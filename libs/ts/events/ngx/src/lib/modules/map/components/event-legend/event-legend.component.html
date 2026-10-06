@@ -1,14 +1,22 @@
-<ng-container *ngIf="sidebarInfo as info">
-  <div *ngFor="let section of info.sections" class="sidebar-info-section">
-    <div class="sidebar-component-name">
-      <p [ngStyle]="section.styleOverrides?.heading">{{ section.heading }}</p>
+@if (sidebarInfo; as info) {
+  @for (section of info.sections; track section) {
+    <div class="sidebar-info-section">
+      <div class="sidebar-component-name">
+        <p [ngStyle]="section.styleOverrides?.heading">{{ section.heading }}</p>
+      </div>
+      @if (section.subheading) {
+        <p class="sidebar-info-subheading" [ngStyle]="section.styleOverrides?.subheading">{{ section.subheading }}</p>
+      }
+      @if (section.items?.length) {
+        <ul class="sidebar-info-items" [ngStyle]="section.styleOverrides?.items">
+          @for (item of section.items; track item) {
+            <li [ngStyle]="section.styleOverrides?.item">{{ item }}</li>
+          }
+        </ul>
+      }
     </div>
-    <p *ngIf="section.subheading" class="sidebar-info-subheading" [ngStyle]="section.styleOverrides?.subheading">{{ section.subheading }}</p>
-    <ul *ngIf="section.items?.length" class="sidebar-info-items" [ngStyle]="section.styleOverrides?.items">
-      <li *ngFor="let item of section.items" [ngStyle]="section.styleOverrides?.item">{{ item }}</li>
-    </ul>
-  </div>
-</ng-container>
+  }
+}
 
 <tamu-gisc-legend
   [deduplicate]="deduplicate"

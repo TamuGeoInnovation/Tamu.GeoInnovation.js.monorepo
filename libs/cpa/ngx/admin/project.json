@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/cpa/ngx/admin/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/cpa/ngx/admin"],
       "options": {
-        "jestConfig": "libs/cpa/ngx/admin/jest.config.ts"
+        "jestConfig": "libs/cpa/ngx/admin/jest.config.ts",
+        "tsConfig": "libs/cpa/ngx/admin/tsconfig.spec.json"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

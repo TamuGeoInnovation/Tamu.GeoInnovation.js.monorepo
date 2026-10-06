@@ -8,10 +8,12 @@
     </thead>
 
     <tbody>
-      <tr *ngFor="let prop of (data.attributes | keyvalue)">
-        <td>{{ prop.key }}</td>
-        <td>{{ prop.value }}</td>
-      </tr>
+      @for (prop of (data.attributes | keyvalue); track prop) {
+        <tr>
+          <td>{{ prop.key }}</td>
+          <td>{{ prop.value }}</td>
+        </tr>
+      }
     </tbody>
   </table>
 </div>

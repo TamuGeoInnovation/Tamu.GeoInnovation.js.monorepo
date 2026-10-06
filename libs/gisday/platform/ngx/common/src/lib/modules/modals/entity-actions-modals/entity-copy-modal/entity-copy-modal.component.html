@@ -2,7 +2,9 @@
 
 <p>Select the season to copy <strong>{{data.identities.length}} {{entityType | lowercase}}</strong> into:</p>
 
-<p class="info-block notice" *ngIf="data?.notice"><strong>Note</strong>: {{data.notice}}</p>
+@if (data?.notice) {
+  <p class="info-block notice"><strong>Note</strong>: {{data.notice}}</p>
+}
 
 <tamu-gisc-select class="leader-2 trailer-2" [value]="(season$ | async)?.guid" placeholder="Season to Copy Into" [floatLabel]="true" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" (changed)="setSeason($event)"></tamu-gisc-select>
 

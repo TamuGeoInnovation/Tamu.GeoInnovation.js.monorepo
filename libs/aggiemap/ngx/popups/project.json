@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/aggiemap/ngx/popups/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/aggiemap/ngx/popups"],
       "options": {
-        "jestConfig": "libs/aggiemap/ngx/popups/jest.config.ts"
+        "jestConfig": "libs/aggiemap/ngx/popups/jest.config.ts",
+        "tsConfig": "libs/aggiemap/ngx/popups/tsconfig.spec.json"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

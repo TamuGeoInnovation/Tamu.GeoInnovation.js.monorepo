@@ -1,36 +1,49 @@
 <div id="direction-results">
   <!-- Directions Overview  -->
-  <div class="directions-overview" *ngIf="result?.directions && !result?.isProcessing && !result?.isError">
-    <div class="directions-overview-item">
-      <div class="quantity">{{ result?.directions.totalTime.toFixed(0) }}</div>
-      <div class="unit">Minutes</div>
+  @if (result?.directions && !result?.isProcessing && !result?.isError) {
+    <div class="directions-overview">
+      <div class="directions-overview-item">
+        <div class="quantity">{{ result?.directions.totalTime.toFixed(0) }}</div>
+        <div class="unit">Minutes</div>
+      </div>
+      <div class="divider"></div>
+      <div class="directions-overview-item">
+        <div class="quantity">{{ result?.directions.totalLength.toFixed(2) }}</div>
+        <div class="unit">Miles</div>
+      </div>
     </div>
+  }
 
-    <div class="divider"></div>
-
-    <div class="directions-overview-item">
-      <div class="quantity">{{ result?.directions.totalLength.toFixed(2) }}</div>
-      <div class="unit">Miles</div>
-    </div>
-  </div>
-
-  <tamu-gisc-trip-planner-directions-actions *ngIf="result && result?.isFulfilled"></tamu-gisc-trip-planner-directions-actions>
+  @if (result && result?.isFulfilled) {
+    <tamu-gisc-trip-planner-directions-actions></tamu-gisc-trip-planner-directions-actions>
+  }
 
   <!-- User Instructions  -->
-  <div id="direction-feedback" *ngIf="result?.isProcessing || !result?.directions || result?.isError">
-    <p *ngIf="!result?.directions && !result?.isError && !result?.isProcessing">Please select two points for written step-by-step directions.</p>
-
-    <p class="error" *ngIf="result?.isError && !result?.isProcessing">No reasonable route was found! Please try again with different points.</p>
-
-    <div *ngIf="result?.isProcessing" class="spinning-loader"></div>
-
-    <p *ngIf="result?.isProcessing">Calculating route. Please wait...</p>
-  </div>
+  @if (result?.isProcessing || !result?.directions || result?.isError) {
+    <div id="direction-feedback">
+      @if (!result?.directions && !result?.isError && !result?.isProcessing) {
+        <p>Please select two points for written step-by-step directions.</p>
+      }
+      @if (result?.isError && !result?.isProcessing) {
+        <p class="error">No reasonable route was found! Please try again with different points.</p>
+      }
+      @if (result?.isProcessing) {
+        <div class="spinning-loader"></div>
+      }
+      @if (result?.isProcessing) {
+        <p>Calculating route. Please wait...</p>
+      }
+    </div>
+  }
 
   <!-- Directions List -->
-  <div *ngIf="result?.directions && result?.modeSwitches && !result?.isProcessing && !result?.isError">
-    <div class="switch-container" *ngFor="let mode of result?.modeSwitches; let i = index">
-      <tamu-gisc-trip-planner-mode-switch [modeSwitch]="mode" [result]="result"></tamu-gisc-trip-planner-mode-switch>
+  @if (result?.directions && result?.modeSwitches && !result?.isProcessing && !result?.isError) {
+    <div>
+      @for (mode of result?.modeSwitches; track mode; let i = $index) {
+        <div class="switch-container">
+          <tamu-gisc-trip-planner-mode-switch [modeSwitch]="mode" [result]="result"></tamu-gisc-trip-planner-mode-switch>
+        </div>
+      }
     </div>
-  </div>
+  }
 </div>

@@ -1,7 +1,10 @@
 <p class="center-text intro-text">
-  <ng-container *ngIf="settings?.introductionText !== undefined; else noIntroText">{{settings?.introductionText}}</ng-container>
+  @if (settings?.introductionText !== undefined) {
+    {{settings?.introductionText}}
+  } @else {
+    Get the best transportation and parking information for {{settings?.name}}
+  }
 
-  <ng-template #noIntroText> Get the best transportation and parking information for {{settings?.name}} </ng-template>
 </p>
 
 <div class="trailer-1 leader-2 flex flex-row justify-center intro-action">

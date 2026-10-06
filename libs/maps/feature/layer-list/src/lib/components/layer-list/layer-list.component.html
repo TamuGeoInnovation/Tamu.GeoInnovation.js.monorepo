@@ -1,8 +1,12 @@
 <div class="sidebar-component-name">
-  <span class="material-icons" *ngIf="responsive?.isMobile" (click)="backAction()">arrow_back</span>
+  @if (responsive?.isMobile) {
+    <span class="material-icons" (click)="backAction()">arrow_back</span>
+  }
   <p>Layers</p>
 </div>
 
 <div class="sidebar-component-content-container">
-  <tamu-gisc-layer-list-item *ngFor="let item of layers | async" [listItem]="item"></tamu-gisc-layer-list-item>
+  @for (item of layers | async; track item) {
+    <tamu-gisc-layer-list-item [listItem]="item"></tamu-gisc-layer-list-item>
+  }
 </div>

@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/feature-highlight/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/feature/feature-highlight/jest.config.ts"
+        "jestConfig": "libs/maps/feature/feature-highlight/jest.config.ts",
+        "tsConfig": "libs/maps/feature/feature-highlight/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/feature-highlight"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

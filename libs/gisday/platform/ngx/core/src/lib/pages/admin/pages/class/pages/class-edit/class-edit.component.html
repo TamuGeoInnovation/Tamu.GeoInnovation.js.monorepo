@@ -6,14 +6,15 @@
       <div class="form-section-title">Attendance</div>
 
       <div class="form-section-actions">
-        <a (click)="exportCSV()" *ngIf="(isExporting$ | async) === false ; else exporting">Export as CSV <span class="material-icons action">file_download</span></a>
-
-        <ng-template #exporting>
+        @if ((isExporting$ | async) === false ) {
+          <a (click)="exportCSV()">Export as CSV <span class="material-icons action">file_download</span></a>
+        } @else {
           <div id="export-state">
             <p>Exporting...</p>
             <div class="loader"></div>
           </div>
-        </ng-template>
+        }
+
       </div>
     </div>
 
@@ -25,10 +26,12 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let attendee of students$ | async">
-            <td>{{ attendee.accountGuid }}</td>
-            <td>{{ attendee.created | date: 'medium' }}</td>
-          </tr>
+          @for (attendee of students$ | async; track attendee) {
+            <tr>
+              <td>{{ attendee.accountGuid }}</td>
+              <td>{{ attendee.created | date: 'medium' }}</td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>

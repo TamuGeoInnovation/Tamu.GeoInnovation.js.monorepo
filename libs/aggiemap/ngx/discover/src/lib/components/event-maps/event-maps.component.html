@@ -1,11 +1,13 @@
 <div class="maps-page-shell">
-    <tamu-gisc-maps-page-header [title]="title" [intro]="intro" [showMainParking]="showMainParking"></tamu-gisc-maps-page-header>
+  <tamu-gisc-maps-page-header [title]="title" [intro]="intro" [showMainParking]="showMainParking"></tamu-gisc-maps-page-header>
 
-    <div class="maps-list-section trailer-3">
-      <tamu-gisc-aggiemap-map-columns [columns]="applicationColumns" [getApplicationRoute]="getApplicationRoute" noMapsMessage="No event maps are available right now."></tamu-gisc-aggiemap-map-columns>
-    </div>
+  <div class="maps-list-section trailer-3">
+    <tamu-gisc-aggiemap-map-columns [columns]="applicationColumns" [getApplicationRoute]="getApplicationRoute" noMapsMessage="No event maps are available right now."></tamu-gisc-aggiemap-map-columns>
+  </div>
 
-    <tamu-gisc-quick-links *ngIf="quickLinks.length > 0" [links]="quickLinks"></tamu-gisc-quick-links>
+  @if (quickLinks.length > 0) {
+    <tamu-gisc-quick-links [links]="quickLinks"></tamu-gisc-quick-links>
+  }
 </div>
 
 <tamu-gisc-footer></tamu-gisc-footer>

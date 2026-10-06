@@ -7,22 +7,27 @@
     <div class="column6 flex flex-column" id="settings-table">
       <div class="setting-item"></div>
 
-      <div class="setting-item" *ngFor="let option of mergedSettings">
-        <div>{{option.shortDescription}}</div>
-        <div>
-          <p *ngIf="option.option === null">Not Set</p>
-          <p *ngIf="option.option !== null">{{ option.option.label }}</p>
-          <a (click)="goToAccommodationSelection(option.key)" (keyup.space)="goToAccommodationSelection(option.key)" (keyup.enter)="goToAccommodationSelection(option.key)">Change</a>
+      @for (option of mergedSettings; track option) {
+        <div class="setting-item">
+          <div>{{option.shortDescription}}</div>
+          <div>
+            @if (option.option === null) {
+              <p>Not Set</p>
+            }
+            @if (option.option !== null) {
+              <p>{{ option.option.label }}</p>
+            }
+            <a (click)="goToAccommodationSelection(option.key)" (keyup.space)="goToAccommodationSelection(option.key)" (keyup.enter)="goToAccommodationSelection(option.key)">Change</a>
+          </div>
         </div>
-      </div>
+      }
 
-      <ng-container *ngIf="settingsValid; else infoTemplate">
+      @if (settingsValid) {
         <tamu-gisc-button value="Take Me To My Map" (go)="navigateToMap()" [look]="'tertiary'"></tamu-gisc-button>
-      </ng-container>
-
-      <ng-template #infoTemplate>
+      } @else {
         <p>Please ensure that all selections are set before proceeding.</p>
-      </ng-template>
+      }
+
     </div>
   </div>
 </div>

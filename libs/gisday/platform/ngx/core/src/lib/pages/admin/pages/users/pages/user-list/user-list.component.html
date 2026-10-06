@@ -5,12 +5,11 @@
     </div>
 
     <div class="form-section-body">
-      <ng-container *ngIf="(users$ | async) !== null; else noData">
-        <ng-container *ngIf="(users$ | async)?.length > 0; else noUsers">
+      @if ((users$ | async) !== null) {
+        @if ((users$ | async)?.length > 0) {
           <div>
             <p>Displaying <strong>{{(users$ | async).length}}</strong> users.</p>
           </div>
-
           <table class="floating-table">
             <thead>
               <tr>
@@ -19,25 +18,23 @@
                 <th>Connection ID</th>
               </tr>
             </thead>
-
             <tbody>
-              <tr *ngFor="let user of (users$ | async)">
-                <td>{{user?.user_info?.name}}</td>
-                <td>{{user?.user_info?.email}}</td>
-                <td>{{user?.user_info?.id}}</td>
-              </tr>
+              @for (user of (users$ | async); track user) {
+                <tr>
+                  <td>{{user?.user_info?.name}}</td>
+                  <td>{{user?.user_info?.email}}</td>
+                  <td>{{user?.user_info?.id}}</td>
+                </tr>
+              }
             </tbody>
           </table>
-        </ng-container>
-
-        <ng-template #noUsers>
+        } @else {
           <p>There are no users yet.</p>
-        </ng-template>
-      </ng-container>
-
-      <ng-template #noData>
+        }
+      } @else {
         <div class="loader"></div>
-      </ng-template>
+      }
+
     </div>
   </div>
 </div>

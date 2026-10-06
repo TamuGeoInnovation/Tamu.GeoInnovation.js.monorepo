@@ -4,6 +4,7 @@
   "sourceRoot": "apps/ues-operations-nest/src",
   "projectType": "application",
   "prefix": "ues-operations-nest",
+  "tags": ["assets"],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -75,6 +76,5 @@
         "jestConfig": "apps/ues-operations-nest/jest.config.ts"
       }
     }
-  },
-  "tags": ["assets"]
+  }
 }

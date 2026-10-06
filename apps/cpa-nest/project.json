@@ -4,6 +4,8 @@
   "sourceRoot": "apps/cpa-nest/src",
   "projectType": "application",
   "prefix": "cpa-nest",
+  "tags": [],
+  "implicitDependencies": ["assets"],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -68,7 +70,5 @@
         "jestConfig": "apps/cpa-nest/jest.config.ts"
       }
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["assets"]
+  }
 }

@@ -9,191 +9,199 @@
       </div>
 
       <!-- <div>
-        <a href="https://urisatexas.org/event-3958981" class="button secondary column4 leader-2 trailer-2" target="_blank">Sponsor through ATX TxGIS Day</a>
-      </div> -->
+      <a href="https://urisatexas.org/event-3958981" class="button secondary column4 leader-2 trailer-2" target="_blank">Sponsor through ATX TxGIS Day</a>
+    </div> -->
 
-      <div>
-        <a href="https://www.h-gac.com/events/houston-area-gis-day-sponsorship" class="button secondary column4 leader-2 trailer-2" target="_blank">Sponsor through Houston Area TxGIS Day</a>
+    <div>
+      <a href="https://www.h-gac.com/events/houston-area-gis-day-sponsorship" class="button secondary column4 leader-2 trailer-2" target="_blank">Sponsor through Houston Area TxGIS Day</a>
+    </div>
+  </div>
+</div>
+
+<div class="container12 flex flex-column justify-center align-center trailer-2" id="current">
+  <h1 class="trailer-1">Sponsors</h1>
+  <p class="sub-section-heading column8">A special thanks to our industry, community, and university partners directly contributing to make TxGIS Day as <i>spatial</i> as it can be.</p>
+</div>
+
+<div class="container12 flex flex-column trailer-1">
+  <div class="large-partition bg-md-grey-50 flex flex-column justify-center align-center mobile-reverse" style="background-image: url(../assets/images/graphics/graphic-raster.png); background-repeat: no-repeat; background-size: cover; background-position: bottom right">
+    <div class="column8 clr-md-grey-900 trailer-2">
+      <h2 class="trailer-1">RASTER</h2>
+      <div class="red-line small"></div>
+      <p>A matrix of cells, also referred to as pixels, arranged into a grid of columns and rows. Each cell represents a value in a variable.</p>
+    </div>
+
+    <div class="sponsor-list">
+      <div class="icon-grid">
+        @for (s of rasterSponsors$ | async; track s) {
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+        }
       </div>
     </div>
   </div>
+</div>
 
-  <div class="container12 flex flex-column justify-center align-center trailer-2" id="current">
-    <h1 class="trailer-1">Sponsors</h1>
-    <p class="sub-section-heading column8">A special thanks to our industry, community, and university partners directly contributing to make TxGIS Day as <i>spatial</i> as it can be.</p>
-  </div>
+<div class="container12 flex flex-column trailer-1">
+  <div class="large-partition bg-md-grey-50 flex flex-column justify-center align-center" style="background-image: url(../assets/images/graphics/graphic-polygon-2.png); background-repeat: no-repeat; background-size: cover; background-position: bottom left">
+    <div class="column8 clr-md-grey-900 trailer-2">
+      <h2 class="trailer-1">POLYGON</h2>
+      <div class="red-line small"></div>
+      <p>A 2-dimensional, vector, bounded shape composed of a finite sequence of straight line segments called edges or sides, converging at vertices.</p>
+    </div>
 
-  <div class="container12 flex flex-column trailer-1">
-    <div class="large-partition bg-md-grey-50 flex flex-column justify-center align-center mobile-reverse" style="background-image: url(../assets/images/graphics/graphic-raster.png); background-repeat: no-repeat; background-size: cover; background-position: bottom right">
-      <div class="column8 clr-md-grey-900 trailer-2">
-        <h2 class="trailer-1">RASTER</h2>
-        <div class="red-line small"></div>
-        <p>A matrix of cells, also referred to as pixels, arranged into a grid of columns and rows. Each cell represents a value in a variable.</p>
-      </div>
-
-      <div class="sponsor-list">
-        <div class="icon-grid">
-          <div class="icon-item large" *ngFor="let s of rasterSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
-        </div>
+    <div class="sponsor-list">
+      <div class="icon-grid">
+        @for (s of polygonSponsors$ | async; track s) {
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+        }
       </div>
     </div>
   </div>
+</div>
 
-  <div class="container12 flex flex-column trailer-1">
-    <div class="large-partition bg-md-grey-50 flex flex-column justify-center align-center" style="background-image: url(../assets/images/graphics/graphic-polygon-2.png); background-repeat: no-repeat; background-size: cover; background-position: bottom left">
-      <div class="column8 clr-md-grey-900 trailer-2">
-        <h2 class="trailer-1">POLYGON</h2>
-        <div class="red-line small"></div>
-        <p>A 2-dimensional, vector, bounded shape composed of a finite sequence of straight line segments called edges or sides, converging at vertices.</p>
-      </div>
-
-      <div class="sponsor-list">
-        <div class="icon-grid">
-          <div class="icon-item large" *ngFor="let s of polygonSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
-        </div>
-      </div>
+<div class="container12 flex flex-column trailer-1">
+  <div class="large-partition bg-md-grey-50 flex flex-column justify-center align-center" style="background-image: url(./assets/images/graphics/graphic-line.png); background-repeat: no-repeat; background-size: cover; background-position: bottom right">
+    <div class="columzn6 clr-md-grey-900 trailer-2">
+      <h2 class="trailer-1">LINE</h2>
+      <div class="red-line small"></div>
+      <p>A 2-dimensional vector feature composed of a at least two connected points.</p>
     </div>
-  </div>
 
-  <div class="container12 flex flex-column trailer-1">
-    <div class="large-partition bg-md-grey-50 flex flex-column justify-center align-center" style="background-image: url(./assets/images/graphics/graphic-line.png); background-repeat: no-repeat; background-size: cover; background-position: bottom right">
-      <div class="columzn6 clr-md-grey-900 trailer-2">
-        <h2 class="trailer-1">LINE</h2>
-        <div class="red-line small"></div>
-        <p>A 2-dimensional vector feature composed of a at least two connected points.</p>
-      </div>
-
-      <div class="sponsor-list">
-        <div class="icon-grid">
-          <div class="icon-item large" *ngFor="let s of lineSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
-        </div>
+    <div class="sponsor-list">
+      <div class="icon-grid">
+        @for (s of lineSponsors$ | async; track s) {
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+        }
       </div>
     </div>
   </div>
+</div>
 
-  <div class="container12 flex flex-column trailer-6">
-    <div class="large-partition bg-md-grey-50 flex flex-column justify-center align-center" style="background-image: url(./assets/images/graphics/graphic-point.png); background-repeat: no-repeat; background-size: cover; background-position: bottom left">
-      <div class="column6 clr-md-grey-900 trailer-2">
-        <h2 class="trailer-1">POINT</h2>
-        <div class="red-line small"></div>
-        <p>A 2-dimensional vector feature representing a discrete geographic location.</p>
-      </div>
-
-      <div class="sponsor-list">
-        <div class="icon-grid">
-          <div class="icon-item large" *ngFor="let s of pointSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="container12 flex flex-column justify-center align-center trailer-2" id="logistics">
-    <h1>Logistics</h1>
-  </div>
-  <div class="container12 flex flex-column trailer-6">
-    <p class="trailer-1">Thank you for joining us for TxGIS Day, below is information about each day of the event, across each of the in-person events happening in the state</p>
-  </div>
-
-  <div class="container12 flex flex-column justify-center align-center trailer-2" id="logistics">
-    <h2>Texas A&amp;M University TxGIS Day</h2>
-    <!-- <p class="sub-section-heading aggie-weight-1 column8">A few odds and ends.</p> -->
-  </div>
-
-  <div class="container12 flex flex-column trailer-6">
-
-    <div class="trailer-1">
-      <h2>Parking Validations</h2>
-      <ul>
-        <li>If you are not affiliated with the university you may be able to pick up a 1-day parking pass (each day) from the TxGIS Day Check-In tables which will be present outside of each TxGIS Day session room.</li>
-        <li>The number of these passes may be limited, so please grab one early if free parking is important to you.</li>
-      </ul>
+<div class="container12 flex flex-column trailer-6">
+  <div class="large-partition bg-md-grey-50 flex flex-column justify-center align-center" style="background-image: url(./assets/images/graphics/graphic-point.png); background-repeat: no-repeat; background-size: cover; background-position: bottom left">
+    <div class="column6 clr-md-grey-900 trailer-2">
+      <h2 class="trailer-1">POINT</h2>
+      <div class="red-line small"></div>
+      <p>A 2-dimensional vector feature representing a discrete geographic location.</p>
     </div>
 
-    <div class="trailer-1">
-      <h2>Monday, November 17th</h2>
-      <ul>
-        <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0468.4&amp;utm_source=gisday" target="_blank">Student Computing Center</a> (SCC) located on TAMU Main Campus.</li>
-        <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the SCC is the <a href="https://aggiemap.tamu.edu/?bldg=0469&amp;utm_source=gisday" target="_blank">Central Campus Garage</a> (CCG).</li>
-      </ul>
-    </div>
-
-    <div class="trailer-1">
-      <h2>Tuesday, November 18th</h2>
-      <ul>
-        <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC)  Gates Ballroom, Room 2400 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
-        <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the MSC is the <a href="https://aggiemap.tamu.edu/?bldg=1544&amp;utm_source=gisday" target="_blank">Gene Stallings Blvd Garage</a> (SBG).</li>
-        <li>As you cross the street from SBG parking garage toward the MSC there will be exterior stairs into the MSC that will take you straight to the event rooms on the second floor.</li>
-      </ul>
-    </div>
-
-    <div class="trailer-1">
-      <h2>Wednesday, November 19th</h2>
-      <ul>
-        <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC)  Bethancourt Ballroom, Room 2300 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
-        <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the MSC is the <a href="https://aggiemap.tamu.edu/?bldg=1544&amp;utm_source=gisday" target="_blank">Gene Stallings Blvd Garage</a> (SBG).</li>
-        <li>As you cross the street from SBG parking garage toward the MSC there will be exterior stairs into the MSC that will take you straight to the event rooms on the second floor.</li>
-        <li>If you are participating in the Career &amp; Resources Fair, setup can take place 30 minutes before-hand in the rooms reserved for the Career Fair events.</li>
-      </ul>
-    </div>
-
-    <div class="trailer-1">
-      <h2>Thursday, November 20th</h2>
-      <ul>
-        <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC)  Gates Ballroom, Room 2400 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
-        <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the MSC is the <a href="https://aggiemap.tamu.edu/?bldg=1544&amp;utm_source=gisday" target="_blank">Gene Stallings Blvd Garage</a> (SBG).</li>
-        <li>As you cross the street from SBG parking garage toward the MSC there will be exterior stairs into the MSC that will take you straight to the event rooms on the second floor.</li>
-      </ul>
-    </div>
-
-    <div class="trailer-1">
-      <h2>Friday, November 21st</h2>
-      <ul>
-        <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC) , Room 2404 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
-        <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the MSC is the <a href="https://aggiemap.tamu.edu/?bldg=1544&amp;utm_source=gisday" target="_blank">Gene Stallings Blvd Garage</a> (SBG).</li>
-        <li>As you cross the street from SBG parking garage toward the MSC there will be exterior stairs into the MSC that will take you straight to the event rooms on the second floor.</li>
-      </ul>
-    </div>
-
-    <div class="trailer-1">
-      <h2>Shipping</h2>
-      <p class="">If you would like to ship materials to campus for TxGIS Day:</p>
-
-      <div class="address-block trailer-1">
-        <p>ATTN: TAMU GIS Day - C/O Emerson Barnett</p>
-        <p>275 Joe Routt Blvd</p>
-        <p>Memorial Student Center, Texas A&amp;M University</p>
-        <p>College Station, TX 77843</p>
-      </div>
-    </div>
-
-    <div class="trailer-1">
-      <h2>Career Fair Booth Setup, Material Storage &amp; Return Shipping</h2>
-
-      <ul>
-        <li><strong>Setup: </strong>Event sponsors may begin setting up their booths (table cloths, popup signs, etc.) 30 minutes prior to the Career &amp; Resources Fair event.</li>
-        <li>
-          <strong>Storage: </strong>
-          Event sponsors may store their materials at the TxGIS Day Check-In tables which will be located in the MSC outside of each of the TxGIS Day sessions.
-        </li>
-        <li>
-          <strong>Return Shipping: </strong>
-          Return shipping is simple. Just bring a return shipping label to affix to your materials, and we will take care of the rest.
-        </li>
-      </ul>
-    </div>
-
-    <div class="trailer-1">
-      <h2>Need Logistical Help?</h2>
-      <p class="">For any questions, contact:</p>
-
-      <div class="contact-block trailer-1">
-        <p>Dr. Daniel W. Goldberg</p>
-        <p>Department of Geography</p>
-        <p>Texas A&amp;M University</p>
-        <p>dan&#64;tamu.edu</p>
-        <p>979-213-0504</p>
-        <p>https://txgisday.org</p>
+    <div class="sponsor-list">
+      <div class="icon-grid">
+        @for (s of pointSponsors$ | async; track s) {
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+        }
       </div>
     </div>
   </div>
+</div>
+
+<div class="container12 flex flex-column justify-center align-center trailer-2" id="logistics">
+  <h1>Logistics</h1>
+</div>
+<div class="container12 flex flex-column trailer-6">
+  <p class="trailer-1">Thank you for joining us for TxGIS Day, below is information about each day of the event, across each of the in-person events happening in the state</p>
+</div>
+
+<div class="container12 flex flex-column justify-center align-center trailer-2" id="logistics">
+  <h2>Texas A&amp;M University TxGIS Day</h2>
+  <!-- <p class="sub-section-heading aggie-weight-1 column8">A few odds and ends.</p> -->
+</div>
+
+<div class="container12 flex flex-column trailer-6">
+
+  <div class="trailer-1">
+    <h2>Parking Validations</h2>
+    <ul>
+      <li>If you are not affiliated with the university you may be able to pick up a 1-day parking pass (each day) from the TxGIS Day Check-In tables which will be present outside of each TxGIS Day session room.</li>
+      <li>The number of these passes may be limited, so please grab one early if free parking is important to you.</li>
+    </ul>
+  </div>
+
+  <div class="trailer-1">
+    <h2>Monday, November 17th</h2>
+    <ul>
+      <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0468.4&amp;utm_source=gisday" target="_blank">Student Computing Center</a> (SCC) located on TAMU Main Campus.</li>
+      <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the SCC is the <a href="https://aggiemap.tamu.edu/?bldg=0469&amp;utm_source=gisday" target="_blank">Central Campus Garage</a> (CCG).</li>
+    </ul>
+  </div>
+
+  <div class="trailer-1">
+    <h2>Tuesday, November 18th</h2>
+    <ul>
+      <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC)  Gates Ballroom, Room 2400 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
+      <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the MSC is the <a href="https://aggiemap.tamu.edu/?bldg=1544&amp;utm_source=gisday" target="_blank">Gene Stallings Blvd Garage</a> (SBG).</li>
+      <li>As you cross the street from SBG parking garage toward the MSC there will be exterior stairs into the MSC that will take you straight to the event rooms on the second floor.</li>
+    </ul>
+  </div>
+
+  <div class="trailer-1">
+    <h2>Wednesday, November 19th</h2>
+    <ul>
+      <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC)  Bethancourt Ballroom, Room 2300 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
+      <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the MSC is the <a href="https://aggiemap.tamu.edu/?bldg=1544&amp;utm_source=gisday" target="_blank">Gene Stallings Blvd Garage</a> (SBG).</li>
+      <li>As you cross the street from SBG parking garage toward the MSC there will be exterior stairs into the MSC that will take you straight to the event rooms on the second floor.</li>
+      <li>If you are participating in the Career &amp; Resources Fair, setup can take place 30 minutes before-hand in the rooms reserved for the Career Fair events.</li>
+    </ul>
+  </div>
+
+  <div class="trailer-1">
+    <h2>Thursday, November 20th</h2>
+    <ul>
+      <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC)  Gates Ballroom, Room 2400 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
+      <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the MSC is the <a href="https://aggiemap.tamu.edu/?bldg=1544&amp;utm_source=gisday" target="_blank">Gene Stallings Blvd Garage</a> (SBG).</li>
+      <li>As you cross the street from SBG parking garage toward the MSC there will be exterior stairs into the MSC that will take you straight to the event rooms on the second floor.</li>
+    </ul>
+  </div>
+
+  <div class="trailer-1">
+    <h2>Friday, November 21st</h2>
+    <ul>
+      <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC) , Room 2404 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
+      <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the MSC is the <a href="https://aggiemap.tamu.edu/?bldg=1544&amp;utm_source=gisday" target="_blank">Gene Stallings Blvd Garage</a> (SBG).</li>
+      <li>As you cross the street from SBG parking garage toward the MSC there will be exterior stairs into the MSC that will take you straight to the event rooms on the second floor.</li>
+    </ul>
+  </div>
+
+  <div class="trailer-1">
+    <h2>Shipping</h2>
+    <p class="">If you would like to ship materials to campus for TxGIS Day:</p>
+
+    <div class="address-block trailer-1">
+      <p>ATTN: TAMU GIS Day - C/O Emerson Barnett</p>
+      <p>275 Joe Routt Blvd</p>
+      <p>Memorial Student Center, Texas A&amp;M University</p>
+      <p>College Station, TX 77843</p>
+    </div>
+  </div>
+
+  <div class="trailer-1">
+    <h2>Career Fair Booth Setup, Material Storage &amp; Return Shipping</h2>
+
+    <ul>
+      <li><strong>Setup: </strong>Event sponsors may begin setting up their booths (table cloths, popup signs, etc.) 30 minutes prior to the Career &amp; Resources Fair event.</li>
+      <li>
+        <strong>Storage: </strong>
+        Event sponsors may store their materials at the TxGIS Day Check-In tables which will be located in the MSC outside of each of the TxGIS Day sessions.
+      </li>
+      <li>
+        <strong>Return Shipping: </strong>
+        Return shipping is simple. Just bring a return shipping label to affix to your materials, and we will take care of the rest.
+      </li>
+    </ul>
+  </div>
+
+  <div class="trailer-1">
+    <h2>Need Logistical Help?</h2>
+    <p class="">For any questions, contact:</p>
+
+    <div class="contact-block trailer-1">
+      <p>Dr. Daniel W. Goldberg</p>
+      <p>Department of Geography</p>
+      <p>Texas A&amp;M University</p>
+      <p>dan&#64;tamu.edu</p>
+      <p>979-213-0504</p>
+      <p>https://txgisday.org</p>
+    </div>
+  </div>
+</div>
 </section>

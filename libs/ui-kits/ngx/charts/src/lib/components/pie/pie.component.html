@@ -1,3 +1,5 @@
-<h3 *ngIf="title !== undefined || title === ''">{{ this.title }}</h3>
+@if (title !== undefined || title === '') {
+  <h3>{{ this.title }}</h3>
+}
 
 <tamu-gisc-chart-container></tamu-gisc-chart-container>

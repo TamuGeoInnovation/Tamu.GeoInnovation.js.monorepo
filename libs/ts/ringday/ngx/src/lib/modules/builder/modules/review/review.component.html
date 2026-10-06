@@ -6,8 +6,12 @@
       <div class="setting-item">
         <div>Ring Day Appointment Date</div>
         <div>
-          <p *ngIf="!settings || settings.date === undefined">Not Set</p>
-          <p *ngIf="settings && settings.date !== undefined">{{eventDate | date : 'MMMM'}} {{ eventDate | date : 'd' }}, {{eventDate | date : 'YYYY'}}</p>
+          @if (!settings || settings.date === undefined) {
+            <p>Not Set</p>
+          }
+          @if (settings && settings.date !== undefined) {
+            <p>{{eventDate | date : 'MMMM'}} {{ eventDate | date : 'd' }}, {{eventDate | date : 'YYYY'}}</p>
+          }
           <p [routerLink]="['/builder/date']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/date', {ret: 'review'})" (keyup.enter)="next('builder/date', {ret: 'review'})" tabindex="0">Change</p>
         </div>
       </div>
@@ -15,14 +19,22 @@
       <div class="setting-item">
         <div>Require Accessible (ADA) Accommodations</div>
         <div>
-          <p *ngIf="!settings || settings.accessible === undefined">Not Set</p>
-          <p *ngIf="settings && settings.accessible !== undefined">{{ settings.accessible ? 'Yes' : 'No' }}</p>
+          @if (!settings || settings.accessible === undefined) {
+            <p>Not Set</p>
+          }
+          @if (settings && settings.accessible !== undefined) {
+            <p>{{ settings.accessible ? 'Yes' : 'No' }}</p>
+          }
           <p [routerLink]="['/builder/accommodations']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/accommodations', {ret: 'review'})" (keyup.enter)="next('builder/accommodations', {ret: 'review'})" tabindex="0">Change</p>
         </div>
       </div>
 
-      <div class="button tertiary" *ngIf="settingsValid" [routerLink]="'../../map'" (keyup.space)="next('map')" (keyup.enter)="next('map')" tabindex="0">Take Me To My Map</div>
-      <div class="button disabled" *ngIf="!settingsValid">Please ensure all selections are valid</div>
+      @if (settingsValid) {
+        <div class="button tertiary" [routerLink]="'../../map'" (keyup.space)="next('map')" (keyup.enter)="next('map')" tabindex="0">Take Me To My Map</div>
+      }
+      @if (!settingsValid) {
+        <div class="button disabled">Please ensure all selections are valid</div>
+      }
     </div>
   </div>
 </div>

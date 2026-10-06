@@ -3,7 +3,9 @@
     <div class="flex flex-row justify-center wrap">
       <div class="column4">
         <a class="logo-container" [routerLink]="['/']">
-          <div class="site-logo greyscale">TxGIS Day <span *ngIf="(activeSeason$ | async)?.year as year">{{year}}</span></div>
+          <div class="site-logo greyscale">TxGIS Day @if ((activeSeason$ | async)?.year; as year) {
+            <span>{{year}}</span>
+          }</div>
         </a>
         <p>Three days of workshops and programs celebrating geospatial technology.</p>
       </div>
@@ -34,19 +36,20 @@
       <div class="column3">
         <p class="footer-column-title">TxGIS Day Partners</p>
 
-        <ng-container *ngIf="organizations$ | async as orgs">
-          <ng-container *ngIf="orgs.length > 0; else noOrgs">
+        @if (organizations$ | async; as orgs) {
+          @if (orgs.length > 0) {
             <ul>
-              <li *ngFor="let org of orgs">
-                <a [href]="org.website" target="_blank">{{org.name}}</a>
-              </li>
+              @for (org of orgs; track org) {
+                <li>
+                  <a [href]="org.website" target="_blank">{{org.name}}</a>
+                </li>
+              }
             </ul>
-          </ng-container>
-        </ng-container>
+          } @else {
+            <p>Coming soon!</p>
+          }
+        }
 
-        <ng-template #noOrgs>
-          <p>Coming soon!</p>
-        </ng-template>
       </div>
     </div>
   </div>

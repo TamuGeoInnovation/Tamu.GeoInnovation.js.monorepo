@@ -4,17 +4,18 @@
   "prefix": "tamu-gisc",
   "projectType": "library",
   "sourceRoot": "libs/ui-kits/ngx/forms/src",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/ui-kits/ngx/forms/jest.config.ts"
+        "jestConfig": "libs/ui-kits/ngx/forms/jest.config.ts",
+        "tsConfig": "libs/ui-kits/ngx/forms/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/forms"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

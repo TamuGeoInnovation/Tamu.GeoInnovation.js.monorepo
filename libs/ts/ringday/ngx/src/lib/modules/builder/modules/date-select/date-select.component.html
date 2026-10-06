@@ -2,16 +2,21 @@
   <p class="center-text component-instructions">Select your Ring Day appointment date.</p>
 
   <div class="date-card-container">
-    <div *ngFor="let item of timestampedDates; let i = index;" class="date-card" (click)="saveDate(item)" (keyup.space)="saveDate(item)" (keyup.enter)="saveDate(item)" tabindex="0">
-      <div class="date">
-        <p class="name">{{item | date : 'EEEE'}}</p>
-        <p class="month">{{item | date : 'MMMM'}} {{item | date : 'd'}}, {{item | date : 'YYYY'}}</p>
+    @for (item of timestampedDates; track item; let i = $index) {
+      <div class="date-card" (click)="saveDate(item)" (keyup.space)="saveDate(item)" (keyup.enter)="saveDate(item)" tabindex="0">
+        <div class="date">
+          <p class="name">{{item | date : 'EEEE'}}</p>
+          <p class="month">{{item | date : 'MMMM'}} {{item | date : 'd'}}, {{item | date : 'YYYY'}}</p>
+        </div>
+        <div class="action" [ngClass]="{'active': (item | date : 'd') === (savedDate | async)}">
+          @if ((item | date : 'd') !== (savedDate | async)) {
+            <p class="material-icons">arrow_forward</p>
+          }
+          @if ((item | date : 'd') === (savedDate | async)) {
+            <p class="material-icons active">check</p>
+          }
+        </div>
       </div>
-
-      <div class="action" [ngClass]="{'active': (item | date : 'd') === (savedDate | async)}">
-        <p class="material-icons" *ngIf="(item | date : 'd') !== (savedDate | async)">arrow_forward</p>
-        <p class="material-icons active" *ngIf="(item | date : 'd') === (savedDate | async)">check</p>
-      </div>
-    </div>
+    }
   </div>
 </div>

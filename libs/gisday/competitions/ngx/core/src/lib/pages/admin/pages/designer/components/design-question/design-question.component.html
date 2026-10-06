@@ -1,6 +1,8 @@
 <tamu-gisc-accordion>
   <tamu-gisc-accordion-header>
-    <p>{{control.get('title').value}} <span *ngIf="control.get('enabled').value === false">(Disabled)</span></p>
+    <p>{{control.get('title').value}} @if (control.get('enabled').value === false) {
+      <span>(Disabled)</span>
+    }</p>
   </tamu-gisc-accordion-header>
 
   <tamu-gisc-accordion-content (submit)="emitRemove()">
@@ -39,45 +41,53 @@
         <tamu-gisc-select formControlName="type" [data]="inputTypes" [valueTemplate]="'type'" [displayTemplate]="'name'" [placeholder]="'Select question type'"> </tamu-gisc-select>
       </div>
 
-      <div class="question-control" *ngIf="control.get('type').value === 'select'">
-        <p class="question-control-header">Point Discriminator</p>
-        <p>Enable this to use this question's option values as the point discriminator for leaderboard scoring. Only one question per form should be marked as the discriminator.</p>
+      @if (control.get('type').value === 'select') {
+        <div class="question-control">
+          <p class="question-control-header">Point Discriminator</p>
+          <p>Enable this to use this question's option values as the point discriminator for leaderboard scoring. Only one question per form should be marked as the discriminator.</p>
+          <tamu-gisc-checkbox formControlName="isDiscriminator" label="Use this question as the point discriminator"></tamu-gisc-checkbox>
+        </div>
+      }
 
-        <tamu-gisc-checkbox formControlName="isDiscriminator" label="Use this question as the point discriminator"></tamu-gisc-checkbox>
-      </div>
-
-      <div class="question-control" *ngIf="control.get('type').value === 'select'">
-        <p class="question-control-header">Dropdown Options</p>
-
-        <div [ngSwitch]="control.get('options').value.length > 0">
-          <div *ngSwitchCase="true">
-            <p>The following are the options displayed for the user in the "dropdown" list. Add or remove as necessary.</p>
-
-            <div class="floating-table">
-              <div class="floating-table-header">
-                <div class="floating-row">
-                  <div class="column">Label</div>
-                  <div class="column">Value</div>
-                  <div class="column">Points</div>
-                </div>
-              </div>
-
-              <div class="floating-table-body" formArrayName="options">
-                <div class="floating-row" *ngFor="let optControl of control.get('options')['controls']; let i = index">
-                  <div>{{optControl.value.name}}</div>
-                  <div>{{optControl.value.value}}</div>
-                  <div>
-                    <input type="number" min="0" step="1" [value]="optControl.value.points || 1" (input)="updateOptionPoints(i, $any($event.target).value)" style="width: 80px" />
+      @if (control.get('type').value === 'select') {
+        <div class="question-control">
+          <p class="question-control-header">Dropdown Options</p>
+          <div>
+            @switch (control.get('options').value.length > 0) {
+              @case (true) {
+                <div>
+                  <p>The following are the options displayed for the user in the "dropdown" list. Add or remove as necessary.</p>
+                  <div class="floating-table">
+                    <div class="floating-table-header">
+                      <div class="floating-row">
+                        <div class="column">Label</div>
+                        <div class="column">Value</div>
+                        <div class="column">Points</div>
+                      </div>
+                    </div>
+                    <div class="floating-table-body" formArrayName="options">
+                      @for (optControl of control.get('options')['controls']; track optControl; let i = $index) {
+                        <div class="floating-row">
+                          <div>{{optControl.value.name}}</div>
+                          <div>{{optControl.value.value}}</div>
+                          <div>
+                            <input type="number" min="0" step="1" [value]="optControl.value.points || 1" (input)="updateOptionPoints(i, $any($event.target).value)" style="width: 80px" />
+                          </div>
+                        </div>
+                      }
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div *ngSwitchDefault>
-            <p>There are no options for this question.</p>
+              }
+              @default {
+                <div>
+                  <p>There are no options for this question.</p>
+                </div>
+              }
+            }
           </div>
         </div>
-      </div>
+      }
     </form>
 
     <!-- <tamu-gisc-button [type]="'submit'" [look]="'danger'" value="Remove Question"></tamu-gisc-button> -->

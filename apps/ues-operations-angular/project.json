@@ -113,7 +113,8 @@
         "development": {
           "buildTarget": "ues-operations-angular:build:development"
         }
-      }
+      },
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -124,7 +125,8 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/ues-operations-angular/jest.config.ts"
+        "jestConfig": "apps/ues-operations-angular/jest.config.ts",
+        "tsConfig": "apps/ues-operations-angular/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/ues-operations-angular"]
     },

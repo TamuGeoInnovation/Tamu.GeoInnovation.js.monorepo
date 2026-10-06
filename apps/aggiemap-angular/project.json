@@ -140,12 +140,14 @@
         "host": "0.0.0.0",
         "proxyConfig": "apps/aggiemap-angular/proxy.conf.json",
         "buildTarget": "aggiemap-angular:build"
-      }
+      },
+      "continuous": true
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/aggiemap-angular/jest.config.ts"
+        "jestConfig": "apps/aggiemap-angular/jest.config.ts",
+        "tsConfig": "apps/aggiemap-angular/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/aggiemap-angular"]
     },

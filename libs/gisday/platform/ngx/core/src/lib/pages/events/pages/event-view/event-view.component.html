@@ -11,75 +11,85 @@
         <p><strong>Note:</strong> All times are in Central Standard Time (CST).</p>
         <p><br /></p>
         <div id="links-container">
-          <p *ngFor="let day of (activeSeason$ | async)?.days; let i = index">
-            <a [routerLink]="['/sessions']" [fragment]="'day' + (i+1) ">Day {{i + 1}}</a>
-          </p>
+          @for (day of (activeSeason$ | async)?.days; track day; let i = $index) {
+            <p>
+              <a [routerLink]="['/sessions']" [fragment]="'day' + (i+1) ">Day {{i + 1}}</a>
+            </p>
+          }
 
           <!-- <p>
-            <a class="md-link" ui-sref="agenda()" href="#!/agenda">Agenda View</a>
-          </p> -->
-        </div>
-      </div>
-    </div>
-
-    <div class="trailer-3" id="sessions-container">
-      <div id="default-content" *ngIf="activeSeason$ | async as season;">
-        <div class="info-block warning" *ngIf="(userInfo$ | async) && (userProfileComplete$ | async) === false">
-          <p>You must complete your TxGIS Day <a routerLink="/account/details">profile</a> before registering for events.</p>
-        </div>
-
-        <tamu-gisc-season-day-card *ngFor="let day of season?.days; let i = index;" [seasonDay]="day" [index]="i" [tags]="activeTagFilters$ | async" [organizations]="activeOrgFilters$ | async" [rsvps]="rsvps$ | async" (register)="registerEvent($event)" (unregister)="unregisterEvent($event)"></tamu-gisc-season-day-card>
-      </div>
-
-      <div id="filters-container">
-        <div id="filter-toggle" class="info-block" [ngClass]="{'notice': (activeFilterCount$ | async) > 0}" (click)="toggleFilters()"><span class="material-icons">filter_list</span>Filters <strong *ngIf="(activeFilterCount$ | async) > 0">({{activeFilterCount$ | async}} active)</strong></div>
-
-        <form [formGroup]="form" id="filters-inner" [ngClass]="{expanded: filtersVisible$ | async}">
-          <div id="tag-filters-container">
-            <div class="card filters">
-              <h2 class="trailer-1">Tags</h2>
-
-              <ng-container *ngIf="(tags$ | async) as tags; else loading">
-                <ng-container *ngIf="tags?.length > 0; else noTags">
-                  <div class="row">
-                    <tamu-gisc-checkbox-group referenceId="guid" formControlName="tags">
-                      <tamu-gisc-checkbox *ngFor="let tag of tags" [data]="tag" [label]="tag.name"></tamu-gisc-checkbox>
-                    </tamu-gisc-checkbox-group>
-                  </div>
-                </ng-container>
-
-                <ng-template #noTags>
-                  <p class="row">There are no tags.</p>
-                </ng-template>
-              </ng-container>
-            </div>
-          </div>
-
-          <div id="organization-filters-container">
-            <div class="card filters">
-              <h2 class="trailer-1">Organizations</h2>
-
-              <ng-container *ngIf="(organizations$ | async) as orgs; else loading">
-                <ng-container *ngIf="orgs?.length > 0; else noOrgs">
-                  <div class="row">
-                    <tamu-gisc-checkbox-group referenceId="guid" formControlName="organizations">
-                      <tamu-gisc-checkbox *ngFor="let org of orgs" [data]="org" [label]="org.name"></tamu-gisc-checkbox>
-                    </tamu-gisc-checkbox-group>
-                  </div>
-                </ng-container>
-
-                <ng-template #noOrgs>
-                  <p class="row">There are no organizations.</p>
-                </ng-template>
-              </ng-container>
-            </div>
-          </div>
-        </form>
+          <a class="md-link" ui-sref="agenda()" href="#!/agenda">Agenda View</a>
+        </p> -->
       </div>
     </div>
   </div>
+
+  <div class="trailer-3" id="sessions-container">
+    @if (activeSeason$ | async; as season;) {
+      <div id="default-content">
+        @if ((userInfo$ | async) && (userProfileComplete$ | async) === false) {
+          <div class="info-block warning">
+            <p>You must complete your TxGIS Day <a routerLink="/account/details">profile</a> before registering for events.</p>
+          </div>
+        }
+        @for (day of season?.days; track day; let i = $index) {
+          <tamu-gisc-season-day-card [seasonDay]="day" [index]="i" [tags]="activeTagFilters$ | async" [organizations]="activeOrgFilters$ | async" [rsvps]="rsvps$ | async" (register)="registerEvent($event)" (unregister)="unregisterEvent($event)"></tamu-gisc-season-day-card>
+        }
+      </div>
+    }
+
+    <div id="filters-container">
+      <div id="filter-toggle" class="info-block" [ngClass]="{'notice': (activeFilterCount$ | async) > 0}" (click)="toggleFilters()"><span class="material-icons">filter_list</span>Filters @if ((activeFilterCount$ | async) > 0) {
+      <strong>({{activeFilterCount$ | async}} active)</strong>
+    }</div>
+
+    <form [formGroup]="form" id="filters-inner" [ngClass]="{expanded: filtersVisible$ | async}">
+      <div id="tag-filters-container">
+        <div class="card filters">
+          <h2 class="trailer-1">Tags</h2>
+
+          @if ((tags$ | async); as tags) {
+            @if (tags?.length > 0) {
+              <div class="row">
+                <tamu-gisc-checkbox-group referenceId="guid" formControlName="tags">
+                  @for (tag of tags; track tag) {
+                    <tamu-gisc-checkbox [data]="tag" [label]="tag.name"></tamu-gisc-checkbox>
+                  }
+                </tamu-gisc-checkbox-group>
+              </div>
+            } @else {
+              <p class="row">There are no tags.</p>
+            }
+          } @else {
+            <div class="loader small"></div>
+          }
+        </div>
+      </div>
+
+      <div id="organization-filters-container">
+        <div class="card filters">
+          <h2 class="trailer-1">Organizations</h2>
+
+          @if ((organizations$ | async); as orgs) {
+            @if (orgs?.length > 0) {
+              <div class="row">
+                <tamu-gisc-checkbox-group referenceId="guid" formControlName="organizations">
+                  @for (org of orgs; track org) {
+                    <tamu-gisc-checkbox [data]="org" [label]="org.name"></tamu-gisc-checkbox>
+                  }
+                </tamu-gisc-checkbox-group>
+              </div>
+            } @else {
+              <p class="row">There are no organizations.</p>
+            }
+          } @else {
+            <div class="loader small"></div>
+          }
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
 </section>
 
-<ng-template #loading>
-  <div class="loader small"></div>
-</ng-template>

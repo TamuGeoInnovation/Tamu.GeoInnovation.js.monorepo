@@ -16,19 +16,63 @@
     },
     "@nx/angular:component": {
       "style": "scss",
-      "skipTests": true
+      "skipTests": true,
+      "type": "component"
     },
     "@nx/angular:guard": {
-      "skipTests": true
+      "skipTests": true,
+      "typeSeparator": "."
     },
     "@nx/angular:service": {
-      "skipTests": true
+      "skipTests": true,
+      "type": "service"
     },
     "@nx/angular:pipe": {
-      "skipTests": true
+      "skipTests": true,
+      "typeSeparator": "."
     },
     "@nx/angular:directive": {
-      "skipTests": true
+      "skipTests": true,
+      "type": "directive"
+    },
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@nx/angular:scam": {
+      "type": "component"
+    },
+    "@nx/angular:scam-directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@nx/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@nx/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@nx/angular:resolver": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
     }
   },
   "nxCloudId": "68bf66e05ea3cd1b684d15cb",
@@ -75,6 +119,5 @@
   },
   "parallel": 1,
   "useInferencePlugins": false,
-  "defaultBase": "development",
-  "useLegacyCache": true
+  "defaultBase": "development"
 }

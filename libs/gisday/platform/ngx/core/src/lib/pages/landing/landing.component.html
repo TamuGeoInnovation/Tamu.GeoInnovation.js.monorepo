@@ -6,33 +6,39 @@
     <div class="x-large-partition">
       <div class="flex flex-column align-center">
         <div class="logo-container">
-          <h1 class="site-logo">TxGIS Day <span *ngIf="(activeSeason$ | async)?.year as year">{{year}}</span></h1>
+          <h1 class="site-logo">TxGIS Day @if ((activeSeason$ | async)?.year; as year) {
+            <span>{{year}}</span>
+          }</h1>
           <img src="assets/images/2022-TIN-sq-1080px.png" />
         </div>
 
         <div class="landing-container">
-          <div class="countdown" *ngIf="(seasonStarted$ | async) === false">
-            <div class="days">
-              <div class="value">{{daysUntil$ | async}}</div>
-              <div class="label">Days</div>
+          @if ((seasonStarted$ | async) === false) {
+            <div class="countdown">
+              <div class="days">
+                <div class="value">{{daysUntil$ | async}}</div>
+                <div class="label">Days</div>
+              </div>
+              <div class="hours">
+                <div class="value">{{hoursUntil$ | async}}</div>
+                <div class="label">Hours</div>
+              </div>
+              <div class="minutes">
+                <div class="value">{{minutesUntil$ | async}}</div>
+                <div class="label">Minutes</div>
+              </div>
+              <div class="seconds">
+                <div class="value">{{secondsUntil$ | async}}</div>
+                <div class="label">Seconds</div>
+              </div>
             </div>
-            <div class="hours">
-              <div class="value">{{hoursUntil$ | async}}</div>
-              <div class="label">Hours</div>
-            </div>
-            <div class="minutes">
-              <div class="value">{{minutesUntil$ | async}}</div>
-              <div class="label">Minutes</div>
-            </div>
-            <div class="seconds">
-              <div class="value">{{secondsUntil$ | async}}</div>
-              <div class="label">Seconds</div>
-            </div>
-          </div>
+          }
 
           <h2 class="trailer-1 column9 slogan">{{dayCountText$ | async}}, demonstrations, and programs celebrating the advancement of geospatial technology.</h2>
 
-          <h3 class="column9" *ngIf="dateRange$ | async as dates">{{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</h3>
+          @if (dateRange$ | async; as dates) {
+            <h3 class="column9">{{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</h3>
+          }
 
           <a routerLink="/sessions" class="button snug leader-2 trailer-2">Explore Events</a>
 
@@ -85,19 +91,19 @@
     <div class="container12 flex flex-column justify-center align-center">
       <p class="column10 trailer-1">GIS Day sponsors are increasingly becoming the backbone of the event and with a growing attendance rate, their contributions help drive the gears that make TxGIS Day possible. As a bonus, their contributions are translated to direct communication and exposure with attendees.</p>
 
-      <ng-container *ngIf="sponsors$ | async as sponsors; else noSponsors">
+      @if (sponsors$ | async; as sponsors) {
         <div class="icon-grid column12">
-          <div class="icon-item" *ngFor="let sponsor of sponsors">
-            <img [src]="sponsor?.logos?.[0]?.path | assetUrl | async" [alt]="sponsor.name + 'logo'" [title]="sponsor.name" />
-          </div>
+          @for (sponsor of sponsors; track sponsor) {
+            <div class="icon-item">
+              <img [src]="sponsor?.logos?.[0]?.path | assetUrl | async" [alt]="sponsor.name + 'logo'" [title]="sponsor.name" />
+            </div>
+          }
         </div>
-
         <p class="leader-2"><a [routerLink]="['/sponsors']">Learn more about sponsorship options</a></p>
-      </ng-container>
-
-      <ng-template #noSponsors>
+      } @else {
         <a routerLink="/sponsors" class="button">Learn about sponsorship opportunities</a>
-      </ng-template>
+      }
+
     </div>
   </div>
 
@@ -112,13 +118,16 @@
       </div>
 
       <div class="icon-grid column12">
-        <div class="icon-item" *ngFor="let org of organizations$ | async">
-          <img [src]="org?.logos?.[0]?.path | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
-          <p *ngIf="org.website !== null && org.website !== ''; else noOrgWebsite"><a [href]="org.website" target="_blank">{{org.name}}</a></p>
-          <ng-template #noOrgWebsite>
-            <p>{{org.name}}</p>
-          </ng-template>
-        </div>
+        @for (org of organizations$ | async; track org) {
+          <div class="icon-item">
+            <img [src]="org?.logos?.[0]?.path | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
+            @if (org.website !== null && org.website !== '') {
+              <p><a [href]="org.website" target="_blank">{{org.name}}</a></p>
+            } @else {
+              <p>{{org.name}}</p>
+            }
+          </div>
+        }
       </div>
     </div>
   </div>

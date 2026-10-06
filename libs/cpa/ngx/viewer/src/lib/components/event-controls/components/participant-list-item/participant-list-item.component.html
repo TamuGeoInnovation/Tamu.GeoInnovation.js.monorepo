@@ -8,14 +8,15 @@
   </div>
 </div>
 
-<div class="confirmation-prompt attention" *ngIf="confirmationVisible | async">
-  <p>
-    Deleting this participant will also remove any associated submissions. This process is irreversible. Are you sure you want to remove <strong><em>{{participant.name}}</em></strong
-    >?
-  </p>
-
-  <div class="confirmation-actions">
-    <tamu-gisc-button value="Never mind" look="secondary" (click)="hideConfirmation()"></tamu-gisc-button>
-    <tamu-gisc-button value="Yes, I'm sure" look="danger" (click)="deleteParticipant()"></tamu-gisc-button>
+@if (confirmationVisible | async) {
+  <div class="confirmation-prompt attention">
+    <p>
+      Deleting this participant will also remove any associated submissions. This process is irreversible. Are you sure you want to remove <strong><em>{{participant.name}}</em></strong
+      >?
+    </p>
+    <div class="confirmation-actions">
+      <tamu-gisc-button value="Never mind" look="secondary" (click)="hideConfirmation()"></tamu-gisc-button>
+      <tamu-gisc-button value="Yes, I'm sure" look="danger" (click)="deleteParticipant()"></tamu-gisc-button>
+    </div>
   </div>
-</div>
+}

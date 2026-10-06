@@ -1,35 +1,38 @@
 <section>
   <div class="container12 presenter-details-item leader-1">
-    <div *ngIf="($speaker | async) as person">
-      <div class="column4 image-container">
-        <tamu-gisc-speaker-avatar [avatarImageUrl]="person?.images?.[0]?.path"></tamu-gisc-speaker-avatar>
-      </div>
-
-      <div class="column6 pre-2">
-        <p class="name">
-          {{person.firstName}} {{person.lastName}}
-          <span *ngIf="person.organization && person.organization.name.length > 0" class="class"> | {{person.organization?.name}}</span>
-        </p>
-
-        <ng-container *ngIf="person.description && person.description.length > 0; else noDescription">
-          <div class="markdown-content" [innerHTML]="person.description | markdownParse"></div>
-        </ng-container>
-
-        <ng-template #noDescription>
-          <p>There is no description for this presenter yet. Please check back at a later time.</p>
-        </ng-template>
-
-        <div *ngIf="person.events && person.events.length > 0" class="events-section leader-2">
-          <div class="border-divider trailer-2"></div>
-          <h3 class="trailer-1">Presenting At</h3>
-          <div class="events-list">
-            <div *ngFor="let event of person.events" class="event-item">
-              <div class="event-time">{{event?.day?.date | parseDateTimeStrings : event.startTime | date:'MMM d, y, h:mm a'}} - {{ event?.day?.date| parseDateTimeStrings : event.endTime | date:'h:mm a'}}</div>
-              <div class="event-name"><a [routerLink]="['/sessions', 'details', event.guid]">{{ event.name }}</a></div>
+    @if (($speaker | async); as person) {
+      <div>
+        <div class="column4 image-container">
+          <tamu-gisc-speaker-avatar [avatarImageUrl]="person?.images?.[0]?.path"></tamu-gisc-speaker-avatar>
+        </div>
+        <div class="column6 pre-2">
+          <p class="name">
+            {{person.firstName}} {{person.lastName}}
+            @if (person.organization && person.organization.name.length > 0) {
+              <span class="class"> | {{person.organization?.name}}</span>
+            }
+          </p>
+          @if (person.description && person.description.length > 0) {
+            <div class="markdown-content" [innerHTML]="person.description | markdownParse"></div>
+          } @else {
+            <p>There is no description for this presenter yet. Please check back at a later time.</p>
+          }
+          @if (person.events && person.events.length > 0) {
+            <div class="events-section leader-2">
+              <div class="border-divider trailer-2"></div>
+              <h3 class="trailer-1">Presenting At</h3>
+              <div class="events-list">
+                @for (event of person.events; track event) {
+                  <div class="event-item">
+                    <div class="event-time">{{event?.day?.date | parseDateTimeStrings : event.startTime | date:'MMM d, y, h:mm a'}} - {{ event?.day?.date| parseDateTimeStrings : event.endTime | date:'h:mm a'}}</div>
+                    <div class="event-name"><a [routerLink]="['/sessions', 'details', event.guid]">{{ event.name }}</a></div>
+                  </div>
+                }
+              </div>
             </div>
-          </div>
+          }
         </div>
       </div>
-    </div>
+    }
   </div>
 </section>

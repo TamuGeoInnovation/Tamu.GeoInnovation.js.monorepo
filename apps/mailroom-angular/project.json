@@ -86,7 +86,8 @@
       "defaultConfiguration": "development",
       "options": {
         "host": "0.0.0.0"
-      }
+      },
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -101,7 +102,8 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/mailroom-angular"],
       "options": {
-        "jestConfig": "apps/mailroom-angular/jest.config.ts"
+        "jestConfig": "apps/mailroom-angular/jest.config.ts",
+        "tsConfig": "apps/mailroom-angular/tsconfig.spec.json"
       }
     }
   }

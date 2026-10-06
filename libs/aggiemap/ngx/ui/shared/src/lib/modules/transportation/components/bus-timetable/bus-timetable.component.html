@@ -1,14 +1,21 @@
-<div *ngIf="loaded !== true" class="flex flex-column justify-center align-center">
-  <div class="spinning-loader"></div>
-</div>
-
-<div class="detail-container" *ngIf="stops | async as stopList">
-  <div *ngIf="stopList.length > 0" class="stops">
-    <p class="stops-title">Stops on this route</p>
-    <ul class="stops-list">
-      <li *ngFor="let stop of stopList">{{ stop }}</li>
-    </ul>
+@if (loaded !== true) {
+  <div class="flex flex-column justify-center align-center">
+    <div class="spinning-loader"></div>
   </div>
+}
 
-  <a class="button schedule-link" [href]="scheduleUrl" target="_blank" rel="noopener">View full schedule</a>
-</div>
+@if (stops | async; as stopList) {
+  <div class="detail-container">
+    @if (stopList.length > 0) {
+      <div class="stops">
+        <p class="stops-title">Stops on this route</p>
+        <ul class="stops-list">
+          @for (stop of stopList; track stop) {
+            <li>{{ stop }}</li>
+          }
+        </ul>
+      </div>
+    }
+    <a class="button schedule-link" [href]="scheduleUrl" target="_blank" rel="noopener">View full schedule</a>
+  </div>
+}

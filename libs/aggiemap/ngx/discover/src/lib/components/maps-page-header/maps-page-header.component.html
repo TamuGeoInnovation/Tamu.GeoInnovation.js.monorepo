@@ -10,8 +10,12 @@
 <div class="maps-page-header-row leader-1 trailer-2">
   <div class="maps-page-header-titles">
     <h1 class="maps-page-title">{{ title }}</h1>
-    <p class="maps-page-intro" *ngIf="intro">{{ intro }}</p>
+    @if (intro) {
+      <p class="maps-page-intro">{{ intro }}</p>
+    }
   </div>
 
-  <a *ngIf="showMainParking" class="button maroon" [routerLink]="mainParkingRoute">Main Campus Parking Map</a>
+  @if (showMainParking) {
+    <a class="button maroon" [routerLink]="mainParkingRoute">Main Campus Parking Map</a>
+  }
 </div>

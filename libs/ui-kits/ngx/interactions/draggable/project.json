@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/ui-kits/ngx/interactions/draggable/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/ui-kits/ngx/interactions/draggable/jest.config.ts"
+        "jestConfig": "libs/ui-kits/ngx/interactions/draggable/jest.config.ts",
+        "tsConfig": "libs/ui-kits/ngx/interactions/draggable/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/interactions/draggable"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

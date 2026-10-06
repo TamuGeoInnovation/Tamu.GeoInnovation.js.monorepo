@@ -1,5 +1,5 @@
-import { DOCUMENT } from '@angular/common';
-import { ComponentRef, Inject, Injectable, Type, ViewContainerRef } from '@angular/core';
+
+import { ComponentRef, Inject, Injectable, Type, ViewContainerRef, DOCUMENT } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ModalHostComponent } from '../../components/modal-host/modal-host.component';

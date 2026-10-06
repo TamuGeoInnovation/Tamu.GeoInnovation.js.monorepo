@@ -4,6 +4,7 @@
   "sourceRoot": "apps/oidc-provider-nest/src",
   "projectType": "application",
   "prefix": "oidc-provider-nest",
+  "tags": ["assets"],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -78,6 +79,5 @@
       },
       "outputs": ["{workspaceRoot}/coverage/apps/oidc-provider-nest"]
     }
-  },
-  "tags": ["assets"]
+  }
 }

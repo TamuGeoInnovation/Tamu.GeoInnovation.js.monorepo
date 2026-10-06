@@ -4,7 +4,9 @@
       <h1 class="trailer-1">About TxGIS Day</h1>
 
       <div class="container12">
-        <p class="sub-section-heading">GIS Day, the annual worldwide salute to geospatial technology and its power to transform and enhance lives, is going to be extra "spatial" this year in Texas, where the TxGIS Day celebration, one of the world's largest, is expanding to encompass {{dayCountText$ | async}}<span *ngIf="dateRange$ | async as dates">, {{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</span>.</p>
+        <p class="sub-section-heading">GIS Day, the annual worldwide salute to geospatial technology and its power to transform and enhance lives, is going to be extra "spatial" this year in Texas, where the TxGIS Day celebration, one of the world's largest, is expanding to encompass {{dayCountText$ | async}}@if (dateRange$ | async; as dates) {
+          <span>, {{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</span>
+        }.</p>
       </div>
     </div>
   </div>
@@ -17,14 +19,17 @@
       </div>
 
       <div class="column12" id="bubble-portrait-container">
-        <div class="presenter-list-item" *ngFor="let member of organizingMembers$ | async">
-          <tamu-gisc-speaker-avatar [avatarImageUrl]="member?.images?.[0]?.path" [fallbackStyle]="'initials'" [avatarNames]="member.firstName + ' ' + member.lastName"></tamu-gisc-speaker-avatar>
-
-          <div class="presenter-list-details">
-            <p><a [routerLink]="['/presenters/details', member.guid]">{{member.firstName}} {{member.lastName}}</a></p>
-            <p *ngIf="member?.organization?.name as orgName">{{orgName}}</p>
+        @for (member of organizingMembers$ | async; track member) {
+          <div class="presenter-list-item">
+            <tamu-gisc-speaker-avatar [avatarImageUrl]="member?.images?.[0]?.path" [fallbackStyle]="'initials'" [avatarNames]="member.firstName + ' ' + member.lastName"></tamu-gisc-speaker-avatar>
+            <div class="presenter-list-details">
+              <p><a [routerLink]="['/presenters/details', member.guid]">{{member.firstName}} {{member.lastName}}</a></p>
+              @if (member?.organization?.name; as orgName) {
+                <p>{{orgName}}</p>
+              }
+            </div>
           </div>
-        </div>
+        }
       </div>
     </div>
 
@@ -36,13 +41,16 @@
         </div>
 
         <div class="icon-grid column12">
-          <div class="icon-item" *ngFor="let org of organizations$ | async">
-            <img [src]="org?.logos?.[0]?.path | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
-            <p *ngIf="org.website !== null && org.website !== ''; else noOrgWebsite"><a [href]="org.website" target="_blank">{{org.name}}</a></p>
-            <ng-template #noOrgWebsite>
-              <p>{{org.name}}</p>
-            </ng-template>
-          </div>
+          @for (org of organizations$ | async; track org) {
+            <div class="icon-item">
+              <img [src]="org?.logos?.[0]?.path | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
+              @if (org.website !== null && org.website !== '') {
+                <p><a [href]="org.website" target="_blank">{{org.name}}</a></p>
+              } @else {
+                <p>{{org.name}}</p>
+              }
+            </div>
+          }
         </div>
       </div>
     </div>

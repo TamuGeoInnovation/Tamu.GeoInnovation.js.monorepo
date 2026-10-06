@@ -1,19 +1,25 @@
 <div class="popup-section">
   <div class="feature-style-1" tabindex="0">{{ data.attributes.BldgName }}</div>
-  <div class="feature-style-2" tabindex="0" *ngIf="data.attributes.Number">Building {{ data.attributes.Number }}</div>
-  <div class="feature-style-2" tabindex="0"><span *ngIf="(data.attributes.Address | trim | titlecase).length > 0">{{data.attributes.Address | trim | titlecase}}, </span><span>{{data.attributes.City | trim | titlecase}}</span>, TX <span>{{data.attributes.Zip | trim}}</span></div>
-</div>
-
-<div class="popup-section">
-  <!-- Copy URL component -->
-  <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
-
-  <!-- Directions To Button -->
-  <div *ngIf="directionsAvailable | async" class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.Number" (click)="startDirections()">Directions To Here</div>
-</div>
-
-<div class="popup-section">
-  <div class="image" tabindex="0" aria-label="Image of feature">
-    <img alt="" src="https://aggiemap.tamu.edu/images/compressed_test/{{ data.attributes.Number }}.jpg" />
+  @if (data.attributes.Number) {
+    <div class="feature-style-2" tabindex="0">Building {{ data.attributes.Number }}</div>
+  }
+  <div class="feature-style-2" tabindex="0">@if ((data.attributes.Address | trim | titlecase).length > 0) {
+    <span>{{data.attributes.Address | trim | titlecase}}, </span>
+    }<span>{{data.attributes.City | trim | titlecase}}</span>, TX <span>{{data.attributes.Zip | trim}}</span></div>
   </div>
-</div>
+
+  <div class="popup-section">
+    <!-- Copy URL component -->
+    <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+
+    <!-- Directions To Button -->
+    @if (directionsAvailable | async) {
+      <div class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.Number" (click)="startDirections()">Directions To Here</div>
+    }
+  </div>
+
+  <div class="popup-section">
+    <div class="image" tabindex="0" aria-label="Image of feature">
+      <img alt="" src="https://aggiemap.tamu.edu/images/compressed_test/{{ data.attributes.Number }}.jpg" />
+    </div>
+  </div>

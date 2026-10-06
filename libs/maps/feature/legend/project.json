@@ -4,17 +4,18 @@
   "prefix": "tamu-gisc",
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/legend/src",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/feature/legend/jest.config.ts"
+        "jestConfig": "libs/maps/feature/legend/jest.config.ts",
+        "tsConfig": "libs/maps/feature/legend/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/legend"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

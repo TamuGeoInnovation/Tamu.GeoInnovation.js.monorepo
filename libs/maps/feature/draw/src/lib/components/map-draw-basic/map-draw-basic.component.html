@@ -1,17 +1,41 @@
-<div class="tool-set update" *ngIf="updateTools">
-  <p class="material-icons" title="Transform" *ngIf="transformTool" [ngClass]="{ active: activeUpdateTool === 'transform' }" (click)="setUpdateTool('transform')">open_with</p>
-  <p class="material-icons" title="Reshape" *ngIf="reshapeTool" [ngClass]="{ active: activeUpdateTool === 'reshape' }" (click)="setUpdateTool('reshape')">format_shapes</p>
-</div>
+@if (updateTools) {
+  <div class="tool-set update">
+    @if (transformTool) {
+      <p class="material-icons" title="Transform" [ngClass]="{ active: activeUpdateTool === 'transform' }" (click)="setUpdateTool('transform')">open_with</p>
+    }
+    @if (reshapeTool) {
+      <p class="material-icons" title="Reshape" [ngClass]="{ active: activeUpdateTool === 'reshape' }" (click)="setUpdateTool('reshape')">format_shapes</p>
+    }
+  </div>
+}
 
-<div class="tool-set create" *ngIf="createTools">
-  <p class="material-icons" title="Draw a Point" *ngIf="pointTool" [ngClass]="{ active: model?.activeTool === 'point' }" (click)="create('point')">room</p>
-  <p class="material-icons" title="Draw a Polyline" *ngIf="polylineTool" [ngClass]="{ active: model?.activeTool === 'polyline' }" (click)="create('polyline')">timeline</p>
-  <p class="material-icons" title="Draw a Polygon" *ngIf="polygonTool" [ngClass]="{ active: model?.activeTool === 'polygon' }" (click)="create('polygon')">star_border</p>
-  <p class="material-icons" title="Draw a Rectangle" *ngIf="rectangleTool" [ngClass]="{ active: model?.activeTool === 'rectangle' }" (click)="create('rectangle')">check_box_outline_blank</p>
-  <p class="material-icons" title="Draw a Circle" *ngIf="circleTool" [ngClass]="{ active: model?.activeTool === 'circle' }" (click)="create('circle')">radio_button_unchecked</p>
-</div>
+@if (createTools) {
+  <div class="tool-set create">
+    @if (pointTool) {
+      <p class="material-icons" title="Draw a Point" [ngClass]="{ active: model?.activeTool === 'point' }" (click)="create('point')">room</p>
+    }
+    @if (polylineTool) {
+      <p class="material-icons" title="Draw a Polyline" [ngClass]="{ active: model?.activeTool === 'polyline' }" (click)="create('polyline')">timeline</p>
+    }
+    @if (polygonTool) {
+      <p class="material-icons" title="Draw a Polygon" [ngClass]="{ active: model?.activeTool === 'polygon' }" (click)="create('polygon')">star_border</p>
+    }
+    @if (rectangleTool) {
+      <p class="material-icons" title="Draw a Rectangle" [ngClass]="{ active: model?.activeTool === 'rectangle' }" (click)="create('rectangle')">check_box_outline_blank</p>
+    }
+    @if (circleTool) {
+      <p class="material-icons" title="Draw a Circle" [ngClass]="{ active: model?.activeTool === 'circle' }" (click)="create('circle')">radio_button_unchecked</p>
+    }
+  </div>
+}
 
-<div class="tool-set version" *ngIf="versionTools">
-  <p class="material-icons" title="Undo" *ngIf="undoTool" [ngClass]="{ available: model?.canUndo() }" (click)="versionAction('undo')">undo</p>
-  <p class="material-icons" title="Redo" *ngIf="redoTool" [ngClass]="{ available: model?.canRedo() }" (click)="versionAction('redo')">redo</p>
-</div>
+@if (versionTools) {
+  <div class="tool-set version">
+    @if (undoTool) {
+      <p class="material-icons" title="Undo" [ngClass]="{ available: model?.canUndo() }" (click)="versionAction('undo')">undo</p>
+    }
+    @if (redoTool) {
+      <p class="material-icons" title="Redo" [ngClass]="{ available: model?.canRedo() }" (click)="versionAction('redo')">redo</p>
+    }
+  </div>
+}

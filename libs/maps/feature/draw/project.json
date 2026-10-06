@@ -4,17 +4,18 @@
   "prefix": "tamu-gisc",
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/draw/src",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/feature/draw/jest.config.ts"
+        "jestConfig": "libs/maps/feature/draw/jest.config.ts",
+        "tsConfig": "libs/maps/feature/draw/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/draw"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

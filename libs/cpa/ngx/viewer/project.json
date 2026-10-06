@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/cpa/ngx/viewer/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/cpa/ngx/viewer"],
       "options": {
-        "jestConfig": "libs/cpa/ngx/viewer/jest.config.ts"
+        "jestConfig": "libs/cpa/ngx/viewer/jest.config.ts",
+        "tsConfig": "libs/cpa/ngx/viewer/tsconfig.spec.json"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

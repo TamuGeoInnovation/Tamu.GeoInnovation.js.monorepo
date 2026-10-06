@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/ui-kits/ngx/navigation/triggers/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/ui-kits/ngx/navigation/triggers/jest.config.ts"
+        "jestConfig": "libs/ui-kits/ngx/navigation/triggers/jest.config.ts",
+        "tsConfig": "libs/ui-kits/ngx/navigation/triggers/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/navigation/triggers"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

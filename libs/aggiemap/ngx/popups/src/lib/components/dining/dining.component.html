@@ -4,44 +4,60 @@
 </div>
 
 <div class="popup-section" *giscAccordion="let parent;" id="dining-location-schedule-container">
-  <div class="flex flex-row align-center justify-between" tab-index="0" *ngIf="status" [giscAccordionHeader]="parent">
-    <div class="flex flex-row">
-      <p [ngClass]="{'clr-md-green-700': status.statusCode === 'open', 'clr-md-red-600': status.statusCode === 'closed', 'no-message' : status?.message === null}" class="status-text flex flex-row align-center"><span class="material-icons">schedule</span>{{status.status}}</p>
-      <p class="status-message" *ngIf="status.message">{{status?.message}}</p>
+  @if (status) {
+    <div class="flex flex-row align-center justify-between" tab-index="0" [giscAccordionHeader]="parent">
+      <div class="flex flex-row">
+        <p [ngClass]="{'clr-md-green-700': status.statusCode === 'open', 'clr-md-red-600': status.statusCode === 'closed', 'no-message' : status?.message === null}" class="status-text flex flex-row align-center"><span class="material-icons">schedule</span>{{status.status}}</p>
+        @if (status.message) {
+          <p class="status-message">{{status?.message}}</p>
+        }
+      </div>
+      <div class="flex flex-row expand-icon" [ngClass]="{expanded: parent.expanded}">
+        <span class="material-icons">keyboard_arrow_down</span>
+      </div>
     </div>
-
-    <div class="flex flex-row expand-icon" [ngClass]="{expanded: parent.expanded}">
-      <span class="material-icons">keyboard_arrow_down</span>
-    </div>
-  </div>
+  }
 
   <div class="leader-1" *giscAccordionContent="parent.expanded">
-    <ng-container *ngIf="schedule | async as schedule; else scheduleFallback">
-      <div *ngFor="let day of schedule | keyvalue" class="flex flex-row justify-between schedule-day-row">
-        <p>{{ day.key | date : 'EEEE' }}</p>
-        <div [ngSwitch]="day.value.hours.length > 0">
-          <div *ngSwitchCase="true" class="flex flex-column">
-            <p *ngFor="let hours of day.value.hours"><span class="time-block time-block__start">{{hours.start | date : 'h:mm a'}}</span> &mdash; <span class="time-block time-block__end">{{hours.end | date : 'h:mm a'}}</span></p>
+    @if (schedule | async; as schedule) {
+      @for (day of schedule | keyvalue; track day) {
+        <div class="flex flex-row justify-between schedule-day-row">
+          <p>{{ day.key | date : 'EEEE' }}</p>
+          <div>
+            @switch (day.value.hours.length > 0) {
+              @case (true) {
+                <div class="flex flex-column">
+                  @for (hours of day.value.hours; track hours) {
+                    <p><span class="time-block time-block__start">{{hours.start | date : 'h:mm a'}}</span> &mdash; <span class="time-block time-block__end">{{hours.end | date : 'h:mm a'}}</span></p>
+                  }
+                </div>
+              }
+              @default {
+                <div><p>Closed</p></div>
+              }
+            }
           </div>
-          <div *ngSwitchDefault><p>Closed</p></div>
         </div>
-      </div>
-    </ng-container>
-
-    <ng-template #scheduleFallback>
+      }
+    } @else {
       <p class="schedule-fallback">{{ scheduleUnavailable ? 'Hours unavailable' : 'Loading hours&hellip;' }}</p>
-    </ng-template>
+    }
+
   </div>
 </div>
 
 <!-- <div class="popup-section">
-  <div class="image" tabindex="0" aria-label="Image of feature">
-    <img alt="" src="https://aggiemap.tamu.edu/images/compressed_test/{{ data.attributes.Number }}.jpg" />
-  </div>
+<div class="image" tabindex="0" aria-label="Image of feature">
+  <img alt="" src="https://aggiemap.tamu.edu/images/compressed_test/{{ data.attributes.Number }}.jpg" />
+</div>
 </div> -->
 
 <div class="popup-section">
-  <div *ngIf="data?.attributes?.description" [innerHTML]="data.attributes.description| markdownParse"></div>
+  @if (data?.attributes?.description) {
+    <div [innerHTML]="data.attributes.description| markdownParse"></div>
+  }
   <!-- Directions To Button -->
-  <div *ngIf="directionsAvailable | async" class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.name" (click)="startDirections()">Directions To Here</div>
+  @if (directionsAvailable | async) {
+    <div class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.name" (click)="startDirections()">Directions To Here</div>
+  }
 </div>

@@ -109,12 +109,14 @@
       "options": {
         "host": "0.0.0.0",
         "buildTarget": "gisday-competitions-angular:build"
-      }
+      },
+      "continuous": true
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/gisday-competitions-angular/jest.config.ts"
+        "jestConfig": "apps/gisday-competitions-angular/jest.config.ts",
+        "tsConfig": "apps/gisday-competitions-angular/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/gisday-competitions-angular"]
     },

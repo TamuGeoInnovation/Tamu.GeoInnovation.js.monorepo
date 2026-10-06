@@ -9,5 +9,7 @@
 
   <input type="email" placeholder="Email" [(ngModel)]="email" name="email" tabindex="0" [disabled]="submitted" />
 
-  <button class="leader-2" type="submit" *ngIf="!submitted" tabindex="0">Submit</button>
+  @if (!submitted) {
+    <button class="leader-2" type="submit" tabindex="0">Submit</button>
+  }
 </form>

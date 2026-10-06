@@ -1,24 +1,30 @@
-<!-- This component is an application-specific implementation of the generic sidebar component. 
+<!-- This component is an application-specific implementation of the generic sidebar component.
 
 We are injecting application-specific sidebar tabs and content -->
 
 <!-- `tamuGiscRevealSidebarOnPopup`: the feature popup renders inside this panel, so a closed panel
-     swallows it and clicking a feature appears to do nothing (#1244). -->
+swallows it and clicking a feature appears to do nothing (#1244). -->
 <tamu-gisc-sidebar [position]="'right'" tamuGiscRevealSidebarOnPopup>
   <div class="tabs left">
     <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''" (click)="reportSidebarContent('Features')"></tamu-gisc-sidebar-tab>
 
     <!-- Development-only while routing is unpublished (#1003). -->
-    <tamu-gisc-sidebar-tab *ngIf="(isDev | async) === true" [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'" (click)="reportSidebarContent('Directions')"></tamu-gisc-sidebar-tab>
+    @if ((isDev | async) === true) {
+      <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'" (click)="reportSidebarContent('Directions')"></tamu-gisc-sidebar-tab>
+    }
 
     <!--
-      Development-only until `TS/Bus_Routes` is published (#1090). Without this gate the tab shipped to
-      production, where `busRoutesAvailable` correctly refuses to render any routes - so the tab opened
-      a panel apologising for being unavailable.
+    Development-only until `TS/Bus_Routes` is published (#1090). Without this gate the tab shipped to
+    production, where `busRoutesAvailable` correctly refuses to render any routes - so the tab opened
+    a panel apologising for being unavailable.
     -->
-    <tamu-gisc-sidebar-tab *ngIf="(isDev | async) === true" [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'" [route]="'bus'" (click)="reportSidebarContent('Bus Routes')"></tamu-gisc-sidebar-tab>
+    @if ((isDev | async) === true) {
+      <tamu-gisc-sidebar-tab [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'" [route]="'bus'" (click)="reportSidebarContent('Bus Routes')"></tamu-gisc-sidebar-tab>
+    }
 
-    <tamu-gisc-sidebar-tab *ngIf="(isDev | async) === true" [title]="'Experiments'" [description]="'Aggiemap Experiments'" [material_icon]="'science'" [route]="'experiments'" (click)="reportSidebarContent('Experiments')"></tamu-gisc-sidebar-tab>
+    @if ((isDev | async) === true) {
+      <tamu-gisc-sidebar-tab [title]="'Experiments'" [description]="'Aggiemap Experiments'" [material_icon]="'science'" [route]="'experiments'" (click)="reportSidebarContent('Experiments')"></tamu-gisc-sidebar-tab>
+    }
 
     <tamu-gisc-sidebar-tab [title]="'Settings'" [description]="'Settings'" [material_icon]="'settings'" [route]="'settings'" (click)="reportSidebarContent('Settings')"></tamu-gisc-sidebar-tab>
   </div>

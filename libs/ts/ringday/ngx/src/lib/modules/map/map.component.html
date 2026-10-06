@@ -1,55 +1,66 @@
 <tamu-gisc-reveille-console-log></tamu-gisc-reveille-console-log>
 
 <div class="map-ui bottom left">
-  <div class="help map-ui-element" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" *ngIf="!isMobile" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
-    <span class="material-icons">help</span>
-    <div class="topics">
-      <p><a routerLink="/discover" tabindex="0">All Maps</a></p>
-      <p><a routerLink="/about" tabindex="0">About Aggie Map</a></p>
-      <p><a routerLink="/instructions" tabindex="0">Map Instructions</a></p>
-      <p><a routerLink="/directory" tabindex="0">Building Directory</a></p>
-      <p class="topics-separator" aria-hidden="true"></p>
-      <p><a routerLink="/requesting-maps" tabindex="0">Request Maps &amp; Changes</a></p>
-      <p><a href="mailto:aggiemap@tamu.edu?subject=Aggiemap%20Feedback" target="_blank" tabindex="0">Submit Feedback</a></p>
-      <p class="topics-separator" aria-hidden="true"></p>
-      <p><a href="http://itaccessibility.tamu.edu" target="_blank" tabindex="0">Accessibility Policy</a></p>
-      <p><a href="https://www.tamu.edu/statements/privacy.html" target="_blank" tabindex="0">Privacy &amp; Security Policy</a></p>
-      <p><a href="https://www.tamu.edu/statements/index.html" target="_blank" tabindex="0">Site Policies</a></p>
-      <p class="topics-separator" aria-hidden="true"></p>
-      <p><a href="https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo" target="_blank" tabindex="0">GitHub</a></p>
-      <p><a href="https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pulls?q=is%3Apr+is%3Aclosed" target="_blank" tabindex="0">Changelog</a></p>
+  @if (!isMobile) {
+    <div class="help map-ui-element" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
+      <span class="material-icons">help</span>
+      <div class="topics">
+        <p><a routerLink="/discover" tabindex="0">All Maps</a></p>
+        <p><a routerLink="/about" tabindex="0">About Aggie Map</a></p>
+        <p><a routerLink="/instructions" tabindex="0">Map Instructions</a></p>
+        <p><a routerLink="/directory" tabindex="0">Building Directory</a></p>
+        <p class="topics-separator" aria-hidden="true"></p>
+        <p><a routerLink="/requesting-maps" tabindex="0">Request Maps &amp; Changes</a></p>
+        <p><a href="mailto:aggiemap@tamu.edu?subject=Aggiemap%20Feedback" target="_blank" tabindex="0">Submit Feedback</a></p>
+        <p class="topics-separator" aria-hidden="true"></p>
+        <p><a href="http://itaccessibility.tamu.edu" target="_blank" tabindex="0">Accessibility Policy</a></p>
+        <p><a href="https://www.tamu.edu/statements/privacy.html" target="_blank" tabindex="0">Privacy &amp; Security Policy</a></p>
+        <p><a href="https://www.tamu.edu/statements/index.html" target="_blank" tabindex="0">Site Policies</a></p>
+        <p class="topics-separator" aria-hidden="true"></p>
+        <p><a href="https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo" target="_blank" tabindex="0">GitHub</a></p>
+        <p><a href="https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pulls?q=is%3Apr+is%3Aclosed" target="_blank" tabindex="0">Changelog</a></p>
+      </div>
     </div>
-  </div>
+  }
 
   <!-- Map click coordinates, copy to click -->
-  <tamu-gisc-click-coordinates class="map-ui-element" *ngIf="!isMobile"></tamu-gisc-click-coordinates>
+  @if (!isMobile) {
+    <tamu-gisc-click-coordinates class="map-ui-element"></tamu-gisc-click-coordinates>
+  }
 </div>
 
 <!-- Map component -->
-<ng-container *ngIf="(config | async) as c">
+@if ((config | async); as c) {
   <tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }">
     <div class="map-overlay-ui">
       <div class="overlay-zone top left"></div>
-
       <div class="overlay-zone bottom right">
-        <div *ngIf="hasSettings" class="esri-component esri-track esri-widget--button esri-widget" role="button" alt="URL Share" clipboard-copy [text]="shareUrl"><span class="material-icons" (click)="notifyUrlCopy()">share</span></div>
+        @if (hasSettings) {
+          <div class="esri-component esri-track esri-widget--button esri-widget" role="button" alt="URL Share" clipboard-copy [text]="shareUrl"><span class="material-icons" (click)="notifyUrlCopy()">share</span></div>
+        }
         <div routerLink="/builder/review" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Map Settings">settings</span></div>
         <!-- Mobile only. These two target routes that exist only under the mobile (`m`) branch, so on a
-             desktop map the router cannot resolve them and falls back to the root map - a click that
-             silently throws away the map the user was looking at. They also sit beneath the desktop
-             side panel, which already offers Layers and Legend properly. See #1251. -->
-        <div *ngIf="isMobile" routerLink="/map/m/sidebar/legend" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Legend">format_list_bulleted</span></div>
-        <div *ngIf="isMobile" routerLink="/map/m/sidebar/layers" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Layer List">layers</span></div>
+        desktop map the router cannot resolve them and falls back to the root map - a click that
+        silently throws away the map the user was looking at. They also sit beneath the desktop
+        side panel, which already offers Layers and Legend properly. See #1251. -->
+        @if (isMobile) {
+          <div routerLink="/map/m/sidebar/legend" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Legend">format_list_bulleted</span></div>
+        }
+        @if (isMobile) {
+          <div routerLink="/map/m/sidebar/layers" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Layer List">layers</span></div>
+        }
       </div>
     </div>
   </tamu-gisc-esri-map>
-</ng-container>
+}
 
 <!-- Router outlet where desktop and mobile controls are rendered -->
 <router-outlet></router-outlet>
 
 <!-- Mobile keyboard viewfinder/feature list -->
-<tamu-gisc-map-viewfinder *ngIf="!isMobile" [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
+@if (!isMobile) {
+  <tamu-gisc-map-viewfinder [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
+}
 
 <!-- Application Loader -->
 <div class="loader flex flex-column justify-center align-center">

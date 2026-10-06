@@ -4,6 +4,7 @@
   "sourceRoot": "apps/gisday-competitions-nest/src",
   "projectType": "application",
   "prefix": "gisday-competitions-nest",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -56,6 +57,5 @@
         "jestConfig": "apps/gisday-competitions-nest/jest.config.ts"
       }
     }
-  },
-  "tags": []
+  }
 }
