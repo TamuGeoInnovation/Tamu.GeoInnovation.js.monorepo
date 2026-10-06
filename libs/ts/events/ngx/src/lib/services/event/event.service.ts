@@ -584,9 +584,10 @@ export class EventService {
    * `keys`), so no layer- or data-type-specific values are hard-coded here.
    */
   private async selectFeatureByConfiguredParam(sources: LayerSource[], params: URLSearchParams): Promise<void> {
-    const searchSources = this.env.value('SearchSources') as SearchSource[] | null | undefined;
+    // The map's own search sources come first; see `EventSettingsService.configuredSearchSources`.
+    const searchSources = this.eventSettingsService.configuredSearchSources();
 
-    if (!Array.isArray(searchSources)) {
+    if (searchSources.length === 0) {
       return;
     }
 

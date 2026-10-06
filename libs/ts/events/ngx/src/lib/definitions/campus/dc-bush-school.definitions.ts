@@ -59,6 +59,12 @@ export const DCBushSchoolLayerSources: LayerSource[] = [
 export const DCBushSchoolSearchSources: SearchSource[] = [
   {
     source: 'dc-bush-school-property',
+    // `?bldg=1234`, and `?abbrv=OCNG` for a building with no number (#1481). The popup's copy link
+    // reads these same two names, so one declaration decides what a shared link says and what
+    // `EventService.selectFeatureByConfiguredParam` accepts when it is opened. Both forms match
+    // against every field in `where.keys` below, so either resolves whichever value it carries.
+    urlQueryParam: 'bldg',
+    urlQueryParamAliases: ['abbrv'],
     name: 'Property',
     url: `${Connections.dcBushSchoolFeatureServerUrl}/0`,
     queryParams: {
@@ -101,6 +107,7 @@ export const DCBushSchoolConfiguration: EventConfiguration = {
     layerId: DC_BUSH_SCHOOL_LAYERS.PROPERTY,
     title: ['bldgname', 'bldgabbr'],
     number: 'number',
+    abbreviation: 'bldgabbr',
     address: { street: 'address', city: 'city', zip: 'zip', state: 'DC' }
   },
   // TODO: set `brandingIconUrl` to an official Bush School of Government & Public Service (D.C.
