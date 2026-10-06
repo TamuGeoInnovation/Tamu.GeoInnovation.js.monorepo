@@ -159,36 +159,6 @@ describe('LayerSources', () => {
         layerId: 'ev-charge-stations',
         name: 'EV Charge Stations',
         url: 'ev-charge-stations-url'
-      },
-      EVENT_150_OPENING_EVENT_LOCATIONS: {
-        id: 'event-150-opening-event-locations',
-        layerId: 'event-150-opening-event-locations',
-        name: 'Event Locations',
-        url: 'opening-ceremony-url/0'
-      },
-      EVENT_150_OPENING_SHUTTLE_ROUTE: {
-        id: 'event-150-opening-shuttle-route',
-        layerId: 'event-150-opening-shuttle-route',
-        name: 'Shuttle Route',
-        url: 'opening-ceremony-url/1'
-      },
-      EVENT_150_OPENING_PARKING: {
-        id: 'event-150-opening-parking',
-        layerId: 'event-150-opening-parking',
-        name: 'Parking',
-        url: 'opening-ceremony-url/2'
-      },
-      EVENT_150_KICKOFF_AT_KYLE: {
-        id: 'event-150-kickoff-at-kyle',
-        layerId: 'event-150-kickoff-at-kyle',
-        name: 'Kickoff at Kyle',
-        url: 'kickoff-at-kyle-url'
-      },
-      EVENT_150_SPIRIT_WEEK: {
-        id: 'event-150-spirit-week',
-        layerId: 'event-150-spirit-week',
-        name: '150 Cake & Ice Cream',
-        url: 'spirit-of-150-week-url'
       }
     };
     options = { exclude: [] };
@@ -197,14 +167,14 @@ describe('LayerSources', () => {
   it('should return all layer sources when no options are provided', () => {
     const result = LayerSources(connections, definitions);
 
-    expect(result.length).toBe(17);
+    expect(result.length).toBe(16);
   });
 
   it('should exclude specified layers', () => {
     options.exclude = ['BUILDINGS', 'CONSTRUCTION'];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(15);
+    expect(result.length).toBe(14);
     expect(result.find((layer) => layer.id === 'buildings')).toBeUndefined();
     expect(result.find((layer) => layer.id === 'construction')).toBeUndefined();
   });
@@ -213,7 +183,7 @@ describe('LayerSources', () => {
     options.exclude = [];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(17);
+    expect(result.length).toBe(16);
   });
 
   it('should retain only non-definition-backed top-level layers when all definitions are excluded', () => {
@@ -223,8 +193,7 @@ describe('LayerSources', () => {
     expect(resultWithExclusions.map((layer) => layer.id)).toEqual([
       'selection-layer',
       'bus-route-layer',
-      'sustainable-transportation-group-layer',
-      'event-150-group-layer'
+      'sustainable-transportation-group-layer'
     ]);
   });
 
