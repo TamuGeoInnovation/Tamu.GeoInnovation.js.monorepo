@@ -70,6 +70,12 @@ const dictionary = [
     name: 'Map'
   },
   {
+    // Turns a renderer's JSON - including the CIM symbols a portal item publishes - into a renderer
+    // instance. See portal-symbology.ts (#1497).
+    class: 'esri/renderers/support/jsonUtils',
+    name: 'rendererJsonUtils'
+  },
+  {
     class: 'esri/views/MapView',
     name: 'MapView'
   },

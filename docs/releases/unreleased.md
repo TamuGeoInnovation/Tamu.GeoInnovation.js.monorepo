@@ -16,7 +16,20 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-_Nothing yet._
+- **Maps draw the symbology that was actually drawn for them** ([#1497](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1497)): a layer styled in ArcGIS Pro keeps its
+  symbol on the portal item, while the service publishes a flattened approximation - and the maps were
+  drawing the approximation. Across the 36 hosted services, **128 of 128 layers** are affected, which
+  is why symbols have had to be copied into our own code one at a time. Layers now draw what was
+  published for them, unless a map deliberately sets its own.
+
+  The clearest case is the Football micromobility routes, authored as a thin line with arrowheads and
+  flattened by the service into a thick line with none:
+
+  | Before | After |
+  | --- | --- |
+  | ![Entry routes as a thick flat purple line with no arrowheads](../screenshots/1497-portal-symbology/before-micromobility-entry.png) | ![Entry routes as a thin purple line with arrowheads](../screenshots/1497-portal-symbology/after-micromobility-entry.png) |
+
+  Maps whose services were already faithful are unchanged - Visitor Parking looks exactly as it did.
 
 ---
 
@@ -27,15 +40,15 @@ _Nothing yet._
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** nothing beyond the [6 October release](2026-10-06.md) itself.
+**Currently on dev for testing:** nothing beyond the [6 October release](2026-10-06.md) itself, until the next build carries the change below.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
-| _Nothing yet._ | | |
+| Map symbology ([#1497](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1497)) | Any map you know well, and [Football micromobility entry](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry) | **This one needs the widest look of anything in the release.** Micromobility routes should be a thin line with arrowheads, not a thick slab. Everywhere else, symbols should look the same or better - anything that looks *worse* or has changed unexpectedly is the thing to report, on any map |
 
 ---
 
-## Work in flight — 6 October
+## Work in flight â€” 6 October
 
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
@@ -58,8 +71,8 @@ file would say the work had stopped.
 | 10 | Angular 19 to 22, one major per pull request | done and merged: 20 ([#1451](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1451)), 21 ([#1465](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1465), dev-tagged `dev-2026-10-06`), 22 ([#1471](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1471)), about 1 to 1.5 hours each ([`docs/upgrades/angular.md`](../upgrades/angular.md)). **Angular 22 is not yet tested on dev**: its dev build was deploying on the morning of 6 October; the full suite, then the dev tag, come next |
 | 10b | Faster smoke suite ([#1426](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1426)) | merged ([#1477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1477)): a release check runs one framing route per map, 6 workers, the ArcGIS library cached; 22 min 44 s on a workstation against about 1 h 50 min. Further cuts: [#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473) (bus test), [#1427](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1427) (maps) |
 | 11 | `esri-loader` to `@arcgis/core`, 134 files | last |
-| — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | VeoRide retired ([#1404](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1404)); the old Ring Day app goes after 10 October ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)); CPA retires next ([#1458](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1458), tagged `cpa-last`), and the other unused projects are being listed ([#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457)); both are with the cloud session (Batch B on the `cloud-mailbox` branch) |
-| — | After Angular 22 | standalone ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)), `@defer` ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454)), signals and OnPush ([#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455)), zoneless ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)), Vitest ([#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)), accessibility rules back on ([#1474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1474)); in that order after the cleanups. Ubuntu pins before 19 October: [#1407](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1407) (GitHub), [#1468](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1468) (Azure) |
+| â€” | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | VeoRide retired ([#1404](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1404)); the old Ring Day app goes after 10 October ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)); CPA retires next ([#1458](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1458), tagged `cpa-last`), and the other unused projects are being listed ([#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457)); both are with the cloud session (Batch B on the `cloud-mailbox` branch) |
+| â€” | After Angular 22 | standalone ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)), `@defer` ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454)), signals and OnPush ([#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455)), zoneless ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)), Vitest ([#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)), accessibility rules back on ([#1474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1474)); in that order after the cleanups. Ubuntu pins before 19 October: [#1407](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1407) (GitHub), [#1468](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1468) (Azure) |
 
 **A local `nx affected` on a `package.json` change fails on projects that already fail on
 `development`.** Every project counts as affected. Measured on 2 October: `cpa-angular`,
@@ -102,7 +115,7 @@ the lock file with a clean `npm ci` before pushing (CLAUDE.md, [#1347](https://g
 
 **Bus route stops are a data fix, not a code fix
 ([#1174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1174)).** Five
-routes draw no stops — NW0104, NW0305, NW4041, 15R and 47/48 — and two draw the wrong number: 40 has
+routes draw no stops â€” NW0104, NW0305, NW4041, 15R and 47/48 â€” and two draw the wrong number: 40 has
 one extra, 47 two missing. The map matches each stop's `Route` field in the Bus Stops layer
 (`TS/Bus_Routes/MapServer/0`) against the route code, and no stop carries those codes. The side panel
 still lists their stops, because that comes from separate text fields.
@@ -114,7 +127,7 @@ entries, so the test holds any bus release until the data is right.
 ### Read this first if you are picking up elsewhere
 
 **726 screenshots exist only on the work machine.** They are in `test/visual/baselines/builder/`,
-untracked and deliberately uncommitted — 363 builder destinations at two viewports, 325MB. They are
+untracked and deliberately uncommitted â€” 363 builder destinations at two viewports, 325MB. They are
 the output of a two-hour crawl against dev and can be regenerated with:
 
 ```bash
@@ -132,7 +145,7 @@ permanently, since git keeps every version. Where they should live is
 
 **A red smoke run is not automatically a code fault.** On the morning of 30 September the scheduled
 run was red on both environments: 57 failures on production, one on dev. Every one of them was the
-new tests running against builds that predated them — neither environment had been redeployed since
+new tests running against builds that predated them â€” neither environment had been redeployed since
 the 29 September release. Checking the deployed bundle settled it in minutes; debugging the
 application would have wasted the morning.
 
@@ -143,15 +156,15 @@ promptly deployed.
 
 ### The decision waiting to be made
 
-**[#1107](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1107) — evaluate
+**[#1107](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1107) â€” evaluate
 Visual Regression Tracker on the cluster** as the home for baseline images, with
 [#1119](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1119) to stand it
 up. Phase 0 is five decisions that need no VPN: hostname, TLS issuer, image storage, PVC size, and who
 can log in.
 
 The contained test is in #1107: stand VRT up, point the existing capture at `gameday-parking`'s 14
-destinations, and find out whether its Playwright agent — about two years stale, while the server is
-current — still works before migrating 726 images.
+destinations, and find out whether its Playwright agent â€” about two years stale, while the server is
+current â€” still works before migrating 726 images.
 
 ### Open, none started
 
@@ -191,8 +204,8 @@ current — still works before migrating 726 images.
   ([#1105](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1105)).
 - **A local dev server must be reached at `http://localhost:4200`, not `127.0.0.1`.** `TestingService`
   keys on the host containing `dev` or `localhost`, so `127.0.0.1` renders the *production* variant.
-  That is deliberate and useful — it is the `local-production` test environment, and the way to capture
-  production behaviour before deploying — but it is not what you want for everyday work.
+  That is deliberate and useful â€” it is the `local-production` test environment, and the way to capture
+  production behaviour before deploying â€” but it is not what you want for everyday work.
 - **The builder inventory is environment-specific** and the smoke suite refuses one captured
   elsewhere. Production has no inventory yet, so its builder maps still skip
   ([#1134](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1134)).
