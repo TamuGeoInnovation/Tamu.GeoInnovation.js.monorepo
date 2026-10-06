@@ -21,6 +21,13 @@ what has not shipped yet.
 
 ## Summary
 
+- **Upcoming Events shows the next date, not a range** ([#1443](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1443)): a repeat event showed every date it spans, so Soccer
+  read "Dates: 8/5/2026 - 11/1/2026" - a three-month span where a visitor wanted to know when the next
+  one is. Each card now reads "Next:" and one date, chosen the same way the list itself is ordered.
+
+  | Before | After |
+  | --- | --- |
+  | ![Upcoming Events showing date ranges, Soccer spanning August to November](../screenshots/1443-upcoming-next-date/before-upcoming-events.png) | ![Upcoming Events showing one next date on each card](../screenshots/1443-upcoming-next-date/after-upcoming-events.png) |
 - **Satellite campus building popups** ([#1463](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1463)): clicking or searching for a building on the
   Galveston, McAllen and DC / Bush School maps now shows a popup like the main map's. It gives the building's
   name, its number, its address where the campus publishes one, and a link to copy that reopens the
@@ -87,6 +94,7 @@ What to test in it is listed in [that file](2026-10-05.md#what-to-test).
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Upcoming Events dates ([#1443](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1443)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps), the **Upcoming Events** row | Each card reads **Next:** and a single date - the next one that event happens - rather than a range. Check one with several dates, such as October Ring Day, shows only the first of them |
 | Campus building popups ([#1463](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1463)) | [Galveston Student Center](https://dev.aggiemap.tamu.edu/campus/galveston/map/d?feature=galveston-buildings-layer:1), [McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen/map/d), [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school/map/d) | The popup shows a title, "Building N" and the address (Galveston and DC; McAllen has no address in its data), and a copy field, with **no Property/Value table**. Search Galveston for "Williams", open the result, copy its link and paste it in a new tab: it reopens the same building. DC's ZIP shows 00318 until the data is fixed ([#1464](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1464)) |
 | Angular 22 ([#1469](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1469)) | The [main map](https://dev.aggiemap.tamu.edu/map/d): click a building, then a parking lot; the side panel's Layers and Legend; an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); the [mobile map](https://dev.aggiemap.tamu.edu/map/m) popups; [directions](https://dev.aggiemap.tamu.edu/map/d/trip) with parking and biking options | **nothing different**. Popups open with their content; the trip planner shows its parking and biking options; turning a layer on or off updates the map and the legend straight away. Anything that only updates after another click is the thing to report |
 | Angular 21 ([#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456)) | The [main map](https://dev.aggiemap.tamu.edu/map/d), a building popup, and an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); on a phone, the [mobile map](https://dev.aggiemap.tamu.edu/map/m) | **nothing different**. Click a building and press **Copy** in its popup, then paste; press **Escape** to close a popup; open and close the side panel's tabs and any accordion; on a phone, use the menu and the tiles. A click or key that does nothing is the thing to report |
