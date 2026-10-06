@@ -285,6 +285,13 @@ export interface BuildingPopupFields {
     zip: string;
     state: string;
   };
+
+  /**
+   * Field holding the building's abbreviation, used for the copy link when the building has no
+   * number (#1481). Named explicitly rather than taken as the last of `title`, so a campus that
+   * reorders its title fields does not quietly change what its shared links say.
+   */
+  abbreviation?: string;
 }
 
 /**
