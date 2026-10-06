@@ -30,6 +30,7 @@ export const ALWAYS_RUN_SPECS = [
   'build-banner.spec.ts',
   'development-only.spec.ts',
   'esri-runtime.spec.ts',
+  'gis-hosts.spec.ts',
   'mobile.spec.ts',
   'paint.spec.ts',
   'retired.spec.ts'
