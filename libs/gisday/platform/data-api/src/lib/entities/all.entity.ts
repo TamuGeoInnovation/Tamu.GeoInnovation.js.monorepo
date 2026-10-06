@@ -594,7 +594,7 @@ export class Speaker extends GuidIdentity {
   @Column({ nullable: true })
   public accountGuid: string;
 
-  @ManyToMany(() => Event, (event) => event.speakers)
+  @ManyToMany(() => Event, (event) => event.speakers, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   public events: Event[];
 
   @ManyToOne(() => Season, (season) => season.speakers, { nullable: true })
