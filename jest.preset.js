@@ -13,6 +13,16 @@ module.exports = {
     '^.+\\.(ts|js|html)$': 'ts-jest'
   },
   resolver: '@nx/jest/plugins/resolver',
+  // lightgallery ships its Angular module as a package nested inside its own (lightgallery/angular/13).
+  // Jest 30's resolver cannot find it, so Nx's resolver falls back to TypeScript's, which returns the
+  // .d.ts: the module is then undefined at run time and any NgModule importing it fails with
+  // "Cannot read properties of undefined (reading 'ngModule')". Point Jest at the real file (#1456).
+  moduleNameMapper: {
+    '^lightgallery/angular/13$': require('path').join(
+      __dirname,
+      'node_modules/lightgallery/angular/13/fesm2020/lightgallery-angular-13.mjs'
+    )
+  },
   moduleFileExtensions: ['ts', 'js', 'html'],
   collectCoverage: true,
   coverageReporters: ['html', 'lcov', 'text'],
