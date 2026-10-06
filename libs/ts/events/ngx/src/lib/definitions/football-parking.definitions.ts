@@ -113,13 +113,10 @@ export enum FOOTBALL_PARKING_LAYERS {
   FP_RV_PARKING_LOTS = 'football-rv-parking-lots',
 
   // --- Micromobility ---
+  // In the order the services publish them, which is the order Transportation asked for (#996).
   FP_MICROMOBILITY_PARKING = 'football-micromobility-parking',
+  FP_MICROMOBILITY_ENTRY_ROUTES = 'football-micromobility-entry-routes',
   FP_MICROMOBILITY_EXIT_ROUTES = 'football-micromobility-exit-routes',
-  // FP_BIKE_LANES is withheld with its layer - see #1036. It cannot simply be left here: this enum is
-  // exported as the map's `references`, and the event service resolves every member to a layer source,
-  // so a member without one throws "Layer source reference 'football-bike-lanes' not found" and the
-  // map fails to build its areas.
-  // FP_BIKE_LANES = 'football-bike-lanes',
   FP_BIKE_DISMOUNT_ZONES = 'football-bike-dismount-zones',
   FP_BIKE_VEO_GEOFENCE = 'football-bike-veo-geofence',
 
@@ -192,13 +189,16 @@ const hiddenNative = (overrides: Partial<FeatureNativeProps> = {}): FeatureNativ
   }) as unknown as FeatureNativeProps;
 
 /**
- * Route arrow colors, keyed by travel type. Every route layer publishes as a flat solid green line
- * regardless of mode, so the cyclist and pedestrian maps are re-colored here to match the scheme
- * used across the other event maps.
+ * Route arrow colors, keyed by travel type, for the route layers that still publish a flat solid
+ * green line regardless of mode.
+ *
+ * The micromobility routes no longer need one: `FBike_entry/1` and `FBike_exit/2` publish their own
+ * purple line, so both draw what the service says and a change made in ArcGIS reaches the map without
+ * a release (#996). The vehicle and pedestrian routes are the remaining overrides; removing those is
+ * part of the audit in #1028.
  */
 const ROUTE_COLORS = {
   vehicle: 'rgb(38, 115, 0)',
-  cyclist: 'rgb(112, 48, 160)',
   pedestrian: 'rgb(0, 92, 230)'
 };
 
@@ -670,9 +670,17 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
   },
 
   // --- Micromobility ---
+  // Declared in the order the services publish them - Parking Area, Entry Routes, Exit Routes,
+  // Dismount Zones, Veo Geofence - because that is the order Transportation asked for and the order
+  // the layer list reads in (#996).
+  //
   // The parking, dismount and geofence layers are identical copies in the entry and exit services, so
-  // they are sourced from the entry service and shown for both directions. Bike Lanes exist only on
+  // they are sourced from the entry service and shown for both directions. Entry Routes exist only on
   // the entry service and Exit Routes only on the exit service.
+  //
+  // Bike Lanes used to sit here, withheld because `FBike_entry` published no layer by that name
+  // (#1036). Transportation has since confirmed the bike lane markings were removed from the service
+  // deliberately, so there is nothing to restore and the placeholder is gone.
   {
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_PARKING,
@@ -687,6 +695,20 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     native: hiddenNative()
   },
   {
+    // The entry map had no route layer at all: the service grew `Entry Routes` and nothing here read
+    // it, so arriving cyclists were shown parking and dismount zones and no way to reach them (#996).
+    type: 'feature',
+    id: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_ENTRY_ROUTES,
+    title: 'Entry Routes',
+    url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/1`,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.location',
+      description: 'attributes.description'
+    },
+    native: hiddenNative()
+  },
+  {
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_EXIT_ROUTES,
     title: 'Exit Routes',
@@ -696,25 +718,8 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
       name: 'attributes.location',
       description: 'attributes.description'
     },
-    native: hiddenNative({ renderer: routeRenderer(ROUTE_COLORS.cyclist) })
+    native: hiddenNative()
   },
-  // Bike Lanes is withheld until we know where its data went. `FBike_entry` publishes no layer by
-  // that name, and the index this used to point at (4) is Bike Veo Geofence - so it was drawing the
-  // geofence under the Bike Lanes label, with no error. Showing nothing is better than confidently
-  // showing the wrong thing. Restore this once the source is identified. See #1036.
-  //
-  // {
-  //   type: 'feature',
-  //   id: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
-  //   title: 'Bike Lanes',
-  //   url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/?`,
-  //   popupComponent: MarkdownPopupComponent,
-  //   popupData: {
-  //     name: 'attributes.use_',
-  //     description: 'attributes.location'
-  //   },
-  //   native: hiddenNative()
-  // },
   {
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_BIKE_DISMOUNT_ZONES,
@@ -771,6 +776,11 @@ export const FootballParkingConfiguration: EventConfiguration = {
   scheduleUrl: 'https://12thman.com/sports/football/schedule',
   mapCenter: [-96.34344, 30.61011],
   zoom: 16,
+  // The layer list follows the order the layers are declared in, which is the order the services
+  // publish them. Alphabetical is the default and was the other half of "they appear to be
+  // scrambled" in #996: the entry map listed Bike Dismount Zones, Bike Veo Geofence, Micromobility
+  // Parking Area, while the legend right below it listed the same three the other way round (#1433).
+  referenceLayerListOrder: 'source',
   defaultLayerOverrides: {
     'construction_zone-layer': {
       visible: false
@@ -895,15 +905,13 @@ export const FootballParkingOptions: SpecialEventOptions = [
           conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
         },
         {
+          layerId: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_ENTRY_ROUTES,
+          conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
+        },
+        {
           layerId: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_EXIT_ROUTES,
           conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
         },
-        // Bike Lanes is withheld - see the note on its layer definition and #1036. The previous
-        // comment here said it exists only on the entry service; it does not exist on either.
-        // {
-        //   layerId: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
-        //   conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
-        // },
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_BIKE_DISMOUNT_ZONES,
           conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
@@ -1000,16 +1008,15 @@ export const FootballParkingOptions: SpecialEventOptions = [
         ...VEHICLE_MODES.flatMap(vehicleModeDirectionEffects),
 
         {
+          // Micromobility entry routes come from the entry service; hide them on the exit map.
+          layerId: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_ENTRY_ROUTES,
+          conversions: [{ input: Direction.EXIT, propOverrides: HIDE }]
+        },
+        {
           // Micromobility exit routes come from the exit service; hide them on the entry map.
           layerId: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_EXIT_ROUTES,
           conversions: [{ input: Direction.ENTRY, propOverrides: HIDE }]
         }
-        // Bike Lanes is withheld - see the note on its layer definition and #1036. This hid it on the
-        // exit map; with no layer to hide, the rule has nothing to act on.
-        // {
-        //   layerId: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
-        //   conversions: [{ input: Direction.EXIT, propOverrides: HIDE }]
-        // }
       ]
     }
   }
