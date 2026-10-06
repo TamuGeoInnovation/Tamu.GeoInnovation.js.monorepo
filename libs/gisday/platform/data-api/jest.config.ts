@@ -1,5 +1,5 @@
 /* eslint-disable */
-export default {
+module.exports = {
   displayName: 'gisday-platform-data-api',
 
   globals: {},

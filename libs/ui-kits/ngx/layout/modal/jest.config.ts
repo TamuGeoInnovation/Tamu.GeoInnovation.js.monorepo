@@ -1,5 +1,5 @@
 /* eslint-disable */
-export default {
+module.exports = {
   displayName: 'ui-kits-ngx-layout-modal',
 
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],

@@ -184,7 +184,7 @@ runs here; CLAUDE.md has the rest (`affected`, `all`, a list of projects).
 reports `Successfully ran targets lint, test, build`. A later run reuses the volume, skips `npm ci` unless
 the lock changed, and replays unchanged tasks from the Nx cache in about a second.
 
-Inside the containers, Nx runs as `node node_modules/nx/bin/nx.js`, never bare `nx` or
+Inside the containers, Nx runs as `node node_modules/nx/dist/bin/nx.js`, never bare `nx` or
 `npx nx` - `node_modules/.bin` may not be populated.
 
 **Build, not just test.** Most libraries have no `build` target at all, so
@@ -196,7 +196,7 @@ only compiles what the specs import, and `nx lint` does not typecheck at all.
 ## Phase 5 - Run the app
 
 ```
-MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v "<path>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:22.23.3 sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v "<path>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:22.23.3 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 **Expect:** compiled in roughly three to four minutes, then the app answers on port 4200.

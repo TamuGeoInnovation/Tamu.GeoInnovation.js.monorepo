@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { In } from 'typeorm';
-import * as deepmerge from 'deepmerge';
+import deepmerge from 'deepmerge';
 
 import {
   IClientMetadata,

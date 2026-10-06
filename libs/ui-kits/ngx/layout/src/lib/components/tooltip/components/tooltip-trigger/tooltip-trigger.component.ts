@@ -12,21 +12,21 @@ export class TooltipTriggerComponent {
 
   public triggerActivate: EventEmitter<boolean> = new EventEmitter();
 
-  @HostListener('click', ['$event'])
+  @HostListener('click')
   public click() {
     if (this.triggerType === 'click') {
       this.triggerActivate.emit();
     }
   }
 
-  @HostListener('mouseenter', ['$event'])
+  @HostListener('mouseenter')
   public mouseenter() {
     if (this.triggerType === 'hover') {
       this.triggerActivate.emit();
     }
   }
 
-  @HostListener('mouseleave', ['$event'])
+  @HostListener('mouseleave')
   public mouseleave() {
     if (this.triggerType === 'hover') {
       this.triggerActivate.emit();

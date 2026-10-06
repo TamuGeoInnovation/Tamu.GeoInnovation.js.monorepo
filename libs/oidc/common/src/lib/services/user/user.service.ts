@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 
 import { hash, compare } from 'bcrypt';
-import * as deepmerge from 'deepmerge';
+import deepmerge from 'deepmerge';
 
 import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
 import { MailerService } from '@tamu-gisc/common/nest/services';

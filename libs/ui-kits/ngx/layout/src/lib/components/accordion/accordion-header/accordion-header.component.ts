@@ -11,8 +11,8 @@ import { AccordionService } from '../services/accordion.service';
 export class AccordionHeaderComponent {
   public state = this.comm.state;
 
-  @HostListener('click', ['$event'])
-  private _onClick() {
+  @HostListener('click')
+  protected _onClick() {
     this.comm.toggle('expanded');
   }
 

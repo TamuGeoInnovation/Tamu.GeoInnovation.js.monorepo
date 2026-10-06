@@ -12,7 +12,7 @@ import {
 
 describe('centroidFromGeometry', () => {
   it('should error on invalid input', () => {
-    expect(() => centroidFromGeometry({} as unknown as FeatureUnion)).toThrowError(
+    expect(() => centroidFromGeometry({} as unknown as FeatureUnion)).toThrow(
       new Error('Could not get centroid from search geometry because type could not be identified.')
     );
   });
@@ -49,7 +49,7 @@ describe('centroidFromGeometry', () => {
 
 describe('centroidFromPolygonGeometry', () => {
   it('should error on invalid input', () => {
-    expect(() => centroidFromPolygonGeometry({ centroid: null, rings: null } as unknown as esri.Polygon)).toThrowError(
+    expect(() => centroidFromPolygonGeometry({ centroid: null, rings: null } as unknown as esri.Polygon)).toThrow(
       new Error('Feature provided does not contain rings.')
     );
   });
@@ -82,12 +82,10 @@ describe('centroidFromPolygonGeometry', () => {
 
 describe('getGeometryType', () => {
   it('should error on invalid inputs', () => {
-    expect(() => getGeometryType(null)).toThrowError(
+    expect(() => getGeometryType(null)).toThrow(
       new Error('Could not determine geometry type because geometry was not provided.')
     );
-    expect(() => getGeometryType({} as unknown as esri.Geometry)).toThrowError(
-      new Error('Could not resolve geometry type.')
-    );
+    expect(() => getGeometryType({} as unknown as esri.Geometry)).toThrow(new Error('Could not resolve geometry type.'));
   });
 
   it('should return "point"', () => {
@@ -109,7 +107,7 @@ describe('getGeometryType', () => {
 
 describe('pointFromMultiPointGeometry', () => {
   it('should error on invalid input', () => {
-    expect(() => pointFromMultiPointGeometry({ points: null } as unknown as esri.Multipoint)).toThrowError(
+    expect(() => pointFromMultiPointGeometry({ points: null } as unknown as esri.Multipoint)).toThrow(
       new Error('Feature provided does not contain points.')
     );
   });
@@ -124,7 +122,7 @@ describe('pointFromMultiPointGeometry', () => {
 
 describe('pointFromPointGeometry', () => {
   it('should error on invalid input', () => {
-    expect(() => pointFromPointGeometry(null)).toThrowError(new Error('Feature provided does not have x or y.'));
+    expect(() => pointFromPointGeometry(null)).toThrow(new Error('Feature provided does not have x or y.'));
   });
 
   it('should work for Point', () => {
@@ -139,8 +137,8 @@ describe('pointFromPointGeometry', () => {
 
 describe('pointFromPolylineGeometry', () => {
   it('should error on invalid input', () => {
-    expect(() => pointFromPolylineGeometry(null)).toThrowError(new Error('Feature provided does not contain paths.'));
-    expect(() => pointFromPolylineGeometry({ paths: undefined } as unknown as esri.Polyline)).toThrowError(
+    expect(() => pointFromPolylineGeometry(null)).toThrow(new Error('Feature provided does not contain paths.'));
+    expect(() => pointFromPolylineGeometry({ paths: undefined } as unknown as esri.Polyline)).toThrow(
       new Error('Feature provided does not contain paths.')
     );
   });

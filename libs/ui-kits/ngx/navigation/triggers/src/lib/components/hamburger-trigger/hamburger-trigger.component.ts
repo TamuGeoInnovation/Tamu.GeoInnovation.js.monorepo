@@ -78,7 +78,7 @@ export class HamburgerTriggerComponent implements OnChanges {
   public animationState: Observable<string> = this._state.asObservable().pipe(switchMap((s) => of(s ? 'up' : 'down')));
 
   @HostListener('click')
-  private _poke() {
+  protected _poke() {
     this._state.next(!this._state.getValue());
     this.poked.emit(this._state.getValue());
   }

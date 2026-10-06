@@ -69,6 +69,6 @@ describe('BaseChartComponent', () => {
         'invalidPath',
         'invalidCollection'
       )
-    ).toThrowError(new Error('Invalid chart operator: invalidSet'));
+    ).toThrow(new Error('Invalid chart operator: invalidSet'));
   }));
 });

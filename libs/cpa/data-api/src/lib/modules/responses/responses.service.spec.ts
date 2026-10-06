@@ -84,7 +84,7 @@ describe('ResponsesService', () => {
       };
 
       jest.spyOn(responsesService, 'getOne').mockResolvedValue(new Response());
-      await expect(responsesService.insertNew(mockparameter)).rejects.toThrowError();
+      await expect(responsesService.insertNew(mockparameter)).rejects.toThrow();
     });
   });
 });

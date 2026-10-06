@@ -28,7 +28,7 @@ export class TileComponent implements AfterContentInit, OnDestroy {
   public link: TileLinkDirective;
 
   @HostListener('click')
-  private _tileClick() {
+  protected _tileClick() {
     if (this.submenu) {
       this.service.updateSubmenu({
         template: this.submenu.template,

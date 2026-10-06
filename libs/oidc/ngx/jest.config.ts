@@ -1,5 +1,5 @@
 /* eslint-disable */
-export default {
+module.exports = {
   displayName: 'oidc-ngx',
 
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],

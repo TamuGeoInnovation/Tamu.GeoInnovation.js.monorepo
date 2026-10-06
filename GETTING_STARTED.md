@@ -437,7 +437,7 @@ MSYS_NO_PATHCONV=1 docker run --rm -m 8g -e CYPRESS_INSTALL_BINARY=0 \
 ```bash
 MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 \
   -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:22.23.3 \
-  sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+  sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 Watch the first compile, which takes a few minutes:
@@ -450,7 +450,7 @@ docker logs -f aggiemap-dev
 **Notes:**
 
 - **`--poll=2000` is required on Windows.** File-change events don't cross the Windows-to-Linux bind mount. Without polling, the server compiles once and then never rebuilds, even though it looks like it's working.
-- Use `node node_modules/nx/bin/nx.js`, not `nx` or `npx nx`. `node_modules/.bin` may not be populated.
+- Use `node node_modules/nx/dist/bin/nx.js`, not `nx` or `npx nx`. `node_modules/.bin` may not be populated.
 - `localhost:4200` shows dev-only features. `http://127.0.0.1:4200` hides them, so you can check the production code path without deploying.
 - Both hostnames read map layers from the **production** GIS server (`gis.it.tamu.edu`). Only hostnames containing `dev` use `gis-dev.it.tamu.edu`. See `libs/aggiemap/ngx/common/src/lib/connections.ts`.
 
@@ -483,7 +483,7 @@ Claude Code can check each of these, but some need you to act in a browser or si
 
 - The trunk is `development`, not `master`. Branch protection requires a pull request.
 - Push branches to your fork (the `fork` remote), never to `TamuGeoInnovation` (`origin`). `CLAUDE.md` says so too, so Claude Code should already follow it.
-- Run `nx` through the Docker command in Path 5, as `node node_modules/nx/bin/nx.js`.
+- Run `nx` through the Docker command in Path 5, as `node node_modules/nx/dist/bin/nx.js`.
 - Don't edit files while a Docker run is in progress. The bind mount is live, so the run's result would describe files that changed partway through.
 - Most libraries have no `build` target. To typecheck a library, build the app that uses it. `nx test` only typechecks what the specs import, and `nx lint` doesn't typecheck at all.
 

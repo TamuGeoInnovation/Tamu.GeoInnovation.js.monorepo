@@ -29,7 +29,7 @@ export class TileLinkDirective {
   ) {}
 
   @HostListener('click', ['$event.target'])
-  private _click(target: HTMLElement) {
+  protected _click(target: HTMLElement) {
     const lt = this.testLocation(this.location);
 
     if (lt === LocationType.EXTERNAL) {

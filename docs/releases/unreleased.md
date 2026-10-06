@@ -21,6 +21,12 @@ what has not shipped yet.
 
 ## Summary
 
+- Not visible: **Angular 21** ([#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456)): Angular 20.3 to 21.2, Nx 21.6 to 22.7, Jest 29 to 30.
+  Nothing is meant to look or behave differently. The changes most likely to show are in **clicks and
+  keys handled by shared components** (accordions, tooltips, the side panel's tabs, the mobile tiles and
+  menu, Escape to close a popup or modal), whose handlers were adjusted for Angular 21's stricter
+  checking, and the **copy button**, whose clipboard library is now imported differently. Not on dev
+  until the build after it merges.
 - Not visible: **Angular 20** ([#1447](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1447)): Angular 19.2 to 20.3, Nx 20.8 to 21.6,
   TypeScript 5.7 to 5.9, with Prettier 3 ([#1448](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1448)). Nothing is meant to look or behave
   differently, but **most templates changed form**: Angular's migration rewrote `*ngIf` and `*ngFor` as
@@ -63,6 +69,7 @@ What to test in it is listed in [that file](2026-10-05.md#what-to-test).
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Angular 21 ([#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456)) | The [main map](https://dev.aggiemap.tamu.edu/map/d), a building popup, and an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); on a phone, the [mobile map](https://dev.aggiemap.tamu.edu/map/m) | **nothing different**. Click a building and press **Copy** in its popup, then paste; press **Escape** to close a popup; open and close the side panel's tabs and any accordion; on a phone, use the menu and the tiles. A click or key that does nothing is the thing to report |
 | Angular 20 ([#1447](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1447)) | Any map you use; [All Maps](https://dev.aggiemap.tamu.edu/all-maps); an event builder such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); popups, the side panel's Layers and Legend; and GIS Day's pages if you use them | **nothing different**. Templates were rewritten from `*ngIf`/`*ngFor` to `@if`/`@for`, so the thing to look for is something missing: an empty list, a panel that will not open, a button that has gone |
 
 ---

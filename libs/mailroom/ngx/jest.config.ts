@@ -1,5 +1,5 @@
 /* eslint-disable */
-export default {
+module.exports = {
   displayName: 'mailroom-ngx',
 
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],

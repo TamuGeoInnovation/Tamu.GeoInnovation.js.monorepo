@@ -1,5 +1,5 @@
 /* eslint-disable */
-export default {
+module.exports = {
   displayName: 'ts-ring-day-angular',
 
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],

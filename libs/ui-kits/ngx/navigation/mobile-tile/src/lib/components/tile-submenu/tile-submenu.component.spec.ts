@@ -38,6 +38,6 @@ describe('TileSubmenuComponent', () => {
   it('should call toggleSubmenu', () => {
     const yeet = jest.spyOn(TileServiceStub, 'toggleSubmenu');
     component.close();
-    expect(yeet).toBeCalled();
+    expect(yeet).toHaveBeenCalled();
   });
 });

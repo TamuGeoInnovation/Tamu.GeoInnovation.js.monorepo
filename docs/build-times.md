@@ -35,6 +35,12 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 5 Oct 2026 | home | `check-in-volume.sh chore/1456-angular-21 all`, Angular 21 after its fixes (246 tasks, 0 failed) | volume, warm cache | **3 min 5 s** |
+| 5 Oct 2026 | home | `check-in-volume.sh chore/1456-angular-21 all`, run 4 (3 failed: lightgallery under Jest 30) | volume | 4 min 11 s |
+| 5 Oct 2026 | home | `check-in-volume.sh chore/1456-angular-21 all`, run 2 (24 failed: a fix script's own mistake) | volume | 5 min 1 s |
+| 5 Oct 2026 | home | `check-in-volume.sh chore/1456-angular-21 all`, Angular 21 after its migrations (246 tasks; 41 failed) | volume, Nx cache cold; a full dev smoke run going | **7 min 7 s** |
+| 5 Oct 2026 | home | `nx migrate --run-migrations`, Angular 21 (25 migrations, 447 files) | volume; a full dev smoke run sharing the machine | **39 min 45 s** |
+| 5 Oct 2026 | home | `nx migrate 22.7.12` | volume | 40 s |
 | 5 Oct 2026 | home | Smoke `--grep "development-only"` on production after the #1460 fix (6 passed) | Playwright container, `node_modules` in a volume; alongside the dev run below | **1 min 37 s** |
 | 5 Oct 2026 | home | Smoke `--grep "development-only"` on dev after the #1460 fix (6 passed) | Playwright container, `node_modules` in a volume; alongside the production run above | **1 min 29 s** |
 | 5 Oct 2026 | home | Smoke `--grep "development-only"` on dev before the #1460 fix (3 passed, 2 failed on the Tailgating zones, each retried twice) | Playwright container, `node_modules` in a volume; a full dev smoke run going | **6 min 6 s** |
@@ -66,6 +72,11 @@ same output appears when the graph fails to compute. Read the log, not the exit 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 5 Oct 2026 | home | `npm ci` into the new `tamu-js-1456` volume, Angular 21 | check script, clean volume | 1 min 42 s |
+| 5 Oct 2026 | home | `npm ci` after the Angular 21 migrations (lock unchanged) | clean, from only `package.json` and the lock | 1 min 35 s |
+| 5 Oct 2026 | home | `npm ci`, Angular 21 install proof | clean, from only `package.json` and the lock | 47 s |
+| 5 Oct 2026 | home | `npm install`, Angular 21's new versions | into the `tamu-js-ng21` Docker volume | **60 s** |
+| 5 Oct 2026 | home | `npm ci`, Angular 20 baseline before the Angular 21 migrate | volume | 54 s |
 | 5 Oct 2026 | home | `npm ci` from the resynced lock after the Angular 20 migrations | clean, from only `package.json` and the lock | 68 s |
 | 5 Oct 2026 | home | `npm ci`, Angular 20 install proof | clean, from only `package.json` and the lock | 55 s |
 | 5 Oct 2026 | home | `npm install`, Angular 20's new versions | into the `tamu-js-1447` Docker volume | **58 s** |

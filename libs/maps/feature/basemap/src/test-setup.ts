@@ -1,12 +1,6 @@
-import 'jest-preset-angular/setup-jest';
+import { setupZoneTestEnv } from 'jest-preset-angular/setup-env/zone';
 
-import { getTestBed } from '@angular/core/testing';
-import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
-
-// Explicit platform initialisation, matching the majority of projects in this workspace. Without
-// it the TestBed has no platform and every configureTestingModule call fails with
-// "Cannot read properties of undefined (reading 'ngModule')".
-getTestBed().resetTestEnvironment();
-getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting(), {
-  teardown: { destroyAfterEach: false }
-});
+// Sets up the TestBed's platform itself (jest-preset-angular 16, #1456), so there is no
+// initTestEnvironment here: a second one fails with NG0400. destroyAfterEach: false keeps the
+// teardown these specs were written against.
+setupZoneTestEnv({ teardown: { destroyAfterEach: false } });
