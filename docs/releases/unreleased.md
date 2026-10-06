@@ -131,10 +131,23 @@ what has not shipped yet.
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** the [5 October release](2026-10-05.md), from
-[`cc809f63`](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/commit/cc809f63),
-tagged `dev-2026-10-04-3`, which passed the full suite on 4 October: 328 passed, 0 failed, 7 skipped.
-What to test in it is listed in [that file](2026-10-05.md#what-to-test).
+**Currently on dev for testing:** everything in this file, from
+[`0c8b12df`](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/commit/0c8b12df),
+tagged `dev-2026-10-06-3`, built as `main-QFOMWXNR.js`. The full suite ran against it on 6 October:
+**421 passed, 1 failed, 14 skipped of 436, in 29 min 24 s**.
+
+The one failure was `/map loads and serves its layers`, and it was the paint check timing out rather
+than anything being wrong: *"the canvas is 0.340 #ffffff, which is below 0.65, but it held that for
+only 2 of the 3 consecutive readings required"*. The map painted - 0.340 white is well under the 0.65
+blank threshold - it just did not hold steady for three consecutive readings while six workers were
+loading dev. `/map` is the heaviest map in the suite; RNS Spaces alone serves 44,980 features. Re-run
+on its own with the machine quiet it **passed in 43.8 s**, and a check of dev at the time found
+exactly the ten layer failures dev already allows and no others, the probe ready, and all thirteen
+loaded layers serving data (#1502).
+
+The two Men's Basketball failures from the morning run are gone, which is
+[#1431](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1431) doing its
+job.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
