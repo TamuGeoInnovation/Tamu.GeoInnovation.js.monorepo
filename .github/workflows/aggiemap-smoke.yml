@@ -79,7 +79,12 @@ jobs:
     # Generous on purpose. A job that exceeds this is *cancelled*, not failed, and `if: failure()`
     # steps do not run on cancellation - so a slow failure would produce a red job and no issue,
     # which is the one outcome this workflow must not have.
-    timeout-minutes: 75
+    #
+    # 120 since #1445. Runs took 25-43 minutes before the production framing baseline
+    # (framing.spec.ts, 412 routes) joined the suite; that spec alone takes 40-47 minutes, and on
+    # 5 October a production run was still going when 75 cancelled it. Expected now: 80-90 minutes.
+    # This is headroom, not a fix: shortening the suite is #1426.
+    timeout-minutes: 120
 
     strategy:
       # One unhealthy environment must not cancel the check on the other - knowing whether a failure
