@@ -82,3 +82,5 @@ secrets.ts
 test/smoke/aggiemap/map-manifest.generated.json
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+
+.claude/worktrees

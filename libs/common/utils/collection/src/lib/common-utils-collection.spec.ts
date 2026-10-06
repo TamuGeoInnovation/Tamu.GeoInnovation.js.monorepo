@@ -6,7 +6,7 @@ describe('pairwiseOverlap', function () {
   });
 
   it('should error on insufficient items', () => {
-    expect(() => pairwiseOverlap(['1 element'])).toThrowError(new Error(`Insufficient elements to pair.`));
+    expect(() => pairwiseOverlap(['1 element'])).toThrow(new Error(`Insufficient elements to pair.`));
   });
 
   it('should handle correct input', () => {

@@ -65,7 +65,7 @@ describe('Workshops Controller', () => {
     it('should call service method updateWorkshop', async () => {
       const serviceSpyOn = jest.spyOn(workshopsService, 'updateWorkshop');
       await workshopsController.updateOne(mockParameters, mockParameters);
-      expect(serviceSpyOn).toBeCalled();
+      expect(serviceSpyOn).toHaveBeenCalled();
     });
   });
 
@@ -73,7 +73,7 @@ describe('Workshops Controller', () => {
     it('should call service method deleteWorkshop', async () => {
       const serviceSpyOn = jest.spyOn(workshopsService, 'deleteWorkshop');
       await workshopsController.deleteOne(mockParameters);
-      expect(serviceSpyOn).toBeCalled();
+      expect(serviceSpyOn).toHaveBeenCalled();
     });
   });
 

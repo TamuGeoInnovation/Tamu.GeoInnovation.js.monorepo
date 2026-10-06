@@ -26,7 +26,7 @@ describe('orderBy.pipe', () => {
 
   it('should error for invalid direction', inject([OrderByPipe], (pipe: OrderByPipe) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(() => pipe.transform([{ test: 1 }, { test: 2 }], 'test', 'south' as any)).toThrowError(
+    expect(() => pipe.transform([{ test: 1 }, { test: 2 }], 'test', 'south' as any)).toThrow(
       new Error('Invalid ordering direction specified')
     );
   }));
