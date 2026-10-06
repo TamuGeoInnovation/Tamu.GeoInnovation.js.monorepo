@@ -17,21 +17,39 @@ import * as path from 'path';
 export const DEVELOPMENT_ONLY_SECTIONS = ['Directions', 'Bus Routes', 'Experiments'];
 
 /**
- * GIS services with no production counterpart, each with the issue that keeps it off production.
+ * GIS services with no production counterpart, each with the issue that keeps it off production and
+ * the pages that request it.
  *
  * A service is not visible on production unless it is explicitly allowed, and this list is how it is
- * not allowed: production must make no request to any of them, and development must, so the check is
- * proven able to see one. Matched against request URLs as a substring. When a service is published for
- * production, take it out of this list and out of the code's development-only gate together.
+ * not allowed: production must make no request to any of them from any page listed here, and
+ * development must request each one from every page it lists, so the check is proven able to see one.
+ * Matched against request URLs as a substring. When a service is published for production, take it
+ * out of this list and out of the code's development-only gate together.
+ *
+ * `pages` lists only the pages that really request the service. A service one map alone uses is
+ * required of that map, not of every page (#1460: the Tailgating zones were required of the main map).
  */
-export const DEVELOPMENT_ONLY_SERVICES: Record<string, string> = {
-  'Hosted/VTBase/VectorTileServer': '#1229: the vector tile campus basemap',
+export const DEVELOPMENT_ONLY_SERVICES: Record<string, { reason: string; pages: string[] }> = {
+  // The main map draws it by default; an event map draws it for a visitor who has saved Aggieland as
+  // their basemap, which the spec sets up on Visitor Parking.
+  'Hosted/VTBase/VectorTileServer': {
+    reason: '#1229: the vector tile campus basemap',
+    pages: ['/map', '/parking/visitor-parking']
+  },
   // The Code Maroon emergency feed, proxied through this origin. Production must never request it:
   // the proof of concept is not something to show the public, and an emergency alert drawn by an
-  // unfinished feature is a worse failure than most. #1289.
-  '/code-maroon/feed.xml': '#1289: the Code Maroon proof of concept',
-  // The Tailgating map's zones, published from ArcGIS Pro to TAMU's ArcGIS Online organization.
-  'TAMU_Tailgate_Zones/FeatureServer': '#1422: the Football Tailgating map prototype'
+  // unfinished feature is a worse failure than most. #1289. The application shell polls it, so every
+  // page requests it.
+  '/code-maroon/feed.xml': {
+    reason: '#1289: the Code Maroon proof of concept',
+    pages: ['/map', '/parking/visitor-parking', '/events/tailgating']
+  },
+  // The Tailgating map's zones, published from ArcGIS Pro to TAMU's ArcGIS Online organization. The
+  // map is registered on development hosts only, so on production its link redirects to the main map.
+  'TAMU_Tailgate_Zones/FeatureServer': {
+    reason: '#1422: the Football Tailgating map prototype',
+    pages: ['/events/tailgating']
+  }
 };
 
 /** Whether the environment under test renders the development variant. */

@@ -35,6 +35,9 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 5 Oct 2026 | home | Smoke `--grep "development-only"` on production after the #1460 fix (6 passed) | Playwright container, `node_modules` in a volume; alongside the dev run below | **1 min 37 s** |
+| 5 Oct 2026 | home | Smoke `--grep "development-only"` on dev after the #1460 fix (6 passed) | Playwright container, `node_modules` in a volume; alongside the production run above | **1 min 29 s** |
+| 5 Oct 2026 | home | Smoke `--grep "development-only"` on dev before the #1460 fix (3 passed, 2 failed on the Tailgating zones, each retried twice) | Playwright container, `node_modules` in a volume; a full dev smoke run going | **6 min 6 s** |
 | 5 Oct 2026 | home | `check-in-volume.sh chore/1447-angular-20 all` after the fixes (246 tasks, 0 failed; 70 from cache) | volume, warm | **4 min 9 s** |
 | 5 Oct 2026 | home | `check-in-volume.sh chore/1447-angular-20 all`, Angular 20 after its migrations (246 tasks; 71 failed) | volume, Nx cache cold; a GitHub smoke run going | **6 min 22 s** |
 | 5 Oct 2026 | home | `nx migrate --run-migrations`, Angular 20 (28 migrations, 371 files) | volume | **8 min 55 s** |

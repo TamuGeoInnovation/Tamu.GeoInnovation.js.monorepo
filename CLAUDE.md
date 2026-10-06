@@ -259,7 +259,8 @@ itself when a later run passes. Say so when reporting a failure, so nobody opens
 **Nothing without a production service is visible on production unless explicitly allowed.** A
 layer, basemap or service published only on dev is gated with `TestingService` (`isTesting`), as bus
 routes and the vector tile basemap are. Add it to `DEVELOPMENT_ONLY_SERVICES` in
-`test/smoke/aggiemap/development-only.ts`, so the smoke suite fails if production ever requests it.
+`test/smoke/aggiemap/development-only.ts`, with the pages that request it, so the smoke suite fails
+if production ever requests it.
 The maintainer decides when it moves to production. See #1229.
 
 **Reuse before building; build to be reused.** No one-offs: not components, not services, not

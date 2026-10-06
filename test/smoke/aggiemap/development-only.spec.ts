@@ -59,32 +59,39 @@ test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay 
 /**
  * Development-only GIS services are requested only where development-only sections show (#1229).
  *
- * The campus basemap resolves in two places: the main map, and an event or parking map for a visitor
- * who has saved Aggieland as their basemap. Both are loaded and every request recorded.
+ * Every page a service lists in `DEVELOPMENT_ONLY_SERVICES` is loaded and every request recorded. On
+ * development each page must request every service that lists it; a service one map alone uses is not
+ * required of the others (#1460). On production no page may request any of them.
  */
 test.describe(`development-only services ${VISIBLE ? 'are used here' : 'are never requested here'}`, () => {
-  const pages = [
-    { name: 'the main map', path: '/map', savedBasemap: false },
-    // A permanent map built on the event framework, reachable without a builder choice.
-    { name: 'an event map with Aggieland saved as the basemap', path: '/parking/visitor-parking', savedBasemap: true }
-  ];
+  const pages = [...new Set(Object.values(DEVELOPMENT_ONLY_SERVICES).flatMap((service) => service.pages))];
 
-  for (const { name, path, savedBasemap } of pages) {
-    test(`${name} ${VISIBLE ? 'requests' : 'requests none of'} them`, async ({ page }) => {
+  // A permanent map built on the event framework, reachable without a builder choice. The campus
+  // basemap reaches an event map only for a visitor who has saved Aggieland as their basemap.
+  const SAVED_BASEMAP_PAGE = '/parking/visitor-parking';
+
+  for (const path of pages) {
+    test(`${path} ${VISIBLE ? 'requests the ones it uses' : 'requests none of them'}`, async ({ page }) => {
       const requested: string[] = [];
 
       page.on('request', (request) => requested.push(request.url()));
       await blockAnalytics(page);
 
-      if (savedBasemap) {
+      if (path === SAVED_BASEMAP_PAGE) {
         await page.addInitScript(() =>
           window.localStorage.setItem('user-preferences', JSON.stringify({ settings: { basemap: 'aggie_basemap' } }))
         );
       }
 
+      // On production a development-only map's link redirects to the main map, which is then the page
+      // that must request none of them.
       await page.goto(path);
 
-      for (const [service, reason] of Object.entries(DEVELOPMENT_ONLY_SERVICES)) {
+      for (const [service, { reason, pages: usedOn }] of Object.entries(DEVELOPMENT_ONLY_SERVICES)) {
+        if (VISIBLE && !usedOn.includes(path)) {
+          continue;
+        }
+
         const hits = () => requested.filter((url) => url.includes(service));
 
         if (VISIBLE) {
