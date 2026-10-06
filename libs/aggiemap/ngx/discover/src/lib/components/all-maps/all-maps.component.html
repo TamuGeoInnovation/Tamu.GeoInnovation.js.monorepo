@@ -133,7 +133,8 @@
       @for (app of upcomingApplications; track app) {
       <div class="event-card" (click)="onApplicationSelect(app)">
         <h3 class="event-title">{{ app.name }}</h3>
-        <div class="event-dates"><strong>Dates:</strong> {{ getEventDateRange(app.configuration.eventDates) }}</div>
+        <!-- The next date rather than the whole range: this list answers "when is the next one" (#1443). -->
+        <div class="event-dates"><strong>Next:</strong> {{ getNextEventDate(app.configuration.eventDates) }}</div>
       </div>
       }
     </div>

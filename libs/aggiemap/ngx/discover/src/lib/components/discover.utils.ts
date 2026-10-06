@@ -1,5 +1,5 @@
 import { DiscoverApplication, InternalDiscoverApplication } from '../interfaces/discover-application.interface';
-import { parseEventDate } from '@tamu-gisc/common/utils/date';
+import { nextEventDate, parseEventDate } from '@tamu-gisc/common/utils/date';
 
 /**
  * Builds the router commands used to navigate to a map application. Events live under `/events`,
@@ -154,6 +154,28 @@ export function getEventDateRange(dates: Array<string | Date | number>): string 
   }
 
   return `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+}
+
+/**
+ * The one date an upcoming event next happens on, formatted as `getEventDateRange` formats a single
+ * date.
+ *
+ * Upcoming Events answers "when is the next one", and a repeat event's whole range is the wrong
+ * answer to it: Ring Day runs 8-10 October, so on 6 October the range read "10/8/2026 - 10/10/2026",
+ * three numbers to read where one will do, ending on the date nobody is going to (#1443).
+ *
+ * `nextEventDate` decides which date that is, so this agrees by construction with the ordering of the
+ * list itself, which is built from the same call. An event is on for its whole day, so today counts
+ * (#1301).
+ *
+ * Falls back to the full range when no date is still to come. The Upcoming Events list cannot show
+ * such an event - it is filtered out before it gets here - but a caller elsewhere can, and a range is
+ * a better answer than an empty one.
+ */
+export function getNextEventDate(dates: Array<string | Date | number>, now: number = Date.now()): string {
+  const next = nextEventDate(dates, now);
+
+  return next === null ? getEventDateRange(dates) : new Date(next).toLocaleDateString();
 }
 
 /**

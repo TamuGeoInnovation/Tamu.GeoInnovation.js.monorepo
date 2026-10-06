@@ -14,7 +14,7 @@ import {
 } from '../../interfaces/discover-application.interface';
 import { DiscoveryService, FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
 import { LastMapService } from '../../services/last-map/last-map.service';
-import { getApplicationRoute, getEventDateRange } from '../discover.utils';
+import { getApplicationRoute, getNextEventDate } from '../discover.utils';
 import { QuickLinkItem } from '../quick-links/quick-links.component';
 
 /**
@@ -66,7 +66,7 @@ export class AllMapsComponent implements OnInit {
   public isDev: Observable<boolean>;
 
   public readonly getApplicationRoute = getApplicationRoute;
-  public readonly getEventDateRange = getEventDateRange;
+  public readonly getNextEventDate = getNextEventDate;
 
   constructor(
     private readonly rt: Router,
