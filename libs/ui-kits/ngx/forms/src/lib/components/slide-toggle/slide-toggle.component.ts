@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChildren, forwardRef, ChangeDetectionStrategy } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  QueryList,
+  ViewChildren,
+  forwardRef,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable, Subject, delay, map, shareReplay } from 'rxjs';
 

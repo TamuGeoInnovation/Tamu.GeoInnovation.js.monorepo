@@ -4,8 +4,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { MapsPageHeaderComponent } from './maps-page-header.component';
 
-@Component({ selector: 'tamu-gisc-test-page', template: 'page', changeDetection: ChangeDetectionStrategy.Eager,
- standalone: false })
+@Component({
+  selector: 'tamu-gisc-test-page',
+  template: 'page',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
+})
 class TestPageComponent {}
 
 /**

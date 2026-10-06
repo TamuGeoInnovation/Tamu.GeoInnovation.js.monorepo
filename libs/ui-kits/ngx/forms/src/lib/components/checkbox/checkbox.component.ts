@@ -1,4 +1,13 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, forwardRef, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+  forwardRef,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 @Component({

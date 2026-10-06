@@ -1,4 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, HostBinding, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  HostBinding,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
 

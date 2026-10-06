@@ -1,4 +1,14 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 'rxjs';
 

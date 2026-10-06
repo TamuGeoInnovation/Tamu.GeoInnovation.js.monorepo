@@ -1,4 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { take } from 'rxjs/operators';
 
 import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/map/map.service';

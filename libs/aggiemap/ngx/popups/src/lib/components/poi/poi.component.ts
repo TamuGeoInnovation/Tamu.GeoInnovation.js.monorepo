@@ -1,4 +1,12 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 

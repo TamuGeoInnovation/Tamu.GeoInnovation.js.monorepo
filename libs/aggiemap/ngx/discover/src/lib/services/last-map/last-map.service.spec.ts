@@ -5,8 +5,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { LastMapService } from './last-map.service';
 
-@Component({ selector: 'tamu-gisc-test-page', template: 'page', changeDetection: ChangeDetectionStrategy.Eager,
- standalone: false })
+@Component({
+  selector: 'tamu-gisc-test-page',
+  template: 'page',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
+})
 class TestPageComponent {}
 
 /**

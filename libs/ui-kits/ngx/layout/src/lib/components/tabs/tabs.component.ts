@@ -1,4 +1,12 @@
-import { Component, ContentChildren, QueryList, AfterContentInit, Input, HostBinding, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  ContentChildren,
+  QueryList,
+  AfterContentInit,
+  Input,
+  HostBinding,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { AbstractContentReplacerComponent } from '../../abstracts/abstract-content-swap/abstract-content-replacer.component';
 import { TabComponent } from './tab/tab.component';

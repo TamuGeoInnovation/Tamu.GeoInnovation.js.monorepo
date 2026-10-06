@@ -1,4 +1,12 @@
-import { AfterContentInit, Component, ContentChildren, Input, OnDestroy, QueryList, ChangeDetectionStrategy } from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  ContentChildren,
+  Input,
+  OnDestroy,
+  QueryList,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { from, merge, Subject } from 'rxjs';
 import { mergeMap, pluck, switchMap, takeUntil } from 'rxjs/operators';
 

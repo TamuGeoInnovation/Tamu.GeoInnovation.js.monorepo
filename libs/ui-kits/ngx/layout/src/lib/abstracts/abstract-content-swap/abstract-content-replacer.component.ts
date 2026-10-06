@@ -1,4 +1,13 @@
-import { Component, Input, ContentChildren, QueryList, AfterContentInit, TemplateRef, HostBinding, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  Input,
+  ContentChildren,
+  QueryList,
+  AfterContentInit,
+  TemplateRef,
+  HostBinding,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { AbstractContentReplacerToggleComponent } from './abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
 

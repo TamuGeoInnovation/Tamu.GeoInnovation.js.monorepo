@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, ContentChildren, QueryList, AfterContentInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  ContentChildren,
+  QueryList,
+  AfterContentInit,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { BaseChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';

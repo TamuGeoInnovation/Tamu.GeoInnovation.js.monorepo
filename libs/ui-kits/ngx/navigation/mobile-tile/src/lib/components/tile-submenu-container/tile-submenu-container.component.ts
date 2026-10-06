@@ -1,4 +1,12 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, OnDestroy, HostBinding, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ViewContainerRef,
+  OnDestroy,
+  HostBinding,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 

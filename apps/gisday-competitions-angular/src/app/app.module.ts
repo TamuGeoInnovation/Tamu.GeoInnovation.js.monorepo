@@ -39,6 +39,10 @@ WebFont.load({
     SettingsModule,
     GisdayCompetitionsNgxCoreModule
   ],
-  providers: [NotificationService, { provide: env, useValue: environment }, provideHttpClient(withXhr(), withInterceptorsFromDi())]
+  providers: [
+    NotificationService,
+    { provide: env, useValue: environment },
+    provideHttpClient(withXhr(), withInterceptorsFromDi())
+  ]
 })
 export class AppModule {}
