@@ -57,6 +57,12 @@ export const GalvestonLayerSources: LayerSource[] = [
 export const GalvestonSearchSources: SearchSource[] = [
   {
     source: 'galveston-building',
+    // `?bldg=1234`, and `?abbrv=OCNG` for a building with no number (#1481). The popup's copy link
+    // reads these same two names, so one declaration decides what a shared link says and what
+    // `EventService.selectFeatureByConfiguredParam` accepts when it is opened. Both forms match
+    // against every field in `where.keys` below, so either resolves whichever value it carries.
+    urlQueryParam: 'bldg',
+    urlQueryParamAliases: ['abbrv'],
     name: 'Building',
     url: `${Connections.galvestonFeatureServerUrl}/0`,
     queryParams: {
@@ -98,6 +104,7 @@ export const GalvestonConfiguration: EventConfiguration = {
     layerId: GALVESTON_LAYERS.BUILDINGS,
     title: ['name', 'bldgname', 'bldgabbrev', 'abbrev'],
     number: 'number',
+    abbreviation: 'bldgabbrev',
     address: { street: 'address', city: 'city', zip: 'zip', state: 'TX' }
   },
   // TODO: set `brandingIconUrl` to an official Texas A&M University at Galveston logo once one is

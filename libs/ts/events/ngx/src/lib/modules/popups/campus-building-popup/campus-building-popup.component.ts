@@ -9,7 +9,7 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.component';
 import { EventSettingsQuery } from '../../../services/settings/event-settings-query';
-import { BuildingPopupContent, buildingPopupContent } from './building-popup-content';
+import { BuildingPopupContent, buildingPopupContent, buildingShareIdentity } from './building-popup-content';
 
 /**
  * A satellite campus's building popup, laid out as the main map's: title, building number, address and a
@@ -42,6 +42,21 @@ export class CampusBuildingPopupComponent extends BaseEventPopupComponent implem
     env: EnvironmentService
   ) {
     super(router, route, plannerService, analytics, mapService, env);
+  }
+
+  /**
+   * The copy link names the building by its number, or by its abbreviation where it has no number,
+   * rather than by the layer and object id it happens to sit at (#1481).
+   *
+   * Both the parameter names and the fields come from the campus's own declaration - the search
+   * source for the names, `buildingPopup` for the fields - so nothing here is specific to one campus,
+   * and a campus that declares neither keeps the generic `feature=` link.
+   */
+  protected override _getShareUrlIdentity(): { param: string; value: string | number } | null {
+    const configuration = this._settings.eventConfiguration().configuration;
+    const source = configuration?.searchSources?.find((searchSource) => searchSource.urlQueryParam !== undefined);
+
+    return buildingShareIdentity(this.data?.attributes, configuration?.buildingPopup, source);
   }
 
   public override ngOnInit(): void {

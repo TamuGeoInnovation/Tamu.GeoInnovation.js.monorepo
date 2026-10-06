@@ -33,11 +33,29 @@ export abstract class BaseEventPopupComponent extends BaseDirectionsComponent {
     return fragment ? `${origin}${window.location.pathname}${fragment}` : `${origin}${window.location.pathname}`;
   }
 
+  /**
+   * A readable name for this feature in a copied link, as `{ param, value }` - for example
+   * `{ param: 'bldg', value: '1234' }`, which a popup's copy button turns into `?bldg=1234`.
+   *
+   * The default is none, which keeps the generic `feature=<layerId>:<objectId>` form. That form is
+   * right for a feature with nothing better to be called, and wrong as a default for anything a
+   * person would recognise: it cannot be read or checked by hand, and the object id in it is not
+   * stable across a republish of the service (#1481).
+   *
+   * A subclass returning an identity gets every other part of the link unchanged - the builder
+   * selections stamped onto it, and the clearing of any stale feature parameter already in the URL.
+   */
+  protected _getShareUrlIdentity(): { param: string; value: string | number } | null {
+    return null;
+  }
+
   protected override _getShareUrlFragment(): string | null {
+    const identity = this._getShareUrlIdentity();
     const layerId = this.data?.attributes?.__featureLayerId || this.data?.layer?.id;
     const objectId = this._getObjectIdValue(this.data);
+    const hasGenericReference = !!layerId && objectId !== null && objectId !== undefined && objectId !== '';
 
-    if (!layerId || objectId === null || objectId === undefined || objectId === '') {
+    if (!identity && !hasGenericReference) {
       return null;
     }
 
@@ -45,7 +63,12 @@ export abstract class BaseEventPopupComponent extends BaseDirectionsComponent {
 
     this._clearExistingFeatureParams(params);
     this._applyEventSettingParams(params);
-    params.set('feature', `${layerId}:${objectId}`);
+
+    if (identity) {
+      params.set(identity.param, `${identity.value}`);
+    } else {
+      params.set('feature', `${layerId}:${objectId}`);
+    }
 
     return `?${params.toString()}`;
   }
