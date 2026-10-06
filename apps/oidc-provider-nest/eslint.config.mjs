@@ -26,6 +26,7 @@ export default [
     rules: {}
   },
   {
-    ignores: ['src/assets/scripts/*.min.js']
+    // Nx runs ESLint from the workspace root, so a pattern relative to this folder no longer matches.
+    ignores: ['**/src/assets/scripts/*.min.js']
   }
 ];
