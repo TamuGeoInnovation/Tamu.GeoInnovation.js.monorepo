@@ -9,8 +9,8 @@ import { AccordionDirective } from './accordion.directive';
 export class AccordionHeaderDirective {
   public parent: AccordionDirective;
 
-  @HostListener('click', ['$event'])
-  private _toggle() {
+  @HostListener('click')
+  protected _toggle() {
     this.parent.expanded = !this.parent.expanded;
   }
 

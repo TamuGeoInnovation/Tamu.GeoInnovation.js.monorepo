@@ -52,7 +52,7 @@ export class PopupComponent implements OnInit, OnDestroy {
   /**
    * Allows closing the popup with the keyboard `esc` key.
    */
-  @HostListener('window:keyup.esc', ['$event'])
+  @HostListener('window:keyup.esc')
   public escapeKeydown() {
     this.close();
   }

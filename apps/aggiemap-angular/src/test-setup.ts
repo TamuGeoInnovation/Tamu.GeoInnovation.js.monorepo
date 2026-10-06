@@ -1,10 +1,6 @@
 import { setupZoneTestEnv } from 'jest-preset-angular/setup-env/zone';
 
-setupZoneTestEnv();
-import { getTestBed } from '@angular/core/testing';
-import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
-
-getTestBed().resetTestEnvironment();
-getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting(), {
-  teardown: { destroyAfterEach: false }
-});
+// Sets up the TestBed's platform itself (jest-preset-angular 16, #1456), so there is no
+// initTestEnvironment here: a second one fails with NG0400. destroyAfterEach: false keeps the
+// teardown these specs were written against.
+setupZoneTestEnv({ teardown: { destroyAfterEach: false } });

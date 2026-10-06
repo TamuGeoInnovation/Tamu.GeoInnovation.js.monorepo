@@ -48,7 +48,7 @@ export class SidebarTabComponent {
   public $clicked: Observable<TabHostClick> = this._$clicked.asObservable();
 
   @HostListener('click', ['$event'])
-  private clicked(event: MouseEvent) {
+  protected clicked(event: MouseEvent) {
     this._$clicked.next({ event: event, native: this });
   }
 }

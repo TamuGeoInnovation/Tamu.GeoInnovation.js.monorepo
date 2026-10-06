@@ -21,7 +21,7 @@ export class MobileTabNavigationTabComponent implements OnInit {
 
   public activeTab: Observable<boolean>;
 
-  @HostListener('click', ['$event'])
+  @HostListener('click')
   public navigate() {
     this.router.navigate([this.route]);
   }

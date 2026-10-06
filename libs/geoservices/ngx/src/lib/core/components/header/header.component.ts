@@ -30,7 +30,7 @@ export class HeaderComponent implements OnInit {
   public ignorePointerEvents: Observable<boolean>;
 
   @HostListener('click', ['$event'])
-  private _onLinkClick(e: MouseEvent) {
+  protected _onLinkClick(e: MouseEvent) {
     if (e.target instanceof HTMLAnchorElement) {
       this._$ignorePointerEvents.next(true);
     }

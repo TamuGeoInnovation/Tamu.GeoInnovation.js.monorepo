@@ -15,19 +15,19 @@ export class ScrollToDirective {
   }
 
   @HostListener('click')
-  private onClick() {
+  protected onClick() {
     this.scroll();
   }
 
   @HostListener('keydown.space', ['$event'])
-  private onKeydown(e: KeyboardEvent) {
+  protected onKeydown(e: KeyboardEvent) {
     e.preventDefault();
     e.stopImmediatePropagation();
   }
 
   @HostListener('keyup.enter')
   @HostListener('keyup.space')
-  private onKeyup() {
+  protected onKeyup() {
     this.scroll();
   }
 
