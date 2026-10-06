@@ -35,6 +35,9 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 6 Oct 2026 | office | Full smoke suite against dev, the 6 October release (`0c8b12df`, `main-QFOMWXNR.js`, `dev-2026-10-06-3`), 6 workers, 11:51:12 to 12:20:47 Central | 421 passed, 1 failed, 14 skipped of 436 | **29 min 24 s** |
+| 6 Oct 2026 | office | The same suite's one failure re-run alone, machine quiet: `/map loads and serves its layers` | passed in 43.8 s; it had timed out at 120 s under the full run's load | **1 min 42 s** |
+| 6 Oct 2026 | office | `check-in-volume.sh fix/1497-portal-symbology` (affected), a shared-library change: 87 tasks, 41 projects, 0/87 cache hits | all passing | **3 min 5 s** |
 | 6 Oct 2026 | office | `check-in-volume.sh batch/2026-10-06-verify` (affected), the 8-change batch: 29 tasks, lint+test+build, 14 projects, 0/29 cache hits, 09:39 Central | volume, warm clone, cold Nx cache | **1 min 25 s** |
 | 6 Oct 2026 | office | The same check, second of three runs, 09:05 Central (one spec failing: a test fixture, not the app) | volume, warm clone | 1 min 25 s |
 | 6 Oct 2026 | office | `npm ci` into the dev server's `tamu-js-dev-nm` volume, 2,318 packages, after it was found two upgrades stale (Angular 19.2.9 against the checkout's 22.1.8) | bind-mounted source, volume `node_modules` | **1 min 28 s** |
