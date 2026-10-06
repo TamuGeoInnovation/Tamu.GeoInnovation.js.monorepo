@@ -22,13 +22,14 @@ the shared libraries behind them. A change to a shared library can affect severa
 
 ## Where things are written down
 
-Four places, each with one job.
+Five places, each with one job.
 
 | Where | What belongs there |
 | --- | --- |
 | This file | The lasting rules: how to build, test, release and open a pull request here. Anything still true next month. |
 | [`docs/build-times.md`](docs/build-times.md) | How long runs take, recorded as they happen, so a change meant to speed the work up can be shown to have done it. Measurements, not rules. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
+| The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
 | The maintainer's handoff page | One person's own cross-machine notes, so he can stop on one machine and resume on another. Private, not linked from this repository, reached by pasting a pickup prompt. |
 
 **The handoff page is for one person, so it cannot be where anything else lives.** If a fact matters to
@@ -458,6 +459,10 @@ maintainer included, pushes branches to their own fork and opens pull requests f
 repository, used only to pull `development`; `fork` is the user's fork, where branches are
 pushed. If a checkout has no `fork` remote, ask which fork to use before pushing anything.
 
+The one exception is the cloud session's: `cloud-mailbox` and `cloud/<issue>-<topic>` branches live
+on `TamuGeoInnovation`, because that is where the cloud session pushes. Their pull requests still go
+through a fork, opened by the desktop session (see [The cloud session](#the-cloud-session)).
+
 ```
 git remote add fork git@github.com:<user>/Tamu.GeoInnovation.js.monorepo.git
 git switch -c <branch> origin/development
@@ -472,6 +477,62 @@ access.
 
 Titles follow `scope(project-name): Short description`, where scope is `fix`, `feat`,
 `chore` or `ci`. One change per pull request. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## The cloud session
+
+A cloud Claude session sometimes works on issues the desktop session hands it. The desktop session is
+in charge: it has Docker, the local run, the servers and GitHub's GraphQL API, and it builds and checks
+everything, opens the pull requests and asks the maintainer. The two sessions never talk directly; they
+exchange files on the `cloud-mailbox` branch, and the maintainer relays two short phrases.
+
+Start line, pasted into the cloud session by the maintainer:
+
+```
+Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the cloud-mailbox branch, and do what cloud/TASKS.md says.
+```
+
+The rules for the cloud session:
+
+- **Do only the issues listed in the task file, then report and stop.** Don't ask whether to do more,
+  and don't offer or start other work. The desktop session decides what's next.
+- **The task file and reports live on the `cloud-mailbox` branch** (`cloud/TASKS.md`,
+  `cloud/reports/<yyyy-mm-dd>-batch-<letter>.md`). Commit only your report there, directly. Never merge
+  `cloud-mailbox` into anything, or anything into it.
+- **This repo is public.** No customer names, keys, server names or internal addresses in issues,
+  commits, branches or reports. If something sensitive comes up, the report says only "a question for
+  Dan; ask the desktop session".
+- **File what you find, right away.** A bug, follow-up or to-do found while working becomes a GitHub
+  issue the moment it comes up, with the assignee, type and labels this file's issue rules give. List
+  the numbers in your report with a suggested priority. The desktop session then sets Priority (asking
+  the maintainer) and the project Status, which need the GraphQL API the cloud can't use.
+- **Nothing else on GitHub:** no comments, PRs or merges.
+- **Branches:** one per issue, `cloud/<issue>-<topic>` from the latest `development`, pushed to this
+  repository, with a `.pr-body.md` draft as the last commit. Don't merge `development` into it; the
+  desktop session does that when it opens the PR.
+- **Commit messages:** no `Claude-Session:` line or other link to the session; end with the
+  `Co-Authored-By` line only. The desktop session strips any that slip through before opening a PR.
+- **Say "branch ready: <names>" when done.** The desktop session builds and tests each branch the way
+  CI does, checks it locally, and opens the PRs.
+
+What the desktop session does when the cloud has finished:
+
+1. Pull `cloud-mailbox` and read the report. Its questions go to the maintainer, renumbered.
+2. Ask the maintainer the Priority of each cloud-filed issue, then set every field and the project
+   Status as [Pull requests](#pull-requests) says.
+3. For each cloud branch, in its own worktree: make a branch on the fork at the cloud branch's code
+   commits, without the `.pr-body.md` commit (its text drafts the PR body); strip any
+   `Claude-Session:` lines; merge the latest `development`; run `scripts/check-in-volume.sh`; check it in
+   the local run against plain `development`, turning every check into a test.
+4. Open each PR as this file says, with the real check results, and set the issue to In Progress.
+5. Before a batch is merged, check all of its PRs merged together: two PRs can each pass CI and still
+   fail together.
+6. After the merges, delete the merged `cloud/` branches, then write the next batch into
+   `cloud/TASKS.md` (the header stays; only the batch changes) and give the maintainer the start line.
+
+A good batch is work that can be done and proven without the local run or the servers: code, unit
+tests, deletions, investigations that end in a report, and smoke runs against a deployed environment.
+Every open PR's branch goes under the batch's "Don't touch", so the cloud does not build on code that
+is about to change.
 
 ## Things that look broken but are not
 
