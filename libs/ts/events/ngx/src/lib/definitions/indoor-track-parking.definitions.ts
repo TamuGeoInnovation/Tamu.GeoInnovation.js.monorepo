@@ -95,7 +95,6 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: IndoorTrackParkingDefinitions.PARKING.id,
-    title: IndoorTrackParkingDefinitions.PARKING.name,
     url: IndoorTrackParkingDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
@@ -121,7 +120,6 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: IndoorTrackParkingDefinitions.BUILDING.id,
-    title: IndoorTrackParkingDefinitions.BUILDING.name,
     url: IndoorTrackParkingDefinitions.BUILDING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
@@ -152,7 +150,6 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.id,
-    title: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.name,
     url: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {

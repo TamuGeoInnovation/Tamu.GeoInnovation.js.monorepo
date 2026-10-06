@@ -41,7 +41,6 @@ export const MS150ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MS150Definitions.AVP_PARKING.id,
-    title: MS150Definitions.AVP_PARKING.name,
     url: MS150Definitions.AVP_PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
@@ -57,7 +56,6 @@ export const MS150ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MS150Definitions.PARKING.id,
-    title: MS150Definitions.PARKING.name,
     url: MS150Definitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
@@ -74,7 +72,6 @@ export const MS150ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MS150Definitions.ROUTE.id,
-    title: MS150Definitions.ROUTE.name,
     url: MS150Definitions.ROUTE.url,
     visible: true,
     listMode: 'show',

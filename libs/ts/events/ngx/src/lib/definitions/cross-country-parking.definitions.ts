@@ -39,7 +39,6 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.id,
-    title: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.name,
     url: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
@@ -56,7 +55,6 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: CrossCountryParkingDefinitions.PARKING.id,
-    title: CrossCountryParkingDefinitions.PARKING.name,
     url: CrossCountryParkingDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {

@@ -27,7 +27,6 @@ export const RetireeParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: RetireeParkingDefinitions.RETIREE_PARKING_LOTS.id,
-    title: RetireeParkingDefinitions.RETIREE_PARKING_LOTS.name,
     url: RetireeParkingDefinitions.RETIREE_PARKING_LOTS.url,
     visible: true,
     listMode: 'show',

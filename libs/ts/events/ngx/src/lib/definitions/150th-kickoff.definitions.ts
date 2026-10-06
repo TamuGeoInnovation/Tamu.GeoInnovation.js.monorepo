@@ -43,7 +43,6 @@ export const Kickoff150thLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: Kickoff150thDefinitions.EVENT_LOCATIONS.id,
-    title: Kickoff150thDefinitions.EVENT_LOCATIONS.name,
     url: Kickoff150thDefinitions.EVENT_LOCATIONS.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
@@ -66,7 +65,6 @@ export const Kickoff150thLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: Kickoff150thDefinitions.SHUTTLE_ROUTE.id,
-    title: Kickoff150thDefinitions.SHUTTLE_ROUTE.name,
     url: Kickoff150thDefinitions.SHUTTLE_ROUTE.url,
     visible: true,
     listMode: 'show',
@@ -77,7 +75,6 @@ export const Kickoff150thLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: Kickoff150thDefinitions.PARKING.id,
-    title: Kickoff150thDefinitions.PARKING.name,
     url: Kickoff150thDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {

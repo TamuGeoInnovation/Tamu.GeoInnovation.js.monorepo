@@ -27,7 +27,6 @@ export const MediaParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MediaParkingDefinitions.MEDIA_PARKING_LOTS.id,
-    title: MediaParkingDefinitions.MEDIA_PARKING_LOTS.name,
     url: MediaParkingDefinitions.MEDIA_PARKING_LOTS.url,
     visible: true,
     listMode: 'show',

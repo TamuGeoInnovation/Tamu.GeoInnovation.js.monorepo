@@ -61,7 +61,6 @@ export const AggieFamilyParadeLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: AggieFamilyParadeDefinitions.ROUTE.id,
-    title: AggieFamilyParadeDefinitions.ROUTE.name,
     url: AggieFamilyParadeDefinitions.ROUTE.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {

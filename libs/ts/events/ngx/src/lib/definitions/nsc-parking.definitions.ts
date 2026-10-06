@@ -48,7 +48,6 @@ export const NscParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: NscParkingDefinitions.NSC_PARKING_LOTS.id,
-    title: NscParkingDefinitions.NSC_PARKING_LOTS.name,
     url: NscParkingDefinitions.NSC_PARKING_LOTS.url,
     visible: true,
     listMode: 'show',

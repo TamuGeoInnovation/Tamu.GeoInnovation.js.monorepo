@@ -72,7 +72,6 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TsMainParkingDefinitions.ROUTE_STOP_START_POINTS.id,
-    title: TsMainParkingDefinitions.ROUTE_STOP_START_POINTS.name,
     url: TsMainParkingDefinitions.ROUTE_STOP_START_POINTS.url,
     visible: true,
     listMode: 'show',
@@ -84,7 +83,6 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TsMainParkingDefinitions.CAMPUS_STOPS.id,
-    title: TsMainParkingDefinitions.CAMPUS_STOPS.name,
     url: TsMainParkingDefinitions.CAMPUS_STOPS.url,
     visible: true,
     listMode: 'show',
@@ -119,7 +117,6 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TsMainParkingDefinitions.VISITOR_KIOSKS.id,
-    title: TsMainParkingDefinitions.VISITOR_KIOSKS.name,
     url: TsMainParkingDefinitions.VISITOR_KIOSKS.url,
     visible: true,
     listMode: 'show',
@@ -132,7 +129,6 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TsMainParkingDefinitions.PARKING_LOTS.id,
-    title: TsMainParkingDefinitions.PARKING_LOTS.name,
     url: TsMainParkingDefinitions.PARKING_LOTS.url,
     visible: true,
     listMode: 'show',
@@ -187,7 +183,6 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TsMainParkingDefinitions.LINE_PAINT.id,
-    title: TsMainParkingDefinitions.LINE_PAINT.name,
     url: TsMainParkingDefinitions.LINE_PAINT.url,
     visible: true,
     listMode: 'hide',
@@ -199,7 +194,6 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TsMainParkingDefinitions.RNS_SPACES.id,
-    title: TsMainParkingDefinitions.RNS_SPACES.name,
     url: TsMainParkingDefinitions.RNS_SPACES.url,
     visible: true,
     listMode: 'show',

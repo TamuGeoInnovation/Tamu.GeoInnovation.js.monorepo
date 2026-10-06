@@ -39,7 +39,6 @@ export const MaroonWhiteGameColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MaroonWhiteGameDefinitions.EVENT_PARKING_LOTS.id,
-    title: MaroonWhiteGameDefinitions.EVENT_PARKING_LOTS.name,
     url: MaroonWhiteGameDefinitions.EVENT_PARKING_LOTS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
@@ -60,7 +59,6 @@ export const MaroonWhiteGameColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MaroonWhiteGameDefinitions.ACCESSIBLE_PREPAID_PARKING.id,
-    title: MaroonWhiteGameDefinitions.ACCESSIBLE_PREPAID_PARKING.name,
     url: MaroonWhiteGameDefinitions.ACCESSIBLE_PREPAID_PARKING.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {

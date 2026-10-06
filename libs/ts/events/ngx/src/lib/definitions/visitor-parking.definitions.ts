@@ -36,7 +36,6 @@ export const VisitorParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: VisitorParkingDefinitions.VISITOR_KIOSKS.id,
-    title: VisitorParkingDefinitions.VISITOR_KIOSKS.name,
     url: VisitorParkingDefinitions.VISITOR_KIOSKS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     visible: true,
@@ -48,7 +47,6 @@ export const VisitorParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: VisitorParkingDefinitions.VISITOR_PARKING_LOTS.id,
-    title: VisitorParkingDefinitions.VISITOR_PARKING_LOTS.name,
     url: VisitorParkingDefinitions.VISITOR_PARKING_LOTS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {

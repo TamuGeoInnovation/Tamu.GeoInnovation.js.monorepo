@@ -54,7 +54,6 @@ export const VendorParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: VendorParkingDefinitions.VENDOR_PARKING_LOTS.id,
-    title: VendorParkingDefinitions.VENDOR_PARKING_LOTS.name,
     url: VendorParkingDefinitions.VENDOR_PARKING_LOTS.url,
     visible: true,
     listMode: 'show',

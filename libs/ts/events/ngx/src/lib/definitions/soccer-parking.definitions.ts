@@ -81,7 +81,6 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: SoccerParkingDefinitions.PARKING.id,
-    title: SoccerParkingDefinitions.PARKING.name,
     url: SoccerParkingDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {

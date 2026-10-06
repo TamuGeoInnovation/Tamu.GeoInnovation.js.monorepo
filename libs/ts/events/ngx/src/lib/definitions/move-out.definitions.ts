@@ -41,7 +41,6 @@ export const MoveOutColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MoveOutDefinitions.NO_PARKING.id,
-    title: MoveOutDefinitions.NO_PARKING.name,
     url: MoveOutDefinitions.NO_PARKING.url,
     visible: true,
     listMode: 'show',
@@ -63,7 +62,6 @@ export const MoveOutColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MoveOutDefinitions.STREET_PARKING.id,
-    title: MoveOutDefinitions.STREET_PARKING.name,
     url: MoveOutDefinitions.STREET_PARKING.url,
     visible: true,
     listMode: 'show',
@@ -85,7 +83,6 @@ export const MoveOutColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MoveOutDefinitions.MOVE_OUT_LOTS.id,
-    title: MoveOutDefinitions.MOVE_OUT_LOTS.name,
     url: MoveOutDefinitions.MOVE_OUT_LOTS.url,
     visible: true,
     listMode: 'show',

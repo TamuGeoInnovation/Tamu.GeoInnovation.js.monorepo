@@ -80,7 +80,6 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: OutdoorTrackParkingDefinitions.PARKING.id,
-    title: OutdoorTrackParkingDefinitions.PARKING.name,
     url: OutdoorTrackParkingDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {

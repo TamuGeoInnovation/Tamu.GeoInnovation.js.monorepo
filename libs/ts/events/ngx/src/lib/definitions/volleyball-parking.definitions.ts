@@ -81,7 +81,6 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: VolleyballParkingDefinitions.PARKING.id,
-    title: VolleyballParkingDefinitions.PARKING.name,
     url: VolleyballParkingDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {

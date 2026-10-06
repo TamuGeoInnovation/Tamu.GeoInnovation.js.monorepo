@@ -29,7 +29,6 @@ export const SpiritOf150WeekLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: SpiritOf150WeekDefinitions.CAKE_ICE_CREAM.id,
-    title: SpiritOf150WeekDefinitions.CAKE_ICE_CREAM.name,
     url: SpiritOf150WeekDefinitions.CAKE_ICE_CREAM.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {

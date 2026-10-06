@@ -41,7 +41,6 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MensBasketball_Definitions.GATES.id,
-    title: MensBasketball_Definitions.GATES.name,
     url: MensBasketball_Definitions.GATES.url,
     visible: true,
     listMode: 'show',
@@ -53,7 +52,6 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MensBasketball_Definitions.SYMBOLS.id,
-    title: MensBasketball_Definitions.SYMBOLS.name,
     url: MensBasketball_Definitions.SYMBOLS.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
@@ -70,7 +68,6 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MensBasketball_Definitions.PARKING.id,
-    title: MensBasketball_Definitions.PARKING.name,
     url: MensBasketball_Definitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {

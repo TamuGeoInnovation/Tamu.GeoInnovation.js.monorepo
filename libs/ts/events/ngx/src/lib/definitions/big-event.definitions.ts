@@ -79,7 +79,6 @@ export const BigEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: BigEventDefinitions.ROAD_CLOSURES.id,
-    title: BigEventDefinitions.ROAD_CLOSURES.name,
     url: BigEventDefinitions.ROAD_CLOSURES.url,
     popupComponent: MarkdownPopupComponent,
     visible: true,
@@ -92,7 +91,6 @@ export const BigEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: BigEventDefinitions.PARKING_LOTS.id,
-    title: BigEventDefinitions.PARKING_LOTS.name,
     url: BigEventDefinitions.PARKING_LOTS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     // popupData: {

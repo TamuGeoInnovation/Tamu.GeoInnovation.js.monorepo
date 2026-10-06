@@ -27,7 +27,6 @@ export const TennisParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TennisParkingDefinitions.PARKING.id,
-    title: TennisParkingDefinitions.PARKING.name,
     url: TennisParkingDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {

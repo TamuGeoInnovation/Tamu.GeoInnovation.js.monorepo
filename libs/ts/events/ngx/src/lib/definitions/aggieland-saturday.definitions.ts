@@ -51,7 +51,6 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: AggielandSaturdayEventDefinitions.EVENT_PARKING.id,
-    title: AggielandSaturdayEventDefinitions.EVENT_PARKING.name,
     url: AggielandSaturdayEventDefinitions.EVENT_PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
@@ -67,7 +66,6 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: AggielandSaturdayEventDefinitions.EVENT_BUS_STOPS.id,
-    title: AggielandSaturdayEventDefinitions.EVENT_BUS_STOPS.name,
     url: AggielandSaturdayEventDefinitions.EVENT_BUS_STOPS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
@@ -83,7 +81,6 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: AggielandSaturdayEventDefinitions.EVENT_BUS_ROUTES.id,
-    title: AggielandSaturdayEventDefinitions.EVENT_BUS_ROUTES.name,
     url: AggielandSaturdayEventDefinitions.EVENT_BUS_ROUTES.url,
     visible: true,
     listMode: 'show',

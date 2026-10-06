@@ -80,7 +80,6 @@ export const SoftballParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: SoftballParkingDefinitions.PARKING.id,
-    title: SoftballParkingDefinitions.PARKING.name,
     url: SoftballParkingDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {

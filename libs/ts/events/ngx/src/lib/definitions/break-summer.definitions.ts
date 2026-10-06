@@ -50,7 +50,6 @@ export const BreakSummerColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: BreakSummerDefinitions.BREAK_SUMMER_LOTS.id,
-    title: BreakSummerDefinitions.BREAK_SUMMER_LOTS.name,
     url: BreakSummerDefinitions.BREAK_SUMMER_LOTS.url,
     visible: true,
     listMode: 'show',

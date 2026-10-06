@@ -27,7 +27,6 @@ export const TimedParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TimedParkingDefinitions.TIMED_PARKING_SPACE.id,
-    title: TimedParkingDefinitions.TIMED_PARKING_SPACE.name,
     url: TimedParkingDefinitions.TIMED_PARKING_SPACE.url,
     visible: true,
     listMode: 'show',

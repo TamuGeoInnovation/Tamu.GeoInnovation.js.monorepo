@@ -134,14 +134,12 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
   {
     type: 'group',
     id: PhysEngFestDefinitions.GENERAL_PARKING_GROUP.id,
-    title: PhysEngFestDefinitions.GENERAL_PARKING_GROUP.name,
     visible: true,
     listMode: 'show',
     sources: [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.GENERAL_PARKING.id,
-        title: PhysEngFestDefinitions.GENERAL_PARKING.name,
         url: PhysEngFestDefinitions.GENERAL_PARKING.url,
         popupComponent: MarkdownWDirectionsPopupComponent,
         visible: true,
@@ -168,14 +166,12 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
   {
     type: 'group',
     id: PhysEngFestDefinitions.EASTBOUND_UNIVERSITY_GROUP.id,
-    title: PhysEngFestDefinitions.EASTBOUND_UNIVERSITY_GROUP.name,
     visible: false,
     listMode: 'show',
     sources: [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.EASTBOUND_BUS_PARKING.id,
-        title: PhysEngFestDefinitions.EASTBOUND_BUS_PARKING.name,
         url: PhysEngFestDefinitions.EASTBOUND_BUS_PARKING.url,
         popupComponent: MarkdownWDirectionsPopupComponent,
         visible: true,
@@ -187,7 +183,6 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.EASTBOUND_BUS_ROUTE.id,
-        title: PhysEngFestDefinitions.EASTBOUND_BUS_ROUTE.name,
         url: PhysEngFestDefinitions.EASTBOUND_BUS_ROUTE.url,
         popupComponent: MarkdownPopupComponent,
         visible: true,
@@ -197,7 +192,6 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.EASTBOUND_PEDESTRIAN_PATH.id,
-        title: PhysEngFestDefinitions.EASTBOUND_PEDESTRIAN_PATH.name,
         url: PhysEngFestDefinitions.EASTBOUND_PEDESTRIAN_PATH.url,
         popupComponent: MarkdownPopupComponent,
         visible: true,
@@ -207,7 +201,6 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.EASTBOUND_BUS_DROPOFF.id,
-        title: PhysEngFestDefinitions.EASTBOUND_BUS_DROPOFF.name,
         url: PhysEngFestDefinitions.EASTBOUND_BUS_DROPOFF.url,
         popupComponent: MarkdownWDirectionsPopupComponent,
         visible: true,
@@ -224,14 +217,12 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
   {
     type: 'group',
     id: PhysEngFestDefinitions.WESTBOUND_UNIVERSITY_GROUP.id,
-    title: PhysEngFestDefinitions.WESTBOUND_UNIVERSITY_GROUP.name,
     visible: false,
     listMode: 'show',
     sources: [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.WESTBOUND_BUS_PARKING.id,
-        title: PhysEngFestDefinitions.WESTBOUND_BUS_PARKING.name,
         url: PhysEngFestDefinitions.WESTBOUND_BUS_PARKING.url,
         popupComponent: MarkdownWDirectionsPopupComponent,
         visible: true,
@@ -243,7 +234,6 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.WESTBOUND_BUS_ROUTE.id,
-        title: PhysEngFestDefinitions.WESTBOUND_BUS_ROUTE.name,
         url: PhysEngFestDefinitions.WESTBOUND_BUS_ROUTE.url,
         popupComponent: MarkdownPopupComponent,
         visible: true,
@@ -253,7 +243,6 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.WESTBOUND_PEDESTRIAN_PATH.id,
-        title: PhysEngFestDefinitions.WESTBOUND_PEDESTRIAN_PATH.name,
         url: PhysEngFestDefinitions.WESTBOUND_PEDESTRIAN_PATH.url,
         popupComponent: MarkdownPopupComponent,
         visible: true,
@@ -263,7 +252,6 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.WESTBOUND_BUS_DROPOFF.id,
-        title: PhysEngFestDefinitions.WESTBOUND_BUS_DROPOFF.name,
         url: PhysEngFestDefinitions.WESTBOUND_BUS_DROPOFF.url,
         popupComponent: MarkdownWDirectionsPopupComponent,
         visible: true,

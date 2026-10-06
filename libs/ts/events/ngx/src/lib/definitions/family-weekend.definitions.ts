@@ -46,7 +46,6 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: FamilyWeekendDefinitions.FRIDAY_PARKING_LOTS.id,
-    title: FamilyWeekendDefinitions.FRIDAY_PARKING_LOTS.name,
     url: FamilyWeekendDefinitions.FRIDAY_PARKING_LOTS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     visible: false,
@@ -58,7 +57,6 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: FamilyWeekendDefinitions.SATURDAY_PARKING_LOTS.id,
-    title: FamilyWeekendDefinitions.SATURDAY_PARKING_LOTS.name,
     url: FamilyWeekendDefinitions.SATURDAY_PARKING_LOTS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     visible: false,
@@ -70,7 +68,6 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: FamilyWeekendDefinitions.SUNDAY_PARKING_LOTS.id,
-    title: FamilyWeekendDefinitions.SUNDAY_PARKING_LOTS.name,
     url: FamilyWeekendDefinitions.SUNDAY_PARKING_LOTS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     visible: false,

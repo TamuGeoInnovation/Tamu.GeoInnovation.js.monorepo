@@ -26,7 +26,6 @@ export const StudentSelectableColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: StudentSelectableDefinitions.STUDENT_SELECTABLE.id,
-    title: StudentSelectableDefinitions.STUDENT_SELECTABLE.name,
     url: StudentSelectableDefinitions.STUDENT_SELECTABLE.url,
     visible: true,
     listMode: 'show',
