@@ -185,8 +185,8 @@ if (extractDir) {
 if (markdown) {
   const base = process.env.SYMBOL_IMAGE_BASE || '.';
 
-  console.log('| Layer | Symbol | As the service declares it | As the art really is | What the map shows today |');
-  console.log('| --- | --- | --- | --- | --- |');
+  console.log('| Service | Layer | Symbol | As the service declares it | As the art really is | What the map shows today |');
+  console.log('| --- | --- | --- | --- | --- | --- |');
 
   findings.forEach((f) => {
     const file = f.file || slug(f.connection.replace(/Url$/, '') + '-' + f.layerName + (f.label ? '-' + f.label : '')) + '-' + f.declared.width + 'x' + f.declared.height + '.png';
@@ -194,7 +194,7 @@ if (markdown) {
     const corrected = { width: 24, height: Math.round((24 * f.art.height) / f.art.width) };
 
     console.log(
-      `| ${f.layerName} | ${f.label || '(single symbol)'} ` +
+      `| ${f.service.split('/services/')[1].replace(/\/(Feature|Map)Server$/, '')} | ${f.layerName} | ${f.label || '(single symbol)'} ` +
         `| ${f.declared.width}x${f.declared.height} <br><img src="${src}" width="${f.declared.width}" height="${f.declared.height}"> ` +
         `| ${f.art.width}x${f.art.height} <br><img src="${src}" width="${Math.min(f.art.width, 60)}"> ` +
         `| <img src="${src}" width="${corrected.width}" height="${corrected.height}"> |`
