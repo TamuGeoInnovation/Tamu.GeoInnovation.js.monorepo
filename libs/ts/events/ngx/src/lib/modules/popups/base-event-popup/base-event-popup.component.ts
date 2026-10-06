@@ -3,11 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { BaseDirectionsComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
-import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { EventSettingsQuery } from '../../../services/settings/event-settings-query';
 
@@ -21,8 +19,7 @@ export abstract class BaseEventPopupComponent extends BaseDirectionsComponent {
     route: ActivatedRoute,
     plannerService: TripPlannerService,
     analytics: Angulartics2,
-    mapService: EsriMapService,
-    private readonly env: EnvironmentService
+    mapService: EsriMapService
   ) {
     super(router, route, plannerService, analytics, mapService);
   }
@@ -98,7 +95,9 @@ export abstract class BaseEventPopupComponent extends BaseDirectionsComponent {
   private _clearExistingFeatureParams(params: URLSearchParams): void {
     params.delete('feature');
 
-    const searchSources = (this.env.value('SearchSources') || []) as SearchSource[];
+    // The map's own sources as well as the application's, so a campus link's `bldg`/`abbrv` is
+    // cleared before the fresh one is set rather than both ending up in the URL (#1481).
+    const searchSources = this._eventSettingsService.configuredSearchSources();
 
     searchSources.forEach((source) => {
       if (source.urlQueryParam) {

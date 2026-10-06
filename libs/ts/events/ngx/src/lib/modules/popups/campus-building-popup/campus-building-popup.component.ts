@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
@@ -38,10 +37,9 @@ export class CampusBuildingPopupComponent extends BaseEventPopupComponent implem
     route: ActivatedRoute,
     plannerService: TripPlannerService,
     analytics: Angulartics2,
-    mapService: EsriMapService,
-    env: EnvironmentService
+    mapService: EsriMapService
   ) {
-    super(router, route, plannerService, analytics, mapService, env);
+    super(router, route, plannerService, analytics, mapService);
   }
 
   /**
