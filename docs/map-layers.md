@@ -1,8 +1,14 @@
 # How a map decides what its layers look like
 
-A layer's appearance — its symbology, its name, and where it sits in the layer list — comes from the
-service that publishes it. This page is about the cases where it should not, how to override each
-one, and what to write down when you do.
+**The map owner sets the cartography. We render it.**
+
+A layer's appearance — its symbology, its name, and where it sits in the layer list — is the decision
+of whoever publishes the service. Transportation chose those colours; we display them. Our job is to
+be sure we are not breaking what they published, not to improve on it.
+
+That is the whole rule, and it settles almost every question this page could otherwise be about. An
+override is not a design choice we are entitled to make: it is an admission that we could not render
+what the owner published, and it should be read as a defect with a workaround attached.
 
 It exists because the default is being inverted. Until [#1497][1497] the maps drew a flattened copy of
 each symbol and anything better had to be hard-coded; after [#1508][1508] the service is the source in
@@ -54,25 +60,26 @@ leaves the layer alone — the portal item is not consulted at all for it.
 
 ### When it is right
 
-Less often than the 95 overrides in this repository would suggest. Reviewed side by side on 6 October
-2026, **every** service-driven version was judged better than the hard-coded one, and the exception
-list came out empty (#1508).
+**When we cannot render what the owner published.** That is the only reason. Not because their
+symbology looks wrong to us, is inconsistent with another map, or would be clearer another way - those
+are the owner's calls to make, and the place to raise them is with the owner.
 
-That included the case everyone assumed was the exception. The Construction layer replaced the
-service's per-owner colours with a single orange hatch, on the reasoning that a map *about*
-construction wants one construction colour. Looked at properly, the per-owner symbols - SSC, TS, UES,
-TxDOT, Building Projects - are the better map, and the hatch is one more override to remove. An
-argument that sounds right is not evidence; the pictures are.
+The 150th anniversary marker is the shape of a legitimate one: inlined as base64 because the service's
+own image endpoint returned 400. A real technical constraint, written down, removable when the
+endpoint is fixed. Even that turned out to be unnecessary when tested - the Spirit of 150 Week cake
+markers draw from the service perfectly well.
 
-So the honest answer is: **when the service genuinely cannot supply it.** The 150th anniversary marker
-was inlined as base64 because the service's own image endpoint returned 400 - a real constraint, and
-one that can be removed when the endpoint is fixed. Even that one turned out to be redundant when
-tested: the Spirit of 150 Week cake markers draw from the service perfectly well.
+**The aesthetic cases do not survive being looked at.** Reviewed side by side on 6 October 2026, every
+service-driven version was judged better than its hard-coded replacement, and the exception list came
+out empty (#1508). That included the one everybody assumed was the exception: Construction replaced
+the service's per-owner colours with a single orange hatch, on the reasoning that a map *about*
+construction wants one construction colour. It is a persuasive sentence. The per-owner symbols - SSC,
+TS, UES, TxDOT, Building Projects - are the better map, and the argument had survived unexamined in
+#1028 for weeks.
 
-If you think you have a case for the first kind - the map meaning something different from the service
-- capture it both ways and look at the two pictures before deciding. That costs about ten minutes with
-`tools/visual-baselines`, and it is how the Construction assumption was found to be wrong after
-surviving unexamined in #1028 for weeks.
+So before overriding anything: capture it both ways and look at the two pictures. Ten minutes with
+`tools/visual-baselines`. If the answer is still "theirs is wrong", that is a conversation with the
+map owner, not a renderer in a definition file.
 
 ### When it is not right
 
@@ -114,14 +121,14 @@ removing.
 
 ### When it is right
 
-**When the service's name is not a name for a visitor.** Service layers are named by whoever published
-them, sometimes for their own filing rather than for a map — a suffix, an internal code, a plural that
-reads oddly in a list next to others.
+Same answer as symbology: **when the service cannot supply one.** The layer's name is the owner's
+too. A service name that reads badly in a list is a request to the owner to rename it, not a string to
+correct here.
 
-Otherwise prefer the service's. A layer renamed upstream and not here shows a stale name with nothing
-to indicate it is stale, and the two drift apart silently. The Men's Basketball layers were renamed in
-the service and the map kept calling them by their old names until somebody noticed the map was wrong
-([#1431][1431]).
+A layer renamed upstream and not here shows a stale name with nothing to mark it stale, and the two
+drift apart in silence. The Men's Basketball layers were renamed in the service and the map went on
+calling them by their old names until somebody noticed the map was wrong ([#1431][1431]). Overriding
+the name is what made that possible.
 
 ---
 
@@ -165,7 +172,7 @@ same pull request, or the check starts failing for a correct change — see [#15
 
 ## If you do override something
 
-Write down **why**, in the definition, next to the override:
+You are recording a defect, so write it down as one. In the definition, next to the override:
 
 - what the service or portal item could not supply, or what the map means differently;
 - what would let the override be removed — a republished service, a fixed image endpoint;
