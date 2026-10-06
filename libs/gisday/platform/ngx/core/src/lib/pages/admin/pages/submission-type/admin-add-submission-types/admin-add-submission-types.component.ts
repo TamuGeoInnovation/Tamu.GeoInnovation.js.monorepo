@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { SubmissionTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -17,6 +17,7 @@ export const formExporter = () => {
   selector: 'tamu-gisc-admin-add-submission-types',
   templateUrl: './admin-add-submission-types.component.html',
   styleUrls: ['./admin-add-submission-types.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AdminAddSubmissionTypesComponent extends BaseAdminAddComponent<SubmissionType> implements OnInit {

@@ -5,7 +5,7 @@
   </div>
   }
 
-  <tamu-gisc-speaker-avatar [avatarImageUrl]="speaker?.images?.[0]?.path" [fallbackStyle]="'initials'" [avatarInitials]="speakerInitials"></tamu-gisc-speaker-avatar>
+  <tamu-gisc-speaker-avatar [avatarImageUrl]="$safeNavigationMigration(speaker?.images?.[0]?.path)" [fallbackStyle]="'initials'" [avatarInitials]="speakerInitials"></tamu-gisc-speaker-avatar>
 
   <div class="details">
     <div class="name">

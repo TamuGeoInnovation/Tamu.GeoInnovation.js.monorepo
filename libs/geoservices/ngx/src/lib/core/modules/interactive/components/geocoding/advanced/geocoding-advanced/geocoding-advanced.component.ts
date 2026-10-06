@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -24,6 +24,7 @@ import {
   selector: 'tamu-gisc-geocoding-advanced',
   templateUrl: './geocoding-advanced.component.html',
   styleUrls: ['./geocoding-advanced.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GeocodingAdvancedComponent extends GeocodingBasicComponent implements OnInit, OnDestroy {

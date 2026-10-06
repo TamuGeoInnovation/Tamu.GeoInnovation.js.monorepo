@@ -1,11 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { LastMapService } from './last-map.service';
 
-@Component({ selector: 'tamu-gisc-test-page', template: 'page', standalone: false })
+@Component({
+  selector: 'tamu-gisc-test-page',
+  template: 'page',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
+})
 class TestPageComponent {}
 
 /**

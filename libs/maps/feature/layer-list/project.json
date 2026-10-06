@@ -8,11 +8,11 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/layer-list"],
       "options": {
         "jestConfig": "libs/maps/feature/layer-list/jest.config.ts",
         "tsConfig": "libs/maps/feature/layer-list/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/layer-list"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

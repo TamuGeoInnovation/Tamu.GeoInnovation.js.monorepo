@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Observable, filter, map, mergeMap, shareReplay, startWith, toArray } from 'rxjs';
 
@@ -24,6 +24,7 @@ const numberDictionary = {
   selector: 'tamu-gisc-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AboutComponent implements OnInit {

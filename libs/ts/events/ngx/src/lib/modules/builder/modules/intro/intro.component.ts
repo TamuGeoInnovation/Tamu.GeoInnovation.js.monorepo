@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -11,6 +11,7 @@ import { BuilderModuleBaseComponent } from '../builder-module-base/builder-modul
   selector: 'tamu-gisc-intro',
   templateUrl: './intro.component.html',
   styleUrls: ['./intro.component.scss', '../builder-module-base/builder-module-base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class IntroComponent extends BuilderModuleBaseComponent implements OnInit {

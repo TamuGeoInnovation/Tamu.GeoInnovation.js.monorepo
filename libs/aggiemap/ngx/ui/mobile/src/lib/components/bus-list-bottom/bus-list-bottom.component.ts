@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
@@ -7,6 +7,7 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
   selector: 'tamu-gisc-bus-list-bottom',
   templateUrl: './bus-list-bottom.component.html',
   styleUrls: ['./bus-list-bottom.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BusListBottomComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -10,6 +10,7 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
   selector: 'tamu-gisc-trip-planner-directions-mobile',
   templateUrl: './mobile.component.html',
   styleUrls: ['../base/base.component.scss', './mobile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TripPlannerDirectionsMobileComponent extends TripPlannerDirectionsComponent {

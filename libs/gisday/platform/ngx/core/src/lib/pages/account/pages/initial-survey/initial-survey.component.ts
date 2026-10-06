@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 import { Observable, Subject } from 'rxjs';
@@ -11,6 +11,7 @@ import { InitialSurveyQuestion } from '@tamu-gisc/gisday/platform/data-api';
   selector: 'tamu-gisc-initial-survey',
   templateUrl: './initial-survey.component.html',
   styleUrls: ['./initial-survey.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class InitialSurveyComponent implements OnInit, OnDestroy {

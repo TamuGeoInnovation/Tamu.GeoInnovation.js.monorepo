@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { AddressProcessingBasicComponent } from '../../basic/address-processing-basic/address-processing-basic.component';
 
@@ -6,6 +6,7 @@ import { AddressProcessingBasicComponent } from '../../basic/address-processing-
   selector: 'tamu-gisc-address-processing-advanced',
   templateUrl: './address-processing-advanced.component.html',
   styleUrls: ['./address-processing-advanced.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AddressProcessingAdvancedComponent extends AddressProcessingBasicComponent {}

@@ -1,11 +1,11 @@
 import {
   Component,
-  ComponentFactoryResolver,
   ComponentRef,
   HostListener,
   OnDestroy,
   OnInit,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
@@ -20,6 +20,7 @@ import { BasePopupComponent } from '../../components/base/base.component';
   selector: 'tamu-gisc-feature-popup',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PopupComponent implements OnInit, OnDestroy {
@@ -59,8 +60,7 @@ export class PopupComponent implements OnInit, OnDestroy {
 
   constructor(
     private mapService: EsriMapService,
-    private popupService: PopupService,
-    private componentResolver: ComponentFactoryResolver
+    private popupService: PopupService
   ) {}
 
   public ngOnInit() {
@@ -102,17 +102,14 @@ export class PopupComponent implements OnInit, OnDestroy {
 
       this.popupService.showPopup();
 
-      // Resolve component
-      const factory = this.componentResolver.resolveComponentFactory(resolved.component);
-
       // Get reference to the view container (host)
       const container = this.viewHost.viewContainerRef;
 
       // Clear the view container (host)
       container.clear();
 
-      // Create component from resolved component from component factory
-      const resolvedComponent = container.createComponent(factory) as ComponentRef<BasePopupComponent>;
+      // Create the resolved component in the host
+      const resolvedComponent = container.createComponent(resolved.component) as ComponentRef<BasePopupComponent>;
 
       // Pass in feature data to the created component
       // Will only handle a single feature for now.

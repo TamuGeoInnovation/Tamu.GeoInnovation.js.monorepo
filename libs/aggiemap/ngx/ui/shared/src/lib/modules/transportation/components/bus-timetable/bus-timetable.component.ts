@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -15,6 +15,7 @@ import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
   selector: 'tamu-gisc-bus-timetable',
   templateUrl: './bus-timetable.component.html',
   styleUrls: ['./bus-timetable.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BusTimetableComponent implements OnInit {

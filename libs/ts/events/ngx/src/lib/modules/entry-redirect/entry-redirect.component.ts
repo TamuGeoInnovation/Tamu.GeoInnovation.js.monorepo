@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 
 @Component({
   selector: 'tamu-gisc-entry-redirect',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 export class EntryRedirectComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, shareReplay, pluck } from 'rxjs/operators';
 
@@ -10,6 +10,7 @@ import { TimeModeOption, TripPlannerService } from '../../../../services/trip-pl
   selector: 'tamu-gisc-trip-planner-time-picker',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {

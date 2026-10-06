@@ -18,7 +18,7 @@ swallows it and clicking a feature appears to do nothing (#1244). -->
     @if (!configuration?.brandingIconUrl) {
     <tamu-gisc-tamu-block></tamu-gisc-tamu-block>
     } @else {
-    <img class="campus-branding-icon" [src]="configuration?.brandingIconUrl" [alt]="configuration?.applicationName" />
+    <img class="campus-branding-icon" [src]="$safeNavigationMigration(configuration?.brandingIconUrl)" [alt]="$safeNavigationMigration(configuration?.applicationName)" />
     }
     <router-outlet></router-outlet>
     <tamu-gisc-feature-popup></tamu-gisc-feature-popup>

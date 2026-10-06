@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
@@ -20,6 +20,7 @@ import esri = __esri;
   styleUrls: ['./omnisearch.component.scss'],
   animations: [offCanvasSlideInFromBottom, offCanvasSlideUpFromTop],
   providers: [AltSearchHelper],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class OmnisearchComponent implements OnInit, OnDestroy {

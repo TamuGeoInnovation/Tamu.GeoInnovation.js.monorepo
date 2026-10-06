@@ -8,11 +8,11 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/layout"],
       "options": {
         "jestConfig": "libs/ui-kits/ngx/layout/jest.config.ts",
         "tsConfig": "libs/ui-kits/ngx/layout/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/layout"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

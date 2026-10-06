@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { DeepPartial } from 'typeorm';
 import { from, Observable, of } from 'rxjs';
 import { map, pluck, shareReplay, skip, switchMap, toArray } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { ISnapshotPartial } from '@tamu-gisc/cpa/data-api';
   selector: 'tamu-gisc-snapshot-list-item',
   templateUrl: './snapshot-list-item.component.html',
   styleUrls: ['./snapshot-list-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SnapshotListItemComponent implements OnInit {

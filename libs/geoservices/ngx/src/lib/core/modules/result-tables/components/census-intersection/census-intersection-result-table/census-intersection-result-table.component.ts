@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
@@ -10,6 +10,7 @@ import { CensusIntersectionFeatureLabel } from '../../../../../util/dictionaries
   selector: 'tamu-gisc-census-intersection-result-table',
   templateUrl: './census-intersection-result-table.component.html',
   styleUrls: ['./census-intersection-result-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CensusIntersectionResultTableComponent implements OnInit {

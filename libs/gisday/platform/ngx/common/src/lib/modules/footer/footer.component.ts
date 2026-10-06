@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { filter, mergeMap, Observable, switchMap, toArray } from 'rxjs';
 
 import { Place, Season } from '@tamu-gisc/gisday/platform/data-api';
@@ -10,6 +10,7 @@ import { PlaceVisibilityOptions } from '../../enums/place-visibility-options.enu
   selector: 'tamu-gisc-app-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class FooterComponent implements OnInit {

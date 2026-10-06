@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, pipe, Subject } from 'rxjs';
 import { filter, map, pluck, takeUntil } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { ViewerService } from './services/viewer.service';
   selector: 'tamu-gisc-viewer',
   templateUrl: './cpa-ngx-viewer.component.html',
   styleUrls: ['./cpa-ngx-viewer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ViewerComponent implements OnInit, OnDestroy {

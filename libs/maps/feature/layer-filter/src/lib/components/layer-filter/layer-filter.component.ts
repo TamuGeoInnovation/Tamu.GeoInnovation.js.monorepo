@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject, from, combineLatest, of, iif, forkJoin, zip } from 'rxjs';
 import {
   pluck,
@@ -24,6 +24,7 @@ import esri = __esri;
   selector: 'tamu-gisc-layer-filter',
   templateUrl: './layer-filter.component.html',
   styleUrls: ['./layer-filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LayerFilterComponent implements OnInit, OnDestroy {

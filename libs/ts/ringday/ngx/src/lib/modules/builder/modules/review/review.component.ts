@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -12,6 +12,7 @@ import { RingDaySettingsService } from '../../../map/services/settings/ring-day-
   selector: 'tamu-gisc-review',
   templateUrl: './review.component.html',
   styleUrls: ['./review.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReviewComponent implements OnInit {

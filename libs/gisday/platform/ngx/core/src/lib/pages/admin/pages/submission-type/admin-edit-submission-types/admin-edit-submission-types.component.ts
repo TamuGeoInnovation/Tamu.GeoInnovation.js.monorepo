@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SeasonService, SubmissionTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -12,6 +12,7 @@ import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.co
   selector: 'tamu-gisc-admin-edit-submission-types',
   templateUrl: './admin-edit-submission-types.component.html',
   styleUrls: ['./admin-edit-submission-types.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AdminEditSubmissionTypesComponent extends BaseAdminListComponent<SubmissionType> {

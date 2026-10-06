@@ -1,10 +1,11 @@
-import { Component, Input, HostListener } from '@angular/core';
+import { Component, Input, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-sidebar-tab',
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SidebarTabComponent {

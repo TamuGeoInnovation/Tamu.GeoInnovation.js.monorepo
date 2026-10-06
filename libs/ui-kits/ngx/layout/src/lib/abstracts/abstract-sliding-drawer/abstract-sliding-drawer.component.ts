@@ -1,4 +1,4 @@
-import { Component, Input, HostBinding, OnInit } from '@angular/core';
+import { Component, Input, HostBinding, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { slide } from '../../animations/drawer';
 import { AnimationOptions } from '@angular/animations';
@@ -7,6 +7,7 @@ import { AnimationOptions } from '@angular/animations';
   selector: 'tamu-gisc-abstract-sliding-drawer-model',
   template: '',
   animations: [slide],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AbstractSlidingDrawerComponent implements OnInit {

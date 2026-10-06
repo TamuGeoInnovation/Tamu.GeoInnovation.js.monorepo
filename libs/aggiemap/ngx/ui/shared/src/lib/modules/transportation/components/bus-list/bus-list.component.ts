@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -11,6 +11,7 @@ import { groupBy, Group } from '@tamu-gisc/common/utils/collection';
   selector: 'tamu-gisc-bus-list',
   templateUrl: './bus-list.component.html',
   styleUrls: ['./bus-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BusListComponent implements OnInit, OnDestroy {

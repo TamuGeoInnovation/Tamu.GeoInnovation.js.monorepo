@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pipe, withLatestFrom, map, switchMap } from 'rxjs';
@@ -15,6 +15,7 @@ import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-inte
   selector: 'tamu-gisc-reverse-geocoding-basic',
   templateUrl: './reverse-geocoding-basic.component.html',
   styleUrls: ['./reverse-geocoding-basic.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<

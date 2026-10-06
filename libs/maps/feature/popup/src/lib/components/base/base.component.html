@@ -12,7 +12,7 @@
     </thead>
 
     <tbody>
-      @for (prop of data?.attributes | keyvalue; track prop) {
+      @for (prop of $safeNavigationMigration(data?.attributes) | keyvalue; track prop) {
       <tr>
         <td>{{ prop?.key }}</td>
         <td>{{ prop?.value }}</td>

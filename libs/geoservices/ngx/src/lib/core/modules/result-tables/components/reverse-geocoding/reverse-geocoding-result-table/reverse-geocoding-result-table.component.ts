@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { FieldEnumerator, EnumeratorKeyValuePairs } from '@tamu-gisc/common/utils/object';
@@ -10,6 +10,7 @@ import { ReverseGeocodeFieldLabel } from '../../../../../util/dictionaries';
   selector: 'tamu-gisc-reverse-geocoding-result-table',
   templateUrl: './reverse-geocoding-result-table.component.html',
   styleUrls: ['./reverse-geocoding-result-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReverseGeocodingResultTableComponent implements OnInit {

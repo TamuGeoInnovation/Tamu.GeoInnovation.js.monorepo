@@ -13,7 +13,7 @@ import {
   tap,
   toArray
 } from 'rxjs';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { DatatableComponent, TableColumn } from '@swimlane/ngx-datatable';
@@ -22,6 +22,7 @@ import { DatatableComponent, TableColumn } from '@swimlane/ngx-datatable';
   selector: 'tamu-gisc-aggiemap-directory',
   templateUrl: './directory.component.html',
   styleUrls: ['./directory.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class DirectoryComponent implements OnInit {

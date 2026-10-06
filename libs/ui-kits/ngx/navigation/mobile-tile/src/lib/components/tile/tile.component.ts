@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ContentChild, HostListener, OnDestroy } from '@angular/core';
+import { AfterContentInit, Component, ContentChild, HostListener, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 
 import { TileTitleComponent } from '../tile-title/tile-title.component';
@@ -10,6 +10,7 @@ import { TileLinkDirective } from '../../directives/tile-link/tile-link.directiv
   selector: 'tamu-gisc-tile',
   templateUrl: './tile.component.html',
   styleUrls: ['./tile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TileComponent implements AfterContentInit, OnDestroy {

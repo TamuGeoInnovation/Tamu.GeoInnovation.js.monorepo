@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -12,6 +12,7 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
   selector: 'tamu-gisc-trip-planner-parking-options-component',
   templateUrl: './trip-planner-parking-options.component.html',
   styleUrls: ['../../containers/base/base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TripPlannerParkingOptionsComponent extends TripPlannerOptionsBaseComponent {

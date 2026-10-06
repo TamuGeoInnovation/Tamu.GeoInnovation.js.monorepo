@@ -7,7 +7,8 @@ import {
   Output,
   Renderer2,
   SimpleChanges,
-  TemplateRef
+  TemplateRef,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BehaviorSubject, debounceTime, map, Observable, shareReplay, startWith } from 'rxjs';
@@ -23,6 +24,7 @@ import { BehaviorSubject, debounceTime, map, Observable, shareReplay, startWith 
       multi: true
     }
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SelectListComponent<T extends Record<string, unknown>> implements OnInit, OnChanges {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { BasePopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 
@@ -6,6 +6,7 @@ import { BasePopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
   selector: 'tamu-gisc-ring-day-markdown',
   templateUrl: './ring-day-markdown.component.html',
   styleUrls: ['./ring-day-markdown.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class RingDayMarkdownComponent extends BasePopupComponent implements OnInit {

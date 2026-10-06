@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
 import {
   ComponentMode,
@@ -9,6 +9,7 @@ import {
   selector: 'tamu-gisc-interactive-mode-toggle',
   templateUrl: './interactive-mode-toggle.component.html',
   styleUrls: ['./interactive-mode-toggle.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class InteractiveModeToggleComponent {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
@@ -14,6 +14,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   templateUrl: './workshop-builder.component.html',
   styleUrls: ['./workshop-builder.component.scss'],
   providers: [WorkshopService, SnapshotService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WorkshopBuilderComponent implements OnInit {

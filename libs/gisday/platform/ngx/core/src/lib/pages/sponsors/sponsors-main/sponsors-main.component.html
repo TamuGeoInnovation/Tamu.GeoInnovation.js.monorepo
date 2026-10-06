@@ -34,7 +34,7 @@
       <div class="sponsor-list">
         <div class="icon-grid">
           @for (s of rasterSponsors$ | async; track s) {
-          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + ($safeNavigationMigration(s?.logos['0']?.path) | assetUrl | async) + ')' " [title]="s.name"></a></div>
           }
         </div>
       </div>
@@ -52,7 +52,7 @@
       <div class="sponsor-list">
         <div class="icon-grid">
           @for (s of polygonSponsors$ | async; track s) {
-          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + ($safeNavigationMigration(s?.logos['0']?.path) | assetUrl | async) + ')' " [title]="s.name"></a></div>
           }
         </div>
       </div>
@@ -70,7 +70,7 @@
       <div class="sponsor-list">
         <div class="icon-grid">
           @for (s of lineSponsors$ | async; track s) {
-          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + ($safeNavigationMigration(s?.logos['0']?.path) | assetUrl | async) + ')' " [title]="s.name"></a></div>
           }
         </div>
       </div>
@@ -88,7 +88,7 @@
       <div class="sponsor-list">
         <div class="icon-grid">
           @for (s of pointSponsors$ | async; track s) {
-          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + ($safeNavigationMigration(s?.logos['0']?.path) | assetUrl | async) + ')' " [title]="s.name"></a></div>
           }
         </div>
       </div>

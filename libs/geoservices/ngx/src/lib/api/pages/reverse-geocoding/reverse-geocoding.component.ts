@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
 
@@ -6,6 +6,7 @@ import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
   selector: 'tamu-gisc-reverse-geocoding',
   templateUrl: './reverse-geocoding.component.html',
   styleUrls: ['./reverse-geocoding.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReverseGeocodingComponent {

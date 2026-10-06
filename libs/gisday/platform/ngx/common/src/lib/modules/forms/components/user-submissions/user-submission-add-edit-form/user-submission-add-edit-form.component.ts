@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { filter, map, Observable, shareReplay, startWith, Subject, switchMap, take, tap } from 'rxjs';
 
@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: 'tamu-gisc-user-submission-add-edit-form',
   templateUrl: './user-submission-add-edit-form.component.html',
   styleUrls: ['./user-submission-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {

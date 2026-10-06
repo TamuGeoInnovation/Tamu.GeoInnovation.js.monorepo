@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { DatabaseService, DatabaseRecord } from '@tamu-gisc/geoservices/data-acc
   selector: 'tamu-gisc-uploaded',
   templateUrl: './uploaded.component.html',
   styleUrls: ['./uploaded.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class UploadedComponent implements OnInit {

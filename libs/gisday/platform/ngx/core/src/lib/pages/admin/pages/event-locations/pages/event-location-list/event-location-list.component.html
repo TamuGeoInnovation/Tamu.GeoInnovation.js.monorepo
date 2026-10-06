@@ -3,7 +3,7 @@
     <div class="form-section-toolbar">
       <div class="form-section-name">Venues</div>
       <div class="form-section-actions">
-        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="$safeNavigationMigration((selectedSeason$ | async)?.guid)" (changed)="setSeason($event)"></tamu-gisc-select>
         <a routerLink="add">Add venue <span class="material-icons action">add</span></a>
       </div>
     </div>
@@ -26,7 +26,7 @@
         <tbody>
           @for (entity of entities; track entity) {
           <tr class="selectable" [routerLink]="['edit', entity.guid]">
-            <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(entity?.guid)" [checked]="(selectedRows$ | async) | exists: entity?.guid"></tamu-gisc-checkbox></td>
+            <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
             <td>{{entity.building}}</td>
             <td>{{entity.room}}</td>
             <td>{{entity?.place?.name}}</td>

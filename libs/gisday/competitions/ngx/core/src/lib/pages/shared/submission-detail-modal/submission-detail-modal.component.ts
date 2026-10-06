@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
@@ -16,6 +16,7 @@ import esri = __esri;
   selector: 'tamu-gisc-submission-detail-modal',
   templateUrl: './submission-detail-modal.component.html',
   styleUrls: ['./submission-detail-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SubmissionDetailModalComponent implements OnInit {

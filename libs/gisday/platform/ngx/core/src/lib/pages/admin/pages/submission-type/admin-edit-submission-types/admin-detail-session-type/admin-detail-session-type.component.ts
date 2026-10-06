@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -12,6 +12,7 @@ import { formExporter } from '../../admin-add-submission-types/admin-add-submiss
   selector: 'tamu-gisc-admin-detail-session-type',
   templateUrl: './admin-detail-session-type.component.html',
   styleUrls: ['./admin-detail-session-type.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AdminDetailSessionTypeComponent extends BaseAdminDetailComponent<SubmissionType> implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { map, Observable, switchMap } from 'rxjs';
@@ -10,6 +10,7 @@ import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   selector: 'tamu-gisc-sponsors-detail',
   templateUrl: './sponsors-detail.component.html',
   styleUrls: ['./sponsors-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SponsorsDetailComponent implements OnInit {

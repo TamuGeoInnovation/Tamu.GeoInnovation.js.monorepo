@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { filter, pluck, shareReplay, startWith, switchMap, take } from 'rxjs/operators';
@@ -11,6 +11,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   selector: 'tamu-gisc-event-controls',
   templateUrl: './event-controls.component.html',
   styleUrls: ['./event-controls.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EventControlsComponent implements OnInit {

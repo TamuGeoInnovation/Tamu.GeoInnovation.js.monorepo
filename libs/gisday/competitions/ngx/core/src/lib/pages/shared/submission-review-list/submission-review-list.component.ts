@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
@@ -18,6 +18,7 @@ interface SwimlaneNgxDatatableActivateEvent {
   selector: 'tamu-gisc-submission-review-list',
   templateUrl: './submission-review-list.component.html',
   styleUrls: ['./submission-review-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SubmissionReviewListComponent implements OnInit {

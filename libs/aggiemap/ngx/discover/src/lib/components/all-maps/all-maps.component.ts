@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Params, Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
@@ -25,6 +25,7 @@ import { QuickLinkItem } from '../quick-links/quick-links.component';
   selector: 'tamu-gisc-aggiemap-all-maps',
   templateUrl: './all-maps.component.html',
   styleUrls: ['./all-maps.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AllMapsComponent implements OnInit {

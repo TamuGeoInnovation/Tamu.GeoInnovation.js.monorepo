@@ -8,11 +8,11 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/signage"],
       "options": {
         "jestConfig": "libs/signage/jest.config.ts",
         "tsConfig": "libs/signage/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/signage"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { map, Observable } from 'rxjs';
 
@@ -12,6 +12,7 @@ import esri = __esri;
   selector: 'tamu-gisc-layer-list',
   templateUrl: './layer-list.component.html',
   styleUrls: ['./layer-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LayerListComponent implements OnInit {

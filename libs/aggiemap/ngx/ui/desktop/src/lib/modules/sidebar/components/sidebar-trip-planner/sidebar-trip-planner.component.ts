@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
@@ -12,6 +12,7 @@ import esri = __esri;
   selector: 'tamu-gisc-sidebar-trip-planner',
   templateUrl: './sidebar-trip-planner.component.html',
   styleUrls: ['./sidebar-trip-planner.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SidebarTripPlannerComponent {

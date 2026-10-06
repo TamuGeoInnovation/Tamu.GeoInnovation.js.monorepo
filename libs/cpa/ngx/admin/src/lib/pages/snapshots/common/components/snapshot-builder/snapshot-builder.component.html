@@ -61,7 +61,7 @@
 
         <div class="form-section-body" id="configurator-container" dragula="LAYERS" [(dragulaModel)]="builderForm['controls'].layers['controls']">
           @for (controlGroup of builderForm['controls'].layers['controls']; track controlGroup; let i = $index) {
-          <div class="form-collection column layer-configuration" [ngClass]="{ valid: controlGroup?.controls?.url?.value?.length > 0 }">
+          <div class="form-collection column layer-configuration" [ngClass]="{ valid: $safeNavigationMigration(controlGroup?.controls?.url?.value?.length) > 0 }">
             <div class="handle"><span class="material-icons">drag_handle</span></div>
             <div [formGroup]="controlGroup">
               <tamu-gisc-textbox formControlName="url" placeholder="Service Layer URL" type="text" floatLabel="true">

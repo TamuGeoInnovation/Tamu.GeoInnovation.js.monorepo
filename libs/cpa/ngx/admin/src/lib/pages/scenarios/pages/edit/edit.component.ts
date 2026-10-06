@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { pluck } from 'rxjs/operators';
   selector: 'tamu-gisc-edit',
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EditComponent implements OnInit {

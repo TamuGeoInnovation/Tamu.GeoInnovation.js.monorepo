@@ -1,4 +1,13 @@
-import { Component, HostListener, EventEmitter, Output, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  EventEmitter,
+  Output,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BehaviorSubject, of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -54,6 +63,7 @@ import { switchMap } from 'rxjs/operators';
       transition('* <=> *', [animate('.3s ease')])
     ])
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class HamburgerTriggerComponent implements OnChanges {

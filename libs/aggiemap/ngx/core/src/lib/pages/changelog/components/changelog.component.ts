@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { events } from '../changelog-events';
 
@@ -6,6 +6,7 @@ import { events } from '../changelog-events';
   selector: 'tamu-gisc-aggiemap-changelog',
   templateUrl: './changelog.component.html',
   styleUrls: ['./changelog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ChangelogComponent {

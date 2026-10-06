@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { CensusIntersection, CensusYear } from '@tamu-gisc/geoprocessing-v5';
 
@@ -6,6 +6,7 @@ import { CensusIntersection, CensusYear } from '@tamu-gisc/geoprocessing-v5';
   selector: 'tamu-gisc-census-intersection',
   templateUrl: './census-intersection.component.html',
   styleUrls: ['./census-intersection.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CensusIntersectionComponent {

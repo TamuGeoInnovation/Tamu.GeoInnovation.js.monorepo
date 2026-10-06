@@ -32,9 +32,9 @@
         <tbody>
           @for (sub of (presentationSubmissions$ | async); track sub) {
           <tr class="selectable" [routerLink]="['edit', sub.guid]">
-            <td class="title" [title]="sub?.title">{{sub?.title}}</td>
-            <td>{{sub?.submissionType | titlecase}}</td>
-            <td>{{sub?.format | titlecase}}</td>
+            <td class="title" [title]="$safeNavigationMigration(sub?.title)">{{sub?.title}}</td>
+            <td>{{$safeNavigationMigration(sub?.submissionType) | titlecase}}</td>
+            <td>{{$safeNavigationMigration(sub?.format) | titlecase}}</td>
             <td class="status" [ngClass]="{'clr-md-amber-800': (sub | submissionReviewStatus) === SubmissionReviewStatus.InReview, 'clr-md-green-600': (sub | submissionReviewStatus) === SubmissionReviewStatus.Accepted, 'clr-md-red-500': (sub | submissionReviewStatus) === SubmissionReviewStatus.Rejected}">{{sub | submissionReviewStatus}}</td>
           </tr>
           }

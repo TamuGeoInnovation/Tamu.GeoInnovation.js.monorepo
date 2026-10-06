@@ -8,11 +8,11 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/ues/common/ngx"],
       "options": {
         "jestConfig": "libs/ues/common/ngx/jest.config.ts",
         "tsConfig": "libs/ues/common/ngx/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/ues/common/ngx"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

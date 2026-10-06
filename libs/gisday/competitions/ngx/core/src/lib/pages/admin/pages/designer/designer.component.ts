@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions/data-api';
 
@@ -6,6 +6,7 @@ import { ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions/d
   selector: 'tamu-gisc-designer',
   templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class DesignerComponent {

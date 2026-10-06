@@ -168,7 +168,7 @@
     <tamu-gisc-accordion-header>Input Parameters</tamu-gisc-accordion-header>
     <tamu-gisc-accordion-content>
       <p>The following table displays the input parameters (including defaults) that were used to process the query. These are helpful to know when debugging a response.</p>
-      <tamu-gisc-geocode-input-parameters [parameters]="res?.data?.inputParameterSet"></tamu-gisc-geocode-input-parameters>
+      <tamu-gisc-geocode-input-parameters [parameters]="$safeNavigationMigration(res?.data?.inputParameterSet)"></tamu-gisc-geocode-input-parameters>
     </tamu-gisc-accordion-content>
   </tamu-gisc-accordion>
   @for (result of res?.data?.results; track result; let last = $last; let i = $index) {
@@ -185,9 +185,9 @@
       <tamu-gisc-census-intersection-result-tabs [censusRecords]="result.censusRecords"></tamu-gisc-census-intersection-result-tabs>
       }
       <h4 class="leader-2">Parsed Address</h4>
-      <tamu-gisc-parsed-address-result-table [address]="result?.matchedAddress" [type]="'expanded'"></tamu-gisc-parsed-address-result-table>
+      <tamu-gisc-parsed-address-result-table [address]="$safeNavigationMigration(result?.matchedAddress)" [type]="'expanded'"></tamu-gisc-parsed-address-result-table>
       <h4 class="leader-2">Reference Feature</h4>
-      <tamu-gisc-geocode-matched-reference-feature-table [matchedFeature]="result?.referenceFeature"></tamu-gisc-geocode-matched-reference-feature-table>
+      <tamu-gisc-geocode-matched-reference-feature-table [matchedFeature]="$safeNavigationMigration(result?.referenceFeature)"></tamu-gisc-geocode-matched-reference-feature-table>
     </tamu-gisc-accordion-content>
   </tamu-gisc-accordion>
   }

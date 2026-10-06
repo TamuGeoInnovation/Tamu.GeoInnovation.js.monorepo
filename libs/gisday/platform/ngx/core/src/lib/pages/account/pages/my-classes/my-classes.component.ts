@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { map, shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -11,6 +11,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   selector: 'tamu-gisc-my-classes',
   templateUrl: './my-classes.component.html',
   styleUrls: ['./my-classes.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MyClassesComponent implements OnInit {

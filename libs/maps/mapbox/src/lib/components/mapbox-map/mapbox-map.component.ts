@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MapboxOptions, Map } from 'mapbox-gl';
 
@@ -8,6 +8,7 @@ import { MapboxMapService } from '../../services/mapbox-map.service';
   selector: 'tamu-gisc-mapbox-map',
   templateUrl: './mapbox-map.component.html',
   styleUrls: ['./mapbox-map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MapboxMapComponent implements OnInit {

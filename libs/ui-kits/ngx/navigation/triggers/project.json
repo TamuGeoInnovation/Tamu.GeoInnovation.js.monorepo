@@ -8,11 +8,11 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/navigation/triggers"],
       "options": {
         "jestConfig": "libs/ui-kits/ngx/navigation/triggers/jest.config.ts",
         "tsConfig": "libs/ui-kits/ngx/navigation/triggers/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/navigation/triggers"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

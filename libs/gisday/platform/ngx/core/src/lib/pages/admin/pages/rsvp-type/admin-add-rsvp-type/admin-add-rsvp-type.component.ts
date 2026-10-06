@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { RsvpTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -17,6 +17,7 @@ export const formExporter = () => {
   selector: 'tamu-gisc-admin-add-rsvp-type',
   templateUrl: './admin-add-rsvp-type.component.html',
   styleUrls: ['./admin-add-rsvp-type.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AdminAddRsvpTypeComponent extends BaseAdminAddComponent<RsvpType> implements OnInit {

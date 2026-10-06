@@ -5,7 +5,7 @@
 @if (data?.attributes?.description) {
 <div class="popup-section">
   @if (data?.attributes?.description) {
-  <p class="trailer-1" [innerHTML]="data.attributes?.description"></p>
+  <p class="trailer-1" [innerHTML]="$safeNavigationMigration(data.attributes?.description)"></p>
   }
 </div>
 } @if (shareUrl) {

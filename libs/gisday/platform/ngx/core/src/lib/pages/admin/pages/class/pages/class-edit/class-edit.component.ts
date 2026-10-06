@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, forkJoin, of, switchMap, tap } from 'rxjs';
@@ -12,6 +12,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   selector: 'tamu-gisc-class-edit',
   templateUrl: './class-edit.component.html',
   styleUrls: ['./class-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ClassEditComponent implements OnInit {

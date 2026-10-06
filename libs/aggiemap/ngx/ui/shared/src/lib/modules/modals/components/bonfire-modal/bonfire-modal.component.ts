@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
@@ -6,6 +6,7 @@ import { ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
   selector: 'tamu-gisc-bonfire-modal',
   templateUrl: './bonfire-modal.component.html',
   styleUrls: ['./bonfire-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BonfireModalComponent {

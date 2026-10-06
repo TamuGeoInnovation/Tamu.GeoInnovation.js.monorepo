@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject, delay, filter, map, merge, of, startWith, switchMap } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -15,6 +15,7 @@ import { RevivalModalComponent } from '../modals/revival-modal/revival-modal.com
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   animations: [growAnimationBuilder(250)],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class HeaderComponent implements OnInit {

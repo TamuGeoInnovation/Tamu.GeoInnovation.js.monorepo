@@ -9,6 +9,8 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath.base}"],
+      "defaultConfiguration": "",
       "options": {
         "outputPath": {
           "base": "dist/apps/cpa-angular",
@@ -91,12 +93,11 @@
             }
           ]
         }
-      },
-      "outputs": ["{options.outputPath.base}"],
-      "defaultConfiguration": ""
+      }
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "continuous": true,
       "options": {
         "host": "0.0.0.0",
         "buildTarget": "cpa-angular:build"
@@ -108,8 +109,7 @@
         "development": {
           "buildTarget": "cpa-angular:build:development"
         }
-      },
-      "continuous": true
+      }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -119,11 +119,11 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/cpa-angular"],
       "options": {
         "jestConfig": "apps/cpa-angular/jest.config.ts",
         "tsConfig": "apps/cpa-angular/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/apps/cpa-angular"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

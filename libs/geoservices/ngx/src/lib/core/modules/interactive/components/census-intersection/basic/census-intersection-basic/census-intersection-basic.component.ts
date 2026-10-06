@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pipe, withLatestFrom, map, switchMap } from 'rxjs';
@@ -21,6 +21,7 @@ import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
   selector: 'tamu-gisc-census-intersection-basic',
   templateUrl: './census-intersection-basic.component.html',
   styleUrls: ['./census-intersection-basic.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessingComponent<

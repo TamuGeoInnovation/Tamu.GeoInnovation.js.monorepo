@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -15,6 +15,7 @@ import esri = __esri;
   selector: 'tamu-gisc-basemap-gallery',
   templateUrl: './basemap-gallery.component.html',
   styleUrls: ['./basemap-gallery.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BasemapGalleryComponent implements OnInit {

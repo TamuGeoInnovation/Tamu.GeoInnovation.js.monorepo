@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,6 +20,7 @@ import { formToFormData } from '../../../../../utils/form-to-form-data';
   selector: 'tamu-gisc-speaker-add-edit-form',
   templateUrl: './speaker-add-edit-form.component.html',
   styleUrls: ['./speaker-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SpeakerAddEditFormComponent implements OnInit {

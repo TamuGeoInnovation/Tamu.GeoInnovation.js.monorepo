@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { switchMap, takeUntil, pluck } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
   selector: 'tamu-gisc-trip-planner-bottom',
   templateUrl: './trip-planner-bottom.component.html',
   styleUrls: ['./trip-planner-bottom.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TripPlannerBottomComponent implements OnInit, OnDestroy {

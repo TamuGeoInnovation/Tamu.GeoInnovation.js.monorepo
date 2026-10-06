@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { TripResult } from '../../../../core/trip-planner-core';
 import { TripModeSwitch, TripPlannerService } from '../../../../services/trip-planner.service';
@@ -8,6 +8,7 @@ import { BusService } from '../../../../services/transportation/bus/bus.service'
   selector: 'tamu-gisc-trip-planner-mode-switch',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TripPlannerModeSwitchComponent implements OnInit {

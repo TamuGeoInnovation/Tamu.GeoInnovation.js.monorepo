@@ -46,7 +46,7 @@
       </tamu-gisc-tab>
     </tamu-gisc-tabs>
     <div class="flex flex-row">
-      <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToAdvanced(res)"></tamu-gisc-interactive-response-metadata>
+      <tamu-gisc-interactive-response-metadata [status]="$safeNavigationMigration(res?.message)" [guid]="$safeNavigationMigration(res?.data?.transactionGuid)" [timeTaken]="$safeNavigationMigration(res?.data?.timeTaken)" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToAdvanced(res)"></tamu-gisc-interactive-response-metadata>
     </div>
   </div>
   } }

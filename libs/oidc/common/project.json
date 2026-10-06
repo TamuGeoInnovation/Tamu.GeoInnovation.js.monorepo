@@ -10,10 +10,10 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/oidc/common"],
       "options": {
         "jestConfig": "libs/oidc/common/jest.config.ts"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/oidc/common"]
+      }
     }
   }
 }

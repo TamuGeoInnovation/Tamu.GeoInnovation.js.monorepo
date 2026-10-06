@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { AuthService } from '@auth0/auth0-angular';
 
@@ -6,6 +6,7 @@ import { AuthService } from '@auth0/auth0-angular';
   selector: 'tamu-gisc-callback',
   templateUrl: './callback.component.html',
   styleUrls: ['./callback.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CallbackComponent {

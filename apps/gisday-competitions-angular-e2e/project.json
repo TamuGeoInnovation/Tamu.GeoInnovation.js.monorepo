@@ -8,14 +8,14 @@
   "targets": {
     "e2e": {
       "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/gisday-competitions-angular-e2e/cypress.json",
+        "devServerTarget": "gisday-competitions-angular:serve"
+      },
       "configurations": {
         "production": {
           "devServerTarget": "gisday-competitions-angular:serve:production"
         }
-      },
-      "options": {
-        "cypressConfig": "apps/gisday-competitions-angular-e2e/cypress.json",
-        "devServerTarget": "gisday-competitions-angular:serve"
       }
     },
     "lint": {

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ComponentFactoryResolver, ViewChild, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, from, of } from 'rxjs';
 import { switchMap, filter, toArray, take, shareReplay, find, pluck } from 'rxjs/operators';
@@ -73,7 +73,6 @@ export class TripPlannerOptionsComponent implements OnInit {
     private plannerService: TripPlannerService,
     private testingService: TestingService,
     private componentService: TripPlannerOptionsComponentService,
-    private componentResolver: ComponentFactoryResolver,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -109,19 +108,16 @@ export class TripPlannerOptionsComponent implements OnInit {
       return;
     }
 
-    // Resolve component
-    const factory = this.componentResolver.resolveComponentFactory<
-      TripPlannerParkingOptionsComponent | TripPlannerBikingOptionsComponent
-    >(component);
-
     // Get reference to the view container (host)
     const container = this.viewHost.viewContainerRef;
 
     // Clear the view container (host)
     container.clear();
 
-    // Create component from resolved component from component factory
-    const resolvedComponent = container.createComponent(factory);
+    // Create the resolved component in the host
+    const resolvedComponent = container.createComponent<
+      TripPlannerParkingOptionsComponent | TripPlannerBikingOptionsComponent
+    >(component);
 
     // Pass in feature data to the created component
     // Will only handle a single feature for now.

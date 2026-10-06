@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 
@@ -11,6 +11,7 @@ import { baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation }
   styleUrls: ['./tile-navigation.component.scss'],
   providers: [TileService],
   animations: [baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TileNavigationComponent implements OnInit, OnDestroy {

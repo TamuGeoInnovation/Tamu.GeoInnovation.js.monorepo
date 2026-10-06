@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, mergeMap, Observable, take, withLatestFrom } from 'rxjs';
 
@@ -9,6 +9,7 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
   selector: 'tamu-gisc-bus-timetable-bottom',
   templateUrl: './bus-timetable-bottom.component.html',
   styleUrls: ['./bus-timetable-bottom.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BusTimetableBottomComponent implements OnInit, OnDestroy {

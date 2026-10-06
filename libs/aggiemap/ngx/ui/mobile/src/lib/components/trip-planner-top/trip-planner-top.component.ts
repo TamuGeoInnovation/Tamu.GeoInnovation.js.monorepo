@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { fromEventPattern, Observable, pipe, Subject } from 'rxjs';
 import { switchMap, takeUntil, pluck, map } from 'rxjs/operators';
@@ -16,6 +16,7 @@ import esri = __esri;
   templateUrl: './trip-planner-top.component.html',
   styleUrls: ['./trip-planner-top.component.scss'],
   animations: [offCanvasSlideUpFromTop],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TripPlannerTopComponent implements OnInit, OnDestroy {

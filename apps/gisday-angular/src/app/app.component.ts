@@ -1,4 +1,4 @@
-import { Component, ViewContainerRef } from '@angular/core';
+import { Component, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
 
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
 
@@ -8,6 +8,7 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
   selector: 'tamu-gisc-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AppComponent {

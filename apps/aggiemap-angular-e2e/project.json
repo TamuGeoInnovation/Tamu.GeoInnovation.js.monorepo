@@ -8,14 +8,14 @@
   "targets": {
     "e2e": {
       "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/aggiemap-angular-e2e/cypress.json",
+        "devServerTarget": "aggiemap-angular:serve"
+      },
       "configurations": {
         "production": {
           "devServerTarget": "aggiemap-angular:serve:production"
         }
-      },
-      "options": {
-        "cypressConfig": "apps/aggiemap-angular-e2e/cypress.json",
-        "devServerTarget": "aggiemap-angular:serve"
       }
     },
     "lint": {

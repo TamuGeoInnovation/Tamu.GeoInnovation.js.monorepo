@@ -10,10 +10,10 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/cpa/common/entities"],
       "options": {
         "jestConfig": "libs/cpa/common/entities/jest.config.ts"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/cpa/common/entities"]
+      }
     }
   }
 }

@@ -1,4 +1,13 @@
-import { Component, ElementRef, Input, OnChanges, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  AfterViewInit,
+  ViewChild,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 import { AccordionService } from '../services/accordion.service';
 import { IAccordionModel } from '../services/accordion.service';
@@ -7,6 +16,7 @@ import { IAccordionModel } from '../services/accordion.service';
   selector: 'tamu-gisc-accordion-content',
   templateUrl: './accordion-content.component.html',
   styleUrls: ['./accordion-content.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AccordionContentComponent implements OnChanges, OnDestroy, AfterViewInit {

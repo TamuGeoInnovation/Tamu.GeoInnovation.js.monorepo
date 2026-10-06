@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 
@@ -16,6 +16,7 @@ import {
   selector: 'tamu-gisc-review',
   templateUrl: './review.component.html',
   styleUrls: ['./review.component.scss', '../builder-module-base/builder-module-base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReviewComponent implements OnInit {

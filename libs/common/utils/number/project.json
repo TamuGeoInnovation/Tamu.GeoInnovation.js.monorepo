@@ -7,10 +7,10 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/common/utils/number"],
       "options": {
         "jestConfig": "libs/common/utils/number/jest.config.ts"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/common/utils/number"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"
