@@ -62,9 +62,25 @@ image="mcr.microsoft.com/playwright:v${pw_version}-noble"
 export MSYS_NO_PATHCONV=1
 mount=$(pwd -W 2>/dev/null || pwd)
 
+# A capture of the local dev server shares that container's network, so the browser reaches it on
+# `localhost` - the address the Angular dev server and the dining API's CORS allowlist accept.
+# Without it, `localhost` inside the capture container is the capture container. `run-local.sh`
+# reaches the same server the same way.
+network_args=()
+case "$url" in
+  *//localhost* | *//127.0.0.1*)
+    if ! docker ps --format '{{.Names}}' | grep -qx aggiemap-dev; then
+      echo "No aggiemap-dev container is running, so $url is not reachable from the capture." >&2
+      echo "Start the dev server first (CLAUDE.md, Fixing a bug quickly)." >&2
+      exit 2
+    fi
+    network_args=(--network container:aggiemap-dev)
+    ;;
+esac
+
 echo "Capturing $url -> $output${selector:+ (clipped to $selector)}"
 
-docker run --rm -i \
+docker run --rm -i ${network_args[@]+"${network_args[@]}"} \
   -v "$mount:/work" -w /work \
   -e CAPTURE_URL="$url" -e CAPTURE_OUTPUT="$output" -e CAPTURE_SELECTOR="$selector" -e CAPTURE_WAIT="$wait_ms" \
   "$image" node -e '
