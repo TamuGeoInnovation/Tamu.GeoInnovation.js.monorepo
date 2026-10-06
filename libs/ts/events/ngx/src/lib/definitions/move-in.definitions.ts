@@ -176,19 +176,7 @@ export const MoveInColdLayerSources: LayerSource[] = [
     // No base definition expression: the selected-hall effect sets it directly. Keeping it off
     // `native` avoids `generateLayer`'s native-overrides-top-level behavior so the effect applies.
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [24, 255, 255, 0.75],
-          outline: {
-            color: [24, 255, 255, 1],
-            width: '3px'
-          }
-        }
-      }
+      outFields: ['*']
     }
   },
   {

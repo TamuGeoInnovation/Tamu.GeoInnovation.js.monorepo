@@ -31,64 +31,16 @@ const eventUrl = Connections.physicsFestUrl;
 
 type AutoCastSimpleLineSymbol = { type: 'simple-line' } & esri.SimpleLineSymbolProperties;
 
-const GREEN_PATH_ARROW_SYMBOL: AutoCastSimpleLineSymbol = {
-  type: 'simple-line',
-  color: 'rgb(56, 168, 0)',
-  width: 2,
-  marker: {
-    type: 'line-marker',
-    style: 'arrow',
-    color: 'rgb(56, 168, 0)',
-    placement: 'end'
-  }
-};
-
-const EASTBOUND_BUS_ROUTE_ARROW_SYMBOL: AutoCastSimpleLineSymbol = {
-  type: 'simple-line',
-  color: 'blue',
-  width: 3.5,
-  marker: {
-    type: 'line-marker',
-    style: 'arrow',
-    color: 'blue',
-    placement: 'end'
-  }
-};
-
-const WESTBOUND_BUS_ROUTE_ARROW_SYMBOL: AutoCastSimpleLineSymbol = {
-  type: 'simple-line',
-  color: 'red',
-  width: 3.5,
-  marker: {
-    type: 'line-marker',
-    style: 'arrow',
-    color: 'red',
-    placement: 'end'
-  }
-};
-
 const GREEN_ARROW_LINE_NATIVE: NonNullable<FeatureLayerSourceProperties['native']> = {
-  outFields: ['*'],
-  renderer: {
-    type: 'simple',
-    symbol: GREEN_PATH_ARROW_SYMBOL
-  }
+  outFields: ['*']
 };
 
 const EASTBOUND_BUS_ROUTE_LINE_NATIVE: NonNullable<FeatureLayerSourceProperties['native']> = {
-  outFields: ['*'],
-  renderer: {
-    type: 'simple',
-    symbol: EASTBOUND_BUS_ROUTE_ARROW_SYMBOL
-  }
+  outFields: ['*']
 };
 
 const WESTBOUND_BUS_ROUTE_LINE_NATIVE: NonNullable<FeatureLayerSourceProperties['native']> = {
-  outFields: ['*'],
-  renderer: {
-    type: 'simple',
-    symbol: WESTBOUND_BUS_ROUTE_ARROW_SYMBOL
-  }
+  outFields: ['*']
 };
 
 export const PhysEngFestDefinitions = {

@@ -16,32 +16,6 @@ const eventUrl = Connections.contractorParkingUrl;
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
 
-const contractorAndContractorPlusRenderer: FeatureRenderer = {
-  type: 'simple',
-  symbol: {
-    type: 'simple-fill',
-    color: [90, 0, 0, 255],
-    outline: {
-      type: 'simple-line',
-      color: [0, 0, 0, 0],
-      width: 0
-    }
-  }
-};
-
-const contractorPlusOnlyRenderer: FeatureRenderer = {
-  type: 'simple',
-  symbol: {
-    type: 'simple-fill',
-    color: [232, 190, 255, 255],
-    outline: {
-      type: 'simple-line',
-      color: [0, 0, 0, 0],
-      width: 0
-    }
-  }
-};
-
 export const ContractorParkingDefinitions = {
   CONTRACTOR_AND_CONTRACTOR_PLUS: {
     id: CONTRACTOR_PARKING_LAYERS.CONTRACTOR_AND_CONTRACTOR_PLUS,
@@ -78,9 +52,8 @@ export const ContractorParkingColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*'],
-      definitionExpression: `"GIS.TS.Lot_Use.Construct_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface')`,
-      renderer: contractorAndContractorPlusRenderer
-    }
+      definitionExpression: `"GIS.TS.Lot_Use.Construct_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface')`
+}
   },
   {
     type: 'feature',
@@ -102,9 +75,8 @@ export const ContractorParkingColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*'],
-      definitionExpression: `"GIS.TS.Lot_Use.Construct_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage Visitor')`,
-      renderer: contractorPlusOnlyRenderer
-    }
+      definitionExpression: `"GIS.TS.Lot_Use.Construct_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage Visitor')`
+}
   }
 ];
 

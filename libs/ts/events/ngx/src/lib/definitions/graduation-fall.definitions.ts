@@ -8,7 +8,6 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { commonSymbols } from './common.definitions';
 
 import esri = __esri;
 
@@ -48,67 +47,6 @@ const GraduationEventDefinitions = {
     url: `${eventUrl}/2`
   }
 };
-
-const graduationParkingRenderer = {
-  type: 'unique-value',
-  field: 'Type',
-  uniqueValueInfos: [
-    {
-      value: 'Free Public Parking',
-      label: 'Free Public Parking',
-      symbol: {
-        type: 'simple-fill',
-        color: [95, 138, 232, 255],
-        outline: {
-          type: 'simple-line',
-          color: [94, 52, 234, 255],
-          width: 1
-        }
-      } as unknown as esri.SymbolProperties
-    },
-    {
-      value: 'Reserved',
-      label: 'Reserved',
-      symbol: {
-        type: 'simple-fill',
-        color: [242, 160, 97, 255],
-        outline: {
-          type: 'simple-line',
-          color: [230, 124, 0, 255],
-          width: 1
-        }
-      } as unknown as esri.SymbolProperties
-    },
-    {
-      value: 'Reserved - Accessible',
-      label: 'Reserved',
-      symbol: {
-        type: 'simple-fill',
-        color: [242, 160, 97, 255],
-        outline: {
-          type: 'simple-line',
-          color: [230, 124, 0, 255],
-          width: 1
-        }
-      } as unknown as esri.SymbolProperties
-    }
-  ]
-} as unknown as esri.UniqueValueRendererProperties;
-
-const graduationRoadClosureRenderer = {
-  type: 'simple',
-  label: 'Road Closed (Pedestrian Zone)',
-  symbol: {
-    type: 'simple-fill',
-    style: 'backward-diagonal',
-    color: [230, 0, 0, 255],
-    outline: {
-      type: 'simple-line',
-      color: [230, 0, 0, 255],
-      width: 1
-    }
-  }
-} as unknown as esri.SimpleRendererProperties;
 
 const graduationParkingLabelingInfo = [
   {
@@ -165,14 +103,6 @@ export const GraduationColdLayerSources: LayerSource[] = [
     layerIndex: 12,
     native: {
       outFields: ['*'],
-      renderer: {
-        type: 'simple',
-        label: 'Traffic Flow',
-        symbol: {
-          ...commonSymbols.GREEN_ARROW,
-          width: 3
-        }
-      } as unknown as esri.SimpleRendererProperties
     } as unknown as FeatureNative
   },
   {
@@ -191,7 +121,6 @@ export const GraduationColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       definitionExpression: `Type <> 'Closure'`,
-      renderer: graduationParkingRenderer,
       labelingInfo: graduationParkingLabelingInfo
     } as unknown as FeatureNative
   },
@@ -210,9 +139,8 @@ export const GraduationColdLayerSources: LayerSource[] = [
     layerIndex: 11,
     native: {
       outFields: ['*'],
-      definitionExpression: `Type = 'Closure'`,
-      renderer: graduationRoadClosureRenderer
-    } as unknown as FeatureNative
+      definitionExpression: `Type = 'Closure'`
+} as unknown as FeatureNative
   }
 ];
 

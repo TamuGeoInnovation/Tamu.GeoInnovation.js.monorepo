@@ -77,33 +77,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'Route',
-        uniqueValueInfos: [
-          {
-            value: '13',
-            label: 'East Bus Stops',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/transportation/Bus-Blue.png',
-              width: '24px',
-              height: '32px'
-            } as unknown as esri.PictureMarkerSymbolProperties
-          },
-          {
-            value: '12',
-            label: 'West Bus Stops',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/transportation/Bus-Red.png',
-              width: '24px',
-              height: '32px'
-            } as unknown as esri.PictureMarkerSymbolProperties
-          }
-        ]
-      }
+      outFields: ['*']
     }
   },
   {
@@ -114,43 +88,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'RouteName',
-        uniqueValueInfos: [
-          {
-            value: 'Aggieland Saturday E',
-            label: 'East Route',
-            symbol: {
-              type: 'simple-line',
-              color: 'blue',
-              width: 3.5,
-              marker: {
-                type: 'line-marker',
-                style: 'arrow',
-                color: 'blue',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          },
-          {
-            value: 'Aggieland Saturday W',
-            label: 'West Route',
-            symbol: {
-              type: 'simple-line',
-              color: 'red',
-              width: 3.5,
-              marker: {
-                type: 'line-marker',
-                style: 'arrow',
-                color: 'red',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          }
-        ]
-      }
+      outFields: ['*']
     }
   },
   {
@@ -166,53 +104,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'Type',
-        uniqueValueInfos: [
-          {
-            value: 'Dining',
-            label: 'Dining',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/shops-food/Dining.png',
-              width: '24px',
-              height: '32px'
-            } as unknown as esri.PictureMarkerSymbolProperties
-          },
-          {
-            value: 'Performance',
-            label: 'Performance',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/fixtures/Theater.png',
-              width: '24px',
-              height: '32px'
-            } as unknown as esri.PictureMarkerSymbolProperties
-          },
-          {
-            value: 'Shopping',
-            label: 'Shopping',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/shops-food/Store.png',
-              width: '24px',
-              height: '32px'
-            } as unknown as esri.PictureMarkerSymbolProperties
-          },
-          {
-            value: 'Bus Parking',
-            label: 'Bus Parking',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/hazards/Hazard.png',
-              width: '24px',
-              height: '32px'
-            } as unknown as esri.PictureMarkerSymbolProperties
-          }
-        ]
-      }
+      outFields: ['*']
     }
   }
 ];

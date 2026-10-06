@@ -22,16 +22,7 @@ const fireSchoolUrl = Connections.fireSchoolUrl;
 // green and add the arrowhead. The symbol field is an AutoCastSymbols intersection, so the whole
 // native object is cast rather than the individual symbol.
 const preferredRouteNative = {
-  outFields: ['*'],
-  renderer: {
-    type: 'simple',
-    symbol: {
-      type: 'simple-line',
-      color: [38, 115, 0, 255],
-      width: 2,
-      marker: { type: 'line-marker', style: 'arrow', color: [38, 115, 0, 255], placement: 'end' }
-    }
-  }
+  outFields: ['*']
 } as unknown as NonNullable<FeatureLayerSourceProperties['native']>;
 
 // The Road Closures layer uses a backward-diagonal red hatch fill, which the ArcGIS legend does not

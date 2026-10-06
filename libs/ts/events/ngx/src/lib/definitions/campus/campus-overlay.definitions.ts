@@ -21,16 +21,5 @@ import { commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
 export const campusClickOverlayNative: FeatureLayerSourceProperties['native'] = {
   ...commonLayerProps,
   legendEnabled: false,
-  labelsVisible: false,
-  renderer: {
-    type: 'simple',
-    symbol: {
-      type: 'simple-fill',
-      style: 'solid',
-      color: [0, 0, 0, 0.01],
-      outline: {
-        width: '0'
-      }
-    }
-  }
+  labelsVisible: false
 };

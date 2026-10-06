@@ -18,43 +18,13 @@ export enum BEEF_CATTLE_LAYERS {
 
 const beefCattleUrl = Connections.beefCattleUrl;
 
-// Hash of the Alert picture-marker symbol (from the published renderer's `url`). Used to pull the
-// icon straight from the service image endpoint so we can re-render it at its natural aspect ratio.
-const ALERT_ICON_HASH = '3448d484ba8d748c96952fed64ae5bc2';
-
 // Routes are directional, so each is rendered with an arrowhead at the end of the line to show the
 // direction of travel. The published service distinguishes two route destinations on the `edited`
 // field — keep both colors (green = routes to the Outside Exhibits, blue = routes to the
 // Loading/Unloading Zones). The symbol field is an AutoCastSymbols intersection, so the whole native
 // object is cast rather than the individual symbols.
 const routesNative = {
-  outFields: ['*'],
-  renderer: {
-    type: 'unique-value',
-    field: 'edited',
-    uniqueValueInfos: [
-      {
-        value: 'Outside Exhibits',
-        label: 'To Outside Exhibits',
-        symbol: {
-          type: 'simple-line',
-          color: [38, 115, 0, 255],
-          width: 2,
-          marker: { type: 'line-marker', style: 'arrow', color: [38, 115, 0, 255], placement: 'end' }
-        }
-      },
-      {
-        value: 'Unloading Zones',
-        label: 'To Loading/Unloading Zones',
-        symbol: {
-          type: 'simple-line',
-          color: [0, 112, 255, 255],
-          width: 2,
-          marker: { type: 'line-marker', style: 'arrow', color: [0, 112, 255, 255], placement: 'end' }
-        }
-      }
-    ]
-  }
+  outFields: ['*']
 } as unknown as NonNullable<FeatureLayerSourceProperties['native']>;
 
 // The published Alert symbol is a 32x40 (0.8 ratio) pin forced into a 25x25 square, which stretches
@@ -62,17 +32,7 @@ const routesNative = {
 // service's image endpoint by hash. Overriding the on-map renderer is required to de-stretch the
 // symbol on the map, or a `legend` override alone only resizes the legend swatch.
 const alertNative = {
-  outFields: ['*'],
-  renderer: {
-    type: 'simple',
-    symbol: {
-      type: 'picture-marker',
-      url: `${beefCattleUrl}/0/images/${ALERT_ICON_HASH}`,
-      width: 24,
-      height: 30,
-      yoffset: 12
-    }
-  }
+  outFields: ['*']
 } as unknown as NonNullable<FeatureLayerSourceProperties['native']>;
 
 // The No Parking Zones layer uses a backward-diagonal red hatch fill, which the ArcGIS legend does

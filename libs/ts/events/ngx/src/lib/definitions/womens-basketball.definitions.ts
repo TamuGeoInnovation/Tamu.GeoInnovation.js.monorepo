@@ -17,29 +17,6 @@ export enum WOMENS_BASKETBALL_LAYERS {
 
 const eventUrl = Connections.womensBasketballUrl;
 
-/**
- * The hosted view publishes the symbol layer with a plain dot renderer, so this map's art has to
- * live on the client — this is the image the legacy `TS_Events/TracSocSoftSwimVollWbask` map service drew.
- */
-const ACCESSIBLE_PARKING_IMAGE_DATA =
-  'iVBORw0KGgoAAAANSUhEUgAAABsAAAAbCAYAAACN1PRVAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACzUlEQVRIieWVe0hTURzHv1t36rRZ05WpMH' +
-  'toSaRIJaloptHDQDN6kD0gpDCSYEUgSUH9EWWBSmH0sH/CkrSECBTzESLhi2yFKx8zG+ZjppPNvdzcTuwE0bQ7bltG0BcO53LO7/4+/O75/u5h' +
-  '8BfF/Eew2NsrISD+HmfmWU14Lethh8UVLT+xO/J+t2oyHoTw3OUQgCwVC5uqUCz7GegMszMSg2kmpVk+7ASSBolwPGMtalpUaOka5QTcHBOSAi' +
-  'IQuvyMPB7mVHQnbwvS4sNwJisGkh2lmLbauPB4bhlEozPTWW+0wmYncFcMl6D+IR0GhnVIPlWFGZt9fmEanZlWNKjWuw3iDJvQmhHg7w1PxXAJ' +
-  'stkIxCIfFMmS5uwVlr/lXLFLWIjED0+vpkE1MuVwKYIDfTFltDrF8B0bHMUKE3ozaCzJRLN8BDcr3uHgtghcftCOj58nOSfnDDu5Zx20egtyCl' +
-  '7B39eLrlUXpsNsmdtju86+oG51G7Z9kxTlL3thtxNoDdM4cqnOad/HawF2xkkRFR6I/anhuF7W6T7McT5jkyb6TAjwqNbpnwqxyBul+am49vAN' +
-  'Dmz1EPZlTI81YWLWFyPDxNAZLLj3XIG8oxuwKnQR+oe07sEqGpQoyE2g5nD02WzlH9uIykYlPas2xSitrqCsE6FL/FhbgRVWVtuDwztWo/5WJr' +
-  'Iu1qJb9d2FAf4+KJYlISZCgtjsCrr2pL6PVpe7L5qC956v+T2YwxiZedUoOZeMrseH8GFAQ50YHR6IdoUaiTnPMDphpLGVjUpIFgtRXtcLxScN' +
-  'W8pfXjE/ZJqeQfaVBtpfCVHBEDB8vFeOQ9437vTO0FcDLtxtnZWHR1zDCF8dLPHryEhcsR4855vaYLbQWbpsIR2uRAhIUIBva5N8RM8O68gdvM' +
-  'EvTgdfIIKn4tuNaDk9zA5zqE2mBuAYf1zMfCT9J2DfAHKADImJlJspAAAAAElFTkSuQmCC';
-
-const accessibleParkingSymbol = {
-  type: 'picture-marker',
-  url: `data:image/png;base64,${ACCESSIBLE_PARKING_IMAGE_DATA}`,
-  width: 20,
-  height: 20
-};
-
 export const WomensBasketball_Definitions = {
   VISITOR_KIOSK: {
     id: WOMENS_BASKETBALL_LAYERS.VISITOR_KIOSK,
@@ -101,12 +78,7 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
       outFields: ['*'],
       // The symbol table in the view is campus-wide and unfiltered; basketball accessible spaces
       // are tagged as either `Accessible` or `Disabled` depending on when they were captured.
-      definitionExpression: `event = 'Basketball' AND type IN ('Accessible', 'Disabled')`,
-      renderer: {
-        type: 'simple',
-        label: 'Accessible Parking Spaces',
-        symbol: accessibleParkingSymbol
-      }
+      definitionExpression: `event = 'Basketball' AND type IN ('Accessible', 'Disabled')`
     }
   } as unknown as LayerSource,
 
@@ -150,16 +122,7 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     listMode: 'show',
     native: {
       outFields: ['*'],
-      definitionExpression: "street_use = 'X-Walk'",
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-line',
-          color: [214, 170, 81, 255],
-          width: 2,
-          style: 'short-dash'
-        }
-      }
+      definitionExpression: "street_use = 'X-Walk'"
     }
   }
 ];

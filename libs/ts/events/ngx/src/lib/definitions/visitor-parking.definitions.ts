@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
@@ -63,21 +62,7 @@ export const VisitorParkingColdLayerSources: LayerSource[] = [
       }
     },
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'GIS.TS.Lot_Use.Visitor_Lot',
-        uniqueValueInfos: [
-          {
-            value: '1',
-            label: 'Hourly Visitor Parking',
-            symbol: {
-              type: 'simple-fill',
-              color: 'rgb(0, 77, 168)'
-            } as unknown as esri.SimpleFillSymbolProperties
-          }
-        ]
-      }
+      outFields: ['*']
     },
   }
 ];

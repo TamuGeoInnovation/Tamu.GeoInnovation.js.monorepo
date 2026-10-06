@@ -79,22 +79,7 @@ export const MS150ColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-line',
-          color: 'rgb(56, 168, 0)',
-          width: 2.5,
-          style: 'solid',
-          marker: {
-            type: 'line-marker',
-            style: 'arrow',
-            color: 'rgb(56, 168, 0)',
-            placement: 'end'
-          }
-        }
-      }
+      outFields: ['*']
     }
   }
 ];

@@ -44,43 +44,7 @@ export const SoftballLayerSources: LayerSource[] = [
       description: 'attributes.description'
     },
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'name',
-        uniqueValueInfos: [
-          {
-            value: 'Fast Route',
-            label: 'Fast Route',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(56, 168, 0)',
-              width: 2,
-              marker: {
-                type: 'line-marker',
-                style: 'arrow',
-                color: 'rgb(56, 168, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          },
-          {
-            value: 'Expect Delays',
-            label: 'Expect Delays',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(230, 0, 0)',
-              width: 2,
-              marker: {
-                type: 'line-marker',
-                style: 'arrow',
-                color: 'rgb(230, 0, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          }
-        ]
-      }
+      outFields: ['*']
     }
   },
   {

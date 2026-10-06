@@ -35,18 +35,7 @@ export const DiningKioskLayerSources: LayerSource[] = [
     layerIndex: 1,
     native: {
       ...commonLayerProps,
-      legendEnabled: false,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [0, 0, 0, 0.01],
-          outline: {
-            width: '0'
-          }
-        }
-      }
+      legendEnabled: false
     }
   },
   {
@@ -60,54 +49,6 @@ export const DiningKioskLayerSources: LayerSource[] = [
     popupComponent: Popups.DiningPopupComponent,
     native: {
       ...commonLayerProps,
-      renderer: {
-        type: 'unique-value',
-        field: 'label',
-        field2: 'type',
-        fieldDelimiter: ',',
-        uniqueValueInfos: [
-          {
-            value: 'open,food-truck',
-            label: 'Food Truck - Open',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/FoodTruck_open.png',
-              width: '24px',
-              height: '32px'
-            }
-          },
-          {
-            value: 'closed,food-truck',
-            label: 'Food Truck - Closed',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/FoodTruck_closed.png',
-              width: '24px',
-              height: '32px'
-            }
-          },
-          {
-            value: 'open,fixed',
-            label: 'Dining - Open',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/Dining_open.png',
-              width: '24px',
-              height: '32px'
-            }
-          },
-          {
-            value: 'closed,fixed',
-            label: 'Dining - Closed',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/Dining_closed.png',
-              width: '24px',
-              height: '32px'
-            }
-          }
-        ]
-      } as unknown as esri.UniqueValueRenderer
     }
   }
 ];
