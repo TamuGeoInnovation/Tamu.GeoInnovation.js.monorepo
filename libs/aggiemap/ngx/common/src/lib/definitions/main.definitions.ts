@@ -27,12 +27,7 @@ export enum MAIN_MAP_LAYERS {
   CAMPUS_BIKE_LANES = 'bike-lanes-layer',
   BIKE_FIX_STATIONS = 'bike-fix-stations-layer',
   BIKE_RACKS_MAP = 'bike-racks-map-layer',
-  EV_CHARGE_STATIONS = 'ev-charge-stations-layer',
-  EVENT_150_OPENING_EVENT_LOCATIONS = 'event-150-opening-event-locations-layer',
-  EVENT_150_OPENING_SHUTTLE_ROUTE = 'event-150-opening-shuttle-route-layer',
-  EVENT_150_OPENING_PARKING = 'event-150-opening-parking-layer',
-  EVENT_150_KICKOFF_AT_KYLE = 'event-150-kickoff-at-kyle-layer',
-  EVENT_150_SPIRIT_WEEK = 'event-150-spirit-week-layer'
+  EV_CHARGE_STATIONS = 'ev-charge-stations-layer'
 }
 
 export interface IDefinition {
@@ -65,11 +60,6 @@ export interface IComposedIDefinitions {
   BIKE_FIX_STATIONS: IDefinition;
   BIKE_RACKS_MAP: IDefinition;
   EV_CHARGE_STATIONS: IDefinition;
-  EVENT_150_OPENING_EVENT_LOCATIONS: IDefinition;
-  EVENT_150_OPENING_SHUTTLE_ROUTE: IDefinition;
-  EVENT_150_OPENING_PARKING: IDefinition;
-  EVENT_150_KICKOFF_AT_KYLE: IDefinition;
-  EVENT_150_SPIRIT_WEEK: IDefinition;
 }
 
 export const commonLayerProps = {
@@ -169,46 +159,6 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       name: 'Dining Locations',
       url: `${connections.diningLocationsUrl}`,
       popupComponent: Popups.DiningPopupComponent
-    },
-
-    // 150th anniversary event layers, shown on the main map in a "150th Events" group (#1017).
-    // Aggie Family Parade is excluded because it is April 2027 and not part of this autumn's set.
-    // Live at the Station is excluded because it is not a 150th event (#1125).
-    EVENT_150_OPENING_EVENT_LOCATIONS: {
-      id: 'event-150-opening-event-locations',
-      layerId: MAIN_MAP_LAYERS.EVENT_150_OPENING_EVENT_LOCATIONS,
-      name: 'Event Locations',
-      url: `${connections.kickoff150thUrl}/0`,
-      popupComponent: Popups.MarkdownPopupComponent
-    },
-    EVENT_150_OPENING_SHUTTLE_ROUTE: {
-      id: 'event-150-opening-shuttle-route',
-      layerId: MAIN_MAP_LAYERS.EVENT_150_OPENING_SHUTTLE_ROUTE,
-      name: 'Shuttle Route',
-      url: `${connections.kickoff150thUrl}/1`
-    },
-    EVENT_150_OPENING_PARKING: {
-      id: 'event-150-opening-parking',
-      layerId: MAIN_MAP_LAYERS.EVENT_150_OPENING_PARKING,
-      name: 'Parking',
-      url: `${connections.kickoff150thUrl}/2`,
-      popupComponent: Popups.MarkdownPopupComponent
-    },
-    EVENT_150_KICKOFF_AT_KYLE: {
-      id: 'event-150-kickoff-at-kyle',
-      layerId: MAIN_MAP_LAYERS.EVENT_150_KICKOFF_AT_KYLE,
-      name: 'Kickoff at Kyle',
-      url: `${connections.kickoffAtKyleUrl}/0`,
-      popupComponent: Popups.MarkdownPopupComponent
-    },
-    EVENT_150_SPIRIT_WEEK: {
-      id: 'event-150-spirit-week',
-      layerId: MAIN_MAP_LAYERS.EVENT_150_SPIRIT_WEEK,
-      // The event is one day of cake and ice cream, not the week around it. The id and layer key
-      // keep the old name so shared links and the layer's own key are undisturbed (#1142).
-      name: '150 Cake & Ice Cream',
-      url: `${connections.spiritOf150WeekUrl}/0`,
-      popupComponent: Popups.MarkdownPopupComponent
     },
     AGGIEPRINT_LOCATIONS: {
       id: 'aggieprint-locations',
@@ -727,53 +677,6 @@ export function MainMapLayerSources(
         ...commonLayerProps,
         definitionExpression: "showOnAggieMap = 'Y'"
       }
-    },
-
-    // 150th anniversary event layers (#1017), under a "150th Events" heading. Each event set is off
-    // by default and toggled on its own, so these are opt-in on the landing map rather than a change
-    // to what every visitor sees.
-    //
-    // Each event set's date is shown after its name in the layer list (`listNote`, #1126).
-    //
-    // Esri's layer list shows a group's children in reverse draw order (the last source is listed
-    // first), so these sources are written in reverse of the order they appear in the list.
-    //
-    // An event set is listed while it is still to come or is happening today, and comes out once it
-    // has passed: Opening Ceremony and Kickoff at Kyle were both on 2 October and were removed on
-    // 5 October (#1413). 150 Cake & Ice Cream is the last of them.
-    //
-    // Live at the Station is not a 150th event, so it is not listed here (#1125). Its own map is
-    // unchanged.
-    //
-    // These draw the same services as the standalone event maps. 150 Cake & Ice Cream uses the
-    // service's own symbology rather than the cake marker on its own map: that marker is an inline
-    // image in the events library, which cannot be imported here without a dependency cycle.
-    {
-      type: 'group',
-      id: 'event-150-group-layer',
-      title: '150th Events',
-      listMode: 'show',
-      // Listed as a heading with no toggle of its own; each event set below is toggled separately.
-      listHeading: true,
-      sources: [
-        {
-          type: 'feature',
-          id: definitions.EVENT_150_SPIRIT_WEEK.layerId,
-          title: definitions.EVENT_150_SPIRIT_WEEK.name,
-          listNote: 'Oct. 5, 2026',
-          url: definitions.EVENT_150_SPIRIT_WEEK.url,
-          popupComponent: definitions.EVENT_150_SPIRIT_WEEK.popupComponent,
-          listMode: 'show',
-          visible: false,
-          popupData: {
-            name: '{attributes.name}',
-            description: '{attributes.description}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        }
-      ]
     }
   ];
 

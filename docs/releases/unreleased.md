@@ -1,21 +1,16 @@
 # Unreleased
 
-> **Not on production.** This file collects what has merged since the last production release. Each
-> entry says where it can be seen.
+Nothing has merged since the 6 October release yet.
 
-**On production: the [2 October release](2026-10-02.md)**, tagged `prod-2026-10-02`.
+**The last release is [6 October 2026](2026-10-06.md)**, on production as `main-RKVTA45W.js` from
+`0c8b12df`, tagged `prod-2026-10-06`. It carried the Angular 20 to 22 upgrades, the satellite-campus
+maps going live on production, and five visible fixes. What was tested, and what went into it, are in
+that file.
 
-**On dev, being tested: the [5 October release](2026-10-05.md)**, which takes the maps from Angular 15
-to 19 on Node 22, built with esbuild, and brings NestJS 10 and ArcGIS 4.27. Its notes are written and
-it passed the full suite, but it is **not on production yet**: the team tests it on dev first, and it
-is planned for production on Monday 5 October. The `prod-*` tag, not this file, will record when it
-ships.
-
-**If you followed a link here** expecting the notes for a release that just shipped, they are in those
-dated files now. Everything that was listed here, including the Angular 16 release first written up for
-3 October, is in the [5 October release](2026-10-05.md), which is named for the day it is planned to
-reach production. Those files are the permanent record of what shipped; this one only ever describes
-what has not shipped yet.
+This file collects what merges from here until the next release. **A pull request with a user-visible
+result adds its own entry below, in that pull request**, with its before/after screenshots linked from
+`docs/screenshots/<slug>/` - and a row in *What to test on dev*. Nobody writes these later. See
+[README.md](README.md#cutting-a-release).
 
 ---
 
@@ -121,6 +116,7 @@ what has not shipped yet.
 
   ![Tent numbers on Performance Lawn, zoomed in](../screenshots/1422-football-tailgating-map/after-tent-numbers.png)
 
+_Nothing yet._
 
 ---
 
@@ -131,10 +127,7 @@ what has not shipped yet.
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** the [5 October release](2026-10-05.md), from
-[`cc809f63`](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/commit/cc809f63),
-tagged `dev-2026-10-04-3`, which passed the full suite on 4 October: 328 passed, 0 failed, 7 skipped.
-What to test in it is listed in [that file](2026-10-05.md#what-to-test).
+**Currently on dev for testing:** nothing beyond the [6 October release](2026-10-06.md) itself.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
@@ -146,10 +139,11 @@ What to test in it is listed in [that file](2026-10-05.md#what-to-test).
 | Angular 22 ([#1469](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1469)) | The [main map](https://dev.aggiemap.tamu.edu/map/d): click a building, then a parking lot; the side panel's Layers and Legend; an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); the [mobile map](https://dev.aggiemap.tamu.edu/map/m) popups; [directions](https://dev.aggiemap.tamu.edu/map/d/trip) with parking and biking options | **nothing different**. Popups open with their content; the trip planner shows its parking and biking options; turning a layer on or off updates the map and the legend straight away. Anything that only updates after another click is the thing to report |
 | Angular 21 ([#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456)) | The [main map](https://dev.aggiemap.tamu.edu/map/d), a building popup, and an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); on a phone, the [mobile map](https://dev.aggiemap.tamu.edu/map/m) | **nothing different**. Click a building and press **Copy** in its popup, then paste; press **Escape** to close a popup; open and close the side panel's tabs and any accordion; on a phone, use the menu and the tiles. A click or key that does nothing is the thing to report |
 | Angular 20 ([#1447](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1447)) | Any map you use; [All Maps](https://dev.aggiemap.tamu.edu/all-maps); an event builder such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); popups, the side panel's Layers and Legend; and GIS Day's pages if you use them | **nothing different**. Templates were rewritten from `*ngIf`/`*ngFor` to `@if`/`@for`, so the thing to look for is something missing: an empty list, a panel that will not open, a button that has gone |
+| _Nothing yet._ | | |
 
 ---
 
-## Work in flight — 5 October
+## Work in flight — 6 October
 
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
@@ -169,9 +163,11 @@ file would say the work had stopped.
 | 8 | Node 20.18 to 22.23.3 ([#1376](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1376)) | done: [#1401](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1401) |
 | 9 | Angular 18 to 19 ([#1378](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1378)) | done: [#1406](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1406). Steps 2 to 9b are all in the 5 October release |
 | 9b | esbuild-based `application` builder ([#1403](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1403)) | done: [#1408](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1408), in the 5 October release |
-| 10 | Angular 19 to 22, one major per pull request | next. Forecast about 2 to 3 hours each in the new check setup ([`docs/upgrades/angular.md`](../upgrades/angular.md)) |
+| 10 | Angular 19 to 22, one major per pull request | done and merged: 20 ([#1451](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1451)), 21 ([#1465](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1465), dev-tagged `dev-2026-10-06`), 22 ([#1471](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1471)), about 1 to 1.5 hours each ([`docs/upgrades/angular.md`](../upgrades/angular.md)). **Angular 22 is not yet tested on dev**: its dev build was deploying on the morning of 6 October; the full suite, then the dev tag, come next |
+| 10b | Faster smoke suite ([#1426](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1426)) | merged ([#1477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1477)): a release check runs one framing route per map, 6 workers, the ArcGIS library cached; 22 min 44 s on a workstation against about 1 h 50 min. Further cuts: [#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473) (bus test), [#1427](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1427) (maps) |
 | 11 | `esri-loader` to `@arcgis/core`, 134 files | last |
-| — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | VeoRide retired ([#1404](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1404)); the old Ring Day app goes after 10 October ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) |
+| — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | VeoRide retired ([#1404](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1404)); the old Ring Day app goes after 10 October ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)); CPA retires next ([#1458](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1458), tagged `cpa-last`), and the other unused projects are being listed ([#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457)); both are with the cloud session (Batch B on the `cloud-mailbox` branch) |
+| — | After Angular 22 | standalone ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)), `@defer` ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454)), signals and OnPush ([#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455)), zoneless ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)), Vitest ([#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)), accessibility rules back on ([#1474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1474)); in that order after the cleanups. Ubuntu pins before 19 October: [#1407](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1407) (GitHub), [#1468](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1468) (Azure) |
 
 **A local `nx affected` on a `package.json` change fails on projects that already fail on
 `development`.** Every project counts as affected. Measured on 2 October: `cpa-angular`,
