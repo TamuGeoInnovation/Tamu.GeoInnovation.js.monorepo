@@ -3,13 +3,12 @@
 </div>
 
 @if (fileName === undefined) {
-  <div class="placeholder">
-    <ng-content></ng-content>
-  </div>
+<div class="placeholder">
+  <ng-content></ng-content>
+</div>
 } @else {
-  <p>{{fileName}}</p>
-  <p class="inline-link" (click)="reset()">{{clearMessage}}</p>
+<p>{{fileName}}</p>
+<p class="inline-link" (click)="reset()">{{clearMessage}}</p>
 }
-
 
 <input type="file" [accept]="accept" (change)="handleFileChange($event)" />

@@ -3,10 +3,9 @@
 <div *giscAccordion="let parent;">
   <div class="pill" [giscAccordionHeader]="parent">
     @if (!parent.expanded) {
-      <div><span>Show Comparison Table</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-    }
-    @if (parent.expanded) {
-      <div><span>Hide Comparison Table</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+    <div><span>Show Comparison Table</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+    } @if (parent.expanded) {
+    <div><span>Hide Comparison Table</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
     }
   </div>
 

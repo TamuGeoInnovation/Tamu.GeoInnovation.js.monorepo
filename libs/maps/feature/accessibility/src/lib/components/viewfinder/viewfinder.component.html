@@ -2,17 +2,17 @@
 
 <div class="accessible-viewfinder-features" [ngClass]="{ hidden: ($accessibleNavigation | async) !== true}">
   @if (viewFinderFeatures?.length > 0) {
-    <div class="feature-item-container">
-      @for (feature of viewFinderFeatures; track feature; let i = $index) {
-        <div class="feature-item">
-          <div class="feature-index">
-            <div class="wrapper">
-              <p>{{ i + 1 }}</p>
-            </div>
-          </div>
-          <p class="feature-name">{{ feature.display }}</p>
+  <div class="feature-item-container">
+    @for (feature of viewFinderFeatures; track feature; let i = $index) {
+    <div class="feature-item">
+      <div class="feature-index">
+        <div class="wrapper">
+          <p>{{ i + 1 }}</p>
         </div>
-      }
+      </div>
+      <p class="feature-name">{{ feature.display }}</p>
     </div>
+    }
+  </div>
   }
 </div>

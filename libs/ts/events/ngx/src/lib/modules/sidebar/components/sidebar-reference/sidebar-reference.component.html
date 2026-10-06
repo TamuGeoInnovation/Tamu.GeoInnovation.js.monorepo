@@ -1,64 +1,48 @@
 <tamu-gisc-search [placeholder]="'Find Building or Parking'" [leftActionIcon]="'search'" [rightActionIcon]="'close'" [sources]="searchSources" (result)="onSearchResult($event)"></tamu-gisc-search>
 
 @if (configuration?.applicationName) {
-  <div class="map-title">
-    <h1>{{ configuration?.applicationName }}</h1>
+<div class="map-title">
+  <h1>{{ configuration?.applicationName }}</h1>
+</div>
+} @if (hasSettings) {
+<div class="leader-1">
+  <div class="sidebar-component-name">
+    <p>Share Map</p>
   </div>
-}
-
-@if (hasSettings) {
-  <div class="leader-1">
-    <div class="sidebar-component-name">
-      <p>Share Map</p>
-    </div>
-    <div class="sidebar-component-content-container">
-      <p>Make coordination easy! The following link can be shared with friends and family to load your configured map.</p>
-      <ul class="settings-list">
-        @for (pair of mergedSettings | keyvalue; track pair) {
-          <li>
-            <strong>{{ pair.value.shortDescription }}: {{ pair.value.option?.label }}</strong>
-            @if (showResolvedSettingNotes && pair.value.option?.note) {
-              <p class="setting-note">{{ pair.value.option?.note }}</p>
-            }
-          </li>
+  <div class="sidebar-component-content-container">
+    <p>Make coordination easy! The following link can be shared with friends and family to load your configured map.</p>
+    <ul class="settings-list">
+      @for (pair of mergedSettings | keyvalue; track pair) {
+      <li>
+        <strong>{{ pair.value.shortDescription }}: {{ pair.value.option?.label }}</strong>
+        @if (showResolvedSettingNotes && pair.value.option?.note) {
+        <p class="setting-note">{{ pair.value.option?.note }}</p>
         }
-      </ul>
-      <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
-      <p class="settings-edit"><a href="javascript:void(0)" (click)="navigateSettingsReview()">Change {{configuration?.shortApplicationName}} Settings</a></p>
-    </div>
+      </li>
+      }
+    </ul>
+    <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+    <p class="settings-edit"><a href="javascript:void(0)" (click)="navigateSettingsReview()">Change {{configuration?.shortApplicationName}} Settings</a></p>
   </div>
-}
-
-@if (configuration?.sidebarInfo; as info) {
-  @for (section of info.sections; track section) {
-    <div class="sidebar-info-section">
-      <div class="sidebar-component-name">
-        <p [ngStyle]="section.styleOverrides?.heading">{{ section.heading }}</p>
-      </div>
-      <div class="sidebar-component-content-container">
-        @if (section.subheading) {
-          <p class="sidebar-info-subheading" [ngStyle]="section.styleOverrides?.subheading">{{ section.subheading }}</p>
-        }
-        @if (section.items?.length) {
-          <ul class="sidebar-info-items" [ngStyle]="section.styleOverrides?.items">
-            @for (item of section.items; track item) {
-              <li [ngStyle]="section.styleOverrides?.item">{{ item }}</li>
-            }
-          </ul>
-        }
-      </div>
-    </div>
-  }
-}
-
-@if (!hideLayerToggle) {
-  <tamu-gisc-layer-list [allowedLayerIds]="eventLayerIds" [orderBy]="layerListOrderBy"></tamu-gisc-layer-list>
-  <tamu-gisc-legend
-    [deduplicate]="true"
-    [respectDefinitionExpression]="true"
-    [allowVisibilityToggle]="legendAllowVisibilityToggle"
-    [combineChildrenUnderPrimary]="legendCombineChildrenUnderPrimary"
-    [allowedLayerIds]="eventLayerIds"
-    [forceShowLayerIds]="legendForceShowLayerIds"
-  ></tamu-gisc-legend>
+</div>
+} @if (configuration?.sidebarInfo; as info) { @for (section of info.sections; track section) {
+<div class="sidebar-info-section">
+  <div class="sidebar-component-name">
+    <p [ngStyle]="section.styleOverrides?.heading">{{ section.heading }}</p>
+  </div>
+  <div class="sidebar-component-content-container">
+    @if (section.subheading) {
+    <p class="sidebar-info-subheading" [ngStyle]="section.styleOverrides?.subheading">{{ section.subheading }}</p>
+    } @if (section.items?.length) {
+    <ul class="sidebar-info-items" [ngStyle]="section.styleOverrides?.items">
+      @for (item of section.items; track item) {
+      <li [ngStyle]="section.styleOverrides?.item">{{ item }}</li>
+      }
+    </ul>
+    }
+  </div>
+</div>
+} } @if (!hideLayerToggle) {
+<tamu-gisc-layer-list [allowedLayerIds]="eventLayerIds" [orderBy]="layerListOrderBy"></tamu-gisc-layer-list>
+<tamu-gisc-legend [deduplicate]="true" [respectDefinitionExpression]="true" [allowVisibilityToggle]="legendAllowVisibilityToggle" [combineChildrenUnderPrimary]="legendCombineChildrenUnderPrimary" [allowedLayerIds]="eventLayerIds" [forceShowLayerIds]="legendForceShowLayerIds"></tamu-gisc-legend>
 }

@@ -10,32 +10,32 @@
     </div>
 
     @for (event of changelogEvents; track event) {
-      <div class="changelog-event">
-        <div class="changelog-event-date">
-          <div>{{ event.date | date }}</div>
-        </div>
-        <div class="changelog-event-body">
-          <h3>{{ event.title }}</h3>
-          <div class="changelog-event-tag-container">
-            @for (tag of event.keywords; track tag) {
-              <span>{{ tag }}</span>
-            }
-          </div>
-          <div class="changelog-event-body-description markdown" [innerHTML]="event.description | safeHtml"></div>
-          @if (event.media && event.media.length > 0) {
-            <div class="changelong-event-body-media">
-              @for (item of event.media; track item) {
-                <a [href]="item.url" target="_blank">
-                  <figure>
-                    <img [src]="item.url" [alt]="item.title" [title]="item.title" />
-                    <figcaption>{{ item.title }}</figcaption>
-                  </figure>
-                </a>
-              }
-            </div>
+    <div class="changelog-event">
+      <div class="changelog-event-date">
+        <div>{{ event.date | date }}</div>
+      </div>
+      <div class="changelog-event-body">
+        <h3>{{ event.title }}</h3>
+        <div class="changelog-event-tag-container">
+          @for (tag of event.keywords; track tag) {
+          <span>{{ tag }}</span>
           }
         </div>
+        <div class="changelog-event-body-description markdown" [innerHTML]="event.description | safeHtml"></div>
+        @if (event.media && event.media.length > 0) {
+        <div class="changelong-event-body-media">
+          @for (item of event.media; track item) {
+          <a [href]="item.url" target="_blank">
+            <figure>
+              <img [src]="item.url" [alt]="item.title" [title]="item.title" />
+              <figcaption>{{ item.title }}</figcaption>
+            </figure>
+          </a>
+          }
+        </div>
+        }
       </div>
+    </div>
     }
   </div>
 </div>

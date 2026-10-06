@@ -1,5 +1,5 @@
 <select name="routingServiceSelection" id="routingServiceSelection" [(ngModel)]="currentUrlAlias" (change)="setRoutingNetwork()">
   @for (service of (routingAliasesServiceList | async); track service) {
-    <option [ngValue]="service.name">{{ service.name }}</option>
+  <option [ngValue]="service.name">{{ service.name }}</option>
   }
 </select>

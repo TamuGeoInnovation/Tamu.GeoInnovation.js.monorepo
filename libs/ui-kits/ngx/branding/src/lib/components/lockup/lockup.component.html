@@ -1,20 +1,19 @@
 <div class="logo">
   @if (theme === 'light') {
-    <img alt="Texas A&amp;M University Logo" src="assets/images/logo/TAM-LogoBox.svg" />
+  <img alt="Texas A&amp;M University Logo" src="assets/images/logo/TAM-LogoBox.svg" />
   } @else {
-    <img alt="Texas A&amp;M University Logo" src="assets/images/logo/TAM-Logo-white.svg" />
+  <img alt="Texas A&amp;M University Logo" src="assets/images/logo/TAM-Logo-white.svg" />
   }
-
 </div>
 
 <div class="identity">
   @if (type === 'college' || type === 'department') {
-    <span class="tamu-name">Texas A&amp;M University</span>
+  <span class="tamu-name">Texas A&amp;M University</span>
   }
 
   <div class="entity-name"><ng-content select=".entity"></ng-content></div>
 
   @if (type === 'deptWDivision') {
-    <span class="division-name"><ng-content select=".division"></ng-content></span>
+  <span class="division-name"><ng-content select=".division"></ng-content></span>
   }
 </div>

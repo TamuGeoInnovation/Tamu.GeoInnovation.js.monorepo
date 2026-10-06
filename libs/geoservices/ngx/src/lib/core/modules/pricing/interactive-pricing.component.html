@@ -24,131 +24,116 @@
       <tamu-gisc-radio-group [options]="yesNoOptions" displayPath="label" valuePath="value" formControlName="partnerProgram"></tamu-gisc-radio-group>
     </div> -->
 
-    @if ((isRecurring | async) === true && (frequencyType | async) === 'RECURRING_YEARLY') {
+      @if ((isRecurring | async) === true && (frequencyType | async) === 'RECURRING_YEARLY') {
       <div class="form-collection column">
         <p class="byop-question">Are you looking for a service level agreement?</p>
         <tamu-gisc-radio-group [options]="yesNoOptions" displayPath="label" valuePath="value" formControlName="sla"> </tamu-gisc-radio-group>
       </div>
-    }
-  </form>
-</div>
+      }
+    </form>
+  </div>
 
-<div class="column5 pre-2">
-  <div class="card">
-    <table>
-      <tbody>
-        <tr>
-          <td>
-            Credits
-            <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
-              <tamu-gisc-tooltip-trigger triggerType="hover"><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
-              <div id="snap-scen-help-text">
-                <p>One credit equals one transaction using any of our services. Batch transactions are credited per processed record.</p>
-              </div>
-            </tamu-gisc-tooltip>
-          </td>
-          <td>{{(selectedCreditTierPoints | async)}}</td>
-        </tr>
+  <div class="column5 pre-2">
+    <div class="card">
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              Credits
+              <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
+                <tamu-gisc-tooltip-trigger triggerType="hover"><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
+                <div id="snap-scen-help-text">
+                  <p>One credit equals one transaction using any of our services. Batch transactions are credited per processed record.</p>
+                </div>
+              </tamu-gisc-tooltip>
+            </td>
+            <td>{{(selectedCreditTierPoints | async)}}</td>
+          </tr>
 
-        <tr>
-          <td>Frequency</td>
-          <td>
-            @if ((isRecurring | async)) {
-              {{(recurringInterval | async)?.label}}
-            } @else {
-              @if ((partnerPricing | async) === false) {
-                One-time
-              } @else {
-                Manual Reload
-              }
-            }
-          </td>
+          <tr>
+            <td>Frequency</td>
+            <td>@if ((isRecurring | async)) { {{(recurringInterval | async)?.label}} } @else { @if ((partnerPricing | async) === false) { One-time } @else { Manual Reload } }</td>
+          </tr>
 
-        </tr>
+          <tr>
+            <td>
+              Access to all products
+              <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
+                <tamu-gisc-tooltip-trigger triggerType="hover"><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
+                <div id="snap-scen-help-text">
+                  <p>Get access to geocoding, reverse geocoding, address processing, census intersection, k-nearest, and geocode correction tools.</p>
+                </div>
+              </tamu-gisc-tooltip>
+            </td>
+            <td><span class="material-icons success included-feature">check_circle</span></td>
+          </tr>
 
-        <tr>
-          <td>
-            Access to all products
-            <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
-              <tamu-gisc-tooltip-trigger triggerType="hover"><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
-              <div id="snap-scen-help-text">
-                <p>Get access to geocoding, reverse geocoding, address processing, census intersection, k-nearest, and geocode correction tools.</p>
-              </div>
-            </tamu-gisc-tooltip>
-          </td>
-          <td><span class="material-icons success included-feature">check_circle</span></td>
-        </tr>
+          <tr>
+            <td>
+              Business hours support
+              <tamu-gisc-tooltip positioningStrategy="fixed">
+                <tamu-gisc-tooltip-trigger triggerType="hover"><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
+                <div id="snap-scen-help-text">
+                  <p>9AM-5PM CST</p>
+                </div>
+              </tamu-gisc-tooltip>
+            </td>
+            <td><span class="material-icons success included-feature">check_circle</span></td>
+          </tr>
 
-        <tr>
-          <td>
-            Business hours support
-            <tamu-gisc-tooltip positioningStrategy="fixed">
-              <tamu-gisc-tooltip-trigger triggerType="hover"><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
-              <div id="snap-scen-help-text">
-                <p>9AM-5PM CST</p>
-              </div>
-            </tamu-gisc-tooltip>
-          </td>
-          <td><span class="material-icons success included-feature">check_circle</span></td>
-        </tr>
+          <tr>
+            <td>No contract required</td>
+            <td><span class="material-icons success included-feature">check_circle</span></td>
+          </tr>
 
-        <tr>
-          <td>No contract required</td>
-          <td><span class="material-icons success included-feature">check_circle</span></td>
-        </tr>
+          <tr>
+            <td>
+              Stay in control of your data
+              <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
+                <tamu-gisc-tooltip-trigger triggerType="hover"><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
+                <div id="snap-scen-help-text">
+                  <p>We are able to comply with your data's export controls and process some or all of it within the TAMU network or offsite on the cloud.</p>
+                </div>
+              </tamu-gisc-tooltip>
+            </td>
+            <td><span class="material-icons success included-feature">check_circle</span></td>
+          </tr>
 
-        <tr>
-          <td>
-            Stay in control of your data
-            <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
-              <tamu-gisc-tooltip-trigger triggerType="hover"><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
-              <div id="snap-scen-help-text">
-                <p>We are able to comply with your data's export controls and process some or all of it within the TAMU network or offsite on the cloud.</p>
-              </div>
-            </tamu-gisc-tooltip>
-          </td>
-          <td><span class="material-icons success included-feature">check_circle</span></td>
-        </tr>
+          <tr>
+            <td>99% SLA uptime</td>
+            <td><span class="material-icons success included-feature">check_circle</span></td>
+          </tr>
 
-        <tr>
-          <td>99% SLA uptime</td>
-          <td><span class="material-icons success included-feature">check_circle</span></td>
-        </tr>
-
-        @if ((isSLA | async) === true) {
+          @if ((isSLA | async) === true) {
           <tr>
             <td>Dedicated server *</td>
             <td><span class="material-icons success optional-feature">check_circle</span></td>
           </tr>
-        }
-      </tbody>
-    </table>
+          }
+        </tbody>
+      </table>
 
-    <div class="flex flex-row justify-between align-end" id="total_cost">
-      @if ((isSLA | async) === false) {
+      <div class="flex flex-row justify-between align-end" id="total_cost">
+        @if ((isSLA | async) === false) {
         <h3>
-          <strong>Total cost: {{(selectedTierCost | async) | currency }}@if (isRecurring | async) {
-            /{{(recurringInterval | async)?.unit}}
-          }</strong>
+          <strong>Total cost: {{(selectedTierCost | async) | currency }}@if (isRecurring | async) { /{{(recurringInterval | async)?.unit}} }</strong>
         </h3>
-      }
-
-      @if ((isSLA | async) === true) {
+        } @if ((isSLA | async) === true) {
         <em><strong>*</strong> Optional services</em>
-      }
+        }
+      </div>
+
+      <div class="flex flex-row justify-center leader-2 trailer-1">
+        <p class="button secondary" id="ctaButton" (click)="navigateCtaAction()">{{ ctaText | async }}</p>
+      </div>
     </div>
 
-    <div class="flex flex-row justify-center leader-2 trailer-1">
-      <p class="button secondary" id="ctaButton" (click)="navigateCtaAction()">{{ ctaText | async }}</p>
+    <div class="card leader-2 cta" id="freeCTA">
+      <h3>Try Before You Buy</h3>
+
+      <p>All users start with 2,500 <em>free</em>, zero-commitment credits, usable on any of our services. Use this initial quota to determine if our services are right for you.</p>
+
+      <a class="trailer-1" [routerLink]="['/docs/getting-started']">Get Started ></a>
     </div>
   </div>
-
-  <div class="card leader-2 cta" id="freeCTA">
-    <h3>Try Before You Buy</h3>
-
-    <p>All users start with 2,500 <em>free</em>, zero-commitment credits, usable on any of our services. Use this initial quota to determine if our services are right for you.</p>
-
-    <a class="trailer-1" [routerLink]="['/docs/getting-started']">Get Started ></a>
-  </div>
-</div>
 </div>

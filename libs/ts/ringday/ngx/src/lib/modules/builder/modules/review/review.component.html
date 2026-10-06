@@ -7,10 +7,9 @@
         <div>Ring Day Appointment Date</div>
         <div>
           @if (!settings || settings.date === undefined) {
-            <p>Not Set</p>
-          }
-          @if (settings && settings.date !== undefined) {
-            <p>{{eventDate | date : 'MMMM'}} {{ eventDate | date : 'd' }}, {{eventDate | date : 'YYYY'}}</p>
+          <p>Not Set</p>
+          } @if (settings && settings.date !== undefined) {
+          <p>{{eventDate | date : 'MMMM'}} {{ eventDate | date : 'd' }}, {{eventDate | date : 'YYYY'}}</p>
           }
           <p [routerLink]="['/builder/date']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/date', {ret: 'review'})" (keyup.enter)="next('builder/date', {ret: 'review'})" tabindex="0">Change</p>
         </div>
@@ -20,20 +19,18 @@
         <div>Require Accessible (ADA) Accommodations</div>
         <div>
           @if (!settings || settings.accessible === undefined) {
-            <p>Not Set</p>
-          }
-          @if (settings && settings.accessible !== undefined) {
-            <p>{{ settings.accessible ? 'Yes' : 'No' }}</p>
+          <p>Not Set</p>
+          } @if (settings && settings.accessible !== undefined) {
+          <p>{{ settings.accessible ? 'Yes' : 'No' }}</p>
           }
           <p [routerLink]="['/builder/accommodations']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/accommodations', {ret: 'review'})" (keyup.enter)="next('builder/accommodations', {ret: 'review'})" tabindex="0">Change</p>
         </div>
       </div>
 
       @if (settingsValid) {
-        <div class="button tertiary" [routerLink]="'../../map'" (keyup.space)="next('map')" (keyup.enter)="next('map')" tabindex="0">Take Me To My Map</div>
-      }
-      @if (!settingsValid) {
-        <div class="button disabled">Please ensure all selections are valid</div>
+      <div class="button tertiary" [routerLink]="'../../map'" (keyup.space)="next('map')" (keyup.enter)="next('map')" tabindex="0">Take Me To My Map</div>
+      } @if (!settingsValid) {
+      <div class="button disabled">Please ensure all selections are valid</div>
       }
     </div>
   </div>

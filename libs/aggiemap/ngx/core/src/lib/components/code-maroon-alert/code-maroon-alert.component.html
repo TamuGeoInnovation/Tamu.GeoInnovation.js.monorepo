@@ -2,118 +2,92 @@
 Shown only on /code-maroon, and only where development features are on. Nothing here reaches
 production (#1289).
 -->
-@if (enabled && (state | async); as current) {
-  @if (!dismissed) {
-    <div class="code-maroon" role="alert" aria-live="assertive">
-      <!--
+@if (enabled && (state | async); as current) { @if (!dismissed) {
+<div class="code-maroon" role="alert" aria-live="assertive">
+  <!--
       The sample banner is deliberately the first thing in the box and cannot be dismissed
       separately. Fabricated emergency wording that could be screenshotted and passed on is a hazard,
       so it is labelled where the label travels with the content.
       -->
-      @if (current.sample) {
-        <p class="code-maroon-sample">
-          SAMPLE DATA — this is a demonstration, not a real alert
-        </p>
+  @if (current.sample) {
+  <p class="code-maroon-sample">SAMPLE DATA — this is a demonstration, not a real alert</p>
+  } @switch (current.status) {
+  <!-- An alert is running. -->
+  @case ('active') { @for (alert of current.alerts; track alert) {
+  <div class="code-maroon-alert">
+    <p class="code-maroon-kicker">
+      <span class="code-maroon-mark">Code Maroon</span>
+      @if (typeFor(alert); as type) {
+      <span class="code-maroon-type">{{ type.label }}</span>
+      } @if (isTest(alert)) {
+      <span class="code-maroon-type code-maroon-type--test">System test</span>
       }
-      @switch (current.status) {
-        <!-- An alert is running. -->
-        @case ('active') {
-          @for (alert of current.alerts; track alert) {
-            <div class="code-maroon-alert">
-              <p class="code-maroon-kicker">
-                <span class="code-maroon-mark">Code Maroon</span>
-                @if (typeFor(alert); as type) {
-                  <span class="code-maroon-type">{{ type.label }}</span>
-                }
-                @if (isTest(alert)) {
-                  <span class="code-maroon-type code-maroon-type--test">System test</span>
-                }
-              </p>
-              <h2 class="code-maroon-title">{{ alert.title }}</h2>
-              @if (alert.description && alert.description !== alert.title) {
-                <p class="code-maroon-body">
-                  {{ alert.description }}
-                </p>
-              }
-              <!--
+    </p>
+    <h2 class="code-maroon-title">{{ alert.title }}</h2>
+    @if (alert.description && alert.description !== alert.title) {
+    <p class="code-maroon-body">{{ alert.description }}</p>
+    }
+    <!--
               Fields the feed carried that we did not expect. Shown rather than dropped: no real alert
               item has ever been observed, so anything unanticipated is more likely to matter than not.
               -->
-              @if (extraOf(alert).length > 0) {
-                <dl class="code-maroon-extra">
-                  @for (field of extraOf(alert); track field) {
-                    <dt>{{ field.name }}</dt>
-                    <dd>{{ field.value }}</dd>
-                  }
-                </dl>
-              }
-              <p class="code-maroon-actions">
-                <a class="button maroon" [href]="procedureFor(alert)" target="_blank" rel="noopener">
-                  What to do
-                </a>
-                @if (alert.link) {
-                  <a class="button" [href]="alert.link" target="_blank" rel="noopener">
-                    Full notice
-                  </a>
-                }
-                @if (canDismiss(current, alert)) {
-                  <tamu-gisc-button
-                    fit="snug"
-                    look="secondary"
-                    value="Dismiss"
-                    (go)="dismiss()"
-                  ></tamu-gisc-button>
-                }
-              </p>
-              <p class="code-maroon-meta">
-                @if (alert.published) {
-                  <span>Issued {{ alert.published | date: 'medium' }}. </span>
-                }
-                @if (current.checkedAt) {
-                  <span>Checked {{ current.checkedAt | date: 'mediumTime' }}.</span>
-                }
-              </p>
-            </div>
-          }
-        }
-        <!-- The feed answered and carried nothing. This is the normal state. -->
-        @case ('clear') {
-          <div class="code-maroon-quiet">
-            <p class="code-maroon-kicker"><span class="code-maroon-mark">Code Maroon</span></p>
-            <p class="code-maroon-body">No active alerts.</p>
-            @if (current.checkedAt) {
-              <p class="code-maroon-meta">Checked {{ current.checkedAt | date: 'mediumTime' }}.</p>
-            }
-            @if (current.snapshot) {
-              <p class="code-maroon-meta code-maroon-snapshot">
-                From a saved copy of the Code Maroon feed until this server's feed proxy is set up.
-              </p>
-            }
-          </div>
-        }
-        <!--
+    @if (extraOf(alert).length > 0) {
+    <dl class="code-maroon-extra">
+      @for (field of extraOf(alert); track field) {
+      <dt>{{ field.name }}</dt>
+      <dd>{{ field.value }}</dd>
+      }
+    </dl>
+    }
+    <p class="code-maroon-actions">
+      <a class="button maroon" [href]="procedureFor(alert)" target="_blank" rel="noopener"> What to do </a>
+      @if (alert.link) {
+      <a class="button" [href]="alert.link" target="_blank" rel="noopener"> Full notice </a>
+      } @if (canDismiss(current, alert)) {
+      <tamu-gisc-button fit="snug" look="secondary" value="Dismiss" (go)="dismiss()"></tamu-gisc-button>
+      }
+    </p>
+    <p class="code-maroon-meta">
+      @if (alert.published) {
+      <span>Issued {{ alert.published | date: 'medium' }}. </span>
+      } @if (current.checkedAt) {
+      <span>Checked {{ current.checkedAt | date: 'mediumTime' }}.</span>
+      }
+    </p>
+  </div>
+  } }
+  <!-- The feed answered and carried nothing. This is the normal state. -->
+  @case ('clear') {
+  <div class="code-maroon-quiet">
+    <p class="code-maroon-kicker"><span class="code-maroon-mark">Code Maroon</span></p>
+    <p class="code-maroon-body">No active alerts.</p>
+    @if (current.checkedAt) {
+    <p class="code-maroon-meta">Checked {{ current.checkedAt | date: 'mediumTime' }}.</p>
+    } @if (current.snapshot) {
+    <p class="code-maroon-meta code-maroon-snapshot">From a saved copy of the Code Maroon feed until this server's feed proxy is set up.</p>
+    }
+  </div>
+  }
+  <!--
         Said out loud rather than folded into "no alerts". A map that looks calm because the feed
         failed, during an emergency, is the worst thing this could do.
         -->
-        @case ('unreachable') {
-          <div class="code-maroon-unreachable">
-            <p class="code-maroon-kicker"><span class="code-maroon-mark">Code Maroon</span></p>
-            <h2 class="code-maroon-title">The alert feed could not be read</h2>
-            <p class="code-maroon-body">
-              This map cannot currently tell whether there is an active alert. Check
-              <a href="https://emergency.tamu.edu/" target="_blank" rel="noopener">emergency.tamu.edu</a> directly.
-            </p>
-            @if (current.error) {
-              <p class="code-maroon-meta">{{ current.error }}</p>
-            }
-          </div>
-        }
-        @case ('loading') {
-          <div class="code-maroon-quiet">
-            <p class="code-maroon-body">Checking Code Maroon…</p>
-          </div>
-        }
-      }
-    </div>
-  }
-}
+  @case ('unreachable') {
+  <div class="code-maroon-unreachable">
+    <p class="code-maroon-kicker"><span class="code-maroon-mark">Code Maroon</span></p>
+    <h2 class="code-maroon-title">The alert feed could not be read</h2>
+    <p class="code-maroon-body">
+      This map cannot currently tell whether there is an active alert. Check
+      <a href="https://emergency.tamu.edu/" target="_blank" rel="noopener">emergency.tamu.edu</a> directly.
+    </p>
+    @if (current.error) {
+    <p class="code-maroon-meta">{{ current.error }}</p>
+    }
+  </div>
+  } @case ('loading') {
+  <div class="code-maroon-quiet">
+    <p class="code-maroon-body">Checking Code Maroon…</p>
+  </div>
+  } }
+</div>
+} }

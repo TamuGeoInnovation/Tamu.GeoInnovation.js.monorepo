@@ -1,6 +1,6 @@
 @if ((coords | async)?.latitude && (coords| async).longitude) {
-  <div [class.active]="copying | async" [text]="coordText | async" (copying)="copying = $event" class="point-coords" clipboard-copy alt="Copy" title="Copy">
-    <p>Latitude: {{ (coords | async)?.latitude }}</p>
-    <p>Longitude: {{ (coords | async)?.longitude }}</p>
-  </div>
+<div [class.active]="copying | async" [text]="coordText | async" (copying)="copying = $event" class="point-coords" clipboard-copy alt="Copy" title="Copy">
+  <p>Latitude: {{ (coords | async)?.latitude }}</p>
+  <p>Longitude: {{ (coords | async)?.longitude }}</p>
+</div>
 }

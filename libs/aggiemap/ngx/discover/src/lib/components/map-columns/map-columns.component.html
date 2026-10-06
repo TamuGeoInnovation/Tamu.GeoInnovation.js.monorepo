@@ -1,47 +1,40 @@
 @if (columns.length > 0) {
-  <div class="parking-columns">
-    <!--
+<div class="parking-columns">
+  <!--
     `--titled` marks a column that is a real section rather than a layout split. On a phone
     the columns collapse into one list and their boundaries should disappear, but a titled
     one keeps its separation because its heading gives it meaning. Set here rather than
     inferred in CSS so it does not depend on `:has()`.
     -->
-    @for (column of columns; track column) {
-      <div class="parking-column" [class.parking-column--titled]="column.heading">
-        @if (column.heading) {
-          <h2 class="parking-column-heading">{{ column.heading }}</h2>
-        }
-        @if (column.applications.length > 0) {
-          <ul class="map-entry-list">
-            @for (app of column.applications; track app) {
-              <li class="map-entry-item">
-                <!--
+  @for (column of columns; track column) {
+  <div class="parking-column" [class.parking-column--titled]="column.heading">
+    @if (column.heading) {
+    <h2 class="parking-column-heading">{{ column.heading }}</h2>
+    } @if (column.applications.length > 0) {
+    <ul class="map-entry-list">
+      @for (app of column.applications; track app) {
+      <li class="map-entry-item">
+        <!--
                 A map that has a picture shows it in place of the glyph, so the listing shows what you are
                 choosing between. This markup used to exist only on the All Maps page, which is a different
                 component - so the Campus Maps page, the page the campus thumbnails were added for, drew a
                 name over an empty area (#1275).
                 -->
-                <a class="map-entry" [class.map-entry--pictured]="app.thumbnail" [routerLink]="getApplicationRoute(app)">
-                  @if (app.thumbnail) {
-                    <img
-                      class="map-entry-thumbnail"
-                      [src]="app.thumbnail"
-                      [alt]="app.name + ' map'"
-                      loading="lazy"
-                      />
-                  } @else {
-                    <span class="map-entry-icon" aria-hidden="true"></span>
-                  }
-                  <span class="map-entry-label">{{ app.name }}</span>
-                </a>
-              </li>
-            }
-          </ul>
-        }
-      </div>
+        <a class="map-entry" [class.map-entry--pictured]="app.thumbnail" [routerLink]="getApplicationRoute(app)">
+          @if (app.thumbnail) {
+          <img class="map-entry-thumbnail" [src]="app.thumbnail" [alt]="app.name + ' map'" loading="lazy" />
+          } @else {
+          <span class="map-entry-icon" aria-hidden="true"></span>
+          }
+          <span class="map-entry-label">{{ app.name }}</span>
+        </a>
+      </li>
+      }
+    </ul>
     }
   </div>
+  }
+</div>
 } @else {
-  <p class="section-description">{{ noMapsMessage }}</p>
+<p class="section-description">{{ noMapsMessage }}</p>
 }
-

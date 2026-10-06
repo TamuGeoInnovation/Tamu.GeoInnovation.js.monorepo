@@ -1,13 +1,11 @@
 @if (imageExists$ | async) {
-  <img class="image" presenter="presenter" [src]="avatarImageUrl$ | async" />
+<img class="image" presenter="presenter" [src]="avatarImageUrl$ | async" />
 } @else {
-  <div class="image default">
-    @if (fallbackStyle === 'initials') {
-      <div class="initials">{{initials$ | async}}</div>
-    }
-    @if (fallbackStyle === 'icon') {
-      <span class="material-icons">person</span>
-    }
-  </div>
+<div class="image default">
+  @if (fallbackStyle === 'initials') {
+  <div class="initials">{{initials$ | async}}</div>
+  } @if (fallbackStyle === 'icon') {
+  <span class="material-icons">person</span>
+  }
+</div>
 }
-

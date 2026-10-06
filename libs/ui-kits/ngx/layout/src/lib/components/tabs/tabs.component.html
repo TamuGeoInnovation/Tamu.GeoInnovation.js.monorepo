@@ -1,8 +1,8 @@
 <div class="tabs">
   @for (toggle of toggles; track toggle) {
-    <div class="tab" (click)="swapContent(toggle)" [ngClass]="{ active: toggle.index === toggleIndex }">
-      <p>{{ toggle.label }}</p>
-    </div>
+  <div class="tab" (click)="swapContent(toggle)" [ngClass]="{ active: toggle.index === toggleIndex }">
+    <p>{{ toggle.label }}</p>
+  </div>
   }
 </div>
 

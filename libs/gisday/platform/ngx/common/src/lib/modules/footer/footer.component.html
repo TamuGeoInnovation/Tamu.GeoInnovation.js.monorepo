@@ -3,9 +3,11 @@
     <div class="flex flex-row justify-center wrap">
       <div class="column4">
         <a class="logo-container" [routerLink]="['/']">
-          <div class="site-logo greyscale">TxGIS Day @if ((activeSeason$ | async)?.year; as year) {
+          <div class="site-logo greyscale">
+            TxGIS Day @if ((activeSeason$ | async)?.year; as year) {
             <span>{{year}}</span>
-          }</div>
+            }
+          </div>
         </a>
         <p>Three days of workshops and programs celebrating geospatial technology.</p>
       </div>
@@ -36,20 +38,17 @@
       <div class="column3">
         <p class="footer-column-title">TxGIS Day Partners</p>
 
-        @if (organizations$ | async; as orgs) {
-          @if (orgs.length > 0) {
-            <ul>
-              @for (org of orgs; track org) {
-                <li>
-                  <a [href]="org.website" target="_blank">{{org.name}}</a>
-                </li>
-              }
-            </ul>
-          } @else {
-            <p>Coming soon!</p>
+        @if (organizations$ | async; as orgs) { @if (orgs.length > 0) {
+        <ul>
+          @for (org of orgs; track org) {
+          <li>
+            <a [href]="org.website" target="_blank">{{org.name}}</a>
+          </li>
           }
-        }
-
+        </ul>
+        } @else {
+        <p>Coming soon!</p>
+        } }
       </div>
     </div>
   </div>

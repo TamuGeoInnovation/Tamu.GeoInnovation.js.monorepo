@@ -1,16 +1,16 @@
 @for (clientGroup of ($userRoles | async); track clientGroup) {
-  <table>
-    <tr>
-      <th>{{clientGroup[0].client.clientName}}</th>
-      <th class="action-row">Actions</th>
-    </tr>
-    @for (userRole of clientGroup; track userRole) {
-      <tr>
-        <td>{{userRole.role.name}}</td>
-        <td>{{userRole.user.name}}</td>
-        <td>{{userRole.user.email}}</td>
-        <td><span [routerLink]="[userRole.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span><span (click)="deleteEntity(userRole)" class="material-icons action alt" title="Delete entity">delete</span></td>
-      </tr>
-    }
-  </table>
+<table>
+  <tr>
+    <th>{{clientGroup[0].client.clientName}}</th>
+    <th class="action-row">Actions</th>
+  </tr>
+  @for (userRole of clientGroup; track userRole) {
+  <tr>
+    <td>{{userRole.role.name}}</td>
+    <td>{{userRole.user.name}}</td>
+    <td>{{userRole.user.email}}</td>
+    <td><span [routerLink]="[userRole.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span><span (click)="deleteEntity(userRole)" class="material-icons action alt" title="Delete entity">delete</span></td>
+  </tr>
+  }
+</table>
 }

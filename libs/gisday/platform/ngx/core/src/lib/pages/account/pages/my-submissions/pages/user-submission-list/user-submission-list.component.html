@@ -14,8 +14,8 @@
       </div>
 
       @if ((presentationSubmissions$ | async)?.length > 0) {
-        <table class="floating-table">
-          <colgroup>
+      <table class="floating-table">
+        <colgroup>
           <col class="title-col" />
           <col />
           <col />
@@ -31,21 +31,20 @@
         </thead>
         <tbody>
           @for (sub of (presentationSubmissions$ | async); track sub) {
-            <tr class="selectable" [routerLink]="['edit', sub.guid]">
-              <td class="title" [title]="sub?.title">{{sub?.title}}</td>
-              <td>{{sub?.submissionType | titlecase}}</td>
-              <td>{{sub?.format | titlecase}}</td>
-              <td class="status" [ngClass]="{'clr-md-amber-800': (sub | submissionReviewStatus) === SubmissionReviewStatus.InReview, 'clr-md-green-600': (sub | submissionReviewStatus) === SubmissionReviewStatus.Accepted, 'clr-md-red-500': (sub | submissionReviewStatus) === SubmissionReviewStatus.Rejected}">{{sub | submissionReviewStatus}}</td>
-            </tr>
+          <tr class="selectable" [routerLink]="['edit', sub.guid]">
+            <td class="title" [title]="sub?.title">{{sub?.title}}</td>
+            <td>{{sub?.submissionType | titlecase}}</td>
+            <td>{{sub?.format | titlecase}}</td>
+            <td class="status" [ngClass]="{'clr-md-amber-800': (sub | submissionReviewStatus) === SubmissionReviewStatus.InReview, 'clr-md-green-600': (sub | submissionReviewStatus) === SubmissionReviewStatus.Accepted, 'clr-md-red-500': (sub | submissionReviewStatus) === SubmissionReviewStatus.Rejected}">{{sub | submissionReviewStatus}}</td>
+          </tr>
           }
         </tbody>
       </table>
-    } @else {
+      } @else {
       <p class="leader-1">You currently have no entries for this season's student competitions.</p>
-    }
-
+      }
+    </div>
   </div>
-</div>
 </div>
 
 <ng-template #loader>

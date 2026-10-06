@@ -2,31 +2,30 @@
   <div class="form-section">
     <div class="form-section-toolbar">
       @if (type === 'create') {
-        <div class="form-section-title">Create Event</div>
+      <div class="form-section-title">Create Event</div>
       } @else {
-        <div class="form-section-title">Update Event</div>
+      <div class="form-section-title">Update Event</div>
       }
-
     </div>
 
     <div class="form-section-body">
       <div class="form-collection row">
         @for (day of activeSeasonDays$ | async; track day; let last = $last) {
-          <tamu-gisc-seasons-day-tile [interactive]="false" [day]="day" (click)="setEventDate(day)" [ngClass]="{selected: (selectedEventDate$ | async) === day.guid}"></tamu-gisc-seasons-day-tile>
+        <tamu-gisc-seasons-day-tile [interactive]="false" [day]="day" (click)="setEventDate(day)" [ngClass]="{selected: (selectedEventDate$ | async) === day.guid}"></tamu-gisc-seasons-day-tile>
         }
       </div>
 
       @if ((selectedEventDateStart$ | async) !== null && (selectedEventDateEnd$ | async) !== null) {
-        <div class="form-collection row">
-          <div>
-            <p><strong>Event start time</strong></p>
-            <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateStart$ | async" (changed)="setEventTime($event, 'start')" iconName="schedule"></tamu-gisc-date-time-picker>
-          </div>
-          <div>
-            <p><strong>Event end time</strong></p>
-            <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateEnd$ | async" (changed)="setEventTime($event, 'end')" iconName="schedule"></tamu-gisc-date-time-picker>
-          </div>
+      <div class="form-collection row">
+        <div>
+          <p><strong>Event start time</strong></p>
+          <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateStart$ | async" (changed)="setEventTime($event, 'start')" iconName="schedule"></tamu-gisc-date-time-picker>
         </div>
+        <div>
+          <p><strong>Event end time</strong></p>
+          <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateEnd$ | async" (changed)="setEventTime($event, 'end')" iconName="schedule"></tamu-gisc-date-time-picker>
+        </div>
+      </div>
       }
     </div>
   </div>
@@ -93,23 +92,20 @@
 
     <div class="form-section-body">
       <div class="form-collection column">
-        @if ((speakers$ | async)?.length > 0) {
-          @if (speakers$ | async; as speakers) {
-            <tamu-gisc-select-list placeholder="Search speakers..." [options]="speakers" [rowTemplate]="speakerListRowTemplate">
-              <ng-template #speakerListRowTemplate let-speaker>
-                <tamu-gisc-presenter-card [speaker]="speaker" [linkable]="false" (click)="patchSpeaker(speaker)"></tamu-gisc-presenter-card>
-              </ng-template>
-            </tamu-gisc-select-list>
-            <div class="flex flex-row wrap">
-              @for (speaker of eventSpeakers$ | async; track speaker) {
-                <tamu-gisc-presenter-card [speaker]="speaker" [linkable]="false" [showActions]="true" (delete)="patchSpeaker(speaker, 'remove')"></tamu-gisc-presenter-card>
-              }
-            </div>
+        @if ((speakers$ | async)?.length > 0) { @if (speakers$ | async; as speakers) {
+        <tamu-gisc-select-list placeholder="Search speakers..." [options]="speakers" [rowTemplate]="speakerListRowTemplate">
+          <ng-template #speakerListRowTemplate let-speaker>
+            <tamu-gisc-presenter-card [speaker]="speaker" [linkable]="false" (click)="patchSpeaker(speaker)"></tamu-gisc-presenter-card>
+          </ng-template>
+        </tamu-gisc-select-list>
+        <div class="flex flex-row wrap">
+          @for (speaker of eventSpeakers$ | async; track speaker) {
+          <tamu-gisc-presenter-card [speaker]="speaker" [linkable]="false" [showActions]="true" (delete)="patchSpeaker(speaker, 'remove')"></tamu-gisc-presenter-card>
           }
-        } @else {
-          <p>No speakers registered yet.</p>
+        </div>
+        } } @else {
+        <p>No speakers registered yet.</p>
         }
-
       </div>
     </div>
   </div>
@@ -121,18 +117,15 @@
 
     <div class="form-section-body">
       <div class="form-collection column">
-        @if ((tags$ | async)?.length > 0) {
-          @if (tags$ | async; as tags) {
-            <tamu-gisc-checkbox-group referenceId="guid" formControlName="tags">
-              @for (tag of tags; track tag) {
-                <tamu-gisc-checkbox [data]="tag" [label]="tag.name"></tamu-gisc-checkbox>
-              }
-            </tamu-gisc-checkbox-group>
+        @if ((tags$ | async)?.length > 0) { @if (tags$ | async; as tags) {
+        <tamu-gisc-checkbox-group referenceId="guid" formControlName="tags">
+          @for (tag of tags; track tag) {
+          <tamu-gisc-checkbox [data]="tag" [label]="tag.name"></tamu-gisc-checkbox>
           }
-        } @else {
-          <p>No tags registered yet.</p>
+        </tamu-gisc-checkbox-group>
+        } } @else {
+        <p>No tags registered yet.</p>
         }
-
       </div>
     </div>
   </div>
@@ -157,7 +150,7 @@
     <div class="form-section-body">
       <div class="form-collection row">
         @if (type === 'edit') {
-          <tamu-gisc-button type="button" look="danger" value="Delete Event" (click)="deleteEntity()"></tamu-gisc-button>
+        <tamu-gisc-button type="button" look="danger" value="Delete Event" (click)="deleteEntity()"></tamu-gisc-button>
         }
         <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
       </div>

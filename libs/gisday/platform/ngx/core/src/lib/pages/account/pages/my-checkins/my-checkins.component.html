@@ -10,26 +10,25 @@
       </div>
 
       @if ((checkins$ | async) ?.length > 0) {
-        <table class="floating-table">
-          <thead>
-            <tr>
-              <th>Event Name</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (checkin of (checkins$ | async); track checkin) {
-              <tr>
-                <td>{{checkin?.event?.name}}</td>
-                <td>{{checkin.created | date:'short'}}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
+      <table class="floating-table">
+        <thead>
+          <tr>
+            <th>Event Name</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (checkin of (checkins$ | async); track checkin) {
+          <tr>
+            <td>{{checkin?.event?.name}}</td>
+            <td>{{checkin.created | date:'short'}}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
       } @else {
-        <p>You have not checked into any events yet.</p>
+      <p>You have not checked into any events yet.</p>
       }
-
     </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 <tamu-gisc-tabs>
   @for (cr of censusRecords; track cr) {
-    <tamu-gisc-tab [label]="cr.censusYear.toString()">
-      <tamu-gisc-census-intersection-result-table [address]="cr"></tamu-gisc-census-intersection-result-table>
-    </tamu-gisc-tab>
+  <tamu-gisc-tab [label]="cr.censusYear.toString()">
+    <tamu-gisc-census-intersection-result-table [address]="cr"></tamu-gisc-census-intersection-result-table>
+  </tamu-gisc-tab>
   }
 </tamu-gisc-tabs>

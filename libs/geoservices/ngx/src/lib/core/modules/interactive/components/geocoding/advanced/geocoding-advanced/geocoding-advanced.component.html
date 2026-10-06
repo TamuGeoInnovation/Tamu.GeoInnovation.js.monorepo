@@ -29,124 +29,120 @@
         </div>
 
         @if ((isAdvanced | async) === false) {
-          <div class="form-collection row">
-            <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYears" [floatLabel]="true"></tamu-gisc-select>
-          </div>
+        <div class="form-collection row">
+          <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYears" [floatLabel]="true"></tamu-gisc-select>
+        </div>
         }
       </div>
     </div>
 
     @if (isAdvanced | async) {
-      <div class="form-section">
-        <div class="form-section-toolbar">
-          <div class="form-section-name">
-            <p>Geocoding Options</p>
-          </div>
-        </div>
-        <div class="form-section-body">
-          <div class="form-collection column">
-            <tamu-gisc-checkbox label="Use attribute relaxation" formControlName="attributeRelaxation"></tamu-gisc-checkbox>
-            <tamu-gisc-checkbox label="Use substring matching" formControlName="substringMatching"></tamu-gisc-checkbox>
-            <tamu-gisc-checkbox label="Use soundex matching" formControlName="soundexMatching"></tamu-gisc-checkbox>
-            <tamu-gisc-checkbox label="Use uncertainty hierarchy" formControlName="uncertaintyHierarchy"></tamu-gisc-checkbox>
-            <tamu-gisc-checkbox label="Allow ties" formControlName="allowTies"></tamu-gisc-checkbox>
-            @if (form.controls.allowTies.value === false) {
-              <p>If <strong>no</strong> ties are allowed, use the following tie breaking strategy:</p>
-              <tamu-gisc-select class="leader-1" [data]="tieBreakingStrategies" valueTemplate="value" displayTemplate="name" formControlName="tieBreakingStrategy" [floatLabel]="true" placeholder="Tie-breaking strategy"></tamu-gisc-select>
-            }
-          </div>
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Geocoding Options</p>
         </div>
       </div>
-    }
-
-    @if (isAdvanced | async) {
-      <div class="form-section">
-        <div class="form-section-toolbar">
-          <div class="form-section-name">
-            <p>Census Years (Required)</p>
-          </div>
-        </div>
-        <div class="form-section-body">
-          <div class="form-collection column">
-            <p>Select all applicable return census years to intersect latitude and longitude with.</p>
-            <tamu-gisc-checkbox-group formControlName="censusYears" [referenceId]="'value'">
-              @for (year of censusYears; track year) {
-                <tamu-gisc-checkbox [label]="year.name" [data]="year"></tamu-gisc-checkbox>
-              }
-            </tamu-gisc-checkbox-group>
-          </div>
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <tamu-gisc-checkbox label="Use attribute relaxation" formControlName="attributeRelaxation"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox label="Use substring matching" formControlName="substringMatching"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox label="Use soundex matching" formControlName="soundexMatching"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox label="Use uncertainty hierarchy" formControlName="uncertaintyHierarchy"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox label="Allow ties" formControlName="allowTies"></tamu-gisc-checkbox>
+          @if (form.controls.allowTies.value === false) {
+          <p>If <strong>no</strong> ties are allowed, use the following tie breaking strategy:</p>
+          <tamu-gisc-select class="leader-1" [data]="tieBreakingStrategies" valueTemplate="value" displayTemplate="name" formControlName="tieBreakingStrategy" [floatLabel]="true" placeholder="Tie-breaking strategy"></tamu-gisc-select>
+          }
         </div>
       </div>
-    }
-
-    @if (isAdvanced | async) {
-      <div class="form-section">
-        <div class="form-section-toolbar">
-          <div class="form-section-name">
-            <p>Reference Sources</p>
-          </div>
-          <div class="forms-section-actions">
-            <div class="faux-link" (click)="deselectAllRefs()">Deselect All</div>
-          </div>
-        </div>
-        <div class="form-section-body" formGroupName="refs">
-          <div class="form-collection column">
-            <p><strong>Address Points</strong></p>
-            @for (r of refs.addressPoints; track r) {
-              <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
-            }
-            <tamu-gisc-select class="leader-1" [data]="cls" valueTemplate="value" displayTemplate="name" formControlName="openAddressesMinimumConfLevel" [floatLabel]="true" placeholder="Minimum confidence level"></tamu-gisc-select>
-          </div>
-          <div class="form-collection column">
-            <p><strong>Building Footprints</strong></p>
-            @for (r of refs.buildingFootprints; track r) {
-              <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
-            }
-          </div>
-          <div class="form-collection column">
-            <p><strong>Parcels</strong></p>
-            @for (r of refs.parcels; track r) {
-              <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
-            }
-          </div>
-          <div class="form-collection column">
-            <p><strong>Streets</strong></p>
-            @for (r of refs.streets; track r) {
-              <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
-            }
-          </div>
-          <div class="form-collection column">
-            <p><strong>Census 2020</strong></p>
-            @for (r of refs.census2020; track r) {
-              <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
-            }
-          </div>
-          <div class="form-collection column">
-            <p><strong>Census 2010</strong></p>
-            @for (r of refs.census2010; track r) {
-              <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
-            }
-          </div>
-          <div class="form-collection column">
-            <p><strong>Census 2008</strong></p>
-            @for (r of refs.census2000; track r) {
-              <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
-            }
-          </div>
-          <div class="form-collection column">
-            <p><strong>Zip</strong></p>
-            @for (r of refs.zip; track r) {
-              <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
-            }
-          </div>
-          <div class="form-collection column">
-            <p><strong>Pre-Computed Points</strong></p>
-            @for (r of refs.preComputedPoints; track r) {
-              <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
-            }
-          </div>
+    </div>
+    } @if (isAdvanced | async) {
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Census Years (Required)</p>
         </div>
       </div>
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <p>Select all applicable return census years to intersect latitude and longitude with.</p>
+          <tamu-gisc-checkbox-group formControlName="censusYears" [referenceId]="'value'">
+            @for (year of censusYears; track year) {
+            <tamu-gisc-checkbox [label]="year.name" [data]="year"></tamu-gisc-checkbox>
+            }
+          </tamu-gisc-checkbox-group>
+        </div>
+      </div>
+    </div>
+    } @if (isAdvanced | async) {
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Reference Sources</p>
+        </div>
+        <div class="forms-section-actions">
+          <div class="faux-link" (click)="deselectAllRefs()">Deselect All</div>
+        </div>
+      </div>
+      <div class="form-section-body" formGroupName="refs">
+        <div class="form-collection column">
+          <p><strong>Address Points</strong></p>
+          @for (r of refs.addressPoints; track r) {
+          <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+          }
+          <tamu-gisc-select class="leader-1" [data]="cls" valueTemplate="value" displayTemplate="name" formControlName="openAddressesMinimumConfLevel" [floatLabel]="true" placeholder="Minimum confidence level"></tamu-gisc-select>
+        </div>
+        <div class="form-collection column">
+          <p><strong>Building Footprints</strong></p>
+          @for (r of refs.buildingFootprints; track r) {
+          <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+          }
+        </div>
+        <div class="form-collection column">
+          <p><strong>Parcels</strong></p>
+          @for (r of refs.parcels; track r) {
+          <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+          }
+        </div>
+        <div class="form-collection column">
+          <p><strong>Streets</strong></p>
+          @for (r of refs.streets; track r) {
+          <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+          }
+        </div>
+        <div class="form-collection column">
+          <p><strong>Census 2020</strong></p>
+          @for (r of refs.census2020; track r) {
+          <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+          }
+        </div>
+        <div class="form-collection column">
+          <p><strong>Census 2010</strong></p>
+          @for (r of refs.census2010; track r) {
+          <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+          }
+        </div>
+        <div class="form-collection column">
+          <p><strong>Census 2008</strong></p>
+          @for (r of refs.census2000; track r) {
+          <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+          }
+        </div>
+        <div class="form-collection column">
+          <p><strong>Zip</strong></p>
+          @for (r of refs.zip; track r) {
+          <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+          }
+        </div>
+        <div class="form-collection column">
+          <p><strong>Pre-Computed Points</strong></p>
+          @for (r of refs.preComputedPoints; track r) {
+          <tamu-gisc-checkbox [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+          }
+        </div>
+      </div>
+    </div>
     }
 
     <div class="form-section">
@@ -159,49 +155,41 @@
   </form>
 </div>
 
-@if ((result | async) !== null && (resultError | async) === false;) {
-  @if (result | async; as res) {
-    <div [@inOutAnimation] class="leader-3">
-      <h2 class="section-header">Results</h2>
-      <tamu-gisc-accordion [expanded]="true">
-        <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
-        <tamu-gisc-accordion-content>
-          <tamu-gisc-status-result-table [status]="res.data"></tamu-gisc-status-result-table>
-        </tamu-gisc-accordion-content>
-      </tamu-gisc-accordion>
-      <tamu-gisc-accordion [expanded]="false">
-        <tamu-gisc-accordion-header>Input Parameters</tamu-gisc-accordion-header>
-        <tamu-gisc-accordion-content>
-          <p>The following table displays the input parameters (including defaults) that were used to process the query. These are helpful to know when debugging a response.</p>
-          <tamu-gisc-geocode-input-parameters [parameters]="res?.data?.inputParameterSet"></tamu-gisc-geocode-input-parameters>
-        </tamu-gisc-accordion-content>
-      </tamu-gisc-accordion>
-      @for (result of res?.data?.results; track result; let last = $last; let i = $index) {
-        <tamu-gisc-accordion [expanded]="true">
-          <tamu-gisc-accordion-header>
-            @if (i === 0) {
-              Best Match Result
-            } @else {
-              Possible Geocode #{{i}}
-            }
-          </tamu-gisc-accordion-header>
-          <tamu-gisc-accordion-content>
-            <tamu-gisc-result-map [points]="mapPoints | async" [size]="'lg'" class="trailer-2"></tamu-gisc-result-map>
-            <h4>Geocode Result</h4>
-            <p>The following represents the geocoded output for the best match from the input parameters.</p>
-            <tamu-gisc-geocode-result-table [geocode]="result"></tamu-gisc-geocode-result-table>
-            @if (result.censusRecords) {
-              <h4 class="leader-2">Census Values</h4>
-              <p>The following represents the census records for the best match geocode.</p>
-              <tamu-gisc-census-intersection-result-tabs [censusRecords]="result.censusRecords"></tamu-gisc-census-intersection-result-tabs>
-            }
-            <h4 class="leader-2">Parsed Address</h4>
-            <tamu-gisc-parsed-address-result-table [address]="result?.matchedAddress" [type]="'expanded'"></tamu-gisc-parsed-address-result-table>
-            <h4 class="leader-2">Reference Feature</h4>
-            <tamu-gisc-geocode-matched-reference-feature-table [matchedFeature]="result?.referenceFeature"></tamu-gisc-geocode-matched-reference-feature-table>
-          </tamu-gisc-accordion-content>
-        </tamu-gisc-accordion>
+@if ((result | async) !== null && (resultError | async) === false;) { @if (result | async; as res) {
+<div [@inOutAnimation] class="leader-3">
+  <h2 class="section-header">Results</h2>
+  <tamu-gisc-accordion [expanded]="true">
+    <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
+    <tamu-gisc-accordion-content>
+      <tamu-gisc-status-result-table [status]="res.data"></tamu-gisc-status-result-table>
+    </tamu-gisc-accordion-content>
+  </tamu-gisc-accordion>
+  <tamu-gisc-accordion [expanded]="false">
+    <tamu-gisc-accordion-header>Input Parameters</tamu-gisc-accordion-header>
+    <tamu-gisc-accordion-content>
+      <p>The following table displays the input parameters (including defaults) that were used to process the query. These are helpful to know when debugging a response.</p>
+      <tamu-gisc-geocode-input-parameters [parameters]="res?.data?.inputParameterSet"></tamu-gisc-geocode-input-parameters>
+    </tamu-gisc-accordion-content>
+  </tamu-gisc-accordion>
+  @for (result of res?.data?.results; track result; let last = $last; let i = $index) {
+  <tamu-gisc-accordion [expanded]="true">
+    <tamu-gisc-accordion-header> @if (i === 0) { Best Match Result } @else { Possible Geocode #{{i}} } </tamu-gisc-accordion-header>
+    <tamu-gisc-accordion-content>
+      <tamu-gisc-result-map [points]="mapPoints | async" [size]="'lg'" class="trailer-2"></tamu-gisc-result-map>
+      <h4>Geocode Result</h4>
+      <p>The following represents the geocoded output for the best match from the input parameters.</p>
+      <tamu-gisc-geocode-result-table [geocode]="result"></tamu-gisc-geocode-result-table>
+      @if (result.censusRecords) {
+      <h4 class="leader-2">Census Values</h4>
+      <p>The following represents the census records for the best match geocode.</p>
+      <tamu-gisc-census-intersection-result-tabs [censusRecords]="result.censusRecords"></tamu-gisc-census-intersection-result-tabs>
       }
-    </div>
+      <h4 class="leader-2">Parsed Address</h4>
+      <tamu-gisc-parsed-address-result-table [address]="result?.matchedAddress" [type]="'expanded'"></tamu-gisc-parsed-address-result-table>
+      <h4 class="leader-2">Reference Feature</h4>
+      <tamu-gisc-geocode-matched-reference-feature-table [matchedFeature]="result?.referenceFeature"></tamu-gisc-geocode-matched-reference-feature-table>
+    </tamu-gisc-accordion-content>
+  </tamu-gisc-accordion>
   }
-}
+</div>
+} }

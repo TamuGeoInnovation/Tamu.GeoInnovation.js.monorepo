@@ -5,59 +5,48 @@
 <div class="event-meta">
   <div class="event-time">
     @if (day?.date && event?.startTime && event?.endTime) {
-      <span>{{day.date | parseDateTimeStrings : event.startTime | date: 'h:mm a'}}</span>
-      <span id="detail-time"> - {{day.date | parseDateTimeStrings : event.endTime | date: 'h:mm a'}}</span>
+    <span>{{day.date | parseDateTimeStrings : event.startTime | date: 'h:mm a'}}</span>
+    <span id="detail-time"> - {{day.date | parseDateTimeStrings : event.endTime | date: 'h:mm a'}}</span>
     } @else {
-      <span>Time TBD</span>
+    <span>Time TBD</span>
     }
-
   </div>
 
   <div class="event-name">
     @if (event?.name) {
-      <p class="name">{{event.name}}</p>
+    <p class="name">{{event.name}}</p>
     } @else {
-      <p>Event Name TBD</p>
-    }
-
-
-    @if (event?.location?.building) {
-      <div class="event-location">
-        @if (event?.location?.place; as place) {
-          <p>
-            @if (place.name) {
-              <span>{{place.name}}</span>
-            }
-            @if (place.city || place.state) {
-              <span>: </span>
-            }
-            @if (place.city) {
-              <span>{{place.city}}</span>
-            }
-            @if (place.state) {
-              <span>, {{place.state}}</span>
-            }
-          </p>
+    <p>Event Name TBD</p>
+    } @if (event?.location?.building) {
+    <div class="event-location">
+      @if (event?.location?.place; as place) {
+      <p>
+        @if (place.name) {
+        <span>{{place.name}}</span>
+        } @if (place.city || place.state) {
+        <span>: </span>
+        } @if (place.city) {
+        <span>{{place.city}}</span>
+        } @if (place.state) {
+        <span>, {{place.state}}</span>
         }
-        @if (event?.location; as location) {
-          <p>
-            @if (event.mode) {
-              <span class="event-mode">{{event.mode}}: </span>
-            }
-            @if (location.building) {
-              <span>{{location.building}}</span>
-            }
-            @if (location.room) {
-              <span> {{location.room}}</span>
-            }
-          </p>
+      </p>
+      } @if (event?.location; as location) {
+      <p>
+        @if (event.mode) {
+        <span class="event-mode">{{event.mode}}: </span>
+        } @if (location.building) {
+        <span>{{location.building}}</span>
+        } @if (location.room) {
+        <span> {{location.room}}</span>
         }
-      </div>
+      </p>
+      }
+    </div>
     } @else {
-      <div class="event-location">
-        <p>Location TBD</p>
-      </div>
+    <div class="event-location">
+      <p>Location TBD</p>
+    </div>
     }
-
   </div>
 </div>

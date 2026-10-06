@@ -2,49 +2,51 @@
 
 <div class="map-ui bottom left">
   @if (!isMobile) {
-    <div class="help map-ui-element" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
-      <span class="material-icons">help</span>
-      <div class="topics">
-        <p><a routerLink="/all-maps" tabindex="0">All Maps</a></p>
-        <p><a routerLink="/about" tabindex="0">About Aggie Map</a></p>
-        <p><a routerLink="/instructions" tabindex="0">Map Instructions</a></p>
-        <p><a routerLink="/directory" tabindex="0">Building Directory</a></p>
-        <p>@if (isDev | async) {
-          <a tabindex="0" (click)="openBetaModal(true)">Beta Branch</a>
-        }</p>
-        <p class="topics-separator" aria-hidden="true"></p>
-        <p><a routerLink="/requesting-maps" tabindex="0">Request Maps &amp; Changes</a></p>
-        <p><a href="mailto:aggiemap@tamu.edu?subject=Aggiemap%20Feedback" target="_blank" tabindex="0">Submit Feedback</a></p>
-        <p class="topics-separator" aria-hidden="true"></p>
-        <p><a href="http://itaccessibility.tamu.edu" target="_blank" tabindex="0">Accessibility Policy</a></p>
-        <p><a href="https://www.tamu.edu/statements/privacy.html" target="_blank" tabindex="0">Privacy &amp; Security Policy</a></p>
-        <p><a href="https://www.tamu.edu/statements/index.html" target="_blank" tabindex="0">Site Policies</a></p>
-        <p class="topics-separator" aria-hidden="true"></p>
-        <p><a href="https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo" target="_blank" tabindex="0">GitHub</a></p>
-        <p><a href="https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pulls?q=is%3Apr+is%3Aclosed" target="_blank" tabindex="0">Changelog</a></p>
-      </div>
+  <div class="help map-ui-element" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
+    <span class="material-icons">help</span>
+    <div class="topics">
+      <p><a routerLink="/all-maps" tabindex="0">All Maps</a></p>
+      <p><a routerLink="/about" tabindex="0">About Aggie Map</a></p>
+      <p><a routerLink="/instructions" tabindex="0">Map Instructions</a></p>
+      <p><a routerLink="/directory" tabindex="0">Building Directory</a></p>
+      <p>
+        @if (isDev | async) {
+        <a tabindex="0" (click)="openBetaModal(true)">Beta Branch</a>
+        }
+      </p>
+      <p class="topics-separator" aria-hidden="true"></p>
+      <p><a routerLink="/requesting-maps" tabindex="0">Request Maps &amp; Changes</a></p>
+      <p><a href="mailto:aggiemap@tamu.edu?subject=Aggiemap%20Feedback" target="_blank" tabindex="0">Submit Feedback</a></p>
+      <p class="topics-separator" aria-hidden="true"></p>
+      <p><a href="http://itaccessibility.tamu.edu" target="_blank" tabindex="0">Accessibility Policy</a></p>
+      <p><a href="https://www.tamu.edu/statements/privacy.html" target="_blank" tabindex="0">Privacy &amp; Security Policy</a></p>
+      <p><a href="https://www.tamu.edu/statements/index.html" target="_blank" tabindex="0">Site Policies</a></p>
+      <p class="topics-separator" aria-hidden="true"></p>
+      <p><a href="https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo" target="_blank" tabindex="0">GitHub</a></p>
+      <p><a href="https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pulls?q=is%3Apr+is%3Aclosed" target="_blank" tabindex="0">Changelog</a></p>
     </div>
+  </div>
   }
 
   <!-- Map click coordinates, copy to click -->
   @if (!isMobile) {
-    <tamu-gisc-click-coordinates class="map-ui-element"></tamu-gisc-click-coordinates>
+  <tamu-gisc-click-coordinates class="map-ui-element"></tamu-gisc-click-coordinates>
   }
 </div>
 
 <!-- Map component -->
 @if ((config | async); as c) {
-  <tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }">
-    <div class="map-overlay-ui">
-      <div class="overlay-zone top left">
-        <a class="all-maps-button esri-component esri-widget" routerLink="/all-maps" aria-label="Open All Maps">ALL MAPS</a>
-        <tamu-gisc-perspective-toggle [threeDLayers]="threeDLayers"></tamu-gisc-perspective-toggle>
-      </div>
-      <div class="overlay-zone bottom right">
-        <!-- <div routerLink="/map/m/bus" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons">directions_bus</span></div> -->
-      </div>
+<tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }">
+  <div class="map-overlay-ui">
+    <div class="overlay-zone top left">
+      <a class="all-maps-button esri-component esri-widget" routerLink="/all-maps" aria-label="Open All Maps">ALL MAPS</a>
+      <tamu-gisc-perspective-toggle [threeDLayers]="threeDLayers"></tamu-gisc-perspective-toggle>
     </div>
-  </tamu-gisc-esri-map>
+    <div class="overlay-zone bottom right">
+      <!-- <div routerLink="/map/m/bus" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons">directions_bus</span></div> -->
+    </div>
+  </div>
+</tamu-gisc-esri-map>
 }
 
 <!-- Router outlet where desktop and mobile controls are rendered -->
@@ -52,7 +54,7 @@
 
 <!-- Mobile keyboard viewfinder/feature list -->
 @if (!isMobile) {
-  <tamu-gisc-map-viewfinder [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
+<tamu-gisc-map-viewfinder [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
 }
 
 <!-- Application Loader -->

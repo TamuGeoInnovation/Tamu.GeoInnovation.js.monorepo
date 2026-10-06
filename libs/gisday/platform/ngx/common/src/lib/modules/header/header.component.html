@@ -33,25 +33,22 @@
   </tamu-gisc-tile>
 
   @if ((loggedIn$ | async) === false) {
-    <tamu-gisc-tile>
-      <tamu-gisc-tile-icon><div class="material-icons">login</div></tamu-gisc-tile-icon>
-      <tamu-gisc-tile-title (click)="login()">Login</tamu-gisc-tile-title>
-    </tamu-gisc-tile>
-  } @else {
-    @if ((loggedIn$ | async) === true) {
-      <tamu-gisc-tile>
-        <tamu-gisc-tile-icon><div class="material-icons">account_circle</div></tamu-gisc-tile-icon>
-        <tamu-gisc-tile-title>Account</tamu-gisc-tile-title>
-        <tamu-gisc-tile-submenu *giscTileSubmenu>
-          <p tamuGiscTileLink location="/account/details">Profile</p>
-          <p tamuGiscTileLink location="/account/classes">Classes</p>
-          <p tamuGiscTileLink location="/account/checkins">Checkins</p>
-          <p (click)="logout()">Logout</p>
-        </tamu-gisc-tile-submenu>
-      </tamu-gisc-tile>
-    }
-  }
-
+  <tamu-gisc-tile>
+    <tamu-gisc-tile-icon><div class="material-icons">login</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title (click)="login()">Login</tamu-gisc-tile-title>
+  </tamu-gisc-tile>
+  } @else { @if ((loggedIn$ | async) === true) {
+  <tamu-gisc-tile>
+    <tamu-gisc-tile-icon><div class="material-icons">account_circle</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title>Account</tamu-gisc-tile-title>
+    <tamu-gisc-tile-submenu *giscTileSubmenu>
+      <p tamuGiscTileLink location="/account/details">Profile</p>
+      <p tamuGiscTileLink location="/account/classes">Classes</p>
+      <p tamuGiscTileLink location="/account/checkins">Checkins</p>
+      <p (click)="logout()">Logout</p>
+    </tamu-gisc-tile-submenu>
+  </tamu-gisc-tile>
+  } }
 </tamu-gisc-tile-navigation>
 
 <header>
@@ -64,110 +61,106 @@
           </span>
           TxGIS Day @if ((activeSeason$ | async)?.year; as year) {
           <span>{{year}}</span>
-        }
-      </h1>
-    </a>
-  </div>
+          }
+        </h1>
+      </a>
+    </div>
 
-  <div class="desktop-menu">
-    <div class="aux">
-
-      @if ((places$ | async); as places) {
+    <div class="desktop-menu">
+      <div class="aux">
+        @if ((places$ | async); as places) {
         <ul class="dropdown">
           <p>Organizations <span class="material-icons">arrow_drop_down</span></p>
           <ul>
             @for (place of places; track place) {
-              <li>
-                @if (place.website) {
-                  <a class="with-description" [href]="place.website" target="_blank">{{place.name}}</a>
-                } @else {
-                  @if (!place.website) {
-                    <p class="with-description">{{place.name}}</p>
-                  }
+            <li>
+              @if (place.website) {
+              <a class="with-description" [href]="place.website" target="_blank">{{place.name}}</a>
+              } @else { @if (!place.website) {
+              <p class="with-description">{{place.name}}</p>
+              } }
+              <span class="menu-item-description">{{place.city}}, {{place.state}}</span>
+              @if (place?.links?.length > 0) {
+              <ul class="dropdown-sub-menu">
+                @for (link of place.links; track link) {
+                <li>
+                  <a [href]="link.url" target="_blank">{{link.label}}</a>
+                </li>
                 }
-                <span class="menu-item-description">{{place.city}}, {{place.state}}</span>
-                @if (place?.links?.length > 0) {
-                  <ul class="dropdown-sub-menu">
-                    @for (link of place.links; track link) {
-                      <li>
-                        <a [href]="link.url" target="_blank">{{link.label}}</a>
-                      </li>
-                    }
-                  </ul>
-                }
-              </li>
+              </ul>
+              }
+            </li>
             }
           </ul>
         </ul>
-      }
+        }
 
-      <ul class="dropdown">
-        <a [routerLink]="['/sponsors']" id="linkSponsors">Sponsor <span class="material-icons">arrow_drop_down</span></a>
+        <ul class="dropdown">
+          <a [routerLink]="['/sponsors']" id="linkSponsors">Sponsor <span class="material-icons">arrow_drop_down</span></a>
 
-        <ul>
-          <li><a [routerLink]="['/sponsors']" fragment="opportunities">Opportunities</a></li>
-          <li><a [routerLink]="['/sponsors']" fragment="current">Current Sponsors</a></li>
-          <li><a [routerLink]="['/sponsors']" fragment="logistics">Logistics</a></li>
+          <ul>
+            <li><a [routerLink]="['/sponsors']" fragment="opportunities">Opportunities</a></li>
+            <li><a [routerLink]="['/sponsors']" fragment="current">Current Sponsors</a></li>
+            <li><a [routerLink]="['/sponsors']" fragment="logistics">Logistics</a></li>
+          </ul>
         </ul>
-      </ul>
 
-      @if ((loggedIn$ | async)) {
+        @if ((loggedIn$ | async)) {
         <ul class="dropdown">
           <a [routerLink]="['/account/details']" id="linkAccount">Account <span class="material-icons">arrow_drop_down</span></a>
           <ul>
             <li><a [routerLink]="['/account/details']">Profile</a></li>
             <!-- <li><a [routerLink]="['/account/classes']">Classes</a></li> -->
-            @if ((userRoles$ | async) | hasRoles :  [appRoles.ADMIN, appRoles.MANAGER, appRoles.ORGANIZER]) {
-              <li><a [routerLink]="['/admin']">Admin</a></li>
+            @if ((userRoles$ | async) | hasRoles : [appRoles.ADMIN, appRoles.MANAGER, appRoles.ORGANIZER]) {
+            <li><a [routerLink]="['/admin']">Admin</a></li>
             }
             <!-- <li><a [routerLink]="['/account/checkins']">Checkins</a></li> -->
             <!-- <li><a [routerLink]="['/account/submissions']">My Submissions</a></li> -->
             <li><a (click)="logout()">Logout</a></li>
           </ul>
         </ul>
-      } @else {
+        } @else {
         <ul id="liLogin">
           <a (click)="login()" id="linkLogin">Login/Signup</a>
         </ul>
-      }
+        }
+      </div>
 
-    </div>
+      <div class="primary">
+        <ul>
+          <a [routerLink]="['/sessions']" id="linkSessions">Sessions</a>
+          <a [routerLink]="['/presenters']" id="linkPresenters">Presenters</a>
+        </ul>
 
-    <div class="primary">
-      <ul>
-        <a [routerLink]="['/sessions']" id="linkSessions">Sessions</a>
-        <a [routerLink]="['/presenters']" id="linkPresenters">Presenters</a>
-      </ul>
+        <ul class="dropdown">
+          <a [routerLink]="['/competitions']" id="linkCompetitions">Competitions <span class="material-icons">arrow_drop_down</span></a>
 
-      <ul class="dropdown">
-        <a [routerLink]="['/competitions']" id="linkCompetitions">Competitions <span class="material-icons">arrow_drop_down</span></a>
+          <ul>
+            <!-- <li><a [routerLink]="['/competitions/highschool']">High School Essay Contest</a></li> -->
+            <!-- <li><a [routerLink]="['/competitions/feedback']">Feedback Lottery</a></li> -->
+            <li><a [routerLink]="['/competitions/vgi']">VGI Competition</a></li>
+            <li><a [routerLink]="['/competitions/presentation']">Presentation Competition</a></li>
+            <li><a [routerLink]="['/competitions/posters']">Poster Competition</a></li>
+            <li><a [routerLink]="['/competitions/aggie-map']">Aggie Map Design Competition</a></li>
+          </ul>
+        </ul>
 
         <ul>
-          <!-- <li><a [routerLink]="['/competitions/highschool']">High School Essay Contest</a></li> -->
-          <!-- <li><a [routerLink]="['/competitions/feedback']">Feedback Lottery</a></li> -->
-          <li><a [routerLink]="['/competitions/vgi']">VGI Competition</a></li>
-          <li><a [routerLink]="['/competitions/presentation']">Presentation Competition</a></li>
-          <li><a [routerLink]="['/competitions/posters']">Poster Competition</a></li>
-          <li><a [routerLink]="['/competitions/aggie-map']">Aggie Map Design Competition</a></li>
+          <a [routerLink]="['/faq']" id="linkFAQ">FAQ</a>
         </ul>
-      </ul>
 
-      <ul>
-        <a [routerLink]="['/faq']" id="linkFAQ">FAQ</a>
-      </ul>
-
-      <ul class="dropdown">
-        <a [routerLink]="['/about']" id="linkAbout">About <span class="material-icons">arrow_drop_down</span></a>
+        <ul class="dropdown">
+          <a [routerLink]="['/about']" id="linkAbout">About <span class="material-icons">arrow_drop_down</span></a>
+          <ul>
+            <li><a [routerLink]="['/about']" fragment="committee">Organizing Committee</a></li>
+            <li><a [routerLink]="['/about']" fragment="student-volunteer">Volunteer Opportunities</a></li>
+            <li><a [routerLink]="['/about']" fragment="resume-bank">Resume Bank</a></li>
+          </ul>
+        </ul>
         <ul>
-          <li><a [routerLink]="['/about']" fragment="committee">Organizing Committee</a></li>
-          <li><a [routerLink]="['/about']" fragment="student-volunteer">Volunteer Opportunities</a></li>
-          <li><a [routerLink]="['/about']" fragment="resume-bank">Resume Bank</a></li>
+          <a [routerLink]="['/contact']" id="linkContact">Contact</a>
         </ul>
-      </ul>
-      <ul>
-        <a [routerLink]="['/contact']" id="linkContact">Contact</a>
-      </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 </header>

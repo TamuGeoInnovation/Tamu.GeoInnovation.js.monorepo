@@ -2,16 +2,16 @@
   <tamu-gisc-textbox [formControlName]="'search'" type="text" [floatLabel]="floatLabel" [placeholder]="placeholder"></tamu-gisc-textbox>
 
   @if (rowTemplate !== undefined) {
-    <div class="select-list-container" tabindex="-1">
-      @if ((options$ | async)?.length > 0) {
-        <div class="row-item">
-          @for (item of (options$ | async); track item) {
-            <ng-container [ngTemplateOutlet]="rowTemplate" [ngTemplateOutletContext]="{$implicit: item}"></ng-container>
-          }
-        </div>
-      } @else {
-        <p id="no-results-message">No items to show...</p>
+  <div class="select-list-container" tabindex="-1">
+    @if ((options$ | async)?.length > 0) {
+    <div class="row-item">
+      @for (item of (options$ | async); track item) {
+      <ng-container [ngTemplateOutlet]="rowTemplate" [ngTemplateOutletContext]="{$implicit: item}"></ng-container>
       }
     </div>
+    } @else {
+    <p id="no-results-message">No items to show...</p>
+    }
+  </div>
   }
 </form>

@@ -1,6 +1,6 @@
 <div class="profile" [routerLink]="['/presenters/details', speaker.guid]">
   @if (speaker?.university?.acronym && speaker?.graduationYear !== '') {
-    <div class="class-banner" [ngStyle]=" { 'background': '#'+ speaker.university?.hexTriplet+'' }">{{speaker.university.acronym}} {{ graduationYear }}</div>
+  <div class="class-banner" [ngStyle]=" { 'background': '#'+ speaker.university?.hexTriplet+'' }">{{speaker.university.acronym}} {{ graduationYear }}</div>
   }
 
   <div class="avatar-container">

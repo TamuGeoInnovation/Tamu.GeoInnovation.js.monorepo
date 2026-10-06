@@ -1,12 +1,12 @@
 <div class="sidebar-component-name">
   @if (responsive?.isMobile) {
-    <span class="material-icons" (click)="backAction()">arrow_back</span>
+  <span class="material-icons" (click)="backAction()">arrow_back</span>
   }
   <p>Layers</p>
 </div>
 
 <div class="sidebar-component-content-container">
   @for (item of layers | async; track item) {
-    <tamu-gisc-layer-list-item [listItem]="item"></tamu-gisc-layer-list-item>
+  <tamu-gisc-layer-list-item [listItem]="item"></tamu-gisc-layer-list-item>
   }
 </div>

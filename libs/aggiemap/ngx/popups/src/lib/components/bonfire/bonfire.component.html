@@ -1,28 +1,28 @@
 <div class="popup-section">
   <div class="feature-style-1" tabindex="0">{{ data.attributes.Name }}</div>
   @if (data.attributes.Name !== 'Bonfire Memorial') {
-    <div class="feature-style-2" tabindex="0">Bonfire Memorial</div>
+  <div class="feature-style-2" tabindex="0">Bonfire Memorial</div>
   }
 </div>
 
 @if (medias?.length > 0) {
-  <div class="popup-section">
-    <swiper-container #swiperRef init="false">
-      @for (media of medias; track media) {
-        <swiper-slide [attr.data-src]="media">
-          <a [href]="media" target="_blank">
-            <img [src]="media" />
-          </a>
-        </swiper-slide>
-      }
-    </swiper-container>
-  </div>
+<div class="popup-section">
+  <swiper-container #swiperRef init="false">
+    @for (media of medias; track media) {
+    <swiper-slide [attr.data-src]="media">
+      <a [href]="media" target="_blank">
+        <img [src]="media" />
+      </a>
+    </swiper-slide>
+    }
+  </swiper-container>
+</div>
 }
 
 <div class="popup-section">
   <div [innerHTML]="data?.attributes?.Description  | markdownParse" class="trailer-2"></div>
 
   @if (directionsAvailable | async) {
-    <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
+  <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
   }
 </div>

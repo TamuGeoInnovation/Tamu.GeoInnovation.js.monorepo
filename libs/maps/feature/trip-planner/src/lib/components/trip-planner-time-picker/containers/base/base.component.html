@@ -5,5 +5,5 @@
 </select>
 
 @if ((timeMode | async) === 'leave' && requestedTime !== null) {
-  <tamu-gisc-date-time-picker [value]="requestedTime" [formatString]="'short'" [showIcon]="false" [minuteStep]="5" (changed)="setRequestedTime($event)"></tamu-gisc-date-time-picker>
+<tamu-gisc-date-time-picker [value]="requestedTime" [formatString]="'short'" [showIcon]="false" [minuteStep]="5" (changed)="setRequestedTime($event)"></tamu-gisc-date-time-picker>
 }

@@ -3,106 +3,65 @@
   single child so that there aren't groups with a single child, because it will break the cleanliness
   of the table -->
   @if (showGroupHeader) {
-    <div
-      class="element-parent-name"
-      tabindex="0"
-      role="button"
-      (click)="toggleExpanded()"
-      (keydown.enter)="toggleExpanded()"
-      (keydown.space)="toggleExpanded(); $event.preventDefault()"
-      >
-      <span class="material-icons">{{ expanded ? 'expand_more' : 'chevron_right' }}</span> {{ displayGroupTitle }}
-    </div>
+  <div class="element-parent-name" tabindex="0" role="button" (click)="toggleExpanded()" (keydown.enter)="toggleExpanded()" (keydown.space)="toggleExpanded(); $event.preventDefault()"><span class="material-icons">{{ expanded ? 'expand_more' : 'chevron_right' }}</span> {{ displayGroupTitle }}</div>
   }
 
   <!-- Safety First layers always use the hardcoded fallback regardless of element type -->
   @if (useSportsSafetyFirstFallback()) {
-    <div class="legend-info">
-      <div class="image-container">
-        <img [src]="getSportsSafetyFirstLegendSrc()" alt="Safety First icon" />
-      </div>
-      <div class="label">{{ getSportsSafetyFirstLegendLabel() }}</div>
+  <div class="legend-info">
+    <div class="image-container">
+      <img [src]="getSportsSafetyFirstLegendSrc()" alt="Safety First icon" />
     </div>
-  } @else {
-    @switch (element.type) {
-      <!-- For SymbolTable element type -->
-      @case ('symbol-table') {
-        <div class="element-group">
-          @for (info of infos | async; track info) {
-            <div class="legend-info" [hidden]="showGroupHeader && !expanded">
-              <div>
-                @switch ($any(info).type) {
-                  <!-- Support for infos with nested infos. This case will continue to recursively iterate through n-nested infos until reaching the last node. -->
-                  @case ('symbol-table') {
-                    <div>
-                      @if (holdsNestedTables(info)) {
-                        @for (subInfo of $any(info).infos; track subInfo) {
-                          <tamu-gisc-legend-element
-                            [element]="subInfo"
-                            [layer]="layer"
-                            [groupTitle]="$any(info).title"
-                            [deduplicateChildren]="deduplicateChildren"
-                            [respectDefinitionExpression]="respectDefinitionExpression"
-                            [hideGroupHeader]="hideGroupHeader"
-                          ></tamu-gisc-legend-element>
-                        }
-                      } @else {
-                        <tamu-gisc-legend-element
-                          [element]="info"
-                          [layer]="layer"
-                          [groupTitle]="groupTitle"
-                          [deduplicateChildren]="deduplicateChildren"
-                          [respectDefinitionExpression]="respectDefinitionExpression"
-                          [hideGroupHeader]="true"
-                        ></tamu-gisc-legend-element>
-                      }
-                      <!-- A unique value group's classes, listed under the layer's own title. The group heading is
-                      the renderer's field name, which means nothing to a visitor, so it is not shown. -->
-                    </div>
-                  }
-                  <!-- This case will be reached of every info node and will terminate either with an info.preview or info.src -->
-                  @default {
-                    <div>
-                      @if (hasLegendOverrideForInfo(info)) {
-                        <img
-                          class="image-container"
-                          [src]="resolveLegendIconSrc(info)"
-                          [ngStyle]="legendOverrideStyles"
-                          alt="Layer legend icon"
-                          />
-                      } @else {
-                        @switch ($any(info).preview !== undefined) {
-                          @case (true) {
-                            <div class="image-container" [elementInsert]="$any(info).preview"></div>
-                          }
-                          @case (false) {
-                            <img class="image-container" [src]="$any(info).src" [ngStyle]="{opacity: $any(info).opacity}" alt="Layer legend icon" />
-                          }
-                        }
-                      }
-                    </div>
-                  }
-                }
-              </div>
-              <!-- Apply the legend item from the parent group or child. A group of classes labels each class
-              itself, so it gets no label of its own. -->
-              @if (!isGroupOfClasses(info)) {
-                @if (useGroupTitleLabel) {
-                  <div class="group-title">{{ displayGroupTitle }}</div>
-                } @else {
-                  <div class="label">{{ info?.label }}</div>
-                }
-              }
-            </div>
+    <div class="label">{{ getSportsSafetyFirstLegendLabel() }}</div>
+  </div>
+  } @else { @switch (element.type) {
+  <!-- For SymbolTable element type -->
+  @case ('symbol-table') {
+  <div class="element-group">
+    @for (info of infos | async; track info) {
+    <div class="legend-info" [hidden]="showGroupHeader && !expanded">
+      <div>
+        @switch ($any(info).type) {
+        <!-- Support for infos with nested infos. This case will continue to recursively iterate through n-nested infos until reaching the last node. -->
+        @case ('symbol-table') {
+        <div>
+          @if (holdsNestedTables(info)) { @for (subInfo of $any(info).infos; track subInfo) {
+          <tamu-gisc-legend-element [element]="subInfo" [layer]="layer" [groupTitle]="$any(info).title" [deduplicateChildren]="deduplicateChildren" [respectDefinitionExpression]="respectDefinitionExpression" [hideGroupHeader]="hideGroupHeader"></tamu-gisc-legend-element>
+          } } @else {
+          <tamu-gisc-legend-element [element]="info" [layer]="layer" [groupTitle]="groupTitle" [deduplicateChildren]="deduplicateChildren" [respectDefinitionExpression]="respectDefinitionExpression" [hideGroupHeader]="true"></tamu-gisc-legend-element>
           }
+          <!-- A unique value group's classes, listed under the layer's own title. The group heading is
+                      the renderer's field name, which means nothing to a visitor, so it is not shown. -->
         </div>
-      }
-      <!-- Default printout -->
-      @default {
-        <div>Unsupported legend element type: {{ element.type }}</div>
-      }
+        }
+        <!-- This case will be reached of every info node and will terminate either with an info.preview or info.src -->
+        @default {
+        <div>
+          @if (hasLegendOverrideForInfo(info)) {
+          <img class="image-container" [src]="resolveLegendIconSrc(info)" [ngStyle]="legendOverrideStyles" alt="Layer legend icon" />
+          } @else { @switch ($any(info).preview !== undefined) { @case (true) {
+          <div class="image-container" [elementInsert]="$any(info).preview"></div>
+          } @case (false) {
+          <img class="image-container" [src]="$any(info).src" [ngStyle]="{opacity: $any(info).opacity}" alt="Layer legend icon" />
+          } } }
+        </div>
+        } }
+      </div>
+      <!-- Apply the legend item from the parent group or child. A group of classes labels each class
+              itself, so it gets no label of its own. -->
+      @if (!isGroupOfClasses(info)) { @if (useGroupTitleLabel) {
+      <div class="group-title">{{ displayGroupTitle }}</div>
+      } @else {
+      <div class="label">{{ info?.label }}</div>
+      } }
+    </div>
     }
+  </div>
   }
+  <!-- Default printout -->
+  @default {
+  <div>Unsupported legend element type: {{ element.type }}</div>
+  } } }
 
   <!-- Switch through the different element types. The default is a "not supported" message printout. -->
 </div>

@@ -6,30 +6,23 @@ published, so until then it keeps the notice it was already showing.
 Because the routes pipeline is cold, leaving this branch unrendered also means no request is made
 to that server.
 -->
-@if (busRoutesAvailable | async) {
-  @if ((routes | async) === null) {
-    <div class="flex flex-column justify-center align-center leader-2 trailer-2">
-      <div class="spinning-loader"></div>
-    </div>
-  }
-  @for (group of routes | async; track group) {
-    <div class="group">
-      <p class="group-name">{{ $any(group.identity).Name }}</p>
-      <div class="routes">
-        @for (route of group?.items; track route) {
-          <tamu-gisc-bus-route [route]="route" [selection]="selectionAction"></tamu-gisc-bus-route>
-        }
-      </div>
-    </div>
-  }
-} @else {
-  <div class="bus-routes-notice leader-1 trailer-2">
-    <span class="material-icons-outlined trailer-1">info</span>
-    <p>Bus routes are currently unavailable on Aggiemap. We apologize for the inconvenience.</p>
-    <p>
-      Visit <a href="https://transport.tamu.edu/busroutes/?utm_source=aggiemap" target="_blank">Transportation Services</a> for
-      bus routes.
-    </p>
+@if (busRoutesAvailable | async) { @if ((routes | async) === null) {
+<div class="flex flex-column justify-center align-center leader-2 trailer-2">
+  <div class="spinning-loader"></div>
+</div>
+} @for (group of routes | async; track group) {
+<div class="group">
+  <p class="group-name">{{ $any(group.identity).Name }}</p>
+  <div class="routes">
+    @for (route of group?.items; track route) {
+    <tamu-gisc-bus-route [route]="route" [selection]="selectionAction"></tamu-gisc-bus-route>
+    }
   </div>
+</div>
+} } @else {
+<div class="bus-routes-notice leader-1 trailer-2">
+  <span class="material-icons-outlined trailer-1">info</span>
+  <p>Bus routes are currently unavailable on Aggiemap. We apologize for the inconvenience.</p>
+  <p>Visit <a href="https://transport.tamu.edu/busroutes/?utm_source=aggiemap" target="_blank">Transportation Services</a> for bus routes.</p>
+</div>
 }
-

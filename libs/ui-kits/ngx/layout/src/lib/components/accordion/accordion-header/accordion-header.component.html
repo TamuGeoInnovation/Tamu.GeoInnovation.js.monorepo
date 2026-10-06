@@ -1,13 +1,10 @@
 <div class="title-container">
   <ng-content></ng-content>
   <div>
-    @switch ((state | async)?.expanded) {
-      @case (true) {
-        <div class="material-icons">remove</div>
-      }
-      @default {
-        <div class="material-icons">add</div>
-      }
-    }
+    @switch ((state | async)?.expanded) { @case (true) {
+    <div class="material-icons">remove</div>
+    } @default {
+    <div class="material-icons">add</div>
+    } }
   </div>
 </div>

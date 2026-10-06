@@ -11,11 +11,11 @@
   <div class="maps-page-header-titles">
     <h1 class="maps-page-title">{{ title }}</h1>
     @if (intro) {
-      <p class="maps-page-intro">{{ intro }}</p>
+    <p class="maps-page-intro">{{ intro }}</p>
     }
   </div>
 
   @if (showMainParking) {
-    <a class="button maroon" [routerLink]="mainParkingRoute">Main Campus Parking Map</a>
+  <a class="button maroon" [routerLink]="mainParkingRoute">Main Campus Parking Map</a>
   }
 </div>

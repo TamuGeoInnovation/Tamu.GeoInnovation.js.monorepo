@@ -8,10 +8,10 @@
 
   <tbody>
     @for (item of (filteredProps | async); track item) {
-      <tr>
-        <td>{{parsedAddressDict[item.key]}}</td>
-        <td>{{item.value}}</td>
-      </tr>
+    <tr>
+      <td>{{parsedAddressDict[item.key]}}</td>
+      <td>{{item.value}}</td>
+    </tr>
     }
   </tbody>
 </table>

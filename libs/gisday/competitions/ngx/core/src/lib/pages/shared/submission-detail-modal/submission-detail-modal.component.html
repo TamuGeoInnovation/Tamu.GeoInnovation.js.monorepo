@@ -11,10 +11,10 @@
           <span>{{ submission.created | date: 'short' }}</span>
         </div>
         @if (submission.resolvedIdentity) {
-          <div class="info-row">
-            <label>User:</label>
-            <span>{{ submission.resolvedIdentity }}</span>
-          </div>
+        <div class="info-row">
+          <label>User:</label>
+          <span>{{ submission.resolvedIdentity }}</span>
+        </div>
         }
         <div class="info-row">
           <label>Question:</label>
@@ -33,32 +33,32 @@
           <span>{{ submission.location.latitude }}, {{ submission.location.longitude }}</span>
         </div>
         @if (submission.sha256Hashes && submission.sha256Hashes.length > 0) {
-          <div class="info-row">
-            <label>SHA256 Hash{{ submission.sha256Hashes.length > 1 ? 'es' : '' }}:</label>
-            <div class="sha256-list">
-              @for (hash of submission.sha256Hashes; track hash) {
-                <span class="sha256-hash">{{ hash }}</span>
-              }
-            </div>
+        <div class="info-row">
+          <label>SHA256 Hash{{ submission.sha256Hashes.length > 1 ? 'es' : '' }}:</label>
+          <div class="sha256-list">
+            @for (hash of submission.sha256Hashes; track hash) {
+            <span class="sha256-hash">{{ hash }}</span>
+            }
           </div>
+        </div>
         }
       </div>
     </div>
   </div>
 
   @if (submission.location && mapConfig) {
-    <div class="form-section">
-      <div class="form-section-toolbar">
-        <div class="form-section-title">Submission Location</div>
-      </div>
-      <div class="form-section-body">
-        <div class="form-collection column">
-          <div class="map-wrapper">
-            <tamu-gisc-esri-map [config]="mapConfig"></tamu-gisc-esri-map>
-          </div>
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Submission Location</div>
+    </div>
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <div class="map-wrapper">
+          <tamu-gisc-esri-map [config]="mapConfig"></tamu-gisc-esri-map>
         </div>
       </div>
     </div>
+  </div>
   }
 
   <div class="form-section">
@@ -69,15 +69,13 @@
     <div class="form-section-body">
       <div class="form-collection column">
         <div class="image-gallery">
-          @if (images$ | async; as images) {
-            @for (image of images; track image) {
-              <a [href]="image.url" target="_blank" rel="noopener noreferrer">
-                <img [src]="image.url" alt="Submission image" class="submission-image" loading="lazy" />
-              </a>
-            }
-          } @else {
-            <div class="image-placeholder"></div>
-            <div class="image-placeholder"></div>
+          @if (images$ | async; as images) { @for (image of images; track image) {
+          <a [href]="image.url" target="_blank" rel="noopener noreferrer">
+            <img [src]="image.url" alt="Submission image" class="submission-image" loading="lazy" />
+          </a>
+          } } @else {
+          <div class="image-placeholder"></div>
+          <div class="image-placeholder"></div>
           }
         </div>
       </div>
@@ -85,20 +83,20 @@
   </div>
 
   @if (isAdmin) {
-    <div class="form-section leader-2">
-      <div class="form-section-body">
-        <div class="form-collection row">
-          <tamu-gisc-button [look]="'danger'" (click)="setValidationStatus(VALIDATION_STATUS.discarded)" [disabled]="submission.validationStatus === VALIDATION_STATUS.discarded" value="Discard">
-            <span class="material-icons">delete</span>
-          </tamu-gisc-button>
-          <tamu-gisc-button [look]="'warning'" (click)="setValidationStatus(VALIDATION_STATUS.unverified)" [disabled]="submission.validationStatus === VALIDATION_STATUS.unverified" value="Unverify">
-            <span class="material-icons">help</span>
-          </tamu-gisc-button>
-          <tamu-gisc-button [look]="'success'" (click)="setValidationStatus(VALIDATION_STATUS.verified)" [disabled]="submission.validationStatus === VALIDATION_STATUS.verified" value="Verify">
-            <span class="material-icons">check_circle</span>
-          </tamu-gisc-button>
-        </div>
+  <div class="form-section leader-2">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button [look]="'danger'" (click)="setValidationStatus(VALIDATION_STATUS.discarded)" [disabled]="submission.validationStatus === VALIDATION_STATUS.discarded" value="Discard">
+          <span class="material-icons">delete</span>
+        </tamu-gisc-button>
+        <tamu-gisc-button [look]="'warning'" (click)="setValidationStatus(VALIDATION_STATUS.unverified)" [disabled]="submission.validationStatus === VALIDATION_STATUS.unverified" value="Unverify">
+          <span class="material-icons">help</span>
+        </tamu-gisc-button>
+        <tamu-gisc-button [look]="'success'" (click)="setValidationStatus(VALIDATION_STATUS.verified)" [disabled]="submission.validationStatus === VALIDATION_STATUS.verified" value="Verify">
+          <span class="material-icons">check_circle</span>
+        </tamu-gisc-button>
       </div>
     </div>
+  </div>
   }
 </div>

@@ -1,21 +1,21 @@
 <form [formGroup]="builderForm" (ngSubmit)="createScenario()">
   @if ((isExisting | async) === false) {
-    <div class="form-section">
-      <div class="form-section-toolbar">
-        <div class="form-section-name">
-          <p>What workshop would you like to base this scenario on?</p>
-        </div>
-      </div>
-      <div class="form-section-body">
-        <div class="form-collection column">
-          <p>Upon creating a scenario based on a workshop, the available responses will be limited to those drawn in the chosen workshop.</p>
-          <tamu-gisc-select [value]="selectedWorkshop" [valueTemplate]="'guid'" [data]="workshops | async" [displayTemplate]="'title'" (changed)="setWorkshopScenario($event)"></tamu-gisc-select>
-        </div>
-        @if ((workshops | async)?.length === 0) {
-          <p>Currently there are no workshops</p>
-        }
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>What workshop would you like to base this scenario on?</p>
       </div>
     </div>
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <p>Upon creating a scenario based on a workshop, the available responses will be limited to those drawn in the chosen workshop.</p>
+        <tamu-gisc-select [value]="selectedWorkshop" [valueTemplate]="'guid'" [data]="workshops | async" [displayTemplate]="'title'" (changed)="setWorkshopScenario($event)"></tamu-gisc-select>
+      </div>
+      @if ((workshops | async)?.length === 0) {
+      <p>Currently there are no workshops</p>
+      }
+    </div>
+  </div>
   }
 
   <div class="form-section">
@@ -37,107 +37,104 @@
   </div>
 
   @if ((isExisting | async)) {
-    <div class="map-configuration-container">
-      <div class="map-configuration">
-        <div class="form-section">
-          <div class="form-section-toolbar">
-            <div class="form-section-name">
-              <p>Map Properties</p>
-            </div>
-          </div>
-          <div class="form-section-body">
-            <div class="form-collection column">
-              @if ((mapExtent$ | async) === null) {
-                <p>To set the initial map center and zoom adjust the preview map to the desired area and press the button below to record the extent.</p>
-                <p>If no extent is recorded for this scenario, the initial map center and zoom will be that of the previous snapshot/scenario in the workshop. <strong>Do not record a map extent if this is the desired effect.</strong></p>
-                <tamu-gisc-button [value]="'Record Initial Map Location'" (go)="recordExtent()"></tamu-gisc-button>
-              }
-              @if ((mapExtent$ | async) !== null) {
-                <p>An initial map center and zoom have been set. You can adjust the preview map to the desired area/region and update the recorded extent or clear the recorded extent.</p>
-                <p>With an extent recorded, the map view will snap to the saved area whenever the user switches to this scenario.</p>
-                <div class="form-collection row">
-                  <tamu-gisc-button [value]="'Update Initial Map Location'" (go)="recordExtent()" [disabled]="(mapViewExtentChanged$ | async) === false"></tamu-gisc-button>
-                  <tamu-gisc-button [value]="'Reset Initial Map Location'" look="secondary" (go)="clearExtent()"></tamu-gisc-button>
-                </div>
-              }
-            </div>
+  <div class="map-configuration-container">
+    <div class="map-configuration">
+      <div class="form-section">
+        <div class="form-section-toolbar">
+          <div class="form-section-name">
+            <p>Map Properties</p>
           </div>
         </div>
-        @if (this.selectedWorkshop) {
-          <div class="form-section">
-            <div class="form-section-toolbar">
-              <div class="form-section-name">
-                <p>Layers</p>
-              </div>
-            </div>
-            <tamu-gisc-tabs>
-              <tamu-gisc-tab label="Snapshot Layers">
-                <div class="leader-1 trailer-1">
-                  <p class="trailer-1">The following list represents pre-configured <a [routerLink]="['/admin/snapshots']">snapshots</a>. Each added snapshot to a scenario will add <strong>ALL</strong> of its constituent snapshot layers. The more snapshots are added to a scenario, the more layers a scenario needs to load and draw, and the less performant scenario becomes.</p>
-                  <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="snapshots" [referenceId]="'guid'">
-                    @for (snapshot of (allSnapshots | async); track snapshot) {
-                      <tamu-gisc-checkbox [label]="snapshot.title" [data]="snapshot"></tamu-gisc-checkbox>
-                    }
-                  </tamu-gisc-checkbox-group>
-                  @if ((allSnapshots | async)?.length === 0) {
-                    <p>There are no snapshots created yet.</p>
-                  }
-                </div>
-              </tamu-gisc-tab>
-              <tamu-gisc-tab label="Snapshot Responses">
-                <div class="leader-1 trailer-1">
-                  <p class="trailer-1">The following list represents workshop snapshots, with and without, participant submissions. Selecting a snapshot will add <strong>ALL</strong> of the snapshot's current (if any) and future responses and add them to this scenario as a separate layer. Hover over a snapshot in the list to preview the responses associated to that snapshot.</p>
-                  <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="snapshotResponses" [referenceId]="'guid'">
-                    @for (snapshot of (workshopSnapshots | async); track snapshot) {
-                      <tamu-gisc-checkbox [label]="snapshot.title" [data]="snapshot" (mouseover)="loadSnapshotResponsesPreview(snapshot)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
-                    }
-                  </tamu-gisc-checkbox-group>
-                  @if ((workshopSnapshots | async)?.length === 0) {
-                    <p>There are no snapshots for the associated workshop.</p>
-                  }
-                </div>
-              </tamu-gisc-tab>
-              <tamu-gisc-tab label="Scenario Responses">
-                <div class="leader-1 trailer-1">
-                  <p class="trailer-1">The following list represents workshop scenarios, with and without, participant submissions. Selecting a scenario will add <strong>ALL</strong> of the scenario's current (if any) and future responses and add them to this scenario as a separate layer. Hover over a scenario in the list to preview the responses associated to that scenario.</p>
-                  <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="scenarioResponses" [referenceId]="'guid'">
-                    @for (scenario of (workshopScenarios | async); track scenario) {
-                      <tamu-gisc-checkbox [label]="scenario.title" [data]="scenario" (mouseover)="loadScenarioResponsesPreview(scenario)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
-                    }
-                  </tamu-gisc-checkbox-group>
-                  @if ((workshopSnapshots | async)?.length === 0) {
-                    <p>There are no scenarios for the associated workshop.</p>
-                  }
-                </div>
-              </tamu-gisc-tab>
-            </tamu-gisc-tabs>
-          </div>
-        }
-      </div>
-      <div class="map-preview">
-        <div class="form-section">
-          <div class="form-section-toolbar">
-            <div class="form-section-name">
-              <p>Preview</p>
-            </div>
-          </div>
-          <div class="form-section-body">
+        <div class="form-section-body">
+          <div class="form-collection column">
+            @if ((mapExtent$ | async) === null) {
+            <p>To set the initial map center and zoom adjust the preview map to the desired area and press the button below to record the extent.</p>
+            <p>If no extent is recorded for this scenario, the initial map center and zoom will be that of the previous snapshot/scenario in the workshop. <strong>Do not record a map extent if this is the desired effect.</strong></p>
+            <tamu-gisc-button [value]="'Record Initial Map Location'" (go)="recordExtent()"></tamu-gisc-button>
+            } @if ((mapExtent$ | async) !== null) {
+            <p>An initial map center and zoom have been set. You can adjust the preview map to the desired area/region and update the recorded extent or clear the recorded extent.</p>
+            <p>With an extent recorded, the map view will snap to the saved area whenever the user switches to this scenario.</p>
             <div class="form-collection row">
-              <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
+              <tamu-gisc-button [value]="'Update Initial Map Location'" (go)="recordExtent()" [disabled]="(mapViewExtentChanged$ | async) === false"></tamu-gisc-button>
+              <tamu-gisc-button [value]="'Reset Initial Map Location'" look="secondary" (go)="clearExtent()"></tamu-gisc-button>
             </div>
+            }
+          </div>
+        </div>
+      </div>
+      @if (this.selectedWorkshop) {
+      <div class="form-section">
+        <div class="form-section-toolbar">
+          <div class="form-section-name">
+            <p>Layers</p>
+          </div>
+        </div>
+        <tamu-gisc-tabs>
+          <tamu-gisc-tab label="Snapshot Layers">
+            <div class="leader-1 trailer-1">
+              <p class="trailer-1">The following list represents pre-configured <a [routerLink]="['/admin/snapshots']">snapshots</a>. Each added snapshot to a scenario will add <strong>ALL</strong> of its constituent snapshot layers. The more snapshots are added to a scenario, the more layers a scenario needs to load and draw, and the less performant scenario becomes.</p>
+              <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="snapshots" [referenceId]="'guid'">
+                @for (snapshot of (allSnapshots | async); track snapshot) {
+                <tamu-gisc-checkbox [label]="snapshot.title" [data]="snapshot"></tamu-gisc-checkbox>
+                }
+              </tamu-gisc-checkbox-group>
+              @if ((allSnapshots | async)?.length === 0) {
+              <p>There are no snapshots created yet.</p>
+              }
+            </div>
+          </tamu-gisc-tab>
+          <tamu-gisc-tab label="Snapshot Responses">
+            <div class="leader-1 trailer-1">
+              <p class="trailer-1">The following list represents workshop snapshots, with and without, participant submissions. Selecting a snapshot will add <strong>ALL</strong> of the snapshot's current (if any) and future responses and add them to this scenario as a separate layer. Hover over a snapshot in the list to preview the responses associated to that snapshot.</p>
+              <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="snapshotResponses" [referenceId]="'guid'">
+                @for (snapshot of (workshopSnapshots | async); track snapshot) {
+                <tamu-gisc-checkbox [label]="snapshot.title" [data]="snapshot" (mouseover)="loadSnapshotResponsesPreview(snapshot)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
+                }
+              </tamu-gisc-checkbox-group>
+              @if ((workshopSnapshots | async)?.length === 0) {
+              <p>There are no snapshots for the associated workshop.</p>
+              }
+            </div>
+          </tamu-gisc-tab>
+          <tamu-gisc-tab label="Scenario Responses">
+            <div class="leader-1 trailer-1">
+              <p class="trailer-1">The following list represents workshop scenarios, with and without, participant submissions. Selecting a scenario will add <strong>ALL</strong> of the scenario's current (if any) and future responses and add them to this scenario as a separate layer. Hover over a scenario in the list to preview the responses associated to that scenario.</p>
+              <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="scenarioResponses" [referenceId]="'guid'">
+                @for (scenario of (workshopScenarios | async); track scenario) {
+                <tamu-gisc-checkbox [label]="scenario.title" [data]="scenario" (mouseover)="loadScenarioResponsesPreview(scenario)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
+                }
+              </tamu-gisc-checkbox-group>
+              @if ((workshopSnapshots | async)?.length === 0) {
+              <p>There are no scenarios for the associated workshop.</p>
+              }
+            </div>
+          </tamu-gisc-tab>
+        </tamu-gisc-tabs>
+      </div>
+      }
+    </div>
+    <div class="map-preview">
+      <div class="form-section">
+        <div class="form-section-toolbar">
+          <div class="form-section-name">
+            <p>Preview</p>
+          </div>
+        </div>
+        <div class="form-section-body">
+          <div class="form-collection row">
+            <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
           </div>
         </div>
       </div>
     </div>
+  </div>
   }
 
   <div class="form-collection row">
     @if ((isExisting | async) === false) {
-      <tamu-gisc-button type="submit" value="Publish" [disabled]="!builderForm.valid"></tamu-gisc-button>
-    }
-
-    @if (isExisting | async) {
-      <tamu-gisc-button type="submit" value="Update" [disabled]="!builderForm.valid"></tamu-gisc-button>
+    <tamu-gisc-button type="submit" value="Publish" [disabled]="!builderForm.valid"></tamu-gisc-button>
+    } @if (isExisting | async) {
+    <tamu-gisc-button type="submit" value="Update" [disabled]="!builderForm.valid"></tamu-gisc-button>
     }
   </div>
 </form>

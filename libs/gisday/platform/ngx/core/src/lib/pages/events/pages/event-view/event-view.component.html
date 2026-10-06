@@ -12,84 +12,80 @@
         <p><br /></p>
         <div id="links-container">
           @for (day of (activeSeason$ | async)?.days; track day; let i = $index) {
-            <p>
-              <a [routerLink]="['/sessions']" [fragment]="'day' + (i+1) ">Day {{i + 1}}</a>
-            </p>
+          <p>
+            <a [routerLink]="['/sessions']" [fragment]="'day' + (i+1) ">Day {{i + 1}}</a>
+          </p>
           }
 
           <!-- <p>
           <a class="md-link" ui-sref="agenda()" href="#!/agenda">Agenda View</a>
         </p> -->
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="trailer-3" id="sessions-container">
-    @if (activeSeason$ | async; as season;) {
+    <div class="trailer-3" id="sessions-container">
+      @if (activeSeason$ | async; as season;) {
       <div id="default-content">
         @if ((userInfo$ | async) && (userProfileComplete$ | async) === false) {
-          <div class="info-block warning">
-            <p>You must complete your TxGIS Day <a routerLink="/account/details">profile</a> before registering for events.</p>
-          </div>
-        }
-        @for (day of season?.days; track day; let i = $index) {
-          <tamu-gisc-season-day-card [seasonDay]="day" [index]="i" [tags]="activeTagFilters$ | async" [organizations]="activeOrgFilters$ | async" [rsvps]="rsvps$ | async" (register)="registerEvent($event)" (unregister)="unregisterEvent($event)"></tamu-gisc-season-day-card>
+        <div class="info-block warning">
+          <p>You must complete your TxGIS Day <a routerLink="/account/details">profile</a> before registering for events.</p>
+        </div>
+        } @for (day of season?.days; track day; let i = $index) {
+        <tamu-gisc-season-day-card [seasonDay]="day" [index]="i" [tags]="activeTagFilters$ | async" [organizations]="activeOrgFilters$ | async" [rsvps]="rsvps$ | async" (register)="registerEvent($event)" (unregister)="unregisterEvent($event)"></tamu-gisc-season-day-card>
         }
       </div>
-    }
+      }
 
-    <div id="filters-container">
-      <div id="filter-toggle" class="info-block" [ngClass]="{'notice': (activeFilterCount$ | async) > 0}" (click)="toggleFilters()"><span class="material-icons">filter_list</span>Filters @if ((activeFilterCount$ | async) > 0) {
-      <strong>({{activeFilterCount$ | async}} active)</strong>
-    }</div>
+      <div id="filters-container">
+        <div id="filter-toggle" class="info-block" [ngClass]="{'notice': (activeFilterCount$ | async) > 0}" (click)="toggleFilters()">
+          <span class="material-icons">filter_list</span>Filters @if ((activeFilterCount$ | async) > 0) {
+          <strong>({{activeFilterCount$ | async}} active)</strong>
+          }
+        </div>
 
-    <form [formGroup]="form" id="filters-inner" [ngClass]="{expanded: filtersVisible$ | async}">
-      <div id="tag-filters-container">
-        <div class="card filters">
-          <h2 class="trailer-1">Tags</h2>
+        <form [formGroup]="form" id="filters-inner" [ngClass]="{expanded: filtersVisible$ | async}">
+          <div id="tag-filters-container">
+            <div class="card filters">
+              <h2 class="trailer-1">Tags</h2>
 
-          @if ((tags$ | async); as tags) {
-            @if (tags?.length > 0) {
+              @if ((tags$ | async); as tags) { @if (tags?.length > 0) {
               <div class="row">
                 <tamu-gisc-checkbox-group referenceId="guid" formControlName="tags">
                   @for (tag of tags; track tag) {
-                    <tamu-gisc-checkbox [data]="tag" [label]="tag.name"></tamu-gisc-checkbox>
+                  <tamu-gisc-checkbox [data]="tag" [label]="tag.name"></tamu-gisc-checkbox>
                   }
                 </tamu-gisc-checkbox-group>
               </div>
-            } @else {
+              } @else {
               <p class="row">There are no tags.</p>
-            }
-          } @else {
-            <div class="loader small"></div>
-          }
-        </div>
-      </div>
+              } } @else {
+              <div class="loader small"></div>
+              }
+            </div>
+          </div>
 
-      <div id="organization-filters-container">
-        <div class="card filters">
-          <h2 class="trailer-1">Organizations</h2>
+          <div id="organization-filters-container">
+            <div class="card filters">
+              <h2 class="trailer-1">Organizations</h2>
 
-          @if ((organizations$ | async); as orgs) {
-            @if (orgs?.length > 0) {
+              @if ((organizations$ | async); as orgs) { @if (orgs?.length > 0) {
               <div class="row">
                 <tamu-gisc-checkbox-group referenceId="guid" formControlName="organizations">
                   @for (org of orgs; track org) {
-                    <tamu-gisc-checkbox [data]="org" [label]="org.name"></tamu-gisc-checkbox>
+                  <tamu-gisc-checkbox [data]="org" [label]="org.name"></tamu-gisc-checkbox>
                   }
                 </tamu-gisc-checkbox-group>
               </div>
-            } @else {
+              } @else {
               <p class="row">There are no organizations.</p>
-            }
-          } @else {
-            <div class="loader small"></div>
-          }
-        </div>
+              } } @else {
+              <div class="loader small"></div>
+              }
+            </div>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   </div>
-</div>
-</div>
 </section>
-

@@ -9,41 +9,36 @@
     </div>
 
     <div class="form-section-body" id="season-list">
-      @if (($entities | async); as seasons) {
-        @for (season of seasons; track season) {
-          <div class="season-row flex flex-row justify-around align-center" [routerLink]="['edit', season.guid]">
-            <div class="season-year">
-              <p class="value">{{season?.year}}</p>
-              <p class="description">Year</p>
-            </div>
-            <div class="season-date-range">
-              @if (season?.days && season?.days.length > 0) {
-                <p class="value">
-                  @for (day of season?.days; track day; let last = $last) {
-                    <span>{{day.date | date : 'MMM. d'}}{{last === false ? ', ': ''}}</span>
-                  }
-                </p>
-              } @else {
-                <div class="value">No date range set for this season</div>
-              }
-              <p class="description">Days</p>
-            </div>
-            <div class="season-status">
-              <div class="value">
-                @switch (season?.active) {
-                  @case (true) {
-                    <p class="active">Active</p>
-                  }
-                  @default {
-                    <p class="disabled">Disabled</p>
-                  }
-                }
-              </div>
-              <p class="description">Status</p>
-            </div>
+      @if (($entities | async); as seasons) { @for (season of seasons; track season) {
+      <div class="season-row flex flex-row justify-around align-center" [routerLink]="['edit', season.guid]">
+        <div class="season-year">
+          <p class="value">{{season?.year}}</p>
+          <p class="description">Year</p>
+        </div>
+        <div class="season-date-range">
+          @if (season?.days && season?.days.length > 0) {
+          <p class="value">
+            @for (day of season?.days; track day; let last = $last) {
+            <span>{{day.date | date : 'MMM. d'}}{{last === false ? ', ': ''}}</span>
+            }
+          </p>
+          } @else {
+          <div class="value">No date range set for this season</div>
+          }
+          <p class="description">Days</p>
+        </div>
+        <div class="season-status">
+          <div class="value">
+            @switch (season?.active) { @case (true) {
+            <p class="active">Active</p>
+            } @default {
+            <p class="disabled">Disabled</p>
+            } }
           </div>
-        }
-      }
+          <p class="description">Status</p>
+        </div>
+      </div>
+      } }
 
       <ng-template #noSeasons> There are no seasons yet. Add one to get started. </ng-template>
     </div>

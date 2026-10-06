@@ -1,49 +1,44 @@
 <div id="direction-results">
   <!-- Directions Overview  -->
   @if (result?.directions && !result?.isProcessing && !result?.isError) {
-    <div class="directions-overview">
-      <div class="directions-overview-item">
-        <div class="quantity">{{ result?.directions.totalTime.toFixed(0) }}</div>
-        <div class="unit">Minutes</div>
-      </div>
-      <div class="divider"></div>
-      <div class="directions-overview-item">
-        <div class="quantity">{{ result?.directions.totalLength.toFixed(2) }}</div>
-        <div class="unit">Miles</div>
-      </div>
+  <div class="directions-overview">
+    <div class="directions-overview-item">
+      <div class="quantity">{{ result?.directions.totalTime.toFixed(0) }}</div>
+      <div class="unit">Minutes</div>
     </div>
-  }
-
-  @if (result && result?.isFulfilled) {
-    <tamu-gisc-trip-planner-directions-actions></tamu-gisc-trip-planner-directions-actions>
+    <div class="divider"></div>
+    <div class="directions-overview-item">
+      <div class="quantity">{{ result?.directions.totalLength.toFixed(2) }}</div>
+      <div class="unit">Miles</div>
+    </div>
+  </div>
+  } @if (result && result?.isFulfilled) {
+  <tamu-gisc-trip-planner-directions-actions></tamu-gisc-trip-planner-directions-actions>
   }
 
   <!-- User Instructions  -->
   @if (result?.isProcessing || !result?.directions || result?.isError) {
-    <div id="direction-feedback">
-      @if (!result?.directions && !result?.isError && !result?.isProcessing) {
-        <p>Please select two points for written step-by-step directions.</p>
-      }
-      @if (result?.isError && !result?.isProcessing) {
-        <p class="error">No reasonable route was found! Please try again with different points.</p>
-      }
-      @if (result?.isProcessing) {
-        <div class="spinning-loader"></div>
-      }
-      @if (result?.isProcessing) {
-        <p>Calculating route. Please wait...</p>
-      }
-    </div>
+  <div id="direction-feedback">
+    @if (!result?.directions && !result?.isError && !result?.isProcessing) {
+    <p>Please select two points for written step-by-step directions.</p>
+    } @if (result?.isError && !result?.isProcessing) {
+    <p class="error">No reasonable route was found! Please try again with different points.</p>
+    } @if (result?.isProcessing) {
+    <div class="spinning-loader"></div>
+    } @if (result?.isProcessing) {
+    <p>Calculating route. Please wait...</p>
+    }
+  </div>
   }
 
   <!-- Directions List -->
   @if (result?.directions && result?.modeSwitches && !result?.isProcessing && !result?.isError) {
-    <div>
-      @for (mode of result?.modeSwitches; track mode; let i = $index) {
-        <div class="switch-container">
-          <tamu-gisc-trip-planner-mode-switch [modeSwitch]="mode" [result]="result"></tamu-gisc-trip-planner-mode-switch>
-        </div>
-      }
+  <div>
+    @for (mode of result?.modeSwitches; track mode; let i = $index) {
+    <div class="switch-container">
+      <tamu-gisc-trip-planner-mode-switch [modeSwitch]="mode" [result]="result"></tamu-gisc-trip-planner-mode-switch>
     </div>
+    }
+  </div>
   }
 </div>

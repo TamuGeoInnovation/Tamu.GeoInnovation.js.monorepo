@@ -2,23 +2,21 @@
   <div class="column">{{snapshot.title}}</div>
 
   @if ((snapshotWorkshopsCount | async) > 1) {
-    <div class="column">
-      <a [routerLink]="['/admin/workshops/edit/', (firstWorkshop | async)?.guid]">{{(firstWorkshop | async)?.title}}</a> &nbsp; and &nbsp;
-      <tamu-gisc-tooltip positioningStrategy="fixed" width="15rem">
-        <tamu-gisc-tooltip-trigger><div class="linked-text">{{(snapshotWorkshopsCount | async) -1}} other(s)</div></tamu-gisc-tooltip-trigger>
-        <div class="remaining-workshops-list">
-          @for (ws of remainingWorkshops | async; track ws) {
-            <a [routerLink]="['/admin/workshops/edit/', ws.guid]">{{ws.title}}</a>
-          }
-        </div>
-      </tamu-gisc-tooltip>
-    </div>
-  }
-  @if ((snapshotWorkshopsCount | async) === 1) {
-    <div class="column"><a [routerLink]="['/admin/workshops/edit/', (firstWorkshop | async)?.guid]">{{(firstWorkshop | async)?.title}}</a></div>
-  }
-  @if ((snapshotWorkshopsCount | async) === 0) {
-    <div class="column"></div>
+  <div class="column">
+    <a [routerLink]="['/admin/workshops/edit/', (firstWorkshop | async)?.guid]">{{(firstWorkshop | async)?.title}}</a> &nbsp; and &nbsp;
+    <tamu-gisc-tooltip positioningStrategy="fixed" width="15rem">
+      <tamu-gisc-tooltip-trigger><div class="linked-text">{{(snapshotWorkshopsCount | async) -1}} other(s)</div></tamu-gisc-tooltip-trigger>
+      <div class="remaining-workshops-list">
+        @for (ws of remainingWorkshops | async; track ws) {
+        <a [routerLink]="['/admin/workshops/edit/', ws.guid]">{{ws.title}}</a>
+        }
+      </div>
+    </tamu-gisc-tooltip>
+  </div>
+  } @if ((snapshotWorkshopsCount | async) === 1) {
+  <div class="column"><a [routerLink]="['/admin/workshops/edit/', (firstWorkshop | async)?.guid]">{{(firstWorkshop | async)?.title}}</a></div>
+  } @if ((snapshotWorkshopsCount | async) === 0) {
+  <div class="column"></div>
   }
 
   <div class="column table-actions">

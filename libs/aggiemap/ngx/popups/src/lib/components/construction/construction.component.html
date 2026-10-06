@@ -7,10 +7,9 @@
   <div class="feature-style-2" tabindex="0"><strong>Start Date</strong>: {{ startDate | date: 'longDate' }}</div>
   <div class="feature-style-2" tabindex="0"><strong>End Date</strong>: {{ endDate | date: 'longDate' }}</div>
   @if (showContactName) {
-    <div class="feature-style-2" tabindex="0"><strong>Contact Name</strong>: {{ contactName }}</div>
-  }
-  @if (showContactInfo) {
-    <div class="feature-style-2" tabindex="0"><strong>Contact Info</strong>: {{ contactInfo }}</div>
+  <div class="feature-style-2" tabindex="0"><strong>Contact Name</strong>: {{ contactName }}</div>
+  } @if (showContactInfo) {
+  <div class="feature-style-2" tabindex="0"><strong>Contact Info</strong>: {{ contactInfo }}</div>
   }
   <div class="feature-style-2" tabindex="0"><strong>Notes</strong>: {{ notes }}</div>
 </div>

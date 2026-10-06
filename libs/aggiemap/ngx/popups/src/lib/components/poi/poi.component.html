@@ -1,10 +1,10 @@
 <swiper-container #swiperRef init="false">
   @for (media of medias; track media) {
-    <swiper-slide [attr.data-src]="media">
-      <a [href]="media" target="_blank">
-        <img [src]="media" />
-      </a>
-    </swiper-slide>
+  <swiper-slide [attr.data-src]="media">
+    <a [href]="media" target="_blank">
+      <img [src]="media" />
+    </a>
+  </swiper-slide>
   }
 </swiper-container>
 
@@ -16,6 +16,6 @@
   <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
 
   @if (directionsAvailable | async) {
-    <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
+  <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
   }
 </div>

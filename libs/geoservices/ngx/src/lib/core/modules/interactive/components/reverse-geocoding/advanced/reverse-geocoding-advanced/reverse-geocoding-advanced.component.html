@@ -28,24 +28,22 @@
   </form>
 </div>
 
-@if ((result | async) !== null && (resultError | async) === false;) {
-  @if (result | async; as res) {
-    <div [@inOutAnimation] class="leader-3">
-      <h2 class="section-header">Results</h2>
-      <tamu-gisc-accordion [expanded]="true">
-        <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
-        <tamu-gisc-accordion-content>
-          <tamu-gisc-status-result-table [status]="res.data"></tamu-gisc-status-result-table>
-        </tamu-gisc-accordion-content>
-      </tamu-gisc-accordion>
-      <tamu-gisc-accordion [expanded]="true">
-        <tamu-gisc-accordion-header>Result</tamu-gisc-accordion-header>
-        <tamu-gisc-accordion-content>
-          @for (reverseGeocode of res.data?.results; track reverseGeocode) {
-            <tamu-gisc-reverse-geocoding-result-table [result]="reverseGeocode"></tamu-gisc-reverse-geocoding-result-table>
-          }
-        </tamu-gisc-accordion-content>
-      </tamu-gisc-accordion>
-    </div>
-  }
-}
+@if ((result | async) !== null && (resultError | async) === false;) { @if (result | async; as res) {
+<div [@inOutAnimation] class="leader-3">
+  <h2 class="section-header">Results</h2>
+  <tamu-gisc-accordion [expanded]="true">
+    <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
+    <tamu-gisc-accordion-content>
+      <tamu-gisc-status-result-table [status]="res.data"></tamu-gisc-status-result-table>
+    </tamu-gisc-accordion-content>
+  </tamu-gisc-accordion>
+  <tamu-gisc-accordion [expanded]="true">
+    <tamu-gisc-accordion-header>Result</tamu-gisc-accordion-header>
+    <tamu-gisc-accordion-content>
+      @for (reverseGeocode of res.data?.results; track reverseGeocode) {
+      <tamu-gisc-reverse-geocoding-result-table [result]="reverseGeocode"></tamu-gisc-reverse-geocoding-result-table>
+      }
+    </tamu-gisc-accordion-content>
+  </tamu-gisc-accordion>
+</div>
+} }

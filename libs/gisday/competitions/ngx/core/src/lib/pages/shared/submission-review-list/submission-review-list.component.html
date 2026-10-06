@@ -13,10 +13,9 @@
     <ngx-datatable-column name="SHA256" [width]="150" [resizeable]="true">
       <ng-template let-row="row" ngx-datatable-cell-template>
         @if (row.sha256Hashes && row.sha256Hashes.length > 0) {
-          <span [title]="row.sha256Hashes.join(', ')"> {{ row.sha256Hashes.length }} hash{{ row.sha256Hashes.length > 1 ? 'es' : '' }} </span>
-        }
-        @if (!row.sha256Hashes || row.sha256Hashes.length === 0) {
-          <span>—</span>
+        <span [title]="row.sha256Hashes.join(', ')"> {{ row.sha256Hashes.length }} hash{{ row.sha256Hashes.length > 1 ? 'es' : '' }} </span>
+        } @if (!row.sha256Hashes || row.sha256Hashes.length === 0) {
+        <span>—</span>
         }
       </ng-template>
     </ngx-datatable-column>

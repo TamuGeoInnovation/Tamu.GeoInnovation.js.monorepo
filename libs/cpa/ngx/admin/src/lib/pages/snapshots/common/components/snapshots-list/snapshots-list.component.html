@@ -1,27 +1,24 @@
 @if ((snapshots | async) === null) {
-  <div class="spinning-loader"></div>
+<div class="spinning-loader"></div>
+} @else { @if ((snapshots | async).length === 0) {
+<div>
+  <p class="leader-1 trailer-1">There are no snapshots. <a [routerLink]="['create']">Get started.</a></p>
+</div>
 } @else {
-  @if ((snapshots | async).length === 0) {
-    <div>
-      <p class="leader-1 trailer-1">There are no snapshots. <a [routerLink]="['create']">Get started.</a></p>
-    </div>
-  } @else {
-    <div class="flex flex-column align-center">
-      <div class="floating-table">
-        <div class="floating-table-header">
-          <div class="floating-row">
-            <div class="column">Workshop</div>
-            <div class="column">Name</div>
-            <div class="column"></div>
-          </div>
-        </div>
-        <div class="floating-table-body">
-          @for (snapshot of snapshots | async; track snapshot) {
-            <tamu-gisc-snapshot-list-item [snapshot]="snapshot"></tamu-gisc-snapshot-list-item>
-          }
-        </div>
+<div class="flex flex-column align-center">
+  <div class="floating-table">
+    <div class="floating-table-header">
+      <div class="floating-row">
+        <div class="column">Workshop</div>
+        <div class="column">Name</div>
+        <div class="column"></div>
       </div>
     </div>
-  }
-}
-
+    <div class="floating-table-body">
+      @for (snapshot of snapshots | async; track snapshot) {
+      <tamu-gisc-snapshot-list-item [snapshot]="snapshot"></tamu-gisc-snapshot-list-item>
+      }
+    </div>
+  </div>
+</div>
+} }

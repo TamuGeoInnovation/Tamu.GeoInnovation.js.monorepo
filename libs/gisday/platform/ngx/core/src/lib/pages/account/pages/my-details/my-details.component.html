@@ -1,13 +1,11 @@
 @if (signedOnEntityHasCompletedInfo$ | async) {
-  <div class="info-block success">
-    <p><strong>Your TxGIS Day profile is complete!</strong> You can now register for <a routerLink="/sessions">sessions</a>.</p>
-  </div>
-}
-
-@if ((signedOnEntityHasCompletedInfo$ | async) === false) {
-  <div class="info-block warning">
-    <p><strong>Your TxGIS Day profile is incomplete!</strong> You must complete your profile before being able to register for <a routerLink="/sessions">sessions</a>.</p>
-  </div>
+<div class="info-block success">
+  <p><strong>Your TxGIS Day profile is complete!</strong> You can now register for <a routerLink="/sessions">sessions</a>.</p>
+</div>
+} @if ((signedOnEntityHasCompletedInfo$ | async) === false) {
+<div class="info-block warning">
+  <p><strong>Your TxGIS Day profile is incomplete!</strong> You must complete your profile before being able to register for <a routerLink="/sessions">sessions</a>.</p>
+</div>
 }
 
 <form [formGroup]="form" (ngSubmit)="updateUserInfo()">
@@ -51,84 +49,80 @@
 
   <ng-container formGroupName="user_metadata">
     @if ((selectedParticipantType$ | async) === 'student') {
-      <div class="form-section leader-1" formGroupName="education">
-        <div class="form-section-toolbar">
-          <div class="form-section-title">Student Information</div>
+    <div class="form-section leader-1" formGroupName="education">
+      <div class="form-section-toolbar">
+        <div class="form-section-title">Student Information</div>
+      </div>
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <p class="trailer-1">Select the educational institution which you attend.</p>
+          <tamu-gisc-select formControlName="institution" [data]="universities$ | async" valueTemplate="guid" displayTemplate="name" placeholder="Select Institution"> </tamu-gisc-select>
         </div>
-        <div class="form-section-body">
-          <div class="form-collection column">
-            <p class="trailer-1">Select the educational institution which you attend.</p>
-            <tamu-gisc-select formControlName="institution" [data]="universities$ | async" valueTemplate="guid" displayTemplate="name" placeholder="Select Institution"> </tamu-gisc-select>
-          </div>
-          <div class="form-collection column pad-top">
-            <tamu-gisc-textbox formControlName="id" placeholder="Student ID" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-          </div>
-          @if (otherInstitutionSelected$ | async) {
-            <div class="form-collection column">
-              <p class="trailer-1">You've indicated <strong>other</strong> as the institution which you attend. Please provide the name.</p>
-              <tamu-gisc-textbox formControlName="otherInstitution" placeholder="Institution Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-            </div>
-          }
-          <div class="form-collection column">
-            <tamu-gisc-textbox formControlName="fieldOfStudy" placeholder="Field of Study" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-          </div>
-          <div class="form-collection column">
-            <tamu-gisc-textbox formControlName="classification" placeholder="Classification" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-          </div>
+        <div class="form-collection column pad-top">
+          <tamu-gisc-textbox formControlName="id" placeholder="Student ID" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+        @if (otherInstitutionSelected$ | async) {
+        <div class="form-collection column">
+          <p class="trailer-1">You've indicated <strong>other</strong> as the institution which you attend. Please provide the name.</p>
+          <tamu-gisc-textbox formControlName="otherInstitution" placeholder="Institution Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+        }
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="fieldOfStudy" placeholder="Field of Study" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="classification" placeholder="Classification" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         </div>
       </div>
-    }
-
-    @if ((selectedParticipantType$ | async) === 'industry') {
-      <div class="form-section leader-1" formGroupName="occupation">
-        <div class="form-section-toolbar">
-          <div class="form-section-title">Employment Information</div>
+    </div>
+    } @if ((selectedParticipantType$ | async) === 'industry') {
+    <div class="form-section leader-1" formGroupName="occupation">
+      <div class="form-section-toolbar">
+        <div class="form-section-title">Employment Information</div>
+      </div>
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <p class="trailer-1">Select your employer from the following list</p>
+          <tamu-gisc-select formControlName="employer" [data]="organizations$ | async" valueTemplate="guid" displayTemplate="name" placeholder="Select Employer"> </tamu-gisc-select>
         </div>
-        <div class="form-section-body">
-          <div class="form-collection column">
-            <p class="trailer-1">Select your employer from the following list</p>
-            <tamu-gisc-select formControlName="employer" [data]="organizations$ | async" valueTemplate="guid" displayTemplate="name" placeholder="Select Employer"> </tamu-gisc-select>
-          </div>
-          @if (otherEmployerSelected$ | async) {
-            <div class="form-collection column">
-              <p class="trailer-1">You've indicated <strong>other</strong> as your employer. Please provide the name.</p>
-              <tamu-gisc-textbox formControlName="otherEmployer" placeholder="Employer Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-            </div>
-          }
-          <div class="form-collection column">
-            <tamu-gisc-textbox formControlName="department" placeholder="Department" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-          </div>
-          <div class="form-collection column">
-            <tamu-gisc-textbox formControlName="position" placeholder="Position" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-          </div>
+        @if (otherEmployerSelected$ | async) {
+        <div class="form-collection column">
+          <p class="trailer-1">You've indicated <strong>other</strong> as your employer. Please provide the name.</p>
+          <tamu-gisc-textbox formControlName="otherEmployer" placeholder="Employer Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+        }
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="department" placeholder="Department" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="position" placeholder="Position" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         </div>
       </div>
-    }
-
-    @if ((selectedParticipantType$ | async) === 'academia') {
-      <div class="form-section leader-1" formGroupName="occupation">
-        <div class="form-section-toolbar">
-          <div class="form-section-title">Position Information</div>
+    </div>
+    } @if ((selectedParticipantType$ | async) === 'academia') {
+    <div class="form-section leader-1" formGroupName="occupation">
+      <div class="form-section-toolbar">
+        <div class="form-section-title">Position Information</div>
+      </div>
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <p class="trailer-1">Select your institution from the following list</p>
+          <tamu-gisc-select formControlName="employer" [data]="universities$| async" valueTemplate="guid" displayTemplate="name" placeholder="Select Institution"> </tamu-gisc-select>
         </div>
-        <div class="form-section-body">
-          <div class="form-collection column">
-            <p class="trailer-1">Select your institution from the following list</p>
-            <tamu-gisc-select formControlName="employer" [data]="universities$| async" valueTemplate="guid" displayTemplate="name" placeholder="Select Institution"> </tamu-gisc-select>
-          </div>
-          @if (otherEmployerSelected$ | async) {
-            <div class="form-collection column">
-              <p class="trailer-1">You've indicated <strong>other</strong> as your institution. Please provide the name.</p>
-              <tamu-gisc-textbox formControlName="otherEmployer" placeholder="Institution Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-            </div>
-          }
-          <div class="form-collection column">
-            <tamu-gisc-textbox formControlName="department" placeholder="College/Department" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-          </div>
-          <div class="form-collection column">
-            <tamu-gisc-textbox formControlName="position" placeholder="Position" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-          </div>
+        @if (otherEmployerSelected$ | async) {
+        <div class="form-collection column">
+          <p class="trailer-1">You've indicated <strong>other</strong> as your institution. Please provide the name.</p>
+          <tamu-gisc-textbox formControlName="otherEmployer" placeholder="Institution Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+        }
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="department" placeholder="College/Department" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="position" placeholder="Position" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         </div>
       </div>
+    </div>
     }
   </ng-container>
 

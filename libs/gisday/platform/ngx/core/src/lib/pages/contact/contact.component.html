@@ -42,16 +42,14 @@
 
                   <div class="form-collection column">
                     @if ((formStatus | async) !== 'sent') {
-                      <tamu-gisc-button type="submit" [value]="buttonText | async " [disabled]="(formStatus | async) === 'sending' || form.invalid"></tamu-gisc-button>
+                    <tamu-gisc-button type="submit" [value]="buttonText | async " [disabled]="(formStatus | async) === 'sending' || form.invalid"></tamu-gisc-button>
                     }
 
                     <div class="form-status-messages leader-1">
                       @if ((formStatus | async) === 'error') {
-                        <p class="error center">There was an error sending your message. Please try again later.</p>
-                      }
-
-                      @if ((formStatus | async) === 'sent') {
-                        <p class="success center">Your message has been received!</p>
+                      <p class="error center">There was an error sending your message. Please try again later.</p>
+                      } @if ((formStatus | async) === 'sent') {
+                      <p class="success center">Your message has been received!</p>
                       }
                     </div>
                   </div>

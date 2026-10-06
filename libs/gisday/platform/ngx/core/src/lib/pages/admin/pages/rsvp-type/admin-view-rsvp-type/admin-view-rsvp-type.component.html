@@ -4,9 +4,9 @@
     <th>Updated</th>
   </tr>
   @for (entity of ($entities | async); track entity) {
-    <tr>
-      <td>{{entity.type}}</td>
-      <td>{{entity.updated | date:'short'}}</td>
-    </tr>
+  <tr>
+    <td>{{entity.type}}</td>
+    <td>{{entity.updated | date:'short'}}</td>
+  </tr>
   }
 </table>

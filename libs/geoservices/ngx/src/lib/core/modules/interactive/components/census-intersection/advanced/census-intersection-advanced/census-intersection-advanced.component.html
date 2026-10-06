@@ -21,9 +21,9 @@
         </div>
 
         @if ((isAdvanced | async) === false) {
-          <div class="form-collection row">
-            <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYear" [floatLabel]="true"></tamu-gisc-select>
-          </div>
+        <div class="form-collection row">
+          <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYear" [floatLabel]="true"></tamu-gisc-select>
+        </div>
         }
 
         <div class="form-collection row">
@@ -33,23 +33,23 @@
     </div>
 
     @if ((isAdvanced | async)) {
-      <div class="form-section">
-        <div class="form-section-toolbar">
-          <div class="form-section-name">
-            <p>Census Years</p>
-          </div>
-        </div>
-        <div class="form-section-body">
-          <div class="form-collection column">
-            <p>Select all applicable return census years to intersect latitude and longitude with.</p>
-            <tamu-gisc-checkbox-group formControlName="censusYear" [referenceId]="'value'">
-              @for (year of censusYears; track year) {
-                <tamu-gisc-checkbox [label]="year.name" [data]="year"></tamu-gisc-checkbox>
-              }
-            </tamu-gisc-checkbox-group>
-          </div>
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Census Years</p>
         </div>
       </div>
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <p>Select all applicable return census years to intersect latitude and longitude with.</p>
+          <tamu-gisc-checkbox-group formControlName="censusYear" [referenceId]="'value'">
+            @for (year of censusYears; track year) {
+            <tamu-gisc-checkbox [label]="year.name" [data]="year"></tamu-gisc-checkbox>
+            }
+          </tamu-gisc-checkbox-group>
+        </div>
+      </div>
+    </div>
     }
 
     <div class="form-section">
@@ -62,24 +62,22 @@
   </form>
 </div>
 
-@if ((result | async) !== null && (resultError | async) === false;) {
-  @if (result | async; as res) {
-    <div [@inOutAnimation] class="leader-3">
-      <h2 class="section-header">Results</h2>
-      <tamu-gisc-accordion [expanded]="true">
-        <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
-        <tamu-gisc-accordion-content>
-          <tamu-gisc-status-result-table [status]="res.data"></tamu-gisc-status-result-table>
-        </tamu-gisc-accordion-content>
-      </tamu-gisc-accordion>
-      @for (cr of (result | async)?.data?.results; track cr) {
-        <tamu-gisc-accordion [expanded]="true">
-          <tamu-gisc-accordion-header>Census Year {{cr?.censusYear}}</tamu-gisc-accordion-header>
-          <tamu-gisc-accordion-content>
-            <tamu-gisc-census-intersection-result-table [address]="cr"></tamu-gisc-census-intersection-result-table>
-          </tamu-gisc-accordion-content>
-        </tamu-gisc-accordion>
-      }
-    </div>
+@if ((result | async) !== null && (resultError | async) === false;) { @if (result | async; as res) {
+<div [@inOutAnimation] class="leader-3">
+  <h2 class="section-header">Results</h2>
+  <tamu-gisc-accordion [expanded]="true">
+    <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
+    <tamu-gisc-accordion-content>
+      <tamu-gisc-status-result-table [status]="res.data"></tamu-gisc-status-result-table>
+    </tamu-gisc-accordion-content>
+  </tamu-gisc-accordion>
+  @for (cr of (result | async)?.data?.results; track cr) {
+  <tamu-gisc-accordion [expanded]="true">
+    <tamu-gisc-accordion-header>Census Year {{cr?.censusYear}}</tamu-gisc-accordion-header>
+    <tamu-gisc-accordion-content>
+      <tamu-gisc-census-intersection-result-table [address]="cr"></tamu-gisc-census-intersection-result-table>
+    </tamu-gisc-accordion-content>
+  </tamu-gisc-accordion>
   }
-}
+</div>
+} }

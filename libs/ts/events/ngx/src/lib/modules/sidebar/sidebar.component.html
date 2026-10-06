@@ -3,24 +3,22 @@ swallows it and clicking a feature appears to do nothing (#1244). -->
 <tamu-gisc-sidebar [position]="'right'" tamuGiscRevealSidebarOnPopup>
   <div class="tabs left">
     @if (showTab('features')) {
-      <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''"></tamu-gisc-sidebar-tab>
+    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''"></tamu-gisc-sidebar-tab>
     }
 
     <!-- Development-only while routing is unpublished (#1003). -->
     @if (showTab('directions') && (isDev | async) === true) {
-      <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'"></tamu-gisc-sidebar-tab>
-    }
-
-    @if (showTab('settings')) {
-      <tamu-gisc-sidebar-tab [title]="'Settings'" [description]="'Settings'" [material_icon]="'settings'" [route]="'settings'"></tamu-gisc-sidebar-tab>
+    <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'"></tamu-gisc-sidebar-tab>
+    } @if (showTab('settings')) {
+    <tamu-gisc-sidebar-tab [title]="'Settings'" [description]="'Settings'" [material_icon]="'settings'" [route]="'settings'"></tamu-gisc-sidebar-tab>
     }
   </div>
 
   <div class="content">
     @if (!configuration?.brandingIconUrl) {
-      <tamu-gisc-tamu-block></tamu-gisc-tamu-block>
+    <tamu-gisc-tamu-block></tamu-gisc-tamu-block>
     } @else {
-      <img class="campus-branding-icon" [src]="configuration?.brandingIconUrl" [alt]="configuration?.applicationName" />
+    <img class="campus-branding-icon" [src]="configuration?.brandingIconUrl" [alt]="configuration?.applicationName" />
     }
     <router-outlet></router-outlet>
     <tamu-gisc-feature-popup></tamu-gisc-feature-popup>

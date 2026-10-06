@@ -1,21 +1,19 @@
 @if (loaded !== true) {
-  <div class="flex flex-column justify-center align-center">
-    <div class="spinning-loader"></div>
+<div class="flex flex-column justify-center align-center">
+  <div class="spinning-loader"></div>
+</div>
+} @if (stops | async; as stopList) {
+<div class="detail-container">
+  @if (stopList.length > 0) {
+  <div class="stops">
+    <p class="stops-title">Stops on this route</p>
+    <ul class="stops-list">
+      @for (stop of stopList; track stop) {
+      <li>{{ stop }}</li>
+      }
+    </ul>
   </div>
-}
-
-@if (stops | async; as stopList) {
-  <div class="detail-container">
-    @if (stopList.length > 0) {
-      <div class="stops">
-        <p class="stops-title">Stops on this route</p>
-        <ul class="stops-list">
-          @for (stop of stopList; track stop) {
-            <li>{{ stop }}</li>
-          }
-        </ul>
-      </div>
-    }
-    <a class="button schedule-link" [href]="scheduleUrl" target="_blank" rel="noopener">View full schedule</a>
-  </div>
+  }
+  <a class="button schedule-link" [href]="scheduleUrl" target="_blank" rel="noopener">View full schedule</a>
+</div>
 }

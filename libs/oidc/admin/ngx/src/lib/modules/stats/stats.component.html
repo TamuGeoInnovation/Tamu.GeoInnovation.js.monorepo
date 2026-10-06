@@ -12,7 +12,7 @@
     <div class="form-section-toolbar">
       <div class="form-section-name">
         @for (chart of ($countOfUsersByClient | async); track chart) {
-          <tamu-gisc-pie-chart [source]="chart.data" [options]="chart.options" [title]="chart.options.title.text"></tamu-gisc-pie-chart>
+        <tamu-gisc-pie-chart [source]="chart.data" [options]="chart.options" [title]="chart.options.title.text"></tamu-gisc-pie-chart>
         }
       </div>
     </div>

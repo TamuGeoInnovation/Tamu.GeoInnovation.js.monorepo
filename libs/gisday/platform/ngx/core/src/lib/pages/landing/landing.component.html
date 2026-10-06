@@ -6,38 +6,40 @@
     <div class="x-large-partition">
       <div class="flex flex-column align-center">
         <div class="logo-container">
-          <h1 class="site-logo">TxGIS Day @if ((activeSeason$ | async)?.year; as year) {
+          <h1 class="site-logo">
+            TxGIS Day @if ((activeSeason$ | async)?.year; as year) {
             <span>{{year}}</span>
-          }</h1>
+            }
+          </h1>
           <img src="assets/images/2022-TIN-sq-1080px.png" />
         </div>
 
         <div class="landing-container">
           @if ((seasonStarted$ | async) === false) {
-            <div class="countdown">
-              <div class="days">
-                <div class="value">{{daysUntil$ | async}}</div>
-                <div class="label">Days</div>
-              </div>
-              <div class="hours">
-                <div class="value">{{hoursUntil$ | async}}</div>
-                <div class="label">Hours</div>
-              </div>
-              <div class="minutes">
-                <div class="value">{{minutesUntil$ | async}}</div>
-                <div class="label">Minutes</div>
-              </div>
-              <div class="seconds">
-                <div class="value">{{secondsUntil$ | async}}</div>
-                <div class="label">Seconds</div>
-              </div>
+          <div class="countdown">
+            <div class="days">
+              <div class="value">{{daysUntil$ | async}}</div>
+              <div class="label">Days</div>
             </div>
+            <div class="hours">
+              <div class="value">{{hoursUntil$ | async}}</div>
+              <div class="label">Hours</div>
+            </div>
+            <div class="minutes">
+              <div class="value">{{minutesUntil$ | async}}</div>
+              <div class="label">Minutes</div>
+            </div>
+            <div class="seconds">
+              <div class="value">{{secondsUntil$ | async}}</div>
+              <div class="label">Seconds</div>
+            </div>
+          </div>
           }
 
           <h2 class="trailer-1 column9 slogan">{{dayCountText$ | async}}, demonstrations, and programs celebrating the advancement of geospatial technology.</h2>
 
           @if (dateRange$ | async; as dates) {
-            <h3 class="column9">{{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</h3>
+          <h3 class="column9">{{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</h3>
           }
 
           <a routerLink="/sessions" class="button snug leader-2 trailer-2">Explore Events</a>
@@ -92,18 +94,17 @@
       <p class="column10 trailer-1">GIS Day sponsors are increasingly becoming the backbone of the event and with a growing attendance rate, their contributions help drive the gears that make TxGIS Day possible. As a bonus, their contributions are translated to direct communication and exposure with attendees.</p>
 
       @if (sponsors$ | async; as sponsors) {
-        <div class="icon-grid column12">
-          @for (sponsor of sponsors; track sponsor) {
-            <div class="icon-item">
-              <img [src]="sponsor?.logos?.[0]?.path | assetUrl | async" [alt]="sponsor.name + 'logo'" [title]="sponsor.name" />
-            </div>
-          }
+      <div class="icon-grid column12">
+        @for (sponsor of sponsors; track sponsor) {
+        <div class="icon-item">
+          <img [src]="sponsor?.logos?.[0]?.path | assetUrl | async" [alt]="sponsor.name + 'logo'" [title]="sponsor.name" />
         </div>
-        <p class="leader-2"><a [routerLink]="['/sponsors']">Learn more about sponsorship options</a></p>
+        }
+      </div>
+      <p class="leader-2"><a [routerLink]="['/sponsors']">Learn more about sponsorship options</a></p>
       } @else {
-        <a routerLink="/sponsors" class="button">Learn about sponsorship opportunities</a>
+      <a routerLink="/sponsors" class="button">Learn about sponsorship opportunities</a>
       }
-
     </div>
   </div>
 
@@ -119,14 +120,14 @@
 
       <div class="icon-grid column12">
         @for (org of organizations$ | async; track org) {
-          <div class="icon-item">
-            <img [src]="org?.logos?.[0]?.path | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
-            @if (org.website !== null && org.website !== '') {
-              <p><a [href]="org.website" target="_blank">{{org.name}}</a></p>
-            } @else {
-              <p>{{org.name}}</p>
-            }
-          </div>
+        <div class="icon-item">
+          <img [src]="org?.logos?.[0]?.path | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
+          @if (org.website !== null && org.website !== '') {
+          <p><a [href]="org.website" target="_blank">{{org.name}}</a></p>
+          } @else {
+          <p>{{org.name}}</p>
+          }
+        </div>
         }
       </div>
     </div>

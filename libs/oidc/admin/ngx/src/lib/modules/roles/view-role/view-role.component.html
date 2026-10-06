@@ -4,9 +4,9 @@
     <th>Level</th>
   </tr>
   @for (role of ($roles | async); track role) {
-    <tr>
-      <td>{{role.name}}</td>
-      <td>{{role.level}}</td>
-    </tr>
+  <tr>
+    <td>{{role.name}}</td>
+    <td>{{role.level}}</td>
+  </tr>
   }
 </table>

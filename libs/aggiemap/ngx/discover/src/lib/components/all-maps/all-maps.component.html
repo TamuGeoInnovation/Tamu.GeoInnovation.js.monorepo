@@ -71,18 +71,14 @@
       </a>
 
       @if ((isDev | async) === true) {
-        <a
-          class="visit-maps-tile"
-          routerLink="/all-maps/campus"
-          aria-label="Campus Maps"
-          >
-          <span class="visit-maps-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" />
-            </svg>
-          </span>
-          <span class="visit-maps-label">Campus Maps</span>
-        </a>
+      <a class="visit-maps-tile" routerLink="/all-maps/campus" aria-label="Campus Maps">
+        <span class="visit-maps-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" />
+          </svg>
+        </span>
+        <span class="visit-maps-label">Campus Maps</span>
+      </a>
       }
 
       <!--
@@ -92,16 +88,14 @@
       on the page.
       -->
       @if ((isDev | async) === true) {
-        <a class="visit-maps-tile" routerLink="/code-maroon" aria-label="Code Maroon">
-          <span class="visit-maps-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path
-                d="M12 2.2c.62 0 1.2.33 1.51.87l9.3 16.1c.31.54.31 1.2 0 1.74-.31.54-.89.87-1.51.87H2.7c-.62 0-1.2-.33-1.51-.87a1.74 1.74 0 0 1 0-1.74l9.3-16.1c.31-.54.89-.87 1.51-.87Zm0 2.93L3.56 19.78h16.88L12 5.13Zm0 4.12c.6 0 1.08.49 1.08 1.08v4.3a1.08 1.08 0 0 1-2.16 0v-4.3c0-.6.49-1.08 1.08-1.08Zm0 8.2a1.26 1.26 0 1 1 0-2.52 1.26 1.26 0 0 1 0 2.52Z"
-                />
-            </svg>
-          </span>
-          <span class="visit-maps-label">Code Maroon</span>
-        </a>
+      <a class="visit-maps-tile" routerLink="/code-maroon" aria-label="Code Maroon">
+        <span class="visit-maps-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2.2c.62 0 1.2.33 1.51.87l9.3 16.1c.31.54.31 1.2 0 1.74-.31.54-.89.87-1.51.87H2.7c-.62 0-1.2-.33-1.51-.87a1.74 1.74 0 0 1 0-1.74l9.3-16.1c.31-.54.89-.87 1.51-.87Zm0 2.93L3.56 19.78h16.88L12 5.13Zm0 4.12c.6 0 1.08.49 1.08 1.08v4.3a1.08 1.08 0 0 1-2.16 0v-4.3c0-.6.49-1.08 1.08-1.08Zm0 8.2a1.26 1.26 0 1 1 0-2.52 1.26 1.26 0 0 1 0 2.52Z" />
+          </svg>
+        </span>
+        <span class="visit-maps-label">Code Maroon</span>
+      </a>
       }
     </div>
   </div>
@@ -115,17 +109,15 @@
             <div class="flex flex-row align-center title">
               <span class="app-name">{{ app.name }}</span>
               @if (app.source === 'internal') {
-                <span class="chip chip-internal">{{ app.type | uppercase }}</span>
-              }
-              @if (app.source === 'external') {
-                <span class="chip chip-external">Experimental</span>
-              }
-              @for (label of app.labels; track label) {
-                <span class="chip chip-label">{{ label | uppercase }}</span>
+              <span class="chip chip-internal">{{ app.type | uppercase }}</span>
+              } @if (app.source === 'external') {
+              <span class="chip chip-external">Experimental</span>
+              } @for (label of app.labels; track label) {
+              <span class="chip chip-label">{{ label | uppercase }}</span>
               }
             </div>
             @if (app.description) {
-              <span class="application-description">{{ app.description }}</span>
+            <span class="application-description">{{ app.description }}</span>
             }
           </div>
         </ng-template>
@@ -137,136 +129,122 @@
     <h2>Upcoming Events</h2>
 
     @if (upcomingApplications.length > 0) {
-      <div class="events-list">
-        @for (app of upcomingApplications; track app) {
-          <div class="event-card" (click)="onApplicationSelect(app)">
-            <h3 class="event-title">{{ app.name }}</h3>
-            <div class="event-dates"><strong>Dates:</strong> {{ getEventDateRange(app.configuration.eventDates) }}</div>
-          </div>
-        }
+    <div class="events-list">
+      @for (app of upcomingApplications; track app) {
+      <div class="event-card" (click)="onApplicationSelect(app)">
+        <h3 class="event-title">{{ app.name }}</h3>
+        <div class="event-dates"><strong>Dates:</strong> {{ getEventDateRange(app.configuration.eventDates) }}</div>
       </div>
+      }
+    </div>
     } @else {
-      <div class="empty-state">
-        <p>No upcoming events found at this time.</p>
-      </div>
+    <div class="empty-state">
+      <p>No upcoming events found at this time.</p>
+    </div>
     }
-
   </div>
 
   @if (quickLinks.length > 0) {
-    <tamu-gisc-quick-links [links]="quickLinks"></tamu-gisc-quick-links>
-  }
-
-  @if ((isDev | async) === true) {
-    <div class="all-events-section trailer-3">
-      <h2>All Events</h2>
-      <p class="section-description">Complete list of all events (development only).</p>
-      @if (allEvents.length > 0) {
-        <div class="map-columns">
-          <ol class="map-links">
-            @for (app of allEvents; track app) {
-              <li class="map-link-item">
-                <!-- Same layout as a search result's name and chips. Retired maps stay in this list so the team can find them, labelled so nobody expects them to work (#1098). -->
-                <div class="flex flex-row align-center title">
-                  <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
-                  @if (app.status === 'retired') {
-                    <span class="chip chip-label retired-label">Retired</span>
-                  }
-                </div>
-              </li>
+  <tamu-gisc-quick-links [links]="quickLinks"></tamu-gisc-quick-links>
+  } @if ((isDev | async) === true) {
+  <div class="all-events-section trailer-3">
+    <h2>All Events</h2>
+    <p class="section-description">Complete list of all events (development only).</p>
+    @if (allEvents.length > 0) {
+    <div class="map-columns">
+      <ol class="map-links">
+        @for (app of allEvents; track app) {
+        <li class="map-link-item">
+          <!-- Same layout as a search result's name and chips. Retired maps stay in this list so the team can find them, labelled so nobody expects them to work (#1098). -->
+          <div class="flex flex-row align-center title">
+            <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
+            @if (app.status === 'retired') {
+            <span class="chip chip-label retired-label">Retired</span>
             }
-          </ol>
-        </div>
-      }
+          </div>
+        </li>
+        }
+      </ol>
     </div>
-  }
-
-  @if ((isDev | async) === true) {
-    <div class="campus-maps-section trailer-3">
-      <h2>Campus Maps</h2>
-      <p class="section-description">
-        Single-basemap maps for TAMU campuses outside College Station. These are reachable in production by
-        direct URL but are not linked or searchable there (development only).
-      </p>
-      @if (campusApplications.length > 0) {
-        <div class="applications-list">
-          @for (app of campusApplications; track app) {
-            <div class="application-card">
-              <!-- The picture is the link, so the card shows what you are choosing between rather than
+    }
+  </div>
+  } @if ((isDev | async) === true) {
+  <div class="campus-maps-section trailer-3">
+    <h2>Campus Maps</h2>
+    <p class="section-description">Single-basemap maps for TAMU campuses outside College Station. These are reachable in production by direct URL but are not linked or searchable there (development only).</p>
+    @if (campusApplications.length > 0) {
+    <div class="applications-list">
+      @for (app of campusApplications; track app) {
+      <div class="application-card">
+        <!-- The picture is the link, so the card shows what you are choosing between rather than
               leaving an empty area above a text link (#1245). The copy field stays: it is how a
               campus map URL gets shared, and these maps are not linked on production. -->
-              <a class="campus-tile map-entry--pictured" [routerLink]="getApplicationRoute(app)" [attr.aria-label]="'Open the ' + app.name + ' map'">
-                @if (app.thumbnail) {
-                  <img class="map-entry-thumbnail" [src]="app.thumbnail" [alt]="app.name + ' campus map'" loading="lazy" />
-                }
-                <span class="campus-tile-label">{{ app.name }}</span>
-              </a>
-              <div class="application-card-content">
-                @if (app.description) {
-                  <div class="application-description">{{ app.description }}</div>
-                }
-                <tamu-gisc-copy-field [text]="app.url"></tamu-gisc-copy-field>
-              </div>
-            </div>
+        <a class="campus-tile map-entry--pictured" [routerLink]="getApplicationRoute(app)" [attr.aria-label]="'Open the ' + app.name + ' map'">
+          @if (app.thumbnail) {
+          <img class="map-entry-thumbnail" [src]="app.thumbnail" [alt]="app.name + ' campus map'" loading="lazy" />
           }
-        </div>
-      } @else {
-        <p class="section-description">No campus maps are defined.</p>
-      }
-    </div>
-  }
-
-  @if ((isDev | async) === true) {
-    <div class="kiosk-maps-section trailer-3">
-      <h2>Kiosk Maps</h2>
-      <p class="section-description">
-        Sidebar-free, preset-layer maps meant to be embedded elsewhere (e.g. in a mobile app webview). Open one to check it, or copy its URL to embed it (development only).
-      </p>
-      @if (kioskApplications.length > 0) {
-        <div class="applications-list">
-          @for (app of kioskApplications; track app) {
-            <div class="application-card">
-              <div class="application-card-header">
-                <h3 class="application-title">{{ app.name }}</h3>
-              </div>
-              <div class="application-card-content">
-                @if (app.description) {
-                  <div class="application-description">{{ app.description }}</div>
-                }
-                <tamu-gisc-copy-field [text]="app.url"></tamu-gisc-copy-field>
-                <a [routerLink]="getApplicationRoute(app)">Open map</a>
-              </div>
-            </div>
+          <span class="campus-tile-label">{{ app.name }}</span>
+        </a>
+        <div class="application-card-content">
+          @if (app.description) {
+          <div class="application-description">{{ app.description }}</div>
           }
+          <tamu-gisc-copy-field [text]="app.url"></tamu-gisc-copy-field>
         </div>
-      } @else {
-        <div class="empty-state">
-          <p>No kiosk maps available at this time.</p>
-        </div>
-      }
-    </div>
-  }
-
-  @if ((isDev | async) === true) {
-    <div class="experimental-applications-section">
-      <h2>Experimental Applications</h2>
-      <p class="section-description">Explore experimental maps and applications</p>
-      <div class="info-block trailer-1">This section is visible only in development mode. The applications listed here are experimental and are provided as-is, with no assurances regarding stability or functionality.</div>
-      <div class="applications-list">
-        @for (app of externalApplications; track app) {
-          <div class="application-card" (click)="onApplicationSelect(app)">
-            <div class="application-card-header">
-              <h3 class="application-title">{{ app.name }}</h3>
-            </div>
-            <div class="application-card-content">
-              @if (app.description) {
-                <div class="application-description">{{ app.description }}</div>
-              }
-            </div>
-          </div>
-        }
       </div>
+      }
     </div>
+    } @else {
+    <p class="section-description">No campus maps are defined.</p>
+    }
+  </div>
+  } @if ((isDev | async) === true) {
+  <div class="kiosk-maps-section trailer-3">
+    <h2>Kiosk Maps</h2>
+    <p class="section-description">Sidebar-free, preset-layer maps meant to be embedded elsewhere (e.g. in a mobile app webview). Open one to check it, or copy its URL to embed it (development only).</p>
+    @if (kioskApplications.length > 0) {
+    <div class="applications-list">
+      @for (app of kioskApplications; track app) {
+      <div class="application-card">
+        <div class="application-card-header">
+          <h3 class="application-title">{{ app.name }}</h3>
+        </div>
+        <div class="application-card-content">
+          @if (app.description) {
+          <div class="application-description">{{ app.description }}</div>
+          }
+          <tamu-gisc-copy-field [text]="app.url"></tamu-gisc-copy-field>
+          <a [routerLink]="getApplicationRoute(app)">Open map</a>
+        </div>
+      </div>
+      }
+    </div>
+    } @else {
+    <div class="empty-state">
+      <p>No kiosk maps available at this time.</p>
+    </div>
+    }
+  </div>
+  } @if ((isDev | async) === true) {
+  <div class="experimental-applications-section">
+    <h2>Experimental Applications</h2>
+    <p class="section-description">Explore experimental maps and applications</p>
+    <div class="info-block trailer-1">This section is visible only in development mode. The applications listed here are experimental and are provided as-is, with no assurances regarding stability or functionality.</div>
+    <div class="applications-list">
+      @for (app of externalApplications; track app) {
+      <div class="application-card" (click)="onApplicationSelect(app)">
+        <div class="application-card-header">
+          <h3 class="application-title">{{ app.name }}</h3>
+        </div>
+        <div class="application-card-content">
+          @if (app.description) {
+          <div class="application-description">{{ app.description }}</div>
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
   }
 </div>
 

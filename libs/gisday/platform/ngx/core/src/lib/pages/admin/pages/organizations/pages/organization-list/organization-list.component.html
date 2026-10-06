@@ -14,44 +14,40 @@
         <p class="trailer-1">Affiliations are institutions which a speaker is a member of and represents during an event (e.g. company, university).</p>
       </div>
 
-      @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) {
-        @if (entities?.length > 0) {
-          <table class="floating-table">
-            <thead>
-              <tr>
-                <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
-                <th>Name</th>
-                <th>Season</th>
-                <th>Updated</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (entity of entities; track entity) {
-                <tr class="selectable" [routerLink]="['edit', entity.guid]">
-                  <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(entity?.guid)" [checked]="(selectedRows$ | async) | exists: entity?.guid"></tamu-gisc-checkbox></td>
-                  <td>{{entity?.name}}</td>
-                  <td>{{entity?.season?.year}}</td>
-                  <td>{{entity?.updated | date:'short'}}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        } @else {
-          <p>There are no affiliations for the selected season.</p>
-        }
-        @if ((selectedRows$ | async)?.length > 0) {
-          <div class="selected-action-container info-block context">
-            <div>
-              <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
-            </div>
-            <div class="selected-actions">
-              <p class="selected-action" (click)="promptCopyModal('Affiliation')">Copy <span class="material-icons action">content_copy</span></p>
-              <p class="selected-action caution" (click)="promptDeleteModal('Affiliation')">Delete <span class="material-icons action">delete_forever</span></p>
-            </div>
-          </div>
-        }
-      }
-
+      @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities?.length > 0) {
+      <table class="floating-table">
+        <thead>
+          <tr>
+            <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
+            <th>Name</th>
+            <th>Season</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entity of entities; track entity) {
+          <tr class="selectable" [routerLink]="['edit', entity.guid]">
+            <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(entity?.guid)" [checked]="(selectedRows$ | async) | exists: entity?.guid"></tamu-gisc-checkbox></td>
+            <td>{{entity?.name}}</td>
+            <td>{{entity?.season?.year}}</td>
+            <td>{{entity?.updated | date:'short'}}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      } @else {
+      <p>There are no affiliations for the selected season.</p>
+      } @if ((selectedRows$ | async)?.length > 0) {
+      <div class="selected-action-container info-block context">
+        <div>
+          <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
+        </div>
+        <div class="selected-actions">
+          <p class="selected-action" (click)="promptCopyModal('Affiliation')">Copy <span class="material-icons action">content_copy</span></p>
+          <p class="selected-action caution" (click)="promptDeleteModal('Affiliation')">Delete <span class="material-icons action">delete_forever</span></p>
+        </div>
+      </div>
+      } }
     </div>
   </div>
 </div>

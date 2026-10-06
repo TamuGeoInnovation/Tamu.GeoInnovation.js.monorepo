@@ -9,48 +9,44 @@
     </div>
 
     <div class="form-section-body">
-      @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as events) {
-        @if (events.length > 0) {
-          <table class="floating-table">
-            <thead>
-              <tr>
-                <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(events)" [checked]="(selectedRows$ | async)?.length === events.length "></tamu-gisc-checkbox></th>
-                <th>Name</th>
-                <th>Location</th>
-                <th>Day</th>
-                <th class="nowrap">Start Time</th>
-                <th class="nowrap">End Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (entity of (entitiesForActiveSeasonOrForSeasonGuid$ | async); track entity) {
-                <tr class="selectable" [routerLink]="['edit', entity.guid]">
-                  <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(entity?.guid)" [checked]="(selectedRows$ | async) | exists: entity?.guid"></tamu-gisc-checkbox></td>
-                  <td>{{entity?.name}}</td>
-                  <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
-                  <td>{{entity?.day?.date | date:'shortDate'}}</td>
-                  <td>{{entity?.day?.date | parseDateTimeStrings: entity?.startTime | date: 'h:mm a'}}</td>
-                  <td>{{entity?.day?.date | parseDateTimeStrings: entity?.endTime | date: 'h:mm a'}}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        } @else {
-          <p>There are no events for the selected season.</p>
-        }
-        @if ((selectedRows$ | async)?.length > 0) {
-          <div class="selected-action-container info-block context">
-            <div>
-              <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
-            </div>
-            <div class="selected-actions">
-              <p class="selected-action" (click)="promptCopyModal()">Copy <span class="material-icons action">content_copy</span></p>
-              <p class="selected-action caution" (click)="promptDeleteModal()">Delete <span class="material-icons action">delete_forever</span></p>
-            </div>
-          </div>
-        }
-      }
-
+      @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as events) { @if (events.length > 0) {
+      <table class="floating-table">
+        <thead>
+          <tr>
+            <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(events)" [checked]="(selectedRows$ | async)?.length === events.length "></tamu-gisc-checkbox></th>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Day</th>
+            <th class="nowrap">Start Time</th>
+            <th class="nowrap">End Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entity of (entitiesForActiveSeasonOrForSeasonGuid$ | async); track entity) {
+          <tr class="selectable" [routerLink]="['edit', entity.guid]">
+            <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(entity?.guid)" [checked]="(selectedRows$ | async) | exists: entity?.guid"></tamu-gisc-checkbox></td>
+            <td>{{entity?.name}}</td>
+            <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
+            <td>{{entity?.day?.date | date:'shortDate'}}</td>
+            <td>{{entity?.day?.date | parseDateTimeStrings: entity?.startTime | date: 'h:mm a'}}</td>
+            <td>{{entity?.day?.date | parseDateTimeStrings: entity?.endTime | date: 'h:mm a'}}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      } @else {
+      <p>There are no events for the selected season.</p>
+      } @if ((selectedRows$ | async)?.length > 0) {
+      <div class="selected-action-container info-block context">
+        <div>
+          <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
+        </div>
+        <div class="selected-actions">
+          <p class="selected-action" (click)="promptCopyModal()">Copy <span class="material-icons action">content_copy</span></p>
+          <p class="selected-action caution" (click)="promptDeleteModal()">Delete <span class="material-icons action">delete_forever</span></p>
+        </div>
+      </div>
+      } }
     </div>
   </div>
 </div>

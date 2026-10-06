@@ -5,10 +5,10 @@
     <th>Enabled 2FA?</th>
   </tr>
   @for (user of ($users | async); track user) {
-    <tr>
-      <td>{{user.guid}}</td>
-      <td>{{user.email}}</td>
-      <td>{{user.enabled2fa}}</td>
-    </tr>
+  <tr>
+    <td>{{user.guid}}</td>
+    <td>{{user.email}}</td>
+    <td>{{user.enabled2fa}}</td>
+  </tr>
   }
 </table>

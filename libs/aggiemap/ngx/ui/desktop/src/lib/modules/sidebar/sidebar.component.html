@@ -10,7 +10,7 @@ swallows it and clicking a feature appears to do nothing (#1244). -->
 
     <!-- Development-only while routing is unpublished (#1003). -->
     @if ((isDev | async) === true) {
-      <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'" (click)="reportSidebarContent('Directions')"></tamu-gisc-sidebar-tab>
+    <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'" (click)="reportSidebarContent('Directions')"></tamu-gisc-sidebar-tab>
     }
 
     <!--
@@ -19,11 +19,9 @@ swallows it and clicking a feature appears to do nothing (#1244). -->
     a panel apologising for being unavailable.
     -->
     @if ((isDev | async) === true) {
-      <tamu-gisc-sidebar-tab [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'" [route]="'bus'" (click)="reportSidebarContent('Bus Routes')"></tamu-gisc-sidebar-tab>
-    }
-
-    @if ((isDev | async) === true) {
-      <tamu-gisc-sidebar-tab [title]="'Experiments'" [description]="'Aggiemap Experiments'" [material_icon]="'science'" [route]="'experiments'" (click)="reportSidebarContent('Experiments')"></tamu-gisc-sidebar-tab>
+    <tamu-gisc-sidebar-tab [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'" [route]="'bus'" (click)="reportSidebarContent('Bus Routes')"></tamu-gisc-sidebar-tab>
+    } @if ((isDev | async) === true) {
+    <tamu-gisc-sidebar-tab [title]="'Experiments'" [description]="'Aggiemap Experiments'" [material_icon]="'science'" [route]="'experiments'" (click)="reportSidebarContent('Experiments')"></tamu-gisc-sidebar-tab>
     }
 
     <tamu-gisc-sidebar-tab [title]="'Settings'" [description]="'Settings'" [material_icon]="'settings'" [route]="'settings'" (click)="reportSidebarContent('Settings')"></tamu-gisc-sidebar-tab>

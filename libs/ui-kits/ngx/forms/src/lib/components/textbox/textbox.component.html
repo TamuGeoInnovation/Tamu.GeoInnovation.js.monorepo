@@ -1,16 +1,12 @@
 <div class="textbox-control">
   @if (type !== 'textarea') {
-    <input #inputElement [type]="type" [name]="formControlName" [(ngModel)]="value" [disabled]="disabled" />
-  }
-  @if (type === 'textarea') {
-    <textarea #inputElement [name]="formControlName" [(ngModel)]="value" [rows]="rows" [disabled]="disabled"></textarea>
-  }
-
-  @if (!floatLabel && placeholder && value !== undefined && value.toString().length === 0) {
-    <label [for]="formControlName">{{ placeholder }}</label>
-  }
-  @if (floatLabel && placeholder) {
-    <label [for]="formControlName" [ngClass]="{ float: value !== undefined && value.toString().length > 0 }">{{ placeholder }}</label>
+  <input #inputElement [type]="type" [name]="formControlName" [(ngModel)]="value" [disabled]="disabled" />
+  } @if (type === 'textarea') {
+  <textarea #inputElement [name]="formControlName" [(ngModel)]="value" [rows]="rows" [disabled]="disabled"></textarea>
+  } @if (!floatLabel && placeholder && value !== undefined && value.toString().length === 0) {
+  <label [for]="formControlName">{{ placeholder }}</label>
+  } @if (floatLabel && placeholder) {
+  <label [for]="formControlName" [ngClass]="{ float: value !== undefined && value.toString().length > 0 }">{{ placeholder }}</label>
   }
 </div>
 

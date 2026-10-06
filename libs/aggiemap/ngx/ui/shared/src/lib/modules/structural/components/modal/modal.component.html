@@ -1,11 +1,10 @@
 <div class="container-12">
   @if (isMobile) {
-    <div class="close mobile" (click)="close()">
-      <i class="material-icons" title="Close">arrow_back</i>
-    </div>
-  }
-  @if (!isMobile) {
-    <div class="close desktop" (click)="close()"><i class="material-icons" title="Close">close</i></div>
+  <div class="close mobile" (click)="close()">
+    <i class="material-icons" title="Close">arrow_back</i>
+  </div>
+  } @if (!isMobile) {
+  <div class="close desktop" (click)="close()"><i class="material-icons" title="Close">close</i></div>
   }
 
   <router-outlet></router-outlet>

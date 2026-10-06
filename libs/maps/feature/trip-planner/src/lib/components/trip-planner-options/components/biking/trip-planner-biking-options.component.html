@@ -1,12 +1,12 @@
 @if ((isDev | async) === true) {
-  <div>
-    <div class="sidebar-component-name">
-      <p>Biking Settings</p>
-    </div>
-    <div class="sidebar-component-content-container">
-      @for (option of (settings | async); track option) {
-        <tamu-gisc-checkbox [disabled]="false" [label]="option.displayName" [description]="option.description" [checked]="(getOptionValue(option.effect) | async) === true" (changed)="setOptionValue(option, $event)"></tamu-gisc-checkbox>
-      }
-    </div>
+<div>
+  <div class="sidebar-component-name">
+    <p>Biking Settings</p>
   </div>
+  <div class="sidebar-component-content-container">
+    @for (option of (settings | async); track option) {
+    <tamu-gisc-checkbox [disabled]="false" [label]="option.displayName" [description]="option.description" [checked]="(getOptionValue(option.effect) | async) === true" (changed)="setOptionValue(option, $event)"></tamu-gisc-checkbox>
+    }
+  </div>
+</div>
 }

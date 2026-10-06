@@ -3,19 +3,17 @@
 </div>
 
 @if (isContentLengthZero === false) {
-  <div class="popup-section">
-    @if (isContentLengthZero === false) {
-      <p class="trailer-1" [innerHTML]="data.attributes?.description"></p>
-    }
-  </div>
+<div class="popup-section">
+  @if (isContentLengthZero === false) {
+  <p class="trailer-1" [innerHTML]="data.attributes?.description"></p>
+  }
+</div>
 }
 
 <div class="popup-section">
   @if (shareUrl) {
-    <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
-  }
-
-  @if (directionsAvailable | async) {
-    <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
+  <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+  } @if (directionsAvailable | async) {
+  <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
   }
 </div>

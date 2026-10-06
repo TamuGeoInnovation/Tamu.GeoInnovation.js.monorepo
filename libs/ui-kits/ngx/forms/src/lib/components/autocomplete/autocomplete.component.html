@@ -2,21 +2,16 @@
   <tamu-gisc-textbox [formControl]="control" class="tamu-autocomplete-input" type="text" [placeholder]="placeholder" [floatLabel]="true" [autofocus]="autofocus" aria-autocomplete="list" aria-haspopup="listbox" [attr.aria-expanded]="!!control.value" aria-controls="autocomplete-results" (keydown)="onInputKeydown($event)"></tamu-gisc-textbox>
 
   @if (showResults) {
-    <div id="autocomplete-results" class="autocomplete-results" role="listbox" keyboardNavigation=".autocomplete-item" (keydown)="onResultsKeydown($event)">
-      @if ((getOptions() | async); as opts;) {
-        @if (opts.length === 0) {
-          <div class="no-results" role="option" aria-disabled="true">No results found.</div>
-        }
-        @for (opt of opts; track opt) {
-          <div class="autocomplete-item" (click)="onSelect(opt)" role="option" [attr.aria-selected]="false">
-            @if (optionTemplate) {
-              <ng-container *ngTemplateOutlet="optionTemplate; context: { $implicit: opt }"></ng-container>
-            } @else {
-              {{ displayWith(opt) }}
-            }
-          </div>
-        }
-      }
+  <div id="autocomplete-results" class="autocomplete-results" role="listbox" keyboardNavigation=".autocomplete-item" (keydown)="onResultsKeydown($event)">
+    @if ((getOptions() | async); as opts;) { @if (opts.length === 0) {
+    <div class="no-results" role="option" aria-disabled="true">No results found.</div>
+    } @for (opt of opts; track opt) {
+    <div class="autocomplete-item" (click)="onSelect(opt)" role="option" [attr.aria-selected]="false">
+      @if (optionTemplate) {
+      <ng-container *ngTemplateOutlet="optionTemplate; context: { $implicit: opt }"></ng-container>
+      } @else { {{ displayWith(opt) }} }
     </div>
+    } }
+  </div>
   }
 </div>

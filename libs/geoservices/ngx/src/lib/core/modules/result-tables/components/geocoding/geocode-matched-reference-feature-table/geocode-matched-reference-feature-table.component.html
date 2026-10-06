@@ -1,8 +1,8 @@
 <tamu-gisc-parsed-address-result-table [address]="matchedFeature.address" type="expanded">
   @for (item of (filteredProps | async); track item) {
-    <tr>
-      <td>{{referenceFeatureDict[item.key]}}</td>
-      <td>{{item.value}}</td>
-    </tr>
+  <tr>
+    <td>{{referenceFeatureDict[item.key]}}</td>
+    <td>{{item.value}}</td>
+  </tr>
   }
 </tamu-gisc-parsed-address-result-table>

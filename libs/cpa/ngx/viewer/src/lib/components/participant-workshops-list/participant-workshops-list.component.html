@@ -12,10 +12,10 @@
 
   <div class="floating-table-body">
     @for (workshop of workshops | async; track workshop) {
-      <div class="floating-row">
-        <div class="colum">{{workshop.title}}</div>
-        <div class="colum"><a [routerLink]="['/viewer']" [queryParams]="{workshop: workshop.guid}">Launch</a></div>
-      </div>
+    <div class="floating-row">
+      <div class="colum">{{workshop.title}}</div>
+      <div class="colum"><a [routerLink]="['/viewer']" [queryParams]="{workshop: workshop.guid}">Launch</a></div>
+    </div>
     }
   </div>
 </div>

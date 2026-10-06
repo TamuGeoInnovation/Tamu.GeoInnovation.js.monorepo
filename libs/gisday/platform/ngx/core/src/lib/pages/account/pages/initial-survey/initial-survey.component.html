@@ -1,20 +1,20 @@
 @if ($tookSurveyAlready | async) {
-  <div class="small-partition">
-    <h1 class="trailer-1">Pre-Event User Impact Survey</h1>
-    <p class="sub-section-heading">Help us make TxGIS Day even better</p>
+<div class="small-partition">
+  <h1 class="trailer-1">Pre-Event User Impact Survey</h1>
+  <p class="sub-section-heading">Help us make TxGIS Day even better</p>
+</div>
+<div class="column10">
+  @if () {
+  <div class="flex flex-column align-center">
+    <img class="xx-small" src="../img/graphics/graphic-thumb.svg" alt="Gig 'Em Thumbs Up'" />
+    <p class="size-2">Your responses for this survey have been recorded. Thank you for your feedback!</p>
+    <p class="trailer-1">You are now eligible to register and checkin to any TxGIS Day event.</p>
+    <a href="../sessions/" class="button primary">Browse Sessions</a>
   </div>
-  <div class="column10">
-    @if () {
-      <div class="flex flex-column align-center">
-        <img class="xx-small" src="../img/graphics/graphic-thumb.svg" alt="Gig 'Em Thumbs Up'" />
-        <p class="size-2">Your responses for this survey have been recorded. Thank you for your feedback!</p>
-        <p class="trailer-1">You are now eligible to register and checkin to any TxGIS Day event.</p>
-        <a href="../sessions/" class="button primary">Browse Sessions</a>
-      </div>
-    }
-  </div>
+  }
+</div>
 } @else {
-  <ng-template [ngTemplateOutlet]="noFeedback"></ng-template>
+<ng-template [ngTemplateOutlet]="noFeedback"></ng-template>
 }
 
 <div #noFeedback class="small-partition">
@@ -24,61 +24,58 @@
 <div class="container12 flex flex-column align-center">
   <div class="column10">
     @if (true) {
-      <div>
-        <p>Hosting the largest GIS Day event in the State of Texas, our goal is to make each successive event even better than the last. The purpose of this survey is to measure the impact and interest of TxGIS Day to improve the structure of an increasingly successful event.</p>
-        <p>Please take a minute to answer the following questions. After doing so, you will become eligible to register for any of the TxGIS Day events.</p>
-      </div>
+    <div>
+      <p>Hosting the largest GIS Day event in the State of Texas, our goal is to make each successive event even better than the last. The purpose of this survey is to measure the impact and interest of TxGIS Day to improve the structure of an increasingly successful event.</p>
+      <p>Please take a minute to answer the following questions. After doing so, you will become eligible to register for any of the TxGIS Day events.</p>
+    </div>
     }
   </div>
   <div>
     <div class="trailer-2">
       @if (true) {
-        <div>
-          <div class="flex flex-column session-rating-questionnaire leader-1">
-            <form [formGroup]="dataGroup">
-              @for (question of ($initalSurveyQuestions | async); track question) {
-                <div>
-                  @if (question.questionType.type === 'boolean') {
-                    <div>
-                      <!-- If I remember correctly this works weird with === instead of ==, probably my fault - Aaron H -->
-                      <p>{{question.questionText}}</p>
-                      <div class="interactive-controls boolean">
-                        <div class="control-inputs trailer-1 flex flex-row">
-                          <tamu-gisc-radio-group [formControlName]="question.guid" [options]="question.questionOptions.split('|')"></tamu-gisc-radio-group>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                  @if (question.questionType.type === 'text') {
-                    <div>
-                      <p>{{question.questionText}}</p>
-                      <tamu-gisc-textbox [formControlName]="question.guid" type="textarea" floatLabel="true"></tamu-gisc-textbox>
-                    </div>
-                  }
-                  @if (question.questionType.type === 'multiple-option') {
-                    <div>
-                      <p>{{question.questionText}}</p>
-                      <tamu-gisc-checkbox-group [formControlName]="question.guid" referenceId="value">
-                        @for (option of question.options; track option) {
-                          <tamu-gisc-checkbox [label]="option.value" [data]="option"> </tamu-gisc-checkbox>
-                        }
-                      </tamu-gisc-checkbox-group>
-                    </div>
-                  }
-                  @if (question.questionType.type === 'scale-normal') {
-                    <div>
-                      <p>{{question.questionText}}</p>
-                      <tamu-gisc-select [formControlName]="question.guid" [data]="question.options" [displayTemplate]="'value'" [valueTemplate]="'value'"> </tamu-gisc-select>
-                    </div>
-                  }
-                </div>
-              }
+      <div>
+        <div class="flex flex-column session-rating-questionnaire leader-1">
+          <form [formGroup]="dataGroup">
+            @for (question of ($initalSurveyQuestions | async); track question) {
+            <div>
+              @if (question.questionType.type === 'boolean') {
               <div>
-                <tamu-gisc-button fit="relaxed" value="Submit" (click)="submitSurvey()"></tamu-gisc-button>
+                <!-- If I remember correctly this works weird with === instead of ==, probably my fault - Aaron H -->
+                <p>{{question.questionText}}</p>
+                <div class="interactive-controls boolean">
+                  <div class="control-inputs trailer-1 flex flex-row">
+                    <tamu-gisc-radio-group [formControlName]="question.guid" [options]="question.questionOptions.split('|')"></tamu-gisc-radio-group>
+                  </div>
+                </div>
               </div>
-            </form>
-          </div>
+              } @if (question.questionType.type === 'text') {
+              <div>
+                <p>{{question.questionText}}</p>
+                <tamu-gisc-textbox [formControlName]="question.guid" type="textarea" floatLabel="true"></tamu-gisc-textbox>
+              </div>
+              } @if (question.questionType.type === 'multiple-option') {
+              <div>
+                <p>{{question.questionText}}</p>
+                <tamu-gisc-checkbox-group [formControlName]="question.guid" referenceId="value">
+                  @for (option of question.options; track option) {
+                  <tamu-gisc-checkbox [label]="option.value" [data]="option"> </tamu-gisc-checkbox>
+                  }
+                </tamu-gisc-checkbox-group>
+              </div>
+              } @if (question.questionType.type === 'scale-normal') {
+              <div>
+                <p>{{question.questionText}}</p>
+                <tamu-gisc-select [formControlName]="question.guid" [data]="question.options" [displayTemplate]="'value'" [valueTemplate]="'value'"> </tamu-gisc-select>
+              </div>
+              }
+            </div>
+            }
+            <div>
+              <tamu-gisc-button fit="relaxed" value="Submit" (click)="submitSurvey()"></tamu-gisc-button>
+            </div>
+          </form>
         </div>
+      </div>
       }
     </div>
   </div>

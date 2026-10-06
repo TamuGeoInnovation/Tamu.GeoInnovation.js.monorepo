@@ -1,21 +1,13 @@
-@if (people$ | async; as people) {
-  @if (people.length > 0) {
-    @if (people.length  > 0) {
-      <div class="container12 flex flex-row justify-center wrap">
-        @if (people?.length > 0) {
-          @for (person of people; track person) {
-            <tamu-gisc-speaker-card [speaker]="person"></tamu-gisc-speaker-card>
-          }
-        } @else {
-          <div class="loader"></div>
-        }
-      </div>
-    } @else {
-      <div class="loader"></div>
-    }
-  } @else {
-    <p>We're putting together an amazing lineup, please check back later!</p>
+@if (people$ | async; as people) { @if (people.length > 0) { @if (people.length > 0) {
+<div class="container12 flex flex-row justify-center wrap">
+  @if (people?.length > 0) { @for (person of people; track person) {
+  <tamu-gisc-speaker-card [speaker]="person"></tamu-gisc-speaker-card>
+  } } @else {
+  <div class="loader"></div>
   }
-}
-
-
+</div>
+} @else {
+<div class="loader"></div>
+} } @else {
+<p>We're putting together an amazing lineup, please check back later!</p>
+} }

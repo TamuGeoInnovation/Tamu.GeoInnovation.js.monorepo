@@ -4,10 +4,10 @@
 
   <div class="related-links-grid">
     @for (link of links; track link) {
-      <a class="related-link" [routerLink]="link.routerLink">
-        <span class="related-link-chevron" aria-hidden="true">&raquo;</span>
-        <span class="related-link-label">{{ link.label }}</span>
-      </a>
+    <a class="related-link" [routerLink]="link.routerLink">
+      <span class="related-link-chevron" aria-hidden="true">&raquo;</span>
+      <span class="related-link-label">{{ link.label }}</span>
+    </a>
     }
   </div>
 </div>

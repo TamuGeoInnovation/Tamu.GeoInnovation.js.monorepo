@@ -10,9 +10,9 @@
       <div class="title">{{ notification.title }}</div>
       <div class="description" [innerHTML]="notification.message">This is a test <i class="material-icons">directions</i></div>
       @if (notification.acknowledge) {
-        <div class="acknowledgment-actions">
-          <a href="#" class="dont-show-again" (click)="acknowledge(); $event.preventDefault(); $event.stopPropagation();" title="Don't show this notification again">[ Don't show again ]</a>
-        </div>
+      <div class="acknowledgment-actions">
+        <a href="#" class="dont-show-again" (click)="acknowledge(); $event.preventDefault(); $event.stopPropagation();" title="Don't show this notification again">[ Don't show again ]</a>
+      </div>
       }
     </div>
   </div>

@@ -1,15 +1,14 @@
 @if (day !== null) {
-  <div class="date-tile">
-    <div class="edit-bubble" (click)="delete()">
-      <span class="material-icons">close</span>
-    </div>
-    <div class="date">
-      <tamu-gisc-date-time-picker [value]="day.date" [maxView]="'month'" minView="day" [formatString]="'mediumDate'" (changed)="update($event)"></tamu-gisc-date-time-picker>
-    </div>
+<div class="date-tile">
+  <div class="edit-bubble" (click)="delete()">
+    <span class="material-icons">close</span>
   </div>
+  <div class="date">
+    <tamu-gisc-date-time-picker [value]="day.date" [maxView]="'month'" minView="day" [formatString]="'mediumDate'" (changed)="update($event)"></tamu-gisc-date-time-picker>
+  </div>
+</div>
 } @else {
-  <div class="date-tile" title="Add event day" (click)="add()">
-    <span class="material-icons">add</span>
-  </div>
+<div class="date-tile" title="Add event day" (click)="add()">
+  <span class="material-icons">add</span>
+</div>
 }
-

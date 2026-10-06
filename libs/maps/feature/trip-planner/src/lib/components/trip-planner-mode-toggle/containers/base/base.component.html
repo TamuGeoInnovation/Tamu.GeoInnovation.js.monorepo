@@ -3,16 +3,16 @@
 
   <!-- If trip result error, show ETA placeholder and apply error class. -->
   @if ((status | async)?.isFulfilled && (status | async)?.isError) {
-    <span class="eta">--</span>
+  <span class="eta">--</span>
   }
 
   <!-- If trip result is processing, show ETA placeholder. -->
   @if ((status | async)?.isProcessing) {
-    <span class="eta">--</span>
+  <span class="eta">--</span>
   }
 
   <!-- If trip result was successful and directions exist, display ETA. -->
   @if ((status | async)?.isFulfilled && (status | async)?.directions?.totalTime) {
-    <span class="eta">{{ (status | async)?.directions?.totalDriveTime | timeUntil }}</span>
+  <span class="eta">{{ (status | async)?.directions?.totalDriveTime | timeUntil }}</span>
   }
 </div>

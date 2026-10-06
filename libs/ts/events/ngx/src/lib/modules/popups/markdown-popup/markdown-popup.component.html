@@ -3,15 +3,13 @@
 </div>
 
 @if (data?.attributes?.description) {
-  <div class="popup-section">
-    @if (data?.attributes?.description) {
-      <p class="trailer-1" [innerHTML]="data.attributes?.description"></p>
-    }
-  </div>
-}
-
-@if (shareUrl) {
-  <div class="popup-section">
-    <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
-  </div>
+<div class="popup-section">
+  @if (data?.attributes?.description) {
+  <p class="trailer-1" [innerHTML]="data.attributes?.description"></p>
+  }
+</div>
+} @if (shareUrl) {
+<div class="popup-section">
+  <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+</div>
 }

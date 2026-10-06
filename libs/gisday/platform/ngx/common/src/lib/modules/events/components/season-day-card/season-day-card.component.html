@@ -1,22 +1,17 @@
 <div [id]="'day' + (this.index + 1)" class="card">
   <h2>{{seasonDay.date | date : 'MMMM dd'}}</h2>
 
-  @if ((events$ | async)?.length > 0) {
-    @if ((filteredEvents$ | async)?.length > 0) {
-      @for (event of filteredEvents$ | async; track event) {
-        <div>
-          <tamu-gisc-event-row [event]="event" [day]="seasonDay" (rowToggle)="handoff(event, $event)" [rsvps]="rsvpsForDay$ | async"></tamu-gisc-event-row>
-        </div>
-      }
-    } @else {
-      <div class="row">
-        <p>No matching events for filter criteria.</p>
-      </div>
-    }
-  } @else {
-    <div class="row">
-      <p>No events scheduled for this day.</p>
-    </div>
+  @if ((events$ | async)?.length > 0) { @if ((filteredEvents$ | async)?.length > 0) { @for (event of filteredEvents$ | async; track event) {
+  <div>
+    <tamu-gisc-event-row [event]="event" [day]="seasonDay" (rowToggle)="handoff(event, $event)" [rsvps]="rsvpsForDay$ | async"></tamu-gisc-event-row>
+  </div>
+  } } @else {
+  <div class="row">
+    <p>No matching events for filter criteria.</p>
+  </div>
+  } } @else {
+  <div class="row">
+    <p>No events scheduled for this day.</p>
+  </div>
   }
-
 </div>

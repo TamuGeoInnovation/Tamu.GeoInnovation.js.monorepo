@@ -6,15 +6,15 @@
   <div class="action-bar" [ngClass]="{'result-available': renderable}">
     <p class="action-bar__action--copy" clipboard-copy [text]="code"><span class="material-icons">file_copy</span>Copy</p>
     @if (result !== undefined) {
-      <p class="action-bar__action--run" (click)="execute()"><span class="material-icons">play_circle_outline</span>Run</p>
+    <p class="action-bar__action--run" (click)="execute()"><span class="material-icons">play_circle_outline</span>Run</p>
     }
   </div>
 </div>
 
 @if (renderable) {
-  <div class="result">
-    <pre>
+<div class="result">
+  <pre>
       <code [highlight]="result | async" [lineNumbers]="true"></code>
     </pre>
-  </div>
+</div>
 }

@@ -5,10 +5,10 @@
     <th>Redirect</th>
   </tr>
   @for (client of ($clients | async); track client) {
-    <tr>
-      <td>{{client.client_name}}</td>
-      <td>{{client.client_id}}</td>
-      <td>{{client.redirect_uris}}</td>
-    </tr>
+  <tr>
+    <td>{{client.client_name}}</td>
+    <td>{{client.client_id}}</td>
+    <td>{{client.redirect_uris}}</td>
+  </tr>
   }
 </table>

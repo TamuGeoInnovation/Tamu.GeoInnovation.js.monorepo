@@ -1,33 +1,30 @@
 @if ((scenarios | async) === null) {
-  <div class="spinning-loader"></div>
+<div class="spinning-loader"></div>
+} @else { @if ((scenarios | async).length === 0) {
+<div>
+  <p class="leader-1 trailer-1">There are no scenarios. <a [routerLink]="['create']">Get started.</a></p>
+</div>
 } @else {
-  @if ((scenarios | async).length === 0) {
-    <div>
-      <p class="leader-1 trailer-1">There are no scenarios. <a [routerLink]="['create']">Get started.</a></p>
-    </div>
-  } @else {
-    <div class="flex flex-column align-center">
-      <div class="floating-table">
-        <div class="floating-table-header">
-          <div class="floating-row">
-            <div class="column">Name</div>
-            <div class="column">Workshop</div>
-            <div class="column"></div>
-          </div>
-        </div>
-        <div class="floating-table-body">
-          @for (scenario of scenarios | async; track scenario) {
-            <div class="floating-row">
-              <div class="column">{{scenario.title}}</div>
-              <div class="column">{{scenario.workshopScenario?.workshop?.title}}</div>
-              <div class="column table-actions">
-                <a [routerLink]="['./edit', scenario.guid]">Edit</a>
-              </div>
-            </div>
-          }
-        </div>
+<div class="flex flex-column align-center">
+  <div class="floating-table">
+    <div class="floating-table-header">
+      <div class="floating-row">
+        <div class="column">Name</div>
+        <div class="column">Workshop</div>
+        <div class="column"></div>
       </div>
     </div>
-  }
-}
-
+    <div class="floating-table-body">
+      @for (scenario of scenarios | async; track scenario) {
+      <div class="floating-row">
+        <div class="column">{{scenario.title}}</div>
+        <div class="column">{{scenario.workshopScenario?.workshop?.title}}</div>
+        <div class="column table-actions">
+          <a [routerLink]="['./edit', scenario.guid]">Edit</a>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+} }

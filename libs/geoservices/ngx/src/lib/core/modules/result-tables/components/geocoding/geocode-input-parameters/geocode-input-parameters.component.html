@@ -1,18 +1,18 @@
 @if (filteredProps | async; as props) {
-  <table>
-    <thead>
-      <tr>
-        <th>Field</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (item of (props | keyvalue); track item) {
-        <tr>
-          <td>{{propsDict[item.key]}}</td>
-          <td>{{item.value}}</td>
-        </tr>
-      }
-    </tbody>
-  </table>
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (item of (props | keyvalue); track item) {
+    <tr>
+      <td>{{propsDict[item.key]}}</td>
+      <td>{{item.value}}</td>
+    </tr>
+    }
+  </tbody>
+</table>
 }

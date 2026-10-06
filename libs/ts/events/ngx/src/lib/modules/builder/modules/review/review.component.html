@@ -1,33 +1,27 @@
 <div class="container12">
-  <p class="trailer-2 center-text component-instructions">
-    {{configuration?.reviewText || "Please review that your selections are correct. In doing so, you will receive the best transportation and parking information to assist with traffic and to avoid parking citations."}}
-  </p>
+  <p class="trailer-2 center-text component-instructions">{{configuration?.reviewText || "Please review that your selections are correct. In doing so, you will receive the best transportation and parking information to assist with traffic and to avoid parking citations."}}</p>
 
   <div class="flex flex-row justify-center">
     <div class="column6 flex flex-column" id="settings-table">
       <div class="setting-item"></div>
 
       @for (option of mergedSettings; track option) {
-        <div class="setting-item">
-          <div>{{option.shortDescription}}</div>
-          <div>
-            @if (option.option === null) {
-              <p>Not Set</p>
-            }
-            @if (option.option !== null) {
-              <p>{{ option.option.label }}</p>
-            }
-            <a (click)="goToAccommodationSelection(option.key)" (keyup.space)="goToAccommodationSelection(option.key)" (keyup.enter)="goToAccommodationSelection(option.key)">Change</a>
-          </div>
+      <div class="setting-item">
+        <div>{{option.shortDescription}}</div>
+        <div>
+          @if (option.option === null) {
+          <p>Not Set</p>
+          } @if (option.option !== null) {
+          <p>{{ option.option.label }}</p>
+          }
+          <a (click)="goToAccommodationSelection(option.key)" (keyup.space)="goToAccommodationSelection(option.key)" (keyup.enter)="goToAccommodationSelection(option.key)">Change</a>
         </div>
-      }
-
-      @if (settingsValid) {
-        <tamu-gisc-button value="Take Me To My Map" (go)="navigateToMap()" [look]="'tertiary'"></tamu-gisc-button>
+      </div>
+      } @if (settingsValid) {
+      <tamu-gisc-button value="Take Me To My Map" (go)="navigateToMap()" [look]="'tertiary'"></tamu-gisc-button>
       } @else {
-        <p>Please ensure that all selections are set before proceeding.</p>
+      <p>Please ensure that all selections are set before proceeding.</p>
       }
-
     </div>
   </div>
 </div>
