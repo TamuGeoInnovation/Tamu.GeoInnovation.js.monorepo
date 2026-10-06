@@ -18,6 +18,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriModuleProviderService } from '../module-provider/module-provider.service';
 import { LayerSourcesService } from '../layer-sources/layer-sources.service';
 import { registerMapProbe } from './map-probe';
+import { declaresOwnRenderer, PortalItemData, portalItemDataUrl, rendererForLayer } from './portal-symbology';
 
 import esri = __esri;
 
@@ -43,6 +44,12 @@ export class EsriMapService {
 
   /** Whether the map loads the main map's layer set. See `withoutMainLayers`. */
   private _mainLayers = true;
+
+  /**
+   * One in-flight or settled request per portal item, keyed by item id, so layers sharing an item
+   * share a request rather than racing (#1497).
+   */
+  private _portalItemData = new Map<string, Promise<PortalItemData | null>>();
 
   public hitTest: Observable<HitTestSnapshot> = this._hitTest.asObservable();
 
@@ -393,6 +400,7 @@ export class EsriMapService {
         // Create and return new feature layer
         const layer = new FeatureLayer(props as esri.FeatureLayerProperties);
         this.applyLegendOverrideToLayerSymbols(layer, legendOverride);
+        this.applyPortalItemSymbology(layer, source);
         return layer;
       });
     } else if (source.type === 'map-image') {
@@ -618,6 +626,76 @@ export class EsriMapService {
    * Only picture-marker symbols are touched; non-image symbols (simple-fill, simple-line, …) are
    * left alone because they don't have a meaningful width/height in the same sense.
    */
+  /**
+   * Draws a hosted layer with the symbology its portal item publishes (#1497).
+   *
+   * A layer authored in ArcGIS Pro keeps its symbol on the portal item; the service definition
+   * carries a flattened approximation, and loading by service URL - which every map here does - gets
+   * the flattened one. Measured across the 36 hosted services on 6 October 2026: of 128 layers, 128
+   * publish CIM symbology on their item and none on their service. `portal-symbology.ts` has the
+   * detail and the worked example (#1496).
+   *
+   * A map that set its own renderer keeps it: Construction deliberately replaces the service's
+   * per-owner colours with one orange hatch. This only fills in where nothing was chosen.
+   *
+   * Everything here fails quietly on purpose. A portal that cannot be reached, an item that is not
+   * shared, a layer the item does not describe - none of those are reasons to stop a map drawing. The
+   * layer keeps the service's symbology, which is what it had before this existed.
+   */
+  private applyPortalItemSymbology(layer: esri.FeatureLayer, source: LayerSource | AutocastableLayer): void {
+    if (declaresOwnRenderer(source)) {
+      return;
+    }
+
+    layer
+      .when()
+      .then(async () => {
+        // `sourceJSON` is the service's own description of the layer, which is where the item id is.
+        const itemId = (layer as unknown as { sourceJSON?: { serviceItemId?: string } }).sourceJSON?.serviceItemId;
+        const url = itemId ? portalItemDataUrl(layer.url ?? '', itemId) : null;
+
+        if (!url || itemId === undefined) {
+          return;
+        }
+
+        const renderer = rendererForLayer(await this.portalItemData(itemId, url), layer.layerId);
+
+        if (!renderer) {
+          return;
+        }
+
+        const [rendererJsonUtils] = await this.moduleProvider.require(['rendererJsonUtils']);
+
+        layer.renderer = rendererJsonUtils.fromJSON(renderer);
+      })
+      .catch(() => {
+        // See above: a layer that draws its service's symbology is the previous behaviour, not a fault.
+      });
+  }
+
+  /**
+   * One portal item's data, fetched once however many layers come from it.
+   *
+   * The 128 layers measured in #1497 come from 36 items, so without this the same document would be
+   * fetched three or four times over on a busy map. The promise is cached rather than the result, so
+   * layers loading together share one request instead of racing.
+   */
+  private portalItemData(itemId: string, url: string): Promise<PortalItemData | null> {
+    const existing = this._portalItemData.get(itemId);
+
+    if (existing) {
+      return existing;
+    }
+
+    const request = lastValueFrom(this.http.get<PortalItemData>(url))
+      .then((data) => ((data as unknown as { error?: unknown })?.error ? null : data))
+      .catch(() => null);
+
+    this._portalItemData.set(itemId, request);
+
+    return request;
+  }
+
   private applyLegendOverrideToLayerSymbols(layer: esri.FeatureLayer, override: LayerLegendOverride | undefined): void {
     if (!override) {
       return;
