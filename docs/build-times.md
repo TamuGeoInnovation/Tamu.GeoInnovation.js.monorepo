@@ -226,6 +226,7 @@ every layer, so its duration says as much about the GIS services as about this c
 
 | Date | Machine | Environment | Result | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 6 Oct 2026 | home | dev, `8c7a9765` (#1526 service symbology, #1529), release scope, 6 workers, 18:58:07 to 19:20:00 Central; cleared the second 6 October release, tagged `dev-2026-10-06-4` | 421 passed, 0 failed, 1 flaky (bus routes: one route did not draw within 30 s, passed on retry; #1473), 14 skipped, of 436. Men's Basketball passes again after #1434 | **21 min 53 s** |
 | 6 Oct 2026 | office | dev, **Angular 22.1.8** (`279853c1`, build 20261006.6, tagged `dev-2026-10-06-2`), release scope, 6 workers, 07:43:33 to 08:09:54 Central | 404 passed, 2 failed (Men's Basketball, #1431), 1 flaky, 14 skipped, of 420 | **26 min 21 s** |
 | 6 Oct 2026 | home | dev, Angular 21 (`4d7f1d7a`), **#1426 release scope**, 6 workers, 06:51:57 to 07:14:41 Central | 404 passed, 3 failed (Men's Basketball, #1431), 0 flaky, 14 skipped, of 421 | **22 min 44 s** |
 | 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; **#1426 branch**, framing only, the 70 release routes, 2 workers, 3:29 to 3:37 AM Central | 62 passed, 1 failed (#1431), 7 skipped; 9.9 s per passing test | **7.7 min** |

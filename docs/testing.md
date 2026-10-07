@@ -66,9 +66,9 @@ with the number of maps and services.
 
 ### What it checks
 
-The counts are a snapshot: **436 tests, measured on dev on 6 October 2026** in the full run that cleared
-the [5 October release](releases/2026-10-05.md#what-cleared-it): 743 passed and 14 skipped, in 1.3 hours,
-against the release candidate built with esbuild. Production lists fewer maps than dev, so it runs fewer.
+The counts are a snapshot: **436 tests, measured on dev on 6 October 2026** in the run that cleared
+the [second 6 October release](releases/2026-10-06-2.md): 421 passed and 14 skipped, in 21 minutes 53 seconds,
+with release scope and 6 workers. Production lists fewer maps than dev, so it runs fewer.
 
 | Type of check | Spec files | Tests | What it catches | Prompted by |
 | --- | --- | ---: | --- | --- |
