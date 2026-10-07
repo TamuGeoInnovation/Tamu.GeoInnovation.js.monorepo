@@ -1,11 +1,11 @@
 # Unreleased
 
-Nothing has merged since the 6 October release yet.
+Nothing has merged since the second 6 October release yet.
 
-**The last release is [6 October 2026](2026-10-06.md)**, on production as `main-RKVTA45W.js` from
-`0c8b12df`, tagged `prod-2026-10-06`. It carried the Angular 20 to 22 upgrades, the satellite-campus
-maps going live on production, and five visible fixes. What was tested, and what went into it, are in
-that file.
+**The last release is [6 October 2026, second release](2026-10-06-2.md)**, built from `8c7a9765` as
+`main-AV4OTLR6.js` and tagged `dev-2026-10-06-4`. It carried the service-driven symbology: every layer
+draws, and is named, the way its service publishes it. What was tested, and what went into it, are in
+that file. The release before it, the same morning, is [6 October 2026](2026-10-06.md).
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
 result adds its own entry below, in that pull request**, with its before/after screenshots linked from
@@ -16,48 +16,7 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-- **Maps draw the symbology that was actually drawn for them** ([#1497](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1497)): a layer styled in ArcGIS Pro keeps its
-  symbol on the portal item, while the service publishes a flattened approximation - and the maps were
-  drawing the approximation. Across the 36 hosted services, **128 of 128 layers** are affected, which
-  is why symbols have had to be copied into our own code one at a time. Layers now draw what was
-  published for them, unless a map deliberately sets its own.
-
-  The clearest case is the Football micromobility routes, authored as a thin line with arrowheads and
-  flattened by the service into a thick line with none:
-
-  | Before | After |
-  | --- | --- |
-  | ![Entry routes as a thick flat purple line with no arrowheads](../screenshots/1497-portal-symbology/before-micromobility-entry.png) | ![Entry routes as a thin purple line with arrowheads](../screenshots/1497-portal-symbology/after-micromobility-entry.png) |
-
-  Maps whose services were already faithful are unchanged - Visitor Parking looks exactly as it did.
-
-- **Every layer now draws, and is named, the way its service publishes it** ([#1508](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1508)): with the
-  symbology readable at last, the copies this repository kept of it have no purpose. **90 hard-coded
-  renderers and 76 symbol, colour and image constants are gone**, along with 71 layer titles that
-  restated the service's own name. The cartography is the service owner's decision; our job is to
-  render it without breaking it.
-
-  Three reasons written into the code for keeping a copy were checked against the live services, and
-  none of them held:
-
-  - The per-event parking classifications were said to need hard-coding. The hosted views publish
-    them. `VolleyballParking_view` publishes **three** classes where this repository declared two, so
-    the Disabled class was being drawn as though it were event parking.
-  - The inlined marker art was said to be necessary because the image endpoint returns 400. It does -
-    and all four services publish the art inside the renderer JSON, so Esri never asks the endpoint.
-  - Construction was said to want one colour because the map is about construction. Reviewed side by
-    side, the service's per-owner symbols are the better map.
-
-  | | Before | After |
-  | --- | --- | --- |
-  | Construction | ![One orange hatch for every construction zone](../screenshots/1508-service-symbology/before-construction.png) | ![Per-owner colours for SSC, TS, UES, TxDOT and Building Projects](../screenshots/1508-service-symbology/after-construction.png) |
-  | Main Campus Parking | ![Lot colours and stop markers copied into our code](../screenshots/1508-service-symbology/before-main-parking.png) | ![The same map drawing the service's own symbology](../screenshots/1508-service-symbology/after-main-parking.png) |
-  | Muster | ![Parking classes from a local copy of the renderer](../screenshots/1508-service-symbology/before-muster.png) | ![Parking classes as Transportation published them](../screenshots/1508-service-symbology/after-muster.png) |
-  | Spirit of 150 Week | ![Cake markers from base64 inlined in the definitions](../screenshots/1508-service-symbology/before-spirit-of-150-week.png) | ![The same markers drawn from the service](../screenshots/1508-service-symbology/after-spirit-of-150-week.png) |
-
-  Where a service's name or order would make a map *worse*, ours stays and the service is asked to fix
-  it instead - 40 names and 2 orders, listed for Transportation on [#1523](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1523), together with 42
-  symbols published at a size that does not match their art.
+Nothing yet.
 
 ---
 
@@ -68,12 +27,10 @@ result adds its own entry below, in that pull request**, with its before/after s
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** nothing beyond the [6 October release](2026-10-06.md) itself, until the next build carries the change below.
+**Currently on dev for testing:** nothing beyond the [second 6 October release](2026-10-06-2.md) itself.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
-| Map symbology ([#1497](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1497)) | Any map you know well, and [Football micromobility entry](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry) | **This one needs the widest look of anything in the release.** Micromobility routes should be a thin line with arrowheads, not a thick slab. Everywhere else, symbols should look the same or better - anything that looks *worse* or has changed unexpectedly is the thing to report, on any map |
-| Map symbology, names and order ([#1508](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1508)) | [Construction](https://dev.aggiemap.tamu.edu/operations/construction-map), [Main Campus Parking](https://dev.aggiemap.tamu.edu/parking/ts-main-parking), [Muster](https://dev.aggiemap.tamu.edu/events/muster), [Spirit of 150 Week](https://dev.aggiemap.tamu.edu/events/spirit-of-150-week) | Construction should show a colour per owner rather than one orange hatch. Everywhere else: symbols and layer names should look the same or better. **A layer whose name changed is expected** - 71 titles now come from the service. Report anything that looks *worse*, a name that reads wrongly, or a marker that looks squashed. **One named thing:** Muster's accessible parking pin was drawn 22x28 by an override and is now drawn 25x25 as the service declares it, so it may look slightly squashed - the art is 700x885, a portrait pin. If it reads badly at that size, say so |
 
 ---
 
