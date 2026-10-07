@@ -15,15 +15,27 @@
  * The run **resumes**: a shot already on disk is skipped, so an interrupted crawl costs only what it
  * had not reached. That matters at this size - the first full builder crawl took two hours.
  *
- * Output:
- *   <out>/<env>/<build>/manifest.json      what ran, against what, when (US Central)
- *   <out>/<env>/<build>/desktop/<slug>.png
- *   <out>/<env>/<build>/phone/<slug>.png
+ * Output is keyed by environment and **release**, so an environment keeps one set per release and the
+ * same release can be compared across environments:
+ *
+ *   <out>/<env>/<release>/manifest.json    what ran, against what, when (US Central)
+ *   <out>/<env>/<release>/desktop/<slug>.png
+ *   <out>/<env>/<release>/phone/<slug>.png
+ *
+ * The release is the tag recording which commit an environment serves - `prod-2026-10-06-2`,
+ * `dev-2026-10-06-4` - from `--release`, or the newest tag for that environment's prefix. A tag is a
+ * claim, so the manifest also records the **bundle hash actually served**, which is what proves it.
+ * Re-capturing a release whose bundle has changed is refused: either the tag is wrong or the
+ * environment moved under it, and both matter more than the capture.
+ *
+ * Baselines live outside the repository by default (`<repo>/../visual-baselines`). A full set runs to
+ * hundreds of megabytes per release, which is not what git is for.
  */
 
 import { chromium } from 'playwright';
 import * as fs from 'fs';
 import * as path from 'path';
+import { execFileSync } from 'child_process';
 
 const arg = (name, fallback) => {
   const i = process.argv.indexOf('--' + name);
@@ -35,7 +47,10 @@ const flag = (name) => process.argv.includes('--' + name);
 
 const REPO = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', '..');
 const envName = arg('env', 'production');
-const outRoot = arg('out', path.join(REPO, 'test', 'visual', 'baselines', 'environments'));
+const outRoot = arg('out', process.env.AGGIEMAP_BASELINES || path.join(REPO, '..', 'visual-baselines'));
+/** The release this environment is serving; defaults to the newest tag for its prefix. */
+const releaseArg = arg('release', '');
+const force = flag('force');
 const routesOnly = flag('routes-only');
 /** Comma-separated substrings; only routes containing one are captured. For asking a narrow question. */
 const only = (arg('only', '') || '').split(',').map((part) => part.trim()).filter(Boolean);
@@ -82,6 +97,56 @@ async function buildIdentity(page) {
   const bundles = [...new Set([...html.matchAll(/main[.-][A-Za-z0-9]+\.js/g)].map((m) => m[0]))];
 
   return bundles[0] || 'unknown-build';
+}
+
+/**
+ * Which release this environment is serving.
+ *
+ * The tag is how this repository records the commit a build came from (`scripts/tag-build.sh`), so it
+ * is the name a baseline should carry: it is shared between machines, it outlives the capture, and it
+ * is what somebody says when they ask what Construction looked like in a given release.
+ *
+ * Nothing in the browser proves an environment is serving a tag, so the bundle hash is recorded
+ * beside it. That way the claim and the fingerprint can disagree out loud.
+ */
+function resolveRelease(fallbackBundle) {
+  if (releaseArg) {
+    return releaseArg;
+  }
+
+  const prefix = { production: 'prod-', development: 'dev-' }[envName];
+
+  if (!prefix) {
+    // local and local-production are never tagged; name the set for the bundle it served.
+    return 'untagged-' + fallbackBundle.replace(/\.js$/, '');
+  }
+
+  try {
+    const tags = execFileSync('git', ['tag', '--sort=-creatordate', '--list', prefix + '*'], {
+      cwd: REPO,
+      encoding: 'utf8'
+    });
+    const newest = tags.split(/\r?\n/).map((line) => line.trim()).filter(Boolean)[0];
+
+    if (newest) {
+      return newest;
+    }
+  } catch {
+    // git is not reachable from in here; say what to pass instead.
+  }
+
+  console.error('Could not work out the release for "' + envName + '".');
+  console.error('Pass --release <tag>, for example --release ' + prefix + '2026-10-06.');
+  process.exit(2);
+}
+
+/** The commit a release tag names, when git can be reached. Recorded, never required. */
+function releaseCommit(release) {
+  try {
+    return execFileSync('git', ['rev-parse', release + '^{commit}'], { cwd: REPO, encoding: 'utf8' }).trim();
+  } catch {
+    return null;
+  }
 }
 
 /** US Central, named, as everything reported here is (CLAUDE.md). */
@@ -204,28 +269,48 @@ async function settle(page) {
 
   await probePage.close();
 
-  const outDir = path.join(outRoot, envName, build.replace(/\.js$/, ''));
+  const release = resolveRelease(build);
+  const outDir = path.join(outRoot, envName, release);
+  const manifestPath = path.join(outDir, 'manifest.json');
+
+  // A set already here for this release must have come from the same bundle. If it did not, either
+  // the tag names a different build or the environment moved under it, and overwriting would quietly
+  // replace a baseline with pictures of something else.
+  if (fs.existsSync(manifestPath)) {
+    const existing = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+
+    if (existing.build && existing.build !== build && !force) {
+      console.error('Release ' + release + ' on ' + envName + ' was captured from bundle ' + existing.build + ',');
+      console.error('but ' + baseUrl + ' is serving ' + build + ' now.');
+      console.error('Either the tag is wrong, or this environment has been redeployed since.');
+      console.error('Capture under its own release name, or pass --force to overwrite deliberately.');
+      process.exit(3);
+    }
+  }
 
   fs.mkdirSync(path.join(outDir, 'desktop'), { recursive: true });
   fs.mkdirSync(path.join(outDir, 'phone'), { recursive: true });
 
-  const manifestPath = path.join(outDir, 'manifest.json');
   const manifest = {
     environment: envName,
     baseUrl: baseUrl,
+    release: release,
+    releaseCommit: releaseCommit(release),
     build: build,
     capturedAt: centralNow(),
     viewports: VIEWPORTS,
     routeCount: routes.length,
     routes: routes,
     note:
-      'Captured by tools/visual-baselines/capture.mjs. The build is the bundle content hash, because ' +
-      'the build banner prints placeholders on IIS-served environments (#1306).'
+      'Captured by tools/visual-baselines/capture.mjs. `release` is the tag recording which commit ' +
+      'this environment serves; `build` is the bundle hash actually served, which is what proves it, ' +
+      'because the build banner prints placeholders on IIS-served environments (#1306).'
   };
 
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
   console.log('environment ' + envName + ' (' + baseUrl + ')');
+  console.log('release      ' + release + (manifest.releaseCommit ? ' (' + manifest.releaseCommit.slice(0, 8) + ')' : ''));
   console.log('build        ' + build);
   console.log('routes       ' + routes.length + ' x ' + Object.keys(VIEWPORTS).length + ' viewports');
   console.log('out          ' + outDir);
