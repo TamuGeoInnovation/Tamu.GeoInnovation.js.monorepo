@@ -10,8 +10,7 @@ import Clipboard = require('clipboard');
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[clipboard-copy]',
-  standalone: false
+  selector: '[clipboard-copy]'
 })
 export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   /**

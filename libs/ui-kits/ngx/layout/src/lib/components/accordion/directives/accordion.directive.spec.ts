@@ -15,15 +15,15 @@ import { AccordionDirective } from './accordion.directive';
  */
 @Component({
   template: `<div *giscAccordion>accordion content</div>`,
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [AccordionDirective],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 class HostComponent {}
 
 describe('AccordionDirective', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AccordionDirective, HostComponent]
+      imports: [AccordionDirective, HostComponent]
     }).compileComponents();
   });
 

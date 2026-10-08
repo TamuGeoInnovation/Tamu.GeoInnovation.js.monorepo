@@ -27,8 +27,7 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
       multi: true
     }
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentInit, ControlValueAccessor {
   @ContentChildren(CheckboxComponent)

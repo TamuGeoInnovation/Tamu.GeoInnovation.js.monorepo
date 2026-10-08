@@ -1,7 +1,7 @@
 import { Component, forwardRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { BaseChartComponent } from '../base/base.component';
-import { DoughnutChartConfiguration } from '../chart-container/chart-container.component';
+import { DoughnutChartConfiguration, ChartContainerComponent } from '../chart-container/chart-container.component';
 
 @Component({
   selector: 'tamu-gisc-doughnut-chart',
@@ -9,7 +9,7 @@ import { DoughnutChartConfiguration } from '../chart-container/chart-container.c
   styleUrls: ['../base/base.component.scss', './doughnut.component.scss'],
   providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => DoughnutChartComponent) }],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [ChartContainerComponent]
 })
 export class DoughnutChartComponent extends BaseChartComponent implements AfterViewInit {
   constructor() {

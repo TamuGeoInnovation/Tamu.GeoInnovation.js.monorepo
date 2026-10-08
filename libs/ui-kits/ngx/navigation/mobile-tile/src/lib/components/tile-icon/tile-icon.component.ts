@@ -4,7 +4,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'tamu-gisc-tile-icon',
   templateUrl: './tile-icon.component.html',
   styleUrls: ['./tile-icon.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TileIconComponent {}

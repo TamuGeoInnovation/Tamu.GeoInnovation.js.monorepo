@@ -9,8 +9,7 @@ describe('TamuBlockComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([])],
-      declarations: [TamuBlockBrandingComponent]
+      imports: [RouterTestingModule.withRoutes([]), TamuBlockBrandingComponent]
     }).compileComponents();
   }));
 

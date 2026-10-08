@@ -1,7 +1,8 @@
 import { Component, Input, forwardRef, ViewChild, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { TooltipComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TooltipComponent, TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { DatePipe } from '@angular/common';
 
 /**
  * The finest and coarsest units a picker offers, in the vocabulary of the library this component used
@@ -98,7 +99,7 @@ export function fromInputValue(raw: string, type: ReturnType<typeof inputTypeFor
     }
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [TooltipComponent, TooltipTriggerComponent, DatePipe]
 })
 export class DateTimePickerComponent implements ControlValueAccessor {
   // Get reference for the tooltip component rendered inside this date time picker component.

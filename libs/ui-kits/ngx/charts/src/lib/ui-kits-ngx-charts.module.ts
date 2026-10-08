@@ -10,8 +10,8 @@ import { DoughnutChartComponent } from './components/doughnut/doughnut.component
 import { PieChartComponent } from './components/pie/pie.component';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [
+  imports: [
+    CommonModule,
     BaseChartComponent,
     BarChartComponent,
     ChartContainerComponent,

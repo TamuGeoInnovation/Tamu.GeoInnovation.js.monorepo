@@ -12,8 +12,7 @@ import {
 @Component({
   template: '',
   styleUrls: ['base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class BaseChartComponent implements OnInit, AfterViewInit {
   /**

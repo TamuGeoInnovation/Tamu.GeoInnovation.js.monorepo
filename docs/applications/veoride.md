@@ -49,8 +49,8 @@ Five npm packages went with it, each imported only by VeoRide code:
 | `uuid` | Ids for the stored trips, status changes, tasks, tokens and logs |
 
 `uuid` and `jsonwebtoken` stay installed as dependencies of other packages; nothing in the repository
-imports them directly. The CPA API's deployment manifest (`apps/cpa-nest/src/package.json`) lists both
-but its code imports neither.
+imports them directly. The CPA API's deployment manifest (`apps/cpa-nest/src/package.json`) listed both
+but its code imported neither; CPA has since been retired ([#1458](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1458)).
 
 **Out of scope:** the deployed API at `veoride.geoservices.tamu.edu` and its database. Removing the
 code does not stop them; shutting them down is a separate decision.

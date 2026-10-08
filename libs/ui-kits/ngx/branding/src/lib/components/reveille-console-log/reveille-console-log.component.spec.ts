@@ -18,7 +18,7 @@ describe('ReveilleConsoleLogComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ReveilleConsoleLogComponent],
+      imports: [ReveilleConsoleLogComponent],
       providers: [
         {
           provide: TestingService,

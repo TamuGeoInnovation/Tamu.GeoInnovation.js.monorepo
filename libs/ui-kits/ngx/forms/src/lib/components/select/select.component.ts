@@ -8,7 +8,8 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-select',
@@ -22,7 +23,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     }
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [FormsModule, NgClass]
 })
 export class SelectComponent<T extends object> implements ControlValueAccessor {
   /**
