@@ -1,7 +1,11 @@
 /**
  * Builds a page for looking at two capture sets side by side.
  *
- *   node tools/visual-baselines/review.mjs <beforeDir> <afterDir> <diffDir> <out.html>
+ *   node tools/visual-baselines/review.mjs <beforeSet> <afterSet> <diffDir> <out.html>
+ *
+ * A set is a capture directory as `capture.mjs` writes it: `<baselines>/<env>/<release>`. The two
+ * need not be the same environment - comparing one release across dev and production asks whether
+ * two builds of the same commit render the same, which nothing else answers.
  *
  * Written next to the images, with relative links, so it opens from disk in a browser with no server
  * and no upload. The question it is for is "does the after look worse", which only a person can
@@ -17,16 +21,32 @@ const [beforeRoot, afterRoot, diffRoot, outFile] = process.argv.slice(2);
 /** Rendering noise: an unchanged map page differs by a few hundredths of a percent (#1105). */
 const NOISE = 0.005;
 
+/**
+ * Every shot in a capture set, keyed `<viewport>/<file>` so two sets line up by route.
+ *
+ * `root` is a set directory - `<baselines>/production/prod-2026-10-06-2` - which holds the viewport
+ * folders and a manifest. It used to assume `local/unknown-build` underneath, from the one-off
+ * experiment this was written for, which made it useless on any real set.
+ */
 function shots(root) {
   const found = new Map();
-  const base = path.join(root, 'local', 'unknown-build');
+  const base = root;
 
-  for (const viewport of fs.readdirSync(base)) {
+  if (!fs.existsSync(base)) {
+    console.error('No such capture set: ' + base);
+    process.exit(2);
+  }
+
+  const viewports = fs.readdirSync(base).filter((entry) => fs.statSync(path.join(base, entry)).isDirectory());
+
+  if (viewports.length === 0) {
+    console.error(base + ' holds no viewport folders. Pass a set directory, for example');
+    console.error('  <baselines>/production/prod-2026-10-06-2');
+    process.exit(2);
+  }
+
+  for (const viewport of viewports) {
     const dir = path.join(base, viewport);
-
-    if (!fs.statSync(dir).isDirectory()) {
-      continue;
-    }
 
     for (const file of fs.readdirSync(dir)) {
       if (file.endsWith('.png')) {
