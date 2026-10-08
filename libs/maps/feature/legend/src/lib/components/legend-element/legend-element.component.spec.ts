@@ -20,14 +20,14 @@ describe('LegendElementComponent', () => {
     // Ensure tsgisHost is available in tests that reference TS URLs
 
     await TestBed.configureTestingModule({
-      declarations: [LegendElementComponent],
-        providers: [
-          { provide: EsriModuleProviderService, useValue: spy },
-          // LegendElementComponent pulls in LayerSourcesService, which injects
-          // EnvironmentService. Mocked directly rather than importing EnvironmentModule,
-          // matching the pattern already used in layer-sources.service.spec.ts.
-          { provide: EnvironmentService, useValue: { value: jest.fn().mockReturnValue([]) } }
-        ]
+      imports: [LegendElementComponent],
+      providers: [
+        { provide: EsriModuleProviderService, useValue: spy },
+        // LegendElementComponent pulls in LayerSourcesService, which injects
+        // EnvironmentService. Mocked directly rather than importing EnvironmentModule,
+        // matching the pattern already used in layer-sources.service.spec.ts.
+        { provide: EnvironmentService, useValue: { value: jest.fn().mockReturnValue([]) } }
+      ]
     }).compileComponents();
   });
 
@@ -44,7 +44,10 @@ describe('LegendElementComponent', () => {
 
   it('toggles expanded state when legend element is grouped', () => {
     component.element = {
-      infos: [{ label: 'A', value: 'A' }, { label: 'B', value: 'B' }]
+      infos: [
+        { label: 'A', value: 'A' },
+        { label: 'B', value: 'B' }
+      ]
     } as unknown as __esri.LegendElement;
 
     expect(component.showGroupHeader).toBe(true);

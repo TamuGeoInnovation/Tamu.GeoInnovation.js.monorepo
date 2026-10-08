@@ -34,8 +34,7 @@ import { Notification } from '../../helpers/notification.helper';
       transition('* => *', [animate('250ms 0ms cubic-bezier(.25, 0, .25, 1.0)')])
     ])
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class NotificationItemComponent implements OnInit, OnDestroy {
   // Notification object passed in from the parent component

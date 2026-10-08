@@ -10,13 +10,16 @@ import { TripPlannerOptionsComponentService } from '../../services/trip-planner-
 import { TripPlannerService, TripPlannerRuleMode, TravelOptions } from '../../../../services/trip-planner.service';
 import { TripPlannerParkingOptionsComponent } from '../../components/parking/trip-planner-parking-options.component';
 import { TripPlannerBikingOptionsComponent } from '../../components/biking/trip-planner-biking-options.component';
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-options',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [UIFormsModule, UILayoutModule, AsyncPipe]
 })
 export class TripPlannerOptionsComponent implements OnInit {
   public readonly isDev = this.testingService.get('isTesting').pipe(shareReplay(1)) as Observable<boolean>;

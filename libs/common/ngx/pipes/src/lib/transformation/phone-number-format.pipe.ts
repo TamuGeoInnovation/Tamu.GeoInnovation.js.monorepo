@@ -1,9 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-  name: 'phoneNumberFormat',
-  standalone: false
-})
+@Pipe({ name: 'phoneNumberFormat' })
 export class PhoneNumberFormatPipe implements PipeTransform {
   public transform(value: string): string {
     const phoneNumber = value.replace(/[^\d]/g, '');

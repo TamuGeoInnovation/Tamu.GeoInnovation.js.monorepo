@@ -12,8 +12,7 @@ import { SidebarTabComponent } from '../tab/tab.component';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
   animations: [slide],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class SidebarComponent extends AbstractSlidingDrawerComponent implements AfterContentInit, OnDestroy {
   public currentView: string;

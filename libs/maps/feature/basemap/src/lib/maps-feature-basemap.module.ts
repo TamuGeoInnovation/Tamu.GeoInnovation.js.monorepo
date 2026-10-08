@@ -5,8 +5,7 @@ import { BasemapGalleryComponent } from './components/basemap-gallery/basemap-ga
 import { BasemapGalleryService } from './services/basemap-gallery/basemap-gallery.service';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [BasemapGalleryComponent],
+  imports: [CommonModule, BasemapGalleryComponent],
   providers: [BasemapGalleryService],
   exports: [BasemapGalleryComponent]
 })

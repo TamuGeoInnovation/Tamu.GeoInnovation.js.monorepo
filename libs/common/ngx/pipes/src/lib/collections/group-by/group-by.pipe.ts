@@ -9,10 +9,7 @@ import { Group, groupBy } from '@tamu-gisc/common/utils/collection';
  * @param categoryIdentifierKeyPath If provided, will append the resolved key path from
  * any ONE of the collection objects into the resulting grouped object. Supports dot onation.
  */
-@Pipe({
-  name: 'groupBy',
-  standalone: false
-})
+@Pipe({ name: 'groupBy' })
 export class GroupByPipe<T extends object> implements PipeTransform {
   public transform(collection: Array<T>, path: string, categoryIdentifierKeyPath?: string): Array<Group<T>> | T {
     return groupBy(collection, path, categoryIdentifierKeyPath);

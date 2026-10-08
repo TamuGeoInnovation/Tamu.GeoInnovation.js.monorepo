@@ -1,9 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-  name: 'exists',
-  standalone: false
-})
+@Pipe({ name: 'exists' })
 export class ExistsPipe implements PipeTransform {
   /**
    * Pipe that checks if a value or object exists in a collection.

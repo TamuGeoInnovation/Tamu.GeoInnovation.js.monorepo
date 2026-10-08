@@ -5,6 +5,8 @@ import { map, Observable } from 'rxjs';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 
 import { LayerListService } from '../../services/layer-list.service';
+import { LayerListItemComponent } from '../layer-list-item/layer-list-item.component';
+import { AsyncPipe } from '@angular/common';
 
 import esri = __esri;
 
@@ -13,7 +15,7 @@ import esri = __esri;
   templateUrl: './layer-list.component.html',
   styleUrls: ['./layer-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [LayerListItemComponent, AsyncPipe]
 })
 export class LayerListComponent implements OnInit {
   @Input() public allowedLayerIds: string[] = [];

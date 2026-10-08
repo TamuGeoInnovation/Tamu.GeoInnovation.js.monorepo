@@ -4,6 +4,9 @@ import { PopupComponent } from '../base/base.component';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { PopupService } from '../../services/popup.service';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
   selector: 'tamu-gisc-feature-mobile-popup',
@@ -11,7 +14,7 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
   styleUrls: ['./mobile.component.scss'],
   providers: [PopupService],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [UIDragModule, NgClass, UILayoutModule, AsyncPipe]
 })
 export class PopupMobileComponent extends PopupComponent implements OnDestroy {
   /**

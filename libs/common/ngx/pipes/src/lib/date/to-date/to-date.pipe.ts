@@ -4,10 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
  * Pipe to convert a date input (string, number, or Date) or an array of date inputs to Date object(s).
  * Returns null for invalid or empty inputs.
  */
-@Pipe({
-  name: 'toDate',
-  standalone: false
-})
+@Pipe({ name: 'toDate' })
 export class ToDatePipe implements PipeTransform {
   /**
    * Transforms the input into a Date object or an array of Date objects.

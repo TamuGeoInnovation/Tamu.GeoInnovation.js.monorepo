@@ -4,8 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MapboxMapComponent } from './components/mapbox-map/mapbox-map.component';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [MapboxMapComponent],
+  imports: [CommonModule, MapboxMapComponent],
   exports: [MapboxMapComponent]
 })
 export class MapsMapboxModule {}
