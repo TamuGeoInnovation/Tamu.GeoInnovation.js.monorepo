@@ -1,4 +1,6 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import esri = __esri;
 
@@ -7,7 +9,7 @@ import esri = __esri;
   templateUrl: './layer-list-item.component.html',
   styleUrls: ['./layer-list-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [NgClass, UILayoutModule]
 })
 export class LayerListItemComponent {
   @Input()

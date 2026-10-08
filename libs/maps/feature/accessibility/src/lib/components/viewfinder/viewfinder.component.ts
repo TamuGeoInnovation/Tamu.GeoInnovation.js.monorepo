@@ -5,6 +5,7 @@ import { map, mapTo, shareReplay, switchMap, takeUntil, withLatestFrom } from 'r
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriModuleProviderService, MapServiceInstance, EsriMapService } from '@tamu-gisc/maps/esri';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 import esri = __esri;
 
@@ -13,7 +14,7 @@ import esri = __esri;
   templateUrl: './viewfinder.component.html',
   styleUrls: ['./viewfinder.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [NgClass, AsyncPipe]
 })
 export class MapViewfinderComponent implements OnInit, OnDestroy {
   /**

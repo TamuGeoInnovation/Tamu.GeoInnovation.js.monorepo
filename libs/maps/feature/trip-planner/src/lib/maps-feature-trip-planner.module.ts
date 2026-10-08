@@ -27,8 +27,14 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { RouteDirectionTransformerPipe } from './core/route-direction-transformer.pipe';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, FormsModule, UIFormsModule, UILayoutModule, UIClipboardModule, PipesModule],
-  declarations: [
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    UIFormsModule,
+    UILayoutModule,
+    UIClipboardModule,
+    PipesModule,
     TripPlannerConnectionsSelectComponent,
     TripPlannerDirectionsComponent,
     TripPlannerDirectionsMobileComponent,

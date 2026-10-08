@@ -19,10 +19,7 @@ import { PopupService } from '../../services/popup.service';
  * Reacts to `opened` rather than to `show`, which starts out reporting `true`. Reacting to that would
  * have every one of these maps open its panel on load.
  */
-@Directive({
-  selector: '[tamuGiscRevealSidebarOnPopup]',
-  standalone: false
-})
+@Directive({ selector: '[tamuGiscRevealSidebarOnPopup]' })
 export class RevealSidebarOnPopupDirective implements OnInit, OnDestroy {
   private _subscription: Subscription | undefined;
 

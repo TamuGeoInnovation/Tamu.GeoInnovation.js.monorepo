@@ -4,8 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MapViewfinderComponent } from './components/viewfinder/viewfinder.component';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [MapViewfinderComponent],
+  imports: [CommonModule, MapViewfinderComponent],
   exports: [MapViewfinderComponent]
 })
 export class MapsFeatureAccessibilityModule {}

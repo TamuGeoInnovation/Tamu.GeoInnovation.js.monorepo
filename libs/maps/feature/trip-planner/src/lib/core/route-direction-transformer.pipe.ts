@@ -4,10 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 // For directions returned from an ArcGIS routing service, return feet units if a predefined threshold is met
 //
 
-@Pipe({
-  name: 'routeDirectionTransformer',
-  standalone: false
-})
+@Pipe({ name: 'routeDirectionTransformer' })
 export class RouteDirectionTransformerPipe implements PipeTransform {
   public transform(value) {
     const units = this.resolveUnits(value);

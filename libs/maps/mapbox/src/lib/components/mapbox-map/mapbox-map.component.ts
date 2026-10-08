@@ -8,8 +8,7 @@ import { MapboxMapService } from '../../services/mapbox-map.service';
   selector: 'tamu-gisc-mapbox-map',
   templateUrl: './mapbox-map.component.html',
   styleUrls: ['./mapbox-map.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class MapboxMapComponent implements OnInit {
   @ViewChild('map', { static: true })
