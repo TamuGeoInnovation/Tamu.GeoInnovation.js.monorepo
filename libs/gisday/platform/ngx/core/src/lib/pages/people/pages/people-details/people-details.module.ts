@@ -3,7 +3,21 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { GISDayPipesModule } from '@tamu-gisc/gisday/platform/ngx/common';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+import {
+  GroupByPipe,
+  OrderByPipe,
+  MarkdownParsePipe,
+  SafeHtmlPipe,
+  TimeUntilPipe,
+  PhoneNumberFormatPipe,
+  ExistsPipe,
+  LookupPipe,
+  DateRangePipe,
+  NearestDatePipe,
+  ToDatePipe,
+  ToArrayPipe,
+  TrimPipe
+} from '@tamu-gisc/common/ngx/pipes';
 
 import { PeopleDetailsComponent } from './people-details.component';
 
@@ -15,7 +29,25 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), GISDayPipesModule, PipesModule, PeopleDetailsComponent],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    GISDayPipesModule,
+    GroupByPipe,
+    OrderByPipe,
+    MarkdownParsePipe,
+    SafeHtmlPipe,
+    TimeUntilPipe,
+    PhoneNumberFormatPipe,
+    ExistsPipe,
+    LookupPipe,
+    DateRangePipe,
+    NearestDatePipe,
+    ToDatePipe,
+    ToArrayPipe,
+    TrimPipe,
+    PeopleDetailsComponent
+  ],
   exports: [RouterModule]
 })
 export class PeopleDetailsModule {}

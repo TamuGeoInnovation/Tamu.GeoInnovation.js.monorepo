@@ -6,10 +6,27 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Angulartics2 } from 'angulartics2';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
-import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-planner';
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
+
+import {
+  TripPlannerConnectionsSelectComponent,
+  TripPlannerDirectionsComponent,
+  TripPlannerDirectionsMobileComponent,
+  TripPlannerDirectionsActionsComponent,
+  TripPlannerDirectionsActionsMobileComponent,
+  TripPlannerModePickerComponent,
+  TripPlannerModePickerMobileComponent,
+  TripPlannerModeSwitchComponent,
+  TripPlannerBusModeSwitchComponent,
+  TripPlannerModeToggleComponent,
+  TripPlannerOptionsBaseComponent,
+  TripPlannerBikingOptionsComponent,
+  TripPlannerParkingOptionsComponent,
+  TripPlannerOptionsComponent,
+  TripPlannerTimePickerComponent,
+  RouteDirectionTransformerPipe
+} from '@tamu-gisc/maps/feature/trip-planner';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { BusListComponent } from './bus-list.component';
 
@@ -30,10 +47,26 @@ describe('BusListComponent (Shallow)', () => {
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
-        ResponsiveModule,
-        EsriMapModule,
-        MapsFeatureTripPlannerModule,
-        SearchModule,
+        EsriMapComponent,
+        TripPlannerConnectionsSelectComponent,
+        TripPlannerDirectionsComponent,
+        TripPlannerDirectionsMobileComponent,
+        TripPlannerDirectionsActionsComponent,
+        TripPlannerDirectionsActionsMobileComponent,
+        TripPlannerModePickerComponent,
+        TripPlannerModePickerMobileComponent,
+        TripPlannerModeSwitchComponent,
+        TripPlannerBusModeSwitchComponent,
+        TripPlannerModeToggleComponent,
+        TripPlannerOptionsBaseComponent,
+        TripPlannerBikingOptionsComponent,
+        TripPlannerParkingOptionsComponent,
+        TripPlannerOptionsComponent,
+        TripPlannerTimePickerComponent,
+        RouteDirectionTransformerPipe,
+        SearchComponent,
+        SearchMobileComponent,
+        SearchResultPipe,
         EnvironmentModule,
         BusListComponent
       ],

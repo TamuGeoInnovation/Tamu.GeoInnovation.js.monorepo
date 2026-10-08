@@ -3,7 +3,22 @@ import { Routes, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import {
+  SelectComponent,
+  CheckboxComponent,
+  CheckboxGroupComponent,
+  DateTimePickerComponent,
+  TextboxComponent,
+  AutocompleteComponent,
+  AutocompleteOptionTemplateDirective,
+  ButtonComponent,
+  FileComponent,
+  RadioGroupComponent,
+  RangeComponent,
+  SlideToggleComponent,
+  SelectListComponent,
+  TurnstileChallengeComponent
+} from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { SubmissionComponent } from './components/submission.component';
 import { SubmissionCompleteComponent } from './components/complete/complete.component';
@@ -24,7 +39,20 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     CommonModule,
     FormsModule,
-    UIFormsModule,
+    SelectComponent,
+    CheckboxComponent,
+    CheckboxGroupComponent,
+    DateTimePickerComponent,
+    TextboxComponent,
+    AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
+    ButtonComponent,
+    FileComponent,
+    RadioGroupComponent,
+    RangeComponent,
+    SlideToggleComponent,
+    SelectListComponent,
+    TurnstileChallengeComponent,
     SubmissionComponent,
     SubmissionCompleteComponent
   ],

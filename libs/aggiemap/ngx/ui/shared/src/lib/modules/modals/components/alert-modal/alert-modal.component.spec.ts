@@ -1,6 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 import { AlertModalComponent, AlertModalData } from './alert-modal.component';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import {
+  SelectComponent,
+  CheckboxComponent,
+  CheckboxGroupComponent,
+  DateTimePickerComponent,
+  TextboxComponent,
+  AutocompleteComponent,
+  AutocompleteOptionTemplateDirective,
+  ButtonComponent,
+  FileComponent,
+  RadioGroupComponent,
+  RangeComponent,
+  SlideToggleComponent,
+  SelectListComponent,
+  TurnstileChallengeComponent
+} from '@tamu-gisc/ui-kits/ngx/forms';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 
@@ -55,7 +70,23 @@ describe('AlertModalComponent', () => {
 describe('AlertModalComponent template', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UIFormsModule, AlertModalComponent],
+      imports: [
+        SelectComponent,
+        CheckboxComponent,
+        CheckboxGroupComponent,
+        DateTimePickerComponent,
+        TextboxComponent,
+        AutocompleteComponent,
+        AutocompleteOptionTemplateDirective,
+        ButtonComponent,
+        FileComponent,
+        RadioGroupComponent,
+        RangeComponent,
+        SlideToggleComponent,
+        SelectListComponent,
+        TurnstileChallengeComponent,
+        AlertModalComponent
+      ],
       providers: [
         { provide: ModalRefService, useValue: { close: jest.fn() } },
         { provide: SettingsService, useValue: { updateSettings: jest.fn() } },

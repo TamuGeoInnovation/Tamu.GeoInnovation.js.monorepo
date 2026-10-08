@@ -2,8 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
-import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
+import {
+  TileNavigationComponent,
+  TileComponent,
+  TileTitleComponent,
+  TileIconComponent,
+  TileSubmenuDirective,
+  TileSubmenuComponent,
+  TileLinkDirective
+} from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { HamburgerTriggerComponent } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
 
 import { FooterComponent } from './modules/footer/footer.component';
 import { HeaderComponent } from './modules/header/header.component';
@@ -13,8 +21,14 @@ import { GISDayPipesModule } from './pipes/gisday-pipes.module';
   imports: [
     CommonModule,
     RouterModule,
-    UITileNavigationModule,
-    UINavigationTriggersModule,
+    TileNavigationComponent,
+    TileComponent,
+    TileTitleComponent,
+    TileIconComponent,
+    TileSubmenuDirective,
+    TileSubmenuComponent,
+    TileLinkDirective,
+    HamburgerTriggerComponent,
     GISDayPipesModule,
     FooterComponent,
     HeaderComponent

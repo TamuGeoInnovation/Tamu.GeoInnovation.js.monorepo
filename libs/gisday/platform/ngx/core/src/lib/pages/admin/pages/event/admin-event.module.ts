@@ -3,8 +3,37 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+import {
+  SelectComponent,
+  CheckboxComponent,
+  CheckboxGroupComponent,
+  DateTimePickerComponent,
+  TextboxComponent,
+  AutocompleteComponent,
+  AutocompleteOptionTemplateDirective,
+  ButtonComponent,
+  FileComponent,
+  RadioGroupComponent,
+  RangeComponent,
+  SlideToggleComponent,
+  SelectListComponent,
+  TurnstileChallengeComponent
+} from '@tamu-gisc/ui-kits/ngx/forms';
+import {
+  GroupByPipe,
+  OrderByPipe,
+  MarkdownParsePipe,
+  SafeHtmlPipe,
+  TimeUntilPipe,
+  PhoneNumberFormatPipe,
+  ExistsPipe,
+  LookupPipe,
+  DateRangePipe,
+  NearestDatePipe,
+  ToDatePipe,
+  ToArrayPipe,
+  TrimPipe
+} from '@tamu-gisc/common/ngx/pipes';
 
 import { AdminEventComponent } from './admin-event.component';
 import { EventAddComponent } from './pages/event-add/event-add.component';
@@ -37,8 +66,33 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     GisdayPlatformNgxCommonModule,
-    UIFormsModule,
-    PipesModule,
+    SelectComponent,
+    CheckboxComponent,
+    CheckboxGroupComponent,
+    DateTimePickerComponent,
+    TextboxComponent,
+    AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
+    ButtonComponent,
+    FileComponent,
+    RadioGroupComponent,
+    RangeComponent,
+    SlideToggleComponent,
+    SelectListComponent,
+    TurnstileChallengeComponent,
+    GroupByPipe,
+    OrderByPipe,
+    MarkdownParsePipe,
+    SafeHtmlPipe,
+    TimeUntilPipe,
+    PhoneNumberFormatPipe,
+    ExistsPipe,
+    LookupPipe,
+    DateRangePipe,
+    NearestDatePipe,
+    ToDatePipe,
+    ToArrayPipe,
+    TrimPipe,
     AdminEventComponent,
     EventAddComponent,
     EventEditComponent,
