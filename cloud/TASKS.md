@@ -28,42 +28,64 @@ place they're kept. In short:
        - Tests: <tests expected>
        - Don't touch: <files or areas other work is changing>
 
-## Batch B (prepared 6 October 2026, "Don't touch" updated 7 October)
+## Batch C (prepared 7 October 2026)
 
-Write your report to `cloud/reports/<yyyy-mm-dd>-batch-b.md` on this branch when done (see the header).
+Write your report to `cloud/reports/<yyyy-mm-dd>-batch-c.md` on this branch when done (see the header).
 Times in the report are US Central, with the zone named.
 
-1. **#1458 (Low): Retire the CPA projects, and remove ng2-dragula with them**
-   - Goal: no CPA code left in the workspace; nothing else changes. The tag `cpa-last` (on `279853c1`,
-     CPA at Angular 22) is already pushed, so CPA can be restored from there.
-   - Where: `apps/cpa-angular`, `apps/cpa-angular-e2e`, `apps/cpa-nest`, `libs/cpa/**` (common, data-api,
-     ngx, sass); their paths in `tsconfig.base.json`; their names in `EXCLUDED_PROJECTS` in
-     `.github/workflows/*.yml`; `ng2-dragula`, `dragula`, `@types/dragula` and the `ng2-dragula` entry in
-     `overrides` in `package.json`; `package-lock.json` resynced with
-     `npm install --package-lock-only --ignore-scripts`. Search the whole repo for `cpa` afterwards
-     (docs, scripts, Azure notes) and update or remove each mention, saying which in the report.
-   - Decided: retire after Angular 22 (done); restore from `cpa-last` if ever needed. Before deleting,
-     confirm nothing outside CPA imports `@tamu-gisc/cpa/*` (on `279853c1` nothing did).
-   - Tests: `npx nx show projects` lists no `cpa-*` project, and the project graph loads; a clean
-     `npm ci` from only `package.json` and the lock passes; lint, test and build of the projects that
-     imported nothing from CPA are unaffected (the desktop session runs the full check).
-   - Don't touch: anything not CPA.
+**Do not run anything against dev or production until the maintainer tells you, in this session, that
+his dev deploy is finished.** A deploy is going out now. Until then, write code and run whatever needs
+no deployed site. If you finish everything else first, report what is left to run and stop.
 
-2. **#1457 (Low): Find the unused projects, libraries and dependencies — a report, no deletions**
-   - Goal: a list the maintainer can decide from. For each candidate: what it is, its last real commit,
-     who imports it (from `nx graph --file=graph.json` and a search), whether a workflow or
-     `azure-pipelines`-style file builds or deploys it, and a recommendation (delete / keep, why).
-   - Where: start from the projects in `EXCLUDED_PROJECTS` in `.github/workflows/build.yml` (CPA aside,
-     covered by item 1), then libraries no deployed app imports, then `package.json` dependencies used
-     only by those.
-   - Decided: nothing is deleted in this batch. Whether a project is deployed can only be confirmed from
-     Azure DevOps and the servers, which the desktop session checks; mark each candidate "deployment
-     unknown" unless the repository itself shows it.
-   - Tests: none; the report is the result. Commit only the report.
-   - Don't touch: no branch for this item.
+1. **#1407 (Low, due before 19 October): Pin the GitHub workflows to `ubuntu-24.04`**
+   - Goal: no workflow under `.github/workflows/` uses `ubuntu-latest`, so nothing moves to Ubuntu 26
+     on 19 October untested. The Azure pipeline's half is #1468, not this batch.
+   - Where: every `runs-on:` in `.github/workflows/*.yml`.
+   - Decided: pin to `ubuntu-24.04` exactly; one pull request for all the workflows.
+   - Tests: the pull request's own CI runs on the pinned image; list every workflow changed, and any
+     workflow that does not run on a pull request (it gets checked after merge).
+   - Don't touch: the `EXCLUDED_PROJECTS` lines (another branch edits them).
 
-**Don't touch, for the whole batch** (open pull requests, updated 7 October 2026): `feat/1532-release-keyed-baselines`
-(#1534: `tools/visual-baselines/`, `CLAUDE.md`, `docs/releases/README.md`), `fix/tailgating-simpson-tents` (#1538:
-`libs/ts/events/ngx` definitions, `docs/releases/unreleased.md`, `docs/build-times.md`), and the older open pull requests
-#381, #562, #691, #697, #898, #925, #928, #977 and #1257. Leave everything outside item 1's files alone; if a CPA removal
-would have to edit a file one of these pull requests changes, say so in the report rather than editing it.
+2. **#1473 (Medium): Split the bus test into one test per route**
+   - Goal: `bus.spec.ts`'s "every route draws a stop for each stop it lists" becomes one test per route,
+     with the same checks, so the 7-to-11-minute test spreads across workers and a failure names its
+     route. The suite's other tests are unchanged.
+   - Where: `test/smoke/aggiemap/bus.spec.ts`, `docs/testing.md` (its counts and the bus row),
+     `docs/build-times.md`. Follow how `framing.spec.ts` generates a test per route.
+   - Decided: none beyond the issue.
+   - Tests: **only after the maintainer says dev's deploy is done**, run the bus spec alone against dev
+     before (on `development`) and after (on your branch), and record both in `docs/build-times.md`,
+     clock times in US Central. Every failure must also fail on `development`, or be explained.
+   - Don't touch: other specs.
+
+3. **#1470 (Low): Make something typecheck the AggieMap smoke suite**
+   - Goal: a pull request whose smoke-suite TypeScript does not compile fails CI, and the three known
+     strict-mode errors in `map-notice.spec.ts` are fixed.
+   - Where: `test/smoke/aggiemap/` (a `tsconfig.json` for the suite if it has none), a cheap step in an
+     existing pull-request workflow that runs `tsc --noEmit` on it, and `docs/testing.md`.
+   - Decided: none beyond the issue. Keep it to one command; no new workflow file if an existing
+     pull-request workflow can carry the step.
+   - Tests: the typecheck fails on `development` (show it) and passes on the branch.
+   - Don't touch: anything outside `test/smoke/`, the one workflow step, and the docs.
+
+4. **#1476 (Low): Move tsconfigs off the settings TypeScript 6 deprecates**
+   - Goal: no tsconfig needs `"ignoreDeprecations": "6.0"`, and it is removed everywhere. Chiefly
+     `moduleResolution: node` (node10) goes to `bundler` for the Angular projects; the Nest projects,
+     which build with webpack and CommonJS, go to whatever their build accepts.
+   - Where: the project tsconfigs, and `tsconfig.base.json`'s `compilerOptions` only.
+   - Decided: none beyond the issue.
+   - Tests: run as much of `nx run-many -t build` and `-t test` as this container can; say exactly which
+     projects you built and which you could not. The desktop session runs the full check.
+   - Don't touch: `tsconfig.base.json`'s `paths` (another branch removes CPA's), and any CPA project
+     (`apps/cpa-*`, `libs/cpa`), which is being deleted.
+
+**Don't touch, for the whole batch:**
+- **Branches in flight on the desktop:** `refactor/1543-standalone-ui-kits` (#1546), `refactor/1544-standalone-common` and
+  `chore/1458-retire-cpa`.
+- **What they and the next ones change:** the `.ts` files under `libs/ui-kits`, `libs/common`, `libs/maps`,
+  `libs/aggiemap`, `libs/ts` and `libs/gisday` (standalone conversion, one group at a time), and
+  everything CPA (`apps/cpa-*`, `libs/cpa`, `tsconfig.base.json`'s `paths`, `EXCLUDED_PROJECTS`, and
+  `ng2-dragula` in `package.json`).
+- **The older open pull requests** #381, #562, #691, #697, #898, #925, #928, #977 and #1257.
+
+If an item cannot be done without touching one of these, say so in the report rather than editing it.
