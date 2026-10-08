@@ -13,3 +13,7 @@ steps:
   - script: npm ci
     displayName: 'NPM Clean Dependency Install'
     condition: ne(variables.CacheHit, 'true')
+    env:
+      # No pipeline step runs Cypress (every *-e2e project is excluded, and #1545 removes them), and its
+      # 249 MB binary download arriving truncated failed build 5210 before anything was built.
+      CYPRESS_INSTALL_BINARY: 0
