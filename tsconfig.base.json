@@ -15,6 +15,9 @@
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    // Still needed by "paths", whose entries are written without a leading "./". TypeScript 6 deprecates
+    // baseUrl, hence "ignoreDeprecations" below; both go once every path starts with "./" (#1476).
+    "baseUrl": ".",
     "strictPropertyInitialization": false,
     "paths": {
       "@tamu-gisc/aggiemap/ngx/common": ["libs/aggiemap/ngx/common/src/index.ts"],
@@ -128,7 +131,8 @@
     "strict": false,
     "noUncheckedSideEffectImports": false,
     "types": ["*"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "ignoreDeprecations": "6.0"
   },
   "exclude": ["node_modules", "tmp"]
 }
