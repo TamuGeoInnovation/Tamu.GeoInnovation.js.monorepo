@@ -79,6 +79,12 @@ no deployed site. If you finish everything else first, report what is left to ru
    - Don't touch: `tsconfig.base.json`'s `paths` (another branch removes CPA's), and any CPA project
      (`apps/cpa-*`, `libs/cpa`), which is being deleted.
 
+**Update, 7 October, late evening:** #1546 (the UI kits made standalone) and #1547 (CPA retired: `apps/cpa-*`,
+`libs/cpa`, `ng2-dragula`, CPA's `tsconfig.base.json` paths and `EXCLUDED_PROJECTS` entries) **have merged** into
+`development`. Treat CPA as gone: don't check, edit or report on anything CPA, and for #1476 skip CPA's tsconfigs
+entirely. Don't merge `development` into your branches; the desktop session does that when it opens each PR.
+Everything else below is unchanged.
+
 **Don't touch, for the whole batch:**
 - **Branches in flight on the desktop:** `refactor/1543-standalone-ui-kits` (#1546), `refactor/1544-standalone-common` and
   `chore/1458-retire-cpa`.
