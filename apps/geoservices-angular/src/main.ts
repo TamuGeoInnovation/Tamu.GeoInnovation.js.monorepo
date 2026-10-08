@@ -12,9 +12,10 @@ import { AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ViewportScroller } from '@angular/common';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { Angulartics2Module } from 'angulartics2';
-import { withInMemoryScrolling, withRouterConfig, provideRouter, Routes } from '@angular/router';
+import { withInMemoryScrolling, provideRouter, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
@@ -70,9 +71,11 @@ bootstrapApplication(AppComponent, {
       NotificationModule
     ),
     AuthService,
-    // Start AuthService's login-state request at boot, as AppModule's constructor did.
     provideAppInitializer(() => {
+      // Start AuthService's login-state request at boot, as AppModule's constructor did.
       inject(AuthService);
+      // RouterModule.forRoot's scrollOffset option, which provideRouter has no counterpart for.
+      inject(ViewportScroller).setOffset([0, 64]);
     }),
     {
       provide: HIGHLIGHT_OPTIONS,
@@ -91,10 +94,6 @@ bootstrapApplication(AppComponent, {
       useClass: AuthInterceptor,
       multi: true
     },
-    provideRouter(
-      routes,
-      withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
-      withRouterConfig({ scrollOffset: [0, 64] })
-    )
+    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }))
   ]
 }).catch((err) => console.error(err));
