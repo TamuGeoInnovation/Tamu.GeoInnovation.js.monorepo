@@ -3,6 +3,5 @@
   "include": ["**/*.spec.ts", "**/*.d.ts"],
   "esModuleInterop": true,
   "compilerOptions": {
-    "ignoreDeprecations": "6.0"
   }
 }
