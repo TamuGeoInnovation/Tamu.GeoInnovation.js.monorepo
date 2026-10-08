@@ -185,8 +185,8 @@ export const TailgatingColdLayerSources: LayerSource[] = [
 
 /**
  * Readable links: `?zone=AP-7` and `?tent=O12`, which a popup's copy button also writes. Matched,
- * case-insensitively, on the `zone_id` and `tent_id` fields set in ArcGIS Pro, so a link survives a
- * republish that renumbers object ids. A zone without a `zone_id` keeps the generic `feature=` link.
+ * case-insensitively, on the `zone_ID` and `tent_id` fields set in ArcGIS Pro, so a link survives a
+ * republish that renumbers object ids. A zone without a `zone_ID` keeps the generic `feature=` link.
  * Not searchable from the sidebar (`searchActive: false`), which keeps the usual campus search.
  */
 const TailgatingLinkSources: SearchSource[] = [
@@ -194,7 +194,7 @@ const TailgatingLinkSources: SearchSource[] = [
     source: 'tailgating-zone',
     name: 'Tailgating Zones',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.AGGIE_PARK}`,
-    queryParams: { where: { keys: ['zone_id'], operators: ['='] } },
+    queryParams: { where: { keys: ['zone_ID'], operators: ['='] } },
     featuresLocation: 'features',
     displayTemplate: '{attributes.name}',
     searchActive: false,
