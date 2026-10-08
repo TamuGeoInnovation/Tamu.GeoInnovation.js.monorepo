@@ -12,10 +12,7 @@ import { parseDateStrings } from '../../utils/parse-date-strings';
  * @class ParseDateTimeStringsPipe
  * @implements {PipeTransform}
  */
-@Pipe({
-  name: 'parseDateTimeStrings',
-  standalone: false
-})
+@Pipe({ name: 'parseDateTimeStrings' })
 export class ParseDateTimeStringsPipe implements PipeTransform {
   public transform(dateString: string | Date, timeString: string): Date {
     return parseDateStrings(dateString, timeString);

@@ -23,9 +23,9 @@ const routes: Routes = [
     ReactiveFormsModule,
     UIFormsModule,
     UILayoutModule,
-    GisDayEventsModule
+    GisDayEventsModule,
+    EventViewComponent
   ],
-  declarations: [EventViewComponent],
   exports: [RouterModule]
 })
 export class EventViewModule {}

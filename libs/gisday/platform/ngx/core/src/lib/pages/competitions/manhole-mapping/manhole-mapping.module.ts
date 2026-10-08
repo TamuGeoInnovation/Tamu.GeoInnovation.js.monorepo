@@ -14,8 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [ManholeMappingComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule],
+  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, ManholeMappingComponent],
   exports: [RouterModule]
 })
 export class ManholeMappingModule {}

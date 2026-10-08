@@ -4,7 +4,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'tamu-gisc-not-authed',
   templateUrl: './not-authed.component.html',
   styleUrls: ['./not-authed.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class NotAuthedComponent {}

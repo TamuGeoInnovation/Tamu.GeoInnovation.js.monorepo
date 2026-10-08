@@ -4,10 +4,7 @@ import { Submission } from '@tamu-gisc/gisday/platform/data-api';
 
 import { SUBMISSION_REVIEW_STATUS } from '../../enums/submission-review-status.enum';
 
-@Pipe({
-  name: 'submissionReviewStatus',
-  standalone: false
-})
+@Pipe({ name: 'submissionReviewStatus' })
 export class SubmissionReviewStatusPipe implements PipeTransform {
   public transform(value: Partial<Submission>): SUBMISSION_REVIEW_STATUS {
     if (!value) return null;

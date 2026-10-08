@@ -15,8 +15,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), GisDayPeopleModule, GISDayPipesModule, PipesModule],
-  declarations: [PeopleDetailsComponent],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    GisDayPeopleModule,
+    GISDayPipesModule,
+    PipesModule,
+    PeopleDetailsComponent
+  ],
   exports: [RouterModule]
 })
 export class PeopleDetailsModule {}

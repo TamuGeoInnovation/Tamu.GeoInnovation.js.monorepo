@@ -16,8 +16,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule, GisdayPlatformNgxCommonModule],
-  declarations: [SponsorsMainComponent],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    UIFormsModule,
+    UILayoutModule,
+    GisdayPlatformNgxCommonModule,
+    SponsorsMainComponent
+  ],
   exports: [RouterModule]
 })
 export class SponsorsMainModule {}

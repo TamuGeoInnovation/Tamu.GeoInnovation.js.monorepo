@@ -33,8 +33,17 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule, UIFormsModule, PipesModule],
-  declarations: [AdminSponsorComponent, SponsorListComponent, SponsorEditComponent, SponsorAddComponent],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    GisdayFormsModule,
+    UIFormsModule,
+    PipesModule,
+    AdminSponsorComponent,
+    SponsorListComponent,
+    SponsorEditComponent,
+    SponsorAddComponent
+  ],
   exports: [RouterModule]
 })
 export class AdminSponsorModule {}

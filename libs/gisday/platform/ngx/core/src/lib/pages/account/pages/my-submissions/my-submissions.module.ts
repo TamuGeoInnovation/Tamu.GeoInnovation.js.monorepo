@@ -29,8 +29,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [MySubmissionsComponent],
+  imports: [CommonModule, RouterModule.forChild(routes), MySubmissionsComponent],
   exports: [RouterModule]
 })
 export class MySubmissionsModule {}

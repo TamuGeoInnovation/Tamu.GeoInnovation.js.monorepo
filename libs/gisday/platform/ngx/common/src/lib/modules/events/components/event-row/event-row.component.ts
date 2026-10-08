@@ -13,13 +13,17 @@ import { Router } from '@angular/router';
 import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 'rxjs';
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SeasonDayCardComponent } from '../season-day-card/season-day-card.component';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { ParseDateTimeStringsPipe } from '../../../../pipes/parse-date-time-strings/parse-date-time-strings.pipe';
 
 @Component({
   selector: 'tamu-gisc-event-row',
   templateUrl: './event-row.component.html',
   styleUrls: ['./event-row.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [CheckboxComponent, SeasonDayCardComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe]
 })
 export class EventRowComponent implements OnChanges, OnInit {
   @Input()

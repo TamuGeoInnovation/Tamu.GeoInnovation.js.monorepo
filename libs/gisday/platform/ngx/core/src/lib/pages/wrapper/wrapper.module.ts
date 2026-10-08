@@ -86,7 +86,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, GisdayPlatformNgxCommonModule, RouterModule.forChild(routes)],
-  declarations: [WrapperComponent]
+  imports: [CommonModule, GisdayPlatformNgxCommonModule, RouterModule.forChild(routes), WrapperComponent]
 })
 export class WrapperModule {}

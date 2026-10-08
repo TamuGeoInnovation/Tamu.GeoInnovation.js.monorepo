@@ -14,8 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule],
-  declarations: [UserSubmissionAddComponent],
+  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule, UserSubmissionAddComponent],
   exports: [RouterModule]
 })
 export class UserSubmissionAddModule {}

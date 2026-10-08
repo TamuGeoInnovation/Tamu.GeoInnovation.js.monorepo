@@ -15,8 +15,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [MyClassesComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule],
+  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule, MyClassesComponent],
   exports: [RouterModule]
 })
 export class MyClassesModule {}

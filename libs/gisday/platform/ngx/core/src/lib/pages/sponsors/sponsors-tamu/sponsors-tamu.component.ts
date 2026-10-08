@@ -4,8 +4,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   selector: 'tamu-gisc-sponsors-tamu',
   templateUrl: './sponsors-tamu.component.html',
   styleUrls: ['./sponsors-tamu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class SponsorsTamuComponent implements OnInit {
   public ngOnInit(): void {

@@ -44,9 +44,12 @@ const routes: Routes = [
     GisdayPlatformNgxCommonModule,
     UIFormsModule,
     PipesModule,
-    EntityActionModalsModule
+    EntityActionModalsModule,
+    AdminEventComponent,
+    EventAddComponent,
+    EventEditComponent,
+    EventListComponent
   ],
-  declarations: [AdminEventComponent, EventAddComponent, EventEditComponent, EventListComponent],
   exports: [RouterModule]
 })
 export class AdminEventModule {}

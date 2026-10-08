@@ -28,7 +28,7 @@ describe('UserSubmissionsComponent', () => {
     } as unknown as jest.Mocked<EnvironmentService>;
 
     await TestBed.configureTestingModule({
-      declarations: [UserSubmissionsComponent],
+      imports: [UserSubmissionsComponent],
       providers: [
         { provide: SubmissionService, useValue: mockSubmissionService },
         { provide: SettingsService, useValue: mockSettingsService },

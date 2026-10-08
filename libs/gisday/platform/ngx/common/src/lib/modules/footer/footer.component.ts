@@ -5,13 +5,15 @@ import { Place, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import { PlaceVisibilityOptions } from '../../enums/place-visibility-options.enum';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-app-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [RouterLink, AsyncPipe]
 })
 export class FooterComponent implements OnInit {
   public activeSeason$: Observable<Partial<Season>>;

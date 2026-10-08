@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Observable,
@@ -30,13 +30,37 @@ import {
   BroadcastService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { SeasonsDayTileComponent } from '../../seasons/seasons-day-tile/seasons-day-tile.component';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectListComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { PresenterCardComponent } from '../../../../people/components/presenter-card/presenter-card.component';
+import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-event-add-edit-form',
   templateUrl: './event-add-edit-form.component.html',
   styleUrls: ['./event-add-edit-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    SeasonsDayTileComponent,
+    NgClass,
+    DateTimePickerComponent,
+    TextboxComponent,
+    SelectComponent,
+    CheckboxComponent,
+    SelectListComponent,
+    PresenterCardComponent,
+    CheckboxGroupComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class EventAddEditFormComponent implements OnInit {
   @Input()

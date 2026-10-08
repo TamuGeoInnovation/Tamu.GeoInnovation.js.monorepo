@@ -17,9 +17,10 @@ import { GISDayPipesModule } from './pipes/gisday-pipes.module';
     UITileNavigationModule,
     UINavigationTriggersModule,
     CommonNgxAuthModule,
-    GISDayPipesModule
+    GISDayPipesModule,
+    FooterComponent,
+    HeaderComponent
   ],
-  declarations: [FooterComponent, HeaderComponent],
   providers: [],
   exports: [FooterComponent, HeaderComponent, GISDayPipesModule]
 })

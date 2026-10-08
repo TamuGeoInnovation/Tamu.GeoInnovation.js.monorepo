@@ -6,8 +6,7 @@ import { AuthService } from '@tamu-gisc/gisday/competitions/ngx/common';
   selector: 'tamu-gisc-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class LoginComponent {
   public loginContext: Window;

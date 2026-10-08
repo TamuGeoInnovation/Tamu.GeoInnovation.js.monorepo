@@ -5,8 +5,7 @@ import { Title } from '@angular/platform-browser';
   selector: 'tamu-gisc-highschool',
   templateUrl: './highschool.component.html',
   styleUrls: ['./highschool.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class HighschoolComponent implements OnInit {
   constructor(private titleService: Title) {}

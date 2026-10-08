@@ -16,8 +16,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [InitialSurveyComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), FormsModule, ReactiveFormsModule, UIFormsModule, UILayoutModule],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    FormsModule,
+    ReactiveFormsModule,
+    UIFormsModule,
+    UILayoutModule,
+    InitialSurveyComponent
+  ],
   exports: [RouterModule]
 })
 export class InitialSurveyModule {}
