@@ -30,7 +30,9 @@ export default [
           style: 'kebab-case'
         }
       ],
-      '@angular-eslint/prefer-on-push-component-change-detection': 'off'
+      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
+      // A browser bundle cannot load `import x = require()` on the dev server (#1558).
+      '@typescript-eslint/no-require-imports': 'error'
     }
   },
   ...nx.configs['flat/angular-template'],
