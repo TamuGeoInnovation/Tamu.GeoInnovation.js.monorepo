@@ -129,7 +129,7 @@ Vite, so Angular's migrations for the `application` builder apply to them.
 - **`nx migrate` set the `@angular/cli` pin itself**, for the first time. The install still needed 441
   stale lock entries cleared, **Cypress 6.9.1 to 15.21.1** (`@nx/cypress` 22 needs 13 to 15; only the
   excluded `*-e2e` projects use it), and an npm `overrides` entry letting **`ng2-dragula` 7.0.0**, whose
-  newest release stops at Angular 20, take Angular 21. It goes with CPA ([#1458](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1458)).
+  newest release stops at Angular 20, take Angular 21. It went when CPA was retired ([#1458](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1458)).
 - **Nx 22 moved its CLI** from `node_modules/nx/bin/nx.js` to `node_modules/nx/dist/bin/nx.js`. The setup
   docs name the new path; `scripts/check-in-volume.sh` falls back to the old one for older branches.
 - **Jest 30 and jest-preset-angular 16 (33 projects):** the setup migration added `setupZoneTestEnv()`
