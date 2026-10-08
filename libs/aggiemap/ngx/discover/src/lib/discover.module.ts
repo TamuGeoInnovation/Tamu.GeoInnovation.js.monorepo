@@ -83,25 +83,23 @@ export const discoverRoutes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    UIFormsModule,
-    UILayoutModule,
-    RouterModule.forChild(discoverRoutes),
-    AggiemapNgxSharedUiStructuralModule,
-    PipesModule,
-    UIClipboardModule
-  ],
-  declarations: [
-    AllMapsComponent,
-    ParkingMapsComponent,
-    EventMapsComponent,
-    MapsPageHeaderComponent,
-    MapColumnsComponent,
-    QuickLinksComponent
-  ],
-  exports: [AllMapsComponent]
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        UIFormsModule,
+        UILayoutModule,
+        RouterModule.forChild(discoverRoutes),
+        AggiemapNgxSharedUiStructuralModule,
+        PipesModule,
+        UIClipboardModule,
+        AllMapsComponent,
+        ParkingMapsComponent,
+        EventMapsComponent,
+        MapsPageHeaderComponent,
+        MapColumnsComponent,
+        QuickLinksComponent
+    ],
+    exports: [AllMapsComponent]
 })
 export class DiscoverModule {}

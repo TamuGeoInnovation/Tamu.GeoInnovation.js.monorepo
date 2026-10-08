@@ -12,15 +12,16 @@ import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { BasePopupComponent } from '../base/base.popup.component';
+import { AsyncPipe, KeyValuePipe } from '@angular/common';
 
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-base-directions',
-  templateUrl: './base-directions.component.html',
-  styleUrls: ['./base-directions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-base-directions',
+    templateUrl: './base-directions.component.html',
+    styleUrls: ['./base-directions.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [AsyncPipe, KeyValuePipe]
 })
 export class BaseDirectionsComponent extends BasePopupComponent implements OnInit, OnDestroy {
   /**

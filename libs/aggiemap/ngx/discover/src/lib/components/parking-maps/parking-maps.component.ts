@@ -8,17 +8,20 @@ import {
   MapColumnGroup,
   sortApplicationsByName
 } from '../discover.utils';
+import { MapsPageHeaderComponent } from '../maps-page-header/maps-page-header.component';
+import { MapColumnsComponent } from '../map-columns/map-columns.component';
+import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 /**
  * Parking Maps page. Renders the parking maps grouped into the General / Business / Permit columns
  * from the comp, with placeholder accordion content below.
  */
 @Component({
-  selector: 'tamu-gisc-aggiemap-parking-maps',
-  templateUrl: './parking-maps.component.html',
-  styleUrls: ['./parking-maps.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-aggiemap-parking-maps',
+    templateUrl: './parking-maps.component.html',
+    styleUrls: ['./parking-maps.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [MapsPageHeaderComponent, MapColumnsComponent, AggiemapNgxSharedUiStructuralModule]
 })
 export class ParkingMapsComponent implements OnInit {
   public columns: MapColumnGroup[] = [];

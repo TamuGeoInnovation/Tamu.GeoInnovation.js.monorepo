@@ -10,7 +10,6 @@ import { ReviewComponent } from './review.component';
 const routes: Routes = [{ path: '', component: ReviewComponent }];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), PipesModule, UIFormsModule],
-  declarations: [ReviewComponent]
+    imports: [CommonModule, RouterModule.forChild(routes), PipesModule, UIFormsModule, ReviewComponent]
 })
 export class ReviewModule {}

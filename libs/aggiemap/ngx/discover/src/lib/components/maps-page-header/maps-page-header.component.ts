@@ -1,6 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
+import { RouterLink } from '@angular/router';
 
 /**
  * Shared header for the Maps sub-pages (Parking Maps, Campus Events, Athletics Events).
@@ -14,11 +15,11 @@ import { FEATURED_PARKING_ID } from '../../services/discovery/discovery.service'
  * link is the only way back; here the parent page is.
  */
 @Component({
-  selector: 'tamu-gisc-maps-page-header',
-  templateUrl: './maps-page-header.component.html',
-  styleUrls: ['./maps-page-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-maps-page-header',
+    templateUrl: './maps-page-header.component.html',
+    styleUrls: ['./maps-page-header.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [RouterLink]
 })
 export class MapsPageHeaderComponent {
   /**

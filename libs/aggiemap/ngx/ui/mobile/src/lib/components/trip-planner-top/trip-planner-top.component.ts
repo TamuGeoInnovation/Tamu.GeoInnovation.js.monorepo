@@ -12,12 +12,11 @@ import { offCanvasSlideUpFromTop } from '../../animations/elements';
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-trip-planner-top',
-  templateUrl: './trip-planner-top.component.html',
-  styleUrls: ['./trip-planner-top.component.scss'],
-  animations: [offCanvasSlideUpFromTop],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-trip-planner-top',
+    templateUrl: './trip-planner-top.component.html',
+    styleUrls: ['./trip-planner-top.component.scss'],
+    animations: [offCanvasSlideUpFromTop],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TripPlannerTopComponent implements OnInit, OnDestroy {
   /**

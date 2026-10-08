@@ -1,6 +1,7 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 export interface AlertModalData {
   title?: string;
@@ -11,11 +12,11 @@ export interface AlertModalData {
 }
 
 @Component({
-  selector: 'tamu-gisc-alert-modal',
-  templateUrl: './alert-modal.component.html',
-  styleUrls: ['./alert-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-alert-modal',
+    templateUrl: './alert-modal.component.html',
+    styleUrls: ['./alert-modal.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ButtonComponent]
 })
 export class AlertModalComponent {
   public title: string;

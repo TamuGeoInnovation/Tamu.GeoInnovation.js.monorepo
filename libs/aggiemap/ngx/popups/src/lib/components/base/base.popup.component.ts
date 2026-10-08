@@ -1,12 +1,13 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { KeyValuePipe } from '@angular/common';
 
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-base-popup-component',
-  templateUrl: './base.popup.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-base-popup-component',
+    templateUrl: './base.popup.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [KeyValuePipe]
 })
 export class BasePopupComponent {
   /**

@@ -20,13 +20,15 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
+import { AsyncPipe } from '@angular/common';
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-  selector: 'tamu-gisc-bonfire',
-  templateUrl: './bonfire.component.html',
-  styleUrls: ['./bonfire.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-bonfire',
+    templateUrl: './bonfire.component.html',
+    styleUrls: ['./bonfire.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [AsyncPipe, PipesModule]
 })
 export class BonfirePopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);

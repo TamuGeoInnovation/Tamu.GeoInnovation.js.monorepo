@@ -55,14 +55,13 @@ describe('AlertModalComponent', () => {
 describe('AlertModalComponent template', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UIFormsModule],
-      declarations: [AlertModalComponent],
-      providers: [
+    imports: [UIFormsModule, AlertModalComponent],
+    providers: [
         { provide: ModalRefService, useValue: { close: jest.fn() } },
         { provide: SettingsService, useValue: { updateSettings: jest.fn() } },
         { provide: MODAL_DATA, useValue: { title: 'Test', message: 'Message', primaryText: 'OK' } }
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
   });
 
   it('should render with the shared button component', () => {

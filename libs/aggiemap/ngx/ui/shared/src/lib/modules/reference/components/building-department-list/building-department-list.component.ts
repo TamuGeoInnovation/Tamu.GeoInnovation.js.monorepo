@@ -4,17 +4,18 @@ import { takeUntil } from 'rxjs/operators';
 
 import { SearchService, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { TitleCasePipe } from '@angular/common';
 
 // Pre-defined search source reference to use in the building department search.
 const searchReference = 'university-departments-exact';
 
 @Component({
-  selector: 'tamu-gisc-building-department-list',
-  templateUrl: './building-department-list.component.html',
-  styleUrls: ['./building-department-list.component.scss'],
-  providers: [SearchService],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-building-department-list',
+    templateUrl: './building-department-list.component.html',
+    styleUrls: ['./building-department-list.component.scss'],
+    providers: [SearchService],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [TitleCasePipe]
 })
 export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
   @Input()

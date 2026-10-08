@@ -8,6 +8,8 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { BusService, TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { AsyncPipe } from '@angular/common';
 
 /**
  * Popup for the AggieSpirit bus map. Rendered when a user clicks a graphic drawn by `BusService` on the
@@ -17,11 +19,11 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
  * Extends `BaseDirectionsComponent` for the shared "Directions To Here" + copy-link behavior.
  */
 @Component({
-  selector: 'tamu-gisc-bus-stop-popup-component',
-  templateUrl: './bus-stop.component.html',
-  styleUrls: ['../base/base.popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-bus-stop-popup-component',
+    templateUrl: './bus-stop.component.html',
+    styleUrls: ['../base/base.popup.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [CopyComponent, AsyncPipe]
 })
 export class BusStopPopupComponent extends BaseDirectionsComponent implements OnInit {
   /**

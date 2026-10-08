@@ -17,50 +17,50 @@ describe('ParkingLotPopupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ParkingLotPopupComponent],
-      providers: [
+    imports: [ParkingLotPopupComponent],
+    providers: [
         {
-          provide: Router,
-          useValue: {
-            navigate: jest.fn()
-          }
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {}
-        },
-        {
-          provide: TripPlannerService,
-          useValue: {
-            Stops: of([]),
-            setStops: jest.fn()
-          }
-        },
-        {
-          provide: Angulartics2,
-          useValue: {
-            eventTrack: {
-              next: jest.fn()
+            provide: Router,
+            useValue: {
+                navigate: jest.fn()
             }
-          }
         },
         {
-          provide: EsriMapService,
-          useValue: {
-            clearHitTest: jest.fn()
-          }
+            provide: ActivatedRoute,
+            useValue: {}
         },
         {
-          provide: SearchService,
-          useValue: {
-            getSource: jest.fn().mockReturnValue({
-              urlQueryParam: 'lot'
-            })
-          }
+            provide: TripPlannerService,
+            useValue: {
+                Stops: of([]),
+                setStops: jest.fn()
+            }
+        },
+        {
+            provide: Angulartics2,
+            useValue: {
+                eventTrack: {
+                    next: jest.fn()
+                }
+            }
+        },
+        {
+            provide: EsriMapService,
+            useValue: {
+                clearHitTest: jest.fn()
+            }
+        },
+        {
+            provide: SearchService,
+            useValue: {
+                getSource: jest.fn().mockReturnValue({
+                    urlQueryParam: 'lot'
+                })
+            }
         }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents();
+    ],
+    schemas: [NO_ERRORS_SCHEMA]
+}).compileComponents();
   });
 
   beforeEach(() => {

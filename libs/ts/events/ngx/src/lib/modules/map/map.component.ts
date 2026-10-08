@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Subject, ReplaySubject, Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { loadModules } from 'esri-loader';
@@ -21,6 +21,14 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 import { EventService } from '../../services/event/event.service';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { EventPassedWarningComponent, MapNoticeComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
+import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
+import { EsriMapModule } from '@tamu-gisc/maps/esri';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MapsFeaturePerspectiveModule } from '@tamu-gisc/maps/feature/perspective';
+import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
+import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
 
 import esri = __esri;
 
@@ -28,23 +36,23 @@ import esri = __esri;
 const EVENT_PASSED_GRACE_DAYS = 1;
 
 @Component({
-  selector: 'tamu-gisc-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss'],
-  // `LayerSourcesService` holds this map's `defaultLayerOverrides`. Provided here, so they live and die
-  // with this map; from the application's shared instance they reached every map opened after it in
-  // the same tab, the main map included (#1397).
-  providers: [
-    EventService,
-    EsriMapService,
-    LayerSourcesService,
-    LayerListService,
-    LegendService,
-    TripPlannerService,
-    BasemapGalleryService
-  ],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-map',
+    templateUrl: './map.component.html',
+    styleUrls: ['./map.component.scss'],
+    // `LayerSourcesService` holds this map's `defaultLayerOverrides`. Provided here, so they live and die
+    // with this map; from the application's shared instance they reached every map opened after it in
+    // the same tab, the main map included (#1397).
+    providers: [
+        EventService,
+        EsriMapService,
+        LayerSourcesService,
+        LayerListService,
+        LegendService,
+        TripPlannerService,
+        BasemapGalleryService
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ReveilleConsoleLogComponent, RouterLink, MapsFeatureCoordinatesModule, EsriMapModule, NgClass, MapsFeaturePerspectiveModule, ClipboardCopyDirective, RouterOutlet, MapPopupModule, MapsFeatureAccessibilityModule, AsyncPipe]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;

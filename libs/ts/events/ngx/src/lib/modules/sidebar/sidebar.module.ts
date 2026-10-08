@@ -16,20 +16,20 @@ import { MoveInOutSidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule,
-    UITamuBrandingModule,
-    UIClipboardModule,
-    SidebarModule,
-    MapPopupModule,
-    SearchModule,
-    MapsFeatureTripPlannerModule,
-    LayerListModule,
-    LegendModule,
-    PipesModule
-  ],
-  declarations: [MoveInOutSidebarComponent, SidebarReferenceComponent],
-  exports: [MoveInOutSidebarComponent]
+    imports: [
+        CommonModule,
+        RouterModule,
+        UITamuBrandingModule,
+        UIClipboardModule,
+        SidebarModule,
+        MapPopupModule,
+        SearchModule,
+        MapsFeatureTripPlannerModule,
+        LayerListModule,
+        LegendModule,
+        PipesModule,
+        MoveInOutSidebarComponent, SidebarReferenceComponent
+    ],
+    exports: [MoveInOutSidebarComponent]
 })
 export class MoveInOutSidebarModule {}

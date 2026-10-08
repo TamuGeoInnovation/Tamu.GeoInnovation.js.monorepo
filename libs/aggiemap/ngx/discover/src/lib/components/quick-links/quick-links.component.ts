@@ -1,4 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 export interface QuickLinkItem {
   label: string;
@@ -6,11 +7,11 @@ export interface QuickLinkItem {
 }
 
 @Component({
-  selector: 'tamu-gisc-quick-links',
-  templateUrl: './quick-links.component.html',
-  styleUrls: ['./quick-links.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-quick-links',
+    templateUrl: './quick-links.component.html',
+    styleUrls: ['./quick-links.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [RouterLink]
 })
 export class QuickLinksComponent {
   @Input()

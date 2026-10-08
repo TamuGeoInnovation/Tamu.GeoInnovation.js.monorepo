@@ -8,11 +8,10 @@ import { EventConfiguration } from '../../../../interfaces/special-event.interfa
 import { BuilderModuleBaseComponent } from '../builder-module-base/builder-module-base.component';
 
 @Component({
-  selector: 'tamu-gisc-intro',
-  templateUrl: './intro.component.html',
-  styleUrls: ['./intro.component.scss', '../builder-module-base/builder-module-base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-intro',
+    templateUrl: './intro.component.html',
+    styleUrls: ['./intro.component.scss', '../builder-module-base/builder-module-base.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class IntroComponent extends BuilderModuleBaseComponent implements OnInit {
   public settings: EventConfiguration | null;

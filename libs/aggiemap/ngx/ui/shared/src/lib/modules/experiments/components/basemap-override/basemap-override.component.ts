@@ -1,15 +1,16 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, Subject, takeUntil } from 'rxjs';
 
 import { SettingsInitializationConfig, SettingsService } from '@tamu-gisc/common/ngx/settings';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-  selector: 'tamu-gisc-basemap-override',
-  templateUrl: './basemap-override.component.html',
-  styleUrls: ['./basemap-override.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-basemap-override',
+    templateUrl: './basemap-override.component.html',
+    styleUrls: ['./basemap-override.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, ReactiveFormsModule, TextboxComponent]
 })
 export class BasemapOverrideComponent implements OnInit, OnDestroy {
   public form: UntypedFormGroup;

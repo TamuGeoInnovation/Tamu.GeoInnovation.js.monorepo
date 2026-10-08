@@ -10,6 +10,7 @@ import {
   SpecialEventOption,
   SpecialEventOptions
 } from '../../../../interfaces/special-event.interface';
+import { NgClass, AsyncPipe, DatePipe } from '@angular/common';
 
 interface AccommodationChoiceGroup {
   label: string;
@@ -17,11 +18,11 @@ interface AccommodationChoiceGroup {
 }
 
 @Component({
-  selector: 'tamu-gisc-accommodations',
-  templateUrl: './accommodations.component.html',
-  styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-accommodations',
+    templateUrl: './accommodations.component.html',
+    styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass, AsyncPipe, DatePipe]
 })
 export class AccommodationsComponent implements OnInit {
   public config = this.eventSettingsService.eventConfiguration()?.configuration;

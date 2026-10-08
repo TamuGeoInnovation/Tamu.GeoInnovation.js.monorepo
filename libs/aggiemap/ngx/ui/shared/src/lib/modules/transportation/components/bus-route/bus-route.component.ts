@@ -8,13 +8,18 @@ import { Angulartics2 } from 'angulartics2';
 
 import { TSRoute, BusService } from '@tamu-gisc/maps/feature/trip-planner';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { NgClass } from '@angular/common';
+import { AccordionComponent as AccordionComponent_1 } from '@tamu-gisc/ui-kits/ngx/layout';
+import { BusListHeaderComponent } from '../bus-list-header/bus-list-header.component';
+import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { BusTimetableComponent } from '../bus-timetable/bus-timetable.component';
 
 @Component({
-  selector: 'tamu-gisc-bus-route',
-  templateUrl: './bus-route.component.html',
-  styleUrls: ['./bus-route.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-bus-route',
+    templateUrl: './bus-route.component.html',
+    styleUrls: ['./bus-route.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass, AccordionComponent_1, BusListHeaderComponent, AccordionContentComponent, BusTimetableComponent]
 })
 export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
   /**

@@ -11,9 +11,8 @@ import { CampusBuildingPopupComponent } from './campus-building-popup/campus-bui
 const popups = [MarkdownWDirectionsPopupComponent, MarkdownPopupComponent, CampusBuildingPopupComponent];
 
 @NgModule({
-  imports: [CommonModule, AggiemapNgxPopupsModule, UIClipboardModule],
-  declarations: [...popups],
-  exports: popups
+    imports: [CommonModule, AggiemapNgxPopupsModule, UIClipboardModule, ...popups],
+    exports: popups
 })
 export class PopupsModule {}
 

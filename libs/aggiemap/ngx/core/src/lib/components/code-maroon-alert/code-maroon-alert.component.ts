@@ -14,6 +14,8 @@ import {
   isMonthlyTest,
   EMERGENCY_PROCEDURES_INDEX
 } from '../../services/code-maroon';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 /**
  * The Code Maroon alert, over the map (#1289).
@@ -25,11 +27,11 @@ import {
  * `isTesting` itself rather than trusting that.
  */
 @Component({
-  selector: 'tamu-gisc-code-maroon-alert',
-  templateUrl: './code-maroon-alert.component.html',
-  styleUrls: ['./code-maroon-alert.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-code-maroon-alert',
+    templateUrl: './code-maroon-alert.component.html',
+    styleUrls: ['./code-maroon-alert.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ButtonComponent, AsyncPipe, DatePipe]
 })
 export class CodeMaroonAlertComponent implements OnInit, OnDestroy {
   public state: Observable<CodeMaroonState>;

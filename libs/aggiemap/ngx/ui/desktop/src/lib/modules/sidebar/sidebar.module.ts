@@ -19,26 +19,24 @@ import { SidebarBusListComponent } from './components/sidebar-bus-list/sidebar-b
 import { SidebarSettingsComponent } from './components/sidebar-settings/sidebar-settings.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule,
-    UITamuBrandingModule,
-    SidebarModule,
-    MapPopupModule,
-    SearchModule,
-    MapsFeatureTripPlannerModule,
-    LayerListModule,
-    LegendModule,
-    TransportationModule,
-    MapsFeatureBasemapGalleryModule
-  ],
-  declarations: [
-    AggiemapSidebarComponent,
-    SidebarReferenceComponent,
-    SidebarTripPlannerComponent,
-    SidebarBusListComponent,
-    SidebarSettingsComponent
-  ],
-  exports: [AggiemapSidebarComponent, SidebarReferenceComponent, SidebarTripPlannerComponent, SidebarSettingsComponent]
+    imports: [
+        CommonModule,
+        RouterModule,
+        UITamuBrandingModule,
+        SidebarModule,
+        MapPopupModule,
+        SearchModule,
+        MapsFeatureTripPlannerModule,
+        LayerListModule,
+        LegendModule,
+        TransportationModule,
+        MapsFeatureBasemapGalleryModule,
+        AggiemapSidebarComponent,
+        SidebarReferenceComponent,
+        SidebarTripPlannerComponent,
+        SidebarBusListComponent,
+        SidebarSettingsComponent
+    ],
+    exports: [AggiemapSidebarComponent, SidebarReferenceComponent, SidebarTripPlannerComponent, SidebarSettingsComponent]
 })
 export class AggiemapSidebarModule {}

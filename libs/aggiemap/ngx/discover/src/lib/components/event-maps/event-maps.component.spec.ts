@@ -27,14 +27,13 @@ describe('EventMapsComponent quick links', () => {
 
   const render = async (data: Record<string, unknown>): Promise<ComponentFixture<EventMapsComponent>> => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [EventMapsComponent],
-      providers: [
+    imports: [RouterTestingModule, EventMapsComponent],
+    providers: [
         { provide: DiscoveryService, useValue: discoveryStub },
         { provide: ActivatedRoute, useValue: { snapshot: { data } } }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents();
+    ],
+    schemas: [NO_ERRORS_SCHEMA]
+}).compileComponents();
 
     const fixture = TestBed.createComponent(EventMapsComponent);
 

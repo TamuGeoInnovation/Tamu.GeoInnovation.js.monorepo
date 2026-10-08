@@ -27,8 +27,8 @@ import { MapComponent } from './map.component';
 describe('MapComponent layer sources', () => {
   it("uses its own LayerSourcesService, not the application's", () => {
     TestBed.configureTestingModule({
-      declarations: [MapComponent],
-      providers: [
+    imports: [MapComponent],
+    providers: [
         { provide: EnvironmentService, useValue: { value: () => [] } },
         { provide: ResponsiveService, useValue: {} },
         { provide: NotificationService, useValue: {} },
@@ -38,8 +38,8 @@ describe('MapComponent layer sources', () => {
         { provide: LocalStoreService, useValue: {} },
         { provide: EventSettingsService, useValue: {} },
         { provide: ModalService, useValue: {} }
-      ]
-    })
+    ]
+})
       // The map itself is not under test; only which injector its providers live in.
       .overrideTemplate(MapComponent, '')
       .overrideProvider(EventService, { useValue: {} });

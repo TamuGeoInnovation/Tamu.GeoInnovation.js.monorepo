@@ -6,13 +6,15 @@ import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { groupBy, Group } from '@tamu-gisc/common/utils/collection';
+import { BusRouteComponent } from '../bus-route/bus-route.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-bus-list',
-  templateUrl: './bus-list.component.html',
-  styleUrls: ['./bus-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-bus-list',
+    templateUrl: './bus-list.component.html',
+    styleUrls: ['./bus-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [BusRouteComponent, AsyncPipe]
 })
 export class BusListComponent implements OnInit, OnDestroy {
   @Input()

@@ -9,6 +9,7 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.component';
 import { EventSettingsQuery } from '../../../services/settings/event-settings-query';
 import { BuildingPopupContent, buildingPopupContent, buildingShareIdentity } from './building-popup-content';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 /**
  * A satellite campus's building popup, laid out as the main map's: title, building number, address and a
@@ -22,10 +23,10 @@ import { BuildingPopupContent, buildingPopupContent, buildingShareIdentity } fro
  * maps show no Directions tab either.
  */
 @Component({
-  selector: 'tamu-gisc-campus-building-popup',
-  templateUrl: './campus-building-popup.component.html',
-  styleUrls: ['../markdown-popup/markdown-popup.component.scss'],
-  standalone: false
+    selector: 'tamu-gisc-campus-building-popup',
+    templateUrl: './campus-building-popup.component.html',
+    styleUrls: ['../markdown-popup/markdown-popup.component.scss'],
+    imports: [CopyComponent]
 })
 export class CampusBuildingPopupComponent extends BaseEventPopupComponent implements OnInit {
   public content: BuildingPopupContent = {};

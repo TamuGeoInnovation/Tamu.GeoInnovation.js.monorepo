@@ -126,34 +126,34 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    UITamuBrandingModule,
-    AggiemapNgxUiMobileModule,
-    MapsFeatureTripPlannerModule,
-    EsriMapModule,
-    MapsFeatureCoordinatesModule,
-    MapsFeatureAccessibilityModule,
-    MapsFeaturePerspectiveModule,
-    SearchModule,
-    AggiemapNgxSharedUiStructuralModule,
-    AggiemapFormsModule,
-    AggiemapSidebarModule,
-    ResponsiveModule,
-    CommonNgxRouterModule,
-    UIFormsModule,
-    UILayoutModule,
-    UIDragModule,
-    SettingsModule,
-    SidebarModule,
-    LayerListModule,
-    PipesModule,
-    LegendModule,
-    MapPopupModule,
-    UIClipboardModule,
-    MoveInOutSidebarModule
-  ],
-  declarations: [MapComponent, EventLegendComponent]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        UITamuBrandingModule,
+        AggiemapNgxUiMobileModule,
+        MapsFeatureTripPlannerModule,
+        EsriMapModule,
+        MapsFeatureCoordinatesModule,
+        MapsFeatureAccessibilityModule,
+        MapsFeaturePerspectiveModule,
+        SearchModule,
+        AggiemapNgxSharedUiStructuralModule,
+        AggiemapFormsModule,
+        AggiemapSidebarModule,
+        ResponsiveModule,
+        CommonNgxRouterModule,
+        UIFormsModule,
+        UILayoutModule,
+        UIDragModule,
+        SettingsModule,
+        SidebarModule,
+        LayerListModule,
+        PipesModule,
+        LegendModule,
+        MapPopupModule,
+        UIClipboardModule,
+        MoveInOutSidebarModule,
+        MapComponent, EventLegendComponent
+    ]
 })
 export class MapModule {}

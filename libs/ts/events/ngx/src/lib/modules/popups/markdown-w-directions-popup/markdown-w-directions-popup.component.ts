@@ -7,13 +7,15 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.component';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-markdown-w-directions-popup',
-  templateUrl: './markdown-w-directions-popup.component.html',
-  styleUrls: ['./markdown-w-directions-popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-markdown-w-directions-popup',
+    templateUrl: './markdown-w-directions-popup.component.html',
+    styleUrls: ['./markdown-w-directions-popup.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [CopyComponent, AsyncPipe]
 })
 export class MarkdownWDirectionsPopupComponent extends BaseEventPopupComponent implements OnInit {
   public title: string;

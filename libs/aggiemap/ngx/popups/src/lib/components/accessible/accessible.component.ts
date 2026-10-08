@@ -9,11 +9,10 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 
 @Component({
-  selector: 'tamu-gisc-accessible-popup-component',
-  templateUrl: './accessible.component.html',
-  styleUrls: ['../base/base.popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-accessible-popup-component',
+    templateUrl: './accessible.component.html',
+    styleUrls: ['../base/base.popup.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class AccessiblePopupComponent extends BaseDirectionsComponent {
   constructor(

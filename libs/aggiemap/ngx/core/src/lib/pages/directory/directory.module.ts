@@ -18,14 +18,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    ReactiveFormsModule,
-    UIFormsModule,
-    AggiemapNgxSharedUiStructuralModule,
-    NgxDatatableModule
-  ],
-  declarations: [DirectoryComponent]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        ReactiveFormsModule,
+        UIFormsModule,
+        AggiemapNgxSharedUiStructuralModule,
+        NgxDatatableModule,
+        DirectoryComponent
+    ]
 })
 export class DirectoryModule {}

@@ -7,13 +7,14 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-construction-popup-component',
-  templateUrl: './construction.component.html',
-  styleUrls: ['../base/base.popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-construction-popup-component',
+    templateUrl: './construction.component.html',
+    styleUrls: ['../base/base.popup.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [DatePipe]
 })
 export class ConstructionPopupComponent extends BaseDirectionsComponent implements OnInit {
   public showContactName = false;

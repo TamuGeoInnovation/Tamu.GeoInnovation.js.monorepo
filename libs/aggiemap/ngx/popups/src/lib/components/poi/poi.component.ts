@@ -20,13 +20,16 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { AsyncPipe } from '@angular/common';
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-  selector: 'tamu-gisc-poi-popup-component',
-  templateUrl: './poi.component.html',
-  styleUrls: ['../base/base.popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-poi-popup-component',
+    templateUrl: './poi.component.html',
+    styleUrls: ['../base/base.popup.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [CopyComponent, AsyncPipe, PipesModule]
 })
 export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);
