@@ -236,6 +236,13 @@ each with its own README:
 Both need the map probe (`window.__tamuGiscMapProbe`) in the deployed build. If layer data comes back
 empty, the environment is running something older.
 
+- **[`tools/visual-baselines`](tools/visual-baselines/README.md)** photographs every map in an
+  environment, keyed by release tag, so a change that moves the symbology of every map at once can be
+  reviewed instead of guessed at. **A set is captured after a release reaches an environment**, as
+  step 8 of [the release sequence](docs/releases/README.md#8-capture-the-baseline-images) — a "before"
+  only exists if somebody took it while it was still true. Baselines live outside the repository, are
+  per machine, and gate nothing.
+
 [`docs/testing.md`](docs/testing.md) describes all of the testing for readers outside the team, with
 dated counts; a check fails if a smoke spec is missing from it.
 
