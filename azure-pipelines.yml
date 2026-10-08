@@ -19,7 +19,8 @@ variables:
   HEAD_SHA: $(git rev-parse HEAD)
 
 pool:
-  vmImage: 'ubuntu-latest'
+  # Pinned rather than ubuntu-latest, which moves to Ubuntu 26 on 19 October 2026 (#1468); move on purpose.
+  vmImage: 'ubuntu-24.04'
 
 stages:
   - stage: Setup
