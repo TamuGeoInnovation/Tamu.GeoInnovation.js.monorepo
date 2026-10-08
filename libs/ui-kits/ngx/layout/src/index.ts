@@ -18,3 +18,6 @@ export * from './lib/animations/drawer';
 
 export * from './lib/directives/render-host/render-host.directive';
 export * from './lib/directives/element-insert/element-insert.directive';
+export * from './lib/components/accordion/directives/accordion-content.directive';
+export * from './lib/components/accordion/directives/accordion.directive';
+export * from './lib/components/accordion/directives/accordion-header.directive';
