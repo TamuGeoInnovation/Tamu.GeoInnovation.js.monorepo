@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { MapsMapboxModule } from '@tamu-gisc/maps/mapbox';
+
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { LightPoleComponent } from './light-pole.component';
@@ -15,7 +15,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, UILayoutModule, LightPoleComponent],
+  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule, LightPoleComponent],
   exports: [RouterModule]
 })
 export class LightPoleModule {}

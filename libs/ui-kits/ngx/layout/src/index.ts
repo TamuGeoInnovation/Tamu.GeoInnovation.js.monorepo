@@ -1,4 +1,4 @@
-export * from './lib/ui-kits-ngx-layout.module';
+
 
 export * from './lib/components/accordion/accordion.component';
 export * from './lib/components/accordion/accordion-header/accordion-header.component';

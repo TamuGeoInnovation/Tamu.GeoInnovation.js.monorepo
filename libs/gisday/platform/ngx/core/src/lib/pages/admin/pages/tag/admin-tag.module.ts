@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+
 
 import { AdminTagComponent } from './admin-tag.component';
 import { TagsListComponent } from './pages/tags-list/tags-list.component';
@@ -40,13 +40,12 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     UIFormsModule,
-    GisdayFormsModule,
     PipesModule,
     AdminTagComponent,
     TagsEditComponent,
     TagsListComponent,
     TagsAddComponent
-  ],
+],
   exports: [RouterModule]
 })
 export class AdminTagModule {}

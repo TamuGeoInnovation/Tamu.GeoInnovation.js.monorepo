@@ -9,7 +9,7 @@ import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-plann
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
-import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
+
 
 import { SidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
@@ -25,10 +25,9 @@ import { SidebarReferenceComponent } from './components/sidebar-reference/sideba
     MapsFeatureTripPlannerModule,
     LayerListModule,
     LegendModule,
-    UESCoreUIModule,
     SidebarComponent,
     SidebarReferenceComponent
-  ],
+],
   exports: [SidebarComponent]
 })
 export class UESSidebarModule {}

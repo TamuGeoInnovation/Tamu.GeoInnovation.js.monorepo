@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { AggiemapNgxSharedUiStructuralModule, TransportationModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
-import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-planner';
-import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
+
+
+
+
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 
 import { AggiemapNgxUiMobileComponent } from './aggiemap-ngx-ui-mobile.component';
@@ -21,12 +21,7 @@ import { BusTimetableBottomComponent } from './components/bus-timetable-bottom/b
   imports: [
     CommonModule,
     RouterModule,
-    AggiemapNgxSharedUiStructuralModule,
-    MapsFeatureTripPlannerModule,
-    UIDragModule,
-    SearchModule,
     UITamuBrandingModule,
-    TransportationModule,
     AggiemapNgxUiMobileComponent,
     TripPlannerTopComponent,
     TripPlannerBottomComponent,
@@ -35,7 +30,7 @@ import { BusTimetableBottomComponent } from './components/bus-timetable-bottom/b
     MainMobileSidebarComponent,
     BusListBottomComponent,
     BusTimetableBottomComponent
-  ],
+],
   exports: [
     AggiemapNgxUiMobileComponent,
     TripPlannerTopComponent,

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
-import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
@@ -28,10 +28,9 @@ const routes: Routes = [
     ReactiveFormsModule,
     UIFormsModule,
     PipesModule,
-    GisdayFormsModule,
     SeasonsListComponent,
     SeasonEditComponent
-  ],
+],
   exports: [RouterModule]
 })
 export class SeasonsModule {}

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { GisDayPeopleModule, GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
@@ -26,10 +26,9 @@ const routes: Routes = [
     UIFormsModule,
     UILayoutModule,
     GisdayPlatformNgxCommonModule,
-    GisDayPeopleModule,
     PipesModule,
     EventDetailComponent
-  ],
+],
   exports: [RouterModule]
 })
 export class EventDetailModule {}

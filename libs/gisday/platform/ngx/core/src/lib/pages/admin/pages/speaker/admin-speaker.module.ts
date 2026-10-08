@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
-import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+
 
 import { AdminSpeakerComponent } from './admin-speaker.component';
 import { SpeakerListComponent } from './pages/speaker-list/speaker-list.component';
@@ -36,14 +36,13 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    GisdayFormsModule,
     UIFormsModule,
     PipesModule,
     AdminSpeakerComponent,
     SpeakerListComponent,
     SpeakerAddComponent,
     SpeakerEditComponent
-  ],
+],
   exports: [RouterModule]
 })
 export class AdminSpeakerModule {}

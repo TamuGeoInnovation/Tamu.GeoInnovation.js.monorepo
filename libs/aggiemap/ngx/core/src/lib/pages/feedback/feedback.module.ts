@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+
 
 import { FeedbackComponent } from './components/feedback.component';
 
@@ -14,6 +14,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), AggiemapNgxSharedUiStructuralModule, FeedbackComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), FeedbackComponent]
 })
 export class FeedbackModule {}

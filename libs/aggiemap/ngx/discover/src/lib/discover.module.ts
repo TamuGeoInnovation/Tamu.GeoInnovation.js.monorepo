@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+
+
+
+
+
 
 import { AllMapsComponent } from './components/all-maps/all-maps.component';
 import { ParkingMapsComponent } from './components/parking-maps/parking-maps.component';
@@ -87,19 +87,14 @@ export const discoverRoutes: Routes = [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    UIFormsModule,
-    UILayoutModule,
     RouterModule.forChild(discoverRoutes),
-    AggiemapNgxSharedUiStructuralModule,
-    PipesModule,
-    UIClipboardModule,
     AllMapsComponent,
     ParkingMapsComponent,
     EventMapsComponent,
     MapsPageHeaderComponent,
     MapColumnsComponent,
     QuickLinksComponent
-  ],
+],
   exports: [AllMapsComponent]
 })
 export class DiscoverModule {}

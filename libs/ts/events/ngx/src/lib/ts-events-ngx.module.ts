@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+
 
 import { SettingsGuard } from './guards/settings/settings.guard';
 import { BuilderComponent } from './modules/builder/builder.component';
@@ -66,7 +66,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), PipesModule, BuilderComponent, EndedComponent],
+  imports: [CommonModule, RouterModule.forChild(routes), BuilderComponent, EndedComponent],
   providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }],
   exports: [RouterModule]
 })

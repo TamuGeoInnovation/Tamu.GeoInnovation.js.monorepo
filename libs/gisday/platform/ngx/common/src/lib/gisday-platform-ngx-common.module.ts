@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { CommonNgxAuthModule } from '@tamu-gisc/common/ngx/auth';
+
 import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
 
@@ -16,11 +16,10 @@ import { GISDayPipesModule } from './pipes/gisday-pipes.module';
     RouterModule,
     UITileNavigationModule,
     UINavigationTriggersModule,
-    CommonNgxAuthModule,
     GISDayPipesModule,
     FooterComponent,
     HeaderComponent
-  ],
+],
   providers: [],
   exports: [FooterComponent, HeaderComponent, GISDayPipesModule]
 })

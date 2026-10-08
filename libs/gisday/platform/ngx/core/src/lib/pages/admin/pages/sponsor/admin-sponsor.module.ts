@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
@@ -36,14 +36,13 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    GisdayFormsModule,
     UIFormsModule,
     PipesModule,
     AdminSponsorComponent,
     SponsorListComponent,
     SponsorEditComponent,
     SponsorAddComponent
-  ],
+],
   exports: [RouterModule]
 })
 export class AdminSponsorModule {}

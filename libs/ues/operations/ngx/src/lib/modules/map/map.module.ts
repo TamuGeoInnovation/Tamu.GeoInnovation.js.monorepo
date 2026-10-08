@@ -45,7 +45,7 @@ import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 
-import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
+
 import { MapComponent } from './map.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
@@ -139,10 +139,9 @@ const routes: Routes = [
     SettingsModule,
     SidebarModule,
     UITamuBrandingModule,
-    UESCoreUIModule,
     TransportationModule,
     MapComponent
-  ],
+],
   providers: [EsriModuleProviderService, EsriMapService, TripPlannerService, BusService]
 })
 export class MapModule {}

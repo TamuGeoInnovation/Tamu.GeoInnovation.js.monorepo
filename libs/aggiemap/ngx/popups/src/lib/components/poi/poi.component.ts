@@ -23,7 +23,8 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { AsyncPipe } from '@angular/common';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+
+import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
   selector: 'tamu-gisc-poi-popup-component',
@@ -32,7 +33,7 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
   changeDetection: ChangeDetectionStrategy.Eager,
   // <swiper-container> is the Swiper web component, registered at run time (as the popups module did).
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [CopyComponent, AsyncPipe, PipesModule]
+  imports: [CopyComponent, AsyncPipe, MarkdownParsePipe]
 })
 export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);

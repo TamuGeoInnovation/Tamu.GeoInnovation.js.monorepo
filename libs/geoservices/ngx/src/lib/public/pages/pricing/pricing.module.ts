@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { PricingComponent } from './pricing.component';
-import { InteractivePricingModule } from '../../../core/modules/pricing/interactive-pricing.module';
+
 
 const routes: Routes = [
   {
@@ -13,6 +13,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), InteractivePricingModule, PricingComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), PricingComponent]
 })
 export class PricingModule {}

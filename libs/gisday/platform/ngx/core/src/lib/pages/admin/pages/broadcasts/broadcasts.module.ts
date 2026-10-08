@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+
 
 import { BroadcastsComponent } from './broadcasts.component';
 import { BroadcastListComponent } from './pages/broadcast-list/broadcast-list.component';
@@ -36,13 +36,12 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    GisdayFormsModule,
     UIFormsModule,
     PipesModule,
     BroadcastsComponent,
     BroadcastListComponent,
     BroadcastAddComponent,
     BroadcastEditComponent
-  ]
+]
 })
 export class BroadcastsModule {}

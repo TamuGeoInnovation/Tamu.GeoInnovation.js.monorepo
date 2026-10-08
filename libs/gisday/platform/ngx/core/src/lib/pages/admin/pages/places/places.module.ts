@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
-import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+
 
 import { PlacesComponent } from './places.component';
 import { PlaceAddComponent } from './pages/place-add/place-add.component';
@@ -36,13 +36,12 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    GisdayFormsModule,
     UIFormsModule,
     PipesModule,
     PlacesComponent,
     PlaceAddComponent,
     PlaceEditComponent,
     PlaceListComponent
-  ]
+]
 })
 export class PlacesModule {}

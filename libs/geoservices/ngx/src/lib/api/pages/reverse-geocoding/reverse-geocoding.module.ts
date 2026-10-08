@@ -5,10 +5,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { UIScrollToModule } from '@tamu-gisc/ui-kits/ngx/interactions/scroll-to';
+
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-import { ApiComponentsModule } from '../../components/components.module';
+
 import { ReverseGeocodingComponent } from './reverse-geocoding.component';
 
 const routes: Routes = [
@@ -24,10 +24,8 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     HighlightPlusModule,
     UIClipboardModule,
-    UIScrollToModule,
     UILayoutModule,
-    ApiComponentsModule,
     ReverseGeocodingComponent
-  ]
+]
 })
 export class ReverseGeocodingModule {}

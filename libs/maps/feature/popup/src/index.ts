@@ -1,4 +1,4 @@
-export * from './lib/maps-feature-popup.module';
+
 
 export * from './lib/components/base/base.component';
 

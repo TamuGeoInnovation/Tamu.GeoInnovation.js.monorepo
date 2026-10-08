@@ -1,4 +1,4 @@
-export * from './lib/maps-feature-trip-planner.module';
+
 
 // Cores
 export * from './lib/core/trip-planner-core';

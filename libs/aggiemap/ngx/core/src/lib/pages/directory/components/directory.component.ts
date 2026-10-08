@@ -19,8 +19,9 @@ import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, 
 import { DatatableComponent, TableColumn, NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { RouterLink } from '@angular/router';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+
 import { AsyncPipe } from '@angular/common';
+import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-directory',
@@ -33,9 +34,9 @@ import { AsyncPipe } from '@angular/common';
     ReactiveFormsModule,
     TextboxComponent,
     NgxDatatableModule,
-    AggiemapNgxSharedUiStructuralModule,
+    FooterComponent,
     AsyncPipe
-  ]
+]
 })
 export class DirectoryComponent implements OnInit {
   public form: UntypedFormGroup;
