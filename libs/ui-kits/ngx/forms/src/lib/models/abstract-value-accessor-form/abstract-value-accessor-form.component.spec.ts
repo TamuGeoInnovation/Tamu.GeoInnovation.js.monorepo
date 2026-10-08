@@ -8,7 +8,7 @@ describe('AbstractValueAccessorFormComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AbstractValueAccessorFormComponent]
+      imports: [AbstractValueAccessorFormComponent]
     }).compileComponents();
   }));
 

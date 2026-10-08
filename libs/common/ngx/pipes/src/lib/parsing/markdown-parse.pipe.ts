@@ -3,10 +3,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { marked } from 'marked';
 
-@Pipe({
-  name: 'markdownParse',
-  standalone: false
-})
+@Pipe({ name: 'markdownParse' })
 export class MarkdownParsePipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
 

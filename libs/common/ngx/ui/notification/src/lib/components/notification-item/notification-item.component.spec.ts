@@ -8,8 +8,10 @@ describe('NotificationItemComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [NotificationItemComponent],
-      declarations: [NotificationItemComponent],
-      imports: [RouterTestingModule.withRoutes([{ path: 'value', component: NotificationItemComponent }])]
+      imports: [
+        RouterTestingModule.withRoutes([{ path: 'value', component: NotificationItemComponent }]),
+        NotificationItemComponent
+      ]
     }).compileComponents();
   }));
 

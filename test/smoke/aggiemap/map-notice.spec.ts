@@ -1,3 +1,5 @@
+import { Page } from '@playwright/test';
+
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 
@@ -36,7 +38,7 @@ const MAP_WITH_NOTICE = '/events/150th-kickoff';
 // map from a different part of the app would not.
 const MAP_WITHOUT_NOTICE = '/events/kickoff-at-kyle';
 
-async function openMap(page, path: string): Promise<void> {
+async function openMap(page: Page, path: string): Promise<void> {
   await blockAnalytics(page);
   // install, not setFixedTime: the clock starts at this date and then runs, which the map needs to
   // finish loading. A frozen clock never lets it report ready.
@@ -46,7 +48,7 @@ async function openMap(page, path: string): Promise<void> {
     .poll(
       async () =>
         await page.evaluate(
-          (n) => (window as unknown as Record<string, { ready?: boolean }>)[n]?.ready === true,
+          (n: string) => (window as unknown as Record<string, { ready?: boolean }>)[n]?.ready === true,
           PROBE_GLOBAL
         ),
       { message: `the map on ${path} never finished loading`, timeout: 90_000, intervals: [1_000] }
@@ -66,7 +68,7 @@ test('a map without a notice shows none', async ({ page }) => {
   await expect(page.locator(NOTICE), `${MAP_WITHOUT_NOTICE} has no notice configured`).toHaveCount(0);
 });
 
-test('a dismissed notice stays dismissed for the session, and returns in a new one', async ({ page, context }) => {
+test('a dismissed notice stays dismissed for the session, and returns in a new one', async ({ page, browser }) => {
   await openMap(page, MAP_WITH_NOTICE);
 
   const notice = page.locator(NOTICE);
@@ -80,7 +82,7 @@ test('a dismissed notice stays dismissed for the session, and returns in a new o
 
   // A new context is a new session, so it must show again - otherwise nobody sees it on the day.
   // A context made by hand does not inherit test.use, so it gets the same time zone explicitly.
-  const fresh = await context.browser().newContext({ timezoneId: TIMEZONE });
+  const fresh = await browser.newContext({ timezoneId: TIMEZONE });
   const freshPage = await fresh.newPage();
   await openMap(freshPage, MAP_WITH_NOTICE);
   await expect(freshPage.locator(NOTICE), 'the notice should show again in a new session').toBeVisible({ timeout: 30_000 });

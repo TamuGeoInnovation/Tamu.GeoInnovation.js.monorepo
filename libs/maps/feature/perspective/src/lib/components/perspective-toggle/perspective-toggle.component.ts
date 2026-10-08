@@ -3,6 +3,7 @@ import { forkJoin, map, Observable, take } from 'rxjs';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { NgClass } from '@angular/common';
 
 import esri = __esri;
 
@@ -11,7 +12,7 @@ import esri = __esri;
   templateUrl: './perspective-toggle.component.html',
   styleUrls: ['./perspective-toggle.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [NgClass]
 })
 export class PerspectiveToggleComponent implements OnInit {
   /**

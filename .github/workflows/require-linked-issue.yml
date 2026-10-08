@@ -20,7 +20,7 @@ permissions:
 jobs:
   linked-issue:
     name: Has a linked issue
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
 
     steps:

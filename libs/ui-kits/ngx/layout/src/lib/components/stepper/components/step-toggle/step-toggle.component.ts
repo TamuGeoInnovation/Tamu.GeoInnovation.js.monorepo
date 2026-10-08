@@ -1,11 +1,12 @@
 import { Component, TemplateRef, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-step-toggle',
   templateUrl: './step-toggle.component.html',
   styleUrls: ['./step-toggle.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [NgTemplateOutlet]
 })
 export class StepToggleComponent {
   @Input()

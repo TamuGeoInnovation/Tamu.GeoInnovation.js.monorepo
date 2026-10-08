@@ -7,13 +7,15 @@ import { Angulartics2 } from 'angulartics2';
 import { v4 as guid } from 'uuid';
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
+import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-directions-actions',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [UIClipboardModule, AsyncPipe]
 })
 export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy {
   /**

@@ -9,6 +9,7 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-checkbox',
@@ -22,7 +23,7 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
     }
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [NgClass]
 })
 export class CheckboxComponent implements ControlValueAccessor {
   @ViewChild('checkboxInput', { static: true }) public ref: ElementRef;

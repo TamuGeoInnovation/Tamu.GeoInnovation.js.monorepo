@@ -12,6 +12,7 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable, Subject, delay, map, shareReplay } from 'rxjs';
 
 import { RadioGroupComponent } from '../radio-group/radio-group.component';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-slide-toggle',
@@ -25,7 +26,7 @@ import { RadioGroupComponent } from '../radio-group/radio-group.component';
     }
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [NgClass, AsyncPipe]
 })
 export class SlideToggleComponent<Option extends object, Value>
   extends RadioGroupComponent<Option, Value>

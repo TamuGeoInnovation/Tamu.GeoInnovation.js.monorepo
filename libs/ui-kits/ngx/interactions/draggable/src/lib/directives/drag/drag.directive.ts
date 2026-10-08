@@ -6,8 +6,7 @@ import interact from 'interactjs';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[draggable]',
-  standalone: false
+  selector: '[draggable]'
 })
 export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy {
   /**

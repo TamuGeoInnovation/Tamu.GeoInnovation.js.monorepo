@@ -24,8 +24,12 @@ import { AutocompleteComponent } from './components/autocomplete/autocomplete.co
 import { AutocompleteOptionTemplateDirective } from './components/autocomplete/directives/autocomplete-option-template.directive';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, UILayoutModule, UIKeyboardModule],
-  declarations: [
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    UILayoutModule,
+    UIKeyboardModule,
     SelectComponent,
     CheckboxComponent,
     CheckboxGroupComponent,

@@ -1,8 +1,7 @@
 {
   "extends": "../../../../../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["node", "jest", "arcgis-js-api"],
-    "ignoreDeprecations": "6.0"
+    "types": ["node", "jest", "arcgis-js-api"]
   },
   "include": [],
   "files": [],

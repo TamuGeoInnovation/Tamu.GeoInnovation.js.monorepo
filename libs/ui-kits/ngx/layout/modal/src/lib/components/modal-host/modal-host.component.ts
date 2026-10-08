@@ -20,8 +20,7 @@ import { ModalRefService } from '../../services/modal-ref/modal-ref.service';
   templateUrl: './modal-host.component.html',
   styleUrls: ['./modal-host.component.scss'],
   providers: [ModalRefService],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ModalHostComponent implements OnInit, OnDestroy {
   @ViewChild('modal', { static: true, read: ViewContainerRef })

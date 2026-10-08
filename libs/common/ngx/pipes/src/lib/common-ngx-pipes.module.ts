@@ -22,8 +22,8 @@ import { SafeHtmlPipe } from './sanitation/safe-html.pipe';
 import { TrimPipe } from './string/trim.pipe';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [
+  imports: [
+    CommonModule,
     GroupByPipe,
     OrderByPipe,
     MarkdownParsePipe,
