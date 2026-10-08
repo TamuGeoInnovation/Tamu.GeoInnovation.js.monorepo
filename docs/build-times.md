@@ -227,6 +227,9 @@ every layer, so its duration says as much about the GIS services as about this c
 
 | Date | Machine | Environment | Result | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 7 Oct 2026 | cloud (4 CPUs) | dev; **`bus.spec.ts` alone, #1473 branch**, one test per route, **2 workers**, 11:09:26 to 11:20:02 PM Central; CPU load about 10 | 26 passed, 0 failed; 48 s median per route test (23 to 61 s) | **10 min 36 s** |
+| 7 Oct 2026 | cloud (4 CPUs) | dev; `bus.spec.ts` alone, #1473 branch, 6 workers, 11:00:10 to 11:09:06 PM Central; CPU load about 35 | 24 passed, 2 flaky (routes 01 and NW4041 timed out at 120 s twice, passed on the third try), 0 failed; 80 to 130 s per route test | 8 min 56 s |
+| 7 Oct 2026 | cloud (4 CPUs) | dev; **`bus.spec.ts` alone, `development` (`300a3ff9`)**, one test for every route, 6 workers (2 tests), 10:51:25 to 11:00:04 PM Central | 2 passed; the every-route test took 8.5 min | **8 min 39 s** |
 | 6 Oct 2026 | home | dev, `8c7a9765` (#1526 service symbology, #1529), release scope, 6 workers, 18:58:07 to 19:20:00 Central; cleared the second 6 October release, tagged `dev-2026-10-06-4` | 421 passed, 0 failed, 1 flaky (bus routes: one route did not draw within 30 s, passed on retry; #1473), 14 skipped, of 436. Men's Basketball passes again after #1434 | **21 min 53 s** |
 | 6 Oct 2026 | office | dev, **Angular 22.1.8** (`279853c1`, build 20261006.6, tagged `dev-2026-10-06-2`), release scope, 6 workers, 07:43:33 to 08:09:54 Central | 404 passed, 2 failed (Men's Basketball, #1431), 1 flaky, 14 skipped, of 420 | **26 min 21 s** |
 | 6 Oct 2026 | home | dev, Angular 21 (`4d7f1d7a`), **#1426 release scope**, 6 workers, 06:51:57 to 07:14:41 Central | 404 passed, 3 failed (Men's Basketball, #1431), 0 flaky, 14 skipped, of 421 | **22 min 44 s** |
@@ -278,6 +281,22 @@ CPUs, against dev serving Angular 21:
 - **What is left is mostly `maps.spec.ts`** (71 tests, about 50 minutes of test time at 2 workers),
   event dates (13) and `bus.spec.ts`, whose every-route test took 7 to 11 minutes on its own and so is a
   floor that more workers cannot lower ([#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473)).
+
+### One bus test per route (#1473)
+
+Splitting the every-route bus test made it parallel, and more expensive in total. Each route now loads
+its own map, about 48 s a test with the machine quiet, where the old test loaded the map once and spent
+about 20 s on each route. So 25 routes cost about 20 minutes of test time instead of 8.5.
+
+What is gained is the floor. The old test could only run on one worker, so no run could finish in less
+than its 7 to 11 minutes. Now the longest bus test is about a minute, and the 20 minutes spread across
+whatever workers there are: about 3.5 minutes on 6 workers with the CPUs to run them.
+
+**The cloud container could not show that.** At 2 workers the split took 10 min 36 s against 8 min 39 s
+before. At 6 workers its 4 CPUs were saturated (load about 35), every test slowed to 80 to 130 s, two
+timed out before passing, and the run took 8 min 56 s. A workstation run at 6 workers is the
+measurement still to take. In a full release check the bus tests share the workers with everything
+else, so what matters there is that none of them is 8 minutes long.
 
 ## Where the other records are
 

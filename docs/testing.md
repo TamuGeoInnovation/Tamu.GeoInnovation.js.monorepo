@@ -68,7 +68,9 @@ with the number of maps and services.
 
 The counts are a snapshot: **436 tests, measured on dev on 6 October 2026** in the run that cleared
 the [second 6 October release](releases/2026-10-06-2.md): 421 passed and 14 skipped, in 21 minutes 53 seconds,
-with release scope and 6 workers. Production lists fewer maps than dev, so it runs fewer.
+with release scope and 6 workers. Production lists fewer maps than dev, so it runs fewer. The bus
+routes became one test each on 7 October (26 tests where there were 2), which makes the total 460;
+the next full run measures it.
 
 | Type of check | Spec files | Tests | What it catches | Prompted by |
 | --- | --- | ---: | --- | --- |
@@ -84,11 +86,11 @@ with release scope and 6 workers. Production lists fewer maps than dev, so it ru
 | Production services | `gis-hosts.spec.ts` | 15 | No map on a production environment may request a development GIS host. The rule is its own tested module, because a host pattern that quietly matches nothing reports green for the one thing it was added to catch | [#1483](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1483), filed on the way to linking the campus maps on production ([#1482](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1482)) |
 | Choosing what to run | `scope.spec.ts` | 9 | The rule that decides which part of the suite a change needs, so a one-map fix is not gated by all 436 tests. Tested because its failure is silent: it would run *fewer* tests than it should | [#1427](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1427) |
 | Build and runtime | `analytics.spec.ts`, `esri-runtime.spec.ts`, `build-banner.spec.ts` | 6 | Each site reports to its own Google Analytics; the maps run the intended ArcGIS version; the page says which build it is | [#1037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1037) (dev was reporting into production's analytics), [#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219), [#1306](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1306) |
-| Interaction | `bus.spec.ts`, `popup.spec.ts` | 3 | Every bus route draws its stops; clicking a feature opens a popup with its data | [#1174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1174), [#1117](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1117) |
+| Interaction | `bus.spec.ts`, `popup.spec.ts` | 27 | Every bus route draws its stops, one test per route (25 on dev; [#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473)); clicking a feature opens a popup with its data | [#1174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1174), [#1117](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1117) |
 | Map framing | `framing.spec.ts` | 71 | Every map, and every builder choice, opens at the zoom and center it opens at on production, compared with a baseline recorded from production: 412 routes, plus one report of the routes only one side has. On dev, 7 maps production does not list are reported and skipped | [#1380](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1380), after event maps opened at the default zoom on dev with every layer drawn ([#1379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1379)) |
 | Kiosk maps | `kiosk.spec.ts` | 4 | The dining kiosk, opened by direct link as production serves it, draws its dining locations with no sidebar, on each of three fresh loads, and holds none of the main map's layers | [#1392](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1392), after it opened on the basemap alone |
 | Map isolation | `isolation.spec.ts` | 3 | Going back to the main map from a map that changes some of its layers, without reloading, shows the main map as it was | [#1397](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1397), after the dining kiosk left the main map's dining layer switched on |
-| **Total** | | **436** | | |
+| **Total** | | **460** | | |
 
 A known problem that cannot be fixed yet, such as a service the dev GIS server does not publish, is
 listed against its issue and reported on every run rather than failing it, so it stays visible until
@@ -114,6 +116,7 @@ The suite started on 27 September 2026 and grew with nearly every bug found sinc
 | 4 October | 758 | Map framing against a production baseline of every map and builder choice; kiosk maps; map isolation |
 | 5 October | 757 | One fewer GIS service once VeoRide was retired. **Measured: 757** (743 passed, 14 skipped) in 1.3 hours, the run that cleared the 5 October release |
 | 6 October | 436 | Production services (`gis-hosts.spec.ts`), and framing scoped from 412 routes to 71 so the suite is fast enough to gate a release ([#1426](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1426)). **Measured: 436** (421 passed, 1 failed, 14 skipped) in 29 min 24 s, the run that cleared the 6 October release |
+| 7 October | 460 | The every-route bus test split into one test per route, so it spreads across workers and a failure names its route ([#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473)). The count is dev's; production, where bus routes are not offered yet, keeps 2 bus tests |
 
 Numbers marked ~ are estimates: today's count for each spec, added up by the date the spec first
 appeared. Bold numbers are real runs. The early estimates are approximate, because the per-map checks
