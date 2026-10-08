@@ -25,7 +25,8 @@ import {
 } from '@tamu-gisc/maps/feature/trip-planner';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
-import { SidebarComponent, SidebarTabComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
+// The shared sidebar's component, renamed here because UES has a SidebarComponent of its own.
+import { SidebarComponent as SidebarContainerComponent, SidebarTabComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
 
 import { SidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
@@ -35,7 +36,7 @@ import { SidebarReferenceComponent } from './components/sidebar-reference/sideba
     CommonModule,
     RouterModule,
     UITamuBrandingModule,
-    SidebarComponent,
+    SidebarContainerComponent,
     SidebarTabComponent,
     PopupComponent,
     PopupMobileComponent,

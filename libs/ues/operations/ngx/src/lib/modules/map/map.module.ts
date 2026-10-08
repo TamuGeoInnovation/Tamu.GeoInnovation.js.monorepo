@@ -6,14 +6,12 @@ import {
   ModalComponent,
   ReportBadRouteComponent,
   BackdropComponent,
-  ModalComponent,
   HeaderComponent,
   FooterComponent,
   BusListComponent,
   BusListHeaderComponent,
   BusRouteComponent,
-  BusTimetableComponent,
-  BusListComponent
+  BusTimetableComponent
 } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
 import { SidebarTripPlannerComponent, AggiemapSidebarModule } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
@@ -67,7 +65,8 @@ import {
 } from '@tamu-gisc/ui-kits/ngx/layout';
 import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
-import { SidebarComponent, SidebarTabComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
+// The shared sidebar's component, renamed here because UES has a SidebarComponent of its own.
+import { SidebarComponent as SidebarContainerComponent, SidebarTabComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { LayerListModule, LayerListCategorizedComponent } from '@tamu-gisc/maps/feature/layer-list';
 import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
 import {
@@ -266,7 +265,7 @@ const routes: Routes = [
     AggiemapSidebarModule,
     ReportBadRouteComponent,
     SettingsModule,
-    SidebarComponent,
+    SidebarContainerComponent,
     SidebarTabComponent,
     UITamuBrandingModule,
     BusListComponent,

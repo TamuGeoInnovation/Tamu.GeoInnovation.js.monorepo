@@ -12,3 +12,5 @@ export * from './lib/modules/structural/components/backdrop/backdrop.component';
 export * from './lib/modules/structural/components/footer/footer.component';
 export * from './lib/modules/structural/components/header/header.component';
 export * from './lib/modules/transportation/components/bus-route/bus-route.component';
+export * from './lib/modules/transportation/components/bus-list-header/bus-list-header.component';
+export * from './lib/modules/transportation/components/bus-timetable/bus-timetable.component';
