@@ -28,7 +28,7 @@ place they're kept. In short:
        - Tests: <tests expected>
        - Don't touch: <files or areas other work is changing>
 
-## Batch B (prepared 6 October 2026)
+## Batch B (prepared 6 October 2026, "Don't touch" updated 7 October)
 
 Write your report to `cloud/reports/<yyyy-mm-dd>-batch-b.md` on this branch when done (see the header).
 Times in the report are US Central, with the zone named.
@@ -62,5 +62,8 @@ Times in the report are US Central, with the zone named.
    - Tests: none; the report is the result. Commit only the report.
    - Don't touch: no branch for this item.
 
-**Don't touch, for the whole batch:** there are no open pull requests. Leave everything outside item 1's
-files alone.
+**Don't touch, for the whole batch** (open pull requests, updated 7 October 2026): `feat/1532-release-keyed-baselines`
+(#1534: `tools/visual-baselines/`, `CLAUDE.md`, `docs/releases/README.md`), `fix/tailgating-simpson-tents` (#1538:
+`libs/ts/events/ngx` definitions, `docs/releases/unreleased.md`, `docs/build-times.md`), and the older open pull requests
+#381, #562, #691, #697, #898, #925, #928, #977 and #1257. Leave everything outside item 1's files alone; if a CPA removal
+would have to edit a file one of these pull requests changes, say so in the report rather than editing it.
