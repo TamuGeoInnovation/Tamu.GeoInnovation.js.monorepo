@@ -11,3 +11,4 @@ export * from './lib/services/map/map-probe';
 export * from './lib/services/map/portal-symbology';
 
 export * from './lib/services/layer-sources/layer-sources.service';
+export * from './lib/components/esri-map/esri-map.component';
