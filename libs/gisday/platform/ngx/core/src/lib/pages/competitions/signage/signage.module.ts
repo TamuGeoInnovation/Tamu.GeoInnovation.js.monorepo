@@ -15,8 +15,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [SignageComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, UILayoutModule],
+  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, UILayoutModule, SignageComponent],
   exports: [RouterModule]
 })
 export class SignageModule {}

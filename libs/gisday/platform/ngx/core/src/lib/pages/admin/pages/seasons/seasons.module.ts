@@ -22,8 +22,16 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), ReactiveFormsModule, UIFormsModule, PipesModule, GisdayFormsModule],
-  declarations: [SeasonsListComponent, SeasonEditComponent],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    ReactiveFormsModule,
+    UIFormsModule,
+    PipesModule,
+    GisdayFormsModule,
+    SeasonsListComponent,
+    SeasonEditComponent
+  ],
   exports: [RouterModule]
 })
 export class SeasonsModule {}

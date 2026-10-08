@@ -52,7 +52,7 @@ describe('SubmissionDetailModalComponent', () => {
     mockSanitizer = {} as jest.Mocked<DomSanitizer>;
 
     await TestBed.configureTestingModule({
-      declarations: [SubmissionDetailModalComponent],
+      imports: [SubmissionDetailModalComponent],
       providers: [
         { provide: MODAL_DATA, useValue: mockData },
         { provide: ModalRefService, useValue: mockModalRef },

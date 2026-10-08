@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { NotFoundComponent } from './not-found.component';
 
 @NgModule({
-  declarations: [NotFoundComponent],
-  imports: [CommonModule]
+  imports: [CommonModule, NotFoundComponent]
 })
 export class NotFoundModule {}

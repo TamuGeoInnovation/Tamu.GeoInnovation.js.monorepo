@@ -5,6 +5,8 @@ import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/typ
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { SubmissionDetailModalComponent } from '../submission-detail-modal/submission-detail-modal.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { DatePipe } from '@angular/common';
 
 interface SwimlaneNgxDatatableActivateEvent {
   type: 'click' | 'dblclick' | 'keydown' | 'contextmenu' | 'mouseenter' | 'mouseleave';
@@ -19,7 +21,7 @@ interface SwimlaneNgxDatatableActivateEvent {
   templateUrl: './submission-review-list.component.html',
   styleUrls: ['./submission-review-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [NgxDatatableModule, DatePipe]
 })
 export class SubmissionReviewListComponent implements OnInit {
   @Input() public submissions$: Observable<SubmissionReviewDto[]>;

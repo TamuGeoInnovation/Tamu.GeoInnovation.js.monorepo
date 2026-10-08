@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   catchError,
   filter,
@@ -21,13 +21,38 @@ import { CheckinService, EventService, RsvpService, UserService } from '@tamu-gi
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GISDayRoles, parseDateStrings } from '@tamu-gisc/gisday/platform/ngx/common';
+import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
+import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { PresenterCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
   templateUrl: './event-detail.component.html',
   styleUrls: ['./event-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [
+    NgIf,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    ButtonComponent,
+    RouterLink,
+    NgFor,
+    PresenterCardComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    AsyncPipe,
+    DatePipe,
+    ParseDateTimeStringsPipe,
+    MarkdownParsePipe
+  ]
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
   public appRoles = GISDayRoles;

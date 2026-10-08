@@ -3,13 +3,14 @@ import { Component, EventEmitter, HostBinding, Input, Output, ChangeDetectionStr
 import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
+import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-seasons-day-tile',
   templateUrl: './seasons-day-tile.component.html',
   styleUrls: ['./seasons-day-tile.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [DateTimePickerComponent]
 })
 export class SeasonsDayTileComponent {
   @Input()

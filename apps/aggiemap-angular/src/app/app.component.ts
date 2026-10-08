@@ -1,18 +1,20 @@
 import { Component, OnDestroy, OnInit, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2';
 
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/discover';
 import { campusOnNavigation, EventNotificationsService } from '@tamu-gisc/aggiemap/ngx/core';
+import { NotificationGroupedComponent } from '@tamu-gisc/common/ngx/ui/notification';
+import { CodeMaroonAlertComponent } from '@tamu-gisc/aggiemap/ngx/core';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [RouterOutlet, NotificationGroupedComponent, CodeMaroonAlertComponent]
 })
 export class AppComponent implements OnInit, OnDestroy {
   private _notifications: Subscription | undefined;

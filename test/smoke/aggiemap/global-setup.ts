@@ -1,7 +1,8 @@
-import { chromium } from '@playwright/test';
+import { chromium, Page } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { blockAnalytics } from './analytics';
 import { retiredMaps } from './retired';
 
 /**
@@ -45,7 +46,17 @@ export interface MapManifest {
   discoveredAt: string;
   /** Root-relative paths, each one a map to test. Always includes the main map. */
   maps: string[];
+  /**
+   * The bus routes the main map's bus panel lists, by route code, so `bus.spec.ts` can generate a test
+   * per route (#1473). Empty where bus routes are not offered; `null` if the panel could not be read.
+   */
+  busRoutes: string[] | null;
 }
+
+/** The main map's bus panel, and what it renders: a route per bus, or a notice where none are offered. */
+export const BUS_PANEL = '/map/d/bus';
+export const BUS_ROUTE = 'tamu-gisc-bus-route';
+export const BUS_NOTICE = '.bus-routes-notice';
 
 export const MANIFEST_PATH = path.join(__dirname, 'map-manifest.generated.json');
 
@@ -118,19 +129,56 @@ export default async function globalSetup(): Promise<void> {
     const isRetired = (href: string) => retiredIds.includes(href.split(/[/?#]/)[2]);
     const skipped = [...maps].filter(isRetired);
 
+    const busRoutes = await discoverBusRoutes(page, baseUrl);
+
     const manifest: MapManifest = {
       baseUrl,
       discoveredAt: new Date().toISOString(),
-      maps: [...maps].filter((href) => !isRetired(href)).sort()
+      maps: [...maps].filter((href) => !isRetired(href)).sort(),
+      busRoutes
     };
 
     fs.writeFileSync(MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`);
 
     console.log(
       `[smoke] discovered ${manifest.maps.length} maps on ${baseUrl}` +
-        (skipped.length > 0 ? `; skipped ${skipped.length} retired: ${skipped.join(', ')}` : '')
+        (skipped.length > 0 ? `; skipped ${skipped.length} retired: ${skipped.join(', ')}` : '') +
+        (busRoutes === null ? '; could not read the bus panel' : `; ${busRoutes.length} bus routes`)
     );
   } finally {
     await browser.close();
   }
+}
+
+/**
+ * The route codes the bus panel lists, read from the panel itself rather than the bus service, so the
+ * tests check the routes a visitor is offered (the panel decides that, per environment).
+ *
+ * Not required, as a discovery page is not: `null` when the panel never rendered, and `bus.spec.ts`
+ * then fails with that. The list is read once it has stopped growing, so a list rendered in pieces is
+ * not read half-drawn.
+ */
+async function discoverBusRoutes(page: Page, baseUrl: string): Promise<string[] | null> {
+  await blockAnalytics(page);
+  await page.goto(`${baseUrl}${BUS_PANEL}`, { waitUntil: 'domcontentloaded' });
+
+  const numbers = page.locator(`${BUS_ROUTE} .route-number`);
+
+  try {
+    await numbers.first().or(page.locator(BUS_NOTICE)).waitFor({ timeout: 60_000 });
+  } catch {
+    return null;
+  }
+
+  let count = await numbers.count();
+
+  // Up to 15 s for it to hold still for a second.
+  for (let unchangedFor = 0, waited = 0; unchangedFor < 1_000 && waited < 15_000; waited += 250) {
+    await page.waitForTimeout(250);
+    const next = await numbers.count();
+    unchangedFor = next === count ? unchangedFor + 250 : 0;
+    count = next;
+  }
+
+  return [...new Set((await numbers.allInnerTexts()).map((code) => code.trim()))];
 }

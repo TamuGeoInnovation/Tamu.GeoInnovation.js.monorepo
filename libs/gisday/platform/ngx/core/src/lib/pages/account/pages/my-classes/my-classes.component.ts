@@ -6,13 +6,15 @@ import { Observable } from 'rxjs';
 import { Class, UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ClassService, UserClassesService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-my-classes',
   templateUrl: './my-classes.component.html',
   styleUrls: ['./my-classes.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [CheckboxComponent, AsyncPipe]
 })
 export class MyClassesComponent implements OnInit {
   public classes$: Observable<Array<Partial<Class>>>;

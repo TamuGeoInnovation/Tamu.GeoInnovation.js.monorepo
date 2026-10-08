@@ -22,8 +22,13 @@ import { GisDayPeopleModule } from '../people/people.module';
 import { UserSubmissionAddEditFormComponent } from './components/user-submissions/user-submission-add-edit-form/user-submission-add-edit-form.component';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, UIFormsModule, GisDayPeopleModule],
-  declarations: [
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    UIFormsModule,
+    GisDayPeopleModule,
     TagAddEditFormComponent,
     EventAddEditFormComponent,
     SeasonsDayTileComponent,

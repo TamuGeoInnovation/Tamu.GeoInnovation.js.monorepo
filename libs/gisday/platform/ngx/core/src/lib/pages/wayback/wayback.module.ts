@@ -18,8 +18,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [WaybackComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), WaybackComponent],
   exports: [RouterModule]
 })
 export class WaybackModule {}

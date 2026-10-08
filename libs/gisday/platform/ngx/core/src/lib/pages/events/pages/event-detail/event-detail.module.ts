@@ -27,9 +27,9 @@ const routes: Routes = [
     UILayoutModule,
     GisdayPlatformNgxCommonModule,
     GisDayPeopleModule,
-    PipesModule
+    PipesModule,
+    EventDetailComponent
   ],
-  declarations: [EventDetailComponent],
   exports: [RouterModule]
 })
 export class EventDetailModule {}

@@ -17,14 +17,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [SponsorsDetailComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
     UIFormsModule,
     UILayoutModule,
     GisdayPlatformNgxCommonModule,
-    PipesModule
+    PipesModule,
+    SponsorsDetailComponent
   ],
   exports: [RouterModule]
 })

@@ -9,6 +9,9 @@ import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-acces
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 import esri = __esri;
 
@@ -17,7 +20,7 @@ import esri = __esri;
   templateUrl: './submission-detail-modal.component.html',
   styleUrls: ['./submission-detail-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [EsriMapComponent, ButtonComponent, AsyncPipe, DatePipe]
 })
 export class SubmissionDetailModalComponent implements OnInit {
   public submission: SubmissionReviewDto;

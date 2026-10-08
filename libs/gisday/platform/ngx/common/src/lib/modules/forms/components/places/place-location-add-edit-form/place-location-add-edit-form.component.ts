@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
@@ -10,13 +10,30 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { PlaceVisibilityOptions } from '../../../../../enums/place-visibility-options.enum';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { PlaceLinkFormComponent } from '../place-link-form/place-link-form.component';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-place-location-add-edit-form',
   templateUrl: './place-location-add-edit-form.component.html',
   styleUrls: ['./place-location-add-edit-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    FileComponent,
+    CheckboxGroupComponent,
+    CheckboxComponent,
+    PlaceLinkFormComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class PlaceLocationAddEditFormComponent implements OnInit {
   @Input()

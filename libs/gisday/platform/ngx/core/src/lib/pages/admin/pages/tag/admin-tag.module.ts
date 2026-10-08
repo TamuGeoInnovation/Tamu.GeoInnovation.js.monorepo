@@ -41,9 +41,12 @@ const routes: Routes = [
     ReactiveFormsModule,
     UIFormsModule,
     GisdayFormsModule,
-    PipesModule
+    PipesModule,
+    AdminTagComponent,
+    TagsEditComponent,
+    TagsListComponent,
+    TagsAddComponent
   ],
-  declarations: [AdminTagComponent, TagsEditComponent, TagsListComponent, TagsAddComponent],
   exports: [RouterModule]
 })
 export class AdminTagModule {}

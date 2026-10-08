@@ -5,6 +5,10 @@ import { Observable, filter, map, mergeMap, shareReplay, startWith, toArray } fr
 import { ActiveSeasonDto, Place, SeasonDay, Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceService, SeasonService, SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { PlaceVisibilityOptions } from '@tamu-gisc/gisday/platform/ngx/common';
+import { SpeakerAvatarComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { AssetUrlPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 const numberDictionary = {
   0: 'Zero',
@@ -25,7 +29,7 @@ const numberDictionary = {
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [SpeakerAvatarComponent, RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
 })
 export class AboutComponent implements OnInit {
   public activeSeason$: Observable<Partial<ActiveSeasonDto>>;
