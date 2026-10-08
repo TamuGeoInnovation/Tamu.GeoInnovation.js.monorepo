@@ -4,7 +4,7 @@ import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
-import { aggiemapBasemap } from '@tamu-gisc/maps/feature/basemap';
+import { aggiemapBasemap, AGGIEMAP_BASEMAP_MAX_SCALE } from '@tamu-gisc/maps/feature/basemap';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
@@ -92,7 +92,7 @@ export class MapComponent implements OnInit, OnDestroy {
             // `center` stays lon/lat, which is projected into whichever spatial reference the view adopts.
             constraints: {
               minScale: 100000, // minZoom is the max you can zoom OUT into space
-              maxScale: 0 // maxZoom is the max you can zoom INTO the ground
+              maxScale: AGGIEMAP_BASEMAP_MAX_SCALE // the deepest level the basemap has tiles for (#1577)
             },
             zoom: 16,
             ui: {

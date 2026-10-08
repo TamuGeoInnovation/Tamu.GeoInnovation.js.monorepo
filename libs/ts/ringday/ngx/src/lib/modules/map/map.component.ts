@@ -13,7 +13,7 @@ import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { aggiemapBasemap, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
+import { aggiemapBasemap, AGGIEMAP_BASEMAP_MAX_SCALE, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { EventService } from './services/event/event.service';
@@ -117,7 +117,7 @@ export class MapComponent implements OnInit, OnDestroy {
             // nothing. `center` stays lon/lat and is projected into whichever reference the view adopts.
             constraints: {
               minScale: 100000, // minZoom is the max you can zoom OUT into space
-              maxScale: 0 // maxZoom is the max you can zoom INTO the ground
+              maxScale: AGGIEMAP_BASEMAP_MAX_SCALE // the deepest level the basemap has tiles for (#1577)
             },
             zoom: 17,
             ui: {
