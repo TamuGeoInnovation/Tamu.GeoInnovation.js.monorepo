@@ -5,7 +5,8 @@ import {
   ElementRef,
   OnInit,
   ViewChild,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -29,6 +30,8 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
   templateUrl: './poi.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
+  // <swiper-container> is the Swiper web component, registered at run time (as the popups module did).
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CopyComponent, AsyncPipe, PipesModule]
 })
 export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {

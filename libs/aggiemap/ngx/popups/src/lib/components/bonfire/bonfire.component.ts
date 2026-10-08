@@ -5,7 +5,8 @@ import {
   ElementRef,
   OnInit,
   ViewChild,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -28,6 +29,8 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
   templateUrl: './bonfire.component.html',
   styleUrls: ['./bonfire.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
+  // <swiper-container> is the Swiper web component, registered at run time (as the popups module did).
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [AsyncPipe, PipesModule]
 })
 export class BonfirePopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
