@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NotificationContainerComponent } from '../../../../libs/common/ngx/ui/notification/src/lib/components/notification-container/notification-container.component';
+import { NotificationContainerComponent } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-root',

@@ -6,8 +6,8 @@ import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/discover';
 import { campusOnNavigation, EventNotificationsService } from '@tamu-gisc/aggiemap/ngx/core';
-import { NotificationGroupedComponent } from '../../../../libs/common/ngx/ui/notification/src/lib/components/notification-grouped/notification-grouped.component';
-import { CodeMaroonAlertComponent } from '../../../../libs/aggiemap/ngx/core/src/lib/components/code-maroon-alert/code-maroon-alert.component';
+import { NotificationGroupedComponent } from '@tamu-gisc/common/ngx/ui/notification';
+import { CodeMaroonAlertComponent } from '@tamu-gisc/aggiemap/ngx/core';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-app-root',
