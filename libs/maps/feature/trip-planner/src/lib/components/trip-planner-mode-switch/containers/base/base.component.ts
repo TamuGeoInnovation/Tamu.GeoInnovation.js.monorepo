@@ -8,11 +8,11 @@ import { TripPlannerBusModeSwitchComponent } from '../../components/bus-switch/b
 import { RouteDirectionTransformerPipe } from '../../../../core/route-direction-transformer.pipe';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-mode-switch',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass, TripPlannerBusModeSwitchComponent, RouteDirectionTransformerPipe]
+  selector: 'tamu-gisc-trip-planner-mode-switch',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, TripPlannerBusModeSwitchComponent, RouteDirectionTransformerPipe]
 })
 export class TripPlannerModeSwitchComponent implements OnInit {
   @Input()

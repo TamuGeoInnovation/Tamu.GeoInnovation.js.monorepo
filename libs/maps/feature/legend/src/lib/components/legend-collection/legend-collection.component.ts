@@ -4,11 +4,11 @@ import { LegendElementComponent } from '../legend-element/legend-element.compone
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-legend-collection',
-    templateUrl: './legend-collection.component.html',
-    styleUrls: ['./legend-collection.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [LegendElementComponent]
+  selector: 'tamu-gisc-legend-collection',
+  templateUrl: './legend-collection.component.html',
+  styleUrls: ['./legend-collection.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [LegendElementComponent]
 })
 export class LegendCollectionComponent {
   @Input()

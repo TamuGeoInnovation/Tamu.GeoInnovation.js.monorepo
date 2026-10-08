@@ -11,11 +11,11 @@ import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-mode-picker',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [TripPlannerModeToggleComponent, TripPlannerTimePickerComponent, RouterLink, AsyncPipe]
+  selector: 'tamu-gisc-trip-planner-mode-picker',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TripPlannerModeToggleComponent, TripPlannerTimePickerComponent, RouterLink, AsyncPipe]
 })
 export class TripPlannerModePickerComponent implements OnInit {
   public isDev: Observable<boolean>;

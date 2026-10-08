@@ -11,11 +11,11 @@ import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-directions-actions',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [UIClipboardModule, AsyncPipe]
+  selector: 'tamu-gisc-trip-planner-directions-actions',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [UIClipboardModule, AsyncPipe]
 })
 export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy {
   /**

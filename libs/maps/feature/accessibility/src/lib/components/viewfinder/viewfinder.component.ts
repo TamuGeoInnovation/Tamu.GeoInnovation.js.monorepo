@@ -10,11 +10,11 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-map-viewfinder',
-    templateUrl: './viewfinder.component.html',
-    styleUrls: ['./viewfinder.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass, AsyncPipe]
+  selector: 'tamu-gisc-map-viewfinder',
+  templateUrl: './viewfinder.component.html',
+  styleUrls: ['./viewfinder.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, AsyncPipe]
 })
 export class MapViewfinderComponent implements OnInit, OnDestroy {
   /**

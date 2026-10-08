@@ -8,11 +8,11 @@ import { NgClass } from '@angular/common';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-perspective-toggle',
-    templateUrl: './perspective-toggle.component.html',
-    styleUrls: ['./perspective-toggle.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass]
+  selector: 'tamu-gisc-perspective-toggle',
+  templateUrl: './perspective-toggle.component.html',
+  styleUrls: ['./perspective-toggle.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass]
 })
 export class PerspectiveToggleComponent implements OnInit {
   /**

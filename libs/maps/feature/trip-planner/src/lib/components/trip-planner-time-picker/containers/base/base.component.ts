@@ -10,11 +10,11 @@ import { FormsModule } from '@angular/forms';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-time-picker',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass, FormsModule, UIFormsModule, AsyncPipe]
+  selector: 'tamu-gisc-trip-planner-time-picker',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, FormsModule, UIFormsModule, AsyncPipe]
 })
 export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   /**

@@ -8,8 +8,8 @@ describe('LegendCollectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [LegendCollectionComponent]
-}).compileComponents();
+      imports: [LegendCollectionComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -58,7 +58,9 @@ describe('LegendCollectionComponent', () => {
     component.group = {
       title: 'Safety First',
       children: [{ title: 'Safety First Child' }],
-      legendElements: [{ infos: [{ label: 'Please use marked crosswalks. No mid-street crossing.', value: 'safety-first' }] }],
+      legendElements: [
+        { infos: [{ label: 'Please use marked crosswalks. No mid-street crossing.', value: 'safety-first' }] }
+      ],
       layer: { id: 'volleyball-parking-safety-first' }
     } as unknown as __esri.ActiveLayerInfo;
 

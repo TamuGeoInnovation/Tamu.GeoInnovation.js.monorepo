@@ -9,11 +9,11 @@ import { NgClass } from '@angular/common';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
-    selector: 'tamu-gisc-gisc-bus-switch',
-    templateUrl: './bus-switch.component.html',
-    styleUrls: ['../../containers/base/base.component.scss', './bus-switch.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass, UILayoutModule]
+  selector: 'tamu-gisc-gisc-bus-switch',
+  templateUrl: './bus-switch.component.html',
+  styleUrls: ['../../containers/base/base.component.scss', './bus-switch.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, UILayoutModule]
 })
 export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
   @Input()

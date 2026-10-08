@@ -11,11 +11,11 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-parking-options-component',
-    templateUrl: './trip-planner-parking-options.component.html',
-    styleUrls: ['../../containers/base/base.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [UIFormsModule, AsyncPipe]
+  selector: 'tamu-gisc-trip-planner-parking-options-component',
+  templateUrl: './trip-planner-parking-options.component.html',
+  styleUrls: ['../../containers/base/base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [UIFormsModule, AsyncPipe]
 })
 export class TripPlannerParkingOptionsComponent extends TripPlannerOptionsBaseComponent {
   /**

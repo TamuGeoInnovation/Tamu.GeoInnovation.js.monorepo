@@ -4,11 +4,11 @@ import { KeyValuePipe } from '@angular/common';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-base-popup-component',
-    templateUrl: './base.component.html',
-    styleUrls: ['../../containers/base/base.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [KeyValuePipe]
+  selector: 'tamu-gisc-base-popup-component',
+  templateUrl: './base.component.html',
+  styleUrls: ['../../containers/base/base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [KeyValuePipe]
 })
 export class BasePopupComponent {
   /**

@@ -6,11 +6,11 @@ import { FormsModule } from '@angular/forms';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-connection-select',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, AsyncPipe]
+  selector: 'tamu-gisc-trip-planner-connection-select',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, AsyncPipe]
 })
 export class TripPlannerConnectionsSelectComponent implements OnInit {
   /**

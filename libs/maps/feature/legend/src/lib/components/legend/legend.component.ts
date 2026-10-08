@@ -13,11 +13,11 @@ import { AsyncPipe } from '@angular/common';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-legend',
-    templateUrl: './legend.component.html',
-    styleUrls: ['./legend.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [LegendCollectionComponent, AsyncPipe]
+  selector: 'tamu-gisc-legend',
+  templateUrl: './legend.component.html',
+  styleUrls: ['./legend.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [LegendCollectionComponent, AsyncPipe]
 })
 export class LegendComponent implements OnInit, OnDestroy {
   /**

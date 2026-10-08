@@ -11,11 +11,11 @@ import { AsyncPipe } from '@angular/common';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-layer-list',
-    templateUrl: './layer-list.component.html',
-    styleUrls: ['./layer-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [LayerListItemComponent, AsyncPipe]
+  selector: 'tamu-gisc-layer-list',
+  templateUrl: './layer-list.component.html',
+  styleUrls: ['./layer-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [LayerListItemComponent, AsyncPipe]
 })
 export class LayerListComponent implements OnInit {
   @Input() public allowedLayerIds: string[] = [];

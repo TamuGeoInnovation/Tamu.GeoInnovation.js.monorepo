@@ -9,8 +9,8 @@ import { LegendElementComponent } from './components/legend-element/legend-eleme
 import { LegendCollectionComponent } from './components/legend-collection/legend-collection.component';
 
 @NgModule({
-    imports: [CommonModule, UILayoutModule, LegendComponent, LegendElementComponent, LegendCollectionComponent],
-    providers: [LegendService],
-    exports: [LegendComponent]
+  imports: [CommonModule, UILayoutModule, LegendComponent, LegendElementComponent, LegendCollectionComponent],
+  providers: [LegendService],
+  exports: [LegendComponent]
 })
 export class LegendModule {}

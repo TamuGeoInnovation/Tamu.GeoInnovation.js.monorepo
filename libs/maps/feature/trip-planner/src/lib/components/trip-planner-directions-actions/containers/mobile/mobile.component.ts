@@ -9,11 +9,11 @@ import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-directions-actions-mobile',
-    templateUrl: './mobile.component.html',
-    styleUrls: ['../base/base.component.scss', './mobile.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [UIClipboardModule, AsyncPipe]
+  selector: 'tamu-gisc-trip-planner-directions-actions-mobile',
+  templateUrl: './mobile.component.html',
+  styleUrls: ['../base/base.component.scss', './mobile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [UIClipboardModule, AsyncPipe]
 })
 export class TripPlannerDirectionsActionsMobileComponent extends TripPlannerDirectionsActionsComponent {
   constructor(

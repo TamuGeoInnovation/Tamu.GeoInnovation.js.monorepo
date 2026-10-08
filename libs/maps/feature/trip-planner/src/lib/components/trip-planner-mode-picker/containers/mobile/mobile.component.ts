@@ -10,11 +10,11 @@ import { TripPlannerModeToggleComponent } from '../../../trip-planner-mode-toggl
 import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-mode-picker-mobile',
-    templateUrl: './mobile.component.html',
-    styleUrls: ['../base/base.component.scss', './mobile.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [TripPlannerModeToggleComponent, NgClass, AsyncPipe]
+  selector: 'tamu-gisc-trip-planner-mode-picker-mobile',
+  templateUrl: './mobile.component.html',
+  styleUrls: ['../base/base.component.scss', './mobile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TripPlannerModeToggleComponent, NgClass, AsyncPipe]
 })
 export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerComponent implements OnInit, OnDestroy {
   private _destroy$: Subject<boolean> = new Subject();

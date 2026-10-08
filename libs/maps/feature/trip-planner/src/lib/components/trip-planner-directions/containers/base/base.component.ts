@@ -11,11 +11,11 @@ import { TripPlannerDirectionsActionsComponent } from '../../../trip-planner-dir
 import { TripPlannerModeSwitchComponent } from '../../../trip-planner-mode-switch/containers/base/base.component';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-directions',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [TripPlannerDirectionsActionsComponent, TripPlannerModeSwitchComponent]
+  selector: 'tamu-gisc-trip-planner-directions',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TripPlannerDirectionsActionsComponent, TripPlannerModeSwitchComponent]
 })
 export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
   public result: TripResult;

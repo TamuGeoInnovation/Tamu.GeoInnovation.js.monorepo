@@ -1,12 +1,4 @@
-import {
-  Component,
-  ComponentRef,
-  HostListener,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, ComponentRef, HostListener, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
 
@@ -19,11 +11,11 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
-    selector: 'tamu-gisc-feature-popup',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass, UILayoutModule, AsyncPipe]
+  selector: 'tamu-gisc-feature-popup',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, UILayoutModule, AsyncPipe]
 })
 export class PopupComponent implements OnInit, OnDestroy {
   /**

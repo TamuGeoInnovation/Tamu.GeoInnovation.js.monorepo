@@ -37,11 +37,11 @@ import esri = __esri;
  */
 
 @Component({
-    selector: 'tamu-gisc-legend-element',
-    templateUrl: './legend-element.component.html',
-    styleUrls: ['./legend-element.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgStyle, UILayoutModule, AsyncPipe]
+  selector: 'tamu-gisc-legend-element',
+  templateUrl: './legend-element.component.html',
+  styleUrls: ['./legend-element.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgStyle, UILayoutModule, AsyncPipe]
 })
 export class LegendElementComponent implements OnInit {
   constructor(

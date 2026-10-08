@@ -9,11 +9,11 @@ import { AsyncPipe } from '@angular/common';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-click-coordinates',
-    templateUrl: './click-coordinates.component.html',
-    styleUrls: ['./click-coordinates.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [UIClipboardModule, AsyncPipe]
+  selector: 'tamu-gisc-click-coordinates',
+  templateUrl: './click-coordinates.component.html',
+  styleUrls: ['./click-coordinates.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [UIClipboardModule, AsyncPipe]
 })
 export class ClickCoordinatesComponent implements OnInit {
   public coords: Observable<ClickCoordinates>;

@@ -8,11 +8,11 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-mode-toggle',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgClass, AsyncPipe, PipesModule]
+  selector: 'tamu-gisc-trip-planner-mode-toggle',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgClass, AsyncPipe, PipesModule]
 })
 export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
   /**
