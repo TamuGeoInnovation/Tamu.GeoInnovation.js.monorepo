@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { InteractiveComponent } from './interactive.component';
 
-
 const routes: Routes = [
   {
     path: '',

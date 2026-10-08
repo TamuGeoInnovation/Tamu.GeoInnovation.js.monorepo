@@ -6,7 +6,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-
 import { DesignerComponent } from './designer.component';
 import { DesignQuestionComponent } from './components/design-question/design-question.component';
 import { DesignFormComponent } from './components/design-form/design-form.component';
@@ -28,6 +27,6 @@ const routes: Routes = [
     DesignerComponent,
     DesignQuestionComponent,
     DesignFormComponent
-]
+  ]
 })
 export class DesignerModule {}

@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-
-
 import { SettingsGuard } from './guards/settings/settings.guard';
 import { BuilderComponent } from './modules/builder/builder.component';
 import { BuilderAccessGuard } from './guards/builder-access/builder-access.guard';

@@ -3,11 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { LightgalleryModule } from 'lightgallery/angular/13';
 
-
-
-
-
-
 import { BasePopupComponent } from './components/base/base.popup.component';
 import { BaseDirectionsComponent } from './components/base-directions/base-directions.component';
 import { AccessiblePopupComponent } from './components/accessible/accessible.component';

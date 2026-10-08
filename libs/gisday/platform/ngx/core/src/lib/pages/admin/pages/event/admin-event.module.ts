@@ -43,7 +43,7 @@ const routes: Routes = [
     EventAddComponent,
     EventEditComponent,
     EventListComponent
-],
+  ],
   exports: [RouterModule]
 })
 export class AdminEventModule {}

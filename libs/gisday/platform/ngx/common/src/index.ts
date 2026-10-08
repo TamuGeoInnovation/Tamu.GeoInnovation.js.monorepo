@@ -2,8 +2,6 @@ export * from './lib/gisday-platform-ngx-common.module';
 
 export * from './lib/modules/events/gisday-events.module';
 
-
-
 export * from './lib/modules/modals/entity-actions-modals/entity-copy-modal/entity-copy-modal.component';
 export * from './lib/modules/modals/entity-actions-modals/entity-delete-modal/entity-delete-modal.component';
 

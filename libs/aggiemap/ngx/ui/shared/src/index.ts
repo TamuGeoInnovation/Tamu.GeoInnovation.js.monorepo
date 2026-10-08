@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 // Component symbols
 export * from './lib/modules/transportation/components/bus-list/bus-list.component';
 export * from './lib/modules/structural/components/modal/modal.component';

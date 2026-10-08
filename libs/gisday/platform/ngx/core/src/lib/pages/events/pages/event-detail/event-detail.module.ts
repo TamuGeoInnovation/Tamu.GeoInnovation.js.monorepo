@@ -28,7 +28,7 @@ const routes: Routes = [
     GisdayPlatformNgxCommonModule,
     PipesModule,
     EventDetailComponent
-],
+  ],
   exports: [RouterModule]
 })
 export class EventDetailModule {}

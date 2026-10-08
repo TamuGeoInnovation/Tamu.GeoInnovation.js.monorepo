@@ -1,5 +1,3 @@
-
-
 export * from './lib/components/chart-container/chart-container.component';
 
 export * from './lib/components/base/base.component';

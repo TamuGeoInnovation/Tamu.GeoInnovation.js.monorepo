@@ -20,12 +20,7 @@ import {
 
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 
-
-
-
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
-
-
 
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
@@ -35,9 +30,6 @@ import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/lay
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 import { TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
 import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
-
-
-
 
 import { BasemapGalleryComponent } from '@tamu-gisc/maps/feature/basemap';
 
@@ -134,6 +126,6 @@ const routes: Routes = [
     MoveInOutSidebarModule,
     MapComponent,
     EventLegendComponent
-]
+  ]
 })
 export class MapModule {}

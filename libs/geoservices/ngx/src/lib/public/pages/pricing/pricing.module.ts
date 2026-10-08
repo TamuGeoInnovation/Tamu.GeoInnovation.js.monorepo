@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { PricingComponent } from './pricing.component';
 
-
 const routes: Routes = [
   {
     path: '',

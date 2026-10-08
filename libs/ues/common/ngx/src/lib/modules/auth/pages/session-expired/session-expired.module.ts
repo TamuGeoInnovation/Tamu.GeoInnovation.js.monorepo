@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { SessionExpiredComponent } from './session-expired.component';
 
-
 const routes: Routes = [
   {
     path: 'session/expired',

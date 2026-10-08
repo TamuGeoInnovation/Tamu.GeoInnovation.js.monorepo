@@ -6,9 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-
 import { ReverseGeocodingComponent } from './reverse-geocoding.component';
-
 
 const routes: Routes = [
   {
@@ -29,6 +27,6 @@ const routes: Routes = [
     HighlightPlusModule,
     UILayoutModule,
     ReverseGeocodingComponent
-]
+  ]
 })
 export class ReverseGeocodingModule {}

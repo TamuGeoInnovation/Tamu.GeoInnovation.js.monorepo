@@ -10,7 +10,6 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { CensusIntersectionComponent } from './census-intersection.component';
 
-
 const routes: Routes = [
   {
     path: '',
@@ -26,6 +25,6 @@ const routes: Routes = [
     UIClipboardModule,
     UILayoutModule,
     CensusIntersectionComponent
-]
+  ]
 })
 export class CensusIntersectionModule {}

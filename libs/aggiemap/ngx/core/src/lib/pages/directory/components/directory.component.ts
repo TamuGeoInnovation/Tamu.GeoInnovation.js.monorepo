@@ -28,15 +28,7 @@ import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
   templateUrl: './directory.component.html',
   styleUrls: ['./directory.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [
-    RouterLink,
-    FormsModule,
-    ReactiveFormsModule,
-    TextboxComponent,
-    NgxDatatableModule,
-    FooterComponent,
-    AsyncPipe
-]
+  imports: [RouterLink, FormsModule, ReactiveFormsModule, TextboxComponent, NgxDatatableModule, FooterComponent, AsyncPipe]
 })
 export class DirectoryComponent implements OnInit {
   public form: UntypedFormGroup;

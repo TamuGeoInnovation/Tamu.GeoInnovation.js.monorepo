@@ -6,7 +6,6 @@ import { v4 as guid } from 'uuid';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
-
 import { TamuBlockBrandingComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
@@ -20,7 +19,15 @@ import { RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [SidebarComponent, SidebarTabComponent, PopupComponent, RevealSidebarOnPopupDirective, TamuBlockBrandingComponent, RouterOutlet, AsyncPipe]
+  imports: [
+    SidebarComponent,
+    SidebarTabComponent,
+    PopupComponent,
+    RevealSidebarOnPopupDirective,
+    TamuBlockBrandingComponent,
+    RouterOutlet,
+    AsyncPipe
+  ]
 })
 export class AggiemapSidebarComponent implements OnInit {
   public isDev: Observable<boolean>;

@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
-
 import { SubmissionComponent } from './components/submission.component';
 import { SubmissionCompleteComponent } from './components/complete/complete.component';
 
@@ -28,7 +27,7 @@ const routes: Routes = [
     UIFormsModule,
     SubmissionComponent,
     SubmissionCompleteComponent
-],
+  ],
   exports: [SubmissionComponent]
 })
 export class SubmissionModule {}

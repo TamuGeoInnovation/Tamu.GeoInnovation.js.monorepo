@@ -23,11 +23,9 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { EventPassedWarningComponent, MapNoticeComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 
-
 import { NgClass, AsyncPipe } from '@angular/common';
 
 import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-
 
 import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
 import { EsriMapComponent } from '@tamu-gisc/maps/esri';
@@ -71,7 +69,7 @@ const EVENT_PASSED_GRACE_DAYS = 1;
     PopupMobileComponent,
     MapViewfinderComponent,
     AsyncPipe
-]
+  ]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;

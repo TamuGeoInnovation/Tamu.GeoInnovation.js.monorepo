@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from '@auth0/auth0-angular';
 
-
 import { DeviceGuard } from '@tamu-gisc/gisday/competitions/ngx/common';
 
 import { PublicComponent } from './public.component';

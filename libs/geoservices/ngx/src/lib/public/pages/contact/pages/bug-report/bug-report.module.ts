@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { BugReportComponent } from './bug-report.component';
 
-
 const routes: Routes = [
   {
     path: '',

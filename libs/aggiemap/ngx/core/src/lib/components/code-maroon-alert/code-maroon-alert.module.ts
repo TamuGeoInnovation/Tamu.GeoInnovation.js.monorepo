@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
-
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 
 import { CodeMaroonAlertComponent } from './code-maroon-alert.component';

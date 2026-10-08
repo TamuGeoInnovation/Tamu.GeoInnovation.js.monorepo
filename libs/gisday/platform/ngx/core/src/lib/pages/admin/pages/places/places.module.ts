@@ -5,7 +5,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
-
 import { PlacesComponent } from './places.component';
 import { PlaceAddComponent } from './pages/place-add/place-add.component';
 import { PlaceEditComponent } from './pages/place-edit/place-edit.component';
@@ -42,6 +41,6 @@ const routes: Routes = [
     PlaceAddComponent,
     PlaceEditComponent,
     PlaceListComponent
-]
+  ]
 })
 export class PlacesModule {}

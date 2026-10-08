@@ -5,7 +5,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
-
 import { OrganizationsComponent } from './organizations.component';
 import { OrganizationListComponent } from './pages/organization-list/organization-list.component';
 import { OrganizationAddComponent } from './pages/organization-add/organization-add.component';
@@ -42,6 +41,6 @@ const routes: Routes = [
     OrganizationListComponent,
     OrganizationAddComponent,
     OrganizationEditComponent
-]
+  ]
 })
 export class OrganizationsModule {}

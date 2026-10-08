@@ -1,5 +1,3 @@
-
-
 export * from './lib/components/base/base.component';
 
 export * from './lib/containers/base/base.component';

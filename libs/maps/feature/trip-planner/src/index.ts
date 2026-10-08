@@ -1,5 +1,3 @@
-
-
 // Cores
 export * from './lib/core/trip-planner-core';
 export * from './lib/core/route-direction-transformer.pipe';

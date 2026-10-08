@@ -6,9 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-
 import { CensusIntersectionComponent } from './census-intersection.component';
-
 
 const routes: Routes = [
   {
@@ -29,6 +27,6 @@ const routes: Routes = [
     HighlightPlusModule,
     UILayoutModule,
     CensusIntersectionComponent
-]
+  ]
 })
 export class CensusIntersectionModule {}

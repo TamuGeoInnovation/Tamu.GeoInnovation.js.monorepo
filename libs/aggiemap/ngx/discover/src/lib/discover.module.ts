@@ -3,12 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-
-
-
-
-
-
 import { AllMapsComponent } from './components/all-maps/all-maps.component';
 import { ParkingMapsComponent } from './components/parking-maps/parking-maps.component';
 import { EventMapsComponent } from './components/event-maps/event-maps.component';
@@ -94,7 +88,7 @@ export const discoverRoutes: Routes = [
     MapsPageHeaderComponent,
     MapColumnsComponent,
     QuickLinksComponent
-],
+  ],
   exports: [AllMapsComponent]
 })
 export class DiscoverModule {}

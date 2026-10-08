@@ -4,9 +4,6 @@ import { RouterModule, Route } from '@angular/router';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-
-
-
 import { GeoservicesApiComponent } from './geoservices-api.component';
 
 export const routes: Route[] = [
@@ -47,12 +44,7 @@ export const routes: Route[] = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    UILayoutModule,
-    GeoservicesApiComponent
-],
+  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule, GeoservicesApiComponent],
   exports: [RouterModule]
 })
 export class GeoservicesApiModule {}

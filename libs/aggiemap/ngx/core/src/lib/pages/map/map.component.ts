@@ -16,9 +16,7 @@ import { BetaPromptComponent, AlertModalComponent } from '@tamu-gisc/aggiemap/ng
 import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
-
 import { NgClass, AsyncPipe } from '@angular/common';
-
 
 import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
 import { EsriMapComponent } from '@tamu-gisc/maps/esri';
@@ -41,7 +39,7 @@ import esri = __esri;
     RouterOutlet,
     MapViewfinderComponent,
     AsyncPipe
-]
+  ]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;

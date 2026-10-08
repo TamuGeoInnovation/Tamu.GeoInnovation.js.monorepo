@@ -10,7 +10,6 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { AddressProcessingComponent } from './address-processing.component';
 
-
 const routes: Routes = [
   {
     path: '',
@@ -26,6 +25,6 @@ const routes: Routes = [
     UIClipboardModule,
     UILayoutModule,
     AddressProcessingComponent
-]
+  ]
 })
 export class AddressProcessingModule {}

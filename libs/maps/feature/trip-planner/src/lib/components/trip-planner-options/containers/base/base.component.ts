@@ -11,7 +11,6 @@ import { TripPlannerService, TripPlannerRuleMode, TravelOptions } from '../../..
 import { TripPlannerParkingOptionsComponent } from '../../components/parking/trip-planner-parking-options.component';
 import { TripPlannerBikingOptionsComponent } from '../../components/biking/trip-planner-biking-options.component';
 
-
 import { AsyncPipe } from '@angular/common';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { RenderHostDirective as RenderHostDirective_1 } from '@tamu-gisc/ui-kits/ngx/layout';

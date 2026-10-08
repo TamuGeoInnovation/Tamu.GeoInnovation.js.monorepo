@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
@@ -42,6 +41,6 @@ const routes: Routes = [
     EventLocationAddComponent,
     EventLocationEditComponent,
     EventLocationListComponent
-]
+  ]
 })
 export class EventLocationsModule {}

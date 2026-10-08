@@ -41,7 +41,7 @@ import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
     FooterComponent,
     AsyncPipe,
     UpperCasePipe
-]
+  ]
 })
 export class AllMapsComponent implements OnInit {
   public readonly mainParkingRoute = ['/parking', FEATURED_PARKING_ID];

@@ -4,26 +4,18 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 
-
-
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
-
-
 
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 
 import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
 
-
 import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
 import { TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
 import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
-
-
-
 
 import { ModalComponent, ReportBadRouteComponent, ExperimentsListComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import {
@@ -160,6 +152,6 @@ const routes: Routes = [
     AggiemapSidebarModule,
     AggiemapNgxUiMobileModule,
     MapComponent
-]
+  ]
 })
 export class MapModule {}

@@ -4,9 +4,6 @@ import { RouterModule } from '@angular/router';
 
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 
-
-
-
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 
@@ -31,7 +28,7 @@ import { SidebarSettingsComponent } from './components/sidebar-settings/sidebar-
     SidebarTripPlannerComponent,
     SidebarBusListComponent,
     SidebarSettingsComponent
-],
+  ],
   exports: [AggiemapSidebarComponent, SidebarReferenceComponent, SidebarTripPlannerComponent, SidebarSettingsComponent]
 })
 export class AggiemapSidebarModule {}

@@ -10,8 +10,6 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { GeocodingComponent } from './geocoding.component';
 
-
-
 const routes: Routes = [
   {
     path: '',
@@ -27,7 +25,7 @@ const routes: Routes = [
     UIClipboardModule,
     UILayoutModule,
     GeocodingComponent
-],
+  ],
   exports: [RouterModule]
 })
 export class GeocodingModule {}

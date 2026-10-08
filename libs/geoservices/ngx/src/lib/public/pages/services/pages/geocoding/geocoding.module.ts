@@ -7,9 +7,7 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-
 import { GeocodingComponent } from './geocoding.component';
-
 
 const routes: Routes = [
   {
@@ -30,6 +28,6 @@ const routes: Routes = [
     HighlightPlusModule,
     UILayoutModule,
     GeocodingComponent
-]
+  ]
 })
 export class GeocodingModule {}

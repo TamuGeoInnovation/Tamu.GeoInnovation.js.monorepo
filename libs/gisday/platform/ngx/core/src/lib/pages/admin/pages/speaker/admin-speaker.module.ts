@@ -5,7 +5,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
-
 import { AdminSpeakerComponent } from './admin-speaker.component';
 import { SpeakerListComponent } from './pages/speaker-list/speaker-list.component';
 import { SpeakerAddComponent } from './pages/speaker-add/speaker-add.component';
@@ -42,7 +41,7 @@ const routes: Routes = [
     SpeakerListComponent,
     SpeakerAddComponent,
     SpeakerEditComponent
-],
+  ],
   exports: [RouterModule]
 })
 export class AdminSpeakerModule {}

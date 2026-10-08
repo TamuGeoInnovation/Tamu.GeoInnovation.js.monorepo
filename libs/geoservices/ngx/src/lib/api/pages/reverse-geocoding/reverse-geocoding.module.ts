@@ -8,7 +8,6 @@ import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-
 import { ReverseGeocodingComponent } from './reverse-geocoding.component';
 
 const routes: Routes = [
@@ -26,6 +25,6 @@ const routes: Routes = [
     UIClipboardModule,
     UILayoutModule,
     ReverseGeocodingComponent
-]
+  ]
 })
 export class ReverseGeocodingModule {}

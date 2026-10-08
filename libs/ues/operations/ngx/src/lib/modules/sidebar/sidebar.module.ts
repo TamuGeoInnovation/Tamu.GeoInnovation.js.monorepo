@@ -10,7 +10,6 @@ import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 
-
 import { SidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
 
@@ -27,7 +26,7 @@ import { SidebarReferenceComponent } from './components/sidebar-reference/sideba
     LegendModule,
     SidebarComponent,
     SidebarReferenceComponent
-],
+  ],
   exports: [SidebarComponent]
 })
 export class UESSidebarModule {}

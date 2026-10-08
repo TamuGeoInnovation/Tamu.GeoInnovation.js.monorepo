@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { UserSubmissionsComponent } from './user-submissions.component';
 
-
 const routes: Routes = [
   {
     path: '',

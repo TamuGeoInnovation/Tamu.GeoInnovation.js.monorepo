@@ -30,7 +30,7 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
     DatePipe,
     KeyValuePipe,
     MarkdownParsePipe
-]
+  ]
 })
 export class DiningPopupComponent extends BaseDirectionsComponent implements OnInit {
   public menu: Observable<IDiningLocationMenu>;

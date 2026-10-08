@@ -8,7 +8,6 @@ export * from './lib/pages/people/people.module';
 export * from './lib/pages/competitions/competitions.module';
 export * from './lib/pages/account/account.module';
 
-
 export * from './lib/pages/admin/admin.module';
 export * from './lib/pages/contact/contact.module';
 export * from './lib/pages/highschool/highschool.module';
