@@ -4,6 +4,7 @@ import * as path from 'path';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { BUS_NOTICE, BUS_PANEL, BUS_ROUTE, MANIFEST_PATH, MapManifest } from './global-setup';
 
 /**
  * Every bus route draws its stops, and choosing a route shows them (#1174).
@@ -48,6 +49,11 @@ function allowedFailures(): Record<string, string> {
 
 const ALLOWED = allowedFailures();
 
+/** The routes the bus panel listed when the run started; see `discoverBusRoutes` in `global-setup.ts`. */
+const busRoutes = (JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8')) as MapManifest).busRoutes ?? null;
+
+const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 interface Drawn {
   route: number;
   waypoints: number;
@@ -76,7 +82,7 @@ async function drawn(page: Page): Promise<Drawn> {
 /** Opens the bus panel and returns its routes, or skips where bus routes are not offered. */
 async function openBusPanel(page: Page): Promise<Locator> {
   await blockAnalytics(page);
-  await page.goto('/map/d/bus');
+  await page.goto(BUS_PANEL);
 
   await expect
     .poll(
@@ -102,8 +108,8 @@ async function openBusPanel(page: Page): Promise<Locator> {
 
   test.skip(!reportsGraphics, "this build's map probe predates graphicTypes, so drawn stops cannot be counted");
 
-  const routes = page.locator('tamu-gisc-bus-route');
-  const notice = page.locator('.bus-routes-notice');
+  const routes = page.locator(BUS_ROUTE);
+  const notice = page.locator(BUS_NOTICE);
 
   await expect(routes.first().or(notice)).toBeVisible({ timeout: 60_000 });
   test.skip(await notice.isVisible(), 'bus routes are not offered on this environment yet');
@@ -151,46 +157,67 @@ test.describe('bus routes', () => {
     await unchoose(page, route);
     await expect(route.locator('.stops-list li'), 'choosing route 01 again did not collapse it').toHaveCount(0);
   });
+});
 
-  test('every route draws a stop for each stop it lists', async ({ page }) => {
-    // Every route is chosen in turn on one page, rather than a page per route, which would add minutes.
-    test.setTimeout(15 * 60_000);
+/**
+ * Every route draws a stop for each stop it lists: one test per route (#1473).
+ *
+ * The routes come from the manifest `global-setup.ts` writes, read from the bus panel itself, as
+ * `framing.spec.ts` gets its maps. Until #1473 this was one test choosing every route in turn on one
+ * page, 7 to 11 minutes on its own: a floor under the suite's wall clock that no number of workers
+ * could lower, and a failure that named the test rather than the route. Each route now opens its own
+ * page, which costs a map load per route but spreads them across the workers.
+ */
+test.describe('every bus route', () => {
+  if (busRoutes === null || busRoutes.length === 0) {
+    // Nothing discovered: either routes are not offered here (the panel says so, and this skips), or the
+    // panel could not be read, which must fail rather than quietly test nothing.
+    test('draws a stop for each stop it lists', async ({ page }) => {
+      const routes = await openBusPanel(page);
+      const count = await routes.count();
 
-    const routes = await openBusPanel(page);
-    const count = await routes.count();
+      expect(count, 'the bus panel listed no routes').toBeGreaterThan(0);
+      throw new Error(
+        `the bus panel lists ${count} routes, but global setup ${busRoutes === null ? 'could not read it' : 'found none'}, so none were tested`
+      );
+    });
 
-    expect(count, 'the bus panel listed no routes').toBeGreaterThan(0);
+    return;
+  }
 
-    for (let i = 0; i < count; i++) {
-      const route = routes.nth(i);
-      const code = (await route.locator('.route-number').innerText()).trim();
-      const known = ALLOWED[code];
-
-      await test.step(`route ${code}`, async () => {
-        const stops = await choose(page, route);
-
-        // Stops draw after the line; give them a moment before reading.
-        const markers = await expect
-          .poll(async () => (await drawn(page)).waypoints, { timeout: 10_000 })
-          .toBe(stops.length)
-          .then(() => stops.length)
-          .catch(async () => (await drawn(page)).waypoints);
-
-        const problem = markers === stops.length ? null : `lists ${stops.length} stops but draws ${markers} on the map`;
-
-        if (known) {
-          test.info().annotations.push({
-            type: problem ? 'known failure' : 'known failure now passing',
-            description: problem
-              ? `route ${code} ${problem} (${known})`
-              : `route ${code} draws all its stops again; remove it from allowedBusRouteFailures (${known})`
-          });
-        } else {
-          expect.soft(problem, `route ${code}`).toBeNull();
-        }
-
-        await unchoose(page, route);
+  for (const code of busRoutes) {
+    test(`route ${code} draws a stop for each stop it lists`, async ({ page }) => {
+      const routes = await openBusPanel(page);
+      const route = routes.filter({
+        has: page.locator('.route-number', { hasText: new RegExp(`^\\s*${escapeRegExp(code)}\\s*$`) })
       });
-    }
-  });
+
+      await expect(route, `route ${code} is no longer listed in the bus panel`).toHaveCount(1);
+
+      const known = ALLOWED[code];
+      const stops = await choose(page, route);
+
+      // Stops draw after the line; give them a moment before reading.
+      const markers = await expect
+        .poll(async () => (await drawn(page)).waypoints, { timeout: 10_000 })
+        .toBe(stops.length)
+        .then(() => stops.length)
+        .catch(async () => (await drawn(page)).waypoints);
+
+      const problem = markers === stops.length ? null : `lists ${stops.length} stops but draws ${markers} on the map`;
+
+      if (known) {
+        test.info().annotations.push({
+          type: problem ? 'known failure' : 'known failure now passing',
+          description: problem
+            ? `route ${code} ${problem} (${known})`
+            : `route ${code} draws all its stops again; remove it from allowedBusRouteFailures (${known})`
+        });
+      } else {
+        expect.soft(problem, `route ${code}`).toBeNull();
+      }
+
+      await unchoose(page, route);
+    });
+  }
 });
