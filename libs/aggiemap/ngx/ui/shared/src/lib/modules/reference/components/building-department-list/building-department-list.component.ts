@@ -10,12 +10,12 @@ import { TitleCasePipe } from '@angular/common';
 const searchReference = 'university-departments-exact';
 
 @Component({
-    selector: 'tamu-gisc-building-department-list',
-    templateUrl: './building-department-list.component.html',
-    styleUrls: ['./building-department-list.component.scss'],
-    providers: [SearchService],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [TitleCasePipe]
+  selector: 'tamu-gisc-building-department-list',
+  templateUrl: './building-department-list.component.html',
+  styleUrls: ['./building-department-list.component.scss'],
+  providers: [SearchService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TitleCasePipe]
 })
 export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
   @Input()

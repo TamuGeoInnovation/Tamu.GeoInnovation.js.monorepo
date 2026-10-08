@@ -50,14 +50,14 @@ describe('AllMapsComponent upcoming events', () => {
     jest.useFakeTimers({ now, doNotFake: ['nextTick', 'setImmediate', 'setTimeout', 'setInterval', 'queueMicrotask'] });
 
     await TestBed.configureTestingModule({
-    imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
-    providers: [
+      imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
+      providers: [
         { provide: DiscoveryService, useValue: discoveryStub },
         { provide: TestingService, useValue: { get: () => of(false) } },
         { provide: LastMapService, useValue: { url: '/map', path: '/map', queryParams: {}, fragment: undefined } }
-    ],
-    schemas: [NO_ERRORS_SCHEMA]
-}).compileComponents();
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
 
     const fixture = TestBed.createComponent(AllMapsComponent);
 

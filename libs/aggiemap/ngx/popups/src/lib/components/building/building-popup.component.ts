@@ -12,11 +12,11 @@ import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-buildling-popup-component',
-    templateUrl: './building-popup.component.html',
-    styleUrls: ['../base/base.popup.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [CopyComponent, AsyncPipe, TitleCasePipe, PipesModule]
+  selector: 'tamu-gisc-buildling-popup-component',
+  templateUrl: './building-popup.component.html',
+  styleUrls: ['../base/base.popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CopyComponent, AsyncPipe, TitleCasePipe, PipesModule]
 })
 export class BuildingPopupComponent extends BaseDirectionsComponent implements OnInit {
   constructor(

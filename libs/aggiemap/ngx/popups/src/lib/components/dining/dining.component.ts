@@ -16,11 +16,20 @@ import { AccordionContentDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-dining-popup-component',
-    templateUrl: './dining.component.html',
-    styleUrls: ['../base/base.popup.component.scss', './dining.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AccordionDirective, AccordionHeaderDirective, NgClass, AccordionContentDirective, AsyncPipe, DatePipe, KeyValuePipe, PipesModule]
+  selector: 'tamu-gisc-dining-popup-component',
+  templateUrl: './dining.component.html',
+  styleUrls: ['../base/base.popup.component.scss', './dining.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    AccordionDirective,
+    AccordionHeaderDirective,
+    NgClass,
+    AccordionContentDirective,
+    AsyncPipe,
+    DatePipe,
+    KeyValuePipe,
+    PipesModule
+  ]
 })
 export class DiningPopupComponent extends BaseDirectionsComponent implements OnInit {
   public menu: Observable<IDiningLocationMenu>;

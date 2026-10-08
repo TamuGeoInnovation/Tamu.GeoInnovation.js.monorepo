@@ -27,11 +27,11 @@ import { AsyncPipe, DatePipe } from '@angular/common';
  * `isTesting` itself rather than trusting that.
  */
 @Component({
-    selector: 'tamu-gisc-code-maroon-alert',
-    templateUrl: './code-maroon-alert.component.html',
-    styleUrls: ['./code-maroon-alert.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ButtonComponent, AsyncPipe, DatePipe]
+  selector: 'tamu-gisc-code-maroon-alert',
+  templateUrl: './code-maroon-alert.component.html',
+  styleUrls: ['./code-maroon-alert.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ButtonComponent, AsyncPipe, DatePipe]
 })
 export class CodeMaroonAlertComponent implements OnInit, OnDestroy {
   public state: Observable<CodeMaroonState>;

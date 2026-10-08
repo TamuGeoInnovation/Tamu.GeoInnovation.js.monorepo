@@ -19,11 +19,11 @@ import { AsyncPipe } from '@angular/common';
  * the garage search source instead.
  */
 @Component({
-    selector: 'tamu-gisc-parking-garage-popup-component',
-    templateUrl: '../parking-lot/parking-lot.component.html',
-    styleUrls: ['../base/base.popup.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [CopyComponent, AsyncPipe]
+  selector: 'tamu-gisc-parking-garage-popup-component',
+  templateUrl: '../parking-lot/parking-lot.component.html',
+  styleUrls: ['../base/base.popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CopyComponent, AsyncPipe]
 })
 export class ParkingGaragePopupComponent extends BaseDirectionsComponent {
   /** The garage code (`CCG`) where there is one, else its name; the garage search source matches either. */

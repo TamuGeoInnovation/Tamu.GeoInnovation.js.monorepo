@@ -19,11 +19,11 @@ import { AsyncPipe } from '@angular/common';
  * Extends `BaseDirectionsComponent` for the shared "Directions To Here" + copy-link behavior.
  */
 @Component({
-    selector: 'tamu-gisc-bus-stop-popup-component',
-    templateUrl: './bus-stop.component.html',
-    styleUrls: ['../base/base.popup.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [CopyComponent, AsyncPipe]
+  selector: 'tamu-gisc-bus-stop-popup-component',
+  templateUrl: './bus-stop.component.html',
+  styleUrls: ['../base/base.popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CopyComponent, AsyncPipe]
 })
 export class BusStopPopupComponent extends BaseDirectionsComponent implements OnInit {
   /**

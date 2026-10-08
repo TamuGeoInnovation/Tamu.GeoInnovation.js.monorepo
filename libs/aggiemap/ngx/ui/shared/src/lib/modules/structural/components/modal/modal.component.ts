@@ -9,11 +9,11 @@ import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { BackdropComponent } from '../backdrop/backdrop.component';
 
 @Component({
-    selector: 'tamu-gisc-modal',
-    templateUrl: './modal.component.html',
-    styleUrls: ['./modal.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterOutlet, BackdropComponent]
+  selector: 'tamu-gisc-modal',
+  templateUrl: './modal.component.html',
+  styleUrls: ['./modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterOutlet, BackdropComponent]
 })
 export class ModalComponent implements OnInit, OnDestroy {
   public isMobile: boolean;

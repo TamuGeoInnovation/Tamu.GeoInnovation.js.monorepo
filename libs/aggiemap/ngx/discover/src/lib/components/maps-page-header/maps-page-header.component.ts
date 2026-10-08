@@ -15,11 +15,11 @@ import { RouterLink } from '@angular/router';
  * link is the only way back; here the parent page is.
  */
 @Component({
-    selector: 'tamu-gisc-maps-page-header',
-    templateUrl: './maps-page-header.component.html',
-    styleUrls: ['./maps-page-header.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink]
+  selector: 'tamu-gisc-maps-page-header',
+  templateUrl: './maps-page-header.component.html',
+  styleUrls: ['./maps-page-header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink]
 })
 export class MapsPageHeaderComponent {
   /**

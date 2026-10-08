@@ -13,7 +13,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), AggiemapNgxSharedUiStructuralModule, AboutComponent],
-    exports: [AboutComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), AggiemapNgxSharedUiStructuralModule, AboutComponent],
+  exports: [AboutComponent]
 })
 export class AboutModule {}

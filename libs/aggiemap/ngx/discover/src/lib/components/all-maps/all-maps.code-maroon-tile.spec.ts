@@ -34,14 +34,14 @@ describe('the Code Maroon tile on All Maps', () => {
   };
   const build = async (isDevelopment: boolean): Promise<void> => {
     await TestBed.configureTestingModule({
-    imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
-    providers: [
+      imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
+      providers: [
         { provide: DiscoveryService, useValue: discoveryStub },
         { provide: TestingService, useValue: { get: () => of(isDevelopment) } },
         { provide: LastMapService, useValue: { url: '/map', path: '/map', queryParams: {}, fragment: undefined } }
-    ],
-    schemas: [NO_ERRORS_SCHEMA]
-}).compileComponents();
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AllMapsComponent);
     fixture.detectChanges();

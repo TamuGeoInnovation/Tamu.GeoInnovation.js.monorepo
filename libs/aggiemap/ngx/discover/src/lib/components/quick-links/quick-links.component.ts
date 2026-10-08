@@ -7,11 +7,11 @@ export interface QuickLinkItem {
 }
 
 @Component({
-    selector: 'tamu-gisc-quick-links',
-    templateUrl: './quick-links.component.html',
-    styleUrls: ['./quick-links.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink]
+  selector: 'tamu-gisc-quick-links',
+  templateUrl: './quick-links.component.html',
+  styleUrls: ['./quick-links.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink]
 })
 export class QuickLinksComponent {
   @Input()

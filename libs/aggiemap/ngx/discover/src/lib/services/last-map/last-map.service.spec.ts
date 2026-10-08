@@ -6,9 +6,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { LastMapService } from './last-map.service';
 
 @Component({
-    selector: 'tamu-gisc-test-page',
-    template: 'page',
-    changeDetection: ChangeDetectionStrategy.Eager
+  selector: 'tamu-gisc-test-page',
+  template: 'page',
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 class TestPageComponent {}
 
@@ -28,15 +28,15 @@ describe('LastMapService', () => {
     window.sessionStorage.clear();
 
     await TestBed.configureTestingModule({
-    imports: [
+      imports: [
         RouterTestingModule.withRoutes([
-            { path: 'map', component: TestPageComponent },
-            { path: 'map/d/bus', component: TestPageComponent },
-            { path: 'all-maps', component: TestPageComponent }
+          { path: 'map', component: TestPageComponent },
+          { path: 'map/d/bus', component: TestPageComponent },
+          { path: 'all-maps', component: TestPageComponent }
         ]),
         TestPageComponent
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     router = TestBed.inject(Router);
     service = TestBed.inject(LastMapService);

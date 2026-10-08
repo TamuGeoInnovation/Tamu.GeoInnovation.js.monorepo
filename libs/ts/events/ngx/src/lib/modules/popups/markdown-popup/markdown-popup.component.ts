@@ -10,11 +10,11 @@ import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.co
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 @Component({
-    selector: 'tamu-gisc-markdown-popup',
-    templateUrl: './markdown-popup.component.html',
-    styleUrls: ['./markdown-popup.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [CopyComponent]
+  selector: 'tamu-gisc-markdown-popup',
+  templateUrl: './markdown-popup.component.html',
+  styleUrls: ['./markdown-popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CopyComponent]
 })
 export class MarkdownPopupComponent extends BaseEventPopupComponent implements OnInit {
   public title: string;

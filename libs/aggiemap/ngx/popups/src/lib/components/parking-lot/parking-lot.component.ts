@@ -11,11 +11,11 @@ import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-parking-lot-popup-component',
-    templateUrl: './parking-lot.component.html',
-    styleUrls: ['../base/base.popup.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [CopyComponent, AsyncPipe]
+  selector: 'tamu-gisc-parking-lot-popup-component',
+  templateUrl: './parking-lot.component.html',
+  styleUrls: ['../base/base.popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CopyComponent, AsyncPipe]
 })
 export class ParkingLotPopupComponent extends BaseDirectionsComponent {
   private get lotIdentifier(): string | number | null {

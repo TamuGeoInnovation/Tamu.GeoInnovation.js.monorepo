@@ -23,10 +23,10 @@ import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
  * maps show no Directions tab either.
  */
 @Component({
-    selector: 'tamu-gisc-campus-building-popup',
-    templateUrl: './campus-building-popup.component.html',
-    styleUrls: ['../markdown-popup/markdown-popup.component.scss'],
-    imports: [CopyComponent]
+  selector: 'tamu-gisc-campus-building-popup',
+  templateUrl: './campus-building-popup.component.html',
+  styleUrls: ['../markdown-popup/markdown-popup.component.scss'],
+  imports: [CopyComponent]
 })
 export class CampusBuildingPopupComponent extends BaseEventPopupComponent implements OnInit {
   public content: BuildingPopupContent = {};

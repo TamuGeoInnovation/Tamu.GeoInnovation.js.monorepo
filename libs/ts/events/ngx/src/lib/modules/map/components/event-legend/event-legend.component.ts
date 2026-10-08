@@ -6,11 +6,11 @@ import { NgStyle } from '@angular/common';
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 
 @Component({
-    selector: 'tamu-gisc-event-legend',
-    templateUrl: './event-legend.component.html',
-    styleUrls: ['./event-legend.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgStyle, LegendModule]
+  selector: 'tamu-gisc-event-legend',
+  templateUrl: './event-legend.component.html',
+  styleUrls: ['./event-legend.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgStyle, LegendModule]
 })
 export class EventLegendComponent implements OnInit {
   public deduplicate = true;

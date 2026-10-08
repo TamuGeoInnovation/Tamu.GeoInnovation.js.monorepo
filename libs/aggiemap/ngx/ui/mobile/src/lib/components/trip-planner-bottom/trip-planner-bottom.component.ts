@@ -9,11 +9,11 @@ import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-plann
 import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-bottom',
-    templateUrl: './trip-planner-bottom.component.html',
-    styleUrls: ['./trip-planner-bottom.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MapsFeatureTripPlannerModule, DragDirective]
+  selector: 'tamu-gisc-trip-planner-bottom',
+  templateUrl: './trip-planner-bottom.component.html',
+  styleUrls: ['./trip-planner-bottom.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [MapsFeatureTripPlannerModule, DragDirective]
 })
 export class TripPlannerBottomComponent implements OnInit, OnDestroy {
   /**

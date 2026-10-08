@@ -9,11 +9,11 @@ import { TransportationModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-bus-timetable-bottom',
-    templateUrl: './bus-timetable-bottom.component.html',
-    styleUrls: ['./bus-timetable-bottom.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [DragDirective, TransportationModule, AsyncPipe]
+  selector: 'tamu-gisc-bus-timetable-bottom',
+  templateUrl: './bus-timetable-bottom.component.html',
+  styleUrls: ['./bus-timetable-bottom.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [DragDirective, TransportationModule, AsyncPipe]
 })
 export class BusTimetableBottomComponent implements OnInit, OnDestroy {
   public identifier: string;

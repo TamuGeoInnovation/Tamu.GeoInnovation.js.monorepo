@@ -12,11 +12,11 @@ import { RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-aggiemap-sidebar',
-    templateUrl: './sidebar.component.html',
-    styleUrls: ['./sidebar.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SidebarModule, MapPopupModule, TamuBlockBrandingComponent, RouterOutlet, AsyncPipe]
+  selector: 'tamu-gisc-aggiemap-sidebar',
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SidebarModule, MapPopupModule, TamuBlockBrandingComponent, RouterOutlet, AsyncPipe]
 })
 export class AggiemapSidebarComponent implements OnInit {
   public isDev: Observable<boolean>;

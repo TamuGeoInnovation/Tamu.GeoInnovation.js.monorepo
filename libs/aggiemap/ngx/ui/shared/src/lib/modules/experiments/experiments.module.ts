@@ -8,7 +8,7 @@ import { ExperimentsListComponent } from './components/experiments-list/experime
 import { BasemapOverrideComponent } from './components/basemap-override/basemap-override.component';
 
 @NgModule({
-    imports: [CommonModule, ReactiveFormsModule, UIFormsModule, ExperimentsListComponent, BasemapOverrideComponent],
-    exports: [ExperimentsListComponent]
+  imports: [CommonModule, ReactiveFormsModule, UIFormsModule, ExperimentsListComponent, BasemapOverrideComponent],
+  exports: [ExperimentsListComponent]
 })
 export class ExperimentsModule {}

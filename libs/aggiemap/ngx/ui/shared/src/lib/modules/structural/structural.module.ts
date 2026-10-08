@@ -8,7 +8,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
-    imports: [CommonModule, RouterModule, BackdropComponent, ModalComponent, HeaderComponent, FooterComponent],
-    exports: [BackdropComponent, ModalComponent, HeaderComponent, FooterComponent]
+  imports: [CommonModule, RouterModule, BackdropComponent, ModalComponent, HeaderComponent, FooterComponent],
+  exports: [BackdropComponent, ModalComponent, HeaderComponent, FooterComponent]
 })
 export class AggiemapNgxSharedUiStructuralModule {}

@@ -4,11 +4,11 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-markdown-w-directions-popup',
-    templateUrl: './markdown-w-directions-popup.component.html',
-    styleUrls: ['./markdown-w-directions-popup.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe]
+  selector: 'tamu-gisc-markdown-w-directions-popup',
+  templateUrl: './markdown-w-directions-popup.component.html',
+  styleUrls: ['./markdown-w-directions-popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class MarkdownWDirectionsPopupComponent extends BaseDirectionsComponent implements OnInit {
   public title: string;

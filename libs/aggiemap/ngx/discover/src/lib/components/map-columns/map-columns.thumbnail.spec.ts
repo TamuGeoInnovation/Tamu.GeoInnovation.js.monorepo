@@ -38,8 +38,8 @@ describe('MapColumnsComponent pictures', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [CommonModule, RouterTestingModule, MapColumnsComponent]
-}).compileComponents();
+      imports: [CommonModule, RouterTestingModule, MapColumnsComponent]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MapColumnsComponent);
   });

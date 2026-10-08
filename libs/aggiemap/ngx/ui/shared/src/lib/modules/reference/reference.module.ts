@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { BuildingDepartmentListComponent } from './components/building-department-list/building-department-list.component';
 
 @NgModule({
-    imports: [CommonModule, BuildingDepartmentListComponent],
-    exports: [BuildingDepartmentListComponent]
+  imports: [CommonModule, BuildingDepartmentListComponent],
+  exports: [BuildingDepartmentListComponent]
 })
 export class ReferenceModule {}

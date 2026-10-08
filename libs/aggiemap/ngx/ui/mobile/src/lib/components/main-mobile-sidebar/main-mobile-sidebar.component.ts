@@ -13,11 +13,11 @@ interface MenuItem {
 }
 
 @Component({
-    selector: 'tamu-gisc-main-mobile-sidebar',
-    templateUrl: './main-mobile-sidebar.component.html',
-    styleUrls: ['./main-mobile-sidebar.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [TamuBlockBrandingComponent, RouterLink]
+  selector: 'tamu-gisc-main-mobile-sidebar',
+  templateUrl: './main-mobile-sidebar.component.html',
+  styleUrls: ['./main-mobile-sidebar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TamuBlockBrandingComponent, RouterLink]
 })
 export class MainMobileSidebarComponent {
   public menu: MenuItem[] = [

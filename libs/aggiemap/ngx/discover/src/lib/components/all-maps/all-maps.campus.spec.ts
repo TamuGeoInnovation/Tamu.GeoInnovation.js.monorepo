@@ -55,14 +55,14 @@ describe('AllMapsComponent campus maps', () => {
 
   const componentAs = async (isDev: boolean): Promise<ComponentFixture<AllMapsComponent>> => {
     await TestBed.configureTestingModule({
-    imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
-    providers: [
+      imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
+      providers: [
         { provide: DiscoveryService, useValue: discoveryStub },
         { provide: TestingService, useValue: { get: () => of(isDev) } },
         { provide: LastMapService, useValue: { url: '/map', path: '/map', queryParams: {}, fragment: undefined } }
-    ],
-    schemas: [NO_ERRORS_SCHEMA]
-}).compileComponents();
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
 
     const fixture = TestBed.createComponent(AllMapsComponent);
 
@@ -106,9 +106,7 @@ describe('AllMapsComponent campus maps', () => {
       // rather than whatever `startWith('')` produced first.
       await new Promise<void>((resolve) => {
         const emissions: unknown[][] = [];
-        const subscription = fixture.componentInstance.filteredApplications.subscribe((apps) =>
-          emissions.push(apps)
-        );
+        const subscription = fixture.componentInstance.filteredApplications.subscribe((apps) => emissions.push(apps));
 
         fixture.componentInstance.searchControl.setValue('Galveston');
 

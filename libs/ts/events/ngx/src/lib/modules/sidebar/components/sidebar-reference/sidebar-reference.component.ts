@@ -16,11 +16,11 @@ import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-sidebar-reference',
-    templateUrl: './sidebar-reference.component.html',
-    styleUrls: ['./sidebar-reference.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SearchComponent, CopyComponent, NgStyle, LayerListModule, LegendModule, KeyValuePipe]
+  selector: 'tamu-gisc-sidebar-reference',
+  templateUrl: './sidebar-reference.component.html',
+  styleUrls: ['./sidebar-reference.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SearchComponent, CopyComponent, NgStyle, LayerListModule, LegendModule, KeyValuePipe]
 })
 export class SidebarReferenceComponent implements OnInit {
   public shareUrl: string;

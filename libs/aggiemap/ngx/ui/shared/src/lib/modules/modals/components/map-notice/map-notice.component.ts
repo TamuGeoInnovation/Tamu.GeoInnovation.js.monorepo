@@ -30,11 +30,11 @@ export const MAP_NOTICE_SESSION_PREFIX = 'map-notice:';
  * something a visitor is meant to read.
  */
 @Component({
-    selector: 'tamu-gisc-map-notice',
-    templateUrl: './map-notice.component.html',
-    styleUrls: ['./map-notice.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ButtonComponent]
+  selector: 'tamu-gisc-map-notice',
+  templateUrl: './map-notice.component.html',
+  styleUrls: ['./map-notice.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ButtonComponent]
 })
 export class MapNoticeComponent {
   public title: string;

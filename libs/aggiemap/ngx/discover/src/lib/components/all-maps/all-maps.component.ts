@@ -27,11 +27,20 @@ import { AsyncPipe, UpperCasePipe } from '@angular/common';
  * events. The dev-only "All Events" and "Experimental Applications" sections are preserved here.
  */
 @Component({
-    selector: 'tamu-gisc-aggiemap-all-maps',
-    templateUrl: './all-maps.component.html',
-    styleUrls: ['./all-maps.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, AutocompleteComponent, AutocompleteOptionTemplateDirective, QuickLinksComponent, CopyComponent, AggiemapNgxSharedUiStructuralModule, AsyncPipe, UpperCasePipe]
+  selector: 'tamu-gisc-aggiemap-all-maps',
+  templateUrl: './all-maps.component.html',
+  styleUrls: ['./all-maps.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    RouterLink,
+    AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
+    QuickLinksComponent,
+    CopyComponent,
+    AggiemapNgxSharedUiStructuralModule,
+    AsyncPipe,
+    UpperCasePipe
+  ]
 })
 export class AllMapsComponent implements OnInit {
   public readonly mainParkingRoute = ['/parking', FEATURED_PARKING_ID];

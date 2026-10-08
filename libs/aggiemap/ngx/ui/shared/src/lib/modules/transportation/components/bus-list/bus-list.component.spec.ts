@@ -27,7 +27,7 @@ describe('BusListComponent (Shallow)', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [
+      imports: [
         RouterTestingModule,
         HttpClientTestingModule,
         ResponsiveModule,
@@ -36,21 +36,21 @@ describe('BusListComponent (Shallow)', () => {
         SearchModule,
         EnvironmentModule,
         BusListComponent
-    ],
-    providers: [
+      ],
+      providers: [
         {
-            // BusService injects Angulartics2, which needs RouterlessTracking. Mocked rather
-            // than importing the real module, matching parking-lot.component.spec.ts.
-            provide: Angulartics2,
-            useValue: { eventTrack: { next: jest.fn() } }
+          // BusService injects Angulartics2, which needs RouterlessTracking. Mocked rather
+          // than importing the real module, matching parking-lot.component.spec.ts.
+          provide: Angulartics2,
+          useValue: { eventTrack: { next: jest.fn() } }
         },
         {
-            provide: env,
-            useValue: { SearchSources: [], LayerSources: [] }
+          provide: env,
+          useValue: { SearchSources: [], LayerSources: [] }
         }
-    ],
-    schemas: [NO_ERRORS_SCHEMA]
-}).compileComponents();
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

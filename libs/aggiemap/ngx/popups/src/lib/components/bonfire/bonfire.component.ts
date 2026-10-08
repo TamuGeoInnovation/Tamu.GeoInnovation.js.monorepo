@@ -24,11 +24,11 @@ import { AsyncPipe } from '@angular/common';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-bonfire',
-    templateUrl: './bonfire.component.html',
-    styleUrls: ['./bonfire.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe, PipesModule]
+  selector: 'tamu-gisc-bonfire',
+  templateUrl: './bonfire.component.html',
+  styleUrls: ['./bonfire.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe, PipesModule]
 })
 export class BonfirePopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);

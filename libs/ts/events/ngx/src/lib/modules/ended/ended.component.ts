@@ -8,10 +8,10 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
  * `RetiredEventGuard` sends a retired event's links here.
  */
 @Component({
-    selector: 'tamu-gisc-event-ended',
-    templateUrl: './ended.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink]
+  selector: 'tamu-gisc-event-ended',
+  templateUrl: './ended.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink]
 })
 export class EndedComponent {
   public readonly name: string;

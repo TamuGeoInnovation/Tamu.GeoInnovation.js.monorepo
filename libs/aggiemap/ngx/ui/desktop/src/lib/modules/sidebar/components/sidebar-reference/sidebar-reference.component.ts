@@ -10,11 +10,11 @@ import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-sidebar-reference',
-    templateUrl: './sidebar-reference.component.html',
-    styleUrls: ['./sidebar-reference.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SearchComponent, LayerListModule, LegendModule]
+  selector: 'tamu-gisc-sidebar-reference',
+  templateUrl: './sidebar-reference.component.html',
+  styleUrls: ['./sidebar-reference.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SearchComponent, LayerListModule, LegendModule]
 })
 export class SidebarReferenceComponent<T extends esri.Graphic> {
   constructor(

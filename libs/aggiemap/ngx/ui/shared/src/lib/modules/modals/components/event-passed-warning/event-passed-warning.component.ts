@@ -10,11 +10,11 @@ export interface EventPassedData {
 }
 
 @Component({
-    selector: 'tamu-gisc-event-passed-warning',
-    templateUrl: './event-passed-warning.component.html',
-    styleUrls: ['./event-passed-warning.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ButtonComponent]
+  selector: 'tamu-gisc-event-passed-warning',
+  templateUrl: './event-passed-warning.component.html',
+  styleUrls: ['./event-passed-warning.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ButtonComponent]
 })
 export class EventPassedWarningComponent {
   public title: string;

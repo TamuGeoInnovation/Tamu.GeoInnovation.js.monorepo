@@ -12,11 +12,11 @@ import { v4 as guid } from 'uuid';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'tamu-gisc-report-bad-route',
-    templateUrl: './report-bad-route.component.html',
-    styleUrls: ['./report-bad-route.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule]
+  selector: 'tamu-gisc-report-bad-route',
+  templateUrl: './report-bad-route.component.html',
+  styleUrls: ['./report-bad-route.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule]
 })
 export class ReportBadRouteComponent implements OnInit, OnDestroy {
   public result: TripResult;

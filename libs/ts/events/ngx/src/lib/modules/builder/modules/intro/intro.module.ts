@@ -8,6 +8,6 @@ import { BuilderModuleBaseModule } from '../builder-module-base/builder-module-b
 const routes: Routes = [{ path: '', component: IntroComponent }];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), BuilderModuleBaseModule, IntroComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), BuilderModuleBaseModule, IntroComponent]
 })
 export class IntroModule {}

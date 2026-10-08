@@ -15,6 +15,12 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), AggiemapNgxSharedUiStructuralModule, PipesModule, ChangelogComponent]
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    AggiemapNgxSharedUiStructuralModule,
+    PipesModule,
+    ChangelogComponent
+  ]
 })
 export class ChangelogModule {}

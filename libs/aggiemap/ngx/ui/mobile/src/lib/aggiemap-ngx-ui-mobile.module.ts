@@ -18,33 +18,33 @@ import { BusListBottomComponent } from './components/bus-list-bottom/bus-list-bo
 import { BusTimetableBottomComponent } from './components/bus-timetable-bottom/bus-timetable-bottom.component';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        AggiemapNgxSharedUiStructuralModule,
-        MapsFeatureTripPlannerModule,
-        UIDragModule,
-        SearchModule,
-        UITamuBrandingModule,
-        TransportationModule,
-        AggiemapNgxUiMobileComponent,
-        TripPlannerTopComponent,
-        TripPlannerBottomComponent,
-        OmnisearchComponent,
-        MobileSidebarComponent,
-        MainMobileSidebarComponent,
-        BusListBottomComponent,
-        BusTimetableBottomComponent
-    ],
-    exports: [
-        AggiemapNgxUiMobileComponent,
-        TripPlannerTopComponent,
-        TripPlannerBottomComponent,
-        OmnisearchComponent,
-        MobileSidebarComponent,
-        MainMobileSidebarComponent,
-        BusListBottomComponent,
-        BusTimetableBottomComponent
-    ]
+  imports: [
+    CommonModule,
+    RouterModule,
+    AggiemapNgxSharedUiStructuralModule,
+    MapsFeatureTripPlannerModule,
+    UIDragModule,
+    SearchModule,
+    UITamuBrandingModule,
+    TransportationModule,
+    AggiemapNgxUiMobileComponent,
+    TripPlannerTopComponent,
+    TripPlannerBottomComponent,
+    OmnisearchComponent,
+    MobileSidebarComponent,
+    MainMobileSidebarComponent,
+    BusListBottomComponent,
+    BusTimetableBottomComponent
+  ],
+  exports: [
+    AggiemapNgxUiMobileComponent,
+    TripPlannerTopComponent,
+    TripPlannerBottomComponent,
+    OmnisearchComponent,
+    MobileSidebarComponent,
+    MainMobileSidebarComponent,
+    BusListBottomComponent,
+    BusTimetableBottomComponent
+  ]
 })
 export class AggiemapNgxUiMobileModule {}

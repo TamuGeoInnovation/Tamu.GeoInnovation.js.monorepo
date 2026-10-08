@@ -10,11 +10,11 @@ import { RouterLink } from '@angular/router';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-sidebar-trip-planner',
-    templateUrl: './sidebar-trip-planner.component.html',
-    styleUrls: ['./sidebar-trip-planner.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink]
+  selector: 'tamu-gisc-sidebar-trip-planner',
+  templateUrl: './sidebar-trip-planner.component.html',
+  styleUrls: ['./sidebar-trip-planner.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink]
 })
 export class SidebarTripPlannerComponent {
   public dev = this.testing.get('isTesting');

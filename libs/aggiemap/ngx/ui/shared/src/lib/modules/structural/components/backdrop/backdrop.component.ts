@@ -10,10 +10,10 @@ import {
 } from '@angular/core';
 
 @Component({
-    selector: 'tamu-gisc-backdrop',
-    templateUrl: './backdrop.component.html',
-    styleUrls: ['./backdrop.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager
+  selector: 'tamu-gisc-backdrop',
+  templateUrl: './backdrop.component.html',
+  styleUrls: ['./backdrop.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class BackdropComponent implements OnInit {
   /**

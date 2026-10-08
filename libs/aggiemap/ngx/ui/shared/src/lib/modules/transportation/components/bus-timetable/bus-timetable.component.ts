@@ -13,11 +13,11 @@ import { AsyncPipe } from '@angular/common';
  * `bus-timetable` to avoid rippling the module + mobile usages.)
  */
 @Component({
-    selector: 'tamu-gisc-bus-timetable',
-    templateUrl: './bus-timetable.component.html',
-    styleUrls: ['./bus-timetable.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe]
+  selector: 'tamu-gisc-bus-timetable',
+  templateUrl: './bus-timetable.component.html',
+  styleUrls: ['./bus-timetable.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class BusTimetableComponent implements OnInit {
   @Input()

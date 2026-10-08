@@ -25,11 +25,11 @@ import { AsyncPipe } from '@angular/common';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-poi-popup-component',
-    templateUrl: './poi.component.html',
-    styleUrls: ['../base/base.popup.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [CopyComponent, AsyncPipe, PipesModule]
+  selector: 'tamu-gisc-poi-popup-component',
+  templateUrl: './poi.component.html',
+  styleUrls: ['../base/base.popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CopyComponent, AsyncPipe, PipesModule]
 })
 export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);

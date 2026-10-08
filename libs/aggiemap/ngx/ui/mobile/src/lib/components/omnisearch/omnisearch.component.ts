@@ -17,13 +17,13 @@ import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-omnisearch',
-    templateUrl: './omnisearch.component.html',
-    styleUrls: ['./omnisearch.component.scss'],
-    animations: [offCanvasSlideInFromBottom, offCanvasSlideUpFromTop],
-    providers: [AltSearchHelper],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SearchMobileComponent, AggiemapNgxSharedUiStructuralModule, AsyncPipe]
+  selector: 'tamu-gisc-omnisearch',
+  templateUrl: './omnisearch.component.html',
+  styleUrls: ['./omnisearch.component.scss'],
+  animations: [offCanvasSlideInFromBottom, offCanvasSlideUpFromTop],
+  providers: [AltSearchHelper],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SearchMobileComponent, AggiemapNgxSharedUiStructuralModule, AsyncPipe]
 })
 export class OmnisearchComponent implements OnInit, OnDestroy {
   /**

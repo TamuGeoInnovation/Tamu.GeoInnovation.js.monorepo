@@ -5,9 +5,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MapsPageHeaderComponent } from './maps-page-header.component';
 
 @Component({
-    selector: 'tamu-gisc-test-page',
-    template: 'page',
-    changeDetection: ChangeDetectionStrategy.Eager
+  selector: 'tamu-gisc-test-page',
+  template: 'page',
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 class TestPageComponent {}
 
@@ -31,14 +31,15 @@ describe('MapsPageHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
+      imports: [
         RouterTestingModule.withRoutes([
-            { path: 'map', component: TestPageComponent },
-            { path: 'all-maps', component: TestPageComponent }
+          { path: 'map', component: TestPageComponent },
+          { path: 'all-maps', component: TestPageComponent }
         ]),
-        MapsPageHeaderComponent, TestPageComponent
-    ]
-}).compileComponents();
+        MapsPageHeaderComponent,
+        TestPageComponent
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MapsPageHeaderComponent);
     fixture.componentInstance.title = 'Campus Events';

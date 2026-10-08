@@ -23,11 +23,19 @@ import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-aggiemap-directory',
-    templateUrl: './directory.component.html',
-    styleUrls: ['./directory.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, FormsModule, ReactiveFormsModule, TextboxComponent, NgxDatatableModule, AggiemapNgxSharedUiStructuralModule, AsyncPipe]
+  selector: 'tamu-gisc-aggiemap-directory',
+  templateUrl: './directory.component.html',
+  styleUrls: ['./directory.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    RouterLink,
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    NgxDatatableModule,
+    AggiemapNgxSharedUiStructuralModule,
+    AsyncPipe
+  ]
 })
 export class DirectoryComponent implements OnInit {
   public form: UntypedFormGroup;

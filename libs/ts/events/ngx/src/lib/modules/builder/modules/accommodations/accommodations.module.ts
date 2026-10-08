@@ -7,6 +7,6 @@ import { AccommodationsComponent } from './accommodations.component';
 const routes: Routes = [{ path: '', component: AccommodationsComponent }];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), AccommodationsComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), AccommodationsComponent]
 })
 export class AccommodationsModule {}

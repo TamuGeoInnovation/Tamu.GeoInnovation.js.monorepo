@@ -66,8 +66,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), PipesModule, BuilderComponent, EndedComponent],
-    providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }],
-    exports: [RouterModule]
+  imports: [CommonModule, RouterModule.forChild(routes), PipesModule, BuilderComponent, EndedComponent],
+  providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }],
+  exports: [RouterModule]
 })
 export class TsEventsNgxModule {}

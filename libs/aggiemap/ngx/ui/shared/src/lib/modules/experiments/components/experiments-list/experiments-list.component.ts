@@ -6,11 +6,11 @@ import { BasemapOverrideComponent } from '../basemap-override/basemap-override.c
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-experiments-list',
-    templateUrl: './experiments-list.component.html',
-    styleUrls: ['./experiments-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [BasemapOverrideComponent, AsyncPipe]
+  selector: 'tamu-gisc-experiments-list',
+  templateUrl: './experiments-list.component.html',
+  styleUrls: ['./experiments-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [BasemapOverrideComponent, AsyncPipe]
 })
 export class ExperimentsListComponent implements OnInit {
   public responsive: Observable<boolean>;

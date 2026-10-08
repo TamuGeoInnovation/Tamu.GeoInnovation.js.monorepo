@@ -17,49 +17,49 @@ describe('ParkingGaragePopupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [ParkingGaragePopupComponent],
-    providers: [
+      imports: [ParkingGaragePopupComponent],
+      providers: [
         {
-            provide: Router,
-            useValue: {
-                navigate: jest.fn()
-            }
+          provide: Router,
+          useValue: {
+            navigate: jest.fn()
+          }
         },
         {
-            provide: ActivatedRoute,
-            useValue: {}
+          provide: ActivatedRoute,
+          useValue: {}
         },
         {
-            provide: TripPlannerService,
-            useValue: {
-                Stops: of([]),
-                setStops: jest.fn()
-            }
+          provide: TripPlannerService,
+          useValue: {
+            Stops: of([]),
+            setStops: jest.fn()
+          }
         },
         {
-            provide: Angulartics2,
-            useValue: {
-                eventTrack: {
-                    next: jest.fn()
-                }
+          provide: Angulartics2,
+          useValue: {
+            eventTrack: {
+              next: jest.fn()
             }
+          }
         },
         {
-            provide: EsriMapService,
-            useValue: {
-                clearHitTest: jest.fn()
-            }
+          provide: EsriMapService,
+          useValue: {
+            clearHitTest: jest.fn()
+          }
         },
         {
-            provide: SearchService,
-            useValue: {
-                // Share links are built from the garage search source, not the parking lot one.
-                getSource: jest.fn((id: string) => (id === 'parking-garage' ? { urlQueryParam: 'garage' } : undefined))
-            }
+          provide: SearchService,
+          useValue: {
+            // Share links are built from the garage search source, not the parking lot one.
+            getSource: jest.fn((id: string) => (id === 'parking-garage' ? { urlQueryParam: 'garage' } : undefined))
+          }
         }
-    ],
-    schemas: [NO_ERRORS_SCHEMA]
-}).compileComponents();
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
   });
 
   beforeEach(() => {

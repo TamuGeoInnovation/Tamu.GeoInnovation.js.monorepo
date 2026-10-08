@@ -64,14 +64,14 @@ describe('AllMapsComponent breadcrumbs', () => {
 
   const build = async (lastMapUrl: string): Promise<void> => {
     await TestBed.configureTestingModule({
-    imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
-    providers: [
+      imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
+      providers: [
         { provide: DiscoveryService, useValue: discoveryStub },
         { provide: TestingService, useValue: { get: () => of(false) } },
         { provide: LastMapService, useValue: lastMapStub(lastMapUrl) }
-    ],
-    schemas: [NO_ERRORS_SCHEMA]
-}).compileComponents();
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AllMapsComponent);
     fixture.detectChanges();

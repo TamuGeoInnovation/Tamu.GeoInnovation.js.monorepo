@@ -10,11 +10,11 @@ import { BusRouteComponent } from '../bus-route/bus-route.component';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-bus-list',
-    templateUrl: './bus-list.component.html',
-    styleUrls: ['./bus-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [BusRouteComponent, AsyncPipe]
+  selector: 'tamu-gisc-bus-list',
+  templateUrl: './bus-list.component.html',
+  styleUrls: ['./bus-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [BusRouteComponent, AsyncPipe]
 })
 export class BusListComponent implements OnInit, OnDestroy {
   @Input()

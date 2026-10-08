@@ -6,11 +6,11 @@ import { SettingsInitializationConfig, SettingsService } from '@tamu-gisc/common
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-basemap-override',
-    templateUrl: './basemap-override.component.html',
-    styleUrls: ['./basemap-override.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent]
+  selector: 'tamu-gisc-basemap-override',
+  templateUrl: './basemap-override.component.html',
+  styleUrls: ['./basemap-override.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent]
 })
 export class BasemapOverrideComponent implements OnInit, OnDestroy {
   public form: UntypedFormGroup;

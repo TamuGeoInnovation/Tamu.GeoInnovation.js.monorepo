@@ -6,11 +6,11 @@ import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { TransportationModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 @Component({
-    selector: 'tamu-gisc-bus-list-bottom',
-    templateUrl: './bus-list-bottom.component.html',
-    styleUrls: ['./bus-list-bottom.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [DragDirective, TransportationModule]
+  selector: 'tamu-gisc-bus-list-bottom',
+  templateUrl: './bus-list-bottom.component.html',
+  styleUrls: ['./bus-list-bottom.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [DragDirective, TransportationModule]
 })
 export class BusListBottomComponent implements OnInit, OnDestroy {
   public identifier: string;

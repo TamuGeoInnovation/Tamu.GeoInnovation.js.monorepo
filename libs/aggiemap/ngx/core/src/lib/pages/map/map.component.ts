@@ -23,11 +23,21 @@ import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessib
 
 import esri = __esri;
 @Component({
-    selector: 'tamu-gisc-aggiemap-map',
-    templateUrl: './map.component.html',
-    styleUrls: ['./map.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ReveilleConsoleLogComponent, RouterLink, MapsFeatureCoordinatesModule, EsriMapModule, NgClass, MapsFeaturePerspectiveModule, RouterOutlet, MapsFeatureAccessibilityModule, AsyncPipe]
+  selector: 'tamu-gisc-aggiemap-map',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    ReveilleConsoleLogComponent,
+    RouterLink,
+    MapsFeatureCoordinatesModule,
+    EsriMapModule,
+    NgClass,
+    MapsFeaturePerspectiveModule,
+    RouterOutlet,
+    MapsFeatureAccessibilityModule,
+    AsyncPipe
+  ]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;

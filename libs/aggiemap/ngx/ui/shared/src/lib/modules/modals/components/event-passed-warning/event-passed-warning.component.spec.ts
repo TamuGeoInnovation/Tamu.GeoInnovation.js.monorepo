@@ -8,19 +8,19 @@ import { EventPassedWarningComponent } from './event-passed-warning.component';
 describe('EventPassedWarningComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [UIFormsModule, EventPassedWarningComponent],
-    providers: [
+      imports: [UIFormsModule, EventPassedWarningComponent],
+      providers: [
         { provide: ModalRefService, useValue: { close: jest.fn() } },
         {
-            provide: MODAL_DATA,
-            useValue: {
-                title: 'This event has passed',
-                message: 'Message',
-                acknowledgeText: 'I Understand'
-            }
+          provide: MODAL_DATA,
+          useValue: {
+            title: 'This event has passed',
+            message: 'Message',
+            acknowledgeText: 'I Understand'
+          }
         }
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
   });
 
   it('should render the shared button component', () => {

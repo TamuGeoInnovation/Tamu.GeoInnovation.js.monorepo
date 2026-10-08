@@ -17,11 +17,11 @@ import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/
  * from the comp, with placeholder accordion content below.
  */
 @Component({
-    selector: 'tamu-gisc-aggiemap-parking-maps',
-    templateUrl: './parking-maps.component.html',
-    styleUrls: ['./parking-maps.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MapsPageHeaderComponent, MapColumnsComponent, AggiemapNgxSharedUiStructuralModule]
+  selector: 'tamu-gisc-aggiemap-parking-maps',
+  templateUrl: './parking-maps.component.html',
+  styleUrls: ['./parking-maps.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [MapsPageHeaderComponent, MapColumnsComponent, AggiemapNgxSharedUiStructuralModule]
 })
 export class ParkingMapsComponent implements OnInit {
   public columns: MapColumnGroup[] = [];

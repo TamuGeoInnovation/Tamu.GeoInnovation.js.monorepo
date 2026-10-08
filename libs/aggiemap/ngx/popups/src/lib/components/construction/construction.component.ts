@@ -10,11 +10,11 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 import { DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-construction-popup-component',
-    templateUrl: './construction.component.html',
-    styleUrls: ['../base/base.popup.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [DatePipe]
+  selector: 'tamu-gisc-construction-popup-component',
+  templateUrl: './construction.component.html',
+  styleUrls: ['../base/base.popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [DatePipe]
 })
 export class ConstructionPopupComponent extends BaseDirectionsComponent implements OnInit {
   public showContactName = false;

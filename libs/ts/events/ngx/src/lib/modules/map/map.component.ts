@@ -36,23 +36,35 @@ import esri = __esri;
 const EVENT_PASSED_GRACE_DAYS = 1;
 
 @Component({
-    selector: 'tamu-gisc-map',
-    templateUrl: './map.component.html',
-    styleUrls: ['./map.component.scss'],
-    // `LayerSourcesService` holds this map's `defaultLayerOverrides`. Provided here, so they live and die
-    // with this map; from the application's shared instance they reached every map opened after it in
-    // the same tab, the main map included (#1397).
-    providers: [
-        EventService,
-        EsriMapService,
-        LayerSourcesService,
-        LayerListService,
-        LegendService,
-        TripPlannerService,
-        BasemapGalleryService
-    ],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ReveilleConsoleLogComponent, RouterLink, MapsFeatureCoordinatesModule, EsriMapModule, NgClass, MapsFeaturePerspectiveModule, ClipboardCopyDirective, RouterOutlet, MapPopupModule, MapsFeatureAccessibilityModule, AsyncPipe]
+  selector: 'tamu-gisc-map',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.scss'],
+  // `LayerSourcesService` holds this map's `defaultLayerOverrides`. Provided here, so they live and die
+  // with this map; from the application's shared instance they reached every map opened after it in
+  // the same tab, the main map included (#1397).
+  providers: [
+    EventService,
+    EsriMapService,
+    LayerSourcesService,
+    LayerListService,
+    LegendService,
+    TripPlannerService,
+    BasemapGalleryService
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    ReveilleConsoleLogComponent,
+    RouterLink,
+    MapsFeatureCoordinatesModule,
+    EsriMapModule,
+    NgClass,
+    MapsFeaturePerspectiveModule,
+    ClipboardCopyDirective,
+    RouterOutlet,
+    MapPopupModule,
+    MapsFeatureAccessibilityModule,
+    AsyncPipe
+  ]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;

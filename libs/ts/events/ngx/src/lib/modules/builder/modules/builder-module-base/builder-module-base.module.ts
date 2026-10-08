@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { BuilderModuleBaseComponent } from './builder-module-base.component';
 
 @NgModule({
-    imports: [CommonModule, BuilderModuleBaseComponent],
-    exports: [BuilderModuleBaseComponent]
+  imports: [CommonModule, BuilderModuleBaseComponent],
+  exports: [BuilderModuleBaseComponent]
 })
 export class BuilderModuleBaseModule {}

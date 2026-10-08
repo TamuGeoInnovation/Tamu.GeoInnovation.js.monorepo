@@ -15,11 +15,11 @@ import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { BusTimetableComponent } from '../bus-timetable/bus-timetable.component';
 
 @Component({
-    selector: 'tamu-gisc-bus-route',
-    templateUrl: './bus-route.component.html',
-    styleUrls: ['./bus-route.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass, AccordionComponent_1, BusListHeaderComponent, AccordionContentComponent, BusTimetableComponent]
+  selector: 'tamu-gisc-bus-route',
+  templateUrl: './bus-route.component.html',
+  styleUrls: ['./bus-route.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, AccordionComponent_1, BusListHeaderComponent, AccordionContentComponent, BusTimetableComponent]
 })
 export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
