@@ -24,8 +24,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     UIFormsModule,
     AggiemapNgxSharedUiStructuralModule,
-    NgxDatatableModule
-  ],
-  declarations: [DirectoryComponent]
+    NgxDatatableModule,
+    DirectoryComponent
+  ]
 })
 export class DirectoryModule {}

@@ -27,8 +27,7 @@ describe('EventMapsComponent quick links', () => {
 
   const render = async (data: Record<string, unknown>): Promise<ComponentFixture<EventMapsComponent>> => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [EventMapsComponent],
+      imports: [RouterTestingModule, EventMapsComponent],
       providers: [
         { provide: DiscoveryService, useValue: discoveryStub },
         { provide: ActivatedRoute, useValue: { snapshot: { data } } }
@@ -69,14 +68,19 @@ describe('EventMapsComponent quick links', () => {
     // had stopped working everywhere.
     const fixture = await render({ mapType: 'campus', title: 'Campus Events' });
 
-    expect(fixture.componentInstance.quickLinks.map((link) => link.label)).toEqual(['Campus Main Parking', 'Visitor Parking']);
+    expect(fixture.componentInstance.quickLinks.map((link) => link.label)).toEqual([
+      'Campus Main Parking',
+      'Visitor Parking'
+    ]);
     expect(fixture.nativeElement.querySelector('tamu-gisc-quick-links')).not.toBeNull();
   });
 });
 
 describe('All Maps routes', () => {
   it('turn the quick links off on the Campus Maps page, and only there', () => {
-    const withoutQuickLinks = discoverRoutes.filter((route) => route.data?.['quickLinks'] === false).map((route) => route.path);
+    const withoutQuickLinks = discoverRoutes
+      .filter((route) => route.data?.['quickLinks'] === false)
+      .map((route) => route.path);
 
     expect(withoutQuickLinks).toEqual(['campus']);
   });

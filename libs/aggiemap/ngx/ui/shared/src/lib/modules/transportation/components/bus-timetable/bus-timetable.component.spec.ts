@@ -43,8 +43,14 @@ describe('BusTimeTableComponent (integrated)', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, EsriMapModule, RouterTestingModule, SearchModule, EnvironmentModule],
-      declarations: [BusTimetableComponent],
+      imports: [
+        HttpClientTestingModule,
+        EsriMapModule,
+        RouterTestingModule,
+        SearchModule,
+        EnvironmentModule,
+        BusTimetableComponent
+      ],
       providers: [
         {
           // The integrated block has its own TestBed and needs the same Angulartics2 mock.

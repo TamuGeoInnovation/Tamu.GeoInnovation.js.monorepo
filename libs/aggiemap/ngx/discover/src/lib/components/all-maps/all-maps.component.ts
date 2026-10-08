@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Params, Router } from '@angular/router';
+import { Params, Router, RouterLink } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
@@ -15,7 +15,12 @@ import {
 import { DiscoveryService, FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
 import { LastMapService } from '../../services/last-map/last-map.service';
 import { getApplicationRoute, getNextEventDate } from '../discover.utils';
-import { QuickLinkItem } from '../quick-links/quick-links.component';
+import { QuickLinkItem, QuickLinksComponent } from '../quick-links/quick-links.component';
+import { AutocompleteComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AutocompleteOptionTemplateDirective } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
 
 /**
  * "All Maps" landing page. Surfaces the Visit Maps quick links, a map search, and the top upcoming
@@ -26,7 +31,16 @@ import { QuickLinkItem } from '../quick-links/quick-links.component';
   templateUrl: './all-maps.component.html',
   styleUrls: ['./all-maps.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [
+    RouterLink,
+    AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
+    QuickLinksComponent,
+    CopyComponent,
+    AggiemapNgxSharedUiStructuralModule,
+    AsyncPipe,
+    UpperCasePipe
+  ]
 })
 export class AllMapsComponent implements OnInit {
   public readonly mainParkingRoute = ['/parking', FEATURED_PARKING_ID];

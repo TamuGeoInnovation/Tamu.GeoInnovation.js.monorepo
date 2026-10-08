@@ -152,8 +152,9 @@ const routes: Routes = [
     LegendModule,
     MapPopupModule,
     UIClipboardModule,
-    MoveInOutSidebarModule
-  ],
-  declarations: [MapComponent, EventLegendComponent]
+    MoveInOutSidebarModule,
+    MapComponent,
+    EventLegendComponent
+  ]
 })
 export class MapModule {}

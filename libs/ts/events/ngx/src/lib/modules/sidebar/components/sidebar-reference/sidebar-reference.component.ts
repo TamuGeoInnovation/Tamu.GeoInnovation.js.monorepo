@@ -7,6 +7,11 @@ import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
 import { EventConfiguration, EventSettings, ResolvedEventSettings } from '../../../../interfaces/special-event.interface';
+import { SearchComponent } from '@tamu-gisc/ui-kits/ngx/search';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { NgStyle, KeyValuePipe } from '@angular/common';
+import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
+import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 
 import esri = __esri;
 
@@ -15,7 +20,7 @@ import esri = __esri;
   templateUrl: './sidebar-reference.component.html',
   styleUrls: ['./sidebar-reference.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [SearchComponent, CopyComponent, NgStyle, LayerListModule, LegendModule, KeyValuePipe]
 })
 export class SidebarReferenceComponent implements OnInit {
   public shareUrl: string;

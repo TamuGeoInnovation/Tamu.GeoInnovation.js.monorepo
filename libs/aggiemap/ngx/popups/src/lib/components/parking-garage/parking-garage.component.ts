@@ -7,6 +7,8 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { AsyncPipe } from '@angular/common';
 
 /**
  * Details for a parking garage (#1163).
@@ -21,7 +23,7 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   templateUrl: '../parking-lot/parking-lot.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [CopyComponent, AsyncPipe]
 })
 export class ParkingGaragePopupComponent extends BaseDirectionsComponent {
   /** The garage code (`CCG`) where there is one, else its name; the garage search source matches either. */

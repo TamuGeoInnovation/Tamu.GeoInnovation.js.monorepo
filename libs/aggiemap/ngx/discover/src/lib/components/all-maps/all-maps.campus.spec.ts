@@ -2,6 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Angulartics2 } from 'angulartics2';
 import { of } from 'rxjs';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
@@ -55,9 +56,11 @@ describe('AllMapsComponent campus maps', () => {
 
   const componentAs = async (isDev: boolean): Promise<ComponentFixture<AllMapsComponent>> => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [AllMapsComponent],
+      imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
       providers: [
+        // A standalone AllMapsComponent brings its real children, one of which injects Angulartics2;
+        // mocked rather than importing the real module, matching bus-list.component.spec.ts.
+        { provide: Angulartics2, useValue: { eventTrack: { next: jest.fn() } } },
         { provide: DiscoveryService, useValue: discoveryStub },
         { provide: TestingService, useValue: { get: () => of(isDev) } },
         { provide: LastMapService, useValue: { url: '/map', path: '/map', queryParams: {}, fragment: undefined } }
@@ -107,9 +110,7 @@ describe('AllMapsComponent campus maps', () => {
       // rather than whatever `startWith('')` produced first.
       await new Promise<void>((resolve) => {
         const emissions: unknown[][] = [];
-        const subscription = fixture.componentInstance.filteredApplications.subscribe((apps) =>
-          emissions.push(apps)
-        );
+        const subscription = fixture.componentInstance.filteredApplications.subscribe((apps) => emissions.push(apps));
 
         fixture.componentInstance.searchControl.setValue('Galveston');
 

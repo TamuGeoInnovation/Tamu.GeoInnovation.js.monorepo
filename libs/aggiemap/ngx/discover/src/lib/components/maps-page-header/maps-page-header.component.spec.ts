@@ -7,8 +7,7 @@ import { MapsPageHeaderComponent } from './maps-page-header.component';
 @Component({
   selector: 'tamu-gisc-test-page',
   template: 'page',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 class TestPageComponent {}
 
@@ -36,9 +35,10 @@ describe('MapsPageHeaderComponent', () => {
         RouterTestingModule.withRoutes([
           { path: 'map', component: TestPageComponent },
           { path: 'all-maps', component: TestPageComponent }
-        ])
-      ],
-      declarations: [MapsPageHeaderComponent, TestPageComponent]
+        ]),
+        MapsPageHeaderComponent,
+        TestPageComponent
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MapsPageHeaderComponent);

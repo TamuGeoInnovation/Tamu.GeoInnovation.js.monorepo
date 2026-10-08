@@ -13,8 +13,7 @@ import {
   selector: 'tamu-gisc-backdrop',
   templateUrl: './backdrop.component.html',
   styleUrls: ['./backdrop.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class BackdropComponent implements OnInit {
   /**

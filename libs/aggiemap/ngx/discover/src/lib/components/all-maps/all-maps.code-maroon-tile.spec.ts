@@ -34,8 +34,7 @@ describe('the Code Maroon tile on All Maps', () => {
   };
   const build = async (isDevelopment: boolean): Promise<void> => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [AllMapsComponent],
+      imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
       providers: [
         { provide: DiscoveryService, useValue: discoveryStub },
         { provide: TestingService, useValue: { get: () => of(isDevelopment) } },

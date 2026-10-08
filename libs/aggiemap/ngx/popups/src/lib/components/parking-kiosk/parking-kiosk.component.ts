@@ -12,8 +12,7 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   selector: 'tamu-gisc-parking-kiosk-popup-component',
   templateUrl: './parking-kiosk.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ParkingKioskPopupComponent extends BaseDirectionsComponent {
   constructor(

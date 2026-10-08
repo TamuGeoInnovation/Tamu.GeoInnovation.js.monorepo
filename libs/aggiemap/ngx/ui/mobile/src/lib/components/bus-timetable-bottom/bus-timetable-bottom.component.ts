@@ -4,13 +4,16 @@ import { filter, map, mergeMap, Observable, take, withLatestFrom } from 'rxjs';
 
 import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { TransportationModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-bus-timetable-bottom',
   templateUrl: './bus-timetable-bottom.component.html',
   styleUrls: ['./bus-timetable-bottom.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [DragDirective, TransportationModule, AsyncPipe]
 })
 export class BusTimetableBottomComponent implements OnInit, OnDestroy {
   public identifier: string;

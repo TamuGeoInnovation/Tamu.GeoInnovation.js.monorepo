@@ -184,8 +184,8 @@ const routes: Routes = [
     MapsFeatureCoordinatesModule,
     AggiemapFormsModule,
     MapsFeaturePerspectiveModule,
-    ExperimentsModule
-  ],
-  declarations: [MapComponent]
+    ExperimentsModule,
+    MapComponent
+  ]
 })
 export class MapModule {}

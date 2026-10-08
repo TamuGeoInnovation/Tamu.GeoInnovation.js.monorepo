@@ -13,9 +13,8 @@ import { CodeMaroonAlertComponent } from './code-maroon-alert.component';
  * the ordinary map without the map module knowing anything about it.
  */
 @NgModule({
-  declarations: [CodeMaroonAlertComponent],
   exports: [CodeMaroonAlertComponent],
-  imports: [CommonModule, RouterModule, UIFormsModule, TestingModule],
+  imports: [CommonModule, RouterModule, UIFormsModule, TestingModule, CodeMaroonAlertComponent],
   providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())]
 })
 export class CodeMaroonAlertModule {}

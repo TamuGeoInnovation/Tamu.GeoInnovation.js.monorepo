@@ -1,18 +1,19 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { Router, RouterEvent } from '@angular/router';
+import { Router, RouterEvent, RouterOutlet } from '@angular/router';
 import { Location } from '@angular/common';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
+import { BackdropComponent } from '../backdrop/backdrop.component';
 
 @Component({
   selector: 'tamu-gisc-modal',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [RouterOutlet, BackdropComponent]
 })
 export class ModalComponent implements OnInit, OnDestroy {
   public isMobile: boolean;

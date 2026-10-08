@@ -1,5 +1,6 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 export interface MapNoticeData {
   title: string;
@@ -33,7 +34,7 @@ export const MAP_NOTICE_SESSION_PREFIX = 'map-notice:';
   templateUrl: './map-notice.component.html',
   styleUrls: ['./map-notice.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [ButtonComponent]
 })
 export class MapNoticeComponent {
   public title: string;

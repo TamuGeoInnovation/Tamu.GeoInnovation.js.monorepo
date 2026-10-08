@@ -27,9 +27,10 @@ import { SidebarReferenceComponent } from './components/sidebar-reference/sideba
     MapsFeatureTripPlannerModule,
     LayerListModule,
     LegendModule,
-    PipesModule
+    PipesModule,
+    MoveInOutSidebarComponent,
+    SidebarReferenceComponent
   ],
-  declarations: [MoveInOutSidebarComponent, SidebarReferenceComponent],
   exports: [MoveInOutSidebarComponent]
 })
 export class MoveInOutSidebarModule {}

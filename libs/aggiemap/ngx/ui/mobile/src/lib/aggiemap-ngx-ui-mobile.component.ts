@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-ngx-ui-mobile',
@@ -8,6 +9,6 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
   styleUrls: ['./aggiemap-ngx-ui-mobile.component.scss'],
   providers: [DragService],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [RouterOutlet]
 })
 export class AggiemapNgxUiMobileComponent {}

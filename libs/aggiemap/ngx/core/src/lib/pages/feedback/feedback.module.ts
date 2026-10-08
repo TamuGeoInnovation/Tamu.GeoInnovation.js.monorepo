@@ -14,7 +14,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), AggiemapNgxSharedUiStructuralModule],
-  declarations: [FeedbackComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), AggiemapNgxSharedUiStructuralModule, FeedbackComponent]
 })
 export class FeedbackModule {}

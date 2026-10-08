@@ -7,13 +7,15 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-parking-lot-popup-component',
   templateUrl: './parking-lot.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [CopyComponent, AsyncPipe]
 })
 export class ParkingLotPopupComponent extends BaseDirectionsComponent {
   private get lotIdentifier(): string | number | null {

@@ -64,8 +64,7 @@ describe('AllMapsComponent breadcrumbs', () => {
 
   const build = async (lastMapUrl: string): Promise<void> => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [AllMapsComponent],
+      imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
       providers: [
         { provide: DiscoveryService, useValue: discoveryStub },
         { provide: TestingService, useValue: { get: () => of(false) } },

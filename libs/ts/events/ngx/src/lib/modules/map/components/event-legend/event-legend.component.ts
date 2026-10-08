@@ -2,13 +2,15 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
 import { SidebarInfoPanel } from '../../../../interfaces/special-event.interface';
+import { NgStyle } from '@angular/common';
+import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 
 @Component({
   selector: 'tamu-gisc-event-legend',
   templateUrl: './event-legend.component.html',
   styleUrls: ['./event-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [NgStyle, LegendModule]
 })
 export class EventLegendComponent implements OnInit {
   public deduplicate = true;
