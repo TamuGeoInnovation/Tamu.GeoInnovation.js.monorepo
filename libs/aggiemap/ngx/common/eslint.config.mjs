@@ -10,6 +10,8 @@ export default [
       '@angular-eslint/prefer-standalone': 'off',
       '@angular-eslint/prefer-inject': 'off',
       '@angular-eslint/prefer-on-push-component-change-detection': 'off',
+      // A browser bundle cannot load `import x = require()` on the dev server (#1558).
+      '@typescript-eslint/no-require-imports': 'error',
       '@angular-eslint/directive-selector': [
         'error',
         {
