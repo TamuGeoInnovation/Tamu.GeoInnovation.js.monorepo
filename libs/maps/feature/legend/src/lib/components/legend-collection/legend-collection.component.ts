@@ -1,13 +1,14 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { LegendElementComponent } from '../legend-element/legend-element.component';
 
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-legend-collection',
-  templateUrl: './legend-collection.component.html',
-  styleUrls: ['./legend-collection.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-legend-collection',
+    templateUrl: './legend-collection.component.html',
+    styleUrls: ['./legend-collection.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [LegendElementComponent]
 })
 export class LegendCollectionComponent {
   @Input()

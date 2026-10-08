@@ -9,9 +9,8 @@ import { LayerListService } from './services/layer-list.service';
 import { LayerListItemComponent } from './components/layer-list-item/layer-list-item.component';
 
 @NgModule({
-  imports: [CommonModule, UILayoutModule],
-  providers: [LayerListService],
-  declarations: [LayerListComponent, LayerListCategorizedComponent, LayerListItemComponent],
-  exports: [LayerListComponent, LayerListCategorizedComponent, LayerListItemComponent]
+    imports: [CommonModule, UILayoutModule, LayerListComponent, LayerListCategorizedComponent, LayerListItemComponent],
+    providers: [LayerListService],
+    exports: [LayerListComponent, LayerListCategorizedComponent, LayerListItemComponent]
 })
 export class LayerListModule {}

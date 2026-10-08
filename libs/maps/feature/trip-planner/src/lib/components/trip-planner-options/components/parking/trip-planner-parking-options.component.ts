@@ -7,13 +7,15 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { ParkingService } from '../../../../services/transportation/drive/parking.service';
 import { TripPlannerOptionsBaseComponent } from '../base/base.component';
 import { TripPlannerService } from '../../../../services/trip-planner.service';
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-trip-planner-parking-options-component',
-  templateUrl: './trip-planner-parking-options.component.html',
-  styleUrls: ['../../containers/base/base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-trip-planner-parking-options-component',
+    templateUrl: './trip-planner-parking-options.component.html',
+    styleUrls: ['../../containers/base/base.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [UIFormsModule, AsyncPipe]
 })
 export class TripPlannerParkingOptionsComponent extends TripPlannerOptionsBaseComponent {
   /**

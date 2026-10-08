@@ -8,15 +8,16 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { BasemapGalleryService } from '../../services/basemap-gallery/basemap-gallery.service';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-basemap-gallery',
-  templateUrl: './basemap-gallery.component.html',
-  styleUrls: ['./basemap-gallery.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-basemap-gallery',
+    templateUrl: './basemap-gallery.component.html',
+    styleUrls: ['./basemap-gallery.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass, AsyncPipe]
 })
 export class BasemapGalleryComponent implements OnInit {
   public gallery: Observable<esri.BasemapGalleryViewModel>;

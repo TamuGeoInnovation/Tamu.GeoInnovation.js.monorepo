@@ -8,8 +8,8 @@ describe('LegendCollectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LegendCollectionComponent]
-    }).compileComponents();
+    imports: [LegendCollectionComponent]
+}).compileComponents();
   });
 
   beforeEach(() => {

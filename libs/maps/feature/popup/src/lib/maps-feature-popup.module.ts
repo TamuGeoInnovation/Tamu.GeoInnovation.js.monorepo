@@ -10,8 +10,7 @@ import { BasePopupComponent } from './components/base/base.component';
 import { RevealSidebarOnPopupDirective } from './directives/reveal-sidebar/reveal-sidebar.directive';
 
 @NgModule({
-  imports: [CommonModule, UIDragModule, UILayoutModule],
-  declarations: [PopupComponent, PopupMobileComponent, BasePopupComponent, RevealSidebarOnPopupDirective],
-  exports: [PopupComponent, PopupMobileComponent, RevealSidebarOnPopupDirective]
+    imports: [CommonModule, UIDragModule, UILayoutModule, PopupComponent, PopupMobileComponent, BasePopupComponent, RevealSidebarOnPopupDirective],
+    exports: [PopupComponent, PopupMobileComponent, RevealSidebarOnPopupDirective]
 })
 export class MapPopupModule {}

@@ -5,13 +5,15 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { TripPlannerOptionsBaseComponent } from '../base/base.component';
 import { TripPlannerService } from '../../../../services/trip-planner.service';
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-trip-planner-biking-options',
-  templateUrl: './trip-planner-biking-options.component.html',
-  styleUrls: ['../../containers/base/base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-trip-planner-biking-options',
+    templateUrl: './trip-planner-biking-options.component.html',
+    styleUrls: ['../../containers/base/base.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [UIFormsModule, AsyncPipe]
 })
 export class TripPlannerBikingOptionsComponent extends TripPlannerOptionsBaseComponent {
   constructor(

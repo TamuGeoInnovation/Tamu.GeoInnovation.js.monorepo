@@ -7,13 +7,15 @@ import { Angulartics2 } from 'angulartics2';
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripResult } from '../../../../core/trip-planner-core';
+import { TripPlannerDirectionsActionsComponent } from '../../../trip-planner-directions-actions/containers/base/base.component';
+import { TripPlannerModeSwitchComponent } from '../../../trip-planner-mode-switch/containers/base/base.component';
 
 @Component({
-  selector: 'tamu-gisc-trip-planner-directions',
-  templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-trip-planner-directions',
+    templateUrl: './base.component.html',
+    styleUrls: ['./base.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [TripPlannerDirectionsActionsComponent, TripPlannerModeSwitchComponent]
 })
 export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
   public result: TripResult;

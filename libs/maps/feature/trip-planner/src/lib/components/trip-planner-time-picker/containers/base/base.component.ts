@@ -5,13 +5,16 @@ import { takeUntil, shareReplay, pluck } from 'rxjs/operators';
 import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { TimeModeOption, TripPlannerService } from '../../../../services/trip-planner.service';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-  selector: 'tamu-gisc-trip-planner-time-picker',
-  templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-trip-planner-time-picker',
+    templateUrl: './base.component.html',
+    styleUrls: ['./base.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass, FormsModule, UIFormsModule, AsyncPipe]
 })
 export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   /**

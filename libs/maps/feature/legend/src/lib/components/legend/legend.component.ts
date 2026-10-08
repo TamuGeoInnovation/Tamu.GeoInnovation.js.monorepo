@@ -7,15 +7,17 @@ import { Angulartics2 } from 'angulartics2';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 
 import { LegendService } from '../../services/legend.service';
+import { LegendCollectionComponent } from '../legend-collection/legend-collection.component';
+import { AsyncPipe } from '@angular/common';
 
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-legend',
-  templateUrl: './legend.component.html',
-  styleUrls: ['./legend.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-legend',
+    templateUrl: './legend.component.html',
+    styleUrls: ['./legend.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [LegendCollectionComponent, AsyncPipe]
 })
 export class LegendComponent implements OnInit, OnDestroy {
   /**

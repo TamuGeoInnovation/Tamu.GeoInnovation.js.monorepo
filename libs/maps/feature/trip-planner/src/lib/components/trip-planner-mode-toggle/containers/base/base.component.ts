@@ -4,13 +4,15 @@ import { switchMap, filter, withLatestFrom, map, mergeMap, pluck, takeUntil, sha
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripResult } from '../../../../core/trip-planner-core';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-  selector: 'tamu-gisc-trip-planner-mode-toggle',
-  templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'tamu-gisc-trip-planner-mode-toggle',
+    templateUrl: './base.component.html',
+    styleUrls: ['./base.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [NgClass, AsyncPipe, PipesModule]
 })
 export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
   /**

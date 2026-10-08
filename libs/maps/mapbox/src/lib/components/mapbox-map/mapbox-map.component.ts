@@ -5,11 +5,10 @@ import { MapboxOptions, Map } from 'mapbox-gl';
 import { MapboxMapService } from '../../services/mapbox-map.service';
 
 @Component({
-  selector: 'tamu-gisc-mapbox-map',
-  templateUrl: './mapbox-map.component.html',
-  styleUrls: ['./mapbox-map.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-mapbox-map',
+    templateUrl: './mapbox-map.component.html',
+    styleUrls: ['./mapbox-map.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class MapboxMapComponent implements OnInit {
   @ViewChild('map', { static: true })

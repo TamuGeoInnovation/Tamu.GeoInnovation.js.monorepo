@@ -14,11 +14,10 @@ import { take } from 'rxjs/operators';
 import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/map/map.service';
 
 @Component({
-  selector: 'tamu-gisc-esri-map',
-  templateUrl: './esri-map.component.html',
-  styleUrls: ['./esri-map.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-esri-map',
+    templateUrl: './esri-map.component.html',
+    styleUrls: ['./esri-map.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class EsriMapComponent implements OnInit, OnDestroy {
   @Input()

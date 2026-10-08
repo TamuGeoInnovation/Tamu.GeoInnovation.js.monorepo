@@ -5,13 +5,15 @@ import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { TripModeSwitch } from '../../../../services/trip-planner.service';
 import { BusStop, TimetableRow, BusService } from '../../../../services/transportation/bus/bus.service';
+import { NgClass } from '@angular/common';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
-  selector: 'tamu-gisc-gisc-bus-switch',
-  templateUrl: './bus-switch.component.html',
-  styleUrls: ['../../containers/base/base.component.scss', './bus-switch.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-gisc-bus-switch',
+    templateUrl: './bus-switch.component.html',
+    styleUrls: ['../../containers/base/base.component.scss', './bus-switch.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass, UILayoutModule]
 })
 export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
   @Input()
