@@ -1,6 +1,8 @@
 import { enableProdMode, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
 
-import { environment } from './environments/environment';
+import * as WebFont from 'webfontloader';
+
+import * as environment from './environments/environment';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import {
   notificationStorage,
@@ -16,9 +18,15 @@ import { TsEventsNgxModule } from '@tamu-gisc/ts/events/ngx';
 import { provideRouter } from '@angular/router';
 import { AppComponent } from './app/app.component';
 
-if (environment.production) {
+if (environment.environment.production) {
   enableProdMode();
 }
+
+WebFont.load({
+  google: {
+    families: ['Material Icons', 'Material Icons Outlined', 'Open Sans:300,400,600', 'Oswald']
+  }
+});
 
 bootstrapApplication(AppComponent, {
   providers: [
