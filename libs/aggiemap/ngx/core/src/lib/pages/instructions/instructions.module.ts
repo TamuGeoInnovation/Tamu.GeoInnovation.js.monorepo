@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
-
 import { InstructionsComponent } from './components/instructions.component';
 
 const routes: Routes = [
@@ -14,6 +12,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), AggiemapNgxSharedUiStructuralModule, InstructionsComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), InstructionsComponent]
 })
 export class InstructionsModule {}

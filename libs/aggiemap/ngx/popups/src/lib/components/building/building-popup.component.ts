@@ -9,14 +9,15 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+
+import { TrimPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
   selector: 'tamu-gisc-buildling-popup-component',
   templateUrl: './building-popup.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CopyComponent, AsyncPipe, TitleCasePipe, PipesModule]
+  imports: [CopyComponent, AsyncPipe, TitleCasePipe, TrimPipe]
 })
 export class BuildingPopupComponent extends BaseDirectionsComponent implements OnInit {
   constructor(

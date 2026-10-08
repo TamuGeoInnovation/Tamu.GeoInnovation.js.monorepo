@@ -3,8 +3,9 @@ import { Observable, pipe, fromEventPattern } from 'rxjs';
 import { map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
 import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+
 import { AsyncPipe } from '@angular/common';
+import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 import esri = __esri;
 
@@ -13,7 +14,7 @@ import esri = __esri;
   templateUrl: './click-coordinates.component.html',
   styleUrls: ['./click-coordinates.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [UIClipboardModule, AsyncPipe]
+  imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class ClickCoordinatesComponent implements OnInit {
   public coords: Observable<ClickCoordinates>;

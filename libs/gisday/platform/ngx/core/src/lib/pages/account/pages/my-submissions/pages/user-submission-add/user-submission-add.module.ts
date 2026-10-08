@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
-
 import { UserSubmissionAddComponent } from './user-submission-add.component';
 
 const routes: Routes = [
@@ -14,7 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule, UserSubmissionAddComponent],
+  imports: [CommonModule, RouterModule.forChild(routes), UserSubmissionAddComponent],
   exports: [RouterModule]
 })
 export class UserSubmissionAddModule {}

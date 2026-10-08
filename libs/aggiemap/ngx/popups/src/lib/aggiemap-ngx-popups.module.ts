@@ -3,11 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { LightgalleryModule } from 'lightgallery/angular/13';
 
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { ReferenceModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-
 import { BasePopupComponent } from './components/base/base.popup.component';
 import { BaseDirectionsComponent } from './components/base-directions/base-directions.component';
 import { AccessiblePopupComponent } from './components/accessible/accessible.component';
@@ -64,7 +59,7 @@ const PopsObj = {
 };
 
 @NgModule({
-  imports: [CommonModule, UIClipboardModule, PipesModule, ReferenceModule, LightgalleryModule, UILayoutModule, ...PopsArr],
+  imports: [CommonModule, LightgalleryModule, ...PopsArr],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AggiemapNgxPopupsModule {}

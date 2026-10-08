@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from '@auth0/auth0-angular';
 
-import { UINavigationMobileTabModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tab';
 import { DeviceGuard } from '@tamu-gisc/gisday/competitions/ngx/common';
 
 import { PublicComponent } from './public.component';
@@ -67,6 +66,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), UINavigationMobileTabModule, PublicComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), PublicComponent]
 })
 export class PublicModule {}

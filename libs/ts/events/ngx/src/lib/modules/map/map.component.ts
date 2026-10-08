@@ -22,13 +22,17 @@ import { EventService } from '../../services/event/event.service';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { EventPassedWarningComponent, MapNoticeComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
-import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
+
 import { NgClass, AsyncPipe } from '@angular/common';
-import { MapsFeaturePerspectiveModule } from '@tamu-gisc/maps/feature/perspective';
+
 import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
-import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
+
+import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { PerspectiveToggleComponent } from '@tamu-gisc/maps/feature/perspective';
+import { PopupComponent } from '@tamu-gisc/maps/feature/popup';
+import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
+import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
 
 import esri = __esri;
 
@@ -55,14 +59,15 @@ const EVENT_PASSED_GRACE_DAYS = 1;
   imports: [
     ReveilleConsoleLogComponent,
     RouterLink,
-    MapsFeatureCoordinatesModule,
-    EsriMapModule,
+    ClickCoordinatesComponent,
+    EsriMapComponent,
     NgClass,
-    MapsFeaturePerspectiveModule,
+    PerspectiveToggleComponent,
     ClipboardCopyDirective,
     RouterOutlet,
-    MapPopupModule,
-    MapsFeatureAccessibilityModule,
+    PopupComponent,
+    PopupMobileComponent,
+    MapViewfinderComponent,
     AsyncPipe
   ]
 })

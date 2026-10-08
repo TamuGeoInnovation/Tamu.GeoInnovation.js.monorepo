@@ -4,9 +4,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
-import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
+import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { EsriMapModule } from '../../maps-esri.module';
 import { EsriMapComponent } from './esri-map.component';
 
 describe('EsriMapComponent', () => {
@@ -19,7 +18,15 @@ describe('EsriMapComponent', () => {
           useValue: { SearchSources: [], LayerSources: [] }
         }
       ],
-      imports: [EsriMapModule, RouterTestingModule, SearchModule, HttpClientTestingModule, EnvironmentModule]
+      imports: [
+        EsriMapComponent,
+        RouterTestingModule,
+        SearchComponent,
+        SearchMobileComponent,
+        SearchResultPipe,
+        HttpClientTestingModule,
+        EnvironmentModule
+      ]
     }).compileComponents();
   }));
 

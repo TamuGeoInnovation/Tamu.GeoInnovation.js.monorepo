@@ -12,7 +12,8 @@ import { SearchSelection, AltSearchHelper } from '@tamu-gisc/ui-kits/ngx/search'
 
 import { offCanvasSlideInFromBottom, offCanvasSlideUpFromTop } from '../../animations/elements';
 import { SearchMobileComponent } from '@tamu-gisc/ui-kits/ngx/search';
-import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+
+import { BackdropComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
 
@@ -23,7 +24,7 @@ import esri = __esri;
   animations: [offCanvasSlideInFromBottom, offCanvasSlideUpFromTop],
   providers: [AltSearchHelper],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [SearchMobileComponent, AggiemapNgxSharedUiStructuralModule, AsyncPipe]
+  imports: [SearchMobileComponent, BackdropComponent, AsyncPipe]
 })
 export class OmnisearchComponent implements OnInit, OnDestroy {
   /**

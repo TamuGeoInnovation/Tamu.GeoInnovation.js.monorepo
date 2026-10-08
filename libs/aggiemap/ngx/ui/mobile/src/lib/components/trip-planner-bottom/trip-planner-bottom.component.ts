@@ -5,15 +5,16 @@ import { switchMap, takeUntil, pluck } from 'rxjs/operators';
 
 import { TripPlannerService, TripResult } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-planner';
+
 import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { TripPlannerDirectionsMobileComponent } from '@tamu-gisc/maps/feature/trip-planner';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-bottom',
   templateUrl: './trip-planner-bottom.component.html',
   styleUrls: ['./trip-planner-bottom.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [MapsFeatureTripPlannerModule, DragDirective]
+  imports: [TripPlannerDirectionsMobileComponent, DragDirective]
 })
 export class TripPlannerBottomComponent implements OnInit, OnDestroy {
   /**

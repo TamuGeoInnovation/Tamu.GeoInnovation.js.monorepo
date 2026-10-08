@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import {
-  AggiemapNgxSharedUiStructuralModule,
   ModalComponent,
   ReportBadRouteComponent,
-  AggiemapFormsModule
+  BackdropComponent,
+  HeaderComponent,
+  FooterComponent
 } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import {
   AggiemapSidebarModule,
@@ -25,24 +26,88 @@ import {
 
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
-import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-gisc/ui-kits/ngx/search';
+
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import {
+  SelectComponent,
+  CheckboxComponent,
+  CheckboxGroupComponent,
+  DateTimePickerComponent,
+  TextboxComponent,
+  AutocompleteComponent,
+  AutocompleteOptionTemplateDirective,
+  ButtonComponent,
+  FileComponent,
+  RadioGroupComponent,
+  RangeComponent,
+  SlideToggleComponent,
+  SelectListComponent,
+  TurnstileChallengeComponent
+} from '@tamu-gisc/ui-kits/ngx/forms';
+import {
+  DrawerComponent,
+  AccordionComponent,
+  AccordionHeaderComponent,
+  AccordionContentComponent,
+  TooltipComponent,
+  TooltipTriggerComponent,
+  TabsComponent,
+  TabComponent,
+  AccordionDirective,
+  AccordionHeaderDirective,
+  AccordionContentDirective,
+  StepperComponent,
+  StepComponent,
+  StepToggleComponent,
+  StepperToggleDirective,
+  RenderHostDirective,
+  ElementInsertDirective
+} from '@tamu-gisc/ui-kits/ngx/layout';
+import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
-import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
+import { SidebarComponent, SidebarTabComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+import {
+  GroupByPipe,
+  OrderByPipe,
+  MarkdownParsePipe,
+  SafeHtmlPipe,
+  TimeUntilPipe,
+  PhoneNumberFormatPipe,
+  ExistsPipe,
+  LookupPipe,
+  DateRangePipe,
+  NearestDatePipe,
+  ToDatePipe,
+  ToArrayPipe,
+  TrimPipe
+} from '@tamu-gisc/common/ngx/pipes';
 import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
-import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
-import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
-import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
+import {
+  TripPlannerOptionsComponent,
+  TripPlannerConnectionsSelectComponent,
+  TripPlannerDirectionsComponent,
+  TripPlannerDirectionsMobileComponent,
+  TripPlannerDirectionsActionsComponent,
+  TripPlannerDirectionsActionsMobileComponent,
+  TripPlannerModePickerComponent,
+  TripPlannerModePickerMobileComponent,
+  TripPlannerModeSwitchComponent,
+  TripPlannerBusModeSwitchComponent,
+  TripPlannerModeToggleComponent,
+  TripPlannerOptionsBaseComponent,
+  TripPlannerBikingOptionsComponent,
+  TripPlannerParkingOptionsComponent,
+  TripPlannerTimePickerComponent,
+  RouteDirectionTransformerPipe
+} from '@tamu-gisc/maps/feature/trip-planner';
+import { PopupMobileComponent, PopupComponent, RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
+import { ClipboardCopyDirective, CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
+import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
 import { BasemapGalleryComponent } from '@tamu-gisc/maps/feature/basemap';
 
 import { MoveInOutSidebarModule } from '../sidebar/sidebar.module';
@@ -121,26 +186,90 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     UITamuBrandingModule,
     AggiemapNgxUiMobileModule,
-    MapsFeatureTripPlannerModule,
-    EsriMapModule,
-    MapsFeatureCoordinatesModule,
-    MapsFeatureAccessibilityModule,
-    SearchModule,
-    AggiemapNgxSharedUiStructuralModule,
-    AggiemapFormsModule,
+    TripPlannerConnectionsSelectComponent,
+    TripPlannerDirectionsComponent,
+    TripPlannerDirectionsMobileComponent,
+    TripPlannerDirectionsActionsComponent,
+    TripPlannerDirectionsActionsMobileComponent,
+    TripPlannerModePickerComponent,
+    TripPlannerModePickerMobileComponent,
+    TripPlannerModeSwitchComponent,
+    TripPlannerBusModeSwitchComponent,
+    TripPlannerModeToggleComponent,
+    TripPlannerOptionsBaseComponent,
+    TripPlannerBikingOptionsComponent,
+    TripPlannerParkingOptionsComponent,
+    TripPlannerOptionsComponent,
+    TripPlannerTimePickerComponent,
+    RouteDirectionTransformerPipe,
+    EsriMapComponent,
+    ClickCoordinatesComponent,
+    MapViewfinderComponent,
+    SearchComponent,
+    SearchMobileComponent,
+    SearchResultPipe,
+    BackdropComponent,
+    ModalComponent,
+    HeaderComponent,
+    FooterComponent,
+    ReportBadRouteComponent,
     AggiemapSidebarModule,
-    ResponsiveModule,
     CommonNgxRouterModule,
-    UIFormsModule,
-    UILayoutModule,
-    UIDragModule,
+    SelectComponent,
+    CheckboxComponent,
+    CheckboxGroupComponent,
+    DateTimePickerComponent,
+    TextboxComponent,
+    AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
+    ButtonComponent,
+    FileComponent,
+    RadioGroupComponent,
+    RangeComponent,
+    SlideToggleComponent,
+    SelectListComponent,
+    TurnstileChallengeComponent,
+    DrawerComponent,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    TooltipComponent,
+    TooltipTriggerComponent,
+    TabsComponent,
+    TabComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective,
+    StepperComponent,
+    StepComponent,
+    StepToggleComponent,
+    StepperToggleDirective,
+    RenderHostDirective,
+    ElementInsertDirective,
+    DragDirective,
     SettingsModule,
-    SidebarModule,
+    SidebarComponent,
+    SidebarTabComponent,
     LayerListModule,
-    PipesModule,
+    GroupByPipe,
+    OrderByPipe,
+    MarkdownParsePipe,
+    SafeHtmlPipe,
+    TimeUntilPipe,
+    PhoneNumberFormatPipe,
+    ExistsPipe,
+    LookupPipe,
+    DateRangePipe,
+    NearestDatePipe,
+    ToDatePipe,
+    ToArrayPipe,
+    TrimPipe,
     LegendModule,
-    MapPopupModule,
-    UIClipboardModule,
+    PopupComponent,
+    PopupMobileComponent,
+    RevealSidebarOnPopupDirective,
+    ClipboardCopyDirective,
+    CopyComponent,
     MoveInOutSidebarModule
   ],
   declarations: [MapComponent]

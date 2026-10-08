@@ -46,6 +46,38 @@ Nothing below has merged, so it is not part of a release yet. This section exist
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
 file would say the work had stopped.
 
+### Standalone components ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)), 8 October
+
+Every Angular app except Ring Day ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) and the OIDC admin and signage deletion
+candidates ([#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457)) now starts with `bootstrapApplication` and no `AppModule`, and its
+libraries' components are standalone.
+
+| Step | State |
+| --- | --- |
+| UI kits, common, maps, AggieMap libraries | merged: [#1546](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1546), [#1549](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1549), [#1551](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1551), [#1557](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1557) |
+| GIS Day libraries ([#1561](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1561)) | merged: [#1562](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1562) |
+| AggieMap and event maps bootstrapped ([#1563](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1563)) | merged: [#1565](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1565) |
+| Geoservices, mailroom and UES libraries ([#1564](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1564)) | merged: [#1566](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1566) |
+| GIS Day, geoservices, mailroom and UES bootstrapped ([#1567](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1567)) | merged: [#1572](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1572) |
+| The 53 emptied NgModules removed ([#1568](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1568)) | [#1573](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1573), open; local smoke run 428 passed |
+| The ~230 routing NgModules replaced with route arrays ([#1569](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1569)) | not started, Medium |
+
+**Next:** after #1573 merges, one `development` build to dev and the full suite there, covering all of the
+above and the Ring Day fix ([#1571](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1571)) together. Then the dev tag, and the release.
+
+**What Angular's standalone migration gets wrong here, so check for it next time:**
+
+- `--mode=standalone-bootstrap` drops `provideZoneChangeDetection()` (the app then runs zoneless), gives
+  the `env` token only the `environment` export where the module used `import * as environment` (AggieMap
+  then rendered nothing, and only the smoke suite noticed), and loses anything at the top of the deleted
+  `app.module.ts`, such as `WebFont.load`. A module with a constructor is left in place with a TODO.
+- `--mode=prune-ng-modules` must run over the whole workspace in one pass, and even then leaves imports of
+  the modules it deleted in routing modules, unconverted code and specs.
+- Every pass leaves relative imports across libraries and components not exported from their library's
+  index; both show as lint or `TS2305` errors in the check.
+- The production daily smoke run fails its campus and All Maps notification tests until the Ring Day fix
+  ships: the hard-coded notice it removes shows on every page from 8 to 10 October.
+
 ### The Angular upgrade ([#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218)), in order
 
 | Order | Step | State |

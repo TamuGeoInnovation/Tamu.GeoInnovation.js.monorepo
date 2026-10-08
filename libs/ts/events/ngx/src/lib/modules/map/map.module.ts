@@ -2,12 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import {
-  AggiemapNgxSharedUiStructuralModule,
-  ModalComponent,
-  ReportBadRouteComponent,
-  AggiemapFormsModule
-} from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { ModalComponent, ReportBadRouteComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import {
   AggiemapSidebarModule,
   SidebarSettingsComponent,
@@ -25,25 +20,17 @@ import {
 
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
-import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
-import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
+
 import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
-import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
-import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
-import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
-import { MapsFeaturePerspectiveModule } from '@tamu-gisc/maps/feature/perspective';
+import { TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
+import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
+
 import { BasemapGalleryComponent } from '@tamu-gisc/maps/feature/basemap';
 
 import { MoveInOutSidebarModule } from '../sidebar/sidebar.module';
@@ -131,27 +118,11 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     UITamuBrandingModule,
     AggiemapNgxUiMobileModule,
-    MapsFeatureTripPlannerModule,
-    EsriMapModule,
-    MapsFeatureCoordinatesModule,
-    MapsFeatureAccessibilityModule,
-    MapsFeaturePerspectiveModule,
-    SearchModule,
-    AggiemapNgxSharedUiStructuralModule,
-    AggiemapFormsModule,
     AggiemapSidebarModule,
-    ResponsiveModule,
     CommonNgxRouterModule,
-    UIFormsModule,
-    UILayoutModule,
-    UIDragModule,
     SettingsModule,
-    SidebarModule,
     LayerListModule,
-    PipesModule,
     LegendModule,
-    MapPopupModule,
-    UIClipboardModule,
     MoveInOutSidebarModule,
     MapComponent,
     EventLegendComponent

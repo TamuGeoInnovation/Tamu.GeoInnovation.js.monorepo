@@ -1,6 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import {
+  DrawerComponent,
+  AccordionComponent,
+  AccordionHeaderComponent,
+  AccordionContentComponent,
+  TooltipComponent,
+  TooltipTriggerComponent,
+  TabsComponent,
+  TabComponent,
+  AccordionDirective,
+  AccordionHeaderDirective,
+  AccordionContentDirective,
+  StepperComponent,
+  StepComponent,
+  StepToggleComponent,
+  StepperToggleDirective,
+  RenderHostDirective,
+  ElementInsertDirective
+} from '@tamu-gisc/ui-kits/ngx/layout';
 
 import {
   DateTimePickerChange,
@@ -67,7 +85,26 @@ describe('DateTimePickerComponent', () => {
 
     beforeEach(async () => {
       await TestBed.configureTestingModule({
-        imports: [UILayoutModule, DateTimePickerComponent]
+        imports: [
+          DrawerComponent,
+          AccordionComponent,
+          AccordionHeaderComponent,
+          AccordionContentComponent,
+          TooltipComponent,
+          TooltipTriggerComponent,
+          TabsComponent,
+          TabComponent,
+          AccordionDirective,
+          AccordionHeaderDirective,
+          AccordionContentDirective,
+          StepperComponent,
+          StepComponent,
+          StepToggleComponent,
+          StepperToggleDirective,
+          RenderHostDirective,
+          ElementInsertDirective,
+          DateTimePickerComponent
+        ]
       }).compileComponents();
 
       fixture = TestBed.createComponent(DateTimePickerComponent);

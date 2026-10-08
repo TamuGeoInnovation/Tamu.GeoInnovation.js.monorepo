@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { GeoservicesCoreNgxModule } from '../core/geoservices-core-ngx.module';
 import { GeoservicesPublicComponent } from './geoservices-public.component';
 
 const routes: Routes = [
@@ -36,6 +35,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), GeoservicesCoreNgxModule, GeoservicesPublicComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), GeoservicesPublicComponent]
 })
 export class GeoservicesPublicModule {}

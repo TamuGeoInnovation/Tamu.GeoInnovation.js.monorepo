@@ -5,15 +5,16 @@ import { Angulartics2 } from 'angulartics2';
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripPlannerDirectionsActionsComponent } from '../base/base.component';
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+
 import { AsyncPipe } from '@angular/common';
+import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-directions-actions-mobile',
   templateUrl: './mobile.component.html',
   styleUrls: ['../base/base.component.scss', './mobile.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [UIClipboardModule, AsyncPipe]
+  imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class TripPlannerDirectionsActionsMobileComponent extends TripPlannerDirectionsActionsComponent {
   constructor(

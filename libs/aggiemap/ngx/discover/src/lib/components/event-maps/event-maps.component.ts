@@ -15,7 +15,8 @@ import {
 import { QuickLinkItem, QuickLinksComponent } from '../quick-links/quick-links.component';
 import { MapsPageHeaderComponent } from '../maps-page-header/maps-page-header.component';
 import { MapColumnsComponent } from '../map-columns/map-columns.component';
-import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+
+import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 interface EventMapsRouteData {
   mapType: Extract<DiscoverMapType, 'campus' | 'athletics' | 'operations' | 'satellite-campus' | '150'>;
@@ -40,7 +41,7 @@ interface EventMapsRouteData {
   templateUrl: './event-maps.component.html',
   styleUrls: ['./event-maps.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [MapsPageHeaderComponent, MapColumnsComponent, QuickLinksComponent, AggiemapNgxSharedUiStructuralModule]
+  imports: [MapsPageHeaderComponent, MapColumnsComponent, QuickLinksComponent, FooterComponent]
 })
 export class EventMapsComponent implements OnInit {
   public title: string;

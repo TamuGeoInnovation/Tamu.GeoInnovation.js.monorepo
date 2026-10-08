@@ -35,6 +35,13 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 8 Oct 2026 | home | `check-in-volume.sh refactor/1568-prune-ng-modules` (affected, 67 projects, 140 tasks), rebased on `development` after #1572 | volume, cold cache | **2 min 55 s** |
+| 8 Oct 2026 | home | NgModule prune (`--mode=prune-ng-modules`) over the whole workspace, one run | volume | ~6 min |
+| 8 Oct 2026 | home | NgModule prune run library by library, 16 paths (abandoned: it missed importers outside each path) | volume | 27 min |
+| 8 Oct 2026 | home | `check-in-volume.sh refactor/standalone-bootstrap-rest` (#1567, affected, 54 projects, 114 tasks) | volume, cold cache | 2 min 8 s |
+| 8 Oct 2026 | home | `check-in-volume.sh refactor/1563-standalone-bootstrap` (affected, 45 projects) | volume, cold cache | 2 min 22 s |
+| 8 Oct 2026 | home | `check-in-volume.sh refactor/1564-standalone-remaining` (affected, 48 projects) | volume | 1 min 56 s |
+| 8 Oct 2026 | home | Standalone bootstrap migration (`--mode=standalone-bootstrap`), per app | volume | ~1 min 40 s each |
 | 7 Oct 2026 | Kaleb's laptop | `check-in-volume.sh fix/tailgating-simpson-tents ts-events-ngx,aggiemap-angular` (lint, test, build), 12:45 Central | volume, cold clone and `npm ci` (27 s of it), 2 projects | **55 s** |
 | 6 Oct 2026 | office | `check-in-volume.sh feat/1508-service-symbology` (affected), deleting 90 hard-coded renderers across 42 files, 17:12 Central | volume, cold clone and `npm ci` | 6 min, **failed**: a scripted edit dropped three `commonLayerProps` imports still in use (8 suites, `ReferenceError`) |
 | 6 Oct 2026 | office | The same check after the import fix, plus 71 titles removed, 17:35 Central | volume, warm | 5 min, **failed**: `LayerSource.title` was required, so TS2322 in `aggiemap-angular` and `ts-events-angular` |
@@ -227,6 +234,8 @@ every layer, so its duration says as much about the GIS services as about this c
 
 | Date | Machine | Environment | Result | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 8 Oct 2026 | home | local dev server, #1568 branch rebased on `development` (all the standalone work and #1571), release scope, 6 workers, about 11:25 AM to 11:55 AM Central | 428 passed, 1 failed (build banner, local only), 1 flaky (bus route 48), 30 skipped | **28.2 min** |
+| 8 Oct 2026 | home | local dev server, #1563 branch (AggieMap bootstrapped standalone), release scope, 6 workers, morning | 405 passed, 1 failed (build banner, local only), 30 skipped | 22.1 min |
 | 7 Oct 2026 | cloud (4 CPUs) | dev; **`bus.spec.ts` alone, #1473 branch**, one test per route, **2 workers**, 11:09:26 to 11:20:02 PM Central; CPU load about 10 | 26 passed, 0 failed; 48 s median per route test (23 to 61 s) | **10 min 36 s** |
 | 7 Oct 2026 | cloud (4 CPUs) | dev; `bus.spec.ts` alone, #1473 branch, 6 workers, 11:00:10 to 11:09:06 PM Central; CPU load about 35 | 24 passed, 2 flaky (routes 01 and NW4041 timed out at 120 s twice, passed on the third try), 0 failed; 80 to 130 s per route test | 8 min 56 s |
 | 7 Oct 2026 | cloud (4 CPUs) | dev; **`bus.spec.ts` alone, `development` (`300a3ff9`)**, one test for every route, 6 workers (2 tests), 10:51:25 to 11:00:04 PM Central | 2 passed; the every-route test took 8.5 min | **8 min 39 s** |

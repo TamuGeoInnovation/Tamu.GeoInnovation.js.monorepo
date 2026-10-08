@@ -11,7 +11,7 @@ import * as WebFont from 'webfontloader';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { NotificationModule, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
+
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { GisdayCompetitionsNgxCoreModule } from '@tamu-gisc/gisday/competitions/ngx/core';
 
@@ -35,7 +35,6 @@ WebFont.load({
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
     EnvironmentModule,
     NotificationModule,
-    ResponsiveModule,
     SettingsModule,
     GisdayCompetitionsNgxCoreModule
   ],

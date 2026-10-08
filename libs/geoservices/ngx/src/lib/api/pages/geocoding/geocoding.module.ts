@@ -4,13 +4,29 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { UIScrollToModule } from '@tamu-gisc/ui-kits/ngx/interactions/scroll-to';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { ClipboardCopyDirective, CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+
+import {
+  DrawerComponent,
+  AccordionComponent,
+  AccordionHeaderComponent,
+  AccordionContentComponent,
+  TooltipComponent,
+  TooltipTriggerComponent,
+  TabsComponent,
+  TabComponent,
+  AccordionDirective,
+  AccordionHeaderDirective,
+  AccordionContentDirective,
+  StepperComponent,
+  StepComponent,
+  StepToggleComponent,
+  StepperToggleDirective,
+  RenderHostDirective,
+  ElementInsertDirective
+} from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { GeocodingComponent } from './geocoding.component';
-import { ApiComponentsModule } from '../../components/components.module';
-import { GeoservicesCoreInteractiveModule } from '../../../core/modules/interactive/interactive.module';
 
 const routes: Routes = [
   {
@@ -24,11 +40,25 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     HighlightPlusModule,
-    UIClipboardModule,
-    UIScrollToModule,
-    UILayoutModule,
-    ApiComponentsModule,
-    GeoservicesCoreInteractiveModule,
+    ClipboardCopyDirective,
+    CopyComponent,
+    DrawerComponent,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    TooltipComponent,
+    TooltipTriggerComponent,
+    TabsComponent,
+    TabComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective,
+    StepperComponent,
+    StepComponent,
+    StepToggleComponent,
+    StepperToggleDirective,
+    RenderHostDirective,
+    ElementInsertDirective,
     GeocodingComponent
   ],
   exports: [RouterModule]

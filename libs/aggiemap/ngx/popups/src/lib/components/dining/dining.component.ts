@@ -13,7 +13,8 @@ import { AccordionDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 import { NgClass, AsyncPipe, DatePipe, KeyValuePipe } from '@angular/common';
 import { AccordionContentDirective } from '@tamu-gisc/ui-kits/ngx/layout';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+
+import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
   selector: 'tamu-gisc-dining-popup-component',
@@ -28,7 +29,7 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
     AsyncPipe,
     DatePipe,
     KeyValuePipe,
-    PipesModule
+    MarkdownParsePipe
   ]
 })
 export class DiningPopupComponent extends BaseDirectionsComponent implements OnInit {

@@ -3,9 +3,37 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+import {
+  GroupByPipe,
+  OrderByPipe,
+  MarkdownParsePipe,
+  SafeHtmlPipe,
+  TimeUntilPipe,
+  PhoneNumberFormatPipe,
+  ExistsPipe,
+  LookupPipe,
+  DateRangePipe,
+  NearestDatePipe,
+  ToDatePipe,
+  ToArrayPipe,
+  TrimPipe
+} from '@tamu-gisc/common/ngx/pipes';
+import {
+  SelectComponent,
+  CheckboxComponent,
+  CheckboxGroupComponent,
+  DateTimePickerComponent,
+  TextboxComponent,
+  AutocompleteComponent,
+  AutocompleteOptionTemplateDirective,
+  ButtonComponent,
+  FileComponent,
+  RadioGroupComponent,
+  RangeComponent,
+  SlideToggleComponent,
+  SelectListComponent,
+  TurnstileChallengeComponent
+} from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { AdminTagComponent } from './admin-tag.component';
 import { TagsListComponent } from './pages/tags-list/tags-list.component';
@@ -39,9 +67,33 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     FormsModule,
     ReactiveFormsModule,
-    UIFormsModule,
-    GisdayFormsModule,
-    PipesModule,
+    SelectComponent,
+    CheckboxComponent,
+    CheckboxGroupComponent,
+    DateTimePickerComponent,
+    TextboxComponent,
+    AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
+    ButtonComponent,
+    FileComponent,
+    RadioGroupComponent,
+    RangeComponent,
+    SlideToggleComponent,
+    SelectListComponent,
+    TurnstileChallengeComponent,
+    GroupByPipe,
+    OrderByPipe,
+    MarkdownParsePipe,
+    SafeHtmlPipe,
+    TimeUntilPipe,
+    PhoneNumberFormatPipe,
+    ExistsPipe,
+    LookupPipe,
+    DateRangePipe,
+    NearestDatePipe,
+    ToDatePipe,
+    ToArrayPipe,
+    TrimPipe,
     AdminTagComponent,
     TagsEditComponent,
     TagsListComponent,

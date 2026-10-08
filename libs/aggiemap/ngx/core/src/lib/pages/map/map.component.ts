@@ -15,11 +15,13 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { BetaPromptComponent, AlertModalComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
+
 import { NgClass, AsyncPipe } from '@angular/common';
-import { MapsFeaturePerspectiveModule } from '@tamu-gisc/maps/feature/perspective';
-import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
+
+import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { PerspectiveToggleComponent } from '@tamu-gisc/maps/feature/perspective';
+import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
 
 import esri = __esri;
 @Component({
@@ -30,12 +32,12 @@ import esri = __esri;
   imports: [
     ReveilleConsoleLogComponent,
     RouterLink,
-    MapsFeatureCoordinatesModule,
-    EsriMapModule,
+    ClickCoordinatesComponent,
+    EsriMapComponent,
     NgClass,
-    MapsFeaturePerspectiveModule,
+    PerspectiveToggleComponent,
     RouterOutlet,
-    MapsFeatureAccessibilityModule,
+    MapViewfinderComponent,
     AsyncPipe
   ]
 })

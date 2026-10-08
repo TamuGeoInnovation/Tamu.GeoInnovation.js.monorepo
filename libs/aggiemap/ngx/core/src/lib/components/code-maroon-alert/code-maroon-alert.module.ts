@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 
 import { CodeMaroonAlertComponent } from './code-maroon-alert.component';
@@ -14,7 +13,7 @@ import { CodeMaroonAlertComponent } from './code-maroon-alert.component';
  */
 @NgModule({
   exports: [CodeMaroonAlertComponent],
-  imports: [CommonModule, RouterModule, UIFormsModule, TestingModule, CodeMaroonAlertComponent],
+  imports: [CommonModule, RouterModule, TestingModule, CodeMaroonAlertComponent],
   providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())]
 })
 export class CodeMaroonAlertModule {}

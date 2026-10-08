@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { UserSubmissionsComponent } from './user-submissions.component';
-import { SubmissionReviewSharedModule } from '../../../shared/submission-review-shared.module';
 
 const routes: Routes = [
   {
@@ -13,6 +12,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), SubmissionReviewSharedModule, UserSubmissionsComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), UserSubmissionsComponent]
 })
 export class UserSubmissionsModule {}

@@ -12,7 +12,25 @@ import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { AuthenticationGuard, AuthRoutingModule } from '@tamu-gisc/oidc/ngx';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 import { NotificationModule, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import {
+  DrawerComponent,
+  AccordionComponent,
+  AccordionHeaderComponent,
+  AccordionContentComponent,
+  TooltipComponent,
+  TooltipTriggerComponent,
+  TabsComponent,
+  TabComponent,
+  AccordionDirective,
+  AccordionHeaderDirective,
+  AccordionContentDirective,
+  StepperComponent,
+  StepComponent,
+  StepToggleComponent,
+  StepperToggleDirective,
+  RenderHostDirective,
+  ElementInsertDirective
+} from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
@@ -85,7 +103,23 @@ export function getHighlightLanguages() {
     EnvironmentModule,
     LocalStoreModule,
     NotificationModule,
-    UILayoutModule,
+    DrawerComponent,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    TooltipComponent,
+    TooltipTriggerComponent,
+    TabsComponent,
+    TabComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective,
+    StepperComponent,
+    StepComponent,
+    StepToggleComponent,
+    StepperToggleDirective,
+    RenderHostDirective,
+    ElementInsertDirective,
     AuthRoutingModule
   ],
   providers: [

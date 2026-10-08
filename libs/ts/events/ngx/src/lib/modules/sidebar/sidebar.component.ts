@@ -5,18 +5,29 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { EventConfiguration } from '../../interfaces/special-event.interface';
 import { EventSettingsService } from '../../services/settings/event-settings.service';
-import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
-import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
+
 import { TamuBlockBrandingComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
+import { SidebarComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
+import { SidebarTabComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
+import { PopupComponent } from '@tamu-gisc/maps/feature/popup';
+import { RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
 
 @Component({
   selector: 'tamu-gisc-movein-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [SidebarModule, MapPopupModule, TamuBlockBrandingComponent, RouterOutlet, AsyncPipe]
+  imports: [
+    SidebarComponent,
+    SidebarTabComponent,
+    PopupComponent,
+    RevealSidebarOnPopupDirective,
+    TamuBlockBrandingComponent,
+    RouterOutlet,
+    AsyncPipe
+  ]
 })
 export class MoveInOutSidebarComponent implements OnInit {
   public configuration: EventConfiguration | null;

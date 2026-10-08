@@ -1,5 +1,4 @@
 // Modules
-export * from './lib/common-ngx-auth.module';
 
 // Guards
 export * from './lib/guards/role/role.guard';

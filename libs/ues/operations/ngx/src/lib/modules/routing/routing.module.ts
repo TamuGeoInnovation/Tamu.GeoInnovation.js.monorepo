@@ -8,7 +8,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 
 // Services
-import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
+
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 
@@ -34,7 +34,6 @@ const hybridRoutes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
-    ResponsiveModule,
     CommonNgxRouterModule,
     TestingModule,
     UITamuBrandingModule,

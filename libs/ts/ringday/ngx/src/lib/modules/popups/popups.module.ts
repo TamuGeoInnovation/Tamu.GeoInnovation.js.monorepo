@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { ClipboardCopyDirective, CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 import { RingDayMarkdownWDirectionsComponent } from './ring-day-markdown-w-directions/ring-day-markdown-w-directions.component';
 import { RingDayMarkdownComponent } from './ring-day-markdown/ring-day-markdown.component';
@@ -10,7 +10,7 @@ import { RingDayMarkdownComponent } from './ring-day-markdown/ring-day-markdown.
 const popups = [RingDayMarkdownWDirectionsComponent, RingDayMarkdownComponent];
 
 @NgModule({
-  imports: [CommonModule, AggiemapNgxPopupsModule, UIClipboardModule],
+  imports: [CommonModule, AggiemapNgxPopupsModule, ClipboardCopyDirective, CopyComponent],
   declarations: [...popups],
   exports: popups
 })

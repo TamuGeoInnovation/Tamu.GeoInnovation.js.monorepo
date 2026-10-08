@@ -2,8 +2,25 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { MapsMapboxModule } from '@tamu-gisc/maps/mapbox';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import {
+  DrawerComponent,
+  AccordionComponent,
+  AccordionHeaderComponent,
+  AccordionContentComponent,
+  TooltipComponent,
+  TooltipTriggerComponent,
+  TabsComponent,
+  TabComponent,
+  AccordionDirective,
+  AccordionHeaderDirective,
+  AccordionContentDirective,
+  StepperComponent,
+  StepComponent,
+  StepToggleComponent,
+  StepperToggleDirective,
+  RenderHostDirective,
+  ElementInsertDirective
+} from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { CompetitionsComponent } from './competitions.component';
 
@@ -94,7 +111,28 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, UILayoutModule, CompetitionsComponent],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    DrawerComponent,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    TooltipComponent,
+    TooltipTriggerComponent,
+    TabsComponent,
+    TabComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective,
+    StepperComponent,
+    StepComponent,
+    StepToggleComponent,
+    StepperToggleDirective,
+    RenderHostDirective,
+    ElementInsertDirective,
+    CompetitionsComponent
+  ],
   exports: [RouterModule]
 })
 export class CompetitionsModule {}

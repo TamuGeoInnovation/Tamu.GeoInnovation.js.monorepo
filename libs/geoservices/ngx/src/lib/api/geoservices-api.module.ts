@@ -2,10 +2,25 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Route } from '@angular/router';
 
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-import { UIScrollToModule } from '@tamu-gisc/ui-kits/ngx/interactions/scroll-to';
-import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
-import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
+import {
+  DrawerComponent,
+  AccordionComponent,
+  AccordionHeaderComponent,
+  AccordionContentComponent,
+  TooltipComponent,
+  TooltipTriggerComponent,
+  TabsComponent,
+  TabComponent,
+  AccordionDirective,
+  AccordionHeaderDirective,
+  AccordionContentDirective,
+  StepperComponent,
+  StepComponent,
+  StepToggleComponent,
+  StepperToggleDirective,
+  RenderHostDirective,
+  ElementInsertDirective
+} from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { GeoservicesApiComponent } from './geoservices-api.component';
 
@@ -50,10 +65,23 @@ export const routes: Route[] = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    UILayoutModule,
-    UIScrollToModule,
-    UITileNavigationModule,
-    UINavigationTriggersModule,
+    DrawerComponent,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    TooltipComponent,
+    TooltipTriggerComponent,
+    TabsComponent,
+    TabComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective,
+    StepperComponent,
+    StepComponent,
+    StepToggleComponent,
+    StepperToggleDirective,
+    RenderHostDirective,
+    ElementInsertDirective,
     GeoservicesApiComponent
   ],
   exports: [RouterModule]

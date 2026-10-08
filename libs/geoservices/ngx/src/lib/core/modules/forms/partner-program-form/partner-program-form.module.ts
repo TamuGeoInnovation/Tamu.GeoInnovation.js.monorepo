@@ -3,12 +3,45 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import {
+  SelectComponent,
+  CheckboxComponent,
+  CheckboxGroupComponent,
+  DateTimePickerComponent,
+  TextboxComponent,
+  AutocompleteComponent,
+  AutocompleteOptionTemplateDirective,
+  ButtonComponent,
+  FileComponent,
+  RadioGroupComponent,
+  RangeComponent,
+  SlideToggleComponent,
+  SelectListComponent,
+  TurnstileChallengeComponent
+} from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { PartnerProgramFormComponent } from './partner-program-form.component';
 
 @NgModule({
-  imports: [CommonModule, ReactiveFormsModule, UIFormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    SelectComponent,
+    CheckboxComponent,
+    CheckboxGroupComponent,
+    DateTimePickerComponent,
+    TextboxComponent,
+    AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
+    ButtonComponent,
+    FileComponent,
+    RadioGroupComponent,
+    RangeComponent,
+    SlideToggleComponent,
+    SelectListComponent,
+    TurnstileChallengeComponent,
+    RouterModule
+  ],
   declarations: [PartnerProgramFormComponent],
   exports: [PartnerProgramFormComponent]
 })

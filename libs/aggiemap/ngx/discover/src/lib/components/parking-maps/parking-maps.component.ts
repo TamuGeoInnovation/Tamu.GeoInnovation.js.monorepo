@@ -10,7 +10,8 @@ import {
 } from '../discover.utils';
 import { MapsPageHeaderComponent } from '../maps-page-header/maps-page-header.component';
 import { MapColumnsComponent } from '../map-columns/map-columns.component';
-import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+
+import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 /**
  * Parking Maps page. Renders the parking maps grouped into the General / Business / Permit columns
@@ -21,7 +22,7 @@ import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/
   templateUrl: './parking-maps.component.html',
   styleUrls: ['./parking-maps.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [MapsPageHeaderComponent, MapColumnsComponent, AggiemapNgxSharedUiStructuralModule]
+  imports: [MapsPageHeaderComponent, MapColumnsComponent, FooterComponent]
 })
 export class ParkingMapsComponent implements OnInit {
   public columns: MapColumnGroup[] = [];

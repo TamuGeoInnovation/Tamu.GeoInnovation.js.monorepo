@@ -2,7 +2,22 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import {
+  SelectComponent,
+  CheckboxComponent,
+  CheckboxGroupComponent,
+  DateTimePickerComponent,
+  TextboxComponent,
+  AutocompleteComponent,
+  AutocompleteOptionTemplateDirective,
+  ButtonComponent,
+  FileComponent,
+  RadioGroupComponent,
+  RangeComponent,
+  SlideToggleComponent,
+  SelectListComponent,
+  TurnstileChallengeComponent
+} from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { SeasonDayCardComponent } from './components/season-day-card/season-day-card.component';
 import { EventRowComponent } from './components/event-row/event-row.component';
@@ -12,7 +27,20 @@ import { GisdayPlatformNgxCommonModule } from '../../gisday-platform-ngx-common.
   imports: [
     CommonModule,
     RouterModule,
-    UIFormsModule,
+    SelectComponent,
+    CheckboxComponent,
+    CheckboxGroupComponent,
+    DateTimePickerComponent,
+    TextboxComponent,
+    AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
+    ButtonComponent,
+    FileComponent,
+    RadioGroupComponent,
+    RangeComponent,
+    SlideToggleComponent,
+    SelectListComponent,
+    TurnstileChallengeComponent,
     GisdayPlatformNgxCommonModule,
     SeasonDayCardComponent,
     EventRowComponent

@@ -19,8 +19,9 @@ import { QuickLinkItem, QuickLinksComponent } from '../quick-links/quick-links.c
 import { AutocompleteComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AutocompleteOptionTemplateDirective } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
+import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 /**
  * "All Maps" landing page. Surfaces the Visit Maps quick links, a map search, and the top upcoming
@@ -37,7 +38,7 @@ import { AsyncPipe, UpperCasePipe } from '@angular/common';
     AutocompleteOptionTemplateDirective,
     QuickLinksComponent,
     CopyComponent,
-    AggiemapNgxSharedUiStructuralModule,
+    FooterComponent,
     AsyncPipe,
     UpperCasePipe
   ]

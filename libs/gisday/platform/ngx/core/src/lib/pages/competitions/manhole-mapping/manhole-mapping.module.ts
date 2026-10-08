@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { MapsMapboxModule } from '@tamu-gisc/maps/mapbox';
-
 import { ManholeMappingComponent } from './manhole-mapping.component';
 
 const routes: Routes = [
@@ -14,7 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, ManholeMappingComponent],
+  imports: [CommonModule, RouterModule.forChild(routes), ManholeMappingComponent],
   exports: [RouterModule]
 })
 export class ManholeMappingModule {}

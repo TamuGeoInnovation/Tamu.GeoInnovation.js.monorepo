@@ -22,7 +22,8 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { AsyncPipe } from '@angular/common';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+
+import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
   selector: 'tamu-gisc-bonfire',
@@ -31,7 +32,7 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
   changeDetection: ChangeDetectionStrategy.Eager,
   // <swiper-container> is the Swiper web component, registered at run time (as the popups module did).
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [AsyncPipe, PipesModule]
+  imports: [AsyncPipe, MarkdownParsePipe]
 })
 export class BonfirePopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);
