@@ -92,9 +92,7 @@ export const discoverRoutes: Routes = [
     RouterModule.forChild(discoverRoutes),
     AggiemapNgxSharedUiStructuralModule,
     PipesModule,
-    UIClipboardModule
-  ],
-  declarations: [
+    UIClipboardModule,
     AllMapsComponent,
     ParkingMapsComponent,
     EventMapsComponent,

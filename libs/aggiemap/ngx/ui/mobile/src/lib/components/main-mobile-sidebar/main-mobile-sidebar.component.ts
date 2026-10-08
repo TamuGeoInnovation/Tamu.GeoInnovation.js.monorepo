@@ -2,6 +2,8 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { Angulartics2 } from 'angulartics2';
 import { v4 as guid } from 'uuid';
+import { TamuBlockBrandingComponent } from '@tamu-gisc/ui-kits/ngx/branding';
+import { RouterLink } from '@angular/router';
 
 interface MenuItem {
   name: string;
@@ -15,7 +17,7 @@ interface MenuItem {
   templateUrl: './main-mobile-sidebar.component.html',
   styleUrls: ['./main-mobile-sidebar.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [TamuBlockBrandingComponent, RouterLink]
 })
 export class MainMobileSidebarComponent {
   public menu: MenuItem[] = [

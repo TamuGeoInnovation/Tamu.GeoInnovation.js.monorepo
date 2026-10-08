@@ -27,7 +27,7 @@ import { MapComponent } from './map.component';
 describe('MapComponent layer sources', () => {
   it("uses its own LayerSourcesService, not the application's", () => {
     TestBed.configureTestingModule({
-      declarations: [MapComponent],
+      imports: [MapComponent],
       providers: [
         { provide: EnvironmentService, useValue: { value: () => [] } },
         { provide: ResponsiveService, useValue: {} },

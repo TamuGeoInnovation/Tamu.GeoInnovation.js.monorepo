@@ -2,13 +2,15 @@ import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/
 import { Router } from '@angular/router';
 
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { TransportationModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 @Component({
   selector: 'tamu-gisc-bus-list-bottom',
   templateUrl: './bus-list-bottom.component.html',
   styleUrls: ['./bus-list-bottom.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [DragDirective, TransportationModule]
 })
 export class BusListBottomComponent implements OnInit, OnDestroy {
   public identifier: string;

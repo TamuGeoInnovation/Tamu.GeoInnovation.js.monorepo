@@ -17,7 +17,7 @@ describe('ParkingGaragePopupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ParkingGaragePopupComponent],
+      imports: [ParkingGaragePopupComponent],
       providers: [
         {
           provide: Router,

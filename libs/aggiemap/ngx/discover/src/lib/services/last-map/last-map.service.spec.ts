@@ -8,8 +8,7 @@ import { LastMapService } from './last-map.service';
 @Component({
   selector: 'tamu-gisc-test-page',
   template: 'page',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 class TestPageComponent {}
 
@@ -34,9 +33,9 @@ describe('LastMapService', () => {
           { path: 'map', component: TestPageComponent },
           { path: 'map/d/bus', component: TestPageComponent },
           { path: 'all-maps', component: TestPageComponent }
-        ])
-      ],
-      declarations: [TestPageComponent]
+        ]),
+        TestPageComponent
+      ]
     }).compileComponents();
 
     router = TestBed.inject(Router);

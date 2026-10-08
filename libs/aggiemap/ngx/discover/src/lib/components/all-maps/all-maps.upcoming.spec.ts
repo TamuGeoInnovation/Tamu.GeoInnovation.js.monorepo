@@ -50,8 +50,7 @@ describe('AllMapsComponent upcoming events', () => {
     jest.useFakeTimers({ now, doNotFake: ['nextTick', 'setImmediate', 'setTimeout', 'setInterval', 'queueMicrotask'] });
 
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [AllMapsComponent],
+      imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
       providers: [
         { provide: DiscoveryService, useValue: discoveryStub },
         { provide: TestingService, useValue: { get: () => of(false) } },

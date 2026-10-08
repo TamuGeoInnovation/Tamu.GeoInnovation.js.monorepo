@@ -10,8 +10,15 @@ import { AlertModalComponent } from './components/alert-modal/alert-modal.compon
 import { MapNoticeComponent } from './components/map-notice/map-notice.component';
 
 @NgModule({
-  imports: [CommonModule, UIFormsModule],
-  declarations: [BetaPromptComponent, BonfireModalComponent, EventPassedWarningComponent, AlertModalComponent, MapNoticeComponent],
+  imports: [
+    CommonModule,
+    UIFormsModule,
+    BetaPromptComponent,
+    BonfireModalComponent,
+    EventPassedWarningComponent,
+    AlertModalComponent,
+    MapNoticeComponent
+  ],
   exports: [BetaPromptComponent, BonfireModalComponent, EventPassedWarningComponent, AlertModalComponent, MapNoticeComponent]
 })
 export class ModalsModule {}

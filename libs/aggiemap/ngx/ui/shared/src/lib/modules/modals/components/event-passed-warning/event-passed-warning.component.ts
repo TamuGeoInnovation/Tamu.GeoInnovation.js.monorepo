@@ -1,5 +1,6 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 export interface EventPassedData {
   title?: string;
@@ -13,7 +14,7 @@ export interface EventPassedData {
   templateUrl: './event-passed-warning.component.html',
   styleUrls: ['./event-passed-warning.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [ButtonComponent]
 })
 export class EventPassedWarningComponent {
   public title: string;

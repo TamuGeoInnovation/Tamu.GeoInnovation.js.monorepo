@@ -9,13 +9,27 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
+import { AccordionDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionHeaderDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { NgClass, AsyncPipe, DatePipe, KeyValuePipe } from '@angular/common';
+import { AccordionContentDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
   selector: 'tamu-gisc-dining-popup-component',
   templateUrl: './dining.component.html',
   styleUrls: ['../base/base.popup.component.scss', './dining.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [
+    AccordionDirective,
+    AccordionHeaderDirective,
+    NgClass,
+    AccordionContentDirective,
+    AsyncPipe,
+    DatePipe,
+    KeyValuePipe,
+    PipesModule
+  ]
 })
 export class DiningPopupComponent extends BaseDirectionsComponent implements OnInit {
   public menu: Observable<IDiningLocationMenu>;

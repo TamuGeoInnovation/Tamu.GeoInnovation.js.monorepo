@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
-import { Location } from '@angular/common';
+import { Location, AsyncPipe } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
@@ -11,6 +11,8 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { SearchSelection, AltSearchHelper } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { offCanvasSlideInFromBottom, offCanvasSlideUpFromTop } from '../../animations/elements';
+import { SearchMobileComponent } from '@tamu-gisc/ui-kits/ngx/search';
+import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
 
@@ -21,7 +23,7 @@ import esri = __esri;
   animations: [offCanvasSlideInFromBottom, offCanvasSlideUpFromTop],
   providers: [AltSearchHelper],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [SearchMobileComponent, AggiemapNgxSharedUiStructuralModule, AsyncPipe]
 })
 export class OmnisearchComponent implements OnInit, OnDestroy {
   /**

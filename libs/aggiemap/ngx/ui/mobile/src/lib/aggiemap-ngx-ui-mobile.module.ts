@@ -26,9 +26,7 @@ import { BusTimetableBottomComponent } from './components/bus-timetable-bottom/b
     UIDragModule,
     SearchModule,
     UITamuBrandingModule,
-    TransportationModule
-  ],
-  declarations: [
+    TransportationModule,
     AggiemapNgxUiMobileComponent,
     TripPlannerTopComponent,
     TripPlannerBottomComponent,

@@ -8,8 +8,7 @@ import { EventPassedWarningComponent } from './event-passed-warning.component';
 describe('EventPassedWarningComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UIFormsModule],
-      declarations: [EventPassedWarningComponent],
+      imports: [UIFormsModule, EventPassedWarningComponent],
       providers: [
         { provide: ModalRefService, useValue: { close: jest.fn() } },
         {

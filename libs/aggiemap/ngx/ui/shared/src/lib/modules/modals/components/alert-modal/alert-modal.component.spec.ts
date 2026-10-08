@@ -55,8 +55,7 @@ describe('AlertModalComponent', () => {
 describe('AlertModalComponent template', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UIFormsModule],
-      declarations: [AlertModalComponent],
+      imports: [UIFormsModule, AlertModalComponent],
       providers: [
         { provide: ModalRefService, useValue: { close: jest.fn() } },
         { provide: SettingsService, useValue: { updateSettings: jest.fn() } },

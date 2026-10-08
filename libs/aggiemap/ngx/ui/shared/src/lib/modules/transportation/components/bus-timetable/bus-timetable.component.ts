@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
+import { AsyncPipe } from '@angular/common';
 
 /**
  * Route detail shown when a route is expanded in the side panel.
@@ -16,7 +17,7 @@ import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
   templateUrl: './bus-timetable.component.html',
   styleUrls: ['./bus-timetable.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [AsyncPipe]
 })
 export class BusTimetableComponent implements OnInit {
   @Input()

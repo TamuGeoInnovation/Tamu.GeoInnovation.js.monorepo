@@ -34,9 +34,9 @@ describe('BusListComponent (Shallow)', () => {
         EsriMapModule,
         MapsFeatureTripPlannerModule,
         SearchModule,
-        EnvironmentModule
+        EnvironmentModule,
+        BusListComponent
       ],
-      declarations: [BusListComponent],
       providers: [
         {
           // BusService injects Angulartics2, which needs RouterlessTracking. Mocked rather

@@ -30,9 +30,7 @@ import { SidebarSettingsComponent } from './components/sidebar-settings/sidebar-
     LayerListModule,
     LegendModule,
     TransportationModule,
-    MapsFeatureBasemapGalleryModule
-  ],
-  declarations: [
+    MapsFeatureBasemapGalleryModule,
     AggiemapSidebarComponent,
     SidebarReferenceComponent,
     SidebarTripPlannerComponent,

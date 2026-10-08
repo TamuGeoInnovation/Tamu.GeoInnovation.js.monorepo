@@ -66,8 +66,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), PipesModule],
-  declarations: [BuilderComponent, EndedComponent],
+  imports: [CommonModule, RouterModule.forChild(routes), PipesModule, BuilderComponent, EndedComponent],
   providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }],
   exports: [RouterModule]
 })

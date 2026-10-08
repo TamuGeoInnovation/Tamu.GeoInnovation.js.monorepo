@@ -11,13 +11,14 @@ import {
   ResolvedEventSettings,
   SpecialEventOptions
 } from '../../../../interfaces/special-event.interface';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-review',
   templateUrl: './review.component.html',
   styleUrls: ['./review.component.scss', '../builder-module-base/builder-module-base.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [ButtonComponent]
 })
 export class ReviewComponent implements OnInit {
   public eventOptions: BehaviorSubject<SpecialEventOptions>;

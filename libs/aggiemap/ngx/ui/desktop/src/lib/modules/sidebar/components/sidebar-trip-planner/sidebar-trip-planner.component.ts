@@ -5,6 +5,7 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { SearchSelection, SearchEvent } from '@tamu-gisc/ui-kits/ngx/search';
+import { RouterLink } from '@angular/router';
 
 import esri = __esri;
 
@@ -13,7 +14,7 @@ import esri = __esri;
   templateUrl: './sidebar-trip-planner.component.html',
   styleUrls: ['./sidebar-trip-planner.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [RouterLink]
 })
 export class SidebarTripPlannerComponent {
   public dev = this.testing.get('isTesting');

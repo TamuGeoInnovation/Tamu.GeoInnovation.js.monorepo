@@ -14,7 +14,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), AggiemapNgxSharedUiStructuralModule],
-  declarations: [RequestingMapsComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), AggiemapNgxSharedUiStructuralModule, RequestingMapsComponent]
 })
 export class RequestingMapsModule {}

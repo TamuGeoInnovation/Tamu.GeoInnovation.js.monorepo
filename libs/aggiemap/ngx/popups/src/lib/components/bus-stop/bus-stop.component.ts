@@ -8,6 +8,8 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { BusService, TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { AsyncPipe } from '@angular/common';
 
 /**
  * Popup for the AggieSpirit bus map. Rendered when a user clicks a graphic drawn by `BusService` on the
@@ -21,7 +23,7 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   templateUrl: './bus-stop.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [CopyComponent, AsyncPipe]
 })
 export class BusStopPopupComponent extends BaseDirectionsComponent implements OnInit {
   /**

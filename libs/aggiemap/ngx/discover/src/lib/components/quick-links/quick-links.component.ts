@@ -1,4 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 export interface QuickLinkItem {
   label: string;
@@ -10,7 +11,7 @@ export interface QuickLinkItem {
   templateUrl: './quick-links.component.html',
   styleUrls: ['./quick-links.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [RouterLink]
 })
 export class QuickLinksComponent {
   @Input()

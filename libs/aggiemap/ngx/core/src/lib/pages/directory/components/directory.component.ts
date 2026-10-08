@@ -14,16 +14,28 @@ import {
   toArray
 } from 'rxjs';
 import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { DatatableComponent, TableColumn } from '@swimlane/ngx-datatable';
+import { DatatableComponent, TableColumn, NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { RouterLink } from '@angular/router';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-directory',
   templateUrl: './directory.component.html',
   styleUrls: ['./directory.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [
+    RouterLink,
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    NgxDatatableModule,
+    AggiemapNgxSharedUiStructuralModule,
+    AsyncPipe
+  ]
 })
 export class DirectoryComponent implements OnInit {
   public form: UntypedFormGroup;

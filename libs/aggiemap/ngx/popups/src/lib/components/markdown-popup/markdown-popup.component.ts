@@ -6,8 +6,7 @@ import { BasePopupComponent } from '../base/base.popup.component';
   selector: 'tamu-gisc-markdown-popup',
   templateUrl: './markdown-popup.component.html',
   styleUrls: ['./markdown-popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class MarkdownPopupComponent extends BasePopupComponent implements OnInit {
   public title: string;

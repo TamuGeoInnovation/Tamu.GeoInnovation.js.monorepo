@@ -9,8 +9,14 @@ import { BusRouteComponent } from './components/bus-route/bus-route.component';
 import { BusTimetableComponent } from './components/bus-timetable/bus-timetable.component';
 
 @NgModule({
-  imports: [CommonModule, UILayoutModule],
-  declarations: [BusListComponent, BusListHeaderComponent, BusRouteComponent, BusTimetableComponent],
+  imports: [
+    CommonModule,
+    UILayoutModule,
+    BusListComponent,
+    BusListHeaderComponent,
+    BusRouteComponent,
+    BusTimetableComponent
+  ],
   exports: [BusListComponent, BusListHeaderComponent, BusRouteComponent, BusTimetableComponent]
 })
 export class TransportationModule {}

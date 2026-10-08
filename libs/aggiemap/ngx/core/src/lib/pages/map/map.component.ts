@@ -13,6 +13,13 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { BetaPromptComponent, AlertModalComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
+import { EsriMapModule } from '@tamu-gisc/maps/esri';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MapsFeaturePerspectiveModule } from '@tamu-gisc/maps/feature/perspective';
+import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
 
 import esri = __esri;
 @Component({
@@ -20,7 +27,17 @@ import esri = __esri;
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [
+    ReveilleConsoleLogComponent,
+    RouterLink,
+    MapsFeatureCoordinatesModule,
+    EsriMapModule,
+    NgClass,
+    MapsFeaturePerspectiveModule,
+    RouterOutlet,
+    MapsFeatureAccessibilityModule,
+    AsyncPipe
+  ]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
