@@ -25,6 +25,12 @@ result adds its own entry below, in that pull request**, with its before/after s
   down to 1:282, but the maps let you zoom two levels further, where there was nothing to draw. Every
   map now stops at the deepest level the basemap has. ([before](../screenshots/basemap-max-zoom/before.png),
   [after](../screenshots/basemap-max-zoom/after.png))
+- **The old standalone Ring Day app's code is removed** ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). Ring Day is
+  served by the event map at `/events/ring-day`; the old app at `/ringday/` was a second copy with its
+  own dates and its own notice. Its projects and library are gone, so Azure no longer builds it, and the
+  dev-only Experimental Applications list no longer links it. **The deployed `/ringday/` folder on dev and
+  production is still there**: deleting it, or redirecting `/ringday/` to `/events/ring-day`, is a step
+  on the servers for the maintainer.
 - **Ring Day shows one notification, not two** ([#1570](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1570)). During October 2026's Ring Day the
   main map stacked two notices about it ("1 of 2"): an old hard-coded one, and the one the Ring Day
   event map raises itself. The hard-coded one is gone, and a test now fails if any hard-coded notice
@@ -140,7 +146,8 @@ the lock file with a clean `npm ci` before pushing (CLAUDE.md, [#1347](https://g
   saved copy is removed once it is in place.
 - **The browser console's build banner prints `___BUILD_DATE___` and the other placeholders** instead
   of the build's details ([#1306](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1306), low priority).
-- **The old standalone Ring Day app** is removed after Ring Day, 8 to 10 October
+- **The old standalone Ring Day app's deployed copy at `/ringday/`** still needs deleting, or redirecting
+  to `/events/ring-day`, on dev and production; its code is removed
   ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). The old Move-In app's deployed copy at `/movein/` still needs deleting
   ([#1235](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1235)).
 - **Every map's starting center and zoom** to be checked against its data ([#1231](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1231)).

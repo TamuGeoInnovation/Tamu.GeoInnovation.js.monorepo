@@ -68,7 +68,7 @@ describe('NotificationGroupedComponent.actionGroupItem', () => {
   });
 
   it('clears the notifications the user did not click, not only the one they did', () => {
-    const clicked = make('ring-day', { type: 'route', value: '/ts/ringday' });
+    const clicked = make('ring-day', { type: 'route', value: '/events/ring-day' });
     build([clicked, make('bonfire'), make('parking')]);
 
     component.actionGroupItem(clicked);
@@ -79,19 +79,19 @@ describe('NotificationGroupedComponent.actionGroupItem', () => {
   });
 
   it('still navigates to the clicked alert destination', () => {
-    const clicked = make('ring-day', { type: 'route', value: '/ts/ringday' });
+    const clicked = make('ring-day', { type: 'route', value: '/events/ring-day' });
     build([make('bonfire'), clicked]);
 
     component.actionGroupItem(clicked);
 
-    expect(navigated).toEqual([['/ts/ringday']]);
+    expect(navigated).toEqual([['/events/ring-day']]);
   });
 
   it('removes the notifications synchronously, so the destination cannot render them first', () => {
     // `closeGroup` animates out and removes 300ms later. That window is long enough for the
     // destination route to render the stale toasts, which is the fault in #1246, so this path must
     // not borrow it.
-    const clicked = make('ring-day', { type: 'route', value: '/ts/ringday' });
+    const clicked = make('ring-day', { type: 'route', value: '/events/ring-day' });
     build([clicked, make('bonfire')]);
 
     component.actionGroupItem(clicked);
