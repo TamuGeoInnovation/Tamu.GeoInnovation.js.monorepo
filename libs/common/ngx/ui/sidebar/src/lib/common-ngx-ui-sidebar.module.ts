@@ -5,8 +5,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { SidebarTabComponent } from './components/tab/tab.component';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [SidebarComponent, SidebarTabComponent],
+  imports: [CommonModule, SidebarComponent, SidebarTabComponent],
   exports: [SidebarComponent, SidebarTabComponent]
 })
 export class SidebarModule {}

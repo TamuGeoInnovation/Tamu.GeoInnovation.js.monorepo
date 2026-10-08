@@ -5,8 +5,7 @@ import { Observable, Subject } from 'rxjs';
   selector: 'tamu-gisc-sidebar-tab',
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class SidebarTabComponent {
   /**

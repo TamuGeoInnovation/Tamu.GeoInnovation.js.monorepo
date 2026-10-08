@@ -1,9 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-  name: 'toArray',
-  standalone: false
-})
+@Pipe({ name: 'toArray' })
 export class ToArrayPipe implements PipeTransform {
   /**
    * Transforms a value or array of values into an array. If the input is null or undefined, an empty array is returned.
