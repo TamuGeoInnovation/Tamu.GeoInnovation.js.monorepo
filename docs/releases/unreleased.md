@@ -16,6 +16,11 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+- **Dining and AggiePrint locations have their icons back** ([#1576](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1576)). Since the second 6 October
+  release they drew as plain dots: that release took the symbology from each layer's service, and
+  these two sources publish none worth drawing (Dining is a GeoJSON feed; AggiePrint's service publishes
+  ArcGIS's default marker). Their own icons are restored, and a test now fails if they go again.
+  ([before](../screenshots/dining-aggieprint-icons/before.png), [after](../screenshots/dining-aggieprint-icons/after.png))
 - **Ring Day shows one notification, not two** ([#1570](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1570)). During October 2026's Ring Day the
   main map stacked two notices about it ("1 of 2"): an old hard-coded one, and the one the Ring Day
   event map raises itself. The hard-coded one is gone, and a test now fails if any hard-coded notice
@@ -35,6 +40,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Dining and AggiePrint icons ([#1576](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1576)) ([before](../screenshots/dining-aggieprint-icons/before.png), [after](../screenshots/dining-aggieprint-icons/after.png)) | The [main map](https://dev.aggiemap.tamu.edu/map/d): turn on Dining Locations and AggiePrint Locations; and the [Dining map](https://dev.aggiemap.tamu.edu/events/dining) | Dining shows fork and food-truck icons, green when open and red when closed; AggiePrint shows printer icons, one style for campus-accessible printers and one for restricted. No plain orange or red dots |
 | Ring Day shows one notification ([#1570](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1570)) ([before](../screenshots/ring-day-one-notification/before.png), [after](../screenshots/ring-day-one-notification/after.png)) | The [main map](https://dev.aggiemap.tamu.edu/map/d), in a new private window, through 11 October 2026 (Ring Day's notice shows from a week before to a day after) | One Ring Day notice, "Ring Day Transportation Map Available", with no "1 of 2" stepper for it. Another event's notice, such as game day parking, may still show alongside: that's a different event |
 | Football Tailgating map reads the republished service's new layer order; Simpson Drill Field tents get their own layer ([#1537](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1537)) ([before](../screenshots/tailgating-simpson-tents/before.png), [after](../screenshots/tailgating-simpson-tents/after.png)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating) | Aggie Park zones draw again and the legend groups match their layers; "Simpson Drill Field Tents" and "Aggie Park Tents" in the Layers list; Simpson tents show at every zoom, Aggie Park tents only once zoomed in past about 1:2,500 |
 

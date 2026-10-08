@@ -49,6 +49,56 @@ export const DiningKioskLayerSources: LayerSource[] = [
     popupComponent: Popups.DiningPopupComponent,
     native: {
       ...commonLayerProps,
+      // Overridden deliberately (#1576): this is a GeoJSON feed, which carries no symbology, so without
+      // a renderer ArcGIS draws a plain default marker. The icons show open and closed, food truck or not.
+      renderer: {
+        type: 'unique-value',
+        field: 'label',
+        field2: 'type',
+        fieldDelimiter: ',',
+        uniqueValueInfos: [
+          {
+            value: 'open,food-truck',
+            label: 'Food Truck - Open',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/FoodTruck_open.png',
+              width: '24px',
+              height: '32px'
+            }
+          },
+          {
+            value: 'closed,food-truck',
+            label: 'Food Truck - Closed',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/FoodTruck_closed.png',
+              width: '24px',
+              height: '32px'
+            }
+          },
+          {
+            value: 'open,fixed',
+            label: 'Dining - Open',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/Dining_open.png',
+              width: '24px',
+              height: '32px'
+            }
+          },
+          {
+            value: 'closed,fixed',
+            label: 'Dining - Closed',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/Dining_closed.png',
+              width: '24px',
+              height: '32px'
+            }
+          }
+        ]
+      } as unknown as esri.UniqueValueRenderer
     }
   }
 ];
