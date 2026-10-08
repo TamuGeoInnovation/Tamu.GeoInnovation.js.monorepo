@@ -31,6 +31,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Football Tailgating map reads the republished service's new layer order; Simpson Drill Field tents get their own layer ([#1537](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1537)) ([before](../screenshots/tailgating-simpson-tents/before.png), [after](../screenshots/tailgating-simpson-tents/after.png)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating) | Aggie Park zones draw again and the legend groups match their layers; "Simpson Drill Field Tents" and "Aggie Park Tents" in the Layers list; Simpson tents show at every zoom, Aggie Park tents only once zoomed in past about 1:2,500 |
 
 ---
 
