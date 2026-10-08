@@ -15,9 +15,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [MapComponent],
-  exports: [MapComponent],
-  imports: [RouterModule.forChild(routes), CommonModule, EsriMapModule],
-  providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())]
+    exports: [MapComponent],
+    imports: [RouterModule.forChild(routes), CommonModule, EsriMapModule, MapComponent],
+    providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())]
 })
 export class MapModule {}

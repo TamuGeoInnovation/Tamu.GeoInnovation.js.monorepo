@@ -17,8 +17,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AdminDetailSessionTypeComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), FormsModule, ReactiveFormsModule, UIFormsModule, UILayoutModule],
-  exports: [RouterModule]
+    imports: [CommonModule, RouterModule.forChild(routes), FormsModule, ReactiveFormsModule, UIFormsModule, UILayoutModule, AdminDetailSessionTypeComponent],
+    exports: [RouterModule]
 })
 export class AdminDetailSessionTypeModule {}

@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLinkActive, RouterLink } from '@angular/router';
 
 import { RsvpTypeService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { RsvpType } from '@tamu-gisc/gisday/platform/data-api';
@@ -7,12 +7,13 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
+import { AsyncPipe, DatePipe } from '@angular/common';
 @Component({
-  selector: 'tamu-gisc-admin-edit-rsvp-type',
-  templateUrl: './admin-edit-rsvp-type.component.html',
-  styleUrls: ['./admin-edit-rsvp-type.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-admin-edit-rsvp-type',
+    templateUrl: './admin-edit-rsvp-type.component.html',
+    styleUrls: ['./admin-edit-rsvp-type.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [RouterLinkActive, RouterLink, AsyncPipe, DatePipe]
 })
 export class AdminEditRsvpTypeComponent extends BaseAdminListComponent<RsvpType> {
   constructor(

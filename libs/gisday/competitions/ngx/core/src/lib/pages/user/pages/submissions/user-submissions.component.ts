@@ -6,13 +6,14 @@ import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/typ
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { SubmissionReviewListComponent } from '../../../shared/submission-review-list/submission-review-list.component';
 
 @Component({
-  selector: 'tamu-gisc-user-submissions',
-  templateUrl: './user-submissions.component.html',
-  styleUrls: ['./user-submissions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-user-submissions',
+    templateUrl: './user-submissions.component.html',
+    styleUrls: ['./user-submissions.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [SubmissionReviewListComponent]
 })
 export class UserSubmissionsComponent implements OnInit {
   public submissions$: Observable<SubmissionReviewDto[]>;

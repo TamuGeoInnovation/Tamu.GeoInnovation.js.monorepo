@@ -18,18 +18,18 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    FormsModule,
-    ReactiveFormsModule,
-    UIFormsModule,
-    UILayoutModule,
-    GisdayPlatformNgxCommonModule,
-    GisDayPeopleModule,
-    PipesModule
-  ],
-  declarations: [EventDetailComponent],
-  exports: [RouterModule]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        FormsModule,
+        ReactiveFormsModule,
+        UIFormsModule,
+        UILayoutModule,
+        GisdayPlatformNgxCommonModule,
+        GisDayPeopleModule,
+        PipesModule,
+        EventDetailComponent
+    ],
+    exports: [RouterModule]
 })
 export class EventDetailModule {}

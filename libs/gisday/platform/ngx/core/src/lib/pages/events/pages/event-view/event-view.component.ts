@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, Subject, combineLatest, forkJoin, merge } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ActiveSeasonDto, Event, GisDayAppMetadata, Place, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import {
@@ -16,13 +16,17 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
+import { SeasonDayCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-  selector: 'tamu-gisc-event-view',
-  templateUrl: './event-view.component.html',
-  styleUrls: ['./event-view.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-event-view',
+    templateUrl: './event-view.component.html',
+    styleUrls: ['./event-view.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [RouterLink, SeasonDayCardComponent, NgClass, FormsModule, ReactiveFormsModule, CheckboxGroupComponent, CheckboxComponent, AsyncPipe]
 })
 export class EventViewComponent implements OnInit, OnDestroy {
   public activeSeason$: Observable<ActiveSeasonDto>;

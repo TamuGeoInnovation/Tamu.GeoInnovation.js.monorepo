@@ -1,17 +1,20 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
 
 import { ContactService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-contact',
-  templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-contact',
+    templateUrl: './contact.component.html',
+    styleUrls: ['./contact.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe]
 })
 export class ContactComponent implements OnInit {
   public form: UntypedFormGroup;

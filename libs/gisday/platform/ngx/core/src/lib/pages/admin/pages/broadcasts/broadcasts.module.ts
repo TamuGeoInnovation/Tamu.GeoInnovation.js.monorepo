@@ -33,7 +33,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule, UIFormsModule, PipesModule],
-  declarations: [BroadcastsComponent, BroadcastListComponent, BroadcastAddComponent, BroadcastEditComponent]
+    imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule, UIFormsModule, PipesModule, BroadcastsComponent, BroadcastListComponent, BroadcastAddComponent, BroadcastEditComponent]
 })
 export class BroadcastsModule {}

@@ -7,13 +7,15 @@ import * as Papa from 'papaparse';
 
 import { ClassService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { ClassAddEditFormComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-class-edit',
-  templateUrl: './class-edit.component.html',
-  styleUrls: ['./class-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-class-edit',
+    templateUrl: './class-edit.component.html',
+    styleUrls: ['./class-edit.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ClassAddEditFormComponent, AsyncPipe, DatePipe]
 })
 export class ClassEditComponent implements OnInit {
   public students$: Observable<Array<Partial<UserClass>>>;

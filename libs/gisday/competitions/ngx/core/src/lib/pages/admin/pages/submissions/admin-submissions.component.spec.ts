@@ -16,9 +16,9 @@ describe('AdminSubmissionsComponent', () => {
     } as unknown as jest.Mocked<SubmissionService>;
 
     await TestBed.configureTestingModule({
-      declarations: [AdminSubmissionsComponent],
-      providers: [{ provide: SubmissionService, useValue: mockSubmissionService }]
-    }).compileComponents();
+    imports: [AdminSubmissionsComponent],
+    providers: [{ provide: SubmissionService, useValue: mockSubmissionService }]
+}).compileComponents();
 
     fixture = TestBed.createComponent(AdminSubmissionsComponent);
     component = fixture.componentInstance;

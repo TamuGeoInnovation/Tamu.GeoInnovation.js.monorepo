@@ -14,8 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [StormwaterComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule],
-  exports: [RouterModule]
+    imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, StormwaterComponent],
+    exports: [RouterModule]
 })
 export class StormwaterModule {}

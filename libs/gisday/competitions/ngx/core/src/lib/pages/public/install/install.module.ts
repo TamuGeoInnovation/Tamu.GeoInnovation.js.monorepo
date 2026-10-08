@@ -14,7 +14,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [InstallComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule]
+    imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule, InstallComponent]
 })
 export class InstallModule {}

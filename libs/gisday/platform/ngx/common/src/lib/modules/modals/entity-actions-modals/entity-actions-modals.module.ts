@@ -8,8 +8,7 @@ import { EntityCopyModalComponent } from './entity-copy-modal/entity-copy-modal.
 import { EntityDeleteModalComponent } from './entity-delete-modal/entity-delete-modal.component';
 
 @NgModule({
-  imports: [CommonModule, UIFormsModule, ReactiveFormsModule],
-  declarations: [EntityCopyModalComponent, EntityDeleteModalComponent],
-  exports: [EntityCopyModalComponent, EntityDeleteModalComponent]
+    imports: [CommonModule, UIFormsModule, ReactiveFormsModule, EntityCopyModalComponent, EntityDeleteModalComponent],
+    exports: [EntityCopyModalComponent, EntityDeleteModalComponent]
 })
 export class EntityActionModalsModule {}

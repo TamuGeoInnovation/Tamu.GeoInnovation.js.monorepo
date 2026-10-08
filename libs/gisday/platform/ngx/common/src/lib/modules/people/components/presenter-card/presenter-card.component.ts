@@ -1,13 +1,15 @@
 import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
+import { SpeakerAvatarComponent } from '../speaker-avatar/speaker-avatar.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'tamu-gisc-presenter-card',
-  templateUrl: './presenter-card.component.html',
-  styleUrls: ['./presenter-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-presenter-card',
+    templateUrl: './presenter-card.component.html',
+    styleUrls: ['./presenter-card.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [SpeakerAvatarComponent, RouterLink]
 })
 export class PresenterCardComponent implements OnInit {
   @Input()

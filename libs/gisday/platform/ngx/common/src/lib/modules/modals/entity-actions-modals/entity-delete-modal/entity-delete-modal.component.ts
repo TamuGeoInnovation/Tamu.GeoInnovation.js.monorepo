@@ -1,15 +1,18 @@
 import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe, LowerCasePipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-entity-delete-modal',
-  templateUrl: './entity-delete-modal.component.html',
-  styleUrls: ['./entity-delete-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-entity-delete-modal',
+    templateUrl: './entity-delete-modal.component.html',
+    styleUrls: ['./entity-delete-modal.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe, LowerCasePipe]
 })
 export class EntityDeleteModalComponent implements OnInit {
   public form: UntypedFormGroup;

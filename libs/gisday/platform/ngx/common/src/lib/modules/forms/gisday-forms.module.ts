@@ -22,37 +22,34 @@ import { GisDayPeopleModule } from '../people/people.module';
 import { UserSubmissionAddEditFormComponent } from './components/user-submissions/user-submission-add-edit-form/user-submission-add-edit-form.component';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, UIFormsModule, GisDayPeopleModule],
-  declarations: [
-    TagAddEditFormComponent,
-    EventAddEditFormComponent,
-    SeasonsDayTileComponent,
-    SpeakerAddEditFormComponent,
-    OrganizationAddEditFormComponent,
-    SeasonAddEditFormComponent,
-    UniversityAddEditFormComponent,
-    BroadcastAddEditFormComponent,
-    EventLocationAddEditFormComponent,
-    PlaceLocationAddEditFormComponent,
-    SponsorAddEditFormComponent,
-    PlaceLinkFormComponent,
-    ClassAddEditFormComponent,
-    UserSubmissionAddEditFormComponent
-  ],
-  exports: [
-    TagAddEditFormComponent,
-    EventAddEditFormComponent,
-    SeasonsDayTileComponent,
-    SpeakerAddEditFormComponent,
-    OrganizationAddEditFormComponent,
-    SeasonAddEditFormComponent,
-    UniversityAddEditFormComponent,
-    BroadcastAddEditFormComponent,
-    EventLocationAddEditFormComponent,
-    PlaceLocationAddEditFormComponent,
-    SponsorAddEditFormComponent,
-    ClassAddEditFormComponent,
-    UserSubmissionAddEditFormComponent
-  ]
+    imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, UIFormsModule, GisDayPeopleModule, TagAddEditFormComponent,
+        EventAddEditFormComponent,
+        SeasonsDayTileComponent,
+        SpeakerAddEditFormComponent,
+        OrganizationAddEditFormComponent,
+        SeasonAddEditFormComponent,
+        UniversityAddEditFormComponent,
+        BroadcastAddEditFormComponent,
+        EventLocationAddEditFormComponent,
+        PlaceLocationAddEditFormComponent,
+        SponsorAddEditFormComponent,
+        PlaceLinkFormComponent,
+        ClassAddEditFormComponent,
+        UserSubmissionAddEditFormComponent],
+    exports: [
+        TagAddEditFormComponent,
+        EventAddEditFormComponent,
+        SeasonsDayTileComponent,
+        SpeakerAddEditFormComponent,
+        OrganizationAddEditFormComponent,
+        SeasonAddEditFormComponent,
+        UniversityAddEditFormComponent,
+        BroadcastAddEditFormComponent,
+        EventLocationAddEditFormComponent,
+        PlaceLocationAddEditFormComponent,
+        SponsorAddEditFormComponent,
+        ClassAddEditFormComponent,
+        UserSubmissionAddEditFormComponent
+    ]
 })
 export class GisdayFormsModule {}

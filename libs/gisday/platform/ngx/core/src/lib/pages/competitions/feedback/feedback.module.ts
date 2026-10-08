@@ -12,8 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [FeedbackComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [CommonModule, RouterModule.forChild(routes), FeedbackComponent],
+    exports: [RouterModule]
 })
 export class FeedbackModule {}

@@ -10,8 +10,7 @@ import { SubmissionReviewListComponent } from './submission-review-list/submissi
 import { SubmissionDetailModalComponent } from './submission-detail-modal/submission-detail-modal.component';
 
 @NgModule({
-  declarations: [SubmissionReviewListComponent, SubmissionDetailModalComponent],
-  imports: [CommonModule, NgxDatatableModule, UILayoutModule, EsriMapModule, UIFormsModule],
-  exports: [SubmissionReviewListComponent, SubmissionDetailModalComponent]
+    imports: [CommonModule, NgxDatatableModule, UILayoutModule, EsriMapModule, UIFormsModule, SubmissionReviewListComponent, SubmissionDetailModalComponent],
+    exports: [SubmissionReviewListComponent, SubmissionDetailModalComponent]
 })
 export class SubmissionReviewSharedModule {}

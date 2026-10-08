@@ -12,8 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [VgiComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [CommonModule, RouterModule.forChild(routes), VgiComponent],
+    exports: [RouterModule]
 })
 export class VgiModule {}

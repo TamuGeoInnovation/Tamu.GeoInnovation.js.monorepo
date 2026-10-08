@@ -26,8 +26,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [SponsorsComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [CommonModule, RouterModule.forChild(routes), SponsorsComponent],
+    exports: [RouterModule]
 })
 export class SponsorsModule {}

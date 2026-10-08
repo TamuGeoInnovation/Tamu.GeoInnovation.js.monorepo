@@ -37,16 +37,16 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    GisdayFormsModule,
-    GisdayPlatformNgxCommonModule,
-    UIFormsModule,
-    PipesModule,
-    EntityActionModalsModule
-  ],
-  declarations: [AdminEventComponent, EventAddComponent, EventEditComponent, EventListComponent],
-  exports: [RouterModule]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        GisdayFormsModule,
+        GisdayPlatformNgxCommonModule,
+        UIFormsModule,
+        PipesModule,
+        EntityActionModalsModule,
+        AdminEventComponent, EventAddComponent, EventEditComponent, EventListComponent
+    ],
+    exports: [RouterModule]
 })
 export class AdminEventModule {}

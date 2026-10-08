@@ -52,8 +52,8 @@ describe('SubmissionDetailModalComponent', () => {
     mockSanitizer = {} as jest.Mocked<DomSanitizer>;
 
     await TestBed.configureTestingModule({
-      declarations: [SubmissionDetailModalComponent],
-      providers: [
+    imports: [SubmissionDetailModalComponent],
+    providers: [
         { provide: MODAL_DATA, useValue: mockData },
         { provide: ModalRefService, useValue: mockModalRef },
         { provide: SubmissionService, useValue: mockSubmissionService },
@@ -62,13 +62,13 @@ describe('SubmissionDetailModalComponent', () => {
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: DomSanitizer, useValue: mockSanitizer },
         {
-          // EsriMapService drags in SearchService -> HttpClient -> ActivatedRoute and more.
-          // The component only reads `store`, so mock it rather than wiring the whole chain.
-          provide: EsriMapService,
-          useValue: { store: of([]) }
+            // EsriMapService drags in SearchService -> HttpClient -> ActivatedRoute and more.
+            // The component only reads `store`, so mock it rather than wiring the whole chain.
+            provide: EsriMapService,
+            useValue: { store: of([]) }
         }
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(SubmissionDetailModalComponent);
     component = fixture.componentInstance;

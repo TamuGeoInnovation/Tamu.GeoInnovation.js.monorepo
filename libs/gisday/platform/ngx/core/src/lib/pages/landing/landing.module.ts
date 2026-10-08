@@ -14,8 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), GisdayPlatformNgxCommonModule],
-  declarations: [LandingComponent],
-  exports: [RouterModule]
+    imports: [CommonModule, RouterModule.forChild(routes), GisdayPlatformNgxCommonModule, LandingComponent],
+    exports: [RouterModule]
 })
 export class LandingModule {}

@@ -1,18 +1,20 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 
 import { Class, Season, UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ClassService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-  selector: 'tamu-gisc-class-add-edit-form',
-  templateUrl: './class-add-edit-form.component.html',
-  styleUrls: ['./class-add-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-class-add-edit-form',
+    templateUrl: './class-add-edit-form.component.html',
+    styleUrls: ['./class-add-edit-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class ClassAddEditFormComponent implements OnInit {
   @Input()

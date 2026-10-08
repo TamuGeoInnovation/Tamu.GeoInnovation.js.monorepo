@@ -12,8 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [Wayback2019Component],
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [CommonModule, RouterModule.forChild(routes), Wayback2019Component],
+    exports: [RouterModule]
 })
 export class Wayback2019Module {}

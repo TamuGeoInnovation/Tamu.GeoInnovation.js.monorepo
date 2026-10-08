@@ -34,16 +34,16 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    FormsModule,
-    ReactiveFormsModule,
-    UIFormsModule,
-    GisdayFormsModule,
-    PipesModule
-  ],
-  declarations: [AdminTagComponent, TagsEditComponent, TagsListComponent, TagsAddComponent],
-  exports: [RouterModule]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        FormsModule,
+        ReactiveFormsModule,
+        UIFormsModule,
+        GisdayFormsModule,
+        PipesModule,
+        AdminTagComponent, TagsEditComponent, TagsListComponent, TagsAddComponent
+    ],
+    exports: [RouterModule]
 })
 export class AdminTagModule {}

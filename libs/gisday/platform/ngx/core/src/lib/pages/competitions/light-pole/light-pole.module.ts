@@ -15,8 +15,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [LightPoleComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, UILayoutModule],
-  exports: [RouterModule]
+    imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, UILayoutModule, LightPoleComponent],
+    exports: [RouterModule]
 })
 export class LightPoleModule {}

@@ -12,13 +12,15 @@ import { BehaviorSubject, Observable, ReplaySubject, combineLatest, map, shareRe
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonDayService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { EventRowComponent } from '../event-row/event-row.component';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-season-day-card',
-  templateUrl: './season-day-card.component.html',
-  styleUrls: ['./season-day-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-season-day-card',
+    templateUrl: './season-day-card.component.html',
+    styleUrls: ['./season-day-card.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [EventRowComponent, AsyncPipe, DatePipe]
 })
 export class SeasonDayCardComponent implements OnInit, OnChanges {
   @Input()

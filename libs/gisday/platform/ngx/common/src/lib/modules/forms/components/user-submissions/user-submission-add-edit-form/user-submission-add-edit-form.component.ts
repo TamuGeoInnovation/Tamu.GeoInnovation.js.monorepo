@@ -1,18 +1,23 @@
 import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { filter, map, Observable, shareReplay, startWith, Subject, switchMap, take, tap } from 'rxjs';
 
 import { Submission, SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RadioGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SlideToggleComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-user-submission-add-edit-form',
-  templateUrl: './user-submission-add-edit-form.component.html',
-  styleUrls: ['./user-submission-add-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-user-submission-add-edit-form',
+    templateUrl: './user-submission-add-edit-form.component.html',
+    styleUrls: ['./user-submission-add-edit-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, ReactiveFormsModule, RadioGroupComponent, SlideToggleComponent, TextboxComponent, ButtonComponent, AsyncPipe]
 })
 export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   @Input()

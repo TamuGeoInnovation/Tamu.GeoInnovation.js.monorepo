@@ -14,8 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AggieAccessibilityComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule],
-  exports: [RouterModule]
+    imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, AggieAccessibilityComponent],
+    exports: [RouterModule]
 })
 export class AggieAccessibilityModule {}

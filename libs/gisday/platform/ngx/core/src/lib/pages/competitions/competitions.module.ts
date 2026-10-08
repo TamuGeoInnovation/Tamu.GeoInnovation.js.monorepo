@@ -94,8 +94,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [CompetitionsComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, UILayoutModule],
-  exports: [RouterModule]
+    imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, UILayoutModule, CompetitionsComponent],
+    exports: [RouterModule]
 })
 export class CompetitionsModule {}

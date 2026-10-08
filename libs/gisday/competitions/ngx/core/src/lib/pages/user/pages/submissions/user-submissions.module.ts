@@ -13,7 +13,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [UserSubmissionsComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), SubmissionReviewSharedModule]
+    imports: [CommonModule, RouterModule.forChild(routes), SubmissionReviewSharedModule, UserSubmissionsComponent]
 })
 export class UserSubmissionsModule {}

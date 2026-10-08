@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { Season, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
@@ -8,13 +8,14 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-seasons-list',
-  templateUrl: './seasons-list.component.html',
-  styleUrls: ['./seasons-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-seasons-list',
+    templateUrl: './seasons-list.component.html',
+    styleUrls: ['./seasons-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [RouterLink, AsyncPipe, DatePipe]
 })
 export class SeasonsListComponent extends BaseAdminListComponent<Season> implements OnInit {
   public dateRange$: Observable<Array<SeasonDay>>;

@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SeasonService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Tag } from '@tamu-gisc/gisday/platform/data-api';
@@ -7,13 +7,17 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-  selector: 'tamu-gisc-tags-list',
-  templateUrl: './tags-list.component.html',
-  styleUrls: ['./tags-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-tags-list',
+    templateUrl: './tags-list.component.html',
+    styleUrls: ['./tags-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe]
 })
 export class TagsListComponent extends BaseAdminListComponent<Tag> {
   constructor(

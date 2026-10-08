@@ -12,8 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AdminViewRsvpTypeComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [CommonModule, RouterModule.forChild(routes), AdminViewRsvpTypeComponent],
+    exports: [RouterModule]
 })
 export class AdminViewRsvpTypeModule {}

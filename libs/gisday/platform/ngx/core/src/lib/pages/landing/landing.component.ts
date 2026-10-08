@@ -19,6 +19,9 @@ import {
 import { PlaceService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ActiveSeasonDto, Place, SeasonDay, Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceVisibilityOptions } from '@tamu-gisc/gisday/platform/ngx/common';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { AssetUrlPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 const numberDictionary = {
   0: 'Zero',
@@ -35,11 +38,11 @@ const numberDictionary = {
 };
 
 @Component({
-  selector: 'tamu-gisc-landing',
-  templateUrl: './landing.component.html',
-  styleUrls: ['./landing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-landing',
+    templateUrl: './landing.component.html',
+    styleUrls: ['./landing.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
 })
 export class LandingComponent implements OnInit {
   private title = 'TxGIS Day';

@@ -1,18 +1,20 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { University } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-  selector: 'tamu-gisc-university-add-edit-form',
-  templateUrl: './university-add-edit-form.component.html',
-  styleUrls: ['./university-add-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-university-add-edit-form',
+    templateUrl: './university-add-edit-form.component.html',
+    styleUrls: ['./university-add-edit-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class UniversityAddEditFormComponent implements OnInit {
   @Input()

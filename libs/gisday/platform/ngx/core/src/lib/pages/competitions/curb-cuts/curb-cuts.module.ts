@@ -13,7 +13,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule],
-  declarations: [CurbCutsComponent]
+    imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule, CurbCutsComponent]
 })
 export class CurbCutsModule {}

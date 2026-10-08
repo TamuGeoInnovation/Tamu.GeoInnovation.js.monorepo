@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, take } from 'rxjs/operators';
 
@@ -7,13 +7,14 @@ import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { ILeaderboardItem, LeaderboardService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { GISDayRoles } from '@tamu-gisc/gisday/platform/ngx/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-leaderboard',
-  templateUrl: './leaderboard.component.html',
-  styleUrls: ['./leaderboard.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-leaderboard',
+    templateUrl: './leaderboard.component.html',
+    styleUrls: ['./leaderboard.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass, RouterLink, AsyncPipe]
 })
 export class LeaderboardComponent implements OnInit {
   public me$: Observable<string>;
