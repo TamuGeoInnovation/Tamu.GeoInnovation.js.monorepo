@@ -15,8 +15,6 @@
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    // Still needed by "paths", whose entries are written without a leading "./". TypeScript 6 deprecates
-    // baseUrl, hence "ignoreDeprecations" below; both go once every path starts with "./" (#1476).
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "paths": {
