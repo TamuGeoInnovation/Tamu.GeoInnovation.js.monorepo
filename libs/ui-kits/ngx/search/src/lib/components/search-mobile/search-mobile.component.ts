@@ -7,6 +7,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { SearchService } from '../../services/search.service';
 import { SearchComponent } from '../search/search.component';
+import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-search-mobile',
@@ -14,7 +15,7 @@ import { SearchComponent } from '../search/search.component';
   styleUrls: ['../search/search.component.scss', './search-mobile.component.scss'],
   providers: [SearchService],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [NgClass, AsyncPipe, TitleCasePipe]
 })
 export class SearchMobileComponent extends SearchComponent {
   constructor(

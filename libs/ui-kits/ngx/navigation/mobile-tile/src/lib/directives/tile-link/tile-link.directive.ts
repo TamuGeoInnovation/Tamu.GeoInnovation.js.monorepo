@@ -1,10 +1,7 @@
 import { Directive, ElementRef, EventEmitter, HostListener, Input, Output, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 
-@Directive({
-  selector: '[tamuGiscTileLink]',
-  standalone: false
-})
+@Directive({ selector: '[tamuGiscTileLink]' })
 export class TileLinkDirective {
   /**
    * Location of the link to redirect to. Can be internal relative URL or absolute external URL

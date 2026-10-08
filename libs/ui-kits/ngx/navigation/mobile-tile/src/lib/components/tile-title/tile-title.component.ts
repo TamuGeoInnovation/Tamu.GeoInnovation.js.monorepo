@@ -4,8 +4,7 @@ import { Component, OnInit, ElementRef, ChangeDetectionStrategy } from '@angular
   selector: 'tamu-gisc-tile-title',
   templateUrl: './tile-title.component.html',
   styleUrls: ['./tile-title.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TileTitleComponent implements OnInit {
   public title: string;

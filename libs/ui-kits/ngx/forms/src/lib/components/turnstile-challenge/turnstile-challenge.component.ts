@@ -25,8 +25,7 @@ import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-
       multi: true
     }
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TurnstileChallengeComponent extends AbstractValueAccessorFormComponent<string> implements OnInit {
   constructor(

@@ -24,6 +24,7 @@ import { getGeolocation, isCoordinatePair } from '@tamu-gisc/common/utils/geomet
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
 import { SearchService, SearchResult, SearchResultItem, SearchSource } from '../../services/search.service';
+import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-search',
@@ -31,7 +32,7 @@ import { SearchService, SearchResult, SearchResultItem, SearchSource } from '../
   styleUrls: ['./search.component.scss'],
   providers: [SearchService],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [NgClass, AsyncPipe, TitleCasePipe]
 })
 export class SearchComponent implements OnInit, OnDestroy {
   /**

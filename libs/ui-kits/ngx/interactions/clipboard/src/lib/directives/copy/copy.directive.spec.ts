@@ -9,8 +9,8 @@ import { ClipboardCopyDirective } from './copy.directive';
   template: `
     <div clipboard-copy [text]="'text to copy'" (err)="copyEvent.next($event)" (copying)="copyEvent.next($event)"></div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [ClipboardCopyDirective],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 class MockCopyDirectiveComponent {
   public copyEvent = new Subject();
@@ -22,7 +22,7 @@ describe('ClipboardCopyDirective', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [MockCopyDirectiveComponent, ClipboardCopyDirective]
+      imports: [MockCopyDirectiveComponent, ClipboardCopyDirective]
     });
   });
 

@@ -8,8 +8,7 @@ import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard
 import { CodeRunnerComponent } from './components/code-runner/code-runner.component';
 
 @NgModule({
-  imports: [CommonModule, HighlightPlusModule, UIClipboardModule],
-  declarations: [CodeRunnerComponent],
+  imports: [CommonModule, HighlightPlusModule, UIClipboardModule, CodeRunnerComponent],
   exports: [CodeRunnerComponent]
 })
 export class UILayoutCodeModule {}

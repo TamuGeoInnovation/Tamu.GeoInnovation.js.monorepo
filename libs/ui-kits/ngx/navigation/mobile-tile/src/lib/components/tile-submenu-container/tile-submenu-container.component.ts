@@ -22,8 +22,7 @@ import { submenuListStagger } from '../../animations/animations';
   // in the self-component otherwise it can't query anything entering into view
   // because the whole thing is entering into view.
   animations: [submenuListStagger],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   @ViewChild('container', { static: true, read: ViewContainerRef })

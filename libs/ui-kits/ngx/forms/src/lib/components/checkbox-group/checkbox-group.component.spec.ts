@@ -8,7 +8,7 @@ describe('CheckboxGroupComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CheckboxGroupComponent]
+      imports: [CheckboxGroupComponent]
     }).compileComponents();
   }));
 

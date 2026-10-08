@@ -13,8 +13,8 @@ import { TileSubmenuDirective } from './directives/tile-submenu/tile-submenu.dir
 import { TileLinkDirective } from './directives/tile-link/tile-link.directive';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [
+  imports: [
+    CommonModule,
     TileNavigationComponent,
     TileComponent,
     TileTitleComponent,
