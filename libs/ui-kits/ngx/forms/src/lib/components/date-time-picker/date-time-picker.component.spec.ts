@@ -67,8 +67,7 @@ describe('DateTimePickerComponent', () => {
 
     beforeEach(async () => {
       await TestBed.configureTestingModule({
-        imports: [UILayoutModule],
-        declarations: [DateTimePickerComponent]
+        imports: [UILayoutModule, DateTimePickerComponent]
       }).compileComponents();
 
       fixture = TestBed.createComponent(DateTimePickerComponent);

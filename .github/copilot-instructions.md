@@ -10,7 +10,7 @@ This is an Nx monorepo containing multiple Angular front-end applications and Ne
 - **`apps/`** - Application entry points (thin shells with minimal logic). Main app: `aggiemap-angular`
 - **`libs/`** - All business logic shared across applications. Organized by feature/domain:
   - `libs/common/` - Shared utilities and components
-  - `libs/aggiemap/`, `libs/gisday/`, `libs/cpa/`, etc. - Feature-specific libraries
+  - `libs/aggiemap/`, `libs/gisday/`, etc. - Feature-specific libraries
   - `libs/assets/` - Images, fonts, and static assets
   - `libs/sass/` - Global styles
 - **`tools/`** - Workspace automation scripts

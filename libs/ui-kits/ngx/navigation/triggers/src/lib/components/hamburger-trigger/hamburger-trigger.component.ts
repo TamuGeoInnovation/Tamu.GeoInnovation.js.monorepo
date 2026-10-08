@@ -11,6 +11,7 @@ import {
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BehaviorSubject, of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-hamburger-trigger',
@@ -64,7 +65,7 @@ import { switchMap } from 'rxjs/operators';
     ])
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [AsyncPipe]
 })
 export class HamburgerTriggerComponent implements OnChanges {
   /**

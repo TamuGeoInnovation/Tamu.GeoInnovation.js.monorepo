@@ -2,8 +2,7 @@ import { Directive, ElementRef, HostListener, Input, AfterViewInit } from '@angu
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[keyboardNavigation]',
-  standalone: false
+  selector: '[keyboardNavigation]'
 })
 export class KeyboardNavigationDirective implements AfterViewInit {
   /** CSS selector for option elements inside the host where focus/selection will occur. */

@@ -7,8 +7,7 @@ import { AccordionService } from './services/accordion.service';
   templateUrl: './accordion.component.html',
   styleUrls: ['./accordion.component.scss'],
   providers: [AccordionService],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class AccordionComponent implements AfterContentInit {
   /**

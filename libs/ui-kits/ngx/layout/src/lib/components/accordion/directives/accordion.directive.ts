@@ -3,8 +3,7 @@ import { Subject } from 'rxjs';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[giscAccordion]',
-  standalone: false
+  selector: '[giscAccordion]'
 })
 export class AccordionDirective implements OnInit {
   @Input()

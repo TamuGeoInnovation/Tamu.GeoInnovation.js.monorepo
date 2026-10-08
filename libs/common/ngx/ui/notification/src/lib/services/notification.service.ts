@@ -17,7 +17,7 @@ export const notificationStorage = new InjectionToken<string>('StorageKey');
  * origin, so an acknowledgement under a key of their own would be invisible to the others and the
  * same notice would return on the next of them the visitor opened.
  *
- * Only for applications that share notifications. The UES, CPA and GIS Day applications keep their
+ * Only for applications that share notifications. The UES and GIS Day applications keep their
  * own keys: they are different products whose notices have nothing to do with these. See #1246.
  */
 export const AGGIEMAP_NOTIFICATION_STORE_KEY = 'aggiemap-notifications';

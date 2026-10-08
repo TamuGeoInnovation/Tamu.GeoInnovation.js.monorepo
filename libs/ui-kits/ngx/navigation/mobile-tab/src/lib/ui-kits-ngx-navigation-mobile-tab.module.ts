@@ -5,8 +5,7 @@ import { MobileTabNavigationComponent } from './components/container/container.c
 import { MobileTabNavigationTabComponent } from './components/tab/tab.component';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [MobileTabNavigationComponent, MobileTabNavigationTabComponent],
+  imports: [CommonModule, MobileTabNavigationComponent, MobileTabNavigationTabComponent],
   exports: [MobileTabNavigationComponent, MobileTabNavigationTabComponent]
 })
 export class UINavigationMobileTabModule {}

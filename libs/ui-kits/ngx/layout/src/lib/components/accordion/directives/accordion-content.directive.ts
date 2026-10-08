@@ -2,8 +2,7 @@ import { Directive, HostBinding, Input, TemplateRef, ViewContainerRef } from '@a
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[giscAccordionContent]',
-  standalone: false
+  selector: '[giscAccordionContent]'
 })
 export class AccordionContentDirective {
   private _display = false;

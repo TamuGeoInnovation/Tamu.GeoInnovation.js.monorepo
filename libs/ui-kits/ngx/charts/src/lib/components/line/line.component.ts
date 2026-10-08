@@ -1,7 +1,7 @@
 import { Component, forwardRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { BaseChartComponent } from '../base/base.component';
-import { LineChartConfiguration } from '../chart-container/chart-container.component';
+import { LineChartConfiguration, ChartContainerComponent } from '../chart-container/chart-container.component';
 
 @Component({
   selector: 'tamu-gisc-line-chart',
@@ -9,7 +9,7 @@ import { LineChartConfiguration } from '../chart-container/chart-container.compo
   styleUrls: ['../base/base.component.scss', './line.component.scss'],
   providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => LineChartComponent) }],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [ChartContainerComponent]
 })
 export class LineChartComponent extends BaseChartComponent implements AfterViewInit {
   constructor() {

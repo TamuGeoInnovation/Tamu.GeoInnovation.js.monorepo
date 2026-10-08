@@ -5,3 +5,11 @@ $font-color: #323232;
 
 $main-blue: #0079c1;
 $form-grey: rgba(241, 243, 244, 1);
+
+// Interface state colours: an active item, one changing state, and an inactive one. Defaults, so an
+// app that sets its own before importing this keeps them. Moved here from the retired CPA styles,
+// which the layout drawer read them from (#1458).
+$active-color: hsl(223, 75%, 67%) !default;
+$state-transition-color: #536dfe !default;
+$inactive-color: hsl(223, 15%, 60%) !default;
+$lightened-inactive-color: lighten($inactive-color, 25%) !default;
