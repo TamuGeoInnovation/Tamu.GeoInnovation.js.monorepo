@@ -9,8 +9,7 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { InteractivePricingComponent } from './interactive-pricing.component';
 
 @NgModule({
-  imports: [CommonModule, ReactiveFormsModule, UIFormsModule, UILayoutModule, RouterModule],
-  declarations: [InteractivePricingComponent],
-  exports: [InteractivePricingComponent]
+    imports: [CommonModule, ReactiveFormsModule, UIFormsModule, UILayoutModule, RouterModule, InteractivePricingComponent],
+    exports: [InteractivePricingComponent]
 })
 export class InteractivePricingModule {}

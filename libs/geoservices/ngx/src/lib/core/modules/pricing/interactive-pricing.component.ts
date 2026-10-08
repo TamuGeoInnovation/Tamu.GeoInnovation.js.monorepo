@@ -1,18 +1,23 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { RangeInputDataMap } from '@tamu-gisc/ui-kits/ngx/forms';
+import { RangeComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { RadioGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TooltipComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-interactive-pricing',
-  templateUrl: './interactive-pricing.component.html',
-  styleUrls: ['./interactive-pricing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-interactive-pricing',
+    templateUrl: './interactive-pricing.component.html',
+    styleUrls: ['./interactive-pricing.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, ReactiveFormsModule, RangeComponent, RadioGroupComponent, TooltipComponent, TooltipTriggerComponent, RouterLink, AsyncPipe, CurrencyPipe]
 })
 export class InteractivePricingComponent implements OnInit {
   public form: UntypedFormGroup;

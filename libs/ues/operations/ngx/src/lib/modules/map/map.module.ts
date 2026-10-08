@@ -115,34 +115,34 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    EsriMapModule,
-    MapsFeatureTripPlannerModule,
-    LegendModule,
-    LayerListModule,
-    MapPopupModule,
-    AggiemapNgxPopupsModule,
-    MapsFeatureAccessibilityModule,
-    MapsFeatureCoordinatesModule,
-    UIClipboardModule,
-    UIDragModule,
-    UILayoutModule,
-    UIFormsModule,
-    PipesModule,
-    SearchModule,
-    AggiemapNgxUiMobileModule,
-    AggiemapNgxSharedUiStructuralModule,
-    AggiemapSidebarModule,
-    AggiemapFormsModule,
-    SettingsModule,
-    SidebarModule,
-    UITamuBrandingModule,
-    UESCoreUIModule,
-    TransportationModule
-  ],
-  declarations: [MapComponent],
-  providers: [EsriModuleProviderService, EsriMapService, TripPlannerService, BusService]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        EsriMapModule,
+        MapsFeatureTripPlannerModule,
+        LegendModule,
+        LayerListModule,
+        MapPopupModule,
+        AggiemapNgxPopupsModule,
+        MapsFeatureAccessibilityModule,
+        MapsFeatureCoordinatesModule,
+        UIClipboardModule,
+        UIDragModule,
+        UILayoutModule,
+        UIFormsModule,
+        PipesModule,
+        SearchModule,
+        AggiemapNgxUiMobileModule,
+        AggiemapNgxSharedUiStructuralModule,
+        AggiemapSidebarModule,
+        AggiemapFormsModule,
+        SettingsModule,
+        SidebarModule,
+        UITamuBrandingModule,
+        UESCoreUIModule,
+        TransportationModule,
+        MapComponent
+    ],
+    providers: [EsriModuleProviderService, EsriMapService, TripPlannerService, BusService]
 })
 export class MapModule {}

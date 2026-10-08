@@ -1,13 +1,14 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { ReverseGeocodingAdvancedComponent } from '../../../../../../../core/modules/interactive/components/reverse-geocoding/advanced/reverse-geocoding-advanced/reverse-geocoding-advanced.component';
 
 @Component({
-  selector: 'tamu-gisc-interactive',
-  templateUrl: './interactive.component.html',
-  styleUrls: ['./interactive.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-interactive',
+    templateUrl: './interactive.component.html',
+    styleUrls: ['./interactive.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ReverseGeocodingAdvancedComponent]
 })
 export class InteractiveComponent implements OnInit {
   public url: string;

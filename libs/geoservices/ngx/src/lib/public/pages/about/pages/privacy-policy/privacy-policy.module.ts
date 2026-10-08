@@ -12,7 +12,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [PrivacyPolicyComponent]
+    imports: [CommonModule, RouterModule.forChild(routes), PrivacyPolicyComponent]
 })
 export class PrivacyPolicyModule {}

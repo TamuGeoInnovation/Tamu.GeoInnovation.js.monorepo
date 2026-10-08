@@ -13,7 +13,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), InteractivePricingModule],
-  declarations: [PricingComponent]
+    imports: [CommonModule, RouterModule.forChild(routes), InteractivePricingModule, PricingComponent]
 })
 export class PricingModule {}

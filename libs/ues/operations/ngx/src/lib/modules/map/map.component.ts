@@ -7,15 +7,22 @@ import { loadModules } from 'esri-loader';
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { NgClass } from '@angular/common';
+import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
+import { UESTamuBlockComponent } from '@tamu-gisc/ues/common/ngx';
 
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-map',
+    templateUrl: './map.component.html',
+    styleUrls: ['./map.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ReveilleConsoleLogComponent, RouterLink, ClickCoordinatesComponent, EsriMapComponent, NgClass, RouterOutlet, MapViewfinderComponent, UESTamuBlockComponent]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;

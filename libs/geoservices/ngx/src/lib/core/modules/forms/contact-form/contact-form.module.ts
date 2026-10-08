@@ -7,8 +7,7 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ContactFormComponent } from './contact-form.component';
 
 @NgModule({
-  imports: [CommonModule, ReactiveFormsModule, UIFormsModule],
-  declarations: [ContactFormComponent],
-  exports: [ContactFormComponent]
+    imports: [CommonModule, ReactiveFormsModule, UIFormsModule, ContactFormComponent],
+    exports: [ContactFormComponent]
 })
 export class ContactFormModule {}

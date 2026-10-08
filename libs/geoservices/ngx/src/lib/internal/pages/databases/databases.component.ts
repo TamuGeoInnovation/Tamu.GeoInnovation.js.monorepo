@@ -1,10 +1,11 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLinkActive, RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'tamu-gisc-databases',
-  templateUrl: './databases.component.html',
-  styleUrls: ['./databases.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-databases',
+    templateUrl: './databases.component.html',
+    styleUrls: ['./databases.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [RouterLinkActive, RouterLink, RouterOutlet]
 })
 export class DatabasesComponent {}

@@ -1,17 +1,22 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ContactService } from '@tamu-gisc/geoservices/data-access';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TurnstileChallengeComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-  selector: 'tamu-gisc-geocode-correction-form',
-  templateUrl: './geocode-correction-form.component.html',
-  styleUrls: ['./geocode-correction-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-geocode-correction-form',
+    templateUrl: './geocode-correction-form.component.html',
+    styleUrls: ['./geocode-correction-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, TurnstileChallengeComponent, NgClass, ButtonComponent, AsyncPipe]
 })
 export class GeocodeCorrectionFormComponent implements OnInit {
   public form: UntypedFormGroup;

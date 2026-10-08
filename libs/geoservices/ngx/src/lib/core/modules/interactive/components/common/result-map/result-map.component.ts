@@ -2,16 +2,17 @@ import { Component, HostBinding, Input, OnInit, ChangeDetectionStrategy } from '
 import { take } from 'rxjs';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-result-map',
-  templateUrl: './result-map.component.html',
-  styleUrls: ['./result-map.component.scss'],
-  providers: [EsriMapService],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-result-map',
+    templateUrl: './result-map.component.html',
+    styleUrls: ['./result-map.component.scss'],
+    providers: [EsriMapService],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [EsriMapComponent]
 })
 export class ResultMapComponent implements OnInit {
   @Input()

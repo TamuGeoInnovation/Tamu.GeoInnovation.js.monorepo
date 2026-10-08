@@ -2,13 +2,14 @@ import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy
 import { Observable, Subject, map, pipe, startWith } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-basic-summary-blurb',
-  templateUrl: './basic-summary-blurb.component.html',
-  styleUrls: ['./basic-summary-blurb.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-basic-summary-blurb',
+    templateUrl: './basic-summary-blurb.component.html',
+    styleUrls: ['./basic-summary-blurb.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [AsyncPipe]
 })
 export class BasicSummaryBlurbComponent implements OnInit {
   @Input()

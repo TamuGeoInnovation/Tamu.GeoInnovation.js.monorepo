@@ -9,14 +9,29 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 import { RevivalModalComponent } from '../modals/revival-modal/revival-modal.component';
+import { RouterLinkActive, RouterLink } from '@angular/router';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { RevivalBannerComponent } from '../revival-banner/revival-banner.component';
+import { HeaderMobileComponent } from '../header-mobile/header-mobile.component';
+import { HamburgerTriggerComponent } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
+import { TileNavigationComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileIconComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileTitleComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileSubmenuDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileSubmenuComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { AccordionDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionHeaderDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionContentDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TileLinkDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 
 @Component({
-  selector: 'tamu-gisc-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
-  animations: [growAnimationBuilder(250)],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    animations: [growAnimationBuilder(250)],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [RouterLinkActive, RouterLink, NgClass, RevivalBannerComponent, HeaderMobileComponent, HamburgerTriggerComponent, TileNavigationComponent, TileComponent, TileIconComponent, TileTitleComponent, TileSubmenuDirective, TileSubmenuComponent, AccordionDirective, AccordionHeaderDirective, AccordionContentDirective, TileLinkDirective, AsyncPipe]
 })
 export class HeaderComponent implements OnInit {
   public mobileNavToggle: Subject<boolean> = new Subject();

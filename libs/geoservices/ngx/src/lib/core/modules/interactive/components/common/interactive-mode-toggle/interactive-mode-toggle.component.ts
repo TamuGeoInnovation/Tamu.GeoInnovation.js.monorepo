@@ -4,13 +4,15 @@ import {
   ComponentMode,
   ComponentModeLabel
 } from '../base-interactive-geoprocessing/base-interactive-geoprocessing.component';
+import { SlideToggleComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'tamu-gisc-interactive-mode-toggle',
-  templateUrl: './interactive-mode-toggle.component.html',
-  styleUrls: ['./interactive-mode-toggle.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-interactive-mode-toggle',
+    templateUrl: './interactive-mode-toggle.component.html',
+    styleUrls: ['./interactive-mode-toggle.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [SlideToggleComponent, FormsModule]
 })
 export class InteractiveModeToggleComponent {
   @Input()

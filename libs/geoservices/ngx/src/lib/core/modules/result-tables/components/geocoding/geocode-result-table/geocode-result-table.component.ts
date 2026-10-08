@@ -4,13 +4,14 @@ import { Observable, map, of } from 'rxjs';
 import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
 import { GeocodeNAACCRField, GeocodeRecordField, IGeocodeRecord } from '@tamu-gisc/geoprocessing-v5';
 import { GeocodeFieldLabel, GeocodeNaaccrFieldLabel } from '../../../../../util/dictionaries';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-geocode-result-table',
-  templateUrl: './geocode-result-table.component.html',
-  styleUrls: ['./geocode-result-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-geocode-result-table',
+    templateUrl: './geocode-result-table.component.html',
+    styleUrls: ['./geocode-result-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [AsyncPipe]
 })
 export class GeocodeResultTableComponent implements OnInit {
   @Input()

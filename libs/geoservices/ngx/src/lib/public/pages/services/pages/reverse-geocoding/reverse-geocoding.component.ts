@@ -3,13 +3,23 @@ import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { ReverseGeocodingBasicComponent } from '../../../../../core/modules/interactive/components/reverse-geocoding/basic/reverse-geocoding-basic/reverse-geocoding-basic.component';
+import { TabsComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TabComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { CodeRunnerComponent } from '@tamu-gisc/ui-kits/ngx/layout/code';
+import { RouterLink } from '@angular/router';
+import { StepperComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { StepComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { StepperToggleDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AsyncPipe } from '@angular/common';
+import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
 @Component({
-  selector: 'tamu-gisc-reverse-geocoding',
-  templateUrl: './reverse-geocoding.component.html',
-  styleUrls: ['./reverse-geocoding.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-reverse-geocoding',
+    templateUrl: './reverse-geocoding.component.html',
+    styleUrls: ['./reverse-geocoding.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ReverseGeocodingBasicComponent, TabsComponent, TabComponent, CodeRunnerComponent, RouterLink, StepperComponent, StepComponent, StepperToggleDirective, AsyncPipe, HighlightPlusModule]
 })
 export class ReverseGeocodingComponent implements OnInit {
   private geocoder: ReverseGeocode;

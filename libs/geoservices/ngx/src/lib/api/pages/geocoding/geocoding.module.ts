@@ -20,17 +20,17 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    HighlightPlusModule,
-    UIClipboardModule,
-    UIScrollToModule,
-    UILayoutModule,
-    ApiComponentsModule,
-    GeoservicesCoreInteractiveModule
-  ],
-  declarations: [GeocodingComponent],
-  exports: [RouterModule]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        HighlightPlusModule,
+        UIClipboardModule,
+        UIScrollToModule,
+        UILayoutModule,
+        ApiComponentsModule,
+        GeoservicesCoreInteractiveModule,
+        GeocodingComponent
+    ],
+    exports: [RouterModule]
 })
 export class GeocodingModule {}

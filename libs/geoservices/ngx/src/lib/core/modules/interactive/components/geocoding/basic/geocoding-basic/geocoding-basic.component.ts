@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
@@ -11,13 +11,23 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { BasicSummaryBlurbComponent } from '../../../common/basic-summary-blurb/basic-summary-blurb.component';
+import { TabsComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TabComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { GeocodeResultTableComponent } from '../../../../../result-tables/components/geocoding/geocode-result-table/geocode-result-table.component';
+import { ResultMapComponent } from '../../../common/result-map/result-map.component';
+import { InteractiveResponseMetadataComponent } from '../../../common/interactive-response-metadata/interactive-response-metadata.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-geocoding-basic',
-  templateUrl: './geocoding-basic.component.html',
-  styleUrls: ['./geocoding-basic.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-geocoding-basic',
+    templateUrl: './geocoding-basic.component.html',
+    styleUrls: ['./geocoding-basic.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, ButtonComponent, BasicSummaryBlurbComponent, TabsComponent, TabComponent, GeocodeResultTableComponent, ResultMapComponent, InteractiveResponseMetadataComponent, AsyncPipe]
 })
 export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<GeocodeResult, IGeocodeOptions> {
   public states = STATES_TITLECASE;

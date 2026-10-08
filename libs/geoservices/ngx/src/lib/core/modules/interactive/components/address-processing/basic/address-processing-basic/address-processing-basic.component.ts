@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
@@ -16,13 +16,22 @@ import { AuthService } from '@tamu-gisc/geoservices/data-access';
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 import { ADDRESS_FORMAT_TYPES } from '../../../../../../util/dictionaries';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { BasicSummaryBlurbComponent } from '../../../common/basic-summary-blurb/basic-summary-blurb.component';
+import { TabsComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TabComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { ParsedAddressResultTableComponent } from '../../../../../result-tables/components/address-processing/parsed-address-result-table/parsed-address-result-table.component';
+import { InteractiveResponseMetadataComponent } from '../../../common/interactive-response-metadata/interactive-response-metadata.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-address-processing-basic',
-  templateUrl: './address-processing-basic.component.html',
-  styleUrls: ['./address-processing-basic.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-address-processing-basic',
+    templateUrl: './address-processing-basic.component.html',
+    styleUrls: ['./address-processing-basic.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, ButtonComponent, BasicSummaryBlurbComponent, TabsComponent, TabComponent, ParsedAddressResultTableComponent, InteractiveResponseMetadataComponent, AsyncPipe]
 })
 export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessingComponent<
   AddressProcessingResult,

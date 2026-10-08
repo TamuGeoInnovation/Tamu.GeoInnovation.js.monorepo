@@ -1,13 +1,14 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { ApiBase, TransformersMap } from '@tamu-gisc/geoprocessing-core';
+import { HighlightModule } from 'ngx-highlightjs';
 
 @Component({
-  selector: 'tamu-gisc-response-viewer',
-  templateUrl: './response-viewer.component.html',
-  styleUrls: ['./response-viewer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-response-viewer',
+    templateUrl: './response-viewer.component.html',
+    styleUrls: ['./response-viewer.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [HighlightModule]
 })
 export class ResponseViewerComponent<Type extends object, Res extends object> implements OnInit {
   @Input()

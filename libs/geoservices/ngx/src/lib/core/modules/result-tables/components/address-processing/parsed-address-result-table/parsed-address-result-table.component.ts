@@ -5,13 +5,14 @@ import { IParsedAddressRecord, ParsedAddressRecordField } from '@tamu-gisc/geopr
 import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
 
 import { ParsedAddressFieldLabel } from '../../../../../util/dictionaries';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-parsed-address-result-table',
-  templateUrl: './parsed-address-result-table.component.html',
-  styleUrls: ['./parsed-address-result-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-parsed-address-result-table',
+    templateUrl: './parsed-address-result-table.component.html',
+    styleUrls: ['./parsed-address-result-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [AsyncPipe]
 })
 export class ParsedAddressResultTableComponent implements OnInit {
   /**

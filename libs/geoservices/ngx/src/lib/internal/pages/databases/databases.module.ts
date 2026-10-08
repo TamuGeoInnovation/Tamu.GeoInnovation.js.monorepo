@@ -31,7 +31,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [DatabasesComponent]
+    imports: [CommonModule, RouterModule.forChild(routes), DatabasesComponent]
 })
 export class DatabasesModule {}

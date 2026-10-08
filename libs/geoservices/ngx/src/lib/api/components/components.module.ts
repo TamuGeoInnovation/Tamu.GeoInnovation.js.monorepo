@@ -19,34 +19,31 @@ import { AddressFormatFragmentComponent } from './fragments/address-normalizatio
 import { ServiceAttributeAccordionComponent } from './fragments/common/service-attribute-accordion/service-attribute-accordion.component';
 
 @NgModule({
-  imports: [CommonModule, HighlightPlusModule, UILayoutModule],
-  declarations: [
-    ResponseViewerComponent,
-    AddressAttributeListComponent,
-    AddressMatchTypeAttributeListComponent,
-    ReferenceFeatureAttributeListComponent,
-    ReferenceFeatureInterpolationTypeAttributeListComponent,
-    ReferenceFeatureInterpolationSubTypeAttributeListComponent,
-    ApiVersionFragmentComponent,
-    QueryStatusFragmentComponent,
-    CensusYearsParameterFragmentComponent,
-    CensusRecordFragmentComponent,
-    AddressFormatFragmentComponent,
-    ServiceAttributeAccordionComponent
-  ],
-  exports: [
-    ResponseViewerComponent,
-    AddressAttributeListComponent,
-    AddressMatchTypeAttributeListComponent,
-    ReferenceFeatureAttributeListComponent,
-    ReferenceFeatureInterpolationTypeAttributeListComponent,
-    ReferenceFeatureInterpolationSubTypeAttributeListComponent,
-    ApiVersionFragmentComponent,
-    QueryStatusFragmentComponent,
-    CensusYearsParameterFragmentComponent,
-    CensusRecordFragmentComponent,
-    AddressFormatFragmentComponent,
-    ServiceAttributeAccordionComponent
-  ]
+    imports: [CommonModule, HighlightPlusModule, UILayoutModule, ResponseViewerComponent,
+        AddressAttributeListComponent,
+        AddressMatchTypeAttributeListComponent,
+        ReferenceFeatureAttributeListComponent,
+        ReferenceFeatureInterpolationTypeAttributeListComponent,
+        ReferenceFeatureInterpolationSubTypeAttributeListComponent,
+        ApiVersionFragmentComponent,
+        QueryStatusFragmentComponent,
+        CensusYearsParameterFragmentComponent,
+        CensusRecordFragmentComponent,
+        AddressFormatFragmentComponent,
+        ServiceAttributeAccordionComponent],
+    exports: [
+        ResponseViewerComponent,
+        AddressAttributeListComponent,
+        AddressMatchTypeAttributeListComponent,
+        ReferenceFeatureAttributeListComponent,
+        ReferenceFeatureInterpolationTypeAttributeListComponent,
+        ReferenceFeatureInterpolationSubTypeAttributeListComponent,
+        ApiVersionFragmentComponent,
+        QueryStatusFragmentComponent,
+        CensusYearsParameterFragmentComponent,
+        CensusRecordFragmentComponent,
+        AddressFormatFragmentComponent,
+        ServiceAttributeAccordionComponent
+    ]
 })
 export class ApiComponentsModule {}

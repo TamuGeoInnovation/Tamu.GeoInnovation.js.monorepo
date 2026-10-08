@@ -19,15 +19,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    HighlightPlusModule,
-    UIClipboardModule,
-    UIScrollToModule,
-    UILayoutModule,
-    ApiComponentsModule
-  ],
-  declarations: [ReverseGeocodingComponent]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        HighlightPlusModule,
+        UIClipboardModule,
+        UIScrollToModule,
+        UILayoutModule,
+        ApiComponentsModule,
+        ReverseGeocodingComponent
+    ]
 })
 export class ReverseGeocodingModule {}

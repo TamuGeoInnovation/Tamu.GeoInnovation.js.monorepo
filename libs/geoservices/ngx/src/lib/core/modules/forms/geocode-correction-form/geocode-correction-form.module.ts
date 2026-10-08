@@ -7,8 +7,7 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { GeocodeCorrectionFormComponent } from './geocode-correction-form.component';
 
 @NgModule({
-  imports: [CommonModule, ReactiveFormsModule, UIFormsModule],
-  declarations: [GeocodeCorrectionFormComponent],
-  exports: [GeocodeCorrectionFormComponent]
+    imports: [CommonModule, ReactiveFormsModule, UIFormsModule, GeocodeCorrectionFormComponent],
+    exports: [GeocodeCorrectionFormComponent]
 })
 export class GeocodeCorrectionFormModule {}
