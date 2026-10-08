@@ -263,6 +263,26 @@ Production numbers are not recorded by hand. The
 [smoke workflow](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/actions/workflows/aggiemap-smoke.yml)
 checks production daily and opens a health issue when something breaks.
 
+### 8. Capture the baseline images
+
+```bash
+node tools/visual-baselines/capture.mjs --env production
+```
+
+Every map, both viewports, written under the release tag:
+`<baselines>/production/prod-2026-10-06-2/`. Do the same for dev after step 3.
+
+**Capture after the deploy, not before.** A "before" set is only worth having if it was taken while
+it was still true, and the set that matters for the next release is this one — today's production, as
+shipped. Capturing ahead of a change photographs maps that are about to be restyled.
+
+The release tag is the key because that is the question people ask months later: what did this map
+look like in that release. [`tools/visual-baselines`](../../tools/visual-baselines/README.md) explains
+the layout, and why the manifest records the bundle hash as well as the tag.
+
+Baselines live outside the repository and are per machine. They are evidence for review, not a
+check that gates anything — nothing fails if a set is missing, and the suite is what gates a release.
+
 ### What the tags are for
 
 A build is identified by an Azure DevOps build number, which nobody outside the pipeline can resolve.

@@ -27,6 +27,7 @@ import esri = __esri;
 export enum TAILGATING_LAYERS {
   ZONE_NUMBERS = 'tailgating-zone-numbers',
   TENTS = 'tailgating-tents',
+  SIMPSON_TENTS = 'tailgating-simpson-tents',
   AGGIE_PARK = 'tailgating-aggie-park',
   WEST_CAMPUS = 'tailgating-west-campus',
   CONSTRUCTION = 'tailgating-construction'
@@ -42,12 +43,24 @@ const TAILGATE_ZONES_URL =
 const TAILGATE_ZONES_LAYER_INDEX = {
   ZONE_NUMBERS: 0,
   TENTS: 1,
-  WEST_CAMPUS: 2,
-  AGGIE_PARK: 3
+  SIMPSON_TENTS: 2,
+  WEST_CAMPUS: 3,
+  AGGIE_PARK: 4
 } as const;
 
-/** The tents are small and closely packed, so they only draw once zoomed in far enough to read. */
-const TENTS_MIN_SCALE = 4000;
+/**
+ * The tent layers take their visible scale range from the service, so it is set in ArcGIS Pro: the
+ * packed Aggie Park tents draw only once zoomed in, the scattered Simpson Drill Field tents always.
+ * `commonLayerProps` fixes a range for every layer, so the tents leave its range out.
+ */
+const tentLayerProps: Partial<typeof commonLayerProps> = { ...commonLayerProps };
+delete tentLayerProps.minScale;
+delete tentLayerProps.maxScale;
+
+const tentPopupData: LayerSource['popupData'] = {
+  name: 'Tent {attributes.tent_id}',
+  description: 'attributes.lawn'
+};
 
 /**
  * Transportation Services' live construction areas (the same source as the Construction map),
@@ -130,19 +143,28 @@ export const TailgatingColdLayerSources: LayerSource[] = [
   } as unknown as LayerSource,
   {
     type: 'feature',
-    id: TAILGATING_LAYERS.TENTS,
-    title: 'Tent Numbers',
-    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.TENTS}`,
+    id: TAILGATING_LAYERS.SIMPSON_TENTS,
+    title: 'Simpson Drill Field Tents',
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.SIMPSON_TENTS}`,
     popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'Tent {attributes.tent_id}',
-      description: 'attributes.lawn'
-    },
+    popupData: tentPopupData,
     listMode: 'show',
     visible: true,
     native: {
-      ...commonLayerProps,
-      minScale: TENTS_MIN_SCALE
+      ...tentLayerProps
+    }
+  } as unknown as LayerSource,
+  {
+    type: 'feature',
+    id: TAILGATING_LAYERS.TENTS,
+    title: 'Aggie Park Tents',
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.TENTS}`,
+    popupComponent: MarkdownPopupComponent,
+    popupData: tentPopupData,
+    listMode: 'show',
+    visible: true,
+    native: {
+      ...tentLayerProps
     }
   } as unknown as LayerSource,
   {

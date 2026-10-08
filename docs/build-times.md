@@ -35,6 +35,7 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 7 Oct 2026 | Kaleb's laptop | `check-in-volume.sh fix/tailgating-simpson-tents ts-events-ngx,aggiemap-angular` (lint, test, build), 12:45 Central | volume, cold clone and `npm ci` (27 s of it), 2 projects | **55 s** |
 | 6 Oct 2026 | office | `check-in-volume.sh feat/1508-service-symbology` (affected), deleting 90 hard-coded renderers across 42 files, 17:12 Central | volume, cold clone and `npm ci` | 6 min, **failed**: a scripted edit dropped three `commonLayerProps` imports still in use (8 suites, `ReferenceError`) |
 | 6 Oct 2026 | office | The same check after the import fix, plus 71 titles removed, 17:35 Central | volume, warm | 5 min, **failed**: `LayerSource.title` was required, so TS2322 in `aggiemap-angular` and `ts-events-angular` |
 | 6 Oct 2026 | office | `check-in-volume.sh feat/1508-service-symbology aggiemap-angular,ts-events-angular,common-types`, confirming the optional-title fix before repeating the full run, 17:41 Central | volume, warm, 3 projects | **1 min** |
