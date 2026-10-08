@@ -8,11 +8,11 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-security',
-    templateUrl: './security.component.html',
-    styleUrls: ['./security.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, AsyncPipe]
+  selector: 'tamu-gisc-security',
+  templateUrl: './security.component.html',
+  styleUrls: ['./security.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, AsyncPipe]
 })
 export class SecurityComponent implements OnInit {
   public questions: Observable<Array<ISecretQuestion>>;

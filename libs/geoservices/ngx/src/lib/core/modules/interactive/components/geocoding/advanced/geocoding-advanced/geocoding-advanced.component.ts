@@ -38,11 +38,31 @@ import { GeocodeMatchedReferenceFeatureTableComponent } from '../../../../../res
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-geocoding-advanced',
-    templateUrl: './geocoding-advanced.component.html',
-    styleUrls: ['./geocoding-advanced.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, InteractiveModeToggleComponent, TextboxComponent, SelectComponent, CheckboxComponent, CheckboxGroupComponent, ButtonComponent, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent, StatusResultTableComponent, GeocodeInputParametersComponent, ResultMapComponent, GeocodeResultTableComponent, CensusIntersectionResultTabsComponent, ParsedAddressResultTableComponent, GeocodeMatchedReferenceFeatureTableComponent, AsyncPipe]
+  selector: 'tamu-gisc-geocoding-advanced',
+  templateUrl: './geocoding-advanced.component.html',
+  styleUrls: ['./geocoding-advanced.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    InteractiveModeToggleComponent,
+    TextboxComponent,
+    SelectComponent,
+    CheckboxComponent,
+    CheckboxGroupComponent,
+    ButtonComponent,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    StatusResultTableComponent,
+    GeocodeInputParametersComponent,
+    ResultMapComponent,
+    GeocodeResultTableComponent,
+    CensusIntersectionResultTabsComponent,
+    ParsedAddressResultTableComponent,
+    GeocodeMatchedReferenceFeatureTableComponent,
+    AsyncPipe
+  ]
 })
 export class GeocodingAdvancedComponent extends GeocodingBasicComponent implements OnInit, OnDestroy {
   public tieBreakingStrategies = TIE_BREAKING_STRATEGIES;

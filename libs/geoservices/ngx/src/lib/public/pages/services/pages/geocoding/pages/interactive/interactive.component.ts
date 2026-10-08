@@ -4,11 +4,11 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { GeocodingAdvancedComponent } from '../../../../../../../core/modules/interactive/components/geocoding/advanced/geocoding-advanced/geocoding-advanced.component';
 
 @Component({
-    selector: 'tamu-gisc-interactive',
-    templateUrl: './interactive.component.html',
-    styleUrls: ['./interactive.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [GeocodingAdvancedComponent]
+  selector: 'tamu-gisc-interactive',
+  templateUrl: './interactive.component.html',
+  styleUrls: ['./interactive.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [GeocodingAdvancedComponent]
 })
 export class InteractiveComponent implements OnInit {
   public url: string;

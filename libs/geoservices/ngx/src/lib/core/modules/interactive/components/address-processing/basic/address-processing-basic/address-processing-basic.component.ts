@@ -27,11 +27,23 @@ import { InteractiveResponseMetadataComponent } from '../../../common/interactiv
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-address-processing-basic',
-    templateUrl: './address-processing-basic.component.html',
-    styleUrls: ['./address-processing-basic.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, ButtonComponent, BasicSummaryBlurbComponent, TabsComponent, TabComponent, ParsedAddressResultTableComponent, InteractiveResponseMetadataComponent, AsyncPipe]
+  selector: 'tamu-gisc-address-processing-basic',
+  templateUrl: './address-processing-basic.component.html',
+  styleUrls: ['./address-processing-basic.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    SelectComponent,
+    ButtonComponent,
+    BasicSummaryBlurbComponent,
+    TabsComponent,
+    TabComponent,
+    ParsedAddressResultTableComponent,
+    InteractiveResponseMetadataComponent,
+    AsyncPipe
+  ]
 })
 export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessingComponent<
   AddressProcessingResult,

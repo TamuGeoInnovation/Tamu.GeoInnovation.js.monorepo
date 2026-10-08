@@ -5,11 +5,11 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-basic-summary-blurb',
-    templateUrl: './basic-summary-blurb.component.html',
-    styleUrls: ['./basic-summary-blurb.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe]
+  selector: 'tamu-gisc-basic-summary-blurb',
+  templateUrl: './basic-summary-blurb.component.html',
+  styleUrls: ['./basic-summary-blurb.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class BasicSummaryBlurbComponent implements OnInit {
   @Input()

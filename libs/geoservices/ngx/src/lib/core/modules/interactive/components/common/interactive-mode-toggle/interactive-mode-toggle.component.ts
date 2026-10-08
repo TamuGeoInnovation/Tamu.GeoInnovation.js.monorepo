@@ -8,11 +8,11 @@ import { SlideToggleComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'tamu-gisc-interactive-mode-toggle',
-    templateUrl: './interactive-mode-toggle.component.html',
-    styleUrls: ['./interactive-mode-toggle.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SlideToggleComponent, FormsModule]
+  selector: 'tamu-gisc-interactive-mode-toggle',
+  templateUrl: './interactive-mode-toggle.component.html',
+  styleUrls: ['./interactive-mode-toggle.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SlideToggleComponent, FormsModule]
 })
 export class InteractiveModeToggleComponent {
   @Input()

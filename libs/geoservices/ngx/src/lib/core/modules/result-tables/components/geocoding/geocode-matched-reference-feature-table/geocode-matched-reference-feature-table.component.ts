@@ -9,11 +9,11 @@ import { ParsedAddressResultTableComponent } from '../../address-processing/pars
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-geocode-matched-reference-feature-table',
-    templateUrl: './geocode-matched-reference-feature-table.component.html',
-    styleUrls: ['./geocode-matched-reference-feature-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ParsedAddressResultTableComponent, AsyncPipe]
+  selector: 'tamu-gisc-geocode-matched-reference-feature-table',
+  templateUrl: './geocode-matched-reference-feature-table.component.html',
+  styleUrls: ['./geocode-matched-reference-feature-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ParsedAddressResultTableComponent, AsyncPipe]
 })
 export class GeocodeMatchedReferenceFeatureTableComponent implements OnInit {
   @Input()

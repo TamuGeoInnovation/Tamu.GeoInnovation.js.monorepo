@@ -12,11 +12,20 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-geocode-correction-form',
-    templateUrl: './geocode-correction-form.component.html',
-    styleUrls: ['./geocode-correction-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, TurnstileChallengeComponent, NgClass, ButtonComponent, AsyncPipe]
+  selector: 'tamu-gisc-geocode-correction-form',
+  templateUrl: './geocode-correction-form.component.html',
+  styleUrls: ['./geocode-correction-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    SelectComponent,
+    TurnstileChallengeComponent,
+    NgClass,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class GeocodeCorrectionFormComponent implements OnInit {
   public form: UntypedFormGroup;

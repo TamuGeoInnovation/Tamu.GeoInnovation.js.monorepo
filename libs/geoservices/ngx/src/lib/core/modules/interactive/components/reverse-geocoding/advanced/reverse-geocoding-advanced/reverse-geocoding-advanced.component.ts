@@ -13,10 +13,22 @@ import { ReverseGeocodingResultTableComponent } from '../../../../../result-tabl
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-reverse-geocoding-advanced',
-    templateUrl: './reverse-geocoding-advanced.component.html',
-    styleUrls: ['./reverse-geocoding-advanced.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, ButtonComponent, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent, StatusResultTableComponent, ReverseGeocodingResultTableComponent, AsyncPipe]
+  selector: 'tamu-gisc-reverse-geocoding-advanced',
+  templateUrl: './reverse-geocoding-advanced.component.html',
+  styleUrls: ['./reverse-geocoding-advanced.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    SelectComponent,
+    ButtonComponent,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    StatusResultTableComponent,
+    ReverseGeocodingResultTableComponent,
+    AsyncPipe
+  ]
 })
 export class ReverseGeocodingAdvancedComponent extends ReverseGeocodingBasicComponent {}

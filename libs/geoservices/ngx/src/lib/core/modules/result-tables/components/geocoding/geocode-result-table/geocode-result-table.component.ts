@@ -7,11 +7,11 @@ import { GeocodeFieldLabel, GeocodeNaaccrFieldLabel } from '../../../../../util/
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-geocode-result-table',
-    templateUrl: './geocode-result-table.component.html',
-    styleUrls: ['./geocode-result-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe]
+  selector: 'tamu-gisc-geocode-result-table',
+  templateUrl: './geocode-result-table.component.html',
+  styleUrls: ['./geocode-result-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class GeocodeResultTableComponent implements OnInit {
   @Input()

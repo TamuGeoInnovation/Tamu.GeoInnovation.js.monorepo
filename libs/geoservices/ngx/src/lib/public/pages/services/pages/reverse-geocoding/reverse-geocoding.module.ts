@@ -22,15 +22,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        ReactiveFormsModule,
-        HighlightPlusModule,
-        UILayoutModule,
-        UILayoutCodeModule,
-        GeoservicesCoreInteractiveModule,
-        ReverseGeocodingComponent
-    ]
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    ReactiveFormsModule,
+    HighlightPlusModule,
+    UILayoutModule,
+    UILayoutCodeModule,
+    GeoservicesCoreInteractiveModule,
+    ReverseGeocodingComponent
+  ]
 })
 export class ReverseGeocodingModule {}

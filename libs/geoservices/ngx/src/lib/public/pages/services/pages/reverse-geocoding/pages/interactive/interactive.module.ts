@@ -13,6 +13,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), GeoservicesCoreInteractiveModule, InteractiveComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), GeoservicesCoreInteractiveModule, InteractiveComponent]
 })
 export class InteractiveModule {}

@@ -23,11 +23,24 @@ import { InteractiveResponseMetadataComponent } from '../../../common/interactiv
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-geocoding-basic',
-    templateUrl: './geocoding-basic.component.html',
-    styleUrls: ['./geocoding-basic.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, ButtonComponent, BasicSummaryBlurbComponent, TabsComponent, TabComponent, GeocodeResultTableComponent, ResultMapComponent, InteractiveResponseMetadataComponent, AsyncPipe]
+  selector: 'tamu-gisc-geocoding-basic',
+  templateUrl: './geocoding-basic.component.html',
+  styleUrls: ['./geocoding-basic.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    SelectComponent,
+    ButtonComponent,
+    BasicSummaryBlurbComponent,
+    TabsComponent,
+    TabComponent,
+    GeocodeResultTableComponent,
+    ResultMapComponent,
+    InteractiveResponseMetadataComponent,
+    AsyncPipe
+  ]
 })
 export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<GeocodeResult, IGeocodeOptions> {
   public states = STATES_TITLECASE;

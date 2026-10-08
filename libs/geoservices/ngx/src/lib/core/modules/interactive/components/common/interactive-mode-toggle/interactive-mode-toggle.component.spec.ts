@@ -14,12 +14,12 @@ describe('InteractiveModeToggleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [InteractiveModeToggleComponent],
-    // The template renders <tamu-gisc-slide-toggle>, which is not declared here. Schema-only so
-    // the unknown element does not fail compilation -- this spec covers the toggle's own logic,
-    // not the child component's rendering.
-    schemas: [NO_ERRORS_SCHEMA]
-}).compileComponents();
+      imports: [InteractiveModeToggleComponent],
+      // The template renders <tamu-gisc-slide-toggle>, which is not declared here. Schema-only so
+      // the unknown element does not fail compilation -- this spec covers the toggle's own logic,
+      // not the child component's rendering.
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
   });
 
   beforeEach(() => {

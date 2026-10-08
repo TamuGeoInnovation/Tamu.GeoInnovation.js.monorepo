@@ -12,11 +12,21 @@ import { AccordionContentDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AddressAttributeListComponent } from '../../components/fragments/common/address-attribute-list/address-attribute-list.component';
 
 @Component({
-    selector: 'tamu-gisc-address-processing',
-    templateUrl: './address-processing.component.html',
-    styleUrls: ['./address-processing.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, ServiceAttributeAccordionComponent, AddressFormatFragmentComponent, ApiVersionFragmentComponent, QueryStatusFragmentComponent, AccordionDirective, AccordionHeaderDirective, AccordionContentDirective, AddressAttributeListComponent]
+  selector: 'tamu-gisc-address-processing',
+  templateUrl: './address-processing.component.html',
+  styleUrls: ['./address-processing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    RouterLink,
+    ServiceAttributeAccordionComponent,
+    AddressFormatFragmentComponent,
+    ApiVersionFragmentComponent,
+    QueryStatusFragmentComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective,
+    AddressAttributeListComponent
+  ]
 })
 export class AddressProcessingComponent {
   public apiVersion = '5.0';

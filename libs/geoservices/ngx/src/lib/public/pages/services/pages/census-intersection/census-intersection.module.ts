@@ -22,15 +22,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        ReactiveFormsModule,
-        HighlightPlusModule,
-        UILayoutModule,
-        UILayoutCodeModule,
-        GeoservicesCoreInteractiveModule,
-        CensusIntersectionComponent
-    ]
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    ReactiveFormsModule,
+    HighlightPlusModule,
+    UILayoutModule,
+    UILayoutCodeModule,
+    GeoservicesCoreInteractiveModule,
+    CensusIntersectionComponent
+  ]
 })
 export class CensusIntersectionModule {}

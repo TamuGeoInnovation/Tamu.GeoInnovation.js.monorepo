@@ -13,11 +13,21 @@ import { TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-interactive-pricing',
-    templateUrl: './interactive-pricing.component.html',
-    styleUrls: ['./interactive-pricing.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, RangeComponent, RadioGroupComponent, TooltipComponent, TooltipTriggerComponent, RouterLink, AsyncPipe, CurrencyPipe]
+  selector: 'tamu-gisc-interactive-pricing',
+  templateUrl: './interactive-pricing.component.html',
+  styleUrls: ['./interactive-pricing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    RangeComponent,
+    RadioGroupComponent,
+    TooltipComponent,
+    TooltipTriggerComponent,
+    RouterLink,
+    AsyncPipe,
+    CurrencyPipe
+  ]
 })
 export class InteractivePricingComponent implements OnInit {
   public form: UntypedFormGroup;

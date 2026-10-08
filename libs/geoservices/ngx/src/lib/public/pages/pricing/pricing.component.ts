@@ -5,11 +5,11 @@ import { InteractivePricingComponent } from '../../../core/modules/pricing/inter
 import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'tamu-gisc-pricing',
-    templateUrl: './pricing.component.html',
-    styleUrls: ['./pricing.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [InteractivePricingComponent, RouterLink]
+  selector: 'tamu-gisc-pricing',
+  templateUrl: './pricing.component.html',
+  styleUrls: ['./pricing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [InteractivePricingComponent, RouterLink]
 })
 export class PricingComponent implements OnInit {
   public url: string;

@@ -7,10 +7,17 @@ import { ReferenceFeatureInterpolationTypeAttributeListComponent } from '../refe
 import { ReferenceFeatureInterpolationSubTypeAttributeListComponent } from '../reference-feature-interpolation-sub-type-attribute-list/reference-feature-interpolation-sub-type-attribute-list.component';
 
 @Component({
-    selector: 'tamu-gisc-reference-feature-attribute-list',
-    templateUrl: './reference-feature-attribute-list.component.html',
-    styleUrls: ['./reference-feature-attribute-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AccordionDirective, AccordionHeaderDirective, AccordionContentDirective, AddressAttributeListComponent, ReferenceFeatureInterpolationTypeAttributeListComponent, ReferenceFeatureInterpolationSubTypeAttributeListComponent]
+  selector: 'tamu-gisc-reference-feature-attribute-list',
+  templateUrl: './reference-feature-attribute-list.component.html',
+  styleUrls: ['./reference-feature-attribute-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective,
+    AddressAttributeListComponent,
+    ReferenceFeatureInterpolationTypeAttributeListComponent,
+    ReferenceFeatureInterpolationSubTypeAttributeListComponent
+  ]
 })
 export class ReferenceFeatureAttributeListComponent {}

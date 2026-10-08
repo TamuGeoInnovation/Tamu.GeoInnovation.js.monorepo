@@ -14,11 +14,24 @@ import { TileLinkDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-api',
-    templateUrl: './geoservices-api.component.html',
-    styleUrls: ['./geoservices-api.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [DrawerComponent, RouterLinkActive, RouterLink, ScrollToDirective, HamburgerTriggerComponent, TileNavigationComponent, TileComponent, TileIconComponent, TileTitleComponent, TileLinkDirective, RouterOutlet, AsyncPipe]
+  selector: 'tamu-gisc-api',
+  templateUrl: './geoservices-api.component.html',
+  styleUrls: ['./geoservices-api.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    DrawerComponent,
+    RouterLinkActive,
+    RouterLink,
+    ScrollToDirective,
+    HamburgerTriggerComponent,
+    TileNavigationComponent,
+    TileComponent,
+    TileIconComponent,
+    TileTitleComponent,
+    TileLinkDirective,
+    RouterOutlet,
+    AsyncPipe
+  ]
 })
 export class GeoservicesApiComponent implements OnInit, OnDestroy {
   @ViewChild('scrollContainer', { static: true })

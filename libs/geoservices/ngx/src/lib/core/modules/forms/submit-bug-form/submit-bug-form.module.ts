@@ -7,7 +7,7 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SubmitBugFormComponent } from './submit-bug-form.component';
 
 @NgModule({
-    imports: [CommonModule, ReactiveFormsModule, UIFormsModule, SubmitBugFormComponent],
-    exports: [SubmitBugFormComponent]
+  imports: [CommonModule, ReactiveFormsModule, UIFormsModule, SubmitBugFormComponent],
+  exports: [SubmitBugFormComponent]
 })
 export class SubmitBugFormModule {}

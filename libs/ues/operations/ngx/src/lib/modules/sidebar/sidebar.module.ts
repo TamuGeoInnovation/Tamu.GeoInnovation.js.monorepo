@@ -15,19 +15,20 @@ import { SidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        UITamuBrandingModule,
-        SidebarModule,
-        MapPopupModule,
-        SearchModule,
-        MapsFeatureTripPlannerModule,
-        LayerListModule,
-        LegendModule,
-        UESCoreUIModule,
-        SidebarComponent, SidebarReferenceComponent
-    ],
-    exports: [SidebarComponent]
+  imports: [
+    CommonModule,
+    RouterModule,
+    UITamuBrandingModule,
+    SidebarModule,
+    MapPopupModule,
+    SearchModule,
+    MapsFeatureTripPlannerModule,
+    LayerListModule,
+    LegendModule,
+    UESCoreUIModule,
+    SidebarComponent,
+    SidebarReferenceComponent
+  ],
+  exports: [SidebarComponent]
 })
 export class UESSidebarModule {}

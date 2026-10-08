@@ -8,11 +8,11 @@ import { ParsedAddressFieldLabel } from '../../../../../util/dictionaries';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-parsed-address-result-table',
-    templateUrl: './parsed-address-result-table.component.html',
-    styleUrls: ['./parsed-address-result-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe]
+  selector: 'tamu-gisc-parsed-address-result-table',
+  templateUrl: './parsed-address-result-table.component.html',
+  styleUrls: ['./parsed-address-result-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class ParsedAddressResultTableComponent implements OnInit {
   /**

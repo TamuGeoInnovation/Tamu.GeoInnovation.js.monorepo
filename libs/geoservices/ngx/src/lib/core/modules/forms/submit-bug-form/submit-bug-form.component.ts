@@ -10,11 +10,19 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-submit-bug-form',
-    templateUrl: './submit-bug-form.component.html',
-    styleUrls: ['./submit-bug-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, TurnstileChallengeComponent, NgClass, ButtonComponent, AsyncPipe]
+  selector: 'tamu-gisc-submit-bug-form',
+  templateUrl: './submit-bug-form.component.html',
+  styleUrls: ['./submit-bug-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    TurnstileChallengeComponent,
+    NgClass,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class SubmitBugFormComponent implements OnInit {
   public form: UntypedFormGroup;

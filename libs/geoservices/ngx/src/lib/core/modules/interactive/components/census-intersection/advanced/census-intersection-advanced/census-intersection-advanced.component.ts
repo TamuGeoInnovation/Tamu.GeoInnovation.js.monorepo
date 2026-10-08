@@ -16,10 +16,25 @@ import { CensusIntersectionResultTableComponent } from '../../../../../result-ta
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-census-intersection-advanced',
-    templateUrl: './census-intersection-advanced.component.html',
-    styleUrls: ['./census-intersection-advanced.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, InteractiveModeToggleComponent, TextboxComponent, SelectComponent, CheckboxGroupComponent, CheckboxComponent, ButtonComponent, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent, StatusResultTableComponent, CensusIntersectionResultTableComponent, AsyncPipe]
+  selector: 'tamu-gisc-census-intersection-advanced',
+  templateUrl: './census-intersection-advanced.component.html',
+  styleUrls: ['./census-intersection-advanced.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    InteractiveModeToggleComponent,
+    TextboxComponent,
+    SelectComponent,
+    CheckboxGroupComponent,
+    CheckboxComponent,
+    ButtonComponent,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    StatusResultTableComponent,
+    CensusIntersectionResultTableComponent,
+    AsyncPipe
+  ]
 })
 export class CensusIntersectionAdvancedComponent extends CensusIntersectionBasicComponent {}

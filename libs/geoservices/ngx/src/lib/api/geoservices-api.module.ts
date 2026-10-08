@@ -47,15 +47,15 @@ export const routes: Route[] = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        UILayoutModule,
-        UIScrollToModule,
-        UITileNavigationModule,
-        UINavigationTriggersModule,
-        GeoservicesApiComponent
-    ],
-    exports: [RouterModule]
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    UILayoutModule,
+    UIScrollToModule,
+    UITileNavigationModule,
+    UINavigationTriggersModule,
+    GeoservicesApiComponent
+  ],
+  exports: [RouterModule]
 })
 export class GeoservicesApiModule {}

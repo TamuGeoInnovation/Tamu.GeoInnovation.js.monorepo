@@ -13,11 +13,23 @@ import { AddressAttributeListComponent } from '../../components/fragments/common
 import { ReferenceFeatureAttributeListComponent } from '../../components/fragments/common/reference-feature-attribute-list/reference-feature-attribute-list.component';
 
 @Component({
-    selector: 'tamu-gisc-geocoding',
-    templateUrl: './geocoding.component.html',
-    styleUrls: ['./geocoding.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ServiceAttributeAccordionComponent, CensusYearsParameterFragmentComponent, ApiVersionFragmentComponent, QueryStatusFragmentComponent, AccordionDirective, AccordionHeaderDirective, AccordionContentDirective, AddressMatchTypeAttributeListComponent, CensusRecordFragmentComponent, AddressAttributeListComponent, ReferenceFeatureAttributeListComponent]
+  selector: 'tamu-gisc-geocoding',
+  templateUrl: './geocoding.component.html',
+  styleUrls: ['./geocoding.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    ServiceAttributeAccordionComponent,
+    CensusYearsParameterFragmentComponent,
+    ApiVersionFragmentComponent,
+    QueryStatusFragmentComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective,
+    AddressMatchTypeAttributeListComponent,
+    CensusRecordFragmentComponent,
+    AddressAttributeListComponent,
+    ReferenceFeatureAttributeListComponent
+  ]
 })
 export class GeocodingComponent {
   public apiVersion = '5.0';

@@ -8,11 +8,11 @@ import { UESTamuBlockComponent } from '../../../core-ui/components/branding/ues-
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-session-expired',
-    templateUrl: './session-expired.component.html',
-    styleUrls: ['./session-expired.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [UESTamuBlockComponent, AsyncPipe]
+  selector: 'tamu-gisc-session-expired',
+  templateUrl: './session-expired.component.html',
+  styleUrls: ['./session-expired.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [UESTamuBlockComponent, AsyncPipe]
 })
 export class SessionExpiredComponent {
   constructor(

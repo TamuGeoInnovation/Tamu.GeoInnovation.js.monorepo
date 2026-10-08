@@ -17,10 +17,26 @@ import { ParsedAddressResultTableComponent } from '../../../../../result-tables/
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-address-processing-advanced',
-    templateUrl: './address-processing-advanced.component.html',
-    styleUrls: ['./address-processing-advanced.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, InteractiveModeToggleComponent, TextboxComponent, SelectComponent, RouterLink, CheckboxGroupComponent, CheckboxComponent, ButtonComponent, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent, StatusResultTableComponent, ParsedAddressResultTableComponent, AsyncPipe]
+  selector: 'tamu-gisc-address-processing-advanced',
+  templateUrl: './address-processing-advanced.component.html',
+  styleUrls: ['./address-processing-advanced.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    InteractiveModeToggleComponent,
+    TextboxComponent,
+    SelectComponent,
+    RouterLink,
+    CheckboxGroupComponent,
+    CheckboxComponent,
+    ButtonComponent,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    StatusResultTableComponent,
+    ParsedAddressResultTableComponent,
+    AsyncPipe
+  ]
 })
 export class AddressProcessingAdvancedComponent extends AddressProcessingBasicComponent {}

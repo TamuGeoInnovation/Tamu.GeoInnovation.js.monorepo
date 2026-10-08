@@ -13,11 +13,11 @@ import { RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, AsyncPipe, DatePipe]
+  selector: 'tamu-gisc-list',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, AsyncPipe, DatePipe]
 })
 export class ListComponent implements OnInit {
   private _$refresh: Subject<boolean> = new Subject();

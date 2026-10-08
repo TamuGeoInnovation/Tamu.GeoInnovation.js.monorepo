@@ -6,10 +6,16 @@ import { AddressMatchTypeAttributeListComponent } from '../address-match-type-at
 import { AddressFormatFragmentComponent } from '../../address-normalization/address-format-fragment/address-format-fragment.component';
 
 @Component({
-    selector: 'tamu-gisc-address-attribute-list',
-    templateUrl: './address-attribute-list.component.html',
-    styleUrls: ['./address-attribute-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AccordionDirective, AccordionHeaderDirective, AccordionContentDirective, AddressMatchTypeAttributeListComponent, AddressFormatFragmentComponent]
+  selector: 'tamu-gisc-address-attribute-list',
+  templateUrl: './address-attribute-list.component.html',
+  styleUrls: ['./address-attribute-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective,
+    AddressMatchTypeAttributeListComponent,
+    AddressFormatFragmentComponent
+  ]
 })
 export class AddressAttributeListComponent {}

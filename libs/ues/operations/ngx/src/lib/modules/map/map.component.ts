@@ -18,11 +18,20 @@ import { UESTamuBlockComponent } from '@tamu-gisc/ues/common/ngx';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-map',
-    templateUrl: './map.component.html',
-    styleUrls: ['./map.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ReveilleConsoleLogComponent, RouterLink, ClickCoordinatesComponent, EsriMapComponent, NgClass, RouterOutlet, MapViewfinderComponent, UESTamuBlockComponent]
+  selector: 'tamu-gisc-map',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    ReveilleConsoleLogComponent,
+    RouterLink,
+    ClickCoordinatesComponent,
+    EsriMapComponent,
+    NgClass,
+    RouterOutlet,
+    MapViewfinderComponent,
+    UESTamuBlockComponent
+  ]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;

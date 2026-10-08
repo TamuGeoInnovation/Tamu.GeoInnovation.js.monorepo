@@ -15,11 +15,22 @@ import { AsyncPipe } from '@angular/common';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
 @Component({
-    selector: 'tamu-gisc-address-processing',
-    templateUrl: './address-processing.component.html',
-    styleUrls: ['./address-processing.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AddressProcessingBasicComponent, TabsComponent, TabComponent, CodeRunnerComponent, RouterLink, StepperComponent, StepComponent, StepperToggleDirective, AsyncPipe, HighlightPlusModule]
+  selector: 'tamu-gisc-address-processing',
+  templateUrl: './address-processing.component.html',
+  styleUrls: ['./address-processing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    AddressProcessingBasicComponent,
+    TabsComponent,
+    TabComponent,
+    CodeRunnerComponent,
+    RouterLink,
+    StepperComponent,
+    StepComponent,
+    StepperToggleDirective,
+    AsyncPipe,
+    HighlightPlusModule
+  ]
 })
 export class AddressProcessingComponent implements OnInit {
   private address: AddressProcessing;

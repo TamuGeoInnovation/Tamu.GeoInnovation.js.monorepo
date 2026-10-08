@@ -18,6 +18,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), ListComponent, DetailComponent, DeleteEmailModalComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), ListComponent, DetailComponent, DeleteEmailModalComponent]
 })
 export class ListModule {}

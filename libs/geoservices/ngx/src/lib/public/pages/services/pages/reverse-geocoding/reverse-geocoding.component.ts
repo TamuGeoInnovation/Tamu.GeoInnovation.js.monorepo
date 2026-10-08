@@ -15,11 +15,22 @@ import { AsyncPipe } from '@angular/common';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
 @Component({
-    selector: 'tamu-gisc-reverse-geocoding',
-    templateUrl: './reverse-geocoding.component.html',
-    styleUrls: ['./reverse-geocoding.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ReverseGeocodingBasicComponent, TabsComponent, TabComponent, CodeRunnerComponent, RouterLink, StepperComponent, StepComponent, StepperToggleDirective, AsyncPipe, HighlightPlusModule]
+  selector: 'tamu-gisc-reverse-geocoding',
+  templateUrl: './reverse-geocoding.component.html',
+  styleUrls: ['./reverse-geocoding.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    ReverseGeocodingBasicComponent,
+    TabsComponent,
+    TabComponent,
+    CodeRunnerComponent,
+    RouterLink,
+    StepperComponent,
+    StepComponent,
+    StepperToggleDirective,
+    AsyncPipe,
+    HighlightPlusModule
+  ]
 })
 export class ReverseGeocodingComponent implements OnInit {
   private geocoder: ReverseGeocode;

@@ -25,11 +25,21 @@ import { InteractiveResponseMetadataComponent } from '../../../common/interactiv
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-census-intersection-basic',
-    templateUrl: './census-intersection-basic.component.html',
-    styleUrls: ['./census-intersection-basic.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, ButtonComponent, BasicSummaryBlurbComponent, CensusIntersectionResultTabsComponent, InteractiveResponseMetadataComponent, AsyncPipe]
+  selector: 'tamu-gisc-census-intersection-basic',
+  templateUrl: './census-intersection-basic.component.html',
+  styleUrls: ['./census-intersection-basic.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    SelectComponent,
+    ButtonComponent,
+    BasicSummaryBlurbComponent,
+    CensusIntersectionResultTabsComponent,
+    InteractiveResponseMetadataComponent,
+    AsyncPipe
+  ]
 })
 export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessingComponent<
   CensusIntersectionResult,

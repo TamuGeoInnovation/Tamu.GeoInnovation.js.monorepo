@@ -4,11 +4,11 @@ import { TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { DecimalPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-interactive-response-metadata',
-    templateUrl: './interactive-response-metadata.component.html',
-    styleUrls: ['./interactive-response-metadata.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [TooltipComponent, TooltipTriggerComponent, DecimalPipe]
+  selector: 'tamu-gisc-interactive-response-metadata',
+  templateUrl: './interactive-response-metadata.component.html',
+  styleUrls: ['./interactive-response-metadata.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TooltipComponent, TooltipTriggerComponent, DecimalPipe]
 })
 export class InteractiveResponseMetadataComponent {
   @Input()

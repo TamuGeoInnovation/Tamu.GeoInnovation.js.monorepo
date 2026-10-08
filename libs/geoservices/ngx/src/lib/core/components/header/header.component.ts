@@ -26,12 +26,30 @@ import { AccordionContentDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 import { TileLinkDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 
 @Component({
-    selector: 'tamu-gisc-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss'],
-    animations: [growAnimationBuilder(250)],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLinkActive, RouterLink, NgClass, RevivalBannerComponent, HeaderMobileComponent, HamburgerTriggerComponent, TileNavigationComponent, TileComponent, TileIconComponent, TileTitleComponent, TileSubmenuDirective, TileSubmenuComponent, AccordionDirective, AccordionHeaderDirective, AccordionContentDirective, TileLinkDirective, AsyncPipe]
+  selector: 'tamu-gisc-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
+  animations: [growAnimationBuilder(250)],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    RouterLinkActive,
+    RouterLink,
+    NgClass,
+    RevivalBannerComponent,
+    HeaderMobileComponent,
+    HamburgerTriggerComponent,
+    TileNavigationComponent,
+    TileComponent,
+    TileIconComponent,
+    TileTitleComponent,
+    TileSubmenuDirective,
+    TileSubmenuComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective,
+    TileLinkDirective,
+    AsyncPipe
+  ]
 })
 export class HeaderComponent implements OnInit {
   public mobileNavToggle: Subject<boolean> = new Subject();

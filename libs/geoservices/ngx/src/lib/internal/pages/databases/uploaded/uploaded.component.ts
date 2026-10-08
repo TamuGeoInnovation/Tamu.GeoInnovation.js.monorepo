@@ -7,11 +7,11 @@ import { DatabaseService, DatabaseRecord } from '@tamu-gisc/geoservices/data-acc
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-uploaded',
-    templateUrl: './uploaded.component.html',
-    styleUrls: ['./uploaded.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, AsyncPipe, DatePipe]
+  selector: 'tamu-gisc-uploaded',
+  templateUrl: './uploaded.component.html',
+  styleUrls: ['./uploaded.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, AsyncPipe, DatePipe]
 })
 export class UploadedComponent implements OnInit {
   public databases: Observable<Array<DatabaseRecord>>;

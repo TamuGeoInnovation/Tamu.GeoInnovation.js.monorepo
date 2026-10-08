@@ -8,11 +8,11 @@ import { ReverseGeocodeFieldLabel } from '../../../../../util/dictionaries';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-reverse-geocoding-result-table',
-    templateUrl: './reverse-geocoding-result-table.component.html',
-    styleUrls: ['./reverse-geocoding-result-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe]
+  selector: 'tamu-gisc-reverse-geocoding-result-table',
+  templateUrl: './reverse-geocoding-result-table.component.html',
+  styleUrls: ['./reverse-geocoding-result-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class ReverseGeocodingResultTableComponent implements OnInit {
   @Input()

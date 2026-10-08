@@ -5,11 +5,11 @@ import { RouterLink } from '@angular/router';
 import { CensusIntersectionAdvancedComponent } from '../../../../../../../core/modules/interactive/components/census-intersection/advanced/census-intersection-advanced/census-intersection-advanced.component';
 
 @Component({
-    selector: 'tamu-gisc-interactive',
-    templateUrl: './interactive.component.html',
-    styleUrls: ['./interactive.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, CensusIntersectionAdvancedComponent]
+  selector: 'tamu-gisc-interactive',
+  templateUrl: './interactive.component.html',
+  styleUrls: ['./interactive.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, CensusIntersectionAdvancedComponent]
 })
 export class InteractiveComponent implements OnInit {
   public url: string;

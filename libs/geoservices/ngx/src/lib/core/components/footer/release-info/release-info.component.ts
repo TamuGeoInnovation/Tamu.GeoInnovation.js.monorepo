@@ -4,11 +4,11 @@ import { EnvironmentService, ReleaseMetadata } from '@tamu-gisc/common/ngx/envir
 import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 @Component({
-    selector: 'tamu-gisc-release-info',
-    templateUrl: './release-info.component.html',
-    styleUrls: ['./release-info.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ClipboardCopyDirective]
+  selector: 'tamu-gisc-release-info',
+  templateUrl: './release-info.component.html',
+  styleUrls: ['./release-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ClipboardCopyDirective]
 })
 export class ReleaseInfoComponent implements OnInit {
   public release_meta: ReleaseMetadata;

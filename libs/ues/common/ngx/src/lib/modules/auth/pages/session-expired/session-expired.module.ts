@@ -13,6 +13,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), UESCoreUIModule, SessionExpiredComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), UESCoreUIModule, SessionExpiredComponent]
 })
 export class SessionExpiredModule {}

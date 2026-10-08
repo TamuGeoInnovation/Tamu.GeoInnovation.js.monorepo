@@ -16,11 +16,22 @@ import { AsyncPipe } from '@angular/common';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
 @Component({
-    selector: 'tamu-gisc-geocoding',
-    templateUrl: './geocoding.component.html',
-    styleUrls: ['./geocoding.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [GeocodingBasicComponent, TabsComponent, TabComponent, CodeRunnerComponent, RouterLink, StepperComponent, StepComponent, StepperToggleDirective, AsyncPipe, HighlightPlusModule]
+  selector: 'tamu-gisc-geocoding',
+  templateUrl: './geocoding.component.html',
+  styleUrls: ['./geocoding.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    GeocodingBasicComponent,
+    TabsComponent,
+    TabComponent,
+    CodeRunnerComponent,
+    RouterLink,
+    StepperComponent,
+    StepComponent,
+    StepperToggleDirective,
+    AsyncPipe,
+    HighlightPlusModule
+  ]
 })
 export class GeocodingComponent implements OnInit {
   private geocode: Geocode;

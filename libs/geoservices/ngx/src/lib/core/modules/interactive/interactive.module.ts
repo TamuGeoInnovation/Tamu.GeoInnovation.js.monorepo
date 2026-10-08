@@ -22,37 +22,37 @@ import { InteractiveModeToggleComponent } from './components/common/interactive-
 import { BasicSummaryBlurbComponent } from './components/common/basic-summary-blurb/basic-summary-blurb.component';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        UIFormsModule,
-        UILayoutModule,
-        EsriMapModule,
-        RouterModule,
-        ResultTablesModule,
-        ReverseGeocodingBasicComponent,
-        CensusIntersectionBasicComponent,
-        AddressProcessingBasicComponent,
-        GeocodingBasicComponent,
-        InteractiveResponseMetadataComponent,
-        AddressProcessingAdvancedComponent,
-        CensusIntersectionAdvancedComponent,
-        GeocodingAdvancedComponent,
-        ReverseGeocodingAdvancedComponent,
-        ResultMapComponent,
-        InteractiveModeToggleComponent,
-        BasicSummaryBlurbComponent
-    ],
-    exports: [
-        ReverseGeocodingBasicComponent,
-        CensusIntersectionBasicComponent,
-        AddressProcessingBasicComponent,
-        GeocodingBasicComponent,
-        AddressProcessingAdvancedComponent,
-        CensusIntersectionAdvancedComponent,
-        GeocodingAdvancedComponent,
-        ReverseGeocodingAdvancedComponent
-    ]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    UIFormsModule,
+    UILayoutModule,
+    EsriMapModule,
+    RouterModule,
+    ResultTablesModule,
+    ReverseGeocodingBasicComponent,
+    CensusIntersectionBasicComponent,
+    AddressProcessingBasicComponent,
+    GeocodingBasicComponent,
+    InteractiveResponseMetadataComponent,
+    AddressProcessingAdvancedComponent,
+    CensusIntersectionAdvancedComponent,
+    GeocodingAdvancedComponent,
+    ReverseGeocodingAdvancedComponent,
+    ResultMapComponent,
+    InteractiveModeToggleComponent,
+    BasicSummaryBlurbComponent
+  ],
+  exports: [
+    ReverseGeocodingBasicComponent,
+    CensusIntersectionBasicComponent,
+    AddressProcessingBasicComponent,
+    GeocodingBasicComponent,
+    AddressProcessingAdvancedComponent,
+    CensusIntersectionAdvancedComponent,
+    GeocodingAdvancedComponent,
+    ReverseGeocodingAdvancedComponent
+  ]
 })
 export class GeoservicesCoreInteractiveModule {}

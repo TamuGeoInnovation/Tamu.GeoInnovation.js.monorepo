@@ -13,23 +13,27 @@ import { CensusIntersectionResultTableComponent } from './components/census-inte
 import { ReverseGeocodingResultTableComponent } from './components/reverse-geocoding/reverse-geocoding-result-table/reverse-geocoding-result-table.component';
 
 @NgModule({
-    imports: [CommonModule, UILayoutModule, StatusResultTableComponent,
-        CensusIntersectionResultTabsComponent,
-        GeocodeResultTableComponent,
-        GeocodeInputParametersComponent,
-        ParsedAddressResultTableComponent,
-        GeocodeMatchedReferenceFeatureTableComponent,
-        CensusIntersectionResultTableComponent,
-        ReverseGeocodingResultTableComponent],
-    exports: [
-        StatusResultTableComponent,
-        CensusIntersectionResultTabsComponent,
-        GeocodeResultTableComponent,
-        GeocodeInputParametersComponent,
-        ParsedAddressResultTableComponent,
-        GeocodeMatchedReferenceFeatureTableComponent,
-        CensusIntersectionResultTableComponent,
-        ReverseGeocodingResultTableComponent
-    ]
+  imports: [
+    CommonModule,
+    UILayoutModule,
+    StatusResultTableComponent,
+    CensusIntersectionResultTabsComponent,
+    GeocodeResultTableComponent,
+    GeocodeInputParametersComponent,
+    ParsedAddressResultTableComponent,
+    GeocodeMatchedReferenceFeatureTableComponent,
+    CensusIntersectionResultTableComponent,
+    ReverseGeocodingResultTableComponent
+  ],
+  exports: [
+    StatusResultTableComponent,
+    CensusIntersectionResultTabsComponent,
+    GeocodeResultTableComponent,
+    GeocodeInputParametersComponent,
+    ParsedAddressResultTableComponent,
+    GeocodeMatchedReferenceFeatureTableComponent,
+    CensusIntersectionResultTableComponent,
+    ReverseGeocodingResultTableComponent
+  ]
 })
 export class ResultTablesModule {}

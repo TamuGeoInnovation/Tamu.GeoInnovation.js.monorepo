@@ -12,6 +12,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), TermsOfUseComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), TermsOfUseComponent]
 })
 export class TermsOfUseModule {}

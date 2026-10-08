@@ -15,11 +15,22 @@ import { AsyncPipe } from '@angular/common';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
 @Component({
-    selector: 'tamu-gisc-census-intersection',
-    templateUrl: './census-intersection.component.html',
-    styleUrls: ['./census-intersection.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [CensusIntersectionBasicComponent, TabsComponent, TabComponent, CodeRunnerComponent, RouterLink, StepperComponent, StepComponent, StepperToggleDirective, AsyncPipe, HighlightPlusModule]
+  selector: 'tamu-gisc-census-intersection',
+  templateUrl: './census-intersection.component.html',
+  styleUrls: ['./census-intersection.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    CensusIntersectionBasicComponent,
+    TabsComponent,
+    TabComponent,
+    CodeRunnerComponent,
+    RouterLink,
+    StepperComponent,
+    StepComponent,
+    StepperToggleDirective,
+    AsyncPipe,
+    HighlightPlusModule
+  ]
 })
 export class CensusIntersectionComponent implements OnInit {
   private intersection: CensusIntersection;

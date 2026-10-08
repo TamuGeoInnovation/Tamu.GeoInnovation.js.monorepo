@@ -7,11 +7,11 @@ import { AccountDetailsService, IAccountDetails } from '@tamu-gisc/geoservices/d
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-details',
-    templateUrl: './details.component.html',
-    styleUrls: ['./details.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent]
+  selector: 'tamu-gisc-details',
+  templateUrl: './details.component.html',
+  styleUrls: ['./details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent]
 })
 export class DetailsComponent implements OnInit {
   public data: Observable<IAccountDetails>;

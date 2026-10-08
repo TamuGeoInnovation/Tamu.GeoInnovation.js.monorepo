@@ -19,15 +19,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        HighlightPlusModule,
-        UIClipboardModule,
-        UIScrollToModule,
-        UILayoutModule,
-        ApiComponentsModule,
-        CensusIntersectionComponent
-    ]
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    HighlightPlusModule,
+    UIClipboardModule,
+    UIScrollToModule,
+    UILayoutModule,
+    ApiComponentsModule,
+    CensusIntersectionComponent
+  ]
 })
 export class CensusIntersectionModule {}

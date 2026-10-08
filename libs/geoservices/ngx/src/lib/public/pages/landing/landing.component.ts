@@ -6,11 +6,11 @@ import { TabsComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { TabComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
-    selector: 'tamu-gisc-landing',
-    templateUrl: './landing.component.html',
-    styleUrls: ['./landing.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLinkActive, RouterLink, TabsComponent, TabComponent]
+  selector: 'tamu-gisc-landing',
+  templateUrl: './landing.component.html',
+  styleUrls: ['./landing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLinkActive, RouterLink, TabsComponent, TabComponent]
 })
 export class LandingComponent implements OnInit {
   public url: string;

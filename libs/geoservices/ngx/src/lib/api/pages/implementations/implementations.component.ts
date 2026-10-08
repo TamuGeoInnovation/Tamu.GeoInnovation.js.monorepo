@@ -6,11 +6,11 @@ import { AsyncPipe } from '@angular/common';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
 @Component({
-    selector: 'tamu-gisc-implementations',
-    templateUrl: './implementations.component.html',
-    styleUrls: ['./implementations.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [HighlightModule, AsyncPipe, HighlightPlusModule]
+  selector: 'tamu-gisc-implementations',
+  templateUrl: './implementations.component.html',
+  styleUrls: ['./implementations.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [HighlightModule, AsyncPipe, HighlightPlusModule]
 })
 export class ImplementationsComponent implements OnInit {
   public url: string;

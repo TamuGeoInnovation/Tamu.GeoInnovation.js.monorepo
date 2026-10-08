@@ -19,30 +19,30 @@ import { RevivalModalComponent } from './components/modals/revival-modal/revival
 import { RevivalBannerComponent } from './components/revival-banner/revival-banner.component';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        PipesModule,
-        UILayoutModule,
-        UITileNavigationModule,
-        UINavigationTriggersModule,
-        UIClipboardModule,
-        HeaderComponent,
-        FooterComponent,
-        HeaderMobileComponent,
-        FooterLegalComponent,
-        FooterShortcutsComponent,
-        ReleaseInfoComponent,
-        RevivalModalComponent,
-        RevivalBannerComponent
-    ],
-    exports: [
-        HeaderComponent,
-        FooterComponent,
-        FooterLegalComponent,
-        FooterShortcutsComponent,
-        HeaderMobileComponent,
-        RevivalBannerComponent
-    ]
+  imports: [
+    CommonModule,
+    RouterModule,
+    PipesModule,
+    UILayoutModule,
+    UITileNavigationModule,
+    UINavigationTriggersModule,
+    UIClipboardModule,
+    HeaderComponent,
+    FooterComponent,
+    HeaderMobileComponent,
+    FooterLegalComponent,
+    FooterShortcutsComponent,
+    ReleaseInfoComponent,
+    RevivalModalComponent,
+    RevivalBannerComponent
+  ],
+  exports: [
+    HeaderComponent,
+    FooterComponent,
+    FooterLegalComponent,
+    FooterShortcutsComponent,
+    HeaderMobileComponent,
+    RevivalBannerComponent
+  ]
 })
 export class GeoservicesCoreNgxModule {}

@@ -22,11 +22,24 @@ import { InteractiveResponseMetadataComponent } from '../../../common/interactiv
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-reverse-geocoding-basic',
-    templateUrl: './reverse-geocoding-basic.component.html',
-    styleUrls: ['./reverse-geocoding-basic.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, ButtonComponent, BasicSummaryBlurbComponent, TabsComponent, TabComponent, ReverseGeocodingResultTableComponent, ResultMapComponent, InteractiveResponseMetadataComponent, AsyncPipe]
+  selector: 'tamu-gisc-reverse-geocoding-basic',
+  templateUrl: './reverse-geocoding-basic.component.html',
+  styleUrls: ['./reverse-geocoding-basic.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    SelectComponent,
+    ButtonComponent,
+    BasicSummaryBlurbComponent,
+    TabsComponent,
+    TabComponent,
+    ReverseGeocodingResultTableComponent,
+    ResultMapComponent,
+    InteractiveResponseMetadataComponent,
+    AsyncPipe
+  ]
 })
 export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<
   ReverseGeocodeResult,

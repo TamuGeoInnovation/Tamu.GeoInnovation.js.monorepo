@@ -6,11 +6,11 @@ import { ApiVersionFragmentComponent } from '../../components/fragments/common/a
 import { QueryStatusFragmentComponent } from '../../components/fragments/common/query-status-fragment/query-status-fragment.component';
 
 @Component({
-    selector: 'tamu-gisc-reverse-geocoding',
-    templateUrl: './reverse-geocoding.component.html',
-    styleUrls: ['./reverse-geocoding.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ServiceAttributeAccordionComponent, ApiVersionFragmentComponent, QueryStatusFragmentComponent]
+  selector: 'tamu-gisc-reverse-geocoding',
+  templateUrl: './reverse-geocoding.component.html',
+  styleUrls: ['./reverse-geocoding.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ServiceAttributeAccordionComponent, ApiVersionFragmentComponent, QueryStatusFragmentComponent]
 })
 export class ReverseGeocodingComponent {
   public apiVersion = '5.0';

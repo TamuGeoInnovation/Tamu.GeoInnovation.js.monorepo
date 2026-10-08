@@ -13,7 +13,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), RefillComponent],
-    exports: [RouterModule]
+  imports: [CommonModule, RouterModule.forChild(routes), RefillComponent],
+  exports: [RouterModule]
 })
 export class RefillModule {}

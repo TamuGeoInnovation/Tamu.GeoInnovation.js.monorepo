@@ -4,11 +4,11 @@ import { ITransactionData } from '@tamu-gisc/geoprocessing-v5';
 import { DecimalPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-status-result-table',
-    templateUrl: './status-result-table.component.html',
-    styleUrls: ['./status-result-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [DecimalPipe]
+  selector: 'tamu-gisc-status-result-table',
+  templateUrl: './status-result-table.component.html',
+  styleUrls: ['./status-result-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [DecimalPipe]
 })
 export class StatusResultTableComponent {
   @Input()
