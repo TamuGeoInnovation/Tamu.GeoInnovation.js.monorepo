@@ -36,5 +36,10 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
+      # Playwright strips types when it loads a spec, so nothing else fails on a type error in the
+      # AggieMap smoke suite. A few seconds; runs on every pull request (#1470).
+      - name: Typecheck the AggieMap smoke suite
+        run: npx tsc -p test/smoke/aggiemap
+
       - name: Lint Affected
         run: npx nx affected:lint --configuration=production --exclude=${{ env.EXCLUDED_PROJECTS }}  --base=${{ inputs.base }} --parallel=2

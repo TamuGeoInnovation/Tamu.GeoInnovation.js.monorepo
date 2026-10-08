@@ -26,6 +26,10 @@ A change reaches the main code only through a pull request, and every pull reque
 on GitHub before it is merged. Changes merged to `development` run them again.
 
 - **Lint.** Checks the code follows the project's style and avoids common mistakes.
+- **The smoke suite compiles.** The live-site checks described below are typechecked strictly on every
+  pull request, so a mistake in a check fails before it can quietly check the wrong thing. Until
+  October 2026 nothing compiled them
+  ([#1470](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1470)).
 - **Unit tests.** Small, fast tests that live next to the code they check. There are about 175 unit
   test files across the applications and shared libraries, holding roughly 900 individual tests
   (counted from the source on 4 October 2026). Results are published on the pull request itself, so a
