@@ -9,7 +9,14 @@ import { EventRowComponent } from './components/event-row/event-row.component';
 import { GisdayPlatformNgxCommonModule } from '../../gisday-platform-ngx-common.module';
 
 @NgModule({
-    imports: [CommonModule, RouterModule, UIFormsModule, GisdayPlatformNgxCommonModule, SeasonDayCardComponent, EventRowComponent],
-    exports: [SeasonDayCardComponent, EventRowComponent]
+  imports: [
+    CommonModule,
+    RouterModule,
+    UIFormsModule,
+    GisdayPlatformNgxCommonModule,
+    SeasonDayCardComponent,
+    EventRowComponent
+  ],
+  exports: [SeasonDayCardComponent, EventRowComponent]
 })
 export class GisDayEventsModule {}

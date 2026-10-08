@@ -10,11 +10,11 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-my-classes',
-    templateUrl: './my-classes.component.html',
-    styleUrls: ['./my-classes.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [CheckboxComponent, AsyncPipe]
+  selector: 'tamu-gisc-my-classes',
+  templateUrl: './my-classes.component.html',
+  styleUrls: ['./my-classes.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CheckboxComponent, AsyncPipe]
 })
 export class MyClassesComponent implements OnInit {
   public classes$: Observable<Array<Partial<Class>>>;

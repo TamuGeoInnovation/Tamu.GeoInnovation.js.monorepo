@@ -1,5 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  ValidatorFn,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { Observable, Subject, map, shareReplay, startWith, switchMap, take } from 'rxjs';
 
 import { AuthService } from '@auth0/auth0-angular';
@@ -50,11 +57,20 @@ const infoCompletionValidator: ValidatorFn = (control: UntypedFormGroup): { [key
 };
 
 @Component({
-    selector: 'tamu-gisc-my-details',
-    templateUrl: './my-details.component.html',
-    styleUrls: ['./my-details.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, FormsModule, ReactiveFormsModule, TextboxComponent, NgClass, SelectComponent, ButtonComponent, AsyncPipe]
+  selector: 'tamu-gisc-my-details',
+  templateUrl: './my-details.component.html',
+  styleUrls: ['./my-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    RouterLink,
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    NgClass,
+    SelectComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class MyDetailsComponent implements OnInit {
   public form: UntypedFormGroup;

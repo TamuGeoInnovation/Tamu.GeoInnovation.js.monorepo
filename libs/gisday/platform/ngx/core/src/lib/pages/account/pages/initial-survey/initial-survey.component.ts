@@ -15,11 +15,22 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-initial-survey',
-    templateUrl: './initial-survey.component.html',
-    styleUrls: ['./initial-survey.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgTemplateOutlet, FormsModule, ReactiveFormsModule, RadioGroupComponent, TextboxComponent, CheckboxGroupComponent, CheckboxComponent, SelectComponent, ButtonComponent, AsyncPipe]
+  selector: 'tamu-gisc-initial-survey',
+  templateUrl: './initial-survey.component.html',
+  styleUrls: ['./initial-survey.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    NgTemplateOutlet,
+    FormsModule,
+    ReactiveFormsModule,
+    RadioGroupComponent,
+    TextboxComponent,
+    CheckboxGroupComponent,
+    CheckboxComponent,
+    SelectComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class InitialSurveyComponent implements OnInit, OnDestroy {
   public dataGroup: UntypedFormGroup;

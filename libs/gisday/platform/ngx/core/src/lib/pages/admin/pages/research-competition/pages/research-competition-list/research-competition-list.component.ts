@@ -15,11 +15,20 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 import { SubmissionReviewStatusPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
-    selector: 'tamu-gisc-research-competition-list',
-    templateUrl: './research-competition-list.component.html',
-    styleUrls: ['./research-competition-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SelectComponent, CheckboxComponent, RouterLink, NgClass, AsyncPipe, TitleCasePipe, ExistsPipe, SubmissionReviewStatusPipe]
+  selector: 'tamu-gisc-research-competition-list',
+  templateUrl: './research-competition-list.component.html',
+  styleUrls: ['./research-competition-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    SelectComponent,
+    CheckboxComponent,
+    RouterLink,
+    NgClass,
+    AsyncPipe,
+    TitleCasePipe,
+    ExistsPipe,
+    SubmissionReviewStatusPipe
+  ]
 })
 export class ResearchCompetitionListComponent extends BaseAdminListComponent<Submission> {
   public SubmissionReviewStatus = SUBMISSION_REVIEW_STATUS;

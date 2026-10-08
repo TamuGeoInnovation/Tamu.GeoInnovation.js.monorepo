@@ -9,11 +9,11 @@ import { AsyncPipe } from '@angular/common';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-sponsors-detail',
-    templateUrl: './sponsors-detail.component.html',
-    styleUrls: ['./sponsors-detail.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe, MarkdownParsePipe]
+  selector: 'tamu-gisc-sponsors-detail',
+  templateUrl: './sponsors-detail.component.html',
+  styleUrls: ['./sponsors-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe, MarkdownParsePipe]
 })
 export class SponsorsDetailComponent implements OnInit {
   public $sponsor: Observable<Partial<Sponsor>>;

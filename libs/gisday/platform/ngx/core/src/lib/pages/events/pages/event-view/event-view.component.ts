@@ -22,11 +22,20 @@ import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-event-view',
-    templateUrl: './event-view.component.html',
-    styleUrls: ['./event-view.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, SeasonDayCardComponent, NgClass, FormsModule, ReactiveFormsModule, CheckboxGroupComponent, CheckboxComponent, AsyncPipe]
+  selector: 'tamu-gisc-event-view',
+  templateUrl: './event-view.component.html',
+  styleUrls: ['./event-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    RouterLink,
+    SeasonDayCardComponent,
+    NgClass,
+    FormsModule,
+    ReactiveFormsModule,
+    CheckboxGroupComponent,
+    CheckboxComponent,
+    AsyncPipe
+  ]
 })
 export class EventViewComponent implements OnInit, OnDestroy {
   public activeSeason$: Observable<ActiveSeasonDto>;

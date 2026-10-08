@@ -5,10 +5,10 @@ import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
-    selector: 'tamu-gisc-curb-cuts',
-    templateUrl: './curb-cuts.component.html',
-    styleUrls: ['./curb-cuts.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent]
+  selector: 'tamu-gisc-curb-cuts',
+  templateUrl: './curb-cuts.component.html',
+  styleUrls: ['./curb-cuts.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent]
 })
 export class CurbCutsComponent {}

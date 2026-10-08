@@ -67,6 +67,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), UINavigationMobileTabModule, PublicComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), UINavigationMobileTabModule, PublicComponent]
 })
 export class PublicModule {}

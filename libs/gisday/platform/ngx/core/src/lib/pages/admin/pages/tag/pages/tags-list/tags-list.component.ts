@@ -13,11 +13,11 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-tags-list',
-    templateUrl: './tags-list.component.html',
-    styleUrls: ['./tags-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe]
+  selector: 'tamu-gisc-tags-list',
+  templateUrl: './tags-list.component.html',
+  styleUrls: ['./tags-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe]
 })
 export class TagsListComponent extends BaseAdminListComponent<Tag> {
   constructor(

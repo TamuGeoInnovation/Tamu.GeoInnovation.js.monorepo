@@ -16,9 +16,9 @@ describe('SubmissionReviewListComponent', () => {
     } as unknown as jest.Mocked<ModalService>;
 
     await TestBed.configureTestingModule({
-    imports: [SubmissionReviewListComponent],
-    providers: [{ provide: ModalService, useValue: mockModalService }]
-}).compileComponents();
+      imports: [SubmissionReviewListComponent],
+      providers: [{ provide: ModalService, useValue: mockModalService }]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SubmissionReviewListComponent);
     component = fixture.componentInstance;

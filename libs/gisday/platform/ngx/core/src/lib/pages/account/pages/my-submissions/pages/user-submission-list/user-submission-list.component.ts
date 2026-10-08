@@ -9,11 +9,11 @@ import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
 import { SubmissionReviewStatusPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
-    selector: 'tamu-gisc-user-submission-list',
-    templateUrl: './user-submission-list.component.html',
-    styleUrls: ['./user-submission-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, NgClass, AsyncPipe, TitleCasePipe, SubmissionReviewStatusPipe]
+  selector: 'tamu-gisc-user-submission-list',
+  templateUrl: './user-submission-list.component.html',
+  styleUrls: ['./user-submission-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, NgClass, AsyncPipe, TitleCasePipe, SubmissionReviewStatusPipe]
 })
 export class UserSubmissionListComponent implements OnInit {
   public presentationSubmissions$: Observable<Array<Partial<Submission>>>;

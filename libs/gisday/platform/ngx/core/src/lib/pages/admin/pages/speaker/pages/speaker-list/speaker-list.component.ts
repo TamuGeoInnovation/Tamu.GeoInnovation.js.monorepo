@@ -13,11 +13,11 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-speaker-list',
-    templateUrl: './speaker-list.component.html',
-    styleUrls: ['./speaker-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe]
+  selector: 'tamu-gisc-speaker-list',
+  templateUrl: './speaker-list.component.html',
+  styleUrls: ['./speaker-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe]
 })
 export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {
   constructor(

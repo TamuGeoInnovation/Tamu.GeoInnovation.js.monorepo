@@ -8,11 +8,11 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, LowerCasePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-entity-delete-modal',
-    templateUrl: './entity-delete-modal.component.html',
-    styleUrls: ['./entity-delete-modal.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe, LowerCasePipe]
+  selector: 'tamu-gisc-entity-delete-modal',
+  templateUrl: './entity-delete-modal.component.html',
+  styleUrls: ['./entity-delete-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe, LowerCasePipe]
 })
 export class EntityDeleteModalComponent implements OnInit {
   public form: UntypedFormGroup;

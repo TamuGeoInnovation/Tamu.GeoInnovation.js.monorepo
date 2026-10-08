@@ -17,11 +17,11 @@ interface SwimlaneNgxDatatableActivateEvent {
 }
 
 @Component({
-    selector: 'tamu-gisc-submission-review-list',
-    templateUrl: './submission-review-list.component.html',
-    styleUrls: ['./submission-review-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgxDatatableModule, DatePipe]
+  selector: 'tamu-gisc-submission-review-list',
+  templateUrl: './submission-review-list.component.html',
+  styleUrls: ['./submission-review-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgxDatatableModule, DatePipe]
 })
 export class SubmissionReviewListComponent implements OnInit {
   @Input() public submissions$: Observable<SubmissionReviewDto[]>;

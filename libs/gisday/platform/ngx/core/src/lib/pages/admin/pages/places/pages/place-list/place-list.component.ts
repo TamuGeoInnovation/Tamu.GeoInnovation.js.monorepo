@@ -13,11 +13,11 @@ import { AsyncPipe } from '@angular/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-place-list',
-    templateUrl: './place-list.component.html',
-    styleUrls: ['./place-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe]
+  selector: 'tamu-gisc-place-list',
+  templateUrl: './place-list.component.html',
+  styleUrls: ['./place-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe]
 })
 export class PlaceListComponent extends BaseAdminListComponent<Place> {
   constructor(

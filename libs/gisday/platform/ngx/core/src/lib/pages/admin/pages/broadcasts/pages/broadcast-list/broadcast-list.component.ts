@@ -13,11 +13,11 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-broadcast-list',
-    templateUrl: './broadcast-list.component.html',
-    styleUrls: ['./broadcast-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe]
+  selector: 'tamu-gisc-broadcast-list',
+  templateUrl: './broadcast-list.component.html',
+  styleUrls: ['./broadcast-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe]
 })
 export class BroadcastListComponent extends BaseAdminListComponent<EventBroadcast> {
   constructor(

@@ -19,11 +19,11 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 import { ParseDateTimeStringsPipe } from '../../../../pipes/parse-date-time-strings/parse-date-time-strings.pipe';
 
 @Component({
-    selector: 'tamu-gisc-event-row',
-    templateUrl: './event-row.component.html',
-    styleUrls: ['./event-row.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [CheckboxComponent, SeasonDayCardComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe]
+  selector: 'tamu-gisc-event-row',
+  templateUrl: './event-row.component.html',
+  styleUrls: ['./event-row.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CheckboxComponent, SeasonDayCardComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe]
 })
 export class EventRowComponent implements OnChanges, OnInit {
   @Input()

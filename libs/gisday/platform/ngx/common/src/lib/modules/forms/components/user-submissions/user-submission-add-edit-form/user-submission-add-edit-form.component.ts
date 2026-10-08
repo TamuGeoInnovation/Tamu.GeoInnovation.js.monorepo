@@ -13,11 +13,19 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-user-submission-add-edit-form',
-    templateUrl: './user-submission-add-edit-form.component.html',
-    styleUrls: ['./user-submission-add-edit-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, RadioGroupComponent, SlideToggleComponent, TextboxComponent, ButtonComponent, AsyncPipe]
+  selector: 'tamu-gisc-user-submission-add-edit-form',
+  templateUrl: './user-submission-add-edit-form.component.html',
+  styleUrls: ['./user-submission-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    RadioGroupComponent,
+    SlideToggleComponent,
+    TextboxComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   @Input()

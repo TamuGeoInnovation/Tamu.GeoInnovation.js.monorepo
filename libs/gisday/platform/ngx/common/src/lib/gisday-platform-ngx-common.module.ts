@@ -11,16 +11,17 @@ import { HeaderComponent } from './modules/header/header.component';
 import { GISDayPipesModule } from './pipes/gisday-pipes.module';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        UITileNavigationModule,
-        UINavigationTriggersModule,
-        CommonNgxAuthModule,
-        GISDayPipesModule,
-        FooterComponent, HeaderComponent
-    ],
-    providers: [],
-    exports: [FooterComponent, HeaderComponent, GISDayPipesModule]
+  imports: [
+    CommonModule,
+    RouterModule,
+    UITileNavigationModule,
+    UINavigationTriggersModule,
+    CommonNgxAuthModule,
+    GISDayPipesModule,
+    FooterComponent,
+    HeaderComponent
+  ],
+  providers: [],
+  exports: [FooterComponent, HeaderComponent, GISDayPipesModule]
 })
 export class GisdayPlatformNgxCommonModule {}

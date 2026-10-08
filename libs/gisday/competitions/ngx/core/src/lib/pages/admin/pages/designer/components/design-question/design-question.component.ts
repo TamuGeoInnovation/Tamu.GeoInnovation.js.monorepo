@@ -9,11 +9,21 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-design-question',
-    templateUrl: './design-question.component.html',
-    styleUrls: ['./design-question.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AccordionComponent, AccordionHeaderComponent, AccordionContentComponent, FormsModule, ReactiveFormsModule, RadioGroupComponent, TextboxComponent, SelectComponent, CheckboxComponent]
+  selector: 'tamu-gisc-design-question',
+  templateUrl: './design-question.component.html',
+  styleUrls: ['./design-question.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    RadioGroupComponent,
+    TextboxComponent,
+    SelectComponent,
+    CheckboxComponent
+  ]
 })
 export class DesignQuestionComponent {
   /**

@@ -13,11 +13,11 @@ import { AsyncPipe } from '@angular/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-class-list',
-    templateUrl: './class-list.component.html',
-    styleUrls: ['./class-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe]
+  selector: 'tamu-gisc-class-list',
+  templateUrl: './class-list.component.html',
+  styleUrls: ['./class-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe]
 })
 export class ClassListComponent extends BaseAdminListComponent<Class> {
   constructor(

@@ -1,5 +1,12 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 
@@ -12,11 +19,11 @@ import { SeasonsDayTileComponent } from '../seasons-day-tile/seasons-day-tile.co
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-season-add-edit-form',
-    templateUrl: './season-add-edit-form.component.html',
-    styleUrls: ['./season-add-edit-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, CheckboxComponent, SeasonsDayTileComponent, ButtonComponent]
+  selector: 'tamu-gisc-season-add-edit-form',
+  templateUrl: './season-add-edit-form.component.html',
+  styleUrls: ['./season-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, CheckboxComponent, SeasonsDayTileComponent, ButtonComponent]
 })
 export class SeasonAddEditFormComponent implements OnInit {
   @Input()

@@ -14,11 +14,11 @@ import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common'
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-event-list',
-    templateUrl: './event-list.component.html',
-    styleUrls: ['./event-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, ExistsPipe]
+  selector: 'tamu-gisc-event-list',
+  templateUrl: './event-list.component.html',
+  styleUrls: ['./event-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, ExistsPipe]
 })
 export class EventListComponent extends BaseAdminListComponent<Event> {
   constructor(

@@ -4,10 +4,10 @@ import { MobileTabNavigationComponent } from '@tamu-gisc/ui-kits/ngx/navigation/
 import { MobileTabNavigationTabComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tab';
 
 @Component({
-    selector: 'tamu-gisc-public',
-    templateUrl: './public.component.html',
-    styleUrls: ['./public.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterOutlet, MobileTabNavigationComponent, MobileTabNavigationTabComponent]
+  selector: 'tamu-gisc-public',
+  templateUrl: './public.component.html',
+  styleUrls: ['./public.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterOutlet, MobileTabNavigationComponent, MobileTabNavigationTabComponent]
 })
 export class PublicComponent {}

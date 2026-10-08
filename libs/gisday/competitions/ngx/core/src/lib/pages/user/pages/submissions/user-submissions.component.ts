@@ -9,11 +9,11 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { SubmissionReviewListComponent } from '../../../shared/submission-review-list/submission-review-list.component';
 
 @Component({
-    selector: 'tamu-gisc-user-submissions',
-    templateUrl: './user-submissions.component.html',
-    styleUrls: ['./user-submissions.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SubmissionReviewListComponent]
+  selector: 'tamu-gisc-user-submissions',
+  templateUrl: './user-submissions.component.html',
+  styleUrls: ['./user-submissions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SubmissionReviewListComponent]
 })
 export class UserSubmissionsComponent implements OnInit {
   public submissions$: Observable<SubmissionReviewDto[]>;

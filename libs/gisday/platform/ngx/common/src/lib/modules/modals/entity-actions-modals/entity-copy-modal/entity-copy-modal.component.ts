@@ -9,11 +9,11 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, LowerCasePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-entity-copy-modal',
-    templateUrl: './entity-copy-modal.component.html',
-    styleUrls: ['./entity-copy-modal.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SelectComponent, ButtonComponent, AsyncPipe, LowerCasePipe]
+  selector: 'tamu-gisc-entity-copy-modal',
+  templateUrl: './entity-copy-modal.component.html',
+  styleUrls: ['./entity-copy-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SelectComponent, ButtonComponent, AsyncPipe, LowerCasePipe]
 })
 export class EntityCopyModalComponent implements OnInit {
   public season$: Observable<Partial<Season>>;

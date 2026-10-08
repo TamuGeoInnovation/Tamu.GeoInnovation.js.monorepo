@@ -11,11 +11,11 @@ import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
-    selector: 'tamu-gisc-install',
-    templateUrl: './install.component.html',
-    styleUrls: ['./install.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent, AsyncPipe]
+  selector: 'tamu-gisc-install',
+  templateUrl: './install.component.html',
+  styleUrls: ['./install.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent, AsyncPipe]
 })
 export class InstallComponent implements OnInit {
   public device: Device;

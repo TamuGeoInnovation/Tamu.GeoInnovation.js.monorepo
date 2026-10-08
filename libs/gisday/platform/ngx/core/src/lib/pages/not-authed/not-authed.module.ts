@@ -12,7 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), NotAuthedComponent],
-    exports: [RouterModule]
+  imports: [CommonModule, RouterModule.forChild(routes), NotAuthedComponent],
+  exports: [RouterModule]
 })
 export class NotAuthedModule {}

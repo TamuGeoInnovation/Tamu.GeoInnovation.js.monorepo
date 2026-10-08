@@ -11,11 +11,11 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-admin-detail-session-type',
-    templateUrl: './admin-detail-session-type.component.html',
-    styleUrls: ['./admin-detail-session-type.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
+  selector: 'tamu-gisc-admin-detail-session-type',
+  templateUrl: './admin-detail-session-type.component.html',
+  styleUrls: ['./admin-detail-session-type.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class AdminDetailSessionTypeComponent extends BaseAdminDetailComponent<SubmissionType> implements OnInit {
   constructor(

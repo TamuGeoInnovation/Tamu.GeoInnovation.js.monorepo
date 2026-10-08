@@ -3,11 +3,11 @@ import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'tamu-gisc-faq',
-    templateUrl: './faq.component.html',
-    styleUrls: ['./faq.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink]
+  selector: 'tamu-gisc-faq',
+  templateUrl: './faq.component.html',
+  styleUrls: ['./faq.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink]
 })
 export class FaqComponent {
   constructor(private titleService: Title) {

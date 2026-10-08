@@ -10,11 +10,11 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-contact',
-    templateUrl: './contact.component.html',
-    styleUrls: ['./contact.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe]
+  selector: 'tamu-gisc-contact',
+  templateUrl: './contact.component.html',
+  styleUrls: ['./contact.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe]
 })
 export class ContactComponent implements OnInit {
   public form: UntypedFormGroup;

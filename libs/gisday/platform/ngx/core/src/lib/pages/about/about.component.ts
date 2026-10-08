@@ -25,11 +25,11 @@ const numberDictionary = {
 };
 
 @Component({
-    selector: 'tamu-gisc-about',
-    templateUrl: './about.component.html',
-    styleUrls: ['./about.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SpeakerAvatarComponent, RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
+  selector: 'tamu-gisc-about',
+  templateUrl: './about.component.html',
+  styleUrls: ['./about.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SpeakerAvatarComponent, RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
 })
 export class AboutComponent implements OnInit {
   public activeSeason$: Observable<Partial<ActiveSeasonDto>>;

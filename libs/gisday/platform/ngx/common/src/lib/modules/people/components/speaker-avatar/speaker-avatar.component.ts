@@ -6,11 +6,11 @@ import { AssetsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-speaker-avatar',
-    templateUrl: './speaker-avatar.component.html',
-    styleUrls: ['./speaker-avatar.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe]
+  selector: 'tamu-gisc-speaker-avatar',
+  templateUrl: './speaker-avatar.component.html',
+  styleUrls: ['./speaker-avatar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class SpeakerAvatarComponent implements OnInit {
   @Input()

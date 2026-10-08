@@ -9,11 +9,11 @@ import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-app-footer',
-    templateUrl: './footer.component.html',
-    styleUrls: ['./footer.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, AsyncPipe]
+  selector: 'tamu-gisc-app-footer',
+  templateUrl: './footer.component.html',
+  styleUrls: ['./footer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, AsyncPipe]
 })
 export class FooterComponent implements OnInit {
   public activeSeason$: Observable<Partial<Season>>;

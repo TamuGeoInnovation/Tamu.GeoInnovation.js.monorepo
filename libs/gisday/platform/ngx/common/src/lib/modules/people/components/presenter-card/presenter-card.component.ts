@@ -5,11 +5,11 @@ import { SpeakerAvatarComponent } from '../speaker-avatar/speaker-avatar.compone
 import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'tamu-gisc-presenter-card',
-    templateUrl: './presenter-card.component.html',
-    styleUrls: ['./presenter-card.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SpeakerAvatarComponent, RouterLink]
+  selector: 'tamu-gisc-presenter-card',
+  templateUrl: './presenter-card.component.html',
+  styleUrls: ['./presenter-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SpeakerAvatarComponent, RouterLink]
 })
 export class PresenterCardComponent implements OnInit {
   @Input()

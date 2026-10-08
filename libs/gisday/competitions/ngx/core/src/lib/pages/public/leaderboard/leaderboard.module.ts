@@ -14,8 +14,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    exports: [LeaderboardComponent],
-    imports: [RouterModule.forChild(routes), CommonModule, LeaderboardComponent],
-    providers: [LeaderboardService]
+  exports: [LeaderboardComponent],
+  imports: [RouterModule.forChild(routes), CommonModule, LeaderboardComponent],
+  providers: [LeaderboardService]
 })
 export class LeaderboardModule {}

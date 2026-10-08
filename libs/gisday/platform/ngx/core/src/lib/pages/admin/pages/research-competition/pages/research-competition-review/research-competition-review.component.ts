@@ -12,11 +12,19 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-research-competition-review',
-    templateUrl: './research-competition-review.component.html',
-    styleUrls: ['./research-competition-review.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, SlideToggleComponent, TextboxComponent, ButtonComponent, AsyncPipe, TitleCasePipe]
+  selector: 'tamu-gisc-research-competition-review',
+  templateUrl: './research-competition-review.component.html',
+  styleUrls: ['./research-competition-review.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    SlideToggleComponent,
+    TextboxComponent,
+    ButtonComponent,
+    AsyncPipe,
+    TitleCasePipe
+  ]
 })
 export class ResearchCompetitionReviewComponent implements OnInit {
   public entity$: Observable<Partial<Submission>>;

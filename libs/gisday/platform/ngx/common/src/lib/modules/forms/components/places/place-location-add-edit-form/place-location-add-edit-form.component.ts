@@ -19,11 +19,21 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-place-location-add-edit-form',
-    templateUrl: './place-location-add-edit-form.component.html',
-    styleUrls: ['./place-location-add-edit-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, FileComponent, CheckboxGroupComponent, CheckboxComponent, PlaceLinkFormComponent, ButtonComponent, AsyncPipe]
+  selector: 'tamu-gisc-place-location-add-edit-form',
+  templateUrl: './place-location-add-edit-form.component.html',
+  styleUrls: ['./place-location-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    FileComponent,
+    CheckboxGroupComponent,
+    CheckboxComponent,
+    PlaceLinkFormComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class PlaceLocationAddEditFormComponent implements OnInit {
   @Input()

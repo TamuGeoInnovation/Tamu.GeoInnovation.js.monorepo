@@ -10,11 +10,11 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-broadcast-add-edit-form',
-    templateUrl: './broadcast-add-edit-form.component.html',
-    styleUrls: ['./broadcast-add-edit-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
+  selector: 'tamu-gisc-broadcast-add-edit-form',
+  templateUrl: './broadcast-add-edit-form.component.html',
+  styleUrls: ['./broadcast-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class BroadcastAddEditFormComponent implements OnInit {
   @Input()

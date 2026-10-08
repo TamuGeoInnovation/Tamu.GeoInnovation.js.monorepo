@@ -12,11 +12,11 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-event-location-add-edit-form',
-    templateUrl: './event-location-add-edit-form.component.html',
-    styleUrls: ['./event-location-add-edit-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, ButtonComponent, AsyncPipe]
+  selector: 'tamu-gisc-event-location-add-edit-form',
+  templateUrl: './event-location-add-edit-form.component.html',
+  styleUrls: ['./event-location-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, ButtonComponent, AsyncPipe]
 })
 export class EventLocationAddEditFormComponent implements OnInit {
   @Input()

@@ -8,11 +8,11 @@ import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-acce
 import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-gallery',
-    templateUrl: './gallery.component.html',
-    styleUrls: ['./gallery.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass, AsyncPipe]
+  selector: 'tamu-gisc-gallery',
+  templateUrl: './gallery.component.html',
+  styleUrls: ['./gallery.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, AsyncPipe]
 })
 export class GalleryComponent implements OnInit {
   public $posters: Observable<Array<Partial<Submission>>>;

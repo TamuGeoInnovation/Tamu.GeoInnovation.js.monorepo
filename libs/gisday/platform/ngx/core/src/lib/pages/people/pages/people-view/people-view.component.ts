@@ -8,11 +8,11 @@ import { SpeakerCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-people-view',
-    templateUrl: './people-view.component.html',
-    styleUrls: ['./people-view.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SpeakerCardComponent, AsyncPipe]
+  selector: 'tamu-gisc-people-view',
+  templateUrl: './people-view.component.html',
+  styleUrls: ['./people-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SpeakerCardComponent, AsyncPipe]
 })
 export class PeopleViewComponent implements OnInit {
   public people$: Observable<Array<Partial<Speaker>>>;

@@ -16,11 +16,11 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-submission-detail-modal',
-    templateUrl: './submission-detail-modal.component.html',
-    styleUrls: ['./submission-detail-modal.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [EsriMapComponent, ButtonComponent, AsyncPipe, DatePipe]
+  selector: 'tamu-gisc-submission-detail-modal',
+  templateUrl: './submission-detail-modal.component.html',
+  styleUrls: ['./submission-detail-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [EsriMapComponent, ButtonComponent, AsyncPipe, DatePipe]
 })
 export class SubmissionDetailModalComponent implements OnInit {
   public submission: SubmissionReviewDto;

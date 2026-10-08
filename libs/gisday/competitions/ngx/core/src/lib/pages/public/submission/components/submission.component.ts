@@ -7,11 +7,11 @@ import { SubmissionComponent as SubmissionComponent_1 } from '@tamu-gisc/gisday/
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-submission-complete',
-    templateUrl: './submission.component.html',
-    styleUrls: ['./submission.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SubmissionComponent_1, AsyncPipe]
+  selector: 'tamu-gisc-submission-complete',
+  templateUrl: './submission.component.html',
+  styleUrls: ['./submission.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SubmissionComponent_1, AsyncPipe]
 })
 export class SubmissionComponent implements OnInit {
   public model: Observable<CompetitionSeason>;

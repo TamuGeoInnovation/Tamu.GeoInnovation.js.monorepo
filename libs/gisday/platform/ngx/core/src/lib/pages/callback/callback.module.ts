@@ -12,6 +12,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), CallbackComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), CallbackComponent]
 })
 export class CallbackModule {}

@@ -10,11 +10,11 @@ import { GISDayRoles } from '@tamu-gisc/gisday/platform/ngx/common';
 import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-leaderboard',
-    templateUrl: './leaderboard.component.html',
-    styleUrls: ['./leaderboard.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass, RouterLink, AsyncPipe]
+  selector: 'tamu-gisc-leaderboard',
+  templateUrl: './leaderboard.component.html',
+  styleUrls: ['./leaderboard.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, RouterLink, AsyncPipe]
 })
 export class LeaderboardComponent implements OnInit {
   public me$: Observable<string>;

@@ -21,11 +21,24 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
 
 @Component({
-    selector: 'tamu-gisc-app-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [HamburgerTriggerComponent, TileNavigationComponent, TileComponent, TileIconComponent, TileTitleComponent, TileLinkDirective, TileSubmenuDirective, TileSubmenuComponent, NgClass, RouterLink, AsyncPipe, HasRolesPipe]
+  selector: 'tamu-gisc-app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    HamburgerTriggerComponent,
+    TileNavigationComponent,
+    TileComponent,
+    TileIconComponent,
+    TileTitleComponent,
+    TileLinkDirective,
+    TileSubmenuDirective,
+    TileSubmenuComponent,
+    NgClass,
+    RouterLink,
+    AsyncPipe,
+    HasRolesPipe
+  ]
 })
 export class HeaderComponent implements OnInit {
   public loggedIn$: Observable<boolean>;

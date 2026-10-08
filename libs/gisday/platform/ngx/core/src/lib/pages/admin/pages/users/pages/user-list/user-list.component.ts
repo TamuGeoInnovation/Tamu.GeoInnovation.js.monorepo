@@ -6,11 +6,11 @@ import { Auth0UserProfile } from '@tamu-gisc/common/nest/auth';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-user-list',
-    templateUrl: './user-list.component.html',
-    styleUrls: ['./user-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe]
+  selector: 'tamu-gisc-user-list',
+  templateUrl: './user-list.component.html',
+  styleUrls: ['./user-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class UserListComponent implements OnInit {
   public users$: Observable<Array<Auth0UserProfile>>;

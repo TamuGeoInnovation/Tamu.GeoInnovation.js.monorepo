@@ -8,11 +8,11 @@ import { AsyncPipe } from '@angular/common';
 import { AssetUrlPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
-    selector: 'tamu-gisc-sponsors-main',
-    templateUrl: './sponsors-main.component.html',
-    styleUrls: ['./sponsors-main.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, AsyncPipe, AssetUrlPipe]
+  selector: 'tamu-gisc-sponsors-main',
+  templateUrl: './sponsors-main.component.html',
+  styleUrls: ['./sponsors-main.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, AsyncPipe, AssetUrlPipe]
 })
 export class SponsorsMainComponent implements OnInit {
   private _sponsors$: Observable<Array<Partial<Sponsor>>>;

@@ -13,11 +13,11 @@ import { AsyncPipe } from '@angular/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-sponsor-list',
-    templateUrl: './sponsor-list.component.html',
-    styleUrls: ['./sponsor-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe]
+  selector: 'tamu-gisc-sponsor-list',
+  templateUrl: './sponsor-list.component.html',
+  styleUrls: ['./sponsor-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe]
 })
 export class SponsorListComponent extends BaseAdminListComponent<Sponsor> {
   constructor(

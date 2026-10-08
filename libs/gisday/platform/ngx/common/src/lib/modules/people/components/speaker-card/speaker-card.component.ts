@@ -6,11 +6,11 @@ import { NgStyle } from '@angular/common';
 import { SpeakerAvatarComponent } from '../speaker-avatar/speaker-avatar.component';
 
 @Component({
-    selector: 'tamu-gisc-speaker-card',
-    templateUrl: './speaker-card.component.html',
-    styleUrls: ['./speaker-card.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, NgStyle, SpeakerAvatarComponent]
+  selector: 'tamu-gisc-speaker-card',
+  templateUrl: './speaker-card.component.html',
+  styleUrls: ['./speaker-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, NgStyle, SpeakerAvatarComponent]
 })
 export class SpeakerCardComponent implements OnInit {
   @Input()

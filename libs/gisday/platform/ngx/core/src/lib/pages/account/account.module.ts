@@ -42,7 +42,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), AccountComponent],
-    exports: [RouterModule]
+  imports: [CommonModule, RouterModule.forChild(routes), AccountComponent],
+  exports: [RouterModule]
 })
 export class AccountModule {}

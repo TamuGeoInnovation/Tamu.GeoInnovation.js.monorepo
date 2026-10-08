@@ -10,11 +10,11 @@ import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.co
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-admin-edit-submission-types',
-    templateUrl: './admin-edit-submission-types.component.html',
-    styleUrls: ['./admin-edit-submission-types.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLinkActive, RouterLink, AsyncPipe, DatePipe]
+  selector: 'tamu-gisc-admin-edit-submission-types',
+  templateUrl: './admin-edit-submission-types.component.html',
+  styleUrls: ['./admin-edit-submission-types.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLinkActive, RouterLink, AsyncPipe, DatePipe]
 })
 export class AdminEditSubmissionTypesComponent extends BaseAdminListComponent<SubmissionType> {
   constructor(

@@ -16,11 +16,11 @@ import { EventRowComponent } from '../event-row/event-row.component';
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-season-day-card',
-    templateUrl: './season-day-card.component.html',
-    styleUrls: ['./season-day-card.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [EventRowComponent, AsyncPipe, DatePipe]
+  selector: 'tamu-gisc-season-day-card',
+  templateUrl: './season-day-card.component.html',
+  styleUrls: ['./season-day-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [EventRowComponent, AsyncPipe, DatePipe]
 })
 export class SeasonDayCardComponent implements OnInit, OnChanges {
   @Input()

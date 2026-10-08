@@ -10,11 +10,11 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-tag-add-edit-form',
-    templateUrl: './tag-add-edit-form.component.html',
-    styleUrls: ['./tag-add-edit-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
+  selector: 'tamu-gisc-tag-add-edit-form',
+  templateUrl: './tag-add-edit-form.component.html',
+  styleUrls: ['./tag-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class TagAddEditFormComponent implements OnInit {
   @Input()

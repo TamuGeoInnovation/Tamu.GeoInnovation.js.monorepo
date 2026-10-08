@@ -15,11 +15,11 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-organization-add-edit-form',
-    templateUrl: './organization-add-edit-form.component.html',
-    styleUrls: ['./organization-add-edit-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, FileComponent, ButtonComponent, AsyncPipe]
+  selector: 'tamu-gisc-organization-add-edit-form',
+  templateUrl: './organization-add-edit-form.component.html',
+  styleUrls: ['./organization-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, FileComponent, ButtonComponent, AsyncPipe]
 })
 export class OrganizationAddEditFormComponent implements OnInit {
   @Input()

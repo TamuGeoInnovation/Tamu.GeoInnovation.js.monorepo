@@ -29,6 +29,16 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), ReactiveFormsModule, UIFormsModule, PipesModule, GISDayPipesModule, ResearchCompetitionComponent, ResearchCompetitionListComponent, ResearchCompetitionReviewComponent]
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    ReactiveFormsModule,
+    UIFormsModule,
+    PipesModule,
+    GISDayPipesModule,
+    ResearchCompetitionComponent,
+    ResearchCompetitionListComponent,
+    ResearchCompetitionReviewComponent
+  ]
 })
 export class ResearchCompetitionModule {}

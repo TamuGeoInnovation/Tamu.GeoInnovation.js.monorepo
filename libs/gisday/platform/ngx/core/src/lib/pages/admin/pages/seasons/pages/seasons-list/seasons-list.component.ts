@@ -11,11 +11,11 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-seasons-list',
-    templateUrl: './seasons-list.component.html',
-    styleUrls: ['./seasons-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, AsyncPipe, DatePipe]
+  selector: 'tamu-gisc-seasons-list',
+  templateUrl: './seasons-list.component.html',
+  styleUrls: ['./seasons-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, AsyncPipe, DatePipe]
 })
 export class SeasonsListComponent extends BaseAdminListComponent<Season> implements OnInit {
   public dateRange$: Observable<Array<SeasonDay>>;

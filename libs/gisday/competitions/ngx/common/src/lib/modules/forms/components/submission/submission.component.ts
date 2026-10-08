@@ -1,5 +1,12 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, EMPTY, NEVER, Observable, of, Subject } from 'rxjs';
 import { catchError, filter, map, shareReplay, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
@@ -17,11 +24,11 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-submission',
-    templateUrl: './submission.component.html',
-    styleUrls: ['./submission.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, NgStyle, SelectComponent, TextboxComponent, AsyncPipe]
+  selector: 'tamu-gisc-submission',
+  templateUrl: './submission.component.html',
+  styleUrls: ['./submission.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, NgStyle, SelectComponent, TextboxComponent, AsyncPipe]
 })
 export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   @Input()

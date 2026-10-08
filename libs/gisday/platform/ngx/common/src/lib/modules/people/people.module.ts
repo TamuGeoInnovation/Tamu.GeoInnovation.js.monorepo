@@ -7,7 +7,7 @@ import { SpeakerCardComponent } from './components/speaker-card/speaker-card.com
 import { SpeakerAvatarComponent } from './components/speaker-avatar/speaker-avatar.component';
 
 @NgModule({
-    imports: [CommonModule, RouterModule, PresenterCardComponent, SpeakerCardComponent, SpeakerAvatarComponent],
-    exports: [PresenterCardComponent, SpeakerCardComponent, SpeakerAvatarComponent]
+  imports: [CommonModule, RouterModule, PresenterCardComponent, SpeakerCardComponent, SpeakerAvatarComponent],
+  exports: [PresenterCardComponent, SpeakerCardComponent, SpeakerAvatarComponent]
 })
 export class GisDayPeopleModule {}

@@ -6,11 +6,11 @@ import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-acces
 import { SubmissionReviewListComponent } from '../../../shared/submission-review-list/submission-review-list.component';
 
 @Component({
-    selector: 'tamu-gisc-admin-submissions',
-    templateUrl: './admin-submissions.component.html',
-    styleUrls: ['./admin-submissions.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SubmissionReviewListComponent]
+  selector: 'tamu-gisc-admin-submissions',
+  templateUrl: './admin-submissions.component.html',
+  styleUrls: ['./admin-submissions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SubmissionReviewListComponent]
 })
 export class AdminSubmissionsComponent implements OnInit {
   public submissions$: Observable<SubmissionReviewDto[]>;

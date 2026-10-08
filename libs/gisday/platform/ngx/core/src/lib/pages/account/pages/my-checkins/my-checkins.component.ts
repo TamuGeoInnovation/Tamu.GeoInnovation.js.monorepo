@@ -7,11 +7,11 @@ import { CheckIn } from '@tamu-gisc/gisday/platform/data-api';
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-my-checkins',
-    templateUrl: './my-checkins.component.html',
-    styleUrls: ['./my-checkins.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe, DatePipe]
+  selector: 'tamu-gisc-my-checkins',
+  templateUrl: './my-checkins.component.html',
+  styleUrls: ['./my-checkins.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe, DatePipe]
 })
 export class MyCheckinsComponent implements OnInit {
   public checkins$: Observable<Array<Partial<CheckIn>>>;

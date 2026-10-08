@@ -12,7 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), LandingComponent],
-    exports: [RouterModule]
+  imports: [CommonModule, RouterModule.forChild(routes), LandingComponent],
+  exports: [RouterModule]
 })
 export class LandingModule {}

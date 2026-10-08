@@ -14,11 +14,11 @@ import { DesignQuestionComponent } from '../design-question/design-question.comp
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-design-form',
-    templateUrl: './design-form.component.html',
-    styleUrls: ['./design-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, CheckboxComponent, DesignQuestionComponent]
+  selector: 'tamu-gisc-design-form',
+  templateUrl: './design-form.component.html',
+  styleUrls: ['./design-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, CheckboxComponent, DesignQuestionComponent]
 })
 export class DesignFormComponent implements OnInit {
   @Output()

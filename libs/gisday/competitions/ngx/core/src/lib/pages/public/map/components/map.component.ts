@@ -9,11 +9,11 @@ import { EsriMapComponent } from '@tamu-gisc/maps/esri';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-map',
-    templateUrl: './map.component.html',
-    styleUrls: ['./map.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [EsriMapComponent]
+  selector: 'tamu-gisc-map',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [EsriMapComponent]
 })
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);

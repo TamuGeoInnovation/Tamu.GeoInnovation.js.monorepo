@@ -7,11 +7,11 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-admin-view-rsvp-type',
-    templateUrl: './admin-view-rsvp-type.component.html',
-    styleUrls: ['./admin-view-rsvp-type.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe, DatePipe]
+  selector: 'tamu-gisc-admin-view-rsvp-type',
+  templateUrl: './admin-view-rsvp-type.component.html',
+  styleUrls: ['./admin-view-rsvp-type.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe, DatePipe]
 })
 export class AdminViewRsvpTypeComponent extends BaseAdminViewComponent<RsvpType> {
   constructor(private readonly rsvpTypeService: RsvpTypeService) {

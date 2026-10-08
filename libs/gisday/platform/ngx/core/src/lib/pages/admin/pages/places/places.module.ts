@@ -33,6 +33,16 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule, UIFormsModule, PipesModule, PlacesComponent, PlaceAddComponent, PlaceEditComponent, PlaceListComponent]
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    GisdayFormsModule,
+    UIFormsModule,
+    PipesModule,
+    PlacesComponent,
+    PlaceAddComponent,
+    PlaceEditComponent,
+    PlaceListComponent
+  ]
 })
 export class PlacesModule {}

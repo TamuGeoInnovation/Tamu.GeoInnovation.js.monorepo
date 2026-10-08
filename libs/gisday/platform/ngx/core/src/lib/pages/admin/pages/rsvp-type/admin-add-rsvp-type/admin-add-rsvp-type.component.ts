@@ -16,11 +16,11 @@ export const formExporter = () => {
 };
 
 @Component({
-    selector: 'tamu-gisc-admin-add-rsvp-type',
-    templateUrl: './admin-add-rsvp-type.component.html',
-    styleUrls: ['./admin-add-rsvp-type.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
+  selector: 'tamu-gisc-admin-add-rsvp-type',
+  templateUrl: './admin-add-rsvp-type.component.html',
+  styleUrls: ['./admin-add-rsvp-type.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class AdminAddRsvpTypeComponent extends BaseAdminAddComponent<RsvpType> implements OnInit {
   constructor(private rsvpTypeService: RsvpTypeService) {

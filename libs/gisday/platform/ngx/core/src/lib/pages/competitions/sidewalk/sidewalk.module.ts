@@ -14,7 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, SidewalkComponent],
-    exports: [RouterModule]
+  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, SidewalkComponent],
+  exports: [RouterModule]
 })
 export class SidewalkModule {}

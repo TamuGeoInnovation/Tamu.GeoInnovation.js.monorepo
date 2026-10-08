@@ -23,11 +23,20 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-speaker-add-edit-form',
-    templateUrl: './speaker-add-edit-form.component.html',
-    styleUrls: ['./speaker-add-edit-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, FileComponent, SelectComponent, CheckboxComponent, ButtonComponent, AsyncPipe]
+  selector: 'tamu-gisc-speaker-add-edit-form',
+  templateUrl: './speaker-add-edit-form.component.html',
+  styleUrls: ['./speaker-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    FileComponent,
+    SelectComponent,
+    CheckboxComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class SpeakerAddEditFormComponent implements OnInit {
   @Input()

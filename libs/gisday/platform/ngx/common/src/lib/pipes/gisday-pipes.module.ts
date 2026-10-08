@@ -9,7 +9,7 @@ import { ParseDateTimeStringsPipe } from './parse-date-time-strings/parse-date-t
 const pipes = [AssetUrlPipe, OrderByPipe, ParseDateTimeStringsPipe, SubmissionReviewStatusPipe];
 
 @NgModule({
-    imports: [CommonModule, ...pipes],
-    exports: [...pipes]
+  imports: [CommonModule, ...pipes],
+  exports: [...pipes]
 })
 export class GISDayPipesModule {}

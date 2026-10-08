@@ -11,11 +11,11 @@ import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common'
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-people-details',
-    templateUrl: './people-details.component.html',
-    styleUrls: ['./people-details.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SpeakerAvatarComponent, RouterLink, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, MarkdownParsePipe]
+  selector: 'tamu-gisc-people-details',
+  templateUrl: './people-details.component.html',
+  styleUrls: ['./people-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SpeakerAvatarComponent, RouterLink, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, MarkdownParsePipe]
 })
 export class PeopleDetailsComponent implements OnInit {
   public speakerGuid: string;

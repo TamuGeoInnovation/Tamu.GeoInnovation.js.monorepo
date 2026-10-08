@@ -6,11 +6,11 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-admin-view-submission-types',
-    templateUrl: './admin-view-submission-types.component.html',
-    styleUrls: ['./admin-view-submission-types.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe, DatePipe]
+  selector: 'tamu-gisc-admin-view-submission-types',
+  templateUrl: './admin-view-submission-types.component.html',
+  styleUrls: ['./admin-view-submission-types.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe, DatePipe]
 })
 export class AdminViewSubmissionTypesComponent extends BaseAdminViewComponent<SubmissionType> {
   constructor(private readonly submissionTypeService: SubmissionTypeService) {

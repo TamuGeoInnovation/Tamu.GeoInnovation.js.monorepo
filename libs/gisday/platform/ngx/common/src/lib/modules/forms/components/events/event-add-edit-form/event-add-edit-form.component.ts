@@ -42,11 +42,25 @@ import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-    selector: 'tamu-gisc-event-add-edit-form',
-    templateUrl: './event-add-edit-form.component.html',
-    styleUrls: ['./event-add-edit-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, SeasonsDayTileComponent, NgClass, DateTimePickerComponent, TextboxComponent, SelectComponent, CheckboxComponent, SelectListComponent, PresenterCardComponent, CheckboxGroupComponent, ButtonComponent, AsyncPipe]
+  selector: 'tamu-gisc-event-add-edit-form',
+  templateUrl: './event-add-edit-form.component.html',
+  styleUrls: ['./event-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    SeasonsDayTileComponent,
+    NgClass,
+    DateTimePickerComponent,
+    TextboxComponent,
+    SelectComponent,
+    CheckboxComponent,
+    SelectListComponent,
+    PresenterCardComponent,
+    CheckboxGroupComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class EventAddEditFormComponent implements OnInit {
   @Input()

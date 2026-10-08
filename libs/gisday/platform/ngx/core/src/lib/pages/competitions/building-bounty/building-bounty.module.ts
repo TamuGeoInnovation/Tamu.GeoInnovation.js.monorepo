@@ -12,6 +12,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), BuildingBountyComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), BuildingBountyComponent]
 })
 export class BuildingBountyModule {}

@@ -13,11 +13,11 @@ import { AsyncPipe } from '@angular/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-event-location-list',
-    templateUrl: './event-location-list.component.html',
-    styleUrls: ['./event-location-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SelectComponent, RouterLink, RouterLinkActive, CheckboxComponent, AsyncPipe, ExistsPipe]
+  selector: 'tamu-gisc-event-location-list',
+  templateUrl: './event-location-list.component.html',
+  styleUrls: ['./event-location-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SelectComponent, RouterLink, RouterLinkActive, CheckboxComponent, AsyncPipe, ExistsPipe]
 })
 export class EventLocationListComponent extends BaseAdminListComponent<EventLocation> {
   constructor(

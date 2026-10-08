@@ -12,7 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(routes), AggieMapComponent],
-    exports: [RouterModule]
+  imports: [CommonModule, RouterModule.forChild(routes), AggieMapComponent],
+  exports: [RouterModule]
 })
 export class AggieMapModule {}

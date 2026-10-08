@@ -32,11 +32,27 @@ import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common'
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
-    selector: 'tamu-gisc-event-detail',
-    templateUrl: './event-detail.component.html',
-    styleUrls: ['./event-detail.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgIf, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent, ButtonComponent, RouterLink, NgFor, PresenterCardComponent, FormsModule, ReactiveFormsModule, TextboxComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, MarkdownParsePipe]
+  selector: 'tamu-gisc-event-detail',
+  templateUrl: './event-detail.component.html',
+  styleUrls: ['./event-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    NgIf,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    ButtonComponent,
+    RouterLink,
+    NgFor,
+    PresenterCardComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    AsyncPipe,
+    DatePipe,
+    ParseDateTimeStringsPipe,
+    MarkdownParsePipe
+  ]
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
   public appRoles = GISDayRoles;
