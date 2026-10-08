@@ -18,11 +18,11 @@ import { KeyboardNavigationDirective } from '../../../../../interactions/keyboar
 import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-autocomplete',
-    templateUrl: './autocomplete.component.html',
-    styleUrls: ['./autocomplete.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [TextboxComponent, FormsModule, ReactiveFormsModule, KeyboardNavigationDirective, NgTemplateOutlet, AsyncPipe]
+  selector: 'tamu-gisc-autocomplete',
+  templateUrl: './autocomplete.component.html',
+  styleUrls: ['./autocomplete.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TextboxComponent, FormsModule, ReactiveFormsModule, KeyboardNavigationDirective, NgTemplateOutlet, AsyncPipe]
 })
 export class AutocompleteComponent<T> implements OnInit, OnDestroy {
   /**

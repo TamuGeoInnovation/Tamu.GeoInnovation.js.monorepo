@@ -3,11 +3,11 @@ import { Component, ElementRef, Input, AfterContentInit, ChangeDetectionStrategy
 import { AccordionService } from './services/accordion.service';
 
 @Component({
-    selector: 'tamu-gisc-accordion',
-    templateUrl: './accordion.component.html',
-    styleUrls: ['./accordion.component.scss'],
-    providers: [AccordionService],
-    changeDetection: ChangeDetectionStrategy.Eager
+  selector: 'tamu-gisc-accordion',
+  templateUrl: './accordion.component.html',
+  styleUrls: ['./accordion.component.scss'],
+  providers: [AccordionService],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class AccordionComponent implements AfterContentInit {
   /**

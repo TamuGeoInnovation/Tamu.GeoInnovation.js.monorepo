@@ -5,18 +5,18 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-radio-group',
-    templateUrl: './radio-group.component.html',
-    styleUrls: ['./radio-group.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => RadioGroupComponent),
-            multi: true
-        }
-    ],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass]
+  selector: 'tamu-gisc-radio-group',
+  templateUrl: './radio-group.component.html',
+  styleUrls: ['./radio-group.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => RadioGroupComponent),
+      multi: true
+    }
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass]
 })
 export class RadioGroupComponent<Option extends object, Value> implements ControlValueAccessor {
   @Input()

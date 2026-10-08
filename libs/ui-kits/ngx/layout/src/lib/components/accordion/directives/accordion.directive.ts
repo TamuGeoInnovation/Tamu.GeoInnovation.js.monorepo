@@ -1,9 +1,10 @@
 import { Directive, Input, HostBinding, TemplateRef, ViewContainerRef, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 
-@Directive({ 
-    // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: '[giscAccordion]' })
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: '[giscAccordion]'
+})
 export class AccordionDirective implements OnInit {
   @Input()
   public expanded = false;

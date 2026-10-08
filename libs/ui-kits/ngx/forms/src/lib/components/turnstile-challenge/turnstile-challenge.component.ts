@@ -15,17 +15,17 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
 
 @Component({
-    selector: 'tamu-gisc-turnstile-challenge',
-    templateUrl: './turnstile-challenge.component.html',
-    styleUrls: ['./turnstile-challenge.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => TurnstileChallengeComponent),
-            multi: true
-        }
-    ],
-    changeDetection: ChangeDetectionStrategy.Eager
+  selector: 'tamu-gisc-turnstile-challenge',
+  templateUrl: './turnstile-challenge.component.html',
+  styleUrls: ['./turnstile-challenge.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TurnstileChallengeComponent),
+      multi: true
+    }
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TurnstileChallengeComponent extends AbstractValueAccessorFormComponent<string> implements OnInit {
   constructor(

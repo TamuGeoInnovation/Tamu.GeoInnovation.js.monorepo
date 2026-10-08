@@ -13,22 +13,25 @@ import { TileSubmenuDirective } from './directives/tile-submenu/tile-submenu.dir
 import { TileLinkDirective } from './directives/tile-link/tile-link.directive';
 
 @NgModule({
-    imports: [CommonModule, TileNavigationComponent,
-        TileComponent,
-        TileTitleComponent,
-        TileIconComponent,
-        TileSubmenuDirective,
-        TileSubmenuComponent,
-        TileSubmenuContainerComponent,
-        TileLinkDirective],
-    exports: [
-        TileNavigationComponent,
-        TileComponent,
-        TileTitleComponent,
-        TileIconComponent,
-        TileSubmenuDirective,
-        TileSubmenuComponent,
-        TileLinkDirective
-    ]
+  imports: [
+    CommonModule,
+    TileNavigationComponent,
+    TileComponent,
+    TileTitleComponent,
+    TileIconComponent,
+    TileSubmenuDirective,
+    TileSubmenuComponent,
+    TileSubmenuContainerComponent,
+    TileLinkDirective
+  ],
+  exports: [
+    TileNavigationComponent,
+    TileComponent,
+    TileTitleComponent,
+    TileIconComponent,
+    TileSubmenuDirective,
+    TileSubmenuComponent,
+    TileLinkDirective
+  ]
 })
 export class UITileNavigationModule {}

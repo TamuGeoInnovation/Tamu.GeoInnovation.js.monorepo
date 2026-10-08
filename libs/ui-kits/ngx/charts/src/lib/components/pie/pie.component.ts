@@ -4,12 +4,12 @@ import { BaseChartComponent } from '../base/base.component';
 import { PieChartConfiguration, ChartContainerComponent } from '../chart-container/chart-container.component';
 
 @Component({
-    selector: 'tamu-gisc-pie-chart',
-    templateUrl: './pie.component.html',
-    styleUrls: ['../base/base.component.scss', './pie.component.scss'],
-    providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => PieChartComponent) }],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ChartContainerComponent]
+  selector: 'tamu-gisc-pie-chart',
+  templateUrl: './pie.component.html',
+  styleUrls: ['../base/base.component.scss', './pie.component.scss'],
+  providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => PieChartComponent) }],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ChartContainerComponent]
 })
 export class PieChartComponent extends BaseChartComponent implements AfterViewInit {
   constructor() {

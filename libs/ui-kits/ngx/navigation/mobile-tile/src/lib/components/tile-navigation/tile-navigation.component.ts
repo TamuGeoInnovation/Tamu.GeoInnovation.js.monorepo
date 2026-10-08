@@ -8,13 +8,13 @@ import { TileSubmenuContainerComponent } from '../tile-submenu-container/tile-su
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-tile-navigation',
-    templateUrl: './tile-navigation.component.html',
-    styleUrls: ['./tile-navigation.component.scss'],
-    providers: [TileService],
-    animations: [baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [TileSubmenuContainerComponent, AsyncPipe]
+  selector: 'tamu-gisc-tile-navigation',
+  templateUrl: './tile-navigation.component.html',
+  styleUrls: ['./tile-navigation.component.scss'],
+  providers: [TileService],
+  animations: [baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TileSubmenuContainerComponent, AsyncPipe]
 })
 export class TileNavigationComponent implements OnInit, OnDestroy {
   @Input()

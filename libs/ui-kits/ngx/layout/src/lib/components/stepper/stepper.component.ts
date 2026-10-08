@@ -6,11 +6,11 @@ import { StepToggleComponent } from './components/step-toggle/step-toggle.compon
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-stepper',
-    templateUrl: './stepper.component.html',
-    styleUrls: ['./stepper.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [StepToggleComponent, NgClass, NgTemplateOutlet]
+  selector: 'tamu-gisc-stepper',
+  templateUrl: './stepper.component.html',
+  styleUrls: ['./stepper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [StepToggleComponent, NgClass, NgTemplateOutlet]
 })
 export class StepperComponent extends AbstractContentReplacerComponent implements AfterContentInit {
   @ContentChildren(StepComponent)

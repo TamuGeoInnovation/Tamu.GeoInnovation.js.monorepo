@@ -1,9 +1,9 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-    selector: 'tamu-gisc-mobile-navigation-tab',
-    templateUrl: './container.component.html',
-    styleUrls: ['./container.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager
+  selector: 'tamu-gisc-mobile-navigation-tab',
+  templateUrl: './container.component.html',
+  styleUrls: ['./container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class MobileTabNavigationComponent {}

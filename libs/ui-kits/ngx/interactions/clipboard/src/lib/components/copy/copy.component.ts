@@ -7,11 +7,11 @@ import { ClipboardCopyDirective } from '../../directives/copy/copy.directive';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-copy-field',
-    templateUrl: './copy.component.html',
-    styleUrls: ['./copy.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ClipboardCopyDirective, AsyncPipe]
+  selector: 'tamu-gisc-copy-field',
+  templateUrl: './copy.component.html',
+  styleUrls: ['./copy.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class CopyComponent {
   @Input()

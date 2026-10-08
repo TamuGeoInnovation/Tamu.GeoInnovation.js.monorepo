@@ -15,11 +15,11 @@ import { TileService } from '../../services/tile.service';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-tile-submenu',
-    templateUrl: './tile-submenu.component.html',
-    styleUrls: ['./tile-submenu.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AsyncPipe]
+  selector: 'tamu-gisc-tile-submenu',
+  templateUrl: './tile-submenu.component.html',
+  styleUrls: ['./tile-submenu.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
   @Input()

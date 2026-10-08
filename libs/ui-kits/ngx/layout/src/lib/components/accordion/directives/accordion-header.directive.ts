@@ -1,9 +1,10 @@
 import { Directive, HostListener, Input } from '@angular/core';
 import { AccordionDirective } from './accordion.directive';
 
-@Directive({ 
-    // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: '[giscAccordionHeader]' })
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: '[giscAccordionHeader]'
+})
 export class AccordionHeaderDirective {
   public parent: AccordionDirective;
 

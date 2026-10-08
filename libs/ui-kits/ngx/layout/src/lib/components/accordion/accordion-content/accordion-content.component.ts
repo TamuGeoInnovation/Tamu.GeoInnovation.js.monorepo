@@ -14,11 +14,11 @@ import { IAccordionModel } from '../services/accordion.service';
 import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-accordion-content',
-    templateUrl: './accordion-content.component.html',
-    styleUrls: ['./accordion-content.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass, AsyncPipe]
+  selector: 'tamu-gisc-accordion-content',
+  templateUrl: './accordion-content.component.html',
+  styleUrls: ['./accordion-content.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, AsyncPipe]
 })
 export class AccordionContentComponent implements OnChanges, OnDestroy, AfterViewInit {
   @Input()

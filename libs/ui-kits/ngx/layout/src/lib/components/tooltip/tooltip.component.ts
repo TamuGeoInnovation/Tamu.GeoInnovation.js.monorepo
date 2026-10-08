@@ -17,11 +17,11 @@ import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
 import { AbstractSlidingDrawerComponent } from '../../abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component';
 
 @Component({
-    selector: 'tamu-gisc-tooltip',
-    templateUrl: './tooltip.component.html',
-    styleUrls: ['./tooltip.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgStyle, NgClass, AbstractSlidingDrawerComponent, AsyncPipe]
+  selector: 'tamu-gisc-tooltip',
+  templateUrl: './tooltip.component.html',
+  styleUrls: ['./tooltip.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgStyle, NgClass, AbstractSlidingDrawerComponent, AsyncPipe]
 })
 export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   private _isVisible: BehaviorSubject<boolean> = new BehaviorSubject(false);

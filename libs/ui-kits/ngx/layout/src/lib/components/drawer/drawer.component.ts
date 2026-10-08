@@ -5,11 +5,11 @@ import { slide } from '../../animations/drawer';
 import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-drawer',
-    templateUrl: './drawer.component.html',
-    styleUrls: ['./drawer.component.scss'],
-    animations: [slide],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass]
+  selector: 'tamu-gisc-drawer',
+  templateUrl: './drawer.component.html',
+  styleUrls: ['./drawer.component.scss'],
+  animations: [slide],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass]
 })
 export class DrawerComponent extends AbstractSlidingDrawerComponent {}

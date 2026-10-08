@@ -10,12 +10,12 @@ import { SearchComponent } from '../search/search.component';
 import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-search-mobile',
-    templateUrl: './search-mobile.component.html',
-    styleUrls: ['../search/search.component.scss', './search-mobile.component.scss'],
-    providers: [SearchService],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgClass, AsyncPipe, TitleCasePipe]
+  selector: 'tamu-gisc-search-mobile',
+  templateUrl: './search-mobile.component.html',
+  styleUrls: ['../search/search.component.scss', './search-mobile.component.scss'],
+  providers: [SearchService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgClass, AsyncPipe, TitleCasePipe]
 })
 export class SearchMobileComponent extends SearchComponent {
   constructor(

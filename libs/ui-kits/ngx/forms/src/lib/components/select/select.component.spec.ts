@@ -8,8 +8,8 @@ describe('SelectComponent', () => {
   let fixture: ComponentFixture<SelectComponent<{ test: 'value' }>>;
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [FormsModule, SelectComponent]
-}).compileComponents();
+      imports: [FormsModule, SelectComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

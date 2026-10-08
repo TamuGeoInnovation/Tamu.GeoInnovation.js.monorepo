@@ -4,9 +4,10 @@ import { DragService, UIDragState } from '../../services/drag/drag.service';
 
 import interact from 'interactjs';
 
-@Directive({ 
-    // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: '[draggable]' })
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: '[draggable]'
+})
 export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy {
   /**
    * Unique component identifier generated when the component register with the UI drag service.

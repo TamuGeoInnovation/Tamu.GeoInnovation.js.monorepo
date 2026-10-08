@@ -8,8 +8,8 @@ describe('AbstractContentReplacerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [AbstractContentReplacerComponent]
-}).compileComponents();
+      imports: [AbstractContentReplacerComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

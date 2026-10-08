@@ -8,11 +8,11 @@ import { TileLinkDirective } from '../../directives/tile-link/tile-link.directiv
 import { TileNavigationComponent } from '../tile-navigation/tile-navigation.component';
 
 @Component({
-    selector: 'tamu-gisc-tile',
-    templateUrl: './tile.component.html',
-    styleUrls: ['./tile.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [TileNavigationComponent]
+  selector: 'tamu-gisc-tile',
+  templateUrl: './tile.component.html',
+  styleUrls: ['./tile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TileNavigationComponent]
 })
 export class TileComponent implements AfterContentInit, OnDestroy {
   private _destroy$: Subject<boolean> = new Subject();

@@ -16,18 +16,18 @@ import { TextboxComponent } from '../textbox/textbox.component';
 import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-select-list',
-    templateUrl: './select-list.component.html',
-    styleUrls: ['./select-list.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => SelectListComponent),
-            multi: true
-        }
-    ],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, NgTemplateOutlet, AsyncPipe]
+  selector: 'tamu-gisc-select-list',
+  templateUrl: './select-list.component.html',
+  styleUrls: ['./select-list.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SelectListComponent),
+      multi: true
+    }
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, NgTemplateOutlet, AsyncPipe]
 })
 export class SelectListComponent<T extends Record<string, unknown>> implements OnInit, OnChanges {
   /**

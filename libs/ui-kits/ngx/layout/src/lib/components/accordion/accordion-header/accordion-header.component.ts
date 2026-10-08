@@ -5,11 +5,11 @@ import { AbstractSlidingDrawerComponent } from '../../../abstracts/abstract-slid
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-accordion-header',
-    templateUrl: './accordion-header.component.html',
-    styleUrls: ['./accordion-header.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AbstractSlidingDrawerComponent, AsyncPipe]
+  selector: 'tamu-gisc-accordion-header',
+  templateUrl: './accordion-header.component.html',
+  styleUrls: ['./accordion-header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AbstractSlidingDrawerComponent, AsyncPipe]
 })
 export class AccordionHeaderComponent {
   public state = this.comm.state;

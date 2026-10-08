@@ -2,11 +2,11 @@ import { Component, HostListener, EventEmitter, Input, ChangeDetectionStrategy }
 import { AbstractSlidingDrawerComponent } from '../../../../abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component';
 
 @Component({
-    selector: 'tamu-gisc-tooltip-trigger',
-    templateUrl: './tooltip-trigger.component.html',
-    styleUrls: ['./tooltip-trigger.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AbstractSlidingDrawerComponent]
+  selector: 'tamu-gisc-tooltip-trigger',
+  templateUrl: './tooltip-trigger.component.html',
+  styleUrls: ['./tooltip-trigger.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AbstractSlidingDrawerComponent]
 })
 export class TooltipTriggerComponent {
   @Input()

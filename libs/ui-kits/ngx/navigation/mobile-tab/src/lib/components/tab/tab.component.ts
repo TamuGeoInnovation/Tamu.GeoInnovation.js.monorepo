@@ -6,11 +6,11 @@ import { MobileTabNavigationComponent } from '../container/container.component';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-mobile-nav-tab',
-    templateUrl: './tab.component.html',
-    styleUrls: ['./tab.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MobileTabNavigationComponent, AsyncPipe]
+  selector: 'tamu-gisc-mobile-nav-tab',
+  templateUrl: './tab.component.html',
+  styleUrls: ['./tab.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [MobileTabNavigationComponent, AsyncPipe]
 })
 export class MobileTabNavigationTabComponent implements OnInit {
   @Input()

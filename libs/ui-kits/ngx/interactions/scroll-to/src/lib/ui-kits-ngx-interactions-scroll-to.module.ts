@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ScrollToDirective } from './directives/scroll-to.directive';
 
 @NgModule({
-    imports: [CommonModule, ScrollToDirective],
-    exports: [ScrollToDirective]
+  imports: [CommonModule, ScrollToDirective],
+  exports: [ScrollToDirective]
 })
 export class UIScrollToModule {}
