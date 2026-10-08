@@ -8,8 +8,8 @@ describe('TooltipTriggerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TooltipTriggerComponent]
-    }).compileComponents();
+    imports: [TooltipTriggerComponent]
+}).compileComponents();
   }));
 
   beforeEach(() => {

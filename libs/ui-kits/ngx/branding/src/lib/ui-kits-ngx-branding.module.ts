@@ -10,8 +10,7 @@ import { PageLoaderComponent } from './components/page-loader/page-loader.compon
 import { LockupComponent } from './components/lockup/lockup.component';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, TestingModule],
-  declarations: [TamuBlockBrandingComponent, ReveilleConsoleLogComponent, PageLoaderComponent, LockupComponent],
-  exports: [TamuBlockBrandingComponent, ReveilleConsoleLogComponent, PageLoaderComponent, LockupComponent]
+    imports: [CommonModule, RouterModule, TestingModule, TamuBlockBrandingComponent, ReveilleConsoleLogComponent, PageLoaderComponent, LockupComponent],
+    exports: [TamuBlockBrandingComponent, ReveilleConsoleLogComponent, PageLoaderComponent, LockupComponent]
 })
 export class UITamuBrandingModule {}

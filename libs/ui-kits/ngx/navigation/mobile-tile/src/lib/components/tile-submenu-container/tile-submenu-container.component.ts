@@ -14,16 +14,15 @@ import { TileService } from '../../services/tile.service';
 import { submenuListStagger } from '../../animations/animations';
 
 @Component({
-  selector: 'tamu-gisc-tile-submenu-container',
-  templateUrl: './tile-submenu-container.component.html',
-  styleUrls: ['./tile-submenu-container.component.scss'],
-  // Queries the view-entering sub-menu items and staggers them in.
-  // This animation apparently needs to be in a parent component, and not
-  // in the self-component otherwise it can't query anything entering into view
-  // because the whole thing is entering into view.
-  animations: [submenuListStagger],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-tile-submenu-container',
+    templateUrl: './tile-submenu-container.component.html',
+    styleUrls: ['./tile-submenu-container.component.scss'],
+    // Queries the view-entering sub-menu items and staggers them in.
+    // This animation apparently needs to be in a parent component, and not
+    // in the self-component otherwise it can't query anything entering into view
+    // because the whole thing is entering into view.
+    animations: [submenuListStagger],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   @ViewChild('container', { static: true, read: ViewContainerRef })

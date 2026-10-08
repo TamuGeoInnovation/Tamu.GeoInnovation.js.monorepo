@@ -10,15 +10,12 @@ import { DoughnutChartComponent } from './components/doughnut/doughnut.component
 import { PieChartComponent } from './components/pie/pie.component';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [
-    BaseChartComponent,
-    BarChartComponent,
-    ChartContainerComponent,
-    LineChartComponent,
-    DoughnutChartComponent,
-    PieChartComponent
-  ],
-  exports: [BaseChartComponent, BarChartComponent, LineChartComponent, DoughnutChartComponent, PieChartComponent]
+    imports: [CommonModule, BaseChartComponent,
+        BarChartComponent,
+        ChartContainerComponent,
+        LineChartComponent,
+        DoughnutChartComponent,
+        PieChartComponent],
+    exports: [BaseChartComponent, BarChartComponent, LineChartComponent, DoughnutChartComponent, PieChartComponent]
 })
 export class UiKitsNgxChartsModule {}

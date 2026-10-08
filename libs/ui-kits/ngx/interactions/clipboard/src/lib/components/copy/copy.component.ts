@@ -3,13 +3,15 @@ import { Angulartics2 } from 'angulartics2';
 import { Observable } from 'rxjs';
 
 import { v4 as guid } from 'uuid';
+import { ClipboardCopyDirective } from '../../directives/copy/copy.directive';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-copy-field',
-  templateUrl: './copy.component.html',
-  styleUrls: ['./copy.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-copy-field',
+    templateUrl: './copy.component.html',
+    styleUrls: ['./copy.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class CopyComponent {
   @Input()

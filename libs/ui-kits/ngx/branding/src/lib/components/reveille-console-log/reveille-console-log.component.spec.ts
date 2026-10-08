@@ -18,14 +18,14 @@ describe('ReveilleConsoleLogComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ReveilleConsoleLogComponent],
-      providers: [
+    imports: [ReveilleConsoleLogComponent],
+    providers: [
         {
-          provide: TestingService,
-          useClass: TestingMock
+            provide: TestingService,
+            useClass: TestingMock
         }
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {

@@ -6,11 +6,10 @@ import { Subject } from 'rxjs';
 import { ClipboardCopyDirective } from './copy.directive';
 
 @Component({
-  template: `
+    template: `
     <div clipboard-copy [text]="'text to copy'" (err)="copyEvent.next($event)" (copying)="copyEvent.next($event)"></div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 class MockCopyDirectiveComponent {
   public copyEvent = new Subject();
@@ -22,8 +21,8 @@ describe('ClipboardCopyDirective', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [MockCopyDirectiveComponent, ClipboardCopyDirective]
-    });
+    imports: [MockCopyDirectiveComponent, ClipboardCopyDirective]
+});
   });
 
   beforeEach(() => {

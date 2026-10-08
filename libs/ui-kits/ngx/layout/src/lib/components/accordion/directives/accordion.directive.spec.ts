@@ -14,17 +14,16 @@ import { AccordionDirective } from './accordion.directive';
  * passed regardless of whether the directive worked.
  */
 @Component({
-  template: `<div *giscAccordion>accordion content</div>`,
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    template: `<div *giscAccordion>accordion content</div>`,
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 class HostComponent {}
 
 describe('AccordionDirective', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AccordionDirective, HostComponent]
-    }).compileComponents();
+    imports: [AccordionDirective, HostComponent]
+}).compileComponents();
   });
 
   it('renders its template into the view container', () => {

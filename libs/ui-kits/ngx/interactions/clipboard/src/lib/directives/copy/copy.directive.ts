@@ -8,11 +8,9 @@ import { mapTo, startWith } from 'rxjs/operators';
 // esModuleInterop; a namespace import is not constructable under preserve.
 import Clipboard = require('clipboard');
 
-@Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[clipboard-copy]',
-  standalone: false
-})
+@Directive({ 
+    // eslint-disable-next-line @angular-eslint/directive-selector
+    selector: '[clipboard-copy]' })
 export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   /**
    * Text string that will be copied to clipboard.

@@ -12,10 +12,9 @@ import {
 import { AbstractContentReplacerToggleComponent } from './abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
 
 @Component({
-  selector: 'tamu-gisc-abstract-content-replacer',
-  template: '',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-abstract-content-replacer',
+    template: '',
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class AbstractContentReplacerComponent implements AfterContentInit {
   /**

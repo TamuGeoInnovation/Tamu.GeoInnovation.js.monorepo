@@ -2,6 +2,9 @@ import { Component, Input, forwardRef, ViewChild, Output, EventEmitter, ChangeDe
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { TooltipComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TooltipComponent as TooltipComponent_1 } from '../../../../../layout/src/lib/components/tooltip/tooltip.component';
+import { TooltipTriggerComponent } from '../../../../../layout/src/lib/components/tooltip/components/tooltip-trigger/tooltip-trigger.component';
+import { DatePipe } from '@angular/common';
 
 /**
  * The finest and coarsest units a picker offers, in the vocabulary of the library this component used
@@ -87,18 +90,18 @@ export function fromInputValue(raw: string, type: ReturnType<typeof inputTypeFor
  * `ngcc` rewrote it, which Angular 16 removes. The inputs and the `changed` output are unchanged.
  */
 @Component({
-  selector: 'tamu-gisc-date-time-picker',
-  templateUrl: './date-time-picker.component.html',
-  styleUrls: ['./date-time-picker.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => DateTimePickerComponent),
-      multi: true
-    }
-  ],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-date-time-picker',
+    templateUrl: './date-time-picker.component.html',
+    styleUrls: ['./date-time-picker.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => DateTimePickerComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [TooltipComponent_1, TooltipTriggerComponent, DatePipe]
 })
 export class DateTimePickerComponent implements ControlValueAccessor {
   // Get reference for the tooltip component rendered inside this date time picker component.

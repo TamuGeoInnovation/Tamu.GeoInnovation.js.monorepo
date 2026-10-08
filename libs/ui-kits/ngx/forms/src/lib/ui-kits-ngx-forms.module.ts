@@ -24,39 +24,36 @@ import { AutocompleteComponent } from './components/autocomplete/autocomplete.co
 import { AutocompleteOptionTemplateDirective } from './components/autocomplete/directives/autocomplete-option-template.directive';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, UILayoutModule, UIKeyboardModule],
-  declarations: [
-    SelectComponent,
-    CheckboxComponent,
-    CheckboxGroupComponent,
-    DateTimePickerComponent,
-    TextboxComponent,
-    AbstractValueAccessorFormComponent,
-    ButtonComponent,
-    AutocompleteComponent,
-    AutocompleteOptionTemplateDirective,
-    FileComponent,
-    RadioGroupComponent,
-    RangeComponent,
-    SlideToggleComponent,
-    SelectListComponent,
-    TurnstileChallengeComponent
-  ],
-  exports: [
-    SelectComponent,
-    CheckboxComponent,
-    CheckboxGroupComponent,
-    DateTimePickerComponent,
-    TextboxComponent,
-    AutocompleteComponent,
-    AutocompleteOptionTemplateDirective,
-    ButtonComponent,
-    FileComponent,
-    RadioGroupComponent,
-    RangeComponent,
-    SlideToggleComponent,
-    SelectListComponent,
-    TurnstileChallengeComponent
-  ]
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, UILayoutModule, UIKeyboardModule, SelectComponent,
+        CheckboxComponent,
+        CheckboxGroupComponent,
+        DateTimePickerComponent,
+        TextboxComponent,
+        AbstractValueAccessorFormComponent,
+        ButtonComponent,
+        AutocompleteComponent,
+        AutocompleteOptionTemplateDirective,
+        FileComponent,
+        RadioGroupComponent,
+        RangeComponent,
+        SlideToggleComponent,
+        SelectListComponent,
+        TurnstileChallengeComponent],
+    exports: [
+        SelectComponent,
+        CheckboxComponent,
+        CheckboxGroupComponent,
+        DateTimePickerComponent,
+        TextboxComponent,
+        AutocompleteComponent,
+        AutocompleteOptionTemplateDirective,
+        ButtonComponent,
+        FileComponent,
+        RadioGroupComponent,
+        RangeComponent,
+        SlideToggleComponent,
+        SelectListComponent,
+        TurnstileChallengeComponent
+    ]
 })
 export class UIFormsModule {}

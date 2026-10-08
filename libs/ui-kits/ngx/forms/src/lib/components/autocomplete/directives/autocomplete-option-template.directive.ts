@@ -7,10 +7,7 @@ import { Directive, Input, TemplateRef } from '@angular/core';
  *   <!-- custom rendering for item -->
  * </ng-template>
  */
-@Directive({
-  selector: '[tamuGiscAutocompleteOption]',
-  standalone: false
-})
+@Directive({ selector: '[tamuGiscAutocompleteOption]' })
 export class AutocompleteOptionTemplateDirective<T = unknown> {
   /**
    * Optional input used only for template type inference.

@@ -19,9 +19,9 @@ describe('TileSubmenuComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TileSubmenuComponent],
-      providers: [{ provide: TileService, useValue: TileServiceStub }]
-    }).compileComponents();
+    imports: [TileSubmenuComponent],
+    providers: [{ provide: TileService, useValue: TileServiceStub }]
+}).compileComponents();
   }));
 
   beforeEach(() => {

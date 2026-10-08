@@ -10,21 +10,22 @@ import {
 } from '@angular/core';
 
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
+import { DecimalPipe, CurrencyPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-range',
-  templateUrl: './range.component.html',
-  styleUrls: ['./range.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => RangeComponent),
-      multi: true
-    }
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'tamu-gisc-range',
+    templateUrl: './range.component.html',
+    styleUrls: ['./range.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => RangeComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [FormsModule, DecimalPipe, CurrencyPipe]
 })
 export class RangeComponent extends AbstractValueAccessorFormComponent<number> implements OnChanges {
   /**

@@ -10,22 +10,24 @@ import {
   TemplateRef,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, NG_VALUE_ACCESSOR, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, debounceTime, map, Observable, shareReplay, startWith } from 'rxjs';
+import { TextboxComponent } from '../textbox/textbox.component';
+import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-select-list',
-  templateUrl: './select-list.component.html',
-  styleUrls: ['./select-list.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SelectListComponent),
-      multi: true
-    }
-  ],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-select-list',
+    templateUrl: './select-list.component.html',
+    styleUrls: ['./select-list.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SelectListComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, ReactiveFormsModule, TextboxComponent, NgTemplateOutlet, AsyncPipe]
 })
 export class SelectListComponent<T extends Record<string, unknown>> implements OnInit, OnChanges {
   /**

@@ -9,9 +9,8 @@ describe('MobileTabNavigationTabComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([])],
-      declarations: [MobileTabNavigationTabComponent]
-    }).compileComponents();
+    imports: [RouterTestingModule.withRoutes([]), MobileTabNavigationTabComponent]
+}).compileComponents();
   }));
 
   beforeEach(() => {

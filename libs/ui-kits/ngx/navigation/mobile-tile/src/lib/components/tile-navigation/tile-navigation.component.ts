@@ -4,15 +4,17 @@ import { distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 
 import { TileService } from '../../services/tile.service';
 import { baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation } from '../../animations/animations';
+import { TileSubmenuContainerComponent } from '../tile-submenu-container/tile-submenu-container.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-tile-navigation',
-  templateUrl: './tile-navigation.component.html',
-  styleUrls: ['./tile-navigation.component.scss'],
-  providers: [TileService],
-  animations: [baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-tile-navigation',
+    templateUrl: './tile-navigation.component.html',
+    styleUrls: ['./tile-navigation.component.scss'],
+    providers: [TileService],
+    animations: [baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [TileSubmenuContainerComponent, AsyncPipe]
 })
 export class TileNavigationComponent implements OnInit, OnDestroy {
   @Input()

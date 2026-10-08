@@ -6,9 +6,8 @@ import { SearchMobileComponent } from './components/search-mobile/search-mobile.
 import { SearchResultPipe } from './pipes/search-result.pipe';
 
 @NgModule({
-  imports: [CommonModule],
-  providers: [],
-  declarations: [SearchComponent, SearchMobileComponent, SearchResultPipe],
-  exports: [SearchComponent, SearchMobileComponent, SearchResultPipe]
+    imports: [CommonModule, SearchComponent, SearchMobileComponent, SearchResultPipe],
+    providers: [],
+    exports: [SearchComponent, SearchMobileComponent, SearchResultPipe]
 })
 export class SearchModule {}

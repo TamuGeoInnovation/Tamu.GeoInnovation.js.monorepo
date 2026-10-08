@@ -5,13 +5,14 @@ import { TileTitleComponent } from '../tile-title/tile-title.component';
 import { TileSubmenuDirective } from '../../directives/tile-submenu/tile-submenu.directive';
 import { TileService } from '../../services/tile.service';
 import { TileLinkDirective } from '../../directives/tile-link/tile-link.directive';
+import { TileNavigationComponent } from '../tile-navigation/tile-navigation.component';
 
 @Component({
-  selector: 'tamu-gisc-tile',
-  templateUrl: './tile.component.html',
-  styleUrls: ['./tile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-tile',
+    templateUrl: './tile.component.html',
+    styleUrls: ['./tile.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [TileNavigationComponent]
 })
 export class TileComponent implements AfterContentInit, OnDestroy {
   private _destroy$: Subject<boolean> = new Subject();

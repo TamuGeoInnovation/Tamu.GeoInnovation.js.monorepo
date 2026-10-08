@@ -4,11 +4,10 @@ import { slide } from '../../animations/drawer';
 import { AnimationOptions } from '@angular/animations';
 
 @Component({
-  selector: 'tamu-gisc-abstract-sliding-drawer-model',
-  template: '',
-  animations: [slide],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-abstract-sliding-drawer-model',
+    template: '',
+    animations: [slide],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class AbstractSlidingDrawerComponent implements OnInit {
   private _visible: boolean;

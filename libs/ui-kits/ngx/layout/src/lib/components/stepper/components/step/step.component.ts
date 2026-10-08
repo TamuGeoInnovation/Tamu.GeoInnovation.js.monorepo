@@ -4,11 +4,10 @@ import { AbstractContentReplacerToggleComponent } from '../../../../abstracts/ab
 import { StepperToggleDirective } from '../../directives/stepper-toggle.directive';
 
 @Component({
-  selector: 'tamu-gisc-step',
-  templateUrl: './step.component.html',
-  styleUrls: ['./step.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-step',
+    templateUrl: './step.component.html',
+    styleUrls: ['./step.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class StepComponent extends AbstractContentReplacerToggleComponent {
   @ContentChild(StepperToggleDirective, { static: true })

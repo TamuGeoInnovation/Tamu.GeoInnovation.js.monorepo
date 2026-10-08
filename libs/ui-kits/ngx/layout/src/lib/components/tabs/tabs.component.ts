@@ -10,13 +10,14 @@ import {
 
 import { AbstractContentReplacerComponent } from '../../abstracts/abstract-content-swap/abstract-content-replacer.component';
 import { TabComponent } from './tab/tab.component';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-tabs',
-  templateUrl: './tabs.component.html',
-  styleUrls: ['./tabs.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-tabs',
+    templateUrl: './tabs.component.html',
+    styleUrls: ['./tabs.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass, NgTemplateOutlet]
 })
 export class TabsComponent extends AbstractContentReplacerComponent implements AfterContentInit {
   @ContentChildren(TabComponent)

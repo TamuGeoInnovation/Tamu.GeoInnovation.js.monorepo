@@ -1,11 +1,12 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-page-loader',
-  templateUrl: './page-loader.component.html',
-  styleUrls: ['./page-loader.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-page-loader',
+    templateUrl: './page-loader.component.html',
+    styleUrls: ['./page-loader.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass]
 })
 export class PageLoaderComponent implements OnInit, OnChanges {
   /**

@@ -8,8 +8,8 @@ describe('AbstractValueAccessorFormComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AbstractValueAccessorFormComponent]
-    }).compileComponents();
+    imports: [AbstractValueAccessorFormComponent]
+}).compileComponents();
   }));
 
   beforeEach(() => {

@@ -4,8 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DragDirective } from './directives/drag/drag.directive';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [DragDirective],
-  exports: [DragDirective]
+    imports: [CommonModule, DragDirective],
+    exports: [DragDirective]
 })
 export class UIDragModule {}

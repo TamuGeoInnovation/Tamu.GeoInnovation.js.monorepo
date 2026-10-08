@@ -17,18 +17,17 @@ import { CheckboxComponent } from '../checkbox/checkbox.component';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
 @Component({
-  selector: 'tamu-gisc-checkbox-group',
-  templateUrl: './checkbox-group.component.html',
-  styleUrls: ['./checkbox-group.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => CheckboxGroupComponent),
-      multi: true
-    }
-  ],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-checkbox-group',
+    templateUrl: './checkbox-group.component.html',
+    styleUrls: ['./checkbox-group.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => CheckboxGroupComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentInit, ControlValueAccessor {
   @ContentChildren(CheckboxComponent)
