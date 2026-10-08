@@ -23,3 +23,4 @@ export * from './lib/components/drawer/drawer.component';
 export * from './lib/components/stepper/components/step/step.component';
 export * from './lib/components/stepper/directives/stepper-toggle.directive';
 export * from './lib/components/stepper/stepper.component';
+export * from './lib/components/stepper/components/step-toggle/step-toggle.component';
