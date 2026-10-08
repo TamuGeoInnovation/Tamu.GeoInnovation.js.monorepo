@@ -3,10 +3,10 @@ import { Directive, ElementRef, Input, OnDestroy, Output, EventEmitter, OnChange
 import { Observable, timer } from 'rxjs';
 import { mapTo, startWith } from 'rxjs/operators';
 
-// `clipboard` is CommonJS and exports its class directly. `import = require` hands over the class itself
-// both to esbuild (module: preserve, #1456) and to ts-jest, which compiles to CommonJS without
-// esModuleInterop; a namespace import is not constructable under preserve.
-import Clipboard = require('clipboard');
+// `clipboard` is CommonJS and exports its class directly. A default import hands over the class both to
+// esbuild and, with esModuleInterop (#1476), to ts-jest. `import = require` cannot be loaded by the
+// browser bundle the dev server serves (#1558), and a namespace import is not constructable.
+import Clipboard from 'clipboard';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
