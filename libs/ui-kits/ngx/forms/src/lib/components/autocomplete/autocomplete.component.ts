@@ -10,16 +10,19 @@ import {
   OnDestroy
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { AutocompleteOptionTemplateDirective } from './directives/autocomplete-option-template.directive';
+import { TextboxComponent } from '../textbox/textbox.component';
+import { KeyboardNavigationDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
+import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-autocomplete',
   templateUrl: './autocomplete.component.html',
   styleUrls: ['./autocomplete.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [TextboxComponent, FormsModule, ReactiveFormsModule, KeyboardNavigationDirective, NgTemplateOutlet, AsyncPipe]
 })
 export class AutocompleteComponent<T> implements OnInit, OnDestroy {
   /**

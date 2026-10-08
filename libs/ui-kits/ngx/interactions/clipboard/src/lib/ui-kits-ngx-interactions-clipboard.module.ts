@@ -5,8 +5,7 @@ import { ClipboardCopyDirective } from './directives/copy/copy.directive';
 import { CopyComponent } from './components/copy/copy.component';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [ClipboardCopyDirective, CopyComponent],
+  imports: [CommonModule, ClipboardCopyDirective, CopyComponent],
   exports: [ClipboardCopyDirective, CopyComponent]
 })
 export class UIClipboardModule {}

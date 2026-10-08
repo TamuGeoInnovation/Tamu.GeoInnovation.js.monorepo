@@ -4,8 +4,7 @@ import { Component, HostBinding, Input, ChangeDetectionStrategy } from '@angular
   selector: 'tamu-gisc-lockup',
   templateUrl: './lockup.component.html',
   styleUrls: ['./lockup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class LockupComponent {
   @Input()

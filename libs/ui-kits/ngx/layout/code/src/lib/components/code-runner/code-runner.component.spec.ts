@@ -12,8 +12,7 @@ describe('CodeRunnerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HighlightPlusModule, UIClipboardModule],
-      declarations: [CodeRunnerComponent]
+      imports: [HighlightPlusModule, UIClipboardModule, CodeRunnerComponent]
     }).compileComponents();
   }));
 

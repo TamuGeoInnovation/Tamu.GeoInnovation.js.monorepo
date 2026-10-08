@@ -4,8 +4,7 @@ import { Component, Input, Output, EventEmitter, HostBinding, ChangeDetectionStr
   selector: 'tamu-gisc-button',
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ButtonComponent {
   /**

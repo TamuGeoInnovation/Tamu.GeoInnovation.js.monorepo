@@ -8,7 +8,7 @@ describe('TooltipTriggerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TooltipTriggerComponent]
+      imports: [TooltipTriggerComponent]
     }).compileComponents();
   }));
 

@@ -22,8 +22,7 @@ describe('TileNavigationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [TileNavigationComponent, TileSubmenuContainerComponent],
+      imports: [RouterTestingModule, TileNavigationComponent, TileSubmenuContainerComponent],
       providers: [{ provide: TileService, useValue: TileServiceStub }]
     }).compileComponents();
   }));

@@ -10,7 +10,8 @@ import {
 } from '@angular/core';
 
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
+import { DecimalPipe, CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-range',
@@ -24,7 +25,7 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
     }
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [FormsModule, DecimalPipe, CurrencyPipe]
 })
 export class RangeComponent extends AbstractValueAccessorFormComponent<number> implements OnChanges {
   /**

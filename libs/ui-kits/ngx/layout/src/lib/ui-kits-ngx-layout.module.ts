@@ -28,8 +28,8 @@ import { RenderHostDirective } from './directives/render-host/render-host.direct
 import { ElementInsertDirective } from './directives/element-insert/element-insert.directive';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [
+  imports: [
+    CommonModule,
     AbstractSlidingDrawerComponent,
     AbstractContentReplacerComponent,
     AbstractContentReplacerToggleComponent,

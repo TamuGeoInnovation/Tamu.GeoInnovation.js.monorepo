@@ -8,6 +8,7 @@ export * from './lib/components/tabs/tabs.component';
 export * from './lib/components/tabs/tab/tab.component';
 
 export * from './lib/components/tooltip/tooltip.component';
+export * from './lib/components/tooltip/components/tooltip-trigger/tooltip-trigger.component';
 
 export * from './lib/components/accordion/services/accordion.service';
 

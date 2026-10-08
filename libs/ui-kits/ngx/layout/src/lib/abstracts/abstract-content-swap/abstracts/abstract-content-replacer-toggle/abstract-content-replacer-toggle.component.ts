@@ -3,8 +3,7 @@ import { Component, Input, ViewChild, TemplateRef, ChangeDetectionStrategy } fro
 @Component({
   selector: 'tamu-gisc-abstract-content-replacer-toggle',
   template: '',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class AbstractContentReplacerToggleComponent {
   @Input()

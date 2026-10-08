@@ -12,13 +12,14 @@ import { mergeMap, pluck, switchMap, takeUntil } from 'rxjs/operators';
 
 import { TileLinkDirective } from '../../directives/tile-link/tile-link.directive';
 import { TileService } from '../../services/tile.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-tile-submenu',
   templateUrl: './tile-submenu.component.html',
   styleUrls: ['./tile-submenu.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [AsyncPipe]
 })
 export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
   @Input()

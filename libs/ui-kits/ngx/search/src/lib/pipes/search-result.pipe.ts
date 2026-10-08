@@ -3,10 +3,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 //
 // Accepts an array of objects and returns those which evaluation is truthy
 //
-@Pipe({
-  name: 'searchResult',
-  standalone: false
-})
+@Pipe({ name: 'searchResult' })
 export class SearchResultPipe implements PipeTransform {
   public transform(
     value: Array<{ attributes: ValidObject }>,
