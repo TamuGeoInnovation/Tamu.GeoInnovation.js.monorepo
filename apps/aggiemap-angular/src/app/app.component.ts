@@ -10,11 +10,11 @@ import { NotificationGroupedComponent } from '../../../../libs/common/ngx/ui/not
 import { CodeMaroonAlertComponent } from '../../../../libs/aggiemap/ngx/core/src/lib/components/code-maroon-alert/code-maroon-alert.component';
 
 @Component({
-    selector: 'tamu-gisc-aggiemap-app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterOutlet, NotificationGroupedComponent, CodeMaroonAlertComponent]
+  selector: 'tamu-gisc-aggiemap-app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterOutlet, NotificationGroupedComponent, CodeMaroonAlertComponent]
 })
 export class AppComponent implements OnInit, OnDestroy {
   private _notifications: Subscription | undefined;
