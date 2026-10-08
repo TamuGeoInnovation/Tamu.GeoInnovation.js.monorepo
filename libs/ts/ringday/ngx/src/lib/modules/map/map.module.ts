@@ -5,7 +5,6 @@ import { RouterModule, Routes } from '@angular/router';
 import {
   ModalComponent,
   ReportBadRouteComponent,
-  ReportBadRouteComponent,
   BackdropComponent,
   HeaderComponent,
   FooterComponent

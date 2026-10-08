@@ -6,7 +6,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { EsriMapComponent } from '../../maps-esri.module';
 import { EsriMapComponent } from './esri-map.component';
 
 describe('EsriMapComponent', () => {
