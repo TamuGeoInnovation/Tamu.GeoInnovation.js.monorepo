@@ -30,9 +30,7 @@ import { BasicSummaryBlurbComponent } from './components/common/basic-summary-bl
     UILayoutModule,
     EsriMapModule,
     RouterModule,
-    ResultTablesModule
-  ],
-  declarations: [
+    ResultTablesModule,
     ReverseGeocodingBasicComponent,
     CensusIntersectionBasicComponent,
     AddressProcessingBasicComponent,

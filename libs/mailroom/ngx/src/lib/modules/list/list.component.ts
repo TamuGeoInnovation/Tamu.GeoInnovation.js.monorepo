@@ -9,13 +9,15 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { DeleteEmailModalComponent } from './modal/delete-email-modal.component';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [RouterLink, AsyncPipe, DatePipe]
 })
 export class ListComponent implements OnInit {
   private _$refresh: Subject<boolean> = new Subject();

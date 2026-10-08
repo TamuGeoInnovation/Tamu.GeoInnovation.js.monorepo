@@ -1,13 +1,14 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { ITransactionData } from '@tamu-gisc/geoprocessing-v5';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-status-result-table',
   templateUrl: './status-result-table.component.html',
   styleUrls: ['./status-result-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [DecimalPipe]
 })
 export class StatusResultTableComponent {
   @Input()

@@ -4,13 +4,14 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { ReplaySubject } from 'rxjs';
 
 import { DatabaseService } from '@tamu-gisc/geoservices/data-access';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'tamu-gisc-upload',
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [RouterOutlet]
 })
 export class UploadComponent implements OnInit {
   public form: UntypedFormGroup;

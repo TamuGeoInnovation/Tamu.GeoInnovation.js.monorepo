@@ -26,9 +26,7 @@ import { RevivalBannerComponent } from './components/revival-banner/revival-bann
     UILayoutModule,
     UITileNavigationModule,
     UINavigationTriggersModule,
-    UIClipboardModule
-  ],
-  declarations: [
+    UIClipboardModule,
     HeaderComponent,
     FooterComponent,
     HeaderMobileComponent,

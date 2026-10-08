@@ -29,8 +29,8 @@ const routes: Routes = [
     HighlightPlusModule,
     UILayoutModule,
     UILayoutCodeModule,
-    GeoservicesCoreInteractiveModule
-  ],
-  declarations: [CensusIntersectionComponent]
+    GeoservicesCoreInteractiveModule,
+    CensusIntersectionComponent
+  ]
 })
 export class CensusIntersectionModule {}

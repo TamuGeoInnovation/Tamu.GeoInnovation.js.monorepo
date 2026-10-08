@@ -26,8 +26,8 @@ const routes: Routes = [
     UIClipboardModule,
     UIScrollToModule,
     UILayoutModule,
-    ApiComponentsModule
-  ],
-  declarations: [ReverseGeocodingComponent]
+    ApiComponentsModule,
+    ReverseGeocodingComponent
+  ]
 })
 export class ReverseGeocodingModule {}

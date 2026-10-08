@@ -3,13 +3,34 @@ import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { AddressProcessing, AddressProcessingAddressFormat } from '@tamu-gisc/geoprocessing-v5';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { AddressProcessingBasicComponent } from '../../../../../core/modules/interactive/components/address-processing/basic/address-processing-basic/address-processing-basic.component';
+import { TabsComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TabComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { CodeRunnerComponent } from '@tamu-gisc/ui-kits/ngx/layout/code';
+import { RouterLink } from '@angular/router';
+import { StepperComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { StepComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { StepperToggleDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AsyncPipe } from '@angular/common';
+import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
 @Component({
   selector: 'tamu-gisc-address-processing',
   templateUrl: './address-processing.component.html',
   styleUrls: ['./address-processing.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [
+    AddressProcessingBasicComponent,
+    TabsComponent,
+    TabComponent,
+    CodeRunnerComponent,
+    RouterLink,
+    StepperComponent,
+    StepComponent,
+    StepperToggleDirective,
+    AsyncPipe,
+    HighlightPlusModule
+  ]
 })
 export class AddressProcessingComponent implements OnInit {
   private address: AddressProcessing;

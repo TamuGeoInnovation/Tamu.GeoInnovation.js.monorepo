@@ -26,8 +26,8 @@ const routes: Routes = [
     UIClipboardModule,
     UIScrollToModule,
     UILayoutModule,
-    ApiComponentsModule
-  ],
-  declarations: [AddressProcessingComponent]
+    ApiComponentsModule,
+    AddressProcessingComponent
+  ]
 })
 export class AddressProcessingModule {}

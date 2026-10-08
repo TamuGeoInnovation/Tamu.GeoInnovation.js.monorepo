@@ -1,15 +1,37 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterLinkActive, RouterLink, RouterOutlet } from '@angular/router';
 import { Observable, Subject, filter, takeUntil } from 'rxjs';
 
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
+import { DrawerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { ScrollToDirective } from '@tamu-gisc/ui-kits/ngx/interactions/scroll-to';
+import { HamburgerTriggerComponent } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
+import { TileNavigationComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileIconComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileTitleComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileLinkDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-api',
   templateUrl: './geoservices-api.component.html',
   styleUrls: ['./geoservices-api.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [
+    DrawerComponent,
+    RouterLinkActive,
+    RouterLink,
+    ScrollToDirective,
+    HamburgerTriggerComponent,
+    TileNavigationComponent,
+    TileComponent,
+    TileIconComponent,
+    TileTitleComponent,
+    TileLinkDirective,
+    RouterOutlet,
+    AsyncPipe
+  ]
 })
 export class GeoservicesApiComponent implements OnInit, OnDestroy {
   @ViewChild('scrollContainer', { static: true })

@@ -13,8 +13,9 @@ import { CensusIntersectionResultTableComponent } from './components/census-inte
 import { ReverseGeocodingResultTableComponent } from './components/reverse-geocoding/reverse-geocoding-result-table/reverse-geocoding-result-table.component';
 
 @NgModule({
-  imports: [CommonModule, UILayoutModule],
-  declarations: [
+  imports: [
+    CommonModule,
+    UILayoutModule,
     StatusResultTableComponent,
     CensusIntersectionResultTabsComponent,
     GeocodeResultTableComponent,

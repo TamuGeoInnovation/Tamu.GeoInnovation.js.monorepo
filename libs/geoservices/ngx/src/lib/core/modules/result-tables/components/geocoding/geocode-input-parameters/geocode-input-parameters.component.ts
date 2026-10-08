@@ -4,13 +4,14 @@ import { Observable, filter, from, reduce } from 'rxjs';
 import { IGeocodeDeserializedInputParametersMap } from '@tamu-gisc/geoprocessing-v5';
 
 import { GeocodeInputParameterLabel } from '../../../../../util/dictionaries';
+import { AsyncPipe, KeyValuePipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-geocode-input-parameters',
   templateUrl: './geocode-input-parameters.component.html',
   styleUrls: ['./geocode-input-parameters.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [AsyncPipe, KeyValuePipe]
 })
 export class GeocodeInputParametersComponent implements OnInit {
   @Input()

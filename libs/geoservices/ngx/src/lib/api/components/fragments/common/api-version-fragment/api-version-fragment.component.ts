@@ -4,7 +4,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'tamu-gisc-api-version-fragment',
   templateUrl: './api-version-fragment.component.html',
   styleUrls: ['./api-version-fragment.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ApiVersionFragmentComponent {}

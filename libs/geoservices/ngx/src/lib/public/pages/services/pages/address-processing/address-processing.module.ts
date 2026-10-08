@@ -29,8 +29,8 @@ const routes: Routes = [
     HighlightPlusModule,
     UILayoutModule,
     UILayoutCodeModule,
-    GeoservicesCoreInteractiveModule
-  ],
-  declarations: [AddressProcessingComponent]
+    GeoservicesCoreInteractiveModule,
+    AddressProcessingComponent
+  ]
 })
 export class AddressProcessingModule {}

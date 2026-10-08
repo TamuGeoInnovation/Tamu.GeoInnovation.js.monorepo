@@ -28,9 +28,9 @@ const routes: Routes = [
     UIScrollToModule,
     UILayoutModule,
     ApiComponentsModule,
-    GeoservicesCoreInteractiveModule
+    GeoservicesCoreInteractiveModule,
+    GeocodingComponent
   ],
-  declarations: [GeocodingComponent],
   exports: [RouterModule]
 })
 export class GeocodingModule {}

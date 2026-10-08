@@ -5,13 +5,14 @@ import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/util
 import { CensusIntersectionRecordField, ICensusIntersectionRecord } from '@tamu-gisc/geoprocessing-v5';
 
 import { CensusIntersectionFeatureLabel } from '../../../../../util/dictionaries';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-census-intersection-result-table',
   templateUrl: './census-intersection-result-table.component.html',
   styleUrls: ['./census-intersection-result-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [AsyncPipe]
 })
 export class CensusIntersectionResultTableComponent implements OnInit {
   @Input()

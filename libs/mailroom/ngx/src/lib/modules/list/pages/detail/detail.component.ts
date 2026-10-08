@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Location, AsyncPipe } from '@angular/common';
 
 import { Buffer } from 'buffer';
 import { map, Observable, shareReplay, switchMap } from 'rxjs';
@@ -17,7 +17,7 @@ import { DeleteEmailModalComponent } from '../../modal/delete-email-modal.compon
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [RouterLink, AsyncPipe]
 })
 export class DetailComponent implements OnInit {
   public $email: Observable<MailroomEmail>;

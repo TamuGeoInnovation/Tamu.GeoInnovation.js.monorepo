@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pipe, withLatestFrom, map, switchMap } from 'rxjs';
 
@@ -16,13 +16,30 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { BasicSummaryBlurbComponent } from '../../../common/basic-summary-blurb/basic-summary-blurb.component';
+import { CensusIntersectionResultTabsComponent } from '../../../../../result-tables/components/census-intersection/census-intersection-result-tabs/census-intersection-result-tabs.component';
+import { InteractiveResponseMetadataComponent } from '../../../common/interactive-response-metadata/interactive-response-metadata.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-census-intersection-basic',
   templateUrl: './census-intersection-basic.component.html',
   styleUrls: ['./census-intersection-basic.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    SelectComponent,
+    ButtonComponent,
+    BasicSummaryBlurbComponent,
+    CensusIntersectionResultTabsComponent,
+    InteractiveResponseMetadataComponent,
+    AsyncPipe
+  ]
 })
 export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessingComponent<
   CensusIntersectionResult,

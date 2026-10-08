@@ -5,13 +5,15 @@ import { GeocodeReferenceFeatureField, IGeocodeReferenceFeature } from '@tamu-gi
 import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
 
 import { GeocodeReferenceFeatureLabel } from '../../../../../util/dictionaries';
+import { ParsedAddressResultTableComponent } from '../../address-processing/parsed-address-result-table/parsed-address-result-table.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-geocode-matched-reference-feature-table',
   templateUrl: './geocode-matched-reference-feature-table.component.html',
   styleUrls: ['./geocode-matched-reference-feature-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [ParsedAddressResultTableComponent, AsyncPipe]
 })
 export class GeocodeMatchedReferenceFeatureTableComponent implements OnInit {
   @Input()

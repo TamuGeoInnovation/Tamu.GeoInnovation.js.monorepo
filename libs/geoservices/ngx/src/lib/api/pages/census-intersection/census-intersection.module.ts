@@ -26,8 +26,8 @@ const routes: Routes = [
     UIClipboardModule,
     UIScrollToModule,
     UILayoutModule,
-    ApiComponentsModule
-  ],
-  declarations: [CensusIntersectionComponent]
+    ApiComponentsModule,
+    CensusIntersectionComponent
+  ]
 })
 export class CensusIntersectionModule {}

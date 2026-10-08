@@ -21,3 +21,7 @@ export * from './lib/directives/element-insert/element-insert.directive';
 export * from './lib/components/accordion/directives/accordion-content.directive';
 export * from './lib/components/accordion/directives/accordion.directive';
 export * from './lib/components/accordion/directives/accordion-header.directive';
+export * from './lib/components/drawer/drawer.component';
+export * from './lib/components/stepper/components/step/step.component';
+export * from './lib/components/stepper/directives/stepper-toggle.directive';
+export * from './lib/components/stepper/stepper.component';

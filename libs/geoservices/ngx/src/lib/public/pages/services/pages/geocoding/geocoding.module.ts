@@ -30,8 +30,8 @@ const routes: Routes = [
     HighlightPlusModule,
     UILayoutModule,
     UILayoutCodeModule,
-    GeoservicesCoreInteractiveModule
-  ],
-  declarations: [GeocodingComponent]
+    GeoservicesCoreInteractiveModule,
+    GeocodingComponent
+  ]
 })
 export class GeocodingModule {}

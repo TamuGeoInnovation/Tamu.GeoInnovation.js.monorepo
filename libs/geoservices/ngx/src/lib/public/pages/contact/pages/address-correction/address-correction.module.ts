@@ -9,8 +9,8 @@ import { GeocodeCorrectionFormModule } from '../../../../../core/modules/forms/g
   imports: [
     CommonModule,
     RouterModule.forChild([{ path: '', component: AddressCorrectionComponent }]),
-    GeocodeCorrectionFormModule
-  ],
-  declarations: [AddressCorrectionComponent]
+    GeocodeCorrectionFormModule,
+    AddressCorrectionComponent
+  ]
 })
 export class AddressCorrectionModule {}

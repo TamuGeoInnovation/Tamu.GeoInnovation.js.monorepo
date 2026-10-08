@@ -140,9 +140,9 @@ const routes: Routes = [
     SidebarModule,
     UITamuBrandingModule,
     UESCoreUIModule,
-    TransportationModule
+    TransportationModule,
+    MapComponent
   ],
-  declarations: [MapComponent],
   providers: [EsriModuleProviderService, EsriMapService, TripPlannerService, BusService]
 })
 export class MapModule {}

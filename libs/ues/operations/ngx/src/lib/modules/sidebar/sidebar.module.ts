@@ -25,9 +25,10 @@ import { SidebarReferenceComponent } from './components/sidebar-reference/sideba
     MapsFeatureTripPlannerModule,
     LayerListModule,
     LegendModule,
-    UESCoreUIModule
+    UESCoreUIModule,
+    SidebarComponent,
+    SidebarReferenceComponent
   ],
-  declarations: [SidebarComponent, SidebarReferenceComponent],
   exports: [SidebarComponent]
 })
 export class UESSidebarModule {}

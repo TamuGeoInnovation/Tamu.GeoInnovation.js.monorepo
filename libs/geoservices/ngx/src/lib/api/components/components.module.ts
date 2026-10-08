@@ -19,8 +19,10 @@ import { AddressFormatFragmentComponent } from './fragments/address-normalizatio
 import { ServiceAttributeAccordionComponent } from './fragments/common/service-attribute-accordion/service-attribute-accordion.component';
 
 @NgModule({
-  imports: [CommonModule, HighlightPlusModule, UILayoutModule],
-  declarations: [
+  imports: [
+    CommonModule,
+    HighlightPlusModule,
+    UILayoutModule,
     ResponseViewerComponent,
     AddressAttributeListComponent,
     AddressMatchTypeAttributeListComponent,

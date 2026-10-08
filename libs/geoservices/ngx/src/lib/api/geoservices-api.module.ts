@@ -53,9 +53,9 @@ export const routes: Route[] = [
     UILayoutModule,
     UIScrollToModule,
     UITileNavigationModule,
-    UINavigationTriggersModule
+    UINavigationTriggersModule,
+    GeoservicesApiComponent
   ],
-  declarations: [GeoservicesApiComponent],
   exports: [RouterModule]
 })
 export class GeoservicesApiModule {}

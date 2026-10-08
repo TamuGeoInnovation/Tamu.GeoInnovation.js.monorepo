@@ -29,8 +29,8 @@ const routes: Routes = [
     HighlightPlusModule,
     UILayoutModule,
     UILayoutCodeModule,
-    GeoservicesCoreInteractiveModule
-  ],
-  declarations: [ReverseGeocodingComponent]
+    GeoservicesCoreInteractiveModule,
+    ReverseGeocodingComponent
+  ]
 })
 export class ReverseGeocodingModule {}

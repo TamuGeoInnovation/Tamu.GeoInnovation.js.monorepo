@@ -4,8 +4,7 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
   selector: 'tamu-gisc-ues-tamu-block',
   templateUrl: './ues-tamu-block.component.html',
   styleUrls: ['./ues-tamu-block.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class UESTamuBlockComponent {
   @Input()

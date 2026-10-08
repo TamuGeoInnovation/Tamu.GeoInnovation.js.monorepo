@@ -2,6 +2,7 @@ import { Component, HostBinding, Input, OnInit, ChangeDetectionStrategy } from '
 import { take } from 'rxjs';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
@@ -11,7 +12,7 @@ import esri = __esri;
   styleUrls: ['./result-map.component.scss'],
   providers: [EsriMapService],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [EsriMapComponent]
 })
 export class ResultMapComponent implements OnInit {
   @Input()

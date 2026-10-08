@@ -12,7 +12,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [UploadedComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), UploadedComponent]
 })
 export class UploadedModule {}

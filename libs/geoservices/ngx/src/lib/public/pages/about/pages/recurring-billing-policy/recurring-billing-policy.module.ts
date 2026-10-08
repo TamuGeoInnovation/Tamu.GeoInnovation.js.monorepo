@@ -12,7 +12,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [RecurringBillingPolicyComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), RecurringBillingPolicyComponent]
 })
 export class RecurringBillingPolicyModule {}

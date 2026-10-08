@@ -7,8 +7,7 @@ import { AuthGroupsPipe } from './pipes/auth-groups.pipe';
 import { SessionExpiredModule } from './pages/session-expired/session-expired.module';
 
 @NgModule({
-  imports: [CommonModule, SessionExpiredModule],
-  declarations: [AuthGroupsPipe],
+  imports: [CommonModule, SessionExpiredModule, AuthGroupsPipe],
   providers: [UserService],
   exports: [AuthGroupsPipe]
 })

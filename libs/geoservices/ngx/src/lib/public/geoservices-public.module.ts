@@ -36,7 +36,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), GeoservicesCoreNgxModule],
-  declarations: [GeoservicesPublicComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), GeoservicesCoreNgxModule, GeoservicesPublicComponent]
 })
 export class GeoservicesPublicModule {}
