@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core
 import { Observable } from 'rxjs';
 import { HighlightModule } from 'ngx-highlightjs';
 import { NgClass, AsyncPipe } from '@angular/common';
-import { ClipboardCopyDirective } from '../../../../../../interactions/clipboard/src/lib/directives/copy/copy.directive';
+import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 @Component({
   selector: 'tamu-gisc-code-runner',

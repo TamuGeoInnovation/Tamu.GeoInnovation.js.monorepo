@@ -11,7 +11,6 @@ import {
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BehaviorSubject, of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { UINavigationTriggersModule } from '../../ui-kits-ngx-navigation-triggers.module';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
@@ -66,7 +65,7 @@ import { AsyncPipe } from '@angular/common';
     ])
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [UINavigationTriggersModule, AsyncPipe]
+  imports: [AsyncPipe]
 })
 export class HamburgerTriggerComponent implements OnChanges {
   /**

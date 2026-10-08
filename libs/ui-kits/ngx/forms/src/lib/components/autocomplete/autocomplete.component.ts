@@ -14,7 +14,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { AutocompleteOptionTemplateDirective } from './directives/autocomplete-option-template.directive';
 import { TextboxComponent } from '../textbox/textbox.component';
-import { KeyboardNavigationDirective } from '../../../../../interactions/keyboard/src/lib/directives/keyboard-navigation/keyboard-navigation.directive';
+import { KeyboardNavigationDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
 
 @Component({

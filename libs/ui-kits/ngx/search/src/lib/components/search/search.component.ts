@@ -25,7 +25,6 @@ import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
 import { SearchService, SearchResult, SearchResultItem, SearchSource } from '../../services/search.service';
 import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
-import { SearchModule } from '../../search.module';
 
 @Component({
   selector: 'tamu-gisc-search',
@@ -33,7 +32,7 @@ import { SearchModule } from '../../search.module';
   styleUrls: ['./search.component.scss'],
   providers: [SearchService],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, SearchModule, AsyncPipe, TitleCasePipe]
+  imports: [NgClass, AsyncPipe, TitleCasePipe]
 })
 export class SearchComponent implements OnInit, OnDestroy {
   /**

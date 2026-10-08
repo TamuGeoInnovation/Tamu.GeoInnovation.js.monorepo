@@ -15,6 +15,7 @@ import { AccordionDirective } from './accordion.directive';
  */
 @Component({
   template: `<div *giscAccordion>accordion content</div>`,
+  imports: [AccordionDirective],
   changeDetection: ChangeDetectionStrategy.Eager
 })
 class HostComponent {}
