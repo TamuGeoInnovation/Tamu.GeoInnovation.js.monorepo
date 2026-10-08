@@ -8,12 +8,11 @@ import { AbstractSlidingDrawerComponent, slide } from '@tamu-gisc/ui-kits/ngx/la
 import { SidebarTabComponent } from '../tab/tab.component';
 
 @Component({
-  selector: 'tamu-gisc-sidebar',
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss'],
-  animations: [slide],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-sidebar',
+    templateUrl: './sidebar.component.html',
+    styleUrls: ['./sidebar.component.scss'],
+    animations: [slide],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class SidebarComponent extends AbstractSlidingDrawerComponent implements AfterContentInit, OnDestroy {
   public currentView: string;

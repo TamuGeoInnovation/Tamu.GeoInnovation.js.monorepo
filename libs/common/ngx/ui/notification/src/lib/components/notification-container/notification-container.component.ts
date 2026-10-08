@@ -6,13 +6,15 @@ import { Angulartics2 } from 'angulartics2';
 
 import { NotificationService } from '../../services/notification.service';
 import { Notification } from '../../helpers/notification.helper';
+import { NotificationItemComponent } from '../notification-item/notification-item.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'tamu-gisc-notification-container',
-  templateUrl: './notification-container.component.html',
-  styleUrls: ['./notification-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-notification-container',
+    templateUrl: './notification-container.component.html',
+    styleUrls: ['./notification-container.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NotificationItemComponent, AsyncPipe]
 })
 export class NotificationContainerComponent implements OnInit {
   @Input()

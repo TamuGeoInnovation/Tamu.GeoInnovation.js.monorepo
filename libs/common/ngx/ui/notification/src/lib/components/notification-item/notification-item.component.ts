@@ -14,28 +14,21 @@ import { Router } from '@angular/router';
 import { Notification } from '../../helpers/notification.helper';
 
 @Component({
-  selector: 'tamu-gisc-notification-item',
-  templateUrl: './notification-item.component.html',
-  styleUrls: ['./notification-item.component.scss'],
-  animations: [
-    trigger('animate', [
-      state(
-        'true',
-        style({
-          transform: 'translateY(-110%)'
-        })
-      ),
-      state(
-        'false',
-        style({
-          transform: 'translateY(10%)'
-        })
-      ),
-      transition('* => *', [animate('250ms 0ms cubic-bezier(.25, 0, .25, 1.0)')])
-    ])
-  ],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-notification-item',
+    templateUrl: './notification-item.component.html',
+    styleUrls: ['./notification-item.component.scss'],
+    animations: [
+        trigger('animate', [
+            state('true', style({
+                transform: 'translateY(-110%)'
+            })),
+            state('false', style({
+                transform: 'translateY(10%)'
+            })),
+            transition('* => *', [animate('250ms 0ms cubic-bezier(.25, 0, .25, 1.0)')])
+        ])
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class NotificationItemComponent implements OnInit, OnDestroy {
   // Notification object passed in from the parent component

@@ -9,6 +9,7 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { NotificationService } from '../../services/notification.service';
 import { Notification } from '../../helpers/notification.helper';
+import { NgClass } from '@angular/common';
 
 /**
  * Several active notifications as one stacked toast, highest priority first.
@@ -21,11 +22,11 @@ import { Notification } from '../../helpers/notification.helper';
  * Grouping originates in #693. Priority ordering and the high-priority marker are #1195.
  */
 @Component({
-  selector: 'tamu-gisc-notification-grouped',
-  templateUrl: './notification-grouped.component.html',
-  styleUrls: ['./notification-grouped.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'tamu-gisc-notification-grouped',
+    templateUrl: './notification-grouped.component.html',
+    styleUrls: ['./notification-grouped.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass]
 })
 export class NotificationGroupedComponent implements OnInit, OnDestroy {
   @Input()

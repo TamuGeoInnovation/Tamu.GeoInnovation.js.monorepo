@@ -2,10 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
-@Pipe({
-  name: 'lookup',
-  standalone: false
-})
+@Pipe({ name: 'lookup' })
 export class LookupPipe<T> implements PipeTransform {
   /**
    * Returns the value of an object property given a valid dot-notation path.
