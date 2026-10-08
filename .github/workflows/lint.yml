@@ -13,7 +13,7 @@ env:
 jobs:
   lint:
     name: Affected
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repo
