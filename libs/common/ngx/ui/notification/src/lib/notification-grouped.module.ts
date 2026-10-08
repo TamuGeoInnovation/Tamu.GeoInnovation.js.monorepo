@@ -16,7 +16,7 @@ import { NotificationGroupedComponent } from './components/notification-grouped/
  * Import this only where grouping is actually used.
  */
 @NgModule({
-    imports: [CommonModule, LocalStoreModule, NotificationGroupedComponent],
-    exports: [NotificationGroupedComponent]
+  imports: [CommonModule, LocalStoreModule, NotificationGroupedComponent],
+  exports: [NotificationGroupedComponent]
 })
 export class NotificationGroupedModule {}

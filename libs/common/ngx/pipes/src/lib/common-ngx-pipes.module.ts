@@ -22,33 +22,36 @@ import { SafeHtmlPipe } from './sanitation/safe-html.pipe';
 import { TrimPipe } from './string/trim.pipe';
 
 @NgModule({
-    imports: [CommonModule, GroupByPipe,
-        OrderByPipe,
-        MarkdownParsePipe,
-        SafeHtmlPipe,
-        TimeUntilPipe,
-        PhoneNumberFormatPipe,
-        ExistsPipe,
-        LookupPipe,
-        DateRangePipe,
-        NearestDatePipe,
-        ToDatePipe,
-        ToArrayPipe,
-        TrimPipe],
-    exports: [
-        GroupByPipe,
-        OrderByPipe,
-        MarkdownParsePipe,
-        SafeHtmlPipe,
-        TimeUntilPipe,
-        PhoneNumberFormatPipe,
-        ExistsPipe,
-        LookupPipe,
-        DateRangePipe,
-        NearestDatePipe,
-        ToDatePipe,
-        ToArrayPipe,
-        TrimPipe
-    ]
+  imports: [
+    CommonModule,
+    GroupByPipe,
+    OrderByPipe,
+    MarkdownParsePipe,
+    SafeHtmlPipe,
+    TimeUntilPipe,
+    PhoneNumberFormatPipe,
+    ExistsPipe,
+    LookupPipe,
+    DateRangePipe,
+    NearestDatePipe,
+    ToDatePipe,
+    ToArrayPipe,
+    TrimPipe
+  ],
+  exports: [
+    GroupByPipe,
+    OrderByPipe,
+    MarkdownParsePipe,
+    SafeHtmlPipe,
+    TimeUntilPipe,
+    PhoneNumberFormatPipe,
+    ExistsPipe,
+    LookupPipe,
+    DateRangePipe,
+    NearestDatePipe,
+    ToDatePipe,
+    ToArrayPipe,
+    TrimPipe
+  ]
 })
 export class PipesModule {}

@@ -8,8 +8,8 @@ import { SidebarTabComponent } from '../tab/tab.component';
 describe('SidebarComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([{ path: 'test', component: SidebarComponent }]), SidebarComponent]
-}).compileComponents();
+      imports: [RouterTestingModule.withRoutes([{ path: 'test', component: SidebarComponent }]), SidebarComponent]
+    }).compileComponents();
   }));
 
   it('should create', () => {

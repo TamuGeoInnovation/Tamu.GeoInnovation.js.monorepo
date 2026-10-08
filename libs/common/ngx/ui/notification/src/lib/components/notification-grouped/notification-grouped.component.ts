@@ -22,11 +22,11 @@ import { NgClass } from '@angular/common';
  * Grouping originates in #693. Priority ordering and the high-priority marker are #1195.
  */
 @Component({
-    selector: 'tamu-gisc-notification-grouped',
-    templateUrl: './notification-grouped.component.html',
-    styleUrls: ['./notification-grouped.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NgClass]
+  selector: 'tamu-gisc-notification-grouped',
+  templateUrl: './notification-grouped.component.html',
+  styleUrls: ['./notification-grouped.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass]
 })
 export class NotificationGroupedComponent implements OnInit, OnDestroy {
   @Input()

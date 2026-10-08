@@ -3,11 +3,11 @@ import { Observable, Subject } from 'rxjs';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
-    selector: 'tamu-gisc-sidebar-tab',
-    templateUrl: './tab.component.html',
-    styleUrls: ['./tab.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SidebarComponent]
+  selector: 'tamu-gisc-sidebar-tab',
+  templateUrl: './tab.component.html',
+  styleUrls: ['./tab.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SidebarComponent]
 })
 export class SidebarTabComponent {
   /**

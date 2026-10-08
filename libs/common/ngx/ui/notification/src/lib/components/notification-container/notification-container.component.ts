@@ -10,11 +10,11 @@ import { NotificationItemComponent } from '../notification-item/notification-ite
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'tamu-gisc-notification-container',
-    templateUrl: './notification-container.component.html',
-    styleUrls: ['./notification-container.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [NotificationItemComponent, AsyncPipe]
+  selector: 'tamu-gisc-notification-container',
+  templateUrl: './notification-container.component.html',
+  styleUrls: ['./notification-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NotificationItemComponent, AsyncPipe]
 })
 export class NotificationContainerComponent implements OnInit {
   @Input()

@@ -7,9 +7,12 @@ import { Notification } from '../../helpers/notification.helper';
 describe('NotificationItemComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    providers: [NotificationItemComponent],
-    imports: [RouterTestingModule.withRoutes([{ path: 'value', component: NotificationItemComponent }]), NotificationItemComponent]
-}).compileComponents();
+      providers: [NotificationItemComponent],
+      imports: [
+        RouterTestingModule.withRoutes([{ path: 'value', component: NotificationItemComponent }]),
+        NotificationItemComponent
+      ]
+    }).compileComponents();
   }));
 
   it('should create', inject([NotificationItemComponent], (notificationItemComponent: NotificationItemComponent) => {
