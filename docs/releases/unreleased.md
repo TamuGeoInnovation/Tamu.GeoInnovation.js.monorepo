@@ -1,11 +1,10 @@
 # Unreleased
 
-Nothing has merged since the second 6 October release yet.
+Since the 8 October release: the old Ring Day app removed (see Summary).
 
-**The last release is [6 October 2026, second release](2026-10-06-2.md)**, built from `8c7a9765` as
-`main-AV4OTLR6.js` and tagged `dev-2026-10-06-4`. It carried the service-driven symbology: every layer
-draws, and is named, the way its service publishes it. What was tested, and what went into it, are in
-that file. The release before it, the same morning, is [6 October 2026](2026-10-06.md).
+**The last release is [8 October 2026](2026-10-08.md)**, built from `a4e04a7b` (build 20261008.15). It
+went to production before its dev check, as an emergency during Ring Day; the notes say what happened and
+what the suite found afterwards. The release before it is [6 October 2026, second release](2026-10-06-2.md).
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
 result adds its own entry below, in that pull request**, with its before/after screenshots linked from
@@ -16,11 +15,12 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-- **Ring Day shows one notification, not two** ([#1570](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1570)). During October 2026's Ring Day the
-  main map stacked two notices about it ("1 of 2"): an old hard-coded one, and the one the Ring Day
-  event map raises itself. The hard-coded one is gone, and a test now fails if any hard-coded notice
-  runs while an event's own notice is showing. ([before](../screenshots/ring-day-one-notification/before.png),
-  [after](../screenshots/ring-day-one-notification/after.png))
+- **The old standalone Ring Day app's code is removed** ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). Ring Day is
+  served by the event map at `/events/ring-day`; the old app at `/ringday/` was a second copy with its
+  own dates and its own notice. Its projects and library are gone, so Azure no longer builds it, and the
+  dev-only Experimental Applications list no longer links it. **The deployed `/ringday/` folder on dev and
+  production is still there**: deleting it, or redirecting `/ringday/` to `/events/ring-day`, is a step
+  on the servers for the maintainer.
 
 ---
 
@@ -31,13 +31,12 @@ result adds its own entry below, in that pull request**, with its before/after s
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** nothing beyond the [second 6 October release](2026-10-06-2.md) itself.
+**Currently on dev for testing:** nothing beyond the [8 October release](2026-10-08.md) itself.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | Football Tailgating map: readable links to a zone or tent ([#1574](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1574)) ([before](../screenshots/tailgating-readable-links/before.png), [after](../screenshots/tailgating-readable-links/after.png)) | [Houston Street Grove](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-7), [tent O12](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?tent=O12) | Each opens that zone or tent's popup; a popup's copy link reads `?zone=AP-7` or `?tent=O12`, not `?feature=...`; the sidebar search still finds buildings and lots |
-| Ring Day shows one notification ([#1570](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1570)) ([before](../screenshots/ring-day-one-notification/before.png), [after](../screenshots/ring-day-one-notification/after.png)) | The [main map](https://dev.aggiemap.tamu.edu/map/d), in a new private window, through 11 October 2026 (Ring Day's notice shows from a week before to a day after) | One Ring Day notice, "Ring Day Transportation Map Available", with no "1 of 2" stepper for it. Another event's notice, such as game day parking, may still show alongside: that's a different event |
-| Football Tailgating map reads the republished service's new layer order; Simpson Drill Field tents get their own layer ([#1537](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1537)) ([before](../screenshots/tailgating-simpson-tents/before.png), [after](../screenshots/tailgating-simpson-tents/after.png)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating) | Aggie Park zones draw again and the legend groups match their layers; "Simpson Drill Field Tents" and "Aggie Park Tents" in the Layers list; Simpson tents show at every zoom, Aggie Park tents only once zoomed in past about 1:2,500 |
+| The old Ring Day app removed ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) ([before](../screenshots/ring-day-old-app-removed/before.png), [after](../screenshots/ring-day-old-app-removed/after.png)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps), the dev-only Experimental Applications section; and [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day) | No "Ring Day" card among the experimental applications; the Ring Day event map still opens as before |
 
 ---
 
@@ -130,7 +129,8 @@ the lock file with a clean `npm ci` before pushing (CLAUDE.md, [#1347](https://g
   saved copy is removed once it is in place.
 - **The browser console's build banner prints `___BUILD_DATE___` and the other placeholders** instead
   of the build's details ([#1306](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1306), low priority).
-- **The old standalone Ring Day app** is removed after Ring Day, 8 to 10 October
+- **The old standalone Ring Day app's deployed copy at `/ringday/`** still needs deleting, or redirecting
+  to `/events/ring-day`, on dev and production; its code is removed
   ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). The old Move-In app's deployed copy at `/movein/` still needs deleting
   ([#1235](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1235)).
 - **Every map's starting center and zoom** to be checked against its data ([#1231](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1231)).

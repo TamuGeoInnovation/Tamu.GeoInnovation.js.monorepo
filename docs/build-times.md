@@ -35,6 +35,9 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 8 Oct 2026 | home | `check-in-volume.sh chore/1236-remove-ring-day-app` (affected, 110 projects, 230 tasks), 3:57 to 4:03 PM Central | volume, cold clone and `npm ci` (59 s) | 6 min (Nx 4 min 28 s) |
+| 8 Oct 2026 | home | `check-in-volume.sh fix/1577-basemap-max-zoom` (5 projects) | volume, cold clone | passed |
+| 8 Oct 2026 | home | `check-in-volume.sh fix/1576-dining-aggieprint-icons` (3 projects) | volume, cold clone | passed |
 | 8 Oct 2026 | Kaleb's laptop | `check-in-volume.sh feat/tailgating-readable-links` (affected: ts-events-ngx, aggiemap-ngx-discover, aggiemap-ngx-core, aggiemap-angular, ts-events-angular, ts-events-angular-e2e), 14:20 Central | volume, warm, 6 projects | **1 min 13 s** |
 | 8 Oct 2026 | home | `check-in-volume.sh refactor/1568-prune-ng-modules` (affected, 67 projects, 140 tasks), rebased on `development` after #1572 | volume, cold cache | **2 min 55 s** |
 | 8 Oct 2026 | home | NgModule prune (`--mode=prune-ng-modules`) over the whole workspace, one run | volume | ~6 min |
@@ -235,6 +238,7 @@ every layer, so its duration says as much about the GIS services as about this c
 
 | Date | Machine | Environment | Result | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 8 Oct 2026 | home | **production**, `a4e04a7b` (build 20261008.15: the standalone work, #1571, #1579, #1580), release scope, 6 workers, 4:07:46 PM to 4:27:25 PM Central; cleared the 8 October release, tagged `dev-` and `prod-2026-10-08` | 397 passed, 0 failed, 0 flaky, 24 skipped, of 421 | **19 min 39 s** |
 | 8 Oct 2026 | home | local dev server, #1568 branch rebased on `development` (all the standalone work and #1571), release scope, 6 workers, about 11:25 AM to 11:55 AM Central | 428 passed, 1 failed (build banner, local only), 1 flaky (bus route 48), 30 skipped | **28.2 min** |
 | 8 Oct 2026 | home | local dev server, #1563 branch (AggieMap bootstrapped standalone), release scope, 6 workers, morning | 405 passed, 1 failed (build banner, local only), 30 skipped | 22.1 min |
 | 7 Oct 2026 | cloud (4 CPUs) | dev; **`bus.spec.ts` alone, #1473 branch**, one test per route, **2 workers**, 11:09:26 to 11:20:02 PM Central; CPU load about 10 | 26 passed, 0 failed; 48 s median per route test (23 to 61 s) | **10 min 36 s** |

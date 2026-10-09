@@ -515,6 +515,56 @@ export function MainMapLayerSources(
       popupComponent: definitions.DINING_LOCATIONS.popupComponent,
       native: {
         ...commonLayerProps,
+        // Overridden deliberately (#1576): this is a GeoJSON feed, which carries no symbology, so without
+        // a renderer ArcGIS draws a plain default marker. The icons show open and closed, food truck or not.
+        renderer: {
+          type: 'unique-value',
+          field: 'label',
+          field2: 'type',
+          fieldDelimiter: ',',
+          uniqueValueInfos: [
+            {
+              value: 'open,food-truck',
+              label: 'Food Truck - Open',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/FoodTruck_open.png',
+                width: '24px',
+                height: '32px'
+              }
+            },
+            {
+              value: 'closed,food-truck',
+              label: 'Food Truck - Closed',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/FoodTruck_closed.png',
+                width: '24px',
+                height: '32px'
+              }
+            },
+            {
+              value: 'open,fixed',
+              label: 'Dining - Open',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/Dining_open.png',
+                width: '24px',
+                height: '32px'
+              }
+            },
+            {
+              value: 'closed,fixed',
+              label: 'Dining - Closed',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/Dining_closed.png',
+                width: '24px',
+                height: '32px'
+              }
+            }
+          ]
+        } as unknown as esri.UniqueValueRenderer
       }
     },
     {
@@ -530,6 +580,34 @@ export function MainMapLayerSources(
       },
       native: {
         ...commonLayerProps,
+        // Overridden deliberately (#1576): the service publishes only ArcGIS's default RedSphere marker,
+        // not printer icons. The icons tell campus-accessible printers from restricted ones.
+        renderer: {
+          type: 'unique-value',
+          valueExpression: `When($feature.Access == 'Campus Member Accessible', 'all',  'restricted')`,
+          uniqueValueInfos: [
+            {
+              value: 'all',
+              label: 'Campus Member Accessible',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/services/printer-all-access.png',
+                width: '24px',
+                height: '32px'
+              }
+            },
+            {
+              value: 'restricted',
+              label: 'Restricted Access Printers',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/services/printer-restricted.png',
+                width: '24px',
+                height: '32px'
+              }
+            }
+          ]
+        } as unknown as esri.UniqueValueRenderer
       }
     },
     {

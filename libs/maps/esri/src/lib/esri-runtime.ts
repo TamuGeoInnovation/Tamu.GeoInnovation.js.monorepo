@@ -16,8 +16,8 @@ import { setDefaultOptions } from 'esri-loader';
  * return media and route hits that carry no graphic, `FeatureLayerElevationInfo` became
  * `FeatureLayerBaseElevationInfo`, and the task classes (`QueryTask`, `RouteTask` and their support
  * types) are gone in favour of `esri/rest/*`. The 4.27 runtime no longer serves the task modules at
- * all, so anything still loading them fails at runtime; only the old standalone Ring Day app does
- * (#1236).
+ * all, so anything still loading them fails at runtime. The last thing that did, the old standalone
+ * Ring Day app, was removed in #1236.
  *
  * Note also that `@types/arcgis-js-api` 4.28 and later are deprecated stubs carrying no types at all -
  * they depend on `arcgis-js-api: *`. 4.27 is the last real one, so 4.27 is the ceiling for matched

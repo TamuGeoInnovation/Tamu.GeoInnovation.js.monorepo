@@ -41,7 +41,6 @@ const ROOT = repoRoot();
 /** The map templates that render an overlay of controls over the map canvas. */
 const TEMPLATES = [
   'libs/ts/events/ngx/src/lib/modules/map/map.component.html',
-  'libs/ts/ringday/ngx/src/lib/modules/map/map.component.html',
   'libs/aggiemap/ngx/core/src/lib/pages/map/map.component.html'
 ];
 

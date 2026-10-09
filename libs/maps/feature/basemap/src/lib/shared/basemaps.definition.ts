@@ -62,6 +62,20 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
  * explicitly allowed - the rule that keeps bus routes off production. Production is the default here,
  * so a caller that cannot tell which environment it is in gets the published basemap.
  */
+/**
+ * The deepest scale the campus basemap has tiles for: level 21, 1:282 (#1577).
+ *
+ * `TAMU_BaseMap_060826`'s tiling scheme lists 24 levels, down to 1:70, but its cache stops at level 21
+ * and the service says so in its own `maxScale`. A view allowed past it zooms into levels with no tiles,
+ * and the map goes white under the layers. Every AggieMap view stops here: use this as
+ * `constraints.maxScale`, never `0`. If the basemap is republished with a deeper cache, raise it to the
+ * new service's `maxScale`.
+ *
+ * Set just below level 21's 282.124294 rather than equal to it: at exactly that value the view stopped a
+ * level early, at 20.
+ */
+export const AGGIEMAP_BASEMAP_MAX_SCALE = 282;
+
 export function aggiemapBasemap(isTesting: boolean): BaseMapProperties {
   return isTesting ? AggiemapVectorBasemap : AggiemapRasterBasemap;
 }
