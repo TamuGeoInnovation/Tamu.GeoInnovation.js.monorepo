@@ -1,11 +1,10 @@
 # Unreleased
 
-Nothing has merged since the second 6 October release yet.
+Since the 8 October release: the old Ring Day app removed (see Summary).
 
-**The last release is [6 October 2026, second release](2026-10-06-2.md)**, built from `8c7a9765` as
-`main-AV4OTLR6.js` and tagged `dev-2026-10-06-4`. It carried the service-driven symbology: every layer
-draws, and is named, the way its service publishes it. What was tested, and what went into it, are in
-that file. The release before it, the same morning, is [6 October 2026](2026-10-06.md).
+**The last release is [8 October 2026](2026-10-08.md)**, built from `a4e04a7b` (build 20261008.15). It
+went to production before its dev check, as an emergency during Ring Day; the notes say what happened and
+what the suite found afterwards. The release before it is [6 October 2026, second release](2026-10-06-2.md).
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
 result adds its own entry below, in that pull request**, with its before/after screenshots linked from
@@ -16,26 +15,12 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-- **Dining and AggiePrint locations have their icons back** ([#1576](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1576)). Since the second 6 October
-  release they drew as plain dots: that release took the symbology from each layer's service, and
-  these two sources publish none worth drawing (Dining is a GeoJSON feed; AggiePrint's service publishes
-  ArcGIS's default marker). Their own icons are restored, and a test now fails if they go again.
-  ([before](../screenshots/dining-aggieprint-icons/before.png), [after](../screenshots/dining-aggieprint-icons/after.png))
-- **Zooming all the way in no longer turns the map white** ([#1577](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1577)). The campus basemap has tiles
-  down to 1:282, but the maps let you zoom two levels further, where there was nothing to draw. Every
-  map now stops at the deepest level the basemap has. ([before](../screenshots/basemap-max-zoom/before.png),
-  [after](../screenshots/basemap-max-zoom/after.png))
 - **The old standalone Ring Day app's code is removed** ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). Ring Day is
   served by the event map at `/events/ring-day`; the old app at `/ringday/` was a second copy with its
   own dates and its own notice. Its projects and library are gone, so Azure no longer builds it, and the
   dev-only Experimental Applications list no longer links it. **The deployed `/ringday/` folder on dev and
   production is still there**: deleting it, or redirecting `/ringday/` to `/events/ring-day`, is a step
   on the servers for the maintainer.
-- **Ring Day shows one notification, not two** ([#1570](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1570)). During October 2026's Ring Day the
-  main map stacked two notices about it ("1 of 2"): an old hard-coded one, and the one the Ring Day
-  event map raises itself. The hard-coded one is gone, and a test now fails if any hard-coded notice
-  runs while an event's own notice is showing. ([before](../screenshots/ring-day-one-notification/before.png),
-  [after](../screenshots/ring-day-one-notification/after.png))
 
 ---
 
@@ -46,15 +31,11 @@ result adds its own entry below, in that pull request**, with its before/after s
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** nothing beyond the [second 6 October release](2026-10-06-2.md) itself.
+**Currently on dev for testing:** nothing beyond the [8 October release](2026-10-08.md) itself.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | The old Ring Day app removed ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) ([before](../screenshots/ring-day-old-app-removed/before.png), [after](../screenshots/ring-day-old-app-removed/after.png)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps), the dev-only Experimental Applications section; and [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day) | No "Ring Day" card among the experimental applications; the Ring Day event map still opens as before |
-| Dining and AggiePrint icons ([#1576](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1576)) ([before](../screenshots/dining-aggieprint-icons/before.png), [after](../screenshots/dining-aggieprint-icons/after.png)) | The [main map](https://dev.aggiemap.tamu.edu/map/d): turn on Dining Locations and AggiePrint Locations; and the [Dining map](https://dev.aggiemap.tamu.edu/events/dining) | Dining shows fork and food-truck icons, green when open and red when closed; AggiePrint shows printer icons, one style for campus-accessible printers and one for restricted. No plain orange or red dots |
-| The basemap at the deepest zoom ([#1577](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1577)) ([before](../screenshots/basemap-max-zoom/before.png), [after](../screenshots/basemap-max-zoom/after.png)) | The [main map](https://dev.aggiemap.tamu.edu/map/d) and [Soccer Parking](https://dev.aggiemap.tamu.edu/parking/soccer-parking/map/d): zoom in until the + button greys out. Dev shows the vector tile basemap, so check production after release for the raster one | The basemap is still there at the deepest zoom, never a white map. You can zoom two levels less far than before |
-| Ring Day shows one notification ([#1570](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1570)) ([before](../screenshots/ring-day-one-notification/before.png), [after](../screenshots/ring-day-one-notification/after.png)) | The [main map](https://dev.aggiemap.tamu.edu/map/d), in a new private window, through 11 October 2026 (Ring Day's notice shows from a week before to a day after) | One Ring Day notice, "Ring Day Transportation Map Available", with no "1 of 2" stepper for it. Another event's notice, such as game day parking, may still show alongside: that's a different event |
-| Football Tailgating map reads the republished service's new layer order; Simpson Drill Field tents get their own layer ([#1537](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1537)) ([before](../screenshots/tailgating-simpson-tents/before.png), [after](../screenshots/tailgating-simpson-tents/after.png)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating) | Aggie Park zones draw again and the legend groups match their layers; "Simpson Drill Field Tents" and "Aggie Park Tents" in the Layers list; Simpson tents show at every zoom, Aggie Park tents only once zoomed in past about 1:2,500 |
 
 ---
 

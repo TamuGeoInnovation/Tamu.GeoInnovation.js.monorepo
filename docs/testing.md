@@ -70,11 +70,10 @@ with the number of maps and services.
 
 ### What it checks
 
-The counts are a snapshot: **436 tests, measured on dev on 6 October 2026** in the run that cleared
-the [second 6 October release](releases/2026-10-06-2.md): 421 passed and 14 skipped, in 21 minutes 53 seconds,
-with release scope and 6 workers. Production lists fewer maps than dev, so it runs fewer. The bus
-routes became one test each on 7 October (26 tests where there were 2), which makes the total 460;
-the next full run measures it.
+The counts are a snapshot: **421 tests, measured on production on 8 October 2026** in the run that cleared
+the [8 October release](releases/2026-10-08.md): 397 passed and 24 skipped, none failed, in 19 minutes 39
+seconds, with release scope and 6 workers. Production lists fewer maps than dev, so dev runs more; the
+bus routes run as one test each there (#1473), and production does not show bus routes.
 
 | Type of check | Spec files | Tests | What it catches | Prompted by |
 | --- | --- | ---: | --- | --- |
