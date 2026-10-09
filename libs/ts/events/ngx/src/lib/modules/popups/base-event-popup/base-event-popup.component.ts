@@ -34,15 +34,29 @@ export abstract class BaseEventPopupComponent extends BaseDirectionsComponent {
    * A readable name for this feature in a copied link, as `{ param, value }` - for example
    * `{ param: 'bldg', value: '1234' }`, which a popup's copy button turns into `?bldg=1234`.
    *
-   * The default is none, which keeps the generic `feature=<layerId>:<objectId>` form. That form is
-   * right for a feature with nothing better to be called, and wrong as a default for anything a
-   * person would recognise: it cannot be read or checked by hand, and the object id in it is not
-   * stable across a republish of the service (#1481).
+   * By default it comes from the map's own search sources: the first one with a `urlQueryParam`
+   * whose first match field has a value on this feature - so a map declaring `?zone=` matched on
+   * `zone_id` gets `?zone=AP-7`. With none, the link keeps the generic `feature=<layerId>:<objectId>`
+   * form. That form is right for a feature with nothing better to be called, and wrong as a default
+   * for anything a person would recognise: it cannot be read or checked by hand, and the object id
+   * in it is not stable across a republish of the service (#1481).
    *
    * A subclass returning an identity gets every other part of the link unchanged - the builder
    * selections stamped onto it, and the clearing of any stale feature parameter already in the URL.
    */
   protected _getShareUrlIdentity(): { param: string; value: string | number } | null {
+    const attributes = this.data?.attributes;
+    const ownSources = this._eventSettingsService.eventConfiguration()?.configuration?.searchSources ?? [];
+
+    for (const source of ownSources) {
+      const field = source.queryParams?.where?.keys?.[0];
+      const value = field ? attributes?.[field] : undefined;
+
+      if (source.urlQueryParam && value !== undefined && value !== null && `${value}`.trim() !== '') {
+        return { param: source.urlQueryParam, value };
+      }
+    }
+
     return null;
   }
 

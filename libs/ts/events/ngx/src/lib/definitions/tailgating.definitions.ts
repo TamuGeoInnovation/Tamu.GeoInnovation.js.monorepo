@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { getDefaultGisHosts, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
@@ -182,6 +183,37 @@ export const TailgatingColdLayerSources: LayerSource[] = [
   } as unknown as LayerSource
 ];
 
+/**
+ * Readable links: `?zone=AP-7` and `?tent=O12`, which a popup's copy button also writes. Matched,
+ * case-insensitively, on the `zone_ID` and `tent_id` fields set in ArcGIS Pro, so a link survives a
+ * republish that renumbers object ids. A zone without a `zone_ID` keeps the generic `feature=` link.
+ * Not searchable from the sidebar (`searchActive: false`), which keeps the usual campus search.
+ */
+const TailgatingLinkSources: SearchSource[] = [
+  {
+    source: 'tailgating-zone',
+    name: 'Tailgating Zones',
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.AGGIE_PARK}`,
+    queryParams: { where: { keys: ['zone_ID'], operators: ['='] } },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.name}',
+    searchActive: false,
+    urlQueryParam: 'zone',
+    urlQueryParamAliases: ['Zone']
+  },
+  {
+    source: 'tailgating-tent',
+    name: 'Tailgating Tents',
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.TENTS}`,
+    queryParams: { where: { keys: ['tent_id'], operators: ['='] } },
+    featuresLocation: 'features',
+    displayTemplate: 'Tent {attributes.tent_id}',
+    searchActive: false,
+    urlQueryParam: 'tent',
+    urlQueryParamAliases: ['Tent']
+  }
+] as SearchSource[];
+
 export const TailgatingConfiguration: EventConfiguration = {
   id: 'tailgating',
   // Sorts directly under "Football" in the alphabetical Athletics Events list.
@@ -198,7 +230,8 @@ export const TailgatingConfiguration: EventConfiguration = {
   },
   mapCenter: [-96.3415, 30.6082],
   zoom: 16,
-  referenceLayerListOrder: 'source'
+  referenceLayerListOrder: 'source',
+  searchSources: TailgatingLinkSources
 };
 
 export const TailgatingOptions: SpecialEventOptions = [];

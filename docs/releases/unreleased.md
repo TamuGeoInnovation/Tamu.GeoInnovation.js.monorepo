@@ -35,6 +35,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Football Tailgating map: readable links to a zone or tent ([#1574](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1574)) ([before](../screenshots/tailgating-readable-links/before.png), [after](../screenshots/tailgating-readable-links/after.png)) | [Houston Street Grove](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-7), [tent O12](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?tent=O12) | Each opens that zone or tent's popup; a popup's copy link reads `?zone=AP-7` or `?tent=O12`, not `?feature=...`; the sidebar search still finds buildings and lots |
 | The old Ring Day app removed ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) ([before](../screenshots/ring-day-old-app-removed/before.png), [after](../screenshots/ring-day-old-app-removed/after.png)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps), the dev-only Experimental Applications section; and [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day) | No "Ring Day" card among the experimental applications; the Ring Day event map still opens as before |
 
 ---

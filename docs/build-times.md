@@ -38,6 +38,7 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 | 8 Oct 2026 | home | `check-in-volume.sh chore/1236-remove-ring-day-app` (affected, 110 projects, 230 tasks), 3:57 to 4:03 PM Central | volume, cold clone and `npm ci` (59 s) | 6 min (Nx 4 min 28 s) |
 | 8 Oct 2026 | home | `check-in-volume.sh fix/1577-basemap-max-zoom` (5 projects) | volume, cold clone | passed |
 | 8 Oct 2026 | home | `check-in-volume.sh fix/1576-dining-aggieprint-icons` (3 projects) | volume, cold clone | passed |
+| 8 Oct 2026 | Kaleb's laptop | `check-in-volume.sh feat/tailgating-readable-links` (affected: ts-events-ngx, aggiemap-ngx-discover, aggiemap-ngx-core, aggiemap-angular, ts-events-angular, ts-events-angular-e2e), 14:20 Central | volume, warm, 6 projects | **1 min 13 s** |
 | 8 Oct 2026 | home | `check-in-volume.sh refactor/1568-prune-ng-modules` (affected, 67 projects, 140 tasks), rebased on `development` after #1572 | volume, cold cache | **2 min 55 s** |
 | 8 Oct 2026 | home | NgModule prune (`--mode=prune-ng-modules`) over the whole workspace, one run | volume | ~6 min |
 | 8 Oct 2026 | home | NgModule prune run library by library, 16 paths (abandoned: it missed importers outside each path) | volume | 27 min |

@@ -54,7 +54,10 @@ export class SidebarReferenceComponent implements OnInit {
     this.layerListOrderBy = this.configuration?.referenceLayerListOrder === 'source' ? 'allowed' : 'title';
     this.legendForceShowLayerIds = this.configuration?.legendForceShowLayerIds ?? [];
     this.hideLayerToggle = this.configuration?.hideLayerToggle ?? false;
-    this.searchSources = this.configuration?.searchSources;
+    // A map may declare sources only for its link parameters (`searchActive: false`); the sidebar
+    // search then keeps the application-wide sources rather than searching nothing.
+    const ownSources = this.configuration?.searchSources;
+    this.searchSources = ownSources?.some((source) => source.searchActive) ? ownSources : undefined;
     const settings = this.eventSettingsService.settings();
     const options = this.eventSettingsService.eventOptions();
     this.eventLayerIds = this.eventSettingsService
