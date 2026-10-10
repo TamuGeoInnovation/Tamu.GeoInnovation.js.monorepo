@@ -1,5 +1,3 @@
-export * from './lib/aggiemap-ngx-ui-mobile.module';
-
 // Component symbols
 export * from './lib/aggiemap-ngx-ui-mobile.component';
 export * from './lib/components/omnisearch/omnisearch.component';

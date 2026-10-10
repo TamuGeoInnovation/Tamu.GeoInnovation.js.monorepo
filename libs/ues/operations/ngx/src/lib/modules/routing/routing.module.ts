@@ -5,8 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
-import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
-
 // Services
 
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
@@ -22,7 +20,7 @@ const hybridRoutes: Routes = [
   },
   {
     path: 'map',
-    loadChildren: () => import('../map/map.module').then((m) => m.MapModule)
+    loadChildren: () => import('../map/map.routes').then((m) => m.mapRoutes)
   }
 ];
 
@@ -36,7 +34,6 @@ const hybridRoutes: Routes = [
     FormsModule,
     CommonNgxRouterModule,
     TestingModule,
-    UITamuBrandingModule,
     AuthModule
   ],
   providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())]

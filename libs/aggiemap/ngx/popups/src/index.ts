@@ -1,4 +1,4 @@
-export * from './lib/aggiemap-ngx-popups.module';
+export * from './lib/popups';
 
 // Individual components to have ability to extend.
 export * from './lib/components/accessible/accessible.component';
