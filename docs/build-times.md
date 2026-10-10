@@ -35,6 +35,10 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 10 Oct 2026 | home | `check-in-volume.sh refactor/1453-inject` (affected: lint 75 projects, then test and build 71 projects and 3 dependencies), 2:01 PM Central | volume, warm install, Nx cache cold for these tasks (0 of 70 hits on the run before) | 2 min 54 s (lint 74 s, test and build 100 s) |
+| 10 Oct 2026 | home | The same check's first run, 1:56 PM Central: fresh clone and `npm ci`, then the same tasks; failed on 8 test projects and one build | volume, cold | 3 min 57 s |
+| 10 Oct 2026 | home | `nx run-many -t build -p ues-operations-angular,gisday-competitions-angular`, the two apps CI does not build, in the check's volume | volume, warm | 13 s |
+| 10 Oct 2026 | home | `nx g @angular/core:inject --path=./` over the whole workspace, 99 libraries given a temporary target so their files are seen (#1453) | volume | 3 min 39 s |
 | 9 Oct 2026 | home | `check-in-volume.sh fix/1475-check-script-lint-and-smoke` (affected; nothing affected, no tasks), 7:25 PM Central | volume, fresh clone 38 s, `npm ci` 67 s | 1 min 56 s |
 | 9 Oct 2026 | home | The new script on a throwaway branch touching `oidc-provider-nest`: lint ran (CI lints it), test and build excluded | volume, warm | 10 s |
 | 9 Oct 2026 | home | `check-in-volume.sh feat/1587-football-lots-live-status ts-events-ngx,ts-events-angular,aggiemap-angular` (bug-fix style) | volume | Nx 42.7 s |
