@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { TripResult } from '../../../../core/trip-planner-core';
 import { TripModeSwitch, TripPlannerService } from '../../../../services/trip-planner.service';
@@ -15,6 +15,9 @@ import { RouteDirectionTransformerPipe } from '../../../../core/route-direction-
   imports: [NgClass, TripPlannerBusModeSwitchComponent, RouteDirectionTransformerPipe]
 })
 export class TripPlannerModeSwitchComponent implements OnInit {
+  private tripPlanner = inject(TripPlannerService);
+  private busService = inject(BusService);
+
   @Input()
   public modeSwitch: TripModeSwitch = null;
 
@@ -23,11 +26,6 @@ export class TripPlannerModeSwitchComponent implements OnInit {
 
   public mode_header = '';
   public mode_icon?: string = null;
-
-  constructor(
-    private tripPlanner: TripPlannerService,
-    private busService: BusService
-  ) {}
 
   public ngOnInit(): void {
     if (this.result && !this.result.isError) {

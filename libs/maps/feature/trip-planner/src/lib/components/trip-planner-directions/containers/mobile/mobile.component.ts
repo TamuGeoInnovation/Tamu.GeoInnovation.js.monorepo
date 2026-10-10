@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -16,11 +16,19 @@ import { TripPlannerModeSwitchComponent } from '../../../trip-planner-mode-switc
   imports: [TripPlannerDirectionsActionsMobileComponent, TripPlannerModeSwitchComponent]
 })
 export class TripPlannerDirectionsMobileComponent extends TripPlannerDirectionsComponent {
-  constructor(
-    private rt: Router,
-    private ps: TripPlannerService,
-    private al: Angulartics2
-  ) {
+  private rt: Router;
+  private ps: TripPlannerService;
+  private al: Angulartics2;
+
+  constructor() {
+    const rt = inject(Router);
+    const ps = inject(TripPlannerService);
+    const al = inject(Angulartics2);
+
     super(rt, ps, al);
+  
+    this.rt = rt;
+    this.ps = ps;
+    this.al = al;
   }
 }

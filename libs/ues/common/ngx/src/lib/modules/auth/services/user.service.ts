@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
@@ -12,6 +12,9 @@ import { isAuthorized } from '../utils/utils';
   providedIn: 'root'
 })
 export class UserService {
+  private http = inject(HttpClient);
+  private env = inject(EnvironmentService);
+
   public user: ReplaySubject<IUser> = new ReplaySubject();
   public permissions = {
     isUser: this.isAuthorized(['USER']),
@@ -19,10 +22,7 @@ export class UserService {
     isPublisher: this.isAuthorized(['PUBLISHER'])
   };
 
-  constructor(
-    private http: HttpClient,
-    private env: EnvironmentService
-  ) {
+  constructor() {
     this.http.get<IUser>(this.env.value('apiUrl') + '/oidc/userinfo', { withCredentials: true }).subscribe((user) => {
       this.user.next(user);
     });

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ReplaySubject, Observable, BehaviorSubject, forkJoin, of, from } from 'rxjs';
 import { toArray, concatMap, switchMap, catchError, map } from 'rxjs/operators';
@@ -10,6 +10,9 @@ import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 
 @Injectable({ providedIn: 'root' })
 export class SearchService {
+  private http = inject(HttpClient);
+  private environment = inject(EnvironmentService);
+
   private _sources: SearchSource[];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,7 +23,7 @@ export class SearchService {
   private _searching: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public searching: Observable<boolean> = this._searching.asObservable();
 
-  constructor(private http: HttpClient, private environment: EnvironmentService) {
+  constructor() {
     if (this.environment.value('SearchSources')) {
       this._sources = this.environment.value('SearchSources');
     }

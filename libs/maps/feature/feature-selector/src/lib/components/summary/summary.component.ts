@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  ContentChildren,
-  QueryList,
-  AfterContentInit,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, OnInit, Input, ContentChildren, QueryList, AfterContentInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { BaseChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
@@ -25,6 +17,8 @@ import esri = __esri;
   imports: [AsyncPipe]
 })
 export class SelectionSummaryComponent implements OnInit, AfterContentInit {
+  private collector = inject(FeatureCollectorService);
+
   @Input()
   public selfCollect: boolean;
 
@@ -47,8 +41,6 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
    */
   @ContentChildren(BaseChartComponent, { descendants: true })
   public chartComponents: QueryList<BaseChartComponent>;
-
-  constructor(private collector: FeatureCollectorService) {}
 
   /**
    * Set up the SelectionSummaryComponent feature collector.

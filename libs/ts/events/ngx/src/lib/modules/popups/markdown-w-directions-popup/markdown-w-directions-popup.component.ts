@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -22,13 +22,13 @@ export class MarkdownWDirectionsPopupComponent extends BaseEventPopupComponent i
   public isContentTheSame: boolean;
   public isContentLengthZero: boolean;
 
-  constructor(
-    router: Router,
-    route: ActivatedRoute,
-    plannerService: TripPlannerService,
-    analytics: Angulartics2,
-    mapService: EsriMapService
-  ) {
+  constructor() {
+    const router = inject(Router);
+    const route = inject(ActivatedRoute);
+    const plannerService = inject(TripPlannerService);
+    const analytics = inject(Angulartics2);
+    const mapService = inject(EsriMapService);
+
     super(router, route, plannerService, analytics, mapService);
   }
 

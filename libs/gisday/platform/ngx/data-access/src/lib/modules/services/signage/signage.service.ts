@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignageService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+
 
   public getUrl(competition: string) {
     // TODO: Update to a local url if possible; since this is an old competition maybe not

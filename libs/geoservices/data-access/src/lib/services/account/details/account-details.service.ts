@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -8,12 +8,12 @@ import { forkJoin } from 'rxjs';
   providedIn: 'root'
 })
 export class AccountDetailsService {
+  private env = inject(EnvironmentService);
+  private http = inject(HttpClient);
+
   public resource: string;
 
-  constructor(
-    private env: EnvironmentService,
-    private http: HttpClient
-  ) {
+  constructor() {
     this.resource = this.env.value('legacy_api_url') + 'userServices/getDetails';
   }
 

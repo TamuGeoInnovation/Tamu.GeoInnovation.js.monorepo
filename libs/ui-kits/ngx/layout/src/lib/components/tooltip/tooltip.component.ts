@@ -1,15 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  ElementRef,
-  HostListener,
-  ContentChild,
-  AfterContentInit,
-  OnDestroy,
-  ViewChild,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, OnInit, Input, ElementRef, HostListener, ContentChild, AfterContentInit, OnDestroy, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
 import { TooltipTriggerComponent } from './components/tooltip-trigger/tooltip-trigger.component';
 import { debounceTime, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -24,6 +13,8 @@ import { AbstractSlidingDrawerComponent } from '../../abstracts/abstract-sliding
   imports: [NgStyle, NgClass, AbstractSlidingDrawerComponent, AsyncPipe]
 })
 export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
+  private elementRef = inject(ElementRef);
+
   private _isVisible: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   @Input()
@@ -108,8 +99,6 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
       this.isVisible = false;
     }
   }
-
-  constructor(private elementRef: ElementRef) {}
 
   public ngOnInit() {
     // Set debounce time otherwise there will be two changes in the change detection cycle.

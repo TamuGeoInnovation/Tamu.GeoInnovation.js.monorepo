@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { scan, startWith, switchMap } from 'rxjs/operators';
 
@@ -9,11 +9,17 @@ import esri = __esri;
 
 @Injectable()
 export class FeatureCollectorService extends FeatureSelectorService {
+  private ms: EsriMapService;
+
   public collection: Observable<esri.Graphic[]>;
   private _$resetSignal: Subject<boolean> = new Subject();
 
-  constructor(private ms: EsriMapService) {
+  constructor() {
+    const ms = inject(EsriMapService);
+
     super(ms);
+  
+    this.ms = ms;
   }
 
   public init(options?: IFeatureCollectionOptions): void {

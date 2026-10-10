@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -7,7 +7,10 @@ import { AuthService } from '../auth/services/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard  {
-  constructor(private http: HttpClient, private auth: AuthService, private router: Router) {}
+  private http = inject(HttpClient);
+  private auth = inject(AuthService);
+  private router = inject(Router);
+
 
   public canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.auth.isAuthenticated();

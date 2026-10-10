@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
@@ -23,20 +23,20 @@ import esri = __esri;
   imports: [EsriMapComponent, ButtonComponent, AsyncPipe, DatePipe]
 })
 export class SubmissionDetailModalComponent implements OnInit {
+  private readonly data = inject<SubmissionDetailModalData>(MODAL_DATA);
+  private readonly modalRef = inject(ModalRefService);
+  private readonly submissionService = inject(SubmissionService);
+  private readonly sanitizer = inject(DomSanitizer);
+  private readonly ns = inject(NotificationService);
+  private readonly mapService = inject(EsriMapService);
+
   public submission: SubmissionReviewDto;
   public isAdmin = false;
   public images$: Observable<Array<{ guid: string; url: SafeUrl }>>;
   public VALIDATION_STATUS = COMPETITION_VALIDATION_STATUS;
   public mapConfig: MapConfig;
 
-  constructor(
-    @Inject(MODAL_DATA) private readonly data: SubmissionDetailModalData,
-    private readonly modalRef: ModalRefService,
-    private readonly submissionService: SubmissionService,
-    private readonly sanitizer: DomSanitizer,
-    private readonly ns: NotificationService,
-    private readonly mapService: EsriMapService
-  ) {
+  constructor() {
     this.submission = this.data.submission;
     this.isAdmin = this.data.isAdmin;
   }

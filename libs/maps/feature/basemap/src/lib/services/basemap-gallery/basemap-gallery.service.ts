@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { combineLatest, firstValueFrom, from, map, switchMap } from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
@@ -12,11 +12,10 @@ import esri = __esri;
   providedIn: 'root'
 })
 export class BasemapGalleryService {
-  constructor(
-    private readonly mp: EsriModuleProviderService,
-    private readonly ms: EsriMapService,
-    private readonly ts: TestingService
-  ) {}
+  private readonly mp = inject(EsriModuleProviderService);
+  private readonly ms = inject(EsriMapService);
+  private readonly ts = inject(TestingService);
+
 
   public gallery() {
     return combineLatest([

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, pipe, map, switchMap, withLatestFrom } from 'rxjs';
@@ -49,20 +49,34 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
   AddressProcessingResult,
   IAddressProcessingOptions
 > {
+  private readonly fb: UntypedFormBuilder;
+  private readonly rt: Router;
+  private readonly ar: ActivatedRoute;
+  private readonly ls: LocalStoreService;
+  private readonly as: AuthService;
+  private readonly en: EnvironmentService;
+
   public formats = ADDRESS_FORMAT_TYPES;
   public states = STATES_TITLECASE;
 
   public queryUrl: Observable<string>;
 
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly rt: Router,
-    private readonly ar: ActivatedRoute,
-    private readonly ls: LocalStoreService,
-    private readonly as: AuthService,
-    private readonly en: EnvironmentService
-  ) {
+  constructor() {
+    const fb = inject(UntypedFormBuilder);
+    const rt = inject(Router);
+    const ar = inject(ActivatedRoute);
+    const ls = inject(LocalStoreService);
+    const as = inject(AuthService);
+    const en = inject(EnvironmentService);
+
     super(fb, rt, ar, ls, as, en);
+  
+    this.fb = fb;
+    this.rt = rt;
+    this.ar = ar;
+    this.ls = ls;
+    this.as = as;
+    this.en = en;
   }
 
   public buildForm() {

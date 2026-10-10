@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
@@ -17,7 +17,9 @@ export const ENDED_PATH = 'ended';
   providedIn: 'root'
 })
 export class RetiredEventGuard  {
-  constructor(private readonly router: Router, private readonly eventSettingsService: EventSettingsService) {}
+  private readonly router = inject(Router);
+  private readonly eventSettingsService = inject(EventSettingsService);
+
 
   public canActivateChild(childRoute: ActivatedRouteSnapshot): boolean | UrlTree {
     const eventRoute = childRoute.pathFromRoot.find((snapshot) => snapshot.params['eventId']);

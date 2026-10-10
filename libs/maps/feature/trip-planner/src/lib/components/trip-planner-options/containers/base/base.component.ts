@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ViewChild, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ViewChild, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, from, of } from 'rxjs';
 import { switchMap, filter, toArray, take, shareReplay, find, pluck } from 'rxjs/operators';
@@ -23,6 +23,12 @@ import { RenderHostDirective as RenderHostDirective_1 } from '@tamu-gisc/ui-kits
   imports: [CheckboxComponent, RenderHostDirective_1, AsyncPipe]
 })
 export class TripPlannerOptionsComponent implements OnInit {
+  private plannerService = inject(TripPlannerService);
+  private testingService = inject(TestingService);
+  private componentService = inject(TripPlannerOptionsComponentService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   public readonly isDev = this.testingService.get('isTesting').pipe(shareReplay(1)) as Observable<boolean>;
 
   public readonly travelOptions: Observable<TravelOptions> = this.plannerService.TravelOptions;
@@ -72,14 +78,6 @@ export class TripPlannerOptionsComponent implements OnInit {
    * Reference to the component content host. Travel option child components will be rendered within,.
    */
   @ViewChild(RenderHostDirective, { static: true }) public viewHost: RenderHostDirective;
-
-  constructor(
-    private plannerService: TripPlannerService,
-    private testingService: TestingService,
-    private componentService: TripPlannerOptionsComponentService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
 
   public ngOnInit(): void {
     this.render();

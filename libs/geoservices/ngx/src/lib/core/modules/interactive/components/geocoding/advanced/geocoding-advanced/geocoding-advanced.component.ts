@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -65,21 +65,35 @@ import { AsyncPipe } from '@angular/common';
   ]
 })
 export class GeocodingAdvancedComponent extends GeocodingBasicComponent implements OnInit, OnDestroy {
+  private fbb: UntypedFormBuilder;
+  private readonly rtt: Router;
+  private readonly arr: ActivatedRoute;
+  private readonly lss: LocalStoreService;
+  private readonly ass: AuthService;
+  private readonly enn: EnvironmentService;
+
   public tieBreakingStrategies = TIE_BREAKING_STRATEGIES;
   public refs = GEOCODING_REFS;
   public cls = OPEN_ADDRESSES_MINIMUM_CONFIDENCE_LEVELS;
 
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(
-    private fbb: UntypedFormBuilder,
-    private readonly rtt: Router,
-    private readonly arr: ActivatedRoute,
-    private readonly lss: LocalStoreService,
-    private readonly ass: AuthService,
-    private readonly enn: EnvironmentService
-  ) {
+  constructor() {
+    const fbb = inject(UntypedFormBuilder);
+    const rtt = inject(Router);
+    const arr = inject(ActivatedRoute);
+    const lss = inject(LocalStoreService);
+    const ass = inject(AuthService);
+    const enn = inject(EnvironmentService);
+
     super(fbb, rtt, arr, lss, ass, enn);
+  
+    this.fbb = fbb;
+    this.rtt = rtt;
+    this.arr = arr;
+    this.lss = lss;
+    this.ass = ass;
+    this.enn = enn;
   }
 
   public ngOnInit(): void {

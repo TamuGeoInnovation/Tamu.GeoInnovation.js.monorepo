@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -18,6 +18,9 @@ const searchReference = 'university-departments-exact';
   imports: [TitleCasePipe]
 })
 export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
+  private searchService = inject(SearchService);
+  private environment = inject(EnvironmentService);
+
   @Input()
   public buildingNumber: string;
 
@@ -29,10 +32,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(
-    private searchService: SearchService,
-    private environment: EnvironmentService
-  ) {
+  constructor() {
     if (this.environment.value('SearchSources')) {
       this._sources = this.environment.value('SearchSources');
     }

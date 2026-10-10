@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
@@ -7,10 +7,9 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
   providedIn: 'root'
 })
 export class BuilderAccessGuard  {
-  constructor(
-    private readonly router: Router,
-    private readonly eventSettingsService: EventSettingsService
-  ) {}
+  private readonly router = inject(Router);
+  private readonly eventSettingsService = inject(EventSettingsService);
+
 
   public canActivate(route: ActivatedRouteSnapshot): boolean | UrlTree {
     const eventRoute = route.parent ?? route;

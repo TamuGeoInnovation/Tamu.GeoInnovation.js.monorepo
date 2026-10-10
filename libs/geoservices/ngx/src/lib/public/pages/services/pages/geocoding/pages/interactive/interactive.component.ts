@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { GeocodingAdvancedComponent } from '../../../../../../../core/modules/interactive/components/geocoding/advanced/geocoding-advanced/geocoding-advanced.component';
@@ -11,9 +11,9 @@ import { GeocodingAdvancedComponent } from '../../../../../../../core/modules/in
   imports: [GeocodingAdvancedComponent]
 })
 export class InteractiveComponent implements OnInit {
-  public url: string;
+  private readonly env = inject(EnvironmentService);
 
-  constructor(private readonly env: EnvironmentService) {}
+  public url: string;
 
   public ngOnInit() {
     this.url = this.env.value('accounts_url');

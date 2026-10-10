@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
@@ -20,14 +20,28 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe]
 })
 export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {
-  constructor(
-    private readonly speakerService: SpeakerService,
-    private readonly ss: SeasonService,
-    private readonly ar: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly ms: ModalService,
-    private readonly ns: NotificationService
-  ) {
+  private readonly speakerService: SpeakerService;
+  private readonly ss: SeasonService;
+  private readonly ar: ActivatedRoute;
+  private readonly rt: Router;
+  private readonly ms: ModalService;
+  private readonly ns: NotificationService;
+
+  constructor() {
+    const speakerService = inject(SpeakerService);
+    const ss = inject(SeasonService);
+    const ar = inject(ActivatedRoute);
+    const rt = inject(Router);
+    const ms = inject(ModalService);
+    const ns = inject(NotificationService);
+
     super(speakerService, ss, ar, rt, ms, ns);
+  
+    this.speakerService = speakerService;
+    this.ss = ss;
+    this.ar = ar;
+    this.rt = rt;
+    this.ms = ms;
+    this.ns = ns;
   }
 }

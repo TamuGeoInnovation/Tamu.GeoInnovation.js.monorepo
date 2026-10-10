@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -11,7 +11,8 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [ButtonComponent]
 })
 export class BonfireModalComponent {
-  constructor(private readonly mr: ModalRefService) {}
+  private readonly mr = inject(ModalRefService);
+
 
   public close(acknowledge?: boolean) {
     this.mr.close(acknowledge);

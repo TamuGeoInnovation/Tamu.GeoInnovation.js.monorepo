@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -17,13 +17,25 @@ import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clip
   imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class TripPlannerDirectionsActionsMobileComponent extends TripPlannerDirectionsActionsComponent {
-  constructor(
-    private ccd: ChangeDetectorRef,
-    private anl: Angulartics2,
-    private rt: Router,
-    private ar: ActivatedRoute,
-    private ps: TripPlannerService
-  ) {
+  private ccd: ChangeDetectorRef;
+  private anl: Angulartics2;
+  private rt: Router;
+  private ar: ActivatedRoute;
+  private ps: TripPlannerService;
+
+  constructor() {
+    const ccd = inject(ChangeDetectorRef);
+    const anl = inject(Angulartics2);
+    const rt = inject(Router);
+    const ar = inject(ActivatedRoute);
+    const ps = inject(TripPlannerService);
+
     super(ccd, anl, rt, ar, ps);
+  
+    this.ccd = ccd;
+    this.anl = anl;
+    this.rt = rt;
+    this.ar = ar;
+    this.ps = ps;
   }
 }

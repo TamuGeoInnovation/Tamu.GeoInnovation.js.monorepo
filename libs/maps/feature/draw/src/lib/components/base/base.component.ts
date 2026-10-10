@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectionStrategy, inject } from '@angular/core';
 import { from, Subject, combineLatest, ReplaySubject } from 'rxjs';
 import { takeUntil, filter, switchMap, take, map } from 'rxjs/operators';
 
@@ -13,6 +13,10 @@ import esri = __esri;
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class BaseDrawComponent implements OnInit, OnDestroy {
+  private mapService = inject(EsriMapService);
+  moduleProvider = inject(EsriModuleProviderService);
+  private selector = inject(FeatureSelectorService);
+
   public model: ISketchViewModel;
 
   @Input()
@@ -83,12 +87,6 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
   private _$loaded: ReplaySubject<boolean> = new ReplaySubject();
   private _activeToolWatchHandle: esri.WatchHandle;
   private _layersAddWatchHandle: esri.WatchHandle;
-
-  constructor(
-    private mapService: EsriMapService,
-    public moduleProvider: EsriModuleProviderService,
-    private selector: FeatureSelectorService
-  ) {}
 
   public ngOnInit() {
     this.activeUpdateTool = this.defaultUpdateTool;

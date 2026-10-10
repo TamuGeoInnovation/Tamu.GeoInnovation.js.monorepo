@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { of, Observable } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
@@ -11,10 +11,9 @@ import { Point } from '@tamu-gisc/common/types';
 
 @Injectable({ providedIn: 'root' })
 export class BikeService {
-  constructor(
-    private http: HttpClient,
-    private search: SearchService
-  ) {}
+  private http = inject(HttpClient);
+  private search = inject(SearchService);
+
 
   /**
    * Returns the coordinates of a nearby bike-share unit.

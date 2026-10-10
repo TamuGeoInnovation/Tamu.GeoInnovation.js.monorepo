@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pipe, withLatestFrom, map, switchMap } from 'rxjs';
@@ -45,18 +45,32 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
   CensusIntersectionResult,
   ICensusIntersectionOptions
 > {
+  private readonly fb: UntypedFormBuilder;
+  private readonly rt: Router;
+  private readonly ar: ActivatedRoute;
+  private readonly ls: LocalStoreService;
+  private readonly as: AuthService;
+  private readonly en: EnvironmentService;
+
   public states = STATES_TITLECASE;
   public censusYears = CENSUS_YEARS;
 
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly rt: Router,
-    private readonly ar: ActivatedRoute,
-    private readonly ls: LocalStoreService,
-    private readonly as: AuthService,
-    private readonly en: EnvironmentService
-  ) {
+  constructor() {
+    const fb = inject(UntypedFormBuilder);
+    const rt = inject(Router);
+    const ar = inject(ActivatedRoute);
+    const ls = inject(LocalStoreService);
+    const as = inject(AuthService);
+    const en = inject(EnvironmentService);
+
     super(fb, rt, ar, ls, as, en);
+  
+    this.fb = fb;
+    this.rt = rt;
+    this.ar = ar;
+    this.ls = ls;
+    this.as = as;
+    this.en = en;
   }
 
   public buildForm() {

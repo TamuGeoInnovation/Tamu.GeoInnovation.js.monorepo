@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { RouterLink } from '@angular/router';
@@ -11,7 +11,7 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink]
 })
 export class FooterShortcutsComponent {
-  public legacyHost: string = this.env.value('legacy_host');
+  private readonly env = inject(EnvironmentService);
 
-  constructor(private readonly env: EnvironmentService) {}
+  public legacyHost: string = this.env.value('legacy_host');
 }

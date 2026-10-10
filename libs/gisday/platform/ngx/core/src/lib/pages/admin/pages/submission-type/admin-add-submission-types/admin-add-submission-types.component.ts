@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SubmissionTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -23,8 +23,14 @@ export const formExporter = () => {
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class AdminAddSubmissionTypesComponent extends BaseAdminAddComponent<SubmissionType> implements OnInit {
-  constructor(private submissionTypeService: SubmissionTypeService) {
+  private submissionTypeService: SubmissionTypeService;
+
+  constructor() {
+    const submissionTypeService = inject(SubmissionTypeService);
+
     super(submissionTypeService);
+  
+    this.submissionTypeService = submissionTypeService;
   }
 
   public ngOnInit() {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -14,12 +14,20 @@ import { formExporter } from '../../admin-add-checkins/admin-add-checkins.compon
   styleUrls: ['./admin-detail-checkin.component.scss']
 })
 export class AdminDetailCheckinComponent extends BaseAdminDetailComponent<CheckIn> implements OnInit {
-  constructor(
-    private fb1: FormBuilder,
-    private route1: ActivatedRoute,
-    private checkinService: CheckinService
-  ) {
+  private fb1: FormBuilder;
+  private route1: ActivatedRoute;
+  private checkinService: CheckinService;
+
+  constructor() {
+    const fb1 = inject(FormBuilder);
+    const route1 = inject(ActivatedRoute);
+    const checkinService = inject(CheckinService);
+
     super(fb1, route1, checkinService);
+  
+    this.fb1 = fb1;
+    this.route1 = route1;
+    this.checkinService = checkinService;
   }
 
   public ngOnInit() {

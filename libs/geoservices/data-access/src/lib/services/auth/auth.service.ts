@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, catchError, map, shareReplay } from 'rxjs';
 
@@ -8,6 +8,9 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   providedIn: 'root'
 })
 export class AuthService {
+  private env = inject(EnvironmentService);
+  private http = inject(HttpClient);
+
   public resource: string;
 
   /**
@@ -16,10 +19,7 @@ export class AuthService {
   public state: Observable<LoggedInState>;
   public apiKey: Observable<string>;
 
-  constructor(
-    private env: EnvironmentService,
-    private http: HttpClient
-  ) {
+  constructor() {
     this.resource = this.env.value('legacy_api_url') + 'login';
 
     this.state = this.http

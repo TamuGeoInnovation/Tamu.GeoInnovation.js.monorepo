@@ -1,13 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  Input,
-  OnChanges,
-  OnDestroy,
-  AfterViewInit,
-  ViewChild,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnDestroy, AfterViewInit, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { AccordionService } from '../services/accordion.service';
 import { IAccordionModel } from '../services/accordion.service';
@@ -21,6 +12,8 @@ import { NgClass, AsyncPipe } from '@angular/common';
   imports: [NgClass, AsyncPipe]
 })
 export class AccordionContentComponent implements OnChanges, OnDestroy, AfterViewInit {
+  private comm = inject(AccordionService);
+
   @Input()
   public model: IAccordionModel = {
     animate: false,
@@ -38,8 +31,6 @@ export class AccordionContentComponent implements OnChanges, OnDestroy, AfterVie
 
   @ViewChild('content', { static: true })
   public _container: ElementRef;
-
-  constructor(private comm: AccordionService) {}
 
   public ngAfterViewInit(): void {
     // If resize is set to `true`, initialize a mutation observer on the host element. The callback will trigger an

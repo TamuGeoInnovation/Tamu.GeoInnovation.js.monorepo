@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
 import { delay, Observable, of } from 'rxjs';
 
@@ -13,12 +13,11 @@ import { EventSettings } from '../../interfaces/special-event.interface';
   providedIn: 'root'
 })
 export class SettingsGuard  {
-  constructor(
-    private readonly router: Router,
-    private readonly ess: EventSettingsService,
-    private readonly ns: NotificationService,
-    private readonly anl: Angulartics2
-  ) {}
+  private readonly router = inject(Router);
+  private readonly ess = inject(EventSettingsService);
+  private readonly ns = inject(NotificationService);
+  private readonly anl = inject(Angulartics2);
+
 
   public canActivate(
     route: ActivatedRouteSnapshot

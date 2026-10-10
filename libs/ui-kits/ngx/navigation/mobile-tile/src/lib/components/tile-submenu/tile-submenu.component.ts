@@ -1,12 +1,4 @@
-import {
-  AfterContentInit,
-  Component,
-  ContentChildren,
-  Input,
-  OnDestroy,
-  QueryList,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, Input, OnDestroy, QueryList, ChangeDetectionStrategy, inject } from '@angular/core';
 import { from, merge, Subject } from 'rxjs';
 import { mergeMap, pluck, switchMap, takeUntil } from 'rxjs/operators';
 
@@ -22,6 +14,8 @@ import { AsyncPipe } from '@angular/common';
   imports: [AsyncPipe]
 })
 export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
+  private service = inject(TileService);
+
   @Input()
   public title = this.service.activeSubMenu.pipe(pluck('title'));
 
@@ -29,8 +23,6 @@ export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
   public links: QueryList<TileLinkDirective>;
 
   private _destroy$: Subject<null> = new Subject();
-
-  constructor(private service: TileService) {}
 
   public ngAfterContentInit(): void {
     merge(

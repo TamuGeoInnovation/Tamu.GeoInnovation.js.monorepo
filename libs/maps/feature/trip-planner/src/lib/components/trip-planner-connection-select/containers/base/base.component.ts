@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { TripPlannerConnectionService, TripPlannerConnection } from '../../../../services/trip-planner-connection.service';
@@ -13,6 +13,8 @@ import { AsyncPipe } from '@angular/common';
   imports: [FormsModule, AsyncPipe]
 })
 export class TripPlannerConnectionsSelectComponent implements OnInit {
+  private connectionService = inject(TripPlannerConnectionService);
+
   /**
    * Stores a list of trip planner connections retrieved from the connections service.
    *
@@ -27,8 +29,6 @@ export class TripPlannerConnectionsSelectComponent implements OnInit {
    * Used to pre-populate the network in the dropdown list.
    */
   public currentUrlAlias: string;
-
-  constructor(private connectionService: TripPlannerConnectionService) {}
 
   public ngOnInit() {
     // Subscribe to the routing network list. This populates the list of available networks for

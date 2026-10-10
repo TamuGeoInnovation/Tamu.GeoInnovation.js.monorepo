@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { AccordionHeaderComponent, AccordionService } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
@@ -8,7 +8,13 @@ import { AccordionHeaderComponent, AccordionService } from '@tamu-gisc/ui-kits/n
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class BusListHeaderComponent extends AccordionHeaderComponent {
-  constructor(private c: AccordionService) {
+  private c: AccordionService;
+
+  constructor() {
+    const c = inject(AccordionService);
+
     super(c);
+  
+    this.c = c;
   }
 }

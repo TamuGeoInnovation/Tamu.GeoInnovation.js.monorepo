@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -10,11 +10,17 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class PlaceService extends BaseService<Place> {
-  constructor(
-    private env1: EnvironmentService,
-    private http1: HttpClient
-  ) {
+  private env1: EnvironmentService;
+  private http1: HttpClient;
+
+  constructor() {
+    const env1 = inject(EnvironmentService);
+    const http1 = inject(HttpClient);
+
     super(env1, http1, 'places');
+  
+    this.env1 = env1;
+    this.http1 = http1;
   }
 
   public updateEntityFormData(guid: string, data: FormData) {

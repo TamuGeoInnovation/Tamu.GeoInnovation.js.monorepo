@@ -1,4 +1,4 @@
-import { Provider } from '@angular/core';
+import { Provider, inject } from '@angular/core';
 
 import {
   HttpErrorResponse,
@@ -21,7 +21,8 @@ import { LegacyAuthService } from '../../services/auth/auth.service';
   providedIn: 'root'
 })
 export class LegacyAuthInterceptor implements HttpInterceptor {
-  constructor(private auth: LegacyAuthService) {}
+  private auth = inject(LegacyAuthService);
+
 
   public intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(req).pipe(

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
 import { getUrlSegmentsFromRouteSnapshot } from '@tamu-gisc/common/utils/routing';
 
@@ -12,10 +12,9 @@ import { BackdropComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
   imports: [RouterOutlet, BackdropComponent]
 })
 export class MobileSidebarComponent {
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
 
   /**
    * Returns to the parent route, effectively closing the sidebar.

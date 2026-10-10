@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 import { EventConfiguration } from '../../interfaces/special-event.interface';
@@ -12,9 +12,9 @@ import { RouterOutlet } from '@angular/router';
   imports: [RouterOutlet]
 })
 export class BuilderComponent implements OnInit {
-  public config: EventConfiguration | null;
+  private readonly settings = inject(EventSettingsService);
 
-  constructor(private readonly settings: EventSettingsService) {}
+  public config: EventConfiguration | null;
 
   public ngOnInit(): void {
     this.config = this.settings.eventConfiguration()?.configuration;

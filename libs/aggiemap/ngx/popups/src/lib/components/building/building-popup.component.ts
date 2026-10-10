@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -20,14 +20,26 @@ import { TrimPipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [CopyComponent, AsyncPipe, TitleCasePipe, TrimPipe]
 })
 export class BuildingPopupComponent extends BaseDirectionsComponent implements OnInit {
-  constructor(
-    private rtr: Router,
-    private rt: ActivatedRoute,
-    private ps: TripPlannerService,
-    private anl: Angulartics2,
-    private ms: EsriMapService
-  ) {
+  private rtr: Router;
+  private rt: ActivatedRoute;
+  private ps: TripPlannerService;
+  private anl: Angulartics2;
+  private ms: EsriMapService;
+
+  constructor() {
+    const rtr = inject(Router);
+    const rt = inject(ActivatedRoute);
+    const ps = inject(TripPlannerService);
+    const anl = inject(Angulartics2);
+    const ms = inject(EsriMapService);
+
     super(rtr, rt, ps, anl, ms);
+  
+    this.rtr = rtr;
+    this.rt = rt;
+    this.ps = ps;
+    this.anl = anl;
+    this.ms = ms;
   }
 
   public ngOnInit() {

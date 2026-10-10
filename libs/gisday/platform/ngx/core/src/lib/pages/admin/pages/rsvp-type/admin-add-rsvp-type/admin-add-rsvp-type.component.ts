@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { RsvpTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -23,8 +23,14 @@ export const formExporter = () => {
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class AdminAddRsvpTypeComponent extends BaseAdminAddComponent<RsvpType> implements OnInit {
-  constructor(private rsvpTypeService: RsvpTypeService) {
+  private rsvpTypeService: RsvpTypeService;
+
+  constructor() {
+    const rsvpTypeService = inject(RsvpTypeService);
+
     super(rsvpTypeService);
+  
+    this.rsvpTypeService = rsvpTypeService;
   }
 
   public ngOnInit() {

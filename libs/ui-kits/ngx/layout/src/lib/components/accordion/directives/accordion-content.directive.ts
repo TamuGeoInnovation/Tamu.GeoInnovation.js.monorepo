@@ -1,10 +1,13 @@
-import { Directive, HostBinding, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, HostBinding, Input, TemplateRef, ViewContainerRef, inject } from '@angular/core';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[giscAccordionContent]'
 })
 export class AccordionContentDirective {
+  private templateRef = inject<TemplateRef<unknown>>(TemplateRef);
+  private viewContainer = inject(ViewContainerRef);
+
   private _display = false;
 
   public get display(): boolean {
@@ -17,11 +20,6 @@ export class AccordionContentDirective {
 
   @Input()
   public defaultDisplay: 'initial' | 'inherit' | 'block' | 'inline' | 'inline-block' = 'initial';
-
-  constructor(
-    private templateRef: TemplateRef<unknown>,
-    private viewContainer: ViewContainerRef
-  ) {}
 
   @Input()
   public set giscAccordionContent(expanded: boolean) {

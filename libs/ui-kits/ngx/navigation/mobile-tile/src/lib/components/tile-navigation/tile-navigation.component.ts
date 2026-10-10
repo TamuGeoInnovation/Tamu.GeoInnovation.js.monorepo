@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 
@@ -17,6 +17,8 @@ import { AsyncPipe } from '@angular/common';
   imports: [TileSubmenuContainerComponent, AsyncPipe]
 })
 export class TileNavigationComponent implements OnInit, OnDestroy {
+  service = inject(TileService);
+
   @Input()
   public toggle: Observable<boolean>;
 
@@ -51,8 +53,6 @@ export class TileNavigationComponent implements OnInit, OnDestroy {
   public visible = this.service.menuActive.pipe(distinctUntilChanged());
 
   private _$destroy: Subject<boolean> = new Subject();
-
-  constructor(public service: TileService) {}
 
   public ngOnInit() {
     if (this.toggle !== undefined) {

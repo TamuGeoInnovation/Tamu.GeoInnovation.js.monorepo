@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { CheckinService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { CheckIn } from '@tamu-gisc/gisday/platform/data-api';
@@ -11,7 +11,13 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
   styleUrls: ['./admin-view-checkins.component.scss']
 })
 export class AdminViewCheckinsComponent extends BaseAdminViewComponent<CheckIn> {
-  constructor(private readonly checkinService: CheckinService) {
+  private readonly checkinService: CheckinService;
+
+  constructor() {
+    const checkinService = inject(CheckinService);
+
     super(checkinService);
+  
+    this.checkinService = checkinService;
   }
 }

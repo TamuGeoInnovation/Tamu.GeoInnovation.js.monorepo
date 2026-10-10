@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
@@ -20,14 +20,12 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   imports: [RouterLink, AsyncPipe, DatePipe]
 })
 export class ListComponent implements OnInit {
+  readonly emailService = inject(EmailService);
+  private ns = inject(NotificationService);
+  private readonly modal = inject(ModalService);
+
   private _$refresh: Subject<boolean> = new Subject();
   public $emails: Observable<Array<MailroomEmail>>;
-
-  constructor(
-    public readonly emailService: EmailService,
-    private ns: NotificationService,
-    private readonly modal: ModalService
-  ) {}
 
   public ngOnInit() {
     this.$emails = this._$refresh.pipe(

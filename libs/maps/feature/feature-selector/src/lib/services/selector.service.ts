@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { of, fromEventPattern, Observable, from } from 'rxjs';
 import { switchMap, shareReplay, map } from 'rxjs/operators';
@@ -9,6 +9,8 @@ import esri = __esri;
 
 @Injectable()
 export class FeatureSelectorService {
+  private esriMapService = inject(EsriMapService);
+
   /**
    * Observable that emits the selected map feature.
    */
@@ -21,7 +23,7 @@ export class FeatureSelectorService {
    */
   public snapshot: Observable<esri.Graphic[]>;
 
-  constructor(private esriMapService: EsriMapService) {
+  constructor() {
     this.feature = this.esriMapService.store.pipe(
       map((instances) => instances?.view),
       switchMap((view) => {

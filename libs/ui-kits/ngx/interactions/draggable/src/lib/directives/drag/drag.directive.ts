@@ -1,4 +1,4 @@
-import { Directive, AfterViewInit, ElementRef, AfterViewChecked, OnDestroy, Input } from '@angular/core';
+import { Directive, AfterViewInit, ElementRef, AfterViewChecked, OnDestroy, Input, inject } from '@angular/core';
 
 import { DragService, UIDragState } from '../../services/drag/drag.service';
 
@@ -9,6 +9,9 @@ import interact from 'interactjs';
   selector: '[draggable]'
 })
 export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy {
+  private el = inject(ElementRef);
+  private dragService = inject(DragService);
+
   /**
    * Unique component identifier generated when the component register with the UI drag service.
    */
@@ -30,11 +33,6 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
   private draggable: Interact.Interactable;
 
   private lastContentHeight: number;
-
-  constructor(
-    private el: ElementRef,
-    private dragService: DragService
-  ) {}
 
   public ngAfterViewInit() {
     if (!this.identifier) {

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -20,18 +20,26 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [SelectComponent, CheckboxComponent, AsyncPipe]
 })
 export class TripPlannerParkingOptionsComponent extends TripPlannerOptionsBaseComponent {
+  private analytics: Angulartics2;
+  private tp: TripPlannerService;
+  private dts: TestingService;
+  private parking = inject(ParkingService);
+
   /**
    * Retrieves parking features (decks and lots) from parking service and filters by feature name
    * filtering out any which are empty and duplicates.
    */
   public parkingFeatures = this.parking.getParkingPermits();
 
-  constructor(
-    private analytics: Angulartics2,
-    private tp: TripPlannerService,
-    private dts: TestingService,
-    private parking: ParkingService
-  ) {
+  constructor() {
+    const analytics = inject(Angulartics2);
+    const tp = inject(TripPlannerService);
+    const dts = inject(TestingService);
+
     super(analytics, tp, dts);
+  
+    this.analytics = analytics;
+    this.tp = tp;
+    this.dts = dts;
   }
 }

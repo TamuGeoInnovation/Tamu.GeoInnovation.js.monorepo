@@ -1,14 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  Input,
-  Output,
-  EventEmitter,
-  OnDestroy,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { take } from 'rxjs/operators';
 
 import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/map/map.service';
@@ -20,6 +10,8 @@ import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/ma
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class EsriMapComponent implements OnInit, OnDestroy {
+  private mapService = inject(EsriMapService);
+
   @Input()
   public config: MapConfig;
 
@@ -28,8 +20,6 @@ export class EsriMapComponent implements OnInit, OnDestroy {
 
   @ViewChild('container', { static: true })
   private container: ElementRef;
-
-  constructor(private mapService: EsriMapService) {}
 
   public ngOnInit() {
     if (this.config && this.config.view && this.config.view.properties) {

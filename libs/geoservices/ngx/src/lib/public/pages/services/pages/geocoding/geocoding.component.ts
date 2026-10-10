@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
@@ -34,12 +34,12 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
   ]
 })
 export class GeocodingComponent implements OnInit {
+  private readonly env = inject(EnvironmentService);
+
   private geocode: Geocode;
   public result: Observable<string>;
 
   public url: string;
-
-  constructor(private readonly env: EnvironmentService) {}
 
   public ngOnInit(): void {
     this.geocode = new Geocode({

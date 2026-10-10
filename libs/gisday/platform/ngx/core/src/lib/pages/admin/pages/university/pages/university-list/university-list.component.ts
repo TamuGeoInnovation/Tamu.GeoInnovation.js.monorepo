@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SeasonService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -20,14 +20,28 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe]
 })
 export class UniversityListComponent extends BaseAdminListComponent<University> {
-  constructor(
-    private readonly universityService: UniversityService,
-    private readonly ss: SeasonService,
-    private readonly ar: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly ms: ModalService,
-    private readonly ns: NotificationService
-  ) {
+  private readonly universityService: UniversityService;
+  private readonly ss: SeasonService;
+  private readonly ar: ActivatedRoute;
+  private readonly rt: Router;
+  private readonly ms: ModalService;
+  private readonly ns: NotificationService;
+
+  constructor() {
+    const universityService = inject(UniversityService);
+    const ss = inject(SeasonService);
+    const ar = inject(ActivatedRoute);
+    const rt = inject(Router);
+    const ms = inject(ModalService);
+    const ns = inject(NotificationService);
+
     super(universityService, ss, ar, rt, ms, ns);
+  
+    this.universityService = universityService;
+    this.ss = ss;
+    this.ar = ar;
+    this.rt = rt;
+    this.ms = ms;
+    this.ns = ns;
   }
 }

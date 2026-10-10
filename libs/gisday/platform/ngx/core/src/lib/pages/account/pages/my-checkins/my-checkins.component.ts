@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { Observable, shareReplay } from 'rxjs';
 
@@ -14,9 +14,9 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   imports: [AsyncPipe, DatePipe]
 })
 export class MyCheckinsComponent implements OnInit {
-  public checkins$: Observable<Array<Partial<CheckIn>>>;
+  private readonly checkinService = inject(CheckinService);
 
-  constructor(private readonly checkinService: CheckinService) {}
+  public checkins$: Observable<Array<Partial<CheckIn>>>;
 
   public ngOnInit() {
     this.checkins$ = this.checkinService.getUserCheckins().pipe(shareReplay());

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { CheckinService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -20,8 +20,14 @@ export const formExporter = () => {
   styleUrls: ['./admin-add-checkins.component.scss']
 })
 export class AdminAddCheckinsComponent extends BaseAdminAddComponent<CheckIn> implements OnInit {
-  constructor(private checkinService: CheckinService) {
+  private checkinService: CheckinService;
+
+  constructor() {
+    const checkinService = inject(CheckinService);
+
     super(checkinService);
+  
+    this.checkinService = checkinService;
   }
 
   public ngOnInit() {

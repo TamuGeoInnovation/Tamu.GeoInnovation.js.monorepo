@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { NavigationEnd, Params, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
@@ -12,6 +12,8 @@ import { filter } from 'rxjs/operators';
  */
 @Injectable({ providedIn: 'root' })
 export class LastMapService {
+  private readonly router = inject(Router);
+
   /**
    * Route prefixes that render a map. Everything else - All Maps and its detail pages, About,
    * Changelog, Directory, Feedback - is a page about the maps rather than a map.
@@ -25,7 +27,7 @@ export class LastMapService {
 
   private _url: string = LastMapService.DEFAULT_URL;
 
-  constructor(private readonly router: Router) {
+  constructor() {
     this._url = this.restore();
 
     this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe((event) => {

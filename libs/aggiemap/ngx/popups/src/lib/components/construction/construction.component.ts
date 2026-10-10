@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { Router, ActivatedRoute } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
@@ -17,6 +17,12 @@ import { DatePipe } from '@angular/common';
   imports: [DatePipe]
 })
 export class ConstructionPopupComponent extends BaseDirectionsComponent implements OnInit {
+  private rtr: Router;
+  private rt: ActivatedRoute;
+  private ps: TripPlannerService;
+  private anl: Angulartics2;
+  private mp: EsriMapService;
+
   public showContactName = false;
   public showContactInfo = false;
 
@@ -49,14 +55,20 @@ export class ConstructionPopupComponent extends BaseDirectionsComponent implemen
     return this.attribute('notes');
   }
 
-  constructor(
-    private rtr: Router,
-    private rt: ActivatedRoute,
-    private ps: TripPlannerService,
-    private anl: Angulartics2,
-    private mp: EsriMapService
-  ) {
+  constructor() {
+    const rtr = inject(Router);
+    const rt = inject(ActivatedRoute);
+    const ps = inject(TripPlannerService);
+    const anl = inject(Angulartics2);
+    const mp = inject(EsriMapService);
+
     super(rtr, rt, ps, anl, mp);
+  
+    this.rtr = rtr;
+    this.rt = rt;
+    this.ps = ps;
+    this.anl = anl;
+    this.mp = mp;
   }
 
   public ngOnInit(): void {

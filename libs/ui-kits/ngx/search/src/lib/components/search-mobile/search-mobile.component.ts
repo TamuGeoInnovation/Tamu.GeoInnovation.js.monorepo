@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef, inject } from '@angular/core';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -18,15 +18,29 @@ import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
   imports: [NgClass, AsyncPipe, TitleCasePipe]
 })
 export class SearchMobileComponent extends SearchComponent {
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private anltcs: Angulartics2,
-    private nss: NotificationService,
-    private ss: SearchService,
-    private env: EnvironmentService,
-    private elRef: ElementRef
-  ) {
+  private cdr: ChangeDetectorRef;
+  private anltcs: Angulartics2;
+  private nss: NotificationService;
+  private ss: SearchService;
+  private env: EnvironmentService;
+  private elRef: ElementRef;
+
+  constructor() {
+    const cdr = inject(ChangeDetectorRef);
+    const anltcs = inject(Angulartics2);
+    const nss = inject(NotificationService);
+    const ss = inject(SearchService);
+    const env = inject(EnvironmentService);
+    const elRef = inject(ElementRef);
+
     super(cdr, anltcs, nss, ss, env, elRef);
+  
+    this.cdr = cdr;
+    this.anltcs = anltcs;
+    this.nss = nss;
+    this.ss = ss;
+    this.env = env;
+    this.elRef = elRef;
   }
 
   public emitLeftActionEvent(): void {

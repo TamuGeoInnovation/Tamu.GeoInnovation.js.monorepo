@@ -1,8 +1,12 @@
-import { Directive, ElementRef, EventEmitter, HostListener, Input, Output, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, Input, Output, Renderer2, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Directive({ selector: '[tamuGiscTileLink]' })
 export class TileLinkDirective {
+  private router = inject(Router);
+  private renderer = inject(Renderer2);
+  private el = inject(ElementRef);
+
   /**
    * Location of the link to redirect to. Can be internal relative URL or absolute external URL
    *
@@ -18,12 +22,6 @@ export class TileLinkDirective {
 
   @Output()
   public clicked: EventEmitter<HTMLElement> = new EventEmitter();
-
-  constructor(
-    private router: Router,
-    private renderer: Renderer2,
-    private el: ElementRef
-  ) {}
 
   @HostListener('click', ['$event.target'])
   protected _click(target: HTMLElement) {

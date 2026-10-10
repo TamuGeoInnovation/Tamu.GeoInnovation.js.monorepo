@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { ContactMessageDto } from '@tamu-gisc/geoservices/data-api';
@@ -8,12 +8,12 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   providedIn: 'root'
 })
 export class ContactService {
+  private readonly http = inject(HttpClient);
+  private readonly env = inject(EnvironmentService);
+
   private resource: string;
 
-  constructor(
-    private readonly http: HttpClient,
-    private readonly env: EnvironmentService
-  ) {
+  constructor() {
     this.resource = `${this.env.value('api_url')}/contact`;
   }
 

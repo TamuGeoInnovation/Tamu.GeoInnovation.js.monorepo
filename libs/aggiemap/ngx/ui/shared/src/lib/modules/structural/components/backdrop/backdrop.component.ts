@@ -1,13 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Renderer2,
-  ElementRef,
-  Output,
-  EventEmitter,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, OnInit, Input, Renderer2, ElementRef, Output, EventEmitter, ChangeDetectionStrategy, inject } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-backdrop',
@@ -16,6 +7,9 @@ import {
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class BackdropComponent implements OnInit {
+  private renderer = inject(Renderer2);
+  private element = inject(ElementRef);
+
   /**
    * Background color of the backdrop. Can be a hex string, rgba() string, or web safe color string..
    */
@@ -41,11 +35,6 @@ export class BackdropComponent implements OnInit {
 
   @Output()
   public voidClick: EventEmitter<MouseEvent> = new EventEmitter();
-
-  constructor(
-    private renderer: Renderer2,
-    private element: ElementRef
-  ) {}
 
   public ngOnInit() {
     const rootElement = this.element.nativeElement;

@@ -1,4 +1,4 @@
-import { Component, Input, HostListener, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, HostListener, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, distinctUntilChanged, shareReplay, startWith } from 'rxjs/operators';
@@ -13,6 +13,8 @@ import { AsyncPipe } from '@angular/common';
   imports: [MobileTabNavigationComponent, AsyncPipe]
 })
 export class MobileTabNavigationTabComponent implements OnInit {
+  private router = inject(Router);
+
   @Input()
   public route: string;
 
@@ -28,8 +30,6 @@ export class MobileTabNavigationTabComponent implements OnInit {
   public navigate() {
     this.router.navigate([this.route]);
   }
-
-  constructor(private router: Router) {}
 
   public ngOnInit() {
     this.activeTab = this.router.events.pipe(

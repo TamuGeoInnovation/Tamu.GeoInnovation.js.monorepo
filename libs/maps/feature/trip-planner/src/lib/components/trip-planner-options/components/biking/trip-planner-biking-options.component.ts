@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
@@ -17,11 +17,19 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [CheckboxComponent, AsyncPipe]
 })
 export class TripPlannerBikingOptionsComponent extends TripPlannerOptionsBaseComponent {
-  constructor(
-    private analytics: Angulartics2,
-    private tp: TripPlannerService,
-    private dts: TestingService
-  ) {
+  private analytics: Angulartics2;
+  private tp: TripPlannerService;
+  private dts: TestingService;
+
+  constructor() {
+    const analytics = inject(Angulartics2);
+    const tp = inject(TripPlannerService);
+    const dts = inject(TestingService);
+
     super(analytics, tp, dts);
+  
+    this.analytics = analytics;
+    this.tp = tp;
+    this.dts = dts;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -55,6 +55,15 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   ]
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+  private readonly auth = inject(AuthService);
+  private readonly eventService = inject(EventService);
+  private readonly checkinService = inject(CheckinService);
+  private readonly userRsvpService = inject(RsvpService);
+  private readonly ns = inject(NotificationService);
+  private readonly us = inject(UserService);
+  private readonly fb = inject(UntypedFormBuilder);
+
   public appRoles = GISDayRoles;
 
   public event$: Observable<Partial<Event>>;
@@ -78,17 +87,6 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   private _refresh$: Subject<boolean> = new Subject();
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly auth: AuthService,
-    private readonly eventService: EventService,
-    private readonly checkinService: CheckinService,
-    private readonly userRsvpService: RsvpService,
-    private readonly ns: NotificationService,
-    private readonly us: UserService,
-    private readonly fb: UntypedFormBuilder
-  ) {}
 
   public ngOnInit(): void {
     this.attendanceForm = this.fb.group({

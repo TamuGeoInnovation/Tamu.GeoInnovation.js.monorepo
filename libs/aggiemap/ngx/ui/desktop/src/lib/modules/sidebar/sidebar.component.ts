@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
@@ -30,12 +30,10 @@ import { RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
   ]
 })
 export class AggiemapSidebarComponent implements OnInit {
-  public isDev: Observable<boolean>;
+  private devTools = inject(TestingService);
+  private readonly analytics = inject(Angulartics2);
 
-  constructor(
-    private devTools: TestingService,
-    private readonly analytics: Angulartics2
-  ) {}
+  public isDev: Observable<boolean>;
 
   public ngOnInit() {
     this.isDev = this.devTools.get('isTesting');

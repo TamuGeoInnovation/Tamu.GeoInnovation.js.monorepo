@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { map, Observable } from 'rxjs';
 
@@ -18,6 +18,11 @@ import esri = __esri;
   imports: [LayerListItemComponent, AsyncPipe]
 })
 export class LayerListComponent implements OnInit {
+  private layerListService = inject(LayerListService);
+  private responsiveService = inject(ResponsiveService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   @Input() public allowedLayerIds: string[] = [];
 
   /**
@@ -32,13 +37,6 @@ export class LayerListComponent implements OnInit {
   public layers: Observable<Array<esri.ListItem>>;
 
   public responsive: ResponsiveSnapshot;
-
-  constructor(
-    private layerListService: LayerListService,
-    private responsiveService: ResponsiveService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
 
   public ngOnInit() {
     this.responsive = this.responsiveService.snapshot;

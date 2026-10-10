@@ -1,13 +1,4 @@
-import {
-  AfterViewChecked,
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-  ChangeDetectionStrategy,
-  CUSTOM_ELEMENTS_SCHEMA
-} from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 
@@ -35,6 +26,12 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [AsyncPipe, MarkdownParsePipe]
 })
 export class BonfirePopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
+  private rtr: Router;
+  private rt: ActivatedRoute;
+  private ps: TripPlannerService;
+  private anl: Angulartics2;
+  private mp: EsriMapService;
+
   public load: ReplaySubject<boolean> = new ReplaySubject(1);
   public medias: Array<string> = [];
 
@@ -90,14 +87,20 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
     "Nathan Scott West '02": 'fallen_NathanScottWest.jpg'
   };
 
-  constructor(
-    private rtr: Router,
-    private rt: ActivatedRoute,
-    private ps: TripPlannerService,
-    private anl: Angulartics2,
-    private mp: EsriMapService
-  ) {
+  constructor() {
+    const rtr = inject(Router);
+    const rt = inject(ActivatedRoute);
+    const ps = inject(TripPlannerService);
+    const anl = inject(Angulartics2);
+    const mp = inject(EsriMapService);
+
     super(rtr, rt, ps, anl, mp);
+  
+    this.rtr = rtr;
+    this.rt = rt;
+    this.ps = ps;
+    this.anl = anl;
+    this.mp = mp;
   }
 
   public ngOnInit(): void {

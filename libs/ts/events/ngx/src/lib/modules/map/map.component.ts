@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Subject, ReplaySubject, Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -72,6 +72,17 @@ const EVENT_PASSED_GRACE_DAYS = 1;
   ]
 })
 export class MapComponent implements OnInit, OnDestroy {
+  private readonly responsiveService = inject(ResponsiveService);
+  private readonly env = inject(EnvironmentService);
+  private readonly ns = inject(NotificationService);
+  private readonly ts = inject(TestingService);
+  private readonly rt = inject(Router);
+  private readonly ar = inject(ActivatedRoute);
+  private readonly store = inject(LocalStoreService);
+  private readonly eventsSettingsService = inject(EventSettingsService);
+  private readonly eventService = inject(EventService);
+  private readonly ms = inject(ModalService);
+
   public map: esri.Map;
   public view: esri.MapView;
   public isMobile: boolean;
@@ -106,19 +117,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
   private _connections: { [key: string]: string };
-
-  constructor(
-    private readonly responsiveService: ResponsiveService,
-    private readonly env: EnvironmentService,
-    private readonly ns: NotificationService,
-    private readonly ts: TestingService,
-    private readonly rt: Router,
-    private readonly ar: ActivatedRoute,
-    private readonly store: LocalStoreService,
-    private readonly eventsSettingsService: EventSettingsService,
-    private readonly eventService: EventService, // While not called, needs to be injected to initialize event layers  loading
-    private readonly ms: ModalService
-  ) {}
 
   public ngOnInit() {
     // Settings can come from either local storage or from the url query parameters

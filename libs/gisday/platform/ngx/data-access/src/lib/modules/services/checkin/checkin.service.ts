@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs';
 
@@ -12,14 +12,20 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class CheckinService extends BaseService<CheckIn> {
+  private env1: EnvironmentService;
+  private http1: HttpClient;
+  private ns = inject(NotificationService);
+
   public resource: string;
 
-  constructor(
-    private env1: EnvironmentService,
-    private http1: HttpClient,
-    private ns: NotificationService
-  ) {
+  constructor() {
+    const env1 = inject(EnvironmentService);
+    const http1 = inject(HttpClient);
+
     super(env1, http1, 'check-ins');
+  
+    this.env1 = env1;
+    this.http1 = http1;
   }
 
   public getUserCheckins() {

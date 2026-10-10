@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -14,14 +14,12 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent]
 })
 export class DetailsComponent implements OnInit {
+  private service = inject(AccountDetailsService);
+  private fb = inject(UntypedFormBuilder);
+
   public data: Observable<IAccountDetails>;
 
   public form: UntypedFormGroup;
-
-  constructor(
-    private service: AccountDetailsService,
-    private fb: UntypedFormBuilder
-  ) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

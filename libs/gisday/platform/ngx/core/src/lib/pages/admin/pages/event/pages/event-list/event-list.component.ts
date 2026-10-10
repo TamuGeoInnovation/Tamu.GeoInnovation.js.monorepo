@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -21,15 +21,29 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, ExistsPipe]
 })
 export class EventListComponent extends BaseAdminListComponent<Event> {
-  constructor(
-    private readonly eventService: EventService,
-    private readonly ss: SeasonService,
-    private readonly ar: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly ms: ModalService,
-    private readonly ns: NotificationService
-  ) {
+  private readonly eventService: EventService;
+  private readonly ss: SeasonService;
+  private readonly ar: ActivatedRoute;
+  private readonly rt: Router;
+  private readonly ms: ModalService;
+  private readonly ns: NotificationService;
+
+  constructor() {
+    const eventService = inject(EventService);
+    const ss = inject(SeasonService);
+    const ar = inject(ActivatedRoute);
+    const rt = inject(Router);
+    const ms = inject(ModalService);
+    const ns = inject(NotificationService);
+
     super(eventService, ss, ar, rt, ms, ns);
+  
+    this.eventService = eventService;
+    this.ss = ss;
+    this.ar = ar;
+    this.rt = rt;
+    this.ms = ms;
+    this.ns = ns;
   }
 
   public override promptCopyModal() {

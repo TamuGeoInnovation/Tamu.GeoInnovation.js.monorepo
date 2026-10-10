@@ -1,4 +1,4 @@
-import { Directive, Input, HostBinding, TemplateRef, ViewContainerRef, OnInit } from '@angular/core';
+import { Directive, Input, HostBinding, TemplateRef, ViewContainerRef, OnInit, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Directive({
@@ -6,6 +6,9 @@ import { Subject } from 'rxjs';
   selector: '[giscAccordion]'
 })
 export class AccordionDirective implements OnInit {
+  private templateRef = inject<TemplateRef<unknown>>(TemplateRef);
+  private viewContainer = inject(ViewContainerRef);
+
   @Input()
   public expanded = false;
 
@@ -15,11 +18,6 @@ export class AccordionDirective implements OnInit {
   }
 
   private _$destroy: Subject<boolean> = new Subject();
-
-  constructor(
-    private templateRef: TemplateRef<unknown>,
-    private viewContainer: ViewContainerRef
-  ) {}
 
   public ngOnInit(): void {
     this.viewContainer.createEmbeddedView(this.templateRef, {

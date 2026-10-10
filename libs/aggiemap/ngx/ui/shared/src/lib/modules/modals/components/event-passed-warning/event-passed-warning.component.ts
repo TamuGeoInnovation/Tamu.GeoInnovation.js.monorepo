@@ -1,4 +1,4 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -17,15 +17,17 @@ export interface EventPassedData {
   imports: [ButtonComponent]
 })
 export class EventPassedWarningComponent {
+  private readonly mr = inject(ModalRefService);
+  private readonly data = inject<EventPassedData>(MODAL_DATA);
+
   public title: string;
   public message: string;
   public followupMessage: string;
   public acknowledgeText: string;
 
-  constructor(
-    private readonly mr: ModalRefService,
-    @Inject(MODAL_DATA) private readonly data: EventPassedData
-  ) {
+  constructor() {
+    const data = this.data;
+
     this.title = data?.title || 'This event has passed';
     this.message =
       data?.message || 'The information on this map may be outdated and should be used for informational purposes only.';

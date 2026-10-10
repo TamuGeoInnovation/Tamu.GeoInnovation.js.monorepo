@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -34,17 +34,15 @@ import esri = __esri;
   ]
 })
 export class MapComponent implements OnInit, OnDestroy {
+  private responsiveService = inject(ResponsiveService);
+  private environment = inject(EnvironmentService);
+
   public map: esri.Map;
   public view: esri.MapView;
   public isMobile: boolean;
   public config: MapConfig;
 
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(
-    private responsiveService: ResponsiveService,
-    private environment: EnvironmentService
-  ) {}
 
   public ngOnInit() {
     const connections = this.environment.value('Connections');

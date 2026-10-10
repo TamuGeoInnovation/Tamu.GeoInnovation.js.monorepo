@@ -1,14 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 'rxjs';
 
@@ -26,6 +16,8 @@ import { ParseDateTimeStringsPipe } from '../../../../pipes/parse-date-time-stri
   imports: [CheckboxComponent, SeasonDayCardComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe]
 })
 export class EventRowComponent implements OnChanges, OnInit {
+  private readonly rt = inject(Router);
+
   @Input()
   public event: Partial<SimplifiedEvent>;
 
@@ -48,8 +40,6 @@ export class EventRowComponent implements OnChanges, OnInit {
       this.rt.navigate(['/sessions/details', this.event.guid]);
     }
   }
-
-  constructor(private readonly rt: Router) {}
 
   public ngOnInit() {
     this.isRsvp$ = this._rsvps$.asObservable().pipe(

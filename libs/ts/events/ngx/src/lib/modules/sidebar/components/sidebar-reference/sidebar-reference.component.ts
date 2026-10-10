@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AltSearchHelper, SearchSelection, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
@@ -23,6 +23,12 @@ import esri = __esri;
   imports: [SearchComponent, CopyComponent, NgStyle, LayerListModule, LegendModule, KeyValuePipe]
 })
 export class SidebarReferenceComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly helper = inject(AltSearchHelper);
+  private readonly mapService = inject(EsriMapService);
+  private readonly eventSettingsService = inject(EventSettingsService);
+
   public shareUrl: string;
   public hasSettings: boolean;
   public settings: EventSettings;
@@ -36,14 +42,6 @@ export class SidebarReferenceComponent implements OnInit {
   public showResolvedSettingNotes = false;
   public hideLayerToggle = false;
   public searchSources?: SearchSource[];
-
-  constructor(
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly helper: AltSearchHelper,
-    private readonly mapService: EsriMapService,
-    private readonly eventSettingsService: EventSettingsService
-  ) {}
 
   public ngOnInit(): void {
     this.hasSettings = this.eventSettingsService.queryParamsFromSettings !== null;

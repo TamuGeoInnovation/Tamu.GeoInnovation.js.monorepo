@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
@@ -33,12 +33,12 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
   ]
 })
 export class ReverseGeocodingComponent implements OnInit {
+  private readonly env = inject(EnvironmentService);
+
   private geocoder: ReverseGeocode;
   public result: Observable<string>;
 
   public url: string;
-
-  constructor(private readonly env: EnvironmentService) {}
 
   public ngOnInit(): void {
     this.geocoder = new ReverseGeocode({

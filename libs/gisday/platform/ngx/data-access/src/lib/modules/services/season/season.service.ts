@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
 
@@ -11,6 +11,9 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class SeasonService extends BaseService<Season> {
+  private env1: EnvironmentService;
+  private http1: HttpClient;
+
   private _signal$: Subject<void> = new Subject();
 
   public seasons$: Observable<Array<Partial<Season>>> = this._signal$.pipe(
@@ -24,11 +27,14 @@ export class SeasonService extends BaseService<Season> {
     shareReplay(1)
   );
 
-  constructor(
-    private env1: EnvironmentService,
-    private http1: HttpClient
-  ) {
+  constructor() {
+    const env1 = inject(EnvironmentService);
+    const http1 = inject(HttpClient);
+
     super(env1, http1, 'seasons');
+  
+    this.env1 = env1;
+    this.http1 = http1;
   }
 
   public getActiveSeason() {

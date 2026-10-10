@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { pluck, map } from 'rxjs/operators';
 
@@ -17,16 +17,22 @@ import { NgClass, AsyncPipe } from '@angular/common';
   imports: [TripPlannerModeToggleComponent, NgClass, AsyncPipe]
 })
 export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerComponent implements OnInit, OnDestroy {
+  private tps: TripPlannerService;
+  private dts: TestingService;
+
   private _destroy$: Subject<boolean> = new Subject();
 
   public accessible: Observable<boolean>;
   public isAccessibleMode: Observable<boolean>;
 
-  constructor(
-    private tps: TripPlannerService,
-    private dts: TestingService
-  ) {
+  constructor() {
+    const tps = inject(TripPlannerService);
+    const dts = inject(TestingService);
+
     super(tps, dts);
+  
+    this.tps = tps;
+    this.dts = dts;
   }
 
   public ngOnInit() {

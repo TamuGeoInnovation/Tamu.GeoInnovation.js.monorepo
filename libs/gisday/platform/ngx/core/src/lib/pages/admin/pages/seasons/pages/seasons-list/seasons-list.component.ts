@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -18,16 +18,28 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   imports: [RouterLink, AsyncPipe, DatePipe]
 })
 export class SeasonsListComponent extends BaseAdminListComponent<Season> implements OnInit {
+  private readonly ss: SeasonService;
+  private readonly ar: ActivatedRoute;
+  private readonly rt: Router;
+  private readonly ms: ModalService;
+  private readonly ns: NotificationService;
+
   public dateRange$: Observable<Array<SeasonDay>>;
 
-  constructor(
-    private readonly ss: SeasonService,
-    private readonly ar: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly ms: ModalService,
-    private readonly ns: NotificationService
-  ) {
+  constructor() {
+    const ss = inject(SeasonService);
+    const ar = inject(ActivatedRoute);
+    const rt = inject(Router);
+    const ms = inject(ModalService);
+    const ns = inject(NotificationService);
+
     super(ss, ss, ar, rt, ms, ns);
+  
+    this.ss = ss;
+    this.ar = ar;
+    this.rt = rt;
+    this.ms = ms;
+    this.ns = ns;
   }
 
   public ngOnInit(): void {

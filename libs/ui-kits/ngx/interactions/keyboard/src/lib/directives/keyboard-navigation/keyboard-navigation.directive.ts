@@ -1,10 +1,12 @@
-import { Directive, ElementRef, HostListener, Input, AfterViewInit } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, AfterViewInit, inject } from '@angular/core';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[keyboardNavigation]'
 })
 export class KeyboardNavigationDirective implements AfterViewInit {
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+
   /** CSS selector for option elements inside the host where focus/selection will occur. */
   @Input('keyboardNavigation') public optionSelector = '.autocomplete-item';
 
@@ -15,8 +17,6 @@ export class KeyboardNavigationDirective implements AfterViewInit {
   private activeIndex = -1;
   private externalControl: HTMLElement | null = null;
   private externalKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
-
-  constructor(private host: ElementRef<HTMLElement>) {}
 
   public ngAfterViewInit() {
     this.refreshOptions();

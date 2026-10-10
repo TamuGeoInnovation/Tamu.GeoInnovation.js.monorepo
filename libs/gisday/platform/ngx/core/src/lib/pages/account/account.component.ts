@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterLinkActive, RouterLink, RouterOutlet } from '@angular/router';
 
@@ -10,7 +10,9 @@ import { RouterLinkActive, RouterLink, RouterOutlet } from '@angular/router';
   imports: [RouterLinkActive, RouterLink, RouterOutlet]
 })
 export class AccountComponent {
-  constructor(private titleService: Title) {
+  private titleService = inject(Title);
+
+  constructor() {
     this.titleService.setTitle('Account | TxGIS Day');
   }
 }

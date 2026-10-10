@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
@@ -21,6 +21,10 @@ import { EventSettingsQuery } from './event-settings-query';
   providedIn: 'root'
 })
 export class EventSettingsService implements EventSettingsQuery {
+  private readonly at = inject(ActivatedRoute);
+  private readonly env = inject(EnvironmentService);
+  private readonly store = inject(LocalStoreService);
+
   private _settingsPrimaryKey: string;
   private _settingsSecondaryKey: string;
 
@@ -70,12 +74,6 @@ export class EventSettingsService implements EventSettingsQuery {
     // Initialize the settings store with an empty object if it does not exist
     this._settingsSecondaryKey = key ? key : this.at.snapshot.queryParamMap.get('eventId') || '_';
   }
-
-  constructor(
-    private readonly at: ActivatedRoute,
-    private readonly env: EnvironmentService,
-    private readonly store: LocalStoreService
-  ) {}
 
   public settings(): EventSettings;
   public settings(asObservable: true): Observable<EventSettings>;

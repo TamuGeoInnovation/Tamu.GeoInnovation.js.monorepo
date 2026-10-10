@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { filter, take } from 'rxjs/operators';
 
@@ -26,6 +26,13 @@ import { AsyncPipe } from '@angular/common';
   imports: [CopyComponent, AsyncPipe]
 })
 export class BusStopPopupComponent extends BaseDirectionsComponent implements OnInit {
+  private rtr: Router;
+  private rt: ActivatedRoute;
+  private ps: TripPlannerService;
+  private anl: Angulartics2;
+  private mp: EsriMapService;
+  private busService = inject(BusService);
+
   /**
    * Transportation Services bus schedules — the AggieSpirit per-stop schedule page requires a stopCode
    * and directionName that the TS/Bus_Routes source does not provide, so this links to the general page.
@@ -40,15 +47,20 @@ export class BusStopPopupComponent extends BaseDirectionsComponent implements On
    */
   private readonly busMapPath = 'map/d/bus';
 
-  constructor(
-    private rtr: Router,
-    private rt: ActivatedRoute,
-    private ps: TripPlannerService,
-    private anl: Angulartics2,
-    private mp: EsriMapService,
-    private busService: BusService
-  ) {
+  constructor() {
+    const rtr = inject(Router);
+    const rt = inject(ActivatedRoute);
+    const ps = inject(TripPlannerService);
+    const anl = inject(Angulartics2);
+    const mp = inject(EsriMapService);
+
     super(rtr, rt, ps, anl, mp);
+  
+    this.rtr = rtr;
+    this.rt = rt;
+    this.ps = ps;
+    this.anl = anl;
+    this.mp = mp;
   }
 
   public override ngOnInit(): void {

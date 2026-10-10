@@ -1,4 +1,4 @@
-import { Injectable, InjectionToken, Optional, Inject } from '@angular/core';
+import { Injectable, InjectionToken, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
@@ -107,10 +107,9 @@ export const EVENT_NOTIFICATION_DEFINITIONS = new InjectionToken<EventNotificati
   providedIn: 'root'
 })
 export class EventNotificationsService {
-  constructor(
-    private readonly notificationService: NotificationService,
-    @Optional() @Inject(EVENT_NOTIFICATION_DEFINITIONS) private readonly definitions: EventNotificationEntry[] | null
-  ) {}
+  private readonly notificationService = inject(NotificationService);
+  private readonly definitions = inject(EVENT_NOTIFICATION_DEFINITIONS, { optional: true });
+
 
   /**
    * Ids shown in this browser session, so each notice appears once per session (#1307).

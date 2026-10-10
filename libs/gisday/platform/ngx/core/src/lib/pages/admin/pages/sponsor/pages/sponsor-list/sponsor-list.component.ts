@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
@@ -20,14 +20,28 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe]
 })
 export class SponsorListComponent extends BaseAdminListComponent<Sponsor> {
-  constructor(
-    private readonly sponsorService: SponsorService,
-    private readonly ss: SeasonService,
-    private readonly ar: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly ms: ModalService,
-    private readonly ns: NotificationService
-  ) {
+  private readonly sponsorService: SponsorService;
+  private readonly ss: SeasonService;
+  private readonly ar: ActivatedRoute;
+  private readonly rt: Router;
+  private readonly ms: ModalService;
+  private readonly ns: NotificationService;
+
+  constructor() {
+    const sponsorService = inject(SponsorService);
+    const ss = inject(SeasonService);
+    const ar = inject(ActivatedRoute);
+    const rt = inject(Router);
+    const ms = inject(ModalService);
+    const ns = inject(NotificationService);
+
     super(sponsorService, ss, ar, rt, ms, ns);
+  
+    this.sponsorService = sponsorService;
+    this.ss = ss;
+    this.ar = ar;
+    this.rt = rt;
+    this.ms = ms;
+    this.ns = ns;
   }
 }

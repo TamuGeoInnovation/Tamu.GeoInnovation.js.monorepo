@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { User } from '@auth0/auth0-angular';
@@ -13,13 +13,19 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class UserService extends BaseService<User> {
+  private env1: EnvironmentService;
+  private http1: HttpClient;
+
   public resource: string;
 
-  constructor(
-    private env1: EnvironmentService,
-    private http1: HttpClient
-  ) {
+  constructor() {
+    const env1 = inject(EnvironmentService);
+    const http1 = inject(HttpClient);
+
     super(env1, http1, 'users');
+  
+    this.env1 = env1;
+    this.http1 = http1;
   }
 
   public getUsers() {

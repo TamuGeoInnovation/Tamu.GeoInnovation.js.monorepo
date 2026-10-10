@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -18,12 +18,20 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class AdminDetailRsvpTypeComponent extends BaseAdminDetailComponent<RsvpType> implements OnInit {
-  constructor(
-    private fb1: UntypedFormBuilder,
-    private route1: ActivatedRoute,
-    private rsvpTypeService: RsvpTypeService
-  ) {
+  private fb1: UntypedFormBuilder;
+  private route1: ActivatedRoute;
+  private rsvpTypeService: RsvpTypeService;
+
+  constructor() {
+    const fb1 = inject(UntypedFormBuilder);
+    const route1 = inject(ActivatedRoute);
+    const rsvpTypeService = inject(RsvpTypeService);
+
     super(fb1, route1, rsvpTypeService);
+  
+    this.fb1 = fb1;
+    this.route1 = route1;
+    this.rsvpTypeService = rsvpTypeService;
   }
 
   public ngOnInit() {

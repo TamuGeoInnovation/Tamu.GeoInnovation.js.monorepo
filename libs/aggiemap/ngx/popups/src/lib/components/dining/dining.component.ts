@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { catchError, combineLatestWith, concatMap, map, Observable, of, reduce, shareReplay } from 'rxjs';
@@ -33,6 +33,13 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   ]
 })
 export class DiningPopupComponent extends BaseDirectionsComponent implements OnInit {
+  private rtr: Router;
+  private rt: ActivatedRoute;
+  private ps: TripPlannerService;
+  private anl: Angulartics2;
+  private ms: EsriMapService;
+  private readonly http = inject(HttpClient);
+
   public menu: Observable<IDiningLocationMenu>;
 
   /**
@@ -56,15 +63,20 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
   private _serviceUrl = 'https://api.aggiemap.tamu.edu/dining';
   private _todaysDateStamp: Observable<string>;
 
-  constructor(
-    private rtr: Router,
-    private rt: ActivatedRoute,
-    private ps: TripPlannerService,
-    private anl: Angulartics2,
-    private ms: EsriMapService,
-    private readonly http: HttpClient
-  ) {
+  constructor() {
+    const rtr = inject(Router);
+    const rt = inject(ActivatedRoute);
+    const ps = inject(TripPlannerService);
+    const anl = inject(Angulartics2);
+    const ms = inject(EsriMapService);
+
     super(rtr, rt, ps, anl, ms);
+  
+    this.rtr = rtr;
+    this.rt = rt;
+    this.ps = ps;
+    this.anl = anl;
+    this.ms = ms;
   }
 
   public ngOnInit() {

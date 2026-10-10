@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -63,6 +63,17 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   ]
 })
 export class EventAddEditFormComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly at = inject(ActivatedRoute);
+  private readonly rt = inject(Router);
+  private readonly seasonService = inject(SeasonService);
+  private readonly speakerService = inject(SpeakerService);
+  private readonly tagService = inject(TagService);
+  private readonly eventLocationService = inject(LocationService);
+  private readonly eventBroadcastService = inject(BroadcastService);
+  private readonly eventService = inject(EventService);
+  private readonly ns = inject(NotificationService);
+
   @Input()
   public type: 'create' | 'edit';
 
@@ -148,19 +159,6 @@ export class EventAddEditFormComponent implements OnInit {
       value: 'group'
     }
   ];
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly at: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly seasonService: SeasonService,
-    private readonly speakerService: SpeakerService,
-    private readonly tagService: TagService,
-    private readonly eventLocationService: LocationService,
-    private readonly eventBroadcastService: BroadcastService,
-    private readonly eventService: EventService,
-    private readonly ns: NotificationService
-  ) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

@@ -1,9 +1,9 @@
-import { Directive, ViewContainerRef } from '@angular/core';
+import { Directive, ViewContainerRef, inject } from '@angular/core';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[render-host]'
 })
 export class RenderHostDirective {
-  constructor(public viewContainerRef: ViewContainerRef) {}
+  viewContainerRef = inject(ViewContainerRef);
 }

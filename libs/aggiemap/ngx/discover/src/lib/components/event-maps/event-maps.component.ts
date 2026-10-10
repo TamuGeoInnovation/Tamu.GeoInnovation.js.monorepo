@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { DiscoverMapType } from '@tamu-gisc/ts/events/ngx';
@@ -44,6 +44,9 @@ interface EventMapsRouteData {
   imports: [MapsPageHeaderComponent, MapColumnsComponent, QuickLinksComponent, FooterComponent]
 })
 export class EventMapsComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly discoveryService = inject(DiscoveryService);
+
   public title: string;
   public intro?: string;
 
@@ -52,11 +55,6 @@ export class EventMapsComponent implements OnInit {
   public quickLinks: QuickLinkItem[] = [];
   public showMainParking = true;
   public readonly getApplicationRoute = getApplicationRoute;
-
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly discoveryService: DiscoveryService
-  ) {}
 
   public ngOnInit(): void {
     const data = this.route.snapshot.data as EventMapsRouteData;

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { combineLatest, fromEventPattern, Observable, ReplaySubject } from 'rxjs';
 import { map, scan, startWith, switchMap } from 'rxjs/operators';
 
@@ -18,14 +18,12 @@ export function showsInLegend(layer: esri.Layer): boolean {
 
 @Injectable()
 export class LegendService {
+  private moduleProvider = inject(EsriModuleProviderService);
+  private mapService = inject(EsriMapService);
+  private env = inject(EnvironmentService);
+
   private _legendItems: ReplaySubject<Array<esri.ActiveLayerInfo>> = new ReplaySubject(1);
   public legendItems: Observable<Array<esri.ActiveLayerInfo>> = this._legendItems.asObservable();
-
-  constructor(
-    private moduleProvider: EsriModuleProviderService,
-    private mapService: EsriMapService,
-    private env: EnvironmentService
-  ) {}
 
   public legend(options?: LegendOptions) {
     const excludedLayerIds = new Set(options?.excludedLayerIds ?? []);

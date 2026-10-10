@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, inject } from '@angular/core';
 
 import { Observable, timer } from 'rxjs';
 import { mapTo, startWith } from 'rxjs/operators';
@@ -13,6 +13,8 @@ import Clipboard from 'clipboard';
   selector: '[clipboard-copy]'
 })
 export class ClipboardCopyDirective implements OnChanges, OnDestroy {
+  private el = inject(ElementRef);
+
   /**
    * Text string that will be copied to clipboard.
    */
@@ -31,8 +33,6 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
    * Reference allows unbinding on component destroy
    */
   private _clipboard: InstanceType<typeof Clipboard>;
-
-  constructor(private el: ElementRef) {}
 
   /**
    * OnChanges Hook
