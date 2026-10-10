@@ -67,8 +67,10 @@ scripts/check-in-volume.sh <branch>
 
 From Git Bash, in the main checkout or any worktree. It runs `nx affected -t lint,test,build` against
 `origin/development` in a Linux clone of the branch kept in a Docker volume (`tamu-js-<issue>`), skips
-the projects CI excludes (read from `.github/workflows/build.yml`), writes a log, and exits with the
-check's exit code. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
+for each target the projects that target's own workflow excludes (lint from `lint.yml`, test from
+`test.yml`, build from `build.yml`, so it lints everything CI lints; #1475), writes a log, and exits
+with the check's exit code, which fails if any target failed. `bash scripts/check-in-volume.test.sh`
+tests how it reads those lists. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
 of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
@@ -169,7 +171,7 @@ bind-mounts the source, so edits on Windows reach it, but its `node_modules` liv
 `package-lock.json` changes:
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e CYPRESS_INSTALL_BINARY=0 node:22.23.3 npm ci --no-audit --no-fund
+MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:22.23.3 npm ci --no-audit --no-fund
 MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:22.23.3 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 

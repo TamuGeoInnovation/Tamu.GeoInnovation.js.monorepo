@@ -21,7 +21,7 @@ This is an Nx monorepo containing multiple Angular front-end applications and Ne
 - **Frontend:** Angular 15.2.9 with TypeScript, SCSS, Mapbox GL, Esri ArcGIS
 - **Backend:** NestJS 9.4.3 with TypeORM, Bull job queues, various database adapters (MySQL, MSSQL, SQLite)
 - **Authentication:** Auth0, JWT, OIDC Provider, Passport.js
-- **Testing:** Jest (unit), Cypress (e2e)
+- **Testing:** Jest (unit), Playwright (e2e and smoke, in `test/`)
 - **Build Tool:** Nx 16.0.0
 
 ## Build, Test, and Lint Commands
@@ -35,7 +35,6 @@ This is an Nx monorepo containing multiple Angular front-end applications and Ne
 | **Test single project** | `npx nx run [project-name]:test` | Runs Jest tests for that project only |
 | **Test with coverage** | `npx nx run [project-name]:test --coverage` | Generates coverage report |
 | **Lint single project** | `npx nx run [project-name]:lint` | ESLint check for that project |
-| **E2E test** | `npx nx run [project-name]-e2e:e2e` | Cypress tests for `-e2e` projects |
 
 ### Workspace-Level Tasks
 
@@ -45,7 +44,6 @@ Use these for checking across multiple projects based on what changed:
 npm run affected:build       # Build only affected apps/libs
 npm run affected:test        # Test only affected projects
 npm run affected:lint        # Lint only affected projects
-npm run affected:e2e         # Run e2e tests for affected apps
 npm run format:check         # Check code formatting
 npm run format:write         # Auto-format all code with Prettier
 npm run coverage             # Generate coverage report (all projects)
@@ -64,7 +62,6 @@ npm run affected:dep-graph   # Show only affected dependencies
 
 - **NPM Scope:** `@tamu-gisc/`
 - **Nx Project Names:** Kebab-case (e.g., `aggiemap-angular`, `geoservices-nest`)
-- **E2E Projects:** Named as `[project-name]-e2e` (e.g., `aggiemap-angular-e2e`)
 
 ### PR Format
 
@@ -132,11 +129,7 @@ npx nx run [project]:test --coverage     # Single project with coverage
 npx jest --watch                         # Watch mode for development
 ```
 
-**E2E Tests (Cypress):**
-```bash
-npx nx run [app]-e2e:e2e                 # Run Cypress tests
-npx nx run [app]-e2e:e2e --watch         # Headed mode for debugging
-```
+**E2E and smoke tests (Playwright):** see [test/README.md](../test/README.md).
 
 **Note:** Unit test coverage is appreciated but not currently required.
 

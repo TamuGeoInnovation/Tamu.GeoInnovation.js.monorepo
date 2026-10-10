@@ -399,6 +399,13 @@ const lotLabelingInfo = [
 ] as unknown as FeatureLabelingInfo;
 
 /**
+ * `native` for every Football Parking Lots layer (the four vehicle modes and RV). Staff change a lot's
+ * class during game day, to Lot Closed for example, by editing the service; polling it every minute
+ * redraws the change for visitors who already have the map open, without a reload (#1587).
+ */
+const lotsNative = (): FeatureNativeProps => hiddenNative({ labelingInfo: lotLabelingInfo, refreshInterval: 1 });
+
+/**
  * The gameday/micromobility/rideshare picture markers are pin-shaped (natural ~60x73, 0.82 ratio) but
  * the service renderer forces them into a 25x25 square, which stretches them wide on the map AND in
  * the legend swatch. Re-render both at a matching ~0.82 ratio. `EsriMapService` applies these
@@ -558,7 +565,7 @@ const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
         name: 'attributes.lotname',
         description: 'attributes.note'
       },
-      native: hiddenNative({ labelingInfo: lotLabelingInfo })
+      native: lotsNative()
     }
   ];
 };
@@ -666,7 +673,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
       name: 'attributes.lotname',
       description: 'attributes.note'
     },
-    native: hiddenNative({ labelingInfo: lotLabelingInfo })
+    native: lotsNative()
   },
 
   // --- Micromobility ---

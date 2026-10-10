@@ -15,6 +15,12 @@
 # workflow on GitHub checks all of them; to do the same here, set AGGIEMAP_SMOKE_FRAMING=full.
 # Needs only Docker and bash (Git Bash on Windows); Node runs inside the container. The first run
 # downloads the Playwright image, about 2 GB.
+#
+# The checkout's node_modules is not used, so a checkout or worktree without an install can run the
+# suite (#1459). The suite needs three packages: @playwright/test, pngjs and esri-loader. They live in
+# the Docker volume tamu-js-smoke-nm, mounted over /work/node_modules, at the versions package-lock.json
+# records. The first run installs them, in a few seconds, and so does any run after those versions
+# change. Docker leaves an empty node_modules folder in a checkout that had none.
 set -euo pipefail
 
 env_name="${1:-}"
@@ -29,7 +35,7 @@ esac
 cd "$(git rev-parse --show-toplevel)"
 
 # The image must match the installed @playwright/test, or its browsers will not be the ones the
-# library expects.
+# library expects. The container checks that package-lock.json records the same version.
 pw_version=$(sed -n 's/.*"@playwright\/test": *"[^0-9]*\([0-9][0-9.]*\)".*/\1/p' package.json)
 image="mcr.microsoft.com/playwright:v${pw_version}-noble"
 
@@ -49,11 +55,42 @@ if [ "$env_name" = local ] || [ "$env_name" = local-production ]; then
   network_args=(--network container:aggiemap-dev)
 fi
 
+volume=tamu-js-smoke-nm
+
 echo "Smoke suite: $env_name, $image"
 
-docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -w /work -e SMOKE_ENV="$env_name" -e UPDATE_FRAMING_BASELINE \
+docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -v "$volume:/work/node_modules" -w /work \
+  -e SMOKE_ENV="$env_name" -e SMOKE_VOLUME="$volume" -e PW_VERSION="$pw_version" -e NPM_CONFIG_UPDATE_NOTIFIER=false -e UPDATE_FRAMING_BASELINE \
   -e AGGIEMAP_SMOKE_FRAMING="${AGGIEMAP_SMOKE_FRAMING:-release}" "$image" \
   node -e '
+    const fs = require("fs");
+
+    // Install the three packages into the volume unless it already holds the versions the lock records.
+    const lock = require("./package-lock.json").packages;
+    const wanted = ["@playwright/test", "pngjs", "esri-loader"]
+      .map((name) => `${name}@${lock["node_modules/" + name].version}`)
+      .join(" ");
+    if (!wanted.startsWith(`@playwright/test@${process.env.PW_VERSION} `)) {
+      console.error(`The image is Playwright ${process.env.PW_VERSION}, but package-lock.json records ${wanted}.`);
+      process.exit(2);
+    }
+    const stamp = "node_modules/.smoke-packages";
+    if (!fs.existsSync(stamp) || fs.readFileSync(stamp, "utf8") !== wanted) {
+      console.log(`Installing ${wanted} into the ${process.env.SMOKE_VOLUME} volume`);
+      // In an empty folder, so npm does not read the checkout package.json and install all of it.
+      const dir = fs.mkdtempSync("/tmp/smoke-");
+      const steps = [
+        ["npm", ["install", "--no-save", "--no-package-lock", "--no-audit", "--no-fund", ...wanted.split(" ")], dir],
+        ["find", ["node_modules", "-mindepth", "1", "-delete"], "/work"],
+        ["cp", ["-a", `${dir}/node_modules/.`, "node_modules/"], "/work"]
+      ];
+      for (const [command, args, cwd] of steps) {
+        const step = require("child_process").spawnSync(command, args, { stdio: "inherit", cwd });
+        if (step.status !== 0) process.exit(step.status === null ? 1 : step.status);
+      }
+      fs.writeFileSync(stamp, wanted);
+    }
+
     const settings = require("./test/smoke/aggiemap/environments.json")[process.env.SMOKE_ENV];
     const env = {
       ...process.env,
