@@ -14,7 +14,7 @@ import { AppComponent } from './app/app.component';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('@tamu-gisc/mailroom/ngx').then((m) => m.ListModule)
+    loadChildren: () => import('@tamu-gisc/mailroom/ngx').then((m) => m.listRoutes)
   }
 ];
 

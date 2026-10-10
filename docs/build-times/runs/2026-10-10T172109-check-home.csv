@@ -1,0 +1,2 @@
+started,machine,tool,ran,exit,summary,seconds,elapsed,setup
+2026-10-10 17:21:09 CDT,home,check,refactor/1602-route-arrays-and-reexport-modules affected,0,"lint for 43 projects; test, build for 40 projects and 3 tasks they depend on",132,0:02:12,

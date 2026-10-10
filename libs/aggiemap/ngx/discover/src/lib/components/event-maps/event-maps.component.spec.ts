@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
-import { discoverRoutes } from '../../discover.module';
+import { discoverRoutes } from '../../discover.routes';
 import { EventMapsComponent } from './event-maps.component';
 
 /**

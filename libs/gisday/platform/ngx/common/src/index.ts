@@ -1,11 +1,6 @@
-export * from './lib/gisday-platform-ngx-common.module';
-
-export * from './lib/modules/events/gisday-events.module';
-
 export * from './lib/modules/modals/entity-actions-modals/entity-copy-modal/entity-copy-modal.component';
 export * from './lib/modules/modals/entity-actions-modals/entity-delete-modal/entity-delete-modal.component';
 
-export * from './lib/pipes/gisday-pipes.module';
 export * from './lib/pipes/asset-url/asset-url.pipe';
 export * from './lib/pipes/order-by/order-by.pipe';
 export * from './lib/pipes/parse-date-time-strings/parse-date-time-strings.pipe';

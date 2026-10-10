@@ -1,8 +1,3 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
-import { LightgalleryModule } from 'lightgallery/angular/13';
-
 import { BasePopupComponent } from './components/base/base.popup.component';
 import { BaseDirectionsComponent } from './components/base-directions/base-directions.component';
 import { AccessiblePopupComponent } from './components/accessible/accessible.component';
@@ -20,26 +15,8 @@ import { MarkdownPopupComponent } from './components/markdown-popup/markdown-pop
 import { MarkdownWDirectionsPopupComponent } from './components/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import { BusStopPopupComponent } from './components/bus-stop/bus-stop.component';
 
-const PopsArr = [
-  BasePopupComponent,
-  BaseDirectionsComponent,
-  AccessiblePopupComponent,
-  BuildingPopupComponent,
-  ConstructionPopupComponent,
-  LactationPopupComponent,
-  ParkingKioskPopupComponent,
-  ParkingLotPopupComponent,
-  ParkingGaragePopupComponent,
-  RestroomPopupComponent,
-  PoiPopupComponent,
-  BonfirePopupComponent,
-  DiningPopupComponent,
-  MarkdownPopupComponent,
-  MarkdownWDirectionsPopupComponent,
-  BusStopPopupComponent
-];
-
-const PopsObj = {
+// The popup components by name, for layer and search source definitions to refer to.
+export const Popups = {
   BasePopupComponent,
   BaseDirectionsComponent,
   AccessiblePopupComponent,
@@ -57,11 +34,3 @@ const PopsObj = {
   MarkdownWDirectionsPopupComponent,
   BusStopPopupComponent
 };
-
-@NgModule({
-  imports: [CommonModule, LightgalleryModule, ...PopsArr],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
-})
-export class AggiemapNgxPopupsModule {}
-
-export const Popups = PopsObj;

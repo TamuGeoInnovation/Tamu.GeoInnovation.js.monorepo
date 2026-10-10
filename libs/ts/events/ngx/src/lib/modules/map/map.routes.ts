@@ -1,15 +1,8 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
 import { ModalComponent, ReportBadRouteComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { SidebarSettingsComponent, SidebarTripPlannerComponent } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
-  AggiemapSidebarModule,
-  SidebarSettingsComponent,
-  SidebarTripPlannerComponent
-} from '@tamu-gisc/aggiemap/ngx/ui/desktop';
-import {
-  AggiemapNgxUiMobileModule,
   OmnisearchComponent,
   TripPlannerBottomComponent,
   TripPlannerTopComponent,
@@ -20,30 +13,28 @@ import {
 
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 
-import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
+import { LayerListComponent, LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
-import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
-import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
-
-import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
-
-import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 import { TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
 import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
 
-import { BasemapGalleryComponent } from '@tamu-gisc/maps/feature/basemap';
+import { BasemapGalleryComponent, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 
-import { MoveInOutSidebarModule } from '../sidebar/sidebar.module';
+import { LegendService } from '@tamu-gisc/maps/feature/legend';
+import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { MapComponent } from './map.component';
 import { MoveInOutSidebarComponent } from '../sidebar/sidebar.component';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
 import { EventLegendComponent } from './components/event-legend/event-legend.component';
 import { SidebarRedirectGuard } from '../../guards/sidebar-redirect/sidebar-redirect.guard';
 
-const routes: Routes = [
+export const mapRoutes: Routes = [
   {
     path: '',
     component: MapComponent,
+    // The services the map's NgModule used to scope to this lazy route (#1602). Whether each belongs at the root instead is #1603.
+    providers: [LayerListService, LegendService, BasemapGalleryService, RouterHistoryService, TestingService],
     children: [
       {
         path: '',
@@ -111,21 +102,3 @@ const routes: Routes = [
     ]
   }
 ];
-
-@NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    UITamuBrandingModule,
-    AggiemapNgxUiMobileModule,
-    AggiemapSidebarModule,
-    CommonNgxRouterModule,
-    SettingsModule,
-    LayerListModule,
-    LegendModule,
-    MoveInOutSidebarModule,
-    MapComponent,
-    EventLegendComponent
-  ]
-})
-export class MapModule {}

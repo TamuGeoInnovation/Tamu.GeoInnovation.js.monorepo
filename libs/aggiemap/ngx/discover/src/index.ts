@@ -1,4 +1,4 @@
-export * from './lib/discover.module';
+export * from './lib/discover.routes';
 
 export * from './lib/interfaces/discover-application.interface';
 

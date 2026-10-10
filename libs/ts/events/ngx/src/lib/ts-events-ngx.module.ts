@@ -25,7 +25,7 @@ const routes: Routes = [
       },
       {
         path: 'map',
-        loadChildren: () => import('./modules/map/map.module').then((m) => m.MapModule),
+        loadChildren: () => import('./modules/map/map.routes').then((m) => m.mapRoutes),
         canActivate: [SettingsGuard]
       },
       {
@@ -35,21 +35,21 @@ const routes: Routes = [
         children: [
           {
             path: 'intro',
-            loadChildren: () => import('./modules/builder/modules/intro/intro.module').then((m) => m.IntroModule)
+            loadChildren: () => import('./modules/builder/modules/intro/intro.routes').then((m) => m.introRoutes)
           },
           {
             path: 'accommodations/:accommodation',
             loadChildren: () =>
-              import('./modules/builder/modules/accommodations/accommodations.module').then((m) => m.AccommodationsModule)
+              import('./modules/builder/modules/accommodations/accommodations.routes').then((m) => m.accommodationsRoutes)
           },
           {
             path: 'accommodations',
             loadChildren: () =>
-              import('./modules/builder/modules/accommodations/accommodations.module').then((m) => m.AccommodationsModule)
+              import('./modules/builder/modules/accommodations/accommodations.routes').then((m) => m.accommodationsRoutes)
           },
           {
             path: 'review',
-            loadChildren: () => import('./modules/builder/modules/review/review.module').then((m) => m.ReviewModule)
+            loadChildren: () => import('./modules/builder/modules/review/review.routes').then((m) => m.reviewRoutes)
           },
           { path: '', redirectTo: 'accommodations', pathMatch: 'full' }
         ]
