@@ -43,7 +43,7 @@ const routes: Routes = [
   },
   {
     path: 'users',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.UsersModule),
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.usersRoutes),
     canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
   },
   {
