@@ -37,6 +37,7 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 | --- | --- | --- | --- | ---: |
 | 9 Oct 2026 | home | `check-in-volume.sh fix/1475-check-script-lint-and-smoke` (affected; nothing affected, no tasks), 7:25 PM Central | volume, fresh clone 38 s, `npm ci` 67 s | 1 min 56 s |
 | 9 Oct 2026 | home | The new script on a throwaway branch touching `oidc-provider-nest`: lint ran (CI lints it), test and build excluded | volume, warm | 10 s |
+| 9 Oct 2026 | home | `check-in-volume.sh feat/1587-football-lots-live-status ts-events-ngx,ts-events-angular,aggiemap-angular` (bug-fix style) | volume | Nx 42.7 s |
 | 9 Oct 2026 | home | `check-in-volume.sh chore/1545-remove-cypress` (affected, 108 projects), lock without Cypress, 6:53 PM Central | volume, clean `npm ci` 62 s (2,245 packages) | **6 min 39 s** (Nx 5 min 32 s) |
 | 9 Oct 2026 | home | The same, first lock resync, which still installed Cypress as an optional peer, 6:45 PM Central | volume, fresh clone, clean `npm ci` 93 s (2,307 packages) | 7 min 15 s |
 | 8 Oct 2026 | home | `check-in-volume.sh chore/1236-remove-ring-day-app` (affected, 110 projects, 230 tasks), 3:57 to 4:03 PM Central | volume, cold clone and `npm ci` (59 s) | 6 min (Nx 4 min 28 s) |
@@ -242,6 +243,7 @@ every layer, so its duration says as much about the GIS services as about this c
 
 | Date | Machine | Environment | Result | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 9 Oct 2026 | home | production, `build-banner.spec.ts` only, from a worktree with no `node_modules` (#1459): first run installing the three packages into the volume / packages already there / a brand-new volume | 1 passed each time | 19 s / 14 s / 16 s |
 | 8 Oct 2026 | home | **production**, `a4e04a7b` (build 20261008.15: the standalone work, #1571, #1579, #1580), release scope, 6 workers, 4:07:46 PM to 4:27:25 PM Central; cleared the 8 October release, tagged `dev-` and `prod-2026-10-08` | 397 passed, 0 failed, 0 flaky, 24 skipped, of 421 | **19 min 39 s** |
 | 8 Oct 2026 | home | local dev server, #1568 branch rebased on `development` (all the standalone work and #1571), release scope, 6 workers, about 11:25 AM to 11:55 AM Central | 428 passed, 1 failed (build banner, local only), 1 flaky (bus route 48), 30 skipped | **28.2 min** |
 | 8 Oct 2026 | home | local dev server, #1563 branch (AggieMap bootstrapped standalone), release scope, 6 workers, morning | 405 passed, 1 failed (build banner, local only), 30 skipped | 22.1 min |

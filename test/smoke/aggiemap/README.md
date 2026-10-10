@@ -105,6 +105,15 @@ test/smoke/aggiemap/run-local.sh local         # a dev server in the aggiemap-de
 Anything after the environment goes to `playwright test`, for example `--grep "gameday"`. It needs
 only Docker and bash (Git Bash on Windows). The first run downloads the Playwright image, about 2 GB.
 
+**It does not use the checkout's `node_modules`** (#1459), so a checkout or worktree that was never
+installed can run it. The suite needs three packages, `@playwright/test`, `pngjs` and `esri-loader`,
+and the script keeps them in the Docker volume `tamu-js-smoke-nm`, mounted over `/work/node_modules`.
+The first run installs them at the versions `package-lock.json` records, which takes a few seconds,
+and any run after those versions change installs them again. A full `npm ci` is 2,594 packages and,
+bind-mounted, can take 40 minutes. The Playwright image's version comes from `package.json`, and the
+script stops if the lock records a different one. Docker leaves an empty `node_modules` folder behind
+in a checkout that had none.
+
 **Each environment's settings live in [`environments.json`](environments.json)**: its address, the
 Google Analytics id it should report to, and the layers it is allowed to fail. The workflow and the
 script both read that file, so a change there applies to scheduled, manual and local runs alike.
@@ -117,12 +126,13 @@ context, but the ArcGIS SDK is downloaded once per worker and served from memory
 does not get the cache; it still works, and downloads the SDK itself.
 
 The commands below are what the script runs, for reference or for running without it. Node runs in
-Docker here, so Playwright runs in a container.
+Docker here, so Playwright runs in a container. They take the packages from the `tamu-js-smoke-nm`
+volume, so run the script once first; or drop that mount to use the checkout's own install.
 
 **Against dev or production:**
 
 ```bash
-docker run --rm -v "$PWD:/work" -w /work \
+docker run --rm -v "$PWD:/work" -v tamu-js-smoke-nm:/work/node_modules -w /work \
   -e AGGIEMAP_SMOKE_BASE_URL=https://dev.aggiemap.tamu.edu \
   -e AGGIEMAP_EXPECTED_GTAG_ID=G-71VY0QZS5P \
   mcr.microsoft.com/playwright:v1.63.0-noble \
@@ -137,7 +147,7 @@ On Windows, prefix with `MSYS_NO_PATHCONV=1` and give the mount as a Windows pat
 reaches it on `localhost`. The script's `local` environment does this for you:
 
 ```bash
-docker run --rm --network container:aggiemap-dev -v "$PWD:/work" -w /work \
+docker run --rm --network container:aggiemap-dev -v "$PWD:/work" -v tamu-js-smoke-nm:/work/node_modules -w /work \
   -e AGGIEMAP_SMOKE_BASE_URL=http://localhost:4200 \
   -e AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES="Dining Locations" \
   mcr.microsoft.com/playwright:v1.63.0-noble \
