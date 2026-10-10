@@ -21,6 +21,11 @@ result adds its own entry below, in that pull request**, with its before/after s
   dev-only Experimental Applications list no longer links it. **The deployed `/ringday/` folder on dev and
   production is still there**: deleting it, or redirecting `/ringday/` to `/events/ring-day`, is a step
   on the servers for the maintainer.
+- **Football parking lot status reaches the map within a minute, without a reload** ([#1587](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1587)).
+  Staff change a lot's class during game day, to Lot Closed for example, by editing the service, and
+  visitors had to reload the page to see it. The Football Parking Lots layer, on every personal vehicle
+  map and the RV map, now checks its service every minute and redraws what changed. Only that layer
+  polls; the others do not change during a game.
 
 ---
 
@@ -37,6 +42,7 @@ dated notes as what was tested, and this table empties.
 | --- | --- | --- |
 | Football Tailgating map: readable links to a zone or tent ([#1574](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1574)) ([before](../screenshots/tailgating-readable-links/before.png), [after](../screenshots/tailgating-readable-links/after.png)) | [Houston Street Grove](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-7), [tent O12](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?tent=O12) | Each opens that zone or tent's popup; a popup's copy link reads `?zone=AP-7` or `?tent=O12`, not `?feature=...`; the sidebar search still finds buildings and lots |
 | The old Ring Day app removed ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) ([before](../screenshots/ring-day-old-app-removed/before.png), [after](../screenshots/ring-day-old-app-removed/after.png)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps), the dev-only Experimental Applications section; and [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day) | No "Ring Day" card among the experimental applications; the Ring Day event map still opens as before |
+| Football lot status redraws without a reload ([#1587](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1587)); no screenshots, since showing it means editing live lot data | [Football parking](https://dev.aggiemap.tamu.edu/events/gameday-parking) (choose a personal vehicle option if a builder shows) | With the map open, a lot's status changed in the service (to Lot Closed, say) appears on the map within about a minute without reloading. Needs someone with edit rights to the service to change a lot |
 
 ---
 
