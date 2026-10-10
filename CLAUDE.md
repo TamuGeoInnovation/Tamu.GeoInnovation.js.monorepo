@@ -29,7 +29,7 @@ Five places, each with one job.
 | This file | The lasting rules: how to build, test, release and open a pull request here. Anything still true next month. |
 | [`docs/map-layers.md`](docs/map-layers.md) | Where a layer's symbology, title and order come from, how to override each, and when an override is right. Read before hard-coding anything about how a map looks. |
 | [`docs/testing-maps.md`](docs/testing-maps.md) | Which signal to wait for when a test needs a map to be finished, and why `ready` is not the one for a screenshot. |
-| [`docs/build-times.md`](docs/build-times.md) | How long runs take, recorded as they happen, so a change meant to speed the work up can be shown to have done it. Measurements, not rules. |
+| [`docs/build-times.md`](docs/build-times.md) | How long runs take, so a change meant to speed the work up can be shown to have done it: one small file per run in [`docs/build-times/runs/`](docs/build-times/runs), written by the scripts, and the analysis of what the numbers show. Measurements, not rules. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
 | The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
 | The maintainer's handoff page | One person's own cross-machine notes, so he can stop on one machine and resume on another. Private, not linked from this repository, reached by pasting a pickup prompt. |
@@ -70,7 +70,7 @@ From Git Bash, in the main checkout or any worktree. It runs `nx affected -t lin
 for each target the projects that target's own workflow excludes (lint from `lint.yml`, test from
 `test.yml`, build from `build.yml`, so it lints everything CI lints; #1475), writes a log, and exits
 with the check's exit code, which fails if any target failed. `bash scripts/check-in-volume.test.sh`
-tests how it reads those lists. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
+tests how it reads those lists, and `bash scripts/run-times.test.sh` the run-time files it writes. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
 of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
@@ -104,10 +104,17 @@ On its first real use, a full affected check ran 131 tasks in its first four min
 an hour before. The script keeps the Nx cache in the volume, so an unchanged task replays in about a second, and runs
 with `-m 16g` and `--parallel=8` (peak memory measured: 10.4 GB). Do not add `--skip-nx-cache`.
 
-**Record how long it took, in [`docs/build-times.md`](docs/build-times.md).** Every check, build,
-install or deploy, whatever its length: the date, the machine, what ran, the approach and the
-elapsed time. The scripts already print the elapsed time, so the measurement costs nothing; what
-costs something is wanting a number later that was only ever on screen.
+**Record how long it took.** `scripts/check-in-volume.sh` and `test/smoke/aggiemap/run-local.sh` write
+a small file per run into [`docs/build-times/runs/`](docs/build-times/runs) in the checkout they were
+run from: the start in US Central, the machine, what ran, the result and the elapsed time (#1593). One
+file per run, so two branches' runs never conflict. The file is left uncommitted; **commit the file each
+run writes** with your work. `bash scripts/run-times-report.sh` prints them all as one table. **Set
+`BUILD_TIMES_MACHINE` once on each machine** (e.g. `home`, `office`), as a user environment variable;
+without it the machine is recorded as `unspecified`. The hostname is never used, because this
+repository is public. Anything else that is timed - a
+build, install or deploy run by hand - and any context or analysis, such as what a before-and-after
+comparison shows, goes in [`docs/build-times.md`](docs/build-times.md). What costs something is wanting
+a number later that was only ever on screen.
 
 Record the run you are not trying to make faster, too. A single duration proves nothing on its own —
 the same run measured before and after a change is what shows whether the work paid off, and the
