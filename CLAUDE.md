@@ -67,8 +67,10 @@ scripts/check-in-volume.sh <branch>
 
 From Git Bash, in the main checkout or any worktree. It runs `nx affected -t lint,test,build` against
 `origin/development` in a Linux clone of the branch kept in a Docker volume (`tamu-js-<issue>`), skips
-the projects CI excludes (read from `.github/workflows/build.yml`), writes a log, and exits with the
-check's exit code. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
+for each target the projects that target's own workflow excludes (lint from `lint.yml`, test from
+`test.yml`, build from `build.yml`, so it lints everything CI lints; #1475), writes a log, and exits
+with the check's exit code, which fails if any target failed. `bash scripts/check-in-volume.test.sh`
+tests how it reads those lists. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
 of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
