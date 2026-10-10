@@ -21,6 +21,10 @@
 # the Docker volume tamu-js-smoke-nm, mounted over /work/node_modules, at the versions package-lock.json
 # records. The first run installs them, in a few seconds, and so does any run after those versions
 # change. Docker leaves an empty node_modules folder in a checkout that had none.
+#
+# Each run writes a small file into docs/build-times/runs/ in this checkout (scripts/run-times.sh, #1593):
+# when it started, in US Central, the machine (BUILD_TIMES_MACHINE), what ran, Playwright's totals and the
+# elapsed time. Commit the file with your work.
 set -euo pipefail
 
 env_name="${1:-}"
@@ -33,6 +37,10 @@ case "$env_name" in
 esac
 
 cd "$(git rev-parse --show-toplevel)"
+# shellcheck source=../../../scripts/run-times.sh
+. scripts/run-times.sh
+started="$(run_times_now)"
+SECONDS=0
 
 # The image must match the installed @playwright/test, or its browsers will not be the ones the
 # library expects. The container checks that package-lock.json records the same version.
@@ -59,6 +67,10 @@ volume=tamu-js-smoke-nm
 
 echo "Smoke suite: $env_name, $image"
 
+# The output is copied to a file for Playwright's totals, which go into the run's record.
+output="$(mktemp)"
+trap 'rm -f "$output"' EXIT
+set +e
 docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -v "$volume:/work/node_modules" -w /work \
   -e SMOKE_ENV="$env_name" -e SMOKE_VOLUME="$volume" -e PW_VERSION="$pw_version" -e NPM_CONFIG_UPDATE_NOTIFIER=false -e UPDATE_FRAMING_BASELINE \
   -e AGGIEMAP_SMOKE_FRAMING="${AGGIEMAP_SMOKE_FRAMING:-release}" "$image" \
@@ -104,4 +116,9 @@ docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -v "$v
       { stdio: "inherit", env }
     );
     process.exit(run.status === null ? 1 : run.status);
-  ' -- "$@"
+  ' -- "$@" 2>&1 | tee "$output"
+code=${PIPESTATUS[0]}
+set -e
+run_times_record docs/build-times/runs "$started" smoke \
+  "$env_name framing=${AGGIEMAP_SMOKE_FRAMING:-release}${*:+ $*}" "$code" "$(run_times_smoke_summary "$output")" "$SECONDS"
+exit "$code"

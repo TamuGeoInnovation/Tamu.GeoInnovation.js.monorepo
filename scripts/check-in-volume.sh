@@ -33,6 +33,11 @@
 #     was used for all three, so ten projects CI lints were never linted here.
 #     A list of projects runs exactly those projects for every target, with no exclusions.
 #
+# Each run writes a small file into docs/build-times/runs/ in the checkout it was run from
+# (scripts/run-times.sh, #1593): when it started, in US Central, the machine (BUILD_TIMES_MACHINE), what
+# ran, the result, the elapsed time, and the clone and npm ci times when it did those. Commit the file
+# with your work.
+#
 # ONLY COMMITTED WORK IS CHECKED. Uncommitted edits in the Windows checkout are not seen; commit first.
 # For the same reason, editing files while a check runs is safe.
 #
@@ -55,6 +60,8 @@ excluded_projects() {
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
 set -euo pipefail
+# shellcheck source=run-times.sh
+. "$(dirname "${BASH_SOURCE[0]}")/run-times.sh"
 
 usage() {
   echo "usage: $0 <branch> [affected|all|<project>[,<project>...]] [<log file>]" >&2
@@ -142,6 +149,8 @@ exit "$code"
 export MSYS_NO_PATHCONV=1
 src="$(cd "$main" && pwd -W)"
 
+started="$(run_times_now)"
+SECONDS=0
 echo "Checking $branch ($mode) in volume $volume; log: $log"
 for ((i = 0; i < ${#runs[@]}; i += 2)); do echo "  ${runs[i]}: excluding [${runs[i+1]}]"; done
 set +e
@@ -154,4 +163,6 @@ docker run --rm -m 16g \
 code=$?
 set -e
 echo "Exit $code ($branch, $mode). Log: $log"
+run_times_record "$here/docs/build-times/runs" "$started" check "$branch $mode" "$code" \
+  "$(run_times_check_summary "$log")" "$SECONDS" "$(run_times_check_setup "$log")"
 exit "$code"
