@@ -21,7 +21,7 @@ export class AssetsService extends BaseService<Asset> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'assets');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

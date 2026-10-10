@@ -20,7 +20,7 @@ export class ClassService extends BaseService<Class> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'classes');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

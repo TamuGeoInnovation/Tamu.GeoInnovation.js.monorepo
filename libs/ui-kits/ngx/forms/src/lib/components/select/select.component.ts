@@ -1,4 +1,13 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+  forwardRef,
+  ChangeDetectorRef,
+  inject
+} from '@angular/core';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';

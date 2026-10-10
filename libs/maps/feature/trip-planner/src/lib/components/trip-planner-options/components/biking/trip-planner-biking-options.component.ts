@@ -27,7 +27,7 @@ export class TripPlannerBikingOptionsComponent extends TripPlannerOptionsBaseCom
     const dts = inject(TestingService);
 
     super(analytics, tp, dts);
-  
+
     this.analytics = analytics;
     this.tp = tp;
     this.dts = dts;

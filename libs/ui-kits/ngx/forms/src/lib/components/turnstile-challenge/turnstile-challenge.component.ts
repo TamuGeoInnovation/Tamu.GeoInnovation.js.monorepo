@@ -1,4 +1,13 @@
-import { ChangeDetectorRef, Component, forwardRef, OnInit, Renderer2, DOCUMENT, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  forwardRef,
+  OnInit,
+  Renderer2,
+  DOCUMENT,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -28,7 +37,7 @@ export class TurnstileChallengeComponent extends AbstractValueAccessorFormCompon
     const cdd = inject(ChangeDetectorRef);
 
     super(cdd);
-  
+
     this.cdd = cdd;
   }
 

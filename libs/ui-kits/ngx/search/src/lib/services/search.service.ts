@@ -310,10 +310,7 @@ export class SearchService {
     return this.http.get(url).pipe(
       map((response) => {
         if (response && typeof response === 'object' && (response as { error?: unknown }).error) {
-          console.warn(
-            `Search source "${sourceLabel}" returned an error envelope:`,
-            (response as { error: unknown }).error
-          );
+          console.warn(`Search source "${sourceLabel}" returned an error envelope:`, (response as { error: unknown }).error);
           return {};
         }
         return response;

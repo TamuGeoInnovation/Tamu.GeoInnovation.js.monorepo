@@ -1,4 +1,12 @@
-import { Component, ContentChildren, AfterContentInit, QueryList, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  ContentChildren,
+  AfterContentInit,
+  QueryList,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { from, Subject } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';

@@ -1,4 +1,13 @@
-import { Component, ComponentRef, HostListener, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  ComponentRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
 

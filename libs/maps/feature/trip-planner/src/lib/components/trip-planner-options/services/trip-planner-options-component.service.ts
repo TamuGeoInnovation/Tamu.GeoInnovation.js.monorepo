@@ -8,7 +8,6 @@ import { TripPlannerBikingOptionsComponent } from '../components/biking/trip-pla
 export class TripPlannerOptionsComponentService {
   private tripPlanner = inject(TripPlannerService);
 
-
   private _dictionary = [
     { type: 'parking_pass', component: TripPlannerParkingOptionsComponent },
     { type: 'bike_share', component: TripPlannerBikingOptionsComponent }

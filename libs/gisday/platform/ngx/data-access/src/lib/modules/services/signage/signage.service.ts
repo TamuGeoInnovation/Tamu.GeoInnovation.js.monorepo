@@ -7,7 +7,6 @@ import { Injectable, inject } from '@angular/core';
 export class SignageService {
   private http = inject(HttpClient);
 
-
   public getUrl(competition: string) {
     // TODO: Update to a local url if possible; since this is an old competition maybe not
     return `https://gisday.tamu.edu/rest/${competition}/Get/Submissions/?geoJSON=true`;

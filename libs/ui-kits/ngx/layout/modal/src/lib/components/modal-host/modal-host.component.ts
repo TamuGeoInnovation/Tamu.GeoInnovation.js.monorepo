@@ -1,4 +1,16 @@
-import { Component, ComponentRef, HostListener, Injector, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  ComponentRef,
+  HostListener,
+  Injector,
+  OnDestroy,
+  OnInit,
+  Type,
+  ViewChild,
+  ViewContainerRef,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { Observable, Subject, takeUntil } from 'rxjs';
 
 import { MODAL_DATA } from '../../..';

@@ -14,7 +14,7 @@ export class BusListHeaderComponent extends AccordionHeaderComponent {
     const c = inject(AccordionService);
 
     super(c);
-  
+
     this.c = c;
   }
 }

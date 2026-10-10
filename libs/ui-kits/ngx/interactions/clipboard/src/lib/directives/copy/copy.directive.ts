@@ -1,4 +1,14 @@
-import { Directive, ElementRef, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, inject } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  Input,
+  OnDestroy,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+  inject
+} from '@angular/core';
 
 import { Observable, timer } from 'rxjs';
 import { mapTo, startWith } from 'rxjs/operators';

@@ -36,7 +36,7 @@ export class UniversityListComponent extends BaseAdminListComponent<University> 
     const ns = inject(NotificationService);
 
     super(universityService, ss, ar, rt, ms, ns);
-  
+
     this.universityService = universityService;
     this.ss = ss;
     this.ar = ar;

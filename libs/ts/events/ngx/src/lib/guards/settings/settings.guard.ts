@@ -12,12 +12,11 @@ import { EventSettings } from '../../interfaces/special-event.interface';
 @Injectable({
   providedIn: 'root'
 })
-export class SettingsGuard  {
+export class SettingsGuard {
   private readonly router = inject(Router);
   private readonly ess = inject(EventSettingsService);
   private readonly ns = inject(NotificationService);
   private readonly anl = inject(Angulartics2);
-
 
   public canActivate(
     route: ActivatedRouteSnapshot

@@ -32,7 +32,7 @@ export class AdminEditRsvpTypeComponent extends BaseAdminListComponent<RsvpType>
     const ns = inject(NotificationService);
 
     super(rsvpTypeService, ss, ar, rt, ms, ns);
-  
+
     this.rsvpTypeService = rsvpTypeService;
     this.ss = ss;
     this.ar = ar;

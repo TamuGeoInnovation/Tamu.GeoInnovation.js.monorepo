@@ -13,7 +13,6 @@ export class AuthInterceptor implements HttpInterceptor {
   private document = inject<Document>(DOCUMENT);
   private environment = inject(EnvironmentService);
 
-
   public intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const urlOrOptions: string | AuthOptions =
       this.environment.value('auth_url', true) || this.environment.value('auth_options', true);

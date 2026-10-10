@@ -1,5 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Route, Router, RouterStateSnapshot, UrlSegment, UrlTree } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  Route,
+  Router,
+  RouterStateSnapshot,
+  UrlSegment,
+  UrlTree
+} from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
@@ -7,11 +15,10 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 @Injectable({
   providedIn: 'root'
 })
-export class RouteParamsGuard  {
+export class RouteParamsGuard {
   private readonly ar = inject(ActivatedRoute);
   private readonly es = inject(EventSettingsService);
   private readonly router = inject(Router);
-
 
   public canActivate(
     route: ActivatedRouteSnapshot,

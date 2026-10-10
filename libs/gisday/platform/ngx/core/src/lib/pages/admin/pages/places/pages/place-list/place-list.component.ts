@@ -36,7 +36,7 @@ export class PlaceListComponent extends BaseAdminListComponent<Place> {
     const ns = inject(NotificationService);
 
     super(orgService, ss, ar, rt, ms, ns);
-  
+
     this.orgService = orgService;
     this.ss = ss;
     this.ar = ar;

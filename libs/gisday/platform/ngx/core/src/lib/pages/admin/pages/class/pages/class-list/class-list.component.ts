@@ -36,7 +36,7 @@ export class ClassListComponent extends BaseAdminListComponent<Class> {
     const ns = inject(NotificationService);
 
     super(classService, ss, ar, rt, ms, ns);
-  
+
     this.classService = classService;
     this.ss = ss;
     this.ar = ar;

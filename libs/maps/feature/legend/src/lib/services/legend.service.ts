@@ -69,10 +69,7 @@ export class LegendService {
           // start hidden (e.g. an off-by-default layer in a mutually-exclusive group that
           // should still be listed in the legend so users know it exists).
           scan(
-            (
-              acc: { allowedIds: Set<string>; result: esri.ActiveLayerInfo[] },
-              items: esri.ActiveLayerInfo[]
-            ) => {
+            (acc: { allowedIds: Set<string>; result: esri.ActiveLayerInfo[] }, items: esri.ActiveLayerInfo[]) => {
               const allowedIds = new Set(acc.allowedIds);
               items.filter((l) => l.layer.visible).forEach((l) => allowedIds.add(l.layer.id));
               return { allowedIds, result: items.filter((l) => allowedIds.has(l.layer.id)) };

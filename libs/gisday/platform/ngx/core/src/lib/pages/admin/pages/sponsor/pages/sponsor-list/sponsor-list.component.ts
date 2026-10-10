@@ -36,7 +36,7 @@ export class SponsorListComponent extends BaseAdminListComponent<Sponsor> {
     const ns = inject(NotificationService);
 
     super(sponsorService, ss, ar, rt, ms, ns);
-  
+
     this.sponsorService = sponsorService;
     this.ss = ss;
     this.ar = ar;

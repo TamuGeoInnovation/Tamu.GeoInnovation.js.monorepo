@@ -36,7 +36,7 @@ export class TagsListComponent extends BaseAdminListComponent<Tag> {
     const ns = inject(NotificationService);
 
     super(tagService, ss, ar, rt, ms, ns);
-  
+
     this.tagService = tagService;
     this.ss = ss;
     this.ar = ar;

@@ -20,7 +20,7 @@ export class SponsorService extends BaseService<Sponsor> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'sponsors');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

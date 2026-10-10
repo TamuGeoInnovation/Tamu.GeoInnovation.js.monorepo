@@ -20,7 +20,7 @@ export class AdminViewRsvpTypeComponent extends BaseAdminViewComponent<RsvpType>
     const rsvpTypeService = inject(RsvpTypeService);
 
     super(rsvpTypeService);
-  
+
     this.rsvpTypeService = rsvpTypeService;
   }
 }

@@ -1,4 +1,14 @@
-import { Component, ElementRef, Input, OnChanges, OnDestroy, AfterViewInit, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  AfterViewInit,
+  ViewChild,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 
 import { AccordionService } from '../services/accordion.service';
 import { IAccordionModel } from '../services/accordion.service';

@@ -7,7 +7,6 @@ import { marked } from 'marked';
 export class MarkdownParsePipe implements PipeTransform {
   private sanitizer = inject(DomSanitizer);
 
-
   public transform(value: string): SafeHtml {
     if (value) {
       const content = marked(value);

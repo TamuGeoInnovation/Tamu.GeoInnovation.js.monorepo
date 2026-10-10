@@ -18,7 +18,6 @@ export class SignageComponent implements OnInit {
   private mapService = inject(MapboxMapService);
   private signageService = inject(SignageService);
 
-
   public ngOnInit(): void {
     // TODO: Finish this -Aaron (1/5/2021)
     this.mapService.loaded.subscribe((map) => {

@@ -36,7 +36,7 @@ export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {
     const ns = inject(NotificationService);
 
     super(speakerService, ss, ar, rt, ms, ns);
-  
+
     this.speakerService = speakerService;
     this.ss = ss;
     this.ar = ar;

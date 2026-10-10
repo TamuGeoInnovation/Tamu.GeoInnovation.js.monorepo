@@ -16,10 +16,9 @@ export const ENDED_PATH = 'ended';
 @Injectable({
   providedIn: 'root'
 })
-export class RetiredEventGuard  {
+export class RetiredEventGuard {
   private readonly router = inject(Router);
   private readonly eventSettingsService = inject(EventSettingsService);
-
 
   public canActivateChild(childRoute: ActivatedRouteSnapshot): boolean | UrlTree {
     const eventRoute = childRoute.pathFromRoot.find((snapshot) => snapshot.params['eventId']);

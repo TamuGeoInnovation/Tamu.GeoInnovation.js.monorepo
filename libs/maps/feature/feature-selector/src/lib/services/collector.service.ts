@@ -18,7 +18,7 @@ export class FeatureCollectorService extends FeatureSelectorService {
     const ms = inject(EsriMapService);
 
     super(ms);
-  
+
     this.ms = ms;
   }
 

@@ -8,7 +8,6 @@ export const AppStorage = new InjectionToken<StorageService>('AppStorage');
 export class LocalStoreService {
   private store = inject<StorageService>(AppStorage);
 
-
   /**
    * Returns value of provided local storage reference.
    *

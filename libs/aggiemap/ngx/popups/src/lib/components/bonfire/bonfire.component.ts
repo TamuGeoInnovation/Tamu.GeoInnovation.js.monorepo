@@ -1,4 +1,14 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy,
+  CUSTOM_ELEMENTS_SCHEMA,
+  inject
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 
@@ -95,7 +105,7 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
     const mp = inject(EsriMapService);
 
     super(rtr, rt, ps, anl, mp);
-  
+
     this.rtr = rtr;
     this.rt = rt;
     this.ps = ps;

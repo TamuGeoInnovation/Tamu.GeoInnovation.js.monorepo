@@ -6,10 +6,9 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 @Injectable({
   providedIn: 'root'
 })
-export class EventEntryGuard  {
+export class EventEntryGuard {
   private readonly router = inject(Router);
   private readonly eventSettingsService = inject(EventSettingsService);
-
 
   public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree {
     this.eventSettingsService.validateEventQueryParams(route, true);
@@ -18,7 +17,8 @@ export class EventEntryGuard  {
       .flatMap((snapshot) => snapshot.url.map((segment) => segment.path))
       .filter((segment) => segment.length > 0);
 
-    const requestedPath = this.router.parseUrl(state.url).root.children['primary']?.segments.map((segment) => segment.path) ?? [];
+    const requestedPath =
+      this.router.parseUrl(state.url).root.children['primary']?.segments.map((segment) => segment.path) ?? [];
 
     // Only intercept bare event URLs like /parking/avp-parking. Child routes such as /map and /builder should continue normally.
     if (requestedPath.length > eventPath.length) {

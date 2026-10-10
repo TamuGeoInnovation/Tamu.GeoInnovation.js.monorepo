@@ -87,7 +87,7 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent implemen
     const enn = inject(EnvironmentService);
 
     super(fbb, rtt, arr, lss, ass, enn);
-  
+
     this.fbb = fbb;
     this.rtt = rtt;
     this.arr = arr;

@@ -1,4 +1,16 @@
-import { Component, forwardRef, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, TemplateRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  Renderer2,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, NG_VALUE_ACCESSOR, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, debounceTime, map, Observable, shareReplay, startWith } from 'rxjs';
 import { TextboxComponent } from '../textbox/textbox.component';

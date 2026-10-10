@@ -17,7 +17,7 @@ export class AdminViewCheckinsComponent extends BaseAdminViewComponent<CheckIn> 
     const checkinService = inject(CheckinService);
 
     super(checkinService);
-  
+
     this.checkinService = checkinService;
   }
 }

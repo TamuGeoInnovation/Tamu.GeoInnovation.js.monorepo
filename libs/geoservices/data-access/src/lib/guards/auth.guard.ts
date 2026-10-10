@@ -7,10 +7,9 @@ import { AuthService } from '../services/auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard  {
+export class AuthGuard {
   private auth = inject(AuthService);
   private router = inject(Router);
-
 
   public canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this._authorized;

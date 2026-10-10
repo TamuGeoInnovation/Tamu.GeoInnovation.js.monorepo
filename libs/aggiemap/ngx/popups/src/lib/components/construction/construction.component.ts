@@ -63,7 +63,7 @@ export class ConstructionPopupComponent extends BaseDirectionsComponent implemen
     const mp = inject(EsriMapService);
 
     super(rtr, rt, ps, anl, mp);
-  
+
     this.rtr = rtr;
     this.rt = rt;
     this.ps = ps;

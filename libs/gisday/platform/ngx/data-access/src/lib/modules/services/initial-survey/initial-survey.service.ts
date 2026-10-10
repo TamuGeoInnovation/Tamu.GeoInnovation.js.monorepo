@@ -20,7 +20,7 @@ export class InitialSurveyService extends BaseService<InitialSurveyResponse> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'initial-surveys');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

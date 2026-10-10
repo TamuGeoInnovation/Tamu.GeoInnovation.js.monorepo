@@ -20,7 +20,7 @@ export class EventService extends BaseService<Event> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'events');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

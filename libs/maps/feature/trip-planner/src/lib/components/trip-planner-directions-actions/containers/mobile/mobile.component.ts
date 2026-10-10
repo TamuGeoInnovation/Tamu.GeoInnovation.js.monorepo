@@ -31,7 +31,7 @@ export class TripPlannerDirectionsActionsMobileComponent extends TripPlannerDire
     const ps = inject(TripPlannerService);
 
     super(ccd, anl, rt, ar, ps);
-  
+
     this.ccd = ccd;
     this.anl = anl;
     this.rt = rt;

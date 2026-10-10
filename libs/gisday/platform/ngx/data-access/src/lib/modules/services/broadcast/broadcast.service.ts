@@ -20,7 +20,7 @@ export class BroadcastService extends BaseService<EventBroadcast> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'event-broadcasts');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

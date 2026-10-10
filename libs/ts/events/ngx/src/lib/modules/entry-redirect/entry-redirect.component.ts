@@ -13,7 +13,6 @@ export class EntryRedirectComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly eventSettingsService = inject(EventSettingsService);
 
-
   public ngOnInit(): void {
     this.eventSettingsService.validateEventQueryParams(this.route.snapshot, true);
 

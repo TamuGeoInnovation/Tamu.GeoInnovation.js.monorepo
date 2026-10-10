@@ -1,4 +1,12 @@
-import { AfterContentInit, Component, ContentChild, HostListener, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  ContentChild,
+  HostListener,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 
 import { TileTitleComponent } from '../tile-title/tile-title.component';

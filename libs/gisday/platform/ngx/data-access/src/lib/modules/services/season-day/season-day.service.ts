@@ -18,7 +18,7 @@ export class SeasonDayService extends BaseService<SeasonDay> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'season-days');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

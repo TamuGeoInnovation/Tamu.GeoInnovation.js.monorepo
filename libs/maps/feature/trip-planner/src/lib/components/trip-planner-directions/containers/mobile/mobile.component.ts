@@ -26,7 +26,7 @@ export class TripPlannerDirectionsMobileComponent extends TripPlannerDirectionsC
     const al = inject(Angulartics2);
 
     super(rt, ps, al);
-  
+
     this.rt = rt;
     this.ps = ps;
     this.al = al;

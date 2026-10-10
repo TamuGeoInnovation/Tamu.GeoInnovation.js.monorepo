@@ -30,7 +30,7 @@ export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerC
     const dts = inject(TestingService);
 
     super(tps, dts);
-  
+
     this.tps = tps;
     this.dts = dts;
   }

@@ -20,7 +20,6 @@ export class SidebarReferenceComponent<T extends esri.Graphic> {
   private helper = inject(AltSearchHelper);
   private mapService = inject(EsriMapService);
 
-
   public onSearchResult(result: SearchSelection<T>) {
     this.helper.handleSearchResultFeatureSelection(result).subscribe((res) => {
       const tPoint = TripPoint.from(res);

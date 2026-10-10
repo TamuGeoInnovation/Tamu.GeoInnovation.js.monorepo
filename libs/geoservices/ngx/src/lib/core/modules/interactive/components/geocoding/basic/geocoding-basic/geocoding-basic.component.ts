@@ -62,7 +62,7 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
     const en = inject(EnvironmentService);
 
     super(fb, rt, ar, ls, as, en);
-  
+
     this.fb = fb;
     this.rt = rt;
     this.ar = ar;

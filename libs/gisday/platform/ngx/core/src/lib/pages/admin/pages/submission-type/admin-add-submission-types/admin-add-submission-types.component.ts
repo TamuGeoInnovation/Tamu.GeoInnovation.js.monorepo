@@ -29,7 +29,7 @@ export class AdminAddSubmissionTypesComponent extends BaseAdminAddComponent<Subm
     const submissionTypeService = inject(SubmissionTypeService);
 
     super(submissionTypeService);
-  
+
     this.submissionTypeService = submissionTypeService;
   }
 

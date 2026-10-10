@@ -7,7 +7,6 @@ import { AssetsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 export class AssetUrlPipe implements PipeTransform {
   private readonly assetService = inject(AssetsService);
 
-
   public transform(path: string): Observable<string> {
     if (!path) {
       return null;

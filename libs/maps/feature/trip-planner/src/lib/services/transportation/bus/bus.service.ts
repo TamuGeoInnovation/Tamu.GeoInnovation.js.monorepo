@@ -681,11 +681,7 @@ export class BusService {
     );
   }
 
-  public toggleMapRoute(
-    short_name: string,
-    symbols?: ('route' | 'stops' | 'buses')[],
-    zoomToRoute = true
-  ): void {
+  public toggleMapRoute(short_name: string, symbols?: ('route' | 'stops' | 'buses')[], zoomToRoute = true): void {
     // Check if there are any existing graphics at all in the bus layer.
     const existingGraphics = this._busLayer.getValue().graphics.length > 0;
 

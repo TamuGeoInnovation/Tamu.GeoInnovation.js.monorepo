@@ -242,16 +242,19 @@ export class EventSettingsService implements EventSettingsQuery {
     const existingSettings = this.settings() || {};
     let changed = false;
 
-    const merged = options.reduce((acc, option) => {
-      // Evaluate visibility against the accumulating settings so a gating option (listed earlier) can
-      // determine whether a dependent, conditionally-visible option should receive a default value.
-      if (this.isOptionVisible(option, acc) && acc[option.value] === undefined && option.choices.length > 0) {
-        acc[option.value] = option.choices[0].value;
-        changed = true;
-      }
+    const merged = options.reduce(
+      (acc, option) => {
+        // Evaluate visibility against the accumulating settings so a gating option (listed earlier) can
+        // determine whether a dependent, conditionally-visible option should receive a default value.
+        if (this.isOptionVisible(option, acc) && acc[option.value] === undefined && option.choices.length > 0) {
+          acc[option.value] = option.choices[0].value;
+          changed = true;
+        }
 
-      return acc;
-    }, { ...existingSettings } as EventSettings);
+        return acc;
+      },
+      { ...existingSettings } as EventSettings
+    );
 
     if (changed) {
       this.store.setStorageObjectKeyValue({

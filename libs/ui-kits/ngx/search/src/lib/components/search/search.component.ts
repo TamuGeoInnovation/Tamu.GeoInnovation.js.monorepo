@@ -1,4 +1,17 @@
-import { Component, OnInit, ElementRef, ViewChild, Output, EventEmitter, Input, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ElementRef,
+  ViewChild,
+  Output,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  HostListener,
+  inject
+} from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 

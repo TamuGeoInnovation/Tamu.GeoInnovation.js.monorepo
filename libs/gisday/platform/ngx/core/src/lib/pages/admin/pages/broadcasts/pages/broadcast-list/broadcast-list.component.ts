@@ -36,7 +36,7 @@ export class BroadcastListComponent extends BaseAdminListComponent<EventBroadcas
     const ns = inject(NotificationService);
 
     super(broadcastService, ss, ar, rt, ms, ns);
-  
+
     this.broadcastService = broadcastService;
     this.ss = ss;
     this.ar = ar;

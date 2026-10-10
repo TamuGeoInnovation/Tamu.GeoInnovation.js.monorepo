@@ -16,7 +16,6 @@ export class BasemapGalleryService {
   private readonly ms = inject(EsriMapService);
   private readonly ts = inject(TestingService);
 
-
   public gallery() {
     return combineLatest([
       this.mp.require([

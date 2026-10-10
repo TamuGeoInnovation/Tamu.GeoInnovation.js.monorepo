@@ -15,7 +15,6 @@ export class AppComponent implements OnInit {
   private readonly vcr = inject(ViewContainerRef);
   private readonly ms = inject(ModalService);
 
-
   public ngOnInit(): void {
     this.ms.registerGlobalViewRef(this.vcr);
   }

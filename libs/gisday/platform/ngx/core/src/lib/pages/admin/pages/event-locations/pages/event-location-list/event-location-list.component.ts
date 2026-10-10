@@ -36,7 +36,7 @@ export class EventLocationListComponent extends BaseAdminListComponent<EventLoca
     const ns = inject(NotificationService);
 
     super(eventLocationService, ss, ar, rt, ms, ns);
-  
+
     this.eventLocationService = eventLocationService;
     this.ss = ss;
     this.ar = ar;

@@ -1,4 +1,13 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild, AfterViewInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  ViewChild,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject, Observable } from 'rxjs';
 import { switchMap, takeUntil, shareReplay, distinctUntilChanged, take, filter } from 'rxjs/operators';

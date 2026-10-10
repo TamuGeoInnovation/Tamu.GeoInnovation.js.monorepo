@@ -15,7 +15,6 @@ export class MobileSidebarComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-
   /**
    * Returns to the parent route, effectively closing the sidebar.
    */

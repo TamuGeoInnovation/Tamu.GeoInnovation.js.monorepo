@@ -18,7 +18,7 @@ export class OrganizationService extends BaseService<Organization> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'organizations');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

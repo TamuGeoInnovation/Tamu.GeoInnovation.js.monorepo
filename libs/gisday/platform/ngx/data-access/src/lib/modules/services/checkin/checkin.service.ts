@@ -23,7 +23,7 @@ export class CheckinService extends BaseService<CheckIn> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'check-ins');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

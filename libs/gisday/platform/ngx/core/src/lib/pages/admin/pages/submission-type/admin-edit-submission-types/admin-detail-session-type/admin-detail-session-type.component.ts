@@ -28,7 +28,7 @@ export class AdminDetailSessionTypeComponent extends BaseAdminDetailComponent<Su
     const submissionTypeService = inject(SubmissionTypeService);
 
     super(fb1, route1, submissionTypeService);
-  
+
     this.fb1 = fb1;
     this.route1 = route1;
     this.submissionTypeService = submissionTypeService;

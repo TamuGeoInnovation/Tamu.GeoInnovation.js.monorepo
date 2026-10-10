@@ -18,10 +18,9 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 @Injectable({
   providedIn: 'root'
 })
-export class SidebarRedirectGuard  {
+export class SidebarRedirectGuard {
   private readonly router = inject(Router);
   private readonly eventSettingsService = inject(EventSettingsService);
-
 
   public canActivate(route: ActivatedRouteSnapshot): boolean {
     const hideSidebar = this.eventSettingsService.eventConfiguration()?.configuration?.hideSidebar === true;

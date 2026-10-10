@@ -11,10 +11,9 @@ import { LegacyAuthService } from '../services/auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class LegacyAuthGuard  {
+export class LegacyAuthGuard {
   private auth = inject(LegacyAuthService);
   private router = inject(Router);
-
 
   public canActivate(
     route: ActivatedRouteSnapshot

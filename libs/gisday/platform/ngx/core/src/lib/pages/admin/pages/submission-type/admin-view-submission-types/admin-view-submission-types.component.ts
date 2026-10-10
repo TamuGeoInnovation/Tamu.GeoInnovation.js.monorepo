@@ -19,7 +19,7 @@ export class AdminViewSubmissionTypesComponent extends BaseAdminViewComponent<Su
     const submissionTypeService = inject(SubmissionTypeService);
 
     super(submissionTypeService);
-  
+
     this.submissionTypeService = submissionTypeService;
   }
 }

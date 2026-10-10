@@ -1,4 +1,14 @@
-import { Component, OnInit, Input, Renderer2, ElementRef, Output, EventEmitter, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Renderer2,
+  ElementRef,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-backdrop',

@@ -14,7 +14,6 @@ export class BikeService {
   private http = inject(HttpClient);
   private search = inject(SearchService);
 
-
   /**
    * Returns the coordinates of a nearby bike-share unit.
    *

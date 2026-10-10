@@ -48,7 +48,6 @@ export class LegendElementComponent implements OnInit {
   private readonly moduleProvider = inject(EsriModuleProviderService);
   private readonly layerSourcesService = inject(LayerSourcesService);
 
-
   private readonly sportsSafetyFirstLayerIds = new Set([
     'softball-parking-safety-first',
     'swimming-parking-safety-first',

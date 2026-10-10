@@ -39,7 +39,6 @@ export class PopupMobileComponent extends PopupComponent implements OnDestroy {
     this.ps = ps;
     const dragService = this.dragService;
 
-
     this.identifier = dragService.register(this);
   }
 

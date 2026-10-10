@@ -33,7 +33,7 @@ export class AdminEditSubmissionTypesComponent extends BaseAdminListComponent<Su
     const ns = inject(NotificationService);
 
     super(submissionTypeService, ss, ar, rt, ms, ns);
-  
+
     this.submissionTypeService = submissionTypeService;
     this.ss = ss;
     this.ar = ar;

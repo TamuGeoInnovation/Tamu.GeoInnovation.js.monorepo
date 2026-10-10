@@ -6,10 +6,9 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 @Injectable({
   providedIn: 'root'
 })
-export class BuilderAccessGuard  {
+export class BuilderAccessGuard {
   private readonly router = inject(Router);
   private readonly eventSettingsService = inject(EventSettingsService);
-
 
   public canActivate(route: ActivatedRouteSnapshot): boolean | UrlTree {
     const eventRoute = route.parent ?? route;

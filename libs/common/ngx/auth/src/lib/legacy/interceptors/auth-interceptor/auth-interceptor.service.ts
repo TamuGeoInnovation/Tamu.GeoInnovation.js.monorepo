@@ -23,7 +23,6 @@ import { LegacyAuthService } from '../../services/auth/auth.service';
 export class LegacyAuthInterceptor implements HttpInterceptor {
   private auth = inject(LegacyAuthService);
 
-
   public intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(req).pipe(
       tap(

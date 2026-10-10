@@ -20,7 +20,7 @@ export class UniversityService extends BaseService<University> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'universities');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

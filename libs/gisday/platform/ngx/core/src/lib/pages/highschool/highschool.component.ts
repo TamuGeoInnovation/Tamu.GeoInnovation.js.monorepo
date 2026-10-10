@@ -10,7 +10,6 @@ import { Title } from '@angular/platform-browser';
 export class HighschoolComponent implements OnInit {
   private titleService = inject(Title);
 
-
   public ngOnInit(): void {
     this.titleService.setTitle('High School | TxGIS Day');
   }

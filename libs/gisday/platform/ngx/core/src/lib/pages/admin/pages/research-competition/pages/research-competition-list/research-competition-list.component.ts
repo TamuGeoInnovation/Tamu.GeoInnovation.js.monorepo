@@ -49,7 +49,7 @@ export class ResearchCompetitionListComponent extends BaseAdminListComponent<Sub
     const ns = inject(NotificationService);
 
     super(submissionService, ss, ar, rt, ms, ns);
-  
+
     this.submissionService = submissionService;
     this.ss = ss;
     this.ar = ar;

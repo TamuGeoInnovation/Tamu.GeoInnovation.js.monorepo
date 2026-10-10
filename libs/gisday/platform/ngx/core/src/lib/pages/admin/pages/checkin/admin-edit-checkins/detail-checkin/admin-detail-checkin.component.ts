@@ -24,7 +24,7 @@ export class AdminDetailCheckinComponent extends BaseAdminDetailComponent<CheckI
     const checkinService = inject(CheckinService);
 
     super(fb1, route1, checkinService);
-  
+
     this.fb1 = fb1;
     this.route1 = route1;
     this.checkinService = checkinService;

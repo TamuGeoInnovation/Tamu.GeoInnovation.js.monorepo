@@ -20,7 +20,7 @@ export class SpeakerService extends BaseService<Speaker> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'speakers');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

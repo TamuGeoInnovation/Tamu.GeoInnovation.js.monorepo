@@ -37,7 +37,7 @@ export class EventListComponent extends BaseAdminListComponent<Event> {
     const ns = inject(NotificationService);
 
     super(eventService, ss, ar, rt, ms, ns);
-  
+
     this.eventService = eventService;
     this.ss = ss;
     this.ar = ar;

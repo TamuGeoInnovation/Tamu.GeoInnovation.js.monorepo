@@ -13,7 +13,6 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 export class BetaPromptComponent {
   private readonly mr = inject(ModalRefService);
 
-
   public close() {
     this.mr.close(true);
   }

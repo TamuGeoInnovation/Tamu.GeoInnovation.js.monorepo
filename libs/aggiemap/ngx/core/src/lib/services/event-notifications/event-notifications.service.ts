@@ -110,7 +110,6 @@ export class EventNotificationsService {
   private readonly notificationService = inject(NotificationService);
   private readonly definitions = inject(EVENT_NOTIFICATION_DEFINITIONS, { optional: true });
 
-
   /**
    * Ids shown in this browser session, so each notice appears once per session (#1307).
    *

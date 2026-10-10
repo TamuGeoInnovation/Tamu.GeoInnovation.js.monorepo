@@ -34,7 +34,7 @@ export class SearchMobileComponent extends SearchComponent {
     const elRef = inject(ElementRef);
 
     super(cdr, anltcs, nss, ss, env, elRef);
-  
+
     this.cdr = cdr;
     this.anltcs = anltcs;
     this.nss = nss;

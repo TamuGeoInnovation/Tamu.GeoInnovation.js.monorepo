@@ -71,7 +71,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
     const ms = inject(EsriMapService);
 
     super(rtr, rt, ps, anl, ms);
-  
+
     this.rtr = rtr;
     this.rt = rt;
     this.ps = ps;

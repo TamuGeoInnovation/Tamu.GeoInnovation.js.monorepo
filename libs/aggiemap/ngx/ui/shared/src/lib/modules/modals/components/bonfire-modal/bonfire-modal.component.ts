@@ -13,7 +13,6 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 export class BonfireModalComponent {
   private readonly mr = inject(ModalRefService);
 
-
   public close(acknowledge?: boolean) {
     this.mr.close(acknowledge);
   }

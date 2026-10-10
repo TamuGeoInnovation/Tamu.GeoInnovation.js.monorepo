@@ -46,7 +46,7 @@ export class ParkingLotPopupComponent extends BaseDirectionsComponent {
     const mp = inject(EsriMapService);
 
     super(rtr, rt, ps, anl, mp);
-  
+
     this.rtr = rtr;
     this.rt = rt;
     this.ps = ps;

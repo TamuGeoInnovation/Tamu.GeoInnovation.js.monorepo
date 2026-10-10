@@ -1,4 +1,16 @@
-import { Component, OnInit, Input, ElementRef, HostListener, ContentChild, AfterContentInit, OnDestroy, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  ElementRef,
+  HostListener,
+  ContentChild,
+  AfterContentInit,
+  OnDestroy,
+  ViewChild,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { TooltipTriggerComponent } from './components/tooltip-trigger/tooltip-trigger.component';
 import { debounceTime, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';

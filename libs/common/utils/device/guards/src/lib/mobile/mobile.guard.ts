@@ -8,10 +8,9 @@ import { getUrlSegmentsFromRouteSnapshot, routeSubstitute } from '@tamu-gisc/com
 @Injectable({
   providedIn: 'root'
 })
-export class MobileGuard  {
+export class MobileGuard {
   private rp = inject(ResponsiveService);
   private router = inject(Router);
-
 
   public canActivate(next: ActivatedRouteSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     if (!this.rp.snapshot.isMobile) {

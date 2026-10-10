@@ -20,11 +20,10 @@ import { ROLES_CLAIM } from '../../tokens/claims.token';
 @Injectable({
   providedIn: 'root'
 })
-export class RoleGuard  {
+export class RoleGuard {
   private readonly claim = inject(ROLES_CLAIM);
   private readonly as = inject(AuthService);
   private readonly rt = inject(Router);
-
 
   /**
    * Provide `{requiredRoles: ['role1', 'role2', ...]]}` as a route data property to

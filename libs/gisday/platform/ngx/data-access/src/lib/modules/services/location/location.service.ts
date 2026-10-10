@@ -20,7 +20,7 @@ export class LocationService extends BaseService<EventLocation> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'event-locations');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

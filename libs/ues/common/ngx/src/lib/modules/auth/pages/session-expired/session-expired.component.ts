@@ -18,7 +18,6 @@ export class SessionExpiredComponent {
   private auth = inject(LegacyAuthService);
   private route = inject(ActivatedRoute);
 
-
   /**
    * Seconds before redirect
    */

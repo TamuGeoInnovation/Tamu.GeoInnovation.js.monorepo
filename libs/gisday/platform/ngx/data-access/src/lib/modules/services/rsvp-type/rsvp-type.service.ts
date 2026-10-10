@@ -20,7 +20,7 @@ export class RsvpTypeService extends BaseService<RsvpType> {
     const http1 = inject(HttpClient);
 
     super(env1, http1, 'rsvp-types');
-  
+
     this.env1 = env1;
     this.http1 = http1;
   }

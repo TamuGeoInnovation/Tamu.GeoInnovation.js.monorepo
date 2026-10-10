@@ -14,10 +14,9 @@ import { ModalRefService, MODAL_DATA } from '@tamu-gisc/ui-kits/ngx/layout/modal
 export class DeleteEmailModalComponent {
   readonly data = inject<{
     message: number;
-}>(MODAL_DATA);
+  }>(MODAL_DATA);
   private readonly modalRef = inject(ModalRefService);
   readonly emailService = inject(EmailService);
-
 
   public deleteEmail() {
     this.emailService

@@ -34,7 +34,7 @@ export class SeasonsListComponent extends BaseAdminListComponent<Season> impleme
     const ns = inject(NotificationService);
 
     super(ss, ss, ar, rt, ms, ns);
-  
+
     this.ss = ss;
     this.ar = ar;
     this.rt = rt;

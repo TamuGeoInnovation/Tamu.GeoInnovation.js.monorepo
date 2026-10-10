@@ -28,7 +28,7 @@ export class AdminDetailRsvpTypeComponent extends BaseAdminDetailComponent<RsvpT
     const rsvpTypeService = inject(RsvpTypeService);
 
     super(fb1, route1, rsvpTypeService);
-  
+
     this.fb1 = fb1;
     this.route1 = route1;
     this.rsvpTypeService = rsvpTypeService;

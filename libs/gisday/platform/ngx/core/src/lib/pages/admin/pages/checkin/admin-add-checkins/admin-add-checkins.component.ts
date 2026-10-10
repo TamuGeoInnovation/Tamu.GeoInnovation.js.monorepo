@@ -26,7 +26,7 @@ export class AdminAddCheckinsComponent extends BaseAdminAddComponent<CheckIn> im
     const checkinService = inject(CheckinService);
 
     super(checkinService);
-  
+
     this.checkinService = checkinService;
   }
 

@@ -1,4 +1,13 @@
-import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, forkJoin, from } from 'rxjs';
