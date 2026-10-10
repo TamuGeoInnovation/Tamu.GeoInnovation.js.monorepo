@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
-import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SubmissionTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
@@ -18,21 +17,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class AdminDetailSessionTypeComponent extends BaseAdminDetailComponent<SubmissionType> implements OnInit {
-  private fb1: UntypedFormBuilder;
-  private route1: ActivatedRoute;
-  private submissionTypeService: SubmissionTypeService;
-
-  constructor() {
-    const fb1 = inject(UntypedFormBuilder);
-    const route1 = inject(ActivatedRoute);
-    const submissionTypeService = inject(SubmissionTypeService);
-
-    super(fb1, route1, submissionTypeService);
-
-    this.fb1 = fb1;
-    this.route1 = route1;
-    this.submissionTypeService = submissionTypeService;
-  }
+  protected readonly entityService = inject(SubmissionTypeService);
 
   public ngOnInit() {
     super.ngOnInit();

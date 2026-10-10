@@ -1,13 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  forwardRef,
-  OnInit,
-  Renderer2,
-  DOCUMENT,
-  ChangeDetectionStrategy,
-  inject
-} from '@angular/core';
+import { Component, forwardRef, OnInit, Renderer2, DOCUMENT, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -28,18 +19,9 @@ import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TurnstileChallengeComponent extends AbstractValueAccessorFormComponent<string> implements OnInit {
-  private cdd: ChangeDetectorRef;
   private readonly renderer = inject(Renderer2);
   private _document = inject<Document>(DOCUMENT);
   private readonly env = inject(EnvironmentService);
-
-  constructor() {
-    const cdd = inject(ChangeDetectorRef);
-
-    super(cdd);
-
-    this.cdd = cdd;
-  }
 
   public ngOnInit(): void {
     const script = this.renderer.createElement('script');

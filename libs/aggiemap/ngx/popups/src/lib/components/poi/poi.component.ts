@@ -6,20 +6,14 @@ import {
   OnInit,
   ViewChild,
   ChangeDetectionStrategy,
-  CUSTOM_ELEMENTS_SCHEMA,
-  inject
+  CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 
-import { Angulartics2 } from 'angulartics2';
 import { register } from 'swiper/element/bundle';
 import { InitDetail } from 'lightgallery/lg-events';
 import lightGallery from 'lightgallery';
 import { LightGallery } from 'lightgallery/lightgallery';
-
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -37,12 +31,6 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [CopyComponent, AsyncPipe, MarkdownParsePipe]
 })
 export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
-  private rtr: Router;
-  private rt: ActivatedRoute;
-  private ps: TripPlannerService;
-  private anl: Angulartics2;
-  private mp: EsriMapService;
-
   public load: ReplaySubject<boolean> = new ReplaySubject(1);
   public medias: Array<string> = [];
 
@@ -55,22 +43,6 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
 
   private _lgInstance: LightGallery;
   private _needsRefresh = false;
-
-  constructor() {
-    const rtr = inject(Router);
-    const rt = inject(ActivatedRoute);
-    const ps = inject(TripPlannerService);
-    const anl = inject(Angulartics2);
-    const mp = inject(EsriMapService);
-
-    super(rtr, rt, ps, anl, mp);
-
-    this.rtr = rtr;
-    this.rt = rt;
-    this.ps = ps;
-    this.anl = anl;
-    this.mp = mp;
-  }
 
   public ngOnInit(): void {
     super.ngOnInit();

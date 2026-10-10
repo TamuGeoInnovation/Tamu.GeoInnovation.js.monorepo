@@ -14,13 +14,5 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   imports: [AsyncPipe, DatePipe]
 })
 export class AdminViewRsvpTypeComponent extends BaseAdminViewComponent<RsvpType> {
-  private readonly rsvpTypeService: RsvpTypeService;
-
-  constructor() {
-    const rsvpTypeService = inject(RsvpTypeService);
-
-    super(rsvpTypeService);
-
-    this.rsvpTypeService = rsvpTypeService;
-  }
+  public readonly entityService = inject(RsvpTypeService);
 }

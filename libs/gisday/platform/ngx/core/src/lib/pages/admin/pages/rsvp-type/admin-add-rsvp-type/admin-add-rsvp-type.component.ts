@@ -23,15 +23,7 @@ export const formExporter = () => {
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class AdminAddRsvpTypeComponent extends BaseAdminAddComponent<RsvpType> implements OnInit {
-  private rsvpTypeService: RsvpTypeService;
-
-  constructor() {
-    const rsvpTypeService = inject(RsvpTypeService);
-
-    super(rsvpTypeService);
-
-    this.rsvpTypeService = rsvpTypeService;
-  }
+  protected readonly entityService = inject(RsvpTypeService);
 
   public ngOnInit() {
     this.form = formExporter();

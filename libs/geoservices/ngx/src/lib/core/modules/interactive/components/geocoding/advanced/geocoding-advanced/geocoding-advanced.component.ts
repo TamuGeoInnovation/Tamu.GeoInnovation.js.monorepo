@@ -1,17 +1,13 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import {
   CensusYear,
   GeocodeTieHandlingStrategyType,
   IGeocodeOptions,
   GeocodeConfidenceLevel
 } from '@tamu-gisc/geoprocessing-v5';
-import { AuthService } from '@tamu-gisc/geoservices/data-access';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { GeocodingBasicComponent } from '../../basic/geocoding-basic/geocoding-basic.component';
 import {
@@ -65,36 +61,13 @@ import { AsyncPipe } from '@angular/common';
   ]
 })
 export class GeocodingAdvancedComponent extends GeocodingBasicComponent implements OnInit, OnDestroy {
-  private fbb: UntypedFormBuilder;
-  private readonly rtt: Router;
-  private readonly arr: ActivatedRoute;
-  private readonly lss: LocalStoreService;
-  private readonly ass: AuthService;
-  private readonly enn: EnvironmentService;
+  private fbb = inject(UntypedFormBuilder);
 
   public tieBreakingStrategies = TIE_BREAKING_STRATEGIES;
   public refs = GEOCODING_REFS;
   public cls = OPEN_ADDRESSES_MINIMUM_CONFIDENCE_LEVELS;
 
   private _$destroy: Subject<boolean> = new Subject();
-
-  constructor() {
-    const fbb = inject(UntypedFormBuilder);
-    const rtt = inject(Router);
-    const arr = inject(ActivatedRoute);
-    const lss = inject(LocalStoreService);
-    const ass = inject(AuthService);
-    const enn = inject(EnvironmentService);
-
-    super(fbb, rtt, arr, lss, ass, enn);
-
-    this.fbb = fbb;
-    this.rtt = rtt;
-    this.arr = arr;
-    this.lss = lss;
-    this.ass = ass;
-    this.enn = enn;
-  }
 
   public ngOnInit(): void {
     super.ngOnInit();

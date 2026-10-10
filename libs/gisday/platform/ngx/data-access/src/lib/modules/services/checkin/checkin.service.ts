@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { CheckIn } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
@@ -12,20 +11,13 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class CheckinService extends BaseService<CheckIn> {
-  private env1: EnvironmentService;
-  private http1: HttpClient;
+  private http1 = inject(HttpClient);
   private ns = inject(NotificationService);
 
   public resource: string;
 
   constructor() {
-    const env1 = inject(EnvironmentService);
-    const http1 = inject(HttpClient);
-
-    super(env1, http1, 'check-ins');
-
-    this.env1 = env1;
-    this.http1 = http1;
+    super('check-ins');
   }
 
   public getUserCheckins() {

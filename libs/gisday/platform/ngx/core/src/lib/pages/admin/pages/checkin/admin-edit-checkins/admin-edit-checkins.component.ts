@@ -11,13 +11,5 @@ import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.co
   styleUrls: ['./admin-edit-checkins.component.scss']
 })
 export class AdminEditCheckinsComponent extends BaseAdminListComponent<CheckIn> {
-  private readonly checkinService: CheckinService;
-
-  constructor() {
-    const checkinService = inject(CheckinService);
-
-    super(checkinService);
-
-    this.checkinService = checkinService;
-  }
+  protected readonly entityService = inject(CheckinService);
 }

@@ -11,13 +11,5 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
   styleUrls: ['./admin-view-checkins.component.scss']
 })
 export class AdminViewCheckinsComponent extends BaseAdminViewComponent<CheckIn> {
-  private readonly checkinService: CheckinService;
-
-  constructor() {
-    const checkinService = inject(CheckinService);
-
-    super(checkinService);
-
-    this.checkinService = checkinService;
-  }
+  public readonly entityService = inject(CheckinService);
 }

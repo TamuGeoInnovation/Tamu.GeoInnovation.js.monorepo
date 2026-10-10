@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
 
 import { ActiveSeasonDto, Season } from '@tamu-gisc/gisday/platform/data-api';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { BaseService } from '../_base/base.service';
 
@@ -11,8 +10,7 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class SeasonService extends BaseService<Season> {
-  private env1: EnvironmentService;
-  private http1: HttpClient;
+  private http1 = inject(HttpClient);
 
   private _signal$: Subject<void> = new Subject();
 
@@ -28,13 +26,7 @@ export class SeasonService extends BaseService<Season> {
   );
 
   constructor() {
-    const env1 = inject(EnvironmentService);
-    const http1 = inject(HttpClient);
-
-    super(env1, http1, 'seasons');
-
-    this.env1 = env1;
-    this.http1 = http1;
+    super('seasons');
   }
 
   public getActiveSeason() {

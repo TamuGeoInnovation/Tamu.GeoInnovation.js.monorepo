@@ -1,7 +1,6 @@
 import { Component, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { PopupComponent } from '../base/base.component';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { PopupService } from '../../services/popup.service';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
@@ -19,8 +18,6 @@ import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout';
   imports: [DragDirective, NgClass, RenderHostDirective, AsyncPipe]
 })
 export class PopupMobileComponent extends PopupComponent implements OnDestroy {
-  private ms: EsriMapService;
-  private ps: PopupService;
   private dragService = inject(DragService);
 
   /**
@@ -31,12 +28,8 @@ export class PopupMobileComponent extends PopupComponent implements OnDestroy {
   public identifier: string;
 
   constructor() {
-    const ms = inject(EsriMapService);
-    const ps = inject(PopupService);
+    super();
 
-    super(ms, ps);
-    this.ms = ms;
-    this.ps = ps;
     const dragService = this.dragService;
 
     this.identifier = dragService.register(this);

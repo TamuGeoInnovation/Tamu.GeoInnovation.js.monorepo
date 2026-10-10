@@ -13,13 +13,5 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   imports: [AsyncPipe, DatePipe]
 })
 export class AdminViewSubmissionTypesComponent extends BaseAdminViewComponent<SubmissionType> {
-  private readonly submissionTypeService: SubmissionTypeService;
-
-  constructor() {
-    const submissionTypeService = inject(SubmissionTypeService);
-
-    super(submissionTypeService);
-
-    this.submissionTypeService = submissionTypeService;
-  }
+  public readonly entityService = inject(SubmissionTypeService);
 }

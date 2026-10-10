@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { Event, EventAttendanceDto } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
@@ -10,19 +9,12 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class EventService extends BaseService<Event> {
-  private env1: EnvironmentService;
-  private http1: HttpClient;
+  private http1 = inject(HttpClient);
 
   public resource: string;
 
   constructor() {
-    const env1 = inject(EnvironmentService);
-    const http1 = inject(HttpClient);
-
-    super(env1, http1, 'events');
-
-    this.env1 = env1;
-    this.http1 = http1;
+    super('events');
   }
 
   public getNumberOfRsvps(eventGuid: string) {

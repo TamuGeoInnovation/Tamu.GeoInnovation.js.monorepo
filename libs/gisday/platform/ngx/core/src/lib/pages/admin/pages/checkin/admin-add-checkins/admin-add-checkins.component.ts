@@ -20,15 +20,7 @@ export const formExporter = () => {
   styleUrls: ['./admin-add-checkins.component.scss']
 })
 export class AdminAddCheckinsComponent extends BaseAdminAddComponent<CheckIn> implements OnInit {
-  private checkinService: CheckinService;
-
-  constructor() {
-    const checkinService = inject(CheckinService);
-
-    super(checkinService);
-
-    this.checkinService = checkinService;
-  }
+  protected readonly entityService = inject(CheckinService);
 
   public ngOnInit() {
     this.form = formExporter();

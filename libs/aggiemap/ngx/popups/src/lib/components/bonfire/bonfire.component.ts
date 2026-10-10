@@ -6,20 +6,14 @@ import {
   OnInit,
   ViewChild,
   ChangeDetectionStrategy,
-  CUSTOM_ELEMENTS_SCHEMA,
-  inject
+  CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 
-import { Angulartics2 } from 'angulartics2';
 import { register } from 'swiper/element/bundle';
 import { InitDetail } from 'lightgallery/lg-events';
 import lightGallery from 'lightgallery';
 import { LightGallery } from 'lightgallery/lightgallery';
-
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { AsyncPipe } from '@angular/common';
@@ -36,12 +30,6 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [AsyncPipe, MarkdownParsePipe]
 })
 export class BonfirePopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
-  private rtr: Router;
-  private rt: ActivatedRoute;
-  private ps: TripPlannerService;
-  private anl: Angulartics2;
-  private mp: EsriMapService;
-
   public load: ReplaySubject<boolean> = new ReplaySubject(1);
   public medias: Array<string> = [];
 
@@ -96,22 +84,6 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
     "Miranda Denise Adams '02": 'fallen_MirandaDeniseAdams.jpg',
     "Nathan Scott West '02": 'fallen_NathanScottWest.jpg'
   };
-
-  constructor() {
-    const rtr = inject(Router);
-    const rt = inject(ActivatedRoute);
-    const ps = inject(TripPlannerService);
-    const anl = inject(Angulartics2);
-    const mp = inject(EsriMapService);
-
-    super(rtr, rt, ps, anl, mp);
-
-    this.rtr = rtr;
-    this.rt = rt;
-    this.ps = ps;
-    this.anl = anl;
-    this.mp = mp;
-  }
 
   public ngOnInit(): void {
     super.ngOnInit();

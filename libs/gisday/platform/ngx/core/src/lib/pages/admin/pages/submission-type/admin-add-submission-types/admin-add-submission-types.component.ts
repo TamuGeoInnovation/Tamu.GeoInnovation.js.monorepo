@@ -23,15 +23,7 @@ export const formExporter = () => {
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class AdminAddSubmissionTypesComponent extends BaseAdminAddComponent<SubmissionType> implements OnInit {
-  private submissionTypeService: SubmissionTypeService;
-
-  constructor() {
-    const submissionTypeService = inject(SubmissionTypeService);
-
-    super(submissionTypeService);
-
-    this.submissionTypeService = submissionTypeService;
-  }
+  protected readonly entityService = inject(SubmissionTypeService);
 
   public ngOnInit() {
     this.form = formExporter();
