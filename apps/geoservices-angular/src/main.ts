@@ -25,16 +25,16 @@ import { AppComponent } from './app/app.component';
 const routes: Routes = [
   {
     path: 'internal',
-    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesInternalModule)
+    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.geoservicesInternalRoutes)
     // canActivateChild: [AuthGuard]
   },
   {
     path: 'docs',
-    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesApiModule)
+    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.geoservicesApiRoutes)
   },
   {
     path: '',
-    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesPublicModule)
+    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.geoservicesPublicRoutes)
   }
 ];
 
