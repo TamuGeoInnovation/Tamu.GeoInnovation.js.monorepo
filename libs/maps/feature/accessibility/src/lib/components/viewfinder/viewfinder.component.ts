@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, ChangeDetectionStrategy, inject } from '@angular/core';
 import { fromEventPattern, Observable, Subject } from 'rxjs';
 import { map, mapTo, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 
@@ -17,6 +17,10 @@ import esri = __esri;
   imports: [NgClass, AsyncPipe]
 })
 export class MapViewfinderComponent implements OnInit, OnDestroy {
+  private mp = inject(EsriModuleProviderService);
+  private mapService = inject(EsriMapService);
+  private environment = inject(EnvironmentService);
+
   /**
    * Valid layer source ID which features will be focused.
    *
@@ -64,12 +68,6 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
   private _viewfinder: ElementRef;
 
   private _$destroy: Subject<boolean> = new Subject();
-
-  constructor(
-    private mp: EsriModuleProviderService,
-    private mapService: EsriMapService,
-    private environment: EnvironmentService
-  ) {}
 
   public ngOnInit() {
     const sources = this.environment.value('LayerSources');

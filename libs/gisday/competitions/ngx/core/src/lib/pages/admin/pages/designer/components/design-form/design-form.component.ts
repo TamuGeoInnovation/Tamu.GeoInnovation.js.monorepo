@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { catchError, map, pluck, shareReplay, startWith, switchMap } from 'rxjs/operators';
@@ -21,6 +21,10 @@ import esri = __esri;
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, CheckboxComponent, DesignQuestionComponent]
 })
 export class DesignFormComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly http = inject(HttpClient);
+  private readonly fs = inject(FormService);
+
   @Output()
   public updated: EventEmitter<Array<ICompetitionSeasonFormQuestion>> = new EventEmitter();
 
@@ -28,12 +32,6 @@ export class DesignFormComponent implements OnInit {
   public urlFields$: Observable<Array<Field>>;
   public loadSchemaForm: UntypedFormGroup;
   public formModel: UntypedFormGroup;
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly http: HttpClient,
-    private readonly fs: FormService
-  ) {}
 
   public ngOnInit(): void {
     this.loadSchemaForm = this.fb.group({

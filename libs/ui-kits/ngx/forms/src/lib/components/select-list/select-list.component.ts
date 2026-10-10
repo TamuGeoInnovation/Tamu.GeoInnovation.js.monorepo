@@ -8,7 +8,8 @@ import {
   Renderer2,
   SimpleChanges,
   TemplateRef,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  inject
 } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, NG_VALUE_ACCESSOR, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, debounceTime, map, Observable, shareReplay, startWith } from 'rxjs';
@@ -30,6 +31,9 @@ import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, NgTemplateOutlet, AsyncPipe]
 })
 export class SelectListComponent<T extends Record<string, unknown>> implements OnInit, OnChanges {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly renderer = inject(Renderer2);
+
   /**
    * Default placeholder text for the input.
    */
@@ -76,11 +80,6 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   public options$: Observable<Array<T>>;
   private _displayList$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public displayList$: Observable<boolean> = this._displayList$.asObservable();
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly renderer: Renderer2
-  ) {}
 
   public ngOnInit(): void {
     this.initializeOptions(this.options);

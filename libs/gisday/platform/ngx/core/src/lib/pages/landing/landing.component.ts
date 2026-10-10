@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import {
   distinctUntilChanged,
@@ -45,6 +45,11 @@ const numberDictionary = {
   imports: [RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
 })
 export class LandingComponent implements OnInit {
+  private titleService = inject(Title);
+  private readonly seasonService = inject(SeasonService);
+  private readonly sponsorService = inject(SponsorService);
+  private readonly placeService = inject(PlaceService);
+
   private title = 'TxGIS Day';
   public timeTill: Date = new Date();
   public daysTill: string;
@@ -65,13 +70,6 @@ export class LandingComponent implements OnInit {
 
   public sponsors$: Observable<Array<Partial<Sponsor>>>;
   public organizations$: Observable<Array<Partial<Place>>>;
-
-  constructor(
-    private titleService: Title,
-    private readonly seasonService: SeasonService,
-    private readonly sponsorService: SponsorService,
-    private readonly placeService: PlaceService
-  ) {}
 
   public ngOnInit() {
     this.titleService.setTitle(this.title);

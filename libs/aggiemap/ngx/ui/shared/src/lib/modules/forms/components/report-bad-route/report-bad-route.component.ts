@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subject } from 'rxjs';
@@ -19,6 +19,12 @@ import { FormsModule } from '@angular/forms';
   imports: [FormsModule]
 })
 export class ReportBadRouteComponent implements OnInit, OnDestroy {
+  private tripPlanner = inject(TripPlannerService);
+  private analytics = inject(Angulartics2);
+  private router = inject(Router);
+  private location = inject(Location);
+  private notificationService = inject(NotificationService);
+
   public result: TripResult;
 
   public description: string;
@@ -29,14 +35,6 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
   private _lastRoute: string;
 
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(
-    private tripPlanner: TripPlannerService,
-    private analytics: Angulartics2,
-    private router: Router,
-    private location: Location,
-    private notificationService: NotificationService
-  ) {}
 
   public ngOnInit() {
     this.tripPlanner.TravelOptions.pipe(

@@ -1,4 +1,4 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -37,6 +37,9 @@ export const MAP_NOTICE_SESSION_PREFIX = 'map-notice:';
   imports: [ButtonComponent]
 })
 export class MapNoticeComponent {
+  private readonly mr = inject(ModalRefService);
+  private readonly data = inject<MapNoticeData>(MODAL_DATA);
+
   public title: string;
   public message: string;
   public details: string[];
@@ -59,10 +62,9 @@ export class MapNoticeComponent {
     }
   }
 
-  constructor(
-    private readonly mr: ModalRefService,
-    @Inject(MODAL_DATA) private readonly data: MapNoticeData
-  ) {
+  constructor() {
+    const data = this.data;
+
     this.title = data?.title ?? '';
     this.message = data?.message ?? '';
     this.details = data?.details ?? [];

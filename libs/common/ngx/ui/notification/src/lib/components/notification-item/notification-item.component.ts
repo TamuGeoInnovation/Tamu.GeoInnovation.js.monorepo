@@ -6,7 +6,8 @@ import {
   EventEmitter,
   OnDestroy,
   HostBinding,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  inject
 } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
@@ -37,6 +38,8 @@ import { Notification } from '../../helpers/notification.helper';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class NotificationItemComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+
   // Notification object passed in from the parent component
   @Input()
   public notification: Notification;
@@ -81,8 +84,6 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
     limit: 10000,
     fn: undefined
   };
-
-  constructor(private router: Router) {}
 
   public ngOnInit() {
     // Initiate timer auto-dismiss countdown

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
@@ -30,6 +30,11 @@ import { AsyncPipe, CurrencyPipe } from '@angular/common';
   ]
 })
 export class InteractivePricingComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly route = inject(ActivatedRoute);
+  private readonly env = inject(EnvironmentService);
+
   public form: UntypedFormGroup;
 
   public selectedCreditTier: Observable<PricingTier>;
@@ -108,13 +113,6 @@ export class InteractivePricingComponent implements OnInit {
 
   public eligiblePricingTiers: Observable<Array<PricingTier>>;
   public pricingSliderDataMap: Observable<RangeInputDataMap>;
-
-  constructor(
-    private readonly router: Router,
-    private readonly fb: UntypedFormBuilder,
-    private readonly route: ActivatedRoute,
-    private readonly env: EnvironmentService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

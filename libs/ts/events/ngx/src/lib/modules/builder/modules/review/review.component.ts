@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 
@@ -21,18 +21,16 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [ButtonComponent]
 })
 export class ReviewComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly eventSettingsService = inject(EventSettingsService);
+  private readonly angulartics = inject(Angulartics2);
+
   public eventOptions: BehaviorSubject<SpecialEventOptions>;
   public settings: Observable<EventSettings>;
   public mergedSettings: ResolvedEventSettings;
   public settingsValid = false;
   public configuration: EventConfiguration | null;
-
-  constructor(
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly eventSettingsService: EventSettingsService,
-    private readonly angulartics: Angulartics2
-  ) {}
 
   public ngOnInit() {
     this.eventOptions = new BehaviorSubject(this.eventSettingsService.eventOptions());

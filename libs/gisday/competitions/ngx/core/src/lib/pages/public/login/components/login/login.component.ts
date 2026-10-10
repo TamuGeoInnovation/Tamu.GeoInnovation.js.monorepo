@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { AuthService } from '@tamu-gisc/gisday/competitions/ngx/common';
 
@@ -9,9 +9,9 @@ import { AuthService } from '@tamu-gisc/gisday/competitions/ngx/common';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class LoginComponent {
-  public loginContext: Window;
+  private auth = inject(AuthService);
 
-  constructor(private auth: AuthService) {}
+  public loginContext: Window;
 
   public doLogin() {
     this.auth.authenticate('/');

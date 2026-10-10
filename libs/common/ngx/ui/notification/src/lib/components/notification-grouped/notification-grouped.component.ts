@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, Optional, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -29,6 +29,11 @@ import { NgClass } from '@angular/common';
   imports: [NgClass]
 })
 export class NotificationGroupedComponent implements OnInit, OnDestroy {
+  private readonly analytics = inject(Angulartics2, { optional: true });
+  private readonly router = inject(Router, { optional: true });
+  private readonly modal = inject(ModalService, { optional: true });
+  private readonly service = inject(NotificationService);
+
   @Input()
   public position: 'left' | 'center' | 'right' = 'center';
 
@@ -64,13 +69,6 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
   private _groupTimerInterval: ReturnType<typeof setInterval> | undefined;
   private _groupSubscription: Subscription | undefined;
   private _modalSubscription: Subscription | undefined;
-
-  constructor(
-    @Optional() private readonly analytics: Angulartics2,
-    @Optional() private readonly router: Router,
-    @Optional() private readonly modal: ModalService,
-    private readonly service: NotificationService
-  ) {}
 
   /**
    * Highest priority first, and within a priority the order they arrived in.

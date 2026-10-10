@@ -1,4 +1,4 @@
-import { Inject, Injectable, InjectionToken, Optional, Type } from '@angular/core';
+import { Injectable, InjectionToken, Type, inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, from, Observable, of, BehaviorSubject, timer } from 'rxjs';
@@ -29,6 +29,13 @@ export const BUS_STOP_POPUP_COMPONENT = new InjectionToken<Type<unknown>>('BUS_S
 
 @Injectable({ providedIn: 'root' })
 export class BusService {
+  private http = inject(HttpClient);
+  private moduleProvider = inject(EsriModuleProviderService);
+  private mapService = inject(EsriMapService);
+  private location = inject(Location);
+  private readonly analytics = inject(Angulartics2);
+  private busStopPopupComponent = inject<Type<unknown>>(BUS_STOP_POPUP_COMPONENT, { optional: true });
+
   // Legacy Transportation Services API. It is no longer available; the methods still referencing it
   // (waypoints/stops/timetable/live-bus, used only by the currently-disabled trip-planner bus mode)
   // are kept for compilation but are not exercised by the bus map.
@@ -60,14 +67,7 @@ export class BusService {
 
   private _busLocationsLayer: esri.FeatureLayer;
 
-  constructor(
-    private http: HttpClient,
-    private moduleProvider: EsriModuleProviderService,
-    private mapService: EsriMapService,
-    private location: Location,
-    private readonly analytics: Angulartics2,
-    @Optional() @Inject(BUS_STOP_POPUP_COMPONENT) private busStopPopupComponent: Type<unknown>
-  ) {
+  constructor() {
     from(this.mapService.store).subscribe((mapInstance: MapServiceInstance) => {
       this._map = mapInstance.map;
       this._view = mapInstance.view;
@@ -681,11 +681,7 @@ export class BusService {
     );
   }
 
-  public toggleMapRoute(
-    short_name: string,
-    symbols?: ('route' | 'stops' | 'buses')[],
-    zoomToRoute = true
-  ): void {
+  public toggleMapRoute(short_name: string, symbols?: ('route' | 'stops' | 'buses')[], zoomToRoute = true): void {
     // Check if there are any existing graphics at all in the bus layer.
     const existingGraphics = this._busLayer.getValue().graphics.length > 0;
 

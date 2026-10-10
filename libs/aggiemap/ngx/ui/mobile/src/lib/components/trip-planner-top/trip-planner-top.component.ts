@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { fromEventPattern, Observable, pipe, Subject } from 'rxjs';
 import { switchMap, takeUntil, pluck, map } from 'rxjs/operators';
@@ -19,6 +19,12 @@ import esri = __esri;
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TripPlannerTopComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private tripPlanner = inject(TripPlannerService);
+  private mapService = inject(EsriMapService);
+  private dragService = inject(DragService);
+
   /**
    * Animation trigger.
    *
@@ -45,14 +51,6 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
   public result: TripResult;
 
   public dragStates: UIDragState[];
-
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private tripPlanner: TripPlannerService,
-    private mapService: EsriMapService,
-    private dragService: DragService
-  ) {}
 
   // TODO: There are a lot of internal subscriptions in here. Make more reactive.
   public ngOnInit(): void {

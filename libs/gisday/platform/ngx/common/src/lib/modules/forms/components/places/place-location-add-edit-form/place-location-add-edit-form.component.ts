@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -36,6 +36,15 @@ import { AsyncPipe } from '@angular/common';
   ]
 })
 export class PlaceLocationAddEditFormComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly at = inject(ActivatedRoute);
+  private readonly rt = inject(Router);
+  private readonly as = inject(AssetsService);
+  private readonly ps = inject(PlaceService);
+  private readonly sn = inject(DomSanitizer);
+  private readonly ns = inject(NotificationService);
+  private readonly ss = inject(SeasonService);
+
   @Input()
   public type: 'create' | 'edit';
 
@@ -48,17 +57,6 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
     { label: 'Footer', value: PlaceVisibilityOptions.Footer },
     { label: 'About Page', value: PlaceVisibilityOptions.OrgPage }
   ];
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly at: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly as: AssetsService,
-    private readonly ps: PlaceService,
-    private readonly sn: DomSanitizer,
-    private readonly ns: NotificationService,
-    private readonly ss: SeasonService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

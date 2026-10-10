@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
@@ -13,9 +13,9 @@ import { AsyncPipe } from '@angular/common';
   imports: [BasemapOverrideComponent, AsyncPipe]
 })
 export class ExperimentsListComponent implements OnInit {
-  public responsive: Observable<boolean>;
+  private readonly rs = inject(ResponsiveService);
 
-  constructor(private readonly rs: ResponsiveService) {}
+  public responsive: Observable<boolean>;
 
   ngOnInit(): void {
     this.responsive = this.rs.isMobile;

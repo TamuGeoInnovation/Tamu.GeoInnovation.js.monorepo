@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 import { Observable } from 'rxjs';
 
@@ -14,13 +14,13 @@ import { AsyncPipe } from '@angular/common';
   imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class CopyComponent {
+  private analytics = inject(Angulartics2);
+
   @Input()
   public text: string;
 
   @Input()
   public copying: Observable<boolean>;
-
-  constructor(private analytics: Angulartics2) {}
 
   public copyCoordsClick() {
     const label = {

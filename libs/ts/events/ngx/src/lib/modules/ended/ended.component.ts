@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
@@ -16,7 +16,10 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 export class EndedComponent {
   public readonly name: string;
 
-  constructor(route: ActivatedRoute, eventSettingsService: EventSettingsService) {
+  constructor() {
+    const route = inject(ActivatedRoute);
+    const eventSettingsService = inject(EventSettingsService);
+
     const eventId = route.snapshot.pathFromRoot.find((snapshot) => snapshot.params['eventId'])?.params['eventId'];
     const configuration = eventSettingsService.getEventDefinitionById(eventId)?.configuration;
 

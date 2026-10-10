@@ -1,8 +1,14 @@
+import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
 
 import { Notification, NotificationProperties, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { COLLEGE_STATION, EventNotificationsService, NO_NOTIFICATIONS } from './event-notifications.service';
+import {
+  COLLEGE_STATION,
+  EVENT_NOTIFICATION_DEFINITIONS,
+  EventNotificationsService,
+  NO_NOTIFICATIONS
+} from './event-notifications.service';
 
 /**
  * College Station's notices show on map pages only, and once per browser session (#1307).
@@ -52,10 +58,14 @@ describe('EventNotificationsService on map pages, once per session', () => {
   /** A fresh service, as a page load creates. Session storage carries over, as it does on a reload. */
   const load = () => {
     notifications = new FakeNotificationService();
-    return new EventNotificationsService(notifications as unknown as NotificationService, [
-      definition('ring-day'),
-      definition('kickoff')
-    ]);
+    return TestBed.resetTestingModule()
+      .configureTestingModule({
+        providers: [
+          { provide: NotificationService, useValue: notifications },
+          { provide: EVENT_NOTIFICATION_DEFINITIONS, useValue: [definition('ring-day'), definition('kickoff')] }
+        ]
+      })
+      .runInInjectionContext(() => new EventNotificationsService());
   };
 
   afterEach(() => sessionStorage.clear());

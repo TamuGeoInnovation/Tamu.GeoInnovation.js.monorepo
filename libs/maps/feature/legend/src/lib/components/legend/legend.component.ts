@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Optional, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
@@ -20,6 +20,12 @@ import esri = __esri;
   imports: [LegendCollectionComponent, AsyncPipe]
 })
 export class LegendComponent implements OnInit, OnDestroy {
+  private legendService = inject(LegendService);
+  private responsiveService = inject(ResponsiveService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private analytics = inject(Angulartics2, { optional: true });
+
   /**
    * Certain layers may have duplicate icon/label entries as a result of their unique value renderer definitions.
    *
@@ -55,14 +61,6 @@ export class LegendComponent implements OnInit, OnDestroy {
   public responsive: ResponsiveSnapshot;
 
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(
-    private legendService: LegendService,
-    private responsiveService: ResponsiveService,
-    private router: Router,
-    private route: ActivatedRoute,
-    @Optional() private analytics: Angulartics2
-  ) {}
 
   public ngOnInit() {
     // Read route data to set input properties

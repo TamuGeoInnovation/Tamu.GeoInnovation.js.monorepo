@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, Subject, map, pipe, startWith } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
@@ -12,6 +12,8 @@ import { AsyncPipe } from '@angular/common';
   imports: [AsyncPipe]
 })
 export class BasicSummaryBlurbComponent implements OnInit {
+  private readonly ls = inject(LocalStoreService);
+
   @Input()
   public keyFragment: string;
 
@@ -23,8 +25,6 @@ export class BasicSummaryBlurbComponent implements OnInit {
   private _trigger: Subject<void> = new Subject();
   private _primaryKey = 'geoservices';
   private _subKey: string;
-
-  constructor(private readonly ls: LocalStoreService) {}
 
   public ngOnInit(): void {
     this.showBlurb = this._trigger.pipe(startWith(false), this.getSummaryNoticeSetting());

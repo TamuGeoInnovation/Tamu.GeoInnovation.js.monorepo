@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { MailroomEmail } from '@tamu-gisc/mailroom/common';
@@ -8,12 +8,12 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   providedIn: 'root'
 })
 export class EmailService {
+  private env = inject(EnvironmentService);
+  private http = inject(HttpClient);
+
   public resource: string;
 
-  constructor(
-    private env: EnvironmentService,
-    private http: HttpClient
-  ) {
+  constructor() {
     this.resource = this.env.value('api_url');
   }
 

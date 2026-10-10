@@ -1,4 +1,10 @@
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+
+import { Angulartics2 } from 'angulartics2';
+
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { NotificationGroupedComponent } from './notification-grouped.component';
 import { Notification } from '../../helpers/notification.helper';
@@ -7,7 +13,7 @@ import { NotificationService } from '../../services/notification.service';
 /**
  * Acting on one grouped alert clears the batch (#1246).
  *
- * The component is instantiated by hand rather than through a `TestBed`: `actionGroupItem` is the
+ * The component is instantiated by hand rather than rendered: `actionGroupItem` is the
  * whole subject, and the thing that regressed is which notifications are left in the service
  * afterwards, not anything rendered.
  *
@@ -52,12 +58,16 @@ describe('NotificationGroupedComponent.actionGroupItem', () => {
     navigated = [];
     const router = { navigate: (commands: unknown[]) => navigated.push(commands) };
 
-    component = new NotificationGroupedComponent(
-      null as never,
-      router as never,
-      modal as never,
-      service as unknown as NotificationService
-    );
+    component = TestBed.resetTestingModule()
+      .configureTestingModule({
+        providers: [
+          { provide: Angulartics2, useValue: null },
+          { provide: Router, useValue: router },
+          { provide: ModalService, useValue: modal },
+          { provide: NotificationService, useValue: service }
+        ]
+      })
+      .runInInjectionContext(() => new NotificationGroupedComponent());
     component.ngOnInit();
 
     return component;
@@ -125,12 +135,16 @@ describe('NotificationGroupedComponent, while a modal is open', () => {
   const build = (items: Notification[]) => {
     modal = new FakeModalService();
 
-    component = new NotificationGroupedComponent(
-      null as never,
-      null as never,
-      modal as never,
-      new FakeNotificationService(items) as unknown as NotificationService
-    );
+    component = TestBed.resetTestingModule()
+      .configureTestingModule({
+        providers: [
+          { provide: Angulartics2, useValue: null },
+          { provide: Router, useValue: null },
+          { provide: ModalService, useValue: modal },
+          { provide: NotificationService, useValue: new FakeNotificationService(items) }
+        ]
+      })
+      .runInInjectionContext(() => new NotificationGroupedComponent());
     component.ngOnInit();
 
     return component;
@@ -192,12 +206,16 @@ describe('NotificationGroupedComponent, while a modal is open', () => {
   it('survives having no modal service at all', () => {
     // The component is `@Optional()` on ModalService: twelve other applications render notifications
     // and must not be made to depend on the modal library.
-    component = new NotificationGroupedComponent(
-      null as never,
-      null as never,
-      null as never,
-      new FakeNotificationService([make('bonfire')]) as unknown as NotificationService
-    );
+    component = TestBed.resetTestingModule()
+      .configureTestingModule({
+        providers: [
+          { provide: Angulartics2, useValue: null },
+          { provide: Router, useValue: null },
+          { provide: ModalService, useValue: null },
+          { provide: NotificationService, useValue: new FakeNotificationService([make('bonfire')]) }
+        ]
+      })
+      .runInInjectionContext(() => new NotificationGroupedComponent());
 
     expect(() => component.ngOnInit()).not.toThrow();
     expect(component.blockedByModal).toBe(false);

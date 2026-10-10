@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { Router, ActivatedRoute, Route, Routes, Event, NavigationEnd } from '@angular/router';
 import { merge, of, BehaviorSubject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -9,6 +9,9 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./breadcrumb.component.scss']
 })
 export class BreadcrumbComponent implements OnInit {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   /**
    * Number of breadcrumbs to show
    */
@@ -20,11 +23,6 @@ export class BreadcrumbComponent implements OnInit {
   public crumbs: Observable<Crumbs> = this._crumbs.asObservable();
 
   private routes: Routes;
-
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
 
   public ngOnInit() {
     this.routes = this.extractRoutes(this.route);

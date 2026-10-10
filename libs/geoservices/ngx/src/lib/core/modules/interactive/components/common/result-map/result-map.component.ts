@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { take } from 'rxjs';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
@@ -15,6 +15,8 @@ import esri = __esri;
   imports: [EsriMapComponent]
 })
 export class ResultMapComponent implements OnInit {
+  private readonly ms = inject(EsriMapService);
+
   @Input()
   public points: Array<{ latitude: number; longitude: number }>;
 
@@ -27,8 +29,6 @@ export class ResultMapComponent implements OnInit {
   public get styleClasses() {
     return [this.size];
   }
-
-  constructor(private readonly ms: EsriMapService) {}
 
   public ngOnInit(): void {
     const [first] = this.points;

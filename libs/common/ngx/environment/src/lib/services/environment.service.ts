@@ -1,12 +1,16 @@
-import { Injectable, InjectionToken, Optional, Inject } from '@angular/core';
+import { Injectable, InjectionToken, inject } from '@angular/core';
 
 export const env = new InjectionToken<any>('environment');
 
 @Injectable()
 export class EnvironmentService {
+  private environment = inject(env, { optional: true });
+
   private _config: any;
 
-  constructor(@Optional() @Inject(env) private environment: any) {
+  constructor() {
+    const environment = this.environment;
+
     if (environment) {
       // Freeze the environment object to ensure immutability
       this._config = Object.freeze(this.environment);

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 
@@ -15,6 +15,10 @@ import { AsyncPipe, LowerCasePipe } from '@angular/common';
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe, LowerCasePipe]
 })
 export class EntityDeleteModalComponent implements OnInit {
+  readonly data = inject<EntityDeleteData>(MODAL_DATA);
+  private readonly modalRef = inject(ModalRefService);
+  private readonly fb = inject(UntypedFormBuilder);
+
   public form: UntypedFormGroup;
   public matchingConfirmationCount$: Observable<boolean>;
 
@@ -32,12 +36,6 @@ export class EntityDeleteModalComponent implements OnInit {
       return this.data.entityType;
     }
   }
-
-  constructor(
-    @Inject(MODAL_DATA) public readonly data: EntityDeleteData,
-    private readonly modalRef: ModalRefService,
-    private readonly fb: UntypedFormBuilder
-  ) {}
 
   public ngOnInit(): void {
     console.log(`EntityDeleteModalComponent initialized`);

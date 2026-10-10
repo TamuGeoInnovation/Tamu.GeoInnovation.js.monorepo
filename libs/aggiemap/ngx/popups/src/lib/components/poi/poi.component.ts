@@ -8,17 +8,12 @@ import {
   ChangeDetectionStrategy,
   CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 
-import { Angulartics2 } from 'angulartics2';
 import { register } from 'swiper/element/bundle';
 import { InitDetail } from 'lightgallery/lg-events';
 import lightGallery from 'lightgallery';
 import { LightGallery } from 'lightgallery/lightgallery';
-
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -48,16 +43,6 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
 
   private _lgInstance: LightGallery;
   private _needsRefresh = false;
-
-  constructor(
-    private rtr: Router,
-    private rt: ActivatedRoute,
-    private ps: TripPlannerService,
-    private anl: Angulartics2,
-    private mp: EsriMapService
-  ) {
-    super(rtr, rt, ps, anl, mp);
-  }
 
   public ngOnInit(): void {
     super.ngOnInit();

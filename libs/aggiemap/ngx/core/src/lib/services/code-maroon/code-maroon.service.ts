@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, timer, of } from 'rxjs';
 import { switchMap, map, catchError, tap } from 'rxjs/operators';
@@ -32,6 +32,8 @@ export const CODE_MAROON_POLL_MS = 30_000;
 
 @Injectable({ providedIn: 'root' })
 export class CodeMaroonService {
+  private readonly http = inject(HttpClient);
+
   private readonly _state = new BehaviorSubject<CodeMaroonState>({
     status: 'loading',
     alerts: [],
@@ -39,8 +41,6 @@ export class CodeMaroonService {
   });
 
   public readonly state: Observable<CodeMaroonState> = this._state.asObservable();
-
-  constructor(private readonly http: HttpClient) {}
 
   /**
    * Polls until the returned observable is unsubscribed.

@@ -1,10 +1,8 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router, RouterLinkActive, RouterLink } from '@angular/router';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { RouterLinkActive, RouterLink } from '@angular/router';
 
-import { RsvpTypeService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { RsvpTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { RsvpType } from '@tamu-gisc/gisday/platform/data-api';
-import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
 import { AsyncPipe, DatePipe } from '@angular/common';
@@ -16,14 +14,5 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   imports: [RouterLinkActive, RouterLink, AsyncPipe, DatePipe]
 })
 export class AdminEditRsvpTypeComponent extends BaseAdminListComponent<RsvpType> {
-  constructor(
-    private readonly rsvpTypeService: RsvpTypeService,
-    private readonly ss: SeasonService,
-    private readonly ar: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly ms: ModalService,
-    private readonly ns: NotificationService
-  ) {
-    super(rsvpTypeService, ss, ar, rt, ms, ns);
-  }
+  protected readonly entityService = inject(RsvpTypeService);
 }

@@ -1,4 +1,5 @@
 import { QueryList } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 
@@ -34,7 +35,14 @@ const build = (url: string, tabs: FakeTab[]) => {
   const navigated: string[][] = [];
   const router = { url, navigate: (commands: string[]) => navigated.push(commands) };
 
-  const component = new SidebarComponent(router as unknown as Router, {} as ActivatedRoute);
+  const component = TestBed.resetTestingModule()
+    .configureTestingModule({
+      providers: [
+        { provide: Router, useValue: router },
+        { provide: ActivatedRoute, useValue: {} }
+      ]
+    })
+    .runInInjectionContext(() => new SidebarComponent());
 
   const list = new QueryList<SidebarTabComponent>();
   list.reset(tabs as unknown as SidebarTabComponent[]);

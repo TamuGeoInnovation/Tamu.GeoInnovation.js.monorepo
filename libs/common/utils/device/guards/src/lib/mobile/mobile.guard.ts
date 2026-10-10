@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -8,8 +8,9 @@ import { getUrlSegmentsFromRouteSnapshot, routeSubstitute } from '@tamu-gisc/com
 @Injectable({
   providedIn: 'root'
 })
-export class MobileGuard  {
-  constructor(private rp: ResponsiveService, private router: Router) {}
+export class MobileGuard {
+  private rp = inject(ResponsiveService);
+  private router = inject(Router);
 
   public canActivate(next: ActivatedRouteSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     if (!this.rp.snapshot.isMobile) {

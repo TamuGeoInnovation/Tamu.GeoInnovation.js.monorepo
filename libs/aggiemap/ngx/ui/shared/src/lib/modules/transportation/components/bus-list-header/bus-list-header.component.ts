@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { AccordionHeaderComponent, AccordionService } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
   selector: 'tamu-gisc-bus-list-header',
@@ -7,8 +7,4 @@ import { AccordionHeaderComponent, AccordionService } from '@tamu-gisc/ui-kits/n
   styleUrls: ['./bus-list-header.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager
 })
-export class BusListHeaderComponent extends AccordionHeaderComponent {
-  constructor(private c: AccordionService) {
-    super(c);
-  }
-}
+export class BusListHeaderComponent extends AccordionHeaderComponent {}

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -14,12 +14,10 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   imports: [RouterLink, AsyncPipe, DatePipe]
 })
 export class UploadedComponent implements OnInit {
-  public databases: Observable<Array<DatabaseRecord>>;
+  private db = inject(DatabaseService);
+  route = inject(ActivatedRoute);
 
-  constructor(
-    private db: DatabaseService,
-    public route: ActivatedRoute
-  ) {}
+  public databases: Observable<Array<DatabaseRecord>>;
 
   public ngOnInit() {
     this.databases = this.db.getExisting().pipe(shareReplay(1));

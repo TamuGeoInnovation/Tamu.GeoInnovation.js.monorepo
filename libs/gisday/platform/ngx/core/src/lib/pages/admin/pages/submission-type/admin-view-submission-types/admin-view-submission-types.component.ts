@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { SubmissionTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
 
@@ -13,7 +13,5 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   imports: [AsyncPipe, DatePipe]
 })
 export class AdminViewSubmissionTypesComponent extends BaseAdminViewComponent<SubmissionType> {
-  constructor(private readonly submissionTypeService: SubmissionTypeService) {
-    super(submissionTypeService);
-  }
+  public readonly entityService = inject(SubmissionTypeService);
 }

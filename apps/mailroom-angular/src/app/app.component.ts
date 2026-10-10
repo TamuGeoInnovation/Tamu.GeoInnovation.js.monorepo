@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { RouterOutlet } from '@angular/router';
@@ -12,10 +12,8 @@ import { NotificationContainerComponent } from '@tamu-gisc/common/ngx/ui/notific
   imports: [RouterOutlet, NotificationContainerComponent]
 })
 export class AppComponent implements OnInit {
-  constructor(
-    private readonly viewRef: ViewContainerRef,
-    private readonly ms: ModalService
-  ) {}
+  private readonly viewRef = inject(ViewContainerRef);
+  private readonly ms = inject(ModalService);
 
   public ngOnInit(): void {
     this.ms.registerGlobalViewRef(this.viewRef);

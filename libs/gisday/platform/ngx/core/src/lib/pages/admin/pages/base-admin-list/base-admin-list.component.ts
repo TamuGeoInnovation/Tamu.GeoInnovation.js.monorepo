@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { iif, merge, Observable, of, Subject } from 'rxjs';
@@ -22,6 +22,15 @@ import {
   standalone: false
 })
 export abstract class BaseAdminListComponent<T extends GuidIdentity> implements IBaseAdminEditComponent, OnInit, OnDestroy {
+  /** The service for this page's entity. Each page injects its own. */
+  protected abstract readonly entityService: BaseService<T>;
+
+  private readonly seasonService = inject(SeasonService);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(ModalService);
+  private readonly notificationService = inject(NotificationService);
+
   public seasons$ = this.seasonService.seasons$;
   public activeSeason$ = this.seasonService.activeSeason$;
 
@@ -34,15 +43,6 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
 
   private _selectRow$: Subject<string | Array<string>> = new Subject();
   private _$destroy: Subject<boolean> = new Subject();
-
-  constructor(
-    private readonly entityService: BaseService<T>,
-    private readonly seasonService: SeasonService,
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly router: Router,
-    private readonly modalService: ModalService,
-    private readonly notificationService: NotificationService
-  ) {}
 
   public ngOnInit(): void {
     this.selectedSeason$ = merge(

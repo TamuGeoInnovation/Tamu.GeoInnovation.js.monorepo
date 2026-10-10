@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { map, shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -17,14 +17,12 @@ import { AsyncPipe } from '@angular/common';
   imports: [CheckboxComponent, AsyncPipe]
 })
 export class MyClassesComponent implements OnInit {
+  private readonly cs = inject(ClassService);
+  private readonly ucs = inject(UserClassesService);
+  private readonly ns = inject(NotificationService);
+
   public classes$: Observable<Array<Partial<Class>>>;
   public userClasses$: Observable<Array<Partial<UserClass>>>;
-
-  constructor(
-    private readonly cs: ClassService,
-    private readonly ucs: UserClassesService,
-    private readonly ns: NotificationService
-  ) {}
 
   public ngOnInit(): void {
     this.classes$ = this.cs.getEntitiesForActiveSeason().pipe(shareReplay());

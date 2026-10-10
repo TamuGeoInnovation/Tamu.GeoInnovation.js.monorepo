@@ -13,7 +13,6 @@ export default [
     },
     rules: {
       '@angular-eslint/prefer-standalone': 'off',
-      '@angular-eslint/prefer-inject': 'off',
       '@angular-eslint/directive-selector': [
         'error',
         {

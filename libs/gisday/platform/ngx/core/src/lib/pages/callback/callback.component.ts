@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { AuthService } from '@auth0/auth0-angular';
 
@@ -9,5 +9,5 @@ import { AuthService } from '@auth0/auth0-angular';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class CallbackComponent {
-  constructor(private readonly as: AuthService) {}
+  private readonly as = inject(AuthService);
 }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, AfterContentInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, Input, AfterContentInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { AccordionService } from './services/accordion.service';
 
@@ -10,6 +10,9 @@ import { AccordionService } from './services/accordion.service';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class AccordionComponent implements AfterContentInit {
+  private el = inject(ElementRef);
+  private comm = inject(AccordionService);
+
   /**
    * Input boolean from the parent component that serves as a collapse/expand toggle
    * for the accordion.
@@ -22,11 +25,6 @@ export class AccordionComponent implements AfterContentInit {
 
   @Input()
   public animate = false;
-
-  constructor(
-    private el: ElementRef,
-    private comm: AccordionService
-  ) {}
 
   public ngAfterContentInit() {
     this.comm.update({

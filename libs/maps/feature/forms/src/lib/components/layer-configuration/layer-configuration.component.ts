@@ -2,11 +2,11 @@ import {
   Component,
   OnInit,
   Input,
-  Optional,
   OnDestroy,
   OnChanges,
   SimpleChanges,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  inject
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -31,6 +31,11 @@ import esri = __esri;
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, RangeComponent, CheckboxComponent]
 })
 export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges {
+  private http = inject(HttpClient);
+  private fb = inject(UntypedFormBuilder);
+  private ms = inject(EsriMapService, { optional: true });
+  private mp = inject(EsriModuleProviderService);
+
   /**
    * Internal value. The input is piped through here so that the http query
    * rate can be throttled as the user types in a URL address.
@@ -93,13 +98,6 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
    * form group, if any.
    */
   public config: LayerConfiguration;
-
-  constructor(
-    private http: HttpClient,
-    private fb: UntypedFormBuilder,
-    @Optional() private ms: EsriMapService,
-    private mp: EsriModuleProviderService
-  ) {}
 
   public ngOnInit() {
     if (this._url.getValue() !== undefined) {

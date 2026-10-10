@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormBuilder,
@@ -26,19 +26,17 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, CheckboxComponent, SeasonsDayTileComponent, ButtonComponent]
 })
 export class SeasonAddEditFormComponent implements OnInit {
+  private fb = inject(UntypedFormBuilder);
+  private at = inject(ActivatedRoute);
+  private ss = inject(SeasonService);
+  private rt = inject(Router);
+  private readonly ns = inject(NotificationService);
+
   @Input()
   public type: 'create' | 'edit';
 
   public entity$: Observable<Partial<Season>>;
   public form: UntypedFormGroup;
-
-  constructor(
-    private fb: UntypedFormBuilder,
-    private at: ActivatedRoute,
-    private ss: SeasonService,
-    private rt: Router,
-    private readonly ns: NotificationService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

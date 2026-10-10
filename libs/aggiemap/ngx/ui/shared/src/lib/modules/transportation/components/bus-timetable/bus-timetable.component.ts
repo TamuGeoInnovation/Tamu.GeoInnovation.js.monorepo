@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -20,6 +20,8 @@ import { AsyncPipe } from '@angular/common';
   imports: [AsyncPipe]
 })
 export class BusTimetableComponent implements OnInit {
+  private busService = inject(BusService);
+
   @Input()
   public route: TSRoute;
 
@@ -37,8 +39,6 @@ export class BusTimetableComponent implements OnInit {
    * External Transportation Services schedule page (the ArcGIS source has no timetable data).
    */
   public readonly scheduleUrl = 'https://transport.tamu.edu/busroutes/?utm_source=aggiemap';
-
-  constructor(private busService: BusService) {}
 
   public ngOnInit() {
     this.stops = this.busService.getRouteStops(this.route.ShortName).pipe(

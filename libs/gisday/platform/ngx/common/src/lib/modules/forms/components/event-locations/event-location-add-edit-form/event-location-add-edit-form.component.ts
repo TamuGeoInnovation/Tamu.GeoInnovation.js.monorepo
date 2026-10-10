@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
@@ -19,22 +19,20 @@ import { AsyncPipe } from '@angular/common';
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, ButtonComponent, AsyncPipe]
 })
 export class EventLocationAddEditFormComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly rt = inject(Router);
+  private readonly at = inject(ActivatedRoute);
+  private readonly els = inject(LocationService);
+  private readonly ps = inject(PlaceService);
+  private readonly ns = inject(NotificationService);
+  private readonly ss = inject(SeasonService);
+
   @Input()
   public type: 'create' | 'edit';
 
   public entity$: Observable<Partial<EventLocation>>;
   public places$: Observable<Array<Partial<Place>>>;
   public form: UntypedFormGroup;
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly rt: Router,
-    private readonly at: ActivatedRoute,
-    private readonly els: LocationService,
-    private readonly ps: PlaceService,
-    private readonly ns: NotificationService,
-    private readonly ss: SeasonService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

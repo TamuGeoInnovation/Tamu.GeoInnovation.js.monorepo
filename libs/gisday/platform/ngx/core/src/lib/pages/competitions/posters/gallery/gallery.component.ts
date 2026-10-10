@@ -1,4 +1,4 @@
-import { Component, OnInit, SecurityContext, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, SecurityContext, ChangeDetectionStrategy, inject } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs';
@@ -15,12 +15,10 @@ import { NgClass, AsyncPipe } from '@angular/common';
   imports: [NgClass, AsyncPipe]
 })
 export class GalleryComponent implements OnInit {
-  public $posters: Observable<Array<Partial<Submission>>>;
+  private submissionService = inject(UserSubmissionsService);
+  private sanitizer = inject(DomSanitizer);
 
-  constructor(
-    private submissionService: UserSubmissionsService,
-    private sanitizer: DomSanitizer
-  ) {}
+  public $posters: Observable<Array<Partial<Submission>>>;
 
   public ngOnInit() {
     this.$posters = this.submissionService.getPosters();

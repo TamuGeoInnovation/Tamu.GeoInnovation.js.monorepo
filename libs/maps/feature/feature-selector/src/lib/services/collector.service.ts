@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { scan, startWith, switchMap } from 'rxjs/operators';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { FeatureSelectorService } from './selector.service';
 
 import esri = __esri;
@@ -11,10 +10,6 @@ import esri = __esri;
 export class FeatureCollectorService extends FeatureSelectorService {
   public collection: Observable<esri.Graphic[]>;
   private _$resetSignal: Subject<boolean> = new Subject();
-
-  constructor(private ms: EsriMapService) {
-    super(ms);
-  }
 
   public init(options?: IFeatureCollectionOptions): void {
     this.collection = this._$resetSignal.pipe(

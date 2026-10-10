@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -73,6 +73,13 @@ const infoCompletionValidator: ValidatorFn = (control: UntypedFormGroup): { [key
   ]
 })
 export class MyDetailsComponent implements OnInit {
+  private fb = inject(UntypedFormBuilder);
+  private ns = inject(NotificationService);
+  private readonly as = inject(AuthService);
+  private readonly us = inject(UserService);
+  private readonly is = inject(UniversityService);
+  private readonly os = inject(OrganizationService);
+
   public form: UntypedFormGroup;
 
   public signedOnEntityIsSocial$: Observable<boolean>;
@@ -84,15 +91,6 @@ export class MyDetailsComponent implements OnInit {
   public selectedParticipantType$: Observable<ParticipantType>;
   private _signedOnEntity: Observable<GisDayAppMetadata>;
   private _refresh$: Subject<boolean> = new Subject();
-
-  constructor(
-    private fb: UntypedFormBuilder,
-    private ns: NotificationService,
-    private readonly as: AuthService,
-    private readonly us: UserService,
-    private readonly is: UniversityService,
-    private readonly os: OrganizationService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group(

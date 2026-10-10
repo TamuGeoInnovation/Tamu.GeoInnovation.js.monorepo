@@ -1,6 +1,13 @@
-import { RouterHistoryService } from './router-history.service';
+import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable } from 'rxjs';
+
+import { RouterHistoryService } from './router-history.service';
+
+const build = (router: unknown) =>
+  TestBed.resetTestingModule()
+    .configureTestingModule({ providers: [{ provide: Router, useValue: router }] })
+    .runInInjectionContext(() => new RouterHistoryService());
 
 class MockRouter {
   public ne1 = new NavigationEnd(0, 'http://localhost:4200/test', 'http://localhost:4200/test');
@@ -15,7 +22,7 @@ class MockRouter {
 describe('RouterHistoryService', () => {
   it('should work for a single event', (done) => {
     const mockRouter = new MockRouter();
-    const service: RouterHistoryService = new RouterHistoryService(mockRouter as unknown as Router);
+    const service: RouterHistoryService = build(mockRouter);
     expect(service).toBeTruthy();
     service.last().subscribe((event) => {
       expect(event).toEqual(mockRouter.ne1);
@@ -40,7 +47,7 @@ describe('RouterHistoryService in a production build', () => {
         observer.next(new Wn(1, 'http://localhost:4200/all-maps', 'http://localhost:4200/all-maps'));
       })
     };
-    const service = new RouterHistoryService(router as unknown as Router);
+    const service = build(router);
 
     service.last().subscribe((event) => {
       expect(event.url).toBe('http://localhost:4200/map');
@@ -50,7 +57,7 @@ describe('RouterHistoryService in a production build', () => {
 
   it('still ignores router events that are not a NavigationEnd', () => {
     const router = { events: new Observable((observer) => observer.next({ id: 0, url: '/elsewhere' })) };
-    const service = new RouterHistoryService(router as unknown as Router);
+    const service = build(router);
     let historyLength = -1;
 
     service.history.subscribe((state) => (historyLength = state.historyEvents.length));

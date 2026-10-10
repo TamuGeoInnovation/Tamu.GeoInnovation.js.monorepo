@@ -1,11 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
-import { Router, ActivatedRoute } from '@angular/router';
-import { Angulartics2 } from 'angulartics2';
-
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 
 @Component({
@@ -14,14 +8,4 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   styleUrls: ['../base/base.popup.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager
 })
-export class AccessiblePopupComponent extends BaseDirectionsComponent {
-  constructor(
-    private rtr: Router,
-    private rt: ActivatedRoute,
-    private ps: TripPlannerService,
-    private anl: Angulartics2,
-    private mp: EsriMapService
-  ) {
-    super(rtr, rt, ps, anl, mp);
-  }
-}
+export class AccessiblePopupComponent extends BaseDirectionsComponent {}

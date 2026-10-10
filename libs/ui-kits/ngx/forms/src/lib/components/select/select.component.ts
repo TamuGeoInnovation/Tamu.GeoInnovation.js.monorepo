@@ -5,7 +5,8 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
   forwardRef,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  inject
 } from '@angular/core';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
@@ -26,6 +27,8 @@ import { NgClass } from '@angular/common';
   imports: [FormsModule, NgClass]
 })
 export class SelectComponent<T extends object> implements ControlValueAccessor {
+  private cd = inject(ChangeDetectorRef);
+
   /**
    * Functions as the initial/default or state value of the select element.
    *
@@ -89,8 +92,6 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    */
   @Output()
   public changed: EventEmitter<string> = new EventEmitter();
-
-  constructor(private cd: ChangeDetectorRef) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
   private _onChange = (value: string) => {};

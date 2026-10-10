@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switchMap, take, withLatestFrom } from 'rxjs';
 
@@ -25,6 +25,11 @@ interface AccommodationChoiceGroup {
   imports: [NgClass, AsyncPipe, DatePipe]
 })
 export class AccommodationsComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly angulartics = inject(Angulartics2);
+  private readonly eventSettingsService = inject(EventSettingsService);
+
   public config = this.eventSettingsService.eventConfiguration()?.configuration;
   public savedOptionValue: Observable<string | boolean | number | null>;
 
@@ -32,13 +37,6 @@ export class AccommodationsComponent implements OnInit {
 
   private _eventOptions$: BehaviorSubject<SpecialEventOptions>;
   private _accommodationIndex$: Observable<number>;
-
-  constructor(
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly angulartics: Angulartics2,
-    private readonly eventSettingsService: EventSettingsService
-  ) {}
 
   public ngOnInit() {
     this._eventOptions$ = new BehaviorSubject(this.eventSettingsService.eventOptions());

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { switchMap, takeUntil, pluck } from 'rxjs/operators';
@@ -17,6 +17,10 @@ import { TripPlannerDirectionsMobileComponent } from '@tamu-gisc/maps/feature/tr
   imports: [TripPlannerDirectionsMobileComponent, DragDirective]
 })
 export class TripPlannerBottomComponent implements OnInit, OnDestroy {
+  private tripPlanner = inject(TripPlannerService);
+  private router = inject(Router);
+  private dragService = inject(DragService);
+
   /**
    * Unique component identifier generated from the drag state service, and provided to the DragService.
    */
@@ -29,11 +33,9 @@ export class TripPlannerBottomComponent implements OnInit, OnDestroy {
 
   public result: TripResult;
 
-  constructor(
-    private tripPlanner: TripPlannerService,
-    private router: Router,
-    private dragService: DragService
-  ) {
+  constructor() {
+    const dragService = this.dragService;
+
     this.identifier = dragService.register(this);
   }
 

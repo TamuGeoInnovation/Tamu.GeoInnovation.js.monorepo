@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { of, Observable, from, BehaviorSubject, forkJoin } from 'rxjs';
 import { switchMap, take, filter, reduce, map, mergeMap, toArray } from 'rxjs/operators';
 
@@ -11,6 +11,11 @@ import esri = __esri;
 
 @Injectable({ providedIn: 'root' })
 export class ParkingService {
+  private moduleProvider = inject(EsriModuleProviderService);
+  private search = inject(SearchService);
+  private settings = inject(SettingsService);
+  private environment = inject(EnvironmentService);
+
   private _ParkingOptions = new BehaviorSubject<ParkingOptions>({});
   public ParkingOptions = this._ParkingOptions.asObservable();
 
@@ -78,12 +83,7 @@ export class ParkingService {
     }
   };
 
-  constructor(
-    private moduleProvider: EsriModuleProviderService,
-    private search: SearchService,
-    private settings: SettingsService,
-    private environment: EnvironmentService
-  ) {
+  constructor() {
     this.settings.init(this.settingsConfig).subscribe((res: ParkingOptions) => {
       this._ParkingOptions.next(res);
     });

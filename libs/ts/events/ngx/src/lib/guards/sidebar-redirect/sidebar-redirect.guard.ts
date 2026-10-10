@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 
 import { getUrlSegmentsFromRouteSnapshot } from '@tamu-gisc/common/utils/routing';
@@ -18,8 +18,9 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 @Injectable({
   providedIn: 'root'
 })
-export class SidebarRedirectGuard  {
-  constructor(private readonly router: Router, private readonly eventSettingsService: EventSettingsService) {}
+export class SidebarRedirectGuard {
+  private readonly router = inject(Router);
+  private readonly eventSettingsService = inject(EventSettingsService);
 
   public canActivate(route: ActivatedRouteSnapshot): boolean {
     const hideSidebar = this.eventSettingsService.eventConfiguration()?.configuration?.hideSidebar === true;

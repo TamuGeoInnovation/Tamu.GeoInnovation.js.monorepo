@@ -1,10 +1,8 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { Submission } from '@tamu-gisc/gisday/platform/data-api';
-import { SeasonService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SUBMISSION_REVIEW_STATUS } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
@@ -31,16 +29,7 @@ import { SubmissionReviewStatusPipe } from '@tamu-gisc/gisday/platform/ngx/commo
   ]
 })
 export class ResearchCompetitionListComponent extends BaseAdminListComponent<Submission> {
-  public SubmissionReviewStatus = SUBMISSION_REVIEW_STATUS;
+  protected readonly entityService = inject(UserSubmissionsService);
 
-  constructor(
-    private readonly submissionService: UserSubmissionsService,
-    private readonly ss: SeasonService,
-    private readonly ar: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly ms: ModalService,
-    private readonly ns: NotificationService
-  ) {
-    super(submissionService, ss, ar, rt, ms, ns);
-  }
+  public SubmissionReviewStatus = SUBMISSION_REVIEW_STATUS;
 }

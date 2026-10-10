@@ -1,4 +1,4 @@
-import { Injectable, Optional, InjectionToken, Inject } from '@angular/core';
+import { Injectable, InjectionToken, inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
@@ -24,6 +24,10 @@ export const AGGIEMAP_NOTIFICATION_STORE_KEY = 'aggiemap-notifications';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
+  private store = inject(LocalStoreService);
+  private environment = inject(EnvironmentService);
+  private storageKey = inject(notificationStorage, { optional: true });
+
   private _store: Notification[];
   private _localStorageSettings: StorageConfig;
   /**
@@ -61,11 +65,7 @@ export class NotificationService {
   private _defaultPrimaryStoreKey = 'app-notifications';
   private _defaultSecondaryStoreKey = 'notifications';
 
-  constructor(
-    private store: LocalStoreService,
-    private environment: EnvironmentService,
-    @Optional() @Inject(notificationStorage) private storageKey: string
-  ) {
+  constructor() {
     this._localStorageSettings = {
       primaryKey: undefined
     };

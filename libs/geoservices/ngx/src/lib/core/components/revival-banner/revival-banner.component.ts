@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { BehaviorSubject, delay } from 'rxjs';
 
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
@@ -13,14 +13,12 @@ import { AsyncPipe } from '@angular/common';
   imports: [AsyncPipe]
 })
 export class RevivalBannerComponent implements OnInit {
+  private readonly ss = inject(SettingsService);
+  private readonly env = inject(EnvironmentService);
+
   private _acknowledged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public acknowledged$ = this._acknowledged$.asObservable().pipe(delay(25));
   public legacyHost: string;
-
-  constructor(
-    private readonly ss: SettingsService,
-    private readonly env: EnvironmentService
-  ) {}
 
   public ngOnInit(): void {
     this.ss

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -9,13 +9,13 @@ import { pluck, switchMap, tap } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
+  private environment = inject(EnvironmentService);
+  private settings = inject(SettingsService);
+  private router = inject(Router);
+
   public authenticationDetails: Subject<object> = new BehaviorSubject({});
 
-  constructor(
-    private environment: EnvironmentService,
-    private settings: SettingsService,
-    private router: Router
-  ) {
+  constructor() {
     this.settings
       .init({
         settings: {

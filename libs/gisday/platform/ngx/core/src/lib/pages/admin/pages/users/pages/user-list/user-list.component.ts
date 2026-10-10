@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
 
 import { UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -13,9 +13,9 @@ import { AsyncPipe } from '@angular/common';
   imports: [AsyncPipe]
 })
 export class UserListComponent implements OnInit {
-  public users$: Observable<Array<Auth0UserProfile>>;
+  private readonly us = inject(UserService);
 
-  constructor(private readonly us: UserService) {}
+  public users$: Observable<Array<Auth0UserProfile>>;
 
   public ngOnInit(): void {
     this.users$ = this.us.getUsers().pipe(shareReplay());

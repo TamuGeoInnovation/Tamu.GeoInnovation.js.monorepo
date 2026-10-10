@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, RouterEvent, RouterOutlet } from '@angular/router';
 import { Location } from '@angular/common';
 import { takeUntil } from 'rxjs/operators';
@@ -16,18 +16,16 @@ import { BackdropComponent } from '../backdrop/backdrop.component';
   imports: [RouterOutlet, BackdropComponent]
 })
 export class ModalComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private history = inject(RouterHistoryService);
+  private location = inject(Location);
+  private responsiveService = inject(ResponsiveService);
+
   public isMobile: boolean;
 
   private _lastRoute: string;
 
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(
-    private router: Router,
-    private history: RouterHistoryService,
-    private location: Location,
-    private responsiveService: ResponsiveService
-  ) {}
 
   public ngOnInit() {
     this.isMobile = this.responsiveService.snapshot.isMobile;

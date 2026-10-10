@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -10,13 +10,13 @@ import { AccountDetailsService } from '../details/account-details.service';
   providedIn: 'root'
 })
 export class AccountPreferencesService {
+  private env = inject(EnvironmentService);
+  private http = inject(HttpClient);
+  private details = inject(AccountDetailsService);
+
   public resource: string;
 
-  constructor(
-    private env: EnvironmentService,
-    private http: HttpClient,
-    private details: AccountDetailsService
-  ) {
+  constructor() {
     this.resource = `${this.env.value('legacy_api_url')}userServices/updateNotificationData`;
   }
 

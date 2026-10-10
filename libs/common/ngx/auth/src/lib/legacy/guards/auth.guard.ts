@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,8 +11,9 @@ import { LegacyAuthService } from '../services/auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class LegacyAuthGuard  {
-  constructor(private auth: LegacyAuthService, private router: Router) {}
+export class LegacyAuthGuard {
+  private auth = inject(LegacyAuthService);
+  private router = inject(Router);
 
   public canActivate(
     route: ActivatedRouteSnapshot

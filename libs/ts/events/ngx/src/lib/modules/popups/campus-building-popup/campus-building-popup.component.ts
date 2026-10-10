@@ -1,10 +1,4 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-
-import { Angulartics2 } from 'angulartics2';
-
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.component';
 import { EventSettingsQuery } from '../../../services/settings/event-settings-query';
@@ -32,16 +26,6 @@ export class CampusBuildingPopupComponent extends BaseEventPopupComponent implem
   public content: BuildingPopupContent = {};
 
   private readonly _settings = inject(EventSettingsQuery);
-
-  constructor(
-    router: Router,
-    route: ActivatedRoute,
-    plannerService: TripPlannerService,
-    analytics: Angulartics2,
-    mapService: EsriMapService
-  ) {
-    super(router, route, plannerService, analytics, mapService);
-  }
 
   /**
    * The copy link names the building by its number, or by its abbreviation where it has no number,

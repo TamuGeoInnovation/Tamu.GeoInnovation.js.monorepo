@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
@@ -11,6 +11,9 @@ import { ContactService } from '@tamu-gisc/geoservices/data-access';
   styleUrls: ['./partner-program-form.component.scss']
 })
 export class PartnerProgramFormComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly cs = inject(ContactService);
+
   public states = STATES_TITLECASE;
   public form: FormGroup;
 
@@ -38,11 +41,6 @@ export class PartnerProgramFormComponent implements OnInit {
       label: 'Non-Commercial'
     }
   ];
-
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly cs: ContactService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

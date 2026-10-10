@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { from, of } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -21,12 +21,12 @@ import esri = __esri;
  */
 @Injectable({ providedIn: 'root' })
 export class AltSearchHelper {
+  private searchService = inject(SearchService);
+  private environment = inject(EnvironmentService);
+
   private _sources: SearchSource[];
 
-  constructor(
-    private searchService: SearchService,
-    private environment: EnvironmentService
-  ) {
+  constructor() {
     if (this.environment.value('SearchSources')) {
       this._sources = this.environment.value('SearchSources');
     }

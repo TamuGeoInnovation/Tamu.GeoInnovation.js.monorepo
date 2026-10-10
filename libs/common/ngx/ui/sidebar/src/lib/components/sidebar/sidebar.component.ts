@@ -1,4 +1,12 @@
-import { Component, ContentChildren, AfterContentInit, QueryList, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  ContentChildren,
+  AfterContentInit,
+  QueryList,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { from, Subject } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
@@ -15,20 +23,15 @@ import { SidebarTabComponent } from '../tab/tab.component';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class SidebarComponent extends AbstractSlidingDrawerComponent implements AfterContentInit, OnDestroy {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   public currentView: string;
 
   private _$destroy: Subject<null> = new Subject();
 
   @ContentChildren(SidebarTabComponent, { descendants: true })
   public tabs: QueryList<SidebarTabComponent>;
-
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute
-  ) {
-    // Call the Abstract component constructor
-    super();
-  }
 
   public ngAfterContentInit() {
     // Which tab the sidebar is already showing.

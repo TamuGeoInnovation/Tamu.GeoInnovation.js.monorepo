@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -16,13 +16,11 @@ import { SubmissionReviewListComponent } from '../../../shared/submission-review
   imports: [SubmissionReviewListComponent]
 })
 export class UserSubmissionsComponent implements OnInit {
-  public submissions$: Observable<SubmissionReviewDto[]>;
+  private readonly submissionService = inject(SubmissionService);
+  private readonly settings = inject(SettingsService);
+  private readonly env = inject(EnvironmentService);
 
-  constructor(
-    private readonly submissionService: SubmissionService,
-    private readonly settings: SettingsService,
-    private readonly env: EnvironmentService
-  ) {}
+  public submissions$: Observable<SubmissionReviewDto[]>;
 
   public ngOnInit(): void {
     this.submissions$ = this.settings.getSimpleSettingsBranch(this.env.value('LocalStoreSettings').subKey).pipe(

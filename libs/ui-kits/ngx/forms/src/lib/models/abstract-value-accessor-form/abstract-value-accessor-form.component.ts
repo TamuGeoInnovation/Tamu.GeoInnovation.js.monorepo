@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, ChangeDetectorRef, inject } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 
 @Component({
@@ -7,6 +7,8 @@ import { ControlValueAccessor } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AbstractValueAccessorFormComponent<T> implements ControlValueAccessor {
+  private cd = inject(ChangeDetectorRef);
+
   @Input()
   public disabled = false;
 
@@ -21,8 +23,6 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
   public set value(v: T) {
     this.setInternalValue(v);
   }
-
-  constructor(private cd: ChangeDetectorRef) {}
 
   private _onChange = (v: T) => {
     return v;

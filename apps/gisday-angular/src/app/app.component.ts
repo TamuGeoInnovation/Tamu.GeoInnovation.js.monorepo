@@ -1,4 +1,4 @@
-import { Component, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ViewContainerRef, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
 
@@ -14,11 +14,11 @@ import { NotificationContainerComponent } from '@tamu-gisc/common/ngx/ui/notific
   imports: [RouterOutlet, NotificationContainerComponent]
 })
 export class AppComponent {
-  constructor(
-    private readonly an: Angulartics2GoogleAnalytics,
-    private readonly viewRef: ViewContainerRef,
-    private readonly ms: ModalService
-  ) {
+  private readonly an = inject(Angulartics2GoogleAnalytics);
+  private readonly viewRef = inject(ViewContainerRef);
+  private readonly ms = inject(ModalService);
+
+  constructor() {
     this.an.startTracking();
     this.ms.registerGlobalViewRef(this.viewRef);
   }

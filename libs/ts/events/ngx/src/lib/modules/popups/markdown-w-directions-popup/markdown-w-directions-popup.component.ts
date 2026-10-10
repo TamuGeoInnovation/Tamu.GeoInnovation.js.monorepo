@@ -1,10 +1,4 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-
-import { Angulartics2 } from 'angulartics2';
-
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -21,16 +15,6 @@ export class MarkdownWDirectionsPopupComponent extends BaseEventPopupComponent i
   public title: string;
   public isContentTheSame: boolean;
   public isContentLengthZero: boolean;
-
-  constructor(
-    router: Router,
-    route: ActivatedRoute,
-    plannerService: TripPlannerService,
-    analytics: Angulartics2,
-    mapService: EsriMapService
-  ) {
-    super(router, route, plannerService, analytics, mapService);
-  }
 
   public override ngOnInit(): void {
     super.ngOnInit();

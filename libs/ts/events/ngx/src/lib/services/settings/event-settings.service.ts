@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
@@ -21,6 +21,10 @@ import { EventSettingsQuery } from './event-settings-query';
   providedIn: 'root'
 })
 export class EventSettingsService implements EventSettingsQuery {
+  private readonly at = inject(ActivatedRoute);
+  private readonly env = inject(EnvironmentService);
+  private readonly store = inject(LocalStoreService);
+
   private _settingsPrimaryKey: string;
   private _settingsSecondaryKey: string;
 
@@ -70,12 +74,6 @@ export class EventSettingsService implements EventSettingsQuery {
     // Initialize the settings store with an empty object if it does not exist
     this._settingsSecondaryKey = key ? key : this.at.snapshot.queryParamMap.get('eventId') || '_';
   }
-
-  constructor(
-    private readonly at: ActivatedRoute,
-    private readonly env: EnvironmentService,
-    private readonly store: LocalStoreService
-  ) {}
 
   public settings(): EventSettings;
   public settings(asObservable: true): Observable<EventSettings>;
@@ -244,16 +242,19 @@ export class EventSettingsService implements EventSettingsQuery {
     const existingSettings = this.settings() || {};
     let changed = false;
 
-    const merged = options.reduce((acc, option) => {
-      // Evaluate visibility against the accumulating settings so a gating option (listed earlier) can
-      // determine whether a dependent, conditionally-visible option should receive a default value.
-      if (this.isOptionVisible(option, acc) && acc[option.value] === undefined && option.choices.length > 0) {
-        acc[option.value] = option.choices[0].value;
-        changed = true;
-      }
+    const merged = options.reduce(
+      (acc, option) => {
+        // Evaluate visibility against the accumulating settings so a gating option (listed earlier) can
+        // determine whether a dependent, conditionally-visible option should receive a default value.
+        if (this.isOptionVisible(option, acc) && acc[option.value] === undefined && option.choices.length > 0) {
+          acc[option.value] = option.choices[0].value;
+          changed = true;
+        }
 
-      return acc;
-    }, { ...existingSettings } as EventSettings);
+        return acc;
+      },
+      { ...existingSettings } as EventSettings
+    );
 
     if (changed) {
       this.store.setStorageObjectKeyValue({

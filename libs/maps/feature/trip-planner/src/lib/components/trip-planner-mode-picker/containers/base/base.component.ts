@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { pluck, take } from 'rxjs/operators';
 
@@ -18,12 +18,10 @@ import { AsyncPipe } from '@angular/common';
   imports: [TripPlannerModeToggleComponent, TripPlannerTimePickerComponent, RouterLink, AsyncPipe]
 })
 export class TripPlannerModePickerComponent implements OnInit {
-  public isDev: Observable<boolean>;
+  private plannerService = inject(TripPlannerService);
+  private devTools = inject(TestingService);
 
-  constructor(
-    private plannerService: TripPlannerService,
-    private devTools: TestingService
-  ) {}
+  public isDev: Observable<boolean>;
 
   public ngOnInit() {
     this.isDev = this.devTools.get('isTesting');

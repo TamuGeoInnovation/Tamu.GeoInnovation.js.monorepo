@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { RsvpTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { RsvpType } from '@tamu-gisc/gisday/platform/data-api';
@@ -14,7 +14,5 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   imports: [AsyncPipe, DatePipe]
 })
 export class AdminViewRsvpTypeComponent extends BaseAdminViewComponent<RsvpType> {
-  constructor(private readonly rsvpTypeService: RsvpTypeService) {
-    super(rsvpTypeService);
-  }
+  public readonly entityService = inject(RsvpTypeService);
 }

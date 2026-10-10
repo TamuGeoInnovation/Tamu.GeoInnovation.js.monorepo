@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
@@ -18,6 +18,8 @@ import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
   imports: [NgClass, AccordionComponent, AccordionContentComponent]
 })
 export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
+  private busService = inject(BusService);
+
   @Input()
   public switch: TripModeSwitch;
 
@@ -36,8 +38,6 @@ export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
   public timeTableExpanded = false;
 
   public rideDuration: number;
-
-  constructor(private busService: BusService) {}
 
   public ngOnInit() {
     if (this.switch && this.switch.results && this.switch.results.bus != null) {

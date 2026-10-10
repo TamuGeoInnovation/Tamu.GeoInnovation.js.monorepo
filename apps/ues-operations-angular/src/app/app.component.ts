@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { RouterOutlet } from '@angular/router';
@@ -12,7 +12,11 @@ import { NotificationContainerComponent } from '@tamu-gisc/common/ngx/ui/notific
   imports: [RouterOutlet, NotificationContainerComponent]
 })
 export class AppComponent {
-  constructor(public analytics: Angulartics2GoogleAnalytics) {
+  analytics = inject(Angulartics2GoogleAnalytics);
+
+  constructor() {
+    const analytics = this.analytics;
+
     analytics.startTracking();
   }
 }

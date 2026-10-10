@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { from, fromEventPattern, combineLatest } from 'rxjs';
 import { switchMap, startWith, map } from 'rxjs/operators';
 
@@ -8,12 +8,10 @@ import esri = __esri;
 
 @Injectable()
 export class LayerListService {
-  private _model: esri.LayerListViewModel;
+  private moduleProvider = inject(EsriModuleProviderService);
+  private mapService = inject(EsriMapService);
 
-  constructor(
-    private moduleProvider: EsriModuleProviderService,
-    private mapService: EsriMapService
-  ) {}
+  private _model: esri.LayerListViewModel;
 
   public layers() {
     return combineLatest([from(this.moduleProvider.require(['LayerListViewModel'])), this.mapService.store]).pipe(

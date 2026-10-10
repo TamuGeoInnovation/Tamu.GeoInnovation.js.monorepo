@@ -24,6 +24,12 @@ import esri = __esri;
   imports: [AsyncPipe, KeyValuePipe]
 })
 export class BaseDirectionsComponent extends BasePopupComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private plannerService = inject(TripPlannerService);
+  private analytics = inject(Angulartics2);
+  private mapService = inject(EsriMapService);
+
   /**
    * Data set by the parent popup component.
    */
@@ -51,16 +57,6 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
   private _stops: TripPoint[];
 
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private plannerService: TripPlannerService,
-    private analytics: Angulartics2,
-    private mapService: EsriMapService
-  ) {
-    super();
-  }
 
   protected _makeShareUrl(): string {
     const origin = window.location.origin;

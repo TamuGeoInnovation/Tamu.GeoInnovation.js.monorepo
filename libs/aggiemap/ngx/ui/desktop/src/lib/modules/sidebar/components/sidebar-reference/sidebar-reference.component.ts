@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { SearchSelection, AltSearchHelper } from '@tamu-gisc/ui-kits/ngx/search';
@@ -17,10 +17,8 @@ import esri = __esri;
   imports: [SearchComponent, LayerListModule, LegendModule]
 })
 export class SidebarReferenceComponent<T extends esri.Graphic> {
-  constructor(
-    private helper: AltSearchHelper,
-    private mapService: EsriMapService
-  ) {}
+  private helper = inject(AltSearchHelper);
+  private mapService = inject(EsriMapService);
 
   public onSearchResult(result: SearchSelection<T>) {
     this.helper.handleSearchResultFeatureSelection(result).subscribe((res) => {

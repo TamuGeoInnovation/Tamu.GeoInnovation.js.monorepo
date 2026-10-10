@@ -1,11 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { filter, take } from 'rxjs/operators';
 
-import { Angulartics2 } from 'angulartics2';
-
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { BusService, TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
+import { BusService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -26,6 +23,8 @@ import { AsyncPipe } from '@angular/common';
   imports: [CopyComponent, AsyncPipe]
 })
 export class BusStopPopupComponent extends BaseDirectionsComponent implements OnInit {
+  private busService = inject(BusService);
+
   /**
    * Transportation Services bus schedules — the AggieSpirit per-stop schedule page requires a stopCode
    * and directionName that the TS/Bus_Routes source does not provide, so this links to the general page.
@@ -39,17 +38,6 @@ export class BusStopPopupComponent extends BaseDirectionsComponent implements On
    * localhost and prod; the `DesktopGuard` rewrites `d`→`m` (preserving the query param) for mobile.
    */
   private readonly busMapPath = 'map/d/bus';
-
-  constructor(
-    private rtr: Router,
-    private rt: ActivatedRoute,
-    private ps: TripPlannerService,
-    private anl: Angulartics2,
-    private mp: EsriMapService,
-    private busService: BusService
-  ) {
-    super(rtr, rt, ps, anl, mp);
-  }
 
   public override ngOnInit(): void {
     super.ngOnInit();

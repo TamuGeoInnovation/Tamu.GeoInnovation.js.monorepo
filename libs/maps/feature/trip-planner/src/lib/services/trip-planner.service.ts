@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   BehaviorSubject,
@@ -65,6 +65,20 @@ import esri = __esri;
 
 @Injectable({ providedIn: 'root' })
 export class TripPlannerService implements OnDestroy {
+  private router = inject(Router);
+  private moduleProvider = inject(EsriModuleProviderService);
+  private mapService = inject(EsriMapService);
+  private connectionService = inject(TripPlannerConnectionService);
+  private analytics = inject(Angulartics2);
+  private ns = inject(NotificationService);
+  private url = inject(ActivatedRoute);
+  private search = inject(SearchService);
+  private busService = inject(BusService);
+  private bikeService = inject(BikeService);
+  private parkingService = inject(ParkingService);
+  private settings = inject(SettingsService);
+  private environment = inject(EnvironmentService);
+
   private settingsConfig: SettingsInitializationConfig = {
     storage: {
       subKey: 'trip-planner'
@@ -421,21 +435,10 @@ export class TripPlannerService implements OnDestroy {
     }
   }
 
-  constructor(
-    private router: Router,
-    private moduleProvider: EsriModuleProviderService,
-    private mapService: EsriMapService,
-    private connectionService: TripPlannerConnectionService,
-    private analytics: Angulartics2,
-    private ns: NotificationService,
-    private url: ActivatedRoute,
-    private search: SearchService,
-    private busService: BusService,
-    private bikeService: BikeService,
-    private parkingService: ParkingService,
-    private settings: SettingsService,
-    private environment: EnvironmentService
-  ) {
+  constructor() {
+    const moduleProvider = this.moduleProvider;
+    const mapService = this.mapService;
+
     this.LayerSources = this.environment.value('LayerSources');
     this.RegionalBoundary = this.environment.value('RegionalBoundary', true);
 

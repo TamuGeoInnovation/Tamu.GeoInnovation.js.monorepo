@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 
@@ -11,6 +11,9 @@ import { SelectedFile } from '@tamu-gisc/ui-kits/ngx/forms';
   styleUrls: ['./upload-file.component.scss']
 })
 export class UploadFileComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private db = inject(DatabaseService);
+
   public form: FormGroup;
 
   public delimiters = this.db.getTextDelimiterList();
@@ -18,11 +21,6 @@ export class UploadFileComponent implements OnInit {
   public qualifiers = this.db.getTextQualifierList();
 
   public file: ReplaySubject<SelectedFile> = new ReplaySubject(1);
-
-  constructor(
-    private fb: FormBuilder,
-    private db: DatabaseService
-  ) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

@@ -6,7 +6,8 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  inject
 } from '@angular/core';
 import { BehaviorSubject, Observable, ReplaySubject, combineLatest, map, shareReplay, withLatestFrom } from 'rxjs';
 
@@ -23,6 +24,8 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   imports: [EventRowComponent, AsyncPipe, DatePipe]
 })
 export class SeasonDayCardComponent implements OnInit, OnChanges {
+  private readonly sd = inject(SeasonDayService);
+
   @Input()
   public seasonDay: Partial<SeasonDay>;
 
@@ -65,8 +68,6 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
   private _activeOrgFilters: BehaviorSubject<Array<string>> = new BehaviorSubject<Array<string>>([]);
 
   private _activeRsvpsForDay: ReplaySubject<Array<string>> = new ReplaySubject<Array<string>>();
-
-  constructor(private readonly sd: SeasonDayService) {}
 
   public ngOnInit(): void {
     this.events$ = this.sd.getDayEvents(this.seasonDay.guid).pipe(shareReplay());

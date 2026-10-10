@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
@@ -17,6 +17,13 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class ClassAddEditFormComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly at = inject(ActivatedRoute);
+  private readonly rt = inject(Router);
+  private readonly cs = inject(ClassService);
+  private readonly ss = inject(SeasonService);
+  private readonly ns = inject(NotificationService);
+
   @Input()
   public type: 'create' | 'edit';
 
@@ -24,15 +31,6 @@ export class ClassAddEditFormComponent implements OnInit {
   public activeSeasons$: Observable<Partial<Season>>;
   public students$: Observable<Array<Partial<UserClass>>>;
   public form: UntypedFormGroup;
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly at: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly cs: ClassService,
-    private readonly ss: SeasonService,
-    private readonly ns: NotificationService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
