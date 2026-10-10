@@ -18,7 +18,13 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriModuleProviderService } from '../module-provider/module-provider.service';
 import { LayerSourcesService } from '../layer-sources/layer-sources.service';
 import { registerMapProbe } from './map-probe';
-import { declaresOwnRenderer, PortalItemData, portalItemDataUrl, rendererForLayer } from './portal-symbology';
+import {
+  declaresOwnRenderer,
+  PortalItemData,
+  portalItemDataUrl,
+  recordSymbologySource,
+  rendererForLayer
+} from './portal-symbology';
 
 import esri = __esri;
 
@@ -399,6 +405,7 @@ export class EsriMapService {
 
         // Create and return new feature layer
         const layer = new FeatureLayer(props as esri.FeatureLayerProperties);
+        recordSymbologySource(layer, declaresOwnRenderer(source) ? 'own' : 'service');
         this.applyLegendOverrideToLayerSymbols(layer, legendOverride);
         this.applyPortalItemSymbology(layer, source);
         return layer;
@@ -433,7 +440,9 @@ export class EsriMapService {
         delete props.type;
 
         // Create and return new geojson layer
-        return new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
+        const layer = new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
+        recordSymbologySource(layer, declaresOwnRenderer(source) ? 'own' : 'none');
+        return layer;
       });
     } else if (source.type === 'vector-tile') {
       return this.moduleProvider
@@ -451,7 +460,9 @@ export class EsriMapService {
         delete props.type;
 
         // Create and return new csv layer
-        return new CSVLayer(props as esri.CSVLayerProperties);
+        const layer = new CSVLayer(props as esri.CSVLayerProperties);
+        recordSymbologySource(layer, declaresOwnRenderer(source) ? 'own' : 'none');
+        return layer;
       });
     } else if (source.type === 'group') {
       return this.moduleProvider.require(['GroupLayer']).then(async ([GroupLayer]: [esri.GroupLayerConstructor]) => {
@@ -667,6 +678,7 @@ export class EsriMapService {
         const [rendererJsonUtils] = await this.moduleProvider.require(['rendererJsonUtils']);
 
         layer.renderer = rendererJsonUtils.fromJSON(renderer);
+        recordSymbologySource(layer, 'portal');
       })
       .catch(() => {
         // See above: a layer that draws its service's symbology is the previous behaviour, not a fault.
