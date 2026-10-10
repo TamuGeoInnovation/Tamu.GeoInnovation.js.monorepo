@@ -31,8 +31,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AdminCheckinsComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), AdminCheckinsComponent],
   exports: [RouterModule]
 })
 export class AdminCheckinsModule {}

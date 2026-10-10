@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 import { BaseChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { FeatureCollectorService } from '../../services/collector.service';
+import { AsyncPipe } from '@angular/common';
 
 import esri = __esri;
 
@@ -21,7 +22,7 @@ import esri = __esri;
   styleUrls: ['./summary.component.scss'],
   providers: [FeatureCollectorService],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [AsyncPipe]
 })
 export class SelectionSummaryComponent implements OnInit, AfterContentInit {
   @Input()

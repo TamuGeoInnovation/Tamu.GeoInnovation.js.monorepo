@@ -44,9 +44,11 @@ import { MapDrawAdvancedComponent } from './components/map-draw-advanced/map-dra
     StepToggleComponent,
     StepperToggleDirective,
     RenderHostDirective,
-    ElementInsertDirective
+    ElementInsertDirective,
+    BaseDrawComponent,
+    MapDrawBasicComponent,
+    MapDrawAdvancedComponent
   ],
-  declarations: [BaseDrawComponent, MapDrawBasicComponent, MapDrawAdvancedComponent],
   exports: [MapDrawBasicComponent, MapDrawAdvancedComponent]
 })
 export class MapDrawingModule {}

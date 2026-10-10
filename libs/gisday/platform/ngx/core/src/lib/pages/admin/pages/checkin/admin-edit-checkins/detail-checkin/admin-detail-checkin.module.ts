@@ -49,7 +49,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AdminDetailCheckinComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
@@ -85,7 +84,8 @@ const routes: Routes = [
     StepToggleComponent,
     StepperToggleDirective,
     RenderHostDirective,
-    ElementInsertDirective
+    ElementInsertDirective,
+    AdminDetailCheckinComponent
   ],
   exports: [RouterModule]
 })

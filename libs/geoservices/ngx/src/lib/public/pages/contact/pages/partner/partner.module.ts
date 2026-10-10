@@ -13,7 +13,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), PartnerProgramFormModule],
-  declarations: [PartnerComponent]
+  imports: [CommonModule, RouterModule.forChild(routes), PartnerProgramFormModule, PartnerComponent]
 })
 export class PartnerModule {}

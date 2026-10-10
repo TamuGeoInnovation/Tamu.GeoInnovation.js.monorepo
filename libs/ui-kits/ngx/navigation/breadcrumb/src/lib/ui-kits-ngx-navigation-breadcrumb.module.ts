@@ -5,8 +5,7 @@ import { RouterModule } from '@angular/router';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 
 @NgModule({
-  imports: [CommonModule, RouterModule],
-  declarations: [BreadcrumbComponent],
+  imports: [CommonModule, RouterModule, BreadcrumbComponent],
   exports: [BreadcrumbComponent]
 })
 export class NavigationBreadcrumbModule {}

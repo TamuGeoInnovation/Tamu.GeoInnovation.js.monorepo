@@ -38,9 +38,9 @@ import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector'
     SlideToggleComponent,
     SelectListComponent,
     TurnstileChallengeComponent,
-    FeatureSelectorModule
+    FeatureSelectorModule,
+    LayerFilterComponent
   ],
-  declarations: [LayerFilterComponent],
   exports: [LayerFilterComponent]
 })
 export class LayerFilterModule {}
