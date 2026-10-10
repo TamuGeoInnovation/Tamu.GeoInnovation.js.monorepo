@@ -35,6 +35,7 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 9 Oct 2026 | home | `check-in-volume.sh feat/1587-football-lots-live-status ts-events-ngx,ts-events-angular,aggiemap-angular` (bug-fix style) | volume | Nx 42.7 s |
 | 8 Oct 2026 | home | `check-in-volume.sh chore/1236-remove-ring-day-app` (affected, 110 projects, 230 tasks), 3:57 to 4:03 PM Central | volume, cold clone and `npm ci` (59 s) | 6 min (Nx 4 min 28 s) |
 | 8 Oct 2026 | home | `check-in-volume.sh fix/1577-basemap-max-zoom` (5 projects) | volume, cold clone | passed |
 | 8 Oct 2026 | home | `check-in-volume.sh fix/1576-dining-aggieprint-icons` (3 projects) | volume, cold clone | passed |
