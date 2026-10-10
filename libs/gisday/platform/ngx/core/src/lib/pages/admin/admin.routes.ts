@@ -93,7 +93,7 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'users',
-        loadChildren: () => import('./pages/users/users.routes').then((u) => u.UsersModule)
+        loadChildren: () => import('./pages/users/users.routes').then((m) => m.usersRoutes)
       },
       {
         path: '',
