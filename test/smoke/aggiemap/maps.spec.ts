@@ -79,6 +79,9 @@ interface ProbeLayer {
 
   /** Absent on builds older than this field; see the drawable check below. */
   drawable?: boolean | null;
+
+  /** Absent on builds older than this field; see the symbology check below. */
+  symbology?: 'own' | 'portal' | 'service' | 'default' | null;
 }
 
 interface ProbeSnapshot {
@@ -355,6 +358,22 @@ for (const { mapPath, loadPath, title } of cases) {
     expect(
       undrawable.map((l) => `${l.title || l.id} [${l.type}] is ${l.spatialReference}`),
       `${mapPath} draws nothing: the view is ${snapshot.spatialReference} and these tiled layers cannot be reprojected into it`
+    ).toEqual([]);
+
+    // A layer drawing ArcGIS's default symbol has neither a renderer of its own nor one worth drawing
+    // from its source: a GeoJSON feed, which carries no symbology, or a service publishing only
+    // RedSphere.png. #1526 removed ~85 renderers on the understanding that services publish their own;
+    // Dining and AggiePrint then drew as plain dots on production for two days (#1576, #1578).
+    //
+    // Every layer the map has made is checked, visible or not: both of those are off by default, which
+    // is how they went unseen. A layer created only when switched on (`loadOnInit: false`) is not here
+    // to check. `=== 'default'` skips builds older than the field, as the drawable check does.
+    const defaultSymbology = snapshot.layers.filter((l) => l.loaded && l.symbology === 'default');
+
+    expect(
+      defaultSymbology.map((l) => `${l.title || l.id} [${l.type}]`),
+      `${mapPath} has layers drawing ArcGIS's default symbol: give each a renderer in its definition, ` +
+        `with the reason beside it (docs/map-layers.md)`
     ).toEqual([]);
 
     const failed = snapshot.layers.filter((l) => l.error !== null);

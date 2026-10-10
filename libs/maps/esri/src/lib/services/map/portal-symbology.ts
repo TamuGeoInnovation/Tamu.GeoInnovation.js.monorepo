@@ -80,3 +80,42 @@ export function declaresOwnRenderer(source: unknown): boolean {
 
   return native?.renderer !== undefined && native?.renderer !== null;
 }
+
+/**
+ * Where a layer's symbology came from, as the map service decided it (#1578).
+ *
+ * - `own`: its definition sets a renderer.
+ * - `portal`: drawn with the renderer its portal item publishes (#1497).
+ * - `service`: drawn with whatever its service publishes.
+ * - `none`: a GeoJSON or CSV layer with no renderer of its own. Those formats carry no symbology, so
+ *   ArcGIS draws its default marker - which is how Dining drew as plain dots (#1576).
+ *
+ * Kept beside the layer rather than on it, so nothing is added to an Esri object. The map probe reads it.
+ */
+export type SymbologySource = 'own' | 'portal' | 'service' | 'none';
+
+const symbologySources = new WeakMap<object, SymbologySource>();
+
+export function recordSymbologySource(layer: object, source: SymbologySource): void {
+  symbologySources.set(layer, source);
+}
+
+export function symbologySourceOf(layer: object): SymbologySource | undefined {
+  return symbologySources.get(layer);
+}
+
+/**
+ * Whether a service publishes nothing worth drawing: no drawing info at all, or ArcGIS's own default -
+ * a simple renderer with `RedSphere.png`, which is what a hosted layer gets when nobody chose a symbol.
+ * AggiePrint's service is the worked example (#1576).
+ */
+export function publishesDefaultSymbology(sourceJSON: unknown): boolean {
+  const renderer = (sourceJSON as { drawingInfo?: { renderer?: { type?: string; symbol?: { url?: string } } } })?.drawingInfo
+    ?.renderer;
+
+  if (!renderer) {
+    return true;
+  }
+
+  return renderer.type === 'simple' && renderer.symbol?.url === 'RedSphere.png';
+}

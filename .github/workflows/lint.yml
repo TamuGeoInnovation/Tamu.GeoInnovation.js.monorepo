@@ -7,9 +7,6 @@ on:
         required: true
         type: string
 
-env:
-  EXCLUDED_PROJECTS: 'aggiemap-angular-e2e,geoservices-angular-e2e,gisday-competitions-angular-e2e,mailroom-angular-e2e,oidc-admin-angular-e2e,signage-angular-e2e,ues-operations-angular-e2e'
-
 jobs:
   lint:
     name: Affected
@@ -42,4 +39,4 @@ jobs:
         run: npx tsc -p test/smoke/aggiemap
 
       - name: Lint Affected
-        run: npx nx affected:lint --configuration=production --exclude=${{ env.EXCLUDED_PROJECTS }}  --base=${{ inputs.base }} --parallel=2
+        run: npx nx affected:lint --configuration=production --base=${{ inputs.base }} --parallel=2
