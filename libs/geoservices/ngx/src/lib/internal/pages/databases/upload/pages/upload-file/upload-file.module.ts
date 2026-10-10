@@ -49,8 +49,9 @@ const routes: Routes = [
     RangeComponent,
     SlideToggleComponent,
     SelectListComponent,
-    TurnstileChallengeComponent
-  ],
-  declarations: [UploadFileComponent, UploadFormInputComponent]
+    TurnstileChallengeComponent,
+    UploadFileComponent,
+    UploadFormInputComponent
+  ]
 })
 export class UploadFileModule {}

@@ -48,7 +48,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [LoginComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
@@ -82,7 +81,8 @@ const routes: Routes = [
     StepToggleComponent,
     StepperToggleDirective,
     RenderHostDirective,
-    ElementInsertDirective
+    ElementInsertDirective,
+    LoginComponent
   ],
   exports: [RouterModule]
 })

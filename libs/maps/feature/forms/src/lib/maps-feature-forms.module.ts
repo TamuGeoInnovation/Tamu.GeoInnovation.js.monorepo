@@ -23,7 +23,6 @@ import {
 import { LayerConfigurationComponent } from './components/layer-configuration/layer-configuration.component';
 
 @NgModule({
-  declarations: [LayerConfigurationComponent],
   exports: [LayerConfigurationComponent],
   imports: [
     CommonModule,
@@ -42,7 +41,8 @@ import { LayerConfigurationComponent } from './components/layer-configuration/la
     RangeComponent,
     SlideToggleComponent,
     SelectListComponent,
-    TurnstileChallengeComponent
+    TurnstileChallengeComponent,
+    LayerConfigurationComponent
   ],
   providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())]
 })

@@ -10,8 +10,7 @@ import esri = __esri;
 @Component({
   template: '',
   providers: [FeatureSelectorService],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class BaseDrawComponent implements OnInit, OnDestroy {
   public model: ISketchViewModel;

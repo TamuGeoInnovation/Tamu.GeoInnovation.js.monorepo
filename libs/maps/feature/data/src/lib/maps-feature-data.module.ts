@@ -7,8 +7,7 @@ import { AttributeFieldPipe } from './components/alias-attribute-table/pipes/att
 import { FieldCodedValuePipe } from './components/alias-attribute-table/pipes/field-coded-value/field-coded-value.pipe';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [AttributeTableComponent, AliasAttributeTableComponent, AttributeFieldPipe, FieldCodedValuePipe],
+  imports: [CommonModule, AttributeTableComponent, AliasAttributeTableComponent, AttributeFieldPipe, FieldCodedValuePipe],
   exports: [AttributeTableComponent, AliasAttributeTableComponent]
 })
 export class MapsFeatureDataModule {}

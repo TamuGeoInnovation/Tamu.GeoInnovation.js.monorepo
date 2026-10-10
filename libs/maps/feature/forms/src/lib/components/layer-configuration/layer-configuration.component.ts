@@ -9,7 +9,7 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, forkJoin, from } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, filter, withLatestFrom, pluck, take } from 'rxjs/operators';
 
@@ -17,6 +17,9 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import { v4 as guid } from 'uuid';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { RangeComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import esri = __esri;
 
@@ -25,7 +28,7 @@ import esri = __esri;
   templateUrl: './layer-configuration.component.html',
   styleUrls: ['./layer-configuration.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, RangeComponent, CheckboxComponent]
 })
 export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges {
   /**

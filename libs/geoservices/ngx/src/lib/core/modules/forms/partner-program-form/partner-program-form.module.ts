@@ -40,9 +40,9 @@ import { PartnerProgramFormComponent } from './partner-program-form.component';
     SlideToggleComponent,
     SelectListComponent,
     TurnstileChallengeComponent,
-    RouterModule
+    RouterModule,
+    PartnerProgramFormComponent
   ],
-  declarations: [PartnerProgramFormComponent],
   exports: [PartnerProgramFormComponent]
 })
 export class PartnerProgramFormModule {}

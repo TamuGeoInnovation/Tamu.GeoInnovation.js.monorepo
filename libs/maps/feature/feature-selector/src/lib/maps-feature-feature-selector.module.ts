@@ -7,9 +7,8 @@ import { FeatureSelectorService } from './services/selector.service';
 import { FeatureCollectorService } from './services/collector.service';
 
 @NgModule({
-  imports: [CommonModule],
+  imports: [CommonModule, SelectionSummaryComponent],
   providers: [FeatureSelectorService, FeatureCollectorService],
-  declarations: [SelectionSummaryComponent],
   exports: [SelectionSummaryComponent]
 })
 export class FeatureSelectorModule {}

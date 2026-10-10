@@ -17,6 +17,8 @@ import {
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { makeWhere } from '@tamu-gisc/common/utils/database';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 import esri = __esri;
 
@@ -25,7 +27,7 @@ import esri = __esri;
   templateUrl: './layer-filter.component.html',
   styleUrls: ['./layer-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [SelectComponent, AsyncPipe]
 })
 export class LayerFilterComponent implements OnInit, OnDestroy {
   constructor(

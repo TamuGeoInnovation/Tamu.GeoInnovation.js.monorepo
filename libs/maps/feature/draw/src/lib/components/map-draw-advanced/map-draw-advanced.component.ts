@@ -3,6 +3,9 @@ import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseDrawComponent, ISketchViewModelEvent } from '../base/base.component';
+import { NgClass, NgStyle } from '@angular/common';
+import { TooltipComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import esri = __esri;
 
@@ -11,7 +14,7 @@ import esri = __esri;
   templateUrl: './map-draw-advanced.component.html',
   styleUrls: ['./map-draw-advanced.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+  imports: [NgClass, TooltipComponent, TooltipTriggerComponent, NgStyle]
 })
 export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnInit {
   /**
