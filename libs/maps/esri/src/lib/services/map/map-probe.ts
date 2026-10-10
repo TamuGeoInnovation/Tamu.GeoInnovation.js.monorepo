@@ -5,6 +5,7 @@ import esri = __esri;
 // Type-only: `map.service.ts` imports `registerMapProbe` from here, so a value import would create
 // a runtime cycle between the two modules.
 import type { MapServiceInstance } from './map.service';
+import { publishesDefaultSymbology, symbologySourceOf } from './portal-symbology';
 
 /**
  * Read-only view of one layer's health, as reported to automated tests.
@@ -60,6 +61,16 @@ export interface MapLayerProbe {
    * Decided by `SpatialReference.equals`, which knows 102100 and 3857 are the same reference.
    */
   drawable: boolean | null;
+
+  /**
+   * Where the layer's symbology comes from (#1578): `own`, `portal` or `service` as the map service
+   * recorded it, or `default` when it draws ArcGIS's default symbol because neither its definition nor
+   * its source supplies one - a GeoJSON or CSV layer with no renderer, or a feature layer whose service
+   * publishes no drawing info or only `RedSphere.png`. `null` for layers that have no renderer.
+   *
+   * `default` is what Dining and AggiePrint were for two days on production (#1576).
+   */
+  symbology: 'own' | 'portal' | 'service' | 'default' | null;
 }
 
 export interface MapProbeSnapshot {
@@ -138,6 +149,14 @@ export interface MapProbe {
 
   /** Resolves layer health. Queries feature counts, so it performs network requests. */
   snapshot(): Promise<MapProbeSnapshot>;
+
+  /**
+   * Each layer's renderer as ArcGIS JSON, keyed by layer id, as the layer is drawing it now: its own,
+   * its portal item's or its service's. `null` for a layer with no renderer. For the symbology
+   * inventory in `docs/layer-symbology.md` (#1578), so it records what is actually drawn rather than
+   * what a definition file appears to say.
+   */
+  renderers(): Record<string, unknown>;
 }
 
 /**
@@ -210,7 +229,8 @@ export function registerMapProbe(instance: MapServiceInstance | undefined, owner
       get framing(): MapFraming | null {
         return framing();
       },
-      snapshot: takeSnapshot
+      snapshot: takeSnapshot,
+      renderers: readRenderers
     };
   }
 }
@@ -348,7 +368,8 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
     featureCount: null,
     graphicTypes: countGraphicTypes(layer),
     spatialReference: readSpatialReference(layer),
-    drawable: isDrawable(layer)
+    drawable: isDrawable(layer),
+    symbology: readSymbology(layer)
   };
 
   // A layer that failed to load cannot be queried, and asking would replace a useful load error
@@ -358,6 +379,38 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
   }
 
   return { ...base, featureCount: await countFeatures(layer) };
+}
+
+/** See `MapProbe.renderers`. */
+function readRenderers(): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+
+  for (const layer of registeredLayers()) {
+    const renderer = (layer as unknown as { renderer?: { toJSON?: () => unknown } }).renderer;
+
+    out[layer.id] = renderer?.toJSON ? renderer.toJSON() : null;
+  }
+
+  return out;
+}
+
+/** See `MapLayerProbe.symbology`. Read after the layer has loaded, so `sourceJSON` is there. */
+function readSymbology(layer: esri.Layer): MapLayerProbe['symbology'] {
+  const source = symbologySourceOf(layer);
+
+  if (source === undefined) {
+    return null;
+  }
+
+  if (source === 'none') {
+    return 'default';
+  }
+
+  if (source === 'service' && publishesDefaultSymbology((layer as unknown as { sourceJSON?: unknown }).sourceJSON)) {
+    return 'default';
+  }
+
+  return source;
 }
 
 /**

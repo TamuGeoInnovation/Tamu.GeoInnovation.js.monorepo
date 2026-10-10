@@ -35,6 +35,17 @@ line with arrowheads had been authored ([#1496][1496]).
 
 ## Symbology
 
+**What every layer draws today** is in [`layer-symbology.md`](layer-symbology.md): where each layer's
+symbology comes from and every symbol in use, with images, across all maps. Look there before choosing a
+symbol, so a new one matches the ones already in use.
+
+**Some sources publish nothing worth drawing.** A GeoJSON or CSV layer carries no symbology at all, and a
+hosted service may publish only ArcGIS's default (`RedSphere.png`). Either way the layer draws a plain
+default marker unless its definition sets a renderer, which is why Dining and AggiePrint keep theirs
+([#1576](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1576)).
+`maps.spec.ts` fails on any layer drawing the default symbol
+([#1578](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1578)).
+
 ### How
 
 Set `renderer` inside a layer source's `native` block:

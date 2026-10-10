@@ -22,9 +22,6 @@ Unit tests live next to the code as `*.spec.ts` and are run by Jest through Nx: 
 across `apps/` and `libs/`. Playwright specs live here and are invisible to Jest, because the root
 `jest.config.ts` uses `getJestProjects()` and only picks up registered Nx projects.
 
-`apps/aggiemap-angular-e2e` holds 9 older Cypress specs. Nothing runs them: CI excludes the project,
-and the AggieMap smoke suite covers the same ground against deployed environments.
-
 ## Running locally
 
 Unit tests run through Nx in Docker; [CLAUDE_SETUP.md](../CLAUDE_SETUP.md) has the command.
@@ -92,7 +89,7 @@ stay that way — it runs against production on a schedule.
 | `aggiemap-smoke.yml` | daily at 11:17 UTC, plus manual | no | AggieMap smoke against dev and production; a failure opens a `dev-health` or `prod-health` issue |
 | `smoke.yml` | every 6 hours, plus manual | no | GIS Day smoke against txgisday.org |
 
-`test.yml` skips a fixed list of projects, the Cypress one among them; the list is
+`test.yml` skips a fixed list of projects; the list is
 `EXCLUDED_PROJECTS` at the top of the workflow. It runs with `--coverage=false`;
 coverage is available locally via `npm run coverage`.
 
