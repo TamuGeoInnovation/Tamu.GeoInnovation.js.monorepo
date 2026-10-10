@@ -3,6 +3,7 @@
 // class still undefined.
 import { EventSettingsService } from '../settings/event-settings.service';
 
+import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -35,16 +36,6 @@ function mainLayersLoadedFor(definition: AggiemapCustomMapConfiguration): string
     value: (key: string) => (key === 'LayerSources' ? MAIN_LAYERS : undefined)
   } as unknown as EnvironmentService;
 
-  const mapService = new EsriMapService(
-    {} as EsriModuleProviderService,
-    {} as Router,
-    { snapshot: { queryParams: {} } } as unknown as ActivatedRoute,
-    {} as SearchService,
-    env,
-    {} as HttpClient,
-    new LayerSourcesService(env)
-  );
-
   const settings = {
     eventConfiguration: () => definition,
     eventOptions: () => definition.options,
@@ -54,7 +45,24 @@ function mainLayersLoadedFor(definition: AggiemapCustomMapConfiguration): string
     eventLayerSources: () => definition.sources
   } as unknown as EventSettingsService;
 
-  new EventService(env, {} as EsriModuleProviderService, mapService, settings, new LayerSourcesService(env));
+  // The map and layer source services are the real ones, built from the fakes above.
+  TestBed.resetTestingModule().configureTestingModule({
+    providers: [
+      { provide: EnvironmentService, useValue: env },
+      { provide: EsriModuleProviderService, useValue: {} },
+      { provide: Router, useValue: {} },
+      { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} } } },
+      { provide: SearchService, useValue: {} },
+      { provide: HttpClient, useValue: {} },
+      { provide: EventSettingsService, useValue: settings },
+      LayerSourcesService,
+      EsriMapService,
+      EventService
+    ]
+  });
+
+  TestBed.inject(EventService);
+  const mapService = TestBed.inject(EsriMapService);
 
   return mapService.filterLayerSources(undefined, { params: true }).map((source) => source.id);
 }
