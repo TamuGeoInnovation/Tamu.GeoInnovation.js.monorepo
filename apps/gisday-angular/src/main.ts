@@ -18,15 +18,15 @@ import { AppComponent } from './app/app.component';
 const routes: Routes = [
   {
     path: 'app',
-    loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.PublicModule)
+    loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.publicRoutes)
   },
   {
     path: 'callback',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.CallbackModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.callbackRoutes)
   },
   {
     path: '',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.WrapperModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.wrapperRoutes)
   }
 ];
 const routeOptions: ExtraOptions = {
