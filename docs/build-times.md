@@ -238,6 +238,7 @@ every layer, so its duration says as much about the GIS services as about this c
 
 | Date | Machine | Environment | Result | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 9 Oct 2026 | home | production, `build-banner.spec.ts` only, from a worktree with no `node_modules` (#1459): first run installing the three packages into the volume / packages already there / a brand-new volume | 1 passed each time | 19 s / 14 s / 16 s |
 | 8 Oct 2026 | home | **production**, `a4e04a7b` (build 20261008.15: the standalone work, #1571, #1579, #1580), release scope, 6 workers, 4:07:46 PM to 4:27:25 PM Central; cleared the 8 October release, tagged `dev-` and `prod-2026-10-08` | 397 passed, 0 failed, 0 flaky, 24 skipped, of 421 | **19 min 39 s** |
 | 8 Oct 2026 | home | local dev server, #1568 branch rebased on `development` (all the standalone work and #1571), release scope, 6 workers, about 11:25 AM to 11:55 AM Central | 428 passed, 1 failed (build banner, local only), 1 flaky (bus route 48), 30 skipped | **28.2 min** |
 | 8 Oct 2026 | home | local dev server, #1563 branch (AggieMap bootstrapped standalone), release scope, 6 workers, morning | 405 passed, 1 failed (build banner, local only), 30 skipped | 22.1 min |
