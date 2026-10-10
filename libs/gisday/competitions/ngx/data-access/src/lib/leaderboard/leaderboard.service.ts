@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -10,13 +10,13 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   providedIn: 'root'
 })
 export class LeaderboardService {
+  private http = inject(HttpClient);
+  private environment = inject(EnvironmentService);
+  private readonly ns = inject(NotificationService);
+
   public resource: string;
 
-  constructor(
-    private http: HttpClient,
-    private environment: EnvironmentService,
-    private readonly ns: NotificationService
-  ) {
+  constructor() {
     this.resource = `${this.environment.value('api_url')}/competitions/leaderboards`;
   }
 

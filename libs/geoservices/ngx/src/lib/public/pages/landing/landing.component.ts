@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { RouterLinkActive, RouterLink } from '@angular/router';
@@ -13,9 +13,9 @@ import { TabComponent } from '@tamu-gisc/ui-kits/ngx/layout';
   imports: [RouterLinkActive, RouterLink, TabsComponent, TabComponent]
 })
 export class LandingComponent implements OnInit {
-  public url: string;
+  private readonly env = inject(EnvironmentService);
 
-  constructor(private readonly env: EnvironmentService) {}
+  public url: string;
 
   public ngOnInit(): void {
     this.url = this.env.value('accounts_url');

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -12,12 +12,10 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink]
 })
 export class RevivalModalComponent {
-  public legacyHost: string = this.env.value('legacy_host');
+  private readonly mr = inject(ModalRefService);
+  private readonly env = inject(EnvironmentService);
 
-  constructor(
-    private readonly mr: ModalRefService,
-    private readonly env: EnvironmentService
-  ) {}
+  public legacyHost: string = this.env.value('legacy_host');
 
   public dismiss() {
     this.mr.close(true);

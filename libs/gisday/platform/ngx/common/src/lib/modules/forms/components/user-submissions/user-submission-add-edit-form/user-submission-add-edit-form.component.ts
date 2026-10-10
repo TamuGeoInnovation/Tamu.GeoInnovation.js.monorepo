@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { filter, map, Observable, shareReplay, startWith, Subject, switchMap, take, tap } from 'rxjs';
 
@@ -28,6 +28,14 @@ import { AsyncPipe } from '@angular/common';
   ]
 })
 export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly at = inject(ActivatedRoute);
+  private readonly rt = inject(Router);
+  private readonly submissionTypeService = inject(SubmissionTypeService);
+  private readonly userSubmissionService = inject(UserSubmissionsService);
+  private readonly seasonService = inject(SeasonService);
+  private readonly ns = inject(NotificationService);
+
   @Input()
   public type: 'create' | 'edit';
 
@@ -80,15 +88,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
 
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly at: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly submissionTypeService: SubmissionTypeService,
-    private readonly userSubmissionService: UserSubmissionsService,
-    private readonly seasonService: SeasonService,
-    private readonly ns: NotificationService
-  ) {
+  constructor() {
     this.form = this.fb.group({
       title: [''],
       participants: this.fb.array([]),

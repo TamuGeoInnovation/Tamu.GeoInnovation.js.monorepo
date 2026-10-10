@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs';
@@ -14,15 +14,14 @@ import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   standalone: false
 })
 export abstract class BaseAdminDetailComponent<T> implements OnInit {
+  /** The service for this page's entity. Each page injects its own. */
+  protected abstract readonly entityService: BaseService<T>;
+
+  private readonly activatedRoute = inject(ActivatedRoute);
+
   public entity: Observable<Partial<T>>;
 
   public form: UntypedFormGroup;
-
-  constructor(
-    private formBuilder: UntypedFormBuilder,
-    private activatedRoute: ActivatedRoute,
-    private entityService: BaseService<T>
-  ) {}
 
   public ngOnInit() {
     this.entity = this.activatedRoute.params.pipe(

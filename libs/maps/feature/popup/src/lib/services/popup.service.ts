@@ -1,4 +1,4 @@
-import { Component, Injectable, Type } from '@angular/core';
+import { Component, Injectable, Type, inject } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { BehaviorSubject, Subject } from 'rxjs';
 
@@ -16,6 +16,8 @@ type PopupDataEntry = PopupDataDefinition[string];
 
 @Injectable({ providedIn: 'root' })
 export class PopupService {
+  private environment = inject(EnvironmentService);
+
   private _show: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public show = this._show.asObservable();
 
@@ -33,8 +35,6 @@ export class PopupService {
    * no reason. See #1244.
    */
   public readonly opened = this._opened.asObservable();
-
-  constructor(private environment: EnvironmentService) {}
 
   /**
    * Determine component ID by one of two methods:

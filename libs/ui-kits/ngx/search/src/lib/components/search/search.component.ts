@@ -9,7 +9,8 @@ import {
   OnDestroy,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  HostListener
+  HostListener,
+  inject
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -35,6 +36,13 @@ import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
   imports: [NgClass, AsyncPipe, TitleCasePipe]
 })
 export class SearchComponent implements OnInit, OnDestroy {
+  private cd = inject(ChangeDetectorRef);
+  private analytics = inject(Angulartics2);
+  private ns = inject(NotificationService);
+  private searchService = inject(SearchService);
+  private environment = inject(EnvironmentService);
+  protected elementRef = inject(ElementRef);
+
   /**
    * Placeholder text for the input.
    *
@@ -205,14 +213,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   @ViewChild('search', { static: true }) private searchElem: ElementRef;
 
-  constructor(
-    private cd: ChangeDetectorRef,
-    private analytics: Angulartics2,
-    private ns: NotificationService,
-    private searchService: SearchService,
-    private environment: EnvironmentService,
-    protected elementRef: ElementRef
-  ) {
+  constructor() {
     if (this.environment.value('SearchSources')) {
       this._sources = this.environment.value('SearchSources');
     }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
 import { LayerLegendOverride } from '@tamu-gisc/common/types';
@@ -45,10 +45,8 @@ import esri = __esri;
   imports: [NgStyle, ElementInsertDirective, AsyncPipe]
 })
 export class LegendElementComponent implements OnInit {
-  constructor(
-    private readonly moduleProvider: EsriModuleProviderService,
-    private readonly layerSourcesService: LayerSourcesService
-  ) {}
+  private readonly moduleProvider = inject(EsriModuleProviderService);
+  private readonly layerSourcesService = inject(LayerSourcesService);
 
   private readonly sportsSafetyFirstLayerIds = new Set([
     'softball-parking-safety-first',

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, Subject, from, combineLatest, of, iif, forkJoin, zip } from 'rxjs';
 import {
   pluck,
@@ -30,11 +30,10 @@ import esri = __esri;
   imports: [SelectComponent, AsyncPipe]
 })
 export class LayerFilterComponent implements OnInit, OnDestroy {
-  constructor(
-    private layerList: LayerListService,
-    private moduleProvider: EsriModuleProviderService,
-    private mapService: EsriMapService
-  ) {}
+  private layerList = inject(LayerListService);
+  private moduleProvider = inject(EsriModuleProviderService);
+  private mapService = inject(EsriMapService);
+
   /**
    * Layer ID reference.
    *

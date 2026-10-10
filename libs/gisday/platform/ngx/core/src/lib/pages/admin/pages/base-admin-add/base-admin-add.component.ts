@@ -12,10 +12,11 @@ import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   standalone: false
 })
 export abstract class BaseAdminAddComponent<T> implements IBaseAdminAddComponent, OnDestroy {
+  /** The service for this page's entity. Each page injects its own. */
+  protected abstract readonly entityService: BaseService<T>;
+
   public form: UntypedFormGroup;
   private _$destroy: Subject<boolean> = new Subject();
-
-  constructor(private entityService: BaseService<T>) {}
 
   public ngOnDestroy() {
     this._$destroy.next(undefined);

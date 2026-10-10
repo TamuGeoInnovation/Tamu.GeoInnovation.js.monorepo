@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MapboxOptions, Map } from 'mapbox-gl';
 
@@ -11,6 +11,8 @@ import { MapboxMapService } from '../../services/mapbox-map.service';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class MapboxMapComponent implements OnInit {
+  private mapService = inject(MapboxMapService);
+
   @ViewChild('map', { static: true })
   public mapContainer: ElementRef;
 
@@ -31,8 +33,6 @@ export class MapboxMapComponent implements OnInit {
 
   @Output()
   public loaded: Observable<Map>;
-
-  constructor(private mapService: MapboxMapService) {}
 
   public ngOnInit() {
     this.mapService.createMap({

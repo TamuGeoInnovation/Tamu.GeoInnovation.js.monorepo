@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2';
@@ -17,19 +17,18 @@ import { CodeMaroonAlertComponent } from '@tamu-gisc/aggiemap/ngx/core';
   imports: [RouterOutlet, NotificationGroupedComponent, CodeMaroonAlertComponent]
 })
 export class AppComponent implements OnInit, OnDestroy {
+  analytics = inject(Angulartics2GoogleGlobalSiteTag);
+  private readonly vcr = inject(ViewContainerRef);
+  private readonly ms = inject(ModalService);
+  private readonly lastMap = inject(LastMapService);
+  private readonly eventNotifications = inject(EventNotificationsService);
+  private readonly router = inject(Router);
+
   private _notifications: Subscription | undefined;
 
-  constructor(
-    public analytics: Angulartics2GoogleGlobalSiteTag,
-    private readonly vcr: ViewContainerRef,
-    private readonly ms: ModalService,
-    // Injected only so it exists from startup. It is `providedIn: 'root'`, which is lazy: without
-    // this it would first be constructed on a discover page, by which time the map navigation it
-    // needs to observe has already happened and there would be nothing to go back to.
-    private readonly lastMap: LastMapService,
-    private readonly eventNotifications: EventNotificationsService,
-    private readonly router: Router
-  ) {
+  constructor() {
+    const analytics = this.analytics;
+
     analytics.startTracking();
   }
 

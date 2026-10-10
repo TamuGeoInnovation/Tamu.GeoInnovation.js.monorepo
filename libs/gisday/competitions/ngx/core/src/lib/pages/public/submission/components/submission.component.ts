@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
@@ -14,9 +14,9 @@ import { AsyncPipe } from '@angular/common';
   imports: [SubmissionComponent_1, AsyncPipe]
 })
 export class SubmissionComponent implements OnInit {
-  public model: Observable<CompetitionSeason>;
+  private readonly fs = inject(FormService);
 
-  constructor(private readonly fs: FormService) {}
+  public model: Observable<CompetitionSeason>;
 
   public ngOnInit() {
     this.model = this.fs.getFormForActiveSeason();

@@ -5,7 +5,8 @@ import {
   ContentChildren,
   QueryList,
   AfterContentInit,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  inject
 } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -25,6 +26,8 @@ import esri = __esri;
   imports: [AsyncPipe]
 })
 export class SelectionSummaryComponent implements OnInit, AfterContentInit {
+  private collector = inject(FeatureCollectorService);
+
   @Input()
   public selfCollect: boolean;
 
@@ -47,8 +50,6 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
    */
   @ContentChildren(BaseChartComponent, { descendants: true })
   public chartComponents: QueryList<BaseChartComponent>;
-
-  constructor(private collector: FeatureCollectorService) {}
 
   /**
    * Set up the SelectionSummaryComponent feature collector.

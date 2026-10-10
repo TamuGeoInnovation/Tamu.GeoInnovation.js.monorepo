@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
@@ -17,17 +17,15 @@ import esri = __esri;
   imports: [RouterLink]
 })
 export class SidebarTripPlannerComponent {
+  private plannerService = inject(TripPlannerService);
+  private testing = inject(TestingService);
+
   public dev = this.testing.get('isTesting');
 
   /**
    * Planner service observable reference that contains the planner service stops used to create a trip request.
    */
   public stops: Observable<TripPoint[]> = this.plannerService.Stops;
-
-  constructor(
-    private plannerService: TripPlannerService,
-    private testing: TestingService
-  ) {}
 
   /**
    * Call the planner service to add a result as a trip point to the service stop store

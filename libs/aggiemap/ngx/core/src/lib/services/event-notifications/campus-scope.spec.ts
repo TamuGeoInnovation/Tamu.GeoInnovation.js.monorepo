@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { NavigationEnd } from '@angular/router';
 import { of, Subject } from 'rxjs';
 
@@ -7,6 +8,7 @@ import {
   campusForRoute,
   campusOnNavigation,
   COLLEGE_STATION,
+  EVENT_NOTIFICATION_DEFINITIONS,
   EventNotificationsService,
   NO_NOTIFICATIONS
 } from './event-notifications.service';
@@ -105,10 +107,14 @@ describe('EventNotificationsService campus scoping', () => {
 
   const build = () => {
     notifications = new FakeNotificationService();
-    return new EventNotificationsService(notifications as unknown as NotificationService, [
-      definition('ring-day'),
-      definition('kickoff')
-    ]);
+    return TestBed.resetTestingModule()
+      .configureTestingModule({
+        providers: [
+          { provide: NotificationService, useValue: notifications },
+          { provide: EVENT_NOTIFICATION_DEFINITIONS, useValue: [definition('ring-day'), definition('kickoff')] }
+        ]
+      })
+      .runInInjectionContext(() => new EventNotificationsService());
   };
 
   it('raises College Station notifications on a College Station map', () => {

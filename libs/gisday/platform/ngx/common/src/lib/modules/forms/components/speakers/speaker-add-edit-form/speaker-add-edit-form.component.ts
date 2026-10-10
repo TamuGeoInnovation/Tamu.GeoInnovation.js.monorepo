@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -39,6 +39,17 @@ import { AsyncPipe } from '@angular/common';
   ]
 })
 export class SpeakerAddEditFormComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly rt = inject(Router);
+  private readonly at = inject(ActivatedRoute);
+  private readonly ss = inject(SpeakerService);
+  private readonly as = inject(AssetsService);
+  private readonly us = inject(UniversityService);
+  private readonly os = inject(OrganizationService);
+  private readonly sn = inject(DomSanitizer);
+  private readonly ns = inject(NotificationService);
+  private readonly sss = inject(SeasonService);
+
   @Input()
   public type: 'create' | 'edit';
 
@@ -48,19 +59,6 @@ export class SpeakerAddEditFormComponent implements OnInit {
   public speakerPhotoUrl$: Observable<SafeUrl>;
 
   public form: UntypedFormGroup;
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly rt: Router,
-    private readonly at: ActivatedRoute,
-    private readonly ss: SpeakerService,
-    private readonly as: AssetsService,
-    private readonly us: UniversityService,
-    private readonly os: OrganizationService,
-    private readonly sn: DomSanitizer,
-    private readonly ns: NotificationService,
-    private readonly sss: SeasonService
-  ) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

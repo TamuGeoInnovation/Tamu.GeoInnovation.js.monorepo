@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { Location, AsyncPipe } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
@@ -27,6 +27,15 @@ import esri = __esri;
   imports: [SearchMobileComponent, BackdropComponent, AsyncPipe]
 })
 export class OmnisearchComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private history = inject(RouterHistoryService);
+  private location = inject(Location);
+  private mapService = inject(EsriMapService);
+  private plannerService = inject(TripPlannerService);
+  private dragService = inject(DragService);
+  private helper = inject(AltSearchHelper);
+
   /**
    * Determines the backdrop visibility
    */
@@ -58,16 +67,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
 
   private _lastRoute: string;
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private history: RouterHistoryService,
-    private location: Location,
-    private mapService: EsriMapService,
-    private plannerService: TripPlannerService,
-    private dragService: DragService,
-    private helper: AltSearchHelper
-  ) {
+  constructor() {
     // Set default search icon on search component on omnisearch initialize.
     this.searchComponentLeftAction = 'menu';
   }

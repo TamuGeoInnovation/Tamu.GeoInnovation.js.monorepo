@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Optional, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { v4 as guid } from 'uuid';
@@ -17,15 +17,13 @@ import { AsyncPipe } from '@angular/common';
   imports: [NotificationItemComponent, AsyncPipe]
 })
 export class NotificationContainerComponent implements OnInit {
+  private analytics = inject(Angulartics2, { optional: true });
+  private service = inject(NotificationService);
+
   @Input()
   public position: 'left' | 'center' | 'right' = 'center';
 
   public notifications: Observable<Notification[]>;
-
-  constructor(
-    @Optional() private analytics: Angulartics2,
-    private service: NotificationService
-  ) {}
 
   public ngOnInit() {
     this.notifications = this.service.notifications;

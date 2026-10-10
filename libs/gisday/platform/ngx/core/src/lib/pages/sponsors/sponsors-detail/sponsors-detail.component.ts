@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { map, Observable, switchMap } from 'rxjs';
@@ -16,12 +16,10 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [AsyncPipe, MarkdownParsePipe]
 })
 export class SponsorsDetailComponent implements OnInit {
-  public $sponsor: Observable<Partial<Sponsor>>;
+  private route = inject(ActivatedRoute);
+  private readonly sponsorService = inject(SponsorService);
 
-  constructor(
-    private route: ActivatedRoute,
-    private readonly sponsorService: SponsorService
-  ) {}
+  public $sponsor: Observable<Partial<Sponsor>>;
 
   public ngOnInit() {
     this.$sponsor = this.route.params.pipe(

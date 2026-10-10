@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
@@ -13,9 +13,9 @@ import { SubmissionReviewListComponent } from '../../../shared/submission-review
   imports: [SubmissionReviewListComponent]
 })
 export class AdminSubmissionsComponent implements OnInit {
-  public submissions$: Observable<SubmissionReviewDto[]>;
+  private readonly submissionService = inject(SubmissionService);
 
-  constructor(private readonly submissionService: SubmissionService) {}
+  public submissions$: Observable<SubmissionReviewDto[]>;
 
   public ngOnInit(): void {
     this.submissions$ = this.submissionService.getAdminSubmissions();

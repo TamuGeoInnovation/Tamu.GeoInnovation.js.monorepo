@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, HostBinding, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, mergeMap, startWith, tap, toArray } from 'rxjs/operators';
@@ -41,6 +41,12 @@ import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
   ]
 })
 export class HeaderComponent implements OnInit {
+  private readonly as = inject(AuthService);
+  private readonly ss = inject(SeasonService);
+  private readonly ps = inject(PlaceService);
+  private readonly rt = inject(Router);
+  private readonly at = inject(ActivatedRoute);
+
   public loggedIn$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
   public appRoles = GISDayRoles;
@@ -61,14 +67,6 @@ export class HeaderComponent implements OnInit {
   public get headerSeamless() {
     return this.isHeaderSeamless;
   }
-
-  constructor(
-    private readonly as: AuthService,
-    private readonly ss: SeasonService,
-    private readonly ps: PlaceService,
-    private readonly rt: Router,
-    private readonly at: ActivatedRoute
-  ) {}
 
   public ngOnInit() {
     this.loggedIn$ = this.as.isAuthenticated$;

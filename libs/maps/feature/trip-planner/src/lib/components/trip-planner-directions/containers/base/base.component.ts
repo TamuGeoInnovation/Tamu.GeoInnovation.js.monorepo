@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil, switchMap, pluck } from 'rxjs/operators';
@@ -18,15 +18,13 @@ import { TripPlannerModeSwitchComponent } from '../../../trip-planner-mode-switc
   imports: [TripPlannerDirectionsActionsComponent, TripPlannerModeSwitchComponent]
 })
 export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private plannerService = inject(TripPlannerService);
+  private analytics = inject(Angulartics2);
+
   public result: TripResult;
 
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(
-    private router: Router,
-    private plannerService: TripPlannerService,
-    private analytics: Angulartics2
-  ) {}
 
   public ngOnInit() {
     // Subscribe to travel mode state in trip planner and fetch trip result for mode.

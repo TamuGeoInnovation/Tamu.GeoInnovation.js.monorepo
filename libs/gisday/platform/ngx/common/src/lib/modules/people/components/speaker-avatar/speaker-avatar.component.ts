@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, catchError, filter, mapTo, of, shareReplay, startWith, switchMap } from 'rxjs';
 
 import { AssetsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -13,6 +13,9 @@ import { AsyncPipe } from '@angular/common';
   imports: [AsyncPipe]
 })
 export class SpeakerAvatarComponent implements OnInit {
+  private readonly http = inject(HttpClient);
+  private readonly as = inject(AssetsService);
+
   @Input()
   public avatarImageUrl: string;
 
@@ -60,11 +63,6 @@ export class SpeakerAvatarComponent implements OnInit {
    */
   public imageExists$: Observable<boolean>;
   public initials$: Observable<string>;
-
-  constructor(
-    private readonly http: HttpClient,
-    private readonly as: AssetsService
-  ) {}
 
   public ngOnInit(): void {
     this.avatarImageUrl$ = of(this.avatarImageUrl).pipe(

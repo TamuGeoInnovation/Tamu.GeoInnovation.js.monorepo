@@ -1,4 +1,13 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormBuilder,
@@ -31,6 +40,14 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [FormsModule, ReactiveFormsModule, NgStyle, SelectComponent, TextboxComponent, AsyncPipe]
 })
 export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly as = inject(AuthService);
+  private readonly ns = inject(NotificationService);
+  private readonly analytics = inject(Angulartics2);
+  private readonly ss = inject(SubmissionService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
   @Input()
   public formModel: Partial<CompetitionSeason>;
 
@@ -68,16 +85,6 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
   private _trackLocation: TrackLocation;
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly as: AuthService,
-    private readonly ns: NotificationService,
-    private readonly analytics: Angulartics2,
-    private readonly ss: SubmissionService,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute
-  ) {}
 
   public ngOnInit(): void {
     this._trackLocation = new TrackLocation({ enableHighAccuracy: true, maximumAge: 10000, timeout: 2500 });

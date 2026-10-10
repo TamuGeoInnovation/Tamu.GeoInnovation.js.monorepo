@@ -1,10 +1,12 @@
-import { ComponentRef, Inject, Injectable, Type, ViewContainerRef, DOCUMENT } from '@angular/core';
+import { ComponentRef, Injectable, Type, ViewContainerRef, DOCUMENT, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ModalHostComponent } from '../../components/modal-host/modal-host.component';
 
 @Injectable({ providedIn: 'root' })
 export class ModalService {
+  private document = inject<Document>(DOCUMENT);
+
   private _viewRef: ViewContainerRef;
   private _modalRef: ComponentRef<ModalHostComponent>;
 
@@ -19,8 +21,6 @@ export class ModalService {
    * See #1246.
    */
   public readonly isOpen: Observable<boolean> = this._isOpen.asObservable();
-
-  constructor(@Inject(DOCUMENT) private document: Document) {}
 
   /**
    * Registers the global view container ref that will be used for all modal `open` calls

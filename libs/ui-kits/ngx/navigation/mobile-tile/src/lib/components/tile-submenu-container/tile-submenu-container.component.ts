@@ -5,7 +5,8 @@ import {
   ViewContainerRef,
   OnDestroy,
   HostBinding,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  inject
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -25,6 +26,8 @@ import { submenuListStagger } from '../../animations/animations';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
+  private service = inject(TileService);
+
   @ViewChild('container', { static: true, read: ViewContainerRef })
   private _container: ViewContainerRef;
 
@@ -35,8 +38,6 @@ export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   private _animation() {
     return true;
   }
-
-  constructor(private service: TileService) {}
 
   public ngOnInit() {
     // A click even is registered on the TileComponent.

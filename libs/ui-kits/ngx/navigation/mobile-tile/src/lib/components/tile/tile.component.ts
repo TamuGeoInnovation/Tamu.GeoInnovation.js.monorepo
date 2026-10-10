@@ -1,4 +1,12 @@
-import { AfterContentInit, Component, ContentChild, HostListener, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  ContentChild,
+  HostListener,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 
 import { TileTitleComponent } from '../tile-title/tile-title.component';
@@ -15,6 +23,8 @@ import { TileNavigationComponent } from '../tile-navigation/tile-navigation.comp
   imports: [TileNavigationComponent]
 })
 export class TileComponent implements AfterContentInit, OnDestroy {
+  private service = inject(TileService);
+
   private _destroy$: Subject<boolean> = new Subject();
 
   @ContentChild(TileTitleComponent, { static: true })
@@ -40,8 +50,6 @@ export class TileComponent implements AfterContentInit, OnDestroy {
       this.service.toggleSubmenu(true);
     }
   }
-
-  constructor(private service: TileService) {}
 
   public ngAfterContentInit(): void {
     if (this.link) {

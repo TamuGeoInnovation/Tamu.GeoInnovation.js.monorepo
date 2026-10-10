@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
@@ -30,15 +30,15 @@ import { RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
   ]
 })
 export class MoveInOutSidebarComponent implements OnInit {
+  private readonly eventSettingsService = inject(EventSettingsService);
+  private readonly testing = inject(TestingService);
+
   public configuration: EventConfiguration | null;
 
   /** Development and localhost only; gates the Directions tab while routing is unpublished (#1003). */
   public isDev: Observable<boolean>;
 
-  constructor(
-    private readonly eventSettingsService: EventSettingsService,
-    private readonly testing: TestingService
-  ) {
+  constructor() {
     this.isDev = this.testing.get('isTesting');
   }
 

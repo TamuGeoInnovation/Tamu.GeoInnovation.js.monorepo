@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { map, merge, Observable, shareReplay, Subject, take, withLatestFrom } from 'rxjs';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
@@ -16,6 +16,10 @@ import { AsyncPipe, LowerCasePipe } from '@angular/common';
   imports: [SelectComponent, ButtonComponent, AsyncPipe, LowerCasePipe]
 })
 export class EntityCopyModalComponent implements OnInit {
+  readonly data = inject<EntityCopyModalData>(MODAL_DATA);
+  private readonly modalRef = inject(ModalRefService);
+  private readonly ss = inject(SeasonService);
+
   public season$: Observable<Partial<Season>>;
   public seasons$ = this.ss.seasons$;
 
@@ -35,12 +39,6 @@ export class EntityCopyModalComponent implements OnInit {
       return this.data.entityType;
     }
   }
-
-  constructor(
-    @Inject(MODAL_DATA) public readonly data: EntityCopyModalData,
-    private readonly modalRef: ModalRefService,
-    private readonly ss: SeasonService
-  ) {}
 
   public ngOnInit(): void {
     this.season$ = merge(

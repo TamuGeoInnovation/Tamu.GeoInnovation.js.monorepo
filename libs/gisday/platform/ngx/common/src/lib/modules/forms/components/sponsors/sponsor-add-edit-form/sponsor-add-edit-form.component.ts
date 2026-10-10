@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -23,6 +23,15 @@ import { AsyncPipe } from '@angular/common';
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, FileComponent, ButtonComponent, AsyncPipe]
 })
 export class SponsorAddEditFormComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly at = inject(ActivatedRoute);
+  private readonly rt = inject(Router);
+  private readonly as = inject(AssetsService);
+  private readonly sss = inject(SponsorService);
+  private readonly ss = inject(SeasonService);
+  private readonly sn = inject(DomSanitizer);
+  private readonly ns = inject(NotificationService);
+
   @Input()
   public type: 'create' | 'edit';
 
@@ -49,17 +58,6 @@ export class SponsorAddEditFormComponent implements OnInit {
       label: 'Point'
     }
   ];
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly at: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly as: AssetsService,
-    private readonly sss: SponsorService,
-    private readonly ss: SeasonService,
-    private readonly sn: DomSanitizer,
-    private readonly ns: NotificationService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

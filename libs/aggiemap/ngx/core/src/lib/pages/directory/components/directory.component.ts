@@ -13,7 +13,7 @@ import {
   tap,
   toArray
 } from 'rxjs';
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DatatableComponent, TableColumn, NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -31,6 +31,9 @@ import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
   imports: [RouterLink, FormsModule, ReactiveFormsModule, TextboxComponent, NgxDatatableModule, FooterComponent, AsyncPipe]
 })
 export class DirectoryComponent implements OnInit {
+  private readonly http = inject(HttpClient);
+  private readonly fb = inject(UntypedFormBuilder);
+
   public form: UntypedFormGroup;
 
   @ViewChild(DatatableComponent)
@@ -46,11 +49,6 @@ export class DirectoryComponent implements OnInit {
 
   public loadingIndicator = true;
   private _data$: Observable<Array<BuildingDirectoryEntry>>;
-
-  constructor(
-    private readonly http: HttpClient,
-    private readonly fb: UntypedFormBuilder
-  ) {}
 
   public ngOnInit(): void {
     this._data$ = this.http.get<Array<BuildingDirectoryEntry>>('/assets/data/building-directory.json').pipe(

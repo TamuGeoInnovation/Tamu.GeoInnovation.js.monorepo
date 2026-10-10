@@ -1,15 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, UrlTree, Data, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { Device } from '@tamu-gisc/common/utils/device';
 
 @Injectable({ providedIn: 'root' })
-export class DeviceGuard  {
+export class DeviceGuard {
+  private router = inject(Router);
+
   private deviceTests = {
     standalone: [new Device().standalone]
   };
-  constructor(private router: Router) {}
 
   public canActivate(
     next: ActivatedRouteSnapshot

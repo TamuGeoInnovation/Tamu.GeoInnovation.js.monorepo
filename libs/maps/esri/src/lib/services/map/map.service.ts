@@ -1,4 +1,4 @@
-import { Injectable, Component, Type } from '@angular/core';
+import { Injectable, Component, Type, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, BehaviorSubject, lastValueFrom } from 'rxjs';
@@ -30,6 +30,14 @@ import esri = __esri;
 
 @Injectable({ providedIn: 'root' })
 export class EsriMapService {
+  private moduleProvider = inject(EsriModuleProviderService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private searchService = inject(SearchService);
+  private environment = inject(EnvironmentService);
+  private http = inject(HttpClient);
+  private layerSourcesService = inject(LayerSourcesService);
+
   // Private store, which will contain the eventual map and view objects
   //
   // We use async subject because we want to control the flow of loading
@@ -62,15 +70,7 @@ export class EsriMapService {
   // Exposed observable that will be responsible for emitting values to subscribers
   public readonly store: Observable<MapServiceInstance> = this._store.asObservable().pipe(filter((s) => s !== undefined));
 
-  constructor(
-    private moduleProvider: EsriModuleProviderService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private searchService: SearchService,
-    private environment: EnvironmentService,
-    private http: HttpClient,
-    private layerSourcesService: LayerSourcesService
-  ) {
+  constructor() {
     // Keep the automated-test probe pointed at this instance. Subscribed to the private subject
     // rather than the public `store`, because the probe needs the `undefined` emission on destroy
     // too, and `store` filters those out.

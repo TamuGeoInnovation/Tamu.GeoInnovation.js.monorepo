@@ -3,8 +3,17 @@
 How long things take here, recorded as they are run, so that a change meant to make the work faster
 can be shown to have done it.
 
-**The rule: every check, build, install or deploy records its elapsed time in this file**, whatever
-its length (#1415). Recording everything is deliberate for now, and can be trimmed back if the table
+**Since #1593 the scripts record their own runs**, one small file each, in
+[`build-times/runs/`](build-times/runs): `scripts/check-in-volume.sh` and
+`test/smoke/aggiemap/run-local.sh` write the start in US Central, the machine
+(`BUILD_TIMES_MACHINE`, or `unspecified`), what ran, the exit code and totals, the elapsed time and, for
+a check, the clone and `npm ci` times. Commit the file each run writes with your work, and read them as
+one table with `bash scripts/run-times-report.sh`. This page keeps the runs nothing
+records by itself, and the context and analysis: what a comparison shows and why. The tables below are
+the history recorded by hand before that.
+
+**The rule: every check, build, install or deploy records its elapsed time**, whatever its length
+(#1415): in `build-times/runs/` when a script wrote it, here otherwise. Recording everything is deliberate for now, and can be trimmed back if the table
 becomes unwieldy. The scripts already print the elapsed time, so the measurement is free; what is
 not free is remembering a number that was only ever on screen.
 
@@ -35,6 +44,10 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 10 Oct 2026 | home | `check-in-volume.sh refactor/1453-inject` (affected: lint 75 projects, then test and build 71 projects and 3 dependencies), 2:01 PM Central | volume, warm install, Nx cache cold for these tasks (0 of 70 hits on the run before) | 2 min 54 s (lint 74 s, test and build 100 s) |
+| 10 Oct 2026 | home | The same check's first run, 1:56 PM Central: fresh clone and `npm ci`, then the same tasks; failed on 8 test projects and one build | volume, cold | 3 min 57 s |
+| 10 Oct 2026 | home | `nx run-many -t build -p ues-operations-angular,gisday-competitions-angular`, the two apps CI does not build, in the check's volume | volume, warm | 13 s |
+| 10 Oct 2026 | home | `nx g @angular/core:inject --path=./` over the whole workspace, 99 libraries given a temporary target so their files are seen (#1453) | volume | 3 min 39 s |
 | 9 Oct 2026 | home | `check-in-volume.sh fix/1475-check-script-lint-and-smoke` (affected; nothing affected, no tasks), 7:25 PM Central | volume, fresh clone 38 s, `npm ci` 67 s | 1 min 56 s |
 | 9 Oct 2026 | home | The new script on a throwaway branch touching `oidc-provider-nest`: lint ran (CI lints it), test and build excluded | volume, warm | 10 s |
 | 9 Oct 2026 | home | `check-in-volume.sh feat/1587-football-lots-live-status ts-events-ngx,ts-events-angular,aggiemap-angular` (bug-fix style) | volume | Nx 42.7 s |
@@ -243,6 +256,7 @@ every layer, so its duration says as much about the GIS services as about this c
 
 | Date | Machine | Environment | Result | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 10 Oct 2026 | home | local dev server, #1453 branch (`inject()` throughout), release scope, 6 workers, about 2:12 PM to 2:38 PM Central | 430 passed, 1 failed (build banner, local only), 30 skipped | **26.1 min** |
 | 9 Oct 2026 | home | production, `build-banner.spec.ts` only, from a worktree with no `node_modules` (#1459): first run installing the three packages into the volume / packages already there / a brand-new volume | 1 passed each time | 19 s / 14 s / 16 s |
 | 8 Oct 2026 | home | **production**, `a4e04a7b` (build 20261008.15: the standalone work, #1571, #1579, #1580), release scope, 6 workers, 4:07:46 PM to 4:27:25 PM Central; cleared the 8 October release, tagged `dev-` and `prod-2026-10-08` | 397 passed, 0 failed, 0 flaky, 24 skipped, of 421 | **19 min 39 s** |
 | 8 Oct 2026 | home | local dev server, #1568 branch rebased on `development` (all the standalone work and #1571), release scope, 6 workers, about 11:25 AM to 11:55 AM Central | 428 passed, 1 failed (build banner, local only), 1 flaky (bus route 48), 30 skipped | **28.2 min** |

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
@@ -17,15 +17,15 @@ import { AsyncPipe } from '@angular/common';
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe]
 })
 export class ContactComponent implements OnInit {
+  private titleService = inject(Title);
+  private fb = inject(UntypedFormBuilder);
+  private contactService = inject(ContactService);
+
   public form: UntypedFormGroup;
   public formStatus: BehaviorSubject<string> = new BehaviorSubject('ready');
   public buttonText: Observable<string>;
 
-  constructor(
-    private titleService: Title,
-    private fb: UntypedFormBuilder,
-    private contactService: ContactService
-  ) {
+  constructor() {
     this.titleService.setTitle('Contact | TxGIS Day');
   }
 

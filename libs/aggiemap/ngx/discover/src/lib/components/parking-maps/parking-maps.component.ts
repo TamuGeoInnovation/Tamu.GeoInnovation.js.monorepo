@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
 import {
@@ -25,6 +25,8 @@ import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
   imports: [MapsPageHeaderComponent, MapColumnsComponent, FooterComponent]
 })
 export class ParkingMapsComponent implements OnInit {
+  private readonly discoveryService = inject(DiscoveryService);
+
   public columns: MapColumnGroup[] = [];
 
   public readonly getApplicationRoute = getApplicationRoute;
@@ -33,8 +35,6 @@ export class ParkingMapsComponent implements OnInit {
     { id: 'business', heading: 'Business Parking' },
     { id: 'permit', heading: 'Permit Parking' }
   ];
-
-  constructor(private readonly discoveryService: DiscoveryService) {}
 
   public ngOnInit(): void {
     const applications = sortApplicationsByName(

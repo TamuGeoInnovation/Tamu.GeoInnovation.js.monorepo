@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { style, transition, trigger, animate } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import {
   merge,
   Observable,
@@ -18,7 +18,6 @@ import {
 } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-import { AuthService } from '@tamu-gisc/geoservices/data-access';
 import { GeoservicesError } from '@tamu-gisc/geoprocessing-core';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -41,6 +40,11 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   standalone: false
 })
 export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamType> implements OnInit {
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly localStore = inject(LocalStoreService);
+  private readonly envService = inject(EnvironmentService);
+
   public form: UntypedFormGroup;
   public result: Observable<ResultType>;
 
@@ -74,15 +78,6 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
   private _localStoreSubKey = 'interactive-cache';
   private _localModeSubKey = 'mode';
   private _cacheResult: ReplaySubject<ResultType> = new ReplaySubject(1);
-
-  constructor(
-    private readonly formBuilder: UntypedFormBuilder,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly localStore: LocalStoreService,
-    private readonly authService: AuthService,
-    private readonly envService: EnvironmentService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.buildForm();

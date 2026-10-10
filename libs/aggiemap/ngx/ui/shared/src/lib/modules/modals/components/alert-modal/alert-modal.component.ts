@@ -1,4 +1,4 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -19,16 +19,18 @@ export interface AlertModalData {
   imports: [ButtonComponent]
 })
 export class AlertModalComponent {
+  private readonly mr = inject(ModalRefService);
+  private readonly ss = inject(SettingsService);
+  private readonly data = inject<AlertModalData>(MODAL_DATA);
+
   public title: string;
   public message: string;
   public primaryText: string;
   public secondaryText?: string;
 
-  constructor(
-    private readonly mr: ModalRefService,
-    private readonly ss: SettingsService,
-    @Inject(MODAL_DATA) private readonly data: AlertModalData
-  ) {
+  constructor() {
+    const data = this.data;
+
     this.title = data?.title || '';
     this.message = data?.message || '';
     this.primaryText = data?.primaryText || 'OK';

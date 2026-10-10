@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Observable, filter, map, mergeMap, shareReplay, startWith, toArray } from 'rxjs';
 
@@ -32,6 +32,11 @@ const numberDictionary = {
   imports: [SpeakerAvatarComponent, RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
 })
 export class AboutComponent implements OnInit {
+  private titleService = inject(Title);
+  private readonly seasonService = inject(SeasonService);
+  private readonly placeServices = inject(PlaceService);
+  private readonly speakerService = inject(SpeakerService);
+
   public activeSeason$: Observable<Partial<ActiveSeasonDto>>;
   public activeSeasonDays$: Observable<Array<Partial<SeasonDay>>>;
   public dateRange$: Observable<Array<Date>>;
@@ -40,12 +45,7 @@ export class AboutComponent implements OnInit {
   public organizations$: Observable<Array<Partial<Place>>>;
   public organizingMembers$: Observable<Array<Partial<Speaker>>>;
 
-  constructor(
-    private titleService: Title,
-    private readonly seasonService: SeasonService,
-    private readonly placeServices: PlaceService,
-    private readonly speakerService: SpeakerService
-  ) {
+  constructor() {
     this.titleService.setTitle('About | TxGIS Day');
   }
 

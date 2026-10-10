@@ -30,14 +30,6 @@ import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-
 
 import { BusListComponent } from './bus-list.component';
 
-describe('BusListComponent (Isolated)', () => {
-  const component: BusListComponent = new BusListComponent(undefined, undefined, undefined, undefined);
-
-  it('should instantiate', () => {
-    expect(component).toBeDefined();
-  });
-});
-
 describe('BusListComponent (Shallow)', () => {
   let component: BusListComponent;
   let fixture: ComponentFixture<BusListComponent>;

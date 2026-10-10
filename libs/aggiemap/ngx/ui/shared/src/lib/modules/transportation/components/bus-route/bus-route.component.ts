@@ -1,4 +1,13 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  ViewChild,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject, Observable } from 'rxjs';
 import { switchMap, takeUntil, shareReplay, distinctUntilChanged, take, filter } from 'rxjs/operators';
@@ -22,6 +31,11 @@ import { BusTimetableComponent } from '../bus-timetable/bus-timetable.component'
   imports: [NgClass, AccordionComponent_1, BusListHeaderComponent, AccordionContentComponent, BusTimetableComponent]
 })
 export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
+  private busService = inject(BusService);
+  private readonly router = inject(Router);
+  private readonly rt = inject(ActivatedRoute);
+  private readonly analytics = inject(Angulartics2);
+
   /**
    * Provided TSRoute object from the parent component.
    */
@@ -51,13 +65,6 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
    * observable subscriptions.
    */
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(
-    private busService: BusService,
-    private readonly router: Router,
-    private readonly rt: ActivatedRoute,
-    private readonly analytics: Angulartics2
-  ) {}
 
   public ngOnInit() {
     // Each route makes a subscription to this function that returns a boolean

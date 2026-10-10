@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
@@ -10,13 +9,12 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class SponsorService extends BaseService<Sponsor> {
+  private http1 = inject(HttpClient);
+
   public resource: string;
 
-  constructor(
-    private env1: EnvironmentService,
-    private http1: HttpClient
-  ) {
-    super(env1, http1, 'sponsors');
+  constructor() {
+    super('sponsors');
   }
 
   public updateEntityFormData(guid: string, data: FormData) {

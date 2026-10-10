@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -17,6 +17,10 @@ import { AsyncPipe } from '@angular/common';
   imports: [BusRouteComponent, AsyncPipe]
 })
 export class BusListComponent implements OnInit, OnDestroy {
+  private busService = inject(BusService);
+  private responsiveService = inject(ResponsiveService);
+  private testing = inject(TestingService);
+
   @Input()
   public selectionAction: 'route' | 'in-place' = 'in-place';
 
@@ -40,12 +44,6 @@ export class BusListComponent implements OnInit, OnDestroy {
   public busRoutesAvailable: Observable<boolean>;
 
   public responsive: ResponsiveSnapshot;
-
-  constructor(
-    private busService: BusService,
-    private responsiveService: ResponsiveService,
-    private testing: TestingService
-  ) {}
 
   public ngOnInit(): void {
     this.busRoutesAvailable = this.testing.get('isTesting');

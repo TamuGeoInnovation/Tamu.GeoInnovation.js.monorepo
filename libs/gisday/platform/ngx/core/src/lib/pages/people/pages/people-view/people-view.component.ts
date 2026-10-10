@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { Observable, shareReplay, map } from 'rxjs';
 
@@ -15,9 +15,9 @@ import { AsyncPipe } from '@angular/common';
   imports: [SpeakerCardComponent, AsyncPipe]
 })
 export class PeopleViewComponent implements OnInit {
-  public people$: Observable<Array<Partial<Speaker>>>;
+  private speakerService = inject(SpeakerService);
 
-  constructor(private speakerService: SpeakerService) {}
+  public people$: Observable<Array<Partial<Speaker>>>;
 
   public ngOnInit() {
     this.people$ = this.speakerService.getParticipatingPresenters().pipe(

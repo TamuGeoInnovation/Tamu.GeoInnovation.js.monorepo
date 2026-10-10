@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
@@ -8,12 +8,12 @@ import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
   providedIn: 'root'
 })
 export class ContactService {
+  private http = inject(HttpClient);
+  private environment = inject(EnvironmentService);
+
   private resource: string;
 
-  constructor(
-    private http: HttpClient,
-    private environment: EnvironmentService
-  ) {
+  constructor() {
     this.resource = `${this.environment.value(`api_url`)}/contact`;
   }
 

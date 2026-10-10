@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { map, Observable, switchMap } from 'rxjs';
@@ -18,13 +18,11 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [SpeakerAvatarComponent, RouterLink, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, MarkdownParsePipe]
 })
 export class PeopleDetailsComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private speakerService = inject(SpeakerService);
+
   public speakerGuid: string;
   public $speaker: Observable<Partial<Speaker>>;
-
-  constructor(
-    private route: ActivatedRoute,
-    private speakerService: SpeakerService
-  ) {}
 
   public ngOnInit(): void {
     this.$speaker = this.route.params.pipe(

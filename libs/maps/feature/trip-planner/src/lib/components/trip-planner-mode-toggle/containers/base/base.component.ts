@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy, inject } from '@angular/core';
 import { Observable, from, of, iif, Subject } from 'rxjs';
 import { switchMap, filter, withLatestFrom, map, mergeMap, pluck, takeUntil, shareReplay } from 'rxjs/operators';
 
@@ -16,6 +16,8 @@ import { TimeUntilPipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [NgClass, AsyncPipe, TimeUntilPipe]
 })
 export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
+  private tripPlanner = inject(TripPlannerService);
+
   /**
    * Given each travel type (Walking) can have more than one travel modes (1 & 2),
    * this list represents all the possible travel modes this single toggle will represent.
@@ -79,8 +81,6 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
   public travelMode: number;
 
   private $destroy: Subject<boolean> = new Subject();
-
-  constructor(private tripPlanner: TripPlannerService) {}
 
   public ngOnInit() {
     // One every trip planner result change, calculate the current travel mode.

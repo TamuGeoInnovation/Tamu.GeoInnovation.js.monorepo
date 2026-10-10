@@ -1,11 +1,6 @@
 import { inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-
-import { Angulartics2 } from 'angulartics2';
 
 import { BaseDirectionsComponent } from '@tamu-gisc/aggiemap/ngx/popups';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { EventSettingsQuery } from '../../../services/settings/event-settings-query';
 
@@ -13,16 +8,6 @@ import esri = __esri;
 
 export abstract class BaseEventPopupComponent extends BaseDirectionsComponent {
   private readonly _eventSettingsService = inject(EventSettingsQuery);
-
-  constructor(
-    router: Router,
-    route: ActivatedRoute,
-    plannerService: TripPlannerService,
-    analytics: Angulartics2,
-    mapService: EsriMapService
-  ) {
-    super(router, route, plannerService, analytics, mapService);
-  }
 
   protected override _makeShareUrl(): string {
     const origin = window.location.origin;

@@ -1,6 +1,8 @@
+import { TestBed } from '@angular/core/testing';
+
 import { NotificationProperties, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { EventNotificationsService } from './event-notifications.service';
+import { EVENT_NOTIFICATION_DEFINITIONS, EventNotificationsService } from './event-notifications.service';
 
 /**
  * Event toasts and dismissal across routes (#1246).
@@ -11,7 +13,7 @@ import { EventNotificationsService } from './event-notifications.service';
  * - someone who opens an event map by link has never seen the toasts, so they are raised;
  * - someone who cleared them a moment ago on another route must not have them raised again.
  *
- * The service is constructed directly. A `TestBed` would add nothing: the whole subject is which
+ * The service is constructed directly, with fakes for what it injects. Rendering would add nothing: the whole subject is which
  * definitions reach `NotificationService.toast`.
  */
 
@@ -57,7 +59,14 @@ describe('EventNotificationsService', () => {
   const build = (definitions: Array<ReturnType<typeof definition>>) => {
     notifications = new FakeNotificationService();
 
-    return new EventNotificationsService(notifications as unknown as NotificationService, definitions);
+    return TestBed.resetTestingModule()
+      .configureTestingModule({
+        providers: [
+          { provide: NotificationService, useValue: notifications },
+          { provide: EVENT_NOTIFICATION_DEFINITIONS, useValue: definitions }
+        ]
+      })
+      .runInInjectionContext(() => new EventNotificationsService());
   };
 
   it('raises a toast for an event happening today', () => {
@@ -119,10 +128,7 @@ describe('EventNotificationsService', () => {
   });
 
   it('does nothing when no definitions are provided', () => {
-    const service = new EventNotificationsService(
-      (notifications = new FakeNotificationService()) as unknown as NotificationService,
-      null
-    );
+    const service = build(null);
 
     expect(() => service.checkAndTriggerEventNotifications()).not.toThrow();
     expect(notifications.toasted).toEqual([]);

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -20,6 +20,13 @@ import esri = __esri;
   imports: [NgClass, AsyncPipe]
 })
 export class BasemapGalleryComponent implements OnInit {
+  private readonly bs = inject(BasemapGalleryService);
+  private readonly rs = inject(ResponsiveService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly anl = inject(Angulartics2);
+  private readonly store = inject(LocalStoreService);
+
   public gallery: Observable<esri.BasemapGalleryViewModel>;
   public isMobile: Observable<boolean>;
 
@@ -30,15 +37,6 @@ export class BasemapGalleryComponent implements OnInit {
    * unchanged and reads as broken rather than busy.
    */
   public loadingBasemapId: string;
-
-  constructor(
-    private readonly bs: BasemapGalleryService,
-    private readonly rs: ResponsiveService,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly anl: Angulartics2,
-    private readonly store: LocalStoreService
-  ) {}
 
   public ngOnInit(): void {
     this.gallery = this.bs.gallery();

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { ReplaySubject } from 'rxjs';
@@ -14,6 +14,9 @@ import { RouterOutlet } from '@angular/router';
   imports: [RouterOutlet]
 })
 export class UploadComponent implements OnInit {
+  private fb = inject(UntypedFormBuilder);
+  private db = inject(DatabaseService);
+
   public form: UntypedFormGroup;
 
   public delimiters = this.db.getTextDelimiterList();
@@ -21,11 +24,6 @@ export class UploadComponent implements OnInit {
   public qualifiers = this.db.getTextQualifierList();
 
   public file: ReplaySubject<File> = new ReplaySubject(1);
-
-  constructor(
-    private fb: UntypedFormBuilder,
-    private db: DatabaseService
-  ) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

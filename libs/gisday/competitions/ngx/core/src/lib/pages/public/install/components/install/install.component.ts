@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { BehaviorSubject } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
@@ -18,12 +18,12 @@ import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
   imports: [NgClass, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent, AsyncPipe]
 })
 export class InstallComponent implements OnInit {
+  private readonly ns = inject(NotificationService);
+
   public device: Device;
   public version: IDeviceOSVersion;
 
   public locationRequested: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
-  constructor(private readonly ns: NotificationService) {}
 
   public ngOnInit() {
     this.device = new Device();

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { HighlightModule } from 'ngx-highlightjs';
@@ -13,9 +13,9 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
   imports: [HighlightModule, AsyncPipe, HighlightPlusModule]
 })
 export class ImplementationsComponent implements OnInit {
-  public url: string;
+  private readonly env = inject(EnvironmentService);
 
-  constructor(private readonly env: EnvironmentService) {}
+  public url: string;
 
   public ngOnInit() {
     this.url = this.env.value('accounts_url');

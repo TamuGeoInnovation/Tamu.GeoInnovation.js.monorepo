@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, shareReplay, pluck } from 'rxjs/operators';
 
@@ -18,6 +18,8 @@ import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [NgClass, FormsModule, DateTimePickerComponent, AsyncPipe]
 })
 export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
+  private plannerService = inject(TripPlannerService);
+
   /**
    * Trip time mode that determines how the trip results are modified.
    */
@@ -35,8 +37,6 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
    * Subject that triggers on ngOnDestroy life cycle hook to any active manual observable subscriptions.
    */
   private destroy$: Subject<boolean> = new Subject();
-
-  constructor(private plannerService: TripPlannerService) {}
 
   public ngOnInit(): void {
     this.plannerService.TravelOptions.pipe(pluck('requested_time'), takeUntil(this.destroy$)).subscribe((date) => {

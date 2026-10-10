@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -8,7 +8,7 @@ import { Title } from '@angular/platform-browser';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class HighschoolComponent implements OnInit {
-  constructor(private titleService: Title) {}
+  private titleService = inject(Title);
 
   public ngOnInit(): void {
     this.titleService.setTitle('High School | TxGIS Day');

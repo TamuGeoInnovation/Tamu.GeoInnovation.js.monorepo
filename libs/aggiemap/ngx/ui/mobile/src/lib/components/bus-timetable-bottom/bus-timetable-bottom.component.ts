@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, mergeMap, Observable, take, withLatestFrom } from 'rxjs';
 
@@ -17,18 +17,16 @@ import { BusRouteComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
   imports: [DragDirective, BusRouteComponent, AsyncPipe]
 })
 export class BusTimetableBottomComponent implements OnInit, OnDestroy {
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly ds = inject(DragService);
+  private readonly bs = inject(BusService);
+
   public identifier: string;
 
   public selectedRoute: Observable<string>;
 
   public busRoute: Observable<TSRoute>;
-
-  constructor(
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly ds: DragService,
-    private readonly bs: BusService
-  ) {}
 
   public ngOnInit(): void {
     this.identifier = this.ds.register(this);

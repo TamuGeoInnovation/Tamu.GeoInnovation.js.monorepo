@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, forkJoin, map, take } from 'rxjs';
 
@@ -16,13 +16,11 @@ import esri = __esri;
   imports: [EsriMapComponent]
 })
 export class MapComponent implements OnInit {
-  public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
+  private ms = inject(EsriMapService);
+  private env = inject(EnvironmentService);
+  private at = inject(ActivatedRoute);
 
-  constructor(
-    private ms: EsriMapService,
-    private env: EnvironmentService,
-    private at: ActivatedRoute
-  ) {}
+  public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
   public config = {
     basemap: {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 
@@ -7,6 +7,9 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Injectable({ providedIn: 'root' })
 export class TripPlannerConnectionService {
+  private http = inject(HttpClient);
+  private readonly env = inject(EnvironmentService);
+
   private _allNetworks: BehaviorSubject<TripPlannerConnection[]>;
   private _abNetworks: BehaviorSubject<TripPlannerConnection[]>;
   private _latestNonAbNetwork: BehaviorSubject<TripPlannerConnection>;
@@ -28,10 +31,7 @@ export class TripPlannerConnectionService {
   public readonly currentNetwork: Observable<TripPlannerConnection>;
   public readonly override: Observable<boolean>;
 
-  constructor(
-    private http: HttpClient,
-    private readonly env: EnvironmentService
-  ) {
+  constructor() {
     this._serviceURL = this.env.value('Connections', false)?.routingBaseUrl + '?f=pjson';
 
     // Instantiate Subjects and observables from subjects

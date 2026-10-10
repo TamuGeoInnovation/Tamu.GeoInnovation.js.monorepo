@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
@@ -25,16 +25,14 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   ]
 })
 export class SubmitBugFormComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly ns = inject(NotificationService);
+  private readonly cs = inject(ContactService);
+
   public form: UntypedFormGroup;
 
   public submissionState: ReplaySubject<string> = new ReplaySubject();
   public submissionStateText: BehaviorSubject<string> = new BehaviorSubject('Submit bug report');
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly ns: NotificationService,
-    private readonly cs: ContactService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

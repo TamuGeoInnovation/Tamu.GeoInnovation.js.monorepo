@@ -1,13 +1,10 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { pipe, withLatestFrom, map, switchMap } from 'rxjs';
 
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { IReverseGeocoderOptions, ReverseGeocode, ReverseGeocodeResult } from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -45,18 +42,10 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
   ReverseGeocodeResult,
   IReverseGeocoderOptions
 > {
-  public states = STATES_TITLECASE;
+  private fb = inject(UntypedFormBuilder);
+  private readonly as = inject(AuthService);
 
-  constructor(
-    private fb: UntypedFormBuilder,
-    private rt: Router,
-    private readonly ar: ActivatedRoute,
-    private readonly ls: LocalStoreService,
-    private readonly as: AuthService,
-    private readonly en: EnvironmentService
-  ) {
-    super(fb, rt, ar, ls, as, en);
-  }
+  public states = STATES_TITLECASE;
 
   public buildForm(): UntypedFormGroup {
     return this.fb.group({

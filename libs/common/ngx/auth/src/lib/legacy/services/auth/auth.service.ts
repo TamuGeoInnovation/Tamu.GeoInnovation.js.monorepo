@@ -1,4 +1,4 @@
-import { Inject, Injectable, DOCUMENT } from '@angular/core';
+import { Injectable, DOCUMENT, inject } from '@angular/core';
 
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
@@ -14,17 +14,17 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   providedIn: 'root'
 })
 export class LegacyAuthService {
+  private document = inject<Document>(DOCUMENT);
+  private http = inject(HttpClient);
+  private env = inject(EnvironmentService);
+
   // Default auth options so they can be overwritten.
   public authOptions: AuthOptions = {
     url: undefined,
     attach_href: undefined
   };
 
-  constructor(
-    @Inject(DOCUMENT) private document: Document,
-    private http: HttpClient,
-    private env: EnvironmentService
-  ) {
+  constructor() {
     if (this.env.value('auth_url', true)) {
       this.authOptions.url = this.env.value('auth_url', true);
     } else if (this.env.value('auth_options', true)) {

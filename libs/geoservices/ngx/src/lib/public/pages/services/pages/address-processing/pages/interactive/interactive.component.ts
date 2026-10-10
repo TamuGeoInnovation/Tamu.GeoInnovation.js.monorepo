@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { AddressProcessingAdvancedComponent } from '../../../../../../../core/modules/interactive/components/address-processing/advanced/address-processing-advanced/address-processing-advanced.component';
@@ -11,9 +11,9 @@ import { AddressProcessingAdvancedComponent } from '../../../../../../../core/mo
   imports: [AddressProcessingAdvancedComponent]
 })
 export class InteractiveComponent implements OnInit {
-  public url: string;
+  private readonly env = inject(EnvironmentService);
 
-  constructor(private readonly env: EnvironmentService) {}
+  public url: string;
 
   public ngOnInit() {
     this.url = this.env.value('accounts_url');

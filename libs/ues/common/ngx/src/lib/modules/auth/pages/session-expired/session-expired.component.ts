@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { interval, Observable } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
@@ -15,10 +15,8 @@ import { AsyncPipe } from '@angular/common';
   imports: [UESTamuBlockComponent, AsyncPipe]
 })
 export class SessionExpiredComponent {
-  constructor(
-    private auth: LegacyAuthService,
-    private route: ActivatedRoute
-  ) {}
+  private auth = inject(LegacyAuthService);
+  private route = inject(ActivatedRoute);
 
   /**
    * Seconds before redirect

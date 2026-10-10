@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { filter, pluck, last, mergeMap, take } from 'rxjs/operators';
@@ -7,10 +7,14 @@ const initial: RouterHistoryState = { historyEvents: [] };
 
 @Injectable({ providedIn: 'root' })
 export class RouterHistoryService {
+  private router = inject(Router);
+
   private _$state: BehaviorSubject<RouterHistoryState> = new BehaviorSubject(initial);
   public history: Observable<RouterHistoryState> = this._$state.asObservable();
 
-  constructor(private router: Router) {
+  constructor() {
+    const router = this.router;
+
     router.events
       .pipe(
         // instanceof, not the class name: production builds minify class names, so NavigationEnd is

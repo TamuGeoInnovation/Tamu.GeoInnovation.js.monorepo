@@ -1,4 +1,13 @@
-import { Component, ComponentRef, HostListener, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  ComponentRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy,
+  inject
+} from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
 
@@ -19,6 +28,9 @@ import { RenderHostDirective as RenderHostDirective_1 } from '@tamu-gisc/ui-kits
   imports: [NgClass, RenderHostDirective_1, AsyncPipe]
 })
 export class PopupComponent implements OnInit, OnDestroy {
+  private mapService = inject(EsriMapService);
+  private popupService = inject(PopupService);
+
   /**
    * Holds graphic items from the mapService hitTest observable.
    */
@@ -52,11 +64,6 @@ export class PopupComponent implements OnInit, OnDestroy {
   public escapeKeydown() {
     this.close();
   }
-
-  constructor(
-    private mapService: EsriMapService,
-    private popupService: PopupService
-  ) {}
 
   public ngOnInit() {
     this.show = this.popupService.show;

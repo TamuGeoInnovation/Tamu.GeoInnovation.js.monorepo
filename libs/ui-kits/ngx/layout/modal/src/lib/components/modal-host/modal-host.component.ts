@@ -8,7 +8,8 @@ import {
   Type,
   ViewChild,
   ViewContainerRef,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  inject
 } from '@angular/core';
 import { Observable, Subject, takeUntil } from 'rxjs';
 
@@ -23,6 +24,8 @@ import { ModalRefService } from '../../services/modal-ref/modal-ref.service';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ModalHostComponent implements OnInit, OnDestroy {
+  private modalRef = inject(ModalRefService);
+
   @ViewChild('modal', { static: true, read: ViewContainerRef })
   private _modalChildHost: ViewContainerRef;
 
@@ -34,8 +37,6 @@ export class ModalHostComponent implements OnInit, OnDestroy {
   public escCancel() {
     this.cancelModal();
   }
-
-  constructor(private modalRef: ModalRefService) {}
 
   public ngOnInit(): void {
     // Create a subscription to the modalRef service and listen for close requests

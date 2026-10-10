@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, take } from 'rxjs/operators';
@@ -17,18 +17,16 @@ import { NgClass, AsyncPipe } from '@angular/common';
   imports: [NgClass, RouterLink, AsyncPipe]
 })
 export class LeaderboardComponent implements OnInit {
+  private leaderboardService = inject(LeaderboardService);
+  private settings = inject(SettingsService);
+  private as = inject(AuthService);
+  private router = inject(Router);
+  private at = inject(ActivatedRoute);
+
   public me$: Observable<string>;
   public leaders$: Observable<ILeaderboardItem[]>;
   public roles$: Observable<Array<string>>;
   public userIsManager$: Observable<boolean>;
-
-  constructor(
-    private leaderboardService: LeaderboardService,
-    private settings: SettingsService,
-    private as: AuthService,
-    private router: Router,
-    private at: ActivatedRoute
-  ) {}
 
   public ngOnInit() {
     this.roles$ = this.as.userRoles$;

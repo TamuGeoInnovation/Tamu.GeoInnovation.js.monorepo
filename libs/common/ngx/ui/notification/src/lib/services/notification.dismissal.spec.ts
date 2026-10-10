@@ -1,7 +1,9 @@
+import { TestBed } from '@angular/core/testing';
+
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-import { NotificationService, AGGIEMAP_NOTIFICATION_STORE_KEY } from './notification.service';
+import { NotificationService, AGGIEMAP_NOTIFICATION_STORE_KEY, notificationStorage } from './notification.service';
 import { Notification } from '../helpers/notification.helper';
 
 /**
@@ -43,11 +45,15 @@ class FakeLocalStore {
 }
 
 const build = () =>
-  new NotificationService(
-    new FakeLocalStore() as unknown as LocalStoreService,
-    { value: () => undefined } as unknown as EnvironmentService,
-    AGGIEMAP_NOTIFICATION_STORE_KEY
-  );
+  TestBed.resetTestingModule()
+    .configureTestingModule({
+      providers: [
+        { provide: LocalStoreService, useValue: new FakeLocalStore() },
+        { provide: EnvironmentService, useValue: { value: () => undefined } },
+        { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY }
+      ]
+    })
+    .runInInjectionContext(() => new NotificationService());
 
 const notification = (id: string) => new Notification({ id, title: id, message: id });
 

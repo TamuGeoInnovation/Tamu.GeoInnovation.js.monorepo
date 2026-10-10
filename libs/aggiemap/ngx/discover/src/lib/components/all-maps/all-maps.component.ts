@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Params, Router, RouterLink } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
@@ -44,6 +44,11 @@ import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
   ]
 })
 export class AllMapsComponent implements OnInit {
+  private readonly rt = inject(Router);
+  private readonly discoveryService = inject(DiscoveryService);
+  private readonly dev = inject(TestingService);
+  private readonly lastMap = inject(LastMapService);
+
   public readonly mainParkingRoute = ['/parking', FEATURED_PARKING_ID];
 
   public externalApplications: ExternalDiscoverApplication[];
@@ -83,13 +88,6 @@ export class AllMapsComponent implements OnInit {
 
   public readonly getApplicationRoute = getApplicationRoute;
   public readonly getNextEventDate = getNextEventDate;
-
-  constructor(
-    private readonly rt: Router,
-    private readonly discoveryService: DiscoveryService,
-    private readonly dev: TestingService,
-    private readonly lastMap: LastMapService
-  ) {}
 
   /**
    * Where the breadcrumb's first crumb points: the map the visitor was last looking at, rather than

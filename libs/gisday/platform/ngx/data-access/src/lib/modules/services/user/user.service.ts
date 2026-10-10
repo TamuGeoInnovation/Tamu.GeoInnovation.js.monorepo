@@ -1,9 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { User } from '@auth0/auth0-angular';
 
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { GisDayAppMetadata } from '@tamu-gisc/gisday/platform/data-api';
 import { Auth0UserProfile } from '@tamu-gisc/common/nest/auth';
 
@@ -13,13 +12,12 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class UserService extends BaseService<User> {
+  private http1 = inject(HttpClient);
+
   public resource: string;
 
-  constructor(
-    private env1: EnvironmentService,
-    private http1: HttpClient
-  ) {
-    super(env1, http1, 'users');
+  constructor() {
+    super('users');
   }
 
   public getUsers() {

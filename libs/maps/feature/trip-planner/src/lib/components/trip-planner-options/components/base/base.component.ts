@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
@@ -15,6 +15,10 @@ import { TripPlannerRuleMode, TripPlannerService } from '../../../../services/tr
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TripPlannerOptionsBaseComponent implements OnInit {
+  private anl = inject(Angulartics2);
+  private tripPlanner = inject(TripPlannerService);
+  private devTools = inject(TestingService);
+
   /**
    * Data injected by the trip planner parking options component factory.
    */
@@ -23,12 +27,6 @@ export class TripPlannerOptionsBaseComponent implements OnInit {
   public travelOptions = this.tripPlanner.TravelOptions;
 
   public isDev: Observable<boolean>;
-
-  constructor(
-    private anl: Angulartics2,
-    private tripPlanner: TripPlannerService,
-    private devTools: TestingService
-  ) {}
 
   public ngOnInit() {
     this.isDev = this.devTools.get('isTesting');

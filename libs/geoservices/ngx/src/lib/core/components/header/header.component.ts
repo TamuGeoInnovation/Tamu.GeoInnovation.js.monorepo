@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, HostListener, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, Subject, delay, filter, map, merge, of, startWith, switchMap } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -52,6 +52,12 @@ import { TileLinkDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile
   ]
 })
 export class HeaderComponent implements OnInit {
+  private readonly as = inject(AuthService);
+  private readonly env = inject(EnvironmentService);
+  private readonly ms = inject(ModalService);
+  private readonly ss = inject(SettingsService);
+  readonly rs = inject(ResponsiveService);
+
   public mobileNavToggle: Subject<boolean> = new Subject();
   public loggedIn: Observable<boolean>;
   public isManager: Observable<boolean>;
@@ -69,14 +75,6 @@ export class HeaderComponent implements OnInit {
       this._$ignorePointerEvents.next(true);
     }
   }
-
-  constructor(
-    private readonly as: AuthService,
-    private readonly env: EnvironmentService,
-    private readonly ms: ModalService,
-    private readonly ss: SettingsService,
-    public readonly rs: ResponsiveService
-  ) {}
 
   public ngOnInit() {
     this.loggedIn = this.as.state.pipe(

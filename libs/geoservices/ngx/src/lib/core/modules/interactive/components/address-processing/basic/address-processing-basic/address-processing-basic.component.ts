@@ -1,9 +1,7 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import {
   AddressProcessing,
   AddressProcessingAddressFormat,
@@ -15,7 +13,6 @@ import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 import { ADDRESS_FORMAT_TYPES } from '../../../../../../util/dictionaries';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -49,21 +46,13 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
   AddressProcessingResult,
   IAddressProcessingOptions
 > {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly as = inject(AuthService);
+
   public formats = ADDRESS_FORMAT_TYPES;
   public states = STATES_TITLECASE;
 
   public queryUrl: Observable<string>;
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly rt: Router,
-    private readonly ar: ActivatedRoute,
-    private readonly ls: LocalStoreService,
-    private readonly as: AuthService,
-    private readonly en: EnvironmentService
-  ) {
-    super(fb, rt, ar, ls, as, en);
-  }
 
   public buildForm() {
     return this.fb.group({

@@ -1,4 +1,4 @@
-import { Component, Injectable, Type } from '@angular/core';
+import { Component, Injectable, Type, inject } from '@angular/core';
 import { delay } from 'rxjs';
 
 import deepmerge from 'deepmerge';
@@ -34,6 +34,12 @@ const FOCUS_FLASH_INTERVAL = 450;
   providedIn: 'root'
 })
 export class EventService {
+  private readonly env = inject(EnvironmentService);
+  private readonly moduleProvider = inject(EsriModuleProviderService);
+  private readonly mapService = inject(EsriMapService);
+  private readonly eventSettingsService = inject(EventSettingsService);
+  private readonly lss = inject(LayerSourcesService);
+
   public settings: EventSettings;
   public eventOptions: SpecialEventOptions;
 
@@ -50,13 +56,7 @@ export class EventService {
   private _view: esri.MapView;
   private _exclusiveVisibilityHandles: Array<esri.Handle> = [];
 
-  constructor(
-    private readonly env: EnvironmentService,
-    private readonly moduleProvider: EsriModuleProviderService,
-    private readonly mapService: EsriMapService,
-    private readonly eventSettingsService: EventSettingsService,
-    private readonly lss: LayerSourcesService
-  ) {
+  constructor() {
     // Patch default layer overrides
     const eventConfiguration = this.eventSettingsService.eventConfiguration()?.configuration || undefined;
 

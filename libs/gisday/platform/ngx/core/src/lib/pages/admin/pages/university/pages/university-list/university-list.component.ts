@@ -1,10 +1,8 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
-import { SeasonService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { University } from '@tamu-gisc/gisday/platform/data-api';
-import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -20,14 +18,5 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe]
 })
 export class UniversityListComponent extends BaseAdminListComponent<University> {
-  constructor(
-    private readonly universityService: UniversityService,
-    private readonly ss: SeasonService,
-    private readonly ar: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly ms: ModalService,
-    private readonly ns: NotificationService
-  ) {
-    super(universityService, ss, ar, rt, ms, ns);
-  }
+  protected readonly entityService = inject(UniversityService);
 }

@@ -1,4 +1,10 @@
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+
+import { Angulartics2 } from 'angulartics2';
+
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { NotificationGroupedComponent } from './notification-grouped.component';
 import { Notification } from '../../helpers/notification.helper';
@@ -10,7 +16,7 @@ import { NotificationService } from '../../services/notification.service';
  * Stacking every active notification made the panel as tall as the number of them - four of them
  * covered most of the map on a laptop, and more on a phone. The rest are reached with a stepper.
  *
- * Built by hand rather than through a `TestBed`, as the sibling specs here do: the subject is which
+ * Built by hand rather than rendered, as the sibling specs here do: the subject is which
  * notification the panel considers current as the list changes underneath it, not anything rendered.
  */
 
@@ -41,12 +47,16 @@ describe('stepping through grouped notifications', () => {
   const build = (items: Notification[]) => {
     service = new FakeNotificationService(items);
 
-    component = new NotificationGroupedComponent(
-      null as never,
-      { navigate: () => undefined } as never,
-      new FakeModalService() as never,
-      service as unknown as NotificationService
-    );
+    component = TestBed.resetTestingModule()
+      .configureTestingModule({
+        providers: [
+          { provide: Angulartics2, useValue: null },
+          { provide: Router, useValue: { navigate: () => undefined } },
+          { provide: ModalService, useValue: new FakeModalService() },
+          { provide: NotificationService, useValue: service }
+        ]
+      })
+      .runInInjectionContext(() => new NotificationGroupedComponent());
     component.ngOnInit();
 
     return component;

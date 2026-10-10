@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, shareReplay, switchMap } from 'rxjs';
@@ -27,6 +27,13 @@ import { AsyncPipe, TitleCasePipe } from '@angular/common';
   ]
 })
 export class ResearchCompetitionReviewComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly rt = inject(Router);
+  private readonly at = inject(ActivatedRoute);
+  private readonly submissionService = inject(UserSubmissionsService);
+  private readonly ns = inject(NotificationService);
+  private readonly ss = inject(SeasonService);
+
   public entity$: Observable<Partial<Submission>>;
   public form: UntypedFormGroup;
 
@@ -40,15 +47,6 @@ export class ResearchCompetitionReviewComponent implements OnInit {
       label: 'Reject'
     }
   ];
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly rt: Router,
-    private readonly at: ActivatedRoute,
-    private readonly submissionService: UserSubmissionsService,
-    private readonly ns: NotificationService,
-    private readonly ss: SeasonService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

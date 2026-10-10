@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, pipe, fromEventPattern } from 'rxjs';
 import { map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
@@ -17,11 +17,11 @@ import esri = __esri;
   imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class ClickCoordinatesComponent implements OnInit {
+  private mapService = inject(EsriMapService);
+
   public coords: Observable<ClickCoordinates>;
   public coordText: Observable<string>;
   public copying: Observable<boolean>;
-
-  constructor(private mapService: EsriMapService) {}
 
   public ngOnInit(): void {
     this.coords = this.mapService.store.pipe(pluck('view'), this.$immediateClickHandler(), shareReplay());

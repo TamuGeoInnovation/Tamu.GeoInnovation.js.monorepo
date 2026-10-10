@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
@@ -34,6 +34,11 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   imports: [ButtonComponent, AsyncPipe, DatePipe]
 })
 export class CodeMaroonAlertComponent implements OnInit, OnDestroy {
+  private readonly codeMaroon = inject(CodeMaroonService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly ts = inject(TestingService);
+
   public state: Observable<CodeMaroonState>;
   public dismissed = false;
 
@@ -41,12 +46,7 @@ export class CodeMaroonAlertComponent implements OnInit, OnDestroy {
   /** The live poll, held so a sample can stop it. */
   private _watch?: Subscription;
 
-  constructor(
-    private readonly codeMaroon: CodeMaroonService,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly ts: TestingService
-  ) {
+  constructor() {
     this.state = this.codeMaroon.state;
   }
 

@@ -1,4 +1,4 @@
-import { Component, HostBinding, HostListener, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, HostBinding, HostListener, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { forkJoin, map, Observable, take } from 'rxjs';
 
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -15,6 +15,9 @@ import esri = __esri;
   imports: [NgClass]
 })
 export class PerspectiveToggleComponent implements OnInit {
+  private ms = inject(EsriMapService);
+  private mp = inject(EsriModuleProviderService);
+
   /**
    * Layers that should be applied when the perspective is changed to 3D
    */
@@ -148,11 +151,6 @@ export class PerspectiveToggleComponent implements OnInit {
       this.ms.loadLayers(this.twoDLayers);
     }
   }
-
-  constructor(
-    private ms: EsriMapService,
-    private mp: EsriModuleProviderService
-  ) {}
 }
 
 type PerspectiveType = '2D' | '3D';

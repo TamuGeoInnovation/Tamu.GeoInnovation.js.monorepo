@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { CensusIntersection, CensusYear } from '@tamu-gisc/geoprocessing-v5';
@@ -33,12 +33,12 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
   ]
 })
 export class CensusIntersectionComponent implements OnInit {
+  private readonly env = inject(EnvironmentService);
+
   private intersection: CensusIntersection;
   public result: Observable<string>;
 
   public url: string;
-
-  constructor(private readonly env: EnvironmentService) {}
 
   public ngOnInit(): void {
     this.intersection = new CensusIntersection({
