@@ -149,20 +149,18 @@ substituting the real path in `-v`.
 Git Bash:
 
 ```
-MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:\path\to\repo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e CYPRESS_INSTALL_BINARY=0 node:22.23.3 npm ci --no-audit --no-fund
+MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:\path\to\repo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:22.23.3 npm ci --no-audit --no-fund
 ```
 
 PowerShell, where `MSYS_NO_PATHCONV` is unnecessary:
 
 ```
-docker run --rm -m 16g -v "${PWD}:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e CYPRESS_INSTALL_BINARY=0 node:22.23.3 npm ci --no-audit --no-fund
+docker run --rm -m 16g -v "${PWD}:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:22.23.3 npm ci --no-audit --no-fund
 ```
 
 **Expect:** roughly 2,200 packages. Budget real time - the first run also pulls the
 `node:22.23.3` image, and on a slow link this phase has taken close to an hour.
 
-- `CYPRESS_INSTALL_BINARY=0` skips an ~800 MB download that `--rm` discards after every run.
-  Drop the flag only if the user needs Cypress.
 - A full-tunnel VPN slows this badly. Suggest disconnecting it for this step.
 - Tell the user when this starts. It is long enough that silence looks like a hang.
 

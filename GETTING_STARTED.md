@@ -418,7 +418,7 @@ Run the commands from **Git Bash**. `MSYS_NO_PATHCONV=1` stops Git Bash from rew
 ## 1. Install Dependencies
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -m 8g -e CYPRESS_INSTALL_BINARY=0 \
+MSYS_NO_PATHCONV=1 docker run --rm -m 8g \
   -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:22.23.3 \
   sh -c "npm ci --no-audit --no-fund"
 ```
@@ -427,7 +427,6 @@ MSYS_NO_PATHCONV=1 docker run --rm -m 8g -e CYPRESS_INSTALL_BINARY=0 \
 **Notes:**
 
 - The first run also downloads the `node:22.23.3` image, which is several hundred MB.
-- `CYPRESS_INSTALL_BINARY=0` skips the ~800 MB Cypress download. It would be thrown away with the container on every run anyway, and serving the app doesn't need it. Leave the flag off if you run Cypress tests.
 - A full-tunnel VPN can slow these downloads badly. Disconnect it if you can.
 - `node_modules` goes in a Docker volume, `tamu-js-dev-nm`, not in your checkout: reading it across the Windows-to-Linux bind mount is several times slower. Run this again whenever `package-lock.json` changes.
 - To lint, test and build a committed branch, run `scripts/check-in-volume.sh <branch>`; see CLAUDE.md.
