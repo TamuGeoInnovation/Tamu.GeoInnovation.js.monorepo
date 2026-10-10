@@ -1,4 +1,11 @@
-import { declaresOwnRenderer, portalItemDataUrl, rendererForLayer } from './portal-symbology';
+import {
+  declaresOwnRenderer,
+  portalItemDataUrl,
+  publishesDefaultSymbology,
+  recordSymbologySource,
+  rendererForLayer,
+  symbologySourceOf
+} from './portal-symbology';
 
 /**
  * Choosing a layer's real symbology (#1497).
@@ -68,5 +75,43 @@ describe('portal item symbology', () => {
       expect(declaresOwnRenderer({})).toBe(false);
       expect(declaresOwnRenderer(undefined)).toBe(false);
     });
+  });
+});
+
+/**
+ * Telling a layer drawing ArcGIS's default symbol from one drawing a chosen one (#1578).
+ */
+describe('default symbology', () => {
+  it('counts a service with no drawing info as publishing nothing usable', () => {
+    expect(publishesDefaultSymbology({})).toBe(true);
+    expect(publishesDefaultSymbology(undefined)).toBe(true);
+  });
+
+  it("counts ArcGIS's RedSphere default as publishing nothing usable, as AggiePrint's service does (#1576)", () => {
+    expect(
+      publishesDefaultSymbology({
+        drawingInfo: { renderer: { type: 'simple', symbol: { type: 'esriPMS', url: 'RedSphere.png' } } }
+      })
+    ).toBe(true);
+  });
+
+  it('counts a chosen symbol, or a renderer with classes, as usable', () => {
+    expect(
+      publishesDefaultSymbology({
+        drawingInfo: { renderer: { type: 'simple', symbol: { type: 'esriPMS', url: 'a1b2c3.png' } } }
+      })
+    ).toBe(false);
+    expect(publishesDefaultSymbology({ drawingInfo: { renderer: { type: 'uniqueValue' } } })).toBe(false);
+  });
+
+  it('remembers where a layer got its symbology, and knows nothing of a layer it was not told about', () => {
+    const layer = {};
+
+    expect(symbologySourceOf(layer)).toBeUndefined();
+
+    recordSymbologySource(layer, 'service');
+    recordSymbologySource(layer, 'portal');
+
+    expect(symbologySourceOf(layer)).toBe('portal');
   });
 });
