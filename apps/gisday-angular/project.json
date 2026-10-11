@@ -124,6 +124,9 @@
         },
         "development": {
           "buildTarget": "gisday-angular:build:development"
+        },
+        "local": {
+          "proxyConfig": "apps/gisday-angular/proxy.local.json"
         }
       }
     },

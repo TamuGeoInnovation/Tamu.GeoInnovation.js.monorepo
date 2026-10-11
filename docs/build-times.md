@@ -70,6 +70,10 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 | 6 Oct 2026 | office | `check-in-volume.sh feat/1508-service-symbology aggiemap-angular,ts-events-angular,common-types`, confirming the optional-title fix before repeating the full run, 17:41 Central | volume, warm, 3 projects | **1 min** |
 | 6 Oct 2026 | office | The full affected check, passing: 47 projects, 99 tasks, 17:44 Central | volume, warm | **5 min** |
 | 6 Oct 2026 | office | The same check again after merging the day's four merged PRs into the branch, 17:52 Central | volume, warm | **4 min** (nx run duration 4 min 15 s) |
+| 6 Oct 2026 | office | `scripts/check-in-volume.sh` for #1514: `lint,test,build` on `common-nest-environment,gisday-nest` (plus `gisday-common:build` as a dependency), 16:00 to 16:03 Central | whole clone in volume `tamu-js-1514`, first run on that volume | **2 min 57 s** |
+| 6 Oct 2026 | office | `nx build gisday-nest`, to run the API with plain `node` beside the front end's `nx serve` (#1511) | bind-mounted source, volume `node_modules` | **36 s** |
+| 6 Oct 2026 | office | GIS Day production database: `COPY_ONLY` backup (9.4 GB in use) on the server, `RESTORE VERIFYONLY`, copy here over the prod VPN, SHA-256 of both ends; 16:13 to 16:42 Central (#1511) | backup 65 s, verify 72 s, copy 12 min, hash 14 min | **28.5 min** |
+| 6 Oct 2026 | office | `RESTORE DATABASE` of that 9.23 GB backup into the local SQL Server 2022 container `gisday-db` (#1511) | backup file on a bind mount | **92 s** |
 | 6 Oct 2026 | office | Full smoke suite against dev, the 6 October release (`0c8b12df`, `main-QFOMWXNR.js`, `dev-2026-10-06-3`), 6 workers, 11:51:12 to 12:20:47 Central | 421 passed, 1 failed, 14 skipped of 436 | **29 min 24 s** |
 | 6 Oct 2026 | office | The same suite's one failure re-run alone, machine quiet: `/map loads and serves its layers` | passed in 43.8 s; it had timed out at 120 s under the full run's load | **1 min 42 s** |
 | 6 Oct 2026 | office | `check-in-volume.sh fix/1497-portal-symbology` (affected), a shared-library change: 87 tasks, 41 projects, 0/87 cache hits | all passing | **3 min 5 s** |
@@ -145,6 +149,8 @@ record for the volume work (#1402), because nothing but the destination differed
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
 | 5 Oct 2026 | office | `nx serve aggiemap-angular` to first answer on `:4200` | Angular 19, Vite dev server, volume `node_modules` | 5 min 02 s |
+| 6 Oct 2026 | office | `nx serve gisday-angular` to first answer on `:4201`, 14:16 to 14:21 Central; Vite dependency bundling took several more minutes before the page drew | Angular 22.1.8, Vite dev server, volume `node_modules`, main checkout bind-mounted | ~5 min |
+| 6 Oct 2026 | office | `nx serve gisday-angular` against the local GIS Day stack (#1511), restarted with `--proxy-config` after setting aside a stale `.nx/workspace-data/machine-v3.db`, 17:02 to about 17:11 Central | Angular 22.1.8, Vite dev server, volume `node_modules` | ~9 min |
 
 ## Azure builds
 
