@@ -65,14 +65,12 @@ scripts/gisday-local.sh restore gisday-scrubbed-<date>.bak  # a few seconds
 the log. The scrubbed backup restores like any other and is the one to hand to a new developer.
 
 What it keeps: seasons, events, places, organizations, sponsors, tags, classes, the competition
-forms and answers, and the profiles of speakers who are on an event or are organizers, because the
-site publishes those. Sign-ups and check-ins keep their counts.
+forms and answers, and speakers' names and profiles. Sign-ups and check-ins keep their counts.
 
 What it replaces:
 
 - every account id, with a made-up one that stays the same wherever that account appears;
 - every email address, and the contact names of organizations and sponsors;
-- the name and profile of everyone in `speakers` who was never on an event (most of the table);
 - competition entries' titles, abstracts, messages, links and participant lists;
 - meeting links, ids, phone numbers and passwords;
 - participants' photographs, each with a one-pixel image, which is nearly all of the size;
