@@ -14,9 +14,6 @@ SET QUOTED_IDENTIFIER ON;
 
 DECLARE @target sysname = N'gisday-scrubbed';
 
--- Changes on every run, so an account id cannot be worked back from its replacement.
-DECLARE @salt nvarchar(36) = CONVERT(nvarchar(36), NEWID());
-
 -- `updated` and `created` are kept everywhere and are not listed.
 DECLARE @kept TABLE (tbl sysname, cols nvarchar(max));
 INSERT @kept VALUES
@@ -32,10 +29,10 @@ INSERT @kept VALUES
   (N'event_speakers', N'eventsGuid,speakersGuid'),
   (N'event_sponsors', N'eventsGuid,sponsorsGuid'),
   (N'event_tags', N'eventsGuid,tagsGuid'),
-  (N'events', N'guid,name,active,startTime,endTime,observedAttendeeStart,observedAttendeeEnd,capacity,resources,requiresRsvp,qrCode,mode,eventType,presentationType,isAcceptingRsvps,isBringYourOwnDevice,requirements,dayGuid,broadcastGuid,locationGuid,seasonGuid'),
+  (N'events', N'guid,active,startTime,endTime,observedAttendeeStart,observedAttendeeEnd,capacity,resources,requiresRsvp,qrCode,mode,eventType,presentationType,isAcceptingRsvps,isBringYourOwnDevice,requirements,dayGuid,broadcastGuid,locationGuid,seasonGuid'),
   (N'initial_survey_questions', N'guid,questionText,questionOptions,questionTypeGuid'),
   (N'initial_survey_responses', N'guid,seasonGuid,questionGuid'),
-  (N'organizations', N'guid,website,seasonGuid,acronym'),
+  (N'organizations', N'guid,seasonGuid,acronym'),
   (N'place_links', N'guid,label,url,placeGuid'),
   (N'places', N'guid,name,address,city,state,zip,website,seasonGuid,visibilitySettings'),
   (N'question_types', N'guid,type'),
@@ -68,10 +65,11 @@ INSERT @skipped VALUES (N'typeorm_migrations'), (N'organization_links'), (N'spea
 -- What each personal column becomes. `{c}` is the column; a NULL stays NULL unless the rule says otherwise.
 DECLARE @scrubbed TABLE (tbl sysname, col sysname, expr nvarchar(max));
 
--- An Auth0 account id becomes a made-up id, the same one wherever that account appears.
+-- An Auth0 account id becomes a new random id on every row. Nothing ties two rows to one person, so
+-- the copy has each event's sign-up and check-in counts but nobody's history.
 DECLARE @account nvarchar(max) =
   N'CASE WHEN {c} IS NULL OR {c} = N''system-migration'' THEN {c}
-         ELSE N''local|'' + LOWER(LEFT(CONVERT(nvarchar(64), HASHBYTES(''SHA2_256'', {c} + @salt), 2), 24)) END';
+         ELSE N''local|'' + LOWER(REPLACE(CONVERT(nvarchar(36), NEWID()), N''-'', N'''')) END';
 INSERT @scrubbed VALUES
   (N'checkins', N'accountGuid', @account),
   (N'initial_survey_responses', N'accountGuid', @account),
@@ -83,25 +81,42 @@ INSERT @scrubbed VALUES
   (N'vgi_submissions', N'userGuid', @account),
   (N'vgi_submission_validation_status', N'verifiedBy', @account);
 
--- What an email address looks like inside a longer text. Published text is kept unless it holds one.
-DECLARE @email nvarchar(50) = N'%[a-z0-9]@[a-z0-9]%.[a-z]%';
-INSERT @scrubbed VALUES
-  (N'events', N'abstract', N'CASE WHEN {c} LIKE N''' + @email + N''' THEN N''The abstract is removed from this copy: it held an email address.'' ELSE {c} END'),
-  (N'organizations', N'name', N'CASE WHEN {c} LIKE N''' + @email + N''' THEN N''Organization '' + LOWER(LEFT(guid, 8)) ELSE {c} END'),
-  (N'organizations', N'text', N'CASE WHEN {c} LIKE N''' + @email + N''' THEN NULL ELSE {c} END');
+-- Every real person's full name in the database: speakers, contacts, professors and competition entrants. Text that is
+-- otherwise kept is replaced when it holds one of them, or an email address.
+CREATE TABLE #names (v nvarchar(400) PRIMARY KEY);
+INSERT #names
+SELECT DISTINCT LOWER(LTRIM(RTRIM(f)) + N' ' + LTRIM(RTRIM(l)))
+FROM (SELECT firstName AS f, lastName AS l FROM dbo.speakers
+      UNION SELECT contactFirstName, contactLastName FROM dbo.organizations
+      UNION SELECT contactFirstName, contactLastName FROM dbo.sponsors) people
+WHERE LEN(LTRIM(RTRIM(f))) >= 2 AND LEN(LTRIM(RTRIM(l))) >= 2
+UNION
+SELECT LOWER(LTRIM(RTRIM(professorName))) FROM dbo.classes WHERE LEN(LTRIM(RTRIM(professorName))) >= 6
+UNION
+-- Students named on competition entries; a session can be named after one.
+SELECT LOWER(LTRIM(RTRIM(j.name))) FROM dbo.submissions s
+  CROSS APPLY OPENJSON(CAST(s.participants AS nvarchar(max))) WITH (name nvarchar(400)) j
+WHERE LEN(LTRIM(RTRIM(j.name))) >= 6;
 
--- A speaker on an event, or an organizer, is shown on the public site, so the name and profile are
--- kept. Every other row in `speakers` is a participant who was never published.
-DECLARE @public nvarchar(max) = N'(isOrganizer = 1 OR guid IN (SELECT speakersGuid FROM dbo.event_speakers))';
+DECLARE @email nvarchar(50) = N'%[a-z0-9]@[a-z0-9]%.[a-z]%';
+DECLARE @personal nvarchar(max) =
+  N'({c} LIKE N''' + @email + N''' OR EXISTS (SELECT 1 FROM #names n WHERE CHARINDEX(n.v, LOWER({c})) > 0))';
 INSERT @scrubbed VALUES
-  (N'speakers', N'firstName', N'CASE WHEN ' + @public + N' THEN {c} ELSE N''Participant'' END'),
-  (N'speakers', N'lastName', N'CASE WHEN ' + @public + N' THEN {c} ELSE LOWER(LEFT(guid, 8)) END'),
-  (N'speakers', N'description', N'CASE WHEN ' + @public + N' AND {c} NOT LIKE N''' + @email + N''' THEN {c} END'),
-  (N'speakers', N'socialMedia', N'CASE WHEN ' + @public + N' THEN {c} END'),
-  (N'speakers', N'graduationYear', N'CASE WHEN ' + @public + N' THEN {c} END'),
-  (N'speakers', N'degree', N'CASE WHEN ' + @public + N' THEN {c} END'),
-  (N'speakers', N'program', N'CASE WHEN ' + @public + N' THEN {c} END'),
-  (N'speakers', N'affiliation', N'CASE WHEN ' + @public + N' THEN {c} END'),
+  (N'events', N'name', N'CASE WHEN ' + @personal + N' THEN N''Session '' + LOWER(LEFT(guid, 8)) ELSE {c} END'),
+  (N'events', N'abstract', N'CASE WHEN ' + @personal + N' THEN N''The abstract is removed from this copy.'' ELSE {c} END'),
+  (N'organizations', N'name', N'CASE WHEN ' + @personal + N' THEN N''Organization '' + LOWER(LEFT(guid, 8)) ELSE {c} END'),
+  (N'organizations', N'text', N'CASE WHEN ' + @personal + N' THEN NULL ELSE {c} END'),
+  (N'organizations', N'website', N'CASE WHEN ' + @personal + N' THEN NULL ELSE {c} END'),
+
+  -- Nobody in `speakers` keeps anything real, whether or not the site published them.
+  (N'speakers', N'firstName', N'CHOOSE(ABS(CHECKSUM(guid)) % 12 + 1, N''Alex'', N''Blake'', N''Casey'', N''Devon'', N''Emery'', N''Finley'', N''Harper'', N''Jordan'', N''Morgan'', N''Quinn'', N''Riley'', N''Taylor'')'),
+  (N'speakers', N'lastName', N'N''Sample-'' + LOWER(LEFT(guid, 4))'),
+  (N'speakers', N'description', N'N''A short biography would be here. This one is made up for the local copy.'''),
+  (N'speakers', N'affiliation', N'N''Texas A&M University'''),
+  (N'speakers', N'socialMedia', N'NULL'),
+  (N'speakers', N'graduationYear', N'NULL'),
+  (N'speakers', N'degree', N'NULL'),
+  (N'speakers', N'program', N'NULL'),
 
   -- Uploaded logos and photographs are files on the production site, not rows here, and their
   -- names can be people's names. Every one points at the placeholder the front end ships
@@ -205,7 +220,7 @@ BEGIN
   WHERE c.object_id = OBJECT_ID(N'dbo.' + QUOTENAME(@tbl));
 
   SET @sql = N'INSERT INTO ' + @dest + QUOTENAME(@tbl) + N' (' + @cols + N') SELECT ' + @exprs + N' FROM dbo.' + QUOTENAME(@tbl);
-  EXEC sp_executesql @sql, N'@salt nvarchar(36)', @salt = @salt;
+  EXEC sp_executesql @sql;
   PRINT @tbl + N': ' + CAST(@@ROWCOUNT AS nvarchar(20)) + N' rows';
   FETCH NEXT FROM tables INTO @tbl;
 END
@@ -223,8 +238,9 @@ END
 CLOSE tables;
 DEALLOCATE tables;
 
--- 3. Look in every text column of the copy for what must not be there: an Auth0 account id, or an
---    email address that is not a made-up one. Then the participant lists and the photographs.
+-- 3. Look in every text column of the copy for what must not be there: an Auth0 account id, an email
+--    address that is not a made-up one, or the full name of anyone in #names. Then the participant
+--    lists and the photographs. This is the slow part: a few minutes.
 
 DECLARE @leaks nvarchar(max) = N'', @found int, @col sysname;
 
@@ -233,7 +249,8 @@ DECLARE textColumns CURSOR LOCAL FAST_FORWARD FOR
   FROM @kept k
   JOIN sys.columns c ON c.object_id = OBJECT_ID(N'dbo.' + QUOTENAME(k.tbl))
   JOIN sys.types ty ON ty.user_type_id = c.user_type_id
-  WHERE ty.name IN (N'nvarchar', N'varchar', N'nchar', N'char', N'ntext', N'text');
+  WHERE ty.name IN (N'nvarchar', N'varchar', N'nchar', N'char', N'ntext', N'text')
+    AND c.name <> N'guid' AND c.name NOT LIKE N'%sGuid' AND c.name NOT IN (N'seasonGuid', N'eventGuid', N'classGuid');
 
 OPEN textColumns;
 FETCH NEXT FROM textColumns INTO @tbl, @col;
@@ -242,7 +259,8 @@ BEGIN
   SET @sql = N'SELECT @found = COUNT(*) FROM ' + @dest + QUOTENAME(@tbl) + N' x
     CROSS APPLY (SELECT CAST(x.' + QUOTENAME(@col) + N' AS nvarchar(max)) AS v) t
     WHERE t.v LIKE N''auth0|%'' OR t.v LIKE N''%-oauth2|%''
-       OR REPLACE(t.v, N''@example.org'', N'''') LIKE @email';
+       OR REPLACE(t.v, N''@example.org'', N'''') LIKE @email
+       OR EXISTS (SELECT 1 FROM #names n WHERE CHARINDEX(n.v, LOWER(t.v)) > 0)';
   EXEC sp_executesql @sql, N'@found int OUTPUT, @email nvarchar(50)', @found = @found OUTPUT, @email = @email;
   IF @found > 0 SET @leaks += @tbl + N'.' + @col + N' (' + CAST(@found AS nvarchar(20)) + N' rows); ';
   FETCH NEXT FROM textColumns INTO @tbl, @col;
@@ -262,4 +280,4 @@ BEGIN
   THROW 50002, @leaks, 1;
 END
 
-PRINT N'Copied into ' + @target + N'. No account id, real email address, participant list or photograph is in it.';
+PRINT N'Copied into ' + @target + N'. No account id, real email address, real full name, participant list or photograph is in it.';
