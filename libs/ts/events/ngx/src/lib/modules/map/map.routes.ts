@@ -4,8 +4,8 @@ import { ModalComponent, ReportBadRouteComponent } from '@tamu-gisc/aggiemap/ngx
 import { SidebarSettingsComponent, SidebarTripPlannerComponent } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
   OmnisearchComponent,
-  TripPlannerBottomComponent,
-  TripPlannerTopComponent,
+  loadTripPlannerBottomComponent,
+  loadTripPlannerTopComponent,
   MobileSidebarComponent,
   MainMobileSidebarComponent,
   AggiemapNgxUiMobileComponent
@@ -15,7 +15,7 @@ import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards
 
 import { LayerListComponent, LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
-import { TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
+import { loadTripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
 import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
 
 import { BasemapGalleryComponent, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
@@ -52,7 +52,7 @@ export const mapRoutes: Routes = [
         children: [
           { path: '', component: SidebarReferenceComponent },
           { path: 'trip', component: SidebarTripPlannerComponent },
-          { path: 'trip/options', component: TripPlannerOptionsComponent },
+          { path: 'trip/options', loadComponent: loadTripPlannerOptionsComponent },
           { path: 'settings', component: SidebarSettingsComponent }
         ]
       },
@@ -71,8 +71,8 @@ export const mapRoutes: Routes = [
           {
             path: 'trip',
             children: [
-              { path: '', component: TripPlannerTopComponent },
-              { path: '', component: TripPlannerBottomComponent, outlet: 'outlet-2' }
+              { path: '', loadComponent: loadTripPlannerTopComponent },
+              { path: '', loadComponent: loadTripPlannerBottomComponent, outlet: 'outlet-2' }
             ]
           },
           {

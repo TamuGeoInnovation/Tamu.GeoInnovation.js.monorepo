@@ -5,7 +5,7 @@ import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards
 import { LayerListComponent, LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
 import { LegendComponent, LegendService } from '@tamu-gisc/maps/feature/legend';
-import { TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
+import { loadTripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
 import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
 
 import { ModalComponent, ReportBadRouteComponent, ExperimentsListComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
@@ -18,8 +18,8 @@ import {
 } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
   OmnisearchComponent,
-  TripPlannerBottomComponent,
-  TripPlannerTopComponent,
+  loadTripPlannerBottomComponent,
+  loadTripPlannerTopComponent,
   MobileSidebarComponent,
   MainMobileSidebarComponent,
   AggiemapNgxUiMobileComponent,
@@ -53,7 +53,7 @@ export const mapRoutes: Routes = [
           { path: '', component: SidebarReferenceComponent },
           { path: 'bus', component: SidebarBusListComponent },
           { path: 'trip', component: SidebarTripPlannerComponent },
-          { path: 'trip/options', component: TripPlannerOptionsComponent },
+          { path: 'trip/options', loadComponent: loadTripPlannerOptionsComponent },
           { path: 'experiments', component: ExperimentsListComponent },
           { path: 'settings', component: SidebarSettingsComponent }
         ]
@@ -73,8 +73,8 @@ export const mapRoutes: Routes = [
           {
             path: 'trip',
             children: [
-              { path: '', component: TripPlannerTopComponent },
-              { path: '', component: TripPlannerBottomComponent, outlet: 'outlet-2' }
+              { path: '', loadComponent: loadTripPlannerTopComponent },
+              { path: '', loadComponent: loadTripPlannerBottomComponent, outlet: 'outlet-2' }
             ]
           },
           {
