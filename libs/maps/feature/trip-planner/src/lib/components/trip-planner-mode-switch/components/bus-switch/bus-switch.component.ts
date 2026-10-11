@@ -39,11 +39,11 @@ export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
   public rideDuration: number;
 
   public ngOnInit() {
-    const switch = this.switch();
-    if (switch && switch.results && switch.results.bus != null) {
-      this.routeNumber = switch.results.bus.route_number;
-      this.lingerMinutes = switch.results.bus.linger_minutes;
-      this.timetable = switch.results.bus.timetable;
+    const modeSwitch = this.switch();
+    if (modeSwitch && modeSwitch.results && modeSwitch.results.bus != null) {
+      this.routeNumber = modeSwitch.results.bus.route_number;
+      this.lingerMinutes = modeSwitch.results.bus.linger_minutes;
+      this.timetable = modeSwitch.results.bus.timetable;
 
       this.now = this.timetable[0];
 
@@ -51,7 +51,7 @@ export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
 
       if (this.now.first > this.now.last) {
         // handle wraparound
-        this.stopCount = switch.results.bus.stop_count - this.now.first + this.now.last - 1;
+        this.stopCount = modeSwitch.results.bus.stop_count - this.now.first + this.now.last - 1;
       } else {
         this.stopCount = this.now.last - this.now.first - 1;
       }
