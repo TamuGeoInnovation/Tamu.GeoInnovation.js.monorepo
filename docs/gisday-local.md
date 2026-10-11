@@ -56,7 +56,7 @@ photographs. It should be on as few machines as possible, and never on a student
 one restored can write a scrubbed copy from it:
 
 ```bash
-scripts/gisday-local.sh scrub gisday-scrubbed-<date>.bak    # under a minute; about 4 MB against 9 GB
+scripts/gisday-local.sh scrub gisday-scrubbed-<date>.bak    # under a minute; about 5 MB against 9 GB
 scripts/gisday-local.sh restore gisday-scrubbed-<date>.bak  # a few seconds
 ```
 
