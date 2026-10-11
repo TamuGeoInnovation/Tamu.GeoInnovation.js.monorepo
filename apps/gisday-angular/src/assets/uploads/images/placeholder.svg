@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Image not in this copy">
+  <!-- Stands in for every uploaded logo and photograph in a scrubbed local database (docs/gisday-local.md). -->
+  <rect width="400" height="400" fill="#e6e9ee" />
+  <path d="M100 290l70-90 50 60 40-45 60 75z" fill="#b4bcc8" />
+  <circle cx="275" cy="140" r="28" fill="#b4bcc8" />
+</svg>
