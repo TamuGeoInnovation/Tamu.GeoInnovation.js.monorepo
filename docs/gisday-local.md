@@ -1,0 +1,79 @@
+# Running GIS Day locally
+
+The whole GIS Day stack in Docker on one machine: SQL Server, Redis, the API (`gisday-nest`) and the
+front end's dev server (`gisday-angular`). Part of #1511.
+
+| Container | What | Port |
+| --- | --- | --- |
+| `gisday-db` | SQL Server 2022 Developer, data in volume `gisday-db-data` | 14330 |
+| `gisday-redis` | Redis 7, the API's job queue | none outside Docker |
+| `gisday-api` | `node dist/apps/gisday-nest/main.js` on Node 22.23.3 | 3333 |
+| `gisday-dev` | `nx serve gisday-angular --configuration=local` on Node 22.23.3 | 4201 |
+
+All four share the Docker network `gisday-local`, so they reach each other by container name. The
+API and the dev server bind-mount the checkout and share the `node_modules` volume `tamu-js-dev-nm`
+with the AggieMap dev server (see CLAUDE.md), so that volume must match the checkout's lock file.
+
+## Settings stay outside the repository
+
+`scripts/gisday-local.sh` reads them from `GISDAY_LOCAL_DIR` (default `C:/TAMU/gisday-local`):
+
+- `local-db.env`: `SA_PASSWORD` and `GISDAY_APP_PASSWORD`, local passwords for this container only.
+- `gisday-api.local.env`: the API's settings. Start from `apps/gisday-nest/local.env.sample`. The
+  database settings must point at `gisday-db`, never production or the shared dev server, and every
+  `MAILROOM_` value stays blank so no email is sent. `TYPEORM_PASSWORD` is `GISDAY_APP_PASSWORD`.
+- the backup to restore (`.bak`).
+
+## Steps, in order
+
+From Git Bash at the root of the checkout:
+
+```bash
+scripts/gisday-local.sh install                 # npm ci into tamu-js-dev-nm, about 2 minutes
+scripts/gisday-local.sh db                      # SQL Server, waits until it answers
+scripts/gisday-local.sh restore <file>.bak      # about 90 s for a 9 GB backup
+scripts/gisday-local.sh api                     # builds gisday-nest (under a minute), starts it and Redis
+scripts/gisday-local.sh web                     # first compile takes several minutes
+```
+
+Then open <http://localhost:4201>. `status` lists the containers; `stop` removes them and keeps the
+database volume, so the restore is needed only once.
+
+## What the restore needs by hand
+
+A backup carries the database user `gisday_app` but not the server login, so `restore` creates the
+login with `GISDAY_APP_PASSWORD` and maps the user to it. `gisday_app` can read and write data
+(`db_datareader`, `db_datawriter`) and has `VIEW DEFINITION`, which TypeORM needs to compare the
+schema; it cannot change tables. The migrations table already records `InitialSchema` as applied.
+
+## How the front end reaches the API
+
+`gisday-angular` is built with placeholder settings (`___ANGULAR_API_URL___` and the
+`___ANGULAR_AUTH0_...___` values) that its production container replaces at start. The dev server
+does no such replacement, so the front end calls `/___ANGULAR_API_URL___/...` literally. The `local`
+serve configuration adds `apps/gisday-angular/proxy.local.json`, which sends those calls to
+`http://gisday-api:3333/api/...`.
+
+## What works locally
+
+- Pages load with the restored data (checked 11 October on the office machine: the page, the API
+  directly at <http://localhost:3333/api/seasons/active>, and the same call through the dev server's
+  proxy at <http://localhost:4201/___ANGULAR_API_URL___/seasons/active> all answer 200).
+
+What does not, yet:
+
+- **Sign-in.** The Auth0 placeholders in the front end are never replaced, so the login button goes
+  to `___angular_auth0_domain___`. Needs a dev Auth0 application and a way to fill the values (#1522).
+- **Uploaded images** (sponsor logos, speaker photos). They live on the production cluster's volume,
+  not in the database.
+- **Email**, deliberately: every `MAILROOM_` value is blank.
+
+## Things that look broken
+
+- `Recursive task invocation detected` from `nx serve`: stale task records in
+  `.nx/workspace-data/machine-v3.db`, left by removed containers. Move the file aside (it is
+  gitignored) and start again.
+- The TypeORM CLI cannot find `@tamu-gisc/...` packages: run it as
+  `node -r tsconfig-paths/register node_modules/typeorm/cli-ts-node-commonjs.js` with
+  `TS_NODE_COMPILER_OPTIONS={"module":"commonjs","moduleResolution":"node"}` and
+  `TS_NODE_PROJECT=apps/gisday-nest/tsconfig.app.json`.

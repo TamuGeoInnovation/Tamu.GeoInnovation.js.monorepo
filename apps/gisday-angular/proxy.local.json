@@ -1,0 +1,8 @@
+{
+  "/___ANGULAR_API_URL___": {
+    "target": "http://gisday-api:3333",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": { "^/___ANGULAR_API_URL___": "/api" }
+  }
+}
