@@ -31,7 +31,7 @@ From Git Bash at the root of the checkout:
 ```bash
 scripts/gisday-local.sh install                 # npm ci into tamu-js-dev-nm, about 2 minutes
 scripts/gisday-local.sh db                      # SQL Server, waits until it answers
-scripts/gisday-local.sh restore <file>.bak      # about 90 s for a 9 GB backup
+scripts/gisday-local.sh restore <file>.bak      # seconds for a scrubbed copy, about 90 s for 9 GB
 scripts/gisday-local.sh api                     # builds gisday-nest (under a minute), starts it and Redis
 scripts/gisday-local.sh web                     # first compile takes several minutes
 ```
@@ -48,6 +48,38 @@ A backup carries the database user `gisday_app` but not the server login, so `re
 login with `GISDAY_APP_PASSWORD` and maps the user to it. `gisday_app` can read and write data
 (`db_datareader`, `db_datawriter`) and has `VIEW DEFINITION`, which TypeORM needs to compare the
 schema; it cannot change tables. The migrations table already records `InitialSchema` as applied.
+
+## A copy with no personal data
+
+A backup of production holds real people's names, email addresses, account ids, student ids and
+photographs. It should be on as few machines as possible, and never on a student's. Anyone who has
+one restored can write a scrubbed copy from it:
+
+```bash
+scripts/gisday-local.sh scrub gisday-scrubbed-<date>.bak    # under a minute; about 5 MB against 9 GB
+scripts/gisday-local.sh restore gisday-scrubbed-<date>.bak  # a few seconds
+```
+
+`scrub` builds a new, empty database from the migrations and copies every table into it through
+`apps/gisday-nest/src/database/scrub.sql`, so nothing of the original can be left in freed pages or
+the log. The scrubbed backup restores like any other and is the one to hand to a new developer.
+
+What it keeps: seasons, events, places, organizations, sponsors, tags, classes, the competition
+forms and answers, and speakers' names and profiles. Sign-ups and check-ins keep their counts.
+
+What it replaces:
+
+- every account id, with a made-up one that stays the same wherever that account appears;
+- every email address, and the contact names of organizations and sponsors;
+- competition entries' titles, abstracts, messages, links and participant lists;
+- meeting links, ids, phone numbers and passwords;
+- participants' photographs, each with a one-pixel image, which is nearly all of the size;
+- any event abstract, speaker profile or organization name that holds an email address.
+
+Two things make it safe to keep using as the schema changes. Every column is named in `scrub.sql`
+as kept or replaced, and a column in neither list stops the script before it copies anything. And
+after copying, it searches every text column of the copy for an account id or a real email address
+and fails if it finds one.
 
 ## How the front end reaches the API
 
