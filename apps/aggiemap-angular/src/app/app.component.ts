@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2';
 
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { LastMapService } from '@tamu-gisc/aggiemap/ngx/discover';
+import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 import { campusOnNavigation, EventNotificationsService } from '@tamu-gisc/aggiemap/ngx/core';
 import { NotificationGroupedComponent } from '@tamu-gisc/common/ngx/ui/notification';
 import { CodeMaroonAlertComponent } from '@tamu-gisc/aggiemap/ngx/core';
