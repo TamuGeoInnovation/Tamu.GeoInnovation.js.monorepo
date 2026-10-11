@@ -1,8 +1,8 @@
 # Unreleased
 
-Nothing has merged since the 11 October release.
+Nothing has merged since the 12 October release.
 
-**The last release is [11 October 2026](2026-10-11.md)**, built from `c3a7945a4` (build 20261011.10). The
+**The last release is [12 October 2026](2026-10-12.md)**, built from `c3a7945a4` (build 20261011.10). The
 full suite cleared it on dev: 446 passed, none failed. The release before it is
 [8 October 2026](2026-10-08.md).
 
@@ -26,7 +26,7 @@ Nothing yet.
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** nothing beyond the [11 October release](2026-10-11.md) itself.
+**Currently on dev for testing:** nothing beyond the [12 October release](2026-10-12.md) itself.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
@@ -48,7 +48,7 @@ are on the issue. One pull request per item, each with before and after timings 
 
 | Item | State |
 | --- | --- |
-| Popups: load a popup's component when a popup opens ([#1617](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1617)) | done, in the 11 October release: 71 KB less in the first download, and a phone paints 0.4 to 0.5 s sooner |
+| Popups: load a popup's component when a popup opens ([#1617](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1617)) | done, in the 12 October release: 71 KB less in the first download, and a phone paints 0.4 to 0.5 s sooner |
 | Trip planner, event definitions, the All Maps pages, lodash | not started |
 
 ### GIS Day
@@ -89,7 +89,7 @@ are on the issue. One pull request per item, each with before and after timings 
 | 10b | Faster smoke suite ([#1426](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1426)) | merged ([#1477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1477)): a release check runs one framing route per map, 6 workers, the ArcGIS library cached; 22 min 44 s on a workstation against about 1 h 50 min. Further cuts: [#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473) (bus test), [#1427](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1427) (maps) |
 | 11 | `esri-loader` to `@arcgis/core`, 134 files | last |
 | â€” | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | VeoRide retired ([#1404](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1404)); the old Ring Day app is removed ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)); CPA is retired ([#1458](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1458); restore it from the tag `cpa-last` if it is ever needed); the unused projects are listed in the cloud's Batch B report on `cloud-mailbox`, and the Cypress `*-e2e` projects are deleted, with Cypress itself ([#1545](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1545), part of [#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457)) |
-| â€” | After Angular 22 | standalone ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)) and no NgModules ([#1569](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1569)): done, in the 11 October release. `inject()` ([#1453](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1453)): done, same release. Next, in order: `@defer` and a smaller first load ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454), started 11 October), signals and OnPush ([#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455)), zoneless ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)), Vitest ([#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)), accessibility rules back on ([#1474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1474)) |
+| â€” | After Angular 22 | standalone ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)) and no NgModules ([#1569](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1569)): done, in the 12 October release. `inject()` ([#1453](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1453)): done, same release. Next, in order: `@defer` and a smaller first load ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454), started 11 October), signals and OnPush ([#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455)), zoneless ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)), Vitest ([#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)), accessibility rules back on ([#1474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1474)) |
 
 **A local `nx affected` on a `package.json` change fails on projects that already fail on
 `development`.** Every project counts as affected. Measured on 2 October: `cpa-angular` (since
