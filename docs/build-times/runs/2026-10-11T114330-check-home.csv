@@ -1,0 +1,2 @@
+started,machine,tool,ran,exit,summary,seconds,elapsed,setup
+2026-10-11 11:43:30 CDT,home,check,refactor/1603-provider-modules affected,0,"lint for 56 projects; test, build for 52 projects and 3 tasks they depend on",151,0:02:31,
