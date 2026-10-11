@@ -1,12 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum NOVEMBER_RING_DAY_LAYERS {
   RD_POIS = 'ring-day-pois',
@@ -53,7 +53,7 @@ export const NovemberRingDayColdLayerSources: LayerSource[] = [
     id: NovemberRingDayEventDefinitions.RD_AREAS.id,
     title: NovemberRingDayEventDefinitions.RD_AREAS.name,
     url: NovemberRingDayEventDefinitions.RD_AREAS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.Notes'
@@ -69,7 +69,7 @@ export const NovemberRingDayColdLayerSources: LayerSource[] = [
     id: NovemberRingDayEventDefinitions.RD_ROUTES.id,
     title: NovemberRingDayEventDefinitions.RD_ROUTES.name,
     url: NovemberRingDayEventDefinitions.RD_ROUTES.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'
@@ -85,7 +85,7 @@ export const NovemberRingDayColdLayerSources: LayerSource[] = [
     id: NovemberRingDayEventDefinitions.RD_POIS.id,
     title: NovemberRingDayEventDefinitions.RD_POIS.name,
     url: NovemberRingDayEventDefinitions.RD_POIS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'

@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
@@ -47,7 +47,7 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FamilyWeekendDefinitions.FRIDAY_PARKING_LOTS.id,
     url: FamilyWeekendDefinitions.FRIDAY_PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     visible: false,
     listMode: 'show',
     native: {
@@ -58,23 +58,23 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FamilyWeekendDefinitions.SATURDAY_PARKING_LOTS.id,
     url: FamilyWeekendDefinitions.SATURDAY_PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     visible: false,
     listMode: 'show',
     native: {
       outFields: ['*']
-} as unknown as FeatureNative
+    } as unknown as FeatureNative
   },
   {
     type: 'feature',
     id: FamilyWeekendDefinitions.SUNDAY_PARKING_LOTS.id,
     url: FamilyWeekendDefinitions.SUNDAY_PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     visible: false,
     listMode: 'show',
     native: {
       outFields: ['*']
-} as unknown as FeatureNative
+    } as unknown as FeatureNative
   }
 ];
 

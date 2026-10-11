@@ -6,7 +6,7 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { MarkdownPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
+import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 
 import esri = __esri;
 
@@ -51,7 +51,7 @@ export const NscParkingColdLayerSources: LayerSource[] = [
     url: NscParkingDefinitions.NSC_PARKING_LOTS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: Popups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',

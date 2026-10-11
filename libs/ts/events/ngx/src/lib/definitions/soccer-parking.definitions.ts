@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum SOCCER_PARKING_LAYERS {
   VISITOR_KIOSK = 'soccer-parking-visitor-kiosk',
@@ -52,7 +52,7 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     id: SoccerParkingDefinitions.VISITOR_KIOSK.id,
     title: SoccerParkingDefinitions.VISITOR_KIOSK.name,
     url: SoccerParkingDefinitions.VISITOR_KIOSK.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'Visitor Permit Kiosk',
       description: 'Purchase your hourly parking permit here.'
@@ -69,7 +69,7 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: SoccerParkingDefinitions.ACCESSIBLE_PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
     layerIndex: 11,
@@ -82,7 +82,7 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: SoccerParkingDefinitions.PARKING.id,
     url: SoccerParkingDefinitions.PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'lotname',

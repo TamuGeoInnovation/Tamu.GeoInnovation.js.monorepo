@@ -1,14 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum BASEBALL_PARKING_LAYERS {
   EVENT_SYMBOLS = 'baseball-event-symbols',
@@ -34,14 +32,14 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     id: BASEBALL_PARKING_LAYERS.EVENT_SYMBOLS,
     title: 'Baseball Symbols',
     url: `${eventUrl}/0`,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: '{attributes.type}'
     },
     native: {
       outFields: ['*'],
       definitionExpression: `event = 'Baseball' AND type <> 'Accessible Shuttle Stop'`
-}
+    }
   } as unknown as LayerSource,
 
   {
@@ -50,14 +48,14 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     title: 'Baseball Symbols',
     url: `${eventUrl}/0`,
     visible: false,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: '{attributes.type}'
     },
     native: {
       outFields: ['*'],
       definitionExpression: `event = 'Baseball'`
-}
+    }
   } as unknown as LayerSource,
 
   {
@@ -65,7 +63,7 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     id: BASEBALL_PARKING_LAYERS.GATE_ROAD_CLOSURE,
     title: 'Gate/Road Closure',
     url: `${eventUrl}/2`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     native: {
       outFields: ['*'],
       // The layer holds every sport's gates (90 features, 3 of them baseball's) and the view has no
@@ -79,7 +77,7 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     id: BASEBALL_PARKING_LAYERS.EVENT_LOTS,
     title: 'Event Parking Lots',
     url: `${eventUrl}/3`,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
         field: 'lotname',
@@ -102,7 +100,7 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     title: 'Accessible Parking Lots',
     url: `${eventUrl}/3`,
     visible: false,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
         field: 'lotname',
@@ -124,7 +122,7 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     title: 'Accessible Shuttle',
     url: `${eventUrl}/1`,
     visible: false,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     native: {
       outFields: ['*']
     }

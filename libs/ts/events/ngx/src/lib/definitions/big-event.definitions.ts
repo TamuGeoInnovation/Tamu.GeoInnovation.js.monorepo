@@ -1,8 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -10,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum BIG_EVENT_LAYERS {
   TRAFFIC = 'big-event-traffic',
@@ -64,7 +63,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
     id: BigEventDefinitions.TRAFFIC.id,
     title: BigEventDefinitions.TRAFFIC.name,
     url: BigEventDefinitions.TRAFFIC.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     // popupData: {
     //   name: 'Aggieland Saturday Bus Stop ({attributes.StopType})',
     //   description: `Stop Name: {attributes.StopName}\nRoute Number: {attributes.Route}`
@@ -80,7 +79,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: BigEventDefinitions.ROAD_CLOSURES.id,
     url: BigEventDefinitions.ROAD_CLOSURES.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
     layerIndex: BIG_EVENT_LAYER_INDICES.ROAD_CLOSURES,
@@ -92,7 +91,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: BigEventDefinitions.PARKING_LOTS.id,
     url: BigEventDefinitions.PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     // popupData: {
     //   name: `Aggieland Saturday Points of Interest`,
     //   description: `Type: {attributes.Type}`

@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum INDOOR_TRACK_PARKING_LAYERS {
   VISITOR_KIOSK = 'indoor-track-parking-visitor-kiosk',
@@ -66,7 +66,7 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     id: IndoorTrackParkingDefinitions.VISITOR_KIOSK.id,
     title: IndoorTrackParkingDefinitions.VISITOR_KIOSK.name,
     url: IndoorTrackParkingDefinitions.VISITOR_KIOSK.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'Visitor Permit Kiosk',
       description: 'Purchase your hourly parking permit here.'
@@ -83,7 +83,7 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     id: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
     layerIndex: 24,
@@ -96,7 +96,7 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: IndoorTrackParkingDefinitions.PARKING.id,
     url: IndoorTrackParkingDefinitions.PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'lotname',
@@ -121,7 +121,7 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: IndoorTrackParkingDefinitions.BUILDING.id,
     url: IndoorTrackParkingDefinitions.BUILDING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: IndoorTrackParkingDefinitions.BUILDING.name,
       description: '{attributes.sp_sh_notes}'
@@ -151,7 +151,7 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.id,
     url: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.name,
       description: '{attributes.sp_sh_notes}'

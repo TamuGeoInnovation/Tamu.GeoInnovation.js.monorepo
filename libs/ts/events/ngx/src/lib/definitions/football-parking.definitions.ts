@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 // import { getDefaultGisHost } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 /**
  * Football gameday transportation map.
@@ -506,7 +506,7 @@ const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
           id: mode.layers.entryRoutes,
           title: 'Entry Routes',
           url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.ENTRY_ROUTES}`,
-          popupComponent: MarkdownPopupComponent,
+          popupComponent: EventPopups.MarkdownPopupComponent,
           popupData: {
             name: 'attributes.location',
             description: 'attributes.description'
@@ -522,7 +522,7 @@ const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
       id: mode.layers.gamedayParking,
       title: 'Gameday Parking',
       url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.GAMEDAY_PARKING}`,
-      popupComponent: MarkdownPopupComponent,
+      popupComponent: EventPopups.MarkdownPopupComponent,
       popupData: {
         name: 'attributes.notes',
         description: 'attributes.notes_1'
@@ -536,7 +536,7 @@ const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
       id: mode.layers.exitRoutes,
       title: 'Exit Routes',
       url: `${mode.exitUrl}/${VEHICLE_LAYER_INDEX.EXIT_ROUTES}`,
-      popupComponent: MarkdownPopupComponent,
+      popupComponent: EventPopups.MarkdownPopupComponent,
       popupData: {
         name: 'attributes.location',
         description: 'attributes.description'
@@ -548,7 +548,7 @@ const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
       id: mode.layers.streetGrass,
       title: 'Street Grass Areas (Click for details)',
       url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.STREET_GRASS}`,
-      popupComponent: MarkdownPopupComponent,
+      popupComponent: EventPopups.MarkdownPopupComponent,
       popupData: {
         name: 'attributes.name',
         description: 'attributes.anote'
@@ -560,7 +560,7 @@ const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
       id: mode.layers.lots,
       title: 'Football Parking Lots',
       url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.LOTS}`,
-      popupComponent: MarkdownPopupComponent,
+      popupComponent: EventPopups.MarkdownPopupComponent,
       popupData: {
         name: 'attributes.lotname',
         description: 'attributes.note'
@@ -579,7 +579,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_RIDESHARE_LOCATIONS,
     title: 'Rideshare Locations',
     url: `${HOSTED_ROOT}/RS_view/FeatureServer/0`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.notes',
       description: 'attributes.notes_1'
@@ -594,7 +594,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_SHUTTLE_STOPS,
     title: 'Campus Shuttle Stops',
     url: `${HOSTED_ROOT}/Football_Shuttle_View/FeatureServer/5`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.stopname}',
       description: 'For route: {attributes.routename}'
@@ -606,7 +606,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_SHUTTLE_ROUTES,
     title: 'Shuttle Routes',
     url: `${HOSTED_ROOT}/Football_Shuttle_View/FeatureServer/6`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.routename} ({attributes.routenum})'
     },
@@ -619,7 +619,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_RV_GAMEDAY_PARKING,
     title: 'Gameday Parking',
     url: `${HOSTED_ROOT}/RV_view/FeatureServer/0`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.notes',
       description: 'attributes.notes_1'
@@ -632,7 +632,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_RV_RNS_SPACES,
     title: 'RNS Spaces',
     url: `${HOSTED_ROOT}/RV_view/FeatureServer/2`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.rv_spcnum',
       description: 'attributes.spc_type'
@@ -644,7 +644,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_RV_STRIPES,
     title: 'Stripes',
     url: `${HOSTED_ROOT}/RV_view/FeatureServer/1`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.use_',
       description: 'attributes.location'
@@ -656,7 +656,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_RV_STREET_GRASS_AREAS,
     title: 'Street Grass Areas (Click for details)',
     url: `${HOSTED_ROOT}/RV_view/FeatureServer/3`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.anote'
@@ -668,7 +668,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_RV_PARKING_LOTS,
     title: 'Football Parking Lots',
     url: `${HOSTED_ROOT}/RV_view/FeatureServer/4`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.lotname',
       description: 'attributes.note'
@@ -693,7 +693,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_PARKING,
     title: 'Micromobility Parking Area',
     url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/0`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.type',
       description: 'attributes.br_notes'
@@ -708,7 +708,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_ENTRY_ROUTES,
     title: 'Entry Routes',
     url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/1`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.location',
       description: 'attributes.description'
@@ -720,7 +720,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_EXIT_ROUTES,
     title: 'Exit Routes',
     url: `${HOSTED_ROOT}/FBike_exit/FeatureServer/2`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.location',
       description: 'attributes.description'
@@ -732,7 +732,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_BIKE_DISMOUNT_ZONES,
     title: 'Bike Dismount Zones',
     url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/3`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.bike_notes'
@@ -744,7 +744,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_BIKE_VEO_GEOFENCE,
     title: 'Bike Veo Geofence',
     url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/4`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.type'
@@ -761,7 +761,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_PEDESTRIAN_EXIT_ROUTES,
     title: 'Exit Routes',
     url: `${HOSTED_ROOT}/Football_Pedestrian_Exit/FeatureServer/3`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.location',
       description: 'attributes.description'

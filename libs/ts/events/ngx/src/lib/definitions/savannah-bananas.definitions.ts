@@ -1,12 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum SAVANNAH_BANANAS_PARKING_LAYERS {
   SHUTTLE_GROUP = 'savannah-bananas-shuttle-group',
@@ -76,7 +76,7 @@ export const SavannahBananasParkingColdLayerSources: LayerSource[] = [
         id: SavannahBananasParkingDefinitions.EVENT_PARKING.id,
         title: SavannahBananasParkingDefinitions.EVENT_PARKING.name,
         url: SavannahBananasParkingDefinitions.EVENT_PARKING.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         popupData: {
           name: {
             field: 'name'
@@ -96,7 +96,7 @@ export const SavannahBananasParkingColdLayerSources: LayerSource[] = [
         id: SavannahBananasParkingDefinitions.ACCESSIBLE_PREPAID_PARKING.id,
         title: SavannahBananasParkingDefinitions.ACCESSIBLE_PREPAID_PARKING.name,
         url: SavannahBananasParkingDefinitions.ACCESSIBLE_PREPAID_PARKING.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         popupData: {
           name: {
             field: 'name'
@@ -128,7 +128,7 @@ export const SavannahBananasParkingColdLayerSources: LayerSource[] = [
         id: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.id,
         title: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.name,
         url: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         popupData: {
           name: {
             field: 'name'
@@ -148,7 +148,7 @@ export const SavannahBananasParkingColdLayerSources: LayerSource[] = [
         id: SavannahBananasParkingDefinitions.SHUTTLE_STOPS.id,
         title: SavannahBananasParkingDefinitions.SHUTTLE_STOPS.name,
         url: SavannahBananasParkingDefinitions.SHUTTLE_STOPS.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         popupDataResolutionStrategy: 'cumulative',
         popupData: {
           name: {

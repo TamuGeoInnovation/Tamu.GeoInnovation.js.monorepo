@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum MUSTER_LAYERS {
   PARKING = 'muster-parking',
@@ -44,7 +44,7 @@ export const MusterEventColdLayerSources: LayerSource[] = [
     id: MusterEventDefinitions.TRAFFIC_FLOW.id,
     title: MusterEventDefinitions.TRAFFIC_FLOW.name,
     url: MusterEventDefinitions.TRAFFIC_FLOW.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.edited'
     },
@@ -60,7 +60,7 @@ export const MusterEventColdLayerSources: LayerSource[] = [
     id: MusterEventDefinitions.ACCESSIBLE_PARKING.id,
     title: MusterEventDefinitions.ACCESSIBLE_PARKING.name,
     url: MusterEventDefinitions.ACCESSIBLE_PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'
@@ -77,7 +77,7 @@ export const MusterEventColdLayerSources: LayerSource[] = [
     id: MusterEventDefinitions.PARKING.id,
     title: MusterEventDefinitions.PARKING.name,
     url: MusterEventDefinitions.PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'

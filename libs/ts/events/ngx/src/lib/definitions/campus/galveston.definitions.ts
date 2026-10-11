@@ -2,9 +2,13 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../../interfaces/special-event.interface';
 import { campusClickOverlayNative } from './campus-overlay.definitions';
-import { CampusBuildingPopupComponent } from '../../modules/popups/campus-building-popup/campus-building-popup.component';
+import { EventPopups } from '../../modules/popups/popups';
 
 /**
  * Layer ids used by the Galveston satellite-campus map. `BASEMAP` is the visual vector-tile
@@ -42,7 +46,7 @@ export const GalvestonLayerSources: LayerSource[] = [
     id: GALVESTON_LAYERS.BUILDINGS,
     title: 'Buildings',
     url: `${Connections.galvestonFeatureServerUrl}/0`,
-    popupComponent: CampusBuildingPopupComponent,
+    popupComponent: EventPopups.CampusBuildingPopupComponent,
     listMode: 'hide',
     visible: true,
     essential: true,
@@ -83,7 +87,7 @@ export const GalvestonSearchSources: SearchSource[] = [
     scoringKeys: ['attributes.bldgabbrev', 'attributes.number', 'attributes.bldgname'],
     featuresLocation: 'features',
     displayTemplate: '{attributes.bldgname} ({attributes.number})',
-    popupComponent: CampusBuildingPopupComponent,
+    popupComponent: EventPopups.CampusBuildingPopupComponent,
     searchActive: true
   }
 ];

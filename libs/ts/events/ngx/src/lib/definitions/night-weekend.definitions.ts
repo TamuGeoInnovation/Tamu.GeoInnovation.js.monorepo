@@ -6,7 +6,7 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum NIGHT_WEEKEND_LAYERS {
   NIGHT_PRIVILEGES = 'Night Privileges 5:00pm - 6:00am'
@@ -31,7 +31,7 @@ export const NightWeekendColdLayerSources: LayerSource[] = [
     url: NightWeekendDefinitions.NIGHT_PRIVILEGES.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',

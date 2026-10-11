@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum SUMMER_COMMENCEMENT_LAYERS {
   // Enum order drives draw order (first = top). Recommended Route above Parking Lots so its arrows show.
@@ -50,7 +50,7 @@ export const SummerCommencementColdLayerSources: LayerSource[] = [
     id: SummerCommencementEventDefinitions.PARKING_LOTS.id,
     title: SummerCommencementEventDefinitions.PARKING_LOTS.name,
     url: SummerCommencementEventDefinitions.PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'

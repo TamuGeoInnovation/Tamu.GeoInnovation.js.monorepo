@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
@@ -40,7 +40,7 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.id,
     url: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: '{attributes.description}'
@@ -50,13 +50,13 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     layerIndex: 59,
     native: {
       outFields: ['*']
-} as unknown as FeatureNative
+    } as unknown as FeatureNative
   },
   {
     type: 'feature',
     id: CrossCountryParkingDefinitions.PARKING.id,
     url: CrossCountryParkingDefinitions.PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'lotname',
@@ -73,7 +73,7 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     native: {
       definitionExpression: `trackxc = 'EventParking'`,
       outFields: ['*']
-} as unknown as FeatureNative
+    } as unknown as FeatureNative
   }
 ];
 

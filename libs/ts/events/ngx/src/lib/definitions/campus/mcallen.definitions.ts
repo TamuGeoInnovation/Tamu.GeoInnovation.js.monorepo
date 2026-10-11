@@ -2,9 +2,13 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../../interfaces/special-event.interface';
 import { campusClickOverlayNative } from './campus-overlay.definitions';
-import { CampusBuildingPopupComponent } from '../../modules/popups/campus-building-popup/campus-building-popup.component';
+import { EventPopups } from '../../modules/popups/popups';
 
 /**
  * Layer ids used by the McAllen satellite-campus map. `BASEMAP` is the visual vector-tile basemap.
@@ -42,7 +46,7 @@ export const McAllenLayerSources: LayerSource[] = [
     id: MCALLEN_LAYERS.BUILDINGS,
     title: 'Buildings',
     url: `${Connections.mcallenFeatureServerUrl}/2`,
-    popupComponent: CampusBuildingPopupComponent,
+    popupComponent: EventPopups.CampusBuildingPopupComponent,
     listMode: 'hide',
     visible: true,
     essential: true,
@@ -83,7 +87,7 @@ export const McAllenSearchSources: SearchSource[] = [
     scoringKeys: ['attributes.abbrev', 'attributes.number', 'attributes.name'],
     featuresLocation: 'features',
     displayTemplate: '{attributes.name} ({attributes.number})',
-    popupComponent: CampusBuildingPopupComponent,
+    popupComponent: EventPopups.CampusBuildingPopupComponent,
     searchActive: true
   }
 ];

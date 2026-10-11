@@ -1,18 +1,16 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum FOUR_H_ROUNDUP_LAYERS {
   FOUR_H_ROUNDUP_LOCATIONS = 'four-h-roundup-locations',
-  FOUR_H_ROUNDUP_PARKING = 'four-h-roundup-parking',
+  FOUR_H_ROUNDUP_PARKING = 'four-h-roundup-parking'
 }
 
 const eventUrl = Connections.fourHRoundupUrl;
@@ -29,16 +27,16 @@ const FourHRoundupEventDefinitions = {
     layerId: FOUR_H_ROUNDUP_LAYERS.FOUR_H_ROUNDUP_PARKING,
     name: '4-H Roundup Parking',
     url: `${eventUrl}/1`
-  },
+  }
 };
 
 export const FourHColdLayerSources: LayerSource[] = [
   {
-        type: 'feature',
+    type: 'feature',
     id: FourHRoundupEventDefinitions.FOUR_H_LOCATIONS.id,
     title: FourHRoundupEventDefinitions.FOUR_H_LOCATIONS.name,
     url: FourHRoundupEventDefinitions.FOUR_H_LOCATIONS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.Type',
       description: 'attributes.description'
@@ -61,7 +59,7 @@ export const FourHColdLayerSources: LayerSource[] = [
     id: FourHRoundupEventDefinitions.FOUR_H_PARKING.id,
     title: FourHRoundupEventDefinitions.FOUR_H_PARKING.name,
     url: FourHRoundupEventDefinitions.FOUR_H_PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.Type',
       description: 'attributes.description'
@@ -69,7 +67,7 @@ export const FourHColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*']
     }
-  },
+  }
 ];
 
 export const FourHRoundupConfiguration: EventConfiguration = {

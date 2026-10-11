@@ -1,13 +1,12 @@
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum FIRE_SCHOOL_LAYERS {
   PREFERRED_ROUTE = 'fire-school-preferred-route',
@@ -40,7 +39,7 @@ export const FireSchoolColdLayerSources: LayerSource[] = [
     url: `${fireSchoolUrl}/0`,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: { field: 'name' },
       description: { field: 'description' }
@@ -54,7 +53,7 @@ export const FireSchoolColdLayerSources: LayerSource[] = [
     url: `${fireSchoolUrl}/1`,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'Road Closure',
       description: { field: 'description' }
@@ -76,7 +75,7 @@ export const FireSchoolColdLayerSources: LayerSource[] = [
     url: `${fireSchoolUrl}/2`,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: { field: 'name' },
       description: { field: 'description' }
