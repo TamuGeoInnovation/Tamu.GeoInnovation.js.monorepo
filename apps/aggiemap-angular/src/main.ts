@@ -3,14 +3,9 @@ import { enableProdMode, provideZoneChangeDetection, importProvidersFrom } from 
 import * as WebFont from 'webfontloader';
 
 import * as environment from './environments/environment';
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
-import {
-  notificationStorage,
-  AGGIEMAP_NOTIFICATION_STORE_KEY,
-  NotificationModule,
-  NotificationGroupedModule
-} from '@tamu-gisc/common/ngx/ui/notification';
-import { EVENT_NOTIFICATION_DEFINITIONS, AggiemapNgxCoreModule, CodeMaroonAlertModule } from '@tamu-gisc/aggiemap/ngx/core';
+import { env } from '@tamu-gisc/common/ngx/environment';
+import { notificationStorage, AGGIEMAP_NOTIFICATION_STORE_KEY } from '@tamu-gisc/common/ngx/ui/notification';
+import { EVENT_NOTIFICATION_DEFINITIONS, aggiemapRoutes } from '@tamu-gisc/aggiemap/ngx/core';
 import { EventDefinitions } from '@tamu-gisc/ts/events/ngx';
 import { BUS_STOP_POPUP_COMPONENT } from '@tamu-gisc/maps/feature/trip-planner';
 import { BusStopPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
@@ -18,6 +13,7 @@ import { provideHttpClient, withXhr, withInterceptorsFromDi } from '@angular/com
 import { Angulartics2Module } from 'angulartics2';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 import { AppComponent } from './app/app.component';
 
 if (environment.environment.production) {
@@ -40,17 +36,8 @@ bootstrapApplication(AppComponent, {
     // Every component still relies on Zone.js (ChangeDetectionStrategy.Eager); without this,
     // bootstrapApplication runs zoneless since Angular 21 (#1563, #1478).
     provideZoneChangeDetection(),
-    importProvidersFrom(
-      Angulartics2Module.forRoot(),
-      BrowserModule,
-      BrowserAnimationsModule,
-      EnvironmentModule,
-      NotificationModule,
-      NotificationGroupedModule,
-      AggiemapNgxCoreModule,
-      // Code Maroon proof of concept (#1289). Development only; renders nothing elsewhere.
-      CodeMaroonAlertModule
-    ),
+    importProvidersFrom(Angulartics2Module.forRoot(), BrowserModule, BrowserAnimationsModule),
+    provideRouter(aggiemapRoutes),
     { provide: env, useValue: environment },
     { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
     { provide: EVENT_NOTIFICATION_DEFINITIONS, useValue: EventDefinitions },

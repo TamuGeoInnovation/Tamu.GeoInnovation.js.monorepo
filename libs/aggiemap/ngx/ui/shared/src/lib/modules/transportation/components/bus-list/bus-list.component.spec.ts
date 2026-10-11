@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { env } from '@tamu-gisc/common/ngx/environment';
 
 import {
   TripPlannerConnectionsSelectComponent,
@@ -59,7 +59,6 @@ describe('BusListComponent (Shallow)', () => {
         SearchComponent,
         SearchMobileComponent,
         SearchResultPipe,
-        EnvironmentModule,
         BusListComponent
       ],
       providers: [

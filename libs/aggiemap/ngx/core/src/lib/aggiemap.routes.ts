@@ -1,7 +1,6 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
-const hybridRoutes: Routes = [
+export const aggiemapRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
@@ -30,26 +29,26 @@ const hybridRoutes: Routes = [
   },
   {
     path: 'events',
-    loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.TsEventsNgxModule)
+    loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.tsEventsRoutes)
   },
   {
     path: 'parking',
-    loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.TsEventsNgxModule)
+    loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.tsEventsRoutes)
   },
   {
     path: 'operations',
-    loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.TsEventsNgxModule)
+    loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.tsEventsRoutes)
   },
   {
     path: 'campus',
-    loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.TsEventsNgxModule)
+    loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.tsEventsRoutes)
   },
   {
     // Sidebar-free, preset-layer maps meant to be embedded elsewhere (e.g. a mobile app webview).
     // Kept as its own top-level segment (rather than under `events`/`parking`/`operations`) so all
     // present and future "kiosk" maps stay grouped together.
     path: 'kiosk',
-    loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.TsEventsNgxModule)
+    loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.tsEventsRoutes)
   },
   {
     // Code Maroon proof of concept (#1289): the ordinary map, with the live emergency feed shown
@@ -66,10 +65,3 @@ const hybridRoutes: Routes = [
     redirectTo: 'map'
   }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(hybridRoutes, {})],
-  declarations: [],
-  exports: [RouterModule]
-})
-export class AggiemapNgxCoreModule {}

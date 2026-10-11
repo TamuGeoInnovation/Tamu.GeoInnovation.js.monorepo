@@ -1,4 +1,3 @@
-export * from './lib/modules/auth/auth.module';
 export * from './lib/modules/auth/services/auth.service';
 
 export * from './lib/modules/forms/components/submission/submission.component';

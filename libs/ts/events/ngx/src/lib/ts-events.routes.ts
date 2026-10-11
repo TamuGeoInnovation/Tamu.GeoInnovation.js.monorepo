@@ -1,6 +1,4 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
 import { SettingsGuard } from './guards/settings/settings.guard';
 import { BuilderComponent } from './modules/builder/builder.component';
@@ -63,9 +61,7 @@ const routes: Routes = [
   }
 ];
 
-@NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), BuilderComponent, EndedComponent],
-  providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }],
-  exports: [RouterModule]
-})
-export class TsEventsNgxModule {}
+// Popups ask for the settings as `EventSettingsQuery` (#1403); the routes supply the service under that name.
+export const tsEventsRoutes: Routes = [
+  { path: '', providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }], children: routes }
+];

@@ -10,7 +10,7 @@ import * as WebFont from 'webfontloader';
 import * as environment from './environments/environment';
 import { AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
+import { env } from '@tamu-gisc/common/ngx/environment';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ViewportScroller } from '@angular/common';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
@@ -18,8 +18,6 @@ import { Angulartics2Module } from 'angulartics2';
 import { withInMemoryScrolling, provideRouter, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
-import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
-import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 import { AppComponent } from './app/app.component';
 
 const routes: Routes = [
@@ -61,15 +59,7 @@ bootstrapApplication(AppComponent, {
     // Every component still relies on Zone.js (ChangeDetectionStrategy.Eager); without this,
     // bootstrapApplication runs zoneless since Angular 21 (#1563, #1478).
     provideZoneChangeDetection(),
-    importProvidersFrom(
-      BrowserModule,
-      Angulartics2Module.forRoot(),
-      BrowserAnimationsModule,
-      HighlightPlusModule,
-      EnvironmentModule,
-      LocalStoreModule,
-      NotificationModule
-    ),
+    importProvidersFrom(BrowserModule, Angulartics2Module.forRoot(), BrowserAnimationsModule, HighlightPlusModule),
     AuthService,
     provideAppInitializer(() => {
       // Start AuthService's login-state request at boot, as AppModule's constructor did.

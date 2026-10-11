@@ -2,7 +2,7 @@ import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 
 import { SearchProperties, SearchResult, SearchService } from './search.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
+import { env } from '@tamu-gisc/common/ngx/environment';
 
 describe('SearchService (no SearchSources)', () => {
   beforeEach(waitForAsync(() => {
@@ -14,7 +14,7 @@ describe('SearchService (no SearchSources)', () => {
           useValue: { SearchSources: [] }
         }
       ],
-      imports: [HttpClientTestingModule, EnvironmentModule]
+      imports: [HttpClientTestingModule]
     }).compileComponents();
   }));
 

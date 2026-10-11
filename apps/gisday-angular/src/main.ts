@@ -3,7 +3,7 @@ import { enableProdMode, provideZoneChangeDetection, importProvidersFrom } from 
 import * as WebFont from 'webfontloader';
 import * as environment from './environments/environment';
 import { Title, BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
+import { env } from '@tamu-gisc/common/ngx/environment';
 import { HTTP_INTERCEPTORS, provideHttpClient, withXhr, withInterceptorsFromDi } from '@angular/common/http';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { ROLES_CLAIM } from '@tamu-gisc/common/ngx/auth';
@@ -11,7 +11,6 @@ import { Angulartics2Module } from 'angulartics2';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes, ExtraOptions } from '@angular/router';
-import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app/app.component';
 
@@ -74,8 +73,6 @@ bootstrapApplication(AppComponent, {
       BrowserModule,
       BrowserAnimationsModule,
       RouterModule.forRoot(routes, routeOptions),
-      EnvironmentModule,
-      NotificationModule,
       FormsModule,
       ReactiveFormsModule
     ),
