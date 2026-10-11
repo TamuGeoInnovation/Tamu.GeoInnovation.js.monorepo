@@ -29,7 +29,7 @@ Nine places, each with one job.
 | This file | The lasting rules: how to build, test, release and open a pull request here. Anything still true next month. |
 | [`docs/map-layers.md`](docs/map-layers.md) | Where a layer's symbology, title and order come from, how to override each, and when an override is right. Read before hard-coding anything about how a map looks. |
 | [`docs/testing-maps.md`](docs/testing-maps.md) | Which signal to wait for when a test needs a map to be finished, and why `ready` is not the one for a screenshot. |
-| [`docs/build-times.md`](docs/build-times.md) | How long runs take, so a change meant to speed the work up can be shown to have done it: one small file per run in [`docs/build-times/runs/`](docs/build-times/runs), written by the scripts, and the analysis of what the numbers show. Measurements, not rules. |
+| [`docs/build-times.md`](docs/build-times.md) | How long runs and page loads take, so a change meant to speed something up can be shown to have done it: before-and-after comparisons and what they show, and the run files in [`docs/build-times/runs/`](docs/build-times/runs) the scripts write when asked. Measurements, not rules. |
 | [`docs/gisday-local.md`](docs/gisday-local.md) | How to run the whole GIS Day site on one machine with `scripts/gisday-local.sh`: the containers, the settings kept outside the repository, and what works locally and what does not. |
 | [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
@@ -106,22 +106,23 @@ On its first real use, a full affected check ran 131 tasks in its first four min
 an hour before. The script keeps the Nx cache in the volume, so an unchanged task replays in about a second, and runs
 with `-m 16g` and `--parallel=8` (peak memory measured: 10.4 GB). Do not add `--skip-nx-cache`.
 
-**Record how long it took.** `scripts/check-in-volume.sh` and `test/smoke/aggiemap/run-local.sh` write
-a small file per run into [`docs/build-times/runs/`](docs/build-times/runs) in the checkout they were
-run from: the start in US Central, the machine, what ran, the result and the elapsed time (#1593). One
-file per run, so two branches' runs never conflict. The file is left uncommitted; **commit the file each
-run writes** with your work. `bash scripts/run-times-report.sh` prints them all as one table. **Set
-`BUILD_TIMES_MACHINE` once on each machine** (e.g. `home`, `office`), as a user environment variable;
-without it the machine is recorded as `unspecified`. The hostname is never used, because this
-repository is public. Anything else that is timed - a
-build, install or deploy run by hand - and any context or analysis, such as what a before-and-after
-comparison shows, goes in [`docs/build-times.md`](docs/build-times.md). What costs something is wanting
-a number later that was only ever on screen.
+**Record how long something takes when you are measuring it, not otherwise.** `scripts/check-in-volume.sh`
+and `test/smoke/aggiemap/run-local.sh` print the elapsed time of every run. With `BUILD_TIMES_RECORD=1`
+they also write a small file into [`docs/build-times/runs/`](docs/build-times/runs) in the checkout they
+were run from: the start in US Central, the machine, what ran, the result and the elapsed time (#1593).
+Commit those files with the work they measure; `bash scripts/run-times-report.sh` prints them as one
+table. `BUILD_TIMES_MACHINE` names the machine (e.g. `home`, `office`); the hostname is never used,
+because this repository is public.
 
-Record the run you are not trying to make faster, too. A single duration proves nothing on its own —
-the same run measured before and after a change is what shows whether the work paid off, and the
-"before" cannot be taken afterwards. The volume migration is provably 5 to 12 times faster only
-because someone measured the slow way first. See #1415.
+Recording used to be automatic, and for two days every pull request carried a run file. It answered what
+it was for - how long checks and smoke runs take, and how much the Docker volume saved - and after that
+it was noise (#1647). The files recorded then are kept.
+
+**When you are measuring, take the "before" first.** A single duration proves nothing on its own — the
+same run measured before and after a change is what shows whether the work paid off, and the "before"
+cannot be taken afterwards. The volume migration is provably 5 to 12 times faster only because someone
+measured the slow way first (#1415). Take both on a machine doing nothing else, and put the comparison
+and what it shows in [`docs/build-times.md`](docs/build-times.md), with anything timed by hand.
 
 **Times are US Central, and `TZ=America/Chicago` will lie to you.** Every clock time reported to the
 maintainer, and every timestamp written into an issue, a pull request, release notes or
