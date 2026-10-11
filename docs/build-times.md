@@ -396,6 +396,41 @@ on the machine.
 these runs can show. The build's initial files shrink by more than the page's download does, because part
 of what left them is a library the map route still loads straight away, in its own file.
 
+### lodash and colornames out of the first download
+
+Two production builds on 11 October 2026: `development` at `c3a7945a4` (before) and the change (after),
+neither with the All Maps change.
+
+| | Before | After |
+| --- | ---: | ---: |
+| Application JavaScript on the map page, gzipped | 388 KB | 357 KB |
+| Initial JavaScript, raw (from the build) | 1.33 MB | 1.24 MB |
+| Initial JavaScript, estimated transfer (from the build) | 298 kB | 271 kB |
+
+**What it shows.** 31 KB less JavaScript downloaded by the map page (8%). **The paint timings taken with
+these builds are not recorded as a result**: another session was building on the machine at the time, and
+within one set of five the desktop's first paint ranged from 0.28 s to 1.9 s. They are to be re-taken on
+a quiet machine and added here.
+### Event definitions loaded after startup
+
+Two production builds measured alternately, twice each, on 11 October 2026: `development` with the All
+Maps change (before) and the event definitions change (after). The GIS Day stack was running on the
+machine; the runs within each set were close to one another all the same.
+
+| | Before | After | Before, again | After, again |
+| --- | ---: | ---: | ---: | ---: |
+| Application JavaScript on the map page, gzipped | 376 KB | 377 KB | 376 KB | 377 KB |
+| Initial JavaScript, raw (from the build) | 1.22 MB | 1.01 MB | | |
+| `main`, raw (from the build) | 338 kB | 131 kB | | |
+| Phone: first contentful paint | 4.56 s | 4.26 s | 4.57 s | 4.23 s |
+| Phone: largest contentful paint | 4.81 s | 4.49 s | 4.82 s | 4.46 s |
+| Phone: map ready | 15.7 s | 15.7 s | 15.7 s | 15.7 s |
+| Desktop: first contentful paint | 0.36 s | 0.25 s | 0.27 s | 0.25 s |
+
+**What it shows.** The phone paints about 0.3 seconds sooner (7%), the same in both pairs. The page
+downloads the same amount of JavaScript as before: the definitions still arrive, a moment later, for the
+notices. That is the part a second stage would remove.
+
 ## Where the other records are
 
 This file is for runs as they happen. Two existing records keep their own shape and are not folded

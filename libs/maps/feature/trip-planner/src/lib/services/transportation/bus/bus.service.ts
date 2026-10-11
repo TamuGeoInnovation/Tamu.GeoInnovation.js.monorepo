@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { forkJoin, from, Observable, of, BehaviorSubject, timer } from 'rxjs';
 import { catchError, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 
-import toHex from 'colornames';
 import { v4 as guid } from 'uuid';
 import { Angulartics2 } from 'angulartics2';
 
@@ -728,12 +727,9 @@ export class BusService {
 
         const route = routes.find((r) => r.ShortName === short_name);
 
-        let color = route ? route.Color : '#500000';
-
-        // Only convert named colors, ESRI correctly maps other html colors such as #0f0 or rgb(102, 0, 102)
-        if (!color.startsWith('#') && !color.startsWith('rgb')) {
-          color = toHex(color);
-        }
+        // A route's colour is `rgb(...)`, built from the Bus Routes layer's renderer, or the maroon default;
+        // ArcGIS takes either as written.
+        const color = route ? route.Color : '#500000';
 
         const stopGraphics = stops.map((stop) => {
           return new Graphic({
