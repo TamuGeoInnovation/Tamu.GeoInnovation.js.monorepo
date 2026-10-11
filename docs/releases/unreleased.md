@@ -1,10 +1,10 @@
 # Unreleased
 
-Since the 8 October release: the old Ring Day app removed (see Summary).
+Since the 11 October release notes were cut: the Tailgating tent popup fix (see Summary).
 
-**The last release is [8 October 2026](2026-10-08.md)**, built from `a4e04a7b` (build 20261008.15). It
-went to production before its dev check, as an emergency during Ring Day; the notes say what happened and
-what the suite found afterwards. The release before it is [6 October 2026, second release](2026-10-06-2.md).
+**The last release is [11 October 2026](2026-10-11.md)**, built from `df1768ab9` (build 20261011.3). The
+full suite cleared it on dev: 447 passed, none failed. The release before it is
+[8 October 2026](2026-10-08.md).
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
 result adds its own entry below, in that pull request**, with its before/after screenshots linked from
@@ -15,23 +15,12 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-- **The old standalone Ring Day app's code is removed** ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). Ring Day is
-  served by the event map at `/events/ring-day`; the old app at `/ringday/` was a second copy with its
-  own dates and its own notice. Its projects and library are gone, so Azure no longer builds it, and the
-  dev-only Experimental Applications list no longer links it. **The deployed `/ringday/` folder on dev and
-  production is still there**: deleting it, or redirecting `/ringday/` to `/events/ring-day`, is a step
-  on the servers for the maintainer.
-- **Football parking lot status reaches the map within a minute, without a reload** ([#1587](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1587)).
-  Staff change a lot's class during game day, to Lot Closed for example, by editing the service, and
-  visitors had to reload the page to see it. The Football Parking Lots layer, on every personal vehicle
-  map and the RV map, now checks its service every minute and redraws what changed. Only that layer
-  polls; the others do not change during a game.
-- **GIS Day: the competition app's old login page is removed** ([#1608](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1608)). Opening
-  `/app/login` threw an error and showed an empty page ([before](../screenshots/gisday-competitions-login/before-production.png)),
-  on production too: the page signed in through the retired site login and depended on a service nothing
-  provided. GIS Day signs in through Auth0 only, so the page, its service and its guard are gone, and an
-  old `/app/login` link now leads to the competition app like any other address
-  ([after](../screenshots/gisday-competitions-login/after-local.png)).
+- **Tailgating: a tent inside a highlighted zone opens its own popup** ([#1614](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1614)). A link to a
+  zone, opened in a tab that already had the map open, drew the yellow selection highlight over the zone
+  and its tents, and a click on a tent then opened an empty popup reading ", TX"
+  ([before](../screenshots/tailgating-tent-under-highlight/before-dev.png)). The click now goes to the
+  tent under the highlight ([after](../screenshots/tailgating-tent-under-highlight/after-local.png)).
+  Found on dev before the readable links ([#1574](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1574)) reached production.
 
 ---
 
@@ -42,41 +31,38 @@ result adds its own entry below, in that pull request**, with its before/after s
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** nothing beyond the [8 October release](2026-10-08.md) itself.
+**Currently on dev for testing:** nothing beyond the [11 October release](2026-10-11.md) itself.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
-| Football Tailgating map: readable links to a zone or tent ([#1574](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1574)) ([before](../screenshots/tailgating-readable-links/before.png), [after](../screenshots/tailgating-readable-links/after.png)) | [Houston Street Grove](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-7), [tent O12](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?tent=O12) | Each opens that zone or tent's popup; a popup's copy link reads `?zone=AP-7` or `?tent=O12`, not `?feature=...`; the sidebar search still finds buildings and lots |
-| The old Ring Day app removed ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) ([before](../screenshots/ring-day-old-app-removed/before.png), [after](../screenshots/ring-day-old-app-removed/after.png)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps), the dev-only Experimental Applications section; and [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day) | No "Ring Day" card among the experimental applications; the Ring Day event map still opens as before |
-| Football lot status redraws without a reload ([#1587](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1587)); no screenshots, since showing it means editing live lot data | [Football parking](https://dev.aggiemap.tamu.edu/events/gameday-parking) (choose a personal vehicle option if a builder shows) | With the map open, a lot's status changed in the service (to Lot Closed, say) appears on the map within about a minute without reloading. Needs someone with edit rights to the service to change a lot |
-| GIS Day: old competition login page removed ([#1608](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1608)) ([before](../screenshots/gisday-competitions-login/before-production.png), [after](../screenshots/gisday-competitions-login/after-local.png)) | GIS Day's dev site, `/app/login`, on a phone or at phone size. It is not on dev.aggiemap.tamu.edu | The install page in a browser, or the Auth0 sign-in and then the submission page in the installed app; never an empty page with only the bottom tabs |
+| Tailgating: a tent under the zone highlight ([#1614](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1614)) ([before](../screenshots/tailgating-tent-under-highlight/before-dev.png), [after](../screenshots/tailgating-tent-under-highlight/after-local.png)) | Open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d), then in the same tab open [Aggie Spirit Lawn](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-8) | The zone turns yellow; clicking a tent in it opens that tent's popup ("Tent A21"), not a popup reading ", TX"; clicking the zone away from a tent opens the zone's popup |
 
 ---
 
-## Work in flight â€” 6 October
+## Work in flight - 11 October
 
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
 file would say the work had stopped.
 
-### Standalone components ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)), 8 October
+### A smaller first load ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454)), 11 October
 
-Every Angular app except Ring Day ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) and the OIDC admin and signage deletion
-candidates ([#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457)) now starts with `bootstrapApplication` and no `AppModule`, and its
-libraries' components are standalone.
+Measured on production before any change: the main map's first paint takes 0.75 s on a desktop and 5.3 s
+on a phone (Fast 4G, 4x CPU), and the map is ready at 6.3 s and 19.6 s. The first download is 1.62 MB of
+JavaScript (raw), and nearly everything the map uses is in it; the numbers and the breakdown by library
+are on the issue. One pull request per item, each with before and after timings from the same script.
 
-| Step | State |
+| Item | State |
 | --- | --- |
-| UI kits, common, maps, AggieMap libraries | merged: [#1546](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1546), [#1549](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1549), [#1551](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1551), [#1557](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1557) |
-| GIS Day libraries ([#1561](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1561)) | merged: [#1562](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1562) |
-| AggieMap and event maps bootstrapped ([#1563](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1563)) | merged: [#1565](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1565) |
-| Geoservices, mailroom and UES libraries ([#1564](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1564)) | merged: [#1566](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1566) |
-| GIS Day, geoservices, mailroom and UES bootstrapped ([#1567](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1567)) | merged: [#1572](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1572) |
-| The 53 emptied NgModules removed ([#1568](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1568)) | [#1573](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1573), open; local smoke run 428 passed |
-| The ~230 routing NgModules replaced with route arrays ([#1569](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1569)) | not started, Medium |
+| Popups: load a popup's component when a popup opens | in progress; takes Swiper, lightgallery and the popup components out of the first download |
+| Trip planner, event definitions, the All Maps pages, lodash | not started |
 
-**Next:** after #1573 merges, one `development` build to dev and the full suite there, covering all of the
-above and the Ring Day fix ([#1571](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1571)) together. Then the dev tag, and the release.
+### GIS Day
+
+- **Its production site is on an Angular 15 build**, so its next deploy carries every upgrade and refactor
+  of 2026 at once. [#1611](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1611) (high) is the test pass on its dev site first.
+- **Running the whole GIS Day stack locally** needs a development database and a development Auth0
+  application ([#1511](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1511), [#1522](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1522)).
 
 **What Angular's standalone migration gets wrong here, so check for it next time:**
 
@@ -109,7 +95,7 @@ above and the Ring Day fix ([#1571](https://github.com/TamuGeoInnovation/Tamu.Ge
 | 10b | Faster smoke suite ([#1426](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1426)) | merged ([#1477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1477)): a release check runs one framing route per map, 6 workers, the ArcGIS library cached; 22 min 44 s on a workstation against about 1 h 50 min. Further cuts: [#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473) (bus test), [#1427](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1427) (maps) |
 | 11 | `esri-loader` to `@arcgis/core`, 134 files | last |
 | â€” | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | VeoRide retired ([#1404](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1404)); the old Ring Day app is removed ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)); CPA is retired ([#1458](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1458); restore it from the tag `cpa-last` if it is ever needed); the unused projects are listed in the cloud's Batch B report on `cloud-mailbox`, and the Cypress `*-e2e` projects are deleted, with Cypress itself ([#1545](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1545), part of [#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457)) |
-| â€” | After Angular 22 | standalone ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)), `@defer` ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454)), signals and OnPush ([#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455)), zoneless ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)), Vitest ([#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)), accessibility rules back on ([#1474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1474)); in that order after the cleanups. Ubuntu pins before 19 October: [#1407](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1407) (GitHub), [#1468](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1468) (Azure) |
+| â€” | After Angular 22 | standalone ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)) and no NgModules ([#1569](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1569)): done, in the 11 October release. `inject()` ([#1453](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1453)): done, same release. Next, in order: `@defer` and a smaller first load ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454), started 11 October), signals and OnPush ([#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455)), zoneless ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)), Vitest ([#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)), accessibility rules back on ([#1474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1474)) |
 
 **A local `nx affected` on a `package.json` change fails on projects that already fail on
 `development`.** Every project counts as affected. Measured on 2 October: `cpa-angular` (since
@@ -121,8 +107,8 @@ the lock file with a clean `npm ci` before pushing (CLAUDE.md, [#1347](https://g
 
 ### Also open
 
-- **Pin CI runners to `ubuntu-24.04`** before `ubuntu-latest` moves to Ubuntu 26 on 19 October
-  ([#1407](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1407), low).
+- **The standalone GIS Day competitions app and API are to be removed** ([#1609](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1609), low): the main GIS Day
+  site and API serve everything they did, and nothing builds or deploys them.
 - **`gisday-competitions-angular`'s page never answers when served locally** ([#1410](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1410), low);
   CI and Azure exclude the app.
 - **Clicking a Ring Day popup throws in `TripPlannerConnectionService.connection`**, on production too
