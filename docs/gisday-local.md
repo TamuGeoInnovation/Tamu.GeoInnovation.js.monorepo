@@ -65,12 +65,15 @@ scripts/gisday-local.sh restore gisday-scrubbed-<date>.bak  # a few seconds
 the log. The scrubbed backup restores like any other and is the one to hand to a new developer.
 
 What it keeps: seasons, events, places, organizations, sponsors, tags, classes, the competition
-forms and answers, and speakers' names and profiles. Sign-ups and check-ins keep their counts.
+forms and answers, and the names and profiles of speakers who are on an event or are organizers,
+because the site publishes those. Sign-ups and check-ins keep their counts.
 
 What it replaces:
 
 - every account id, with a made-up one that stays the same wherever that account appears;
 - every email address, and the contact names of organizations and sponsors;
+- the name and profile of everyone in `speakers` who was never on an event (most of the table);
+- every uploaded logo and photograph, with one placeholder image that the front end ships;
 - competition entries' titles, abstracts, messages, links and participant lists;
 - meeting links, ids, phone numbers and passwords;
 - participants' photographs, each with a one-pixel image, which is nearly all of the size;
@@ -103,8 +106,8 @@ serve configuration adds `apps/gisday-angular/proxy.local.json`, which sends tho
 
 What does not, yet:
 
-- **Uploaded images** (sponsor logos, speaker photos). They live on the production cluster's volume,
-  not in the database.
+- **Real logos and photographs.** They are files on the production site, not rows in the database. A
+  scrubbed copy shows one placeholder image in their place; a copy of production shows broken images.
 - **Email**, deliberately: every `MAILROOM_` value is blank.
 
 ## Things that look broken

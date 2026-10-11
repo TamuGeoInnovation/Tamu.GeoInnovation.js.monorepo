@@ -20,7 +20,7 @@ DECLARE @salt nvarchar(36) = CONVERT(nvarchar(36), NEWID());
 -- `updated` and `created` are kept everywhere and are not listed.
 DECLARE @kept TABLE (tbl sysname, cols nvarchar(max));
 INSERT @kept VALUES
-  (N'assets', N'guid,name,path,type,organizationGuid,speakerGuid,sponsorGuid,placesGuid'),
+  (N'assets', N'guid,type,organizationGuid,speakerGuid,sponsorGuid,placesGuid'),
   (N'checkins', N'guid,eventGuid'),
   (N'classes', N'guid,title,code,seasonGuid,number,section'),
   (N'course_credits', N'guid,eventGuid,classGuid'),
@@ -35,7 +35,7 @@ INSERT @kept VALUES
   (N'events', N'guid,name,active,startTime,endTime,observedAttendeeStart,observedAttendeeEnd,capacity,resources,requiresRsvp,qrCode,mode,eventType,presentationType,isAcceptingRsvps,isBringYourOwnDevice,requirements,dayGuid,broadcastGuid,locationGuid,seasonGuid'),
   (N'initial_survey_questions', N'guid,questionText,questionOptions,questionTypeGuid'),
   (N'initial_survey_responses', N'guid,seasonGuid,questionGuid'),
-  (N'organizations', N'guid,website,seasonGuid,acronym,text'),
+  (N'organizations', N'guid,website,seasonGuid,acronym'),
   (N'place_links', N'guid,label,url,placeGuid'),
   (N'places', N'guid,name,address,city,state,zip,website,seasonGuid,visibilitySettings'),
   (N'question_types', N'guid,type'),
@@ -43,8 +43,7 @@ INSERT @kept VALUES
   (N'seasons', N'guid,year,active'),
   (N'seasons_days', N'guid,date,seasonGuid'),
   (N'speaker_roles', N'guid,name'),
-  -- Names and profiles are kept for everyone in `speakers` (the maintainer's decision, 11 October 2026).
-  (N'speakers', N'guid,firstName,lastName,isActive,graduationYear,degree,program,affiliation,socialMedia,seasonGuid,organizationGuid,universityGuid,isOrganizer'),
+  (N'speakers', N'guid,isActive,seasonGuid,organizationGuid,universityGuid,isOrganizer'),
   (N'sponsors', N'guid,name,website,sponsorshipLevel,seasonGuid,description'),
   (N'submission_types', N'guid,type'),
   (N'submissions', N'guid,submissionType,seasonGuid,reviewed,acceptance,format,classificationType'),
@@ -89,9 +88,27 @@ DECLARE @email nvarchar(50) = N'%[a-z0-9]@[a-z0-9]%.[a-z]%';
 INSERT @scrubbed VALUES
   (N'events', N'abstract', N'CASE WHEN {c} LIKE N''' + @email + N''' THEN N''The abstract is removed from this copy: it held an email address.'' ELSE {c} END'),
   (N'organizations', N'name', N'CASE WHEN {c} LIKE N''' + @email + N''' THEN N''Organization '' + LOWER(LEFT(guid, 8)) ELSE {c} END'),
-  (N'speakers', N'description', N'CASE WHEN {c} LIKE N''' + @email + N''' THEN N''The profile is removed from this copy: it held an email address.'' ELSE {c} END');
+  (N'organizations', N'text', N'CASE WHEN {c} LIKE N''' + @email + N''' THEN NULL ELSE {c} END');
 
+-- A speaker on an event, or an organizer, is shown on the public site, so the name and profile are
+-- kept. Every other row in `speakers` is a participant who was never published.
+DECLARE @public nvarchar(max) = N'(isOrganizer = 1 OR guid IN (SELECT speakersGuid FROM dbo.event_speakers))';
 INSERT @scrubbed VALUES
+  (N'speakers', N'firstName', N'CASE WHEN ' + @public + N' THEN {c} ELSE N''Participant'' END'),
+  (N'speakers', N'lastName', N'CASE WHEN ' + @public + N' THEN {c} ELSE LOWER(LEFT(guid, 8)) END'),
+  (N'speakers', N'description', N'CASE WHEN ' + @public + N' AND {c} NOT LIKE N''' + @email + N''' THEN {c} END'),
+  (N'speakers', N'socialMedia', N'CASE WHEN ' + @public + N' THEN {c} END'),
+  (N'speakers', N'graduationYear', N'CASE WHEN ' + @public + N' THEN {c} END'),
+  (N'speakers', N'degree', N'CASE WHEN ' + @public + N' THEN {c} END'),
+  (N'speakers', N'program', N'CASE WHEN ' + @public + N' THEN {c} END'),
+  (N'speakers', N'affiliation', N'CASE WHEN ' + @public + N' THEN {c} END'),
+
+  -- Uploaded logos and photographs are files on the production site, not rows here, and their
+  -- names can be people's names. Every one points at the placeholder the front end ships
+  -- (apps/gisday-angular/src/assets/uploads/images/placeholder.svg, #1625).
+  (N'assets', N'name', N'N''placeholder.svg'''),
+  (N'assets', N'path', N'N''images/placeholder.svg'''),
+
   (N'speakers', N'email', N'N''speaker-'' + LOWER(LEFT(guid, 8)) + N''@example.org'''),
 
   (N'organizations', N'contactFirstName', N'N''Contact'''),
