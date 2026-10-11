@@ -221,6 +221,68 @@ concluding anything, and use `localhost:4200` for everyday work.
 
 Stop it with `docker rm -f aggiemap-dev`.
 
+## Phase 6 - Run GIS Day locally (optional)
+
+**Skip this phase unless the user is going to work on GIS Day.** Nothing else needs it.
+
+`scripts/gisday-local.sh` runs the whole GIS Day site in Docker: SQL Server, Redis, the API
+(`gisday-nest`) and the front end's dev server (`gisday-angular`).
+[`docs/gisday-local.md`](docs/gisday-local.md) explains each part; this phase is only the steps and
+what to expect after each.
+
+### What the user must already have
+
+Three files, in a folder outside the repository (`GISDAY_LOCAL_DIR`, default `C:/TAMU/gisday-local`):
+
+| File | What it is |
+| --- | --- |
+| `local-db.env` | two local passwords, for the database container only |
+| `gisday-api.local.env` | the API's settings, started from `apps/gisday-nest/local.env.sample` |
+| a `.bak` file | the database backup to restore |
+
+```
+ls "${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}"
+```
+
+**Expect:** all three listed. If any is missing, stop and ask the user. For now they come from the
+maintainer. The backup should be a scrubbed copy, with no personal data in it
+([`docs/gisday-local.md`](docs/gisday-local.md#a-copy-with-no-personal-data)); settings with no
+production secrets
+([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623)) and a way
+for a new developer to get the files
+([#1624](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1624)) are still
+open. Do not write these files yourself, do not print their contents, and never copy them into the
+repository.
+
+### The steps
+
+From Git Bash in the repository root, one at a time:
+
+| Step | Expect |
+| --- | --- |
+| `scripts/gisday-local.sh install` | `npm ci` finishes in about two minutes. Phase 3 already filled the same volume, so this is needed only when `package-lock.json` has changed since |
+| `scripts/gisday-local.sh db` | `gisday-db is ready.` within two minutes; the first run also pulls the SQL Server image |
+| `scripts/gisday-local.sh restore <file>.bak` | progress in steps of 10 percent, then `Restored <file>.bak into gisday-nest-eh and mapped gisday_app.` A few seconds for a scrubbed copy. Give the file's name, not its path |
+| `scripts/gisday-local.sh api` | `Successfully ran target build`, then `gisday-api started`. <http://localhost:3333/api/seasons/active> answers 200 |
+| `scripts/gisday-local.sh web` | `gisday-dev started`. The first compile takes several minutes; follow it with `docker logs -f gisday-dev`. Then <http://localhost:4201> shows the site with the restored data |
+| `scripts/gisday-local.sh status` | four containers, all `Up`: `gisday-db`, `gisday-redis`, `gisday-api`, `gisday-dev` |
+
+Then ask the user to sign in at <http://localhost:4201> with their own GIS Day account; you cannot do
+that for them. **Expect:** they return to the site signed in. The port cannot be changed, because
+sign-in only returns to `localhost:4201`. The accounts are the real ones, so nobody edits users from
+a local copy.
+
+`scripts/gisday-local.sh stop` removes the containers and keeps the database, so `restore` is needed
+only once. To change the schema, follow [`docs/gisday-migrations.md`](docs/gisday-migrations.md).
+
+### Known not to work
+
+- **Uploaded images** (sponsor logos, speaker photos) are missing: they are not in the database
+  ([#1625](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1625)).
+- **Email** is never sent, deliberately.
+- [`docs/gisday-local.md`](docs/gisday-local.md#things-that-look-broken) lists errors that look like
+  faults and are not.
+
 ## Known false alarms
 
 Check this list before reporting any of the following as a problem.
