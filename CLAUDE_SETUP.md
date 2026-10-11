@@ -245,11 +245,11 @@ ls "${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}"
 ```
 
 **Expect:** all three listed. If any is missing, stop and ask the user. For now they come from the
-maintainer; a copy with no personal data
-([#1622](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1622)), settings
-with no production secrets
+maintainer. The backup should be a scrubbed copy, with no personal data in it
+([`docs/gisday-local.md`](docs/gisday-local.md#a-copy-with-no-personal-data)); settings with no
+production secrets
 ([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623)) and a way
-for a new developer to get them
+for a new developer to get the files
 ([#1624](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1624)) are still
 open. Do not write these files yourself, do not print their contents, and never copy them into the
 repository.
@@ -262,7 +262,7 @@ From Git Bash in the repository root, one at a time:
 | --- | --- |
 | `scripts/gisday-local.sh install` | `npm ci` finishes in about two minutes. Phase 3 already filled the same volume, so this is needed only when `package-lock.json` has changed since |
 | `scripts/gisday-local.sh db` | `gisday-db is ready.` within two minutes; the first run also pulls the SQL Server image |
-| `scripts/gisday-local.sh restore <file>.bak` | progress in steps of 10 percent, then `Restored <file>.bak into gisday-nest-eh and mapped gisday_app.` About 90 seconds for a 9 GB backup. Give the file's name, not its path |
+| `scripts/gisday-local.sh restore <file>.bak` | progress in steps of 10 percent, then `Restored <file>.bak into gisday-nest-eh and mapped gisday_app.` A few seconds for a scrubbed copy. Give the file's name, not its path |
 | `scripts/gisday-local.sh api` | `Successfully ran target build`, then `gisday-api started`. <http://localhost:3333/api/seasons/active> answers 200 |
 | `scripts/gisday-local.sh web` | `gisday-dev started`. The first compile takes several minutes; follow it with `docker logs -f gisday-dev`. Then <http://localhost:4201> shows the site with the restored data |
 | `scripts/gisday-local.sh status` | four containers, all `Up`: `gisday-db`, `gisday-redis`, `gisday-api`, `gisday-dev` |
