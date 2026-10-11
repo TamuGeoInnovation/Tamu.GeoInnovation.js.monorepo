@@ -332,6 +332,46 @@ timed out before passing, and the run took 8 min 56 s. A workstation run at 6 wo
 measurement still to take. In a full release check the bus tests share the workers with everything
 else, so what matters there is that none of them is 8 minutes long.
 
+## Page load
+
+How long the main map takes to appear, and what it downloads first ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454)). Measured with
+[`tools/load-timing`](../tools/load-timing/README.md): the median of 5 cold loads, each in a fresh
+browser. "Phone" is a Pixel 7 on Fast 4G with a 4x slower CPU.
+
+### Production, before any change
+
+`prod-2026-10-08`, measured 11 October 2026 on the home machine, quiet.
+
+| | Desktop | Phone |
+| --- | ---: | ---: |
+| First contentful paint | 0.75 s | 5.3 s |
+| Largest contentful paint | 0.82 s | 5.5 s |
+| Map ready | 6.3 s | 19.6 s |
+| Application JavaScript, gzipped | 465 KB, 7 files | 465 KB, 7 files |
+
+### Popups loaded when a popup opens
+
+Two production builds served from this machine and measured alternately, twice each, on 11 October 2026:
+`development` at `0d1fe8b9e` (before) and the popups change (after). Served locally, so the paint times
+are lower than production's, which also crosses the network; compare the columns with each other, not
+with the table above.
+
+| | Before | After | Before, again | After, again |
+| --- | ---: | ---: | ---: | ---: |
+| Application JavaScript, gzipped | 459 KB | 388 KB | 459 KB | 388 KB |
+| Initial JavaScript, raw (from the build) | 1.62 MB | 1.33 MB | | |
+| Phone: first contentful paint | 4.88 s | 4.50 s | 4.87 s | 4.36 s |
+| Phone: largest contentful paint | 5.12 s | 4.74 s | 5.12 s | 4.60 s |
+| Phone: map ready | 15.9 s | 15.6 s | 16.0 s | 15.6 s |
+| Desktop: first contentful paint | 0.28 s | 0.26 s | 0.26 s | 0.25 s |
+| Desktop: map ready | 3.7 s | 3.6 s | 3.8 s | 4.4 s |
+
+**What it shows.** 71 KB less JavaScript in the first download (15%), and the phone paints about 0.4 to
+0.5 seconds sooner (8 to 10%), the same in both pairs. Map-ready time on the phone did not move in a way
+these runs can show: its individual runs fall into two groups, about 12.5 s and about 15.9 s, in both
+builds, so the wait is the GIS services, not the JavaScript. On a desktop nothing changed beyond run to
+run variation.
+
 ## Where the other records are
 
 This file is for runs as they happen. Two existing records keep their own shape and are not folded
