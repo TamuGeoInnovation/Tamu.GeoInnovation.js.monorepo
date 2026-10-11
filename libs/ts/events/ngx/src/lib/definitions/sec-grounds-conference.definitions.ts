@@ -1,10 +1,14 @@
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum SEC_GROUNDS_LAYERS {
   DAY1_POIS = 'sec-grounds-day1-pois',
@@ -253,7 +257,7 @@ export const SecGroundsColdLayerSources: LayerSource[] = [
     id: SEC_GROUNDS_LAYERS.DAY1_POIS,
     title: 'Day 1 Points of Interest',
     url: eventUrl + '/1',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'
@@ -278,7 +282,7 @@ export const SecGroundsColdLayerSources: LayerSource[] = [
     id: SEC_GROUNDS_LAYERS.DAY2_POIS,
     title: 'Day 2 Points of Interest',
     url: eventUrl + '/4',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'
@@ -301,7 +305,7 @@ export const SecGroundsColdLayerSources: LayerSource[] = [
     id: SEC_GROUNDS_LAYERS.DAY3_POIS,
     title: 'Day 3 Points of Interest',
     url: eventUrl + '/7',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'
@@ -332,7 +336,8 @@ export const SecGroundsSpecialEventOptions: SpecialEventOptions = [
   {
     value: 'conference-day',
     label: 'Conference Day',
-    description: 'Select which day of the SEC Grounds Conference you are attending to see the relevant routes and points of interest.',
+    description:
+      'Select which day of the SEC Grounds Conference you are attending to see the relevant routes and points of interest.',
     shortDescription: 'Conference Day',
     choices: CONFERENCE_DAYS.map(({ value, label }) => ({ value, label })),
     effects: {

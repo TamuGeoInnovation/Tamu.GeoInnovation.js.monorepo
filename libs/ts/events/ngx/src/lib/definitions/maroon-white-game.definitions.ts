@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum MAROON_WHITE_GAME_LAYERS {
   ACCESSIBLE_PREPAID_PARKING = 'maroon-white-game-accessible-prepaid-parking',
@@ -40,7 +40,7 @@ export const MaroonWhiteGameColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: MaroonWhiteGameDefinitions.EVENT_PARKING_LOTS.id,
     url: MaroonWhiteGameDefinitions.EVENT_PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: '{attributes.description}'
@@ -54,13 +54,13 @@ export const MaroonWhiteGameColdLayerSources: LayerSource[] = [
     // }
     native: {
       outFields: ['*']
-} as unknown as FeatureNative
+    } as unknown as FeatureNative
   },
   {
     type: 'feature',
     id: MaroonWhiteGameDefinitions.ACCESSIBLE_PREPAID_PARKING.id,
     url: MaroonWhiteGameDefinitions.ACCESSIBLE_PREPAID_PARKING.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: '{attributes.description}'
@@ -74,7 +74,7 @@ export const MaroonWhiteGameColdLayerSources: LayerSource[] = [
     // }
     native: {
       outFields: ['*']
-} as unknown as FeatureNative
+    } as unknown as FeatureNative
   }
 ];
 

@@ -3,13 +3,12 @@ import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import esri = __esri;
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum T_CAMP_LAYERS {
   CAMPUS_LOCATIONS = 't-camp-campus-locations',
@@ -23,7 +22,7 @@ const tCampUrl = Connections.tCampUrl;
 // Every feature in the service carries a rich, pre-formatted HTML `description` along with a `name`,
 // so a single name/description popup works for all four layers.
 const popup = {
-  popupComponent: MarkdownPopupComponent,
+  popupComponent: EventPopups.MarkdownPopupComponent,
   popupData: {
     name: { field: 'name' },
     description: { field: 'description' }

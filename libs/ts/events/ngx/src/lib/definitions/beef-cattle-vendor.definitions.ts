@@ -1,13 +1,12 @@
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum BEEF_CATTLE_LAYERS {
   ZONES = 'beef-cattle-zones',
@@ -50,7 +49,7 @@ export const BeefCattleColdLayerSources: LayerSource[] = [
     url: `${beefCattleUrl}/2`,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: { field: 'Type' },
       description: { field: 'description' }
@@ -66,7 +65,7 @@ export const BeefCattleColdLayerSources: LayerSource[] = [
     url: `${beefCattleUrl}/3`,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'No Parking',
       description: { field: 'description' }
@@ -88,7 +87,7 @@ export const BeefCattleColdLayerSources: LayerSource[] = [
     url: `${beefCattleUrl}/1`,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: { field: 'name' },
       description: { field: 'description' }
@@ -102,7 +101,7 @@ export const BeefCattleColdLayerSources: LayerSource[] = [
     url: `${beefCattleUrl}/0`,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'Alert',
       description: { field: 'description' }

@@ -1,12 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum MOVE_OUT_LAYERS {
   NO_PARKING = 'No Parking Areas',
@@ -44,7 +44,7 @@ export const MoveOutColdLayerSources: LayerSource[] = [
     url: MoveOutDefinitions.NO_PARKING.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'Type',
@@ -65,7 +65,7 @@ export const MoveOutColdLayerSources: LayerSource[] = [
     url: MoveOutDefinitions.STREET_PARKING.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'A_Name',
@@ -86,7 +86,7 @@ export const MoveOutColdLayerSources: LayerSource[] = [
     url: MoveOutDefinitions.MOVE_OUT_LOTS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.LotName',

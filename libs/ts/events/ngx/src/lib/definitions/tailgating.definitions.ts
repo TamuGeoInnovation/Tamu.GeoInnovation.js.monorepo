@@ -2,7 +2,6 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { getDefaultGisHosts, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -11,6 +10,7 @@ import {
 import { FootballParkingConfiguration } from './football-parking.definitions';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 /**
  * The tailgating zones are a hosted feature layer in TAMU's ArcGIS Online organization, maintained
@@ -105,7 +105,7 @@ export const TailgatingColdLayerSources: LayerSource[] = [
     id: TAILGATING_LAYERS.WEST_CAMPUS,
     title: 'West Campus Tailgating',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.WEST_CAMPUS}`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: zonePopupData,
     listMode: 'show',
     visible: true,
@@ -118,7 +118,7 @@ export const TailgatingColdLayerSources: LayerSource[] = [
     id: TAILGATING_LAYERS.AGGIE_PARK,
     title: 'Aggie Park Tailgating',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.AGGIE_PARK}`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: zonePopupData,
     listMode: 'show',
     visible: true,
@@ -131,7 +131,7 @@ export const TailgatingColdLayerSources: LayerSource[] = [
     id: TAILGATING_LAYERS.CONSTRUCTION,
     title: 'Construction',
     url: CONSTRUCTION_URL,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: constructionPopupData,
     // Lets later template strings read the aliased date fields resolved above them.
     popupDataResolutionStrategy: 'cumulative',
@@ -139,7 +139,7 @@ export const TailgatingColdLayerSources: LayerSource[] = [
     visible: true,
     native: {
       outFields: ['*'],
-      definitionExpression: `number IN (${TAILGATING_CONSTRUCTION_PROJECTS.map((n) => `'${n}'`).join(', ')})`,
+      definitionExpression: `number IN (${TAILGATING_CONSTRUCTION_PROJECTS.map((n) => `'${n}'`).join(', ')})`
     }
   } as unknown as LayerSource,
   {
@@ -147,7 +147,7 @@ export const TailgatingColdLayerSources: LayerSource[] = [
     id: TAILGATING_LAYERS.SIMPSON_TENTS,
     title: 'Simpson Drill Field Tents',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.SIMPSON_TENTS}`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: tentPopupData,
     listMode: 'show',
     visible: true,
@@ -160,7 +160,7 @@ export const TailgatingColdLayerSources: LayerSource[] = [
     id: TAILGATING_LAYERS.TENTS,
     title: 'Aggie Park Tents',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.TENTS}`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: tentPopupData,
     listMode: 'show',
     visible: true,
@@ -251,6 +251,16 @@ export const TailgatingTs: AggiemapCustomMapConfiguration = {
     mapType: 'athletics',
     // Prototype: registered on development hosts only (see `DevelopmentOnlyEventDefinitions`).
     labels: ['Beta'],
-    keywords: ['tailgating', 'tailgate', 'football', 'gameday', 'aggie park', 'west campus', 'reed arena', 'ucen', 'revel xp']
+    keywords: [
+      'tailgating',
+      'tailgate',
+      'football',
+      'gameday',
+      'aggie park',
+      'west campus',
+      'reed arena',
+      'ucen',
+      'revel xp'
+    ]
   }
 };

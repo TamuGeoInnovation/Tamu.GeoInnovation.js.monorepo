@@ -1,4 +1,4 @@
-import { Injectable, InjectionToken, Type, inject } from '@angular/core';
+import { Injectable, InjectionToken, inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, from, Observable, of, BehaviorSubject, timer } from 'rxjs';
@@ -9,7 +9,12 @@ import { v4 as guid } from 'uuid';
 import { Angulartics2 } from 'angulartics2';
 
 import { Point as LatLon } from '@tamu-gisc/common/types';
-import { EsriMapService, MapServiceInstance, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import {
+  EsriMapService,
+  MapServiceInstance,
+  EsriModuleProviderService,
+  PopupComponentReference
+} from '@tamu-gisc/maps/esri';
 import { dateForDateTimeString } from '@tamu-gisc/common/utils/date';
 import { relativeDistance } from '@tamu-gisc/common/utils/geometry/generic';
 
@@ -25,7 +30,7 @@ const ROUTE_NUMBER_REGEX = /on ([0-9\-A-Za-z]+)$/;
  * (it would create a circular dependency), so the concrete component is supplied at the application
  * root via this token. When not provided, bus features simply have no popup.
  */
-export const BUS_STOP_POPUP_COMPONENT = new InjectionToken<Type<unknown>>('BUS_STOP_POPUP_COMPONENT');
+export const BUS_STOP_POPUP_COMPONENT = new InjectionToken<PopupComponentReference>('BUS_STOP_POPUP_COMPONENT');
 
 @Injectable({ providedIn: 'root' })
 export class BusService {
@@ -34,7 +39,7 @@ export class BusService {
   private mapService = inject(EsriMapService);
   private location = inject(Location);
   private readonly analytics = inject(Angulartics2);
-  private busStopPopupComponent = inject<Type<unknown>>(BUS_STOP_POPUP_COMPONENT, { optional: true });
+  private busStopPopupComponent = inject<PopupComponentReference>(BUS_STOP_POPUP_COMPONENT, { optional: true });
 
   // Legacy Transportation Services API. It is no longer available; the methods still referencing it
   // (waypoints/stops/timetable/live-bus, used only by the currently-disabled trip-planner bus mode)
@@ -672,7 +677,7 @@ export class BusService {
         // Attach the popup component (if the app provided one) so clicking a stop/route graphic on this
         // layer is resolved to a rendered popup by the popup service (which reads `layer.popupComponent`).
         if (this.busStopPopupComponent) {
-          (layer as unknown as { popupComponent: Type<unknown> }).popupComponent = this.busStopPopupComponent;
+          (layer as unknown as { popupComponent: PopupComponentReference }).popupComponent = this.busStopPopupComponent;
         }
 
         this._map.add(layer);

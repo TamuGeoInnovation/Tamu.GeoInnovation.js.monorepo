@@ -1,4 +1,4 @@
-import { Injectable, Component, Type, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, BehaviorSubject, lastValueFrom } from 'rxjs';
@@ -18,6 +18,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriModuleProviderService } from '../module-provider/module-provider.service';
 import { LayerSourcesService } from '../layer-sources/layer-sources.service';
 import { registerMapProbe } from './map-probe';
+import { PopupComponentReference } from '../../popup-reference';
 import {
   declaresOwnRenderer,
   PortalItemData,
@@ -1017,7 +1018,7 @@ export class EsriMapService {
   public getFeatureListFromURL(): {
     dataset: string;
     identifiersList: (string | number)[];
-    popupComponent?: Type<Component>;
+    popupComponent?: PopupComponentReference;
   } | null {
     const parsedRoute = this.router.parseUrl(this.router.url);
     const queryParameters = parsedRoute.queryParams;
@@ -1300,7 +1301,7 @@ interface SelectFeaturesProperties {
    * in the environments file. In those cases, specifying a popup component allows proper
    * or conditional rendering.
    */
-  popupComponent?: Type<Component>;
+  popupComponent?: PopupComponentReference;
 
   /**
    * Optional explicit zoom level to use instead of computing one from geometry extent.
@@ -1322,7 +1323,7 @@ export interface HitTestSnapshot {
    * in the environments file. In those cases, specifying a popup component allows proper or
    *  conditional rendering.
    */
-  popupComponent?: Type<Component>;
+  popupComponent?: PopupComponentReference;
 }
 
 export interface MapViewProperties {

@@ -1,12 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum MENS_BASKETBALL_LAYERS {
   GATES = 'mens-basketball-gates',
@@ -53,7 +53,7 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: MensBasketball_Definitions.SYMBOLS.id,
     url: MensBasketball_Definitions.SYMBOLS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.type}',
       description: `{attributes.event}`
@@ -69,7 +69,7 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: MensBasketball_Definitions.PARKING.id,
     url: MensBasketball_Definitions.PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.lottype} - {attributes.lotnum}',
       description: `{attributes.description}`

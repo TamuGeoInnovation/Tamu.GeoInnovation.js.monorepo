@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum KICKOFF_150TH_LAYERS {
   EVENT_LOCATIONS = '150th-kickoff-event-locations',
@@ -44,7 +44,7 @@ export const Kickoff150thLayerSources: LayerSource[] = [
     type: 'feature',
     id: Kickoff150thDefinitions.EVENT_LOCATIONS.id,
     url: Kickoff150thDefinitions.EVENT_LOCATIONS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: `{attributes.description}`
@@ -59,7 +59,7 @@ export const Kickoff150thLayerSources: LayerSource[] = [
       height: 30
     },
     native: {
-      outFields: ['*'],
+      outFields: ['*']
     }
   } as unknown as LayerSource,
   {
@@ -69,14 +69,14 @@ export const Kickoff150thLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*'],
+      outFields: ['*']
     }
   },
   {
     type: 'feature',
     id: Kickoff150thDefinitions.PARKING.id,
     url: Kickoff150thDefinitions.PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: `{attributes.description}`
@@ -84,7 +84,7 @@ export const Kickoff150thLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*'],
+      outFields: ['*']
     }
   }
 ];

@@ -1,13 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum KICKOFF_AT_KYLE_LAYERS {
   PARKING = 'kickoff-at-kyle-parking'
@@ -34,7 +33,7 @@ export const KickoffAtKyleColdLayerSources: LayerSource[] = [
     // is unpublished (gis.it.tamu.edu/arcgis/rest/services/Routing returns no services) and is
     // being rewritten with no ETA, so the directions variant would ship a button that cannot work.
     // See #1003, which covers hiding the directions UI everywhere else.
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     // Lots carry `name` (lot numbers such as "97", "100a") and `description` ("Free Event Parking",
     // "Reserved Event Parking").
     popupData: {

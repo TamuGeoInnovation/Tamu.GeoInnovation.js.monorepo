@@ -1,11 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum GIS_DAY_LAYERS {
   MSC_RUDDER = 'gis-day-msc-rudder',
@@ -24,7 +24,7 @@ export const GisDayLayerSources: LayerSource[] = [
     id: GIS_DAY_LAYERS.MSC_RUDDER,
     title: 'MSC & Rudder Buildings',
     url: MSC_RUDDER_URL,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.BldgName',
       description: 'attributes.EventInfo'
@@ -40,7 +40,7 @@ export const GisDayLayerSources: LayerSource[] = [
     id: GIS_DAY_LAYERS.GARAGES,
     title: 'GIS Day Parking Garages',
     url: GARAGES_URL,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.BldgName',
       description: 'attributes.ParkingInfo'
@@ -56,7 +56,7 @@ export const GisDayLayerSources: LayerSource[] = [
     id: GIS_DAY_LAYERS.CSG,
     title: 'Gene Stallings Parking Garage',
     url: CSG_URL,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.LotName',
       description: 'attributes.Description'

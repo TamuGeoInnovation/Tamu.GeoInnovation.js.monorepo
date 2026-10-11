@@ -8,7 +8,7 @@ import { notificationStorage, AGGIEMAP_NOTIFICATION_STORE_KEY } from '@tamu-gisc
 import { EVENT_NOTIFICATION_DEFINITIONS, aggiemapRoutes } from '@tamu-gisc/aggiemap/ngx/core';
 import { EventDefinitions } from '@tamu-gisc/ts/events/ngx';
 import { BUS_STOP_POPUP_COMPONENT } from '@tamu-gisc/maps/feature/trip-planner';
-import { BusStopPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
+import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { provideHttpClient, withXhr, withInterceptorsFromDi } from '@angular/common/http';
 import { Angulartics2Module } from 'angulartics2';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
@@ -43,7 +43,7 @@ bootstrapApplication(AppComponent, {
     { provide: EVENT_NOTIFICATION_DEFINITIONS, useValue: EventDefinitions },
     // Supplies the bus map's stop/route popup at the application root (BusService lives in a low-level
     // lib and cannot import the popup component directly — see BUS_STOP_POPUP_COMPONENT).
-    { provide: BUS_STOP_POPUP_COMPONENT, useValue: BusStopPopupComponent },
+    { provide: BUS_STOP_POPUP_COMPONENT, useValue: Popups.BusStopPopupComponent },
     provideHttpClient(withXhr(), withInterceptorsFromDi())
   ]
 }).catch((err) => console.error(err));
