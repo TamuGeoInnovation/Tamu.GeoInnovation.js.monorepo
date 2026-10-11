@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
-# Records each run in its own small file, docs/build-times/runs/<start>-<tool>-<machine>.csv: the header
-# line and one row (#1593). One file per run, so two branches' runs never conflict when they merge;
+# Records a run in its own small file, docs/build-times/runs/<start>-<tool>-<machine>.csv: the header
+# line and one row (#1593), when asked to with BUILD_TIMES_RECORD=1. Not by default: recording every run
+# answered what it was for, how long checks and smoke runs take, and after that a file with every pull
+# request was noise. Turn it on when measuring something, before and after. One file per run, so two branches' runs never conflict when they merge;
 # scripts/run-times-report.sh prints them all as one table. Sourced by scripts/check-in-volume.sh and
 # test/smoke/aggiemap/run-local.sh, which call run_times_now when they start and run_times_record when
 # they finish. Tested by scripts/run-times.test.sh.
 #
-# The file goes into the checkout the script was run from, uncommitted; commit it with your work.
+# The file goes into the checkout the script was run from, uncommitted; commit it with the work it measures.
 # BUILD_TIMES_MACHINE names the machine (e.g. home, office). Set it once on each machine; without it the
 # machine is "unspecified". The hostname is never used: this repository is public.
 
@@ -41,8 +43,10 @@ RUN_TIMES_HEADER='started,machine,tool,ran,exit,summary,seconds,elapsed,setup'
 # Writes a run's file into <folder>, named from <started> (as run_times_now prints it), the tool and the
 # machine: 2026-10-09T192530-check-home.csv, or 2026-10-10T002530utc-check-home.csv for a UTC start.
 #   run_times_record <folder> <started> <tool> <ran> <exit> <summary> <seconds> [<setup>]
-# Never fails and never stops a `set -e` script: a file that cannot be written is a warning on stderr.
+# Writes nothing unless BUILD_TIMES_RECORD is 1. Never fails and never stops a `set -e` script: a file
+# that cannot be written is a warning on stderr.
 run_times_record() {
+  [ "${BUILD_TIMES_RECORD:-}" = 1 ] || return 0
   local file
   if file="$(
     set -eu

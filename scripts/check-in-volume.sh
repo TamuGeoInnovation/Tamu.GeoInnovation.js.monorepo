@@ -33,10 +33,10 @@
 #     was used for all three, so ten projects CI lints were never linted here.
 #     A list of projects runs exactly those projects for every target, with no exclusions.
 #
-# Each run writes a small file into docs/build-times/runs/ in the checkout it was run from
-# (scripts/run-times.sh, #1593): when it started, in US Central, the machine (BUILD_TIMES_MACHINE), what
-# ran, the result, the elapsed time, and the clone and npm ci times when it did those. Commit the file
-# with your work.
+# With BUILD_TIMES_RECORD=1, a run writes a small file into docs/build-times/runs/ in the checkout it was
+# run from (scripts/run-times.sh, #1593): when it started, in US Central, the machine
+# (BUILD_TIMES_MACHINE), what ran, the result, the elapsed time, and the clone and npm ci times when it
+# did those. Use it when measuring something; it is off otherwise.
 #
 # ONLY COMMITTED WORK IS CHECKED. Uncommitted edits in the Windows checkout are not seen; commit first.
 # For the same reason, editing files while a check runs is safe.
