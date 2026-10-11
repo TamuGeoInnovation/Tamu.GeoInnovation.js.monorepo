@@ -32,6 +32,12 @@ result adds its own entry below, in that pull request**, with its before/after s
   provided. GIS Day signs in through Auth0 only, so the page, its service and its guard are gone, and an
   old `/app/login` link now leads to the competition app like any other address
   ([after](../screenshots/gisday-competitions-login/after-local.png)).
+- **Tailgating: a tent inside a highlighted zone opens its own popup** ([#1614](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1614)). A link to a
+  zone, opened in a tab that already had the map open, drew the yellow selection highlight over the zone
+  and its tents, and a click on a tent then opened an empty popup reading ", TX"
+  ([before](../screenshots/tailgating-tent-under-highlight/before-dev.png)). The click now goes to the
+  tent under the highlight ([after](../screenshots/tailgating-tent-under-highlight/after-local.png)).
+  Found on dev before the readable links ([#1574](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1574)) reached production.
 
 ---
 
@@ -50,6 +56,7 @@ dated notes as what was tested, and this table empties.
 | The old Ring Day app removed ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) ([before](../screenshots/ring-day-old-app-removed/before.png), [after](../screenshots/ring-day-old-app-removed/after.png)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps), the dev-only Experimental Applications section; and [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day) | No "Ring Day" card among the experimental applications; the Ring Day event map still opens as before |
 | Football lot status redraws without a reload ([#1587](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1587)); no screenshots, since showing it means editing live lot data | [Football parking](https://dev.aggiemap.tamu.edu/events/gameday-parking) (choose a personal vehicle option if a builder shows) | With the map open, a lot's status changed in the service (to Lot Closed, say) appears on the map within about a minute without reloading. Needs someone with edit rights to the service to change a lot |
 | GIS Day: old competition login page removed ([#1608](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1608)) ([before](../screenshots/gisday-competitions-login/before-production.png), [after](../screenshots/gisday-competitions-login/after-local.png)) | GIS Day's dev site, `/app/login`, on a phone or at phone size. It is not on dev.aggiemap.tamu.edu | The install page in a browser, or the Auth0 sign-in and then the submission page in the installed app; never an empty page with only the bottom tabs |
+| Tailgating: a tent under the zone highlight ([#1614](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1614)) ([before](../screenshots/tailgating-tent-under-highlight/before-dev.png), [after](../screenshots/tailgating-tent-under-highlight/after-local.png)) | Open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d), then in the same tab open [Aggie Spirit Lawn](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-8) | The zone turns yellow; clicking a tent in it opens that tent's popup ("Tent A21"), not a popup reading ", TX"; clicking the zone away from a tent opens the zone's popup |
 
 ---
 
