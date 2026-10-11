@@ -71,6 +71,8 @@ secrets.ts
 .env.prod
 
 # Files in any application assets directory
+# One file under it is tracked anyway, added with `git add -f`: gisday-angular's placeholder.svg, which
+# a scrubbed local database points every uploaded image at (docs/gisday-local.md).
 **/assets/uploads/**
 # Playwright
 /playwright-report/
