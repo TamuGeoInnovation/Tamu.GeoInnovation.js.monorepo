@@ -64,7 +64,7 @@ case "${1:-}" in
       MOVE N'$DB_NAME' TO N'/var/opt/mssql/data/$DB_NAME.mdf',
       MOVE N'${DB_NAME}_log' TO N'/var/opt/mssql/data/${DB_NAME}_log.ldf'"
     # A backup carries the database user but not the server login, so create the login and map it.
-    docker exec --env-file "$LOCAL_DIR/local-db.env" gisday-db sh -c '/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$SA_PASSWORD" -C -b -v APP_PASSWORD="$GISDAY_APP_PASSWORD" -i /dev/stdin' <<SQL
+    docker exec -i --env-file "$LOCAL_DIR/local-db.env" gisday-db sh -c '/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$SA_PASSWORD" -C -b -v APP_PASSWORD="$GISDAY_APP_PASSWORD" -i /dev/stdin' <<SQL
 IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'gisday_app')
   CREATE LOGIN gisday_app WITH PASSWORD = '\$(APP_PASSWORD)', CHECK_POLICY = OFF;
 GO
