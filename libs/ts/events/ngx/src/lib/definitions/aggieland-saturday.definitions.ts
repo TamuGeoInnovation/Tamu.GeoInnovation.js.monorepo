@@ -6,10 +6,9 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum AGGIELAND_SATURDAY_LAYERS {
   BUS_STOPS = 'aggieland-saturday-bus-stops',
@@ -52,7 +51,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: AggielandSaturdayEventDefinitions.EVENT_PARKING.id,
     url: AggielandSaturdayEventDefinitions.EVENT_PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Event} Parking',
       description: 'Type: {attributes.Type}\nLot Name: {attributes.name}\nNotes: {attributes.Notes}'
@@ -67,7 +66,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: AggielandSaturdayEventDefinitions.EVENT_BUS_STOPS.id,
     url: AggielandSaturdayEventDefinitions.EVENT_BUS_STOPS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'Aggieland Saturday Bus Stop ({attributes.StopType})',
       description: 'Stop Name: {attributes.StopName}\nRoute Number: {attributes.Route}'
@@ -93,7 +92,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     id: AggielandSaturdayEventDefinitions.EVENT_SPECIAL_POIS.id,
     title: AggielandSaturdayEventDefinitions.EVENT_SPECIAL_POIS.name,
     url: AggielandSaturdayEventDefinitions.EVENT_SPECIAL_POIS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'Aggieland Saturday Points of Interest',
       description: 'Type: {attributes.Type}'

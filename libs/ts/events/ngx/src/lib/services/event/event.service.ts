@@ -1,9 +1,14 @@
-import { Component, Injectable, Type, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { delay } from 'rxjs';
 
 import deepmerge from 'deepmerge';
 
-import { EsriMapService, EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
+import {
+  EsriMapService,
+  EsriModuleProviderService,
+  LayerSourcesService,
+  PopupComponentReference
+} from '@tamu-gisc/maps/esri';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -690,8 +695,8 @@ export class EventService {
     return false;
   }
 
-  private getPopupComponent(source: LayerSource): Type<Component> | undefined {
-    return source.popupComponent as Type<Component> | undefined;
+  private getPopupComponent(source: LayerSource): PopupComponentReference | undefined {
+    return source.popupComponent as PopupComponentReference | undefined;
   }
 
   /**

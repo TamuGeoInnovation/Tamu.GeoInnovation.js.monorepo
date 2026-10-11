@@ -1,8 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -10,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 
@@ -76,7 +75,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
     id: GraduationEventDefinitions.GRADUATION_ACCESSIBLE_PARKING.id,
     title: GraduationEventDefinitions.GRADUATION_ACCESSIBLE_PARKING.name,
     url: GraduationEventDefinitions.GRADUATION_ACCESSIBLE_PARKING.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: '{attributes.description}'
@@ -93,7 +92,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
     id: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.id,
     title: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.name,
     url: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'
@@ -102,7 +101,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 12,
     native: {
-      outFields: ['*'],
+      outFields: ['*']
     } as unknown as FeatureNative
   },
   {
@@ -110,7 +109,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
     id: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.id,
     title: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.name,
     url: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: '{attributes.description}'
@@ -129,7 +128,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
     id: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.id,
     title: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.name,
     url: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'Road Closed',
       description: '{attributes.description}'
@@ -140,7 +139,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       definitionExpression: `Type = 'Closure'`
-} as unknown as FeatureNative
+    } as unknown as FeatureNative
   }
 ];
 

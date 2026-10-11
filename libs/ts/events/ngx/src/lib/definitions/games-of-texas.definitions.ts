@@ -3,13 +3,12 @@ import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import esri = __esri;
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 // Flat display map (no builder/sessions). The published service is four feature layers, drawn
 // points-on-top: Points of Interest (0), Routes (1), Road Closures (2), Parking (3).
@@ -34,7 +33,7 @@ const ROAD_CLOSED_LEGEND_SVG =
   "<rect x='0.5' y='0.5' width='21' height='21' fill='url(#h)' stroke='#E60000' stroke-width='1'/></svg>";
 
 const popup = (name: string, description: string) => ({
-  popupComponent: MarkdownPopupComponent,
+  popupComponent: EventPopups.MarkdownPopupComponent,
   popupData: {
     name: { field: name },
     description: { field: description }

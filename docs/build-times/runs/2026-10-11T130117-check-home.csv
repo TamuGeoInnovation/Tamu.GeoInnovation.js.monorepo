@@ -1,0 +1,2 @@
+started,machine,tool,ran,exit,summary,seconds,elapsed,setup
+2026-10-11 13:01:17 CDT,home,check,perf/1454-lazy-popups affected,0,"lint for 34 projects; test, build for 31 projects and 3 tasks they depend on",123,0:02:03,

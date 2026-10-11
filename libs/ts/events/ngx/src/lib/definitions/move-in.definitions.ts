@@ -1,14 +1,13 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   ConversionDeconflictingStrategy,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum MOVE_IN_LAYERS {
   RESIDENCE_HALL = 'Residence Hall',
@@ -61,7 +60,7 @@ const AREA_VIEW: Record<CampusArea, { center: [number, number]; zoom: number }> 
 };
 
 const markdownPopup = {
-  popupComponent: MarkdownPopupComponent
+  popupComponent: EventPopups.MarkdownPopupComponent
 };
 
 const poiPopup = {

@@ -6,7 +6,7 @@ import {
   AggiemapCustomMapConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum RETIREE_PARKING_LAYERS {
   RETIREE_PARKING_LOTS = 'Retiree Parking Lots'
@@ -30,7 +30,7 @@ export const RetireeParkingColdLayerSources: LayerSource[] = [
     url: RetireeParkingDefinitions.RETIREE_PARKING_LOTS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',

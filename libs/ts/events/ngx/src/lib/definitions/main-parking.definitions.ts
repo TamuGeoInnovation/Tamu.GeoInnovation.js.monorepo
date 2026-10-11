@@ -1,12 +1,15 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { ConstructionPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum TS_MAIN_PARKING_LAYERS {
   ROUTE_STOP_START_POINTS = 'Route Stop/Start Points',
@@ -86,7 +89,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     url: TsMainParkingDefinitions.CAMPUS_STOPS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
         field: 'StopName',
@@ -106,9 +109,9 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     url: TsMainParkingDefinitions.CONSTRUCTION.url,
     visible: true,
     listMode: 'show',
-    popupComponent: ConstructionPopupComponent,
+    popupComponent: Popups.ConstructionPopupComponent,
     native: {
-      outFields: ['*'],
+      outFields: ['*']
       // Override the hosted service's own per-owner unique-value renderer so this map
       // keeps showing a single, undifferentiated orange/red hatch for all construction.
     } as unknown as FeatureNative
@@ -120,7 +123,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     url: TsMainParkingDefinitions.VISITOR_KIOSKS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     native: {
       outFields: ['*']
     } as unknown as FeatureNative
@@ -133,7 +136,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
 
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupDataResolutionStrategy: 'cumulative',
     popupData: {
       lotName: { field: 'GIS.TS.ParkingLots.Name', collapsed: true },

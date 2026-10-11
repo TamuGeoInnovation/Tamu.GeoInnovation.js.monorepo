@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum AGGIE_FAMILY_PARADE_LAYERS {
   POIS = 'aggie-family-parade-pois',
@@ -38,7 +38,7 @@ export const AggieFamilyParadeLayerSources: LayerSource[] = [
     id: AggieFamilyParadeDefinitions.POIS.id,
     title: AggieFamilyParadeDefinitions.POIS.name,
     url: AggieFamilyParadeDefinitions.POIS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: `{attributes.description}`
@@ -62,7 +62,7 @@ export const AggieFamilyParadeLayerSources: LayerSource[] = [
     type: 'feature',
     id: AggieFamilyParadeDefinitions.ROUTE.id,
     url: AggieFamilyParadeDefinitions.ROUTE.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: `{attributes.description}`

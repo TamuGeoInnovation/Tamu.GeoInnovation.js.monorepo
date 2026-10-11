@@ -1,13 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum ARGENTINA_VS_HONDURAS_LAYERS {
   EVENT_SHUTTLES_GROUP = 'argentina-vs-honduras-event-shuttles-group',
@@ -72,7 +71,7 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
         id: ArgentinaVsHondurasEventDefinitions.SHUTTLE_ROUTES.id,
         title: ArgentinaVsHondurasEventDefinitions.SHUTTLE_ROUTES.name,
         url: ArgentinaVsHondurasEventDefinitions.SHUTTLE_ROUTES.url,
-        popupComponent: MarkdownPopupComponent,
+        popupComponent: EventPopups.MarkdownPopupComponent,
         popupData: {
           name: { field: 'name' },
           description: { field: 'description' }
@@ -88,7 +87,7 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
         id: ArgentinaVsHondurasEventDefinitions.CAMPUS_SHUTTLE_STOPS.id,
         title: ArgentinaVsHondurasEventDefinitions.CAMPUS_SHUTTLE_STOPS.name,
         url: ArgentinaVsHondurasEventDefinitions.CAMPUS_SHUTTLE_STOPS.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         popupData: {
           name: { field: 'name' },
           description: { field: 'description' }
@@ -97,7 +96,7 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
         listMode: 'show',
         native: {
           outFields: ['*']
-        },
+        }
       }
     ],
     native: {
@@ -117,7 +116,7 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
         id: ArgentinaVsHondurasEventDefinitions.EVENT_PARKING.id,
         title: ArgentinaVsHondurasEventDefinitions.EVENT_PARKING.name,
         url: ArgentinaVsHondurasEventDefinitions.EVENT_PARKING.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         popupData: {
           name: { field: 'name' },
           description: { field: 'description' }
@@ -140,7 +139,7 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
         id: ArgentinaVsHondurasEventDefinitions.PARKING_AND_RIDESHARE.id,
         title: ArgentinaVsHondurasEventDefinitions.PARKING_AND_RIDESHARE.name,
         url: ArgentinaVsHondurasEventDefinitions.PARKING_AND_RIDESHARE.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         popupData: {
           name: { field: 'name' },
           description: { field: 'description' }
@@ -170,7 +169,8 @@ export const ArgentinaVsHondurasConfiguration: EventConfiguration = {
   name: 'Road to 26: Argentina vs. Honduras',
   applicationName: 'Road to 26: Argentina vs. Honduras Transportation Map',
   shortApplicationName: 'Road to 26: Argentina vs. Honduras Map',
-  introductionText: 'Get the best transportation and parking information for the Road to 26: Argentina vs. Honduras soccer match.',
+  introductionText:
+    'Get the best transportation and parking information for the Road to 26: Argentina vs. Honduras soccer match.',
   eventDates: ['2026-06-06'],
   mapCenter: [-96.34454, 30.60338],
   zoom: 16,

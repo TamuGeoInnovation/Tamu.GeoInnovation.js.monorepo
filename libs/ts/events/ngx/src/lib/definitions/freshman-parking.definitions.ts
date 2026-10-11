@@ -1,13 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum FRESHMAN_SELECTABLE_LAYERS {
   RESIDENT_STUDENT_PRIORITY = 'Resident Student Priority',
@@ -41,7 +40,7 @@ export const FreshmanSelectableColdLayerSources: LayerSource[] = [
     url: FreshmanSelectableDefinitions.RESIDENT_STUDENT_PRIORITY.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',
@@ -55,7 +54,7 @@ export const FreshmanSelectableColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       definitionExpression: `"GIS.TS.Lot_Use.Resident_Lot" = 1 AND "GIS.TS.Lot_Use.FreshmanSele_Lot" = 1`
-}
+    }
   },
   {
     type: 'feature',
@@ -64,7 +63,7 @@ export const FreshmanSelectableColdLayerSources: LayerSource[] = [
     url: FreshmanSelectableDefinitions.FRESHMAN_STUDENT_SELECTABLE.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',
@@ -78,7 +77,7 @@ export const FreshmanSelectableColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       definitionExpression: `"GIS.TS.Lot_Use.Resident_Lot" = 0 AND "GIS.TS.Lot_Use.FreshmanSele_Lot" = 1`
-}
+    }
   }
 ];
 

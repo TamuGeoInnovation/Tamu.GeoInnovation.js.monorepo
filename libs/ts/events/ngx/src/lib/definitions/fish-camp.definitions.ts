@@ -3,13 +3,12 @@ import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import esri = __esri;
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum FISH_CAMP_LAYERS {
   ARRIVAL_GROUP = 'fish-camp-arrival-group',
@@ -69,7 +68,7 @@ const lotConversions = [
 ];
 
 const popup = {
-  popupComponent: MarkdownPopupComponent,
+  popupComponent: EventPopups.MarkdownPopupComponent,
   popupData: {
     name: { field: 'name' },
     description: { field: 'description' }

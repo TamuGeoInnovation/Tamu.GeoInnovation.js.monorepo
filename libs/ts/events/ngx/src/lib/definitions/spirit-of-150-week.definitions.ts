@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum SPIRIT_OF_150_WEEK_LAYERS {
   CAKE_ICE_CREAM = 'spirit-of-150-week-cake-ice-cream'
@@ -30,7 +30,7 @@ export const SpiritOf150WeekLayerSources: LayerSource[] = [
     type: 'feature',
     id: SpiritOf150WeekDefinitions.CAKE_ICE_CREAM.id,
     url: SpiritOf150WeekDefinitions.CAKE_ICE_CREAM.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: `{attributes.description}`

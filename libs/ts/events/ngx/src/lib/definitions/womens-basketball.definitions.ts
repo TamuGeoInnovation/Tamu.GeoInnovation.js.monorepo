@@ -1,12 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum WOMENS_BASKETBALL_LAYERS {
   VISITOR_KIOSK = 'womens-basketball-visitor-kiosk',
@@ -50,7 +50,7 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     id: WomensBasketball_Definitions.VISITOR_KIOSK.id,
     title: WomensBasketball_Definitions.VISITOR_KIOSK.name,
     url: WomensBasketball_Definitions.VISITOR_KIOSK.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'Visitor Permit Kiosk',
       description: 'Purchase your hourly parking permit here.'
@@ -67,7 +67,7 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     id: WomensBasketball_Definitions.ACCESSIBLE_PARKING.id,
     title: WomensBasketball_Definitions.ACCESSIBLE_PARKING.name,
     url: WomensBasketball_Definitions.ACCESSIBLE_PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.type}',
       description: `**Event:** {attributes.event}`
@@ -87,7 +87,7 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     id: WomensBasketball_Definitions.PARKING.id,
     title: WomensBasketball_Definitions.PARKING.name,
     url: WomensBasketball_Definitions.PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'lotname',
@@ -113,7 +113,7 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     id: WomensBasketball_Definitions.SAFETY_FIRST.id,
     title: WomensBasketball_Definitions.SAFETY_FIRST.name,
     url: WomensBasketball_Definitions.SAFETY_FIRST.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'Crosswalk',
       description: `**Location:** {attributes.location}`

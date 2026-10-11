@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum OUTDOOR_TRACK_PARKING_LAYERS {
   VISITOR_KIOSK = 'outdoor-track-parking-visitor-kiosk',
@@ -52,7 +52,7 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
     id: OutdoorTrackParkingDefinitions.VISITOR_KIOSK.id,
     title: OutdoorTrackParkingDefinitions.VISITOR_KIOSK.name,
     url: OutdoorTrackParkingDefinitions.VISITOR_KIOSK.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'Visitor Permit Kiosk'
     },
@@ -68,7 +68,7 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
     id: OutdoorTrackParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: OutdoorTrackParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: OutdoorTrackParkingDefinitions.ACCESSIBLE_PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
     layerIndex: 22,
@@ -81,7 +81,7 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: OutdoorTrackParkingDefinitions.PARKING.id,
     url: OutdoorTrackParkingDefinitions.PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'lotname',

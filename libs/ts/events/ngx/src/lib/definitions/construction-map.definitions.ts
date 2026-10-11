@@ -1,7 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -32,6 +30,7 @@ export enum CONSTRUCTION_MAP_LAYERS {
  *   needed since this service's sublayer 0 already exposes a description field.
  */
 import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+import { EventPopups } from '../modules/popups/popups';
 const gisHost = getDefaultGisHost();
 const tsgisHost = getDefaultGisHosts().tsgisHost;
 
@@ -148,7 +147,7 @@ export const ConstructionMapColdLayerSources: LayerSource[] = [
     id: ConstructionMapDefinitions.CONSTRUCTION_POPUP.id,
     title: ConstructionMapDefinitions.CONSTRUCTION_POPUP.name,
     url: ConstructionMapDefinitions.CONSTRUCTION_POPUP.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: constructionPopupData,
     popupDataResolutionStrategy,
     visible: true,
@@ -163,7 +162,7 @@ export const ConstructionMapColdLayerSources: LayerSource[] = [
     id: ConstructionMapDefinitions.PLANNED_CONSTRUCTION_POPUP.id,
     title: ConstructionMapDefinitions.PLANNED_CONSTRUCTION_POPUP.name,
     url: ConstructionMapDefinitions.PLANNED_CONSTRUCTION_POPUP.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: plannedConstructionPopupData,
     popupDataResolutionStrategy,
     visible: true,

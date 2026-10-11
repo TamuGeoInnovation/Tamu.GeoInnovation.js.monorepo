@@ -11,7 +11,7 @@ import {
 import { Subscription, Observable } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
 
-import { EsriMapService, HitTestSnapshot } from '@tamu-gisc/maps/esri';
+import { EsriMapService, HitTestSnapshot, loadPopupComponent } from '@tamu-gisc/maps/esri';
 import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { PopupService } from '../../services/popup.service';
@@ -53,6 +53,12 @@ export class PopupComponent implements OnInit, OnDestroy {
   private _hitTestSubscription: Subscription;
 
   /**
+   * Counts render requests, so a popup whose component finishes loading after a newer one was asked
+   * for is dropped instead of replacing it.
+   */
+  private _renderRequest = 0;
+
+  /**
    * Reference to the component content host. Popup child components will be rendered within,.
    */
   @ViewChild(RenderHostDirective, { static: true }) public viewHost: RenderHostDirective;
@@ -76,6 +82,7 @@ export class PopupComponent implements OnInit, OnDestroy {
         if (popupsSuppressed !== true && snapshot.graphics.length > 0 && snapshot.graphics.every((g) => g != null)) {
           this.render();
         } else {
+          this._renderRequest++;
           this.popupService.hidePopup();
         }
       });
@@ -102,20 +109,41 @@ export class PopupComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.popupService.showPopup();
+      const request = ++this._renderRequest;
+      const data = resolved.data ? resolved.data : this.snapshot.graphics[0];
 
-      // Get reference to the view container (host)
-      const container = this.viewHost.viewContainerRef;
+      // A popup component is downloaded the first time one of its kind is opened (#1454).
+      loadPopupComponent(resolved.component)
+        .then((component) => {
+          if (request !== this._renderRequest) {
+            return;
+          }
 
-      // Clear the view container (host)
-      container.clear();
+          this.popupService.showPopup();
 
-      // Create the resolved component in the host
-      const resolvedComponent = container.createComponent(resolved.component) as ComponentRef<BasePopupComponent>;
+          // Get reference to the view container (host)
+          const container = this.viewHost.viewContainerRef;
 
-      // Pass in feature data to the created component
-      // Will only handle a single feature for now.
-      resolvedComponent.instance.data = resolved.data ? resolved.data : this.snapshot.graphics[0];
+          // Clear the view container (host)
+          container.clear();
+
+          // Create the resolved component in the host
+          const resolvedComponent = container.createComponent(component) as ComponentRef<BasePopupComponent>;
+
+          // Pass in feature data to the created component
+          // Will only handle a single feature for now.
+          resolvedComponent.instance.data = data;
+        })
+        .catch((error) => {
+          console.warn('Popup component could not be loaded.', error);
+
+          if (request === this._renderRequest) {
+            this.popupService.hidePopup();
+          }
+        });
+    } else {
+      // Nothing to show: a component still loading for an earlier request must not appear.
+      this._renderRequest++;
     }
   }
 

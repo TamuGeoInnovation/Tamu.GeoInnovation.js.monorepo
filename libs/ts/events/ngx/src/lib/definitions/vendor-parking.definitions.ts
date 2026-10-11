@@ -1,10 +1,14 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum VENDOR_PARKING_LAYERS {
   VENDOR_PARKING_DRAW = 'vendor-parking-lots-draw',
@@ -57,7 +61,7 @@ export const VendorParkingColdLayerSources: LayerSource[] = [
     url: VendorParkingDefinitions.VENDOR_PARKING_LOTS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',
@@ -70,7 +74,7 @@ export const VendorParkingColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*']
-} as unknown as FeatureNative
+    } as unknown as FeatureNative
   }
 ];
 

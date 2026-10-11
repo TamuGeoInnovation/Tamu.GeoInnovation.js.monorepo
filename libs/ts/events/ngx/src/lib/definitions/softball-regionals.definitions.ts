@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum SOFTBALL_LAYERS {
   SOFTBALL_ROUTES = 'softball-routes',
@@ -38,7 +38,7 @@ export const SoftballLayerSources: LayerSource[] = [
     id: SoftballEventDefinitions.SOFTBALL_ROUTES.id,
     title: SoftballEventDefinitions.SOFTBALL_ROUTES.name,
     url: SoftballEventDefinitions.SOFTBALL_ROUTES.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.Type',
       description: 'attributes.description'
@@ -52,7 +52,7 @@ export const SoftballLayerSources: LayerSource[] = [
     id: SoftballEventDefinitions.SOFTBALL_LOCATIONS.id,
     title: SoftballEventDefinitions.SOFTBALL_LOCATIONS.name,
     url: SoftballEventDefinitions.SOFTBALL_LOCATIONS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.Type',
       description: 'attributes.description'
