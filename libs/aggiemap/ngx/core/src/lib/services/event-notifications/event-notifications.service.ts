@@ -101,14 +101,32 @@ export function campusOnNavigation(router: Pick<Router, 'events' | 'url'>): Obse
   );
 }
 
-export const EVENT_NOTIFICATION_DEFINITIONS = new InjectionToken<EventNotificationEntry[]>('EVENT_NOTIFICATION_DEFINITIONS');
+/**
+ * The event definitions to raise notices from: the list, or a function that loads it.
+ *
+ * The application gives the function. The list is every event map's whole definition, about a quarter
+ * of a megabyte before compression, and naming it at startup put it in the first download, ahead of
+ * the first paint, for the sake of a notice that appears afterwards anyway (#1454).
+ */
+export type EventNotificationSource = EventNotificationEntry[] | (() => Promise<EventNotificationEntry[]>);
+
+export const EVENT_NOTIFICATION_DEFINITIONS = new InjectionToken<EventNotificationSource>('EVENT_NOTIFICATION_DEFINITIONS');
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventNotificationsService {
   private readonly notificationService = inject(NotificationService);
-  private readonly definitions = inject(EVENT_NOTIFICATION_DEFINITIONS, { optional: true });
+  private readonly source = inject(EVENT_NOTIFICATION_DEFINITIONS, { optional: true });
+
+  /** The definitions, once they are here: at once when the application gave a list, after loading otherwise. */
+  private definitions?: EventNotificationEntry[];
+
+  /** The load in progress, so navigating again before it finishes does not start a second one. */
+  private _loading?: Promise<void>;
+
+  /** The campus of the map showing now, which may have changed by the time the definitions arrive. */
+  private _campus: CampusId = COLLEGE_STATION;
 
   /**
    * Ids shown in this browser session, so each notice appears once per session (#1307).
@@ -135,6 +153,8 @@ export class EventNotificationsService {
    * where they are matched rather than a new mechanism. See #1265.
    */
   public checkAndTriggerEventNotifications(campus: CampusId = COLLEGE_STATION): void {
+    this._campus = campus;
+
     if (campus !== COLLEGE_STATION) {
       // Notices belong on a College Station map. Ones raised on the map the visitor just left would
       // otherwise stay over the page they moved to until they timed out (#1307).
@@ -142,15 +162,41 @@ export class EventNotificationsService {
       return;
     }
 
-    if (!this.definitions) {
+    if (!this.source) {
       return;
     }
 
+    if (this.definitions) {
+      this.raiseActive(this.definitions);
+    } else if (typeof this.source !== 'function') {
+      this.definitions = this.source;
+      this.raiseActive(this.definitions);
+    } else {
+      this._loading ??= this.source()
+        .then((definitions) => {
+          this.definitions = definitions;
+
+          // The visitor may have moved to another campus's map while these were loading.
+          if (this._campus === COLLEGE_STATION) {
+            this.raiseActive(definitions);
+          }
+        })
+        .catch((error) => {
+          this._loading = undefined;
+          console.warn('Event notifications could not be loaded.', error);
+        });
+    }
+  }
+
+  /**
+   * Raises the notice of every event that is on now or coming up within a week.
+   */
+  private raiseActive(definitions: EventNotificationEntry[]): void {
     const now = Date.now();
     const oneDay = 24 * 60 * 60 * 1000; // milliseconds in a day
     const sevenDays = 7 * oneDay;
 
-    this.definitions.forEach((eventDefinition) => {
+    definitions.forEach((eventDefinition) => {
       const config = eventDefinition.configuration;
 
       // Skip if no configuration or no toast config
