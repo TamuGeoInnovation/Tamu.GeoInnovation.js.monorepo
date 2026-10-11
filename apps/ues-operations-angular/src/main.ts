@@ -2,13 +2,15 @@ import { enableProdMode, provideZoneChangeDetection, importProvidersFrom } from 
 
 import * as WebFont from 'webfontloader';
 import * as environment from './environments/environment';
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
-import { notificationStorage, NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
-import { AppRoutingModule } from '@tamu-gisc/ues/operations/ngx';
+import { env } from '@tamu-gisc/common/ngx/environment';
+import { notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
+import { uesOperationsRoutes } from '@tamu-gisc/ues/operations/ngx';
 import { Angulartics2Module } from 'angulartics2';
-import { StorageServiceModule } from 'ngx-webstorage-service';
 import { AppComponent } from './app/app.component';
-import { bootstrapApplication } from '@angular/platform-browser';
+import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideHttpClient, withXhr, withInterceptorsFromDi } from '@angular/common/http';
+import { provideRouter, withEnabledBlockingInitialNavigation } from '@angular/router';
 
 if (environment.environment.production) {
   enableProdMode();
@@ -25,13 +27,9 @@ bootstrapApplication(AppComponent, {
     // Every component still relies on Zone.js (ChangeDetectionStrategy.Eager); without this,
     // bootstrapApplication runs zoneless since Angular 21 (#1563, #1478).
     provideZoneChangeDetection(),
-    importProvidersFrom(
-      AppRoutingModule,
-      Angulartics2Module.forRoot(),
-      EnvironmentModule,
-      NotificationModule,
-      StorageServiceModule
-    ),
+    importProvidersFrom(BrowserModule, BrowserAnimationsModule, Angulartics2Module.forRoot()),
+    provideRouter(uesOperationsRoutes, withEnabledBlockingInitialNavigation()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
     { provide: env, useValue: environment },
     { provide: notificationStorage, useValue: 'ues-notifications' }
   ]

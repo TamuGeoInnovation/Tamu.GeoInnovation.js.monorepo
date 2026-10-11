@@ -4,8 +4,8 @@ import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { SearchSelection, AltSearchHelper } from '@tamu-gisc/ui-kits/ngx/search';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { SearchComponent } from '@tamu-gisc/ui-kits/ngx/search';
-import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
-import { LegendModule } from '@tamu-gisc/maps/feature/legend';
+import { LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
+import { LegendComponent } from '@tamu-gisc/maps/feature/legend';
 
 import esri = __esri;
 
@@ -14,7 +14,7 @@ import esri = __esri;
   templateUrl: './sidebar-reference.component.html',
   styleUrls: ['./sidebar-reference.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [SearchComponent, LayerListModule, LegendModule]
+  imports: [SearchComponent, LayerListComponent, LegendComponent]
 })
 export class SidebarReferenceComponent<T extends esri.Graphic> {
   private helper = inject(AltSearchHelper);

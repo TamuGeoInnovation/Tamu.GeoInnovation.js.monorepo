@@ -2,8 +2,8 @@ import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 
 import { NotificationContainerComponent } from './notification-container.component';
 import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
-import { LOCAL_STORAGE, StorageServiceModule } from 'ngx-webstorage-service';
+import { env } from '@tamu-gisc/common/ngx/environment';
+import { LOCAL_STORAGE } from 'ngx-webstorage-service';
 import { Angulartics2 } from 'angulartics2';
 
 import { Notification } from '../../helpers/notification.helper';
@@ -30,8 +30,7 @@ describe('ContainerComponent', () => {
           provide: env,
           useValue: { NotificationEvents: [testNotification] }
         }
-      ],
-      imports: [EnvironmentModule, StorageServiceModule]
+      ]
     }).compileComponents();
   }));
 

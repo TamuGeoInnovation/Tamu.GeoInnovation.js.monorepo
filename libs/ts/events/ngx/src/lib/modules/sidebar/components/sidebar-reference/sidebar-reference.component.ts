@@ -10,8 +10,8 @@ import { EventConfiguration, EventSettings, ResolvedEventSettings } from '../../
 import { SearchComponent } from '@tamu-gisc/ui-kits/ngx/search';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { NgStyle, KeyValuePipe } from '@angular/common';
-import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
-import { LegendModule } from '@tamu-gisc/maps/feature/legend';
+import { LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
+import { LegendComponent } from '@tamu-gisc/maps/feature/legend';
 
 import esri = __esri;
 
@@ -20,7 +20,7 @@ import esri = __esri;
   templateUrl: './sidebar-reference.component.html',
   styleUrls: ['./sidebar-reference.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [SearchComponent, CopyComponent, NgStyle, LayerListModule, LegendModule, KeyValuePipe]
+  imports: [SearchComponent, CopyComponent, NgStyle, LayerListComponent, LegendComponent, KeyValuePipe]
 })
 export class SidebarReferenceComponent implements OnInit {
   private readonly router = inject(Router);

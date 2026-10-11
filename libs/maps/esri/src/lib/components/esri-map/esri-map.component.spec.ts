@@ -3,7 +3,7 @@ import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
+import { env } from '@tamu-gisc/common/ngx/environment';
 import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { EsriMapComponent } from './esri-map.component';
@@ -24,8 +24,7 @@ describe('EsriMapComponent', () => {
         SearchComponent,
         SearchMobileComponent,
         SearchResultPipe,
-        HttpClientTestingModule,
-        EnvironmentModule
+        HttpClientTestingModule
       ]
     }).compileComponents();
   }));

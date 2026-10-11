@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
+import { env } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapComponent } from '@tamu-gisc/maps/esri';
 import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-gisc/ui-kits/ngx/search';
 import { BusService } from '@tamu-gisc/maps/feature/trip-planner';
@@ -20,8 +20,7 @@ describe('BusTimetableComponent (isolated)', () => {
         RouterTestingModule,
         SearchComponent,
         SearchMobileComponent,
-        SearchResultPipe,
-        EnvironmentModule
+        SearchResultPipe
       ],
       providers: [
         BusTimetableComponent,
@@ -58,7 +57,6 @@ describe('BusTimeTableComponent (integrated)', () => {
         SearchComponent,
         SearchMobileComponent,
         SearchResultPipe,
-        EnvironmentModule,
         BusTimetableComponent
       ],
       providers: [

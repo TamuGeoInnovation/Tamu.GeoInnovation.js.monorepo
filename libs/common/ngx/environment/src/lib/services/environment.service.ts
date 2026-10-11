@@ -2,7 +2,7 @@ import { Injectable, InjectionToken, inject } from '@angular/core';
 
 export const env = new InjectionToken<any>('environment');
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class EnvironmentService {
   private environment = inject(env, { optional: true });
 

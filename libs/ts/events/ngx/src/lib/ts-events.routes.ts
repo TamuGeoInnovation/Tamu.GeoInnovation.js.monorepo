@@ -1,6 +1,4 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
 import { SettingsGuard } from './guards/settings/settings.guard';
 import { BuilderComponent } from './modules/builder/builder.component';
@@ -12,9 +10,11 @@ import { EndedComponent } from './modules/ended/ended.component';
 import { EventSettingsQuery } from './services/settings/event-settings-query';
 import { EventSettingsService } from './services/settings/event-settings.service';
 
-const routes: Routes = [
+export const tsEventsRoutes: Routes = [
   {
     path: ':eventId',
+    // Popups ask for the settings as `EventSettingsQuery` (#1403); the route supplies the service under that name.
+    providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }],
     canActivate: [RouteParamsGuard, EventEntryGuard],
     // A retired event opens its ended page, never its map or builder (#1098).
     canActivateChild: [RetiredEventGuard],
@@ -62,10 +62,3 @@ const routes: Routes = [
     ]
   }
 ];
-
-@NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), BuilderComponent, EndedComponent],
-  providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }],
-  exports: [RouterModule]
-})
-export class TsEventsNgxModule {}

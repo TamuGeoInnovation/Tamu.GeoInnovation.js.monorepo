@@ -1,5 +1,5 @@
 // Admin modules
-export * from './lib/gisday-competitions-ngx-core.module';
+export * from './lib/gisday-competitions.routes';
 export * from './lib/pages/admin/pages/designer/designer.routes';
 export * from './lib/pages/admin/pages/submissions/admin-submissions.routes';
 

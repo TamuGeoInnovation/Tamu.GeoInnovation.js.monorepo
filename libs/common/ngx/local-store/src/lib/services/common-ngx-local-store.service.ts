@@ -1,9 +1,14 @@
 import { Injectable, InjectionToken, inject } from '@angular/core';
-import { StorageService } from 'ngx-webstorage-service';
+import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 
 const STORAGE_KEY = 'default';
 
-export const AppStorage = new InjectionToken<StorageService>('AppStorage');
+// The browser's local storage unless an application or a test provides something else.
+export const AppStorage = new InjectionToken<StorageService>('AppStorage', {
+  providedIn: 'root',
+  factory: () => inject(LOCAL_STORAGE)
+});
+
 @Injectable({ providedIn: 'root' })
 export class LocalStoreService {
   private store = inject<StorageService>(AppStorage);

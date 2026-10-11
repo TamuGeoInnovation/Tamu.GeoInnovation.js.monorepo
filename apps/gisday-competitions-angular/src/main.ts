@@ -2,16 +2,15 @@ import { enableProdMode, provideZoneChangeDetection, importProvidersFrom } from 
 
 import * as WebFont from 'webfontloader';
 import * as environment from './environments/environment';
-import { NotificationService, NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { env } from '@tamu-gisc/common/ngx/environment';
 import { provideHttpClient, withXhr, withInterceptorsFromDi } from '@angular/common/http';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { Angulartics2Module } from 'angulartics2';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
-import { GisdayCompetitionsNgxCoreModule } from '@tamu-gisc/gisday/competitions/ngx/core';
+import { gisdayCompetitionsRoutes } from '@tamu-gisc/gisday/competitions/ngx/core';
 import { AppComponent } from './app/app.component';
 
 if (environment.environment.production) {
@@ -32,14 +31,10 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(
       BrowserModule,
       BrowserAnimationsModule,
-      RouterModule,
       Angulartics2Module.forRoot(),
-      ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
-      EnvironmentModule,
-      NotificationModule,
-      SettingsModule,
-      GisdayCompetitionsNgxCoreModule
+      ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production })
     ),
+    provideRouter(gisdayCompetitionsRoutes),
     NotificationService,
     { provide: env, useValue: environment },
     provideHttpClient(withXhr(), withInterceptorsFromDi())

@@ -2,8 +2,8 @@ import { enableProdMode, provideZoneChangeDetection, importProvidersFrom } from 
 
 import * as WebFont from 'webfontloader';
 import { environment } from './environments/environment';
-import { NotificationService, NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { env } from '@tamu-gisc/common/ngx/environment';
 import { provideHttpClient, withXhr, withInterceptorsFromDi } from '@angular/common/http';
 import { Angulartics2Module } from 'angulartics2';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
@@ -33,13 +33,7 @@ bootstrapApplication(AppComponent, {
     // Every component still relies on Zone.js (ChangeDetectionStrategy.Eager); without this,
     // bootstrapApplication runs zoneless since Angular 21 (#1563, #1478).
     provideZoneChangeDetection(),
-    importProvidersFrom(
-      Angulartics2Module.forRoot(),
-      BrowserModule,
-      BrowserAnimationsModule,
-      EnvironmentModule,
-      NotificationModule
-    ),
+    importProvidersFrom(Angulartics2Module.forRoot(), BrowserModule, BrowserAnimationsModule),
     NotificationService,
     {
       provide: env,
