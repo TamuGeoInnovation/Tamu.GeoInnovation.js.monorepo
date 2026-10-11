@@ -46,6 +46,14 @@
         "browser": "apps/gisday-angular/src/main.ts"
       },
       "configurations": {
+        "local": {
+          "fileReplacements": [
+            {
+              "replace": "apps/gisday-angular/src/environments/environment.ts",
+              "with": "apps/gisday-angular/src/environments/environment.local.ts"
+            }
+          ]
+        },
         "production": {
           "fileReplacements": [
             {
@@ -126,6 +134,7 @@
           "buildTarget": "gisday-angular:build:development"
         },
         "local": {
+          "buildTarget": "gisday-angular:build:local",
           "proxyConfig": "apps/gisday-angular/proxy.local.json"
         }
       }
