@@ -24,6 +24,17 @@ export function pairwiseOverlap<T>(elements: T[]): T[][] {
 }
 
 /**
+ * The item of a collection for which `value` is smallest, or `undefined` for an empty collection.
+ * The first one wins a tie.
+ */
+export function minBy<T>(collection: T[], value: (item: T) => number): T | undefined {
+  return collection.reduce<T | undefined>(
+    (smallest, item) => (smallest === undefined || value(item) < value(smallest) ? item : smallest),
+    undefined
+  );
+}
+
+/**
  * Groups a collection of objects by a provided key path.
  *
  * @param {Array<T>} collection Object collection
