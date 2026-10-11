@@ -1,4 +1,3 @@
-export * from './lib/gisday-platform-ngx-core.module';
 export * from './lib/pages/landing/landing.routes';
 export * from './lib/pages/events/event.routes';
 export * from './lib/pages/faq/faq.routes';

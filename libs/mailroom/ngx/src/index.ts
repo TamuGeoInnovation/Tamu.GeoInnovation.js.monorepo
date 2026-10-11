@@ -1,1 +1,1 @@
-export * from './lib/modules/list/list.module';
+export * from './lib/modules/list/list.routes';

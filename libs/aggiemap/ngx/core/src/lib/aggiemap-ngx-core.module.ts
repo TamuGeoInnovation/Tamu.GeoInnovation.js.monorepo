@@ -7,26 +7,26 @@ const hybridRoutes: Routes = [
     pathMatch: 'full',
     redirectTo: 'map'
   },
-  { path: 'map', loadChildren: () => import('./pages/map/map.module').then((m) => m.MapModule) },
-  { path: 'about', loadChildren: () => import('./pages/about/about.module').then((m) => m.AboutModule) },
-  { path: 'changelog', loadChildren: () => import('./pages/changelog/changelog.module').then((m) => m.ChangelogModule) },
-  { path: 'directory', loadChildren: () => import('./pages/directory/directory.module').then((m) => m.DirectoryModule) },
+  { path: 'map', loadChildren: () => import('./pages/map/map.routes').then((m) => m.mapRoutes) },
+  { path: 'about', loadChildren: () => import('./pages/about/about.routes').then((m) => m.aboutRoutes) },
+  { path: 'changelog', loadChildren: () => import('./pages/changelog/changelog.routes').then((m) => m.changelogRoutes) },
+  { path: 'directory', loadChildren: () => import('./pages/directory/directory.routes').then((m) => m.directoryRoutes) },
   {
     path: 'all-maps',
-    loadChildren: () => import('@tamu-gisc/aggiemap/ngx/discover').then((m) => m.DiscoverModule)
+    loadChildren: () => import('@tamu-gisc/aggiemap/ngx/discover').then((m) => m.discoverRoutes)
   },
   {
     path: 'discover',
     redirectTo: 'all-maps'
   },
-  { path: 'feedback', loadChildren: () => import('./pages/feedback/feedback.module').then((m) => m.FeedbackModule) },
+  { path: 'feedback', loadChildren: () => import('./pages/feedback/feedback.routes').then((m) => m.feedbackRoutes) },
   {
     path: 'instructions',
-    loadChildren: () => import('./pages/instructions/instructions.module').then((m) => m.InstructionsModule)
+    loadChildren: () => import('./pages/instructions/instructions.routes').then((m) => m.instructionsRoutes)
   },
   {
     path: 'requesting-maps',
-    loadChildren: () => import('./pages/requesting-maps/requesting-maps.module').then((m) => m.RequestingMapsModule)
+    loadChildren: () => import('./pages/requesting-maps/requesting-maps.routes').then((m) => m.requestingMapsRoutes)
   },
   {
     path: 'events',
@@ -59,7 +59,7 @@ const hybridRoutes: Routes = [
     // Development only. The overlay checks `isTesting` itself before it renders or fetches anything,
     // so reaching this path on production shows the plain map and nothing else.
     path: 'code-maroon',
-    loadChildren: () => import('./pages/map/map.module').then((m) => m.MapModule)
+    loadChildren: () => import('./pages/map/map.routes').then((m) => m.mapRoutes)
   },
   {
     path: '**',
