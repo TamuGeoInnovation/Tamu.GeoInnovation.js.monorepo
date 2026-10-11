@@ -396,6 +396,26 @@ on the machine.
 these runs can show. The build's initial files shrink by more than the page's download does, because part
 of what left them is a library the map route still loads straight away, in its own file.
 
+### Event definitions loaded after startup
+
+Two production builds measured alternately, twice each, on 11 October 2026: `development` with the All
+Maps change (before) and the event definitions change (after). The GIS Day stack was running on the
+machine; the runs within each set were close to one another all the same.
+
+| | Before | After | Before, again | After, again |
+| --- | ---: | ---: | ---: | ---: |
+| Application JavaScript on the map page, gzipped | 376 KB | 377 KB | 376 KB | 377 KB |
+| Initial JavaScript, raw (from the build) | 1.22 MB | 1.01 MB | | |
+| `main`, raw (from the build) | 338 kB | 131 kB | | |
+| Phone: first contentful paint | 4.56 s | 4.26 s | 4.57 s | 4.23 s |
+| Phone: largest contentful paint | 4.81 s | 4.49 s | 4.82 s | 4.46 s |
+| Phone: map ready | 15.7 s | 15.7 s | 15.7 s | 15.7 s |
+| Desktop: first contentful paint | 0.36 s | 0.25 s | 0.27 s | 0.25 s |
+
+**What it shows.** The phone paints about 0.3 seconds sooner (7%), the same in both pairs. The page
+downloads the same amount of JavaScript as before: the definitions still arrive, a moment later, for the
+notices. That is the part a second stage would remove.
+
 ## Where the other records are
 
 This file is for runs as they happen. Two existing records keep their own shape and are not folded
