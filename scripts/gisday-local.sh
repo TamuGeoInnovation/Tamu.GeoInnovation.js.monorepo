@@ -112,7 +112,12 @@ SQL
 
   web)
     network
+    # Nx records each running task, keyed by process id, in its workspace-data directory. `stop` kills this
+    # container, so its record is never cleared, and every container's Nx gets the same process id. Kept in
+    # the checkout, the record would make the next start wait for itself forever (#1626); kept in the
+    # container, it goes when the container does. The cost is a project graph computed on every start.
     docker run -d --name gisday-dev -m 8g --network "$NET" -p 4201:4201 -e NX_DAEMON=false \
+      -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data \
       -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w \
       "$NODE_IMAGE" sh -c "node node_modules/nx/dist/bin/nx.js serve gisday-angular --configuration=local --host 0.0.0.0 --port 4201 --poll=2000"
     echo "gisday-dev started; the first compile takes several minutes: docker logs -f gisday-dev"

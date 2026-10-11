@@ -109,8 +109,15 @@ What does not, yet:
 
 ## Things that look broken
 
-- `Recursive task invocation detected` from `nx serve`: stale task records in
-  `.nx/workspace-data/machine-v3.db`, left by removed containers. Move the file aside (it is
-  gitignored) and start again.
+- `Recursive task invocation detected`, or a start that prints `Waiting for <task> in another nx process`
+  and never continues: an Nx container in this checkout was killed in the middle of a task (`docker rm -f`,
+  `docker kill`, Docker itself stopping). Nx writes each running task into
+  `.nx/workspace-data/machine-v3.db`, keyed by its process id, and removes the record only when it exits
+  normally. Every container gives Nx the same process id, so the next run of that task finds the dead
+  run's record and takes it for its own parent (the first message, from `build`, `lint` or a migration)
+  or for a live server (the second, from `serve`). `gisday-dev` cannot leave one behind, because it keeps
+  its Nx records inside the container; the build and migration containers can, if they are killed. With
+  no Nx container running in the checkout, delete the `.nx/workspace-data` folder (it is gitignored and
+  rebuilt) and start again. Nx also drops the first kind of record by itself after a day. See #1626.
 - The TypeORM CLI cannot find `@tamu-gisc/...` packages: do not run it by hand; use the
   `gisday-nest:migration-*` targets, which set what it needs ([gisday-migrations.md](gisday-migrations.md)).
