@@ -7,6 +7,7 @@ import { Angulartics2 } from 'angulartics2';
 
 import { env } from '@tamu-gisc/common/ngx/environment';
 
+import { RouteDirectionTransformerPipe } from '@tamu-gisc/maps/feature/trip-planner';
 import {
   TripPlannerConnectionsSelectComponent,
   TripPlannerDirectionsComponent,
@@ -22,9 +23,8 @@ import {
   TripPlannerBikingOptionsComponent,
   TripPlannerParkingOptionsComponent,
   TripPlannerOptionsComponent,
-  TripPlannerTimePickerComponent,
-  RouteDirectionTransformerPipe
-} from '@tamu-gisc/maps/feature/trip-planner';
+  TripPlannerTimePickerComponent
+} from '@tamu-gisc/maps/feature/trip-planner/components';
 import { EsriMapComponent } from '@tamu-gisc/maps/esri';
 import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-gisc/ui-kits/ngx/search';
 

@@ -90,6 +90,7 @@
       "@tamu-gisc/maps/feature/perspective": ["libs/maps/feature/perspective/src/index.ts"],
       "@tamu-gisc/maps/feature/popup": ["libs/maps/feature/popup/src/index.ts"],
       "@tamu-gisc/maps/feature/trip-planner": ["libs/maps/feature/trip-planner/src/index.ts"],
+      "@tamu-gisc/maps/feature/trip-planner/components": ["libs/maps/feature/trip-planner/src/components.ts"],
       "@tamu-gisc/maps/mapbox": ["libs/maps/mapbox/src/index.ts"],
       "@tamu-gisc/oidc/admin/data-access": ["libs/oidc/admin/data-access/src/index.ts"],
       "@tamu-gisc/oidc/admin/data-api": ["libs/oidc/admin/data-api/src/index.ts"],

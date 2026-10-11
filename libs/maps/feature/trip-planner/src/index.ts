@@ -2,22 +2,10 @@
 export * from './lib/core/trip-planner-core';
 export * from './lib/core/route-direction-transformer.pipe';
 
-// Components
-export * from './lib/components/trip-planner-connection-select/containers/base/base.component';
-export * from './lib/components/trip-planner-directions/containers/base/base.component';
-export * from './lib/components/trip-planner-directions/containers/mobile/mobile.component';
-export * from './lib/components/trip-planner-directions-actions/containers/base/base.component';
-export * from './lib/components/trip-planner-directions-actions/containers/mobile/mobile.component';
-export * from './lib/components/trip-planner-mode-picker/containers/base/base.component';
-export * from './lib/components/trip-planner-mode-picker/containers/mobile/mobile.component';
-export * from './lib/components/trip-planner-mode-switch/containers/base/base.component';
-export * from './lib/components/trip-planner-mode-switch/components/bus-switch/bus-switch.component';
-export * from './lib/components/trip-planner-mode-toggle/containers/base/base.component';
-export * from './lib/components/trip-planner-options/components/base/base.component';
-export * from './lib/components/trip-planner-options/components/biking/trip-planner-biking-options.component';
-export * from './lib/components/trip-planner-options/components/parking/trip-planner-parking-options.component';
-export * from './lib/components/trip-planner-options/containers/base/base.component';
-export * from './lib/components/trip-planner-time-picker/containers/base/base.component';
+// The components are not exported here: an export from this file puts a component, and what it imports,
+// wherever the services are needed, which is the map's first download (#1454). Import them from
+// `@tamu-gisc/maps/feature/trip-planner/components`, or load one with a function below.
+export * from './lib/lazy-components';
 
 // Services
 export * from './lib/services/trip-planner.service';

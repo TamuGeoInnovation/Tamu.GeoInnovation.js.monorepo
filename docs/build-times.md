@@ -429,6 +429,20 @@ machine; the runs within each set were close to one another all the same.
 downloads the same amount of JavaScript as before: the definitions still arrive, a moment later, for the
 notices. That is the part a second stage would remove.
 
+### The trip planner's components loaded when a trip route opens
+
+Two production builds on 11 October 2026: `development` with the All Maps change (before) and the trip
+planner change (after), neither with the lodash or event definitions changes.
+
+| | Before | After |
+| --- | ---: | ---: |
+| Application JavaScript on the map page, gzipped | 376 KB | 360 KB |
+| Initial JavaScript, raw (from the build) | 1.22 MB | 1.13 MB |
+
+**What it shows.** 16 KB less JavaScript downloaded by the map page (4%). **The paint timings taken with
+these builds are not recorded as a result**: the machine was busy, and one set's desktop first paint
+ranged from 0.39 s to 1.15 s. To be re-taken on a quiet machine with the lodash timings.
+
 ## Where the other records are
 
 This file is for runs as they happen. Two existing records keep their own shape and are not folded
