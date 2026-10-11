@@ -10,9 +10,11 @@ import { EndedComponent } from './modules/ended/ended.component';
 import { EventSettingsQuery } from './services/settings/event-settings-query';
 import { EventSettingsService } from './services/settings/event-settings.service';
 
-const routes: Routes = [
+export const tsEventsRoutes: Routes = [
   {
     path: ':eventId',
+    // Popups ask for the settings as `EventSettingsQuery` (#1403); the route supplies the service under that name.
+    providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }],
     canActivate: [RouteParamsGuard, EventEntryGuard],
     // A retired event opens its ended page, never its map or builder (#1098).
     canActivateChild: [RetiredEventGuard],
@@ -59,9 +61,4 @@ const routes: Routes = [
       }
     ]
   }
-];
-
-// Popups ask for the settings as `EventSettingsQuery` (#1403); the routes supply the service under that name.
-export const tsEventsRoutes: Routes = [
-  { path: '', providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }], children: routes }
 ];
