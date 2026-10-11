@@ -39,6 +39,9 @@ scripts/gisday-local.sh web                     # first compile takes several mi
 Then open <http://localhost:4201>. `status` lists the containers; `stop` removes them and keeps the
 database volume, so the restore is needed only once.
 
+`migrate` shows, generates, runs and reverts schema migrations on the local database;
+[gisday-migrations.md](gisday-migrations.md) has the process for changing the schema.
+
 ## What the restore needs by hand
 
 A backup carries the database user `gisday_app` but not the server login, so `restore` creates the
@@ -73,7 +76,5 @@ What does not, yet:
 - `Recursive task invocation detected` from `nx serve`: stale task records in
   `.nx/workspace-data/machine-v3.db`, left by removed containers. Move the file aside (it is
   gitignored) and start again.
-- The TypeORM CLI cannot find `@tamu-gisc/...` packages: run it as
-  `node -r tsconfig-paths/register node_modules/typeorm/cli-ts-node-commonjs.js` with
-  `TS_NODE_COMPILER_OPTIONS={"module":"commonjs","moduleResolution":"node"}` and
-  `TS_NODE_PROJECT=apps/gisday-nest/tsconfig.app.json`.
+- The TypeORM CLI cannot find `@tamu-gisc/...` packages: do not run it by hand; use the
+  `gisday-nest:migration-*` targets, which set what it needs ([gisday-migrations.md](gisday-migrations.md)).

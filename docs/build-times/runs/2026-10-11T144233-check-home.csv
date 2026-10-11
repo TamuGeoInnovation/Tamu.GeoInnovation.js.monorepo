@@ -1,0 +1,2 @@
+started,machine,tool,ran,exit,summary,seconds,elapsed,setup
+2026-10-11 14:42:33 CDT,home,check,feat/1629-gisday-migration-targets affected,0,"lint for 12 projects; test, build for 10 projects and 1 task they depend on",332,0:05:32,"clone 41 s, npm ci 127 s"
