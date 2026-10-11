@@ -1,13 +1,13 @@
 import {
   Component,
   ElementRef,
-  Input,
   OnChanges,
   OnDestroy,
   AfterViewInit,
   ViewChild,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  input
 } from '@angular/core';
 
 import { AccordionService } from '../services/accordion.service';
@@ -24,12 +24,11 @@ import { NgClass, AsyncPipe } from '@angular/common';
 export class AccordionContentComponent implements OnChanges, OnDestroy, AfterViewInit {
   private comm = inject(AccordionService);
 
-  @Input()
-  public model: IAccordionModel = {
+  public readonly model = input<IAccordionModel>({
     animate: false,
     expanded: false,
     resize: false
-  };
+  });
 
   public state = this.comm.state;
 
@@ -45,7 +44,7 @@ export class AccordionContentComponent implements OnChanges, OnDestroy, AfterVie
   public ngAfterViewInit(): void {
     // If resize is set to `true`, initialize a mutation observer on the host element. The callback will trigger an
     // accordion height set.
-    if (this.model.resize) {
+    if (this.model().resize) {
       this.mutationObserver = new MutationObserver(() => {
         this.setAccordionHeight();
       });
@@ -71,10 +70,11 @@ export class AccordionContentComponent implements OnChanges, OnDestroy, AfterVie
   }
 
   public setAccordionHeight() {
-    if (this.model.expanded) {
+    const model = this.model();
+    if (model.expanded) {
       // If animate property is true, we want to determine the inner height of the accordion and set it to be the accordion
       // container height. This will allow smoothing the accordion from 0px to Xpx.
-      if (this.model.animate) {
+      if (model.animate) {
         (<HTMLElement>this._container.nativeElement).style.maxHeight = `${
           (<HTMLElement>this._container.nativeElement).scrollHeight
         }px`;

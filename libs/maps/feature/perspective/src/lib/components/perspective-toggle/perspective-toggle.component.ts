@@ -1,4 +1,4 @@
-import { Component, HostBinding, HostListener, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, HostBinding, HostListener, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { forkJoin, map, Observable, take } from 'rxjs';
 
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -21,14 +21,12 @@ export class PerspectiveToggleComponent implements OnInit {
   /**
    * Layers that should be applied when the perspective is changed to 3D
    */
-  @Input()
-  public threeDLayers: Array<LayerSource>;
+  public readonly threeDLayers = input<Array<LayerSource>>(undefined);
 
   /**
    * Layers that should be applied when the perspective is changed to 2D
    */
-  @Input()
-  public twoDLayers: Array<LayerSource>;
+  public readonly twoDLayers = input<Array<LayerSource>>(undefined);
 
   @HostBinding('class')
   public get componentDisplayClasses() {
@@ -133,22 +131,26 @@ export class PerspectiveToggleComponent implements OnInit {
   }
 
   private removePerspectiveLayers() {
-    if (this.activeMode === '3D' && this.threeDLayers !== undefined) {
-      const layerIdsToRemove = this.threeDLayers.map((source) => source.id);
+    const threeDLayers = this.threeDLayers();
+    const twoDLayers = this.twoDLayers();
+    if (this.activeMode === '3D' && threeDLayers !== undefined) {
+      const layerIdsToRemove = threeDLayers.map((source) => source.id);
 
       this.ms.removeLayersById(layerIdsToRemove);
-    } else if (this.activeMode === '2D' && this.twoDLayers !== undefined) {
-      const layerIdsToRemove = this.twoDLayers.map((source) => source.id);
+    } else if (this.activeMode === '2D' && twoDLayers !== undefined) {
+      const layerIdsToRemove = twoDLayers.map((source) => source.id);
 
       this.ms.removeLayersById(layerIdsToRemove);
     }
   }
 
   public addPerspectiveLayers() {
-    if (this.activeMode === '3D' && this.threeDLayers !== undefined) {
-      this.ms.loadLayers(this.threeDLayers);
-    } else if (this.activeMode === '2D' && this.twoDLayers !== undefined) {
-      this.ms.loadLayers(this.twoDLayers);
+    const threeDLayers = this.threeDLayers();
+    const twoDLayers = this.twoDLayers();
+    if (this.activeMode === '3D' && threeDLayers !== undefined) {
+      this.ms.loadLayers(threeDLayers);
+    } else if (this.activeMode === '2D' && twoDLayers !== undefined) {
+      this.ms.loadLayers(twoDLayers);
     }
   }
 }

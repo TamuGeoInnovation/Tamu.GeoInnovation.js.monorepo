@@ -6,6 +6,6 @@
   }
 </div>
 
-<div class="content" [ngClass]="{forwards: contentDirection === 'forwards', reverse: contentDirection === 'reverse'}">
+<div class="content" [ngClass]="{forwards: contentDirection() === 'forwards', reverse: contentDirection() === 'reverse'}">
   <ng-container [ngTemplateOutlet]="toggles[toggleIndex].template"></ng-container>
 </div>

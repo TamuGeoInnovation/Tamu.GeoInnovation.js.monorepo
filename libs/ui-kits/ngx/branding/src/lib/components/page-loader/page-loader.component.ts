@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges, ChangeDetectionStrategy, input } from '@angular/core';
 import { NgClass } from '@angular/common';
 
 @Component({
@@ -15,20 +15,18 @@ export class PageLoaderComponent implements OnInit, OnChanges {
    * - `true`: Enables the loader. This is the default state.
    * - `false`: Disables the loader.
    */
-  @Input()
-  public toggle = true;
+  public readonly toggle = input(true);
 
   /**
    * Phrases shown on the loader, randomly selected.
    */
-  @Input()
-  public phrases: Array<string> = [
+  public readonly phrases = input<Array<string>>([
     'An Aggie does not lie, cheat or steal or tolerate those who do.',
     'Home of the 12th Man',
     'Whoop!',
     "Gig 'Em!",
     'Howdy Ags!'
-  ];
+  ]);
 
   public phrase: string;
 
@@ -53,6 +51,6 @@ export class PageLoaderComponent implements OnInit, OnChanges {
   }
 
   public selectPhrase() {
-    this.phrase = this.phrases[Math.floor(Math.random() * this.phrases.length)];
+    this.phrase = this.phrases()[Math.floor(Math.random() * this.phrases().length)];
   }
 }

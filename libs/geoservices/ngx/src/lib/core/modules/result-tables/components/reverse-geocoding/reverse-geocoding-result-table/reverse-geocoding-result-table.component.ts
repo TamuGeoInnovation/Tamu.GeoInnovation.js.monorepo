@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { FieldEnumerator, EnumeratorKeyValuePairs } from '@tamu-gisc/common/utils/object';
@@ -15,8 +15,7 @@ import { AsyncPipe } from '@angular/common';
   imports: [AsyncPipe]
 })
 export class ReverseGeocodingResultTableComponent implements OnInit {
-  @Input()
-  public result: IReverseGeocodeRecord;
+  public readonly result = input<IReverseGeocodeRecord>(undefined);
 
   public filteredProps: Observable<EnumeratorKeyValuePairs>;
 
@@ -38,7 +37,7 @@ export class ReverseGeocodingResultTableComponent implements OnInit {
   ];
 
   public ngOnInit(): void {
-    this.filteredProps = of(this.result).pipe(
+    this.filteredProps = of(this.result()).pipe(
       map((result) => {
         return new FieldEnumerator(result).filter('exclude', this._excludedProps).order(this._defaultOrder);
       })

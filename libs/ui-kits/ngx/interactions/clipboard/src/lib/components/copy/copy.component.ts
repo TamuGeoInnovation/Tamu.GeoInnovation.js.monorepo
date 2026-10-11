@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 import { Observable } from 'rxjs';
 
@@ -16,8 +16,7 @@ import { AsyncPipe } from '@angular/common';
 export class CopyComponent {
   private analytics = inject(Angulartics2);
 
-  @Input()
-  public text: string;
+  public readonly text = input<string>(undefined);
 
   @Input()
   public copying: Observable<boolean>;
@@ -26,7 +25,7 @@ export class CopyComponent {
     const label = {
       guid: guid(),
       date: Date.now(),
-      content: this.text
+      content: this.text()
     };
 
     this.analytics.eventTrack.next({

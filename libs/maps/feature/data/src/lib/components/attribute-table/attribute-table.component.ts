@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, input } from '@angular/core';
 
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
@@ -8,8 +8,7 @@ import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
   styleUrls: ['./attribute-table.component.scss']
 })
 export class AttributeTableComponent {
-  @Input()
-  public data: IGraphic['attributes'];
+  public readonly data = input<IGraphic['attributes']>(undefined);
 
   /**
    * Function used to initially sort data. Passed in directly to the ngFor directive

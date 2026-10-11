@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-  <tamu-gisc-textbox [formControlName]="'search'" type="text" [floatLabel]="floatLabel" [placeholder]="placeholder"></tamu-gisc-textbox>
+  <tamu-gisc-textbox [formControlName]="'search'" type="text" [floatLabel]="floatLabel()" [placeholder]="placeholder()"></tamu-gisc-textbox>
 
   @if (rowTemplate !== undefined) {
   <div class="select-list-container" tabindex="-1">

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, AfterContentInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ElementRef, AfterContentInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 
 import { AccordionService } from './services/accordion.service';
 
@@ -17,28 +17,25 @@ export class AccordionComponent implements AfterContentInit {
    * Input boolean from the parent component that serves as a collapse/expand toggle
    * for the accordion.
    */
-  @Input()
-  public expanded = false;
+  public readonly expanded = input(false);
 
-  @Input()
-  public resize = false;
+  public readonly resize = input(false);
 
-  @Input()
-  public animate = false;
+  public readonly animate = input(false);
 
   public ngAfterContentInit() {
     this.comm.update({
-      animate: this.animate,
-      expanded: this.expanded,
-      resize: this.resize
+      animate: this.animate(),
+      expanded: this.expanded(),
+      resize: this.resize()
     });
   }
 
   public toggle() {
     this.comm.update({
-      animate: this.animate,
-      expanded: !this.expanded,
-      resize: this.resize
+      animate: this.animate(),
+      expanded: !this.expanded(),
+      resize: this.resize()
     });
   }
 }

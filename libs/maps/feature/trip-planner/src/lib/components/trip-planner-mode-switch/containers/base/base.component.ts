@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 
 import { TripResult } from '../../../../core/trip-planner-core';
 import { TripModeSwitch, TripPlannerService } from '../../../../services/trip-planner.service';
@@ -21,25 +21,26 @@ export class TripPlannerModeSwitchComponent implements OnInit {
   @Input()
   public modeSwitch: TripModeSwitch = null;
 
-  @Input()
-  public result: TripResult;
+  public readonly result = input<TripResult>(undefined);
 
   public mode_header = '';
   public mode_icon?: string = null;
 
   public ngOnInit(): void {
-    if (this.result && !this.result.isError) {
+    const result = this.result();
+    if (result && !result.isError) {
       this.setModeHeader();
     }
   }
 
   private setModeHeader(): void {
-    if (this.result == null || this.result.params == null) {
+    const result = this.result();
+    if (result == null || result.params == null) {
       this.mode_icon = null;
       this.mode_header = '';
       return;
     }
-    let travelMode = this.result.params.travelMode.id;
+    let travelMode = result.params.travelMode.id;
 
     // `walking` refers to the segment speed identification by the trip planner `speed` fn as part of a
     // successful trip query

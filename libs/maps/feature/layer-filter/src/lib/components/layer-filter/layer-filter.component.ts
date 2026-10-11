@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Observable, Subject, from, combineLatest, of, iif, forkJoin, zip } from 'rxjs';
 import {
   pluck,
@@ -41,20 +41,15 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
    *
    * Used to query and retrieve valid attributes and values.
    */
-  @Input()
-  public reference: string;
+  public readonly reference = input<string>(undefined);
 
-  @Input()
-  public filterGeometry: Observable<esri.Graphic>;
+  public readonly filterGeometry = input<Observable<esri.Graphic>>(undefined);
 
-  @Input()
-  public spatialRelationship: 'intersects' | 'contains' | 'disjoint' = 'intersects';
+  public readonly spatialRelationship = input<'intersects' | 'contains' | 'disjoint'>('intersects');
 
-  @Input()
-  public setDefinitionExpression: boolean;
+  public readonly setDefinitionExpression = input<boolean>(undefined);
 
-  @Input()
-  public executeFilterQuery: boolean;
+  public readonly executeFilterQuery = input<boolean>(undefined);
 
   @Output()
   public filterCompleted: EventEmitter<string> = new EventEmitter();
@@ -182,7 +177,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
     this.layer = this.layerList.layers().pipe(
       filter((l) => l !== undefined),
       map((listItem) => {
-        const layerView = listItem.find((l) => l.layer.id === this.reference);
+        const layerView = listItem.find((l) => l.layer.id === this.reference());
 
         return layerView.layer as esri.FeatureLayer;
       }),
@@ -197,7 +192,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
       })
     );
 
-    combineLatest([this.filterExpression, this.featureFilterModule, this.filterGeometry])
+    combineLatest([this.filterExpression, this.featureFilterModule, this.filterGeometry()])
       .pipe(
         switchMap(([where, FeatureFilter, graphic]) => {
           return zip([
@@ -205,7 +200,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
               new FeatureFilter({
                 where: where,
                 geometry: graphic ? graphic.geometry : undefined,
-                spatialRelationship: this.spatialRelationship
+                spatialRelationship: this.spatialRelationship()
               })
             ),
             this.layer,
@@ -217,7 +212,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
             of(featureFilter),
             of(layerview),
             iif(
-              () => this.executeFilterQuery,
+              () => this.executeFilterQuery(),
               of(true).pipe(
                 switchMap(() => {
                   const query = featureFilter.createQuery();
@@ -235,7 +230,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
             this.filterQueryResults.emit(queryResults.features);
           }
 
-          if (this.setDefinitionExpression) {
+          if (this.setDefinitionExpression()) {
             layerview.filter = featureFilter;
           }
         }),

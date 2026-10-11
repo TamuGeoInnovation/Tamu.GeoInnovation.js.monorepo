@@ -13,13 +13,13 @@
     </div>
     }
 
-    <input #search type="text" (keyup)="change($event)" (keydown.escape)="loseFocus()" (focus)="setFocus()" (blur)="loseFocus()" [value]="value" [placeholder]="placeholder" aria-owns="search-results-container" aria-autocomplete="both" aria-autocomplete="list" role="textbox" [ngClass]="{ 'margin-left': leftActionIcon, 'margin-right': rightActionIcon }" />
+    <input #search type="text" (keyup)="change($event)" (keydown.escape)="loseFocus()" (focus)="setFocus()" (blur)="loseFocus()" [value]="value" [placeholder]="placeholder()" aria-owns="search-results-container" aria-autocomplete="both" aria-autocomplete="list" role="textbox" [ngClass]="{ 'margin-left': leftActionIcon, 'margin-right': rightActionIcon }" />
   </div>
 
   <div class="search-results-container" role="listbox" (keydown)="keyControl($event, 'focus', '.focusable')">
     @if (searchActionsActive) {
     <div>
-      @if (canGeolocate) {
+      @if (canGeolocate()) {
       <div class="my-location">
         <p (mousedown)="geolocate()" (keydown.space)="geolocate()" (keydown.enter)="geolocate()" (focus)="setFocus()" (blur)="loseFocus()" class="focusable" tabindex="-1" role="option">Current Location</p>
       </div>

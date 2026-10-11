@@ -1,13 +1,13 @@
 import {
   Directive,
   ElementRef,
-  Input,
   OnDestroy,
   Output,
   EventEmitter,
   OnChanges,
   SimpleChanges,
-  inject
+  inject,
+  input
 } from '@angular/core';
 
 import { Observable, timer } from 'rxjs';
@@ -28,8 +28,7 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   /**
    * Text string that will be copied to clipboard.
    */
-  @Input()
-  public text: string;
+  public readonly text = input<string>(undefined);
 
   @Output()
   public copying: EventEmitter<Observable<boolean>> = new EventEmitter();
@@ -77,7 +76,7 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   private _initializeHandler() {
     this._clipboard = new Clipboard(this.el.nativeElement, {
       text: () => {
-        return this.text;
+        return this.text();
       }
     })
       .on('success', () => {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { GeocodeReferenceFeatureField, IGeocodeReferenceFeature } from '@tamu-gisc/geoprocessing-v5';
@@ -16,8 +16,7 @@ import { AsyncPipe } from '@angular/common';
   imports: [ParsedAddressResultTableComponent, AsyncPipe]
 })
 export class GeocodeMatchedReferenceFeatureTableComponent implements OnInit {
-  @Input()
-  public matchedFeature: IGeocodeReferenceFeature;
+  public readonly matchedFeature = input<IGeocodeReferenceFeature>(undefined);
 
   public filteredProps: Observable<EnumeratorKeyValuePairs>;
 
@@ -41,7 +40,7 @@ export class GeocodeMatchedReferenceFeatureTableComponent implements OnInit {
   public ngOnInit(): void {
     // Set filteredProps to be an object of key-value pairs of the matched feature, but only for properties found
     // in the reference feature dictionary.
-    this.filteredProps = of(this.matchedFeature).pipe(
+    this.filteredProps = of(this.matchedFeature()).pipe(
       map((feature) => {
         return new FieldEnumerator(feature).filter('exclude', this._excludedProps).order(this._defaultOrder);
       })

@@ -3,9 +3,9 @@ import {
   ContentChildren,
   QueryList,
   AfterContentInit,
-  Input,
   HostBinding,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  input
 } from '@angular/core';
 
 import { AbstractContentReplacerComponent } from '../../abstracts/abstract-content-swap/abstract-content-replacer.component';
@@ -31,8 +31,7 @@ export class TabsComponent extends AbstractContentReplacerComponent implements A
    *
    * Defaults to `default`.
    */
-  @Input()
-  public tabSizing: 'default' | 'contain' = 'default';
+  public readonly tabSizing = input<'default' | 'contain'>('default');
 
   /**
    * Describes the ordering of tabs vs content.
@@ -44,8 +43,7 @@ export class TabsComponent extends AbstractContentReplacerComponent implements A
    *
    * Defaults to `forwards`.
    */
-  @Input()
-  public layoutDirection: 'forward' | 'reverse' = 'forward';
+  public readonly layoutDirection = input<'forward' | 'reverse'>('forward');
 
   /**
    * Describes the layout direction the tab content.
@@ -56,21 +54,20 @@ export class TabsComponent extends AbstractContentReplacerComponent implements A
    * Defaults to `forward`.
    */
 
-  @Input()
-  public contentDirection = 'forward';
+  public readonly contentDirection = input('forward');
 
   @HostBinding('class.forward')
   private get _tabDirectionForwardBinding() {
-    return this.layoutDirection === 'forward';
+    return this.layoutDirection() === 'forward';
   }
 
   @HostBinding('class.reverse')
   private get _tabDirectionReverseBinding() {
-    return this.layoutDirection === 'reverse';
+    return this.layoutDirection() === 'reverse';
   }
 
   @HostBinding('class.tab-sizing-contain')
   private get _tabSizingBinding() {
-    return this.tabSizing === 'contain';
+    return this.tabSizing() === 'contain';
   }
 }

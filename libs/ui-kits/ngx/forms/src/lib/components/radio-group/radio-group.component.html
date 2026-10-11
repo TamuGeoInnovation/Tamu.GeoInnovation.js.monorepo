@@ -1,4 +1,4 @@
-@for (option of options; track option) {
+@for (option of options(); track option) {
 <div class="radio-option" (click)="evaluateSetValue(option)" [ngClass]="{disabled: disabled}">
   <div class="radio-toggle">
     @switch (renderTemplate(option, valuePath) === value) { @case (true) {
@@ -7,6 +7,6 @@
     <div class="material-icons">radio_button_unchecked</div>
     } }
   </div>
-  <p class="radio-label">{{renderTemplate(option, displayPath)}}</p>
+  <p class="radio-label">{{renderTemplate(option, displayPath())}}</p>
 </div>
 }

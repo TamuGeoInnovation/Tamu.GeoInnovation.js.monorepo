@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 
 import { ITransactionData } from '@tamu-gisc/geoprocessing-v5';
 import { DecimalPipe } from '@angular/common';
@@ -11,6 +11,5 @@ import { DecimalPipe } from '@angular/common';
   imports: [DecimalPipe]
 })
 export class StatusResultTableComponent {
-  @Input()
-  public status: ITransactionData<unknown, unknown>;
+  public readonly status = input<ITransactionData<unknown, unknown>>(undefined);
 }

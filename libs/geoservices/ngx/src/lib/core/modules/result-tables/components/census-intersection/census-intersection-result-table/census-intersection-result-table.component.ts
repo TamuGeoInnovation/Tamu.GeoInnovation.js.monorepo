@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
@@ -15,8 +15,7 @@ import { AsyncPipe } from '@angular/common';
   imports: [AsyncPipe]
 })
 export class CensusIntersectionResultTableComponent implements OnInit {
-  @Input()
-  public address: ICensusIntersectionRecord;
+  public readonly address = input<ICensusIntersectionRecord>(undefined);
 
   public filteredProps: Observable<EnumeratorKeyValuePairs>;
 
@@ -44,7 +43,7 @@ export class CensusIntersectionResultTableComponent implements OnInit {
   ];
 
   public ngOnInit(): void {
-    this.filteredProps = of(this.address).pipe(
+    this.filteredProps = of(this.address()).pipe(
       map((address) => {
         return new FieldEnumerator(address).filter('exclude', this._excludedProps).order(this._defaultOrder);
       })

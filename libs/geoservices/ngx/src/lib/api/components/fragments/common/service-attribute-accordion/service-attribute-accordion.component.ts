@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 import { AccordionDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionContentDirective } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -23,6 +23,5 @@ export class ServiceAttributeAccordionComponent {
    *
    * Defaults to `true`.
    */
-  @Input()
-  public collapsable = true;
+  public readonly collapsable = input(true);
 }

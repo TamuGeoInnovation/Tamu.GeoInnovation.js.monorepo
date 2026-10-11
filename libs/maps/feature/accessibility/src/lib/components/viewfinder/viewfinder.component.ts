@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { fromEventPattern, Observable, Subject } from 'rxjs';
 import { map, mapTo, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 
@@ -26,14 +26,12 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
    *
    * Referenced layer id must be that of a feature layer.
    */
-  @Input()
-  public layer: string;
+  public readonly layer = input<string>(undefined);
 
   /**
    * Display template for listed focused features.
    */
-  @Input()
-  public template: string;
+  public readonly template = input<string>(undefined);
 
   /**
    * Determines the maximum number of features that will display in the
@@ -41,8 +39,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
    *
    * Defaults to the maximum of 10 features.
    */
-  @Input()
-  public listLimit = 9;
+  public readonly listLimit = input(9);
 
   /**
    * Store for selected features within the viewfinder. Used in template to render list.
@@ -72,7 +69,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     const sources = this.environment.value('LayerSources');
 
-    const source = sources.find((s) => s.id === this.layer);
+    const source = sources.find((s) => s.id === this.layer());
 
     // Isolate the map view for easier access
     this.$mapView = this.mapService.store.pipe(
@@ -163,9 +160,9 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
                   })
                   .then((features) => {
                     // Limit viewfinder results by the first 5 returned.
-                    this.viewFinderFeatures = features.features.slice(0, this.listLimit).map((f): IViewfinderResult => {
+                    this.viewFinderFeatures = features.features.slice(0, this.listLimit()).map((f): IViewfinderResult => {
                       return {
-                        display: new TemplateRenderer({ template: this.template, lookup: f }).render(),
+                        display: new TemplateRenderer({ template: this.template(), lookup: f }).render(),
                         graphic: f
                       };
                     });
