@@ -71,7 +71,6 @@
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "clipboard": "^2.0.4",
-    "colornames": "^1.1.1",
     "cookie-parser": "^1.4.3",
     "csurf": "^1.11.0",
     "date-and-time": "^0.14.2",

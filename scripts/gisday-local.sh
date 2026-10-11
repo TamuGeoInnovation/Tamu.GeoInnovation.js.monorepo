@@ -10,6 +10,7 @@
 #   api                 build gisday-nest and start it (gisday-api, port 3333), with Redis
 #   web                 start the gisday-angular dev server (gisday-dev, port 4201)
 #   migrate <step>      show, run or revert migrations, or generate <Name>, on gisday-db (docs/gisday-migrations.md)
+#   scrub <new.bak>     write a copy of the database with everything personal replaced, as a new backup
 #   status              list the containers
 #   stop                stop and remove the containers; the database volume is kept
 #
@@ -27,6 +28,7 @@ NODE_IMAGE=node:22.23.3
 SQL_IMAGE=mcr.microsoft.com/mssql/server:2022-latest
 NET=gisday-local
 DB_NAME=gisday-nest-eh
+SCRUB_DB=gisday-scrubbed
 
 need() {
   [ -f "$1" ] || { echo "Missing $1. See docs/gisday-local.md." >&2; exit 2; }
@@ -39,6 +41,17 @@ network() {
 sql() {
   # Runs a query as sa inside the container; the password never leaves the container's environment.
   docker exec gisday-db sh -c '/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$SA_PASSWORD" -C -b "$@"' sqlcmd "$@"
+}
+
+migration() {
+  # Runs a gisday-nest:migration-* target on database $1. As sa: gisday_app can read and write data
+  # but cannot change tables. The password stays in the container.
+  local db="$1" step="$2"
+  shift 2
+  docker run --rm -m 4g --network "$NET" --env-file "$LOCAL_DIR/local-db.env" \
+    -e TYPEORM_HOST=gisday-db -e TYPEORM_DATABASE="$db" -e TYPEORM_USERNAME=sa -e NX_DAEMON=false \
+    -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w "$NODE_IMAGE" \
+    sh -c 'TYPEORM_PASSWORD="$SA_PASSWORD" node node_modules/nx/dist/bin/nx.js run "$@"' nx "gisday-nest:migration-$step" "$@"
 }
 
 case "${1:-}" in
@@ -61,6 +74,8 @@ case "${1:-}" in
   restore)
     bak="${2:?usage: restore <file.bak in $LOCAL_DIR>}"
     need "$LOCAL_DIR/$bak"
+    # A running API holds connections open, and a restore needs the database to itself.
+    sql -Q "IF DB_ID(N'$DB_NAME') IS NOT NULL ALTER DATABASE [$DB_NAME] SET SINGLE_USER WITH ROLLBACK IMMEDIATE"
     sql -Q "RESTORE DATABASE [$DB_NAME] FROM DISK = N'/backups/$bak' WITH REPLACE, STATS = 10,
       MOVE N'$DB_NAME' TO N'/var/opt/mssql/data/$DB_NAME.mdf',
       MOVE N'${DB_NAME}_log' TO N'/var/opt/mssql/data/${DB_NAME}_log.ldf'"
@@ -97,7 +112,12 @@ SQL
 
   web)
     network
+    # Nx records each running task, keyed by process id, in its workspace-data directory. `stop` kills this
+    # container, so its record is never cleared, and every container's Nx gets the same process id. Kept in
+    # the checkout, the record would make the next start wait for itself forever (#1626); kept in the
+    # container, it goes when the container does. The cost is a project graph computed on every start.
     docker run -d --name gisday-dev -m 8g --network "$NET" -p 4201:4201 -e NX_DAEMON=false \
+      -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data \
       -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w \
       "$NODE_IMAGE" sh -c "node node_modules/nx/dist/bin/nx.js serve gisday-angular --configuration=local --host 0.0.0.0 --port 4201 --poll=2000"
     echo "gisday-dev started; the first compile takes several minutes: docker logs -f gisday-dev"
@@ -108,11 +128,28 @@ SQL
     step="${2:?usage: migrate <show|run|revert|generate <Name>>}"
     need "$LOCAL_DIR/local-db.env"
     [ "$step" != generate ] || name="--name=${3:?usage: migrate generate <Name>}"
-    # As sa: gisday_app can read and write data but cannot change tables. The password stays in the container.
-    docker run --rm -m 4g --network "$NET" --env-file "$LOCAL_DIR/local-db.env" \
-      -e TYPEORM_HOST=gisday-db -e TYPEORM_DATABASE="$DB_NAME" -e TYPEORM_USERNAME=sa -e NX_DAEMON=false \
-      -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w "$NODE_IMAGE" \
-      sh -c 'TYPEORM_PASSWORD="$SA_PASSWORD" node node_modules/nx/dist/bin/nx.js run "$@"' nx "gisday-nest:migration-$step" ${name:-}
+    migration "$DB_NAME" "$step" ${name:-}
+    ;;
+
+  scrub)
+    out="${2:?usage: scrub <new file.bak, written to $LOCAL_DIR>}"
+    need "$LOCAL_DIR/local-db.env"
+    [ ! -e "$LOCAL_DIR/$out" ] || { echo "$LOCAL_DIR/$out already exists; choose another name." >&2; exit 2; }
+    # A new, empty database with the same logical file names, so `restore` takes its backup unchanged.
+    sql -Q "DROP DATABASE IF EXISTS [$SCRUB_DB];
+      CREATE DATABASE [$SCRUB_DB]
+        ON (NAME = N'$DB_NAME', FILENAME = N'/var/opt/mssql/data/$SCRUB_DB.mdf')
+        LOG ON (NAME = N'${DB_NAME}_log', FILENAME = N'/var/opt/mssql/data/${SCRUB_DB}_log.ldf');
+      ALTER DATABASE [$SCRUB_DB] SET RECOVERY SIMPLE"
+    migration "$SCRUB_DB" run
+    docker exec -i gisday-db sh -c '/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$SA_PASSWORD" -C -b -I -d "$1" -i /dev/stdin' sqlcmd "$DB_NAME" \
+      < apps/gisday-nest/src/database/scrub.sql
+    # The user a backup has to carry; `restore` maps it to the login on the machine that restores it.
+    sql -d "$SCRUB_DB" -Q "CREATE USER gisday_app FOR LOGIN gisday_app;
+      ALTER ROLE db_datareader ADD MEMBER gisday_app; ALTER ROLE db_datawriter ADD MEMBER gisday_app"
+    sql -Q "BACKUP DATABASE [$SCRUB_DB] TO DISK = N'/backups/$out' WITH INIT, COMPRESSION, CHECKSUM;
+      DROP DATABASE [$SCRUB_DB]"
+    echo "Wrote $LOCAL_DIR/$out. Check it, then restore it with: scripts/gisday-local.sh restore $out"
     ;;
 
   status)

@@ -22,7 +22,7 @@ the shared libraries behind them. A change to a shared library can affect severa
 
 ## Where things are written down
 
-Five places, each with one job.
+Nine places, each with one job.
 
 | Where | What belongs there |
 | --- | --- |
@@ -30,6 +30,8 @@ Five places, each with one job.
 | [`docs/map-layers.md`](docs/map-layers.md) | Where a layer's symbology, title and order come from, how to override each, and when an override is right. Read before hard-coding anything about how a map looks. |
 | [`docs/testing-maps.md`](docs/testing-maps.md) | Which signal to wait for when a test needs a map to be finished, and why `ready` is not the one for a screenshot. |
 | [`docs/build-times.md`](docs/build-times.md) | How long runs take, so a change meant to speed the work up can be shown to have done it: one small file per run in [`docs/build-times/runs/`](docs/build-times/runs), written by the scripts, and the analysis of what the numbers show. Measurements, not rules. |
+| [`docs/gisday-local.md`](docs/gisday-local.md) | How to run the whole GIS Day site on one machine with `scripts/gisday-local.sh`: the containers, the settings kept outside the repository, and what works locally and what does not. |
+| [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
 | The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
 | The maintainer's handoff page | One person's own cross-machine notes, so he can stop on one machine and resume on another. Private, not linked from this repository, reached by pasting a pickup prompt. |

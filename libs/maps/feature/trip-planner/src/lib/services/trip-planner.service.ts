@@ -33,11 +33,10 @@ import {
 import { Angulartics2 } from 'angulartics2';
 import { v4 as guid } from 'uuid';
 import * as gju from 'geojson-utils';
-import { minBy } from 'lodash';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { findNearestIndex, isCoordinatePair, getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
-import { pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
+import { minBy, pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
