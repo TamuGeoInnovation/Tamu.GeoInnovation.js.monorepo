@@ -4,8 +4,8 @@ import { ModalComponent, ReportBadRouteComponent, BusListComponent } from '@tamu
 import { SidebarTripPlannerComponent } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
   AggiemapNgxUiMobileComponent,
-  TripPlannerBottomComponent,
-  TripPlannerTopComponent,
+  loadTripPlannerBottomComponent,
+  loadTripPlannerTopComponent,
   MainMobileSidebarComponent,
   MobileSidebarComponent,
   OmnisearchComponent
@@ -16,7 +16,7 @@ import { EsriModuleProviderService, EsriMapService } from '@tamu-gisc/maps/esri'
 // The shared sidebar's component, renamed here because UES has a SidebarComponent of its own.
 import { LayerListCategorizedComponent, LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendComponent, LegendService } from '@tamu-gisc/maps/feature/legend';
-import { TripPlannerOptionsComponent, TripPlannerService, BusService } from '@tamu-gisc/maps/feature/trip-planner';
+import { loadTripPlannerOptionsComponent, TripPlannerService, BusService } from '@tamu-gisc/maps/feature/trip-planner';
 import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
 
 import { BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
@@ -43,7 +43,7 @@ const routes: Routes = [
           { path: '', component: SidebarReferenceComponent },
           { path: 'bus', component: BusListComponent },
           { path: 'trip', component: SidebarTripPlannerComponent },
-          { path: 'trip/options', component: TripPlannerOptionsComponent }
+          { path: 'trip/options', loadComponent: loadTripPlannerOptionsComponent }
         ]
       },
       {
@@ -61,8 +61,8 @@ const routes: Routes = [
           {
             path: 'trip',
             children: [
-              { path: '', component: TripPlannerTopComponent },
-              { path: '', component: TripPlannerBottomComponent, outlet: 'outlet-2' }
+              { path: '', loadComponent: loadTripPlannerTopComponent },
+              { path: '', loadComponent: loadTripPlannerBottomComponent, outlet: 'outlet-2' }
             ]
           },
           {
