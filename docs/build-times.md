@@ -378,6 +378,24 @@ these runs can show: its individual runs fall into two groups, about 12.5 s and 
 builds, so the wait is the GIS services, not the JavaScript. On a desktop nothing changed beyond run to
 run variation.
 
+### The All Maps pages kept out of the map's first download
+
+Two production builds measured alternately, twice each, on 11 October 2026: `development` at `c3a7945a4`,
+which has the popups change (before), and the All Maps change (after). The GIS Day stack was also running
+on the machine.
+
+| | Before | After | Before, again | After, again |
+| --- | ---: | ---: | ---: | ---: |
+| Application JavaScript on the map page, gzipped | 388 KB | 376 KB | 388 KB | 376 KB |
+| Initial JavaScript, raw (from the build) | 1.33 MB | 1.22 MB | | |
+| Phone: first contentful paint | 4.54 s | 4.55 s | 4.49 s | 4.54 s |
+| Phone: map ready | 15.8 s | 15.7 s | 15.8 s | 15.7 s |
+| Desktop: first contentful paint | 0.29 s | 0.28 s | 0.26 s | 0.26 s |
+
+**What it shows.** 12 KB less JavaScript downloaded by the map page (3%), and no change in paint time that
+these runs can show. The build's initial files shrink by more than the page's download does, because part
+of what left them is a library the map route still loads straight away, in its own file.
+
 ## Where the other records are
 
 This file is for runs as they happen. Two existing records keep their own shape and are not folded

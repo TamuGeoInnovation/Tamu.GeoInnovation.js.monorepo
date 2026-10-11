@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
-import { LastMapService } from '../../services/last-map/last-map.service';
+import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 import { AllMapsComponent } from './all-maps.component';
 
 /**

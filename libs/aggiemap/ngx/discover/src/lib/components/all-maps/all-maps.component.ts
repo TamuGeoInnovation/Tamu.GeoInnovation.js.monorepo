@@ -13,7 +13,7 @@ import {
   InternalDiscoverApplication
 } from '../../interfaces/discover-application.interface';
 import { DiscoveryService, FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
-import { LastMapService } from '../../services/last-map/last-map.service';
+import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 import { getApplicationRoute, getNextEventDate } from '../discover.utils';
 import { QuickLinkItem, QuickLinksComponent } from '../quick-links/quick-links.component';
 import { AutocompleteComponent } from '@tamu-gisc/ui-kits/ngx/forms';

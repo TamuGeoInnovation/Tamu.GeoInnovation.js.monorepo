@@ -71,9 +71,10 @@ with the number of maps and services.
 ### What it checks
 
 The counts are a snapshot: **461 tests, measured on dev on 11 October 2026** in the run that cleared
-the [11 October release](releases/2026-10-11.md): 447 passed and 14 skipped, none failed, in 27 minutes 2
-seconds, with release scope and 6 workers. Production lists fewer maps than dev, so it runs fewer (421 on
-8 October); the bus routes run as one test each on dev (#1473), and production does not show bus routes.
+the [12 October release](releases/2026-10-12.md): 446 passed, 1 flaky and 14 skipped, none failed, in 29
+minutes 9 seconds, with release scope and 6 workers. Production lists fewer maps than dev, so it runs
+fewer (421 on 8 October); the bus routes run as one test each on dev (#1473), and production does not show
+bus routes.
 
 | Type of check | Spec files | Tests | What it catches | Prompted by |
 | --- | --- | ---: | --- | --- |
@@ -120,7 +121,7 @@ The suite started on 27 September 2026 and grew with nearly every bug found sinc
 | 5 October | 757 | One fewer GIS service once VeoRide was retired. **Measured: 757** (743 passed, 14 skipped) in 1.3 hours, the run that cleared the 5 October release |
 | 6 October | 436 | Production services (`gis-hosts.spec.ts`), and framing scoped from 412 routes to 71 so the suite is fast enough to gate a release ([#1426](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1426)). **Measured: 436** (421 passed, 1 failed, 14 skipped) in 29 min 24 s, the run that cleared the 6 October release |
 | 7 October | 460 | The every-route bus test split into one test per route, so it spreads across workers and a failure names its route ([#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473)). The count is dev's; production, where bus routes are not offered yet, keeps 2 bus tests |
-| 11 October | 461 | A map that draws ArcGIS's default symbol fails ([#1578](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1578)). **Measured: 461** on dev (447 passed, 14 skipped) in 27 min 2 s, the run that cleared the 11 October release |
+| 11 October | 461 | A map that draws ArcGIS's default symbol fails ([#1578](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1578)). **Measured: 461** on dev, twice: 447 passed and 14 skipped in 27 min 2 s on that day's first build, then 446 passed, 1 flaky and 14 skipped in 29 min 9 s on the build that shipped |
 
 Numbers marked ~ are estimates: today's count for each spec, added up by the date the spec first
 appeared. Bold numbers are real runs. The early estimates are approximate, because the per-map checks

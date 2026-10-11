@@ -62,11 +62,15 @@ serve configuration adds `apps/gisday-angular/proxy.local.json`, which sends tho
 - Pages load with the restored data (checked 11 October on the office machine: the page, the API
   directly at <http://localhost:3333/api/seasons/active>, and the same call through the dev server's
   proxy at <http://localhost:4201/___ANGULAR_API_URL___/seasons/active> all answer 200).
+- Sign-in, with your own GIS Day account. The `local` serve configuration swaps in
+  `apps/gisday-angular/src/environments/environment.local.ts`, which holds the settings of the
+  "GIS Day (local development)" Auth0 application. That application accepts only sign-ins that return
+  to `http://localhost:4201`, so the port cannot be changed. It is the same Auth0 tenant as production:
+  the accounts are real, and the local API holds whatever Auth0 credentials its settings file was
+  given, so do not edit users from a local copy.
 
 What does not, yet:
 
-- **Sign-in.** The Auth0 placeholders in the front end are never replaced, so the login button goes
-  to `___angular_auth0_domain___`. Needs a dev Auth0 application and a way to fill the values (#1522).
 - **Uploaded images** (sponsor logos, speaker photos). They live on the production cluster's volume,
   not in the database.
 - **Email**, deliberately: every `MAILROOM_` value is blank.
