@@ -15,7 +15,16 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-Nothing yet.
+### GIS Day: the sponsorship levels double for 2026
+
+The sponsor page on the GIS Day site showed last year's amounts. Each level is now twice what it was:
+Point $512, Line $1,024, Polygon $2,048, Raster $4,096. What each level includes is unchanged
+([#1655](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1655)). This reaches
+the public site with GIS Day's next deploy, not with an AggieMap release.
+
+| Before | After |
+| --- | --- |
+| ![The four levels at $256, $512, $1,024 and $2,048](../screenshots/gisday-sponsor-prices-2026/before.png) | ![The four levels at $512, $1,024, $2,048 and $4,096](../screenshots/gisday-sponsor-prices-2026/after.png) |
 
 ---
 
@@ -30,6 +39,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| GIS Day sponsorship levels doubled ([#1655](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1655)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` (see `docs/gisday-local.md`) | Point $512, Line $1,024, Polygon $2,048, Raster $4,096; each level's perks unchanged |
 
 ---
 
