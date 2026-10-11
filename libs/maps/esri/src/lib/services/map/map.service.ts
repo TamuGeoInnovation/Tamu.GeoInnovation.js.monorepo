@@ -18,6 +18,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriModuleProviderService } from '../module-provider/module-provider.service';
 import { LayerSourcesService } from '../layer-sources/layer-sources.service';
 import { registerMapProbe } from './map-probe';
+import { orderHitsForPopup, SELECTION_LAYER_ID } from './hit-order';
 import { PopupComponentReference } from '../../popup-reference';
 import {
   declaresOwnRenderer,
@@ -249,7 +250,9 @@ export class EsriMapService {
         if (!this.router.url.includes('trip')) {
           // A hit can also be a media or route hit, which carries no graphic (ArcGIS 4.27, #1322).
           this._hitTest.next({
-            graphics: res.results.filter((r): r is esri.GraphicHit => r.type === 'graphic').map((r) => r.graphic)
+            graphics: orderHitsForPopup(
+              res.results.filter((r): r is esri.GraphicHit => r.type === 'graphic').map((r) => r.graphic)
+            )
           });
         }
       });
@@ -1090,7 +1093,7 @@ export class EsriMapService {
 
     // Source object
     const selectionLayers = this.environment.value('LayerSources') as LayerSource[];
-    const source = Object.assign(selectionLayers.find((src) => src.id === 'selection-layer')) as LayerSource;
+    const source = Object.assign(selectionLayers.find((src) => src.id === SELECTION_LAYER_ID)) as LayerSource;
 
     // Resolve the popup component to assign to the selection layer instance. Without this,
     // a follow-up click on the highlighted graphic would fall back to the source's static
@@ -1161,7 +1164,7 @@ export class EsriMapService {
    *
    */
   public clearSelectedFeatures() {
-    const source = this.environment.value('LayerSources').find((src) => src.id === 'selection-layer');
+    const source = this.environment.value('LayerSources').find((src) => src.id === SELECTION_LAYER_ID);
 
     if (source) {
       // Source object
