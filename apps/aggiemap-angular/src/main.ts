@@ -6,7 +6,6 @@ import * as environment from './environments/environment';
 import { env } from '@tamu-gisc/common/ngx/environment';
 import { notificationStorage, AGGIEMAP_NOTIFICATION_STORE_KEY } from '@tamu-gisc/common/ngx/ui/notification';
 import { EVENT_NOTIFICATION_DEFINITIONS, aggiemapRoutes } from '@tamu-gisc/aggiemap/ngx/core';
-import { EventDefinitions } from '@tamu-gisc/ts/events/ngx';
 import { BUS_STOP_POPUP_COMPONENT } from '@tamu-gisc/maps/feature/trip-planner';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { provideHttpClient, withXhr, withInterceptorsFromDi } from '@angular/common/http';
@@ -40,7 +39,12 @@ bootstrapApplication(AppComponent, {
     provideRouter(aggiemapRoutes),
     { provide: env, useValue: environment },
     { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
-    { provide: EVENT_NOTIFICATION_DEFINITIONS, useValue: EventDefinitions },
+    // Loaded after startup, not with it: every event map's definition is a large download that the
+    // first paint does not need (#1454).
+    {
+      provide: EVENT_NOTIFICATION_DEFINITIONS,
+      useValue: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.EventDefinitions)
+    },
     // Supplies the bus map's stop/route popup at the application root (BusService lives in a low-level
     // lib and cannot import the popup component directly — see BUS_STOP_POPUP_COMPONENT).
     { provide: BUS_STOP_POPUP_COMPONENT, useValue: Popups.BusStopPopupComponent },

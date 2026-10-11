@@ -1,5 +1,3 @@
-import { EventDefinitions } from '@tamu-gisc/ts/events/ngx';
-
 import { NotificationEvents } from './notification-events';
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
@@ -15,12 +13,20 @@ const toTime = (date: string | number | Date) =>
  * hard-coded here for the same days is a second one: October 2026's Ring Day showed both, as "1 of 2".
  */
 describe('NotificationEvents', () => {
-  const toastWindows = EventDefinitions.map((d) => d.configuration)
-    .filter((c) => c?.toast && c.eventDates?.length)
-    .map((c) => {
-      const dates = c.eventDates.map(toTime);
-      return { id: c.id, from: Math.min(...dates) - 7 * ONE_DAY, to: Math.max(...dates) + ONE_DAY };
-    });
+  let toastWindows: { id: string; from: number; to: number }[] = [];
+
+  // Loaded the way the application loads them: the event definitions are not part of its first
+  // download (#1454), so nothing in the application may import them statically.
+  beforeAll(async () => {
+    const { EventDefinitions } = await import('@tamu-gisc/ts/events/ngx');
+
+    toastWindows = EventDefinitions.map((d) => d.configuration)
+      .filter((c) => c?.toast && c.eventDates?.length)
+      .map((c) => {
+        const dates = c.eventDates.map(toTime);
+        return { id: c.id, from: Math.min(...dates) - 7 * ONE_DAY, to: Math.max(...dates) + ONE_DAY };
+      });
+  });
 
   it('finds the event toasts to compare against', () => {
     expect(toastWindows.length).toBeGreaterThan(0);
