@@ -1,6 +1,6 @@
 # Unreleased
 
-Nothing has merged since the 11 October release.
+Since the 11 October release notes were cut: the Tailgating tent popup fix (see Summary).
 
 **The last release is [11 October 2026](2026-10-11.md)**, built from `df1768ab9` (build 20261011.3). The
 full suite cleared it on dev: 447 passed, none failed. The release before it is
@@ -15,7 +15,12 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-Nothing yet.
+- **Tailgating: a tent inside a highlighted zone opens its own popup** ([#1614](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1614)). A link to a
+  zone, opened in a tab that already had the map open, drew the yellow selection highlight over the zone
+  and its tents, and a click on a tent then opened an empty popup reading ", TX"
+  ([before](../screenshots/tailgating-tent-under-highlight/before-dev.png)). The click now goes to the
+  tent under the highlight ([after](../screenshots/tailgating-tent-under-highlight/after-local.png)).
+  Found on dev before the readable links ([#1574](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1574)) reached production.
 
 ---
 
@@ -30,6 +35,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Tailgating: a tent under the zone highlight ([#1614](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1614)) ([before](../screenshots/tailgating-tent-under-highlight/before-dev.png), [after](../screenshots/tailgating-tent-under-highlight/after-local.png)) | Open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d), then in the same tab open [Aggie Spirit Lawn](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-8) | The zone turns yellow; clicking a tent in it opens that tent's popup ("Tent A21"), not a popup reading ", TX"; clicking the zone away from a tent opens the zone's popup |
 
 ---
 
