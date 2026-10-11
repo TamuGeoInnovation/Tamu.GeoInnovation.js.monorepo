@@ -39,15 +39,6 @@ export const publicRoutes: Routes = [
         }
       },
       {
-        path: 'login',
-        loadChildren: () => import('./login/login.routes').then((m) => m.loginRoutes),
-        canActivate: [],
-        data: {
-          deviceModes: ['standalone'],
-          deviceFailRedirect: 'app/install'
-        }
-      },
-      {
         path: 'install',
         loadChildren: () => import('./install/install.routes').then((m) => m.installRoutes),
         canActivate: [DeviceGuard],
@@ -57,6 +48,8 @@ export const publicRoutes: Routes = [
           deviceIgnoreFailRedirect: true
         }
       },
+      // There is no login page: every page that needs a signed-in user is behind Auth0's guard, which
+      // sends them to sign in and back. An old /login link falls through to the submission page (#1608).
       { path: '', redirectTo: 'submission', pathMatch: 'full' },
       { path: '**', redirectTo: 'submission' }
     ]
