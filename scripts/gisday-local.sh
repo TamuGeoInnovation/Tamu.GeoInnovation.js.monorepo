@@ -5,19 +5,20 @@
 #   scripts/gisday-local.sh <step> [...]
 #
 #   db                  start SQL Server (gisday-db, port 14330, volume gisday-db-data)
-#   restore <file.bak>  restore a backup from GISDAY_LOCAL_DIR into gisday-db, and map the app login
+#   restore [file.bak]  restore the repository's scrubbed copy into gisday-db, or a backup named here
+#                       from GISDAY_LOCAL_DIR, and map the app login
 #   install             npm ci into the shared node_modules volume (tamu-js-dev-nm)
 #   api                 build gisday-nest and start it (gisday-api, port 3333), with Redis
 #   web                 start the gisday-angular dev server (gisday-dev, port 4201)
 #   migrate <step>      show, run or revert migrations, or generate <Name>, on gisday-db (docs/gisday-migrations.md)
-#   scrub <new.bak>     write a copy of the database with everything personal replaced, as a new backup
+#   scrub               rewrite the repository's scrubbed copy from the database now restored
 #   status              list the containers
 #   stop                stop and remove the containers; the database volume is kept
 #
 # Settings never live in the repository. GISDAY_LOCAL_DIR (default C:/TAMU/gisday-local) holds:
-#   local-db.env            SA_PASSWORD and GISDAY_APP_PASSWORD
+#   local-db.env            SA_PASSWORD and GISDAY_APP_PASSWORD; `db` writes it on first use
 #   gisday-api.local.env    gisday-nest's settings, started from apps/gisday-nest/local.env.sample
-#   *.bak                   the backup to restore
+#   *.bak                   only for someone restoring a backup of production
 # Run from Git Bash at the root of a checkout.
 set -euo pipefail
 
@@ -29,6 +30,8 @@ SQL_IMAGE=mcr.microsoft.com/mssql/server:2022-latest
 NET=gisday-local
 DB_NAME=gisday-nest-eh
 SCRUB_DB=gisday-scrubbed
+# The starting database for local development: a copy with nobody's real data in it (docs/gisday-local.md).
+SEED=apps/gisday-nest/src/database/gisday-local.bak
 
 need() {
   [ -f "$1" ] || { echo "Missing $1. See docs/gisday-local.md." >&2; exit 2; }
@@ -56,7 +59,13 @@ migration() {
 
 case "${1:-}" in
   db)
-    need "$LOCAL_DIR/local-db.env"
+    if [ ! -f "$LOCAL_DIR/local-db.env" ]; then
+      # Passwords for this container only. SQL Server wants upper case, lower case, a digit and a symbol.
+      mkdir -p "$LOCAL_DIR"
+      printf 'SA_PASSWORD=Sa1!%s\nGISDAY_APP_PASSWORD=App1!%s\n' "$(openssl rand -hex 12)" "$(openssl rand -hex 12)" \
+        > "$LOCAL_DIR/local-db.env"
+      echo "Wrote new local passwords to $LOCAL_DIR/local-db.env"
+    fi
     network
     docker run -d --name gisday-db -m 4g --network "$NET" -p 14330:1433 \
       -e ACCEPT_EULA=Y -e MSSQL_PID=Developer --env-file "$LOCAL_DIR/local-db.env" \
@@ -72,11 +81,18 @@ case "${1:-}" in
     ;;
 
   restore)
-    bak="${2:?usage: restore <file.bak in $LOCAL_DIR>}"
-    need "$LOCAL_DIR/$bak"
+    need "$LOCAL_DIR/local-db.env"
+    if [ -n "${2:-}" ]; then
+      need "$LOCAL_DIR/$2"
+      bak="$2" from="/backups/$2"
+    else
+      need "$SEED"
+      docker cp "$SEED" gisday-db:/tmp/restore.bak
+      bak="$SEED" from=/tmp/restore.bak
+    fi
     # A running API holds connections open, and a restore needs the database to itself.
     sql -Q "IF DB_ID(N'$DB_NAME') IS NOT NULL ALTER DATABASE [$DB_NAME] SET SINGLE_USER WITH ROLLBACK IMMEDIATE"
-    sql -Q "RESTORE DATABASE [$DB_NAME] FROM DISK = N'/backups/$bak' WITH REPLACE, STATS = 10,
+    sql -Q "RESTORE DATABASE [$DB_NAME] FROM DISK = N'$from' WITH REPLACE, STATS = 10,
       MOVE N'$DB_NAME' TO N'/var/opt/mssql/data/$DB_NAME.mdf',
       MOVE N'${DB_NAME}_log' TO N'/var/opt/mssql/data/${DB_NAME}_log.ldf'"
     # A backup carries the database user but not the server login, so create the login and map it.
@@ -99,12 +115,14 @@ SQL
 
   api)
     need "$LOCAL_DIR/gisday-api.local.env"
+    need "$LOCAL_DIR/local-db.env"
     network
     docker inspect gisday-redis >/dev/null 2>&1 || docker run -d --name gisday-redis --network "$NET" redis:7-alpine
     docker run --rm -m 8g -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false \
       "$NODE_IMAGE" node node_modules/nx/dist/bin/nx.js build gisday-nest
     docker run -d --name gisday-api -m 2g --network "$NET" -p 3333:3333 \
       --env-file "$LOCAL_DIR/gisday-api.local.env" \
+      -e TYPEORM_PASSWORD="$(sed -n 's/^GISDAY_APP_PASSWORD=//p' "$LOCAL_DIR/local-db.env")" \
       -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w \
       "$NODE_IMAGE" node dist/apps/gisday-nest/main.js
     echo "gisday-api started: docker logs -f gisday-api"
@@ -132,9 +150,7 @@ SQL
     ;;
 
   scrub)
-    out="${2:?usage: scrub <new file.bak, written to $LOCAL_DIR>}"
     need "$LOCAL_DIR/local-db.env"
-    [ ! -e "$LOCAL_DIR/$out" ] || { echo "$LOCAL_DIR/$out already exists; choose another name." >&2; exit 2; }
     # A new, empty database with the same logical file names, so `restore` takes its backup unchanged.
     sql -Q "DROP DATABASE IF EXISTS [$SCRUB_DB];
       CREATE DATABASE [$SCRUB_DB]
@@ -147,9 +163,10 @@ SQL
     # The user a backup has to carry; `restore` maps it to the login on the machine that restores it.
     sql -d "$SCRUB_DB" -Q "CREATE USER gisday_app FOR LOGIN gisday_app;
       ALTER ROLE db_datareader ADD MEMBER gisday_app; ALTER ROLE db_datawriter ADD MEMBER gisday_app"
-    sql -Q "BACKUP DATABASE [$SCRUB_DB] TO DISK = N'/backups/$out' WITH INIT, COMPRESSION, CHECKSUM;
+    sql -Q "BACKUP DATABASE [$SCRUB_DB] TO DISK = N'/tmp/scrubbed.bak' WITH INIT, COMPRESSION, CHECKSUM;
       DROP DATABASE [$SCRUB_DB]"
-    echo "Wrote $LOCAL_DIR/$out. Check it, then restore it with: scripts/gisday-local.sh restore $out"
+    docker cp gisday-db:/tmp/scrubbed.bak "$SEED"
+    echo "Wrote $SEED. It is public once pushed: read docs/gisday-local.md before committing it."
     ;;
 
   status)

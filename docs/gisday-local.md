@@ -19,10 +19,13 @@ with the AggieMap dev server (see CLAUDE.md), so that volume must match the chec
 `scripts/gisday-local.sh` reads them from `GISDAY_LOCAL_DIR` (default `C:/TAMU/gisday-local`):
 
 - `local-db.env`: `SA_PASSWORD` and `GISDAY_APP_PASSWORD`, local passwords for this container only.
+  The `db` step writes it, with new random values, the first time it runs.
 - `gisday-api.local.env`: the API's settings. Start from `apps/gisday-nest/local.env.sample`. The
   database settings must point at `gisday-db`, never production or the shared dev server, and every
-  `MAILROOM_` value stays blank so no email is sent. `TYPEORM_PASSWORD` is `GISDAY_APP_PASSWORD`.
-- the backup to restore (`.bak`).
+  `MAILROOM_` value stays blank so no email is sent. Leave `TYPEORM_PASSWORD` blank; the script
+  passes the one it wrote. This is the one file a new developer has to be given (#1623).
+
+The database itself needs nothing from anyone: `restore` uses the scrubbed copy in the repository.
 
 ## Steps, in order
 
@@ -31,7 +34,7 @@ From Git Bash at the root of the checkout:
 ```bash
 scripts/gisday-local.sh install                 # npm ci into tamu-js-dev-nm, about 2 minutes
 scripts/gisday-local.sh db                      # SQL Server, waits until it answers
-scripts/gisday-local.sh restore <file>.bak      # seconds for a scrubbed copy, about 90 s for 9 GB
+scripts/gisday-local.sh restore                 # the repository's scrubbed copy, a few seconds
 scripts/gisday-local.sh api                     # builds gisday-nest (under a minute), starts it and Redis
 scripts/gisday-local.sh web                     # first compile takes several minutes
 ```
@@ -51,38 +54,56 @@ schema; it cannot change tables. The migrations table already records `InitialSc
 
 ## A copy with no personal data
 
-A backup of production holds real people's names, email addresses, account ids, student ids and
-photographs. It should be on as few machines as possible, and never on a student's. Anyone who has
-one restored can write a scrubbed copy from it:
+`apps/gisday-nest/src/database/gisday-local.bak` is the starting database for local development: a
+copy of the real one with nobody's real data in it, about 4 MB. `restore` with no file name uses it.
+
+**It is in a public repository. Whoever replaces it is publishing it.**
+
+What it holds that is real: seasons and their days; events' names, times, rooms and abstracts;
+places, organizations, universities, sponsors, tags and classes; the competition forms, and the
+answers and map positions people submitted to them, which are choices from fixed lists about things
+on campus. It has how many people signed up for and checked in to each event, and nothing about who.
+
+What is made up or removed:
+
+- **everyone in `speakers`**, published or not: a made-up name, biography and affiliation, and no
+  degree, year, program or social media;
+- **every account id**, with a new random one on every row, so no two rows belong to one person;
+- every email address, and the contact names of organizations and sponsors;
+- professors' names on classes;
+- competition entries' titles, abstracts, messages, links and participant lists;
+- meeting links, ids, phone numbers and passwords;
+- participants' photographs, each with a one-pixel image, which was nearly all of the size;
+- every uploaded logo and photograph, with one placeholder image that the front end ships;
+- any event name, event abstract or organization name that holds a real person's full name or an
+  email address.
+
+### Refreshing it
+
+Only someone who has a backup of production, and only when the local data has gone stale:
 
 ```bash
-scripts/gisday-local.sh scrub gisday-scrubbed-<date>.bak    # under a minute; about 5 MB against 9 GB
-scripts/gisday-local.sh restore gisday-scrubbed-<date>.bak  # a few seconds
+scripts/gisday-local.sh restore <production backup>.bak   # from GISDAY_LOCAL_DIR; about 90 s for 9 GB
+scripts/gisday-local.sh scrub                             # rewrites gisday-local.bak; about 3 minutes
+scripts/gisday-local.sh restore                           # back onto the scrubbed copy
 ```
+
+A backup of production holds real people's names, email addresses, account ids, student ids and
+photographs. Keep it on as few machines as possible, never on a student's, and delete it afterwards.
 
 `scrub` builds a new, empty database from the migrations and copies every table into it through
 `apps/gisday-nest/src/database/scrub.sql`, so nothing of the original can be left in freed pages or
-the log. The scrubbed backup restores like any other and is the one to hand to a new developer.
+the log. Three things keep it safe as the schema and the data change:
 
-What it keeps: seasons, events, places, organizations, sponsors, tags, classes, the competition
-forms and answers, and the names and profiles of speakers who are on an event or are organizers,
-because the site publishes those. Sign-ups and check-ins keep their counts.
+- Every column is named in `scrub.sql` as kept or replaced. A column in neither list stops the
+  script before it copies anything.
+- Before copying, it lists every real full name in the database: speakers, contacts, professors and
+  competition entrants.
+- After copying, it searches every text column of the copy for an account id, a real email address
+  or one of those names, and fails if it finds one.
 
-What it replaces:
-
-- every account id, with a made-up one that stays the same wherever that account appears;
-- every email address, and the contact names of organizations and sponsors;
-- the name and profile of everyone in `speakers` who was never on an event (most of the table);
-- every uploaded logo and photograph, with one placeholder image that the front end ships;
-- competition entries' titles, abstracts, messages, links and participant lists;
-- meeting links, ids, phone numbers and passwords;
-- participants' photographs, each with a one-pixel image, which is nearly all of the size;
-- any event abstract, speaker profile or organization name that holds an email address.
-
-Two things make it safe to keep using as the schema changes. Every column is named in `scrub.sql`
-as kept or replaced, and a column in neither list stops the script before it copies anything. And
-after copying, it searches every text column of the copy for an account id or a real email address
-and fails if it finds one.
+What it cannot find is a person mentioned by first name only, or described without being named, in
+an event's name or abstract. Read the diff of what the site shows before committing a new copy.
 
 ## How the front end reaches the API
 
@@ -106,8 +127,8 @@ serve configuration adds `apps/gisday-angular/proxy.local.json`, which sends tho
 
 What does not, yet:
 
-- **Real logos and photographs.** They are files on the production site, not rows in the database. A
-  scrubbed copy shows one placeholder image in their place; a copy of production shows broken images.
+- **Real people, logos and photographs.** The scrubbed copy has made-up speakers and one placeholder
+  image for every upload; the real files are on the production site, not in the database.
 - **Email**, deliberately: every `MAILROOM_` value is blank.
 
 ## Things that look broken
