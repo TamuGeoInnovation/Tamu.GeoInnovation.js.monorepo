@@ -13,10 +13,19 @@ set -uo pipefail
 dir="$(mktemp -d)"
 trap 'rm -rf "$dir"' EXIT
 
+# Recording is opt-in; every case below but the first is about what a recorded run looks like.
 failed=0
 expect() { # <description> <expected> <actual>
   if [ "$2" = "$3" ]; then echo "ok   $1"; else echo "FAIL $1: expected [$2], got [$3]"; failed=1; fi
 }
+
+# Nothing is written unless BUILD_TIMES_RECORD is 1.
+(unset BUILD_TIMES_RECORD; run_times_record "$dir/off" "2026-10-09 19:25:30 CDT" check x 0 "" 1 2>"$dir/off.err")
+expect "a run is not recorded unless asked" "no" "$([ -e "$dir/off" ] && echo yes || echo no)"
+expect "and says nothing about it" "" "$(cat "$dir/off.err")"
+(BUILD_TIMES_RECORD=0 run_times_record "$dir/off" "2026-10-09 19:25:30 CDT" check x 0 "" 1 2>/dev/null)
+expect "nor when BUILD_TIMES_RECORD is something other than 1" "no" "$([ -e "$dir/off" ] && echo yes || echo no)"
+export BUILD_TIMES_RECORD=1
 
 # One file per run, in a folder that does not exist yet, named from the start, the tool and the machine.
 runs="$dir/docs/build-times/runs"

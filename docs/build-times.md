@@ -1,25 +1,23 @@
 # Build times
 
-How long things take here, recorded as they are run, so that a change meant to make the work faster
-can be shown to have done it.
+How long things take here, so that a change meant to make something faster can be shown to have done it.
 
-**Since #1593 the scripts record their own runs**, one small file each, in
-[`build-times/runs/`](build-times/runs): `scripts/check-in-volume.sh` and
-`test/smoke/aggiemap/run-local.sh` write the start in US Central, the machine
-(`BUILD_TIMES_MACHINE`, or `unspecified`), what ran, the exit code and totals, the elapsed time and, for
-a check, the clone and `npm ci` times. Commit the file each run writes with your work, and read them as
-one table with `bash scripts/run-times-report.sh`. This page keeps the runs nothing
-records by itself, and the context and analysis: what a comparison shows and why. The tables below are
-the history recorded by hand before that.
+**Record when you are measuring something, before and after; not every run** (#1647). The scripts print the
+elapsed time of every run. With `BUILD_TIMES_RECORD=1`, `scripts/check-in-volume.sh` and
+`test/smoke/aggiemap/run-local.sh` also write one small file per run into
+[`build-times/runs/`](build-times/runs): the start in US Central, the machine (`BUILD_TIMES_MACHINE`, or
+`unspecified`), what ran, the exit code and totals, the elapsed time and, for a check, the clone and
+`npm ci` times. Commit those with the work they measure, and read them as one table with
+`bash scripts/run-times-report.sh`.
 
-**The rule: every check, build, install or deploy records its elapsed time**, whatever its length
-(#1415): in `build-times/runs/` when a script wrote it, here otherwise. Recording everything is deliberate for now, and can be trimmed back if the table
-becomes unwieldy. The scripts already print the elapsed time, so the measurement is free; what is
-not free is remembering a number that was only ever on screen.
+From 9 to 11 October 2026 every run was recorded, automatically (#1593, after #1415's rule that every
+check, build, install and deploy records its time). That answered what it was for and then became a file
+in every pull request; the 39 runs recorded are kept in that folder. This page keeps what a comparison
+shows and why, the measurements taken by hand, and the history from before.
 
 A single duration says very little. The same run measured before and after a change is what shows
-whether the work paid off, so **record the "before" even when nothing is being optimised** - that is
-the measurement that cannot be taken later.
+whether the work paid off, so **take the "before" first** - it cannot be taken later - and take both on a
+machine doing nothing else.
 
 ## How to record one
 

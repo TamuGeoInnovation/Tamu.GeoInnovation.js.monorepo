@@ -22,9 +22,9 @@
 # records. The first run installs them, in a few seconds, and so does any run after those versions
 # change. Docker leaves an empty node_modules folder in a checkout that had none.
 #
-# Each run writes a small file into docs/build-times/runs/ in this checkout (scripts/run-times.sh, #1593):
-# when it started, in US Central, the machine (BUILD_TIMES_MACHINE), what ran, Playwright's totals and the
-# elapsed time. Commit the file with your work.
+# With BUILD_TIMES_RECORD=1, a run writes a small file into docs/build-times/runs/ in this checkout
+# (scripts/run-times.sh, #1593): when it started, in US Central, the machine (BUILD_TIMES_MACHINE), what
+# ran, Playwright's totals and the elapsed time. Use it when measuring something; it is off otherwise.
 set -euo pipefail
 
 env_name="${1:-}"
