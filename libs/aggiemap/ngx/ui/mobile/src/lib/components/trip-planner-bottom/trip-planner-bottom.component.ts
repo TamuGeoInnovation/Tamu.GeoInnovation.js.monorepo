@@ -7,7 +7,7 @@ import { TripPlannerService, TripResult } from '@tamu-gisc/maps/feature/trip-pla
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
 import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { TripPlannerDirectionsMobileComponent } from '@tamu-gisc/maps/feature/trip-planner';
+import { TripPlannerDirectionsMobileComponent } from '@tamu-gisc/maps/feature/trip-planner/components';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-bottom',
