@@ -9,6 +9,7 @@
 #   install             npm ci into the shared node_modules volume (tamu-js-dev-nm)
 #   api                 build gisday-nest and start it (gisday-api, port 3333), with Redis
 #   web                 start the gisday-angular dev server (gisday-dev, port 4201)
+#   migrate <step>      show, run or revert migrations, or generate <Name>, on gisday-db (docs/gisday-migrations.md)
 #   status              list the containers
 #   stop                stop and remove the containers; the database volume is kept
 #
@@ -101,6 +102,17 @@ SQL
       "$NODE_IMAGE" sh -c "node node_modules/nx/dist/bin/nx.js serve gisday-angular --configuration=local --host 0.0.0.0 --port 4201 --poll=2000"
     echo "gisday-dev started; the first compile takes several minutes: docker logs -f gisday-dev"
     echo "Then open http://localhost:4201"
+    ;;
+
+  migrate)
+    step="${2:?usage: migrate <show|run|revert|generate <Name>>}"
+    need "$LOCAL_DIR/local-db.env"
+    [ "$step" != generate ] || name="--name=${3:?usage: migrate generate <Name>}"
+    # As sa: gisday_app can read and write data but cannot change tables. The password stays in the container.
+    docker run --rm -m 4g --network "$NET" --env-file "$LOCAL_DIR/local-db.env" \
+      -e TYPEORM_HOST=gisday-db -e TYPEORM_DATABASE="$DB_NAME" -e TYPEORM_USERNAME=sa -e NX_DAEMON=false \
+      -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w "$NODE_IMAGE" \
+      sh -c 'TYPEORM_PASSWORD="$SA_PASSWORD" node node_modules/nx/dist/bin/nx.js run "$@"' nx "gisday-nest:migration-$step" ${name:-}
     ;;
 
   status)
