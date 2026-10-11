@@ -15,7 +15,6 @@ import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
-import { SeasonDayCardComponent } from '../season-day-card/season-day-card.component';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { ParseDateTimeStringsPipe } from '../../../../pipes/parse-date-time-strings/parse-date-time-strings.pipe';
 
@@ -24,7 +23,7 @@ import { ParseDateTimeStringsPipe } from '../../../../pipes/parse-date-time-stri
   templateUrl: './event-row.component.html',
   styleUrls: ['./event-row.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CheckboxComponent, SeasonDayCardComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe]
+  imports: [CheckboxComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe]
 })
 export class EventRowComponent implements OnChanges, OnInit {
   private readonly rt = inject(Router);
