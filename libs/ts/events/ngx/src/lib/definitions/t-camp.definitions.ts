@@ -107,7 +107,9 @@ export const TCampConfiguration: EventConfiguration = {
   applicationName: 'T Camp Parking & Transportation Map',
   shortApplicationName: 'T Camp Map',
   introductionText: 'Find parking, entry routes, and closures for T Camp. Use the map to plan your drop-off and pickup.',
-  eventDates: [],
+  // 11 to 13 August 2026, from the Aggie Transfer Camp site. The camp is held off campus; whether
+  // this map still describes something useful for it is asked on #1697.
+  eventDates: ['2026-08-11', '2026-08-12', '2026-08-13'],
   scheduleUrl: 'https://transport.tamu.edu/Parking/Events/camp.aspx',
   // The Williams Alumni Center sits ~570m southwest of the lots, so the initial view has to cover the
   // full extent of all four layers (~460m x ~575m) rather than framing the lots alone. Centered on
