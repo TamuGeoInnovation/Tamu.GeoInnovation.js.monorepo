@@ -1,0 +1,33 @@
+@import 'libs/sass/modules/loaders';
+
+// Moved into the view's manual UI container, which spans the map, so this centres on the map itself.
+:host {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(26rem, 75%);
+}
+
+.nearmap-date-slider {
+  padding: 0.4rem 0.75rem 0.3rem;
+  border-radius: 4pt;
+  font-size: 0.8rem;
+}
+
+.title p {
+  padding-bottom: 0;
+  font-weight: 600;
+
+  &.current {
+    margin-left: auto;
+    font-weight: normal;
+  }
+}
+
+// Sized down from the shared loader's default; it sits beside a title, not in a panel of its own.
+.spinning-loader {
+  margin: 0 0 0 0.5rem;
+  font-size: 4px;
+  flex-shrink: 0;
+}

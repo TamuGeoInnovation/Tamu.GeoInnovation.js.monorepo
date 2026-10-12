@@ -1,0 +1,12 @@
+@if (visible()) {
+<div class="nearmap-date-slider esri-component esri-widget">
+  <div class="title flex flex-row align-center">
+    <p>Aerial imagery</p>
+    @if (loading()) {
+    <div class="spinning-loader" aria-label="Loading imagery"></div>
+    }
+    <p class="current">{{ currentLabel() }}</p>
+  </div>
+  <tamu-gisc-range [formControl]="position" [min]="0" [max]="sliderLength" [step]="1" [ticks]="ticks()" [showLimits]="false"></tamu-gisc-range>
+</div>
+}

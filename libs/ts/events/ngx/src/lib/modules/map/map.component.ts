@@ -13,7 +13,12 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
-import { aggiemapBasemap, AGGIEMAP_BASEMAP_MAX_SCALE, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
+import {
+  aggiemapBasemap,
+  AGGIEMAP_BASEMAP_MAX_SCALE,
+  BasemapGalleryService,
+  NearmapDateSliderComponent
+} from '@tamu-gisc/maps/feature/basemap';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { eventHasPassed } from '@tamu-gisc/common/utils/date';
 
@@ -68,6 +73,7 @@ const EVENT_PASSED_GRACE_DAYS = 1;
     PopupComponent,
     PopupMobileComponent,
     MapViewfinderComponent,
+    NearmapDateSliderComponent,
     AsyncPipe
   ]
 })
@@ -82,6 +88,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private readonly eventsSettingsService = inject(EventSettingsService);
   private readonly eventService = inject(EventService);
   private readonly ms = inject(ModalService);
+  private readonly basemaps = inject(BasemapGalleryService);
 
   public map: esri.Map;
   public view: esri.MapView;
@@ -271,6 +278,9 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public continue(instances: MapServiceInstance) {
+    // A link naming an Aerial Imagery capture, `?imagery=2025-11-22`, opens on it (#1541).
+    this.basemaps.applyNearmapCaptureFromUrl();
+
     loadModules(['esri/widgets/Track', 'esri/widgets/Compass'])
       .then(([Track, Compass]) => {
         instances.view.when(() => {

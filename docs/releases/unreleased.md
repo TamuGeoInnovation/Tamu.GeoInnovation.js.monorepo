@@ -1,6 +1,6 @@
 # Unreleased
 
-Since the 12 October release: November's Ring Day, and GIS Day changes waiting for GIS Day's own deploy.
+Since the 12 October release: November's Ring Day, an Aerial Imagery timeline on dev, and GIS Day changes waiting for GIS Day's own deploy.
 
 **The last release is [12 October 2026](2026-10-12.md)**, built from `79cadfccc` (build 20261012.5). The
 full suite cleared it on dev: 446 passed, none failed. The release before it is
@@ -31,6 +31,29 @@ October Ring Day stays listed and says "This event has passed". That it is not c
 but a person's eye is [#1687](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1687).
 
 Times are not shown. The maps carry dates, not hours ([#1686](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1686)).
+
+### Aerial Imagery can go back in time (dev only)
+
+The Aerial Imagery basemap only ever showed Nearmap's latest capture. Now, while it is the basemap, a
+timeline along the bottom of the map steps back through every capture of campus Nearmap has: fifteen,
+from September 2016 to October 2026 ([#1541](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1541)). Like Google Earth's historical imagery, each
+capture is a tick at its date, years are marked, and the slider snaps to the nearest capture; the
+right end is the latest. The list comes from Nearmap's own service, so it offers what exists rather
+than empty months.
+
+Choosing an older capture turns the map's layers off, so the campus is seen as it was rather than
+under today's zones and buildings; any layer can be turned back on, and returning to the latest
+brings back the ones that were on. A chosen date goes into the address (`?imagery=2020-10-06`), so a
+copied link opens on the same capture.
+
+**Development only for now**: older captures may be billed differently from the current one, and that
+is to be known before production shows it.
+
+| Before | After |
+| --- | --- |
+| ![Aerial Imagery with no way to choose a date](../screenshots/nearmap-imagery-date/before.png) | ![The imagery timeline on the latest capture](../screenshots/nearmap-imagery-date/after-latest.png) |
+
+![Opened from ?imagery=2020-10-06: the 2020 capture, layers off](../screenshots/nearmap-imagery-date/after-2020.png)
 
 ### GIS Day: the 2026 VGI competition, the Monument Trail Challenge
 
@@ -105,6 +128,7 @@ dated notes as what was tested, and this table empties.
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | November Ring Day ([#1686](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1686)) | [Campus events](https://dev.aggiemap.tamu.edu/all-maps/campus-events), then [November Ring Day](https://dev.aggiemap.tamu.edu/events/november-ring-day) | **November Ring Day listed under Fall**, beside October's. Its builder offers two days: Aggie Ring Pickup (November 5) and Aggie Ring Day (November 6). **Each opens on its own view** - pick-up tight on the Williams Alumni Center, the ring day wider across Aggie Park; they must not share a framing. October Ring Day should still say "This event has passed" |
+| Aerial Imagery timeline ([#1541](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1541)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d/settings), choose **Aerial Imagery**; then [the same map on 6 October 2020](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?imagery=2020-10-06) | A slider along the bottom of the map, ticks at each capture, years 2017-2026, "Latest (Oct 5, 2026)" at the right. Dragging snaps to a capture and changes the imagery; leaving the latest turns the layers off, and coming back turns them on. The second link opens on the 2020 imagery with layers off. Any other basemap hides the slider. Not on production |
 | GIS Day: 2026 VGI competition page ([#1665](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1665)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions/vgi` and `/competitions/monuments` | The VGI page says "November 9-20, 2026" and "2026 Competition: Texas A&M University Monument Trail Challenge", with 2025's Art Trail Challenge first under Prior Competitions. "Read Event Details" opens the new page: two things to collect, one point each, winners Thursday November 19, University Architect logo, no broken images |
 | GIS Day: poster and presentation competition dates moved to 2026 ([#1662](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1662)) | Not on dev, for the same reason. Locally, `/competitions/posters` and `/competitions/presentation` | No 2025 date on either page. Posters: Tuesday November 17th, 2026, due Monday November 9th. Presentations: Tuesday November 17th and Wednesday November 18th, 2026 |
 | GIS Day: Aggie Map Design Competition removed ([#1661](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1661)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions` | The Competitions menu and page list VGI, Poster and Presentation only; `/competitions/aggie-map` goes to the home page |
