@@ -83,6 +83,35 @@ output {
   }
 }
 
+// A short mark per tick under the track, its label below it, centred on the value.
+.ticks {
+  position: relative;
+  height: 1.1rem;
+  margin-top: 0.1rem;
+
+  .tick {
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 0.35rem;
+    background: #757575;
+
+    &.unmarked {
+      background: transparent;
+    }
+  }
+
+  .tick-label {
+    position: absolute;
+    top: 0.35rem;
+    left: 50%;
+    @include transform(translatex(-50%));
+    font-size: 0.7rem;
+    color: #757575;
+    white-space: nowrap;
+  }
+}
+
 label,
 .labels {
   font-size: 0.9rem;

@@ -3,6 +3,7 @@ import { Page } from '@playwright/test';
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import {
+  DEVELOPMENT_ONLY_CONTROLS,
   DEVELOPMENT_ONLY_SECTIONS,
   DEVELOPMENT_ONLY_SERVICES,
   developmentSectionsVisible,
@@ -114,6 +115,51 @@ test.describe(`development-only services ${VISIBLE ? 'are used here' : 'are neve
           expect(hits(), `${service} (${reason}) has no production service, but was requested here`).toEqual([]);
         }
       }
+    });
+  }
+});
+
+/**
+ * Development-only controls drawn on the map stay off production (#1541).
+ *
+ * The Aerial Imagery date slider is gated on `TestingService.isTesting`, like the Bus Routes tab, and
+ * like that tab nothing asserted the gate worked - which is how Bus Routes reached production in the
+ * first place (#1090). It is not a sidebar tab and it requests no service of its own, so neither of
+ * the lists above covers it.
+ *
+ * Each control is reached by the address that brings it up, and checked both ways: offered where
+ * development sections are, absent where they are not. One direction alone would pass just as well if
+ * the control had been deleted outright, or if the page had simply failed to load.
+ */
+test.describe(`development-only map controls ${VISIBLE ? 'are offered here' : 'stay off this environment'}`, () => {
+  for (const control of DEVELOPMENT_ONLY_CONTROLS) {
+    test(`${control.name} ${VISIBLE ? 'is offered' : 'is not offered'}`, async ({ page }) => {
+      await blockAnalytics(page);
+      await page.goto(control.page);
+
+      const locator = page.locator(control.selector);
+
+      if (VISIBLE) {
+        // Not waiting for the map first: the control is drawn as soon as the captures are read, which
+        // is well before the imagery has finished painting.
+        await expect(locator, `${control.name} should be offered here (${control.reason})`).toBeVisible({
+          timeout: 120_000
+        });
+
+        return;
+      }
+
+      // Only a map that has finished loading has drawn everything it is going to, so a page that
+      // never got that far cannot pass this by being empty.
+      await expect
+        .poll(async () => probeReady(page), {
+          message: `${control.page} never finished loading, so its absence proves nothing`,
+          timeout: 120_000,
+          intervals: [1_000]
+        })
+        .toBe(true);
+
+      await expect(locator, `${control.name} must not reach production (${control.reason})`).toHaveCount(0);
     });
   }
 });

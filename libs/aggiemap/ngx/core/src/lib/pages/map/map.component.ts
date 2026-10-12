@@ -4,7 +4,12 @@ import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
-import { aggiemapBasemap, AGGIEMAP_BASEMAP_MAX_SCALE } from '@tamu-gisc/maps/feature/basemap';
+import {
+  aggiemapBasemap,
+  AGGIEMAP_BASEMAP_MAX_SCALE,
+  BasemapGalleryService,
+  NearmapDateSliderComponent
+} from '@tamu-gisc/maps/feature/basemap';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
@@ -38,6 +43,7 @@ import esri = __esri;
     PerspectiveToggleComponent,
     RouterOutlet,
     MapViewfinderComponent,
+    NearmapDateSliderComponent,
     AsyncPipe
   ]
 })
@@ -47,6 +53,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private readonly ms = inject(ModalService);
   private readonly ss = inject(SettingsService);
   private readonly ts = inject(TestingService);
+  private readonly basemaps = inject(BasemapGalleryService);
 
   public map: esri.Map;
   public view: esri.MapView;
@@ -159,6 +166,9 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public continue(instances: MapServiceInstance) {
+    // A link naming an Aerial Imagery capture, `?imagery=2025-11-22`, opens on it (#1541).
+    this.basemaps.applyNearmapCaptureFromUrl();
+
     loadModules(['esri/widgets/Track', 'esri/widgets/Compass'])
       .then(([Track, Compass]) => {
         instances.view.when(() => {
