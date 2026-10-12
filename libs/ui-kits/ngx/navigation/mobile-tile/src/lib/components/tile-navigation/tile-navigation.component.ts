@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy, inject, output } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 
@@ -31,8 +31,7 @@ export class TileNavigationComponent implements OnInit, OnDestroy {
    * This event is emitted when the tile navigation component has gone from
    * visible state `true` to `false`
    */
-  @Output()
-  public closed: EventEmitter<boolean> = new EventEmitter();
+  public readonly closed = output<boolean>();
 
   /**
    * While the main control mechanism for the tile nav component is the input
@@ -43,8 +42,7 @@ export class TileNavigationComponent implements OnInit, OnDestroy {
    * This event is emitted when the tile navigation component has gone from
    * visible state `false` to `true`
    */
-  @Output()
-  public opened: EventEmitter<boolean> = new EventEmitter();
+  public readonly opened = output<boolean>();
 
   /**
    * Determines the visibility of the tile nav based on the emissions
@@ -65,9 +63,9 @@ export class TileNavigationComponent implements OnInit, OnDestroy {
       // emission.
       this.visible.pipe(skip(1), takeUntil(this._$destroy)).subscribe((state) => {
         if (state === true) {
-          this.opened.next(true);
+          this.opened.emit(true);
         } else {
-          this.closed.next(true);
+          this.closed.emit(true);
         }
       });
     } else {

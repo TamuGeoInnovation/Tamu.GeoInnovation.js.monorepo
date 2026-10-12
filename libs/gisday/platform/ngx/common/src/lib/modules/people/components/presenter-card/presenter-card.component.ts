@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, input, output } from '@angular/core';
 
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { SpeakerAvatarComponent } from '../speaker-avatar/speaker-avatar.component';
@@ -18,8 +18,7 @@ export class PresenterCardComponent implements OnInit {
 
   public readonly showActions = input(false);
 
-  @Output()
-  public delete: EventEmitter<void> = new EventEmitter();
+  public readonly delete = output<void>();
 
   public speakerInitials: string;
 

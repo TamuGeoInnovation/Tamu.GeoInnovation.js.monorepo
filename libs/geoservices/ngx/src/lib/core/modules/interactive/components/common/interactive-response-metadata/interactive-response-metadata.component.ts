@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, output } from '@angular/core';
 import { TooltipComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { DecimalPipe } from '@angular/common';
@@ -20,11 +20,9 @@ export class InteractiveResponseMetadataComponent {
   @Input()
   public guid: string;
 
-  @Output()
-  public resetTrigger: EventEmitter<null> = new EventEmitter();
+  public readonly resetTrigger = output<null>();
 
-  @Output()
-  public redirectTrigger: EventEmitter<null> = new EventEmitter();
+  public readonly redirectTrigger = output<null>();
 
   public reset() {
     this.resetTrigger.emit(null);

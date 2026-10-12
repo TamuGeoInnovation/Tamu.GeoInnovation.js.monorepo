@@ -1,13 +1,4 @@
-import {
-  Component,
-  HostListener,
-  EventEmitter,
-  Output,
-  OnChanges,
-  SimpleChanges,
-  ChangeDetectionStrategy,
-  input
-} from '@angular/core';
+import { Component, HostListener, OnChanges, SimpleChanges, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BehaviorSubject, of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -78,8 +69,7 @@ export class HamburgerTriggerComponent implements OnChanges {
   /**
    * Event emitted when the hamburger nav element is clicked on by client.
    */
-  @Output()
-  public poked: EventEmitter<boolean> = new EventEmitter();
+  public readonly poked = output<boolean>();
 
   // Internal trigger state
   private _state: BehaviorSubject<boolean> = new BehaviorSubject(false);

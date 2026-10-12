@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 import { Observable, Subject, map, pipe, startWith } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
@@ -16,8 +16,7 @@ export class BasicSummaryBlurbComponent implements OnInit {
 
   public readonly keyFragment = input<string>(undefined);
 
-  @Output()
-  public navigateFull: EventEmitter<void> = new EventEmitter();
+  public readonly navigateFull = output<void>();
 
   public showBlurb: Observable<boolean>;
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, output } from '@angular/core';
 
 import {
   ComponentMode,
@@ -18,8 +18,7 @@ export class InteractiveModeToggleComponent {
   @Input()
   public mode: ComponentMode;
 
-  @Output()
-  public modeChange: EventEmitter<ComponentMode> = new EventEmitter();
+  public readonly modeChange = output<ComponentMode>();
 
   public options = [
     {

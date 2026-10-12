@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, Input, Output, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, HostBinding, Input, ChangeDetectionStrategy, input, output } from '@angular/core';
 
 import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -25,14 +25,11 @@ export class SeasonsDayTileComponent {
    */
   public readonly interactive = input(true);
 
-  @Output()
-  public added: EventEmitter<boolean> = new EventEmitter();
+  public readonly added = output<boolean>();
 
-  @Output()
-  public deleted: EventEmitter<Partial<SeasonDay>> = new EventEmitter();
+  public readonly deleted = output<Partial<SeasonDay>>();
 
-  @Output()
-  public updated: EventEmitter<Partial<SeasonDay>> = new EventEmitter();
+  public readonly updated = output<Partial<SeasonDay>>();
 
   @HostBinding('class')
   public get cssClasses() {

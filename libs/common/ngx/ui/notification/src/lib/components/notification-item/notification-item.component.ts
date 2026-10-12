@@ -2,13 +2,12 @@ import {
   Component,
   OnInit,
   Input,
-  Output,
-  EventEmitter,
   OnDestroy,
   HostBinding,
   ChangeDetectionStrategy,
   inject,
-  input
+  input,
+  output
 } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
@@ -53,18 +52,15 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
   }
 
   // Output event that triggers the notification container to call the notification service remove method
-  @Output()
-  public closeNotification: EventEmitter<Notification> = new EventEmitter();
+  public readonly closeNotification = output<Notification>();
 
   // Output event that triggers the notification container to call the notification service acknowledge method
-  @Output()
-  public acknowledgeNotification: EventEmitter<Notification> = new EventEmitter();
+  public readonly acknowledgeNotification = output<Notification>();
 
   /**
    * Event fired when a notification item registered action is triggered.
    */
-  @Output()
-  public actionNotification: EventEmitter<Notification> = new EventEmitter();
+  public readonly actionNotification = output<Notification>();
 
   // Animation trigger value.
   public animateStatus = true;

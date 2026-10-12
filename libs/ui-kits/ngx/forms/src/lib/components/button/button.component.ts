@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, HostBinding, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, HostBinding, ChangeDetectionStrategy, input, output } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-button',
@@ -39,8 +39,8 @@ export class ButtonComponent {
    *
    * Not required for `reset` or `submit` types.
    */
-  @Output()
-  public go: EventEmitter<boolean> = new EventEmitter();
+  // Emitted with no value; it was declared as boolean but has never carried one.
+  public readonly go = output<void>();
 
   /**
    * Describes the components active state in a form, or otherwise.

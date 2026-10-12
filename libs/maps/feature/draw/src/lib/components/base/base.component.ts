@@ -1,14 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  Input,
-  Output,
-  EventEmitter,
-  ChangeDetectionStrategy,
-  inject,
-  input
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 import { from, Subject, combineLatest, ReplaySubject } from 'rxjs';
 import { takeUntil, filter, switchMap, take, map } from 'rxjs/operators';
 
@@ -76,8 +66,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
   @Input()
   public redoTool = true;
 
-  @Output()
-  public export: EventEmitter<esri.Graphic[] | esri.Graphic> = new EventEmitter();
+  public readonly export = output<esri.Graphic[] | esri.Graphic>();
 
   private _$destroy: Subject<boolean> = new Subject();
   private _$loaded: ReplaySubject<boolean> = new ReplaySubject();

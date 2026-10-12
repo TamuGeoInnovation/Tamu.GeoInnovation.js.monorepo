@@ -1,13 +1,12 @@
 import {
   Component,
   Input,
-  Output,
-  EventEmitter,
   ChangeDetectionStrategy,
   forwardRef,
   ChangeDetectorRef,
   inject,
-  input
+  input,
+  output
 } from '@angular/core';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
@@ -87,8 +86,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   /**
    * Event emitted when the value of the select input element is changed.
    */
-  @Output()
-  public changed: EventEmitter<string> = new EventEmitter();
+  public readonly changed = output<string>();
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
   private _onChange = (value: string) => {};
@@ -100,7 +98,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    * Responsible for emitting the model changed event to the parent component.
    */
   public changeEvent() {
-    this.changed.next(this.value);
+    this.changed.emit(this.value);
   }
 
   /**

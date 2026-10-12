@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, Output, EventEmitter, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, forwardRef, Input, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -31,8 +31,7 @@ export class FileComponent implements ControlValueAccessor {
    */
   public readonly clearMessage = input('Clear');
 
-  @Output()
-  public fileSelected: EventEmitter<File> = new EventEmitter();
+  public readonly fileSelected = output<File>();
 
   public fileName: string;
 
@@ -100,6 +99,6 @@ export class FileComponent implements ControlValueAccessor {
     this.fileName = undefined;
     this.dataType = undefined;
     this.fileExtension = undefined;
-    this.fileSelected.next(undefined);
+    this.fileSelected.emit(undefined);
   }
 }
