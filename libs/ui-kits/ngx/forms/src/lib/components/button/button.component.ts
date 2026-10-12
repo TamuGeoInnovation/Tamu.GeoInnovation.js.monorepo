@@ -39,7 +39,8 @@ export class ButtonComponent {
    *
    * Not required for `reset` or `submit` types.
    */
-  public readonly go = output<boolean>();
+  // Emitted with no value; it was declared as boolean but has never carried one.
+  public readonly go = output<void>();
 
   /**
    * Describes the components active state in a form, or otherwise.

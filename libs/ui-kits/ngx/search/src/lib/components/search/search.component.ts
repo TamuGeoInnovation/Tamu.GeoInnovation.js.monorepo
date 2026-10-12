@@ -145,13 +145,13 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Event emitter that will emit when the left side action icon is pressed.
    * Up to the parent component on how to handle interaction.
    */
-  public readonly leftAction = output<boolean>();
+  public readonly leftAction = output<void>();
 
   /**
    * Event emitter that will emit when the right side action icon is pressed.
    * Up to the parent component on how to handle interaction.
    */
-  public readonly rightAction = output<boolean>();
+  public readonly rightAction = output<void>();
 
   // ===========================================================================
 
