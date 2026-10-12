@@ -185,6 +185,21 @@ the public site with GIS Day's next deploy, not with an AggieMap release.
 | --- | --- |
 | ![The four levels at $256, $512, $1,024 and $2,048](../screenshots/gisday-sponsor-prices-2026/before.png) | ![The four levels at $512, $1,024, $2,048 and $4,096](../screenshots/gisday-sponsor-prices-2026/after.png) |
 
+### GIS Day: button labels are centred again
+
+On the GIS Day site a link styled as a button showed its label at the left edge of the button:
+"Submit Your Presentation", "Submit Your Poster", "Read Event Details" and the rest. The shared rule
+that makes such a link a proper block (so its width and padding apply) left GIS Day's own button
+definition centring with a property that only works on a flex box. The label is now centred in that
+one definition, as the shared button does it, so every button on the site follows
+([#1708](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1708)). Buttons that were already centred, such as those on the sponsor page, are unchanged.
+
+| Before | After |
+| --- | --- |
+| ![Read Event Details at the left edge of its button]($../screenshots/1708-gisday-button-labels/before-vgi-button.png) | ![Read Event Details centred]($../screenshots/1708-gisday-button-labels/after-vgi-button.png) |
+| ![Submit Your Poster at the left edge of its button]($../screenshots/1708-gisday-button-labels/before-posters-top.png) | ![Submit Your Poster centred]($../screenshots/1708-gisday-button-labels/after-posters-top.png) |
+| ![The sponsor page's buttons, already centred]($../screenshots/1708-gisday-button-labels/before-sponsors-buttons.png) | ![The sponsor page's buttons, unchanged]($../screenshots/1708-gisday-button-labels/after-sponsors-buttons.png) |
+
 ### GIS Day: ten more ways to sponsor, listed on the sponsor page
 
 Besides the four levels, GIS Day offers sponsorships of a single event or award: coffee breaks, lunch,
@@ -219,6 +234,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: poster and presentation competition dates moved to 2026 ([#1662](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1662)) | Not on dev, for the same reason. Locally, `/competitions/posters` and `/competitions/presentation` | No 2025 date on either page. Posters: Tuesday November 17th, 2026, due Monday November 9th. Presentations: Tuesday November 17th and Wednesday November 18th, 2026 |
 | GIS Day: Aggie Map Design Competition removed ([#1661](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1661)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions` | The Competitions menu and page list VGI, Poster and Presentation only; `/competitions/aggie-map` goes to the home page |
 | GIS Day sponsorship levels doubled ([#1655](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1655)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` (see `docs/gisday-local.md`) | Point $512, Line $1,024, Polygon $2,048, Raster $4,096; each level's perks unchanged |
+| GIS Day: button labels centred ([#1708](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1708)) | Not on dev, for the same reason. Locally, `/competitions/vgi`, `/competitions/posters`, `/competitions/presentation` and `/sponsors/tamu` | The label of every button is in the middle of the button, not at its left edge: Read Event Details, Submit Your Poster, Submit Your Presentation. The sponsor page's buttons look as they did |
 | GIS Day additional sponsorship opportunities ([#1658](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1658)) | Not on dev, for the same reason. Locally, `/sponsors/tamu` | Under the four levels: "Additional Sponsorship Opportunities", ten rows from Daily Coffee Break Sponsor ($1,500 per day) to VGI Competition Sponsor ($1,000), and a "Send Us a Message" button |
 
 ---

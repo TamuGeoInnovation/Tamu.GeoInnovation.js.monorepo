@@ -246,6 +246,10 @@ a {
   cursor: pointer;
   text-transform: capitalize;
 
+  // An anchor styled as a button is a block (`button-anchors`, below), where `justify-content` does
+  // nothing, so its label sat at the left edge. Centred here as the shared `button-base` centres it.
+  text-align: center;
+
   @include transition(color 0.3s, background 0.3s);
 
   border-radius: 1.5rem;
