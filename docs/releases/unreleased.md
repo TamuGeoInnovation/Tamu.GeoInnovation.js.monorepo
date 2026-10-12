@@ -256,8 +256,15 @@ map's definition only when its map opens ([#1646](https://github.com/TamuGeoInno
 
 - **Its production site is on an Angular 15 build**, so its next deploy carries every upgrade and refactor
   of 2026 at once. [#1611](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1611) (high) is the test pass on its dev site first.
-- **Running the whole GIS Day stack locally** needs a development database and a development Auth0
-  application ([#1511](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1511), [#1522](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1522)).
+- **The whole GIS Day stack runs locally** from `scripts/gisday-local.sh`, with sign-in, on a starting
+  database kept in the repository that holds nobody's real data. [`docs/gisday-local.md`](../gisday-local.md)
+  explains it and `CLAUDE_SETUP.md` Phase 6 is the step-by-step ([#1621](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1621), [#1522](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1522)).
+- **A new developer still has to be given one file**, the API's settings, because it holds production's
+  Auth0 credentials until a separate development tenant exists ([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623), medium).
+- **No development database exists outside a developer's machine.** [#1511](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1511) (medium) is open for
+  that: one on the cluster, then a migration run and reverted there, following
+  [`docs/gisday-migrations.md`](../gisday-migrations.md). It is the first step of the dev site
+  ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525), high).
 
 **What Angular's standalone migration gets wrong here, so check for it next time:**
 
