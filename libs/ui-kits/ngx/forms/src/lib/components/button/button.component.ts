@@ -1,10 +1,9 @@
-import { Component, HostBinding, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, HostBinding, input, output } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-button',
   templateUrl: './button.component.html',
-  styleUrls: ['./button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager
+  styleUrls: ['./button.component.scss']
 })
 export class ButtonComponent {
   /**

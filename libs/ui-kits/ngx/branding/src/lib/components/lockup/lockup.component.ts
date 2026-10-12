@@ -1,10 +1,9 @@
-import { Component, HostBinding, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, HostBinding, input } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-lockup',
   templateUrl: './lockup.component.html',
-  styleUrls: ['./lockup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager
+  styleUrls: ['./lockup.component.scss']
 })
 export class LockupComponent {
   public readonly theme = input<'light' | 'dark'>('light');

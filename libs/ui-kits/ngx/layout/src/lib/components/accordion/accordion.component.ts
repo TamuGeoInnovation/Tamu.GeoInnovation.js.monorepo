@@ -1,4 +1,4 @@
-import { Component, ElementRef, AfterContentInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, ElementRef, AfterContentInit, inject, input } from '@angular/core';
 
 import { AccordionService } from './services/accordion.service';
 
@@ -6,8 +6,7 @@ import { AccordionService } from './services/accordion.service';
   selector: 'tamu-gisc-accordion',
   templateUrl: './accordion.component.html',
   styleUrls: ['./accordion.component.scss'],
-  providers: [AccordionService],
-  changeDetection: ChangeDetectionStrategy.Eager
+  providers: [AccordionService]
 })
 export class AccordionComponent implements AfterContentInit {
   private el = inject(ElementRef);
