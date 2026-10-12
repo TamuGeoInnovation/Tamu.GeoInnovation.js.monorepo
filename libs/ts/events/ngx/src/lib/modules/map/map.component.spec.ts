@@ -8,6 +8,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 
 import { EventService } from '../../services/event/event.service';
 import { EventSettingsService } from '../../services/settings/event-settings.service';
@@ -54,7 +55,8 @@ describe('MapComponent (event-passed flow)', () => {
         { provide: LocalStoreService, useValue: { getStorageObjectKeyValue: jest.fn(() => null) } },
         { provide: EventSettingsService, useValue: mockEventSettingsService },
         { provide: EventService, useValue: {} },
-        { provide: ModalService, useValue: mockModalService }
+        { provide: ModalService, useValue: mockModalService },
+        { provide: BasemapGalleryService, useValue: { applyNearmapCaptureFromUrl: jest.fn() } }
       ]
     }).runInInjectionContext(() => new MapComponent());
   });
