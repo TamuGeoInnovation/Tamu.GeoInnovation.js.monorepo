@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { GeocodingAdvancedComponent } from '../../../../../../../core/modules/interactive/components/geocoding/advanced/geocoding-advanced/geocoding-advanced.component';
@@ -7,7 +7,6 @@ import { GeocodingAdvancedComponent } from '../../../../../../../core/modules/in
   selector: 'tamu-gisc-interactive',
   templateUrl: './interactive.component.html',
   styleUrls: ['./interactive.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [GeocodingAdvancedComponent]
 })
 export class InteractiveComponent implements OnInit {

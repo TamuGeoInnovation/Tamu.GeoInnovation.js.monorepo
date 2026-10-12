@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
@@ -19,7 +19,6 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
   selector: 'tamu-gisc-geocoding',
   templateUrl: './geocoding.component.html',
   styleUrls: ['./geocoding.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     GeocodingBasicComponent,
     TabsComponent,
