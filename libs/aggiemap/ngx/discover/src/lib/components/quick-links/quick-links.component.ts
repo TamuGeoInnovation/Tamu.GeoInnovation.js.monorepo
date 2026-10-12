@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 export interface QuickLinkItem {
@@ -10,7 +10,6 @@ export interface QuickLinkItem {
   selector: 'tamu-gisc-quick-links',
   templateUrl: './quick-links.component.html',
   styleUrls: ['./quick-links.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink]
 })
 export class QuickLinksComponent {

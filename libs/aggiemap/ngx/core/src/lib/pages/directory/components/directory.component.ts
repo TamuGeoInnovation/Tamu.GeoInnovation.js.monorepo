@@ -13,7 +13,7 @@ import {
   tap,
   toArray
 } from 'rxjs';
-import { Component, OnInit, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
+import { Component, OnInit, inject, viewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DatatableComponent, TableColumn, NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -27,7 +27,6 @@ import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
   selector: 'tamu-gisc-aggiemap-directory',
   templateUrl: './directory.component.html',
   styleUrls: ['./directory.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, FormsModule, ReactiveFormsModule, TextboxComponent, NgxDatatableModule, FooterComponent, AsyncPipe]
 })
 export class DirectoryComponent implements OnInit {
