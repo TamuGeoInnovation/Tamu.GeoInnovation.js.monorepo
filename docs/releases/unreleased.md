@@ -1,6 +1,7 @@
 # Unreleased
 
-Since the 12 October release: November's Ring Day, and GIS Day changes waiting for GIS Day's own deploy.
+Since the 12 October release: move-out's three dated maps, November's Ring Day, and GIS Day
+changes waiting for GIS Day's own deploy.
 
 **The last release is [12 October 2026](2026-10-12.md)**, built from `79cadfccc` (build 20261012.5). The
 full suite cleared it on dev: 446 passed, none failed. The release before it is
@@ -14,6 +15,40 @@ result adds its own entry below, in that pull request**, with its before/after s
 ---
 
 ## Summary
+
+### Move-out has a map for each of its three deadlines
+
+Residence Life runs move-out three times a year, on its own deadline each time, and AggieMap had one
+"Move Out" map with no dates on it covering all three. A visitor could not tell which one they were
+looking at, and the map could never say its event was over - so it sat under Spring on
+[campus events](https://aggiemap.tamu.edu/all-maps/campus-events) all year round.
+
+There are now three: **Spring Move Out**, **Summer I Move Out** and **Summer II Move Out**, each with
+its own dates and its own entry on the campus events page - spring under Spring, the two summer ones
+under Summer. The parking is the same for all three, so they share the layers the one map used; only
+the name, the dates and the season differ, and next year's is one line rather than another copy of
+the map.
+
+The dates want confirming before anyone relies on them. Residence Life has published 2026's -
+9 May, 30 June and 8 August ([reslife.tamu.edu/moveout](https://reslife.tamu.edu/moveout/)) - but not
+2027's, so these are matched to them by weekday rather than by calendar date, because each deadline
+falls at the end of its term: 8 May, 29 June and 7 August. Taking the same calendar dates would have
+put two of them on a Sunday.
+
+The original undated map is unlisted rather than deleted, so anything already linking to
+`/events/move-out` still works.
+
+**T Camp is dated too**, 11 to 13 August 2026, from the Aggie Transfer Camp site - it was the other
+event map that could never say its event was over. While looking that up it turned out the camp is
+held off campus, so what its map is for is a question for the team ([#1697](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1697)).
+
+New Student Conference Parking keeps no dates: the conference runs in sessions across the summer and
+no single set of dates describes it. It stays listed as a known exception in the smoke suite, so it
+is visible rather than quietly passing.
+
+| Before | After |
+| --- | --- |
+| ![The campus events page with a single undated Move Out under Spring](../screenshots/move-out-periods/campus-events-before.png) | Captured from dev once this is deployed |
 
 ### November's Ring Day is on the map
 
@@ -104,6 +139,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Move-out split into three dated maps ([#1691](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1691)) | [Campus events](https://dev.aggiemap.tamu.edu/all-maps/campus-events), then [Spring Move Out](https://dev.aggiemap.tamu.edu/events/spring-move-out), [Summer I](https://dev.aggiemap.tamu.edu/events/summer-i-move-out) and [Summer II](https://dev.aggiemap.tamu.edu/events/summer-ii-move-out) | **Spring Move Out under Spring; Summer I and Summer II Move Out under Summer**, and no plain "Move Out" anywhere on the page. Each of the three opens a map with the same parking as the old one. **This is the arrangement to confirm with the team** - whether three entries is what they want, and whether the 2027 dates (8 May, 29 June, 7 August) are right. `/events/move-out` should still open its map |
 | November Ring Day ([#1686](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1686)) | [Campus events](https://dev.aggiemap.tamu.edu/all-maps/campus-events), then [November Ring Day](https://dev.aggiemap.tamu.edu/events/november-ring-day) | **November Ring Day listed under Fall**, beside October's. Its builder offers two days: Aggie Ring Pickup (November 5) and Aggie Ring Day (November 6). **Each opens on its own view** - pick-up tight on the Williams Alumni Center, the ring day wider across Aggie Park; they must not share a framing. October Ring Day should still say "This event has passed" |
 | GIS Day: 2026 VGI competition page ([#1665](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1665)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions/vgi` and `/competitions/monuments` | The VGI page says "November 9-20, 2026" and "2026 Competition: Texas A&M University Monument Trail Challenge", with 2025's Art Trail Challenge first under Prior Competitions. "Read Event Details" opens the new page: two things to collect, one point each, winners Thursday November 19, University Architect logo, no broken images |
 | GIS Day: poster and presentation competition dates moved to 2026 ([#1662](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1662)) | Not on dev, for the same reason. Locally, `/competitions/posters` and `/competitions/presentation` | No 2025 date on either page. Posters: Tuesday November 17th, 2026, due Monday November 9th. Presentations: Tuesday November 17th and Wednesday November 18th, 2026 |
