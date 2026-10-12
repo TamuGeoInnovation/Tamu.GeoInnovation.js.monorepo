@@ -1,4 +1,4 @@
-import { Component, HostListener, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 
 import { AccordionService } from '../services/accordion.service';
 import { AbstractSlidingDrawerComponent } from '../../../abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component';
@@ -8,7 +8,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-accordion-header',
   templateUrl: './accordion-header.component.html',
   styleUrls: ['./accordion-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AbstractSlidingDrawerComponent, AsyncPipe]
 })
 export class AccordionHeaderComponent {

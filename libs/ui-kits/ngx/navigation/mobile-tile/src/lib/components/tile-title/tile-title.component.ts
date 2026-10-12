@@ -1,10 +1,9 @@
-import { Component, OnInit, ElementRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ElementRef, inject } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-tile-title',
   templateUrl: './tile-title.component.html',
-  styleUrls: ['./tile-title.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager
+  styleUrls: ['./tile-title.component.scss']
 })
 export class TileTitleComponent implements OnInit {
   private view = inject(ElementRef);
