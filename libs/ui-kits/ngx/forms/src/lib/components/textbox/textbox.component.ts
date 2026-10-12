@@ -3,10 +3,10 @@ import {
   Input,
   forwardRef,
   ChangeDetectionStrategy,
-  ViewChild,
   ElementRef,
   AfterViewInit,
-  input
+  input,
+  viewChild
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 
@@ -28,7 +28,7 @@ import { NgClass } from '@angular/common';
   imports: [FormsModule, NgClass]
 })
 export class TextboxComponent extends AbstractValueAccessorFormComponent<string> implements AfterViewInit {
-  @ViewChild('inputElement', { static: false }) inputElement: ElementRef<HTMLInputElement | HTMLTextAreaElement>;
+  readonly inputElement = viewChild<ElementRef<HTMLInputElement | HTMLTextAreaElement>>('inputElement');
 
   /**
    * Use the host `formControlName` directive as the input form name used to identify input fields and label ownership.
@@ -70,9 +70,9 @@ export class TextboxComponent extends AbstractValueAccessorFormComponent<string>
   public readonly autofocus = input(false);
 
   ngAfterViewInit(): void {
-    if (this.autofocus() && this.inputElement) {
+    if (this.autofocus() && this.inputElement()) {
       setTimeout(() => {
-        this.inputElement.nativeElement.focus();
+        this.inputElement().nativeElement.focus();
       }, 0);
     }
   }

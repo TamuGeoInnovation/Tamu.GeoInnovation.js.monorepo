@@ -1,4 +1,4 @@
-import { Component, ContentChildren, QueryList, AfterContentInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, AfterContentInit, ChangeDetectionStrategy, contentChildren } from '@angular/core';
 
 import { AbstractContentReplacerComponent } from '../../abstracts/abstract-content-swap/abstract-content-replacer.component';
 import { StepComponent } from './components/step/step.component';
@@ -13,6 +13,5 @@ import { NgClass, NgTemplateOutlet } from '@angular/common';
   imports: [StepToggleComponent, NgClass, NgTemplateOutlet]
 })
 export class StepperComponent extends AbstractContentReplacerComponent implements AfterContentInit {
-  @ContentChildren(StepComponent)
-  public toggleList: QueryList<StepComponent>;
+  public readonly toggleList = contentChildren(StepComponent);
 }

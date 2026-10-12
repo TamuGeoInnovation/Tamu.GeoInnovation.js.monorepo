@@ -6,10 +6,10 @@ import {
   OnDestroy,
   OnInit,
   Type,
-  ViewChild,
   ViewContainerRef,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  viewChild
 } from '@angular/core';
 import { Observable, Subject, takeUntil } from 'rxjs';
 
@@ -26,8 +26,7 @@ import { ModalRefService } from '../../services/modal-ref/modal-ref.service';
 export class ModalHostComponent implements OnInit, OnDestroy {
   private modalRef = inject(ModalRefService);
 
-  @ViewChild('modal', { static: true, read: ViewContainerRef })
-  private _modalChildHost: ViewContainerRef;
+  private readonly _modalChildHost = viewChild('modal', { read: ViewContainerRef });
 
   private _modalChildRef: ComponentRef<unknown>;
 
@@ -54,7 +53,7 @@ export class ModalHostComponent implements OnInit, OnDestroy {
    * Creates a provided component instance into the inner childe modal view container.
    */
   public mountModalChild<C, T>(component: Type<C>, data?: unknown): Observable<T> {
-    this._modalChildRef = this._modalChildHost.createComponent(component, {
+    this._modalChildRef = this._modalChildHost().createComponent(component, {
       injector: Injector.create({
         providers: [
           {
@@ -62,7 +61,7 @@ export class ModalHostComponent implements OnInit, OnDestroy {
             useValue: data
           }
         ],
-        parent: this._modalChildHost.injector
+        parent: this._modalChildHost().injector
       })
     });
 
@@ -79,8 +78,8 @@ export class ModalHostComponent implements OnInit, OnDestroy {
    * original caller.
    */
   public clear(exitData?: unknown, emit?: boolean) {
-    if (this._modalChildHost.length > 0) {
-      this._modalChildHost.clear();
+    if (this._modalChildHost().length > 0) {
+      this._modalChildHost().clear();
     }
 
     if (this._modalChildRef) {

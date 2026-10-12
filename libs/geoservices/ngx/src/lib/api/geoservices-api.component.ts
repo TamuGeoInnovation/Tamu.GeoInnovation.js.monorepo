@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterLinkActive, RouterLink, RouterOutlet } from '@angular/router';
 import { Observable, Subject, filter, takeUntil } from 'rxjs';
 
@@ -37,8 +37,7 @@ export class GeoservicesApiComponent implements OnInit, OnDestroy {
   private readonly rs = inject(ResponsiveService);
   private readonly rt = inject(Router);
 
-  @ViewChild('scrollContainer', { static: true })
-  private container: ElementRef;
+  private readonly container = viewChild<ElementRef>('scrollContainer');
 
   public mobile: Observable<boolean>;
   public mobileNavToggle: Subject<boolean> = new Subject();
@@ -54,7 +53,7 @@ export class GeoservicesApiComponent implements OnInit, OnDestroy {
         takeUntil(this._$destroy)
       )
       .subscribe(() => {
-        this.container.nativeElement.scrollTop = 0;
+        this.container().nativeElement.scrollTop = 0;
       });
   }
 

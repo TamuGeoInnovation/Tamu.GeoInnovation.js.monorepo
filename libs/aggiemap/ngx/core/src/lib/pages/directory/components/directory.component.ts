@@ -13,7 +13,7 @@ import {
   tap,
   toArray
 } from 'rxjs';
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DatatableComponent, TableColumn, NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -36,8 +36,7 @@ export class DirectoryComponent implements OnInit {
 
   public form: UntypedFormGroup;
 
-  @ViewChild(DatatableComponent)
-  public table: DatatableComponent;
+  public readonly table = viewChild(DatatableComponent);
 
   public _rows$: Observable<Array<BuildingDirectoryEntry>>;
   // Define the columns for the datatable
@@ -98,8 +97,9 @@ export class DirectoryComponent implements OnInit {
       }),
       tap(() => {
         this.loadingIndicator = false;
-        if (this.table) {
-          this.table.offset = 0;
+        const table = this.table();
+        if (table) {
+          table.offset = 0;
         }
       })
     );

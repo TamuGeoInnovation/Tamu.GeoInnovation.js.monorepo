@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, ViewChild, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, Input, forwardRef, ChangeDetectionStrategy, input, output, viewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { TooltipComponent, TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -106,8 +106,7 @@ export class DateTimePickerComponent implements ControlValueAccessor {
   //
   // Used to set the visible state of the tooltip content whenever the date time picker component
   // emits a value change.
-  @ViewChild(TooltipComponent, { static: true })
-  private tooltipComponent: TooltipComponent;
+  private readonly tooltipComponent = viewChild(TooltipComponent);
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
@@ -192,7 +191,7 @@ export class DateTimePickerComponent implements ControlValueAccessor {
 
     this.value = picked;
 
-    this.tooltipComponent.isVisible = false;
+    this.tooltipComponent().isVisible = false;
 
     this.changed.emit(new DateTimePickerChange(picked));
   }

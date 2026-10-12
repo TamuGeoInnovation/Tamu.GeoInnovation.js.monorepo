@@ -1,13 +1,12 @@
 import {
   Component,
   Input,
-  ContentChildren,
-  QueryList,
   AfterContentInit,
   TemplateRef,
   HostBinding,
   ChangeDetectionStrategy,
-  input
+  input,
+  contentChildren
 } from '@angular/core';
 
 import { AbstractContentReplacerToggleComponent } from './abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
@@ -45,8 +44,7 @@ export class AbstractContentReplacerComponent implements AfterContentInit {
    * A series of elements that represent the interaction-able components responsible
    * for requesting a content render change.
    */
-  @ContentChildren(AbstractContentReplacerToggleComponent)
-  public toggleList: QueryList<AbstractContentReplacerToggleComponent>;
+  public readonly toggleList = contentChildren(AbstractContentReplacerToggleComponent);
 
   @HostBinding('class.row')
   private get _layoutRowBinding() {
@@ -59,7 +57,7 @@ export class AbstractContentReplacerComponent implements AfterContentInit {
   }
 
   public ngAfterContentInit() {
-    this.toggles = this.toggleList.map((t, i) => {
+    this.toggles = this.toggleList().map((t, i) => {
       return {
         index: i,
         label: t.label,

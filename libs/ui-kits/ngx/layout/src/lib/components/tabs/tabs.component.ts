@@ -1,12 +1,4 @@
-import {
-  Component,
-  ContentChildren,
-  QueryList,
-  AfterContentInit,
-  HostBinding,
-  ChangeDetectionStrategy,
-  input
-} from '@angular/core';
+import { Component, AfterContentInit, HostBinding, ChangeDetectionStrategy, input, contentChildren } from '@angular/core';
 
 import { AbstractContentReplacerComponent } from '../../abstracts/abstract-content-swap/abstract-content-replacer.component';
 import { TabComponent } from './tab/tab.component';
@@ -20,8 +12,7 @@ import { NgClass, NgTemplateOutlet } from '@angular/common';
   imports: [NgClass, NgTemplateOutlet]
 })
 export class TabsComponent extends AbstractContentReplacerComponent implements AfterContentInit {
-  @ContentChildren(TabComponent)
-  public toggleList: QueryList<TabComponent>;
+  public readonly toggleList = contentChildren(TabComponent);
 
   /**
    * Describes the tab sizing scaling relationship.

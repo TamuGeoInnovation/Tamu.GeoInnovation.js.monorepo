@@ -4,10 +4,10 @@ import {
   OnChanges,
   OnDestroy,
   AfterViewInit,
-  ViewChild,
   ChangeDetectionStrategy,
   inject,
-  input
+  input,
+  viewChild
 } from '@angular/core';
 
 import { AccordionService } from '../services/accordion.service';
@@ -38,8 +38,7 @@ export class AccordionContentComponent implements OnChanges, OnDestroy, AfterVie
    */
   private mutationObserver: MutationObserver;
 
-  @ViewChild('content', { static: true })
-  public _container: ElementRef;
+  public readonly _container = viewChild<ElementRef>('content');
 
   public ngAfterViewInit(): void {
     // If resize is set to `true`, initialize a mutation observer on the host element. The callback will trigger an
@@ -49,7 +48,7 @@ export class AccordionContentComponent implements OnChanges, OnDestroy, AfterVie
         this.setAccordionHeight();
       });
 
-      this.mutationObserver.observe(this._container.nativeElement, {
+      this.mutationObserver.observe(this._container().nativeElement, {
         childList: true,
         attributes: false,
         subtree: true
@@ -75,8 +74,8 @@ export class AccordionContentComponent implements OnChanges, OnDestroy, AfterVie
       // If animate property is true, we want to determine the inner height of the accordion and set it to be the accordion
       // container height. This will allow smoothing the accordion from 0px to Xpx.
       if (model.animate) {
-        (<HTMLElement>this._container.nativeElement).style.maxHeight = `${
-          (<HTMLElement>this._container.nativeElement).scrollHeight
+        (<HTMLElement>this._container().nativeElement).style.maxHeight = `${
+          (<HTMLElement>this._container().nativeElement).scrollHeight
         }px`;
       }
     }

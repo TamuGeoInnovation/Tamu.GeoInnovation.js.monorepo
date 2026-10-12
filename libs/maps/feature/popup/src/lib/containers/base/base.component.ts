@@ -4,9 +4,9 @@ import {
   HostListener,
   OnDestroy,
   OnInit,
-  ViewChild,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  viewChild
 } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
@@ -61,7 +61,7 @@ export class PopupComponent implements OnInit, OnDestroy {
   /**
    * Reference to the component content host. Popup child components will be rendered within,.
    */
-  @ViewChild(RenderHostDirective, { static: true }) public viewHost: RenderHostDirective;
+  public readonly viewHost = viewChild(RenderHostDirective);
 
   /**
    * Allows closing the popup with the keyboard `esc` key.
@@ -122,7 +122,7 @@ export class PopupComponent implements OnInit, OnDestroy {
           this.popupService.showPopup();
 
           // Get reference to the view container (host)
-          const container = this.viewHost.viewContainerRef;
+          const container = this.viewHost().viewContainerRef;
 
           // Clear the view container (host)
           container.clear();

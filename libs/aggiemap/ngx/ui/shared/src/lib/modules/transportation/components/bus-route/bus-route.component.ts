@@ -2,11 +2,11 @@ import {
   Component,
   OnInit,
   OnDestroy,
-  ViewChild,
   AfterViewInit,
   ChangeDetectionStrategy,
   inject,
-  input
+  input,
+  viewChild
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject, Observable } from 'rxjs';
@@ -45,8 +45,7 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public readonly eagerLoad = input(false);
 
-  @ViewChild(AccordionComponent, { static: false })
-  public accordion;
+  public readonly accordion = viewChild(AccordionComponent);
 
   /**
    * Describes whether or not any given bus route is drawn on the map.
@@ -102,7 +101,7 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.eagerLoad()) {
           this.toggleRoute();
 
-          this.accordion.toggle();
+          this.accordion().toggle();
         }
       });
   }
