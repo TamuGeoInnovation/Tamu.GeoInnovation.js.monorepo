@@ -39,6 +39,7 @@
       "47": "#1174: the Bus Stops layer tags two fewer stops than the route lists"
     },
     "allowedUndatedEventMaps": {
+      "/events/move-out": "#1704: discover.visible: false hides it on production only, so a development host still lists it and it still has no dates",
       "/events/nsc-parking": "#1691: eventDates is empty; the conference spans sessions all summer"
     }
   },
@@ -88,6 +89,7 @@
       "47": "#1174: the Bus Stops layer tags two fewer stops than the route lists"
     },
     "allowedUndatedEventMaps": {
+      "/events/move-out": "#1704: discover.visible: false hides it on production only, so a development host still lists it and it still has no dates",
       "/events/nsc-parking": "#1691: eventDates is empty; the conference spans sessions all summer"
     }
   },
