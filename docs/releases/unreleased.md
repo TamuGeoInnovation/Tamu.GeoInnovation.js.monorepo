@@ -15,6 +15,17 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### GIS Day: no Aggie Map Design Competition in 2026
+
+GIS Day is not running the Aggie Map Design Competition this year, so the site no longer lists it: it
+is gone from the Competitions menu and the Competitions page, and its own page is removed
+([#1661](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1661)). An old link to that page now lands on the home page.
+
+| Before | After |
+| --- | --- |
+| ![The Competitions menu with four entries, the last being Aggie Map Design Competition](../screenshots/gisday-2026-no-aggie-map-competition/before-competitions-menu.png) | ![The Competitions menu with three entries](../screenshots/gisday-2026-no-aggie-map-competition/after-competitions-menu.png) |
+| ![The Competitions page with four competitions](../screenshots/gisday-2026-no-aggie-map-competition/before-competitions-page.png) | ![The Competitions page with three competitions](../screenshots/gisday-2026-no-aggie-map-competition/after-competitions-page.png) |
+
 ### GIS Day: the sponsorship levels double for 2026
 
 The sponsor page on the GIS Day site showed last year's amounts. Each level is now twice what it was:
@@ -39,6 +50,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| GIS Day: Aggie Map Design Competition removed ([#1661](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1661)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions` | The Competitions menu and page list VGI, Poster and Presentation only; `/competitions/aggie-map` goes to the home page |
 | GIS Day sponsorship levels doubled ([#1655](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1655)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` (see `docs/gisday-local.md`) | Point $512, Line $1,024, Polygon $2,048, Raster $4,096; each level's perks unchanged |
 
 ---
