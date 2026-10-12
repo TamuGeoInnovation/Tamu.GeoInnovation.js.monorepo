@@ -37,6 +37,11 @@
       "47/48": "#1174: no stop in the Bus Stops layer is tagged with this route",
       "40": "#1174: the Bus Stops layer tags one more stop than the route lists",
       "47": "#1174: the Bus Stops layer tags two fewer stops than the route lists"
+    },
+    "allowedUndatedEventMaps": {
+      "/events/move-out": "#1691: eventDates is empty, so the warning can never appear",
+      "/events/nsc-parking": "#1691: eventDates is empty; the conference spans sessions all summer",
+      "/events/t-camp": "#1691: eventDates is empty, so the warning can never appear"
     }
   },
   "production": {
@@ -54,6 +59,11 @@
     "allowedSearchSourceFailures": {
       "parking-garage": "#1163: choosing a garage opens an empty details panel",
       "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
+    },
+    "allowedUndatedEventMaps": {
+      "/events/move-out": "#1691: eventDates is empty, so the warning can never appear",
+      "/events/nsc-parking": "#1691: eventDates is empty; the conference spans sessions all summer",
+      "/events/t-camp": "#1691: eventDates is empty, so the warning can never appear"
     }
   },
   "local": {
@@ -80,6 +90,11 @@
       "47/48": "#1174: no stop in the Bus Stops layer is tagged with this route",
       "40": "#1174: the Bus Stops layer tags one more stop than the route lists",
       "47": "#1174: the Bus Stops layer tags two fewer stops than the route lists"
+    },
+    "allowedUndatedEventMaps": {
+      "/events/move-out": "#1691: eventDates is empty, so the warning can never appear",
+      "/events/nsc-parking": "#1691: eventDates is empty; the conference spans sessions all summer",
+      "/events/t-camp": "#1691: eventDates is empty, so the warning can never appear"
     }
   },
   "local-production": {
@@ -104,6 +119,11 @@
       "47/48": "#1174: no stop in the Bus Stops layer is tagged with this route",
       "40": "#1174: the Bus Stops layer tags one more stop than the route lists",
       "47": "#1174: the Bus Stops layer tags two fewer stops than the route lists"
+    },
+    "allowedUndatedEventMaps": {
+      "/events/move-out": "#1691: eventDates is empty, so the warning can never appear",
+      "/events/nsc-parking": "#1691: eventDates is empty; the conference spans sessions all summer",
+      "/events/t-camp": "#1691: eventDates is empty, so the warning can never appear"
     }
   }
 }

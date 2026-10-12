@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as path from 'path';
 
 import { expect, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
@@ -33,6 +34,24 @@ const manifest: MapManifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'))
  */
 const eventMaps = manifest.maps.filter((route) => route.startsWith('/events/'));
 
+/**
+ * Event maps that cannot say their event is over, each tied to an issue, from environments.json.
+ *
+ * Three carry `eventDates: []`, so `eventHasPassed` always answers `false` and the warning is
+ * unreachable (#1691). Listed rather than skipped silently: an entry that starts passing fails
+ * below, so a map that gains dates is noticed, and a **new** undated event map still fails.
+ */
+function allowedUndated(): Record<string, string> {
+  const base = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');
+  const environments: Record<string, { baseUrl: string; allowedUndatedEventMaps?: Record<string, string> }> =
+    JSON.parse(fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8'));
+  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === base);
+
+  return match?.allowedUndatedEventMaps ?? {};
+}
+
+const ALLOWED_UNDATED = allowedUndated();
+
 const PASSED_WARNING = '.event-passed-modal';
 const MAP_NOTICE = '.map-notice-modal';
 
@@ -62,6 +81,55 @@ test.describe('an event map knows whether its event is over', () => {
         page.locator(PASSED_WARNING),
         `${route} called its event over before it had happened`
       ).toHaveCount(0);
+    });
+
+    /**
+     * The other direction (#1687).
+     *
+     * Everything above guards against a map calling its event over too early. Nothing guarded
+     * against the warning not appearing at all - and that warning is what tells a visitor the
+     * information in front of them is stale. October Ring Day showing it correctly had only ever
+     * been confirmed by eye.
+     *
+     * Every event configuration carries `eventDates` - all 70, checked when this was written - so
+     * every map that draws one is expected to say so. `eventHasPassed` returns `false` without
+     * dates, so a map appearing later without them fails here, which is right: a map that can never
+     * say its event is over is itself a fault.
+     *
+     * **Builder maps are the exception, and not a special case worth hard-coding.** A third of the
+     * event routes open a chooser - transport type, graduation date, camp session - and draw no map
+     * until something is picked, so there is nothing to warn on. Written first without this, the
+     * check failed on exactly those six routes and on nothing else. Rather than list them, which
+     * would go stale as builders are added, the test asks the page whether it drew a map at all: the
+     * probe only exists once one has.
+     */
+    test(`${route} says the event has passed long after it`, async ({ page }) => {
+      await page.clock.setFixedTime(WELL_AFTER);
+      await page.goto(route, { waitUntil: 'domcontentloaded' });
+
+      // Given time to appear, as above - the map and its modal take a moment.
+      await page.waitForTimeout(8_000);
+
+      const drewAMap = await page.evaluate(() => Boolean((window as unknown as Record<string, unknown>).__tamuGiscMapProbe));
+
+      test.skip(!drewAMap, `${route} opens a builder rather than a map, so it has nothing to warn on`);
+
+      const known = ALLOWED_UNDATED[route];
+      const warned = await page.locator(PASSED_WARNING).count();
+
+      if (known) {
+        // Not skipped: a map that starts warning has gained dates, and the entry should go.
+        expect(warned, `${route} says its event is over now; remove it from allowedUndatedEventMaps (${known})`).toBe(
+          0
+        );
+
+        return;
+      }
+
+      expect(
+        warned,
+        `${route} did not say its event was over, with the clock set to ${WELL_AFTER.getFullYear()}`
+      ).toBe(1);
     });
 
     test(`${route} never opens the warning and a notice together`, async ({ page }) => {
