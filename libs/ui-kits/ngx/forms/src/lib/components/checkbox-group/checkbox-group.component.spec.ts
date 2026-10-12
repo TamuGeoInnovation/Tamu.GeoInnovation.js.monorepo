@@ -17,7 +17,7 @@ describe('CheckboxGroupComponent', () => {
     component = fixture.componentInstance;
 
     // Provide @Input properties
-    component.referenceId = 'name';
+    fixture.componentRef.setInput('referenceId', 'name');
 
     fixture.detectChanges();
   });
@@ -27,7 +27,7 @@ describe('CheckboxGroupComponent', () => {
   });
 
   it('should correctly evaluate ngOnInit', () => {
-    component.referenceId = undefined;
+    fixture.componentRef.setInput('referenceId', undefined);
     expect(() => {
       component.ngOnInit();
     }).toThrow();

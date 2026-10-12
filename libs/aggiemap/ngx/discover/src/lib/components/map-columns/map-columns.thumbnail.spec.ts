@@ -45,7 +45,7 @@ describe('MapColumnsComponent pictures', () => {
   });
 
   function render(apps: InternalDiscoverApplication[]): HTMLElement {
-    fixture.componentInstance.columns = [{ id: 'column-1', applications: apps }];
+    fixture.componentRef.setInput('columns', [{ id: 'column-1', applications: apps }]);
     fixture.detectChanges();
 
     return fixture.nativeElement as HTMLElement;

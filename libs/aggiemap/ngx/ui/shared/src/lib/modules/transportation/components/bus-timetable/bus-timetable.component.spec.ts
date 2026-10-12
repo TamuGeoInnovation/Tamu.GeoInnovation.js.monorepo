@@ -78,7 +78,7 @@ describe('BusTimeTableComponent (integrated)', () => {
     fixture = TestBed.createComponent(BusTimetableComponent);
     component = fixture.componentInstance;
 
-    component.route = {
+    fixture.componentRef.setInput('route', {
       Color: 'color',
       Description: 'description',
       Group: {
@@ -90,7 +90,7 @@ describe('BusTimeTableComponent (integrated)', () => {
       Key: 'key',
       Name: 'name',
       ShortName: 'short name'
-    };
+    });
 
     fixture.detectChanges();
   });

@@ -33,14 +33,14 @@ describe('RadioGroupComponent', () => {
   });
 
   it('should correctly evaluate evaluateSetValue with a valid valuePath', () => {
-    component.valuePath = 'test';
+    fixture.componentRef.setInput('valuePath', 'test');
     component.setDisabledState(false);
     component.evaluateSetValue({ test: 1 });
     expect(component.value).toBe(1);
   });
 
   it('should correctly evaluate evaluateSetValue with an invalid valuePath', () => {
-    component.valuePath = 'tesssss';
+    fixture.componentRef.setInput('valuePath', 'tesssss');
     component.setDisabledState(true);
     component.evaluateSetValue({ test: 1 });
     expect(component.value).toBe(undefined);
