@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, output, input } from '@angular/core';
 
 import {
   ComponentMode,
@@ -15,8 +15,7 @@ import { FormsModule } from '@angular/forms';
   imports: [SlideToggleComponent, FormsModule]
 })
 export class InteractiveModeToggleComponent {
-  @Input()
-  public mode: ComponentMode;
+  public readonly mode = input<ComponentMode>(undefined);
 
   public readonly modeChange = output<ComponentMode>();
 
@@ -32,7 +31,7 @@ export class InteractiveModeToggleComponent {
   ];
 
   public toggleMode(e: ComponentMode) {
-    if (e && e !== this.mode) {
+    if (e && e !== this.mode()) {
       this.modeChange.emit(e);
     }
   }

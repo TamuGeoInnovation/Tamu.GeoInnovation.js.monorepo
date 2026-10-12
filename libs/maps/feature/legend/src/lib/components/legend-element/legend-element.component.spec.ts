@@ -34,7 +34,7 @@ describe('LegendElementComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(LegendElementComponent);
     component = fixture.componentInstance;
-    component.element = { type: 'symbol-table', infos: [] } as unknown as __esri.LegendElement;
+    fixture.componentRef.setInput('element', { type: 'symbol-table', infos: [] } as unknown as __esri.LegendElement);
     fixture.detectChanges();
   });
 
@@ -43,12 +43,12 @@ describe('LegendElementComponent', () => {
   });
 
   it('toggles expanded state when legend element is grouped', () => {
-    component.element = {
+    fixture.componentRef.setInput('element', {
       infos: [
         { label: 'A', value: 'A' },
         { label: 'B', value: 'B' }
       ]
-    } as unknown as __esri.LegendElement;
+    } as unknown as __esri.LegendElement);
 
     expect(component.showGroupHeader).toBe(true);
     expect(component.expanded).toBe(true);
@@ -58,14 +58,14 @@ describe('LegendElementComponent', () => {
   });
 
   it('uses the group title label for non-bike single-entry legend elements', async () => {
-    component.groupTitle = 'Baseball Symbols';
-    component.layer = {
+    fixture.componentRef.setInput('groupTitle', 'Baseball Symbols');
+    fixture.componentRef.setInput('layer', {
       id: 'baseball-event-symbols',
       url: `https://${tsgisHost}/arcgis/rest/services/TS/BaseballParking/MapServer/0`
-    } as unknown as __esri.Layer;
-    component.element = {
+    } as unknown as __esri.Layer);
+    fixture.componentRef.setInput('element', {
       infos: [{ label: 'Reserved', src: 'baseball-icon', value: 'reserved' }]
-    } as unknown as __esri.LegendElement;
+    } as unknown as __esri.LegendElement);
 
     await component.ngOnInit();
 
@@ -77,8 +77,8 @@ describe('LegendElementComponent', () => {
   it('lists the classes of a unique value group, as ArcGIS Pro publishes them', async () => {
     // A unique value renderer published from ArcGIS Pro carries `uniqueValueGroups`, headed by the
     // field name. The legend view model nests its classes one level down, under that heading.
-    component.groupTitle = 'West Campus Tailgating';
-    component.element = {
+    fixture.componentRef.setInput('groupTitle', 'West Campus Tailgating');
+    fixture.componentRef.setInput('element', {
       type: 'symbol-table',
       infos: [
         {
@@ -90,7 +90,7 @@ describe('LegendElementComponent', () => {
           ]
         }
       ]
-    } as unknown as __esri.LegendElement;
+    } as unknown as __esri.LegendElement);
 
     await component.ngOnInit();
     fixture.detectChanges();

@@ -7,7 +7,8 @@ import {
   Input,
   OnDestroy,
   forwardRef,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  input
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { from, of, Subject, merge } from 'rxjs';
@@ -52,8 +53,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
    * When the 'bob' checkbox is checked, the checkbox group state will update to `['bob']`
    * to represent that in the checkbox group, 'bob' is active.
    */
-  @Input()
-  public referenceId: string;
+  public readonly referenceId = input<string>(undefined);
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
@@ -80,7 +80,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
   };
 
   public ngOnInit() {
-    if (this.referenceId === undefined) {
+    if (this.referenceId() === undefined) {
       throw new Error('No reference ID provided.');
     }
   }
@@ -109,7 +109,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
             mergeMap((checkbox) => {
               return checkbox.changed.pipe(
                 switchMap(() => {
-                  return of(getPropertyValue<string>(checkbox.data(), this.referenceId));
+                  return of(getPropertyValue<string>(checkbox.data(), this.referenceId()));
                 })
               );
             })
@@ -149,7 +149,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
   private setChildrenValue() {
     if (this.checkboxes && this.checkboxes.length > 0) {
       this.checkboxes.forEach((checkbox) => {
-        const propValue = getPropertyValue<string>(checkbox.data(), this.referenceId);
+        const propValue = getPropertyValue<string>(checkbox.data(), this.referenceId());
 
         // Use == to handle cases where the value is a coerced string or number
         // 3 == '3' -> true

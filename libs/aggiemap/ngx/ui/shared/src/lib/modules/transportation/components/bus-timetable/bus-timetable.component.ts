@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -22,8 +22,7 @@ import { AsyncPipe } from '@angular/common';
 export class BusTimetableComponent implements OnInit {
   private busService = inject(BusService);
 
-  @Input()
-  public route: TSRoute;
+  public readonly route = input<TSRoute>(undefined);
 
   /**
    * Ordered list of stop names for the route.
@@ -41,7 +40,7 @@ export class BusTimetableComponent implements OnInit {
   public readonly scheduleUrl = 'https://transport.tamu.edu/busroutes/?utm_source=aggiemap';
 
   public ngOnInit() {
-    this.stops = this.busService.getRouteStops(this.route.ShortName).pipe(
+    this.stops = this.busService.getRouteStops(this.route().ShortName).pipe(
       tap(() => {
         this.loaded = true;
       })

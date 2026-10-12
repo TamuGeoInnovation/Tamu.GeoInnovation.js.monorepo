@@ -40,13 +40,13 @@ describe('TileNavigationComponent', () => {
 
   it('should correctly evaluate ngOnInit for toggle == undefined', () => {
     jest.spyOn(console, 'warn');
-    component.toggle = undefined;
+    fixture.componentRef.setInput('toggle', undefined);
     component.ngOnInit();
     expect(console.warn).toHaveBeenCalled();
   });
   it('should correctly evaluate ngOnInit for toggle == defined', () => {
     const yeet = jest.spyOn(component, 'switchState');
-    component.toggle = of(true);
+    fixture.componentRef.setInput('toggle', of(true));
     component.ngOnInit();
     expect(yeet).toHaveBeenCalled();
   });
