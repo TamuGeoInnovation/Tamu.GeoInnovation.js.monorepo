@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -21,8 +21,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
   private searchService = inject(SearchService);
   private environment = inject(EnvironmentService);
 
-  @Input()
-  public buildingNumber: string;
+  public readonly buildingNumber = input<string>(undefined);
 
   public result: any[] = [];
 
@@ -45,7 +44,8 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    if (!this.buildingNumber) {
+    const buildingNumber = this.buildingNumber();
+    if (!buildingNumber) {
       console.warn(`Building number not provided. Could not perform department home lookup.`);
     }
 
@@ -53,7 +53,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
     this.searchService
       .search({
         sources: [searchReference],
-        values: [this.buildingNumber],
+        values: [buildingNumber],
         stateful: false
       })
       .pipe(takeUntil(this._destroy$))

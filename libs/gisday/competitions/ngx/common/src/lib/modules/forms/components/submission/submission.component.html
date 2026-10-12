@@ -1,6 +1,6 @@
 <h1 class="bordered">New Submission</h1>
 
-@if (form !== undefined) { @if (formModel.allowSubmissions === false) {
+@if (form !== undefined) { @if (formModel().allowSubmissions === false) {
 <div class="info-block warning">
   <p><strong>Submissions are disabled at this time. Please check back later.</strong></p>
 </div>
@@ -52,7 +52,7 @@
   </div>
   }
   <p class="rules-text">By submitting, you agree that you have read and understand the competition <a href="https://txgisday.org/competitions/vgi/" target="_blank" rel="noopener noreferrer">rules and guidelines.</a></p>
-  <div class="button" role="button" (click)="submitResponse()" [class.disabled]="(formValid | async) !== true || (submissionStatus | async) === 1 || formModel.allowSubmissions === false">
+  <div class="button" role="button" (click)="submitResponse()" [class.disabled]="(formValid | async) !== true || (submissionStatus | async) === 1 || formModel().allowSubmissions === false">
     @if ((submissionStatus | async) !== -1) {
     <div class="progress" [style.width.%]="(submissionProgress | async) * 100"></div>
     }

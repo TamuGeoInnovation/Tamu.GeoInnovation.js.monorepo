@@ -1,4 +1,4 @@
-<div [ngClass]="{ active: focused }">
+<div [ngClass]="{ active: focused() }">
   <div class="input-action-container" (keydown)="keyControl($event, 'focus', '.focusable')" (focus)="setFocus()">
     @if (leftActionIcon) {
     <i class="action-icons material-icons left" (click)="emitLeftActionEvent()">{{ leftActionIcon }}</i>
@@ -13,7 +13,7 @@
     </div>
     }
 
-    <input #search type="text" (keyup)="change($event)" (keydown.escape)="loseFocus()" (focus)="setFocus()" (blur)="loseFocus()" [value]="value" [placeholder]="placeholder" aria-owns="search-results-container" aria-autocomplete="both" aria-autocomplete="list" role="textbox" [ngClass]="{ 'margin-left': leftActionIcon, 'margin-right': rightActionIcon }" />
+    <input #search type="text" (keyup)="change($event)" (keydown.escape)="loseFocus()" (focus)="setFocus()" (blur)="loseFocus()" [value]="value" [placeholder]="placeholder()" aria-owns="search-results-container" aria-autocomplete="both" aria-autocomplete="list" role="textbox" [ngClass]="{ 'margin-left': leftActionIcon, 'margin-right': rightActionIcon }" />
   </div>
 
   <!-- Show search results container only if search results has at least one item OR  canGeolocate is enabled since it will act as the minimum. -->
@@ -21,7 +21,7 @@
   <div class="search-results-container" role="listbox" (keydown)="keyControl($event, 'focus', '.focusable')">
     @if (searchActionsActive) {
     <div class="search-actions">
-      @if (canGeolocate) {
+      @if (canGeolocate()) {
       <div class="my-location" (mousedown)="geolocate()" (keydown.space)="geolocate()" (keydown.enter)="geolocate()" (focus)="setFocus()" class="focusable" tabindex="-1" role="option">
         <i class="material-icons">gps_fixed</i>
         <p>Current Location</p>

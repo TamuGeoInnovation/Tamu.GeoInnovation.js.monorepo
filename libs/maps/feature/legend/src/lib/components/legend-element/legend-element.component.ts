@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 
 import { EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
 import { LayerLegendOverride } from '@tamu-gisc/common/types';
@@ -76,20 +76,17 @@ export class LegendElementComponent implements OnInit {
    *
    * This flag will de-duplicate the legend entries based on the layer title.
    */
-  @Input()
-  public deduplicateChildren = false;
+  public readonly deduplicateChildren = input(false);
 
-  @Input()
-  public respectDefinitionExpression = false;
+  public readonly respectDefinitionExpression = input(false);
 
-  @Input()
-  public hideGroupHeader = false;
+  public readonly hideGroupHeader = input(false);
 
   public infos: Observable<Array<LegendInfo>>;
   public expanded = true;
 
   public get showGroupHeader(): boolean {
-    if (this.hideGroupHeader) {
+    if (this.hideGroupHeader()) {
       return false;
     }
 
@@ -140,7 +137,7 @@ export class LegendElementComponent implements OnInit {
 
     this.infos = iif(
       () => {
-        return this.deduplicateChildren;
+        return this.deduplicateChildren();
       },
       from(
         operableInfos.filter((info, index, self) => {
@@ -151,7 +148,7 @@ export class LegendElementComponent implements OnInit {
     ).pipe(
       concatMap((info: LegendInfo) => {
         // If we are not respecting definition expressions, return the current legend info as-is
-        if (this.respectDefinitionExpression === false || this.layer === undefined) {
+        if (this.respectDefinitionExpression() === false || this.layer === undefined) {
           return of(info);
         }
 

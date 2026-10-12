@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
@@ -27,7 +27,7 @@ export class SubmissionReviewListComponent implements OnInit {
   private readonly modalService = inject(ModalService);
 
   @Input() public submissions$: Observable<SubmissionReviewDto[]>;
-  @Input() public isAdmin = false;
+  public readonly isAdmin = input(false);
 
   public submissions: SubmissionReviewDto[] = [];
 
@@ -45,7 +45,7 @@ export class SubmissionReviewListComponent implements OnInit {
     this.modalService.open(SubmissionDetailModalComponent, {
       data: {
         submission: event.row,
-        isAdmin: this.isAdmin
+        isAdmin: this.isAdmin()
       }
     });
   }

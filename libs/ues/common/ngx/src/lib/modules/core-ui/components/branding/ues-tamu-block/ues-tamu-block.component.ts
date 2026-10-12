@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-ues-tamu-block',
@@ -7,6 +7,5 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class UESTamuBlockComponent {
-  @Input()
-  public version: 'positive' | 'negative' = 'positive';
+  public readonly version = input<'positive' | 'negative'>('positive');
 }

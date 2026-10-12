@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 
 import { ICensusIntersectionRecord } from '@tamu-gisc/geoprocessing-v5';
 import { TabsComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -13,6 +13,5 @@ import { CensusIntersectionResultTableComponent } from '../census-intersection-r
   imports: [TabsComponent, TabComponent, CensusIntersectionResultTableComponent]
 })
 export class CensusIntersectionResultTabsComponent {
-  @Input()
-  public censusRecords: Array<ICensusIntersectionRecord>;
+  public readonly censusRecords = input<Array<ICensusIntersectionRecord>>(undefined);
 }

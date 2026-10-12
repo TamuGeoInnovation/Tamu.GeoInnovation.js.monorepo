@@ -2,11 +2,11 @@ import {
   AfterContentInit,
   Component,
   ContentChildren,
-  Input,
   OnDestroy,
   QueryList,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import { from, merge, Subject } from 'rxjs';
 import { mergeMap, pluck, switchMap, takeUntil } from 'rxjs/operators';
@@ -25,8 +25,7 @@ import { AsyncPipe } from '@angular/common';
 export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
   private service = inject(TileService);
 
-  @Input()
-  public title = this.service.activeSubMenu.pipe(pluck('title'));
+  public readonly title = input(this.service.activeSubMenu.pipe(pluck('title')));
 
   @ContentChildren(TileLinkDirective, { descendants: true })
   public links: QueryList<TileLinkDirective>;

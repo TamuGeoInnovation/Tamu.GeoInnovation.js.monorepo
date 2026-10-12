@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Observable, Subject, map, pipe, startWith } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
@@ -14,8 +14,7 @@ import { AsyncPipe } from '@angular/common';
 export class BasicSummaryBlurbComponent implements OnInit {
   private readonly ls = inject(LocalStoreService);
 
-  @Input()
-  public keyFragment: string;
+  public readonly keyFragment = input<string>(undefined);
 
   @Output()
   public navigateFull: EventEmitter<void> = new EventEmitter();
@@ -28,7 +27,7 @@ export class BasicSummaryBlurbComponent implements OnInit {
 
   public ngOnInit(): void {
     this.showBlurb = this._trigger.pipe(startWith(false), this.getSummaryNoticeSetting());
-    this._subKey = `summary_notice_dismissed__${this.keyFragment}`;
+    this._subKey = `summary_notice_dismissed__${this.keyFragment()}`;
   }
 
   public emitNavigationRequest() {

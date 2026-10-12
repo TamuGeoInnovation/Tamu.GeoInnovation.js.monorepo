@@ -9,17 +9,17 @@
   <tbody>
     <tr>
       <td>Time Taken</td>
-      <td>{{$safeNavigationMigration(status?.timeTaken) | number}}ms</td>
+      <td>{{$safeNavigationMigration(status()?.timeTaken) | number}}ms</td>
     </tr>
 
     <tr>
       <td>Transaction Guid</td>
-      <td>{{status?.transactionGuid}}</td>
+      <td>{{status()?.transactionGuid}}</td>
     </tr>
 
     <tr>
       <td>Transaction Result</td>
-      <td>{{status?.queryStatusCode}}</td>
+      <td>{{status()?.queryStatusCode}}</td>
     </tr>
   </tbody>
 </table>

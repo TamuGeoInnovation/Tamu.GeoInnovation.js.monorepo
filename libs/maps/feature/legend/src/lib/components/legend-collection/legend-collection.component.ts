@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, input } from '@angular/core';
 import { LegendElementComponent } from '../legend-element/legend-element.component';
 
 import esri = __esri;
@@ -14,28 +14,23 @@ export class LegendCollectionComponent {
   @Input()
   public group: IActiveLayerInfo;
 
-  @Input()
-  public layer: ILayer;
+  public readonly layer = input<ILayer>(undefined);
 
   /**
    * Certain layers may have duplicate icon/label entries as a result of their unique value renderer definitions.
    *
    * This flag will de-duplicate the legend entries based on the layer title.
    */
-  @Input()
-  public deduplicate = false;
+  public readonly deduplicate = input(false);
 
-  @Input()
-  public respectDefinitionExpression = false;
+  public readonly respectDefinitionExpression = input(false);
 
   @Input()
   public allowVisibilityToggle = false;
 
-  @Input()
-  public combineChildrenUnderPrimary = false;
+  public readonly combineChildrenUnderPrimary = input(false);
 
-  @Input()
-  public hideElementGroupHeaders = false;
+  public readonly hideElementGroupHeaders = input(false);
 
   public expanded = true;
 
@@ -51,7 +46,7 @@ export class LegendCollectionComponent {
   public get childGroups(): IActiveLayerInfo[] {
     const children = this._toArray<IActiveLayerInfo>(this.group?.children);
 
-    if (!this.combineChildrenUnderPrimary || !this._isPhysicsFestivalGroup(this.group?.layer?.id)) {
+    if (!this.combineChildrenUnderPrimary() || !this._isPhysicsFestivalGroup(this.group?.layer?.id)) {
       return children;
     }
 
@@ -94,11 +89,11 @@ export class LegendCollectionComponent {
   }
 
   public get childHideElementGroupHeaders(): boolean {
-    if (this.combineChildrenUnderPrimary && this.hasChildren && this._isPhysicsFestivalGroup(this.group?.layer?.id)) {
+    if (this.combineChildrenUnderPrimary() && this.hasChildren && this._isPhysicsFestivalGroup(this.group?.layer?.id)) {
       return true;
     }
 
-    return this.hideElementGroupHeaders;
+    return this.hideElementGroupHeaders();
   }
 
   /**
@@ -187,7 +182,7 @@ export class LegendCollectionComponent {
 
     // Also show a clickable title for leaf layers when visibility toggling is enabled
     // and child headers are not suppressed (e.g. Physics Fest combine-under-primary mode)
-    return this.allowVisibilityToggle && !this.hideElementGroupHeaders && !!this.group?.layer;
+    return this.allowVisibilityToggle && !this.hideElementGroupHeaders() && !!this.group?.layer;
   }
 
   private _shouldHideSportsSafetyFirstChildGroups(): boolean {

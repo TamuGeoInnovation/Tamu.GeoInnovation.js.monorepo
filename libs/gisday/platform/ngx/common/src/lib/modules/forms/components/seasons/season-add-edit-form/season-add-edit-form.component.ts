@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormBuilder,
@@ -32,8 +32,7 @@ export class SeasonAddEditFormComponent implements OnInit {
   private rt = inject(Router);
   private readonly ns = inject(NotificationService);
 
-  @Input()
-  public type: 'create' | 'edit';
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public entity$: Observable<Partial<Season>>;
   public form: UntypedFormGroup;

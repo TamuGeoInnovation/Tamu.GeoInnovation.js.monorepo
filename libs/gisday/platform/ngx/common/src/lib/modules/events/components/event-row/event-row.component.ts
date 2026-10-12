@@ -8,7 +8,8 @@ import {
   Output,
   SimpleChanges,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 'rxjs';
@@ -34,8 +35,7 @@ export class EventRowComponent implements OnChanges, OnInit {
   @Input()
   public day: Partial<SeasonDay>;
 
-  @Input()
-  public rsvps: Array<string>;
+  public readonly rsvps = input<Array<string>>(undefined);
 
   @Output()
   public rowToggle: EventEmitter<boolean> = new EventEmitter();

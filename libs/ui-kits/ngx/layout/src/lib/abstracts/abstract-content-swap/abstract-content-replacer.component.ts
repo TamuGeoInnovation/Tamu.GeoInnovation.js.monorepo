@@ -6,7 +6,8 @@ import {
   AfterContentInit,
   TemplateRef,
   HostBinding,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  input
 } from '@angular/core';
 
 import { AbstractContentReplacerToggleComponent } from './abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
@@ -25,8 +26,7 @@ export class AbstractContentReplacerComponent implements AfterContentInit {
    *
    * Defaults to `row`.
    */
-  @Input()
-  public toggleLayout: 'row' | 'column' = 'row';
+  public readonly toggleLayout = input<'row' | 'column'>('row');
 
   /**
    * Default starting toggle index.
@@ -50,12 +50,12 @@ export class AbstractContentReplacerComponent implements AfterContentInit {
 
   @HostBinding('class.row')
   private get _layoutRowBinding() {
-    return this.toggleLayout === 'row';
+    return this.toggleLayout() === 'row';
   }
 
   @HostBinding('class.column')
   private get _layoutColumnBinding() {
-    return this.toggleLayout === 'column';
+    return this.toggleLayout() === 'column';
   }
 
   public ngAfterContentInit() {

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { filter, map, Observable, shareReplay, startWith, Subject, switchMap, take, tap } from 'rxjs';
 
@@ -36,8 +36,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   private readonly seasonService = inject(SeasonService);
   private readonly ns = inject(NotificationService);
 
-  @Input()
-  public type: 'create' | 'edit';
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public form: UntypedFormGroup;
 
@@ -116,7 +115,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
         }
       });
 
-    if (this.type === 'edit') {
+    if (this.type() === 'edit') {
       this.entity$ = this.at.params.pipe(
         map((params) => params.guid),
         filter((guid) => guid !== undefined),
@@ -161,7 +160,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   }
 
   public handleSubmission() {
-    if (this.type === 'create') {
+    if (this.type() === 'create') {
       this._createSubmission();
     } else {
       this._updateSubmission();

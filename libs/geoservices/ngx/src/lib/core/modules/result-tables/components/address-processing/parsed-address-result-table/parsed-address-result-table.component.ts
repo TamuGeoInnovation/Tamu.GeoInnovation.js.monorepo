@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { IParsedAddressRecord, ParsedAddressRecordField } from '@tamu-gisc/geoprocessing-v5';
@@ -20,11 +20,9 @@ export class ParsedAddressResultTableComponent implements OnInit {
    *
    * Defaults to `simple`.
    */
-  @Input()
-  public type: 'simple' | 'expanded' = 'simple';
+  public readonly type = input<'simple' | 'expanded'>('simple');
 
-  @Input()
-  public address: IParsedAddressRecord;
+  public readonly address = input<IParsedAddressRecord>(undefined);
 
   public parsedAddressDict = ParsedAddressFieldLabel;
 
@@ -81,12 +79,12 @@ export class ParsedAddressResultTableComponent implements OnInit {
   ];
 
   public ngOnInit(): void {
-    this.filteredProps = of(this.address).pipe(
+    this.filteredProps = of(this.address()).pipe(
       map((address) => {
         return new FieldEnumerator(address).filter('exclude', this._unsupportedProps[address.addressFormatType]);
       }),
       map((address) => {
-        if (this.type === 'simple') {
+        if (this.type() === 'simple') {
           return new FieldEnumerator(address).filter('include', this._simpleProps).order(this._defaultOrder);
         } else {
           return new FieldEnumerator(address).order(this._defaultOrder);

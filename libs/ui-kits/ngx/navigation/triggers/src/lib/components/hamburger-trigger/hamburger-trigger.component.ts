@@ -3,10 +3,10 @@ import {
   HostListener,
   EventEmitter,
   Output,
-  Input,
   OnChanges,
   SimpleChanges,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  input
 } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BehaviorSubject, of, Observable } from 'rxjs';
@@ -73,8 +73,7 @@ export class HamburgerTriggerComponent implements OnChanges {
    * trigger state is also updated to initiate animation transition
    * between states.
    */
-  @Input()
-  public active: boolean;
+  public readonly active = input<boolean>(undefined);
 
   /**
    * Event emitted when the hamburger nav element is clicked on by client.

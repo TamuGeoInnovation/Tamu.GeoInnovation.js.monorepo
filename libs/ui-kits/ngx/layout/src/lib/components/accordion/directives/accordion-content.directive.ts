@@ -1,4 +1,4 @@
-import { Directive, HostBinding, Input, TemplateRef, ViewContainerRef, inject } from '@angular/core';
+import { Directive, HostBinding, Input, TemplateRef, ViewContainerRef, inject, input } from '@angular/core';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -18,8 +18,7 @@ export class AccordionContentDirective {
     this._display = v;
   }
 
-  @Input()
-  public defaultDisplay: 'initial' | 'inherit' | 'block' | 'inline' | 'inline-block' = 'initial';
+  public readonly defaultDisplay = input<'initial' | 'inherit' | 'block' | 'inline' | 'inline-block'>('initial');
 
   @Input()
   public set giscAccordionContent(expanded: boolean) {
@@ -32,6 +31,6 @@ export class AccordionContentDirective {
 
   @HostBinding('style.display')
   private get _contentExpanded() {
-    return this._display ? this.defaultDisplay : 'none';
+    return this._display ? this.defaultDisplay() : 'none';
   }
 }
