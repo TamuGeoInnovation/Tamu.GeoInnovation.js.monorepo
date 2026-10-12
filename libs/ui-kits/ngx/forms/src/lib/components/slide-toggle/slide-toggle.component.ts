@@ -3,10 +3,9 @@ import {
   Component,
   ElementRef,
   OnInit,
-  QueryList,
-  ViewChildren,
   forwardRef,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  viewChildren
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable, Subject, delay, map, shareReplay } from 'rxjs';
@@ -32,8 +31,7 @@ export class SlideToggleComponent<Option extends object, Value>
   extends RadioGroupComponent<Option, Value>
   implements OnInit, AfterViewInit
 {
-  @ViewChildren('toggleOption')
-  public toggleOptions: QueryList<ElementRef>;
+  public readonly toggleOptions = viewChildren<ElementRef>('toggleOption');
 
   public activeOptionElement$: Subject<ElementRef> = new Subject<ElementRef>();
   public activeDimensions$: Observable<{ width: number; translate: number }>;
@@ -67,8 +65,9 @@ export class SlideToggleComponent<Option extends object, Value>
   }
 
   private _findActiveElement(plainValue: Value) {
-    if (plainValue !== null && this.toggleOptions) {
-      const active = this.toggleOptions.find((option) => {
+    const toggleOptions = this.toggleOptions();
+    if (plainValue !== null && toggleOptions) {
+      const active = toggleOptions.find((option) => {
         return option.nativeElement.attributes['attr-value'].value === plainValue;
       });
 

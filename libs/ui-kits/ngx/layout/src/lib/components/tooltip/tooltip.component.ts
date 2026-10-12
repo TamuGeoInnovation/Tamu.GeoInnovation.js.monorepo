@@ -4,13 +4,13 @@ import {
   Input,
   ElementRef,
   HostListener,
-  ContentChild,
   AfterContentInit,
   OnDestroy,
   ViewChild,
   ChangeDetectionStrategy,
   inject,
-  input
+  input,
+  contentChild
 } from '@angular/core';
 import { TooltipTriggerComponent } from './components/tooltip-trigger/tooltip-trigger.component';
 import { debounceTime, map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -61,11 +61,9 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
     return this._isVisible.getValue();
   }
 
-  @ContentChild(TooltipTriggerComponent, { static: true })
-  public trigger: TooltipTriggerComponent;
+  public readonly trigger = contentChild(TooltipTriggerComponent);
 
-  @ContentChild(TooltipTriggerComponent, { static: true, read: ElementRef })
-  public triggerElem: ElementRef;
+  public readonly triggerElem = contentChild(TooltipTriggerComponent, { read: ElementRef });
 
   @ViewChild('tooltipContainer') set content(c: ElementRef) {
     if (c) {
@@ -113,7 +111,7 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
     // Set debounce time otherwise there will be two changes in the change detection cycle.
     this.containerPosition = combineLatest([this._container.pipe(debounceTime(0))]).pipe(
       map(([c]) => {
-        const triggerRects: DOMRect = this.triggerElem.nativeElement.getBoundingClientRect();
+        const triggerRects: DOMRect = this.triggerElem().nativeElement.getBoundingClientRect();
         const containerRects: DOMRect = c.getBoundingClientRect();
 
         return [containerRects, triggerRects];
@@ -134,8 +132,9 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public ngAfterContentInit() {
-    if (this.trigger) {
-      this.trigger.triggerActivate.pipe(takeUntil(this._$destroy)).subscribe(() => {
+    const trigger = this.trigger();
+    if (trigger) {
+      trigger.triggerActivate.pipe(takeUntil(this._$destroy)).subscribe(() => {
         this.isVisible = !this.isVisible;
       });
     }

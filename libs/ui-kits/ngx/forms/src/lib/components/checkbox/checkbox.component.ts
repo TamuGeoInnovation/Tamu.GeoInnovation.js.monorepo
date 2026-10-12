@@ -3,11 +3,11 @@ import {
   Input,
   Output,
   EventEmitter,
-  ViewChild,
   ElementRef,
   forwardRef,
   ChangeDetectionStrategy,
-  input
+  input,
+  viewChild
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { NgClass } from '@angular/common';
@@ -27,7 +27,7 @@ import { NgClass } from '@angular/common';
   imports: [NgClass]
 })
 export class CheckboxComponent implements ControlValueAccessor {
-  @ViewChild('checkboxInput', { static: true }) public ref: ElementRef;
+  public readonly ref = viewChild<ElementRef>('checkboxInput');
 
   /**
    * Determines the checked state of the checkbox ref element.

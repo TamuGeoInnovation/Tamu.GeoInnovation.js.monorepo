@@ -2,12 +2,11 @@ import {
   Component,
   OnInit,
   Input,
-  ContentChildren,
-  QueryList,
   AfterContentInit,
   ChangeDetectionStrategy,
   inject,
-  input
+  input,
+  contentChildren
 } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -45,8 +44,7 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
    * etc, that all extend from the BaseChartComponent. Collector collection will be injected as their
    * data source instead of template property binding.
    */
-  @ContentChildren(BaseChartComponent, { descendants: true })
-  public chartComponents: QueryList<BaseChartComponent>;
+  public readonly chartComponents = contentChildren(BaseChartComponent, { descendants: true });
 
   /**
    * Set up the SelectionSummaryComponent feature collector.
@@ -67,7 +65,7 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
    * Content children are available at this lifecycle hook. Inject data source.
    */
   public ngAfterContentInit() {
-    this.chartComponents.forEach((component) => {
+    this.chartComponents().forEach((component) => {
       component.source = this.collection;
     });
   }

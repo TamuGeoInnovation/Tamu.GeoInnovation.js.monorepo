@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ChangeDetectionStrategy, inject, input, viewChild } from '@angular/core';
 import { fromEventPattern, Observable, Subject } from 'rxjs';
 import { map, mapTo, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 
@@ -61,8 +61,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
   /**
    * Viewfinder DOM reference.
    */
-  @ViewChild('viewfinder', { static: true })
-  private _viewfinder: ElementRef;
+  private readonly _viewfinder = viewChild<ElementRef>('viewfinder');
 
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -106,7 +105,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
           // Else, the feature intersection calculation does not work as there is no pause for rendering
           // in the event loop until the next event cycle
           setTimeout(() => {
-            const viewfinder = this._viewfinder.nativeElement;
+            const viewfinder = this._viewfinder().nativeElement;
 
             // Get vertices coordinates of the on-screen viewfinder
             const screenCoords = [

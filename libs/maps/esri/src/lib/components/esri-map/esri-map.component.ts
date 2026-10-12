@@ -1,13 +1,13 @@
 import {
   Component,
   OnInit,
-  ViewChild,
   ElementRef,
   Input,
   OnDestroy,
   ChangeDetectionStrategy,
   inject,
-  output
+  output,
+  viewChild
 } from '@angular/core';
 import { take } from 'rxjs/operators';
 
@@ -27,12 +27,11 @@ export class EsriMapComponent implements OnInit, OnDestroy {
 
   public readonly loaded = output<MapServiceInstance>();
 
-  @ViewChild('container', { static: true })
-  private container: ElementRef;
+  private readonly container = viewChild<ElementRef>('container');
 
   public ngOnInit() {
     if (this.config && this.config.view && this.config.view.properties) {
-      this.config.view.properties.container = this.container.nativeElement;
+      this.config.view.properties.container = this.container().nativeElement;
     } else {
       throw new Error(`Incorrectly formed configuration provided.`);
     }

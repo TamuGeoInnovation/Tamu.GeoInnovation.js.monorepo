@@ -5,9 +5,9 @@ import {
   ChangeDetectionStrategy,
   OnChanges,
   SimpleChanges,
-  ViewChild,
   ElementRef,
-  input
+  input,
+  viewChild
 } from '@angular/core';
 
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
@@ -98,11 +98,9 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    */
   public readonly customDataMap = input<RangeInputDataMap>(undefined);
 
-  @ViewChild('rangeElement', { static: true })
-  public input: ElementRef;
+  public readonly input = viewChild<ElementRef>('rangeElement');
 
-  @ViewChild('liveValue', { static: true })
-  public liveValue: ElementRef;
+  public readonly liveValue = viewChild<ElementRef>('liveValue');
 
   public minDisplay: string | number;
   public maxDisplay: string | number;
@@ -116,10 +114,11 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
 
     if (this.showTooltip()) {
       const customDataMap = this.customDataMap();
+      const liveValue = this.liveValue();
       if (customDataMap) {
-        this.liveValue.nativeElement.innerText = customDataMap[value].display;
+        liveValue.nativeElement.innerText = customDataMap[value].display;
       } else {
-        this.liveValue.nativeElement.innerText = value;
+        liveValue.nativeElement.innerText = value;
       }
 
       // The slider thumb offsets from 0% to 100% of the thumb width from the left side of the slider.
@@ -135,7 +134,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
 
       // To position the tooltip in the center of the slider thumb, we need to know the width of the tooltip.
       // Half of the tooltip width is the anchor point relative to the thumb
-      const halfTooltipWidth = this.liveValue.nativeElement.offsetWidth / 2;
+      const halfTooltipWidth = liveValue.nativeElement.offsetWidth / 2;
 
       // thumbOffset can be negative or positive which is why it makes sense to add the two values together.
       const tooltipOffset = halfTooltipWidth + thumbOffset;
@@ -143,7 +142,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
       // Set the tooltip position to the center of the slider.
       // This is based on the fact that the slider is broken down into even steps from 0 to max
       // and the tooltip is positioned as a percentage of the slider width minus half the width of the tooltip.
-      this.liveValue.nativeElement.style.left = `calc(${(this.value / this.max) * 100}% - ${tooltipOffset}px)`;
+      liveValue.nativeElement.style.left = `calc(${(this.value / this.max) * 100}% - ${tooltipOffset}px)`;
     }
   }
 
