@@ -23,10 +23,10 @@ describe('LegendCollectionComponent', () => {
   });
 
   it('toggles expanded state for groups with children', () => {
-    component.group = {
+    fixture.componentRef.setInput('group', {
       title: 'Parent Group',
       children: [{ title: 'Child Group' }]
-    } as unknown as __esri.ActiveLayerInfo;
+    } as unknown as __esri.ActiveLayerInfo);
 
     expect(component.hasChildren).toBe(true);
     expect(component.expanded).toBe(true);
@@ -39,12 +39,12 @@ describe('LegendCollectionComponent', () => {
   });
 
   it('toggles layer visibility', () => {
-    component.group = {
+    fixture.componentRef.setInput('group', {
       title: 'Parent Group',
       children: [{ title: 'Child Group' }],
       layer: { visible: true }
-    } as unknown as __esri.ActiveLayerInfo;
-    component.allowVisibilityToggle = true;
+    } as unknown as __esri.ActiveLayerInfo);
+    fixture.componentRef.setInput('allowVisibilityToggle', true);
 
     expect(component.isLayerVisible).toBe(true);
     expect(component.isExpanded).toBe(true);
@@ -55,26 +55,26 @@ describe('LegendCollectionComponent', () => {
   });
 
   it('hides duplicate sports safety-first child groups when parent legend elements already exist', () => {
-    component.group = {
+    fixture.componentRef.setInput('group', {
       title: 'Safety First',
       children: [{ title: 'Safety First Child' }],
       legendElements: [
         { infos: [{ label: 'Please use marked crosswalks. No mid-street crossing.', value: 'safety-first' }] }
       ],
       layer: { id: 'volleyball-parking-safety-first' }
-    } as unknown as __esri.ActiveLayerInfo;
+    } as unknown as __esri.ActiveLayerInfo);
 
     expect(component.visibleChildGroups).toEqual([]);
     expect(component.hasChildren).toBe(false);
   });
 
   it('keeps sports safety-first child groups when the parent has no legend elements', () => {
-    component.group = {
+    fixture.componentRef.setInput('group', {
       title: 'Safety First',
       children: [{ title: 'Safety First Child' }],
       legendElements: [],
       layer: { id: 'volleyball-parking-safety-first' }
-    } as unknown as __esri.ActiveLayerInfo;
+    } as unknown as __esri.ActiveLayerInfo);
 
     expect(component.visibleChildGroups).toHaveLength(1);
     expect(component.hasChildren).toBe(true);

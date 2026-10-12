@@ -121,7 +121,7 @@ describe('DateTimePickerComponent', () => {
     });
 
     it('renders a native input of the right type', () => {
-      component.minView = 'day';
+      fixture.componentRef.setInput('minView', 'day');
       fixture.detectChanges();
 
       // The input lives in the tooltip, which renders its content only once opened - as a user does.

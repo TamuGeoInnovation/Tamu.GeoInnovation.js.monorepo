@@ -1,4 +1,4 @@
-import { Component, Input, HostListener, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, HostListener, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, distinctUntilChanged, shareReplay, startWith } from 'rxjs/operators';
@@ -15,8 +15,7 @@ import { AsyncPipe } from '@angular/common';
 export class MobileTabNavigationTabComponent implements OnInit {
   private router = inject(Router);
 
-  @Input()
-  public route: string;
+  public readonly route = input<string>(undefined);
 
   public readonly icon = input<string>(undefined);
 
@@ -26,7 +25,7 @@ export class MobileTabNavigationTabComponent implements OnInit {
 
   @HostListener('click')
   public navigate() {
-    this.router.navigate([this.route]);
+    this.router.navigate([this.route()]);
   }
 
   public ngOnInit() {
@@ -34,7 +33,7 @@ export class MobileTabNavigationTabComponent implements OnInit {
       startWith(true),
       switchMap(() => {
         return of(
-          this.router.isActive(this.route, {
+          this.router.isActive(this.route(), {
             paths: 'subset',
             queryParams: 'subset',
             fragment: 'ignored',

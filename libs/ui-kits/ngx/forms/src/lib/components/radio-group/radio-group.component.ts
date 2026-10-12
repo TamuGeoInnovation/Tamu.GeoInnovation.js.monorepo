@@ -42,8 +42,7 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
 
   public readonly displayPath = input<string>(undefined);
 
-  @Input()
-  public valuePath: string;
+  public readonly valuePath = input<string>(undefined);
 
   /**
    * Hook that can be used to execute an operation after the first value has been set.
@@ -89,7 +88,7 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
     let value;
 
     if (this.disabled === false) {
-      value = this.renderTemplate(option, this.valuePath);
+      value = this.renderTemplate(option, this.valuePath());
 
       this.value = value;
 

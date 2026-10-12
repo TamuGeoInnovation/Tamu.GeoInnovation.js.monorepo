@@ -42,7 +42,7 @@ describe('MapsPageHeaderComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(MapsPageHeaderComponent);
-    fixture.componentInstance.title = 'Campus Events';
+    fixture.componentRef.setInput('title', 'Campus Events');
     fixture.detectChanges();
   });
 

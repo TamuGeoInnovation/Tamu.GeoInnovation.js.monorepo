@@ -38,7 +38,7 @@ describe('InteractiveModeToggleComponent', () => {
    * earlier signature -- with the current guard, `undefined` emits nothing.
    */
   it('emits modeChange when a different mode is selected', () => {
-    component.mode = ComponentMode.Basic;
+    fixture.componentRef.setInput('mode', ComponentMode.Basic);
     const spy = jest.spyOn(component.modeChange, 'emit');
 
     component.toggleMode(ComponentMode.Advanced);
@@ -47,7 +47,7 @@ describe('InteractiveModeToggleComponent', () => {
   });
 
   it('does not emit when the selected mode is unchanged', () => {
-    component.mode = ComponentMode.Basic;
+    fixture.componentRef.setInput('mode', ComponentMode.Basic);
     const spy = jest.spyOn(component.modeChange, 'emit');
 
     component.toggleMode(ComponentMode.Basic);
