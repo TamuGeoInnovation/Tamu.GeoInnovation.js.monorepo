@@ -77,6 +77,10 @@ export const competitionsRoutes: Routes = [
         loadChildren: () => import('./art/art.routes').then((m) => m.artRoutes)
       },
       {
+        path: 'monuments',
+        loadChildren: () => import('./monuments/monuments.routes').then((m) => m.monumentsRoutes)
+      },
+      {
         path: '',
         loadChildren: () => import('./landing/landing.routes').then((m) => m.landingRoutes)
       }
