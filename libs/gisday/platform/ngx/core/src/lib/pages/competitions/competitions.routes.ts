@@ -77,10 +77,6 @@ export const competitionsRoutes: Routes = [
         loadChildren: () => import('./art/art.routes').then((m) => m.artRoutes)
       },
       {
-        path: 'aggie-map',
-        loadChildren: () => import('./aggie-map/aggie-map.routes').then((m) => m.aggieMapRoutes)
-      },
-      {
         path: '',
         loadChildren: () => import('./landing/landing.routes').then((m) => m.landingRoutes)
       }
