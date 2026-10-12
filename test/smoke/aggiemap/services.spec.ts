@@ -124,3 +124,121 @@ test.describe(`GIS services (${GIS_HOST})`, () => {
     });
   }
 });
+
+/**
+ * The campus basemap's own services (#1695).
+ *
+ * Everything above is read from `connections.ts`. The basemap gallery's services are not in that
+ * file - they live in `basemaps.definition.ts`, because a basemap is declared as Esri
+ * `BaseMapProperties` rather than as a connection - so until now the one service every AggieMap view
+ * draws under its layers was the only service in the application nothing here asked about. A
+ * republished or unshared campus basemap would have shown up as "a map looks blank", if at all.
+ *
+ * That file imports from `@tamu-gisc/maps/esri`, so it is read as text rather than imported: this
+ * file deliberately pulls in nothing from the Angular graph.
+ */
+const BASEMAP_DEFINITION = fs.readFileSync(
+  path.join(__dirname, '..', '..', '..', 'libs', 'maps', 'feature', 'basemap', 'src', 'lib', 'shared', 'basemaps.definition.ts'),
+  'utf8'
+);
+
+/** Every ArcGIS service URL the basemap definitions name, by the constant that names it. */
+function basemapServices(): Array<[string, string]> {
+  const found: Array<[string, string]> = [];
+
+  for (const match of BASEMAP_DEFINITION.matchAll(/export const (\w+): BaseMapProperties = \{([\s\S]*?)\n\};/g)) {
+    const [, constant, block] = match;
+
+    for (const url of block.matchAll(/https:\/\/[^'"`\s]+\/arcgis\/rest\/services\/[^'"`\s]+/g)) {
+      found.push([constant, url[0]]);
+    }
+  }
+
+  return found;
+}
+
+/** The service root, without `/info/thumbnail` or any other sub-resource. */
+function serviceRoot(url: string): string {
+  const match = url.match(/^(.*\/(?:MapServer|VectorTileServer|FeatureServer))(\/|$)/);
+
+  return match ? match[1] : url;
+}
+
+const basemaps = basemapServices();
+
+/**
+ * One entry per service, not per URL: a basemap names its service twice, once for the tiles and once
+ * for the gallery thumbnail, and checking the same root twice gives two tests of the same name.
+ */
+const basemapRoots = [...new Map(basemaps.map(([constant, url]) => [serviceRoot(url), constant])).entries()];
+
+/** The URLs that are not a service root: the thumbnails. */
+const basemapResources = basemaps.filter(([, url]) => url !== serviceRoot(url));
+
+test.describe('campus basemap services', () => {
+  test('the basemap definitions yield services to check', () => {
+    // As above: guards against the regex or the file's shape changing and emptying this quietly.
+    expect(basemapRoots.length, 'no service URLs were read from basemaps.definition.ts').toBeGreaterThan(1);
+  });
+
+  for (const [root, constant] of basemapRoots) {
+    test(`${constant}: ${root.split('/services/')[1]} is public and answering`, async ({ request }) => {
+      // Both campus basemaps are named on `gis.tamu.edu` outright, not through the environment's GIS
+      // host, so this asks the same question on every environment. The vector cache is shown only
+      // where `isTesting` reports true (#1229), but the service itself is public either way.
+      const problem = await problemWith(request, root);
+
+      expect(problem, `${constant}: ${root} answered "${problem}"`).toBeNull();
+    });
+  }
+
+  for (const [constant, url] of basemapResources) {
+    test(`${constant}: ${url.split('/MapServer/')[1] ?? 'sub-resource'} is an image`, async ({ request }) => {
+      // The gallery's thumbnail. Broken, it leaves a blank tile in the basemap picker that nobody
+      // would report.
+      const response = await request.get(url, { timeout: 30_000, failOnStatusCode: false });
+
+      expect(response.status(), `${constant}: ${url} did not return 200`).toBe(200);
+      expect(response.headers()['content-type'] ?? '', `${constant}: ${url} is not an image`).toContain('image/');
+    });
+  }
+
+  /**
+   * `AGGIEMAP_BASEMAP_MAX_SCALE` still matches the basemap it is derived from (#1577, #1695).
+   *
+   * Every AggieMap view stops at that scale because the raster cache has no tiles past level 21, and
+   * a view allowed deeper draws white under its layers. The number is hard-coded, with a comment
+   * asking whoever republishes the basemap to raise it to the new service's `maxScale` - and nothing
+   * made that happen. This change republished the basemap and the number was right by luck: the
+   * October 2026 cache stops at the same level the June one did.
+   *
+   * Asked of the service rather than of a second copy of the number, so a deeper or shallower cache
+   * is caught the day it is pointed at, not the first time somebody zooms in.
+   */
+  test('the view limit matches the raster basemap cache', async ({ request }) => {
+    const declared = BASEMAP_DEFINITION.match(/AGGIEMAP_BASEMAP_MAX_SCALE = ([\d.]+)/);
+
+    expect(declared, 'AGGIEMAP_BASEMAP_MAX_SCALE was not found in basemaps.definition.ts').not.toBeNull();
+
+    const raster = basemapRoots.find(([, constant]) => constant === 'AggiemapRasterBasemap');
+
+    expect(raster, 'the raster basemap service was not found in basemaps.definition.ts').toBeDefined();
+
+    const response = await request.get(`${raster?.[0]}?f=json`, { timeout: 30_000, failOnStatusCode: false });
+    const service: { maxScale?: number } = await response.json();
+
+    expect(service.maxScale, `${raster?.[0]} did not report a maxScale`).toBeGreaterThan(0);
+
+    // The constant sits just below the service's own value on purpose: at exactly level 21's scale
+    // the view stopped a level early. A whole scale level is a factor of two, so anything within ten
+    // per cent is the same level, and a republished cache one level deeper is not.
+    const limit = Number(declared?.[1]);
+
+    expect(
+      Math.abs(limit - (service.maxScale as number)) / (service.maxScale as number),
+      `AGGIEMAP_BASEMAP_MAX_SCALE is ${limit}, but ${raster?.[0]} caches down to ${service.maxScale}. ` +
+        `Raise or lower the constant to match the cache, or the view will allow levels the basemap ` +
+        `has no tiles for.`
+    ).toBeLessThan(0.1);
+  });
+});
