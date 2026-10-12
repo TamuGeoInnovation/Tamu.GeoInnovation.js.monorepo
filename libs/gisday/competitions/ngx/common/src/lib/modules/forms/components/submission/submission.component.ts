@@ -1,12 +1,12 @@
 import {
   Component,
-  Input,
   OnChanges,
   OnDestroy,
   OnInit,
   SimpleChanges,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import {
   UntypedFormArray,
@@ -48,8 +48,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  @Input()
-  public formModel: Partial<CompetitionSeason>;
+  public readonly formModel = input<Partial<CompetitionSeason>>(undefined);
 
   public form: UntypedFormGroup;
 
@@ -164,7 +163,8 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           // switchMap(([file, user]) => {
           switchMap(([file, file2, user]) => {
             // if (file !== undefined && this.form.valid && this.submissionStatus.getValue() !== 1) {
-            if (this.form.valid && this.submissionStatus.getValue() !== 1 && this.formModel?.allowSubmissions === true) {
+            const formModel = this.formModel();
+            if (this.form.valid && this.submissionStatus.getValue() !== 1 && formModel?.allowSubmissions === true) {
               // FormData gets sent as multi-part form in request.
               const data: FormData = new FormData();
 
@@ -187,7 +187,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
               data.append('userGuid', `${user.sub}`);
               data.append('location', JSON.stringify(location));
               data.append('value', JSON.stringify(value));
-              data.append('season', this.formModel.season.guid);
+              data.append('season', formModel.season.guid);
               data.append('head1', file);
               if (file2 !== undefined) {
                 data.append('head2', file2);

@@ -6,7 +6,8 @@ import {
   OnChanges,
   SimpleChanges,
   ViewChild,
-  ElementRef
+  ElementRef,
+  input
 } from '@angular/core';
 
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
@@ -33,8 +34,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    *
    * Defaults to `default`
    */
-  @Input()
-  public formControlName = 'default';
+  public readonly formControlName = input('default');
 
   @Input()
   public label: string;
@@ -42,8 +42,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
   /**
    * Pins the minimum value of the slider.
    */
-  @Input()
-  public min = 0;
+  public readonly min = input(0);
 
   /**
    * Pins the maximum value of the slider.
@@ -56,26 +55,22 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
   /**
    * The granularity of the slider. The value must be greater than zero, and should divide the difference between `max` and `min` evenly.
    */
-  @Input()
-  public step = 1;
+  public readonly step = input(1);
 
   /**
    *  If true, the slider will display a marker for each step.
    *
    */
-  @Input()
-  public markedSteps: boolean;
+  public readonly markedSteps = input<boolean>(undefined);
 
   /**
    * Format the value displayed in the label.
    *
    * Defaults to `none`
    */
-  @Input()
-  public limitFormat: 'currency' | 'number' | 'none' = 'none';
+  public readonly limitFormat = input<'currency' | 'number' | 'none'>('none');
 
-  @Input()
-  public showTooltip = false;
+  public readonly showTooltip = input(false);
 
   /**
    * When provided, each native step in the slider will be mapped to a custom
@@ -101,8 +96,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    * When using a data map, the control value will be the indexed value of the data map.
    * Developers have the responsibility of extracting the mapped value from the input map.
    */
-  @Input()
-  public customDataMap: RangeInputDataMap;
+  public readonly customDataMap = input<RangeInputDataMap>(undefined);
 
   @ViewChild('rangeElement', { static: true })
   public input: ElementRef;
@@ -120,9 +114,10 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
   public override set value(value: number) {
     this.setInternalValue(value);
 
-    if (this.showTooltip) {
-      if (this.customDataMap) {
-        this.liveValue.nativeElement.innerText = this.customDataMap[value].display;
+    if (this.showTooltip()) {
+      const customDataMap = this.customDataMap();
+      if (customDataMap) {
+        this.liveValue.nativeElement.innerText = customDataMap[value].display;
       } else {
         this.liveValue.nativeElement.innerText = value;
       }
@@ -157,11 +152,12 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
       // Simplify the template by having mapped and vanilla limits referenced by the same property.
       // This might need to be moved to OnChanges because the data source can change at any point in time
       // and the limits will not update.
-      if (this.customDataMap) {
-        this.max = this.customDataMap.length - 1;
+      const customDataMap = this.customDataMap();
+      if (customDataMap) {
+        this.max = customDataMap.length - 1;
 
-        this.minDisplay = this.customDataMap[0].display;
-        this.maxDisplay = this.customDataMap[this.customDataMap.length - 1].display;
+        this.minDisplay = customDataMap[0].display;
+        this.maxDisplay = customDataMap[customDataMap.length - 1].display;
 
         // When the data map value changes, the maximum value of the slider can potentially be higher than the size
         // of the new data map. This will cause the slider to be out of bounds. To prevent this, we need to
@@ -170,7 +166,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
           this.value = this.max;
         }
       } else {
-        this.minDisplay = this.min;
+        this.minDisplay = this.min();
         this.maxDisplay = this.max;
       }
     }

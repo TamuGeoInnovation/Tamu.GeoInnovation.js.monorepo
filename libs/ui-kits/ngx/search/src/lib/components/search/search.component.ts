@@ -10,7 +10,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   HostListener,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -48,16 +49,14 @@ export class SearchComponent implements OnInit, OnDestroy {
    *
    * Defaults to blank.
    */
-  @Input()
-  public placeholder: string;
+  public readonly placeholder = input<string>(undefined);
 
   /**
    * Option that handles whether or not geolocation for the component is enabled
    *
    * Defaults to false.
    */
-  @Input()
-  public canGeolocate: boolean;
+  public readonly canGeolocate = input<boolean>(undefined);
 
   /**
    * Option that enables/disabled the left side action icon on the search bar.
@@ -92,16 +91,14 @@ export class SearchComponent implements OnInit, OnDestroy {
    *
    * Defaults to 0.
    */
-  @Input()
-  public index = 0;
+  public readonly index = input(0);
 
   /**
    * Option that auto-focuses input text box when component is rendered.
    *
    * Defaults to 0.
    */
-  @Input()
-  public focused = false;
+  public readonly focused = input(false);
 
   /**
    * Overrides the application-wide search sources (normally read from the `SearchSources`
@@ -113,8 +110,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    *
    * When omitted, falls back to the application-wide search sources as usual.
    */
-  @Input()
-  public sources?: SearchSource[];
+  public readonly sources = input<SearchSource[]>(undefined);
 
   // ===========================================================================
 
@@ -222,8 +218,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     // A per-instance `sources` input takes precedence over the application-wide search sources
     // read in the constructor (for example, a satellite-campus map's own scoped sources).
-    if (this.sources && this.sources.length > 0) {
-      this._sources = this.sources;
+    const sources = this.sources();
+    if (sources && sources.length > 0) {
+      this._sources = sources;
     }
 
     this.searchStatus = this.searchService.searching;
@@ -284,7 +281,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
         } else {
           // Emit a cleared event
-          this.empty.emit(new SearchEvent({ index: this.index }));
+          this.empty.emit(new SearchEvent({ index: this.index() }));
 
           // Clear the search service results
           this.searchService.clear();
@@ -315,7 +312,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     // If the focused property was provided and is true, focus the input element in the component
     // To make it ready for text input on devices.
-    if (this.focused) {
+    if (this.focused()) {
       this.searchElem.nativeElement.focus();
     }
   }
@@ -382,7 +379,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     const isString = typeof feature === 'string';
 
     const selection = new SearchSelection<T>({
-      index: this.index,
+      index: this.index(),
       type: 'search',
       selection: feature,
       result: parentResult
@@ -427,7 +424,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         // Emit search result object to be consumed by parent component
         this.result.emit(
           new SearchSelection({
-            index: this.index,
+            index: this.index(),
             type: 'search-geolocation',
             selection: {
               name: 'Current Location',
@@ -475,7 +472,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         // Emit search result object to be consumed by parent component
         this.result.emit(
           new SearchSelection({
-            index: this.index,
+            index: this.index(),
             type: 'search-geolocation',
             selection: {
               latitude: defaultLatitude,

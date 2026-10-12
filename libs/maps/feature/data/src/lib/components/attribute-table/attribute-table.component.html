@@ -7,14 +7,14 @@
   </thead>
   <tbody>
     <ng-container *ngIf="sortFn !== undefined; else noInitialSort ">
-      <tr *ngFor="let row of data | keyvalue : sortFn">
+      <tr *ngFor="let row of data() | keyvalue : sortFn">
         <td>{{row.key}}</td>
         <td>{{row.value | json}}</td>
       </tr>
     </ng-container>
 
     <ng-template #noInitialSort>
-      <tr *ngFor="let row of data | keyvalue">
+      <tr *ngFor="let row of data() | keyvalue">
         <td>{{row.key}}</td>
         <td>{{row.value | json}}</td>
       </tr>

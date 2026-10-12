@@ -1,4 +1,4 @@
-import { Component, Input, HostListener, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, Input, HostListener, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, distinctUntilChanged, shareReplay, startWith } from 'rxjs/operators';
@@ -18,11 +18,9 @@ export class MobileTabNavigationTabComponent implements OnInit {
   @Input()
   public route: string;
 
-  @Input()
-  public icon: string;
+  public readonly icon = input<string>(undefined);
 
-  @Input()
-  public label: string;
+  public readonly label = input<string>(undefined);
 
   public activeTab: Observable<boolean>;
 

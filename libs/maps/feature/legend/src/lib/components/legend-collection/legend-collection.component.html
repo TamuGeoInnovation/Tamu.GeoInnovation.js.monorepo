@@ -7,9 +7,9 @@
   } @if (isExpanded) {
   <div class="collection-group-content">
     @for (element of legendElements; track trackByLegendElement($index, element)) {
-    <tamu-gisc-legend-element [element]="element" [layer]="group.layer" [groupTitle]="group.title" [deduplicateChildren]="deduplicate" [respectDefinitionExpression]="respectDefinitionExpression" [hideGroupHeader]="hideElementGroupHeaders || hideLeafElementGroupHeaders"></tamu-gisc-legend-element>
+    <tamu-gisc-legend-element [element]="element" [layer]="group.layer" [groupTitle]="group.title" [deduplicateChildren]="deduplicate()" [respectDefinitionExpression]="respectDefinitionExpression()" [hideGroupHeader]="hideElementGroupHeaders() || hideLeafElementGroupHeaders"></tamu-gisc-legend-element>
     } @for (childGroup of visibleChildGroups; track trackByLegendGroup($index, childGroup)) {
-    <tamu-gisc-legend-collection [group]="childGroup" [layer]="childGroup.layer" [deduplicate]="deduplicate" [respectDefinitionExpression]="respectDefinitionExpression" [allowVisibilityToggle]="allowVisibilityToggle" [combineChildrenUnderPrimary]="combineChildrenUnderPrimary" [hideElementGroupHeaders]="childHideElementGroupHeaders"></tamu-gisc-legend-collection>
+    <tamu-gisc-legend-collection [group]="childGroup" [layer]="childGroup.layer" [deduplicate]="deduplicate()" [respectDefinitionExpression]="respectDefinitionExpression()" [allowVisibilityToggle]="allowVisibilityToggle" [combineChildrenUnderPrimary]="combineChildrenUnderPrimary()" [hideElementGroupHeaders]="childHideElementGroupHeaders"></tamu-gisc-legend-collection>
     }
   </div>
   }

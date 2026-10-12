@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output, ChangeDetectionStrategy, input } from '@angular/core';
 
 import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -23,8 +23,7 @@ export class SeasonsDayTileComponent {
    * When `false`, the component will simply display the date value and will not
    * emit any added, delete, or updated events.
    */
-  @Input()
-  public interactive = true;
+  public readonly interactive = input(true);
 
   @Output()
   public added: EventEmitter<boolean> = new EventEmitter();
@@ -37,7 +36,7 @@ export class SeasonsDayTileComponent {
 
   @HostBinding('class')
   public get cssClasses() {
-    return this.interactive ? 'interactive' : 'non-interactive';
+    return this.interactive() ? 'interactive' : 'non-interactive';
   }
 
   /**
@@ -51,7 +50,7 @@ export class SeasonsDayTileComponent {
    * Emit event to notify parent to handle updating the emitted day
    */
   public update(event: DateTimePickerChange<Date>) {
-    if (this.interactive !== false) {
+    if (this.interactive() !== false) {
       this.updated.emit({
         guid: this.day.guid,
         date: event.value
@@ -63,7 +62,7 @@ export class SeasonsDayTileComponent {
    * Emit event to notify parent to handle deleting the emitted day
    */
   public delete() {
-    if (this.interactive !== false) {
+    if (this.interactive() !== false) {
       this.deleted.emit({
         guid: this.day.guid,
         date: this.day.date

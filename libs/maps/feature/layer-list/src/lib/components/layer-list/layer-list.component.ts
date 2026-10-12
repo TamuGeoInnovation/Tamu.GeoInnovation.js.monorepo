@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { map, Observable } from 'rxjs';
 
@@ -23,7 +23,7 @@ export class LayerListComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  @Input() public allowedLayerIds: string[] = [];
+  public readonly allowedLayerIds = input<string[]>([]);
 
   /**
    * How to order the rendered list.
@@ -32,7 +32,7 @@ export class LayerListComponent implements OnInit {
    * - `allowed`: follows the order of `allowedLayerIds` so the list can match an external draw
    *   order (e.g. the legend). Falls back to `title` ordering for any layer not in the list.
    */
-  @Input() public orderBy: 'title' | 'allowed' = 'title';
+  public readonly orderBy = input<'title' | 'allowed'>('title');
 
   public layers: Observable<Array<esri.ListItem>>;
 
@@ -43,13 +43,13 @@ export class LayerListComponent implements OnInit {
     this.layers = this.layerListService.layers().pipe(
       map((layers) => {
         const filtered =
-          this.allowedLayerIds.length > 0 ? layers.filter((l) => this.allowedLayerIds.includes(l.layer.id)) : layers;
+          this.allowedLayerIds().length > 0 ? layers.filter((l) => this.allowedLayerIds().includes(l.layer.id)) : layers;
 
-        if (this.orderBy === 'allowed' && this.allowedLayerIds.length > 0) {
+        if (this.orderBy() === 'allowed' && this.allowedLayerIds().length > 0) {
           // `filtered` only contains allowed ids here, so order by their position in the list to
           // match an external draw order (e.g. the legend).
           return filtered.sort(
-            (a, b) => this.allowedLayerIds.indexOf(a.layer.id) - this.allowedLayerIds.indexOf(b.layer.id)
+            (a, b) => this.allowedLayerIds().indexOf(a.layer.id) - this.allowedLayerIds().indexOf(b.layer.id)
           );
         }
 

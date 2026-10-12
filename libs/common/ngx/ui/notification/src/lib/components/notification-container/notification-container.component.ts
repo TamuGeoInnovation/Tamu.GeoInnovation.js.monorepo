@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { v4 as guid } from 'uuid';
@@ -20,8 +20,7 @@ export class NotificationContainerComponent implements OnInit {
   private analytics = inject(Angulartics2, { optional: true });
   private service = inject(NotificationService);
 
-  @Input()
-  public position: 'left' | 'center' | 'right' = 'center';
+  public readonly position = input<'left' | 'center' | 'right'>('center');
 
   public notifications: Observable<Notification[]>;
 

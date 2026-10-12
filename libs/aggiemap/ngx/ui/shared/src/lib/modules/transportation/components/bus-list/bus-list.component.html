@@ -15,7 +15,7 @@ to that server.
   <p class="group-name">{{ $any(group.identity).Name }}</p>
   <div class="routes">
     @for (route of group?.items; track route) {
-    <tamu-gisc-bus-route [route]="route" [selection]="selectionAction"></tamu-gisc-bus-route>
+    <tamu-gisc-bus-route [route]="route" [selection]="selectionAction()"></tamu-gisc-bus-route>
     }
   </div>
 </div>

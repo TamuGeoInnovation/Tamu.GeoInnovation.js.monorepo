@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
@@ -20,8 +20,7 @@ import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
   private busService = inject(BusService);
 
-  @Input()
-  public switch: TripModeSwitch;
+  public readonly switch = input<TripModeSwitch>(undefined);
 
   private $destroy: Subject<boolean> = new Subject();
 
@@ -40,10 +39,11 @@ export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
   public rideDuration: number;
 
   public ngOnInit() {
-    if (this.switch && this.switch.results && this.switch.results.bus != null) {
-      this.routeNumber = this.switch.results.bus.route_number;
-      this.lingerMinutes = this.switch.results.bus.linger_minutes;
-      this.timetable = this.switch.results.bus.timetable;
+    const modeSwitch = this.switch();
+    if (modeSwitch && modeSwitch.results && modeSwitch.results.bus != null) {
+      this.routeNumber = modeSwitch.results.bus.route_number;
+      this.lingerMinutes = modeSwitch.results.bus.linger_minutes;
+      this.timetable = modeSwitch.results.bus.timetable;
 
       this.now = this.timetable[0];
 
@@ -51,7 +51,7 @@ export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
 
       if (this.now.first > this.now.last) {
         // handle wraparound
-        this.stopCount = this.switch.results.bus.stop_count - this.now.first + this.now.last - 1;
+        this.stopCount = modeSwitch.results.bus.stop_count - this.now.first + this.now.last - 1;
       } else {
         this.stopCount = this.now.last - this.now.first - 1;
       }

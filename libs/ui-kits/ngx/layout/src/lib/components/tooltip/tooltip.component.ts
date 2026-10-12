@@ -9,7 +9,8 @@ import {
   OnDestroy,
   ViewChild,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import { TooltipTriggerComponent } from './components/tooltip-trigger/tooltip-trigger.component';
 import { debounceTime, map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -29,11 +30,9 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
 
   private _isVisible: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  @Input()
-  public width: string;
+  public readonly width = input<string>(undefined);
 
-  @Input()
-  public height: number;
+  public readonly height = input<number>(undefined);
 
   /**
    * The positioning of the tooltip content container.
@@ -42,14 +41,12 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    *
    * 'fixed' strategy is experimental. Calculates the fixed positioning relative to the trigger.
    */
-  @Input()
-  public positioningStrategy: 'absolute' | 'fixed' = 'absolute';
+  public readonly positioningStrategy = input<'absolute' | 'fixed'>('absolute');
 
   /**
    * The relative position of the trigger.
    */
-  @Input()
-  public position: 'left' | 'right' | 'bottom' | 'top';
+  public readonly position = input<'left' | 'right' | 'bottom' | 'top'>(undefined);
 
   @Input()
   public set isVisible(value) {

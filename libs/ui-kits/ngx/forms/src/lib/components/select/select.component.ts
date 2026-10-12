@@ -6,7 +6,8 @@ import {
   ChangeDetectionStrategy,
   forwardRef,
   ChangeDetectorRef,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
@@ -38,11 +39,9 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   @Input('value')
   private _value: string = undefined;
 
-  @Input()
-  public formControlName = 'default';
+  public readonly formControlName = input('default');
 
-  @Input()
-  public floatLabel = false;
+  public readonly floatLabel = input(false);
 
   public get value() {
     return this._value;
@@ -64,14 +63,12 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   /**
    * Dot-notation string representing the evaluated property used in the display of the option element.
    */
-  @Input()
-  public displayTemplate: string;
+  public readonly displayTemplate = input<string>(undefined);
 
   /**
    * Dot-notation string representing the evaluated property used in the option data model.
    */
-  @Input()
-  public valueTemplate: string;
+  public readonly valueTemplate = input<string>(undefined);
 
   /**
    * Custom string used as the initial/undefined default option.

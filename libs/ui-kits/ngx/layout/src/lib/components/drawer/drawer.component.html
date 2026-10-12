@@ -7,9 +7,9 @@
 </div>
 
 <div class="toggle material-icons" (click)="toggleVisibility()" [ngClass]="{ visible: visible }">
-  @if (position === 'left') {
+  @if (position() === 'left') {
   <span>chevron_right</span>
-  } @if (position === 'right') {
+  } @if (position() === 'right') {
   <span>chevron_left</span>
   }
 </div>

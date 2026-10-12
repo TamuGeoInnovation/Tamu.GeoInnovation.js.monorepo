@@ -1,12 +1,11 @@
-import { Directive, HostListener, Input, HostBinding } from '@angular/core';
+import { Directive, HostListener, HostBinding, input } from '@angular/core';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[scrollTo]'
 })
 export class ScrollToDirective {
-  @Input()
-  public scrollTo: string | HTMLElement;
+  public readonly scrollTo = input<string | HTMLElement>(undefined);
 
   @HostBinding('tabindex')
   private tabIndex() {
@@ -31,15 +30,16 @@ export class ScrollToDirective {
   }
 
   private scroll() {
-    if (this.scrollTo !== undefined) {
+    const scrollTo = this.scrollTo();
+    if (scrollTo !== undefined) {
       // Handle references by class, id, or tag
-      if (typeof this.scrollTo === 'string') {
-        const elem = document.querySelector(this.scrollTo);
+      if (typeof scrollTo === 'string') {
+        const elem = document.querySelector(scrollTo);
 
         elem.scrollIntoView({ behavior: 'smooth' });
-      } else if (this.scrollTo instanceof HTMLElement) {
+      } else if (scrollTo instanceof HTMLElement) {
         // Handle references by provided HTMLElement
-        this.scrollTo.scrollIntoView({ behavior: 'smooth' });
+        scrollTo.scrollIntoView({ behavior: 'smooth' });
       }
     }
   }

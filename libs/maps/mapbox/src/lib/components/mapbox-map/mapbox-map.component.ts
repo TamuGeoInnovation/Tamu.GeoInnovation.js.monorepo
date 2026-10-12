@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Output, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MapboxOptions, Map } from 'mapbox-gl';
 
@@ -16,32 +16,27 @@ export class MapboxMapComponent implements OnInit {
   @ViewChild('map', { static: true })
   public mapContainer: ElementRef;
 
-  @Input()
-  public token: string;
+  public readonly token = input<string>(undefined);
 
-  @Input()
-  public style: MapboxOptions['style'];
+  public readonly style = input<MapboxOptions['style']>(undefined);
 
-  @Input()
-  public center: MapboxOptions['center'];
+  public readonly center = input<MapboxOptions['center']>(undefined);
 
-  @Input()
-  public minZoom: MapboxOptions['minZoom'];
+  public readonly minZoom = input<MapboxOptions['minZoom']>(undefined);
 
-  @Input()
-  public maxZoom: MapboxOptions['maxZoom'];
+  public readonly maxZoom = input<MapboxOptions['maxZoom']>(undefined);
 
   @Output()
   public loaded: Observable<Map>;
 
   public ngOnInit() {
     this.mapService.createMap({
-      accessToken: this.token,
+      accessToken: this.token(),
       container: this.mapContainer.nativeElement,
-      style: this.style,
-      center: this.center,
-      minZoom: this.minZoom,
-      maxZoom: this.maxZoom
+      style: this.style(),
+      center: this.center(),
+      minZoom: this.minZoom(),
+      maxZoom: this.maxZoom()
     });
   }
 }

@@ -6,7 +6,8 @@ import {
   QueryList,
   AfterContentInit,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -28,17 +29,13 @@ import esri = __esri;
 export class SelectionSummaryComponent implements OnInit, AfterContentInit {
   private collector = inject(FeatureCollectorService);
 
-  @Input()
-  public selfCollect: boolean;
+  public readonly selfCollect = input<boolean>(undefined);
 
-  @Input()
-  public layers: string | string[];
+  public readonly layers = input<string | string[]>(undefined);
 
-  @Input()
-  public deleteDuplicates: boolean;
+  public readonly deleteDuplicates = input<boolean>(undefined);
 
-  @Input()
-  public identifier: string;
+  public readonly identifier = input<string>(undefined);
 
   @Input()
   public collection: Observable<esri.Graphic[]>;
@@ -55,11 +52,11 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
    * Set up the SelectionSummaryComponent feature collector.
    */
   public ngOnInit() {
-    if (this.selfCollect === true) {
+    if (this.selfCollect() === true) {
       this.collector.init({
-        layers: this.layers,
-        deleteDuplicates: this.deleteDuplicates,
-        identifier: this.identifier
+        layers: this.layers(),
+        deleteDuplicates: this.deleteDuplicates(),
+        identifier: this.identifier()
       });
 
       this.collection = this.collector.collection;
