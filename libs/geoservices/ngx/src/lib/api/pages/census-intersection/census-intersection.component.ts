@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { CensusIntersection, CensusYear } from '@tamu-gisc/geoprocessing-v5';
 import { ServiceAttributeAccordionComponent } from '../../components/fragments/common/service-attribute-accordion/service-attribute-accordion.component';
@@ -12,7 +12,6 @@ import { CensusRecordFragmentComponent } from '../../components/fragments/common
   selector: 'tamu-gisc-census-intersection',
   templateUrl: './census-intersection.component.html',
   styleUrls: ['./census-intersection.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ServiceAttributeAccordionComponent,
     CensusYearsParameterFragmentComponent,

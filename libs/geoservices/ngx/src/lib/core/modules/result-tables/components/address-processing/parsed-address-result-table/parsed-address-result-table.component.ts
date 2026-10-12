@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { IParsedAddressRecord, ParsedAddressRecordField } from '@tamu-gisc/geoprocessing-v5';
@@ -11,7 +11,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-parsed-address-result-table',
   templateUrl: './parsed-address-result-table.component.html',
   styleUrls: ['./parsed-address-result-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AsyncPipe]
 })
 export class ParsedAddressResultTableComponent implements OnInit {

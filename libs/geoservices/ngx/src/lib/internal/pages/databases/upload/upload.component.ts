@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { ReplaySubject } from 'rxjs';
@@ -10,7 +10,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'tamu-gisc-upload',
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterOutlet]
 })
 export class UploadComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
@@ -18,7 +18,6 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
   selector: 'tamu-gisc-reverse-geocoding',
   templateUrl: './reverse-geocoding.component.html',
   styleUrls: ['./reverse-geocoding.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ReverseGeocodingBasicComponent,
     TabsComponent,

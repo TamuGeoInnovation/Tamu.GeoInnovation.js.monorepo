@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AccordionDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionContentDirective } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -10,7 +10,6 @@ import { ReferenceFeatureInterpolationSubTypeAttributeListComponent } from '../r
   selector: 'tamu-gisc-reference-feature-attribute-list',
   templateUrl: './reference-feature-attribute-list.component.html',
   styleUrls: ['./reference-feature-attribute-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     AccordionDirective,
     AccordionHeaderDirective,

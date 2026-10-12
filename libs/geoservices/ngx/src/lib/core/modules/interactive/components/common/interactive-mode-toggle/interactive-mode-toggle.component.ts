@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, output, input } from '@angular/core';
+import { Component, output, input } from '@angular/core';
 
 import {
   ComponentMode,
@@ -11,7 +11,6 @@ import { FormsModule } from '@angular/forms';
   selector: 'tamu-gisc-interactive-mode-toggle',
   templateUrl: './interactive-mode-toggle.component.html',
   styleUrls: ['./interactive-mode-toggle.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SlideToggleComponent, FormsModule]
 })
 export class InteractiveModeToggleComponent {
