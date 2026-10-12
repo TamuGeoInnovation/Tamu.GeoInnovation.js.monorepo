@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "aggiemap-vector",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": [
+        "run", "--rm", "-m", "8g", "-p", "4200:4200",
+        "-v", "C:/TAMU/Tamu.GeoInnovation.js.monorepo:/w", "-w", "/w",
+        "node:20.18.1", "sh", "-c",
+        "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --disable-host-check --poll 2000"
+      ],
+      "port": 4200
+    }
+  ]
+}
