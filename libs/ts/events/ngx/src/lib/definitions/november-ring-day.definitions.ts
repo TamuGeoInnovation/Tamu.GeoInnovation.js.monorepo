@@ -15,7 +15,20 @@ export enum NOVEMBER_RING_DAY_LAYERS {
 }
 
 const NOVEMBER_RING_DAY_PERIODS = [
-  { value: 'day2', label: 'Aggie Ring Day (November 6, 2026)', dates: ['2026-11-06'] }
+  {
+    value: 'day1',
+    label: 'Aggie Ring Pickup (November 5, 2026)',
+    dates: ['2026-11-05'],
+    // Pickup parking and the Williams Alumni Center. Tune center/zoom here to adjust framing.
+    mapView: { center: [-96.3354, 30.6095], zoom: 18 }
+  },
+  {
+    value: 'day2',
+    label: 'Aggie Ring Day (November 6, 2026)',
+    dates: ['2026-11-06'],
+    // Aggie Park out to the West Campus Garage shuttle loop. Tune center/zoom here to adjust framing.
+    mapView: { center: [-96.3405, 30.6088], zoom: 17 }
+  }
 ] as const;
 
 const novemberRingDayDateConversions = (startField: string, endField: string) =>
@@ -139,7 +152,11 @@ export const NovemberRingDaySpecialEventOptions: SpecialEventOptions = [
     description:
       'Select the November Ring Day period you plan to attend to see the most relevant transportation and logistics information.',
     shortDescription: 'Event Day',
-    choices: NOVEMBER_RING_DAY_PERIODS.map(({ value, label }) => ({ value, label })),
+    choices: NOVEMBER_RING_DAY_PERIODS.map(({ value, label, mapView }) => ({
+      value,
+      label,
+      mapView: { center: [...mapView.center] as [number, number], zoom: mapView.zoom }
+    })),
     effects: {
       layers: [
         {
@@ -172,7 +189,6 @@ export const NovemberRingDayEvent: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     columnKey: 'fall',
-    visible: false,
     keywords: ['ring', 'day', 'aggie', 'ring day', 'transportation', 'parking', 'celebration']
   }
 };
