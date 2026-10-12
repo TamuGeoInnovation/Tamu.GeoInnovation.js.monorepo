@@ -1,8 +1,8 @@
 # Unreleased
 
-Nothing has merged since the 12 October release.
+Since the 12 October release: GIS Day changes only, waiting for GIS Day's own deploy (see Summary).
 
-**The last release is [12 October 2026](2026-10-12.md)**, built from `c3a7945a4` (build 20261011.10). The
+**The last release is [12 October 2026](2026-10-12.md)**, built from `79cadfccc` (build 20261012.5). The
 full suite cleared it on dev: 446 passed, none failed. The release before it is
 [8 October 2026](2026-10-08.md).
 
@@ -95,23 +95,34 @@ dated notes as what was tested, and this table empties.
 
 ---
 
-## Work in flight - 11 October
+## Work in flight - 12 October
 
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
 file would say the work had stopped.
 
-### A smaller first load ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454)), 11 October
+### Signals and OnPush ([#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455)), 12 October
 
-Measured on production before any change: the main map's first paint takes 0.75 s on a desktop and 5.3 s
-on a phone (Fast 4G, 4x CPU), and the map is ready at 6.3 s and 19.6 s. The first download is 1.62 MB of
-JavaScript (raw), and nearly everything the map uses is in it; the numbers and the breakdown by library
-are on the issue. One pull request per item, each with before and after timings from the same script.
+The three migrations are in the 12 October release: 216 of 287 inputs, 40 of 44 outputs, 31 of 40 queries.
 
-| Item | State |
+| Step | State |
 | --- | --- |
-| Popups: load a popup's component when a popup opens ([#1617](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1617)) | done, in the 12 October release: 71 KB less in the first download, and a phone paints 0.4 to 0.5 s sooner |
-| Trip planner, event definitions, the All Maps pages, lodash | not started |
+| What the migrations left ([#1657](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1657)) | 71 inputs, 4 outputs and 9 queries, listed on the issue by reason. Next: five inputs whose specs have no fixture, then the 22 a component writes to itself |
+| OnPush, the safe libraries ([#1670](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1670)) | UI kits (12) and geoservices (58) are in the release. AggieMap's ten non-map pages are on the branch `refactor/1670-onpush-aggiemap-pages`, checked, with no pull request until this release is out. GIS Day's wait for the work in flight there to merge |
+| OnPush, fields set in subscriptions ([#1671](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1671)) | not started: about 90 components to read |
+| Interaction tests in the smoke suite ([#1672](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1672)) | not started; before the map |
+| OnPush, the map ([#1673](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1673)) | last |
+
+The approach and the risks are written on [#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455#issuecomment-6118481532). A view that stops
+updating fails no compile and no unit test, so every step is checked in a browser.
+
+### A smaller first load ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454))
+
+Done, and in the 12 October release: popups, the All Maps pages, lodash and colornames, the event
+definitions loaded after startup, and the trip planner's components. The map page's JavaScript goes from
+459 KB to about 330 KB gzipped. Still owed: paint timings for the lodash and trip planner changes, and one
+measurement of all of it together, on a quiet machine. Parked until after signals: downloading an event
+map's definition only when its map opens ([#1646](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1646)).
 
 ### GIS Day
 
