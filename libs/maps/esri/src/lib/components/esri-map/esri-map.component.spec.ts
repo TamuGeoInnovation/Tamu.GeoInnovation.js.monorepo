@@ -39,7 +39,8 @@ describe('EsriMapComponent', () => {
 
   it('should correctly configure map service', inject([EsriMapComponent], (esriMapComponent: EsriMapComponent) => {
     esriMapComponent.config = { basemap: null, view: { properties: {}, mode: '2d' } };
-    (esriMapComponent as unknown as { container: ElementRef }).container = { nativeElement: null };
+    // The container is a signal query; stand in for it with a function returning the element reference.
+    (esriMapComponent as unknown as { container: () => ElementRef }).container = () => ({ nativeElement: null });
     expect(esriMapComponent.ngOnInit()).toBeUndefined();
   }));
 });
