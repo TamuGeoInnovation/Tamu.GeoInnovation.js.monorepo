@@ -1,4 +1,13 @@
-import { Component, Input, forwardRef, ChangeDetectionStrategy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  forwardRef,
+  ChangeDetectionStrategy,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  input
+} from '@angular/core';
 import { NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
@@ -26,8 +35,7 @@ export class TextboxComponent extends AbstractValueAccessorFormComponent<string>
    *
    * Defaults to `default`
    */
-  @Input()
-  public formControlName = 'default';
+  public readonly formControlName = input('default');
 
   /**
    * Responsible for rendering the correct input element (input vs textarea), and setting its associated type attribute.
@@ -40,8 +48,7 @@ export class TextboxComponent extends AbstractValueAccessorFormComponent<string>
    *
    * Defaults to `4`
    */
-  @Input()
-  public rows = 4;
+  public readonly rows = input(4);
 
   /**
    * Text used in the accompanying label.
@@ -58,14 +65,12 @@ export class TextboxComponent extends AbstractValueAccessorFormComponent<string>
    *
    * Defaults to `false`
    */
-  @Input()
-  public floatLabel = false;
+  public readonly floatLabel = input(false);
 
-  @Input()
-  public autofocus = false;
+  public readonly autofocus = input(false);
 
   ngAfterViewInit(): void {
-    if (this.autofocus && this.inputElement) {
+    if (this.autofocus() && this.inputElement) {
       setTimeout(() => {
         this.inputElement.nativeElement.focus();
       }, 0);

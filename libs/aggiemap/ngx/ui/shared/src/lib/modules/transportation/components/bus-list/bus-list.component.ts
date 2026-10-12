@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -21,8 +21,7 @@ export class BusListComponent implements OnInit, OnDestroy {
   private responsiveService = inject(ResponsiveService);
   private testing = inject(TestingService);
 
-  @Input()
-  public selectionAction: 'route' | 'in-place' = 'in-place';
+  public readonly selectionAction = input<'route' | 'in-place'>('in-place');
 
   public routes: Observable<Group<TSRoute>[]>;
 

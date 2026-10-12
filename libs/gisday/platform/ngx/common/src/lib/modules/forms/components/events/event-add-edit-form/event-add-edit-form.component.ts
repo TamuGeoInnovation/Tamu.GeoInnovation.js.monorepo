@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -74,8 +74,7 @@ export class EventAddEditFormComponent implements OnInit {
   private readonly eventService = inject(EventService);
   private readonly ns = inject(NotificationService);
 
-  @Input()
-  public type: 'create' | 'edit';
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public form: UntypedFormGroup;
 
@@ -235,7 +234,7 @@ export class EventAddEditFormComponent implements OnInit {
       })
     ));
 
-    if (this.type === 'edit') {
+    if (this.type() === 'edit') {
       this.entity$ = this.at.params.pipe(
         map((params) => {
           return params.guid;
@@ -344,7 +343,7 @@ export class EventAddEditFormComponent implements OnInit {
   }
 
   public handleSubmission() {
-    if (this.type === 'create') {
+    if (this.type() === 'create') {
       this._createEntity();
     } else {
       this._updateEntity();

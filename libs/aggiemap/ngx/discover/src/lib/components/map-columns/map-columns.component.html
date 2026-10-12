@@ -20,7 +20,7 @@
                 component - so the Campus Maps page, the page the campus thumbnails were added for, drew a
                 name over an empty area (#1275).
                 -->
-        <a class="map-entry" [class.map-entry--pictured]="app.thumbnail" [routerLink]="getApplicationRoute(app)">
+        <a class="map-entry" [class.map-entry--pictured]="app.thumbnail" [routerLink]="getApplicationRoute()(app)">
           @if (app.thumbnail) {
           <img class="map-entry-thumbnail" [src]="app.thumbnail" [alt]="app.name + ' map'" loading="lazy" />
           } @else {
@@ -36,5 +36,5 @@
   }
 </div>
 } @else {
-<p class="section-description">{{ noMapsMessage }}</p>
+<p class="section-description">{{ noMapsMessage() }}</p>
 }

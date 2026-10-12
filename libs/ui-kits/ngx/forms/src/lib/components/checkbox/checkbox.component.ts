@@ -6,7 +6,8 @@ import {
   ViewChild,
   ElementRef,
   forwardRef,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  input
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { NgClass } from '@angular/common';
@@ -55,8 +56,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    * **REQUIRED** on checkbox groups, where a property in this object is referenced and used to create a composite
    * value of selected items in the list.
    */
-  @Input()
-  public data: object;
+  public readonly data = input<object>(undefined);
 
   /**
    * Determines the interaction state of the component, preventing or allowing user input.
@@ -72,16 +72,14 @@ export class CheckboxComponent implements ControlValueAccessor {
    *
    * Defaults to "Checkbox input".
    */
-  @Input()
-  public ariaLabel = 'Checkbox input';
+  public readonly ariaLabel = input('Checkbox input');
 
   /**
    * Populates the checkbox label property.
    *
    * Defaults to "Checkbox".
    */
-  @Input()
-  public label = 'Checkbox';
+  public readonly label = input('Checkbox');
 
   @Input()
   public description = '';
@@ -91,8 +89,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    *
    * Defaults to "checkbox".
    */
-  @Input()
-  public name = 'checkbox';
+  public readonly name = input('checkbox');
 
   /**
    * Output event emitter, used to bubble up the event value to the parent component.

@@ -7,7 +7,8 @@ import {
   OnDestroy,
   HostBinding,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
@@ -44,12 +45,11 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
   @Input()
   public notification: Notification;
 
-  @Input()
-  public position: 'left' | 'center' | 'right';
+  public readonly position = input<'left' | 'center' | 'right'>(undefined);
 
   @HostBinding('class')
   private get _classes() {
-    return this.position;
+    return this.position();
   }
 
   // Output event that triggers the notification container to call the notification service remove method

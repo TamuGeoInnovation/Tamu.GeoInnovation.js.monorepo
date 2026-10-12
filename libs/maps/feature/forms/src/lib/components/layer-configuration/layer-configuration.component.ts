@@ -6,7 +6,8 @@ import {
   OnChanges,
   SimpleChanges,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -79,8 +80,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
    * Describes whether the layer will be loaded/unloaded from the map upon configuration resolution (load)
    * and component destruction (unload).
    */
-  @Input()
-  public link: boolean;
+  public readonly link = input<boolean>(undefined);
 
   /**
    * The layer positioning index. This is the index that will be used to create the layer.
@@ -88,8 +88,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
    * This property is also watched for changes to apply a new index to the layer if it has been
    * re-ordered.
    */
-  @Input()
-  public index = 0;
+  public readonly index = input(0);
 
   private layer: LayerConfigLayer;
 
@@ -131,7 +130,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
           withLatestFrom(this.ms.store)
         )
         .subscribe(([[response, metadata], instances]: [[esri.FeatureLayer, PortalLayerJSON], MapServiceInstance]) => {
-          if (this.link && this.ms !== null) {
+          if (this.link() && this.ms !== null) {
             if (metadata.type === 'Raster Layer') {
               this.ms
                 .findLayerOrCreateFromSource({
@@ -149,12 +148,12 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
                     console.warn('Multiple map image sub layers unsupported');
                   } else {
                     this.assignMetadata(layer as esri.MapImageLayer);
-                    instances.map.add(layer, this.index);
+                    instances.map.add(layer, this.index());
                   }
                 });
             } else {
               this.assignMetadata(response as esri.FeatureLayer);
-              instances.map.add(this.layer, this.index);
+              instances.map.add(this.layer, this.index());
             }
           }
         });
@@ -190,13 +189,13 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.index && changes.index.previousValue !== changes.index.currentValue && this.layer !== undefined) {
       this.ms.store.pipe(take(1)).subscribe((instances) => {
-        instances.map.reorder(this.layer, this.index);
+        instances.map.reorder(this.layer, this.index());
       });
     }
   }
 
   public ngOnDestroy(): void {
-    if (this.link && this.ms !== null && this.layer && this.layer.id) {
+    if (this.link() && this.ms !== null && this.layer && this.layer.id) {
       this.ms.removeLayerById(this.layer.id);
     }
   }

@@ -1,4 +1,4 @@
-import { Component, HostListener, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, HostListener, EventEmitter, ChangeDetectionStrategy, input } from '@angular/core';
 import { AbstractSlidingDrawerComponent } from '../../../../abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component';
 
 @Component({
@@ -9,28 +9,27 @@ import { AbstractSlidingDrawerComponent } from '../../../../abstracts/abstract-s
   imports: [AbstractSlidingDrawerComponent]
 })
 export class TooltipTriggerComponent {
-  @Input()
-  public triggerType: 'click' | 'hover' = 'click';
+  public readonly triggerType = input<'click' | 'hover'>('click');
 
   public triggerActivate: EventEmitter<boolean> = new EventEmitter();
 
   @HostListener('click')
   public click() {
-    if (this.triggerType === 'click') {
+    if (this.triggerType() === 'click') {
       this.triggerActivate.emit();
     }
   }
 
   @HostListener('mouseenter')
   public mouseenter() {
-    if (this.triggerType === 'hover') {
+    if (this.triggerType() === 'hover') {
       this.triggerActivate.emit();
     }
   }
 
   @HostListener('mouseleave')
   public mouseleave() {
-    if (this.triggerType === 'hover') {
+    if (this.triggerType() === 'hover') {
       this.triggerActivate.emit();
     }
   }

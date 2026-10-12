@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -32,8 +32,7 @@ export class SponsorAddEditFormComponent implements OnInit {
   private readonly sn = inject(DomSanitizer);
   private readonly ns = inject(NotificationService);
 
-  @Input()
-  public type: 'create' | 'edit';
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public entity$: Observable<Partial<Sponsor>>;
   public activeSeasons$: Observable<Partial<Season>>;
@@ -99,7 +98,7 @@ export class SponsorAddEditFormComponent implements OnInit {
       )
     );
 
-    if (this.type === 'edit') {
+    if (this.type() === 'edit') {
       this.entity$.pipe(take(1)).subscribe((entity) => {
         this.form.patchValue({
           ...entity,
@@ -114,7 +113,7 @@ export class SponsorAddEditFormComponent implements OnInit {
   }
 
   public handleSubmission() {
-    if (this.type === 'create') {
+    if (this.type() === 'create') {
       this._createEntity();
     } else {
       this._updateEntity();

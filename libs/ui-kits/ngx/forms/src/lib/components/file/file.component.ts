@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, forwardRef, Input, Output, EventEmitter, ChangeDetectionStrategy, input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -24,14 +24,12 @@ export class FileComponent implements ControlValueAccessor {
    *
    * https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept#unique_file_type_specifiers
    */
-  @Input()
-  public accept = '*';
+  public readonly accept = input('*');
 
   /**
    * Reset CTA action text, displayed after a file has been selected.
    */
-  @Input()
-  public clearMessage = 'Clear';
+  public readonly clearMessage = input('Clear');
 
   @Output()
   public fileSelected: EventEmitter<File> = new EventEmitter();

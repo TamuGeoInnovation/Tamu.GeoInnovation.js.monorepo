@@ -1,9 +1,9 @@
 <tamu-gisc-tooltip [width]="'20rem'" [positioningStrategy]="'fixed'">
   <tamu-gisc-tooltip-trigger>
     <p>
-      @if (showIcon) {
-      <span class="material-icons">{{iconName}}</span>
-      } {{value | date : formatString}}
+      @if (showIcon()) {
+      <span class="material-icons">{{iconName()}}</span>
+      } {{value | date : formatString()}}
     </p>
   </tamu-gisc-tooltip-trigger>
 

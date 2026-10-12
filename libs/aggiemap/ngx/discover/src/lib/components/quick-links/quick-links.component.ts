@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 export interface QuickLinkItem {
@@ -14,9 +14,7 @@ export interface QuickLinkItem {
   imports: [RouterLink]
 })
 export class QuickLinksComponent {
-  @Input()
-  public title = 'Quick Links';
+  public readonly title = input('Quick Links');
 
-  @Input()
-  public links: QuickLinkItem[] = [];
+  public readonly links = input<QuickLinkItem[]>([]);
 }

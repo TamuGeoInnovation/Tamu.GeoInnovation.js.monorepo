@@ -1,4 +1,13 @@
-import { Component, Input, forwardRef, ViewChild, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  Input,
+  forwardRef,
+  ViewChild,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+  input
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { TooltipComponent, TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -122,40 +131,34 @@ export class DateTimePickerComponent implements ControlValueAccessor {
   /**
    * The coarsest unit offered. `hour` picks a time of day only.
    */
-  @Input()
-  public maxView: DateTimePickerView = 'month';
+  public readonly maxView = input<DateTimePickerView>('month');
 
   /**
    * Accepted for compatibility with existing templates. The native input always opens on its own view.
    */
-  @Input()
-  public startView: DateTimePickerView = 'day';
+  public readonly startView = input<DateTimePickerView>('day');
 
   /**
    * Defaults to `5`
    */
-  @Input()
-  public minuteStep = 5;
+  public readonly minuteStep = input(5);
 
   /**
    * The format string used to display the date time picker value.
    *
    * This value will be passed directly to the date pipe.
    */
-  @Input()
-  public formatString = 'medium';
+  public readonly formatString = input('medium');
 
   /**
    * Whether to show the icon in the date time picker input.
    */
-  @Input()
-  public showIcon = true;
+  public readonly showIcon = input(true);
 
   /**
    * Material icon name to display in the date time picker input.
    */
-  @Input()
-  public iconName = 'calendar_today';
+  public readonly iconName = input('calendar_today');
 
   @Output()
   public changed: EventEmitter<DateTimePickerChange<Date>> = new EventEmitter();
@@ -171,7 +174,7 @@ export class DateTimePickerComponent implements ControlValueAccessor {
   }
 
   public get inputType() {
-    return inputTypeFor(this.minView, this.maxView);
+    return inputTypeFor(this.minView, this.maxView());
   }
 
   public get inputValue() {
@@ -180,7 +183,7 @@ export class DateTimePickerComponent implements ControlValueAccessor {
 
   /** The native input's step, in seconds. Dates step by day, which is the input's default. */
   public get step() {
-    return this.inputType === 'date' ? undefined : this.minuteStep * 60;
+    return this.inputType === 'date' ? undefined : this.minuteStep() * 60;
   }
 
   private _onChange = (v) => {

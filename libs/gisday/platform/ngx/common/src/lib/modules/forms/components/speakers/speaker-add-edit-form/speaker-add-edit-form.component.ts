@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -50,8 +50,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
   private readonly ns = inject(NotificationService);
   private readonly sss = inject(SeasonService);
 
-  @Input()
-  public type: 'create' | 'edit';
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public entity$: Observable<Partial<Speaker>>;
   public universities$: Observable<Array<Partial<University>>>;
@@ -120,7 +119,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
       )
     );
 
-    if (this.type === 'edit') {
+    if (this.type() === 'edit') {
       this.entity$.subscribe((entity) => {
         this.form.patchValue({
           ...entity,
@@ -143,7 +142,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
   }
 
   public handleSubmission() {
-    if (this.type === 'create') {
+    if (this.type() === 'create') {
       this._createEntity();
     } else {
       this._updateEntity();

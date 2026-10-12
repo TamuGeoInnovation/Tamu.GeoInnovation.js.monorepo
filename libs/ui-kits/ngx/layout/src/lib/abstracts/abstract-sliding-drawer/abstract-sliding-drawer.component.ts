@@ -1,4 +1,4 @@
-import { Component, Input, HostBinding, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, HostBinding, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
 
 import { slide } from '../../animations/drawer';
 import { AnimationOptions } from '@angular/animations';
@@ -36,31 +36,27 @@ export class AbstractSlidingDrawerComponent implements OnInit {
    *
    * Defaults to `0`
    */
-  @Input()
-  public offset = '0';
+  public readonly offset = input('0');
 
   /**
    * Describes the width applied to the sliding component.
    *
    * Defaults to `22.5rem`;
    */
-  @Input()
-  public width = '22.5rem';
+  public readonly width = input('22.5rem');
 
   /**
    * Describes the positioning of the sliding component.
    *
    * Defaults to `left`
    */
-  @Input()
-  public position: 'left' | 'right' = 'left';
+  public readonly position = input<'left' | 'right'>('left');
 
   /**
    * Describes the host CSS layout position as relative
    * or absolute
    */
-  @Input()
-  public layout: 'absolute' | 'relative' | 'fixed' = 'absolute';
+  public readonly layout = input<'absolute' | 'relative' | 'fixed'>('absolute');
 
   private _params: Partial<AnimationOptions>;
 
@@ -81,7 +77,7 @@ export class AbstractSlidingDrawerComponent implements OnInit {
    */
   @HostBinding('style.width')
   private get _width() {
-    return this.width;
+    return this.width();
   }
 
   /**
@@ -90,16 +86,16 @@ export class AbstractSlidingDrawerComponent implements OnInit {
    */
   @HostBinding('class')
   private get _position() {
-    return this.position;
+    return this.position();
   }
 
   public ngOnInit() {
     this._params = {
       params: {
         xLimit:
-          this.position === 'left'
-            ? `-${this._removeUnits(this.width) + this._removeUnits(this.offset)}${this._getUnits(this.width)}`
-            : `${this._removeUnits(this.width) + this._removeUnits(this.offset)}${this._getUnits(this.width)}`
+          this.position() === 'left'
+            ? `-${this._removeUnits(this.width()) + this._removeUnits(this.offset())}${this._getUnits(this.width())}`
+            : `${this._removeUnits(this.width()) + this._removeUnits(this.offset())}${this._getUnits(this.width())}`
       }
     };
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HighlightModule } from 'ngx-highlightjs';
 import { NgClass, AsyncPipe } from '@angular/common';
@@ -12,16 +12,14 @@ import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clip
   imports: [HighlightModule, NgClass, ClipboardCopyDirective, AsyncPipe]
 })
 export class CodeRunnerComponent implements OnInit {
-  @Input()
-  public code: string;
+  public readonly code = input<string>(undefined);
 
-  @Input()
-  public result: Observable<string>;
+  public readonly result = input<Observable<string>>(undefined);
 
   public renderable = false;
 
   public ngOnInit() {
-    if (this.code === undefined) {
+    if (this.code() === undefined) {
       console.warn('Code runner did does not have code to render.');
     }
   }

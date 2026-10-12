@@ -109,7 +109,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
             mergeMap((checkbox) => {
               return checkbox.changed.pipe(
                 switchMap(() => {
-                  return of(getPropertyValue<string>(checkbox.data, this.referenceId));
+                  return of(getPropertyValue<string>(checkbox.data(), this.referenceId));
                 })
               );
             })
@@ -149,7 +149,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
   private setChildrenValue() {
     if (this.checkboxes && this.checkboxes.length > 0) {
       this.checkboxes.forEach((checkbox) => {
-        const propValue = getPropertyValue<string>(checkbox.data, this.referenceId);
+        const propValue = getPropertyValue<string>(checkbox.data(), this.referenceId);
 
         // Use == to handle cases where the value is a coerced string or number
         // 3 == '3' -> true

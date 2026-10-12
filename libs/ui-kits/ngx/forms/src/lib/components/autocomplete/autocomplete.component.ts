@@ -1,13 +1,13 @@
 import {
   Component,
-  Input,
   Output,
   EventEmitter,
   ChangeDetectionStrategy,
   ContentChild,
   TemplateRef,
   OnInit,
-  OnDestroy
+  OnDestroy,
+  input
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -33,27 +33,22 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy {
   private _suppressShow = false;
   private _subs$: Subscription = new Subscription();
 
-  @Input()
-  public autofocus = false;
+  public readonly autofocus = input(false);
 
   /** If true, focusing the input will show the results even when the input is empty. */
-  @Input()
-  public showOnFocus = false;
+  public readonly showOnFocus = input(false);
 
   /**
    * Form control to bind the input value
    */
-  @Input()
-  public control: FormControl;
+  public readonly control = input<FormControl>(undefined);
 
   /**
    * Options can be provided as an array or observable of items
    */
-  @Input()
-  public options: Array<T> | Observable<Array<T>> = [];
+  public readonly options = input<Array<T> | Observable<Array<T>>>([]);
 
-  @Input()
-  public placeholder = 'Start typing to search...';
+  public readonly placeholder = input('Start typing to search...');
 
   @Output()
   public optionSelected = new EventEmitter<T>();
@@ -78,26 +73,29 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy {
   /**
    * Map function to render option label (optional)
    */
-  @Input()
-  public displayWith: (item: T) => string = (i) => {
+  public readonly displayWith = input<(item: T) => string>((i) => {
     if (!i) {
       return '';
     }
-    const maybe = i as unknown as { name?: string };
+    const maybe = i as unknown as {
+      name?: string;
+    };
     return maybe && maybe.name ? maybe.name : String(i);
-  };
+  });
 
   public getOptions(): Observable<Array<T>> {
-    return this.options instanceof Observable ? this.options : of(this.options as Array<T>);
+    const options = this.options();
+    return options instanceof Observable ? options : of(options as Array<T>);
   }
 
   public onSelect(option: T) {
     // Update the bound control text so selection reflects in the input, but suppress
     // the normal show-results toggle that runs on valueChanges.
     try {
-      if (this.control) {
+      const control = this.control();
+      if (control) {
         this._suppressShow = true;
-        this.control.setValue(this.displayWith(option));
+        control.setValue(this.displayWith()(option));
       }
     } catch (e) {
       // ignore if control is not set or not writable
@@ -126,8 +124,9 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    if (this.control && this.control.valueChanges) {
-      const sub = this.control.valueChanges.subscribe((v) => {
+    const control = this.control();
+    if (control && control.valueChanges) {
+      const sub = control.valueChanges.subscribe((v) => {
         if (this._suppressShow) {
           // skip one event triggered by programmatic selection
           this._suppressShow = false;
@@ -162,14 +161,15 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.showOnFocus) {
+    if (this.showOnFocus()) {
       this.showResults = true;
       return;
     }
 
     // Otherwise, show results only if there is a control value.
-    if (this.control) {
-      const v = this.control.value;
+    const control = this.control();
+    if (control) {
+      const v = control.value;
       this.showResults = !!v;
     }
   }

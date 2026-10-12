@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, forwardRef, ChangeDetectionStrategy, input } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
@@ -19,8 +19,7 @@ import { NgClass } from '@angular/common';
   imports: [NgClass]
 })
 export class RadioGroupComponent<Option extends object, Value> implements ControlValueAccessor {
-  @Input()
-  public options: Array<Option>;
+  public readonly options = input<Array<Option>>(undefined);
 
   /**
    * INTERNAL USE ONLY. Use `value` getter/setter instead.
@@ -41,8 +40,7 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
   @Input()
   public disabled = false;
 
-  @Input()
-  public displayPath: string;
+  public readonly displayPath = input<string>(undefined);
 
   @Input()
   public valuePath: string;
