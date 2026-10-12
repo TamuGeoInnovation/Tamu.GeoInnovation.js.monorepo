@@ -30,7 +30,7 @@ import { AprilRingDayEvent } from './april-ring-day.definitions';
 import { AggiemapCustomMapConfiguration } from '../interfaces/special-event.interface';
 import { MensBasketball_Ts } from './mens-basketball.definitions';
 import { WomensBasketball_Ts } from './womens-basketball.definitions';
-import { MoveOut } from './move-out.definitions';
+import { MoveOut, SpringMoveOut, SummerOneMoveOut, SummerTwoMoveOut } from './move-out.definitions';
 import { GisDayTs } from './gis-day-map.definitions';
 import { ContractorParkingTs } from './contractor-parking.definitions';
 import { TimedParking_Ts } from './timed-parking.definitions';
@@ -120,6 +120,9 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   WomensBasketball_Ts,
   GisDayTs,
   MoveOut,
+  SpringMoveOut,
+  SummerOneMoveOut,
+  SummerTwoMoveOut,
   ContractorParkingTs,
   TimedParking_Ts,
   VendorParking_Ts,

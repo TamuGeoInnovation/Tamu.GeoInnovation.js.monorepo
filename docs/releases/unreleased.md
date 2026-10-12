@@ -1,6 +1,7 @@
 # Unreleased
 
-Since the 12 October release: November's Ring Day, an Aerial Imagery timeline on dev, and GIS Day changes waiting for GIS Day's own deploy.
+Since the 12 October release: a new campus basemap, move-out's three dated maps, November's Ring Day,
+an Aerial Imagery timeline on dev, and GIS Day changes waiting for GIS Day's own deploy.
 
 **The last release is [12 October 2026](2026-10-12.md)**, built from `79cadfccc` (build 20261012.5). The
 full suite cleared it on dev: 446 passed, none failed. The release before it is
@@ -14,6 +15,72 @@ result adds its own entry below, in that pull request**, with its before/after s
 ---
 
 ## Summary
+
+### A new campus basemap
+
+Every AggieMap view draws over a cached basemap of campus that Facilities Coordination publishes.
+AggieMap has been drawing June's; it now draws October's, `TAMU_Basemap_20261008`
+([#1695](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1695)). The buildings that have gone up since June are on the map.
+
+The clearest example is on the north-west edge, beside Finfeather Road, where building 6891 did not
+exist in the old cache at all:
+
+| Before | After |
+| --- | --- |
+| ![The north-west edge of campus in the June basemap: open ground beside Finfeather Road](../screenshots/basemap-20261008/northwest-before.png) | ![The same place in the October basemap, with building 6891 drawn on it](../screenshots/basemap-20261008/northwest-after.png) |
+
+Most of the change is finer than that, and it is everywhere: a third of the basemap tiles over campus
+differ between the two caches, and in the core two thirds do. The core looks the same at a glance,
+which is the point - the detail is redrawn, not rearranged:
+
+| Before | After |
+| --- | --- |
+| ![The campus core in the June basemap](../screenshots/basemap-20261008/core-before.png) | ![The campus core in the October basemap](../screenshots/basemap-20261008/core-after.png) |
+
+The same service also supplies the Buildings layer, Surface Lots and the building search, and those
+move with it, so a search finds the 18 buildings the new service knows about and the old one did not.
+
+One thing is not as it should be, and is worth knowing: the October service is on the production GIS
+server, where it is public, and is not on the development one - that server's FCOR folder lists six
+services and this is not among them. The basemap *tiles* were always named on the production server
+outright, so they are unaffected, but the data layers were not: they followed the environment. They
+are pinned to production until the new service is published on the development server
+([#1696](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1696)), which
+means development now reads its buildings and surface lots from the same place it already drew its
+basemap. Nothing about this is visible to a visitor on either environment.
+### Move-out has a map for each of its three deadlines
+
+Residence Life runs move-out three times a year, on its own deadline each time, and AggieMap had one
+"Move Out" map with no dates on it covering all three. A visitor could not tell which one they were
+looking at, and the map could never say its event was over - so it sat under Spring on
+[campus events](https://aggiemap.tamu.edu/all-maps/campus-events) all year round.
+
+There are now three: **Spring Move Out**, **Summer I Move Out** and **Summer II Move Out**, each with
+its own dates and its own entry on the campus events page - spring under Spring, the two summer ones
+under Summer. The parking is the same for all three, so they share the layers the one map used; only
+the name, the dates and the season differ, and next year's is one line rather than another copy of
+the map.
+
+The dates want confirming before anyone relies on them. Residence Life has published 2026's -
+9 May, 30 June and 8 August ([reslife.tamu.edu/moveout](https://reslife.tamu.edu/moveout/)) - but not
+2027's, so these are matched to them by weekday rather than by calendar date, because each deadline
+falls at the end of its term: 8 May, 29 June and 7 August. Taking the same calendar dates would have
+put two of them on a Sunday.
+
+The original undated map is unlisted rather than deleted, so anything already linking to
+`/events/move-out` still works.
+
+**T Camp is dated too**, 11 to 13 August 2026, from the Aggie Transfer Camp site - it was the other
+event map that could never say its event was over. While looking that up it turned out the camp is
+held off campus, so what its map is for is a question for the team ([#1697](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1697)).
+
+New Student Conference Parking keeps no dates: the conference runs in sessions across the summer and
+no single set of dates describes it. It stays listed as a known exception in the smoke suite, so it
+is visible rather than quietly passing.
+
+| Before | After |
+| --- | --- |
+| ![The campus events page with a single undated Move Out under Spring](../screenshots/move-out-periods/campus-events-before.png) | Captured from dev once this is deployed |
 
 ### November's Ring Day is on the map
 
@@ -127,6 +194,8 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| A new campus basemap ([#1695](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1695)) | [The main map](https://dev.aggiemap.tamu.edu/map), then zoom right in; and [building 6891 on Finfeather Road](https://dev.aggiemap.tamu.edu/map/d?lat=30.62669&lng=-96.36040&zoom=18) | **The map looks like campus and nothing is missing**, at every zoom including the deepest - the basemap is a new cache, so a gap would show as white under the layers. Building 6891 beside Finfeather Road is drawn; it was not there before. Search a building by name and by number: the Buildings layer and the search now read the new service too |
+| Move-out split into three dated maps ([#1691](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1691)) | [Campus events](https://dev.aggiemap.tamu.edu/all-maps/campus-events), then [Spring Move Out](https://dev.aggiemap.tamu.edu/events/spring-move-out), [Summer I](https://dev.aggiemap.tamu.edu/events/summer-i-move-out) and [Summer II](https://dev.aggiemap.tamu.edu/events/summer-ii-move-out) | **Spring Move Out under Spring; Summer I and Summer II Move Out under Summer**, and no plain "Move Out" anywhere on the page. Each of the three opens a map with the same parking as the old one. **This is the arrangement to confirm with the team** - whether three entries is what they want, and whether the 2027 dates (8 May, 29 June, 7 August) are right. `/events/move-out` should still open its map |
 | November Ring Day ([#1686](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1686)) | [Campus events](https://dev.aggiemap.tamu.edu/all-maps/campus-events), then [November Ring Day](https://dev.aggiemap.tamu.edu/events/november-ring-day) | **November Ring Day listed under Fall**, beside October's. Its builder offers two days: Aggie Ring Pickup (November 5) and Aggie Ring Day (November 6). **Each opens on its own view** - pick-up tight on the Williams Alumni Center, the ring day wider across Aggie Park; they must not share a framing. October Ring Day should still say "This event has passed" |
 | Aerial Imagery timeline ([#1541](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1541)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d/settings), choose **Aerial Imagery**; then [the same map on 6 October 2020](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?imagery=2020-10-06) | A slider along the bottom of the map, ticks at each capture, years 2017-2026, "Latest (Oct 5, 2026)" at the right. Dragging snaps to a capture and changes the imagery; leaving the latest turns the layers off, and coming back turns them on. The second link opens on the 2020 imagery with layers off. Any other basemap hides the slider. Not on production |
 | GIS Day: 2026 VGI competition page ([#1665](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1665)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions/vgi` and `/competitions/monuments` | The VGI page says "November 9-20, 2026" and "2026 Competition: Texas A&M University Monument Trail Challenge", with 2025's Art Trail Challenge first under Prior Competitions. "Read Event Details" opens the new page: two things to collect, one point each, winners Thursday November 19, University Architect logo, no broken images |
