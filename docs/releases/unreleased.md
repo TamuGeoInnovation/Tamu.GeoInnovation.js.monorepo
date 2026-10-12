@@ -1,6 +1,6 @@
 # Unreleased
 
-Since the 12 October release: GIS Day changes only, waiting for GIS Day's own deploy (see Summary).
+Since the 12 October release: November's Ring Day, and GIS Day changes waiting for GIS Day's own deploy.
 
 **The last release is [12 October 2026](2026-10-12.md)**, built from `79cadfccc` (build 20261012.5). The
 full suite cleared it on dev: 446 passed, none failed. The release before it is
@@ -14,6 +14,23 @@ result adds its own entry below, in that pull request**, with its before/after s
 ---
 
 ## Summary
+
+### November's Ring Day is on the map
+
+The Association of Former Students asked for November's dates now that October's are past: **Ring
+Pick-Up on Thursday 5 November** and **Aggie Ring Days on Friday the 6th**. November Ring Day now
+appears under Fall on [campus events](https://aggiemap.tamu.edu/all-maps/campus-events), and its
+builder offers both days.
+
+Each day opens on its own view, which November's map never did: pick-up frames the lots beside the
+Williams Alumni Center, the ring day frames Aggie Park out to the West Campus Garage shuttle loop.
+One shared view fits neither - the reason [#1230](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1230) gave October's periods their own framing,
+which November was still missing.
+
+October Ring Day stays listed and says "This event has passed". That it is not checked by anything
+but a person's eye is [#1687](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1687).
+
+Times are not shown. The maps carry dates, not hours ([#1686](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1686)).
 
 ### GIS Day: the 2026 VGI competition, the Monument Trail Challenge
 
@@ -87,6 +104,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| November Ring Day ([#1686](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1686)) | [Campus events](https://dev.aggiemap.tamu.edu/all-maps/campus-events), then [November Ring Day](https://dev.aggiemap.tamu.edu/events/november-ring-day) | **November Ring Day listed under Fall**, beside October's. Its builder offers two days: Aggie Ring Pickup (November 5) and Aggie Ring Day (November 6). **Each opens on its own view** - pick-up tight on the Williams Alumni Center, the ring day wider across Aggie Park; they must not share a framing. October Ring Day should still say "This event has passed" |
 | GIS Day: 2026 VGI competition page ([#1665](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1665)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions/vgi` and `/competitions/monuments` | The VGI page says "November 9-20, 2026" and "2026 Competition: Texas A&M University Monument Trail Challenge", with 2025's Art Trail Challenge first under Prior Competitions. "Read Event Details" opens the new page: two things to collect, one point each, winners Thursday November 19, University Architect logo, no broken images |
 | GIS Day: poster and presentation competition dates moved to 2026 ([#1662](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1662)) | Not on dev, for the same reason. Locally, `/competitions/posters` and `/competitions/presentation` | No 2025 date on either page. Posters: Tuesday November 17th, 2026, due Monday November 9th. Presentations: Tuesday November 17th and Wednesday November 18th, 2026 |
 | GIS Day: Aggie Map Design Competition removed ([#1661](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1661)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions` | The Competitions menu and page list VGI, Poster and Presentation only; `/competitions/aggie-map` goes to the home page |
