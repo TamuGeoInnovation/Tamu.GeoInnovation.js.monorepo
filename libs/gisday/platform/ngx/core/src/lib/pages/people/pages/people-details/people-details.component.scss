@@ -6,8 +6,10 @@
     top: 1rem;
     align-self: flex-start;
 
+    // Not sticky on a phone, but still positioned: the class banner is placed against this box and
+    // clipped by it, and `static` would let it escape to the page's corner.
     @media (max-width: 767px) {
-      position: static;
+      position: relative;
     }
   }
 }

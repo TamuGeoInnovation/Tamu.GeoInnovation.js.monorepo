@@ -29,6 +29,7 @@ export * from './lib/modules/events/components/season-day-card/season-day-card.c
 export * from './lib/modules/forms/components/speakers/speaker-add-edit-form/speaker-add-edit-form.component';
 export * from './lib/modules/people/components/speaker-avatar/speaker-avatar.component';
 export * from './lib/modules/people/components/speaker-card/speaker-card.component';
+export * from './lib/modules/people/components/speaker-class-banner/speaker-class-banner.component';
 export * from './lib/modules/forms/components/sponsors/sponsor-add-edit-form/sponsor-add-edit-form.component';
 export * from './lib/modules/forms/components/tags/tag-add-edit-form/tag-add-edit-form.component';
 export * from './lib/modules/forms/components/universities/university-add-edit-form/university-add-edit-form.component';
