@@ -1,7 +1,8 @@
 # Unreleased
 
 Since the 12 October release: a new campus basemap, move-out's three dated maps, November's Ring Day,
-an Aerial Imagery timeline on dev, and GIS Day changes waiting for GIS Day's own deploy.
+an About page tidy-up, an Aerial Imagery timeline on dev, and GIS Day changes waiting for GIS Day's
+own deploy.
 
 **The last release is [12 October 2026](2026-10-12.md)**, built from `79cadfccc` (build 20261012.5). The
 full suite cleared it on dev: 446 passed, none failed. The release before it is
@@ -15,6 +16,21 @@ result adds its own entry below, in that pull request**, with its before/after s
 ---
 
 ## Summary
+
+### The About page says who is alumni, in its structure
+
+Under **Department of Geography**, one entry on [the About page](https://aggiemap.tamu.edu/about)
+carried its status in the name field - "Edgar Hernandez, Alumni" - while every other entry on the page
+is a name and a title. It read as though "Alumni" were part of the person's name, and it sat in the
+middle of the current staff with nothing to mark it apart, so someone scanning for who to contact had
+no way to tell ([#1702](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1702)).
+
+Alumni now have their own subsection under the same heading, built from the `h5` and spacing classes
+the page already has, with no new styles. The name field holds a name again.
+
+| Before | After |
+| --- | --- |
+| ![Edgar Hernandez, Alumni listed among the Department of Geography staff](../screenshots/about-geography-alumni/about-before.png) | ![An Alumni subsection under Department of Geography, with Edgar Hernandez in it](../screenshots/about-geography-alumni/about-after.png) |
 
 ### A new campus basemap
 
@@ -194,6 +210,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| About page alumni subsection ([#1702](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1702)) | [About](https://dev.aggiemap.tamu.edu/about) | Under **Department of Geography**: the staff row, then an **Alumni** heading with Edgar Hernandez under it, and no "Edgar Hernandez, Alumni" among the staff. Worth an eye on the spacing - the Alumni heading sits closer to the row above it than the section headings do |
 | A new campus basemap ([#1695](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1695)) | [The main map](https://dev.aggiemap.tamu.edu/map), then zoom right in; and [building 6891 on Finfeather Road](https://dev.aggiemap.tamu.edu/map/d?lat=30.62669&lng=-96.36040&zoom=18) | **The map looks like campus and nothing is missing**, at every zoom including the deepest - the basemap is a new cache, so a gap would show as white under the layers. Building 6891 beside Finfeather Road is drawn; it was not there before. Search a building by name and by number: the Buildings layer and the search now read the new service too |
 | Move-out split into three dated maps ([#1691](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1691)) | [Campus events](https://dev.aggiemap.tamu.edu/all-maps/campus-events), then [Spring Move Out](https://dev.aggiemap.tamu.edu/events/spring-move-out), [Summer I](https://dev.aggiemap.tamu.edu/events/summer-i-move-out) and [Summer II](https://dev.aggiemap.tamu.edu/events/summer-ii-move-out) | **Spring Move Out under Spring; Summer I and Summer II Move Out under Summer**, and no plain "Move Out" anywhere on the page. Each of the three opens a map with the same parking as the old one. **This is the arrangement to confirm with the team** - whether three entries is what they want, and whether the 2027 dates (8 May, 29 June, 7 August) are right. `/events/move-out` should still open its map |
 | November Ring Day ([#1686](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1686)) | [Campus events](https://dev.aggiemap.tamu.edu/all-maps/campus-events), then [November Ring Day](https://dev.aggiemap.tamu.edu/events/november-ring-day) | **November Ring Day listed under Fall**, beside October's. Its builder offers two days: Aggie Ring Pickup (November 5) and Aggie Ring Day (November 6). **Each opens on its own view** - pick-up tight on the Williams Alumni Center, the ring day wider across Aggie Park; they must not share a framing. October Ring Day should still say "This event has passed" |
