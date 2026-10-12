@@ -112,14 +112,20 @@ export class PopupComponent implements OnInit, OnDestroy {
       const request = ++this._renderRequest;
       const data = resolved.data ? resolved.data : this.snapshot.graphics[0];
 
+      // Ask for the panel now, not when the component arrives (#1684). The sidebar shows its own
+      // default view whenever nothing is asking for the popup panel, so waiting for the download
+      // left it falling back for about 100 ms between one feature's popup and the next. A dynamic
+      // import never resolves in the same tick, so that gap was there even with the chunk cached.
+      // Closing the popup while a component is still loading still hides it: the hit test with no
+      // graphics calls `hidePopup` after this, and the stale load is dropped below.
+      this.popupService.showPopup();
+
       // A popup component is downloaded the first time one of its kind is opened (#1454).
       loadPopupComponent(resolved.component)
         .then((component) => {
           if (request !== this._renderRequest) {
             return;
           }
-
-          this.popupService.showPopup();
 
           // Get reference to the view container (host)
           const container = this.viewHost().viewContainerRef;
