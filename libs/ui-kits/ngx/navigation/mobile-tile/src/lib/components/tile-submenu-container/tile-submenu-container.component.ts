@@ -1,12 +1,12 @@
 import {
   Component,
   OnInit,
-  ViewChild,
   ViewContainerRef,
   OnDestroy,
   HostBinding,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  viewChild
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -28,8 +28,7 @@ import { submenuListStagger } from '../../animations/animations';
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   private service = inject(TileService);
 
-  @ViewChild('container', { static: true, read: ViewContainerRef })
-  private _container: ViewContainerRef;
+  private readonly _container = viewChild('container', { read: ViewContainerRef });
 
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -47,9 +46,9 @@ export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
     // the submenu template reference.
     this.service.activeSubMenu.pipe(takeUntil(this._$destroy)).subscribe((res) => {
       if (res) {
-        this._container.clear();
+        this._container().clear();
 
-        this._container.createEmbeddedView(res.template);
+        this._container().createEmbeddedView(res.template);
       }
     });
   }

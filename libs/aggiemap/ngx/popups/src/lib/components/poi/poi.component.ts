@@ -4,9 +4,9 @@ import {
   Component,
   ElementRef,
   OnInit,
-  ViewChild,
   ChangeDetectionStrategy,
-  CUSTOM_ELEMENTS_SCHEMA
+  CUSTOM_ELEMENTS_SCHEMA,
+  viewChild
 } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
@@ -38,8 +38,7 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
     counter: false
   };
 
-  @ViewChild('swiperRef', { static: false })
-  private _swiperRef: ElementRef;
+  private readonly _swiperRef = viewChild<ElementRef>('swiperRef');
 
   private _lgInstance: LightGallery;
   private _needsRefresh = false;
@@ -63,14 +62,15 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
       preventClicks: true,
       on: {
         init: () => {
-          this._lgInstance = lightGallery(this._swiperRef.nativeElement, {});
+          this._lgInstance = lightGallery(this._swiperRef().nativeElement, {});
         }
       }
     };
 
-    Object.assign(this._swiperRef.nativeElement, opts);
+    const _swiperRef = this._swiperRef();
+    Object.assign(_swiperRef.nativeElement, opts);
 
-    this._swiperRef.nativeElement.initialize();
+    _swiperRef.nativeElement.initialize();
   }
 
   // TODO: can be cleaned up?

@@ -2,7 +2,6 @@ import {
   Component,
   OnInit,
   ElementRef,
-  ViewChild,
   Input,
   OnDestroy,
   ChangeDetectionStrategy,
@@ -10,7 +9,8 @@ import {
   HostListener,
   inject,
   input,
-  output
+  output,
+  viewChild
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -199,7 +199,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * DOM input element reference.
    */
-  @ViewChild('search', { static: true }) private searchElem: ElementRef;
+  private readonly searchElem = viewChild<ElementRef>('search');
 
   constructor() {
     if (this.environment.value('SearchSources')) {
@@ -305,7 +305,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     // If the focused property was provided and is true, focus the input element in the component
     // To make it ready for text input on devices.
     if (this.focused()) {
-      this.searchElem.nativeElement.focus();
+      this.searchElem().nativeElement.focus();
     }
   }
 
@@ -406,12 +406,12 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.loseFocus();
 
     // Set pending geolocation view value
-    this.searchElem.nativeElement.value = 'Getting your location...';
+    this.searchElem().nativeElement.value = 'Getting your location...';
 
     getGeolocation()
       .then((res: GeolocationCoordinates) => {
         // Set view value
-        this.searchElem.nativeElement.value = 'Current Location';
+        this.searchElem().nativeElement.value = 'Current Location';
 
         // Emit search result object to be consumed by parent component
         this.result.emit(
@@ -456,7 +456,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         // Set view value
         const name = 'Trigon (Default)';
 
-        this.searchElem.nativeElement.value = name;
+        this.searchElem().nativeElement.value = name;
 
         const defaultLatitude = 30.61458;
         const defaultLongitude = -96.33947;

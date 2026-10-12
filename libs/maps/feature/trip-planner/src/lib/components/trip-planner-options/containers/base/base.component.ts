@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ViewChild, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, from, of } from 'rxjs';
 import { switchMap, filter, toArray, take, shareReplay, find, pluck } from 'rxjs/operators';
@@ -77,7 +77,7 @@ export class TripPlannerOptionsComponent implements OnInit {
   /**
    * Reference to the component content host. Travel option child components will be rendered within,.
    */
-  @ViewChild(RenderHostDirective, { static: true }) public viewHost: RenderHostDirective;
+  public readonly viewHost = viewChild(RenderHostDirective);
 
   public ngOnInit(): void {
     this.render();
@@ -111,7 +111,7 @@ export class TripPlannerOptionsComponent implements OnInit {
     }
 
     // Get reference to the view container (host)
-    const container = this.viewHost.viewContainerRef;
+    const container = this.viewHost().viewContainerRef;
 
     // Clear the view container (host)
     container.clear();

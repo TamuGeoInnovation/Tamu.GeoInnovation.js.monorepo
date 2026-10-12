@@ -1,11 +1,11 @@
 import {
   AfterContentInit,
   Component,
-  ContentChild,
   HostListener,
   OnDestroy,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  contentChild
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -27,24 +27,22 @@ export class TileComponent implements AfterContentInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  @ContentChild(TileTitleComponent, { static: true })
-  public title: TileTitleComponent;
+  public readonly title = contentChild(TileTitleComponent);
 
   // A tile can redirect to open a submenu. Need a reference to the submenu template to render it.
-  @ContentChild(TileSubmenuDirective, { static: true })
-  public submenu: TileSubmenuDirective;
+  public readonly submenu = contentChild(TileSubmenuDirective);
 
   // A tile can have a link directive to link directly to a location. Need a reference to the link directive
   // to subscribe to its click event and toggle the menu.
-  @ContentChild(TileLinkDirective)
-  public link: TileLinkDirective;
+  public readonly link = contentChild(TileLinkDirective);
 
   @HostListener('click')
   protected _tileClick() {
-    if (this.submenu) {
+    const submenu = this.submenu();
+    if (submenu) {
       this.service.updateSubmenu({
-        template: this.submenu.template,
-        title: this.title.title
+        template: submenu.template,
+        title: this.title().title
       });
 
       this.service.toggleSubmenu(true);
@@ -52,8 +50,9 @@ export class TileComponent implements AfterContentInit, OnDestroy {
   }
 
   public ngAfterContentInit(): void {
-    if (this.link) {
-      this.link.clicked.pipe(takeUntil(this._destroy$)).subscribe(() => {
+    const link = this.link();
+    if (link) {
+      link.clicked.pipe(takeUntil(this._destroy$)).subscribe(() => {
         this.service.toggleMenu(false);
       });
     }

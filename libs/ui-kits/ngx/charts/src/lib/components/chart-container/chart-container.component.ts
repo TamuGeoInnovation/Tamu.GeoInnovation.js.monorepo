@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ChangeDetectionStrategy, viewChild } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -13,8 +13,7 @@ import 'chartjs-plugin-colorschemes';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ChartContainerComponent implements OnDestroy {
-  @ViewChild('chartContainer', { static: true })
-  public container: ElementRef;
+  public readonly container = viewChild<ElementRef>('chartContainer');
 
   private _chart: Chart;
   private _$destroy: Subject<boolean> = new Subject();
@@ -38,7 +37,7 @@ export class ChartContainerComponent implements OnDestroy {
   private createOrUpdate(config: ChartConfiguration) {
     if (this._chart === undefined) {
       // Handle observable data sources
-      this._chart = new Chart((<HTMLCanvasElement>this.container.nativeElement).getContext('2d'), config);
+      this._chart = new Chart((<HTMLCanvasElement>this.container().nativeElement).getContext('2d'), config);
     } else {
       this._chart.config.type = config.type;
       this._chart.config.data = config.data;

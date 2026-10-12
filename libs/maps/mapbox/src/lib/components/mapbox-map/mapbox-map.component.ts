@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, ElementRef, Output, ChangeDetectionStrategy, inject, input, viewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MapboxOptions, Map } from 'mapbox-gl';
 
@@ -13,8 +13,7 @@ import { MapboxMapService } from '../../services/mapbox-map.service';
 export class MapboxMapComponent implements OnInit {
   private mapService = inject(MapboxMapService);
 
-  @ViewChild('map', { static: true })
-  public mapContainer: ElementRef;
+  public readonly mapContainer = viewChild<ElementRef>('map');
 
   public readonly token = input<string>(undefined);
 
@@ -32,7 +31,7 @@ export class MapboxMapComponent implements OnInit {
   public ngOnInit() {
     this.mapService.createMap({
       accessToken: this.token(),
-      container: this.mapContainer.nativeElement,
+      container: this.mapContainer().nativeElement,
       style: this.style(),
       center: this.center(),
       minZoom: this.minZoom(),
