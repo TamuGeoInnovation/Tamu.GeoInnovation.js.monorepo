@@ -1,0 +1,2 @@
+started,machine,tool,ran,exit,summary,seconds,elapsed,setup
+2026-10-10 13:42:39 CDT,home,smoke,production framing=release build-banner.spec.ts,0,"1 passed, 0 failed, 0 flaky, 0 skipped, 1 workers",13,0:00:13,

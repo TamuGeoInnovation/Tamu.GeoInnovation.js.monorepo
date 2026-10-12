@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Optional } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { v4 as guid } from 'uuid';
@@ -6,19 +6,23 @@ import { Angulartics2 } from 'angulartics2';
 
 import { NotificationService } from '../../services/notification.service';
 import { Notification } from '../../helpers/notification.helper';
+import { NotificationItemComponent } from '../notification-item/notification-item.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-notification-container',
   templateUrl: './notification-container.component.html',
-  styleUrls: ['./notification-container.component.scss']
+  styleUrls: ['./notification-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NotificationItemComponent, AsyncPipe]
 })
 export class NotificationContainerComponent implements OnInit {
-  @Input()
-  public position: 'left' | 'center' | 'right' = 'center';
+  private analytics = inject(Angulartics2, { optional: true });
+  private service = inject(NotificationService);
+
+  public readonly position = input<'left' | 'center' | 'right'>('center');
 
   public notifications: Observable<Notification[]>;
-
-  constructor(@Optional() private analytics: Angulartics2, private service: NotificationService) {}
 
   public ngOnInit() {
     this.notifications = this.service.notifications;

@@ -1,26 +1,42 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  inject,
+  input,
+  output
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 'rxjs';
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { ParseDateTimeStringsPipe } from '../../../../pipes/parse-date-time-strings/parse-date-time-strings.pipe';
 
 @Component({
   selector: 'tamu-gisc-event-row',
   templateUrl: './event-row.component.html',
-  styleUrls: ['./event-row.component.scss']
+  styleUrls: ['./event-row.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CheckboxComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe]
 })
 export class EventRowComponent implements OnChanges, OnInit {
+  private readonly rt = inject(Router);
+
   @Input()
   public event: Partial<SimplifiedEvent>;
 
   @Input()
   public day: Partial<SeasonDay>;
 
-  @Input()
-  public rsvps: Array<string>;
+  public readonly rsvps = input<Array<string>>(undefined);
 
-  @Output()
-  public rowToggle: EventEmitter<boolean> = new EventEmitter();
+  public readonly rowToggle = output<boolean>();
 
   public isRsvp$: Observable<boolean>;
   private _rsvps$: ReplaySubject<Array<string>> = new ReplaySubject<Array<string>>();
@@ -32,8 +48,6 @@ export class EventRowComponent implements OnChanges, OnInit {
       this.rt.navigate(['/sessions/details', this.event.guid]);
     }
   }
-
-  constructor(private readonly rt: Router) {}
 
   public ngOnInit() {
     this.isRsvp$ = this._rsvps$.asObservable().pipe(

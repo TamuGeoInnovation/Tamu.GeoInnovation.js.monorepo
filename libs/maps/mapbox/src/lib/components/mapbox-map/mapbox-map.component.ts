@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output } from '@angular/core';
+import { Component, OnInit, ElementRef, Output, ChangeDetectionStrategy, inject, input, viewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MapboxOptions, Map } from 'mapbox-gl';
 
@@ -7,40 +7,35 @@ import { MapboxMapService } from '../../services/mapbox-map.service';
 @Component({
   selector: 'tamu-gisc-mapbox-map',
   templateUrl: './mapbox-map.component.html',
-  styleUrls: ['./mapbox-map.component.scss']
+  styleUrls: ['./mapbox-map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class MapboxMapComponent implements OnInit {
-  @ViewChild('map', { static: true })
-  public mapContainer: ElementRef;
+  private mapService = inject(MapboxMapService);
 
-  @Input()
-  public token: string;
+  public readonly mapContainer = viewChild<ElementRef>('map');
 
-  @Input()
-  public style: MapboxOptions['style'];
+  public readonly token = input<string>(undefined);
 
-  @Input()
-  public center: MapboxOptions['center'];
+  public readonly style = input<MapboxOptions['style']>(undefined);
 
-  @Input()
-  public minZoom: MapboxOptions['minZoom'];
+  public readonly center = input<MapboxOptions['center']>(undefined);
 
-  @Input()
-  public maxZoom: MapboxOptions['maxZoom'];
+  public readonly minZoom = input<MapboxOptions['minZoom']>(undefined);
+
+  public readonly maxZoom = input<MapboxOptions['maxZoom']>(undefined);
 
   @Output()
   public loaded: Observable<Map>;
 
-  constructor(private mapService: MapboxMapService) {}
-
   public ngOnInit() {
     this.mapService.createMap({
-      accessToken: this.token,
-      container: this.mapContainer.nativeElement,
-      style: this.style,
-      center: this.center,
-      minZoom: this.minZoom,
-      maxZoom: this.maxZoom
+      accessToken: this.token(),
+      container: this.mapContainer().nativeElement,
+      style: this.style(),
+      center: this.center(),
+      minZoom: this.minZoom(),
+      maxZoom: this.maxZoom()
     });
   }
 }

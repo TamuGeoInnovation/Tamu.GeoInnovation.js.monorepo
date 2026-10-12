@@ -1,8 +1,8 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 import { GroupByPipe } from './group-by.pipe';
 
 describe('groupBy.pipe', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [GroupByPipe]
     }).compileComponents();

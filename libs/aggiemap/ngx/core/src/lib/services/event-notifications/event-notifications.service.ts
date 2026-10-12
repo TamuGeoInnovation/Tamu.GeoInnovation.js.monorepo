@@ -1,4 +1,7 @@
-import { Injectable, InjectionToken, Optional, Inject } from '@angular/core';
+import { Injectable, InjectionToken, inject } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { filter, map, take } from 'rxjs/operators';
 import { NotificationService, NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 interface EventToastConfig {
@@ -29,35 +32,171 @@ interface EventNotificationEntry {
   configuration?: EventToastConfig | null;
 }
 
-export const EVENT_NOTIFICATION_DEFINITIONS = new InjectionToken<EventNotificationEntry[]>('EVENT_NOTIFICATION_DEFINITIONS');
+/**
+ * The campus a map belongs to, and therefore whose notifications it shows.
+ *
+ * AggieMap is the College Station application: Ring Day, Football, Kickoff at Kyle and the 150th
+ * events are all College Station, and showing them on a satellite campus map is wrong - those
+ * campuses are separate places, and each will have notifications of its own that must stay separate
+ * from College Station's and from each other's. See #1265.
+ *
+ * Expressed as "which campus is this", rather than as a list of maps to suppress, so a campus added
+ * later shows its own notifications and no one else's by default, instead of inheriting College
+ * Station's until somebody remembers to add it to a deny list.
+ */
+export type CampusId = string;
+
+export const COLLEGE_STATION: CampusId = 'college-station';
+
+/** A surface that shows no notifications at all, whoever's they are. */
+export const NO_NOTIFICATIONS: CampusId = 'none';
+
+/**
+ * Whose notifications a route shows.
+ *
+ * - `/campus/:id` is a satellite campus, and shows that campus's own.
+ * - `/kiosk/:id` shows none. Kiosk maps are sidebar-free, preset-layer maps embedded elsewhere, such
+ *   as in a mobile app webview. There is nobody at the screen to dismiss a toast, and it would draw
+ *   over the map inside someone else's application.
+ * - `/code-maroon` shows none. It carries an emergency alert, and an event toast about cake and ice
+ *   cream stacking under a tornado warning is the kind of thing that destroys trust in the alert
+ *   itself. Nothing competes with Code Maroon on that route (#1289).
+ * - College Station's maps - the main map (`/map`), and an event, parking or operations map
+ *   (`/events/:id/map`, and so on) - show College Station's.
+ * - Everything else shows none: the All Maps pages, the builders, about and the like. Notices belong
+ *   on a page showing a map, not over a list of maps or a form (#1290).
+ */
+export function campusForRoute(url: string): CampusId {
+  const path = (url || '').split('?')[0].split('#')[0];
+
+  if (/(?:^|\/)kiosk\//.test(path) || /(?:^|\/)code-maroon(?:\/|$)/.test(path)) {
+    return NO_NOTIFICATIONS;
+  }
+
+  const match = path.match(/(?:^|\/)campus\/([^/]+)/);
+
+  if (match) {
+    return match[1];
+  }
+
+  return COLLEGE_STATION_MAP.test(path) ? COLLEGE_STATION : NO_NOTIFICATIONS;
+}
+
+/** A College Station map page: `/map`, or an event, parking or operations map. */
+const COLLEGE_STATION_MAP = /^\/(?:(?:events|parking|operations)\/[^/]+\/)?map(?:\/|$)/;
+
+/**
+ * The campus each map shown belongs to, as the router navigates. The application shell raises
+ * notifications from this.
+ *
+ * Driven by `NavigationEnd` alone, which the router also emits for the first page. Not seeded with
+ * `router.url`: the shell subscribes before the first navigation finishes, when that is still `/`,
+ * which reads as College Station - so a campus map opened directly got College Station's notifications
+ * for its first moment, and they stayed (#1265).
+ */
+export function campusOnNavigation(router: Pick<Router, 'events' | 'url'>): Observable<CampusId> {
+  return router.events.pipe(
+    filter((event) => event instanceof NavigationEnd),
+    map(() => campusForRoute(router.url))
+  );
+}
+
+/**
+ * The event definitions to raise notices from: the list, or a function that loads it.
+ *
+ * The application gives the function. The list is every event map's whole definition, about a quarter
+ * of a megabyte before compression, and naming it at startup put it in the first download, ahead of
+ * the first paint, for the sake of a notice that appears afterwards anyway (#1454).
+ */
+export type EventNotificationSource = EventNotificationEntry[] | (() => Promise<EventNotificationEntry[]>);
+
+export const EVENT_NOTIFICATION_DEFINITIONS = new InjectionToken<EventNotificationSource>('EVENT_NOTIFICATION_DEFINITIONS');
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventNotificationsService {
-  constructor(
-    private readonly notificationService: NotificationService,
-    @Optional() @Inject(EVENT_NOTIFICATION_DEFINITIONS) private readonly definitions: EventNotificationEntry[] | null
-  ) {}
+  private readonly notificationService = inject(NotificationService);
+  private readonly source = inject(EVENT_NOTIFICATION_DEFINITIONS, { optional: true });
+
+  /** The definitions, once they are here: at once when the application gave a list, after loading otherwise. */
+  private definitions?: EventNotificationEntry[];
+
+  /** The load in progress, so navigating again before it finishes does not start a second one. */
+  private _loading?: Promise<void>;
+
+  /** The campus of the map showing now, which may have changed by the time the definitions arrive. */
+  private _campus: CampusId = COLLEGE_STATION;
+
+  /**
+   * Ids shown in this browser session, so each notice appears once per session (#1307).
+   *
+   * Kept in session storage, so a reload or a return to a map does not show it again, and a new
+   * session does. The shell calls this on every navigation, so without it walking between two College
+   * Station maps would also stack a second copy of each.
+   */
+  private readonly _seen = readSeen();
+
+  /** Ids this service put on screen during this page load, so it can take them down again. */
+  private readonly _shown = new Set<string>();
 
   /**
    * Checks all event definitions for active events and triggers toast notifications
    * for any that have toast configuration and are currently active/upcoming.
    *
-   * Called once per page load, from the application shell, so that an event map reached by link
+   * Called from the application shell on each navigation, so that an event map reached by link
    * raises them as well - the event maps are lazy routes of this same application. Anything the user
    * has already dismissed during this load is left alone; see `NotificationService`.
+   *
+   * `campus` is the campus whose map is showing. These definitions are College Station's, so nothing
+   * is raised on a satellite campus map. When those campuses get notifications of their own, this is
+   * where they are matched rather than a new mechanism. See #1265.
    */
-  public checkAndTriggerEventNotifications(): void {
-    if (!this.definitions) {
+  public checkAndTriggerEventNotifications(campus: CampusId = COLLEGE_STATION): void {
+    this._campus = campus;
+
+    if (campus !== COLLEGE_STATION) {
+      // Notices belong on a College Station map. Ones raised on the map the visitor just left would
+      // otherwise stay over the page they moved to until they timed out (#1307).
+      this.takeDownShown();
       return;
     }
 
+    if (!this.source) {
+      return;
+    }
+
+    if (this.definitions) {
+      this.raiseActive(this.definitions);
+    } else if (typeof this.source !== 'function') {
+      this.definitions = this.source;
+      this.raiseActive(this.definitions);
+    } else {
+      this._loading ??= this.source()
+        .then((definitions) => {
+          this.definitions = definitions;
+
+          // The visitor may have moved to another campus's map while these were loading.
+          if (this._campus === COLLEGE_STATION) {
+            this.raiseActive(definitions);
+          }
+        })
+        .catch((error) => {
+          this._loading = undefined;
+          console.warn('Event notifications could not be loaded.', error);
+        });
+    }
+  }
+
+  /**
+   * Raises the notice of every event that is on now or coming up within a week.
+   */
+  private raiseActive(definitions: EventNotificationEntry[]): void {
     const now = Date.now();
     const oneDay = 24 * 60 * 60 * 1000; // milliseconds in a day
     const sevenDays = 7 * oneDay;
 
-    this.definitions.forEach((eventDefinition) => {
+    definitions.forEach((eventDefinition) => {
       const config = eventDefinition.configuration;
 
       // Skip if no configuration or no toast config
@@ -113,14 +252,58 @@ export class EventNotificationsService {
       notificationProps.id = `event-${eventId}-toast`;
     }
 
-    // Already dismissed during this page load, so leave it dismissed. This runs on every route, and
-    // without the check, walking from the main map to an event map would raise the whole stack again
-    // a moment after the user cleared it.
+    // Already dismissed during this page load, so leave it dismissed. This runs on every navigation,
+    // and without the check, walking from the main map to an event map would raise the whole stack
+    // again a moment after the user cleared it.
     if (this.notificationService.wasDismissedThisLoad(notificationProps.id)) {
       return;
     }
 
+    // Already shown this session, whether on this page load or before a reload (#1307).
+    if (this._seen.has(notificationProps.id)) {
+      return;
+    }
+
+    this._seen.add(notificationProps.id);
+    this._shown.add(notificationProps.id);
+    writeSeen(this._seen);
+
     // Trigger the notification
     this.notificationService.toast(notificationProps);
+  }
+
+  /** Takes down the notices this service put on screen, leaving any other notification alone. */
+  private takeDownShown(): void {
+    if (this._shown.size === 0) {
+      return;
+    }
+
+    this.notificationService.notifications
+      .pipe(take(1))
+      .subscribe((showing) =>
+        showing.filter((n) => this._shown.has(n.id)).forEach((n) => this.notificationService.remove(n))
+      );
+
+    this._shown.clear();
+  }
+}
+
+/** Where the ids of notices already shown this session are kept (#1307). */
+const SEEN_KEY = 'aggiemap-event-notices-seen';
+
+/** Session storage can be missing or refuse access, as in a private window; then it is per page load. */
+function readSeen(): Set<string> {
+  try {
+    return new Set<string>(JSON.parse(sessionStorage.getItem(SEEN_KEY) ?? '[]'));
+  } catch {
+    return new Set<string>();
+  }
+}
+
+function writeSeen(seen: Set<string>): void {
+  try {
+    sessionStorage.setItem(SEEN_KEY, JSON.stringify([...seen]));
+  } catch {
+    // Not available: notices are then shown once per page load, as before.
   }
 }

@@ -8,12 +8,12 @@ on:
         type: string
 
 env:
-  EXCLUDED_PROJECTS: 'aggiemap-angular-e2e,cpa-angular,cpa-angular-e2e,cpa-nest,geoservices-angular-e2e,gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-angular-e2e,gisday-competitions-nest,mailroom-angular-e2e,oidc-admin-angular,oidc-admin-angular-e2e,oidc-admin-nest,oidc-provider-nest,signage-angular,signage-angular-e2e,trees-angular,trees-angular-e2e,ues-effluent-angular,ues-effluent-angular-e2e,ues-effluent-data-api-nest,ues-operations-angular,ues-operations-angular-e2e,ues-operations-nest,ues-recycling-angular,ues-recycling-angular-e2e,ues-recycling-data-api-nest,ues-valves-angular,ues-valves-angular-e2e,ues-valves-nest,veoride-data-api-nest,veoride-data-compiler-node,veoride-scraper-node'
+  EXCLUDED_PROJECTS: 'gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-nest,oidc-admin-angular,oidc-admin-nest,oidc-provider-nest,signage-angular,ues-operations-angular,ues-operations-nest'
 
 jobs:
   build:
     name: Affected
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20.18.1'
+          node-version: '22.23.3'
 
       - uses: actions/cache@v4
         id: npm-cache

@@ -1,12 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum RING_DAY_LAYERS {
   RD_POIS = 'ring-day-pois',
@@ -66,7 +66,7 @@ export const RingDayColdLayerSources: LayerSource[] = [
     id: RingDayEventDefinitions.RD_AREAS.id,
     title: RingDayEventDefinitions.RD_AREAS.name,
     url: RingDayEventDefinitions.RD_AREAS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.Notes'
@@ -82,7 +82,7 @@ export const RingDayColdLayerSources: LayerSource[] = [
     id: RingDayEventDefinitions.RD_ROUTES.id,
     title: RingDayEventDefinitions.RD_ROUTES.name,
     url: RingDayEventDefinitions.RD_ROUTES.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'
@@ -98,7 +98,7 @@ export const RingDayColdLayerSources: LayerSource[] = [
     id: RingDayEventDefinitions.RD_POIS.id,
     title: RingDayEventDefinitions.RD_POIS.name,
     url: RingDayEventDefinitions.RD_POIS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'

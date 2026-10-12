@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/mailroom-helper-nest/src",
   "projectType": "application",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -11,6 +12,7 @@
         "outputPath": "dist/apps/mailroom-helper-nest",
         "main": "apps/mailroom-helper-nest/src/main.ts",
         "tsConfig": "apps/mailroom-helper-nest/tsconfig.app.json",
+        "webpackConfig": "apps/mailroom-helper-nest/webpack.config.js",
         "assets": [
           "apps/mailroom-helper-nest/src/assets",
           "apps/mailroom-helper-nest/src/Dockerfile",
@@ -41,27 +43,22 @@
       }
     },
     "serve": {
-      "executor": "@nx/node:node",
+      "executor": "@nx/js:node",
       "options": {
         "buildTarget": "mailroom-helper-nest:build",
         "host": "0.0.0.0"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/mailroom-helper-nest/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/mailroom-helper-nest"],
       "options": {
-        "jestConfig": "apps/mailroom-helper-nest/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/mailroom-helper-nest/jest.config.ts"
       }
     }
-  },
-  "tags": []
+  }
 }

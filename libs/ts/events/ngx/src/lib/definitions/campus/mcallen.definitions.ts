@@ -1,9 +1,14 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { Connections, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
-import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../../interfaces/special-event.interface';
+import { campusClickOverlayNative } from './campus-overlay.definitions';
+import { EventPopups } from '../../modules/popups/popups';
 
 /**
  * Layer ids used by the McAllen satellite-campus map. `BASEMAP` is the visual vector-tile basemap.
@@ -41,25 +46,11 @@ export const McAllenLayerSources: LayerSource[] = [
     id: MCALLEN_LAYERS.BUILDINGS,
     title: 'Buildings',
     url: `${Connections.mcallenFeatureServerUrl}/2`,
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: EventPopups.CampusBuildingPopupComponent,
     listMode: 'hide',
     visible: true,
     essential: true,
-    native: {
-      ...commonLayerProps,
-      legendEnabled: false,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [0, 0, 0, 0.01],
-          outline: {
-            width: '0'
-          }
-        }
-      }
-    }
+    native: campusClickOverlayNative
   }
 ];
 
@@ -70,6 +61,12 @@ export const McAllenLayerSources: LayerSource[] = [
 export const McAllenSearchSources: SearchSource[] = [
   {
     source: 'mcallen-building',
+    // `?bldg=1234`, and `?abbrv=OCNG` for a building with no number (#1481). The popup's copy link
+    // reads these same two names, so one declaration decides what a shared link says and what
+    // `EventService.selectFeatureByConfiguredParam` accepts when it is opened. Both forms match
+    // against every field in `where.keys` below, so either resolves whichever value it carries.
+    urlQueryParam: 'bldg',
+    urlQueryParamAliases: ['abbrv'],
     name: 'Building',
     url: `${Connections.mcallenFeatureServerUrl}/2`,
     queryParams: {
@@ -90,7 +87,7 @@ export const McAllenSearchSources: SearchSource[] = [
     scoringKeys: ['attributes.abbrev', 'attributes.number', 'attributes.name'],
     featuresLocation: 'features',
     displayTemplate: '{attributes.name} ({attributes.number})',
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: EventPopups.CampusBuildingPopupComponent,
     searchActive: true
   }
 ];
@@ -107,6 +104,13 @@ export const McAllenConfiguration: EventConfiguration = {
   zoom: 18,
   hideLayerToggle: true,
   sidebarTabs: ['features'],
+  // The McAllen layer has no address fields.
+  buildingPopup: {
+    layerId: MCALLEN_LAYERS.BUILDINGS,
+    title: ['name', 'abbrev'],
+    number: 'number',
+    abbreviation: 'abbrev'
+  },
   // TODO: set `brandingIconUrl` to an official Texas A&M Higher Education Center at McAllen logo
   // once one is sourced. Until then, the sidebar falls back to the default TAMU branding block.
   searchSources: McAllenSearchSources
@@ -126,6 +130,7 @@ export const McAllenTs: AggiemapCustomMapConfiguration = {
     description: 'Map of the Texas A&M Higher Education Center at McAllen campus.',
     source: 'internal',
     type: 'satellite-campus',
-    mapType: 'satellite-campus'
+    mapType: 'satellite-campus',
+    thumbnail: './assets/images/campus/mcallen.jpg'
   }
 };

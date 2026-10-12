@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   BehaviorSubject,
@@ -33,11 +33,10 @@ import {
 import { Angulartics2 } from 'angulartics2';
 import { v4 as guid } from 'uuid';
 import * as gju from 'geojson-utils';
-import { minBy } from 'lodash';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { findNearestIndex, isCoordinatePair, getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
-import { pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
+import { minBy, pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -65,6 +64,20 @@ import esri = __esri;
 
 @Injectable({ providedIn: 'root' })
 export class TripPlannerService implements OnDestroy {
+  private router = inject(Router);
+  private moduleProvider = inject(EsriModuleProviderService);
+  private mapService = inject(EsriMapService);
+  private connectionService = inject(TripPlannerConnectionService);
+  private analytics = inject(Angulartics2);
+  private ns = inject(NotificationService);
+  private url = inject(ActivatedRoute);
+  private search = inject(SearchService);
+  private busService = inject(BusService);
+  private bikeService = inject(BikeService);
+  private parkingService = inject(ParkingService);
+  private settings = inject(SettingsService);
+  private environment = inject(EnvironmentService);
+
   private settingsConfig: SettingsInitializationConfig = {
     storage: {
       subKey: 'trip-planner'
@@ -421,21 +434,10 @@ export class TripPlannerService implements OnDestroy {
     }
   }
 
-  constructor(
-    private router: Router,
-    private moduleProvider: EsriModuleProviderService,
-    private mapService: EsriMapService,
-    private connectionService: TripPlannerConnectionService,
-    private analytics: Angulartics2,
-    private ns: NotificationService,
-    private url: ActivatedRoute,
-    private search: SearchService,
-    private busService: BusService,
-    private bikeService: BikeService,
-    private parkingService: ParkingService,
-    private settings: SettingsService,
-    private environment: EnvironmentService
-  ) {
+  constructor() {
+    const moduleProvider = this.moduleProvider;
+    const mapService = this.mapService;
+
     this.LayerSources = this.environment.value('LayerSources');
     this.RegionalBoundary = this.environment.value('RegionalBoundary', true);
 
@@ -1251,7 +1253,7 @@ export class TripPlannerService implements OnDestroy {
     return pipe(
       map(
         (
-          res: Array<Array<{ result: esri.RouteSolveResult; trip: TripResult; params: esri.supportRouteParameters }>>
+          res: Array<Array<{ result: esri.RouteSolveResult; trip: TripResult; params: esri.RouteParameters }>>
         ): SuccessTripResultWithOriginalTaskParams => {
           const flattened = res.flat(3);
 
@@ -2724,7 +2726,7 @@ export interface TripResultProperties {
   /**
    * Original route parameters used in the trip request.
    */
-  params?: esri.supportRouteParameters;
+  params?: esri.RouteParameters;
 
   /**
    * If trip request succeeded, property will be populated with aggregated directions.
@@ -2919,8 +2921,7 @@ interface CollectionConstructor {
 }
 
 interface TripPlannerModules {
-  TripTask: esri.RouteTaskConstructor;
-  RouteParameters: esri.supportRouteParametersConstructor;
+  RouteParameters: esri.RouteParametersConstructor;
   FeatureSet: esri.FeatureSetConstructor;
   Graphic: esri.GraphicConstructor;
   route: esri.route;

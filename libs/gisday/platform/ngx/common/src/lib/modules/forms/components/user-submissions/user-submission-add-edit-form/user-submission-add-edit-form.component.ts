@@ -1,20 +1,42 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { filter, map, Observable, shareReplay, startWith, Subject, switchMap, take, tap } from 'rxjs';
 
 import { Submission, SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RadioGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SlideToggleComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-user-submission-add-edit-form',
   templateUrl: './user-submission-add-edit-form.component.html',
-  styleUrls: ['./user-submission-add-edit-form.component.scss']
+  styleUrls: ['./user-submission-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    RadioGroupComponent,
+    SlideToggleComponent,
+    TextboxComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
-  @Input()
-  public type: 'create' | 'edit';
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly at = inject(ActivatedRoute);
+  private readonly rt = inject(Router);
+  private readonly submissionTypeService = inject(SubmissionTypeService);
+  private readonly userSubmissionService = inject(UserSubmissionsService);
+  private readonly seasonService = inject(SeasonService);
+  private readonly ns = inject(NotificationService);
+
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public form: UntypedFormGroup;
 
@@ -65,15 +87,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
 
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly at: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly submissionTypeService: SubmissionTypeService,
-    private readonly userSubmissionService: UserSubmissionsService,
-    private readonly seasonService: SeasonService,
-    private readonly ns: NotificationService
-  ) {
+  constructor() {
     this.form = this.fb.group({
       title: [''],
       participants: this.fb.array([]),
@@ -101,7 +115,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
         }
       });
 
-    if (this.type === 'edit') {
+    if (this.type() === 'edit') {
       this.entity$ = this.at.params.pipe(
         map((params) => params.guid),
         filter((guid) => guid !== undefined),
@@ -146,7 +160,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   }
 
   public handleSubmission() {
-    if (this.type === 'create') {
+    if (this.type() === 'create') {
       this._createSubmission();
     } else {
       this._updateSubmission();

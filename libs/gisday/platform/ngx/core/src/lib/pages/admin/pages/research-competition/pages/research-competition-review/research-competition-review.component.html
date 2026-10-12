@@ -4,36 +4,35 @@
       <div class="form-section-title">Review Submission</div>
     </div>
 
-    <div class="form-section-body" *ngIf="entity$ | async as entity">
-      <div class="info-block warning" *ngIf="(entity$ | async)?.reviewed === true">
+    @if (entity$ | async; as entity) {
+    <div class="form-section-body">
+      @if ((entity$ | async)?.reviewed === true) {
+      <div class="info-block warning">
         <p class="bold">This submission has already been reviewed by a TxGIS Day committee member. Submitting a review once again will trigger an additional email notice to all listed participants!</p>
       </div>
-
+      }
       <div class="form-collection column">
         <h5>Title</h5>
         <p class="review-value">{{entity.title}}</p>
-
         <h5>Abstract</h5>
         <p class="review-value">{{entity.abstract}}</p>
-
         <h5>URL</h5>
         <a class="review-value" [href]="entity.link" target="_blank">{{entity.link}}</a>
-
         <h5>Submission Type</h5>
         <p class="review-value">{{entity.submissionType | titlecase}}</p>
-
         <h5>Format</h5>
         <p class="review-value">{{entity.format | titlecase}}</p>
-
         <h5>Classification</h5>
         <p class="review-value">{{entity.classificationType | titlecase}}</p>
-
         <h5>Participant(s)</h5>
         <ul>
-          <li *ngFor="let participant of entity?.participants">{{participant.name}} <ng-container *ngIf="participant?.email">({{participant.email}}) </ng-container> <ng-container *ngIf="participant?.studentId">({{participant.studentId}})</ng-container></li>
+          @for (participant of entity?.participants; track participant) {
+          <li>{{participant.name}} @if (participant?.email) { ({{participant.email}}) } @if (participant?.studentId) { ({{participant.studentId}}) }</li>
+          }
         </ul>
       </div>
     </div>
+    }
   </div>
 
   <div class="form-section">

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { map, shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -6,21 +6,23 @@ import { Observable } from 'rxjs';
 import { Class, UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ClassService, UserClassesService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-my-classes',
   templateUrl: './my-classes.component.html',
-  styleUrls: ['./my-classes.component.scss']
+  styleUrls: ['./my-classes.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CheckboxComponent, AsyncPipe]
 })
 export class MyClassesComponent implements OnInit {
+  private readonly cs = inject(ClassService);
+  private readonly ucs = inject(UserClassesService);
+  private readonly ns = inject(NotificationService);
+
   public classes$: Observable<Array<Partial<Class>>>;
   public userClasses$: Observable<Array<Partial<UserClass>>>;
-
-  constructor(
-    private readonly cs: ClassService,
-    private readonly ucs: UserClassesService,
-    private readonly ns: NotificationService
-  ) {}
 
   public ngOnInit(): void {
     this.classes$ = this.cs.getEntitiesForActiveSeason().pipe(shareReplay());

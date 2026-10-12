@@ -1,20 +1,27 @@
-import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
+import { env } from '@tamu-gisc/common/ngx/environment';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-gisc/ui-kits/ngx/search';
 import { BusService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BusTimetableComponent } from './bus-timetable.component';
 
 describe('BusTimetableComponent (isolated)', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, EsriMapModule, RouterTestingModule, SearchModule, EnvironmentModule],
+      imports: [
+        HttpClientTestingModule,
+        EsriMapComponent,
+        RouterTestingModule,
+        SearchComponent,
+        SearchMobileComponent,
+        SearchResultPipe
+      ],
       providers: [
         BusTimetableComponent,
         BusService,
@@ -43,8 +50,15 @@ describe('BusTimeTableComponent (integrated)', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, EsriMapModule, RouterTestingModule, SearchModule, EnvironmentModule],
-      declarations: [BusTimetableComponent],
+      imports: [
+        HttpClientTestingModule,
+        EsriMapComponent,
+        RouterTestingModule,
+        SearchComponent,
+        SearchMobileComponent,
+        SearchResultPipe,
+        BusTimetableComponent
+      ],
       providers: [
         {
           // The integrated block has its own TestBed and needs the same Angulartics2 mock.
@@ -64,7 +78,7 @@ describe('BusTimeTableComponent (integrated)', () => {
     fixture = TestBed.createComponent(BusTimetableComponent);
     component = fixture.componentInstance;
 
-    component.route = {
+    fixture.componentRef.setInput('route', {
       Color: 'color',
       Description: 'description',
       Group: {
@@ -76,7 +90,7 @@ describe('BusTimeTableComponent (integrated)', () => {
       Key: 'key',
       Name: 'name',
       ShortName: 'short name'
-    };
+    });
 
     fixture.detectChanges();
   });

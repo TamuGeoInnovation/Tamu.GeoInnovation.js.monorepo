@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Observable,
@@ -18,7 +18,7 @@ import {
   withLatestFrom
 } from 'rxjs';
 
-import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
+import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { Event, EventBroadcast, EventLocation, SeasonDay, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import {
@@ -30,15 +30,51 @@ import {
   BroadcastService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { SeasonsDayTileComponent } from '../../seasons/seasons-day-tile/seasons-day-tile.component';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectListComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { PresenterCardComponent } from '../../../../people/components/presenter-card/presenter-card.component';
+import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-event-add-edit-form',
   templateUrl: './event-add-edit-form.component.html',
-  styleUrls: ['./event-add-edit-form.component.scss']
+  styleUrls: ['./event-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    SeasonsDayTileComponent,
+    NgClass,
+    DateTimePickerComponent,
+    TextboxComponent,
+    SelectComponent,
+    CheckboxComponent,
+    SelectListComponent,
+    PresenterCardComponent,
+    CheckboxGroupComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class EventAddEditFormComponent implements OnInit {
-  @Input()
-  public type: 'create' | 'edit';
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly at = inject(ActivatedRoute);
+  private readonly rt = inject(Router);
+  private readonly seasonService = inject(SeasonService);
+  private readonly speakerService = inject(SpeakerService);
+  private readonly tagService = inject(TagService);
+  private readonly eventLocationService = inject(LocationService);
+  private readonly eventBroadcastService = inject(BroadcastService);
+  private readonly eventService = inject(EventService);
+  private readonly ns = inject(NotificationService);
+
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public form: UntypedFormGroup;
 
@@ -123,19 +159,6 @@ export class EventAddEditFormComponent implements OnInit {
     }
   ];
 
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly at: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly seasonService: SeasonService,
-    private readonly speakerService: SpeakerService,
-    private readonly tagService: TagService,
-    private readonly eventLocationService: LocationService,
-    private readonly eventBroadcastService: BroadcastService,
-    private readonly eventService: EventService,
-    private readonly ns: NotificationService
-  ) {}
-
   public ngOnInit() {
     this.form = this.fb.group({
       guid: [null],
@@ -211,7 +234,7 @@ export class EventAddEditFormComponent implements OnInit {
       })
     ));
 
-    if (this.type === 'edit') {
+    if (this.type() === 'edit') {
       this.entity$ = this.at.params.pipe(
         map((params) => {
           return params.guid;
@@ -302,7 +325,7 @@ export class EventAddEditFormComponent implements OnInit {
     });
   }
 
-  public setEventTime(time: DlDateTimePickerChange<Date>, which: 'start' | 'end') {
+  public setEventTime(time: DateTimePickerChange<Date>, which: 'start' | 'end') {
     // Get only the time portion of the date
     const timeString = time.value.toTimeString();
 
@@ -320,7 +343,7 @@ export class EventAddEditFormComponent implements OnInit {
   }
 
   public handleSubmission() {
-    if (this.type === 'create') {
+    if (this.type() === 'create') {
       this._createEntity();
     } else {
       this._updateEntity();

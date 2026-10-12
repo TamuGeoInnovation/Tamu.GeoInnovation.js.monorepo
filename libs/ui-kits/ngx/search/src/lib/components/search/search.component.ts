@@ -2,14 +2,15 @@ import {
   Component,
   OnInit,
   ElementRef,
-  ViewChild,
-  Output,
-  EventEmitter,
   Input,
   OnDestroy,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  HostListener
+  HostListener,
+  inject,
+  input,
+  output,
+  viewChild
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -24,30 +25,37 @@ import { getGeolocation, isCoordinatePair } from '@tamu-gisc/common/utils/geomet
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
 import { SearchService, SearchResult, SearchResultItem, SearchSource } from '../../services/search.service';
+import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
   providers: [SearchService],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgClass, AsyncPipe, TitleCasePipe]
 })
 export class SearchComponent implements OnInit, OnDestroy {
+  private cd = inject(ChangeDetectorRef);
+  private analytics = inject(Angulartics2);
+  private ns = inject(NotificationService);
+  private searchService = inject(SearchService);
+  private environment = inject(EnvironmentService);
+  protected elementRef = inject(ElementRef);
+
   /**
    * Placeholder text for the input.
    *
    * Defaults to blank.
    */
-  @Input()
-  public placeholder: string;
+  public readonly placeholder = input<string>(undefined);
 
   /**
    * Option that handles whether or not geolocation for the component is enabled
    *
    * Defaults to false.
    */
-  @Input()
-  public canGeolocate: boolean;
+  public readonly canGeolocate = input<boolean>(undefined);
 
   /**
    * Option that enables/disabled the left side action icon on the search bar.
@@ -82,16 +90,14 @@ export class SearchComponent implements OnInit, OnDestroy {
    *
    * Defaults to 0.
    */
-  @Input()
-  public index = 0;
+  public readonly index = input(0);
 
   /**
    * Option that auto-focuses input text box when component is rendered.
    *
    * Defaults to 0.
    */
-  @Input()
-  public focused = false;
+  public readonly focused = input(false);
 
   /**
    * Overrides the application-wide search sources (normally read from the `SearchSources`
@@ -103,57 +109,49 @@ export class SearchComponent implements OnInit, OnDestroy {
    *
    * When omitted, falls back to the application-wide search sources as usual.
    */
-  @Input()
-  public sources?: SearchSource[];
+  public readonly sources = input<SearchSource[]>(undefined);
 
   // ===========================================================================
 
   /**
    * Event emitter that will emit to parent component, the value of the selected item
    */
-  @Output()
   // eslint-disable-next-line @angular-eslint/no-output-native
-  public result: EventEmitter<SearchSelection<unknown>> = new EventEmitter();
+  public readonly result = output<SearchSelection<unknown>>();
 
   /**
    * Event emitter that will emit when the value has changed and is no longer the same as initial.
    */
-  @Output()
-  public dirty: EventEmitter<SearchEvent> = new EventEmitter();
+  public readonly dirty = output<SearchEvent>();
 
   /**
    * Event emitter that will emit when the input box in the template is set focus
    */
-  @Output()
   // eslint-disable-next-line @angular-eslint/no-output-native
-  public focus: EventEmitter<boolean> = new EventEmitter();
+  public readonly focus = output<boolean>();
 
   /**
    * Event emitter that will emit when the input box in the template loses focus
    */
-  @Output()
   // eslint-disable-next-line @angular-eslint/no-output-native
-  public blur: EventEmitter<boolean> = new EventEmitter();
+  public readonly blur = output<boolean>();
 
   /**
    * Event emitter that will emit when the value has been cleared.
    */
-  @Output()
-  public empty: EventEmitter<SearchEvent> = new EventEmitter();
+  public readonly empty = output<SearchEvent>();
 
   /**
    * Event emitter that will emit when the left side action icon is pressed.
    * Up to the parent component on how to handle interaction.
    */
-  @Output()
-  public leftAction: EventEmitter<boolean> = new EventEmitter();
+  public readonly leftAction = output<void>();
 
   /**
    * Event emitter that will emit when the right side action icon is pressed.
    * Up to the parent component on how to handle interaction.
    */
-  @Output()
-  public rightAction: EventEmitter<boolean> = new EventEmitter();
+  public readonly rightAction = output<void>();
 
   // ===========================================================================
 
@@ -201,16 +199,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * DOM input element reference.
    */
-  @ViewChild('search', { static: true }) private searchElem: ElementRef;
+  private readonly searchElem = viewChild<ElementRef>('search');
 
-  constructor(
-    private cd: ChangeDetectorRef,
-    private analytics: Angulartics2,
-    private ns: NotificationService,
-    private searchService: SearchService,
-    private environment: EnvironmentService,
-    protected elementRef: ElementRef
-  ) {
+  constructor() {
     if (this.environment.value('SearchSources')) {
       this._sources = this.environment.value('SearchSources');
     }
@@ -219,8 +210,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     // A per-instance `sources` input takes precedence over the application-wide search sources
     // read in the constructor (for example, a satellite-campus map's own scoped sources).
-    if (this.sources && this.sources.length > 0) {
-      this._sources = this.sources;
+    const sources = this.sources();
+    if (sources && sources.length > 0) {
+      this._sources = sources;
     }
 
     this.searchStatus = this.searchService.searching;
@@ -281,7 +273,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
         } else {
           // Emit a cleared event
-          this.empty.emit(new SearchEvent({ index: this.index }));
+          this.empty.emit(new SearchEvent({ index: this.index() }));
 
           // Clear the search service results
           this.searchService.clear();
@@ -312,8 +304,8 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     // If the focused property was provided and is true, focus the input element in the component
     // To make it ready for text input on devices.
-    if (this.focused) {
-      this.searchElem.nativeElement.focus();
+    if (this.focused()) {
+      this.searchElem().nativeElement.focus();
     }
   }
 
@@ -379,7 +371,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     const isString = typeof feature === 'string';
 
     const selection = new SearchSelection<T>({
-      index: this.index,
+      index: this.index(),
       type: 'search',
       selection: feature,
       result: parentResult
@@ -414,17 +406,17 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.loseFocus();
 
     // Set pending geolocation view value
-    this.searchElem.nativeElement.value = 'Getting your location...';
+    this.searchElem().nativeElement.value = 'Getting your location...';
 
     getGeolocation()
       .then((res: GeolocationCoordinates) => {
         // Set view value
-        this.searchElem.nativeElement.value = 'Current Location';
+        this.searchElem().nativeElement.value = 'Current Location';
 
         // Emit search result object to be consumed by parent component
         this.result.emit(
           new SearchSelection({
-            index: this.index,
+            index: this.index(),
             type: 'search-geolocation',
             selection: {
               name: 'Current Location',
@@ -464,7 +456,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         // Set view value
         const name = 'Trigon (Default)';
 
-        this.searchElem.nativeElement.value = name;
+        this.searchElem().nativeElement.value = name;
 
         const defaultLatitude = 30.61458;
         const defaultLongitude = -96.33947;
@@ -472,7 +464,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         // Emit search result object to be consumed by parent component
         this.result.emit(
           new SearchSelection({
-            index: this.index,
+            index: this.index(),
             type: 'search-geolocation',
             selection: {
               latitude: defaultLatitude,

@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "include": ["**/*.ts"],
-  "compilerOptions": {
-    "types": ["jest", "node", "arcgis-js-api"]
-  },
-  "exclude": ["jest.config.ts"]
-}

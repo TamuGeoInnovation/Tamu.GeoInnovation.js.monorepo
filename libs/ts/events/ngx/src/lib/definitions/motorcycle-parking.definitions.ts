@@ -1,12 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum MOTORCYCLE_PARKING_LAYERS {
   MOTORCYCLE_PARKING_SPACE = 'motorcycle-parking-space'
@@ -27,11 +27,10 @@ export const MotorcycleParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MotorcycleParkingDefinitions.MOTORCYCLE_PARKING_SPACE.id,
-    title: MotorcycleParkingDefinitions.MOTORCYCLE_PARKING_SPACE.name,
     url: MotorcycleParkingDefinitions.MOTORCYCLE_PARKING_SPACE.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       lotName: { field: 'LotName', collapsed: true },
       spaceType: { field: 'Spc_Type', collapsed: true },

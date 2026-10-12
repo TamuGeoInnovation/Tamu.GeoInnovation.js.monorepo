@@ -1,16 +1,14 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { commonSymbols } from './common.definitions';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 
@@ -89,7 +87,7 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         id: HsGraduationEventDefinitions.ARRIVAL_PARKING.id,
         title: HsGraduationEventDefinitions.ARRIVAL_PARKING.name,
         url: HsGraduationEventDefinitions.ARRIVAL_PARKING.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         popupData: {
           name: { field: 'Type' },
           description: { field: 'description' }
@@ -105,7 +103,7 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         id: HsGraduationEventDefinitions.ARRIVAL_ROUTES.id,
         title: HsGraduationEventDefinitions.ARRIVAL_ROUTES.name,
         url: HsGraduationEventDefinitions.ARRIVAL_ROUTES.url,
-        popupComponent: MarkdownPopupComponent,
+        popupComponent: EventPopups.MarkdownPopupComponent,
         popupData: {
           name: { field: 'name' },
           description: { field: 'description' }
@@ -113,23 +111,7 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         visible: true,
         listMode: 'show',
         native: {
-          outFields: ['*'],
-          renderer: {
-            type: 'unique-value',
-            field: 'name',
-            uniqueValueInfos: [
-              {
-                value: 'Fast Route',
-                label: 'Fast Route',
-                symbol: commonSymbols.GREEN_ARROW
-              },
-              {
-                value: 'Expect Delays',
-                label: 'Expect Delays',
-                symbol: commonSymbols.RED_ARROW
-              }
-            ]
-          } as unknown as esri.UniqueValueRendererProperties
+          outFields: ['*']
         } as unknown as FeatureNative
       },
       {
@@ -137,7 +119,7 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         id: HsGraduationEventDefinitions.ACCESSIBLE_BUS_PARKING.id,
         title: HsGraduationEventDefinitions.ACCESSIBLE_BUS_PARKING.name,
         url: HsGraduationEventDefinitions.ACCESSIBLE_BUS_PARKING.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         popupData: {
           name: { field: 'name' },
           description: { field: 'description' }
@@ -166,7 +148,7 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         id: HsGraduationEventDefinitions.DEPARTURE_PARKING.id,
         title: HsGraduationEventDefinitions.DEPARTURE_PARKING.name,
         url: HsGraduationEventDefinitions.DEPARTURE_PARKING.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         popupData: {
           name: { field: 'Type' },
           description: { field: 'description' }
@@ -182,7 +164,7 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         id: HsGraduationEventDefinitions.TRAFFIC_ADVISORIES.id,
         title: HsGraduationEventDefinitions.TRAFFIC_ADVISORIES.name,
         url: HsGraduationEventDefinitions.TRAFFIC_ADVISORIES.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         popupData: {
           name: { field: 'name' },
           description: { field: 'description' }
@@ -198,7 +180,7 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         id: HsGraduationEventDefinitions.DEPARTURE_ROUTES.id,
         title: HsGraduationEventDefinitions.DEPARTURE_ROUTES.name,
         url: HsGraduationEventDefinitions.DEPARTURE_ROUTES.url,
-        popupComponent: MarkdownPopupComponent,
+        popupComponent: EventPopups.MarkdownPopupComponent,
         popupData: {
           name: { field: 'Notes' },
           description: { field: 'description' }
@@ -206,18 +188,7 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         visible: true,
         listMode: 'show',
         native: {
-          outFields: ['*'],
-          renderer: {
-            type: 'unique-value',
-            field: 'name',
-            uniqueValueInfos: [
-              {
-                value: 'Departing - Recommended Route',
-                label: 'Departing - Recommended Route',
-                symbol: commonSymbols.GREEN_ARROW
-              }
-            ]
-          } as unknown as esri.UniqueValueRendererProperties
+          outFields: ['*']
         } as unknown as FeatureNative
       }
     ],

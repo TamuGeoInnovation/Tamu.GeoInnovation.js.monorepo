@@ -1,42 +1,66 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
-import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-planner';
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
+import { env } from '@tamu-gisc/common/ngx/environment';
+
+import { RouteDirectionTransformerPipe } from '@tamu-gisc/maps/feature/trip-planner';
+import {
+  TripPlannerConnectionsSelectComponent,
+  TripPlannerDirectionsComponent,
+  TripPlannerDirectionsMobileComponent,
+  TripPlannerDirectionsActionsComponent,
+  TripPlannerDirectionsActionsMobileComponent,
+  TripPlannerModePickerComponent,
+  TripPlannerModePickerMobileComponent,
+  TripPlannerModeSwitchComponent,
+  TripPlannerBusModeSwitchComponent,
+  TripPlannerModeToggleComponent,
+  TripPlannerOptionsBaseComponent,
+  TripPlannerBikingOptionsComponent,
+  TripPlannerParkingOptionsComponent,
+  TripPlannerOptionsComponent,
+  TripPlannerTimePickerComponent
+} from '@tamu-gisc/maps/feature/trip-planner/components';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { BusListComponent } from './bus-list.component';
-
-describe('BusListComponent (Isolated)', () => {
-  const component: BusListComponent = new BusListComponent(undefined, undefined, undefined, undefined);
-
-  it('should instantiate', () => {
-    expect(component).toBeDefined();
-  });
-});
 
 describe('BusListComponent (Shallow)', () => {
   let component: BusListComponent;
   let fixture: ComponentFixture<BusListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
-        ResponsiveModule,
-        EsriMapModule,
-        MapsFeatureTripPlannerModule,
-        SearchModule,
-        EnvironmentModule
+        EsriMapComponent,
+        TripPlannerConnectionsSelectComponent,
+        TripPlannerDirectionsComponent,
+        TripPlannerDirectionsMobileComponent,
+        TripPlannerDirectionsActionsComponent,
+        TripPlannerDirectionsActionsMobileComponent,
+        TripPlannerModePickerComponent,
+        TripPlannerModePickerMobileComponent,
+        TripPlannerModeSwitchComponent,
+        TripPlannerBusModeSwitchComponent,
+        TripPlannerModeToggleComponent,
+        TripPlannerOptionsBaseComponent,
+        TripPlannerBikingOptionsComponent,
+        TripPlannerParkingOptionsComponent,
+        TripPlannerOptionsComponent,
+        TripPlannerTimePickerComponent,
+        RouteDirectionTransformerPipe,
+        SearchComponent,
+        SearchMobileComponent,
+        SearchResultPipe,
+        BusListComponent
       ],
-      declarations: [BusListComponent],
       providers: [
         {
           // BusService injects Angulartics2, which needs RouterlessTracking. Mocked rather

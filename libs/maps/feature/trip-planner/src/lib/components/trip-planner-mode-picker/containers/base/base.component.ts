@@ -1,20 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { pluck, take } from 'rxjs/operators';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { TripPlannerService } from '../../../../services//trip-planner.service';
+import { TripPlannerModeToggleComponent } from '../../../trip-planner-mode-toggle/containers/base/base.component';
+import { TripPlannerTimePickerComponent } from '../../../trip-planner-time-picker/containers/base/base.component';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-mode-picker',
   templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss']
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TripPlannerModeToggleComponent, TripPlannerTimePickerComponent, RouterLink, AsyncPipe]
 })
 export class TripPlannerModePickerComponent implements OnInit {
-  public isDev: Observable<boolean>;
+  private plannerService = inject(TripPlannerService);
+  private devTools = inject(TestingService);
 
-  constructor(private plannerService: TripPlannerService, private devTools: TestingService) {}
+  public isDev: Observable<boolean>;
 
   public ngOnInit() {
     this.isDev = this.devTools.get('isTesting');

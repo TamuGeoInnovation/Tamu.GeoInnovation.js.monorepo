@@ -2,14 +2,14 @@ import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { env } from '@tamu-gisc/common/ngx/environment';
 
 import { AuthGuard } from './auth.guard';
 
 describe('AuthGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule, EnvironmentModule],
+      imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         AuthGuard,
         {

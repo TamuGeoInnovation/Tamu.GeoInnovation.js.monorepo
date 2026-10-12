@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
 import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
-import { aggiemapBasemap } from '@tamu-gisc/maps/feature/basemap';
+import { aggiemapBasemap, AGGIEMAP_BASEMAP_MAX_SCALE } from '@tamu-gisc/maps/feature/basemap';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
@@ -13,15 +13,41 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { BetaPromptComponent, AlertModalComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
+import { NgClass, AsyncPipe } from '@angular/common';
+
+import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { PerspectiveToggleComponent } from '@tamu-gisc/maps/feature/perspective';
+import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
 
 import esri = __esri;
 @Component({
   selector: 'tamu-gisc-aggiemap-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    ReveilleConsoleLogComponent,
+    RouterLink,
+    ClickCoordinatesComponent,
+    EsriMapComponent,
+    NgClass,
+    PerspectiveToggleComponent,
+    RouterOutlet,
+    MapViewfinderComponent,
+    AsyncPipe
+  ]
 })
 export class MapComponent implements OnInit, OnDestroy {
+  private responsiveService = inject(ResponsiveService);
+  private env = inject(EnvironmentService);
+  private readonly ms = inject(ModalService);
+  private readonly ss = inject(SettingsService);
+  private readonly ts = inject(TestingService);
+
   public map: esri.Map;
   public view: esri.MapView;
   public isMobile: boolean;
@@ -34,14 +60,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
   private _connections: { [key: string]: string };
-
-  constructor(
-    private responsiveService: ResponsiveService,
-    private env: EnvironmentService,
-    private readonly ms: ModalService,
-    private readonly ss: SettingsService,
-    private readonly ts: TestingService
-  ) {}
 
   public ngOnInit() {
     this._connections = this.env.value('Connections');
@@ -72,7 +90,7 @@ export class MapComponent implements OnInit, OnDestroy {
             // `center` stays lon/lat, which is projected into whichever spatial reference the view adopts.
             constraints: {
               minScale: 100000, // minZoom is the max you can zoom OUT into space
-              maxScale: 0 // maxZoom is the max you can zoom INTO the ground
+              maxScale: AGGIEMAP_BASEMAP_MAX_SCALE // the deepest level the basemap has tiles for (#1577)
             },
             zoom: 16,
             ui: {

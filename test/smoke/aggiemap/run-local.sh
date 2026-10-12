@@ -10,8 +10,21 @@
 #                                     # a dev host, so development-only features are hidden
 #
 # Anything after the environment is passed to `playwright test`, e.g. `--grep "gameday"`.
+#
+# A local run checks a release, so framing.spec.ts opens one route per map (#1426). The scheduled
+# workflow on GitHub checks all of them; to do the same here, set AGGIEMAP_SMOKE_FRAMING=full.
 # Needs only Docker and bash (Git Bash on Windows); Node runs inside the container. The first run
 # downloads the Playwright image, about 2 GB.
+#
+# The checkout's node_modules is not used, so a checkout or worktree without an install can run the
+# suite (#1459). The suite needs three packages: @playwright/test, pngjs and esri-loader. They live in
+# the Docker volume tamu-js-smoke-nm, mounted over /work/node_modules, at the versions package-lock.json
+# records. The first run installs them, in a few seconds, and so does any run after those versions
+# change. Docker leaves an empty node_modules folder in a checkout that had none.
+#
+# With BUILD_TIMES_RECORD=1, a run writes a small file into docs/build-times/runs/ in this checkout
+# (scripts/run-times.sh, #1593): when it started, in US Central, the machine (BUILD_TIMES_MACHINE), what
+# ran, Playwright's totals and the elapsed time. Use it when measuring something; it is off otherwise.
 set -euo pipefail
 
 env_name="${1:-}"
@@ -24,9 +37,13 @@ case "$env_name" in
 esac
 
 cd "$(git rev-parse --show-toplevel)"
+# shellcheck source=../../../scripts/run-times.sh
+. scripts/run-times.sh
+started="$(run_times_now)"
+SECONDS=0
 
 # The image must match the installed @playwright/test, or its browsers will not be the ones the
-# library expects.
+# library expects. The container checks that package-lock.json records the same version.
 pw_version=$(sed -n 's/.*"@playwright\/test": *"[^0-9]*\([0-9][0-9.]*\)".*/\1/p' package.json)
 image="mcr.microsoft.com/playwright:v${pw_version}-noble"
 
@@ -46,10 +63,46 @@ if [ "$env_name" = local ] || [ "$env_name" = local-production ]; then
   network_args=(--network container:aggiemap-dev)
 fi
 
+volume=tamu-js-smoke-nm
+
 echo "Smoke suite: $env_name, $image"
 
-docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -w /work -e SMOKE_ENV="$env_name" "$image" \
+# The output is copied to a file for Playwright's totals, which go into the run's record.
+output="$(mktemp)"
+trap 'rm -f "$output"' EXIT
+set +e
+docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -v "$volume:/work/node_modules" -w /work \
+  -e SMOKE_ENV="$env_name" -e SMOKE_VOLUME="$volume" -e PW_VERSION="$pw_version" -e NPM_CONFIG_UPDATE_NOTIFIER=false -e UPDATE_FRAMING_BASELINE \
+  -e AGGIEMAP_SMOKE_FRAMING="${AGGIEMAP_SMOKE_FRAMING:-release}" "$image" \
   node -e '
+    const fs = require("fs");
+
+    // Install the three packages into the volume unless it already holds the versions the lock records.
+    const lock = require("./package-lock.json").packages;
+    const wanted = ["@playwright/test", "pngjs", "esri-loader"]
+      .map((name) => `${name}@${lock["node_modules/" + name].version}`)
+      .join(" ");
+    if (!wanted.startsWith(`@playwright/test@${process.env.PW_VERSION} `)) {
+      console.error(`The image is Playwright ${process.env.PW_VERSION}, but package-lock.json records ${wanted}.`);
+      process.exit(2);
+    }
+    const stamp = "node_modules/.smoke-packages";
+    if (!fs.existsSync(stamp) || fs.readFileSync(stamp, "utf8") !== wanted) {
+      console.log(`Installing ${wanted} into the ${process.env.SMOKE_VOLUME} volume`);
+      // In an empty folder, so npm does not read the checkout package.json and install all of it.
+      const dir = fs.mkdtempSync("/tmp/smoke-");
+      const steps = [
+        ["npm", ["install", "--no-save", "--no-package-lock", "--no-audit", "--no-fund", ...wanted.split(" ")], dir],
+        ["find", ["node_modules", "-mindepth", "1", "-delete"], "/work"],
+        ["cp", ["-a", `${dir}/node_modules/.`, "node_modules/"], "/work"]
+      ];
+      for (const [command, args, cwd] of steps) {
+        const step = require("child_process").spawnSync(command, args, { stdio: "inherit", cwd });
+        if (step.status !== 0) process.exit(step.status === null ? 1 : step.status);
+      }
+      fs.writeFileSync(stamp, wanted);
+    }
+
     const settings = require("./test/smoke/aggiemap/environments.json")[process.env.SMOKE_ENV];
     const env = {
       ...process.env,
@@ -63,4 +116,9 @@ docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -w /wo
       { stdio: "inherit", env }
     );
     process.exit(run.status === null ? 1 : run.status);
-  ' -- "$@"
+  ' -- "$@" 2>&1 | tee "$output"
+code=${PIPESTATUS[0]}
+set -e
+run_times_record docs/build-times/runs "$started" smoke \
+  "$env_name framing=${AGGIEMAP_SMOKE_FRAMING:-release}${*:+ $*}" "$code" "$(run_times_smoke_summary "$output")" "$SECONDS"
+exit "$code"

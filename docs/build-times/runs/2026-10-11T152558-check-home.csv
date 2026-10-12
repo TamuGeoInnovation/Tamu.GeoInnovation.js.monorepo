@@ -1,0 +1,2 @@
+started,machine,tool,ran,exit,summary,seconds,elapsed,setup
+2026-10-11 15:25:58 CDT,home,check,perf/1454-lodash-colornames affected,0,"lint for 116 projects; test, build for 108 projects",427,0:07:07,npm ci 68 s

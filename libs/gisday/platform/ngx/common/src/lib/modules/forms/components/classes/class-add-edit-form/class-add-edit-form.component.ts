@@ -1,34 +1,35 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 
 import { Class, Season, UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ClassService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-class-add-edit-form',
   templateUrl: './class-add-edit-form.component.html',
-  styleUrls: ['./class-add-edit-form.component.scss']
+  styleUrls: ['./class-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class ClassAddEditFormComponent implements OnInit {
-  @Input()
-  public type: 'create' | 'edit';
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly at = inject(ActivatedRoute);
+  private readonly rt = inject(Router);
+  private readonly cs = inject(ClassService);
+  private readonly ss = inject(SeasonService);
+  private readonly ns = inject(NotificationService);
+
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public entity$: Observable<Partial<Class>>;
   public activeSeasons$: Observable<Partial<Season>>;
   public students$: Observable<Array<Partial<UserClass>>>;
   public form: UntypedFormGroup;
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly at: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly cs: ClassService,
-    private readonly ss: SeasonService,
-    private readonly ns: NotificationService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -50,7 +51,7 @@ export class ClassAddEditFormComponent implements OnInit {
       shareReplay()
     );
 
-    if (this.type === 'edit') {
+    if (this.type() === 'edit') {
       this.entity$.pipe(take(1)).subscribe((entity) => {
         this.form.patchValue({
           ...entity,
@@ -65,7 +66,7 @@ export class ClassAddEditFormComponent implements OnInit {
   }
 
   public handleSubmission() {
-    if (this.type === 'create') {
+    if (this.type() === 'create') {
       this._createEntity();
     } else {
       this._updateEntity();

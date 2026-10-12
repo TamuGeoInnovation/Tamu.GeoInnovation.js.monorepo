@@ -6,9 +6,9 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum BREAK_SUMMER_LAYERS {
   BREAK_SUMMER_DRAW = 'break-summer-parking-lots-draw',
@@ -28,42 +28,6 @@ export const BreakSummerDefinitions = {
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
-const breakSummerRenderer: FeatureRenderer = {
-  type: 'unique-value',
-  field: 'GIS.TS.Lot_Use.Break_Lot',
-  field2: 'GIS.TS.Lot_Use.Summer_Lot',
-  fieldDelimiter: ',',
-  uniqueValueInfos: [
-    {
-      value: '1,1',
-      label: 'Break AND Summer Authorized',
-      symbol: {
-        type: 'simple-fill',
-        color: [190, 232, 255, 0.85],
-        outline: null
-      } as unknown as esri.SymbolProperties
-    },
-    {
-      value: '1,0',
-      label: 'Authorized Break ONLY',
-      symbol: {
-        type: 'simple-fill',
-        color: [90, 0, 0, 0.9],
-        outline: null
-      } as unknown as esri.SymbolProperties
-    },
-    {
-      value: '0,1',
-      label: 'Authorized Summer ONLY',
-      symbol: {
-        type: 'simple-fill',
-        color: [255, 211, 127, 0.9],
-        outline: null
-      } as unknown as esri.SymbolProperties
-    }
-  ]
-};
-
 export const BreakSummerColdLayerSources: LayerSource[] = [
   {
     type: 'map-image',
@@ -86,12 +50,11 @@ export const BreakSummerColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: BreakSummerDefinitions.BREAK_SUMMER_LOTS.id,
-    title: BreakSummerDefinitions.BREAK_SUMMER_LOTS.name,
     url: BreakSummerDefinitions.BREAK_SUMMER_LOTS.url,
     visible: true,
     listMode: 'show',
 
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',
@@ -104,8 +67,7 @@ export const BreakSummerColdLayerSources: LayerSource[] = [
     },
 
     native: {
-      outFields: ['*'],
-      renderer: breakSummerRenderer
+      outFields: ['*']
     } as unknown as FeatureNative
   }
 ];

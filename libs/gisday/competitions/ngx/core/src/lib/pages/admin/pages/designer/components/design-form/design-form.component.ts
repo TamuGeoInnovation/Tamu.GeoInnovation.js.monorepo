@@ -1,33 +1,36 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject, output } from '@angular/core';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { catchError, map, pluck, shareReplay, startWith, switchMap } from 'rxjs/operators';
 
 import { CompetitionSeason, ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions/data-api';
 import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { DesignQuestionComponent } from '../design-question/design-question.component';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-design-form',
   templateUrl: './design-form.component.html',
-  styleUrls: ['./design-form.component.scss']
+  styleUrls: ['./design-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, CheckboxComponent, DesignQuestionComponent]
 })
 export class DesignFormComponent implements OnInit {
-  @Output()
-  public updated: EventEmitter<Array<ICompetitionSeasonFormQuestion>> = new EventEmitter();
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly http = inject(HttpClient);
+  private readonly fs = inject(FormService);
+
+  public readonly updated = output<Array<ICompetitionSeasonFormQuestion>>();
 
   public currentSeasonForm$: Observable<CompetitionSeason>;
   public urlFields$: Observable<Array<Field>>;
   public loadSchemaForm: UntypedFormGroup;
   public formModel: UntypedFormGroup;
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly http: HttpClient,
-    private readonly fs: FormService
-  ) {}
 
   public ngOnInit(): void {
     this.loadSchemaForm = this.fb.group({
@@ -61,12 +64,12 @@ export class DesignFormComponent implements OnInit {
           )
         });
 
-        this.updated.next(res.form.model);
+        this.updated.emit(res.form.model);
       }
     });
 
     this.formModel.valueChanges.pipe(startWith(this.formModel.getRawValue())).subscribe((changes) => {
-      this.updated.next(changes.fields);
+      this.updated.emit(changes.fields);
     });
   }
 
@@ -118,7 +121,7 @@ export class DesignFormComponent implements OnInit {
     const fieldsArray = this.formModel.get('fields') as UntypedFormArray;
     fieldsArray.removeAt(index);
 
-    this.updated.next(this.formModel.getRawValue().fields);
+    this.updated.emit(this.formModel.getRawValue().fields);
   }
 
   public saveForm(): void {

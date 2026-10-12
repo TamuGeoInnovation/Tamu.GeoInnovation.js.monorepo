@@ -1,22 +1,21 @@
-import { async, TestBed } from '@angular/core/testing';
+import { waitForAsync, TestBed } from '@angular/core/testing';
 import { SettingsService } from './common-ngx-settings.service';
 import { CommonModule } from '@angular/common';
-import { SettingsModule } from '../common-ngx-settings.module';
 
 describe('SettingsService', () => {
-  beforeEach(async(async () => {
+  beforeEach(waitForAsync(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule, SettingsModule]
+      imports: [CommonModule]
     }).compileComponents();
   }));
 
   it('should create', () => {
-    const service: SettingsService = TestBed.get(SettingsService);
+    const service: SettingsService = TestBed.inject(SettingsService);
     expect(service).toBeDefined();
   });
 
   it('should filter persistent compound settings', () => {
-    const service: SettingsService = TestBed.get(SettingsService);
+    const service: SettingsService = TestBed.inject(SettingsService);
     expect(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (service as any).getPersistentCompoundSettings({
@@ -41,7 +40,7 @@ describe('SettingsService', () => {
   });
 
   it('should filter persistent compound settings keys', () => {
-    const service: SettingsService = TestBed.get(SettingsService);
+    const service: SettingsService = TestBed.inject(SettingsService);
     expect(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (service as any).getPersistentCompoundSettingsKeys({
@@ -61,7 +60,7 @@ describe('SettingsService', () => {
   });
 
   it('should reduce compound to simple settings branch', () => {
-    const service: SettingsService = TestBed.get(SettingsService);
+    const service: SettingsService = TestBed.inject(SettingsService);
     expect(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (service as any).compoundToSimpleSettingsBranch({

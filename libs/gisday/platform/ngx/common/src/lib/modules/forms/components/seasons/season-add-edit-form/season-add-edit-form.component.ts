@@ -1,31 +1,41 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 
 import { Season, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SeasonsDayTileComponent } from '../seasons-day-tile/seasons-day-tile.component';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-season-add-edit-form',
   templateUrl: './season-add-edit-form.component.html',
-  styleUrls: ['./season-add-edit-form.component.scss']
+  styleUrls: ['./season-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, CheckboxComponent, SeasonsDayTileComponent, ButtonComponent]
 })
 export class SeasonAddEditFormComponent implements OnInit {
-  @Input()
-  public type: 'create' | 'edit';
+  private fb = inject(UntypedFormBuilder);
+  private at = inject(ActivatedRoute);
+  private ss = inject(SeasonService);
+  private rt = inject(Router);
+  private readonly ns = inject(NotificationService);
+
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public entity$: Observable<Partial<Season>>;
   public form: UntypedFormGroup;
-
-  constructor(
-    private fb: UntypedFormBuilder,
-    private at: ActivatedRoute,
-    private ss: SeasonService,
-    private rt: Router,
-    private readonly ns: NotificationService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

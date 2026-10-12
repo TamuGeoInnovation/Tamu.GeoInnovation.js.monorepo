@@ -97,12 +97,6 @@ describe('LayerSources', () => {
         name: 'Bike Racks',
         url: 'bike-racks-url'
       },
-      BIKE_LOCATIONS: {
-        id: 'bike-locations',
-        layerId: 'bike-locations',
-        name: 'Bike Locations',
-        url: 'bike-locations-url'
-      },
       DINING_LOCATIONS: {
         id: 'dining-locations',
         layerId: 'dining-locations',
@@ -165,36 +159,6 @@ describe('LayerSources', () => {
         layerId: 'ev-charge-stations',
         name: 'EV Charge Stations',
         url: 'ev-charge-stations-url'
-      },
-      EVENT_150_OPENING_EVENT_LOCATIONS: {
-        id: 'event-150-opening-event-locations',
-        layerId: 'event-150-opening-event-locations',
-        name: 'Event Locations',
-        url: 'opening-ceremony-url/0'
-      },
-      EVENT_150_OPENING_SHUTTLE_ROUTE: {
-        id: 'event-150-opening-shuttle-route',
-        layerId: 'event-150-opening-shuttle-route',
-        name: 'Shuttle Route',
-        url: 'opening-ceremony-url/1'
-      },
-      EVENT_150_OPENING_PARKING: {
-        id: 'event-150-opening-parking',
-        layerId: 'event-150-opening-parking',
-        name: 'Parking',
-        url: 'opening-ceremony-url/2'
-      },
-      EVENT_150_KICKOFF_AT_KYLE: {
-        id: 'event-150-kickoff-at-kyle',
-        layerId: 'event-150-kickoff-at-kyle',
-        name: 'Kickoff at Kyle',
-        url: 'kickoff-at-kyle-url'
-      },
-      EVENT_150_SPIRIT_WEEK: {
-        id: 'event-150-spirit-week',
-        layerId: 'event-150-spirit-week',
-        name: '150 Cake & Ice Cream',
-        url: 'spirit-of-150-week-url'
       }
     };
     options = { exclude: [] };
@@ -203,14 +167,14 @@ describe('LayerSources', () => {
   it('should return all layer sources when no options are provided', () => {
     const result = LayerSources(connections, definitions);
 
-    expect(result.length).toBe(18);
+    expect(result.length).toBe(16);
   });
 
   it('should exclude specified layers', () => {
     options.exclude = ['BUILDINGS', 'CONSTRUCTION'];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(16);
+    expect(result.length).toBe(14);
     expect(result.find((layer) => layer.id === 'buildings')).toBeUndefined();
     expect(result.find((layer) => layer.id === 'construction')).toBeUndefined();
   });
@@ -219,7 +183,7 @@ describe('LayerSources', () => {
     options.exclude = [];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(18);
+    expect(result.length).toBe(16);
   });
 
   it('should retain only non-definition-backed top-level layers when all definitions are excluded', () => {
@@ -229,59 +193,28 @@ describe('LayerSources', () => {
     expect(resultWithExclusions.map((layer) => layer.id)).toEqual([
       'selection-layer',
       'bus-route-layer',
-      'sustainable-transportation-group-layer',
-      'event-150-group-layer'
+      'sustainable-transportation-group-layer'
     ]);
   });
 
-  it('should list the 150th event sets under a heading, each off by default, in list order', () => {
+  it('should offer no 150th events at all, now that every one of them has passed', () => {
     const result = LayerSources(connections, definitions);
-    const eventsGroup = result.find((layer) => layer.id === 'event-150-group-layer') as GroupLayerSource | undefined;
-    const children = eventsGroup?.sources ?? [];
-    const openingCeremony = children.find((layer) => layer.id === 'event-150-opening-ceremony-group-layer') as
-      | GroupLayerSource
-      | undefined;
 
-    expect(eventsGroup?.type).toBe('group');
-    expect(eventsGroup?.title).toBe('150th Events');
-    expect(eventsGroup?.listHeading).toBe(true);
-    expect(children.every((layer) => layer.visible === false)).toBe(true);
+    // The 150th anniversary events ran from 2 October to 5 October 2026 and are all over, so the
+    // group goes with the last of them (#1418). Each was removed on the day after it happened:
+    // Opening Ceremony and Kickoff at Kyle on 5 October (#1413), 150 Cake & Ice Cream on 6 October.
+    expect(result.find((layer) => layer.id === 'event-150-group-layer')).toBeUndefined();
 
-    // Opening Ceremony is one list entry that toggles all three of its layers together.
-    expect(openingCeremony?.native?.listMode).toBe('hide-children');
+    const titles = result.map((layer) => layer.title);
 
-    // Esri's layer list shows a group's children in reverse source order, so reversing the sources
-    // gives the order visitors see.
-    // Live at the Station is not a 150th event (#1125), so it is not in this group.
-    expect([...children].reverse().map((layer) => layer.title)).toEqual([
-      'Opening Ceremony',
-      'Kickoff at Kyle',
-      '150 Cake & Ice Cream'
-    ]);
-    expect([...(openingCeremony?.sources ?? [])].reverse().map((layer) => layer.title)).toEqual([
-      'Event Locations',
-      'Shuttle Route',
-      'Parking'
-    ]);
-  });
-
-  it("should show each 150th event's date next to its name in the layer list", () => {
-    const result = LayerSources(connections, definitions);
-    const eventsGroup = result.find((layer) => layer.id === 'event-150-group-layer') as GroupLayerSource | undefined;
-
-    // Shown in the layer list rather than in the layers themselves (#1126).
-    expect([...(eventsGroup?.sources ?? [])].reverse().map((layer) => [layer.title, layer.listNote])).toEqual([
-      ['Opening Ceremony', 'Oct. 2, 2026'],
-      ['Kickoff at Kyle', 'Oct. 2, 2026'],
-      ['150 Cake & Ice Cream', 'Oct. 5, 2026']
-    ]);
+    expect(titles).not.toContain('150th Events');
+    expect(titles).not.toContain('150 Cake & Ice Cream');
   });
 
   it('should split shared bike racks into flat sustainable transportation child layers', () => {
     const result = LayerSources(connections, definitions);
     const sustainableTransportationGroup = result.find((layer) => layer.id === 'sustainable-transportation-group-layer') as
-      | GroupLayerSource
-      | undefined;
+      GroupLayerSource | undefined;
     const childSources = sustainableTransportationGroup?.sources ?? [];
     const childTitles = childSources.map((layer) => layer.title);
     const childIds = childSources.map((layer) => layer.id);

@@ -1,34 +1,37 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { EventLocation, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { LocationService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-event-location-add-edit-form',
   templateUrl: './event-location-add-edit-form.component.html',
-  styleUrls: ['./event-location-add-edit-form.component.scss']
+  styleUrls: ['./event-location-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, ButtonComponent, AsyncPipe]
 })
 export class EventLocationAddEditFormComponent implements OnInit {
-  @Input()
-  public type: 'create' | 'edit';
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly rt = inject(Router);
+  private readonly at = inject(ActivatedRoute);
+  private readonly els = inject(LocationService);
+  private readonly ps = inject(PlaceService);
+  private readonly ns = inject(NotificationService);
+  private readonly ss = inject(SeasonService);
+
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public entity$: Observable<Partial<EventLocation>>;
   public places$: Observable<Array<Partial<Place>>>;
   public form: UntypedFormGroup;
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly rt: Router,
-    private readonly at: ActivatedRoute,
-    private readonly els: LocationService,
-    private readonly ps: PlaceService,
-    private readonly ns: NotificationService,
-    private readonly ss: SeasonService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -44,7 +47,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
 
     this.places$ = this.ps.getEntitiesForActiveSeason();
 
-    if (this.type === 'edit') {
+    if (this.type() === 'edit') {
       this.entity$ = this.at.params.pipe(
         map((params) => params.guid),
         filter((guid) => guid !== undefined),
@@ -70,7 +73,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
   }
 
   public handleSubmission() {
-    if (this.type === 'create') {
+    if (this.type() === 'create') {
       this._createEntity();
     } else {
       this._updateEntity();

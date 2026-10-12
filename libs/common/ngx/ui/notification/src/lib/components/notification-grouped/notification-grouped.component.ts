@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, Optional } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -9,6 +9,7 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { NotificationService } from '../../services/notification.service';
 import { Notification } from '../../helpers/notification.helper';
+import { NgClass } from '@angular/common';
 
 /**
  * Several active notifications as one stacked toast, highest priority first.
@@ -16,21 +17,37 @@ import { Notification } from '../../helpers/notification.helper';
  * Its own component, and its own module, so the apps that do not use it do not ship it. Fourteen
  * applications render a notification container; one groups. Carrying ~5kB of grouping into the other
  * thirteen pushed `correction-lite-angular` past its 1MB budget - a budget five times tighter than its
- * siblings, and deliberately so.
+ * siblings, and deliberately so. That application has since been removed (#1339); the reason stands.
  *
  * Grouping originates in #693. Priority ordering and the high-priority marker are #1195.
  */
 @Component({
   selector: 'tamu-gisc-notification-grouped',
   templateUrl: './notification-grouped.component.html',
-  styleUrls: ['./notification-grouped.component.scss']
+  styleUrls: ['./notification-grouped.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass]
 })
 export class NotificationGroupedComponent implements OnInit, OnDestroy {
+  private readonly analytics = inject(Angulartics2, { optional: true });
+  private readonly router = inject(Router, { optional: true });
+  private readonly modal = inject(ModalService, { optional: true });
+  private readonly service = inject(NotificationService);
+
   @Input()
   public position: 'left' | 'center' | 'right' = 'center';
 
   // Grouped mode state
   public groupedItems: Notification[] = [];
+
+  /**
+   * Which notification is on screen. The panel shows one at a time (#1327): with four of them stacked
+   * it ran most of the height of the map, and on a phone rather more than that.
+   *
+   * Kept as an index rather than a copy of the item, so that a notification being removed - actioned,
+   * acknowledged, or cleared by its own service - cannot leave a stale object showing.
+   */
+  public groupIndex = 0;
   public groupVisible = false;
   public groupShowing = false;
   public groupTimerPercent = 0;
@@ -53,13 +70,6 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
   private _groupSubscription: Subscription | undefined;
   private _modalSubscription: Subscription | undefined;
 
-  constructor(
-    @Optional() private readonly analytics: Angulartics2,
-    @Optional() private readonly router: Router,
-    @Optional() private readonly modal: ModalService,
-    private readonly service: NotificationService
-  ) {}
-
   /**
    * Highest priority first, and within a priority the order they arrived in.
    *
@@ -80,6 +90,13 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
     this._groupSubscription = this.service.notifications.subscribe((items) => {
       const hadItems = this.groupedItems.length > 0;
       this.groupedItems = NotificationGroupedComponent.byPriority(items);
+
+      // The list changes underneath this component - a notification is actioned, acknowledged, or
+      // cleared by its own service - so the index is clamped rather than trusted. Without this,
+      // removing the notification currently on screen leaves the panel rendering nothing (#1327).
+      if (this.groupIndex > this.groupedItems.length - 1) {
+        this.groupIndex = Math.max(0, this.groupedItems.length - 1);
+      }
 
       if (items.length > 0 && !this.groupVisible) {
         this.groupVisible = true;
@@ -138,6 +155,44 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
   }
 
   // --- Grouped mode methods ---
+
+  /** The notification on screen, or `undefined` while the group is emptying. */
+  public get currentItem(): Notification | undefined {
+    return this.groupedItems[this.groupIndex];
+  }
+
+  /** Whether there is more than one, and so whether the stepper is worth showing at all. */
+  public get hasMultiple(): boolean {
+    return this.groupedItems.length > 1;
+  }
+
+  /**
+   * Steps forward, wrapping at the end.
+   *
+   * Wrapping rather than stopping: the panel is dismissed by its timer or its close button, so a
+   * stepper that dead-ends on the last item would simply look broken for the ten seconds it is up.
+   */
+  public nextItem(event?: Event): void {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    if (this.groupedItems.length === 0) {
+      return;
+    }
+
+    this.groupIndex = (this.groupIndex + 1) % this.groupedItems.length;
+  }
+
+  public previousItem(event?: Event): void {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    if (this.groupedItems.length === 0) {
+      return;
+    }
+
+    this.groupIndex = (this.groupIndex - 1 + this.groupedItems.length) % this.groupedItems.length;
+  }
 
   public pauseGroup(): void {
     this._stopGroupTimer();

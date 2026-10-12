@@ -1,16 +1,20 @@
-import { expect, test } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { expect, test } from './fixtures';
 import { APP_ROOT, MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { directionsAvailable, directionsEntryPoints } from './directions';
+import { describePaint, waitForPaint } from './paint';
+import { environmentIsDevelopment, isDevelopmentHostRequest } from './gis-hosts';
 
 /**
  * Behaviours 1 and 2 of #1034, for every map the target environment lists.
  *
  * 1. The map loads -- served, Angular bootstraps, no uncaught errors, no server errors.
  * 2. Every layer resolves -- on the map, loaded without error, and the map is serving features.
+ * 3. The map drew something -- the canvas is not one flat colour. Behaviours 1 and 2 can both pass
+ *    on a blank map, which is the whole of #1240 and #1259.
  *
  * One test per map, generated from the manifest `global-setup.ts` writes. A new event map is
  * covered the moment it appears on a discovery page; nobody adds a test.
@@ -75,6 +79,9 @@ interface ProbeLayer {
 
   /** Absent on builds older than this field; see the drawable check below. */
   drawable?: boolean | null;
+
+  /** Absent on builds older than this field; see the symbology check below. */
+  symbology?: 'own' | 'portal' | 'service' | 'default' | null;
 }
 
 interface ProbeSnapshot {
@@ -225,7 +232,21 @@ for (const { mapPath, loadPath, title } of cases) {
     const pageErrors: string[] = [];
     const serverErrors: string[] = [];
 
+    /**
+     * Requests this map made to a development GIS host (#1483).
+     *
+     * Collected here rather than in a spec of its own because this test already loads every map, and
+     * a second crawl of all of them to watch their requests would roughly double the suite for a
+     * question that costs nothing to answer while the page is already open.
+     */
+    const developmentHostRequests: string[] = [];
+
     page.on('pageerror', (error) => pageErrors.push(error.message));
+    page.on('request', (request) => {
+      if (isDevelopmentHostRequest(request.url())) {
+        developmentHostRequests.push(request.url());
+      }
+    });
     page.on('response', (response) => {
       if (response.status() >= 500) {
         serverErrors.push(`${response.status()} ${response.url()}`);
@@ -339,6 +360,22 @@ for (const { mapPath, loadPath, title } of cases) {
       `${mapPath} draws nothing: the view is ${snapshot.spatialReference} and these tiled layers cannot be reprojected into it`
     ).toEqual([]);
 
+    // A layer drawing ArcGIS's default symbol has neither a renderer of its own nor one worth drawing
+    // from its source: a GeoJSON feed, which carries no symbology, or a service publishing only
+    // RedSphere.png. #1526 removed ~85 renderers on the understanding that services publish their own;
+    // Dining and AggiePrint then drew as plain dots on production for two days (#1576, #1578).
+    //
+    // Every layer the map has made is checked, visible or not: both of those are off by default, which
+    // is how they went unseen. A layer created only when switched on (`loadOnInit: false`) is not here
+    // to check. `=== 'default'` skips builds older than the field, as the drawable check does.
+    const defaultSymbology = snapshot.layers.filter((l) => l.loaded && l.symbology === 'default');
+
+    expect(
+      defaultSymbology.map((l) => `${l.title || l.id} [${l.type}]`),
+      `${mapPath} has layers drawing ArcGIS's default symbol: give each a renderer in its definition, ` +
+        `with the reason beside it (docs/map-layers.md)`
+    ).toEqual([]);
+
     const failed = snapshot.layers.filter((l) => l.error !== null);
     const tolerated = failed.filter(
       (l) => ALLOWED_LAYER_FAILURES.includes(l.title) || ALLOWED_LAYER_FAILURES.includes(l.id)
@@ -366,6 +403,26 @@ for (const { mapPath, loadPath, title } of cases) {
       `no layer on ${mapPath} returned any features, so the map is drawing nothing`
     ).toBeGreaterThan(0);
 
+    // Behaviour 3: the map drew something.
+    //
+    // Every assertion above asks the application about itself, and a map can answer all of them
+    // correctly while showing a blank rectangle. On 1 October the three campus maps reported 34
+    // layers, all loaded, all visible, all drawable, and were still being read as broken by eye -
+    // nothing above could tell a map that paints from one that does not. See #1259.
+    //
+    // Polls rather than asserting once: maps painted between 6 and 13 seconds on both environments
+    // when this was measured, and the probe's `ready` is not a usable signal for it - it was observed
+    // never to become true within 80 seconds on most maps.
+    const paint = await waitForPaint(page);
+
+    test.info().annotations.push({
+      type: 'paint',
+      description: `dominant=${paint.colour} share=${paint.share.toFixed(3)} colours=${paint.colours} ` +
+        `paintedAfter=${paint.paintedAfterMs === null ? 'never' : paint.paintedAfterMs + 'ms'}`
+    });
+
+    expect(paint.paintedAfterMs, describePaint(mapPath, paint)).not.toBeNull();
+
     // While routing is unavailable, no map may offer directions: no Directions tab, and no
     // "Directions To Here" left on the page (#1003). Whether a map offers them when routing is
     // available depends on its own configuration, so only the "hidden" case is checked per map.
@@ -377,5 +434,18 @@ for (const { mapPath, loadPath, title } of cases) {
     // as an incidental console error.
     expect(pageErrors, `uncaught errors on ${mapPath}`).toEqual([]);
     expect(serverErrors, `server errors on ${mapPath}`).toEqual([]);
+
+    // A map on a production environment must draw only from production services (#1483). A layer
+    // pointed at a development host works for anyone inside the network and is missing or stale for
+    // everyone else, which is the kind of failure nobody reports because it looks fine from here.
+    //
+    // One-directional: development legitimately reaches production services, so nothing is asserted
+    // there. `gis-hosts.ts` carries the rule and its own tests.
+    if (!environmentIsDevelopment(manifest.baseUrl)) {
+      expect(
+        [...new Set(developmentHostRequests)],
+        `${mapPath} requested a development host from ${manifest.baseUrl}`
+      ).toEqual([]);
+    }
   });
 }

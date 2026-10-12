@@ -4,21 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/ts/events/ngx/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/ts/events/ngx"],
       "options": {
         "jestConfig": "libs/ts/events/ngx/jest.config.ts",
-        "passWithNoTests": true
+        "tsConfig": "libs/ts/events/ngx/tsconfig.spec.json"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/ts/events/ngx/src/**/*.ts", "libs/ts/events/ngx/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

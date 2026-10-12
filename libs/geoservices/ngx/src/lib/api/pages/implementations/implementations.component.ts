@@ -1,16 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { HighlightModule } from 'ngx-highlightjs';
+import { AsyncPipe } from '@angular/common';
+import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
 @Component({
   selector: 'tamu-gisc-implementations',
   templateUrl: './implementations.component.html',
-  styleUrls: ['./implementations.component.scss']
+  styleUrls: ['./implementations.component.scss'],
+  imports: [HighlightModule, AsyncPipe, HighlightPlusModule]
 })
 export class ImplementationsComponent implements OnInit {
-  public url: string;
+  private readonly env = inject(EnvironmentService);
 
-  constructor(private readonly env: EnvironmentService) {}
+  public url: string;
 
   public ngOnInit() {
     this.url = this.env.value('accounts_url');

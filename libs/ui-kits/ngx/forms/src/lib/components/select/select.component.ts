@@ -1,14 +1,16 @@
 import {
   Component,
   Input,
-  Output,
-  EventEmitter,
   ChangeDetectionStrategy,
   forwardRef,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  inject,
+  input,
+  output
 } from '@angular/core';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-select',
@@ -21,9 +23,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       multi: true
     }
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, NgClass]
 })
 export class SelectComponent<T extends object> implements ControlValueAccessor {
+  private cd = inject(ChangeDetectorRef);
+
   /**
    * Functions as the initial/default or state value of the select element.
    *
@@ -33,11 +38,9 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   @Input('value')
   private _value: string = undefined;
 
-  @Input()
-  public formControlName = 'default';
+  public readonly formControlName = input('default');
 
-  @Input()
-  public floatLabel = false;
+  public readonly floatLabel = input(false);
 
   public get value() {
     return this._value;
@@ -59,14 +62,12 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   /**
    * Dot-notation string representing the evaluated property used in the display of the option element.
    */
-  @Input()
-  public displayTemplate: string;
+  public readonly displayTemplate = input<string>(undefined);
 
   /**
    * Dot-notation string representing the evaluated property used in the option data model.
    */
-  @Input()
-  public valueTemplate: string;
+  public readonly valueTemplate = input<string>(undefined);
 
   /**
    * Custom string used as the initial/undefined default option.
@@ -85,10 +86,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   /**
    * Event emitted when the value of the select input element is changed.
    */
-  @Output()
-  public changed: EventEmitter<string> = new EventEmitter();
-
-  constructor(private cd: ChangeDetectorRef) {}
+  public readonly changed = output<string>();
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
   private _onChange = (value: string) => {};
@@ -100,7 +98,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    * Responsible for emitting the model changed event to the parent component.
    */
   public changeEvent() {
-    this.changed.next(this.value);
+    this.changed.emit(this.value);
   }
 
   /**

@@ -1,13 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum FRESHMAN_SELECTABLE_LAYERS {
   RESIDENT_STUDENT_PRIORITY = 'Resident Student Priority',
@@ -17,32 +16,6 @@ const eventUrl = Connections.freshmanParkingUrl;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
-
-const residentStudentPriorityRenderer: FeatureRenderer = {
-  type: 'simple',
-  symbol: {
-    type: 'simple-fill',
-    color: [255, 0, 0, 255],
-    outline: {
-      type: 'simple-line',
-      color: [0, 0, 0, 0],
-      width: 0
-    }
-  }
-};
-
-const freshmanSelectableRenderer: FeatureRenderer = {
-  type: 'simple',
-  symbol: {
-    type: 'simple-fill',
-    color: [0, 92, 230, 255],
-    outline: {
-      type: 'simple-line',
-      color: [0, 0, 0, 0],
-      width: 0
-    }
-  }
-};
 
 export const FreshmanSelectableDefinitions = {
   RESIDENT_STUDENT_PRIORITY: {
@@ -67,7 +40,7 @@ export const FreshmanSelectableColdLayerSources: LayerSource[] = [
     url: FreshmanSelectableDefinitions.RESIDENT_STUDENT_PRIORITY.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',
@@ -80,8 +53,7 @@ export const FreshmanSelectableColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*'],
-      definitionExpression: `"GIS.TS.Lot_Use.Resident_Lot" = 1 AND "GIS.TS.Lot_Use.FreshmanSele_Lot" = 1`,
-      renderer: residentStudentPriorityRenderer
+      definitionExpression: `"GIS.TS.Lot_Use.Resident_Lot" = 1 AND "GIS.TS.Lot_Use.FreshmanSele_Lot" = 1`
     }
   },
   {
@@ -91,7 +63,7 @@ export const FreshmanSelectableColdLayerSources: LayerSource[] = [
     url: FreshmanSelectableDefinitions.FRESHMAN_STUDENT_SELECTABLE.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',
@@ -104,8 +76,7 @@ export const FreshmanSelectableColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*'],
-      definitionExpression: `"GIS.TS.Lot_Use.Resident_Lot" = 0 AND "GIS.TS.Lot_Use.FreshmanSele_Lot" = 1`,
-      renderer: freshmanSelectableRenderer
+      definitionExpression: `"GIS.TS.Lot_Use.Resident_Lot" = 0 AND "GIS.TS.Lot_Use.FreshmanSele_Lot" = 1`
     }
   }
 ];

@@ -1,11 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switchMap, take, withLatestFrom } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
-import { EventAccommodationOption, SpecialEventOption, SpecialEventOptions } from '../../../../interfaces/special-event.interface';
+import {
+  EventAccommodationOption,
+  SpecialEventOption,
+  SpecialEventOptions
+} from '../../../../interfaces/special-event.interface';
+import { NgClass, AsyncPipe, DatePipe } from '@angular/common';
 
 interface AccommodationChoiceGroup {
   label: string;
@@ -15,9 +20,16 @@ interface AccommodationChoiceGroup {
 @Component({
   selector: 'tamu-gisc-accommodations',
   templateUrl: './accommodations.component.html',
-  styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss']
+  styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, AsyncPipe, DatePipe]
 })
 export class AccommodationsComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly angulartics = inject(Angulartics2);
+  private readonly eventSettingsService = inject(EventSettingsService);
+
   public config = this.eventSettingsService.eventConfiguration()?.configuration;
   public savedOptionValue: Observable<string | boolean | number | null>;
 
@@ -25,13 +37,6 @@ export class AccommodationsComponent implements OnInit {
 
   private _eventOptions$: BehaviorSubject<SpecialEventOptions>;
   private _accommodationIndex$: Observable<number>;
-
-  constructor(
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly angulartics: Angulartics2,
-    private readonly eventSettingsService: EventSettingsService
-  ) {}
 
   public ngOnInit() {
     this._eventOptions$ = new BehaviorSubject(this.eventSettingsService.eventOptions());
@@ -135,17 +140,20 @@ export class AccommodationsComponent implements OnInit {
   };
 
   public getChoiceGroups(choices: Array<EventAccommodationOption>): Array<AccommodationChoiceGroup> {
-    const grouped = choices.reduce((acc, choice) => {
-      const key = choice.group || 'Options';
+    const grouped = choices.reduce(
+      (acc, choice) => {
+        const key = choice.group || 'Options';
 
-      if (!acc[key]) {
-        acc[key] = [];
-      }
+        if (!acc[key]) {
+          acc[key] = [];
+        }
 
-      acc[key].push(choice);
+        acc[key].push(choice);
 
-      return acc;
-    }, {} as Record<string, Array<EventAccommodationOption>>);
+        return acc;
+      },
+      {} as Record<string, Array<EventAccommodationOption>>
+    );
 
     return Object.entries(grouped).map(([label, groupChoices]) => ({
       label,

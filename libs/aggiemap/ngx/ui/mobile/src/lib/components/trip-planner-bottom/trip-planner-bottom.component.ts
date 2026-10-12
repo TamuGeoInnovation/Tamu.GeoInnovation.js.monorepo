@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { switchMap, takeUntil, pluck } from 'rxjs/operators';
@@ -6,12 +6,21 @@ import { switchMap, takeUntil, pluck } from 'rxjs/operators';
 import { TripPlannerService, TripResult } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
+import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { TripPlannerDirectionsMobileComponent } from '@tamu-gisc/maps/feature/trip-planner/components';
+
 @Component({
   selector: 'tamu-gisc-trip-planner-bottom',
   templateUrl: './trip-planner-bottom.component.html',
-  styleUrls: ['./trip-planner-bottom.component.scss']
+  styleUrls: ['./trip-planner-bottom.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TripPlannerDirectionsMobileComponent, DragDirective]
 })
 export class TripPlannerBottomComponent implements OnInit, OnDestroy {
+  private tripPlanner = inject(TripPlannerService);
+  private router = inject(Router);
+  private dragService = inject(DragService);
+
   /**
    * Unique component identifier generated from the drag state service, and provided to the DragService.
    */
@@ -24,7 +33,9 @@ export class TripPlannerBottomComponent implements OnInit, OnDestroy {
 
   public result: TripResult;
 
-  constructor(private tripPlanner: TripPlannerService, private router: Router, private dragService: DragService) {
+  constructor() {
+    const dragService = this.dragService;
+
     this.identifier = dragService.register(this);
   }
 

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TooltipTriggerComponent } from './tooltip-trigger.component';
 
@@ -6,9 +6,9 @@ describe('TooltipTriggerComponent', () => {
   let component: TooltipTriggerComponent;
   let fixture: ComponentFixture<TooltipTriggerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TooltipTriggerComponent]
+      imports: [TooltipTriggerComponent]
     }).compileComponents();
   }));
 

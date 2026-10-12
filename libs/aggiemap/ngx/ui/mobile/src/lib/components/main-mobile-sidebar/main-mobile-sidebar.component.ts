@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { Angulartics2 } from 'angulartics2';
 import { v4 as guid } from 'uuid';
+import { TamuBlockBrandingComponent } from '@tamu-gisc/ui-kits/ngx/branding';
+import { RouterLink } from '@angular/router';
 
 interface MenuItem {
   name: string;
@@ -13,9 +15,13 @@ interface MenuItem {
 @Component({
   selector: 'tamu-gisc-main-mobile-sidebar',
   templateUrl: './main-mobile-sidebar.component.html',
-  styleUrls: ['./main-mobile-sidebar.component.scss']
+  styleUrls: ['./main-mobile-sidebar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TamuBlockBrandingComponent, RouterLink]
 })
 export class MainMobileSidebarComponent {
+  private analytics = inject(Angulartics2);
+
   public menu: MenuItem[] = [
     {
       name: 'Legend',
@@ -103,8 +109,6 @@ export class MainMobileSidebarComponent {
       url: 'https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pulls?q=is%3Apr+is%3Aclosed'
     }
   ];
-
-  constructor(private analytics: Angulartics2) {}
 
   public reportNavigation(name: string) {
     const label = {

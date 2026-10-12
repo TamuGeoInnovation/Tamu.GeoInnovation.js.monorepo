@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
@@ -20,77 +20,6 @@ export enum FAMILY_WEEKEND_LAYERS {
 }
 
 const eventUrl = Connections.familyWeekendUrl;
-
-const familyWeekendEventParkingSymbol = {
-  type: 'simple-fill',
-  color: [95, 138, 232, 255],
-  outline: {
-    type: 'simple-line',
-    color: [94, 52, 234, 255],
-    width: 1
-  }
-} as unknown as esri.SymbolProperties;
-
-const familyWeekendReservedLotSymbol = {
-  type: 'simple-fill',
-  color: [242, 160, 97, 255],
-  outline: {
-    type: 'simple-line',
-    color: [230, 124, 0, 255],
-    width: 1
-  }
-} as unknown as esri.SymbolProperties;
-
-const createFamilyWeekendParkingRenderer = (paidParkingColor: number[]): FeatureRenderer => ({
-  type: 'unique-value',
-  field: 'Type',
-  uniqueValueInfos: [
-    {
-      value: 'Event Parking',
-      label: 'Free Event Parking',
-      symbol: familyWeekendEventParkingSymbol
-    },
-    {
-      value: '$10 Event Parking',
-      label: 'Paid Parking',
-      symbol: {
-        type: 'simple-fill',
-        color: paidParkingColor,
-        outline: {
-          type: 'simple-line',
-          color: [68, 137, 112, 255],
-          width: 1
-        }
-      } as unknown as esri.SymbolProperties
-    },
-    {
-      value: 'Paid hourly visitor parking',
-      label: 'Paid Parking',
-      symbol: {
-        type: 'simple-fill',
-        color: paidParkingColor,
-        outline: {
-          type: 'simple-line',
-          color: [68, 137, 112, 255],
-          width: 1
-        }
-      } as unknown as esri.SymbolProperties
-    },
-    {
-      value: 'Lot Specific Permit Only',
-      label: 'Reserved Lot',
-      symbol: familyWeekendReservedLotSymbol
-    },
-    {
-      value: 'Reserved Athletic',
-      label: 'Reserved Lot',
-      symbol: familyWeekendReservedLotSymbol
-    }
-  ]
-});
-
-const saturdayParkingRenderer = createFamilyWeekendParkingRenderer([81, 179, 54, 255]);
-const sundayParkingRenderer = createFamilyWeekendParkingRenderer([79, 179, 53, 255]);
 
 export const FamilyWeekendDefinitions = {
   FRIDAY_PARKING_LOTS: {
@@ -117,9 +46,8 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: FamilyWeekendDefinitions.FRIDAY_PARKING_LOTS.id,
-    title: FamilyWeekendDefinitions.FRIDAY_PARKING_LOTS.name,
     url: FamilyWeekendDefinitions.FRIDAY_PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     visible: false,
     listMode: 'show',
     native: {
@@ -129,27 +57,23 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: FamilyWeekendDefinitions.SATURDAY_PARKING_LOTS.id,
-    title: FamilyWeekendDefinitions.SATURDAY_PARKING_LOTS.name,
     url: FamilyWeekendDefinitions.SATURDAY_PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     visible: false,
     listMode: 'show',
     native: {
-      outFields: ['*'],
-      renderer: saturdayParkingRenderer
+      outFields: ['*']
     } as unknown as FeatureNative
   },
   {
     type: 'feature',
     id: FamilyWeekendDefinitions.SUNDAY_PARKING_LOTS.id,
-    title: FamilyWeekendDefinitions.SUNDAY_PARKING_LOTS.name,
     url: FamilyWeekendDefinitions.SUNDAY_PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     visible: false,
     listMode: 'show',
     native: {
-      outFields: ['*'],
-      renderer: sundayParkingRenderer
+      outFields: ['*']
     } as unknown as FeatureNative
   }
 ];

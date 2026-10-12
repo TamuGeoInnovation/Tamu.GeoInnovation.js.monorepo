@@ -4,14 +4,20 @@
   "projectType": "application",
   "sourceRoot": "apps/geoservices-angular/src",
   "prefix": "tamu-gisc",
+  "tags": [],
+  "implicitDependencies": ["assets", "sass"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath.base}"],
+      "defaultConfiguration": "",
       "options": {
-        "outputPath": "dist/apps/geoservices-angular",
+        "outputPath": {
+          "base": "dist/apps/geoservices-angular",
+          "browser": ""
+        },
         "index": "apps/geoservices-angular/src/index.html",
-        "main": "apps/geoservices-angular/src/main.ts",
-        "polyfills": "apps/geoservices-angular/src/polyfills.ts",
+        "polyfills": ["apps/geoservices-angular/src/polyfills.ts"],
         "tsConfig": "apps/geoservices-angular/tsconfig.app.json",
         "aot": false,
         "assets": [
@@ -28,13 +34,15 @@
           }
         ],
         "styles": ["apps/geoservices-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "scripts": [],
-        "vendorChunk": true,
         "extractLicenses": false,
-        "buildOptimizer": false,
         "sourceMap": true,
         "optimization": false,
-        "namedChunks": true
+        "namedChunks": true,
+        "browser": "apps/geoservices-angular/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -50,8 +58,6 @@
           "namedChunks": false,
           "aot": true,
           "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
           "budgets": [
             {
               "type": "initial",
@@ -78,8 +84,6 @@
           "namedChunks": false,
           "aot": true,
           "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
           "budgets": [
             {
               "type": "initial",
@@ -93,47 +97,41 @@
             }
           ]
         }
-      },
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": ""
+      }
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "continuous": true,
       "options": {
-        "browserTarget": "geoservices-angular:build",
         "proxyConfig": "apps/geoservices-angular/proxy.conf.json",
-        "host": "0.0.0.0"
+        "host": "0.0.0.0",
+        "buildTarget": "geoservices-angular:build"
       },
       "configurations": {
         "production": {
-          "browserTarget": "geoservices-angular:build:production"
+          "buildTarget": "geoservices-angular:build:production"
         },
         "development": {
-          "browserTarget": "geoservices-angular:build:development"
+          "buildTarget": "geoservices-angular:build:development"
         }
       }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "geoservices-angular:build"
+        "buildTarget": "geoservices-angular:build"
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/geoservices-angular"],
       "options": {
         "jestConfig": "apps/geoservices-angular/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "outputs": ["{workspaceRoot}/coverage/apps/geoservices-angular"]
+        "tsConfig": "apps/geoservices-angular/tsconfig.spec.json"
+      }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/geoservices-angular/src/**/*.ts", "apps/geoservices-angular/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["assets", "sass"]
+  }
 }

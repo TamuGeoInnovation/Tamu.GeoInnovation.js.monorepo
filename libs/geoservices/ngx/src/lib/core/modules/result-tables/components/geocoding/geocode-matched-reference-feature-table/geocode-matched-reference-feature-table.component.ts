@@ -1,19 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { GeocodeReferenceFeatureField, IGeocodeReferenceFeature } from '@tamu-gisc/geoprocessing-v5';
 import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
 
 import { GeocodeReferenceFeatureLabel } from '../../../../../util/dictionaries';
+import { ParsedAddressResultTableComponent } from '../../address-processing/parsed-address-result-table/parsed-address-result-table.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-geocode-matched-reference-feature-table',
   templateUrl: './geocode-matched-reference-feature-table.component.html',
-  styleUrls: ['./geocode-matched-reference-feature-table.component.scss']
+  styleUrls: ['./geocode-matched-reference-feature-table.component.scss'],
+  imports: [ParsedAddressResultTableComponent, AsyncPipe]
 })
 export class GeocodeMatchedReferenceFeatureTableComponent implements OnInit {
-  @Input()
-  public matchedFeature: IGeocodeReferenceFeature;
+  public readonly matchedFeature = input<IGeocodeReferenceFeature>(undefined);
 
   public filteredProps: Observable<EnumeratorKeyValuePairs>;
 
@@ -37,7 +39,7 @@ export class GeocodeMatchedReferenceFeatureTableComponent implements OnInit {
   public ngOnInit(): void {
     // Set filteredProps to be an object of key-value pairs of the matched feature, but only for properties found
     // in the reference feature dictionary.
-    this.filteredProps = of(this.matchedFeature).pipe(
+    this.filteredProps = of(this.matchedFeature()).pipe(
       map((feature) => {
         return new FieldEnumerator(feature).filter('exclude', this._excludedProps).order(this._defaultOrder);
       })

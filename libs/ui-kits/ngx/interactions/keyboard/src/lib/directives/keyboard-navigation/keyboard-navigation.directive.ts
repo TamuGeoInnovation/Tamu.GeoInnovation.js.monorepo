@@ -1,22 +1,22 @@
-import { Directive, ElementRef, HostListener, Input, AfterViewInit } from '@angular/core';
+import { Directive, ElementRef, HostListener, AfterViewInit, inject, input } from '@angular/core';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[keyboardNavigation]'
 })
 export class KeyboardNavigationDirective implements AfterViewInit {
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+
   /** CSS selector for option elements inside the host where focus/selection will occur. */
-  @Input('keyboardNavigation') public optionSelector = '.autocomplete-item';
+  public readonly optionSelector = input('.autocomplete-item', { alias: 'keyboardNavigation' });
 
   /** Attribute name used to mark the active/focused option (will be set to true/false). */
-  @Input() public activeAttr = 'aria-selected';
+  public readonly activeAttr = input('aria-selected');
 
   private options: HTMLElement[] = [];
   private activeIndex = -1;
   private externalControl: HTMLElement | null = null;
   private externalKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
-
-  constructor(private host: ElementRef<HTMLElement>) {}
 
   public ngAfterViewInit() {
     this.refreshOptions();
@@ -74,7 +74,7 @@ export class KeyboardNavigationDirective implements AfterViewInit {
 
   public refreshOptions() {
     const el = this.host.nativeElement;
-    this.options = Array.from(el.querySelectorAll(this.optionSelector)) as HTMLElement[];
+    this.options = Array.from(el.querySelectorAll(this.optionSelector())) as HTMLElement[];
     // Ensure options have tabindex for programmatic focus
     this.options.forEach((o) => {
       if (!o.hasAttribute('tabindex')) {
@@ -214,14 +214,14 @@ export class KeyboardNavigationDirective implements AfterViewInit {
 
   private setActive(index: number) {
     if (this.activeIndex >= 0 && this.options[this.activeIndex]) {
-      this.options[this.activeIndex].setAttribute(this.activeAttr, 'false');
+      this.options[this.activeIndex].setAttribute(this.activeAttr(), 'false');
     }
 
     this.activeIndex = index;
 
     const el = this.options[this.activeIndex];
     if (el) {
-      el.setAttribute(this.activeAttr, 'true');
+      el.setAttribute(this.activeAttr(), 'true');
       el.focus();
     }
   }
@@ -240,7 +240,7 @@ export class KeyboardNavigationDirective implements AfterViewInit {
     host.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     // revert active state
     if (this.activeIndex >= 0 && this.options[this.activeIndex]) {
-      this.options[this.activeIndex].setAttribute(this.activeAttr, 'false');
+      this.options[this.activeIndex].setAttribute(this.activeAttr(), 'false');
     }
     this.activeIndex = -1;
   }

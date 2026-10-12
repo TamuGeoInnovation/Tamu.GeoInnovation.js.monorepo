@@ -4,21 +4,18 @@
   "prefix": "tamu-gisc",
   "projectType": "library",
   "sourceRoot": "libs/dev-tools/responsive/src",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/dev-tools/responsive"],
       "options": {
         "jestConfig": "libs/dev-tools/responsive/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/dev-tools/responsive"]
+        "tsConfig": "libs/dev-tools/responsive/tsconfig.spec.json"
+      }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/dev-tools/responsive/src/**/*.ts", "libs/dev-tools/responsive/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

@@ -1,10 +1,20 @@
-import { Component, Input, ContentChildren, QueryList, AfterContentInit, TemplateRef, HostBinding } from '@angular/core';
+import {
+  Component,
+  Input,
+  AfterContentInit,
+  TemplateRef,
+  HostBinding,
+  ChangeDetectionStrategy,
+  input,
+  contentChildren
+} from '@angular/core';
 
 import { AbstractContentReplacerToggleComponent } from './abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
 
 @Component({
   selector: 'tamu-gisc-abstract-content-replacer',
-  template: ''
+  template: '',
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class AbstractContentReplacerComponent implements AfterContentInit {
   /**
@@ -15,8 +25,7 @@ export class AbstractContentReplacerComponent implements AfterContentInit {
    *
    * Defaults to `row`.
    */
-  @Input()
-  public toggleLayout: 'row' | 'column' = 'row';
+  public readonly toggleLayout = input<'row' | 'column'>('row');
 
   /**
    * Default starting toggle index.
@@ -35,21 +44,20 @@ export class AbstractContentReplacerComponent implements AfterContentInit {
    * A series of elements that represent the interaction-able components responsible
    * for requesting a content render change.
    */
-  @ContentChildren(AbstractContentReplacerToggleComponent)
-  public toggleList: QueryList<AbstractContentReplacerToggleComponent>;
+  public readonly toggleList = contentChildren(AbstractContentReplacerToggleComponent);
 
   @HostBinding('class.row')
   private get _layoutRowBinding() {
-    return this.toggleLayout === 'row';
+    return this.toggleLayout() === 'row';
   }
 
   @HostBinding('class.column')
   private get _layoutColumnBinding() {
-    return this.toggleLayout === 'column';
+    return this.toggleLayout() === 'column';
   }
 
   public ngAfterContentInit() {
-    this.toggles = this.toggleList.map((t, i) => {
+    this.toggles = this.toggleList().map((t, i) => {
       return {
         index: i,
         label: t.label,

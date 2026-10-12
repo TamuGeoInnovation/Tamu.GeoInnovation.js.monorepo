@@ -1,17 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AccountPreferencesService } from '@tamu-gisc/geoservices/data-access';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-preferences',
   templateUrl: './preferences.component.html',
-  styleUrls: ['./preferences.component.scss']
+  styleUrls: ['./preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, CheckboxComponent]
 })
 export class PreferencesComponent implements OnInit {
-  public form: UntypedFormGroup;
+  private service = inject(AccountPreferencesService);
+  private fb = inject(UntypedFormBuilder);
 
-  constructor(private service: AccountPreferencesService, private fb: UntypedFormBuilder) {}
+  public form: UntypedFormGroup;
 
   public ngOnInit() {
     this.form = this.fb.group({

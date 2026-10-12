@@ -6,8 +6,10 @@ import {
   OnDestroy,
   OnInit,
   Type,
-  ViewChild,
-  ViewContainerRef
+  ViewContainerRef,
+  ChangeDetectionStrategy,
+  inject,
+  viewChild
 } from '@angular/core';
 import { Observable, Subject, takeUntil } from 'rxjs';
 
@@ -18,11 +20,13 @@ import { ModalRefService } from '../../services/modal-ref/modal-ref.service';
   selector: 'tamu-gisc-modal-host',
   templateUrl: './modal-host.component.html',
   styleUrls: ['./modal-host.component.scss'],
-  providers: [ModalRefService]
+  providers: [ModalRefService],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ModalHostComponent implements OnInit, OnDestroy {
-  @ViewChild('modal', { static: true, read: ViewContainerRef })
-  private _modalChildHost: ViewContainerRef;
+  private modalRef = inject(ModalRefService);
+
+  private readonly _modalChildHost = viewChild('modal', { read: ViewContainerRef });
 
   private _modalChildRef: ComponentRef<unknown>;
 
@@ -32,8 +36,6 @@ export class ModalHostComponent implements OnInit, OnDestroy {
   public escCancel() {
     this.cancelModal();
   }
-
-  constructor(private modalRef: ModalRefService) {}
 
   public ngOnInit(): void {
     // Create a subscription to the modalRef service and listen for close requests
@@ -51,7 +53,7 @@ export class ModalHostComponent implements OnInit, OnDestroy {
    * Creates a provided component instance into the inner childe modal view container.
    */
   public mountModalChild<C, T>(component: Type<C>, data?: unknown): Observable<T> {
-    this._modalChildRef = this._modalChildHost.createComponent(component, {
+    this._modalChildRef = this._modalChildHost().createComponent(component, {
       injector: Injector.create({
         providers: [
           {
@@ -59,7 +61,7 @@ export class ModalHostComponent implements OnInit, OnDestroy {
             useValue: data
           }
         ],
-        parent: this._modalChildHost.injector
+        parent: this._modalChildHost().injector
       })
     });
 
@@ -76,8 +78,8 @@ export class ModalHostComponent implements OnInit, OnDestroy {
    * original caller.
    */
   public clear(exitData?: unknown, emit?: boolean) {
-    if (this._modalChildHost.length > 0) {
-      this._modalChildHost.clear();
+    if (this._modalChildHost().length > 0) {
+      this._modalChildHost().clear();
     }
 
     if (this._modalChildRef) {

@@ -1,18 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 
 @Component({
   selector: 'tamu-gisc-entry-redirect',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 export class EntryRedirectComponent implements OnInit {
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly eventSettingsService: EventSettingsService
-  ) {}
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly eventSettingsService = inject(EventSettingsService);
 
   public ngOnInit(): void {
     this.eventSettingsService.validateEventQueryParams(this.route.snapshot, true);

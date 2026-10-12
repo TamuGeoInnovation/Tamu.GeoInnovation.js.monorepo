@@ -1,26 +1,34 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2';
 
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { LastMapService } from '@tamu-gisc/aggiemap/ngx/discover';
-import { EventNotificationsService } from '@tamu-gisc/aggiemap/ngx/core';
+import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
+import { campusOnNavigation, EventNotificationsService } from '@tamu-gisc/aggiemap/ngx/core';
+import { NotificationGroupedComponent } from '@tamu-gisc/common/ngx/ui/notification';
+import { CodeMaroonAlertComponent } from '@tamu-gisc/aggiemap/ngx/core';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterOutlet, NotificationGroupedComponent, CodeMaroonAlertComponent]
 })
-export class AppComponent implements OnInit {
-  constructor(
-    public analytics: Angulartics2GoogleGlobalSiteTag,
-    private readonly vcr: ViewContainerRef,
-    private readonly ms: ModalService,
-    // Injected only so it exists from startup. It is `providedIn: 'root'`, which is lazy: without
-    // this it would first be constructed on a discover page, by which time the map navigation it
-    // needs to observe has already happened and there would be nothing to go back to.
-    private readonly lastMap: LastMapService,
-    private readonly eventNotifications: EventNotificationsService
-  ) {
+export class AppComponent implements OnInit, OnDestroy {
+  analytics = inject(Angulartics2GoogleGlobalSiteTag);
+  private readonly vcr = inject(ViewContainerRef);
+  private readonly ms = inject(ModalService);
+  private readonly lastMap = inject(LastMapService);
+  private readonly eventNotifications = inject(EventNotificationsService);
+  private readonly router = inject(Router);
+
+  private _notifications: Subscription | undefined;
+
+  constructor() {
+    const analytics = this.analytics;
+
     analytics.startTracking();
   }
 
@@ -33,7 +41,17 @@ export class AppComponent implements OnInit {
     // opened an event map by link was never told about the other events, and someone who dismissed
     // them on an event map had them raised again on returning to the main map. See #1246.
     //
-    // Once per page load. The service ignores anything already dismissed during this load.
-    this.eventNotifications.checkAndTriggerEventNotifications();
+    // On every navigation rather than once, because whose notifications belong here depends on which
+    // map is showing: College Station's belong on the main map and the event, parking and operations
+    // maps, and nowhere near a satellite campus or an embedded kiosk. The service skips anything
+    // already raised or already dismissed during this page load, so navigating does not stack
+    // duplicates. See #1265.
+    this._notifications = campusOnNavigation(this.router).subscribe((campus) => {
+      this.eventNotifications.checkAndTriggerEventNotifications(campus);
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this._notifications?.unsubscribe();
   }
 }

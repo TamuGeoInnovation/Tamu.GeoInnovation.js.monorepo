@@ -11,6 +11,10 @@
     }
   ],
   "compilerOptions": {
-    "target": "es2020"
+    "target": "es2020",
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "esModuleInterop": false,
+    "ignoreDeprecations": "6.0"
   }
 }

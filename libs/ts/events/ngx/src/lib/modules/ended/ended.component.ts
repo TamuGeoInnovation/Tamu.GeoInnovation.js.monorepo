@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 
@@ -9,12 +9,17 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
  */
 @Component({
   selector: 'tamu-gisc-event-ended',
-  templateUrl: './ended.component.html'
+  templateUrl: './ended.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink]
 })
 export class EndedComponent {
   public readonly name: string;
 
-  constructor(route: ActivatedRoute, eventSettingsService: EventSettingsService) {
+  constructor() {
+    const route = inject(ActivatedRoute);
+    const eventSettingsService = inject(EventSettingsService);
+
     const eventId = route.snapshot.pathFromRoot.find((snapshot) => snapshot.params['eventId'])?.params['eventId'];
     const configuration = eventSettingsService.getEventDefinitionById(eventId)?.configuration;
 

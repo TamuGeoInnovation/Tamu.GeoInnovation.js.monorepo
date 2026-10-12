@@ -1,7 +1,8 @@
-import { Component, HostListener, EventEmitter, Output, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, HostListener, OnChanges, SimpleChanges, input, output } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BehaviorSubject, of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-hamburger-trigger',
@@ -53,7 +54,8 @@ import { switchMap } from 'rxjs/operators';
       ),
       transition('* <=> *', [animate('.3s ease')])
     ])
-  ]
+  ],
+  imports: [AsyncPipe]
 })
 export class HamburgerTriggerComponent implements OnChanges {
   /**
@@ -61,14 +63,12 @@ export class HamburgerTriggerComponent implements OnChanges {
    * trigger state is also updated to initiate animation transition
    * between states.
    */
-  @Input()
-  public active: boolean;
+  public readonly active = input<boolean>(undefined);
 
   /**
    * Event emitted when the hamburger nav element is clicked on by client.
    */
-  @Output()
-  public poked: EventEmitter<boolean> = new EventEmitter();
+  public readonly poked = output<boolean>();
 
   // Internal trigger state
   private _state: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -77,7 +77,7 @@ export class HamburgerTriggerComponent implements OnChanges {
   public animationState: Observable<string> = this._state.asObservable().pipe(switchMap((s) => of(s ? 'up' : 'down')));
 
   @HostListener('click')
-  private _poke() {
+  protected _poke() {
     this._state.next(!this._state.getValue());
     this.poked.emit(this._state.getValue());
   }

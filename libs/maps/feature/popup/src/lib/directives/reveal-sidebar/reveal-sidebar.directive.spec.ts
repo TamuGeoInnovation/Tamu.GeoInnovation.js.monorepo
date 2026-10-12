@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 
 import { SidebarComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
@@ -11,7 +12,7 @@ import { PopupService } from '../../services/popup.service';
  * Before this directive there was no mechanism at all: the popup renders inside the panel, so with the
  * panel closed, clicking a feature produced nothing on screen.
  *
- * Constructed by hand. A `TestBed` would need the Esri map service and a rendered sidebar to say
+ * Constructed by hand, with fakes. The real ones would need the Esri map service and a rendered sidebar to say
  * anything about one boolean.
  */
 
@@ -29,9 +30,14 @@ describe('RevealSidebarOnPopupDirective', () => {
     sidebar = new FakeSidebar();
     sidebar.visible = visible;
 
-    directive = new RevealSidebarOnPopupDirective(sidebar as unknown as SidebarComponent, {
-      opened: opened.asObservable()
-    } as unknown as PopupService);
+    directive = TestBed.resetTestingModule()
+      .configureTestingModule({
+        providers: [
+          { provide: SidebarComponent, useValue: sidebar },
+          { provide: PopupService, useValue: { opened: opened.asObservable() } }
+        ]
+      })
+      .runInInjectionContext(() => new RevealSidebarOnPopupDirective());
     directive.ngOnInit();
 
     return directive;

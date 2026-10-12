@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { environment } from '../environments/environment';
@@ -6,7 +6,9 @@ import { environment } from '../environments/environment';
 @Component({
   selector: 'tamu-gisc-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class AppComponent implements OnInit {
   constructor(public oidcSecurityService: OidcSecurityService) {}

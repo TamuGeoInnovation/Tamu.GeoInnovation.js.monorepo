@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
@@ -9,29 +9,34 @@ import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-acces
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-submission-detail-modal',
   templateUrl: './submission-detail-modal.component.html',
-  styleUrls: ['./submission-detail-modal.component.scss']
+  styleUrls: ['./submission-detail-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [EsriMapComponent, ButtonComponent, AsyncPipe, DatePipe]
 })
 export class SubmissionDetailModalComponent implements OnInit {
+  private readonly data = inject<SubmissionDetailModalData>(MODAL_DATA);
+  private readonly modalRef = inject(ModalRefService);
+  private readonly submissionService = inject(SubmissionService);
+  private readonly sanitizer = inject(DomSanitizer);
+  private readonly ns = inject(NotificationService);
+  private readonly mapService = inject(EsriMapService);
+
   public submission: SubmissionReviewDto;
   public isAdmin = false;
   public images$: Observable<Array<{ guid: string; url: SafeUrl }>>;
   public VALIDATION_STATUS = COMPETITION_VALIDATION_STATUS;
   public mapConfig: MapConfig;
 
-  constructor(
-    @Inject(MODAL_DATA) private readonly data: SubmissionDetailModalData,
-    private readonly modalRef: ModalRefService,
-    private readonly submissionService: SubmissionService,
-    private readonly sanitizer: DomSanitizer,
-    private readonly ns: NotificationService,
-    private readonly mapService: EsriMapService
-  ) {
+  constructor() {
     this.submission = this.data.submission;
     this.isAdmin = this.data.isAdmin;
   }

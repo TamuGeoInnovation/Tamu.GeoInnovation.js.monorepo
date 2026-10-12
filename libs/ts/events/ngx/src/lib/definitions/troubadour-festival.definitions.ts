@@ -1,13 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum TROUBADOUR_LAYERS {
   PARKING = 'troubadour-parking'
@@ -30,7 +29,7 @@ export const TroubadourColdLayerSources: LayerSource[] = [
     id: TroubadourFestivalEventDefinitions.TROUBADOUR_PARKING.id,
     title: TroubadourFestivalEventDefinitions.TROUBADOUR_PARKING.name,
     url: TroubadourFestivalEventDefinitions.TROUBADOUR_PARKING.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'

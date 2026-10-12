@@ -1,5 +1,5 @@
 /* eslint-disable */
-export default {
+module.exports = {
   displayName: 'maps-feature-basemap',
 
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],

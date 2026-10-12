@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AltSearchHelper, SearchSelection, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
@@ -7,15 +7,28 @@ import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
 import { EventConfiguration, EventSettings, ResolvedEventSettings } from '../../../../interfaces/special-event.interface';
+import { SearchComponent } from '@tamu-gisc/ui-kits/ngx/search';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { NgStyle, KeyValuePipe } from '@angular/common';
+import { LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
+import { LegendComponent } from '@tamu-gisc/maps/feature/legend';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-sidebar-reference',
   templateUrl: './sidebar-reference.component.html',
-  styleUrls: ['./sidebar-reference.component.scss']
+  styleUrls: ['./sidebar-reference.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SearchComponent, CopyComponent, NgStyle, LayerListComponent, LegendComponent, KeyValuePipe]
 })
 export class SidebarReferenceComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly helper = inject(AltSearchHelper);
+  private readonly mapService = inject(EsriMapService);
+  private readonly eventSettingsService = inject(EventSettingsService);
+
   public shareUrl: string;
   public hasSettings: boolean;
   public settings: EventSettings;
@@ -30,14 +43,6 @@ export class SidebarReferenceComponent implements OnInit {
   public hideLayerToggle = false;
   public searchSources?: SearchSource[];
 
-  constructor(
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly helper: AltSearchHelper,
-    private readonly mapService: EsriMapService,
-    private readonly eventSettingsService: EventSettingsService
-  ) {}
-
   public ngOnInit(): void {
     this.hasSettings = this.eventSettingsService.queryParamsFromSettings !== null;
     this.configuration = this.eventSettingsService.eventConfiguration()?.configuration;
@@ -47,7 +52,10 @@ export class SidebarReferenceComponent implements OnInit {
     this.layerListOrderBy = this.configuration?.referenceLayerListOrder === 'source' ? 'allowed' : 'title';
     this.legendForceShowLayerIds = this.configuration?.legendForceShowLayerIds ?? [];
     this.hideLayerToggle = this.configuration?.hideLayerToggle ?? false;
-    this.searchSources = this.configuration?.searchSources;
+    // A map may declare sources only for its link parameters (`searchActive: false`); the sidebar
+    // search then keeps the application-wide sources rather than searching nothing.
+    const ownSources = this.configuration?.searchSources;
+    this.searchSources = ownSources?.some((source) => source.searchActive) ? ownSources : undefined;
     const settings = this.eventSettingsService.settings();
     const options = this.eventSettingsService.eventOptions();
     this.eventLayerIds = this.eventSettingsService

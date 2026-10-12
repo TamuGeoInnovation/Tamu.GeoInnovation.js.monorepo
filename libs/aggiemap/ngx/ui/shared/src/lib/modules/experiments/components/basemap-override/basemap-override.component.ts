@@ -1,15 +1,21 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, Subject, takeUntil } from 'rxjs';
 
 import { SettingsInitializationConfig, SettingsService } from '@tamu-gisc/common/ngx/settings';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-basemap-override',
   templateUrl: './basemap-override.component.html',
-  styleUrls: ['./basemap-override.component.scss']
+  styleUrls: ['./basemap-override.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent]
 })
 export class BasemapOverrideComponent implements OnInit, OnDestroy {
+  private readonly ss = inject(SettingsService);
+  private readonly fb = inject(UntypedFormBuilder);
+
   public form: UntypedFormGroup;
 
   private settingsConfig: SettingsInitializationConfig = {
@@ -25,8 +31,6 @@ export class BasemapOverrideComponent implements OnInit, OnDestroy {
   };
 
   private $destroy: Subject<boolean> = new Subject();
-
-  constructor(private readonly ss: SettingsService, private readonly fb: UntypedFormBuilder) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

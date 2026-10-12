@@ -7,13 +7,10 @@ on:
         required: true
         type: string
 
-env:
-  EXCLUDED_PROJECTS: 'aggiemap-angular-e2e,cpa-angular-e2e,geoservices-angular-e2e,gisday-competitions-angular-e2e,mailroom-angular-e2e,oidc-admin-angular-e2e,signage-angular-e2e,trees-angular-e2e,ues-effluent-angular-e2e,ues-operations-angular-e2e,ues-recycling-angular-e2e,ues-valves-angular-e2e'
-
 jobs:
   lint:
     name: Affected
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repo
@@ -24,7 +21,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20.18.1'
+          node-version: '22.23.3'
 
       - uses: actions/cache@v4
         id: npm-cache
@@ -36,5 +33,10 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
+      # Playwright strips types when it loads a spec, so nothing else fails on a type error in the
+      # AggieMap smoke suite. A few seconds; runs on every pull request (#1470).
+      - name: Typecheck the AggieMap smoke suite
+        run: npx tsc -p test/smoke/aggiemap
+
       - name: Lint Affected
-        run: npx nx affected:lint --configuration=production --exclude=${{ env.EXCLUDED_PROJECTS }}  --base=${{ inputs.base }} --parallel=2
+        run: npx nx affected:lint --configuration=production --base=${{ inputs.base }} --parallel=2

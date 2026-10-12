@@ -1,21 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, combineLatestWith, concatMap, map, Observable, of, reduce, shareReplay } from 'rxjs';
 
-import { Angulartics2 } from 'angulartics2';
-
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
-
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
+import { AccordionDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionHeaderDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { NgClass, AsyncPipe, DatePipe, KeyValuePipe } from '@angular/common';
+import { AccordionContentDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+
+import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
   selector: 'tamu-gisc-dining-popup-component',
   templateUrl: './dining.component.html',
-  styleUrls: ['../base/base.popup.component.scss', './dining.component.scss']
+  styleUrls: ['../base/base.popup.component.scss', './dining.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    AccordionDirective,
+    AccordionHeaderDirective,
+    NgClass,
+    AccordionContentDirective,
+    AsyncPipe,
+    DatePipe,
+    KeyValuePipe,
+    MarkdownParsePipe
+  ]
 })
 export class DiningPopupComponent extends BaseDirectionsComponent implements OnInit {
+  private readonly http = inject(HttpClient);
+
   public menu: Observable<IDiningLocationMenu>;
 
   /**
@@ -38,17 +51,6 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
 
   private _serviceUrl = 'https://api.aggiemap.tamu.edu/dining';
   private _todaysDateStamp: Observable<string>;
-
-  constructor(
-    private rtr: Router,
-    private rt: ActivatedRoute,
-    private ps: TripPlannerService,
-    private anl: Angulartics2,
-    private ms: EsriMapService,
-    private readonly http: HttpClient
-  ) {
-    super(rtr, rt, ps, anl, ms);
-  }
 
   public ngOnInit() {
     super.ngOnInit();

@@ -22,12 +22,18 @@ the shared libraries behind them. A change to a shared library can affect severa
 
 ## Where things are written down
 
-Three places, each with one job.
+Nine places, each with one job.
 
 | Where | What belongs there |
 | --- | --- |
 | This file | The lasting rules: how to build, test, release and open a pull request here. Anything still true next month. |
+| [`docs/map-layers.md`](docs/map-layers.md) | Where a layer's symbology, title and order come from, how to override each, and when an override is right. Read before hard-coding anything about how a map looks. |
+| [`docs/testing-maps.md`](docs/testing-maps.md) | Which signal to wait for when a test needs a map to be finished, and why `ready` is not the one for a screenshot. |
+| [`docs/build-times.md`](docs/build-times.md) | How long runs and page loads take, so a change meant to speed something up can be shown to have done it: before-and-after comparisons and what they show, and the run files in [`docs/build-times/runs/`](docs/build-times/runs) the scripts write when asked. Measurements, not rules. |
+| [`docs/gisday-local.md`](docs/gisday-local.md) | How to run the whole GIS Day site on one machine with `scripts/gisday-local.sh`: the containers, the settings kept outside the repository, and what works locally and what does not. |
+| [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
+| The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
 | The maintainer's handoff page | One person's own cross-machine notes, so he can stop on one machine and resume on another. Private, not linked from this repository, reached by pasting a pickup prompt. |
 
 **The handoff page is for one person, so it cannot be where anything else lives.** If a fact matters to
@@ -47,18 +53,27 @@ other machine sees and that is not in git. Whether to turn it off, as the C# rep
 of commits stale. Branch from `development` and target it in pull requests.
 
 **Node runs in Docker, not on the host.** Machines here generally have no usable host Node.
-Run Nx as `node node_modules/nx/bin/nx.js`, not bare `nx` or `npx nx` — `node_modules/.bin`
+Run Nx as `node node_modules/nx/dist/bin/nx.js`, not bare `nx` or `npx nx` — `node_modules/.bin`
 may not be populated. CLAUDE_SETUP.md has the full command.
 
 **Build to typecheck, don't rely on tests.** Most libraries have no `build` target, so
 `nx build <library>` answers `Cannot find configuration for task` and checks nothing. `nx test` only
 compiles what the specs import, and `nx lint` does not typecheck at all.
 
-**Run this before every push, and read its exit code:**
+**Commit, then run this before every push, and read its exit code** (a bug fix may run less; see
+[Fixing a bug quickly](#fixing-a-bug-quickly)):
 
 ```bash
-docker run --rm -m 8g -v "$(pwd -W):/w" -w /w node:20.18.1 sh -c "node node_modules/nx/bin/nx.js affected -t lint,test,build --base=origin/development"
+scripts/check-in-volume.sh <branch>
 ```
+
+From Git Bash, in the main checkout or any worktree. It runs `nx affected -t lint,test,build` against
+`origin/development` in a Linux clone of the branch kept in a Docker volume (`tamu-js-<issue>`), skips
+for each target the projects that target's own workflow excludes (lint from `lint.yml`, test from
+`test.yml`, build from `build.yml`, so it lints everything CI lints; #1475), writes a log, and exits
+with the check's exit code, which fails if any target failed. `bash scripts/check-in-volume.test.sh`
+tests how it reads those lists, and `bash scripts/run-times.test.sh` the run-time files it writes. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
+of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
 advice used to say, and it is not enough: a change to a shared library can break an application you
@@ -72,13 +87,150 @@ Budgets are part of the build, so a purely additive change can fail it without a
 task's, so a task that never ran still looks like a pass. Redirect to a file, capture the
 exit code on its own line, then filter the file.
 
-**Do not edit files while a Docker run is in flight.** The bind mount is live, so a run picks
-up partial edits and reports on a state that never existed. Kill it and restart.
+**Do not edit files while the dev server is compiling them.** Its source is bind-mounted live, so a
+build picks up partial edits and reports on a state that never existed. Checks are unaffected: they run
+on a fetched commit, so editing while one runs is safe.
 
-**Files are LF.** If you edit with a script, write LF endings explicitly. A script that
-writes CRLF turns a ten-line change into a thousand-line diff. Compare `git diff --stat`
-with `git diff --stat --ignore-all-space`; if they disagree wildly, normalize before
-committing.
+**Why checks run in a volume.** With the source and `node_modules` bind-mounted from Windows, every
+file read crosses the Windows-to-Linux boundary. Measured on a quiet machine on 4 October (#1402):
+
+| Task | Bind-mounted | `node_modules` in a volume | Whole clone in a volume |
+| --- | --- | --- | --- |
+| `test maps-esri` | 80-180 s | 113 s | 15 s |
+| `lint ts-events-ngx` | 54-59 s | 18 s | 5 s |
+| `build mailroom-angular` | 95-162 s | 19 s | 29 s |
+| 4 projects' tests, `--parallel=8` | 199 s | - | 24 s |
+| `npm ci` | 43 min (under load) | 105 s | 116 s |
+
+On its first real use, a full affected check ran 131 tasks in its first four minutes, against about 42
+an hour before. The script keeps the Nx cache in the volume, so an unchanged task replays in about a second, and runs
+with `-m 16g` and `--parallel=8` (peak memory measured: 10.4 GB). Do not add `--skip-nx-cache`.
+
+**Record how long something takes when you are measuring it, not otherwise.** `scripts/check-in-volume.sh`
+and `test/smoke/aggiemap/run-local.sh` print the elapsed time of every run. With `BUILD_TIMES_RECORD=1`
+they also write a small file into [`docs/build-times/runs/`](docs/build-times/runs) in the checkout they
+were run from: the start in US Central, the machine, what ran, the result and the elapsed time (#1593).
+Commit those files with the work they measure; `bash scripts/run-times-report.sh` prints them as one
+table. `BUILD_TIMES_MACHINE` names the machine (e.g. `home`, `office`); the hostname is never used,
+because this repository is public.
+
+Recording used to be automatic, and for two days every pull request carried a run file. It answered what
+it was for - how long checks and smoke runs take, and how much the Docker volume saved - and after that
+it was noise (#1647). The files recorded then are kept.
+
+**When you are measuring, take the "before" first.** A single duration proves nothing on its own — the
+same run measured before and after a change is what shows whether the work paid off, and the "before"
+cannot be taken afterwards. The volume migration is provably 5 to 12 times faster only because someone
+measured the slow way first (#1415). Take both on a machine doing nothing else, and put the comparison
+and what it shows in [`docs/build-times.md`](docs/build-times.md), with anything timed by hand.
+
+**Times are US Central, and `TZ=America/Chicago` will lie to you.** Every clock time reported to the
+maintainer, and every timestamp written into an issue, a pull request, release notes or
+`docs/build-times.md`, is US Central with the zone named — not UTC, and not whatever a container's
+clock says. Elapsed durations are just durations and need no zone.
+
+Git Bash on these machines has no tz database, so `TZ=America/Chicago date` **silently returns UTC
+and labels it `GMT`**. It gives a wrong answer that looks like a right one, with nothing to warn you.
+Convert with PowerShell, which has Windows' own timezone data and applies daylight saving itself, so
+the same call is right in CDT and CST:
+
+```powershell
+[System.TimeZoneInfo]::ConvertTimeFromUtc(
+  [DateTime]::UtcNow,
+  [System.TimeZoneInfo]::FindSystemTimeZoneById('Central Standard Time'))
+```
+
+The id stays `Central Standard Time` all year; Windows handles the summer change. Playwright
+containers run in UTC for the same reason, which is why a capture shows the wrong time unless
+`timezoneId: 'America/Chicago'` is passed to `newPage`. See #1423.
+
+**After a dependency change, prove the lock file with a clean `npm ci` before pushing.** CI installs
+with `npm ci`, which installs only what `package-lock.json` records and refuses when it disagrees
+with `package.json`. A local `npm install` quietly adds what is missing to `node_modules` without
+writing it to the lock, so every local check passes and CI fails before running anything. #1345 did
+exactly that: a full local verify passed, then four checks failed on `Missing: @types/dragula from
+lock file`, a peer of the upgraded `ng2-dragula`. Sync the lock with
+`npm install --package-lock-only --ignore-scripts` and commit it. `scripts/check-in-volume.sh` then
+proves it: whenever the committed `package.json` or `package-lock.json` changes, it runs `npm ci` from
+those files alone, as CI does. See #1347.
+
+**Files are LF, and `.gitattributes` will not fix a mistake for you.** It sets `* -text`, which
+turns git's end-of-line normalization off for every file: git stores the bytes it is given, and
+`core.autocrlf` has no effect however a machine is configured. Endings are per-file and permanent
+until someone changes them deliberately.
+
+Every text file is LF except `libs/assets/batch/startup.bat`, which stays CRLF because Windows
+batch files can mishandle `goto` and labels with LF endings.
+
+So if you edit with a script, write LF explicitly. A script that writes CRLF turns a ten-line
+change into a thousand-line diff and the real change becomes impossible to review. Check before
+committing by comparing `git diff --stat` with `git diff --stat --ignore-all-space`; if they
+disagree wildly you have rewritten endings, and should normalize before going further. The counts
+are `git ls-files --eol | awk '{print $1}' | sort | uniq -c`.
+
+## Fixing a bug quickly
+
+A bug the team finds should go from cause found to pull request in about fifteen minutes. On 4 October
+a one-line fix (#1379) was forecast at 45, and none of that was the fix: a dev server started from
+cold, twice, on a stale install; two upgrades sharing the machine; and a full affected build that CI
+then ran again. These rules hold on every machine (#1381).
+
+**Keep a dev server's install current, and the dev server running.** The dev server (`aggiemap-dev`)
+bind-mounts the source, so edits on Windows reach it, but its `node_modules` lives in the Docker volume
+`tamu-js-dev-nm`, installed inside the container. Install it once, and again whenever
+`package-lock.json` changes:
+
+```bash
+MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:22.23.3 npm ci --no-audit --no-fund
+MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:22.23.3 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+```
+
+One volume serves whichever checkout is mounted, so it must match that checkout's lock. Check before
+trusting it: `node_modules/@angular/core/package.json` must show the version the checkout uses. On 4
+October an install two upgrades behind made Nx fail with a misleading error. The dev server recompiles
+on save, so after the first compile, a fix reaches the browser in under a minute.
+
+**Do not set `NX_NO_CLOUD=true`.** With Nx 19 and an `nxCloudId` in `nx.json`, every command fails
+with `Could not find any runner configurations in nx.json`.
+
+**A bug fix pre-empts upgrades.** Long-running upgrade or verification containers are paused while a
+bug fix runs, and resumed when its pull request is open:
+
+```bash
+docker pause <container>...
+docker unpause <container>...
+```
+
+A paused container loses nothing; it only stops competing for the CPU.
+
+**The pre-push check for a bug fix covers only the projects it edits:**
+
+```bash
+scripts/check-in-volume.sh <branch> <each project the fix edits>,<the app the bug is in>
+```
+
+The comma-separated list runs `lint,test,build` on those projects only (a library without a `build`
+target just skips it), in the same volume as the full check. Not `affected`: a fix in a shared library
+makes nearly everything affected. #1379 edited `libs/maps/esri`, and `affected -t lint,test` meant 52
+projects and over 25 minutes; the two projects it edited took about 5.
+
+CI runs the full `affected -t lint,test,build` on every pull request anyway, so running it locally as
+well doubled the wait without adding a check. What CI alone catches - another app's bundle budget, as
+on 30 September - is caught before merging, while the run is watched. Anything that is not a bug fix
+(an upgrade, a dependency change, a shared-library refactor) still runs the full check before pushing.
+
+**Owners and maintainers open pull requests ready for review. Everyone else opens a draft** and marks
+it ready once CI is green. The draft exists so nobody is asked to look at a contribution that has not
+passed yet; a maintainer opening their own pull request is already the person watching the run and
+merging it, so it only makes the list harder to read - eight in one batch on 6 October all showed as
+works in progress and each had to be converted by hand (#1494).
+
+Opening ready costs no extra build, and a draft buys none: converting a draft does not re-run
+anything, because no workflow lists `ready_for_review` in its `types:` and `main.yml` runs on
+`[opened, synchronize, reopened]`.
+
+The rest is unchanged: the issue first, a regression test proven red against the unfixed code, then
+green, before and after screenshots, and a row in the release notes.
 
 ## Checking a deployed environment
 
@@ -95,6 +247,16 @@ each with its own README:
 
 Both need the map probe (`window.__tamuGiscMapProbe`) in the deployed build. If layer data comes back
 empty, the environment is running something older.
+
+- **[`tools/visual-baselines`](tools/visual-baselines/README.md)** photographs every map in an
+  environment, keyed by release tag, so a change that moves the symbology of every map at once can be
+  reviewed instead of guessed at. **A set is captured after a release reaches an environment**, as
+  step 8 of [the release sequence](docs/releases/README.md#8-capture-the-baseline-images) — a "before"
+  only exists if somebody took it while it was still true. Baselines live outside the repository, are
+  per machine, and gate nothing.
+
+[`docs/testing.md`](docs/testing.md) describes all of the testing for readers outside the team, with
+dated counts; a check fails if a smoke spec is missing from it.
 
 ### What "run the tests" means
 
@@ -127,13 +289,34 @@ itself when a later run passes. Say so when reporting a failure, so nobody opens
 **Nothing without a production service is visible on production unless explicitly allowed.** A
 layer, basemap or service published only on dev is gated with `TestingService` (`isTesting`), as bus
 routes and the vector tile basemap are. Add it to `DEVELOPMENT_ONLY_SERVICES` in
-`test/smoke/aggiemap/development-only.ts`, so the smoke suite fails if production ever requests it.
+`test/smoke/aggiemap/development-only.ts`, with the pages that request it, so the smoke suite fails
+if production ever requests it.
 The maintainer decides when it moves to production. See #1229.
 
-**Reuse before building.** Check `libs/ui-kits/ngx/**` for an existing component, and
-`libs/sass/` plus the app's global `styles.scss` for existing classes, before writing any
-CSS. There is a shared copy-field component, a shared `.button` with variants, spacing
-utilities and a flexbox mixin set. Purpose-built CSS is unwanted.
+**Reuse before building; build to be reused.** No one-offs: not components, not services, not
+utilities, not styles, not test helpers. This is the maintainer's standing rule for every change, by
+anyone.
+
+- **Look first, and say where you looked.** Components: `libs/ui-kits/ngx/**`. Services, pipes and
+  helpers: `libs/common/**`. Map features: `libs/maps/feature/**`. Styles: `libs/sass/` and the app's
+  global `styles.scss`. Smoke-suite helpers: the shared modules in `test/smoke/aggiemap/`. There is a
+  shared copy-field component, a shared `.button` with variants, spacing utilities and a flexbox
+  mixin set. Purpose-built CSS is unwanted.
+- **Extend what exists rather than copy it.** If a shared piece nearly fits, add the input, option
+  or variant it lacks. A second near-identical component is a future bug fixed in one copy only.
+- **Change a shared piece behind its existing interface** where you can, so its callers do not have to
+  change. #1220 replaced the date-time picker's internals and left every caller as it was.
+- **When nothing exists, put the new piece where the next caller will find it**, in the shared
+  library for its kind and exported from its index, not inside the feature that first needed it.
+- **Follow the patterns already in the repository**: how definitions declare things (for example,
+  the per-choice `mapView` used by the event maps), how modules are wired, how tests are written.
+  A new way of doing something the repository already does needs a reason in the pull request.
+
+**A layer's symbology, title and order come from its service.** Overriding any of them in a
+definition is a deliberate act that needs a reason written beside it:
+[`docs/map-layers.md`](docs/map-layers.md) says how each one works, when an override is right, and
+what to record. A hard-coded symbol with no comment is indistinguishable from an oversight, and that
+is how 95 of them accumulated (#1028, #1508).
 
 **Shared component styles are imported by the component, not the app.** Only
 globally-applied widget styles belong in an app's `styles.scss`.
@@ -167,6 +350,11 @@ the same pull request**, with its before/after screenshots linked from `docs/scr
 (`../screenshots/<slug>/<file>.png` from the notes). Never write the notes afterwards in a separate
 pull request: on 28 September that left the notes without images when the pull request merged, and
 meant going back for them after the release reached production (#1132).
+
+**It also adds a row to the *What to test on dev* table in `unreleased.md`**: a dev link and what to
+look for. The team works from that table before a release goes to production, so a visible change
+without a row is one nobody is asked to check. If it cannot be checked on dev, say so in the row and
+why. At release the rows move into the dated notes (#1360).
 
 **The release notes merge before production, not after.** They describe what a release contains and
 what cleared it; they do not assert that it is deployed. The `prod-*` tag records that, which is a
@@ -264,7 +452,15 @@ gh project item-edit --id "$item" --project-id <project node id> --field-id <sta
 `gh project view <n> --owner TamuGeoInnovation --format json --jq .id` gives the project node id.
 
 **Anything with a visible result carries before/after screenshots**, in the issue and the pull
-request. Do not wait to be asked.
+request. Do not wait to be asked. A CI check enforces this; the escape hatch is the
+`no-visible-change` label, which is a deliberate act and stays visible afterwards.
+
+**Build the pull request body from [`.github/pull_request_template.md`](.github/pull_request_template.md),
+with every section filled in.** `gh pr create --body-file` *replaces* the template rather than
+pre-filling it, so the checklist is never rendered and nothing notices it is gone - which is exactly
+how four pull requests went out in one session with no images, past a template that had asked for
+them all along. Writing the body to a file is fine; writing it to a file **that was started from the
+template** is the rule. See #1258.
 
 This is not only documentation. The duplicated 150th Anniversary tile (#1055) was found *because*
 before/after images were being captured: a duplicated block reads as correct in a diff, since each
@@ -298,6 +494,10 @@ maintainer included, pushes branches to their own fork and opens pull requests f
 repository, used only to pull `development`; `fork` is the user's fork, where branches are
 pushed. If a checkout has no `fork` remote, ask which fork to use before pushing anything.
 
+The one exception is the cloud session's: `cloud-mailbox` and `cloud/<issue>-<topic>` branches live
+on `TamuGeoInnovation`, because that is where the cloud session pushes. Their pull requests still go
+through a fork, opened by the desktop session (see [The cloud session](#the-cloud-session)).
+
 ```
 git remote add fork git@github.com:<user>/Tamu.GeoInnovation.js.monorepo.git
 git switch -c <branch> origin/development
@@ -312,6 +512,62 @@ access.
 
 Titles follow `scope(project-name): Short description`, where scope is `fix`, `feat`,
 `chore` or `ci`. One change per pull request. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## The cloud session
+
+A cloud Claude session sometimes works on issues the desktop session hands it. The desktop session is
+in charge: it has Docker, the local run, the servers and GitHub's GraphQL API, and it builds and checks
+everything, opens the pull requests and asks the maintainer. The two sessions never talk directly; they
+exchange files on the `cloud-mailbox` branch, and the maintainer relays two short phrases.
+
+Start line, pasted into the cloud session by the maintainer:
+
+```
+Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the cloud-mailbox branch, and do what cloud/TASKS.md says.
+```
+
+The rules for the cloud session:
+
+- **Do only the issues listed in the task file, then report and stop.** Don't ask whether to do more,
+  and don't offer or start other work. The desktop session decides what's next.
+- **The task file and reports live on the `cloud-mailbox` branch** (`cloud/TASKS.md`,
+  `cloud/reports/<yyyy-mm-dd>-batch-<letter>.md`). Commit only your report there, directly. Never merge
+  `cloud-mailbox` into anything, or anything into it.
+- **This repo is public.** No customer names, keys, server names or internal addresses in issues,
+  commits, branches or reports. If something sensitive comes up, the report says only "a question for
+  Dan; ask the desktop session".
+- **File what you find, right away.** A bug, follow-up or to-do found while working becomes a GitHub
+  issue the moment it comes up, with the assignee, type and labels this file's issue rules give. List
+  the numbers in your report with a suggested priority. The desktop session then sets Priority (asking
+  the maintainer) and the project Status, which need the GraphQL API the cloud can't use.
+- **Nothing else on GitHub:** no comments, PRs or merges.
+- **Branches:** one per issue, `cloud/<issue>-<topic>` from the latest `development`, pushed to this
+  repository, with a `.pr-body.md` draft as the last commit. Don't merge `development` into it; the
+  desktop session does that when it opens the PR.
+- **Commit messages:** no `Claude-Session:` line or other link to the session; end with the
+  `Co-Authored-By` line only. The desktop session strips any that slip through before opening a PR.
+- **Say "branch ready: <names>" when done.** The desktop session builds and tests each branch the way
+  CI does, checks it locally, and opens the PRs.
+
+What the desktop session does when the cloud has finished:
+
+1. Pull `cloud-mailbox` and read the report. Its questions go to the maintainer, renumbered.
+2. Ask the maintainer the Priority of each cloud-filed issue, then set every field and the project
+   Status as [Pull requests](#pull-requests) says.
+3. For each cloud branch, in its own worktree: make a branch on the fork at the cloud branch's code
+   commits, without the `.pr-body.md` commit (its text drafts the PR body); strip any
+   `Claude-Session:` lines; merge the latest `development`; run `scripts/check-in-volume.sh`; check it in
+   the local run against plain `development`, turning every check into a test.
+4. Open each PR as this file says, with the real check results, and set the issue to In Progress.
+5. Before a batch is merged, check all of its PRs merged together: two PRs can each pass CI and still
+   fail together.
+6. After the merges, delete the merged `cloud/` branches, then write the next batch into
+   `cloud/TASKS.md` (the header stays; only the batch changes) and give the maintainer the start line.
+
+A good batch is work that can be done and proven without the local run or the servers: code, unit
+tests, deletions, investigations that end in a report, and smoke runs against a deployed environment.
+Every open PR's branch goes under the batch's "Don't touch", so the cloud does not build on code that
+is about to change.
 
 ## Things that look broken but are not
 

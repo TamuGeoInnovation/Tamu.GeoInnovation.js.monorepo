@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
@@ -9,15 +9,30 @@ import { AssetsService, SeasonService, SponsorService } from '@tamu-gisc/gisday/
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-sponsor-add-edit-form',
   templateUrl: './sponsor-add-edit-form.component.html',
-  styleUrls: ['./sponsor-add-edit-form.component.scss']
+  styleUrls: ['./sponsor-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, FileComponent, ButtonComponent, AsyncPipe]
 })
 export class SponsorAddEditFormComponent implements OnInit {
-  @Input()
-  public type: 'create' | 'edit';
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly at = inject(ActivatedRoute);
+  private readonly rt = inject(Router);
+  private readonly as = inject(AssetsService);
+  private readonly sss = inject(SponsorService);
+  private readonly ss = inject(SeasonService);
+  private readonly sn = inject(DomSanitizer);
+  private readonly ns = inject(NotificationService);
+
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public entity$: Observable<Partial<Sponsor>>;
   public activeSeasons$: Observable<Partial<Season>>;
@@ -42,17 +57,6 @@ export class SponsorAddEditFormComponent implements OnInit {
       label: 'Point'
     }
   ];
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly at: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly as: AssetsService,
-    private readonly sss: SponsorService,
-    private readonly ss: SeasonService,
-    private readonly sn: DomSanitizer,
-    private readonly ns: NotificationService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -94,7 +98,7 @@ export class SponsorAddEditFormComponent implements OnInit {
       )
     );
 
-    if (this.type === 'edit') {
+    if (this.type() === 'edit') {
       this.entity$.pipe(take(1)).subscribe((entity) => {
         this.form.patchValue({
           ...entity,
@@ -109,7 +113,7 @@ export class SponsorAddEditFormComponent implements OnInit {
   }
 
   public handleSubmission() {
-    if (this.type === 'create') {
+    if (this.type() === 'create') {
       this._createEntity();
     } else {
       this._updateEntity();

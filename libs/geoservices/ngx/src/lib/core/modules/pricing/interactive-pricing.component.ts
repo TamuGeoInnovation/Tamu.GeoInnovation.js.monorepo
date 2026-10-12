@@ -1,18 +1,40 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { RangeInputDataMap } from '@tamu-gisc/ui-kits/ngx/forms';
+import { RangeComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { RadioGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TooltipComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-interactive-pricing',
   templateUrl: './interactive-pricing.component.html',
-  styleUrls: ['./interactive-pricing.component.scss']
+  styleUrls: ['./interactive-pricing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    RangeComponent,
+    RadioGroupComponent,
+    TooltipComponent,
+    TooltipTriggerComponent,
+    RouterLink,
+    AsyncPipe,
+    CurrencyPipe
+  ]
 })
 export class InteractivePricingComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly route = inject(ActivatedRoute);
+  private readonly env = inject(EnvironmentService);
+
   public form: UntypedFormGroup;
 
   public selectedCreditTier: Observable<PricingTier>;
@@ -91,13 +113,6 @@ export class InteractivePricingComponent implements OnInit {
 
   public eligiblePricingTiers: Observable<Array<PricingTier>>;
   public pricingSliderDataMap: Observable<RangeInputDataMap>;
-
-  constructor(
-    private readonly router: Router,
-    private readonly fb: UntypedFormBuilder,
-    private readonly route: ActivatedRoute,
-    private readonly env: EnvironmentService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

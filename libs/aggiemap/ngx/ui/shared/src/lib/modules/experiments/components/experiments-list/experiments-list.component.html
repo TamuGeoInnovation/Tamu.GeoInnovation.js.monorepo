@@ -1,5 +1,7 @@
 <div class="sidebar-component-name">
-  <span class="material-icons" *ngIf="(responsive | async)" (click)="backAction()">arrow_back</span>
+  @if ((responsive | async)) {
+  <span class="material-icons" (click)="backAction()">arrow_back</span>
+  }
   <p>Aggiemap Experiments</p>
 </div>
 

@@ -1,5 +1,5 @@
 /* eslint-disable */
-export default {
+module.exports = {
   displayName: 'aggiemap-ngx-common',
 
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],

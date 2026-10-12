@@ -1,4 +1,4 @@
-import { Injectable, Component, Type } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, BehaviorSubject, lastValueFrom } from 'rxjs';
@@ -18,11 +18,28 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriModuleProviderService } from '../module-provider/module-provider.service';
 import { LayerSourcesService } from '../layer-sources/layer-sources.service';
 import { registerMapProbe } from './map-probe';
+import { orderHitsForPopup, SELECTION_LAYER_ID } from './hit-order';
+import { PopupComponentReference } from '../../popup-reference';
+import {
+  declaresOwnRenderer,
+  PortalItemData,
+  portalItemDataUrl,
+  recordSymbologySource,
+  rendererForLayer
+} from './portal-symbology';
 
 import esri = __esri;
 
 @Injectable({ providedIn: 'root' })
 export class EsriMapService {
+  private moduleProvider = inject(EsriModuleProviderService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private searchService = inject(SearchService);
+  private environment = inject(EnvironmentService);
+  private http = inject(HttpClient);
+  private layerSourcesService = inject(LayerSourcesService);
+
   // Private store, which will contain the eventual map and view objects
   //
   // We use async subject because we want to control the flow of loading
@@ -41,20 +58,21 @@ export class EsriMapService {
 
   private _viewClickHandle: IHandle;
 
+  /** Whether the map loads the main map's layer set. See `withoutMainLayers`. */
+  private _mainLayers = true;
+
+  /**
+   * One in-flight or settled request per portal item, keyed by item id, so layers sharing an item
+   * share a request rather than racing (#1497).
+   */
+  private _portalItemData = new Map<string, Promise<PortalItemData | null>>();
+
   public hitTest: Observable<HitTestSnapshot> = this._hitTest.asObservable();
 
   // Exposed observable that will be responsible for emitting values to subscribers
   public readonly store: Observable<MapServiceInstance> = this._store.asObservable().pipe(filter((s) => s !== undefined));
 
-  constructor(
-    private moduleProvider: EsriModuleProviderService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private searchService: SearchService,
-    private environment: EnvironmentService,
-    private http: HttpClient,
-    private layerSourcesService: LayerSourcesService
-  ) {
+  constructor() {
     // Keep the automated-test probe pointed at this instance. Subscribed to the private subject
     // rather than the public `store`, because the probe needs the `undefined` emission on destroy
     // too, and `store` filters those out.
@@ -230,7 +248,12 @@ export class EsriMapService {
         // This is because we don't want to shop popup when trying to click
         // on map to set route which will overlay on top of trip planner controls
         if (!this.router.url.includes('trip')) {
-          this._hitTest.next({ graphics: res.results.map((r) => r.graphic) });
+          // A hit can also be a media or route hit, which carries no graphic (ArcGIS 4.27, #1322).
+          this._hitTest.next({
+            graphics: orderHitsForPopup(
+              res.results.filter((r): r is esri.GraphicHit => r.type === 'graphic').map((r) => r.graphic)
+            )
+          });
         }
       });
     });
@@ -386,7 +409,9 @@ export class EsriMapService {
 
         // Create and return new feature layer
         const layer = new FeatureLayer(props as esri.FeatureLayerProperties);
+        recordSymbologySource(layer, declaresOwnRenderer(source) ? 'own' : 'service');
         this.applyLegendOverrideToLayerSymbols(layer, legendOverride);
+        this.applyPortalItemSymbology(layer, source);
         return layer;
       });
     } else if (source.type === 'map-image') {
@@ -419,7 +444,9 @@ export class EsriMapService {
         delete props.type;
 
         // Create and return new geojson layer
-        return new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
+        const layer = new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
+        recordSymbologySource(layer, declaresOwnRenderer(source) ? 'own' : 'none');
+        return layer;
       });
     } else if (source.type === 'vector-tile') {
       return this.moduleProvider
@@ -437,7 +464,9 @@ export class EsriMapService {
         delete props.type;
 
         // Create and return new csv layer
-        return new CSVLayer(props as esri.CSVLayerProperties);
+        const layer = new CSVLayer(props as esri.CSVLayerProperties);
+        recordSymbologySource(layer, declaresOwnRenderer(source) ? 'own' : 'none');
+        return layer;
       });
     } else if (source.type === 'group') {
       return this.moduleProvider.require(['GroupLayer']).then(async ([GroupLayer]: [esri.GroupLayerConstructor]) => {
@@ -612,6 +641,77 @@ export class EsriMapService {
    * Only picture-marker symbols are touched; non-image symbols (simple-fill, simple-line, …) are
    * left alone because they don't have a meaningful width/height in the same sense.
    */
+  /**
+   * Draws a hosted layer with the symbology its portal item publishes (#1497).
+   *
+   * A layer authored in ArcGIS Pro keeps its symbol on the portal item; the service definition
+   * carries a flattened approximation, and loading by service URL - which every map here does - gets
+   * the flattened one. Measured across the 36 hosted services on 6 October 2026: of 128 layers, 128
+   * publish CIM symbology on their item and none on their service. `portal-symbology.ts` has the
+   * detail and the worked example (#1496).
+   *
+   * A map that set its own renderer keeps it: Construction deliberately replaces the service's
+   * per-owner colours with one orange hatch. This only fills in where nothing was chosen.
+   *
+   * Everything here fails quietly on purpose. A portal that cannot be reached, an item that is not
+   * shared, a layer the item does not describe - none of those are reasons to stop a map drawing. The
+   * layer keeps the service's symbology, which is what it had before this existed.
+   */
+  private applyPortalItemSymbology(layer: esri.FeatureLayer, source: LayerSource | AutocastableLayer): void {
+    if (declaresOwnRenderer(source)) {
+      return;
+    }
+
+    layer
+      .when()
+      .then(async () => {
+        // `sourceJSON` is the service's own description of the layer, which is where the item id is.
+        const itemId = (layer as unknown as { sourceJSON?: { serviceItemId?: string } }).sourceJSON?.serviceItemId;
+        const url = itemId ? portalItemDataUrl(layer.url ?? '', itemId) : null;
+
+        if (!url || itemId === undefined) {
+          return;
+        }
+
+        const renderer = rendererForLayer(await this.portalItemData(itemId, url), layer.layerId);
+
+        if (!renderer) {
+          return;
+        }
+
+        const [rendererJsonUtils] = await this.moduleProvider.require(['rendererJsonUtils']);
+
+        layer.renderer = rendererJsonUtils.fromJSON(renderer);
+        recordSymbologySource(layer, 'portal');
+      })
+      .catch(() => {
+        // See above: a layer that draws its service's symbology is the previous behaviour, not a fault.
+      });
+  }
+
+  /**
+   * One portal item's data, fetched once however many layers come from it.
+   *
+   * The 128 layers measured in #1497 come from 36 items, so without this the same document would be
+   * fetched three or four times over on a busy map. The promise is cached rather than the result, so
+   * layers loading together share one request instead of racing.
+   */
+  private portalItemData(itemId: string, url: string): Promise<PortalItemData | null> {
+    const existing = this._portalItemData.get(itemId);
+
+    if (existing) {
+      return existing;
+    }
+
+    const request = lastValueFrom(this.http.get<PortalItemData>(url))
+      .then((data) => ((data as unknown as { error?: unknown })?.error ? null : data))
+      .catch(() => null);
+
+    this._portalItemData.set(itemId, request);
+
+    return request;
+  }
+
   private applyLegendOverrideToLayerSymbols(layer: esri.FeatureLayer, override: LayerLegendOverride | undefined): void {
     if (!override) {
       return;
@@ -812,6 +912,20 @@ export class EsriMapService {
   }
 
   /**
+   * Builds the map without the main map's layer set (the environment's `LayerSources`), so it draws
+   * only the layers its caller adds. Call before the map loads.
+   *
+   * For kiosk maps, which show exactly what their own definition says. Loading the main set as well
+   * drew campus layers a kiosk has no use for, and let the main map's copy of a layer the kiosk also
+   * defines race the kiosk's own: the dining kiosk drew no dining on most loads (#1392).
+   *
+   * The service is scoped to its map component, so this cannot reach another map.
+   */
+  public withoutMainLayers(): void {
+    this._mainLayers = false;
+  }
+
+  /**
    * Returns a list of layer sources, applying various filters if specified. This is used
    * to limit the number of layers that are loaded on map load when requested.
    *
@@ -821,6 +935,10 @@ export class EsriMapService {
    * the current application route contains 'layers' query params.
    */
   public filterLayerSources(sources?: LayerSource[], filters?: { params?: boolean }): Array<LayerSource> {
+    if (!sources && !this._mainLayers) {
+      return [];
+    }
+
     // Get the layer sources from the layer sources service, with overrides applied
     let ret: Array<LayerSource> = sources || this.layerSourcesService.getLayerSourcesWithOverrides();
 
@@ -903,48 +1021,51 @@ export class EsriMapService {
   public getFeatureListFromURL(): {
     dataset: string;
     identifiersList: (string | number)[];
-    popupComponent?: Type<Component>;
+    popupComponent?: PopupComponentReference;
   } | null {
     const parsedRoute = this.router.parseUrl(this.router.url);
     const queryParameters = parsedRoute.queryParams;
-    
+
     // Get search sources from environment
     const searchSources = this.environment.value('SearchSources');
-    
+
     if (!searchSources || !Array.isArray(searchSources)) {
       return null;
     }
-    
+
     // Find the first search source that matches any URL parameter
     for (const searchSource of searchSources) {
       if (!searchSource.urlQueryParam) {
         continue;
       }
-      
+
       // Build list of all parameters to check (primary + aliases)
       const paramsToCheck = [searchSource.urlQueryParam];
       if (searchSource.urlQueryParamAliases) {
         paramsToCheck.push(...searchSource.urlQueryParamAliases);
       }
-      
+
       // Check if any of these parameters exist in the URL
-      const matchedParam = paramsToCheck.find(param => queryParameters[param]);
-      
+      const matchedParam = paramsToCheck.find((param) => queryParameters[param]);
+
       if (matchedParam) {
         const parameterValue = queryParameters[matchedParam];
-        
+
         if (parameterValue?.trim()) {
           // Numeric-field sources (e.g. OBJECTID) must pass unquoted values; strict MapServer layers
           // reject a quoted integer. String sources are left as-is.
           const tokens = parameterValue
             .split(',')
             .map((token) => (searchSource.urlQueryParamNumeric ? Number(token) : token));
-          const deduplicatedTokens = tokens.reduce((uniqueList, token) => {
-            if (!uniqueList.includes(token)) {
-              uniqueList.push(token);
-            }
-            return uniqueList;
-          }, [] as (string | number)[]);
+          const deduplicatedTokens = tokens.reduce(
+            (uniqueList, token) => {
+              if (!uniqueList.includes(token)) {
+                uniqueList.push(token);
+              }
+              return uniqueList;
+            },
+            [] as (string | number)[]
+          );
 
           return {
             dataset: searchSource.source,
@@ -954,7 +1075,7 @@ export class EsriMapService {
         }
       }
     }
-    
+
     return null;
   }
 
@@ -972,7 +1093,7 @@ export class EsriMapService {
 
     // Source object
     const selectionLayers = this.environment.value('LayerSources') as LayerSource[];
-    const source = Object.assign(selectionLayers.find((src) => src.id === 'selection-layer')) as LayerSource;
+    const source = Object.assign(selectionLayers.find((src) => src.id === SELECTION_LAYER_ID)) as LayerSource;
 
     // Resolve the popup component to assign to the selection layer instance. Without this,
     // a follow-up click on the highlighted graphic would fall back to the source's static
@@ -1043,7 +1164,7 @@ export class EsriMapService {
    *
    */
   public clearSelectedFeatures() {
-    const source = this.environment.value('LayerSources').find((src) => src.id === 'selection-layer');
+    const source = this.environment.value('LayerSources').find((src) => src.id === SELECTION_LAYER_ID);
 
     if (source) {
       // Source object
@@ -1143,10 +1264,7 @@ export interface BaseMapProperties extends esri.BasemapProperties {
 }
 
 interface LayerProperties
-  extends esri.LayerProperties,
-    esri.TileLayerProperties,
-    esri.VectorTileLayerProperties,
-    esri.WMSLayerProperties {
+  extends esri.LayerProperties, esri.TileLayerProperties, esri.VectorTileLayerProperties, esri.WMSLayerProperties {
   type: string;
 }
 
@@ -1186,7 +1304,7 @@ interface SelectFeaturesProperties {
    * in the environments file. In those cases, specifying a popup component allows proper
    * or conditional rendering.
    */
-  popupComponent?: Type<Component>;
+  popupComponent?: PopupComponentReference;
 
   /**
    * Optional explicit zoom level to use instead of computing one from geometry extent.
@@ -1208,7 +1326,7 @@ export interface HitTestSnapshot {
    * in the environments file. In those cases, specifying a popup component allows proper or
    *  conditional rendering.
    */
-  popupComponent?: Type<Component>;
+  popupComponent?: PopupComponentReference;
 }
 
 export interface MapViewProperties {

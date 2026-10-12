@@ -1,23 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { BehaviorSubject } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 
 import { Device, IDeviceOSVersion } from '@tamu-gisc/common/utils/device';
 import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
   selector: 'tamu-gisc-install',
   templateUrl: './install.component.html',
-  styleUrls: ['./install.component.scss']
+  styleUrls: ['./install.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent, AsyncPipe]
 })
 export class InstallComponent implements OnInit {
+  private readonly ns = inject(NotificationService);
+
   public device: Device;
   public version: IDeviceOSVersion;
 
   public locationRequested: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
-  constructor(private readonly ns: NotificationService) {}
 
   public ngOnInit() {
     this.device = new Device();

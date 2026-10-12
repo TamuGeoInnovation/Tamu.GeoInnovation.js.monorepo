@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Optional, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
@@ -7,15 +7,25 @@ import { Angulartics2 } from 'angulartics2';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 
 import { LegendService } from '../../services/legend.service';
+import { LegendCollectionComponent } from '../legend-collection/legend-collection.component';
+import { AsyncPipe } from '@angular/common';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-legend',
   templateUrl: './legend.component.html',
-  styleUrls: ['./legend.component.scss']
+  styleUrls: ['./legend.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [LegendCollectionComponent, AsyncPipe]
 })
 export class LegendComponent implements OnInit, OnDestroy {
+  private legendService = inject(LegendService);
+  private responsiveService = inject(ResponsiveService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private analytics = inject(Angulartics2, { optional: true });
+
   /**
    * Certain layers may have duplicate icon/label entries as a result of their unique value renderer definitions.
    *
@@ -52,14 +62,6 @@ export class LegendComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(
-    private legendService: LegendService,
-    private responsiveService: ResponsiveService,
-    private router: Router,
-    private route: ActivatedRoute,
-    @Optional() private analytics: Angulartics2
-  ) {}
-
   public ngOnInit() {
     // Read route data to set input properties
     const routeData = this.route.snapshot.data;
@@ -70,8 +72,7 @@ export class LegendComponent implements OnInit, OnDestroy {
       this.excludedLayerIds = routeData['excludedLayerIds'] ?? this.excludedLayerIds;
       this.allowedLayerIds = routeData['allowedLayerIds'] ?? this.allowedLayerIds;
       this.forceShowLayerIds = routeData['forceShowLayerIds'] ?? this.forceShowLayerIds;
-      this.combineChildrenUnderPrimary =
-        routeData['combineChildrenUnderPrimary'] ?? this.combineChildrenUnderPrimary;
+      this.combineChildrenUnderPrimary = routeData['combineChildrenUnderPrimary'] ?? this.combineChildrenUnderPrimary;
     }
 
     this.legend = this.legendService.legend({

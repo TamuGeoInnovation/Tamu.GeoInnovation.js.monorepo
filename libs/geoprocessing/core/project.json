@@ -3,20 +3,17 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/geoprocessing/core/src",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["libs/geoprocessing/core/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/geoprocessing/core"],
       "options": {
-        "jestConfig": "libs/geoprocessing/core/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/geoprocessing/core/jest.config.ts"
       }
     },
     "build": {
@@ -30,6 +27,5 @@
         "assets": ["libs/geoprocessing/core/*.md"]
       }
     }
-  },
-  "tags": []
+  }
 }

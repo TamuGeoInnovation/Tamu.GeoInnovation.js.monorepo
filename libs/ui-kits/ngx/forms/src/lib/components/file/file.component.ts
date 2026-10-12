@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, forwardRef, Input, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -11,7 +11,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       useExisting: forwardRef(() => FileComponent),
       multi: true
     }
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class FileComponent implements ControlValueAccessor {
   // eslint-disable-next-line @angular-eslint/no-input-rename
@@ -23,17 +24,14 @@ export class FileComponent implements ControlValueAccessor {
    *
    * https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept#unique_file_type_specifiers
    */
-  @Input()
-  public accept = '*';
+  public readonly accept = input('*');
 
   /**
    * Reset CTA action text, displayed after a file has been selected.
    */
-  @Input()
-  public clearMessage = 'Clear';
+  public readonly clearMessage = input('Clear');
 
-  @Output()
-  public fileSelected: EventEmitter<File> = new EventEmitter();
+  public readonly fileSelected = output<File>();
 
   public fileName: string;
 
@@ -101,6 +99,6 @@ export class FileComponent implements ControlValueAccessor {
     this.fileName = undefined;
     this.dataType = undefined;
     this.fileExtension = undefined;
-    this.fileSelected.next(undefined);
+    this.fileSelected.emit(undefined);
   }
 }

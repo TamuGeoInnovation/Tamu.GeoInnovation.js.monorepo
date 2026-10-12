@@ -1,0 +1,2 @@
+started,machine,tool,ran,exit,summary,seconds,elapsed,setup
+2026-10-11 13:43:16 CDT,home,smoke,local framing=release search-sources.spec.ts --grep parking-garage,0,"1 passed, 0 failed, 0 flaky, 0 skipped, 1 workers",58,0:00:58,

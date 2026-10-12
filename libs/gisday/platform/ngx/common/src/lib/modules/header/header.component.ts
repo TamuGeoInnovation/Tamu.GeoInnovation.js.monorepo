@@ -1,5 +1,5 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, HostBinding, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, mergeMap, startWith, tap, toArray } from 'rxjs/operators';
 
@@ -9,13 +9,44 @@ import { PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data
 
 import { GISDayRoles } from '../../roles/gisday.roles';
 import { PlaceVisibilityOptions } from '../../enums/place-visibility-options.enum';
+import { HamburgerTriggerComponent } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
+import { TileNavigationComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileIconComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileTitleComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileLinkDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileSubmenuDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileSubmenuComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
 
 @Component({
   selector: 'tamu-gisc-app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    HamburgerTriggerComponent,
+    TileNavigationComponent,
+    TileComponent,
+    TileIconComponent,
+    TileTitleComponent,
+    TileLinkDirective,
+    TileSubmenuDirective,
+    TileSubmenuComponent,
+    NgClass,
+    RouterLink,
+    AsyncPipe,
+    HasRolesPipe
+  ]
 })
 export class HeaderComponent implements OnInit {
+  private readonly as = inject(AuthService);
+  private readonly ss = inject(SeasonService);
+  private readonly ps = inject(PlaceService);
+  private readonly rt = inject(Router);
+  private readonly at = inject(ActivatedRoute);
+
   public loggedIn$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
   public appRoles = GISDayRoles;
@@ -36,14 +67,6 @@ export class HeaderComponent implements OnInit {
   public get headerSeamless() {
     return this.isHeaderSeamless;
   }
-
-  constructor(
-    private readonly as: AuthService,
-    private readonly ss: SeasonService,
-    private readonly ps: PlaceService,
-    private readonly rt: Router,
-    private readonly at: ActivatedRoute
-  ) {}
 
   public ngOnInit() {
     this.loggedIn$ = this.as.isAuthenticated$;

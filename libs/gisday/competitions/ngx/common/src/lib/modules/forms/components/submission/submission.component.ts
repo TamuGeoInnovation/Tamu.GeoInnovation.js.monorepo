@@ -1,5 +1,21 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  Component,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  inject,
+  input
+} from '@angular/core';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, EMPTY, NEVER, Observable, of, Subject } from 'rxjs';
 import { catchError, filter, map, shareReplay, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
@@ -12,15 +28,27 @@ import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
 import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { AuthService } from '@auth0/auth0-angular';
+import { NgStyle, AsyncPipe } from '@angular/common';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-submission',
   templateUrl: './submission.component.html',
-  styleUrls: ['./submission.component.scss']
+  styleUrls: ['./submission.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, NgStyle, SelectComponent, TextboxComponent, AsyncPipe]
 })
 export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
-  @Input()
-  public formModel: Partial<CompetitionSeason>;
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly as = inject(AuthService);
+  private readonly ns = inject(NotificationService);
+  private readonly analytics = inject(Angulartics2);
+  private readonly ss = inject(SubmissionService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  public readonly formModel = input<Partial<CompetitionSeason>>(undefined);
 
   public form: UntypedFormGroup;
 
@@ -56,16 +84,6 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
   private _trackLocation: TrackLocation;
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly as: AuthService,
-    private readonly ns: NotificationService,
-    private readonly analytics: Angulartics2,
-    private readonly ss: SubmissionService,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute
-  ) {}
 
   public ngOnInit(): void {
     this._trackLocation = new TrackLocation({ enableHighAccuracy: true, maximumAge: 10000, timeout: 2500 });
@@ -145,7 +163,8 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           // switchMap(([file, user]) => {
           switchMap(([file, file2, user]) => {
             // if (file !== undefined && this.form.valid && this.submissionStatus.getValue() !== 1) {
-            if (this.form.valid && this.submissionStatus.getValue() !== 1 && this.formModel?.allowSubmissions === true) {
+            const formModel = this.formModel();
+            if (this.form.valid && this.submissionStatus.getValue() !== 1 && formModel?.allowSubmissions === true) {
               // FormData gets sent as multi-part form in request.
               const data: FormData = new FormData();
 
@@ -168,7 +187,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
               data.append('userGuid', `${user.sub}`);
               data.append('location', JSON.stringify(location));
               data.append('value', JSON.stringify(value));
-              data.append('season', this.formModel.season.guid);
+              data.append('season', formModel.season.guid);
               data.append('head1', file);
               if (file2 !== undefined) {
                 data.append('head2', file2);

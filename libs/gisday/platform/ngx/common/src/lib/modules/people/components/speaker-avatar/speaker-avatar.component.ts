@@ -1,17 +1,22 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Observable, catchError, filter, mapTo, of, shareReplay, startWith, switchMap } from 'rxjs';
 
 import { AssetsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-speaker-avatar',
   templateUrl: './speaker-avatar.component.html',
-  styleUrls: ['./speaker-avatar.component.scss']
+  styleUrls: ['./speaker-avatar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class SpeakerAvatarComponent implements OnInit {
-  @Input()
-  public avatarImageUrl: string;
+  private readonly http = inject(HttpClient);
+  private readonly as = inject(AssetsService);
+
+  public readonly avatarImageUrl = input<string>(undefined);
 
   /**
    * If the avatar photo is not available, this will determine whether to display the avatar's initials or a default icon.
@@ -20,8 +25,7 @@ export class SpeakerAvatarComponent implements OnInit {
    *
    * When set to `initials`, the initials, `avatarInitials`, must be provided.
    */
-  @Input()
-  public fallbackStyle: 'initials' | 'icon' = 'icon';
+  public readonly fallbackStyle = input<'initials' | 'icon'>('icon');
 
   /**
    * The names to use to generate the initials when `fallbackStyle` is set to `initials`.
@@ -34,8 +38,7 @@ export class SpeakerAvatarComponent implements OnInit {
    *
    * If both are set, `avatarNames` will take precedence.
    */
-  @Input()
-  public avatarNames: string;
+  public readonly avatarNames = input<string>(undefined);
 
   /**
    * The initials to display when `fallbackStyle` is set to `initials`.
@@ -44,8 +47,7 @@ export class SpeakerAvatarComponent implements OnInit {
    *
    * If both are set, `avatarNames` will take precedence.
    */
-  @Input()
-  public avatarInitials: string;
+  public readonly avatarInitials = input<string>(undefined);
 
   /**
    * The avatar's image URL, based on the avatars's GUID. This endpoint simply returns the relative path to the image.
@@ -58,10 +60,8 @@ export class SpeakerAvatarComponent implements OnInit {
   public imageExists$: Observable<boolean>;
   public initials$: Observable<string>;
 
-  constructor(private readonly http: HttpClient, private readonly as: AssetsService) {}
-
   public ngOnInit(): void {
-    this.avatarImageUrl$ = of(this.avatarImageUrl).pipe(
+    this.avatarImageUrl$ = of(this.avatarImageUrl()).pipe(
       filter((guid) => {
         return guid !== undefined && guid !== null;
       }),
@@ -83,19 +83,17 @@ export class SpeakerAvatarComponent implements OnInit {
 
     this.initials$ = this.imageExists$.pipe(
       switchMap(() => {
-        if (this.avatarNames !== undefined && this.avatarNames !== null && this.avatarNames.trim().length > 0) {
+        const avatarNames = this.avatarNames();
+        const avatarInitials = this.avatarInitials();
+        if (avatarNames !== undefined && avatarNames !== null && avatarNames.trim().length > 0) {
           return of(
-            this.avatarNames
+            avatarNames
               .split(' ')
               .map((name) => name[0])
               .join('')
           );
-        } else if (
-          this.avatarInitials !== undefined &&
-          this.avatarInitials !== null &&
-          this.avatarInitials.trim().length > 0
-        ) {
-          return of(this.avatarInitials);
+        } else if (avatarInitials !== undefined && avatarInitials !== null && avatarInitials.trim().length > 0) {
+          return of(avatarInitials);
         } else {
           return of('...');
         }

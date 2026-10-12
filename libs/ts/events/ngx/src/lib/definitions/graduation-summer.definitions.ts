@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum SUMMER_COMMENCEMENT_LAYERS {
   // Enum order drives draw order (first = top). Recommended Route above Parking Lots so its arrows show.
@@ -42,41 +42,7 @@ export const SummerCommencementColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'name',
-        uniqueValueInfos: [
-          {
-            value: 'Fast Route',
-            label: 'Recommended Routes',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(56, 168, 0)',
-              width: 3,
-              marker: {
-                style: 'arrow',
-                color: 'rgb(56, 168, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          },
-          {
-            value: 'Slow Route',
-            label: 'Expect Delays',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(230, 0, 0)',
-              width: 2,
-              marker: {
-                style: 'arrow',
-                color: 'rgb(230, 0, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          }
-        ]
-      }
+      outFields: ['*']
     }
   },
   {
@@ -84,7 +50,7 @@ export const SummerCommencementColdLayerSources: LayerSource[] = [
     id: SummerCommencementEventDefinitions.PARKING_LOTS.id,
     title: SummerCommencementEventDefinitions.PARKING_LOTS.name,
     url: SummerCommencementEventDefinitions.PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'

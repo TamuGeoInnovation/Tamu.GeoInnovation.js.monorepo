@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Params, Router } from '@angular/router';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Params, Router, RouterLink } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+import { nextEventDate } from '@tamu-gisc/common/utils/date';
 
 import {
   DiscoverApplication,
@@ -12,9 +13,15 @@ import {
   InternalDiscoverApplication
 } from '../../interfaces/discover-application.interface';
 import { DiscoveryService, FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
-import { LastMapService } from '../../services/last-map/last-map.service';
-import { getApplicationRoute, getEventDateRange, parseEventDate } from '../discover.utils';
-import { QuickLinkItem } from '../quick-links/quick-links.component';
+import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
+import { getApplicationRoute, getNextEventDate } from '../discover.utils';
+import { QuickLinkItem, QuickLinksComponent } from '../quick-links/quick-links.component';
+import { AutocompleteComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AutocompleteOptionTemplateDirective } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
+import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 /**
  * "All Maps" landing page. Surfaces the Visit Maps quick links, a map search, and the top upcoming
@@ -23,9 +30,25 @@ import { QuickLinkItem } from '../quick-links/quick-links.component';
 @Component({
   selector: 'tamu-gisc-aggiemap-all-maps',
   templateUrl: './all-maps.component.html',
-  styleUrls: ['./all-maps.component.scss']
+  styleUrls: ['./all-maps.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    RouterLink,
+    AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
+    QuickLinksComponent,
+    CopyComponent,
+    FooterComponent,
+    AsyncPipe,
+    UpperCasePipe
+  ]
 })
 export class AllMapsComponent implements OnInit {
+  private readonly rt = inject(Router);
+  private readonly discoveryService = inject(DiscoveryService);
+  private readonly dev = inject(TestingService);
+  private readonly lastMap = inject(LastMapService);
+
   public readonly mainParkingRoute = ['/parking', FEATURED_PARKING_ID];
 
   public externalApplications: ExternalDiscoverApplication[];
@@ -46,12 +69,13 @@ export class AllMapsComponent implements OnInit {
   public kioskApplications: Array<InternalDiscoverApplication & { url: string }> = [];
 
   /**
-   * Dev-only listing of the satellite-campus maps (Galveston, McAllen, DC Bush School).
+   * The satellite-campus maps (Galveston, McAllen, DC Bush School), listed on every environment
+   * since #1482.
    *
-   * These are deliberately reachable in production by direct URL -- the testing team uses them --
-   * but nothing links to them there, and they are filtered out of the map search in both
-   * environments. This section and the Visit Maps tile are the only entry points, and both are
-   * gated on `isDev`.
+   * They remain filtered out of the map search in both environments, on purpose: that search is
+   * College Station's, and a Galveston building answering a search made there would be a worse
+   * result than no result. This section and the Visit Maps tile are the only entry points, which is
+   * why each card carries a copy field.
    */
   public campusApplications: Array<InternalDiscoverApplication & { url: string }> = [];
 
@@ -63,14 +87,7 @@ export class AllMapsComponent implements OnInit {
   public isDev: Observable<boolean>;
 
   public readonly getApplicationRoute = getApplicationRoute;
-  public readonly getEventDateRange = getEventDateRange;
-
-  constructor(
-    private readonly rt: Router,
-    private readonly discoveryService: DiscoveryService,
-    private readonly dev: TestingService,
-    private readonly lastMap: LastMapService
-  ) {}
+  public readonly getNextEventDate = getNextEventDate;
 
   /**
    * Where the breadcrumb's first crumb points: the map the visitor was last looking at, rather than
@@ -97,8 +114,9 @@ export class AllMapsComponent implements OnInit {
     this.internalApplications = this.discoveryService.getInternalDiscoverApplications();
     this.allEventApplications = this.discoveryService.getInternalDiscoverApplications({ includeRetired: true });
     this.externalApplications = this.discoveryService.getExternalDiscoverApplications();
-    // Satellite-campus maps have their own dedicated "Campus Maps" listing page and should not
-    // appear in the general map search results.
+    // Satellite-campus maps have their own dedicated "Campus Maps" listing page and are deliberately
+    // left out of the general map search, on production as well as development (#1482): that search
+    // is College Station's.
     this.allApplications = this.discoveryService
       .getAllDiscoverApplications()
       .filter((app) => !(app.source === 'internal' && app.type === 'satellite-campus'));
@@ -144,22 +162,16 @@ export class AllMapsComponent implements OnInit {
   private getUpcomingApplications(): InternalDiscoverApplication[] {
     const now = Date.now();
 
-    return this.discoveryService
-      .getVisibleInternalDiscoverApplications()
-      .map((app) => ({
-        app,
-        earliestUpcomingDate: this.getEarliestUpcomingDate(app.configuration.eventDates, now)
-      }))
-      .filter(({ earliestUpcomingDate }) => earliestUpcomingDate !== Number.POSITIVE_INFINITY)
-      .sort((a, b) => a.earliestUpcomingDate - b.earliestUpcomingDate || a.app.name.localeCompare(b.app.name))
-      .slice(0, 3)
-      .map(({ app }) => app);
-  }
-
-  private getEarliestUpcomingDate(dates: Array<string | Date | number>, now: number): number {
-    const upcomingDates = dates.map((date) => parseEventDate(date)).filter((time) => Number.isFinite(time) && time >= now);
-
-    return upcomingDates.length > 0 ? Math.min(...upcomingDates) : Number.POSITIVE_INFINITY;
+    return (
+      this.discoveryService
+        .getVisibleInternalDiscoverApplications()
+        // Each event's next date, counting today's: an event is on for its whole day (#1301).
+        .map((app) => ({ app, next: nextEventDate(app.configuration.eventDates, now) }))
+        .filter((upcoming): upcoming is { app: InternalDiscoverApplication; next: number } => upcoming.next !== null)
+        .sort((a, b) => a.next - b.next || a.app.name.localeCompare(b.app.name))
+        .slice(0, 3)
+        .map(({ app }) => app)
+    );
   }
 
   private _filterApplications(value: string, isDev: boolean): DiscoverApplication[] {

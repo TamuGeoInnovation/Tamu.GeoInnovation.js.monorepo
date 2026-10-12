@@ -1,22 +1,33 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ChangeDetectionStrategy,
+  CUSTOM_ELEMENTS_SCHEMA,
+  viewChild
+} from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
-import { Angulartics2 } from 'angulartics2';
 import { register } from 'swiper/element/bundle';
 import { InitDetail } from 'lightgallery/lg-events';
 import lightGallery from 'lightgallery';
 import { LightGallery } from 'lightgallery/lightgallery';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
-
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
+import { AsyncPipe } from '@angular/common';
+
+import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
   selector: 'tamu-gisc-bonfire',
   templateUrl: './bonfire.component.html',
-  styleUrls: ['./bonfire.component.scss']
+  styleUrls: ['./bonfire.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  // <swiper-container> is the Swiper web component, registered at run time (as the popups module did).
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [AsyncPipe, MarkdownParsePipe]
 })
 export class BonfirePopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -26,8 +37,7 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
     counter: false
   };
 
-  @ViewChild('swiperRef', { static: false })
-  private _swiperRef: ElementRef;
+  private readonly _swiperRef = viewChild<ElementRef>('swiperRef');
 
   private _lgInstance: LightGallery;
   private _needsRefresh = false;
@@ -73,16 +83,6 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
     "Miranda Denise Adams '02": 'fallen_MirandaDeniseAdams.jpg',
     "Nathan Scott West '02": 'fallen_NathanScottWest.jpg'
   };
-
-  constructor(
-    private rtr: Router,
-    private rt: ActivatedRoute,
-    private ps: TripPlannerService,
-    private anl: Angulartics2,
-    private mp: EsriMapService
-  ) {
-    super(rtr, rt, ps, anl, mp);
-  }
 
   public ngOnInit(): void {
     super.ngOnInit();
@@ -137,14 +137,15 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
       preventClicks: true,
       on: {
         init: () => {
-          this._lgInstance = lightGallery(this._swiperRef.nativeElement, {});
+          this._lgInstance = lightGallery(this._swiperRef().nativeElement, {});
         }
       }
     };
 
-    Object.assign(this._swiperRef.nativeElement, opts);
+    const _swiperRef = this._swiperRef();
+    Object.assign(_swiperRef.nativeElement, opts);
 
-    this._swiperRef.nativeElement.initialize();
+    _swiperRef.nativeElement.initialize();
   }
 
   // TODO: can be cleaned up?

@@ -184,14 +184,14 @@ The repository defines the Node.js version used by CI and the devcontainer. Pref
 
 Canonical locations to check for the version:
 
-- CI (exact version): `.github/workflows/build.yml` — look for `node-version` (e.g. `20.18.1`).
-- Devcontainer (image major): `.devcontainer/devcontainer.json` — image like `mcr.microsoft.com/devcontainers/typescript-node:20` (Node 20).
+- CI (exact version): `.github/workflows/build.yml` — look for `node-version` (e.g. `22.23.3`).
+- Devcontainer (image major): `.devcontainer/devcontainer.json` — image like `mcr.microsoft.com/devcontainers/typescript-node:22` (Node 22).
 
 Install and use the exact CI version with nvm (example uses the value currently in `build.yml`).
 
 ```powershell
-nvm install 20.18.1
-nvm use 20.18.1
+nvm install 22.23.3
+nvm use 22.23.3
 ```
 
 Check:
@@ -203,11 +203,11 @@ npm -v
 
 What to expect: matching version numbers. If the workflow is updated later, re-run the `nvm install <version>` command with the new `node-version` from `.github/workflows/build.yml`.
 
-Fallback: if you want the latest Node 20.x series instead of the exact patch version, you can use:
+Fallback: if you want the latest Node 22.x series instead of the exact patch version, you can use:
 
 ```powershell
-nvm install 20
-nvm use 20
+nvm install 22
+nvm use 22
 ```
 
 **Troubleshooting:** Run `nvm use <version>` if mismatch.
@@ -286,8 +286,8 @@ nvm --version
 As above for macOS/Linux: prefer the exact CI Node.js patch version from `.github/workflows/build.yml`. Example (current CI value):
 
 ```bash
-nvm install 20.18.1
-nvm use 20.18.1
+nvm install 22.23.3
+nvm use 22.23.3
 ```
 
 Check:
@@ -404,7 +404,7 @@ git@github.com:TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo.git
 
 # Path 5: Windows with Docker Only (No Local Node.js)
 
-Runs every Node command in a throwaway `node:20.18.1` container against your checkout, so nothing but Docker Desktop and Git is needed on the host. Use this if you don't want a devcontainer or a local Node install. It is also the setup Claude Code uses; see [Working with Claude Code](#working-with-claude-code).
+Runs every Node command in a throwaway `node:22.23.3` container against your checkout, so nothing but Docker Desktop and Git is needed on the host. Use this if you don't want a devcontainer or a local Node install. It is also the setup Claude Code uses; see [Working with Claude Code](#working-with-claude-code).
 
 ## Prerequisites
 
@@ -418,24 +418,25 @@ Run the commands from **Git Bash**. `MSYS_NO_PATHCONV=1` stops Git Bash from rew
 ## 1. Install Dependencies
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -m 8g -e CYPRESS_INSTALL_BINARY=0 \
-  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -w /w node:20.18.1 \
+MSYS_NO_PATHCONV=1 docker run --rm -m 8g \
+  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:22.23.3 \
   sh -c "npm ci --no-audit --no-fund"
 ```
 
 **What to Expect:** `added ~2200 packages`, then the repo's `postinstall` (`ngcc`) runs for a few minutes.
 **Notes:**
 
-- The first run also downloads the `node:20.18.1` image, which is several hundred MB.
-- `CYPRESS_INSTALL_BINARY=0` skips the ~800 MB Cypress download. It would be thrown away with the container on every run anyway, and serving the app doesn't need it. Leave the flag off if you run Cypress tests.
+- The first run also downloads the `node:22.23.3` image, which is several hundred MB.
 - A full-tunnel VPN can slow these downloads badly. Disconnect it if you can.
+- `node_modules` goes in a Docker volume, `tamu-js-dev-nm`, not in your checkout: reading it across the Windows-to-Linux bind mount is several times slower. Run this again whenever `package-lock.json` changes.
+- To lint, test and build a committed branch, run `scripts/check-in-volume.sh <branch>`; see CLAUDE.md.
 
 ## 2. Run AggieMap
 
 ```bash
 MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 \
-  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -w /w node:20.18.1 \
-  sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:22.23.3 \
+  sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 Watch the first compile, which takes a few minutes:
@@ -448,7 +449,7 @@ docker logs -f aggiemap-dev
 **Notes:**
 
 - **`--poll=2000` is required on Windows.** File-change events don't cross the Windows-to-Linux bind mount. Without polling, the server compiles once and then never rebuilds, even though it looks like it's working.
-- Use `node node_modules/nx/bin/nx.js`, not `nx` or `npx nx`. `node_modules/.bin` may not be populated.
+- Use `node node_modules/nx/dist/bin/nx.js`, not `nx` or `npx nx`. `node_modules/.bin` may not be populated.
 - `localhost:4200` shows dev-only features. `http://127.0.0.1:4200` hides them, so you can check the production code path without deploying.
 - Both hostnames read map layers from the **production** GIS server (`gis.it.tamu.edu`). Only hostnames containing `dev` use `gis-dev.it.tamu.edu`. See `libs/aggiemap/ngx/common/src/lib/connections.ts`.
 
@@ -481,7 +482,7 @@ Claude Code can check each of these, but some need you to act in a browser or si
 
 - The trunk is `development`, not `master`. Branch protection requires a pull request.
 - Push branches to your fork (the `fork` remote), never to `TamuGeoInnovation` (`origin`). `CLAUDE.md` says so too, so Claude Code should already follow it.
-- Run `nx` through the Docker command in Path 5, as `node node_modules/nx/bin/nx.js`.
+- Run `nx` through the Docker command in Path 5, as `node node_modules/nx/dist/bin/nx.js`.
 - Don't edit files while a Docker run is in progress. The bind mount is live, so the run's result would describe files that changed partway through.
 - Most libraries have no `build` target. To typecheck a library, build the app that uses it. `nx test` only typechecks what the specs import, and `nx lint` doesn't typecheck at all.
 

@@ -12,9 +12,10 @@ import esri = __esri;
 
 /**
  * Layer ids used by the Dining kiosk map. `BUILDINGS` is the same always-on basemap layer shown by
- * default on the main map, and `DINING_LOCATIONS` is the one layer this kiosk map forces visible via
- * `defaultLayerOverrides` below. Future kiosk maps for other layers can follow the same pattern:
- * reuse `BUILDINGS` as the standard basemap layer and add their own single toggle layer.
+ * default on the main map, and `DINING_LOCATIONS` is the one layer this kiosk map exists to show, on
+ * from the start. As a kiosk map it loads none of the main map's layers, so these two and the
+ * basemap are all it draws (#1392). Future kiosk maps for other layers can follow the same
+ * pattern: reuse `BUILDINGS` as the standard basemap layer and add their own single layer.
  */
 export enum DINING_KIOSK_LAYERS {
   BUILDINGS = 'buildings-layer',
@@ -34,18 +35,7 @@ export const DiningKioskLayerSources: LayerSource[] = [
     layerIndex: 1,
     native: {
       ...commonLayerProps,
-      legendEnabled: false,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [0, 0, 0, 0.01],
-          outline: {
-            width: '0'
-          }
-        }
-      }
+      legendEnabled: false
     }
   },
   {
@@ -53,13 +43,14 @@ export const DiningKioskLayerSources: LayerSource[] = [
     id: DINING_KIOSK_LAYERS.DINING_LOCATIONS,
     title: 'Dining Locations',
     url: Connections.diningLocationsUrl,
-    // Off by default like the main map's toggle; forced on for this kiosk map via
-    // `defaultLayerOverrides` on `DiningKioskConfiguration`.
+    // On, unlike the main map's toggle of the same id: dining is what this map is for.
     listMode: 'show',
-    visible: false,
+    visible: true,
     popupComponent: Popups.DiningPopupComponent,
     native: {
       ...commonLayerProps,
+      // Overridden deliberately (#1576): this is a GeoJSON feed, which carries no symbology, so without
+      // a renderer ArcGIS draws a plain default marker. The icons show open and closed, food truck or not.
       renderer: {
         type: 'unique-value',
         field: 'label',
@@ -121,13 +112,7 @@ export const DiningKioskConfiguration: EventConfiguration = {
   eventDates: [],
   mapCenter: [-96.344672, 30.61306],
   zoom: 16,
-  hideSidebar: true,
-  defaultLayerOverrides: {
-    [DINING_KIOSK_LAYERS.DINING_LOCATIONS]: {
-      listMode: 'show',
-      visible: true
-    }
-  }
+  hideSidebar: true
 };
 
 export const DiningKioskOptions: SpecialEventOptions = [];

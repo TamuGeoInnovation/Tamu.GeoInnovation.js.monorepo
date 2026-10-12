@@ -1,8 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
+import { AsyncPipe } from '@angular/common';
 
 /**
  * Route detail shown when a route is expanded in the side panel.
@@ -14,11 +15,14 @@ import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
 @Component({
   selector: 'tamu-gisc-bus-timetable',
   templateUrl: './bus-timetable.component.html',
-  styleUrls: ['./bus-timetable.component.scss']
+  styleUrls: ['./bus-timetable.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class BusTimetableComponent implements OnInit {
-  @Input()
-  public route: TSRoute;
+  private busService = inject(BusService);
+
+  public readonly route = input<TSRoute>(undefined);
 
   /**
    * Ordered list of stop names for the route.
@@ -35,10 +39,8 @@ export class BusTimetableComponent implements OnInit {
    */
   public readonly scheduleUrl = 'https://transport.tamu.edu/busroutes/?utm_source=aggiemap';
 
-  constructor(private busService: BusService) {}
-
   public ngOnInit() {
-    this.stops = this.busService.getRouteStops(this.route.ShortName).pipe(
+    this.stops = this.busService.getRouteStops(this.route().ShortName).pipe(
       tap(() => {
         this.loaded = true;
       })

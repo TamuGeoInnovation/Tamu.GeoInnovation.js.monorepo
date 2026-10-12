@@ -1,38 +1,34 @@
-import { Component, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
+import { LegendElementComponent } from '../legend-element/legend-element.component';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-legend-collection',
   templateUrl: './legend-collection.component.html',
-  styleUrls: ['./legend-collection.component.scss']
+  styleUrls: ['./legend-collection.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [LegendElementComponent]
 })
 export class LegendCollectionComponent {
-  @Input()
-  public group: IActiveLayerInfo;
+  public readonly group = input<IActiveLayerInfo>(undefined);
 
-  @Input()
-  public layer: ILayer;
+  public readonly layer = input<ILayer>(undefined);
 
   /**
    * Certain layers may have duplicate icon/label entries as a result of their unique value renderer definitions.
    *
    * This flag will de-duplicate the legend entries based on the layer title.
    */
-  @Input()
-  public deduplicate = false;
+  public readonly deduplicate = input(false);
 
-  @Input()
-  public respectDefinitionExpression = false;
+  public readonly respectDefinitionExpression = input(false);
 
-  @Input()
-  public allowVisibilityToggle = false;
+  public readonly allowVisibilityToggle = input(false);
 
-  @Input()
-  public combineChildrenUnderPrimary = false;
+  public readonly combineChildrenUnderPrimary = input(false);
 
-  @Input()
-  public hideElementGroupHeaders = false;
+  public readonly hideElementGroupHeaders = input(false);
 
   public expanded = true;
 
@@ -46,9 +42,9 @@ export class LegendCollectionComponent {
   ]);
 
   public get childGroups(): IActiveLayerInfo[] {
-    const children = this._toArray<IActiveLayerInfo>(this.group?.children);
+    const children = this._toArray<IActiveLayerInfo>(this.group()?.children);
 
-    if (!this.combineChildrenUnderPrimary || !this._isPhysicsFestivalGroup(this.group?.layer?.id)) {
+    if (!this.combineChildrenUnderPrimary() || !this._isPhysicsFestivalGroup(this.group()?.layer?.id)) {
       return children;
     }
 
@@ -69,7 +65,7 @@ export class LegendCollectionComponent {
   }
 
   public get legendElements(): esri.LegendElement[] {
-    return this._toArray<esri.LegendElement>(this.group?.legendElements);
+    return this._toArray<esri.LegendElement>(this.group()?.legendElements);
   }
 
   public get visibleChildGroups(): IActiveLayerInfo[] {
@@ -79,7 +75,7 @@ export class LegendCollectionComponent {
 
     // A heading-only group (`listHeading`) is always visible and its children are toggled one by
     // one, so list only the children that are on. With none on, the heading shows nothing.
-    if (this.group?.layer?.['listHeading'] === true) {
+    if (this.group()?.layer?.['listHeading'] === true) {
       return this.childGroups.filter((child) => child.layer?.visible === true);
     }
 
@@ -91,15 +87,11 @@ export class LegendCollectionComponent {
   }
 
   public get childHideElementGroupHeaders(): boolean {
-    if (
-      this.combineChildrenUnderPrimary &&
-      this.hasChildren &&
-      this._isPhysicsFestivalGroup(this.group?.layer?.id)
-    ) {
+    if (this.combineChildrenUnderPrimary() && this.hasChildren && this._isPhysicsFestivalGroup(this.group()?.layer?.id)) {
       return true;
     }
 
-    return this.hideElementGroupHeaders;
+    return this.hideElementGroupHeaders();
   }
 
   /**
@@ -112,23 +104,25 @@ export class LegendCollectionComponent {
   }
 
   public toggleExpanded(): void {
-    if (!this.hasChildren && !this.allowVisibilityToggle) {
+    const allowVisibilityToggle = this.allowVisibilityToggle();
+    if (!this.hasChildren && !allowVisibilityToggle) {
       return;
     }
 
-    if (this.allowVisibilityToggle && this.group?.layer) {
-      this.group.layer.visible = !this.isLayerVisible;
+    const group = this.group();
+    if (allowVisibilityToggle && group?.layer) {
+      group.layer.visible = !this.isLayerVisible;
     } else {
       this.expanded = !this.expanded;
     }
   }
 
   public get isLayerVisible(): boolean {
-    return this.group?.layer?.visible ?? true;
+    return this.group()?.layer?.visible ?? true;
   }
 
   public get isExpanded(): boolean {
-    if (this.allowVisibilityToggle && this.group?.layer) {
+    if (this.allowVisibilityToggle() && this.group()?.layer) {
       return this.isLayerVisible;
     }
 
@@ -178,7 +172,8 @@ export class LegendCollectionComponent {
   }
 
   public get showGroupTitle(): boolean {
-    if (this._sportsSafetyFirstLayerIds.has(this.group?.layer?.id)) {
+    const group = this.group();
+    if (this._sportsSafetyFirstLayerIds.has(group?.layer?.id)) {
       return false;
     }
 
@@ -188,11 +183,15 @@ export class LegendCollectionComponent {
 
     // Also show a clickable title for leaf layers when visibility toggling is enabled
     // and child headers are not suppressed (e.g. Physics Fest combine-under-primary mode)
-    return this.allowVisibilityToggle && !this.hideElementGroupHeaders && !!this.group?.layer;
+    return this.allowVisibilityToggle() && !this.hideElementGroupHeaders() && !!group?.layer;
   }
 
   private _shouldHideSportsSafetyFirstChildGroups(): boolean {
-    return this._sportsSafetyFirstLayerIds.has(this.group?.layer?.id) && this.legendElements.length > 0 && this.childGroups.length > 0;
+    return (
+      this._sportsSafetyFirstLayerIds.has(this.group()?.layer?.id) &&
+      this.legendElements.length > 0 &&
+      this.childGroups.length > 0
+    );
   }
 
   private _getPhysicsFestivalChildPriority(title?: string): number {

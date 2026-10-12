@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -7,7 +7,9 @@ import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 @Component({
   selector: 'tamu-gisc-add',
   templateUrl: './add-role.component.html',
-  styleUrls: ['./add-role.component.scss']
+  styleUrls: ['./add-role.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class AddRoleComponent implements OnInit {
   public form: UntypedFormGroup;

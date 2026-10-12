@@ -1,4 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ElementRef,
+  Input,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  inject,
+  output,
+  viewChild
+} from '@angular/core';
 import { take } from 'rxjs/operators';
 
 import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/map/map.service';
@@ -6,23 +16,22 @@ import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/ma
 @Component({
   selector: 'tamu-gisc-esri-map',
   templateUrl: './esri-map.component.html',
-  styleUrls: ['./esri-map.component.scss']
+  styleUrls: ['./esri-map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class EsriMapComponent implements OnInit, OnDestroy {
+  private mapService = inject(EsriMapService);
+
   @Input()
   public config: MapConfig;
 
-  @Output()
-  public loaded: EventEmitter<MapServiceInstance> = new EventEmitter();
+  public readonly loaded = output<MapServiceInstance>();
 
-  @ViewChild('container', { static: true })
-  private container: ElementRef;
-
-  constructor(private mapService: EsriMapService) {}
+  private readonly container = viewChild<ElementRef>('container');
 
   public ngOnInit() {
     if (this.config && this.config.view && this.config.view.properties) {
-      this.config.view.properties.container = this.container.nativeElement;
+      this.config.view.properties.container = this.container().nativeElement;
     } else {
       throw new Error(`Incorrectly formed configuration provided.`);
     }

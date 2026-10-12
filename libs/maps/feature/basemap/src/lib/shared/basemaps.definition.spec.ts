@@ -43,8 +43,7 @@ const urlsOf = (basemap: Basemap) => basemap.baseLayers.map((layer) => layer.url
 describe('campus basemap', () => {
   it('resolves to the raster basemap on production and the vector tiles on dev', () => {
     const resolve = (definitions as unknown as Record<string, unknown>)['aggiemapBasemap'] as
-      | ((isTesting: boolean) => Basemap)
-      | undefined;
+      ((isTesting: boolean) => Basemap) | undefined;
 
     expect(resolve).toBeInstanceOf(Function);
 

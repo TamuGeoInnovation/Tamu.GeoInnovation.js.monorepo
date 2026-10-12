@@ -9,7 +9,7 @@ env:
 
 jobs:
   list-publishable:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix || '[]' }}
     steps:
@@ -38,7 +38,7 @@ jobs:
           echo "matrix=$JASON" >> $GITHUB_OUTPUT
   build-and-push:
     needs: list-publishable
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ needs.list-publishable.outputs.matrix != '[]' }}
     permissions:
       contents: read

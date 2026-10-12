@@ -1,9 +1,14 @@
-import { Component, Injectable, Type } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { delay } from 'rxjs';
 
 import deepmerge from 'deepmerge';
 
-import { EsriMapService, EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
+import {
+  EsriMapService,
+  EsriModuleProviderService,
+  LayerSourcesService,
+  PopupComponentReference
+} from '@tamu-gisc/maps/esri';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -34,6 +39,12 @@ const FOCUS_FLASH_INTERVAL = 450;
   providedIn: 'root'
 })
 export class EventService {
+  private readonly env = inject(EnvironmentService);
+  private readonly moduleProvider = inject(EsriModuleProviderService);
+  private readonly mapService = inject(EsriMapService);
+  private readonly eventSettingsService = inject(EventSettingsService);
+  private readonly lss = inject(LayerSourcesService);
+
   public settings: EventSettings;
   public eventOptions: SpecialEventOptions;
 
@@ -50,13 +61,7 @@ export class EventService {
   private _view: esri.MapView;
   private _exclusiveVisibilityHandles: Array<esri.Handle> = [];
 
-  constructor(
-    private readonly env: EnvironmentService,
-    private readonly moduleProvider: EsriModuleProviderService,
-    private readonly mapService: EsriMapService,
-    private readonly eventSettingsService: EventSettingsService,
-    private readonly lss: LayerSourcesService
-  ) {
+  constructor() {
     // Patch default layer overrides
     const eventConfiguration = this.eventSettingsService.eventConfiguration()?.configuration || undefined;
 
@@ -64,6 +69,11 @@ export class EventService {
       Object.entries(eventConfiguration.defaultLayerOverrides).forEach(([layerId, override]) => {
         this.lss.setLayerOverrides(layerId, override);
       });
+    }
+
+    // A kiosk map shows exactly what its own definition says: none of the main map's layers (#1392).
+    if (this.eventSettingsService.eventConfiguration()?.discover?.type === 'kiosk') {
+      this.mapService.withoutMainLayers();
     }
 
     this.eventOptions = this.eventSettingsService.eventOptions();
@@ -352,6 +362,9 @@ export class EventService {
 
       if (view?.center) {
         try {
+          // Wait for the view first: since ArcGIS 4.27 a goTo made before the view is ready resolves
+          // without moving it (#1379). 4.23 queued it, so this used to work by accident.
+          await this._view.when();
           await this._view.goTo({ center: view.center, zoom: view.zoom ?? this._view.zoom });
         } catch (err) {
           console.error('EventService: Failed to apply selected choice view', err);
@@ -576,9 +589,10 @@ export class EventService {
    * `keys`), so no layer- or data-type-specific values are hard-coded here.
    */
   private async selectFeatureByConfiguredParam(sources: LayerSource[], params: URLSearchParams): Promise<void> {
-    const searchSources = this.env.value('SearchSources') as SearchSource[] | null | undefined;
+    // The map's own search sources come first; see `EventSettingsService.configuredSearchSources`.
+    const searchSources = this.eventSettingsService.configuredSearchSources();
 
-    if (!Array.isArray(searchSources)) {
+    if (searchSources.length === 0) {
       return;
     }
 
@@ -681,8 +695,8 @@ export class EventService {
     return false;
   }
 
-  private getPopupComponent(source: LayerSource): Type<Component> | undefined {
-    return source.popupComponent as Type<Component> | undefined;
+  private getPopupComponent(source: LayerSource): PopupComponentReference | undefined {
+    return source.popupComponent as PopupComponentReference | undefined;
   }
 
   /**
@@ -767,68 +781,5 @@ export class EventService {
     }
 
     return graphic;
-  }
-
-  /**
-   * Executes task with provided options.
-   *
-   * @param {string} url URL used to instantiate the Esri QueryTask class
-   * @param {esri.QueryProperties} query At minimum, requires `where` property
-   * @param {*} [intersect] If true, the query will run with a `intersects` geometry context utilizing boundaries based on builder settings
-   * This will return only features within the provided polygon paths.
-   * @param {boolean} [returnFeatureLayer] If provided and `true`, will return a FeatureLayer from the result of the task
-   * @returns Task result or feature layer
-   */
-  public async runTask(
-    url: string,
-    query: esri.QueryProperties,
-    intersect?: boolean | number[][] | esri.Geometry,
-    returnFeatureLayer?: false,
-    featureLayerProperties?: esri.FeatureLayerProperties
-  ): Promise<esri.FeatureSet>;
-  public async runTask(
-    url: string,
-    query: esri.QueryProperties,
-    intersect?: boolean | number[][] | esri.Geometry,
-    returnFeatureLayer?: true,
-    featureLayerProperties?: esri.FeatureLayerProperties
-  ): Promise<esri.FeatureLayer>;
-  public async runTask(
-    url: string,
-    query: esri.QueryProperties,
-    intersect?: boolean | number[][] | esri.Geometry,
-    returnFeatureLayer?: boolean,
-    featureLayerProperties?: esri.FeatureLayerProperties
-  ): Promise<unknown> {
-    const [QueryTask, Query, FeatureLayer, SpatialReference]: [
-      esri.QueryTaskConstructor,
-      esri.QueryConstructor,
-      esri.FeatureLayerConstructor,
-      esri.SpatialReferenceConstructor
-    ] = await this.moduleProvider.require(['QueryTask', 'Query', 'FeatureLayer', 'SpatialReference']);
-
-    const task = new QueryTask({
-      url: url
-    });
-
-    const q = new Query();
-
-    // Assign query default options.
-    Object.assign(q, { returnGeometry: true, outFields: ['*'], outSpatialReference: new SpatialReference({ wkid: 4326 }) });
-
-    // Assign provided query options.
-    Object.assign(q, query);
-
-    const result = await task.execute(q);
-
-    if (returnFeatureLayer) {
-      const props = {
-        source: result.features,
-        fields: result.fields.filter((f) => !f.name.includes('Shape'))
-      };
-      return new FeatureLayer(featureLayerProperties ? { ...props, ...featureLayerProperties } : props);
-    } else {
-      return result;
-    }
   }
 }

@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
@@ -35,38 +35,12 @@ export const CrossCountryParkingDefinitions = {
   }
 };
 
-const crossCountryAreaRenderer: FeatureRenderer = {
-  type: 'simple',
-  symbol: {
-    type: 'simple-line',
-    color: [137, 112, 68, 255],
-    width: 1.5
-  }
-};
-
-const crossCountryParkingRenderer: FeatureRenderer = {
-  type: 'unique-value',
-  field: 'trackxc',
-  uniqueValueInfos: [
-    {
-      value: 'EventParking',
-      label: 'Event Parking',
-      symbol: {
-        type: 'simple-fill',
-        color: [123, 35, 42, 255],
-        outline: null
-      } as unknown as esri.SymbolProperties
-    }
-  ]
-};
-
 export const CrossCountryParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.id,
-    title: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.name,
     url: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: '{attributes.description}'
@@ -75,16 +49,14 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 59,
     native: {
-      outFields: ['*'],
-      renderer: crossCountryAreaRenderer
+      outFields: ['*']
     } as unknown as FeatureNative
   },
   {
     type: 'feature',
     id: CrossCountryParkingDefinitions.PARKING.id,
-    title: CrossCountryParkingDefinitions.PARKING.name,
     url: CrossCountryParkingDefinitions.PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'lotname',
@@ -100,8 +72,7 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     layerIndex: 60,
     native: {
       definitionExpression: `trackxc = 'EventParking'`,
-      outFields: ['*'],
-      renderer: crossCountryParkingRenderer
+      outFields: ['*']
     } as unknown as FeatureNative
   }
 ];

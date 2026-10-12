@@ -1,13 +1,12 @@
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum FIRE_SCHOOL_LAYERS {
   PREFERRED_ROUTE = 'fire-school-preferred-route',
@@ -22,16 +21,7 @@ const fireSchoolUrl = Connections.fireSchoolUrl;
 // green and add the arrowhead. The symbol field is an AutoCastSymbols intersection, so the whole
 // native object is cast rather than the individual symbol.
 const preferredRouteNative = {
-  outFields: ['*'],
-  renderer: {
-    type: 'simple',
-    symbol: {
-      type: 'simple-line',
-      color: [38, 115, 0, 255],
-      width: 2,
-      marker: { style: 'arrow', color: [38, 115, 0, 255], placement: 'end' }
-    }
-  }
+  outFields: ['*']
 } as unknown as NonNullable<FeatureLayerSourceProperties['native']>;
 
 // The Road Closures layer uses a backward-diagonal red hatch fill, which the ArcGIS legend does not
@@ -49,7 +39,7 @@ export const FireSchoolColdLayerSources: LayerSource[] = [
     url: `${fireSchoolUrl}/0`,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: { field: 'name' },
       description: { field: 'description' }
@@ -63,7 +53,7 @@ export const FireSchoolColdLayerSources: LayerSource[] = [
     url: `${fireSchoolUrl}/1`,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'Road Closure',
       description: { field: 'description' }
@@ -85,7 +75,7 @@ export const FireSchoolColdLayerSources: LayerSource[] = [
     url: `${fireSchoolUrl}/2`,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: { field: 'name' },
       description: { field: 'description' }
@@ -103,8 +93,7 @@ export const FireSchoolConfiguration: EventConfiguration = {
   name: 'Municipal Fire School Vendor Show',
   applicationName: 'Municipal Fire School Vendor Show Map',
   shortApplicationName: 'Fire School Vendor Show',
-  introductionText:
-    'Preferred route, road closures, and parking lot information for the Municipal Fire School Vendor Show.',
+  introductionText: 'Preferred route, road closures, and parking lot information for the Municipal Fire School Vendor Show.',
   eventDates: ['2026-07-17', '2026-07-19'],
   mapCenter: [-96.34426, 30.6067],
   zoom: 17,

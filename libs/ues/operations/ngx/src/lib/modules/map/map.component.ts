@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -7,23 +7,42 @@ import { loadModules } from 'esri-loader';
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { NgClass } from '@angular/common';
+import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
+import { UESTamuBlockComponent } from '@tamu-gisc/ues/common/ngx';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    ReveilleConsoleLogComponent,
+    RouterLink,
+    ClickCoordinatesComponent,
+    EsriMapComponent,
+    NgClass,
+    RouterOutlet,
+    MapViewfinderComponent,
+    UESTamuBlockComponent
+  ]
 })
 export class MapComponent implements OnInit, OnDestroy {
+  private responsiveService = inject(ResponsiveService);
+  private environment = inject(EnvironmentService);
+
   public map: esri.Map;
   public view: esri.MapView;
   public isMobile: boolean;
   public config: MapConfig;
 
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(private responsiveService: ResponsiveService, private environment: EnvironmentService) {}
 
   public ngOnInit() {
     const connections = this.environment.value('Connections');

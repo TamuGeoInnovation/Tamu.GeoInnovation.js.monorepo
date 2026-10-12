@@ -6,7 +6,10 @@ import { UserRepo, SecretQuestionRepo } from '../../entities/all.entity';
 
 @Injectable()
 export class PasswordValidationMiddleware implements NestMiddleware {
-  constructor(public readonly userRepo: UserRepo, public readonly questionRepo: SecretQuestionRepo) {}
+  constructor(
+    public readonly userRepo: UserRepo,
+    public readonly questionRepo: SecretQuestionRepo
+  ) {}
   public async use(req: Request, res: Response, next: () => void) {
     try {
       req.body.validationErrors = [];

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, AfterContentInit } from '@angular/core';
+import { Component, ElementRef, AfterContentInit, inject, input } from '@angular/core';
 
 import { AccordionService } from './services/accordion.service';
 
@@ -9,34 +9,32 @@ import { AccordionService } from './services/accordion.service';
   providers: [AccordionService]
 })
 export class AccordionComponent implements AfterContentInit {
+  private el = inject(ElementRef);
+  private comm = inject(AccordionService);
+
   /**
    * Input boolean from the parent component that serves as a collapse/expand toggle
    * for the accordion.
    */
-  @Input()
-  public expanded = false;
+  public readonly expanded = input(false);
 
-  @Input()
-  public resize = false;
+  public readonly resize = input(false);
 
-  @Input()
-  public animate = false;
-
-  constructor(private el: ElementRef, private comm: AccordionService) {}
+  public readonly animate = input(false);
 
   public ngAfterContentInit() {
     this.comm.update({
-      animate: this.animate,
-      expanded: this.expanded,
-      resize: this.resize
+      animate: this.animate(),
+      expanded: this.expanded(),
+      resize: this.resize()
     });
   }
 
   public toggle() {
     this.comm.update({
-      animate: this.animate,
-      expanded: !this.expanded,
-      resize: this.resize
+      animate: this.animate(),
+      expanded: !this.expanded(),
+      resize: this.resize()
     });
   }
 }

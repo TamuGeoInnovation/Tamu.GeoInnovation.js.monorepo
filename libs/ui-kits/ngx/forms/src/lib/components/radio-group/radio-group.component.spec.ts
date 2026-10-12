@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RadioGroupComponent } from './radio-group.component';
 
@@ -6,9 +6,9 @@ describe('RadioGroupComponent', () => {
   let component: RadioGroupComponent<{ test: number }, number>;
   let fixture: ComponentFixture<RadioGroupComponent<{ test: number }, number>>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [RadioGroupComponent]
+      imports: [RadioGroupComponent]
     }).compileComponents();
   }));
 
@@ -33,14 +33,14 @@ describe('RadioGroupComponent', () => {
   });
 
   it('should correctly evaluate evaluateSetValue with a valid valuePath', () => {
-    component.valuePath = 'test';
+    fixture.componentRef.setInput('valuePath', 'test');
     component.setDisabledState(false);
     component.evaluateSetValue({ test: 1 });
     expect(component.value).toBe(1);
   });
 
   it('should correctly evaluate evaluateSetValue with an invalid valuePath', () => {
-    component.valuePath = 'tesssss';
+    fixture.componentRef.setInput('valuePath', 'tesssss');
     component.setDisabledState(true);
     component.evaluateSetValue({ test: 1 });
     expect(component.value).toBe(undefined);

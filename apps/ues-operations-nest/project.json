@@ -4,6 +4,7 @@
   "sourceRoot": "apps/ues-operations-nest/src",
   "projectType": "application",
   "prefix": "ues-operations-nest",
+  "tags": ["assets"],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -12,6 +13,7 @@
         "outputPath": "dist/apps/ues-operations-nest",
         "main": "apps/ues-operations-nest/src/main.ts",
         "tsConfig": "apps/ues-operations-nest/tsconfig.app.json",
+        "webpackConfig": "apps/ues-operations-nest/webpack.config.js",
         "assets": [
           "apps/ues-operations-nest/src/assets",
           "apps/ues-operations-nest/src/package.json",
@@ -50,7 +52,7 @@
       }
     },
     "serve": {
-      "executor": "@nx/node:node",
+      "executor": "@nx/js:node",
       "options": {
         "buildTarget": "ues-operations-nest:build",
         "host": "0.0.0.0"
@@ -65,19 +67,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/ues-operations-nest/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/ues-operations-nest"],
       "options": {
-        "jestConfig": "apps/ues-operations-nest/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/ues-operations-nest/jest.config.ts"
       }
     }
-  },
-  "tags": ["assets"]
+  }
 }

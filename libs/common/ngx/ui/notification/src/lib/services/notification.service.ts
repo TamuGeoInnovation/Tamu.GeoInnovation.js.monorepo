@@ -1,4 +1,4 @@
-import { Injectable, Optional, InjectionToken, Inject } from '@angular/core';
+import { Injectable, InjectionToken, inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
@@ -17,13 +17,17 @@ export const notificationStorage = new InjectionToken<string>('StorageKey');
  * origin, so an acknowledgement under a key of their own would be invisible to the others and the
  * same notice would return on the next of them the visitor opened.
  *
- * Only for applications that share notifications. The UES, CPA and GIS Day applications keep their
+ * Only for applications that share notifications. The UES and GIS Day applications keep their
  * own keys: they are different products whose notices have nothing to do with these. See #1246.
  */
 export const AGGIEMAP_NOTIFICATION_STORE_KEY = 'aggiemap-notifications';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
+  private store = inject(LocalStoreService);
+  private environment = inject(EnvironmentService);
+  private storageKey = inject(notificationStorage, { optional: true });
+
   private _store: Notification[];
   private _localStorageSettings: StorageConfig;
   /**
@@ -61,11 +65,7 @@ export class NotificationService {
   private _defaultPrimaryStoreKey = 'app-notifications';
   private _defaultSecondaryStoreKey = 'notifications';
 
-  constructor(
-    private store: LocalStoreService,
-    private environment: EnvironmentService,
-    @Optional() @Inject(notificationStorage) private storageKey: string
-  ) {
+  constructor() {
     this._localStorageSettings = {
       primaryKey: undefined
     };

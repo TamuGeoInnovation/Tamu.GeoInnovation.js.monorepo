@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, UrlTree, CanLoad, CanActivateChild, Router } from '@angular/router';
+import { Injectable, inject } from '@angular/core';
+import { UrlTree, Router } from '@angular/router';
 import { Observable, of, switchMap } from 'rxjs';
 
 import { AuthService } from '../services/auth/auth.service';
@@ -7,8 +7,9 @@ import { AuthService } from '../services/auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
-  constructor(private auth: AuthService, private router: Router) {}
+export class AuthGuard {
+  private auth = inject(AuthService);
+  private router = inject(Router);
 
   public canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this._authorized;

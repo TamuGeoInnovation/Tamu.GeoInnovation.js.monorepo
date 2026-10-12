@@ -1,6 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+
+import { EventService } from '../../services/event/event.service';
+import { EventSettingsService } from '../../services/settings/event-settings.service';
 import { MapComponent } from './map.component';
 
 // The generated `describe('MapComponent')` block that used to sit here declared the component in a
@@ -33,18 +43,20 @@ describe('MapComponent (event-passed flow)', () => {
       queryParamsFromSettings: ''
     };
 
-    componentInstance = new MapComponent(
-      { isMobile: of(false) } as any,
-      { value: jest.fn(() => ({})) } as any,
-      {} as any,
-      { get: jest.fn(() => of(false)) } as any,
-      { navigate: jest.fn() } as any,
-      { snapshot: { queryParams: {} }, parent: null } as any,
-      { getStorageObjectKeyValue: jest.fn(() => null) } as any,
-      mockEventSettingsService as any,
-      {} as any,
-      mockModalService as any
-    );
+    componentInstance = TestBed.configureTestingModule({
+      providers: [
+        { provide: ResponsiveService, useValue: { isMobile: of(false) } },
+        { provide: EnvironmentService, useValue: { value: jest.fn(() => ({})) } },
+        { provide: NotificationService, useValue: {} },
+        { provide: TestingService, useValue: { get: jest.fn(() => of(false)) } },
+        { provide: Router, useValue: { navigate: jest.fn() } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, parent: null } },
+        { provide: LocalStoreService, useValue: { getStorageObjectKeyValue: jest.fn(() => null) } },
+        { provide: EventSettingsService, useValue: mockEventSettingsService },
+        { provide: EventService, useValue: {} },
+        { provide: ModalService, useValue: mockModalService }
+      ]
+    }).runInInjectionContext(() => new MapComponent());
   });
 
   it('opens event-passed modal when dates are past', () => {

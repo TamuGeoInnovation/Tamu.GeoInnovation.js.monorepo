@@ -1,13 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum MAINTENANCE_PARKING_LAYERS {
   MAINTENANCE_SPACES = 'maintenance-parking-spaces',
@@ -35,11 +34,10 @@ export const MaintenanceParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MaintenanceParkingDefinitions.MAINTENANCE_SPACES.id,
-    title: MaintenanceParkingDefinitions.MAINTENANCE_SPACES.name,
     url: MaintenanceParkingDefinitions.MAINTENANCE_SPACES.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.LotName}',
       description: {
@@ -70,11 +68,10 @@ export const MaintenanceParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MaintenanceParkingDefinitions.MAINTENANCE_LOTS.id,
-    title: MaintenanceParkingDefinitions.MAINTENANCE_LOTS.name,
     url: MaintenanceParkingDefinitions.MAINTENANCE_LOTS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',

@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
@@ -10,15 +10,42 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { PlaceVisibilityOptions } from '../../../../../enums/place-visibility-options.enum';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { PlaceLinkFormComponent } from '../place-link-form/place-link-form.component';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-place-location-add-edit-form',
   templateUrl: './place-location-add-edit-form.component.html',
-  styleUrls: ['./place-location-add-edit-form.component.scss']
+  styleUrls: ['./place-location-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    FileComponent,
+    CheckboxGroupComponent,
+    CheckboxComponent,
+    PlaceLinkFormComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class PlaceLocationAddEditFormComponent implements OnInit {
-  @Input()
-  public type: 'create' | 'edit';
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly at = inject(ActivatedRoute);
+  private readonly rt = inject(Router);
+  private readonly as = inject(AssetsService);
+  private readonly ps = inject(PlaceService);
+  private readonly sn = inject(DomSanitizer);
+  private readonly ns = inject(NotificationService);
+  private readonly ss = inject(SeasonService);
+
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public form: UntypedFormGroup;
   public entity$: Observable<Partial<Place>>;
@@ -29,17 +56,6 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
     { label: 'Footer', value: PlaceVisibilityOptions.Footer },
     { label: 'About Page', value: PlaceVisibilityOptions.OrgPage }
   ];
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly at: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly as: AssetsService,
-    private readonly ps: PlaceService,
-    private readonly sn: DomSanitizer,
-    private readonly ns: NotificationService,
-    private readonly ss: SeasonService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -56,7 +72,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
       season: [null]
     });
 
-    if (this.type === 'edit') {
+    if (this.type() === 'edit') {
       this.entity$ = this.at.params.pipe(
         map((params) => params.guid),
         filter((guid) => guid !== undefined),
@@ -101,7 +117,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   }
 
   public handleSubmission() {
-    if (this.type === 'create') {
+    if (this.type() === 'create') {
       this._createEntity();
     } else {
       this._updateEntity();

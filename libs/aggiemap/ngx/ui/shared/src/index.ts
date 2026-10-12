@@ -1,10 +1,3 @@
-export * from './lib/modules/reference/reference.module';
-export * from './lib/modules/structural/structural.module';
-export * from './lib/modules/forms/forms.module';
-export * from './lib/modules/transportation/transportation.module';
-export * from './lib/modules/modals/modals.module';
-export * from './lib/modules/experiments/experiments.module';
-
 // Component symbols
 export * from './lib/modules/transportation/components/bus-list/bus-list.component';
 export * from './lib/modules/structural/components/modal/modal.component';
@@ -15,3 +8,9 @@ export * from './lib/modules/modals/components/bonfire-modal/bonfire-modal.compo
 export * from './lib/modules/modals/components/event-passed-warning/event-passed-warning.component';
 export * from './lib/modules/modals/components/alert-modal/alert-modal.component';
 export * from './lib/modules/modals/components/map-notice/map-notice.component';
+export * from './lib/modules/structural/components/backdrop/backdrop.component';
+export * from './lib/modules/structural/components/footer/footer.component';
+export * from './lib/modules/structural/components/header/header.component';
+export * from './lib/modules/transportation/components/bus-route/bus-route.component';
+export * from './lib/modules/transportation/components/bus-list-header/bus-list-header.component';
+export * from './lib/modules/transportation/components/bus-timetable/bus-timetable.component';

@@ -1,12 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum TIMED_PARKING_LAYERS {
   TIMED_PARKING_SPACE = 'Timed Parking Space'
@@ -27,11 +27,10 @@ export const TimedParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TimedParkingDefinitions.TIMED_PARKING_SPACE.id,
-    title: TimedParkingDefinitions.TIMED_PARKING_SPACE.name,
     url: TimedParkingDefinitions.TIMED_PARKING_SPACE.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'LotName',

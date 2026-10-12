@@ -4,24 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/gisday/competitions/ngx/core/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/gisday/competitions/ngx/core"],
       "options": {
         "jestConfig": "libs/gisday/competitions/ngx/core/jest.config.ts",
-        "passWithNoTests": true
+        "tsConfig": "libs/gisday/competitions/ngx/core/tsconfig.spec.json"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/gisday/competitions/ngx/core/src/**/*.ts",
-          "libs/gisday/competitions/ngx/core/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

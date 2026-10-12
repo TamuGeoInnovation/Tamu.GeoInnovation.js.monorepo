@@ -13,21 +13,30 @@ import {
   tap,
   toArray
 } from 'rxjs';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { DatatableComponent, TableColumn } from '@swimlane/ngx-datatable';
+import { DatatableComponent, TableColumn, NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { RouterLink } from '@angular/router';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+
+import { AsyncPipe } from '@angular/common';
+import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-directory',
   templateUrl: './directory.component.html',
-  styleUrls: ['./directory.component.scss']
+  styleUrls: ['./directory.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, FormsModule, ReactiveFormsModule, TextboxComponent, NgxDatatableModule, FooterComponent, AsyncPipe]
 })
 export class DirectoryComponent implements OnInit {
+  private readonly http = inject(HttpClient);
+  private readonly fb = inject(UntypedFormBuilder);
+
   public form: UntypedFormGroup;
 
-  @ViewChild(DatatableComponent)
-  public table: DatatableComponent;
+  public readonly table = viewChild(DatatableComponent);
 
   public _rows$: Observable<Array<BuildingDirectoryEntry>>;
   // Define the columns for the datatable
@@ -39,8 +48,6 @@ export class DirectoryComponent implements OnInit {
 
   public loadingIndicator = true;
   private _data$: Observable<Array<BuildingDirectoryEntry>>;
-
-  constructor(private readonly http: HttpClient, private readonly fb: UntypedFormBuilder) {}
 
   public ngOnInit(): void {
     this._data$ = this.http.get<Array<BuildingDirectoryEntry>>('/assets/data/building-directory.json').pipe(
@@ -63,7 +70,11 @@ export class DirectoryComponent implements OnInit {
 
     this._rows$ = combineLatest([
       this._data$,
-      (this.form.get('search') as UntypedFormControl).valueChanges.pipe(startWith(null), debounceTime(300), distinctUntilChanged())
+      (this.form.get('search') as UntypedFormControl).valueChanges.pipe(
+        startWith(null),
+        debounceTime(300),
+        distinctUntilChanged()
+      )
     ]).pipe(
       tap(() => {
         this.loadingIndicator = true;
@@ -86,8 +97,9 @@ export class DirectoryComponent implements OnInit {
       }),
       tap(() => {
         this.loadingIndicator = false;
-        if (this.table) {
-          this.table.offset = 0;
+        const table = this.table();
+        if (table) {
+          table.offset = 0;
         }
       })
     );

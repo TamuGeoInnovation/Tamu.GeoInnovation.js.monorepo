@@ -1,16 +1,15 @@
 import { ElementRef } from '@angular/core';
-import { async, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
-import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
+import { env } from '@tamu-gisc/common/ngx/environment';
+import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { EsriMapModule } from '../../maps-esri.module';
 import { EsriMapComponent } from './esri-map.component';
 
 describe('EsriMapComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
         EsriMapComponent,
@@ -19,7 +18,14 @@ describe('EsriMapComponent', () => {
           useValue: { SearchSources: [], LayerSources: [] }
         }
       ],
-      imports: [EsriMapModule, RouterTestingModule, SearchModule, HttpClientTestingModule, EnvironmentModule]
+      imports: [
+        EsriMapComponent,
+        RouterTestingModule,
+        SearchComponent,
+        SearchMobileComponent,
+        SearchResultPipe,
+        HttpClientTestingModule
+      ]
     }).compileComponents();
   }));
 
@@ -33,7 +39,8 @@ describe('EsriMapComponent', () => {
 
   it('should correctly configure map service', inject([EsriMapComponent], (esriMapComponent: EsriMapComponent) => {
     esriMapComponent.config = { basemap: null, view: { properties: {}, mode: '2d' } };
-    (esriMapComponent as unknown as { container: ElementRef }).container = { nativeElement: null };
+    // The container is a signal query; stand in for it with a function returning the element reference.
+    (esriMapComponent as unknown as { container: () => ElementRef }).container = () => ({ nativeElement: null });
     expect(esriMapComponent.ngOnInit()).toBeUndefined();
   }));
 });

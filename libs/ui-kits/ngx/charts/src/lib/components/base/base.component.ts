@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input, AfterViewInit, OnInit } from '@angular/core';
+import { Component, ViewChild, Input, AfterViewInit, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
 import { Observable, iif, of } from 'rxjs';
 import { scan } from 'rxjs/operators';
 
@@ -11,7 +11,8 @@ import {
 
 @Component({
   template: '',
-  styleUrls: ['base.component.scss']
+  styleUrls: ['base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class BaseChartComponent implements OnInit, AfterViewInit {
   /**
@@ -20,8 +21,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   @Input()
   public source: Observable<unknown[]>;
 
-  @Input()
-  public options: IChartConfiguration['options'] = {};
+  public readonly options = input<IChartConfiguration['options']>({});
 
   /**
    * Describes the format of the `source` collection format.
@@ -84,8 +84,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
    *
    * ```
    */
-  @Input()
-  public mode: 'single' | 'multi';
+  public readonly mode = input<'single' | 'multi'>(undefined);
 
   /**
    * Resolvable dataset item property path, used as a value entry in a dataset.
@@ -252,7 +251,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
         // based on its chart type.
         this.baseConfig.updateData(p);
 
-        this.baseConfig.mergeOptions(this.options);
+        this.baseConfig.mergeOptions(this.options());
 
         // Emit generated config.
         return this.baseConfig;

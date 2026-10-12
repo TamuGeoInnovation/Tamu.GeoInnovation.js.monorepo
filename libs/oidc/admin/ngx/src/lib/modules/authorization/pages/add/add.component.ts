@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { map, mergeMap, Observable, toArray } from 'rxjs';
@@ -10,7 +10,9 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 @Component({
   selector: 'tamu-gisc-add',
   templateUrl: './add.component.html',
-  styleUrls: ['./add.component.scss']
+  styleUrls: ['./add.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class AddComponent implements OnInit {
   public form: UntypedFormGroup;

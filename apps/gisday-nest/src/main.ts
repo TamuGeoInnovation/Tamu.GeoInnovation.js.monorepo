@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { json } from 'express';
+import { logStartupEnvironment } from '@tamu-gisc/common/nest/environment';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -9,11 +10,9 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 async function bootstrap() {
+  logStartupEnvironment(process.env);
+
   // Simple check for required environment variables
-  if (process.env.LOGGING) {
-    console.log('Logging is enabled');
-    console.log('Environment variables: ', process.env);
-  }
 
   if (
     process.env.AUTH0_AUDIENCE === undefined ||

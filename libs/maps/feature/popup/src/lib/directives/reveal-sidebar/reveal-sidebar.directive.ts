@@ -1,4 +1,4 @@
-import { Directive, OnDestroy, OnInit } from '@angular/core';
+import { Directive, OnDestroy, OnInit, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { SidebarComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
@@ -19,13 +19,12 @@ import { PopupService } from '../../services/popup.service';
  * Reacts to `opened` rather than to `show`, which starts out reporting `true`. Reacting to that would
  * have every one of these maps open its panel on load.
  */
-@Directive({
-  selector: '[tamuGiscRevealSidebarOnPopup]'
-})
+@Directive({ selector: '[tamuGiscRevealSidebarOnPopup]' })
 export class RevealSidebarOnPopupDirective implements OnInit, OnDestroy {
-  private _subscription: Subscription | undefined;
+  private readonly sidebar = inject(SidebarComponent);
+  private readonly popup = inject(PopupService);
 
-  constructor(private readonly sidebar: SidebarComponent, private readonly popup: PopupService) {}
+  private _subscription: Subscription | undefined;
 
   public ngOnInit(): void {
     this._subscription = this.popup.opened.subscribe(() => {

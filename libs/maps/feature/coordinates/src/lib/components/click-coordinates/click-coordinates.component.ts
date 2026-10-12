@@ -1,22 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, pipe, fromEventPattern } from 'rxjs';
 import { map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
 import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+
+import { AsyncPipe } from '@angular/common';
+import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-click-coordinates',
   templateUrl: './click-coordinates.component.html',
-  styleUrls: ['./click-coordinates.component.scss']
+  styleUrls: ['./click-coordinates.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class ClickCoordinatesComponent implements OnInit {
+  private mapService = inject(EsriMapService);
+
   public coords: Observable<ClickCoordinates>;
   public coordText: Observable<string>;
   public copying: Observable<boolean>;
-
-  constructor(private mapService: EsriMapService) {}
 
   public ngOnInit(): void {
     this.coords = this.mapService.store.pipe(pluck('view'), this.$immediateClickHandler(), shareReplay());

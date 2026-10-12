@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CheckboxGroupComponent } from './checkbox-group.component';
 
@@ -6,9 +6,9 @@ describe('CheckboxGroupComponent', () => {
   let component: CheckboxGroupComponent;
   let fixture: ComponentFixture<CheckboxGroupComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CheckboxGroupComponent]
+      imports: [CheckboxGroupComponent]
     }).compileComponents();
   }));
 
@@ -17,7 +17,7 @@ describe('CheckboxGroupComponent', () => {
     component = fixture.componentInstance;
 
     // Provide @Input properties
-    component.referenceId = 'name';
+    fixture.componentRef.setInput('referenceId', 'name');
 
     fixture.detectChanges();
   });
@@ -27,7 +27,7 @@ describe('CheckboxGroupComponent', () => {
   });
 
   it('should correctly evaluate ngOnInit', () => {
-    component.referenceId = undefined;
+    fixture.componentRef.setInput('referenceId', undefined);
     expect(() => {
       component.ngOnInit();
     }).toThrow();

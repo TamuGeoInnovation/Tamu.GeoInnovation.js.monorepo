@@ -1,19 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
 import { CensusIntersectionRecordField, ICensusIntersectionRecord } from '@tamu-gisc/geoprocessing-v5';
 
 import { CensusIntersectionFeatureLabel } from '../../../../../util/dictionaries';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-census-intersection-result-table',
   templateUrl: './census-intersection-result-table.component.html',
-  styleUrls: ['./census-intersection-result-table.component.scss']
+  styleUrls: ['./census-intersection-result-table.component.scss'],
+  imports: [AsyncPipe]
 })
 export class CensusIntersectionResultTableComponent implements OnInit {
-  @Input()
-  public address: ICensusIntersectionRecord;
+  public readonly address = input<ICensusIntersectionRecord>(undefined);
 
   public filteredProps: Observable<EnumeratorKeyValuePairs>;
 
@@ -41,7 +42,7 @@ export class CensusIntersectionResultTableComponent implements OnInit {
   ];
 
   public ngOnInit(): void {
-    this.filteredProps = of(this.address).pipe(
+    this.filteredProps = of(this.address()).pipe(
       map((address) => {
         return new FieldEnumerator(address).filter('exclude', this._excludedProps).order(this._defaultOrder);
       })

@@ -14,7 +14,7 @@ describe('getPathFromRouteSnapshot', () => {
 
 describe('makeUrlParams', () => {
   it('should throw an error for invalid input', () => {
-    expect(() => makeUrlParams(null, false)).toThrowError(
+    expect(() => makeUrlParams(null, false)).toThrow(
       new Error('Could not make URL params because no params were provided.')
     );
   });

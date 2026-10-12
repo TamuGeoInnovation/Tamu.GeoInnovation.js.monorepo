@@ -7,10 +7,15 @@ import {
   Output,
   Renderer2,
   SimpleChanges,
-  TemplateRef
+  TemplateRef,
+  ChangeDetectionStrategy,
+  inject,
+  input
 } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, NG_VALUE_ACCESSOR, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, debounceTime, map, Observable, shareReplay, startWith } from 'rxjs';
+import { TextboxComponent } from '../textbox/textbox.component';
+import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-select-list',
@@ -22,26 +27,28 @@ import { BehaviorSubject, debounceTime, map, Observable, shareReplay, startWith 
       useExisting: forwardRef(() => SelectListComponent),
       multi: true
     }
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, NgTemplateOutlet, AsyncPipe]
 })
 export class SelectListComponent<T extends Record<string, unknown>> implements OnInit, OnChanges {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly renderer = inject(Renderer2);
+
   /**
    * Default placeholder text for the input.
    */
-  @Input()
-  public placeholder = 'Begin typing to search...';
+  public readonly placeholder = input('Begin typing to search...');
 
   /**
    * Whether to display the label above the input or use a static placeholder.
    */
-  @Input()
-  public floatLabel = true;
+  public readonly floatLabel = input(true);
 
   /**
    * List of options to display in the select list.
    */
-  @Input()
-  public options: Array<T>;
+  public readonly options = input<Array<T>>(undefined);
 
   /**
    * List of fields to search within the provided options.
@@ -49,8 +56,7 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
    * If omitted, the search will be performed on all fields which can be a performance concern for large datasets.
    *
    */
-  @Input()
-  public searchFields: Array<keyof T>;
+  public readonly searchFields = input<Array<keyof T>>(undefined);
 
   /**
    * Template reference to use for rendering each row in the select list.
@@ -72,10 +78,8 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   private _displayList$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public displayList$: Observable<boolean> = this._displayList$.asObservable();
 
-  constructor(private readonly fb: UntypedFormBuilder, private readonly renderer: Renderer2) {}
-
   public ngOnInit(): void {
-    this.initializeOptions(this.options);
+    this.initializeOptions(this.options());
 
     this.renderer.listen('document', 'click', (event) => {
       event.activeElement = false;
@@ -98,7 +102,7 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
         }
 
         return options.filter((option) => {
-          const fields = this.searchFields?.length > 0 ? this.searchFields : Object.keys(option);
+          const fields = this.searchFields()?.length > 0 ? this.searchFields() : Object.keys(option);
 
           return fields.some((field) => {
             return `${option[field]}`.toLowerCase().includes(value.toLowerCase());

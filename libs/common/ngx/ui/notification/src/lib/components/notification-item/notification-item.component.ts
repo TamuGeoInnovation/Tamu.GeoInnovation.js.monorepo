@@ -1,4 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, HostBinding } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  HostBinding,
+  ChangeDetectionStrategy,
+  inject,
+  input,
+  output
+} from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
 
@@ -24,34 +34,33 @@ import { Notification } from '../../helpers/notification.helper';
       ),
       transition('* => *', [animate('250ms 0ms cubic-bezier(.25, 0, .25, 1.0)')])
     ])
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class NotificationItemComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+
   // Notification object passed in from the parent component
   @Input()
   public notification: Notification;
 
-  @Input()
-  public position: 'left' | 'center' | 'right';
+  public readonly position = input<'left' | 'center' | 'right'>(undefined);
 
   @HostBinding('class')
   private get _classes() {
-    return this.position;
+    return this.position();
   }
 
   // Output event that triggers the notification container to call the notification service remove method
-  @Output()
-  public closeNotification: EventEmitter<Notification> = new EventEmitter();
+  public readonly closeNotification = output<Notification>();
 
   // Output event that triggers the notification container to call the notification service acknowledge method
-  @Output()
-  public acknowledgeNotification: EventEmitter<Notification> = new EventEmitter();
+  public readonly acknowledgeNotification = output<Notification>();
 
   /**
    * Event fired when a notification item registered action is triggered.
    */
-  @Output()
-  public actionNotification: EventEmitter<Notification> = new EventEmitter();
+  public readonly actionNotification = output<Notification>();
 
   // Animation trigger value.
   public animateStatus = true;
@@ -71,8 +80,6 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
     limit: 10000,
     fn: undefined
   };
-
-  constructor(private router: Router) {}
 
   public ngOnInit() {
     // Initiate timer auto-dismiss countdown

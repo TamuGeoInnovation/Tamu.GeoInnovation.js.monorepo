@@ -1,9 +1,14 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { Connections, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
-import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../../interfaces/special-event.interface';
+import { campusClickOverlayNative } from './campus-overlay.definitions';
+import { EventPopups } from '../../modules/popups/popups';
 
 /**
  * Layer ids used by the Galveston satellite-campus map. `BASEMAP` is the visual vector-tile
@@ -41,25 +46,11 @@ export const GalvestonLayerSources: LayerSource[] = [
     id: GALVESTON_LAYERS.BUILDINGS,
     title: 'Buildings',
     url: `${Connections.galvestonFeatureServerUrl}/0`,
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: EventPopups.CampusBuildingPopupComponent,
     listMode: 'hide',
     visible: true,
     essential: true,
-    native: {
-      ...commonLayerProps,
-      legendEnabled: false,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [0, 0, 0, 0.01],
-          outline: {
-            width: '0'
-          }
-        }
-      }
-    }
+    native: campusClickOverlayNative
   }
 ];
 
@@ -70,6 +61,12 @@ export const GalvestonLayerSources: LayerSource[] = [
 export const GalvestonSearchSources: SearchSource[] = [
   {
     source: 'galveston-building',
+    // `?bldg=1234`, and `?abbrv=OCNG` for a building with no number (#1481). The popup's copy link
+    // reads these same two names, so one declaration decides what a shared link says and what
+    // `EventService.selectFeatureByConfiguredParam` accepts when it is opened. Both forms match
+    // against every field in `where.keys` below, so either resolves whichever value it carries.
+    urlQueryParam: 'bldg',
+    urlQueryParamAliases: ['abbrv'],
     name: 'Building',
     url: `${Connections.galvestonFeatureServerUrl}/0`,
     queryParams: {
@@ -90,7 +87,7 @@ export const GalvestonSearchSources: SearchSource[] = [
     scoringKeys: ['attributes.bldgabbrev', 'attributes.number', 'attributes.bldgname'],
     featuresLocation: 'features',
     displayTemplate: '{attributes.bldgname} ({attributes.number})',
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: EventPopups.CampusBuildingPopupComponent,
     searchActive: true
   }
 ];
@@ -107,6 +104,13 @@ export const GalvestonConfiguration: EventConfiguration = {
   zoom: 16,
   hideLayerToggle: true,
   sidebarTabs: ['features'],
+  buildingPopup: {
+    layerId: GALVESTON_LAYERS.BUILDINGS,
+    title: ['name', 'bldgname', 'bldgabbrev', 'abbrev'],
+    number: 'number',
+    abbreviation: 'bldgabbrev',
+    address: { street: 'address', city: 'city', zip: 'zip', state: 'TX' }
+  },
   // TODO: set `brandingIconUrl` to an official Texas A&M University at Galveston logo once one is
   // sourced. Until then, the sidebar falls back to the default TAMU branding block.
   searchSources: GalvestonSearchSources
@@ -126,6 +130,7 @@ export const GalvestonTs: AggiemapCustomMapConfiguration = {
     description: 'Map of the Texas A&M University at Galveston campus.',
     source: 'internal',
     type: 'satellite-campus',
-    mapType: 'satellite-campus'
+    mapType: 'satellite-campus',
+    thumbnail: './assets/images/campus/galveston.jpg'
   }
 };

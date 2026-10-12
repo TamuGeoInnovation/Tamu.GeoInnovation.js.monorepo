@@ -4,21 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/maps/mapbox/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/maps/mapbox"],
       "options": {
         "jestConfig": "libs/maps/mapbox/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/maps/mapbox"]
+        "tsConfig": "libs/maps/mapbox/tsconfig.spec.json"
+      }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/maps/mapbox/src/**/*.ts", "libs/maps/mapbox/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

@@ -1,22 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, filter, mergeMap, pipe, shareReplay, toArray } from 'rxjs';
 
 import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { AssetUrlPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-sponsors-main',
   templateUrl: './sponsors-main.component.html',
-  styleUrls: ['./sponsors-main.component.scss']
+  styleUrls: ['./sponsors-main.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, AsyncPipe, AssetUrlPipe]
 })
 export class SponsorsMainComponent implements OnInit {
+  private readonly ss = inject(SponsorService);
+
   private _sponsors$: Observable<Array<Partial<Sponsor>>>;
   public rasterSponsors$: Observable<Array<Partial<Sponsor>>>;
   public polygonSponsors$: Observable<Array<Partial<Sponsor>>>;
   public lineSponsors$: Observable<Array<Partial<Sponsor>>>;
   public pointSponsors$: Observable<Array<Partial<Sponsor>>>;
-
-  constructor(private readonly ss: SponsorService) {}
 
   public ngOnInit(): void {
     this._sponsors$ = this.ss.getEntitiesForActiveSeason().pipe(shareReplay(1));

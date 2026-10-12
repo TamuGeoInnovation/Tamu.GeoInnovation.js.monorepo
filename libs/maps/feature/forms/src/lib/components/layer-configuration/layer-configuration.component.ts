@@ -1,6 +1,16 @@
-import { Component, OnInit, Input, Optional, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  inject,
+  input
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, forkJoin, from } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, filter, withLatestFrom, pluck, take } from 'rxjs/operators';
 
@@ -8,15 +18,25 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import { v4 as guid } from 'uuid';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { RangeComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-layer-configuration',
   templateUrl: './layer-configuration.component.html',
-  styleUrls: ['./layer-configuration.component.scss']
+  styleUrls: ['./layer-configuration.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, RangeComponent, CheckboxComponent]
 })
 export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges {
+  private http = inject(HttpClient);
+  private fb = inject(UntypedFormBuilder);
+  private ms = inject(EsriMapService, { optional: true });
+  private mp = inject(EsriModuleProviderService);
+
   /**
    * Internal value. The input is piped through here so that the http query
    * rate can be throttled as the user types in a URL address.
@@ -60,8 +80,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
    * Describes whether the layer will be loaded/unloaded from the map upon configuration resolution (load)
    * and component destruction (unload).
    */
-  @Input()
-  public link: boolean;
+  public readonly link = input<boolean>(undefined);
 
   /**
    * The layer positioning index. This is the index that will be used to create the layer.
@@ -69,8 +88,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
    * This property is also watched for changes to apply a new index to the layer if it has been
    * re-ordered.
    */
-  @Input()
-  public index = 0;
+  public readonly index = input(0);
 
   private layer: LayerConfigLayer;
 
@@ -79,13 +97,6 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
    * form group, if any.
    */
   public config: LayerConfiguration;
-
-  constructor(
-    private http: HttpClient,
-    private fb: UntypedFormBuilder,
-    @Optional() private ms: EsriMapService,
-    private mp: EsriModuleProviderService
-  ) {}
 
   public ngOnInit() {
     if (this._url.getValue() !== undefined) {
@@ -119,7 +130,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
           withLatestFrom(this.ms.store)
         )
         .subscribe(([[response, metadata], instances]: [[esri.FeatureLayer, PortalLayerJSON], MapServiceInstance]) => {
-          if (this.link && this.ms !== null) {
+          if (this.link() && this.ms !== null) {
             if (metadata.type === 'Raster Layer') {
               this.ms
                 .findLayerOrCreateFromSource({
@@ -137,12 +148,12 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
                     console.warn('Multiple map image sub layers unsupported');
                   } else {
                     this.assignMetadata(layer as esri.MapImageLayer);
-                    instances.map.add(layer, this.index);
+                    instances.map.add(layer, this.index());
                   }
                 });
             } else {
               this.assignMetadata(response as esri.FeatureLayer);
-              instances.map.add(this.layer, this.index);
+              instances.map.add(this.layer, this.index());
             }
           }
         });
@@ -178,13 +189,13 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.index && changes.index.previousValue !== changes.index.currentValue && this.layer !== undefined) {
       this.ms.store.pipe(take(1)).subscribe((instances) => {
-        instances.map.reorder(this.layer, this.index);
+        instances.map.reorder(this.layer, this.index());
       });
     }
   }
 
   public ngOnDestroy(): void {
-    if (this.link && this.ms !== null && this.layer && this.layer.id) {
+    if (this.link() && this.ms !== null && this.layer && this.layer.id) {
       this.ms.removeLayerById(this.layer.id);
     }
   }
@@ -194,7 +205,10 @@ export class LayerConfiguration {
   public form: UntypedFormGroup;
   public info: UntypedFormGroup;
 
-  constructor(public fb: UntypedFormBuilder, args: ILayerConfiguration | UntypedFormGroup) {
+  constructor(
+    public fb: UntypedFormBuilder,
+    args: ILayerConfiguration | UntypedFormGroup
+  ) {
     if (args !== undefined) {
       if (args instanceof UntypedFormGroup) {
         this.form = args;

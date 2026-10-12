@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AbstractContentReplacerComponent } from './abstract-content-replacer.component';
 
@@ -6,9 +6,9 @@ describe('AbstractContentReplacerComponent', () => {
   let component: AbstractContentReplacerComponent;
   let fixture: ComponentFixture<AbstractContentReplacerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AbstractContentReplacerComponent]
+      imports: [AbstractContentReplacerComponent]
     }).compileComponents();
   }));
 

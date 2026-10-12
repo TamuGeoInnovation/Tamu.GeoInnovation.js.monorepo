@@ -4,25 +4,21 @@
   "projectType": "library",
   "sourceRoot": "libs/gisday/platform/ngx/data-access/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/gisday/platform/ngx/data-access"],
       "options": {
         "jestConfig": "libs/gisday/platform/ngx/data-access/jest.config.ts",
-        "passWithNoTests": true
+        "tsConfig": "libs/gisday/platform/ngx/data-access/tsconfig.spec.json"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
-        "lintFilePatterns": [
-          "libs/gisday/platform/ngx/data-access/src/**/*.ts",
-          "libs/gisday/platform/ngx/data-access/src/**/*.html"
-        ],
         "force": true
       }
     }
-  },
-  "tags": []
+  }
 }

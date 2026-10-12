@@ -1,20 +1,23 @@
-import { Component, ElementRef, Input, OnChanges, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnChanges, OnDestroy, AfterViewInit, inject, input, viewChild } from '@angular/core';
 
 import { AccordionService } from '../services/accordion.service';
 import { IAccordionModel } from '../services/accordion.service';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-accordion-content',
   templateUrl: './accordion-content.component.html',
-  styleUrls: ['./accordion-content.component.scss']
+  styleUrls: ['./accordion-content.component.scss'],
+  imports: [NgClass, AsyncPipe]
 })
 export class AccordionContentComponent implements OnChanges, OnDestroy, AfterViewInit {
-  @Input()
-  public model: IAccordionModel = {
+  private comm = inject(AccordionService);
+
+  public readonly model = input<IAccordionModel>({
     animate: false,
     expanded: false,
     resize: false
-  };
+  });
 
   public state = this.comm.state;
 
@@ -24,20 +27,17 @@ export class AccordionContentComponent implements OnChanges, OnDestroy, AfterVie
    */
   private mutationObserver: MutationObserver;
 
-  @ViewChild('content', { static: true })
-  public _container: ElementRef;
-
-  constructor(private comm: AccordionService) {}
+  public readonly _container = viewChild<ElementRef>('content');
 
   public ngAfterViewInit(): void {
     // If resize is set to `true`, initialize a mutation observer on the host element. The callback will trigger an
     // accordion height set.
-    if (this.model.resize) {
+    if (this.model().resize) {
       this.mutationObserver = new MutationObserver(() => {
         this.setAccordionHeight();
       });
 
-      this.mutationObserver.observe(this._container.nativeElement, {
+      this.mutationObserver.observe(this._container().nativeElement, {
         childList: true,
         attributes: false,
         subtree: true
@@ -58,12 +58,13 @@ export class AccordionContentComponent implements OnChanges, OnDestroy, AfterVie
   }
 
   public setAccordionHeight() {
-    if (this.model.expanded) {
+    const model = this.model();
+    if (model.expanded) {
       // If animate property is true, we want to determine the inner height of the accordion and set it to be the accordion
       // container height. This will allow smoothing the accordion from 0px to Xpx.
-      if (this.model.animate) {
-        (<HTMLElement>this._container.nativeElement).style.maxHeight = `${
-          (<HTMLElement>this._container.nativeElement).scrollHeight
+      if (model.animate) {
+        (<HTMLElement>this._container().nativeElement).style.maxHeight = `${
+          (<HTMLElement>this._container().nativeElement).scrollHeight
         }px`;
       }
     }

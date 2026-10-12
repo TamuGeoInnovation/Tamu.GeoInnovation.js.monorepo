@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 
 import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
@@ -8,10 +8,12 @@ import esri = __esri;
   providedIn: 'root'
 })
 export class FeatureHighlightService implements OnDestroy {
+  private mapService = inject(EsriMapService);
+
   private _store: HighlightFeatureStore = {};
   private _ms: MapServiceInstance;
 
-  constructor(private mapService: EsriMapService) {
+  constructor() {
     this.mapService.store.subscribe((ins) => {
       // Keep a local instance of the map and view.
       // This is used to get layerView instances required to highlight things on the map.

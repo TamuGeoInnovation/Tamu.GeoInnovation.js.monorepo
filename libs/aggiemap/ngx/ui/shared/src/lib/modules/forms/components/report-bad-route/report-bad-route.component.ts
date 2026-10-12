@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subject } from 'rxjs';
@@ -9,13 +9,22 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { Angulartics2 } from 'angulartics2';
 import { v4 as guid } from 'uuid';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'tamu-gisc-report-bad-route',
   templateUrl: './report-bad-route.component.html',
-  styleUrls: ['./report-bad-route.component.scss']
+  styleUrls: ['./report-bad-route.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule]
 })
 export class ReportBadRouteComponent implements OnInit, OnDestroy {
+  private tripPlanner = inject(TripPlannerService);
+  private analytics = inject(Angulartics2);
+  private router = inject(Router);
+  private location = inject(Location);
+  private notificationService = inject(NotificationService);
+
   public result: TripResult;
 
   public description: string;
@@ -26,14 +35,6 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
   private _lastRoute: string;
 
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(
-    private tripPlanner: TripPlannerService,
-    private analytics: Angulartics2,
-    private router: Router,
-    private location: Location,
-    private notificationService: NotificationService
-  ) {}
 
   public ngOnInit() {
     this.tripPlanner.TravelOptions.pipe(

@@ -1,9 +1,19 @@
-import { Component, OnInit, Input, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  AfterContentInit,
+  ChangeDetectionStrategy,
+  inject,
+  input,
+  contentChildren
+} from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { BaseChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { FeatureCollectorService } from '../../services/collector.service';
+import { AsyncPipe } from '@angular/common';
 
 import esri = __esri;
 
@@ -11,20 +21,20 @@ import esri = __esri;
   selector: 'tamu-gisc-selection-summary',
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],
-  providers: [FeatureCollectorService]
+  providers: [FeatureCollectorService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class SelectionSummaryComponent implements OnInit, AfterContentInit {
-  @Input()
-  public selfCollect: boolean;
+  private collector = inject(FeatureCollectorService);
 
-  @Input()
-  public layers: string | string[];
+  public readonly selfCollect = input<boolean>(undefined);
 
-  @Input()
-  public deleteDuplicates: boolean;
+  public readonly layers = input<string | string[]>(undefined);
 
-  @Input()
-  public identifier: string;
+  public readonly deleteDuplicates = input<boolean>(undefined);
+
+  public readonly identifier = input<string>(undefined);
 
   @Input()
   public collection: Observable<esri.Graphic[]>;
@@ -34,20 +44,17 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
    * etc, that all extend from the BaseChartComponent. Collector collection will be injected as their
    * data source instead of template property binding.
    */
-  @ContentChildren(BaseChartComponent, { descendants: true })
-  public chartComponents: QueryList<BaseChartComponent>;
-
-  constructor(private collector: FeatureCollectorService) {}
+  public readonly chartComponents = contentChildren(BaseChartComponent, { descendants: true });
 
   /**
    * Set up the SelectionSummaryComponent feature collector.
    */
   public ngOnInit() {
-    if (this.selfCollect === true) {
+    if (this.selfCollect() === true) {
       this.collector.init({
-        layers: this.layers,
-        deleteDuplicates: this.deleteDuplicates,
-        identifier: this.identifier
+        layers: this.layers(),
+        deleteDuplicates: this.deleteDuplicates(),
+        identifier: this.identifier()
       });
 
       this.collection = this.collector.collection;
@@ -58,7 +65,7 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
    * Content children are available at this lifecycle hook. Inject data source.
    */
   public ngAfterContentInit() {
-    this.chartComponents.forEach((component) => {
+    this.chartComponents().forEach((component) => {
       component.source = this.collection;
     });
   }

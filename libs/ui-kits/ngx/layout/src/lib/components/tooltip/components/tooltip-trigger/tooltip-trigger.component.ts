@@ -1,33 +1,34 @@
-import { Component, HostListener, EventEmitter, Input } from '@angular/core';
+import { Component, HostListener, EventEmitter, input } from '@angular/core';
+import { AbstractSlidingDrawerComponent } from '../../../../abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component';
 
 @Component({
   selector: 'tamu-gisc-tooltip-trigger',
   templateUrl: './tooltip-trigger.component.html',
-  styleUrls: ['./tooltip-trigger.component.scss']
+  styleUrls: ['./tooltip-trigger.component.scss'],
+  imports: [AbstractSlidingDrawerComponent]
 })
 export class TooltipTriggerComponent {
-  @Input()
-  public triggerType: 'click' | 'hover' = 'click';
+  public readonly triggerType = input<'click' | 'hover'>('click');
 
   public triggerActivate: EventEmitter<boolean> = new EventEmitter();
 
-  @HostListener('click', ['$event'])
+  @HostListener('click')
   public click() {
-    if (this.triggerType === 'click') {
+    if (this.triggerType() === 'click') {
       this.triggerActivate.emit();
     }
   }
 
-  @HostListener('mouseenter', ['$event'])
+  @HostListener('mouseenter')
   public mouseenter() {
-    if (this.triggerType === 'hover') {
+    if (this.triggerType() === 'hover') {
       this.triggerActivate.emit();
     }
   }
 
-  @HostListener('mouseleave', ['$event'])
+  @HostListener('mouseleave')
   public mouseleave() {
-    if (this.triggerType === 'hover') {
+    if (this.triggerType() === 'hover') {
       this.triggerActivate.emit();
     }
   }

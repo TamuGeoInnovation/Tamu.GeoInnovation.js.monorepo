@@ -1,48 +1,58 @@
-import { AfterContentInit, Component, ContentChild, HostListener, OnDestroy } from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  HostListener,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  inject,
+  contentChild
+} from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 
 import { TileTitleComponent } from '../tile-title/tile-title.component';
 import { TileSubmenuDirective } from '../../directives/tile-submenu/tile-submenu.directive';
 import { TileService } from '../../services/tile.service';
 import { TileLinkDirective } from '../../directives/tile-link/tile-link.directive';
+import { TileNavigationComponent } from '../tile-navigation/tile-navigation.component';
 
 @Component({
   selector: 'tamu-gisc-tile',
   templateUrl: './tile.component.html',
-  styleUrls: ['./tile.component.scss']
+  styleUrls: ['./tile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TileNavigationComponent]
 })
 export class TileComponent implements AfterContentInit, OnDestroy {
+  private service = inject(TileService);
+
   private _destroy$: Subject<boolean> = new Subject();
 
-  @ContentChild(TileTitleComponent, { static: true })
-  public title: TileTitleComponent;
+  public readonly title = contentChild(TileTitleComponent);
 
   // A tile can redirect to open a submenu. Need a reference to the submenu template to render it.
-  @ContentChild(TileSubmenuDirective, { static: true })
-  public submenu: TileSubmenuDirective;
+  public readonly submenu = contentChild(TileSubmenuDirective);
 
   // A tile can have a link directive to link directly to a location. Need a reference to the link directive
   // to subscribe to its click event and toggle the menu.
-  @ContentChild(TileLinkDirective)
-  public link: TileLinkDirective;
+  public readonly link = contentChild(TileLinkDirective);
 
   @HostListener('click')
-  private _tileClick() {
-    if (this.submenu) {
+  protected _tileClick() {
+    const submenu = this.submenu();
+    if (submenu) {
       this.service.updateSubmenu({
-        template: this.submenu.template,
-        title: this.title.title
+        template: submenu.template,
+        title: this.title().title
       });
 
       this.service.toggleSubmenu(true);
     }
   }
 
-  constructor(private service: TileService) {}
-
   public ngAfterContentInit(): void {
-    if (this.link) {
-      this.link.clicked.pipe(takeUntil(this._destroy$)).subscribe(() => {
+    const link = this.link();
+    if (link) {
+      link.clicked.pipe(takeUntil(this._destroy$)).subscribe(() => {
         this.service.toggleMenu(false);
       });
     }

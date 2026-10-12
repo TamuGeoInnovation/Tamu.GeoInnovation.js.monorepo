@@ -1,16 +1,14 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { commonSymbols } from './common.definitions';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 
@@ -49,67 +47,6 @@ const GraduationEventDefinitions = {
   }
 };
 
-const graduationParkingRenderer = {
-  type: 'unique-value',
-  field: 'Type',
-  uniqueValueInfos: [
-    {
-      value: 'Free Public Parking',
-      label: 'Free Public Parking',
-      symbol: {
-        type: 'simple-fill',
-        color: [95, 138, 232, 255],
-        outline: {
-          type: 'simple-line',
-          color: [94, 52, 234, 255],
-          width: 1
-        }
-      } as unknown as esri.SymbolProperties
-    },
-    {
-      value: 'Reserved',
-      label: 'Reserved',
-      symbol: {
-        type: 'simple-fill',
-        color: [242, 160, 97, 255],
-        outline: {
-          type: 'simple-line',
-          color: [230, 124, 0, 255],
-          width: 1
-        }
-      } as unknown as esri.SymbolProperties
-    },
-    {
-      value: 'Reserved - Accessible',
-      label: 'Reserved',
-      symbol: {
-        type: 'simple-fill',
-        color: [242, 160, 97, 255],
-        outline: {
-          type: 'simple-line',
-          color: [230, 124, 0, 255],
-          width: 1
-        }
-      } as unknown as esri.SymbolProperties
-    }
-  ]
-} as unknown as esri.UniqueValueRendererProperties;
-
-const graduationRoadClosureRenderer = {
-  type: 'simple',
-  label: 'Road Closed (Pedestrian Zone)',
-  symbol: {
-    type: 'simple-fill',
-    style: 'backward-diagonal',
-    color: [230, 0, 0, 255],
-    outline: {
-      type: 'simple-line',
-      color: [230, 0, 0, 255],
-      width: 1
-    }
-  }
-} as unknown as esri.SimpleRendererProperties;
-
 const graduationParkingLabelingInfo = [
   {
     labelExpressionInfo: {
@@ -138,7 +75,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
     id: GraduationEventDefinitions.GRADUATION_ACCESSIBLE_PARKING.id,
     title: GraduationEventDefinitions.GRADUATION_ACCESSIBLE_PARKING.name,
     url: GraduationEventDefinitions.GRADUATION_ACCESSIBLE_PARKING.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: '{attributes.description}'
@@ -155,7 +92,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
     id: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.id,
     title: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.name,
     url: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: '{attributes.description}'
@@ -164,15 +101,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 12,
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'simple',
-        label: 'Traffic Flow',
-        symbol: {
-          ...commonSymbols.GREEN_ARROW,
-          width: 3
-        }
-      } as unknown as esri.SimpleRendererProperties
+      outFields: ['*']
     } as unknown as FeatureNative
   },
   {
@@ -180,7 +109,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
     id: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.id,
     title: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.name,
     url: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: '{attributes.description}'
@@ -191,7 +120,6 @@ export const GraduationColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       definitionExpression: `Type <> 'Closure'`,
-      renderer: graduationParkingRenderer,
       labelingInfo: graduationParkingLabelingInfo
     } as unknown as FeatureNative
   },
@@ -200,7 +128,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
     id: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.id,
     title: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.name,
     url: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'Road Closed',
       description: '{attributes.description}'
@@ -210,8 +138,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
     layerIndex: 11,
     native: {
       outFields: ['*'],
-      definitionExpression: `Type = 'Closure'`,
-      renderer: graduationRoadClosureRenderer
+      definitionExpression: `Type = 'Closure'`
     } as unknown as FeatureNative
   }
 ];

@@ -1,35 +1,35 @@
-import { Directive, ElementRef, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, OnDestroy, OnChanges, SimpleChanges, inject, input, output } from '@angular/core';
 
 import { Observable, timer } from 'rxjs';
 import { mapTo, startWith } from 'rxjs/operators';
 
-import * as Clipboard from 'clipboard';
+// `clipboard` is CommonJS and exports its class directly. A default import hands over the class both to
+// esbuild and, with esModuleInterop (#1476), to ts-jest. `import = require` cannot be loaded by the
+// browser bundle the dev server serves (#1558), and a namespace import is not constructable.
+import Clipboard from 'clipboard';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[clipboard-copy]'
 })
 export class ClipboardCopyDirective implements OnChanges, OnDestroy {
+  private el = inject(ElementRef);
+
   /**
    * Text string that will be copied to clipboard.
    */
-  @Input()
-  public text: string;
+  public readonly text = input<string>(undefined);
 
-  @Output()
-  public copying: EventEmitter<Observable<boolean>> = new EventEmitter();
+  public readonly copying = output<Observable<boolean>>();
 
-  @Output()
-  public err: EventEmitter<boolean> = new EventEmitter();
+  public readonly err = output<boolean>();
 
   /**
    * Clipboard JS class container.
    *
    * Reference allows unbinding on component destroy
    */
-  private _clipboard: Clipboard;
-
-  constructor(private el: ElementRef) {}
+  private _clipboard: InstanceType<typeof Clipboard>;
 
   /**
    * OnChanges Hook
@@ -64,7 +64,7 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   private _initializeHandler() {
     this._clipboard = new Clipboard(this.el.nativeElement, {
       text: () => {
-        return this.text;
+        return this.text();
       }
     })
       .on('success', () => {

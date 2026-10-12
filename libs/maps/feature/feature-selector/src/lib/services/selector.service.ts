@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { of, fromEventPattern, Observable, from } from 'rxjs';
 import { switchMap, shareReplay, map } from 'rxjs/operators';
@@ -9,6 +9,8 @@ import esri = __esri;
 
 @Injectable()
 export class FeatureSelectorService {
+  private esriMapService = inject(EsriMapService);
+
   /**
    * Observable that emits the selected map feature.
    */
@@ -21,7 +23,7 @@ export class FeatureSelectorService {
    */
   public snapshot: Observable<esri.Graphic[]>;
 
-  constructor(private esriMapService: EsriMapService) {
+  constructor() {
     this.feature = this.esriMapService.store.pipe(
       map((instances) => instances?.view),
       switchMap((view) => {
@@ -43,7 +45,8 @@ export class FeatureSelectorService {
             return from(view.hitTest(event) as unknown as Promise<esri.HitTestResult>);
           }),
           switchMap((hitTestResult: esri.HitTestResult) => {
-            return of(hitTestResult.results.map((v) => v.graphic));
+            // A hit can also be a media or route hit, which carries no graphic (ArcGIS 4.27, #1322).
+            return of(hitTestResult.results.filter((v): v is esri.GraphicHit => v.type === 'graphic').map((v) => v.graphic));
           })
         );
       })

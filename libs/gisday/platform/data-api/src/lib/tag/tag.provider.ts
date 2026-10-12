@@ -8,7 +8,10 @@ import { SeasonService } from '../season/season.service';
 
 @Injectable()
 export class TagProvider extends BaseProvider<Tag> {
-  constructor(@InjectRepository(Tag) private tagRepo: Repository<Tag>, private readonly seasonService: SeasonService) {
+  constructor(
+    @InjectRepository(Tag) private tagRepo: Repository<Tag>,
+    private readonly seasonService: SeasonService
+  ) {
     super(tagRepo);
   }
 

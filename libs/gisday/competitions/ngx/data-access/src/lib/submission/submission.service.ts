@@ -1,8 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
-import { ICompetitionSubmission, ValidateSubmissionDto, SubmissionReviewDto, SubmissionMediaDto } from '@tamu-gisc/gisday/competitions/data-api/types';
+import {
+  ICompetitionSubmission,
+  ValidateSubmissionDto,
+  SubmissionReviewDto,
+  SubmissionMediaDto
+} from '@tamu-gisc/gisday/competitions/data-api/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -10,9 +15,13 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   providedIn: 'root'
 })
 export class SubmissionService {
+  private env = inject(EnvironmentService);
+  private http = inject(HttpClient);
+  private readonly ns = inject(NotificationService);
+
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient, private readonly ns: NotificationService) {
+  constructor() {
     this.resource = `${this.env.value('api_url')}/competitions/submissions`;
   }
 

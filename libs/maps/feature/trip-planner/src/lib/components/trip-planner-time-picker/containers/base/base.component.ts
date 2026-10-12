@@ -1,17 +1,25 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, shareReplay, pluck } from 'rxjs/operators';
 
-import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
+import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { TimeModeOption, TripPlannerService } from '../../../../services/trip-planner.service';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-time-picker',
   templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss']
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, FormsModule, DateTimePickerComponent, AsyncPipe]
 })
 export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
+  private plannerService = inject(TripPlannerService);
+
   /**
    * Trip time mode that determines how the trip results are modified.
    */
@@ -29,8 +37,6 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
    * Subject that triggers on ngOnDestroy life cycle hook to any active manual observable subscriptions.
    */
   private destroy$: Subject<boolean> = new Subject();
-
-  constructor(private plannerService: TripPlannerService) {}
 
   public ngOnInit(): void {
     this.plannerService.TravelOptions.pipe(pluck('requested_time'), takeUntil(this.destroy$)).subscribe((date) => {
@@ -75,8 +81,8 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
    * Once the update is made in the trip planner service state, the component subscriber will be
    * notified and update it here.
    */
-  public setRequestedTime(newRequestedTime: DlDateTimePickerChange<Date> | Date): void {
-    if (newRequestedTime instanceof DlDateTimePickerChange) {
+  public setRequestedTime(newRequestedTime: DateTimePickerChange<Date> | Date): void {
+    if (newRequestedTime instanceof DateTimePickerChange) {
       if (newRequestedTime.value && this.oldTime !== newRequestedTime.value.getTime()) {
         this.plannerService.updateTravelOptions({ requested_time: new Date(newRequestedTime.value.getTime()) });
         this.dateTimePickerVisible = false;

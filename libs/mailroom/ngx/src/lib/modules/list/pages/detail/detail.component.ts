@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Location, AsyncPipe } from '@angular/common';
 
 import { Buffer } from 'buffer';
 import { map, Observable, shareReplay, switchMap } from 'rxjs';
@@ -15,18 +15,18 @@ import { DeleteEmailModalComponent } from '../../modal/delete-email-modal.compon
 @Component({
   selector: 'tamu-gisc-detail',
   templateUrl: './detail.component.html',
-  styleUrls: ['./detail.component.scss']
+  styleUrls: ['./detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, AsyncPipe]
 })
 export class DetailComponent implements OnInit {
-  public $email: Observable<MailroomEmail>;
+  private route = inject(ActivatedRoute);
+  private location = inject(Location);
+  private emailService = inject(EmailService);
+  private ns = inject(NotificationService);
+  private readonly modal = inject(ModalService);
 
-  constructor(
-    private route: ActivatedRoute,
-    private location: Location,
-    private emailService: EmailService,
-    private ns: NotificationService,
-    private readonly modal: ModalService
-  ) {}
+  public $email: Observable<MailroomEmail>;
 
   public ngOnInit() {
     this.$email = this.route.params.pipe(

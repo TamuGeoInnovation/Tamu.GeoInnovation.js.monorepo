@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import esri = __esri;
@@ -6,7 +6,9 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class MapComponent {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);

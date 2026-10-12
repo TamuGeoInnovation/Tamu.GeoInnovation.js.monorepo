@@ -26,7 +26,6 @@ export const AccessibleParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: AccessibleParkingDefinitions.ACCESSIBLE_PARKING_SPACE.id,
-    title: AccessibleParkingDefinitions.ACCESSIBLE_PARKING_SPACE.name,
     url: AccessibleParkingDefinitions.ACCESSIBLE_PARKING_SPACE.url,
     visible: true,
     listMode: 'show',

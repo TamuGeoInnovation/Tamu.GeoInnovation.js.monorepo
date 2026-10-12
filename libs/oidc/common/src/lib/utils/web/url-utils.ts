@@ -14,10 +14,6 @@ export function urlHas<T>(unparsedUrl: string, property: string, value?: T): boo
 
   const parsedUrl = url.parse(unparsedUrl, true);
 
-  if (!parsedUrl.query[property] === undefined) {
-    return false;
-  }
-
   if ((value !== undefined && parsedUrl.query[property] === value.toString()) || value === undefined) {
     return true;
   }

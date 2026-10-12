@@ -1,28 +1,40 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ContactService } from '@tamu-gisc/geoservices/data-access';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TurnstileChallengeComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-contact-form',
   templateUrl: './contact-form.component.html',
-  styleUrls: ['./contact-form.component.scss']
+  styleUrls: ['./contact-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    TurnstileChallengeComponent,
+    NgClass,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class ContactFormComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly ns = inject(NotificationService);
+  private readonly cs = inject(ContactService);
+  private readonly route = inject(ActivatedRoute);
+
   public form: UntypedFormGroup;
 
   public submissionState: ReplaySubject<string> = new ReplaySubject();
   public submissionStateText: BehaviorSubject<string> = new BehaviorSubject('Send message');
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly ns: NotificationService,
-    private readonly cs: ContactService,
-    private readonly route: ActivatedRoute
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

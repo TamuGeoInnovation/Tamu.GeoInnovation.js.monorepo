@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -9,7 +9,9 @@ import { UsersService } from '@tamu-gisc/oidc/admin/data-access';
 @Component({
   selector: 'tamu-gisc-view-users',
   templateUrl: './view-users.component.html',
-  styleUrls: ['./view-users.component.scss']
+  styleUrls: ['./view-users.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class ViewUsersComponent implements OnInit {
   public $users: Observable<Array<Partial<User>>>;

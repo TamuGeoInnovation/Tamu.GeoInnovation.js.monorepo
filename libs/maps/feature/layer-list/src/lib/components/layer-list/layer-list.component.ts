@@ -1,20 +1,29 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { map, Observable } from 'rxjs';
 
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 
 import { LayerListService } from '../../services/layer-list.service';
+import { LayerListItemComponent } from '../layer-list-item/layer-list-item.component';
+import { AsyncPipe } from '@angular/common';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-layer-list',
   templateUrl: './layer-list.component.html',
-  styleUrls: ['./layer-list.component.scss']
+  styleUrls: ['./layer-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [LayerListItemComponent, AsyncPipe]
 })
 export class LayerListComponent implements OnInit {
-  @Input() public allowedLayerIds: string[] = [];
+  private layerListService = inject(LayerListService);
+  private responsiveService = inject(ResponsiveService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
+  public readonly allowedLayerIds = input<string[]>([]);
 
   /**
    * How to order the rendered list.
@@ -23,30 +32,25 @@ export class LayerListComponent implements OnInit {
    * - `allowed`: follows the order of `allowedLayerIds` so the list can match an external draw
    *   order (e.g. the legend). Falls back to `title` ordering for any layer not in the list.
    */
-  @Input() public orderBy: 'title' | 'allowed' = 'title';
+  public readonly orderBy = input<'title' | 'allowed'>('title');
 
   public layers: Observable<Array<esri.ListItem>>;
 
   public responsive: ResponsiveSnapshot;
-
-  constructor(
-    private layerListService: LayerListService,
-    private responsiveService: ResponsiveService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
 
   public ngOnInit() {
     this.responsive = this.responsiveService.snapshot;
     this.layers = this.layerListService.layers().pipe(
       map((layers) => {
         const filtered =
-          this.allowedLayerIds.length > 0 ? layers.filter((l) => this.allowedLayerIds.includes(l.layer.id)) : layers;
+          this.allowedLayerIds().length > 0 ? layers.filter((l) => this.allowedLayerIds().includes(l.layer.id)) : layers;
 
-        if (this.orderBy === 'allowed' && this.allowedLayerIds.length > 0) {
+        if (this.orderBy() === 'allowed' && this.allowedLayerIds().length > 0) {
           // `filtered` only contains allowed ids here, so order by their position in the list to
           // match an external draw order (e.g. the legend).
-          return filtered.sort((a, b) => this.allowedLayerIds.indexOf(a.layer.id) - this.allowedLayerIds.indexOf(b.layer.id));
+          return filtered.sort(
+            (a, b) => this.allowedLayerIds().indexOf(a.layer.id) - this.allowedLayerIds().indexOf(b.layer.id)
+          );
         }
 
         // Order layers by title

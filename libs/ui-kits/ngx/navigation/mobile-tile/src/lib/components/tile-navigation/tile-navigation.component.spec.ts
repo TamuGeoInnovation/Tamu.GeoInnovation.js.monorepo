@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { of } from 'rxjs';
@@ -20,10 +20,9 @@ describe('TileNavigationComponent', () => {
     }
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [TileNavigationComponent, TileSubmenuContainerComponent],
+      imports: [RouterTestingModule, TileNavigationComponent, TileSubmenuContainerComponent],
       providers: [{ provide: TileService, useValue: TileServiceStub }]
     }).compileComponents();
   }));
@@ -31,7 +30,7 @@ describe('TileNavigationComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TileNavigationComponent);
     component = fixture.componentInstance;
-    TileServiceStub = TestBed.get(TileService);
+    TileServiceStub = TestBed.inject(TileService);
     fixture.detectChanges();
   });
 
@@ -41,13 +40,13 @@ describe('TileNavigationComponent', () => {
 
   it('should correctly evaluate ngOnInit for toggle == undefined', () => {
     jest.spyOn(console, 'warn');
-    component.toggle = undefined;
+    fixture.componentRef.setInput('toggle', undefined);
     component.ngOnInit();
     expect(console.warn).toHaveBeenCalled();
   });
   it('should correctly evaluate ngOnInit for toggle == defined', () => {
     const yeet = jest.spyOn(component, 'switchState');
-    component.toggle = of(true);
+    fixture.componentRef.setInput('toggle', of(true));
     component.ngOnInit();
     expect(yeet).toHaveBeenCalled();
   });

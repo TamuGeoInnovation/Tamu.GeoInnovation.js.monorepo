@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
-import { LastMapService } from '../../services/last-map/last-map.service';
+import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 import { AllMapsComponent } from './all-maps.component';
 
 /**
@@ -64,8 +64,7 @@ describe('AllMapsComponent breadcrumbs', () => {
 
   const build = async (lastMapUrl: string): Promise<void> => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [AllMapsComponent],
+      imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
       providers: [
         { provide: DiscoveryService, useValue: discoveryStub },
         { provide: TestingService, useValue: { get: () => of(false) } },

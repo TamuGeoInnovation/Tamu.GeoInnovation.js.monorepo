@@ -1,12 +1,8 @@
-import { Component } from '@angular/core';
-
-import { Router, ActivatedRoute } from '@angular/router';
-import { Angulartics2 } from 'angulartics2';
-
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { AsyncPipe } from '@angular/common';
 
 /**
  * Details for a parking garage (#1163).
@@ -19,7 +15,9 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 @Component({
   selector: 'tamu-gisc-parking-garage-popup-component',
   templateUrl: '../parking-lot/parking-lot.component.html',
-  styleUrls: ['../base/base.popup.component.scss']
+  styleUrls: ['../base/base.popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CopyComponent, AsyncPipe]
 })
 export class ParkingGaragePopupComponent extends BaseDirectionsComponent {
   /** The garage code (`CCG`) where there is one, else its name; the garage search source matches either. */
@@ -29,16 +27,6 @@ export class ParkingGaragePopupComponent extends BaseDirectionsComponent {
     );
 
     return identifier ?? null;
-  }
-
-  constructor(
-    private rtr: Router,
-    private rt: ActivatedRoute,
-    private ps: TripPlannerService,
-    private anl: Angulartics2,
-    private mp: EsriMapService
-  ) {
-    super(rtr, rt, ps, anl, mp);
   }
 
   protected override _getShareUrlFragment(): string | null {

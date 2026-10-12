@@ -1,0 +1,14 @@
+<div class="popup-section">
+  <div class="feature-style-1" tabindex="0" [title]="content.title">{{ content.title }}</div>
+  @if (content.number) {
+  <div class="feature-style-2" tabindex="0">Building {{ content.number }}</div>
+  } @if (content.address) {
+  <div class="feature-style-2" tabindex="0">{{ content.address }}</div>
+  }
+</div>
+
+@if (shareUrl) {
+<div class="popup-section">
+  <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+</div>
+}

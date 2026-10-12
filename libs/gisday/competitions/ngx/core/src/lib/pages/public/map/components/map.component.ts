@@ -1,21 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, forkJoin, map, take } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [EsriMapComponent]
 })
 export class MapComponent implements OnInit {
-  public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
+  private ms = inject(EsriMapService);
+  private env = inject(EnvironmentService);
+  private at = inject(ActivatedRoute);
 
-  constructor(private ms: EsriMapService, private env: EnvironmentService, private at: ActivatedRoute) {}
+  public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
   public config = {
     basemap: {

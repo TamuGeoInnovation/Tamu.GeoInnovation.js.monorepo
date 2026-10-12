@@ -1,5 +1,12 @@
+import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+
 import { AlertModalComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { SettingsService } from '@tamu-gisc/common/ngx/settings';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { MapComponent } from './map.component';
 
@@ -18,7 +25,15 @@ describe('Aggiemap MapComponent (beta flow)', () => {
     };
 
     // Instantiate directly with minimal mocks for the Beta modal flow
-    component = new MapComponent({} as any, {} as any, mockModalService as any, mockSettingsService as any, {} as any, {} as any);
+    component = TestBed.configureTestingModule({
+      providers: [
+        { provide: ResponsiveService, useValue: {} },
+        { provide: EnvironmentService, useValue: {} },
+        { provide: ModalService, useValue: mockModalService },
+        { provide: SettingsService, useValue: mockSettingsService },
+        { provide: TestingService, useValue: {} }
+      ]
+    }).runInInjectionContext(() => new MapComponent());
   });
 
   it('should open AlertModal and persist beta ack when acknowledged', () => {

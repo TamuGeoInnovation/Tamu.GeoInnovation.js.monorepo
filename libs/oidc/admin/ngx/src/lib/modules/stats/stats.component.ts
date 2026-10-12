@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs';
@@ -9,7 +9,9 @@ import { StatsService } from '@tamu-gisc/oidc/admin/data-access';
 @Component({
   selector: 'tamu-gisc-stats',
   templateUrl: './stats.component.html',
-  styleUrls: ['./stats.component.scss']
+  styleUrls: ['./stats.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class StatsComponent implements OnInit {
   public $countOfLoggedInUsers: Observable<number>;
@@ -17,7 +19,10 @@ export class StatsComponent implements OnInit {
   public $countOfNewUsers: Observable<Array<IChartConfiguration>>;
   public $totalLoginsPastMonth: Observable<Array<IChartConfiguration>>;
 
-  constructor(private route: ActivatedRoute, private statService: StatsService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private statService: StatsService
+  ) {}
 
   public ngOnInit(): void {
     this.$countOfLoggedInUsers = this.statService.getCountOfLoggedInUsers();

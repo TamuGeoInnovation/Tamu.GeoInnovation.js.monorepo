@@ -1,7 +1,15 @@
 function createConnections(gisHost: string): IComposedConnections {
   const tsgisHost = getDefaultGisHosts().tsgisHost;
   return {
-    basemapUrl: `https://${gisHost}/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer`,
+    // The campus basemap, as data: layer 1 is the Buildings layer and the building search source,
+    // layer 9 is Surface Lots. The October 2026 service it now names is published on the production
+    // server, where it is public, and is not on the development one - its FCOR folder lists six
+    // services and this is not among them (#1696). So it is named on gis.tamu.edu outright rather
+    // than through `gisHost`, the way `tsgisHost` below is pinned, and the way the tile layer in
+    // `basemaps.definition.ts` has always named it. Development therefore reads its buildings and
+    // surface lots from the same service it already draws its basemap tiles from. Restore
+    // `${gisHost}` once #1696 publishes it on the development server.
+    basemapUrl: `https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer`,
     inforUrl: `https://${gisHost}/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer`,
     accessibleUrl: `https://${gisHost}/arcgis/rest/services/FCOR/ADA_120717/MapServer/0`,
     constructionUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0`,
@@ -13,7 +21,6 @@ function createConnections(gisHost: string): IComposedConnections {
     // Bike racks are layer 1 of TS/BikeMap, which the main map's Bike Racks layer already uses (#1122).
     bikeRacksUrl: `https://${gisHost}/arcgis/rest/services/TS/BikeMap/MapServer/1`,
     bikeMapUrl: `https://${gisHost}/arcgis/rest/services/TS/BikeMap/MapServer`,
-    bikeLocationsUrl: `https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson`,
     routingBaseUrl: `https://${gisHost}/arcgis/rest/services/Routing`,
     poiUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer',
     diningLocationsUrl: `https://api.aggiemap.tamu.edu/dining/locations/geojson`,
@@ -141,7 +148,6 @@ export interface IComposedConnections {
   nightParkingUrl: string;
   bikeRacksUrl: string;
   bikeMapUrl: string;
-  bikeLocationsUrl: string;
   routingBaseUrl: string;
   poiUrl: string;
   diningLocationsUrl: string;

@@ -1,13 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum BUSINESS_PARKING_LAYERS {
   UB_2_HOUR_SPACES = 'University Business Spaces 2 Hour Time Limit',
@@ -18,32 +17,6 @@ const eventUrl = Connections.businessParkingUrl;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
-
-const ubAndUbPlusRenderer: FeatureRenderer = {
-  type: 'simple',
-  symbol: {
-    type: 'simple-fill',
-    color: [90, 0, 0, 255],
-    outline: {
-      type: 'simple-line',
-      color: [0, 0, 0, 0],
-      width: 0
-    }
-  }
-};
-
-const ubPlusOnlyRenderer: FeatureRenderer = {
-  type: 'simple',
-  symbol: {
-    type: 'simple-fill',
-    color: [232, 190, 255, 255],
-    outline: {
-      type: 'simple-line',
-      color: [0, 0, 0, 0],
-      width: 0
-    }
-  }
-};
 
 export const BusinessParkingDefinitions = {
   UB_2_HOUR_SPACES: {
@@ -74,7 +47,7 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     url: BusinessParkingDefinitions.UB_2_HOUR_SPACES.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: '{attributes.LotName}',
       description: {
@@ -94,7 +67,7 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     url: BusinessParkingDefinitions.UB_AND_UB_PLUS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',
@@ -107,8 +80,7 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*'],
-      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface', 'Surface Visitor')`,
-      renderer: ubAndUbPlusRenderer
+      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface', 'Surface Visitor')`
     }
   },
   {
@@ -118,7 +90,7 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     url: BusinessParkingDefinitions.UB_PLUS_ONLY.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',
@@ -131,8 +103,7 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*'],
-      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage', 'Garage Visitor')`,
-      renderer: ubPlusOnlyRenderer
+      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage', 'Garage Visitor')`
     }
   }
 ];

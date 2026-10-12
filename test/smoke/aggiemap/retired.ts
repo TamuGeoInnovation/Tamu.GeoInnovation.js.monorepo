@@ -1,18 +1,16 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { DEFINITIONS_DIR, REPO_ROOT, RETIRED_MARKER, parseDefinition } from './definitions';
+
 /**
  * What is retired (#1098), read from the source.
  *
  * An event that is over is marked `status: 'retired'` in its definition: it is listed nowhere, and
  * the smoke suite does not test it. The definitions cannot be imported here - they pull in Angular,
- * see global-setup.ts - so they are read as text. The marker and the configuration's `id` and `name`
- * are literals in every definition file, which is what this relies on.
+ * see global-setup.ts - so they are read as text, by `definitions.ts`, which the scoped smoke run
+ * shares (#1427).
  */
-
-const REPO_ROOT = path.join(__dirname, '..', '..', '..');
-const DEFINITIONS = path.join(REPO_ROOT, 'libs', 'ts', 'events', 'ngx', 'src', 'lib', 'definitions');
-const RETIRED_MARKER = /\bstatus:\s*'retired'/;
 
 export interface RetiredMap {
   id: string;
@@ -22,39 +20,23 @@ export interface RetiredMap {
   route: string;
 }
 
-/** The route section for each discover `type`, as `getApplicationRoute` builds it. */
-const SECTION_BY_TYPE: Record<string, string> = {
-  event: 'events',
-  parking: 'parking',
-  operations: 'operations',
-  'satellite-campus': 'campus',
-  kiosk: 'kiosk'
-};
-
 /** Every retired map, from its definition's `EventConfiguration`. */
 export function retiredMaps(): RetiredMap[] {
   return fs
-    .readdirSync(DEFINITIONS)
+    .readdirSync(DEFINITIONS_DIR)
     .filter((file) => file.endsWith('.definitions.ts'))
-    .map((file) => ({ file, source: fs.readFileSync(path.join(DEFINITIONS, file), 'utf8') }))
+    .map((file) => ({ file, source: fs.readFileSync(path.join(DEFINITIONS_DIR, file), 'utf8') }))
     .filter(({ source }) => RETIRED_MARKER.test(source))
     .map(({ file, source }) => {
-      const configuration = source.match(/: EventConfiguration = \{\r?\n\s+id: '([^']+)',\r?\n\s+name: '([^']+)'/);
+      const parsed = parseDefinition(file, source);
 
-      if (!configuration) {
+      // Deliberately an error rather than a skip: a retired map whose configuration cannot be read
+      // would otherwise be quietly left in the suite, which is the fault #1098 existed to stop.
+      if (!parsed) {
         throw new Error(`${file} is marked retired but its EventConfiguration id and name could not be read.`);
       }
 
-      // The discover block's `type` decides the route section; `event` is the default.
-      const discover = source.slice(source.indexOf('discover: {'));
-      const type = discover.match(/\btype: '([a-z-]+)'/)?.[1] ?? 'event';
-
-      return {
-        id: configuration[1],
-        name: configuration[2],
-        file,
-        route: `/${SECTION_BY_TYPE[type] ?? 'events'}/${configuration[1]}`
-      };
+      return { id: parsed.id, name: parsed.name, file: parsed.file, route: parsed.route };
     });
 }
 

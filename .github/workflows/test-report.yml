@@ -30,7 +30,7 @@ permissions:
 jobs:
   report:
     name: Publish test results
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
 
     # Runs even when the tests failed. A failing run is the one whose results are worth reading, so

@@ -1,5 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  ValidatorFn,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { Observable, Subject, map, shareReplay, startWith, switchMap, take } from 'rxjs';
 
 import { AuthService } from '@auth0/auth0-angular';
@@ -7,6 +14,11 @@ import { AuthService } from '@auth0/auth0-angular';
 import { OrganizationService, UniversityService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GisDayAppMetadata, Organization, ParticipantType, University } from '@tamu-gisc/gisday/platform/data-api';
+import { RouterLink } from '@angular/router';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 const infoCompletionValidator: ValidatorFn = (control: UntypedFormGroup): { [key: string]: boolean } | null => {
   const type = control.get('app_metadata.gisday.attendeeType');
@@ -47,9 +59,27 @@ const infoCompletionValidator: ValidatorFn = (control: UntypedFormGroup): { [key
 @Component({
   selector: 'tamu-gisc-my-details',
   templateUrl: './my-details.component.html',
-  styleUrls: ['./my-details.component.scss']
+  styleUrls: ['./my-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    RouterLink,
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    NgClass,
+    SelectComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class MyDetailsComponent implements OnInit {
+  private fb = inject(UntypedFormBuilder);
+  private ns = inject(NotificationService);
+  private readonly as = inject(AuthService);
+  private readonly us = inject(UserService);
+  private readonly is = inject(UniversityService);
+  private readonly os = inject(OrganizationService);
+
   public form: UntypedFormGroup;
 
   public signedOnEntityIsSocial$: Observable<boolean>;
@@ -61,15 +91,6 @@ export class MyDetailsComponent implements OnInit {
   public selectedParticipantType$: Observable<ParticipantType>;
   private _signedOnEntity: Observable<GisDayAppMetadata>;
   private _refresh$: Subject<boolean> = new Subject();
-
-  constructor(
-    private fb: UntypedFormBuilder,
-    private ns: NotificationService,
-    private readonly as: AuthService,
-    private readonly us: UserService,
-    private readonly is: UniversityService,
-    private readonly os: OrganizationService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group(

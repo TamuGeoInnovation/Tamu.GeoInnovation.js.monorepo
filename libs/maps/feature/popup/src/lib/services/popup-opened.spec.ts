@@ -1,3 +1,5 @@
+import { TestBed } from '@angular/core/testing';
+
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { PopupService } from './popup.service';
@@ -11,7 +13,12 @@ import { PopupService } from './popup.service';
  * initial value.
  */
 
-const build = () => new PopupService({ value: () => undefined } as unknown as EnvironmentService);
+const build = () =>
+  TestBed.resetTestingModule()
+    .configureTestingModule({
+      providers: [{ provide: EnvironmentService, useValue: { value: () => undefined } }]
+    })
+    .runInInjectionContext(() => new PopupService());
 
 describe('PopupService.opened', () => {
   it('does not fire on subscription, unlike show', () => {

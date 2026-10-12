@@ -56,6 +56,19 @@ export interface EventConfiguration {
    */
   scheduleUrl?: string;
 
+  /**
+   * Overrides the text of the warning shown once the latest `eventDates` entry has passed. Any field
+   * left out keeps the default wording, and omitting this property keeps the default warning.
+   *
+   * Used by maps that stay useful after their dates, such as a seasonal map that remains published
+   * year-round but should tell users the season is over.
+   */
+  eventPassedWarning?: {
+    title?: string;
+    message?: string;
+    followupMessage?: string;
+  };
+
   mapCenter?: Array<number>;
 
   zoom?: number;
@@ -174,6 +187,9 @@ export interface EventConfiguration {
    *   the two surfaces agree.
    *
    * Defaults to `title` when omitted to preserve existing behavior for other events.
+   *
+   * Declaring the sources in the order you want is only half of it - without `source` here the list
+   * sorts alphabetically and the declaration order does nothing. See `docs/map-layers.md`.
    */
   referenceLayerListOrder?: 'title' | 'source';
 
@@ -231,6 +247,54 @@ export interface EventConfiguration {
    * When omitted, the sidebar search falls back to the application-wide search sources as usual.
    */
   searchSources?: SearchSource[];
+
+  /**
+   * Which of this map's building attributes the shared building popup (`CampusBuildingPopupComponent`)
+   * shows. Each satellite campus publishes its buildings with different fields, so each campus declares
+   * its own (#1463).
+   */
+  buildingPopup?: BuildingPopupFields;
+}
+
+/**
+ * A map's building fields, as the shared building popup reads them. Every entry names an attribute
+ * field on the map's buildings layer, except `address.state`, which is the value itself: no campus
+ * layer carries a state field.
+ */
+export interface BuildingPopupFields {
+  /**
+   * The buildings layer's id. A building chosen from search carries no layer, so its copy link names
+   * this one, and opens the building exactly as a link copied from a clicked building does.
+   */
+  layerId: string;
+
+  /**
+   * Fields tried in order for the popup's title; the first with a value wins. List the best name first
+   * and the abbreviation last.
+   */
+  title: string[];
+
+  /**
+   * Field holding the building number, shown as "Building <number>" as on the main map.
+   */
+  number?: string;
+
+  /**
+   * Address fields, where the layer has them.
+   */
+  address?: {
+    street: string;
+    city: string;
+    zip: string;
+    state: string;
+  };
+
+  /**
+   * Field holding the building's abbreviation, used for the copy link when the building has no
+   * number (#1481). Named explicitly rather than taken as the last of `title`, so a campus that
+   * reorders its title fields does not quietly change what its shared links say.
+   */
+  abbreviation?: string;
 }
 
 /**

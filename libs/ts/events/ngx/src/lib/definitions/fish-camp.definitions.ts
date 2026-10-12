@@ -3,13 +3,12 @@ import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import esri = __esri;
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum FISH_CAMP_LAYERS {
   ARRIVAL_GROUP = 'fish-camp-arrival-group',
@@ -69,7 +68,7 @@ const lotConversions = [
 ];
 
 const popup = {
-  popupComponent: MarkdownPopupComponent,
+  popupComponent: EventPopups.MarkdownPopupComponent,
   popupData: {
     name: { field: 'name' },
     description: { field: 'description' }
@@ -79,34 +78,7 @@ const popup = {
 // Routes are directional, so render each type with an arrowhead at the end of the line to show the
 // direction of travel. Colors match the published service renderer (green = vehicle, blue = walking).
 const routesNative: NonNullable<FeatureLayerSourceProperties['native']> = {
-  outFields: ['*'],
-  renderer: {
-    type: 'unique-value',
-    field: 'name',
-    uniqueValueInfos: [
-      {
-        value: 'Preferred Vehicle Route',
-        symbol: {
-          type: 'simple-line',
-          color: [0, 115, 76, 255],
-          width: 4,
-          marker: { style: 'arrow', color: [0, 115, 76, 255], placement: 'end' }
-        } as unknown as esri.SimpleLineSymbolProperties
-      },
-      {
-        value: 'Preferred Walking Route',
-        // Walking routes read as a dashed line (vehicle routes stay solid) to visually
-        // distinguish pedestrian travel; keep the end arrowhead to show direction.
-        symbol: {
-          type: 'simple-line',
-          color: [0, 92, 230, 255],
-          width: 3,
-          style: 'dash',
-          marker: { style: 'arrow', color: [0, 92, 230, 255], placement: 'end' }
-        } as unknown as esri.SimpleLineSymbolProperties
-      }
-    ]
-  }
+  outFields: ['*']
 };
 
 /**
@@ -114,11 +86,14 @@ const routesNative: NonNullable<FeatureLayerSourceProperties['native']> = {
  * exposes the same shape (Parking Information, Routes, Parking Lots) for both phases at different
  * sub-layer indexes.
  */
-function buildPhaseChildren(ids: {
-  parkingInfo: FISH_CAMP_LAYERS;
-  routes: FISH_CAMP_LAYERS;
-  parkingLots: FISH_CAMP_LAYERS;
-}, indexes: { parkingInfo: number; routes: number; parkingLots: number }): LayerSource[] {
+function buildPhaseChildren(
+  ids: {
+    parkingInfo: FISH_CAMP_LAYERS;
+    routes: FISH_CAMP_LAYERS;
+    parkingLots: FISH_CAMP_LAYERS;
+  },
+  indexes: { parkingInfo: number; routes: number; parkingLots: number }
+): LayerSource[] {
   // Order matters: later entries draw on top. Parking Lots (polygons) sit at the bottom, Routes
   // (lines) above them, and Parking Information (points) on top.
   return [
@@ -258,7 +233,7 @@ export const FishCampOptions: SpecialEventOptions = [
         value: FishCampSessionChoices.LOT_40,
         label: 'Sessions A, D, & G',
         // Lot 40b. Tune center/zoom here to adjust framing.
-        mapView: { center: [-96.33380, 30.61118], zoom: 17 }
+        mapView: { center: [-96.3338, 30.61118], zoom: 17 }
       }
     ],
     effects: {

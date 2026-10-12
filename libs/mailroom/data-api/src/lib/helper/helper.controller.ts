@@ -3,7 +3,7 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
 
-import * as FormData from 'form-data';
+import FormData from 'form-data';
 import got from 'got';
 
 @Controller('mail')

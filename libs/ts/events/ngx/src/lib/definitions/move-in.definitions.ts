@@ -1,14 +1,13 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   ConversionDeconflictingStrategy,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum MOVE_IN_LAYERS {
   RESIDENCE_HALL = 'Residence Hall',
@@ -61,7 +60,7 @@ const AREA_VIEW: Record<CampusArea, { center: [number, number]; zoom: number }> 
 };
 
 const markdownPopup = {
-  popupComponent: MarkdownPopupComponent
+  popupComponent: EventPopups.MarkdownPopupComponent
 };
 
 const poiPopup = {
@@ -176,19 +175,7 @@ export const MoveInColdLayerSources: LayerSource[] = [
     // No base definition expression: the selected-hall effect sets it directly. Keeping it off
     // `native` avoids `generateLayer`'s native-overrides-top-level behavior so the effect applies.
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [24, 255, 255, 0.75],
-          outline: {
-            color: [24, 255, 255, 1],
-            width: '3px'
-          }
-        }
-      }
+      outFields: ['*']
     }
   },
   {

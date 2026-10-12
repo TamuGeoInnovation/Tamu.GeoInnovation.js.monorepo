@@ -1,18 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { DiscoverMapType } from '@tamu-gisc/ts/events/ngx';
 
 import { InternalDiscoverApplication } from '../../interfaces/discover-application.interface';
 import { DiscoveryService } from '../../services/discovery/discovery.service';
-import { buildMapColumnGroups, getApplicationRoute, sortApplicationsByName, MapColumnDefinition, MapColumnGroup } from '../discover.utils';
-import { QuickLinkItem } from '../quick-links/quick-links.component';
+import {
+  buildMapColumnGroups,
+  getApplicationRoute,
+  sortApplicationsByName,
+  MapColumnDefinition,
+  MapColumnGroup
+} from '../discover.utils';
+import { QuickLinkItem, QuickLinksComponent } from '../quick-links/quick-links.component';
+import { MapsPageHeaderComponent } from '../maps-page-header/maps-page-header.component';
+import { MapColumnsComponent } from '../map-columns/map-columns.component';
+
+import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 interface EventMapsRouteData {
   mapType: Extract<DiscoverMapType, 'campus' | 'athletics' | 'operations' | 'satellite-campus' | '150'>;
   title: string;
   intro?: string;
   columns?: Array<MapColumnDefinition>;
+  /**
+   * Whether the page shows the quick links. They are College Station's most-used maps, so a category
+   * that is not about College Station, such as the satellite campuses, turns them off. Defaults to on.
+   */
+  quickLinks?: boolean;
+  /** Whether the header shows the Main Campus Parking Map button, for the same reason. Defaults to on. */
+  mainParking?: boolean;
 }
 
 /**
@@ -22,27 +39,35 @@ interface EventMapsRouteData {
 @Component({
   selector: 'tamu-gisc-aggiemap-event-maps',
   templateUrl: './event-maps.component.html',
-  styleUrls: ['./event-maps.component.scss']
+  styleUrls: ['./event-maps.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [MapsPageHeaderComponent, MapColumnsComponent, QuickLinksComponent, FooterComponent]
 })
 export class EventMapsComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly discoveryService = inject(DiscoveryService);
+
   public title: string;
   public intro?: string;
 
   public applications: InternalDiscoverApplication[] = [];
   public applicationColumns: MapColumnGroup[] = [];
   public quickLinks: QuickLinkItem[] = [];
+  public showMainParking = true;
   public readonly getApplicationRoute = getApplicationRoute;
-
-  constructor(private readonly route: ActivatedRoute, private readonly discoveryService: DiscoveryService) {}
 
   public ngOnInit(): void {
     const data = this.route.snapshot.data as EventMapsRouteData;
     this.title = data.title;
     this.intro = data.intro;
-    this.quickLinks = this.discoveryService.getQuickLinkApplications().map((app) => ({
-      label: app.name,
-      routerLink: getApplicationRoute(app)
-    }));
+    this.showMainParking = data.mainParking !== false;
+    this.quickLinks =
+      data.quickLinks === false
+        ? []
+        : this.discoveryService.getQuickLinkApplications().map((app) => ({
+            label: app.name,
+            routerLink: getApplicationRoute(app)
+          }));
 
     // Category pages are a navigation directory of every map of this type, not an upcoming-only list.
     this.applications = sortApplicationsByName(

@@ -4,28 +4,35 @@ import {
   Input,
   ElementRef,
   HostListener,
-  ContentChild,
   AfterContentInit,
   OnDestroy,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy,
+  inject,
+  input,
+  contentChild
 } from '@angular/core';
 import { TooltipTriggerComponent } from './components/tooltip-trigger/tooltip-trigger.component';
 import { debounceTime, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
+import { AbstractSlidingDrawerComponent } from '../../abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component';
 
 @Component({
   selector: 'tamu-gisc-tooltip',
   templateUrl: './tooltip.component.html',
-  styleUrls: ['./tooltip.component.scss']
+  styleUrls: ['./tooltip.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgStyle, NgClass, AbstractSlidingDrawerComponent, AsyncPipe]
 })
 export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
+  private elementRef = inject(ElementRef);
+
   private _isVisible: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  @Input()
-  public width: string;
+  public readonly width = input<string>(undefined);
 
-  @Input()
-  public height: number;
+  public readonly height = input<number>(undefined);
 
   /**
    * The positioning of the tooltip content container.
@@ -34,14 +41,12 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    *
    * 'fixed' strategy is experimental. Calculates the fixed positioning relative to the trigger.
    */
-  @Input()
-  public positioningStrategy: 'absolute' | 'fixed' = 'absolute';
+  public readonly positioningStrategy = input<'absolute' | 'fixed'>('absolute');
 
   /**
    * The relative position of the trigger.
    */
-  @Input()
-  public position: 'left' | 'right' | 'bottom' | 'top';
+  public readonly position = input<'left' | 'right' | 'bottom' | 'top'>(undefined);
 
   @Input()
   public set isVisible(value) {
@@ -56,11 +61,9 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
     return this._isVisible.getValue();
   }
 
-  @ContentChild(TooltipTriggerComponent, { static: true })
-  public trigger: TooltipTriggerComponent;
+  public readonly trigger = contentChild(TooltipTriggerComponent);
 
-  @ContentChild(TooltipTriggerComponent, { static: true, read: ElementRef })
-  public triggerElem: ElementRef;
+  public readonly triggerElem = contentChild(TooltipTriggerComponent, { read: ElementRef });
 
   @ViewChild('tooltipContainer') set content(c: ElementRef) {
     if (c) {
@@ -104,13 +107,11 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
-  constructor(private elementRef: ElementRef) {}
-
   public ngOnInit() {
     // Set debounce time otherwise there will be two changes in the change detection cycle.
     this.containerPosition = combineLatest([this._container.pipe(debounceTime(0))]).pipe(
       map(([c]) => {
-        const triggerRects: DOMRect = this.triggerElem.nativeElement.getBoundingClientRect();
+        const triggerRects: DOMRect = this.triggerElem().nativeElement.getBoundingClientRect();
         const containerRects: DOMRect = c.getBoundingClientRect();
 
         return [containerRects, triggerRects];
@@ -131,8 +132,9 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public ngAfterContentInit() {
-    if (this.trigger) {
-      this.trigger.triggerActivate.pipe(takeUntil(this._$destroy)).subscribe(() => {
+    const trigger = this.trigger();
+    if (trigger) {
+      trigger.triggerActivate.pipe(takeUntil(this._$destroy)).subscribe(() => {
         this.isVisible = !this.isVisible;
       });
     }

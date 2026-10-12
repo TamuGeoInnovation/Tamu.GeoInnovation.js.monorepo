@@ -117,16 +117,6 @@ export const ExternalDiscoverApplications: ExternalDiscoverApplication[] = [
   },
   // Events
   {
-    id: 'ring-day',
-    name: 'Ring Day',
-    description: '',
-    source: 'external',
-    type: 'experiment',
-    location: 'https://dev.aggiemap.tamu.edu/ringday',
-    keywords: ['event'],
-    labels: ['deprecated']
-  },
-  {
     id: 'showdown-rivalry',
     name: 'Showdown Rivalry',
     description: '',

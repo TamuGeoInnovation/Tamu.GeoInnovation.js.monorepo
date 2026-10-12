@@ -4,7 +4,10 @@ import { AccessTokenRepo, UserRepo } from '@tamu-gisc/oidc/common';
 
 @Injectable()
 export class StatService {
-  constructor(private readonly accessTokenRepo: AccessTokenRepo, private readonly userRepo: UserRepo) {}
+  constructor(
+    private readonly accessTokenRepo: AccessTokenRepo,
+    private readonly userRepo: UserRepo
+  ) {}
 
   /**
    * SELECT

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { Router, ActivatedRoute, Route, Routes, Event, NavigationEnd } from '@angular/router';
 import { merge, of, BehaviorSubject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -9,19 +9,19 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./breadcrumb.component.scss']
 })
 export class BreadcrumbComponent implements OnInit {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   /**
    * Number of breadcrumbs to show
    */
-  @Input()
-  public limit = 3;
+  public readonly limit = input(3);
 
   private _crumbs: BehaviorSubject<Crumbs> = new BehaviorSubject([]);
 
   public crumbs: Observable<Crumbs> = this._crumbs.asObservable();
 
   private routes: Routes;
-
-  constructor(private router: Router, private route: ActivatedRoute) {}
 
   public ngOnInit() {
     this.routes = this.extractRoutes(this.route);
@@ -49,8 +49,8 @@ export class BreadcrumbComponent implements OnInit {
 
     let pile = [...trail, drop];
 
-    if (pile.length > this.limit) {
-      pile = pile.splice(pile.length - this.limit, pile.length - 1);
+    if (pile.length > this.limit()) {
+      pile = pile.splice(pile.length - this.limit(), pile.length - 1);
     }
 
     this._crumbs.next(pile);

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
@@ -15,11 +15,16 @@ import {
   SpecialEventOptions
 } from '../../interfaces/special-event.interface';
 import { EventDefinitions } from '../../definitions/all.definitions';
+import { EventSettingsQuery } from './event-settings-query';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EventSettingsService {
+export class EventSettingsService implements EventSettingsQuery {
+  private readonly at = inject(ActivatedRoute);
+  private readonly env = inject(EnvironmentService);
+  private readonly store = inject(LocalStoreService);
+
   private _settingsPrimaryKey: string;
   private _settingsSecondaryKey: string;
 
@@ -69,12 +74,6 @@ export class EventSettingsService {
     // Initialize the settings store with an empty object if it does not exist
     this._settingsSecondaryKey = key ? key : this.at.snapshot.queryParamMap.get('eventId') || '_';
   }
-
-  constructor(
-    private readonly at: ActivatedRoute,
-    private readonly env: EnvironmentService,
-    private readonly store: LocalStoreService
-  ) {}
 
   public settings(): EventSettings;
   public settings(asObservable: true): Observable<EventSettings>;
@@ -243,16 +242,19 @@ export class EventSettingsService {
     const existingSettings = this.settings() || {};
     let changed = false;
 
-    const merged = options.reduce((acc, option) => {
-      // Evaluate visibility against the accumulating settings so a gating option (listed earlier) can
-      // determine whether a dependent, conditionally-visible option should receive a default value.
-      if (this.isOptionVisible(option, acc) && acc[option.value] === undefined && option.choices.length > 0) {
-        acc[option.value] = option.choices[0].value;
-        changed = true;
-      }
+    const merged = options.reduce(
+      (acc, option) => {
+        // Evaluate visibility against the accumulating settings so a gating option (listed earlier) can
+        // determine whether a dependent, conditionally-visible option should receive a default value.
+        if (this.isOptionVisible(option, acc) && acc[option.value] === undefined && option.choices.length > 0) {
+          acc[option.value] = option.choices[0].value;
+          changed = true;
+        }
 
-      return acc;
-    }, { ...existingSettings } as EventSettings);
+        return acc;
+      },
+      { ...existingSettings } as EventSettings
+    );
 
     if (changed) {
       this.store.setStorageObjectKeyValue({
@@ -482,6 +484,24 @@ export class EventSettingsService {
   }
 
   /**
+   * The search sources a deep link on this map may be addressed by, the map's own first.
+   *
+   * The environment's list is the application's - College Station's buildings, lots and garages. A
+   * map that brings its own, as each satellite campus does, declares them on its configuration and
+   * they never reach the environment, so a link keyed on one of them resolved against nothing and
+   * quietly opened no feature (#1481).
+   *
+   * The map's own come first, so a parameter that appears in both lists - `bldg` does - is matched
+   * against the fields of the map actually open rather than against College Station's.
+   */
+  public configuredSearchSources(): SearchSource[] {
+    const own = this.eventConfiguration()?.configuration?.searchSources ?? [];
+    const environment = this.env.value('SearchSources');
+
+    return [...own, ...(Array.isArray(environment) ? (environment as SearchSource[]) : [])];
+  }
+
+  /**
    * Returns true when the provided query params include a supported feature deep-link
    * such as `?lot=43` or the generic `?feature=<layerId>:<objectId>` emitted by popup share links,
    * allowing maps to open directly without builder selections.
@@ -497,13 +517,7 @@ export class EventSettingsService {
       return true;
     }
 
-    const searchSources = this.env.value('SearchSources') as SearchSource[] | null | undefined;
-
-    if (!Array.isArray(searchSources)) {
-      return false;
-    }
-
-    return searchSources.some((searchSource) => {
+    return this.configuredSearchSources().some((searchSource) => {
       if (!searchSource.urlQueryParam) {
         return false;
       }

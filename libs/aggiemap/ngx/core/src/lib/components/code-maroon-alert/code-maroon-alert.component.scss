@@ -1,0 +1,166 @@
+// Positioning for an alert that sits over the map. The buttons inside use the established global
+// `.button` / `.button.maroon` classes and the shared `tamu-gisc-button`, so only the box itself is
+// defined here.
+.code-maroon {
+  position: fixed;
+  // Clear of the map's own controls at the top, and wide enough to be read at a glance from across a
+  // room - this is meant to be seen, not noticed.
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: calc(100% - 2rem);
+  max-width: 44rem;
+
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  // Maroon, heavier than any other surface on the map, so it cannot read as ordinary chrome.
+  background: #500000;
+  color: #ffffff;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.35);
+}
+
+// Marks fabricated content. Yellow on maroon rather than inside the prose, so it survives being
+// screenshotted and passed on without its context.
+.code-maroon-sample {
+  margin: -0.25rem 0 0.85rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 4px;
+  background: #ffd100;
+  color: #330000;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.code-maroon-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.35rem;
+}
+
+.code-maroon-mark {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+}
+
+.code-maroon-type {
+  padding: 0.15rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  // A routine test should not look like an emergency.
+  &--test {
+    border-style: dashed;
+    opacity: 0.85;
+  }
+}
+
+.code-maroon-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.code-maroon-body {
+  margin: 0 0 0.85rem;
+  line-height: 1.45;
+}
+
+// Fields the feed carried that we did not anticipate.
+.code-maroon-extra {
+  margin: 0 0 0.85rem;
+  font-size: 0.9rem;
+
+  dt {
+    font-weight: 700;
+    opacity: 0.85;
+  }
+
+  dd {
+    margin: 0 0 0.35rem;
+  }
+}
+
+.code-maroon-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.6rem;
+
+  // The shared button classes assume a light surface: `.button.maroon` is maroon on white, which
+  // disappears entirely on this panel, and plain `.button` renders blue and full width, making the
+  // secondary action the loudest thing in an emergency alert. Inverted here rather than changed
+  // globally, because every other use of them is on a light background and correct as it is.
+  .button {
+    width: auto;
+    min-height: 2.6rem;
+    padding: 0 1.4rem;
+    border-radius: 4px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    // Secondary: an outline, legible but quiet.
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    color: #ffffff;
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: #ffffff;
+      color: #ffffff;
+    }
+
+    // Primary: solid white. "What to do" is the action that matters when this is on screen.
+    &.maroon {
+      background: #ffffff;
+      border-color: #ffffff;
+      color: #500000;
+
+      &:hover,
+      &:focus-visible {
+        background: #ffd100;
+        border-color: #ffd100;
+        color: #330000;
+      }
+    }
+  }
+}
+
+.code-maroon-meta {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.code-maroon-unreachable {
+  // Distinguished from a live alert: this is the map admitting it does not know, which is a
+  // different thing from an emergency and should not look like one.
+  border-left: 4px solid #ffd100;
+  padding-left: 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .code-maroon {
+    top: 0.5rem;
+    width: calc(100% - 1rem);
+    padding: 1rem;
+  }
+
+  .code-maroon-title {
+    font-size: 1.2rem;
+  }
+}

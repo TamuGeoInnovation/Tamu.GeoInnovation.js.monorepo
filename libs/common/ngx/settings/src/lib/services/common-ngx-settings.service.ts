@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { switchMap, tap, distinctUntilChanged } from 'rxjs/operators';
 
@@ -6,14 +6,14 @@ import { StorageConfig, LocalStoreService } from '@tamu-gisc/common/ngx/local-st
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
+  private storage = inject(LocalStoreService);
+
   private _Store: BehaviorSubject<CompoundSettings> = new BehaviorSubject({});
   private readonly Store: Observable<CompoundSettings> = this._Store.asObservable();
 
   private _localStorageSettings: StorageConfig = {
     primaryKey: 'user-preferences'
   };
-
-  constructor(private storage: LocalStoreService) {}
 
   /**
    * Service initialization method.

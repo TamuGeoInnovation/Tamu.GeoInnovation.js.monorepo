@@ -1,4 +1,4 @@
-import { Directive, AfterViewInit, ElementRef, AfterViewChecked, OnDestroy, Input } from '@angular/core';
+import { Directive, AfterViewInit, ElementRef, AfterViewChecked, OnDestroy, inject, input } from '@angular/core';
 
 import { DragService, UIDragState } from '../../services/drag/drag.service';
 
@@ -9,10 +9,13 @@ import interact from 'interactjs';
   selector: '[draggable]'
 })
 export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy {
+  private el = inject(ElementRef);
+  private dragService = inject(DragService);
+
   /**
    * Unique component identifier generated when the component register with the UI drag service.
    */
-  @Input('draggableIdentifier') public identifier: string;
+  public readonly identifier = input<string>(undefined, { alias: 'draggableIdentifier' });
 
   /**
    * Represents y-offset that is initially present when the element is rendered.
@@ -31,10 +34,8 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
 
   private lastContentHeight: number;
 
-  constructor(private el: ElementRef, private dragService: DragService) {}
-
   public ngAfterViewInit() {
-    if (!this.identifier) {
+    if (!this.identifier()) {
       console.warn(
         'Draggable directive was not provided a component identifier. Provide an identifier with the [draggableIdentifier] property.'
       );
@@ -94,7 +95,7 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
   private _dragMoveListener(event) {
     // Dispatch acton based on action direction
     this.dragService.state = new UIDragState({
-      guid: this.identifier,
+      guid: this.identifier(),
       dragState: 'drag-move',
       dragPercentage: this.getDragPercentage()
     });
@@ -152,7 +153,7 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
 
   private _dragStartListener() {
     this.dragService.state = new UIDragState({
-      guid: this.identifier,
+      guid: this.identifier(),
       dragState: 'drag-start',
       dragPercentage: this.getDragPercentage()
     });
@@ -160,7 +161,7 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
 
   private _dragEndListener() {
     this.dragService.state = new UIDragState({
-      guid: this.identifier,
+      guid: this.identifier(),
       dragState: 'drag-end',
       dragPercentage: this.getDragPercentage()
     });

@@ -1,13 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { RouterLinkActive, RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'tamu-gisc-account',
   templateUrl: './account.component.html',
-  styleUrls: ['./account.component.scss']
+  styleUrls: ['./account.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLinkActive, RouterLink, RouterOutlet]
 })
 export class AccountComponent {
-  constructor(private titleService: Title) {
+  private titleService = inject(Title);
+
+  constructor() {
     this.titleService.setTitle('Account | TxGIS Day');
   }
 }

@@ -1,9 +1,9 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 
 import { TestingService } from './application-testing.service';
 
 describe('TestingService', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({ providers: [TestingService] }).compileComponents();
   }));
 

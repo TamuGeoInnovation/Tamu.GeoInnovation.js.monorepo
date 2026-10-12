@@ -1,7 +1,8 @@
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef, ChangeDetectionStrategy, input } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-radio-group',
@@ -13,11 +14,12 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
       useExisting: forwardRef(() => RadioGroupComponent),
       multi: true
     }
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass]
 })
 export class RadioGroupComponent<Option extends object, Value> implements ControlValueAccessor {
-  @Input()
-  public options: Array<Option>;
+  public readonly options = input<Array<Option>>(undefined);
 
   /**
    * INTERNAL USE ONLY. Use `value` getter/setter instead.
@@ -38,11 +40,9 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
   @Input()
   public disabled = false;
 
-  @Input()
-  public displayPath: string;
+  public readonly displayPath = input<string>(undefined);
 
-  @Input()
-  public valuePath: string;
+  public readonly valuePath = input<string>(undefined);
 
   /**
    * Hook that can be used to execute an operation after the first value has been set.
@@ -88,7 +88,7 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
     let value;
 
     if (this.disabled === false) {
-      value = this.renderTemplate(option, this.valuePath);
+      value = this.renderTemplate(option, this.valuePath());
 
       this.value = value;
 

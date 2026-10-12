@@ -1,29 +1,29 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, input, output } from '@angular/core';
 
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
+import { SpeakerAvatarComponent } from '../speaker-avatar/speaker-avatar.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'tamu-gisc-presenter-card',
   templateUrl: './presenter-card.component.html',
-  styleUrls: ['./presenter-card.component.scss']
+  styleUrls: ['./presenter-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SpeakerAvatarComponent, RouterLink]
 })
 export class PresenterCardComponent implements OnInit {
-  @Input()
-  public speaker: Partial<Speaker>;
+  public readonly speaker = input<Partial<Speaker>>(undefined);
 
-  @Input()
-  public linkable = true;
+  public readonly linkable = input(true);
 
-  @Input()
-  public showActions = false;
+  public readonly showActions = input(false);
 
-  @Output()
-  public delete: EventEmitter<void> = new EventEmitter();
+  public readonly delete = output<void>();
 
   public speakerInitials: string;
 
   public ngOnInit(): void {
-    this.speakerInitials = this.speaker?.firstName[0] + this.speaker?.lastName[0];
+    this.speakerInitials = this.speaker()?.firstName[0] + this.speaker()?.lastName[0];
   }
 
   public emitAction(action: string): void {

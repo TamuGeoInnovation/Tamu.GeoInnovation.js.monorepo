@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import deepmerge from 'deepmerge';
@@ -12,6 +12,8 @@ export interface LayerSourceOverrides {
 
 @Injectable({ providedIn: 'root' })
 export class LayerSourcesService {
+  private environment = inject(EnvironmentService);
+
   private _layerSources: BehaviorSubject<LayerSource[]> = new BehaviorSubject<LayerSource[]>([]);
   private _overrides: BehaviorSubject<LayerSourceOverrides> = new BehaviorSubject<LayerSourceOverrides>({});
   private _legendOverrides: Map<string, LayerLegendOverride> = new Map();
@@ -19,7 +21,7 @@ export class LayerSourcesService {
   public readonly layerSources$: Observable<LayerSource[]> = this._layerSources.asObservable();
   public readonly overrides$: Observable<LayerSourceOverrides> = this._overrides.asObservable();
 
-  constructor(private environment: EnvironmentService) {
+  constructor() {
     this.initializeLayerSources();
   }
 

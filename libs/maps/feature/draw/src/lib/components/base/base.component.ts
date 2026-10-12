@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 import { from, Subject, combineLatest, ReplaySubject } from 'rxjs';
 import { takeUntil, filter, switchMap, take, map } from 'rxjs/operators';
 
@@ -9,16 +9,19 @@ import esri = __esri;
 
 @Component({
   template: '',
-  providers: [FeatureSelectorService]
+  providers: [FeatureSelectorService],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class BaseDrawComponent implements OnInit, OnDestroy {
+  private mapService = inject(EsriMapService);
+  moduleProvider = inject(EsriModuleProviderService);
+  private selector = inject(FeatureSelectorService);
+
   public model: ISketchViewModel;
 
-  @Input()
-  public reference: string;
+  public readonly reference = input<string>(undefined);
 
-  @Input()
-  public defaultUpdateTool: 'transform' | 'move' | 'reshape' = 'transform';
+  public readonly defaultUpdateTool = input<'transform' | 'move' | 'reshape'>('transform');
 
   public activeUpdateTool: 'transform' | 'move' | 'reshape';
 
@@ -30,79 +33,60 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
    * due to the single-geometry type limitation per graphic. Use when the desired output is a SINGLE
    * graphic with multiple polygons/lines/points.
    */
-  @Input()
-  public collapseGraphics = false;
+  public readonly collapseGraphics = input(false);
 
   // Update group/tools default rendering states
 
-  @Input()
-  public updateTools = true;
+  public readonly updateTools = input(true);
 
-  @Input()
-  public transformTool = true;
+  public readonly transformTool = input(true);
 
-  @Input()
-  public reshapeTool = true;
+  public readonly reshapeTool = input(true);
 
   // Create group/tools  default rendering states
 
-  @Input()
-  public createTools = true;
+  public readonly createTools = input(true);
 
-  @Input()
-  public pointTool = true;
+  public readonly pointTool = input(true);
 
-  @Input()
-  public polylineTool = true;
+  public readonly polylineTool = input(true);
 
-  @Input()
-  public polygonTool = true;
+  public readonly polygonTool = input(true);
 
-  @Input()
-  public rectangleTool = true;
+  public readonly rectangleTool = input(true);
 
-  @Input()
-  public circleTool = true;
+  public readonly circleTool = input(true);
 
   // Version group/tools  default rendering states
 
-  @Input()
-  public versionTools = true;
+  public readonly versionTools = input(true);
 
-  @Input()
-  public undoTool = true;
+  public readonly undoTool = input(true);
 
   @Input()
   public redoTool = true;
 
-  @Output()
-  public export: EventEmitter<esri.Graphic[] | esri.Graphic> = new EventEmitter();
+  public readonly export = output<esri.Graphic[] | esri.Graphic>();
 
   private _$destroy: Subject<boolean> = new Subject();
   private _$loaded: ReplaySubject<boolean> = new ReplaySubject();
   private _activeToolWatchHandle: esri.WatchHandle;
   private _layersAddWatchHandle: esri.WatchHandle;
 
-  constructor(
-    private mapService: EsriMapService,
-    public moduleProvider: EsriModuleProviderService,
-    private selector: FeatureSelectorService
-  ) {}
-
   public ngOnInit() {
-    this.activeUpdateTool = this.defaultUpdateTool;
+    this.activeUpdateTool = this.defaultUpdateTool();
 
-    if (this.reference !== undefined) {
+    if (this.reference() !== undefined) {
       combineLatest([from(this.moduleProvider.require(['SketchViewModel'])), this.mapService.store])
         .pipe(takeUntil(this._$destroy))
         .subscribe(([[SketchViewModel], mapInstance]: [[esri.SketchViewModelConstructor], MapServiceInstance]) => {
-          const l = mapInstance.map.findLayerById(this.reference);
+          const l = mapInstance.map.findLayerById(this.reference());
 
           this.model = new SketchViewModel({
             view: mapInstance.view,
             layer: l,
             defaultUpdateOptions: {
-              toggleToolOnClick: this.reshapeTool
+              toggleToolOnClick: this.reshapeTool()
             }
           });
 
@@ -139,7 +123,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
 
           this._activeToolWatchHandle = this.model.watch('activeTool', (tool) => {
             if (tool === null) {
-              this.activeUpdateTool = this.defaultUpdateTool;
+              this.activeUpdateTool = this.defaultUpdateTool();
             } else {
               this.activeUpdateTool = tool;
             }
@@ -153,11 +137,11 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
         });
 
       // If our update tools are disabled, default to the default model updating implementation.
-      if (this.updateTools) {
+      if (this.updateTools()) {
         this.selector.feature
           .pipe(
             switchMap((graphics) => from(graphics)),
-            filter((graphic) => Boolean(graphic.layer) && graphic.layer.id === this.reference),
+            filter((graphic) => Boolean(graphic.layer) && graphic.layer.id === this.reference()),
             takeUntil(this._$destroy)
           )
           .subscribe((res) => {
@@ -246,7 +230,8 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
   }
 
   public emitDrawn(features: esri.Collection<esri.Graphic>) {
-    if (this.collapseGraphics) {
+    const collapseGraphics = this.collapseGraphics();
+    if (collapseGraphics) {
       const collection = features.toArray();
 
       if (collection.length > 0) {
@@ -288,7 +273,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
           this.export.emit(cloned);
         } else {
           console.warn(
-            `Drawn feature collapsing is set to ${this.collapseGraphics}. Multiple geometry types were identified. Will not emit geometry.`
+            `Drawn feature collapsing is set to ${collapseGraphics}. Multiple geometry types were identified. Will not emit geometry.`
           );
         }
       } else {

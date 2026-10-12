@@ -1,5 +1,6 @@
-import { expect, Page, test } from '@playwright/test';
+import { Page } from '@playwright/test';
 
+import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { directionsAvailable, directionsEntryPoints } from './directions';
 

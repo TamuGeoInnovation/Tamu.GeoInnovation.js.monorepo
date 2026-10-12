@@ -1,6 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 import { AlertModalComponent, AlertModalData } from './alert-modal.component';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import {
+  SelectComponent,
+  CheckboxComponent,
+  CheckboxGroupComponent,
+  DateTimePickerComponent,
+  TextboxComponent,
+  AutocompleteComponent,
+  AutocompleteOptionTemplateDirective,
+  ButtonComponent,
+  FileComponent,
+  RadioGroupComponent,
+  RangeComponent,
+  SlideToggleComponent,
+  SelectListComponent,
+  TurnstileChallengeComponent
+} from '@tamu-gisc/ui-kits/ngx/forms';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 
@@ -26,8 +41,14 @@ describe('AlertModalComponent', () => {
       persistKey: 'test_key'
     };
 
-    // instantiate directly to avoid Angular TestBed injection complexities
-    component = new AlertModalComponent(mockModalRef as any, mockSettingsService as any, data as any);
+    // Constructed directly, without rendering the template.
+    component = TestBed.configureTestingModule({
+      providers: [
+        { provide: ModalRefService, useValue: mockModalRef },
+        { provide: SettingsService, useValue: mockSettingsService },
+        { provide: MODAL_DATA, useValue: data }
+      ]
+    }).runInInjectionContext(() => new AlertModalComponent());
   });
 
   it('should create', () => {
@@ -55,8 +76,23 @@ describe('AlertModalComponent', () => {
 describe('AlertModalComponent template', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UIFormsModule],
-      declarations: [AlertModalComponent],
+      imports: [
+        SelectComponent,
+        CheckboxComponent,
+        CheckboxGroupComponent,
+        DateTimePickerComponent,
+        TextboxComponent,
+        AutocompleteComponent,
+        AutocompleteOptionTemplateDirective,
+        ButtonComponent,
+        FileComponent,
+        RadioGroupComponent,
+        RangeComponent,
+        SlideToggleComponent,
+        SelectListComponent,
+        TurnstileChallengeComponent,
+        AlertModalComponent
+      ],
       providers: [
         { provide: ModalRefService, useValue: { close: jest.fn() } },
         { provide: SettingsService, useValue: { updateSettings: jest.fn() } },

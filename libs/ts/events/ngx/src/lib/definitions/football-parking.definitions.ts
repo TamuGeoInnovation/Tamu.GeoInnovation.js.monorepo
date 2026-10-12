@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 // import { getDefaultGisHost } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 /**
  * Football gameday transportation map.
@@ -113,13 +113,10 @@ export enum FOOTBALL_PARKING_LAYERS {
   FP_RV_PARKING_LOTS = 'football-rv-parking-lots',
 
   // --- Micromobility ---
+  // In the order the services publish them, which is the order Transportation asked for (#996).
   FP_MICROMOBILITY_PARKING = 'football-micromobility-parking',
+  FP_MICROMOBILITY_ENTRY_ROUTES = 'football-micromobility-entry-routes',
   FP_MICROMOBILITY_EXIT_ROUTES = 'football-micromobility-exit-routes',
-  // FP_BIKE_LANES is withheld with its layer - see #1036. It cannot simply be left here: this enum is
-  // exported as the map's `references`, and the event service resolves every member to a layer source,
-  // so a member without one throws "Layer source reference 'football-bike-lanes' not found" and the
-  // map fails to build its areas.
-  // FP_BIKE_LANES = 'football-bike-lanes',
   FP_BIKE_DISMOUNT_ZONES = 'football-bike-dismount-zones',
   FP_BIKE_VEO_GEOFENCE = 'football-bike-veo-geofence',
 
@@ -189,16 +186,19 @@ const hiddenNative = (overrides: Partial<FeatureNativeProps> = {}): FeatureNativ
     visible: false,
     listMode: 'hide',
     ...overrides
-  } as unknown as FeatureNativeProps);
+  }) as unknown as FeatureNativeProps;
 
 /**
- * Route arrow colors, keyed by travel type. Every route layer publishes as a flat solid green line
- * regardless of mode, so the cyclist and pedestrian maps are re-colored here to match the scheme
- * used across the other event maps.
+ * Route arrow colors, keyed by travel type, for the route layers that still publish a flat solid
+ * green line regardless of mode.
+ *
+ * The micromobility routes no longer need one: `FBike_entry/1` and `FBike_exit/2` publish their own
+ * purple line, so both draw what the service says and a change made in ArcGIS reaches the map without
+ * a release (#996). The vehicle and pedestrian routes are the remaining overrides; removing those is
+ * part of the audit in #1028.
  */
 const ROUTE_COLORS = {
   vehicle: 'rgb(38, 115, 0)',
-  cyclist: 'rgb(112, 48, 160)',
   pedestrian: 'rgb(0, 92, 230)'
 };
 
@@ -208,7 +208,7 @@ const arrowLineSymbol = (color: string, width = 3): esri.SimpleLineSymbolPropert
   color,
   width,
   style: 'solid',
-  marker: { style: 'arrow', color, placement: 'end' }
+  marker: { type: 'line-marker', style: 'arrow', color, placement: 'end' }
 });
 
 /** Renderer for a route layer whose features are all a single travel type. */
@@ -216,7 +216,7 @@ const routeRenderer = (color: string) =>
   ({
     type: 'simple',
     symbol: arrowLineSymbol(color)
-  } as unknown as FeatureRenderer);
+  }) as unknown as FeatureRenderer;
 
 const createCimHatchPolygonSymbol = (
   outlineColor: number[],
@@ -399,6 +399,13 @@ const lotLabelingInfo = [
 ] as unknown as FeatureLabelingInfo;
 
 /**
+ * `native` for every Football Parking Lots layer (the four vehicle modes and RV). Staff change a lot's
+ * class during game day, to Lot Closed for example, by editing the service; polling it every minute
+ * redraws the change for visitors who already have the map open, without a reload (#1587).
+ */
+const lotsNative = (): FeatureNativeProps => hiddenNative({ labelingInfo: lotLabelingInfo, refreshInterval: 1 });
+
+/**
  * The gameday/micromobility/rideshare picture markers are pin-shaped (natural ~60x73, 0.82 ratio) but
  * the service renderer forces them into a 25x25 square, which stretches them wide on the map AND in
  * the legend swatch. Re-render both at a matching ~0.82 ratio. `EsriMapService` applies these
@@ -499,7 +506,7 @@ const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
           id: mode.layers.entryRoutes,
           title: 'Entry Routes',
           url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.ENTRY_ROUTES}`,
-          popupComponent: MarkdownPopupComponent,
+          popupComponent: EventPopups.MarkdownPopupComponent,
           popupData: {
             name: 'attributes.location',
             description: 'attributes.description'
@@ -515,7 +522,7 @@ const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
       id: mode.layers.gamedayParking,
       title: 'Gameday Parking',
       url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.GAMEDAY_PARKING}`,
-      popupComponent: MarkdownPopupComponent,
+      popupComponent: EventPopups.MarkdownPopupComponent,
       popupData: {
         name: 'attributes.notes',
         description: 'attributes.notes_1'
@@ -529,7 +536,7 @@ const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
       id: mode.layers.exitRoutes,
       title: 'Exit Routes',
       url: `${mode.exitUrl}/${VEHICLE_LAYER_INDEX.EXIT_ROUTES}`,
-      popupComponent: MarkdownPopupComponent,
+      popupComponent: EventPopups.MarkdownPopupComponent,
       popupData: {
         name: 'attributes.location',
         description: 'attributes.description'
@@ -541,7 +548,7 @@ const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
       id: mode.layers.streetGrass,
       title: 'Street Grass Areas (Click for details)',
       url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.STREET_GRASS}`,
-      popupComponent: MarkdownPopupComponent,
+      popupComponent: EventPopups.MarkdownPopupComponent,
       popupData: {
         name: 'attributes.name',
         description: 'attributes.anote'
@@ -553,12 +560,12 @@ const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
       id: mode.layers.lots,
       title: 'Football Parking Lots',
       url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.LOTS}`,
-      popupComponent: MarkdownPopupComponent,
+      popupComponent: EventPopups.MarkdownPopupComponent,
       popupData: {
         name: 'attributes.lotname',
         description: 'attributes.note'
       },
-      native: hiddenNative({ labelingInfo: lotLabelingInfo })
+      native: lotsNative()
     }
   ];
 };
@@ -572,7 +579,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_RIDESHARE_LOCATIONS,
     title: 'Rideshare Locations',
     url: `${HOSTED_ROOT}/RS_view/FeatureServer/0`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.notes',
       description: 'attributes.notes_1'
@@ -587,7 +594,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_SHUTTLE_STOPS,
     title: 'Campus Shuttle Stops',
     url: `${HOSTED_ROOT}/Football_Shuttle_View/FeatureServer/5`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.stopname}',
       description: 'For route: {attributes.routename}'
@@ -599,7 +606,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_SHUTTLE_ROUTES,
     title: 'Shuttle Routes',
     url: `${HOSTED_ROOT}/Football_Shuttle_View/FeatureServer/6`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.routename} ({attributes.routenum})'
     },
@@ -612,7 +619,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_RV_GAMEDAY_PARKING,
     title: 'Gameday Parking',
     url: `${HOSTED_ROOT}/RV_view/FeatureServer/0`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.notes',
       description: 'attributes.notes_1'
@@ -625,7 +632,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_RV_RNS_SPACES,
     title: 'RNS Spaces',
     url: `${HOSTED_ROOT}/RV_view/FeatureServer/2`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.rv_spcnum',
       description: 'attributes.spc_type'
@@ -637,7 +644,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_RV_STRIPES,
     title: 'Stripes',
     url: `${HOSTED_ROOT}/RV_view/FeatureServer/1`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.use_',
       description: 'attributes.location'
@@ -649,7 +656,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_RV_STREET_GRASS_AREAS,
     title: 'Street Grass Areas (Click for details)',
     url: `${HOSTED_ROOT}/RV_view/FeatureServer/3`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.anote'
@@ -661,24 +668,32 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_RV_PARKING_LOTS,
     title: 'Football Parking Lots',
     url: `${HOSTED_ROOT}/RV_view/FeatureServer/4`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.lotname',
       description: 'attributes.note'
     },
-    native: hiddenNative({ labelingInfo: lotLabelingInfo })
+    native: lotsNative()
   },
 
   // --- Micromobility ---
+  // Declared in the order the services publish them - Parking Area, Entry Routes, Exit Routes,
+  // Dismount Zones, Veo Geofence - because that is the order Transportation asked for and the order
+  // the layer list reads in (#996).
+  //
   // The parking, dismount and geofence layers are identical copies in the entry and exit services, so
-  // they are sourced from the entry service and shown for both directions. Bike Lanes exist only on
+  // they are sourced from the entry service and shown for both directions. Entry Routes exist only on
   // the entry service and Exit Routes only on the exit service.
+  //
+  // Bike Lanes used to sit here, withheld because `FBike_entry` published no layer by that name
+  // (#1036). Transportation has since confirmed the bike lane markings were removed from the service
+  // deliberately, so there is nothing to restore and the placeholder is gone.
   {
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_PARKING,
     title: 'Micromobility Parking Area',
     url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/0`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.type',
       description: 'attributes.br_notes'
@@ -687,40 +702,37 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     native: hiddenNative()
   },
   {
+    // The entry map had no route layer at all: the service grew `Entry Routes` and nothing here read
+    // it, so arriving cyclists were shown parking and dismount zones and no way to reach them (#996).
     type: 'feature',
-    id: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_EXIT_ROUTES,
-    title: 'Exit Routes',
-    url: `${HOSTED_ROOT}/FBike_exit/FeatureServer/2`,
-    popupComponent: MarkdownPopupComponent,
+    id: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_ENTRY_ROUTES,
+    title: 'Entry Routes',
+    url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/1`,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.location',
       description: 'attributes.description'
     },
-    native: hiddenNative({ renderer: routeRenderer(ROUTE_COLORS.cyclist) })
+    native: hiddenNative()
   },
-  // Bike Lanes is withheld until we know where its data went. `FBike_entry` publishes no layer by
-  // that name, and the index this used to point at (4) is Bike Veo Geofence - so it was drawing the
-  // geofence under the Bike Lanes label, with no error. Showing nothing is better than confidently
-  // showing the wrong thing. Restore this once the source is identified. See #1036.
-  //
-  // {
-  //   type: 'feature',
-  //   id: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
-  //   title: 'Bike Lanes',
-  //   url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/?`,
-  //   popupComponent: MarkdownPopupComponent,
-  //   popupData: {
-  //     name: 'attributes.use_',
-  //     description: 'attributes.location'
-  //   },
-  //   native: hiddenNative()
-  // },
+  {
+    type: 'feature',
+    id: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_EXIT_ROUTES,
+    title: 'Exit Routes',
+    url: `${HOSTED_ROOT}/FBike_exit/FeatureServer/2`,
+    popupComponent: EventPopups.MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.location',
+      description: 'attributes.description'
+    },
+    native: hiddenNative()
+  },
   {
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_BIKE_DISMOUNT_ZONES,
     title: 'Bike Dismount Zones',
     url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/3`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.bike_notes'
@@ -732,7 +744,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_BIKE_VEO_GEOFENCE,
     title: 'Bike Veo Geofence',
     url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/4`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.type'
@@ -749,7 +761,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     id: FOOTBALL_PARKING_LAYERS.FP_PEDESTRIAN_EXIT_ROUTES,
     title: 'Exit Routes',
     url: `${HOSTED_ROOT}/Football_Pedestrian_Exit/FeatureServer/3`,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.location',
       description: 'attributes.description'
@@ -767,18 +779,15 @@ export const FootballParkingConfiguration: EventConfiguration = {
   // 2026 home schedule (7 home dates at Kyle Field), per the SEC-released schedule:
   // 9/5 Missouri State, 9/12 Arizona State, 9/19 Kentucky, 10/3 Arkansas, 10/17 The Citadel,
   // 11/14 Tennessee, 11/27 Texas (Black Friday). https://12thman.com/news/2025/12/11/2026-texas-am-football-schedule-announced
-  eventDates: [
-    '2026-09-05',
-    '2026-09-12',
-    '2026-09-19',
-    '2026-10-03',
-    '2026-10-17',
-    '2026-11-14',
-    '2026-11-27'
-  ],
+  eventDates: ['2026-09-05', '2026-09-12', '2026-09-19', '2026-10-03', '2026-10-17', '2026-11-14', '2026-11-27'],
   scheduleUrl: 'https://12thman.com/sports/football/schedule',
   mapCenter: [-96.34344, 30.61011],
   zoom: 16,
+  // The layer list follows the order the layers are declared in, which is the order the services
+  // publish them. Alphabetical is the default and was the other half of "they appear to be
+  // scrambled" in #996: the entry map listed Bike Dismount Zones, Bike Veo Geofence, Micromobility
+  // Parking Area, while the legend right below it listed the same three the other way round (#1433).
+  referenceLayerListOrder: 'source',
   defaultLayerOverrides: {
     'construction_zone-layer': {
       visible: false
@@ -903,15 +912,13 @@ export const FootballParkingOptions: SpecialEventOptions = [
           conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
         },
         {
+          layerId: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_ENTRY_ROUTES,
+          conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
+        },
+        {
           layerId: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_EXIT_ROUTES,
           conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
         },
-        // Bike Lanes is withheld - see the note on its layer definition and #1036. The previous
-        // comment here said it exists only on the entry service; it does not exist on either.
-        // {
-        //   layerId: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
-        //   conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
-        // },
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_BIKE_DISMOUNT_ZONES,
           conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
@@ -1008,16 +1015,15 @@ export const FootballParkingOptions: SpecialEventOptions = [
         ...VEHICLE_MODES.flatMap(vehicleModeDirectionEffects),
 
         {
+          // Micromobility entry routes come from the entry service; hide them on the exit map.
+          layerId: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_ENTRY_ROUTES,
+          conversions: [{ input: Direction.EXIT, propOverrides: HIDE }]
+        },
+        {
           // Micromobility exit routes come from the exit service; hide them on the entry map.
           layerId: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_EXIT_ROUTES,
           conversions: [{ input: Direction.ENTRY, propOverrides: HIDE }]
-        },
-        // Bike Lanes is withheld - see the note on its layer definition and #1036. This hid it on the
-        // exit map; with no layer to hide, the rule has nothing to act on.
-        // {
-        //   layerId: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
-        //   conversions: [{ input: Direction.EXIT, propOverrides: HIDE }]
-        // }
+        }
       ]
     }
   }

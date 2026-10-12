@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { TripPlannerService } from '../../../services/trip-planner.service';
 import { TripPlannerParkingOptionsComponent } from '../components/parking/trip-planner-parking-options.component';
@@ -6,7 +6,7 @@ import { TripPlannerBikingOptionsComponent } from '../components/biking/trip-pla
 
 @Injectable({ providedIn: 'root' })
 export class TripPlannerOptionsComponentService {
-  constructor(private tripPlanner: TripPlannerService) {}
+  private tripPlanner = inject(TripPlannerService);
 
   private _dictionary = [
     { type: 'parking_pass', component: TripPlannerParkingOptionsComponent },

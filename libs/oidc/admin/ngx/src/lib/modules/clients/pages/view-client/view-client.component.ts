@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { map, mergeMap, Observable, toArray } from 'rxjs';
 
@@ -8,7 +8,9 @@ import { IClientData } from '@tamu-gisc/oidc/common';
 @Component({
   selector: 'tamu-gisc-view-client',
   templateUrl: './view-client.component.html',
-  styleUrls: ['./view-client.component.scss']
+  styleUrls: ['./view-client.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class ViewClientComponent implements OnInit {
   public $clients: Observable<Array<Partial<IClientData>>>;

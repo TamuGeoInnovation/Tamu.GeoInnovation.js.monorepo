@@ -1,22 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
 
 import { ContactService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-contact',
   templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.scss']
+  styleUrls: ['./contact.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe]
 })
 export class ContactComponent implements OnInit {
+  private titleService = inject(Title);
+  private fb = inject(UntypedFormBuilder);
+  private contactService = inject(ContactService);
+
   public form: UntypedFormGroup;
   public formStatus: BehaviorSubject<string> = new BehaviorSubject('ready');
   public buttonText: Observable<string>;
 
-  constructor(private titleService: Title, private fb: UntypedFormBuilder, private contactService: ContactService) {
+  constructor() {
     this.titleService.setTitle('Contact | TxGIS Day');
   }
 

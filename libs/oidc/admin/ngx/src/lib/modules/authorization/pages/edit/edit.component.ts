@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Observable, startWith, Subject, switchMap } from 'rxjs';
 
@@ -9,13 +9,18 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 @Component({
   selector: 'tamu-gisc-edit',
   templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.scss']
+  styleUrls: ['./edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class EditComponent implements OnInit {
   private _$refresh: Subject<boolean> = new Subject();
   public $userRoles: Observable<Array<Partial<ISimplifiedUserRoleResponse>>>;
 
-  constructor(private readonly userRoleService: UserRoleService, private notificationService: NotificationService) {}
+  constructor(
+    private readonly userRoleService: UserRoleService,
+    private notificationService: NotificationService
+  ) {}
 
   public ngOnInit() {
     this.$userRoles = this._$refresh.pipe(

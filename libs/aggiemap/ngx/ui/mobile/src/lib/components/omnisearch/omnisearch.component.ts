@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
-import { Location } from '@angular/common';
+import { Location, AsyncPipe } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
@@ -11,6 +11,9 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { SearchSelection, AltSearchHelper } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { offCanvasSlideInFromBottom, offCanvasSlideUpFromTop } from '../../animations/elements';
+import { SearchMobileComponent } from '@tamu-gisc/ui-kits/ngx/search';
+
+import { BackdropComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
 
@@ -19,9 +22,20 @@ import esri = __esri;
   templateUrl: './omnisearch.component.html',
   styleUrls: ['./omnisearch.component.scss'],
   animations: [offCanvasSlideInFromBottom, offCanvasSlideUpFromTop],
-  providers: [AltSearchHelper]
+  providers: [AltSearchHelper],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SearchMobileComponent, BackdropComponent, AsyncPipe]
 })
 export class OmnisearchComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private history = inject(RouterHistoryService);
+  private location = inject(Location);
+  private mapService = inject(EsriMapService);
+  private plannerService = inject(TripPlannerService);
+  private dragService = inject(DragService);
+  private helper = inject(AltSearchHelper);
+
   /**
    * Determines the backdrop visibility
    */
@@ -53,16 +67,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
 
   private _lastRoute: string;
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private history: RouterHistoryService,
-    private location: Location,
-    private mapService: EsriMapService,
-    private plannerService: TripPlannerService,
-    private dragService: DragService,
-    private helper: AltSearchHelper
-  ) {
+  constructor() {
     // Set default search icon on search component on omnisearch initialize.
     this.searchComponentLeftAction = 'menu';
   }

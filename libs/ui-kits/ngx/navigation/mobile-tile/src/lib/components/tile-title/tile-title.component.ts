@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, inject } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-tile-title',
@@ -6,9 +6,9 @@ import { Component, OnInit, ElementRef } from '@angular/core';
   styleUrls: ['./tile-title.component.scss']
 })
 export class TileTitleComponent implements OnInit {
-  public title: string;
+  private view = inject(ElementRef);
 
-  constructor(private view: ElementRef) {}
+  public title: string;
 
   public ngOnInit() {
     this.title = (this.view.nativeElement as HTMLElement).innerText;

@@ -1,10 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
-  CanActivate,
-  CanActivateChild,
-  CanLoad,
   Route,
   Router,
   RouterStateSnapshot,
@@ -18,12 +15,10 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 @Injectable({
   providedIn: 'root'
 })
-export class RouteParamsGuard implements CanActivate, CanLoad, CanActivateChild {
-  constructor(
-    private readonly ar: ActivatedRoute,
-    private readonly es: EventSettingsService,
-    private readonly router: Router
-  ) {}
+export class RouteParamsGuard {
+  private readonly ar = inject(ActivatedRoute);
+  private readonly es = inject(EventSettingsService);
+  private readonly router = inject(Router);
 
   public canActivate(
     route: ActivatedRouteSnapshot,

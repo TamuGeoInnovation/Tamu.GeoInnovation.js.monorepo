@@ -9,8 +9,7 @@ describe('MobileTabNavigationTabComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([])],
-      declarations: [MobileTabNavigationTabComponent]
+      imports: [RouterTestingModule.withRoutes([]), MobileTabNavigationTabComponent]
     }).compileComponents();
   }));
 
@@ -32,7 +31,7 @@ describe('MobileTabNavigationTabComponent', () => {
    * failure hard to attribute.
    */
   it('navigates to its configured route when clicked', () => {
-    component.route = 'test-route';
+    fixture.componentRef.setInput('route', 'test-route');
 
     const spy = jest.spyOn(component, 'navigate');
 

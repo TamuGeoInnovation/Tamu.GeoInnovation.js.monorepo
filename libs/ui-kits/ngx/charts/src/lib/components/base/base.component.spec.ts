@@ -1,11 +1,11 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 
 import { BaseChartComponent } from './base.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ChartConfiguration, ChartContainerComponent } from '../chart-container/chart-container.component';
 
 describe('BaseChartComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({ providers: [BaseChartComponent] }).compileComponents();
   }));
 
@@ -69,6 +69,6 @@ describe('BaseChartComponent', () => {
         'invalidPath',
         'invalidCollection'
       )
-    ).toThrowError(new Error('Invalid chart operator: invalidSet'));
+    ).toThrow(new Error('Invalid chart operator: invalidSet'));
   }));
 });

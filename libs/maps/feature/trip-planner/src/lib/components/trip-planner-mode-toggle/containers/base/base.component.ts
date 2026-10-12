@@ -1,17 +1,23 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, inject, input } from '@angular/core';
 import { Observable, from, of, iif, Subject } from 'rxjs';
 import { switchMap, filter, withLatestFrom, map, mergeMap, pluck, takeUntil, shareReplay } from 'rxjs/operators';
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripResult } from '../../../../core/trip-planner-core';
+import { NgClass, AsyncPipe } from '@angular/common';
+
+import { TimeUntilPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-mode-toggle',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgClass, AsyncPipe, TimeUntilPipe]
 })
 export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
+  private tripPlanner = inject(TripPlannerService);
+
   /**
    * Given each travel type (Walking) can have more than one travel modes (1 & 2),
    * this list represents all the possible travel modes this single toggle will represent.
@@ -20,16 +26,14 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
    *
    * **Defaults to an empty array if none provided.**
    */
-  @Input()
-  public activeModes: number[] = [];
+  public readonly activeModes = input<number[]>([]);
 
   /**
    * Material Icon name.
    *
    * Possible list of icons found @ https://material.io/tools/icons/?style=baseline
    */
-  @Input()
-  public iconName: string;
+  public readonly iconName = input<string>(undefined);
 
   /**
    * Simple travel type name such as:
@@ -40,14 +44,12 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
    *
    * This name must match one of the TripPlanner service rules.
    */
-  @Input()
-  public name: string;
+  public readonly name = input<string>(undefined);
 
   /**
    * Short text description of the mode. Used for alt and aria label text.
    */
-  @Input()
-  public label: string;
+  public readonly label = input<string>(undefined);
 
   /**
    * Single trip result for the specified travel mode derived from trip planner results collection.
@@ -76,14 +78,12 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
 
   private $destroy: Subject<boolean> = new Subject();
 
-  constructor(private tripPlanner: TripPlannerService) {}
-
   public ngOnInit() {
     // One every trip planner result change, calculate the current travel mode.
     this.tripPlanner.TravelOptions.pipe(
       pluck('travel_mode'),
       switchMap(() => {
-        const thisToggleMode = this.tripPlanner.calculateTravelMode(this.activeModes);
+        const thisToggleMode = this.tripPlanner.calculateTravelMode(this.activeModes());
 
         return of(thisToggleMode);
       }),
@@ -146,7 +146,7 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
     this.active = this.tripPlanner.TravelOptions.pipe(
       pluck('travel_mode'),
       map((val: number) => {
-        return this.activeModes.includes(val);
+        return this.activeModes().includes(val);
       })
     );
 
@@ -167,7 +167,7 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
             if (
               curr.params &&
               curr.params.travelMode &&
-              this.activeModes.includes(parseInt(curr.params.travelMode.id, 10))
+              this.activeModes().includes(parseInt(curr.params.travelMode.id, 10))
             ) {
               // Current result has params, travel mode, and travel mode is in the toggle modes array.
               newAccumulated.toggleHasResult = true;
@@ -176,7 +176,7 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
             if (newAccumulated.toggleHasResult === false) {
               const qualifying = this.tripPlanner.getQualifyingTravelModes(true);
               const toggleModesInQualifying = qualifying.some((m) => {
-                return this.activeModes.includes(m);
+                return this.activeModes().includes(m);
               });
 
               if (!toggleModesInQualifying) {
@@ -203,7 +203,7 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
    */
   public setTravelMode = () => {
     this.tripPlanner.calculateTravelMode(
-      this.activeModes.map((mode) => mode),
+      this.activeModes().map((mode) => mode),
       true
     );
   };

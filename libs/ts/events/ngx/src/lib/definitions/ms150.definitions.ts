@@ -1,12 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum MS150_LAYERS {
   AVP_PARKING = 'ms150-avp-parking',
@@ -41,9 +41,8 @@ export const MS150ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MS150Definitions.AVP_PARKING.id,
-    title: MS150Definitions.AVP_PARKING.name,
     url: MS150Definitions.AVP_PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: `{attributes.description}`
@@ -57,9 +56,8 @@ export const MS150ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MS150Definitions.PARKING.id,
-    title: MS150Definitions.PARKING.name,
     url: MS150Definitions.PARKING.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.name}',
       description: `{attributes.description}`
@@ -74,26 +72,11 @@ export const MS150ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MS150Definitions.ROUTE.id,
-    title: MS150Definitions.ROUTE.name,
     url: MS150Definitions.ROUTE.url,
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-line',
-          color: 'rgb(56, 168, 0)',
-          width: 2.5,
-          style: 'solid',
-          marker: {
-            style: 'arrow',
-            color: 'rgb(56, 168, 0)',
-            placement: 'end'
-          }
-        }
-      }
+      outFields: ['*']
     }
   }
 ];

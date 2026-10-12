@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -10,7 +10,9 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 @Component({
   selector: 'tamu-gisc-detail-role',
   templateUrl: './detail-role.component.html',
-  styleUrls: ['./detail-role.component.scss']
+  styleUrls: ['./detail-role.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class DetailRoleComponent implements OnInit {
   public roleGuid: string;

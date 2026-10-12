@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BehaviorSubject } from 'rxjs';
 
@@ -17,9 +17,9 @@ describe('TileSubmenuComponent', () => {
     }
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TileSubmenuComponent],
+      imports: [TileSubmenuComponent],
       providers: [{ provide: TileService, useValue: TileServiceStub }]
     }).compileComponents();
   }));
@@ -27,7 +27,7 @@ describe('TileSubmenuComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TileSubmenuComponent);
     component = fixture.componentInstance;
-    TileServiceStub = TestBed.get(TileService);
+    TileServiceStub = TestBed.inject(TileService);
     fixture.detectChanges();
   });
 
@@ -38,6 +38,6 @@ describe('TileSubmenuComponent', () => {
   it('should call toggleSubmenu', () => {
     const yeet = jest.spyOn(TileServiceStub, 'toggleSubmenu');
     component.close();
-    expect(yeet).toBeCalled();
+    expect(yeet).toHaveBeenCalled();
   });
 });

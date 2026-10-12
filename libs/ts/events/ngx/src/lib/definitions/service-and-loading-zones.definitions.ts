@@ -1,13 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum SERVICE_LOADING_LAYERS {
   SERVICE_SPACES = 'service-parking-spaces',
@@ -34,11 +33,10 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: ServiceLoadingDefinitions.SERVICE_SPACES.id,
-    title: ServiceLoadingDefinitions.SERVICE_SPACES.name,
     url: ServiceLoadingDefinitions.SERVICE_SPACES.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.LotName}',
       description: {
@@ -65,11 +63,10 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: ServiceLoadingDefinitions.SERVICE_LOTS.id,
-    title: ServiceLoadingDefinitions.SERVICE_LOTS.name,
     url: ServiceLoadingDefinitions.SERVICE_LOTS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',

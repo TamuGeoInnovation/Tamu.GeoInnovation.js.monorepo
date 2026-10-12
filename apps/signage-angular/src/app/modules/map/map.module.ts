@@ -2,22 +2,28 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
 
 import { MapComponent } from './components/map/map.component';
-import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
+import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
+import { SidebarComponent, SidebarTabComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
-import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
+
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
 import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
-import { UiKitsNgxChartsModule } from '@tamu-gisc/ui-kits/ngx/charts';
+import {
+  BaseChartComponent,
+  BarChartComponent,
+  LineChartComponent,
+  DoughnutChartComponent,
+  PieChartComponent
+} from '@tamu-gisc/ui-kits/ngx/charts';
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
-import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
+import { PopupComponent, PopupMobileComponent, RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
 import { SignageModule } from '@tamu-gisc/signage';
 
 const routes: Routes = [{ path: '', component: MapComponent }];
@@ -26,18 +32,26 @@ const routes: Routes = [{ path: '', component: MapComponent }];
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    EsriMapModule,
-    SearchModule,
-    SidebarModule,
+    EsriMapComponent,
+    SearchComponent,
+    SearchMobileComponent,
+    SearchResultPipe,
+    SidebarComponent,
+    SidebarTabComponent,
     UITamuBrandingModule,
     LayerListModule,
-    ResponsiveModule,
     CommonNgxRouterModule,
     LayerFilterModule,
     FeatureSelectorModule,
-    UiKitsNgxChartsModule,
+    BaseChartComponent,
+    BarChartComponent,
+    LineChartComponent,
+    DoughnutChartComponent,
+    PieChartComponent,
     MapDrawingModule,
-    MapPopupModule,
+    PopupComponent,
+    PopupMobileComponent,
+    RevealSidebarOnPopupDirective,
     SignageModule
   ],
   declarations: [MapComponent]

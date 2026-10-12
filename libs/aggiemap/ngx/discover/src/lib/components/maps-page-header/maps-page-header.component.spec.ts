@@ -1,10 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { MapsPageHeaderComponent } from './maps-page-header.component';
 
-@Component({ selector: 'tamu-gisc-test-page', template: 'page' })
+@Component({
+  selector: 'tamu-gisc-test-page',
+  template: 'page',
+  changeDetection: ChangeDetectionStrategy.Eager
+})
 class TestPageComponent {}
 
 /**
@@ -31,13 +35,14 @@ describe('MapsPageHeaderComponent', () => {
         RouterTestingModule.withRoutes([
           { path: 'map', component: TestPageComponent },
           { path: 'all-maps', component: TestPageComponent }
-        ])
-      ],
-      declarations: [MapsPageHeaderComponent, TestPageComponent]
+        ]),
+        MapsPageHeaderComponent,
+        TestPageComponent
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MapsPageHeaderComponent);
-    fixture.componentInstance.title = 'Campus Events';
+    fixture.componentRef.setInput('title', 'Campus Events');
     fixture.detectChanges();
   });
 

@@ -4,21 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/accessibility/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/accessibility"],
       "options": {
         "jestConfig": "libs/maps/feature/accessibility/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/accessibility"]
+        "tsConfig": "libs/maps/feature/accessibility/tsconfig.spec.json"
+      }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/maps/feature/accessibility/src/**/*.ts", "libs/maps/feature/accessibility/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

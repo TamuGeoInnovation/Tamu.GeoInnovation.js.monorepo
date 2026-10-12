@@ -1,4 +1,13 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  inject,
+  input,
+  viewChild
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject, Observable } from 'rxjs';
 import { switchMap, takeUntil, shareReplay, distinctUntilChanged, take, filter } from 'rxjs/operators';
@@ -8,27 +17,35 @@ import { Angulartics2 } from 'angulartics2';
 
 import { TSRoute, BusService } from '@tamu-gisc/maps/feature/trip-planner';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { NgClass } from '@angular/common';
+import { AccordionComponent as AccordionComponent_1 } from '@tamu-gisc/ui-kits/ngx/layout';
+import { BusListHeaderComponent } from '../bus-list-header/bus-list-header.component';
+import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { BusTimetableComponent } from '../bus-timetable/bus-timetable.component';
 
 @Component({
   selector: 'tamu-gisc-bus-route',
   templateUrl: './bus-route.component.html',
-  styleUrls: ['./bus-route.component.scss']
+  styleUrls: ['./bus-route.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, AccordionComponent_1, BusListHeaderComponent, AccordionContentComponent, BusTimetableComponent]
 })
 export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
+  private busService = inject(BusService);
+  private readonly router = inject(Router);
+  private readonly rt = inject(ActivatedRoute);
+  private readonly analytics = inject(Angulartics2);
+
   /**
    * Provided TSRoute object from the parent component.
    */
-  @Input()
-  public route: TSRoute;
+  public readonly route = input<TSRoute>(undefined);
 
-  @Input()
-  public selection: 'route' | 'in-place' = 'in-place';
+  public readonly selection = input<'route' | 'in-place'>('in-place');
 
-  @Input()
-  public eagerLoad = false;
+  public readonly eagerLoad = input(false);
 
-  @ViewChild(AccordionComponent, { static: false })
-  public accordion;
+  public readonly accordion = viewChild(AccordionComponent);
 
   /**
    * Describes whether or not any given bus route is drawn on the map.
@@ -45,13 +62,6 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(
-    private busService: BusService,
-    private readonly router: Router,
-    private readonly rt: ActivatedRoute,
-    private readonly analytics: Angulartics2
-  ) {}
-
   public ngOnInit() {
     // Each route makes a subscription to this function that returns a boolean
     // function value describing whether their bound route, waypoints, or buses
@@ -61,7 +71,7 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
       takeUntil(this._destroy$),
       switchMap((graphics) => {
         const anyGraphicsForProvidedRoute = graphics.some((graphic) => {
-          return graphic.attributes.id === this.route.ShortName;
+          return graphic.attributes.id === this.route().ShortName;
         });
 
         return of(anyGraphicsForProvidedRoute);
@@ -88,10 +98,10 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
         take(1)
       )
       .subscribe(() => {
-        if (this.eagerLoad) {
+        if (this.eagerLoad()) {
           this.toggleRoute();
 
-          this.accordion.toggle();
+          this.accordion().toggle();
         }
       });
   }
@@ -105,18 +115,20 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
    * Either removes or adds the bound route features to/from the map.
    */
   public toggleRoute(): void {
-    this.reportToggleRoute(this.route.ShortName);
+    const route = this.route();
+    this.reportToggleRoute(route.ShortName);
 
-    if (this.selection === 'route') {
-      this.router.navigate([this.route.ShortName], { relativeTo: this.rt });
+    const selection = this.selection();
+    if (selection === 'route') {
+      this.router.navigate([route.ShortName], { relativeTo: this.rt });
     }
 
     if (!this.isLoading) {
       this.isLoading = true;
     }
 
-    if (this.selection === 'in-place') {
-      this.busService.toggleMapRoute(this.route.ShortName);
+    if (selection === 'in-place') {
+      this.busService.toggleMapRoute(route.ShortName);
     }
   }
 

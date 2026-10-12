@@ -1,17 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import {
   CensusYear,
   GeocodeTieHandlingStrategyType,
   IGeocodeOptions,
   GeocodeConfidenceLevel
 } from '@tamu-gisc/geoprocessing-v5';
-import { AuthService } from '@tamu-gisc/geoservices/data-access';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { GeocodingBasicComponent } from '../../basic/geocoding-basic/geocoding-basic.component';
 import {
@@ -19,29 +15,59 @@ import {
   OPEN_ADDRESSES_MINIMUM_CONFIDENCE_LEVELS,
   TIE_BREAKING_STRATEGIES
 } from '../../../../../../util/dictionaries';
+import { InteractiveModeToggleComponent } from '../../../common/interactive-mode-toggle/interactive-mode-toggle.component';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { StatusResultTableComponent } from '../../../../../result-tables/components/common/status-result-table/status-result-table.component';
+import { GeocodeInputParametersComponent } from '../../../../../result-tables/components/geocoding/geocode-input-parameters/geocode-input-parameters.component';
+import { ResultMapComponent } from '../../../common/result-map/result-map.component';
+import { GeocodeResultTableComponent } from '../../../../../result-tables/components/geocoding/geocode-result-table/geocode-result-table.component';
+import { CensusIntersectionResultTabsComponent } from '../../../../../result-tables/components/census-intersection/census-intersection-result-tabs/census-intersection-result-tabs.component';
+import { ParsedAddressResultTableComponent } from '../../../../../result-tables/components/address-processing/parsed-address-result-table/parsed-address-result-table.component';
+import { GeocodeMatchedReferenceFeatureTableComponent } from '../../../../../result-tables/components/geocoding/geocode-matched-reference-feature-table/geocode-matched-reference-feature-table.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-geocoding-advanced',
   templateUrl: './geocoding-advanced.component.html',
-  styleUrls: ['./geocoding-advanced.component.scss']
+  styleUrls: ['./geocoding-advanced.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    InteractiveModeToggleComponent,
+    TextboxComponent,
+    SelectComponent,
+    CheckboxComponent,
+    CheckboxGroupComponent,
+    ButtonComponent,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    StatusResultTableComponent,
+    GeocodeInputParametersComponent,
+    ResultMapComponent,
+    GeocodeResultTableComponent,
+    CensusIntersectionResultTabsComponent,
+    ParsedAddressResultTableComponent,
+    GeocodeMatchedReferenceFeatureTableComponent,
+    AsyncPipe
+  ]
 })
 export class GeocodingAdvancedComponent extends GeocodingBasicComponent implements OnInit, OnDestroy {
+  private fbb = inject(UntypedFormBuilder);
+
   public tieBreakingStrategies = TIE_BREAKING_STRATEGIES;
   public refs = GEOCODING_REFS;
   public cls = OPEN_ADDRESSES_MINIMUM_CONFIDENCE_LEVELS;
 
   private _$destroy: Subject<boolean> = new Subject();
-
-  constructor(
-    private fbb: UntypedFormBuilder,
-    private readonly rtt: Router,
-    private readonly arr: ActivatedRoute,
-    private readonly lss: LocalStoreService,
-    private readonly ass: AuthService,
-    private readonly enn: EnvironmentService
-  ) {
-    super(fbb, rtt, arr, lss, ass, enn);
-  }
 
   public ngOnInit(): void {
     super.ngOnInit();

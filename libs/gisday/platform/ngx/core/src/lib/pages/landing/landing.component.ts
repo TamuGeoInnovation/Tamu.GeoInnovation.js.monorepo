@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import {
   distinctUntilChanged,
@@ -19,6 +19,9 @@ import {
 import { PlaceService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ActiveSeasonDto, Place, SeasonDay, Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceVisibilityOptions } from '@tamu-gisc/gisday/platform/ngx/common';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { AssetUrlPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 const numberDictionary = {
   0: 'Zero',
@@ -37,9 +40,16 @@ const numberDictionary = {
 @Component({
   selector: 'tamu-gisc-landing',
   templateUrl: './landing.component.html',
-  styleUrls: ['./landing.component.scss']
+  styleUrls: ['./landing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
 })
 export class LandingComponent implements OnInit {
+  private titleService = inject(Title);
+  private readonly seasonService = inject(SeasonService);
+  private readonly sponsorService = inject(SponsorService);
+  private readonly placeService = inject(PlaceService);
+
   private title = 'TxGIS Day';
   public timeTill: Date = new Date();
   public daysTill: string;
@@ -60,13 +70,6 @@ export class LandingComponent implements OnInit {
 
   public sponsors$: Observable<Array<Partial<Sponsor>>>;
   public organizations$: Observable<Array<Partial<Place>>>;
-
-  constructor(
-    private titleService: Title,
-    private readonly seasonService: SeasonService,
-    private readonly sponsorService: SponsorService,
-    private readonly placeService: PlaceService
-  ) {}
 
   public ngOnInit() {
     this.titleService.setTitle(this.title);

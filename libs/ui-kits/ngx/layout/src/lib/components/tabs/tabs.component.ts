@@ -1,16 +1,18 @@
-import { Component, ContentChildren, QueryList, AfterContentInit, Input, HostBinding } from '@angular/core';
+import { Component, AfterContentInit, HostBinding, ChangeDetectionStrategy, input, contentChildren } from '@angular/core';
 
 import { AbstractContentReplacerComponent } from '../../abstracts/abstract-content-swap/abstract-content-replacer.component';
 import { TabComponent } from './tab/tab.component';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-tabs',
   templateUrl: './tabs.component.html',
-  styleUrls: ['./tabs.component.scss']
+  styleUrls: ['./tabs.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, NgTemplateOutlet]
 })
 export class TabsComponent extends AbstractContentReplacerComponent implements AfterContentInit {
-  @ContentChildren(TabComponent)
-  public toggleList: QueryList<TabComponent>;
+  public readonly toggleList = contentChildren(TabComponent);
 
   /**
    * Describes the tab sizing scaling relationship.
@@ -20,8 +22,7 @@ export class TabsComponent extends AbstractContentReplacerComponent implements A
    *
    * Defaults to `default`.
    */
-  @Input()
-  public tabSizing: 'default' | 'contain' = 'default';
+  public readonly tabSizing = input<'default' | 'contain'>('default');
 
   /**
    * Describes the ordering of tabs vs content.
@@ -33,8 +34,7 @@ export class TabsComponent extends AbstractContentReplacerComponent implements A
    *
    * Defaults to `forwards`.
    */
-  @Input()
-  public layoutDirection: 'forward' | 'reverse' = 'forward';
+  public readonly layoutDirection = input<'forward' | 'reverse'>('forward');
 
   /**
    * Describes the layout direction the tab content.
@@ -45,21 +45,20 @@ export class TabsComponent extends AbstractContentReplacerComponent implements A
    * Defaults to `forward`.
    */
 
-  @Input()
-  public contentDirection = 'forward';
+  public readonly contentDirection = input('forward');
 
   @HostBinding('class.forward')
   private get _tabDirectionForwardBinding() {
-    return this.layoutDirection === 'forward';
+    return this.layoutDirection() === 'forward';
   }
 
   @HostBinding('class.reverse')
   private get _tabDirectionReverseBinding() {
-    return this.layoutDirection === 'reverse';
+    return this.layoutDirection() === 'reverse';
   }
 
   @HostBinding('class.tab-sizing-contain')
   private get _tabSizingBinding() {
-    return this.tabSizing === 'contain';
+    return this.tabSizing() === 'contain';
   }
 }

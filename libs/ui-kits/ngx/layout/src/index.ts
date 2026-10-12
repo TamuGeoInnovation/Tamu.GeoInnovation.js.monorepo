@@ -1,5 +1,3 @@
-export * from './lib/ui-kits-ngx-layout.module';
-
 export * from './lib/components/accordion/accordion.component';
 export * from './lib/components/accordion/accordion-header/accordion-header.component';
 export * from './lib/components/accordion/accordion-content/accordion-content.component';
@@ -8,6 +6,7 @@ export * from './lib/components/tabs/tabs.component';
 export * from './lib/components/tabs/tab/tab.component';
 
 export * from './lib/components/tooltip/tooltip.component';
+export * from './lib/components/tooltip/components/tooltip-trigger/tooltip-trigger.component';
 
 export * from './lib/components/accordion/services/accordion.service';
 
@@ -17,3 +16,11 @@ export * from './lib/animations/drawer';
 
 export * from './lib/directives/render-host/render-host.directive';
 export * from './lib/directives/element-insert/element-insert.directive';
+export * from './lib/components/accordion/directives/accordion-content.directive';
+export * from './lib/components/accordion/directives/accordion.directive';
+export * from './lib/components/accordion/directives/accordion-header.directive';
+export * from './lib/components/drawer/drawer.component';
+export * from './lib/components/stepper/components/step/step.component';
+export * from './lib/components/stepper/directives/stepper-toggle.directive';
+export * from './lib/components/stepper/stepper.component';
+export * from './lib/components/stepper/components/step-toggle/step-toggle.component';

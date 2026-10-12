@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable, Subject, delay, filter, map, merge, of, startWith, switchMap } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -9,14 +9,55 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 import { RevivalModalComponent } from '../modals/revival-modal/revival-modal.component';
+import { RouterLinkActive, RouterLink } from '@angular/router';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { RevivalBannerComponent } from '../revival-banner/revival-banner.component';
+import { HeaderMobileComponent } from '../header-mobile/header-mobile.component';
+import { HamburgerTriggerComponent } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
+import { TileNavigationComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileIconComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileTitleComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileSubmenuDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { TileSubmenuComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { AccordionDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionHeaderDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionContentDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TileLinkDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 
 @Component({
   selector: 'tamu-gisc-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  animations: [growAnimationBuilder(250)]
+  animations: [growAnimationBuilder(250)],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    RouterLinkActive,
+    RouterLink,
+    NgClass,
+    RevivalBannerComponent,
+    HeaderMobileComponent,
+    HamburgerTriggerComponent,
+    TileNavigationComponent,
+    TileComponent,
+    TileIconComponent,
+    TileTitleComponent,
+    TileSubmenuDirective,
+    TileSubmenuComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective,
+    TileLinkDirective,
+    AsyncPipe
+  ]
 })
 export class HeaderComponent implements OnInit {
+  private readonly as = inject(AuthService);
+  private readonly env = inject(EnvironmentService);
+  private readonly ms = inject(ModalService);
+  private readonly ss = inject(SettingsService);
+  readonly rs = inject(ResponsiveService);
+
   public mobileNavToggle: Subject<boolean> = new Subject();
   public loggedIn: Observable<boolean>;
   public isManager: Observable<boolean>;
@@ -29,19 +70,11 @@ export class HeaderComponent implements OnInit {
   public ignorePointerEvents: Observable<boolean>;
 
   @HostListener('click', ['$event'])
-  private _onLinkClick(e: MouseEvent) {
+  protected _onLinkClick(e: MouseEvent) {
     if (e.target instanceof HTMLAnchorElement) {
       this._$ignorePointerEvents.next(true);
     }
   }
-
-  constructor(
-    private readonly as: AuthService,
-    private readonly env: EnvironmentService,
-    private readonly ms: ModalService,
-    private readonly ss: SettingsService,
-    public readonly rs: ResponsiveService
-  ) {}
 
   public ngOnInit() {
     this.loggedIn = this.as.state.pipe(

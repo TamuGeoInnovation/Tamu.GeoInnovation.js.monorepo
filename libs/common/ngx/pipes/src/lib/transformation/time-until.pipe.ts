@@ -1,8 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-  name: 'timeUntil'
-})
+@Pipe({ name: 'timeUntil' })
 export class TimeUntilPipe implements PipeTransform {
   public transform(value: number): string {
     const minutes = value;

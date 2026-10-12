@@ -1,14 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { TripPlannerConnectionService, TripPlannerConnection } from '../../../../services/trip-planner-connection.service';
+import { FormsModule } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-connection-select',
   templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss']
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, AsyncPipe]
 })
 export class TripPlannerConnectionsSelectComponent implements OnInit {
+  private connectionService = inject(TripPlannerConnectionService);
+
   /**
    * Stores a list of trip planner connections retrieved from the connections service.
    *
@@ -23,8 +29,6 @@ export class TripPlannerConnectionsSelectComponent implements OnInit {
    * Used to pre-populate the network in the dropdown list.
    */
   public currentUrlAlias: string;
-
-  constructor(private connectionService: TripPlannerConnectionService) {}
 
   public ngOnInit() {
     // Subscribe to the routing network list. This populates the list of available networks for

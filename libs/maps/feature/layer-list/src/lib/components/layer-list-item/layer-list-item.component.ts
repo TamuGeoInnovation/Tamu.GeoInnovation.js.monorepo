@@ -1,11 +1,17 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { NgClass } from '@angular/common';
+
+import { TooltipComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-layer-list-item',
   templateUrl: './layer-list-item.component.html',
-  styleUrls: ['./layer-list-item.component.scss']
+  styleUrls: ['./layer-list-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, TooltipComponent, TooltipTriggerComponent]
 })
 export class LayerListItemComponent {
   @Input()

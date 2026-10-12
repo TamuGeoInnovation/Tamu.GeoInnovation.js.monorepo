@@ -1,12 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum APRIL_RING_DAY_LAYERS {
   RD_POIS = 'ring-day-pois',
@@ -15,8 +15,20 @@ export enum APRIL_RING_DAY_LAYERS {
 }
 
 const APRIL_RING_DAY_PERIODS = [
-  { value: 'day1', label: 'Aggie Ring Pickup (April 9, 2026)', dates: ['2026-04-09'] },
-  { value: 'day2', label: 'Aggie Ring Day (April 10, 2026)', dates: ['2026-04-10'] }
+  {
+    value: 'day1',
+    label: 'Aggie Ring Pickup (April 9, 2026)',
+    dates: ['2026-04-09'],
+    // Pickup parking and the Williams Alumni Center. Tune center/zoom here to adjust framing.
+    mapView: { center: [-96.3354, 30.6095], zoom: 18 }
+  },
+  {
+    value: 'day2',
+    label: 'Aggie Ring Day (April 10, 2026)',
+    dates: ['2026-04-10'],
+    // Aggie Park out to the West Campus Garage shuttle loop. Tune center/zoom here to adjust framing.
+    mapView: { center: [-96.3405, 30.6088], zoom: 17 }
+  }
 ] as const;
 
 const aprilRingDayDateConversions = (startField: string, endField: string) =>
@@ -54,7 +66,7 @@ export const AprilRingDayColdLayerSources: LayerSource[] = [
     id: AprilRingDayEventDefinitions.RD_AREAS.id,
     title: AprilRingDayEventDefinitions.RD_AREAS.name,
     url: AprilRingDayEventDefinitions.RD_AREAS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.Notes'
@@ -70,7 +82,7 @@ export const AprilRingDayColdLayerSources: LayerSource[] = [
     id: AprilRingDayEventDefinitions.RD_ROUTES.id,
     title: AprilRingDayEventDefinitions.RD_ROUTES.name,
     url: AprilRingDayEventDefinitions.RD_ROUTES.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'
@@ -86,7 +98,7 @@ export const AprilRingDayColdLayerSources: LayerSource[] = [
     id: AprilRingDayEventDefinitions.RD_POIS.id,
     title: AprilRingDayEventDefinitions.RD_POIS.name,
     url: AprilRingDayEventDefinitions.RD_POIS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
       description: 'attributes.description'
@@ -141,7 +153,11 @@ export const AprilRingDaySpecialEventOptions: SpecialEventOptions = [
     description:
       'Select which April Ring Day period you plan to attend to see the most relevant transportation and logistics information.',
     shortDescription: 'Event Day',
-    choices: APRIL_RING_DAY_PERIODS.map(({ value, label }) => ({ value, label })),
+    choices: APRIL_RING_DAY_PERIODS.map(({ value, label, mapView }) => ({
+      value,
+      label,
+      mapView: { center: [...mapView.center] as [number, number], zoom: mapView.zoom }
+    })),
     effects: {
       layers: [
         {

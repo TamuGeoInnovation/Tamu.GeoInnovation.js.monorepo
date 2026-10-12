@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ComponentFactoryResolver, ViewChild, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, from, of } from 'rxjs';
 import { switchMap, filter, toArray, take, shareReplay, find, pluck } from 'rxjs/operators';
@@ -11,13 +11,24 @@ import { TripPlannerService, TripPlannerRuleMode, TravelOptions } from '../../..
 import { TripPlannerParkingOptionsComponent } from '../../components/parking/trip-planner-parking-options.component';
 import { TripPlannerBikingOptionsComponent } from '../../components/biking/trip-planner-biking-options.component';
 
+import { AsyncPipe } from '@angular/common';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { RenderHostDirective as RenderHostDirective_1 } from '@tamu-gisc/ui-kits/ngx/layout';
+
 @Component({
   selector: 'tamu-gisc-trip-planner-options',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CheckboxComponent, RenderHostDirective_1, AsyncPipe]
 })
 export class TripPlannerOptionsComponent implements OnInit {
+  private plannerService = inject(TripPlannerService);
+  private testingService = inject(TestingService);
+  private componentService = inject(TripPlannerOptionsComponentService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   public readonly isDev = this.testingService.get('isTesting').pipe(shareReplay(1)) as Observable<boolean>;
 
   public readonly travelOptions: Observable<TravelOptions> = this.plannerService.TravelOptions;
@@ -66,16 +77,7 @@ export class TripPlannerOptionsComponent implements OnInit {
   /**
    * Reference to the component content host. Travel option child components will be rendered within,.
    */
-  @ViewChild(RenderHostDirective, { static: true }) public viewHost: RenderHostDirective;
-
-  constructor(
-    private plannerService: TripPlannerService,
-    private testingService: TestingService,
-    private componentService: TripPlannerOptionsComponentService,
-    private componentResolver: ComponentFactoryResolver,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  public readonly viewHost = viewChild(RenderHostDirective);
 
   public ngOnInit(): void {
     this.render();
@@ -108,19 +110,16 @@ export class TripPlannerOptionsComponent implements OnInit {
       return;
     }
 
-    // Resolve component
-    const factory = this.componentResolver.resolveComponentFactory<
-      TripPlannerParkingOptionsComponent | TripPlannerBikingOptionsComponent
-    >(component);
-
     // Get reference to the view container (host)
-    const container = this.viewHost.viewContainerRef;
+    const container = this.viewHost().viewContainerRef;
 
     // Clear the view container (host)
     container.clear();
 
-    // Create component from resolved component from component factory
-    const resolvedComponent = container.createComponent(factory);
+    // Create the resolved component in the host
+    const resolvedComponent = container.createComponent<
+      TripPlannerParkingOptionsComponent | TripPlannerBikingOptionsComponent
+    >(component);
 
     // Pass in feature data to the created component
     // Will only handle a single feature for now.

@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs-extra';
 import * as Papa from 'papaparse';
-import * as JSZip from 'jszip';
+import JSZip from 'jszip';
 import { createWriteStream } from 'fs';
 import { pipeline } from 'stream/promises';
 

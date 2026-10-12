@@ -1,18 +1,7 @@
-export * from './lib/aggiemap-ngx-popups.module';
+export * from './lib/popups';
 
-// Individual components to have ability to extend.
-export * from './lib/components/accessible/accessible.component';
+// The two base classes, for other libraries' popups to extend. The popups themselves are not exported:
+// an export here puts a popup, and what it imports, in the application's first download (#1454). Refer
+// to them through `Popups`, which loads each one when a popup of its kind first opens.
 export * from './lib/components/base/base.popup.component';
 export * from './lib/components/base-directions/base-directions.component';
-export * from './lib/components/building/building-popup.component';
-export * from './lib/components/construction/construction.component';
-export * from './lib/components/lactation/lactation.component';
-export * from './lib/components/parking-kiosk/parking-kiosk.component';
-export * from './lib/components/parking-lot/parking-lot.component';
-export * from './lib/components/parking-garage/parking-garage.component';
-export * from './lib/components/poi/poi.component';
-export * from './lib/components/restroom/restroom.component';
-export * from './lib/components/dining/dining.component';
-export * from './lib/components/markdown-popup/markdown-popup.component';
-export * from './lib/components/markdown-w-directions-popup/markdown-w-directions-popup.component';
-export * from './lib/components/bus-stop/bus-stop.component';

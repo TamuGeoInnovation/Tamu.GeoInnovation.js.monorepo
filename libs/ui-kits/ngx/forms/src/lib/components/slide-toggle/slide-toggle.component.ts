@@ -1,8 +1,17 @@
-import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChildren, forwardRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  forwardRef,
+  ChangeDetectionStrategy,
+  viewChildren
+} from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable, Subject, delay, map, shareReplay } from 'rxjs';
 
 import { RadioGroupComponent } from '../radio-group/radio-group.component';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-slide-toggle',
@@ -14,14 +23,15 @@ import { RadioGroupComponent } from '../radio-group/radio-group.component';
       useExisting: forwardRef(() => SlideToggleComponent),
       multi: true
     }
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, AsyncPipe]
 })
 export class SlideToggleComponent<Option extends object, Value>
   extends RadioGroupComponent<Option, Value>
   implements OnInit, AfterViewInit
 {
-  @ViewChildren('toggleOption')
-  public toggleOptions: QueryList<ElementRef>;
+  public readonly toggleOptions = viewChildren<ElementRef>('toggleOption');
 
   public activeOptionElement$: Subject<ElementRef> = new Subject<ElementRef>();
   public activeDimensions$: Observable<{ width: number; translate: number }>;
@@ -55,8 +65,9 @@ export class SlideToggleComponent<Option extends object, Value>
   }
 
   private _findActiveElement(plainValue: Value) {
-    if (plainValue !== null && this.toggleOptions) {
-      const active = this.toggleOptions.find((option) => {
+    const toggleOptions = this.toggleOptions();
+    if (plainValue !== null && toggleOptions) {
+      const active = toggleOptions.find((option) => {
         return option.nativeElement.attributes['attr-value'].value === plainValue;
       });
 

@@ -117,11 +117,11 @@ export class TripPoint {
               raw: Object.assign({}, input.selection.geometry as esri.Geometry)
             }
           : (input.selection as TripPointGeometry).latitude && (input.selection as TripPointGeometry).longitude
-          ? {
-              latitude: (input.selection as TripPointGeometry).latitude,
-              longitude: (input.selection as TripPointGeometry).longitude
-            }
-          : { latitude: 0, longitude: 0 },
+            ? {
+                latitude: (input.selection as TripPointGeometry).latitude,
+                longitude: (input.selection as TripPointGeometry).longitude
+              }
+            : { latitude: 0, longitude: 0 },
       originParameters: {
         type: input.type,
         value: input && input.result && input.result.breadcrumbs ? input.result.breadcrumbs : undefined

@@ -1,41 +1,40 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 import { BehaviorSubject, Observable, ReplaySubject, combineLatest, map, shareReplay, withLatestFrom } from 'rxjs';
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonDayService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { EventRowComponent } from '../event-row/event-row.component';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-season-day-card',
   templateUrl: './season-day-card.component.html',
-  styleUrls: ['./season-day-card.component.scss']
+  styleUrls: ['./season-day-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [EventRowComponent, AsyncPipe, DatePipe]
 })
 export class SeasonDayCardComponent implements OnInit, OnChanges {
-  @Input()
-  public seasonDay: Partial<SeasonDay>;
+  private readonly sd = inject(SeasonDayService);
 
-  @Input()
-  public index: number;
+  public readonly seasonDay = input<Partial<SeasonDay>>(undefined);
+
+  public readonly index = input<number>(undefined);
 
   /**
    * Collection of ID's, each representing a tag guid that should be used to filter events.
    */
-  @Input()
-  public tags: Array<string> = [];
+  public readonly tags = input<Array<string>>([]);
 
   /**
    * Collection of ID's, each representing an organization guid that should be used to filter events.
    */
-  @Input()
-  public organizations: Array<string> = [];
+  public readonly organizations = input<Array<string>>([]);
 
-  @Input()
-  public rsvps: Array<string> = [];
+  public readonly rsvps = input<Array<string>>([]);
 
-  @Output()
-  public register: EventEmitter<string> = new EventEmitter();
+  public readonly register = output<string>();
 
-  @Output()
-  public unregister: EventEmitter<string> = new EventEmitter();
+  public readonly unregister = output<string>();
 
   public events$: Observable<Array<SimplifiedEvent>>;
   public filteredEvents$: Observable<Array<SimplifiedEvent>>;
@@ -53,10 +52,8 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
 
   private _activeRsvpsForDay: ReplaySubject<Array<string>> = new ReplaySubject<Array<string>>();
 
-  constructor(private readonly sd: SeasonDayService) {}
-
   public ngOnInit(): void {
-    this.events$ = this.sd.getDayEvents(this.seasonDay.guid).pipe(shareReplay());
+    this.events$ = this.sd.getDayEvents(this.seasonDay().guid).pipe(shareReplay());
 
     this.filteredEvents$ = combineLatest([this._activeTagFilters, this._activeOrgFilters]).pipe(
       withLatestFrom(this.events$),

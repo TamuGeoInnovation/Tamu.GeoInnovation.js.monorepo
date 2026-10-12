@@ -1,8 +1,6 @@
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -10,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS {
   GENERAL_PARKING_GROUP = 'phys-eng-festival-general-parking-group',
@@ -31,61 +30,16 @@ const eventUrl = Connections.physicsFestUrl;
 
 type AutoCastSimpleLineSymbol = { type: 'simple-line' } & esri.SimpleLineSymbolProperties;
 
-const GREEN_PATH_ARROW_SYMBOL: AutoCastSimpleLineSymbol = {
-  type: 'simple-line',
-  color: 'rgb(56, 168, 0)',
-  width: 2,
-  marker: {
-    style: 'arrow',
-    color: 'rgb(56, 168, 0)',
-    placement: 'end'
-  }
-};
-
-const EASTBOUND_BUS_ROUTE_ARROW_SYMBOL: AutoCastSimpleLineSymbol = {
-  type: 'simple-line',
-  color: 'blue',
-  width: 3.5,
-  marker: {
-    style: 'arrow',
-    color: 'blue',
-    placement: 'end'
-  }
-};
-
-const WESTBOUND_BUS_ROUTE_ARROW_SYMBOL: AutoCastSimpleLineSymbol = {
-  type: 'simple-line',
-  color: 'red',
-  width: 3.5,
-  marker: {
-    style: 'arrow',
-    color: 'red',
-    placement: 'end'
-  }
-};
-
 const GREEN_ARROW_LINE_NATIVE: NonNullable<FeatureLayerSourceProperties['native']> = {
-  outFields: ['*'],
-  renderer: {
-    type: 'simple',
-    symbol: GREEN_PATH_ARROW_SYMBOL
-  }
+  outFields: ['*']
 };
 
 const EASTBOUND_BUS_ROUTE_LINE_NATIVE: NonNullable<FeatureLayerSourceProperties['native']> = {
-  outFields: ['*'],
-  renderer: {
-    type: 'simple',
-    symbol: EASTBOUND_BUS_ROUTE_ARROW_SYMBOL
-  }
+  outFields: ['*']
 };
 
 const WESTBOUND_BUS_ROUTE_LINE_NATIVE: NonNullable<FeatureLayerSourceProperties['native']> = {
-  outFields: ['*'],
-  renderer: {
-    type: 'simple',
-    symbol: WESTBOUND_BUS_ROUTE_ARROW_SYMBOL
-  }
+  outFields: ['*']
 };
 
 export const PhysEngFestDefinitions = {
@@ -179,16 +133,14 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
   {
     type: 'group',
     id: PhysEngFestDefinitions.GENERAL_PARKING_GROUP.id,
-    title: PhysEngFestDefinitions.GENERAL_PARKING_GROUP.name,
     visible: true,
     listMode: 'show',
     sources: [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.GENERAL_PARKING.id,
-        title: PhysEngFestDefinitions.GENERAL_PARKING.name,
         url: PhysEngFestDefinitions.GENERAL_PARKING.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         visible: true,
         listMode: 'show',
         native: {
@@ -200,7 +152,7 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
         id: PhysEngFestDefinitions.GENERAL_PARKING_PEDESTRIAN_PATH.id,
         title: PhysEngFestDefinitions.GENERAL_PARKING_PEDESTRIAN_PATH.name,
         url: PhysEngFestDefinitions.GENERAL_PARKING_PEDESTRIAN_PATH.url,
-        popupComponent: MarkdownPopupComponent,
+        popupComponent: EventPopups.MarkdownPopupComponent,
         visible: true,
         listMode: 'show',
         native: GREEN_ARROW_LINE_NATIVE
@@ -213,16 +165,14 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
   {
     type: 'group',
     id: PhysEngFestDefinitions.EASTBOUND_UNIVERSITY_GROUP.id,
-    title: PhysEngFestDefinitions.EASTBOUND_UNIVERSITY_GROUP.name,
     visible: false,
     listMode: 'show',
     sources: [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.EASTBOUND_BUS_PARKING.id,
-        title: PhysEngFestDefinitions.EASTBOUND_BUS_PARKING.name,
         url: PhysEngFestDefinitions.EASTBOUND_BUS_PARKING.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         visible: true,
         listMode: 'show',
         native: {
@@ -232,9 +182,8 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.EASTBOUND_BUS_ROUTE.id,
-        title: PhysEngFestDefinitions.EASTBOUND_BUS_ROUTE.name,
         url: PhysEngFestDefinitions.EASTBOUND_BUS_ROUTE.url,
-        popupComponent: MarkdownPopupComponent,
+        popupComponent: EventPopups.MarkdownPopupComponent,
         visible: true,
         listMode: 'show',
         native: EASTBOUND_BUS_ROUTE_LINE_NATIVE
@@ -242,9 +191,8 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.EASTBOUND_PEDESTRIAN_PATH.id,
-        title: PhysEngFestDefinitions.EASTBOUND_PEDESTRIAN_PATH.name,
         url: PhysEngFestDefinitions.EASTBOUND_PEDESTRIAN_PATH.url,
-        popupComponent: MarkdownPopupComponent,
+        popupComponent: EventPopups.MarkdownPopupComponent,
         visible: true,
         listMode: 'show',
         native: GREEN_ARROW_LINE_NATIVE
@@ -252,9 +200,8 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.EASTBOUND_BUS_DROPOFF.id,
-        title: PhysEngFestDefinitions.EASTBOUND_BUS_DROPOFF.name,
         url: PhysEngFestDefinitions.EASTBOUND_BUS_DROPOFF.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         visible: true,
         listMode: 'show',
         native: {
@@ -269,16 +216,14 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
   {
     type: 'group',
     id: PhysEngFestDefinitions.WESTBOUND_UNIVERSITY_GROUP.id,
-    title: PhysEngFestDefinitions.WESTBOUND_UNIVERSITY_GROUP.name,
     visible: false,
     listMode: 'show',
     sources: [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.WESTBOUND_BUS_PARKING.id,
-        title: PhysEngFestDefinitions.WESTBOUND_BUS_PARKING.name,
         url: PhysEngFestDefinitions.WESTBOUND_BUS_PARKING.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         visible: true,
         listMode: 'show',
         native: {
@@ -288,9 +233,8 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.WESTBOUND_BUS_ROUTE.id,
-        title: PhysEngFestDefinitions.WESTBOUND_BUS_ROUTE.name,
         url: PhysEngFestDefinitions.WESTBOUND_BUS_ROUTE.url,
-        popupComponent: MarkdownPopupComponent,
+        popupComponent: EventPopups.MarkdownPopupComponent,
         visible: true,
         listMode: 'show',
         native: WESTBOUND_BUS_ROUTE_LINE_NATIVE
@@ -298,9 +242,8 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.WESTBOUND_PEDESTRIAN_PATH.id,
-        title: PhysEngFestDefinitions.WESTBOUND_PEDESTRIAN_PATH.name,
         url: PhysEngFestDefinitions.WESTBOUND_PEDESTRIAN_PATH.url,
-        popupComponent: MarkdownPopupComponent,
+        popupComponent: EventPopups.MarkdownPopupComponent,
         visible: true,
         listMode: 'show',
         native: GREEN_ARROW_LINE_NATIVE
@@ -308,9 +251,8 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       {
         type: 'feature',
         id: PhysEngFestDefinitions.WESTBOUND_BUS_DROPOFF.id,
-        title: PhysEngFestDefinitions.WESTBOUND_BUS_DROPOFF.name,
         url: PhysEngFestDefinitions.WESTBOUND_BUS_DROPOFF.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
         visible: true,
         listMode: 'show',
         native: {

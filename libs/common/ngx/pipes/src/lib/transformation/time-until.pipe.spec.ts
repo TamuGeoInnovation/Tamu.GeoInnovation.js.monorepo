@@ -1,8 +1,8 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 import { TimeUntilPipe } from './time-until.pipe';
 
 describe('TimeUtilPipe', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [TimeUntilPipe]
     }).compileComponents();

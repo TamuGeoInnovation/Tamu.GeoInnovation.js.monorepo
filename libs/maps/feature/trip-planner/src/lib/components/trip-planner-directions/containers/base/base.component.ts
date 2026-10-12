@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil, switchMap, pluck } from 'rxjs/operators';
@@ -7,18 +7,24 @@ import { Angulartics2 } from 'angulartics2';
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripResult } from '../../../../core/trip-planner-core';
+import { TripPlannerDirectionsActionsComponent } from '../../../trip-planner-directions-actions/containers/base/base.component';
+import { TripPlannerModeSwitchComponent } from '../../../trip-planner-mode-switch/containers/base/base.component';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-directions',
   templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss']
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TripPlannerDirectionsActionsComponent, TripPlannerModeSwitchComponent]
 })
 export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private plannerService = inject(TripPlannerService);
+  private analytics = inject(Angulartics2);
+
   public result: TripResult;
 
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(private router: Router, private plannerService: TripPlannerService, private analytics: Angulartics2) {}
 
   public ngOnInit() {
     // Subscribe to travel mode state in trip planner and fetch trip result for mode.

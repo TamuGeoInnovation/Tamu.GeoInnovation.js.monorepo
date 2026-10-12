@@ -1,13 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
   EV_CHARGERS = 'sustainable-transportation-ev-chargers',
@@ -15,7 +14,7 @@ export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
   BIKE_FIX_STATIONS = 'sustainable-transportation-bike-fix-stations',
   BIKE_LANES = 'sustainable-transportation-bike-lanes',
   CITY_BIKE_LANES_ROUTES = 'sustainable-transportation-city-bike-lanes-routes',
-  BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones',
+  BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones'
 }
 
 const bikeLayersUrl = Connections.bikeMapUrl;
@@ -27,7 +26,7 @@ export const SustainableTransportationEvChargersLayerSource: LayerSource = {
   url: `${bikeLayersUrl}/0`,
   visible: true,
   listMode: 'show',
-  popupComponent: MarkdownPopupComponent,
+  popupComponent: EventPopups.MarkdownPopupComponent,
   popupData: {
     name: '{attributes.EV_ID}',
     description:
@@ -89,12 +88,11 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.BIKE_RACKS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Type}',
       description:
-        '<strong>Total Capacity</strong>: {attributes.Total_Capacity}\n' +
-        '<strong>Notes</strong>: {attributes.BR_Notes}'
+        '<strong>Total Capacity</strong>: {attributes.Total_Capacity}\n' + '<strong>Notes</strong>: {attributes.BR_Notes}'
     },
     native: {
       outFields: ['*']
@@ -107,7 +105,7 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Bike_Sta_Name}',
       description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
@@ -123,7 +121,7 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.BIKE_LANES.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Use_}',
       description: '<strong>Location</strong>: {attributes.Location}'
@@ -139,7 +137,7 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.CITY_BIKE_LANES_ROUTES.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Type}',
       description: '<strong>Location</strong>: {attributes.Loc}'
@@ -155,7 +153,7 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.BIKE_DISMOUNT_ZONES.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Name}',
       description: '<strong>Notes</strong>: {attributes.Bike_Notes}'
@@ -171,8 +169,7 @@ export const SustainableTransportationConfiguration: EventConfiguration = {
   name: 'Sustainable Transportation',
   applicationName: 'Sustainable Transportation Map',
   shortApplicationName: 'Sustainable Transportation',
-  introductionText:
-    'Explore bike amenities and EV charge stations across Main Campus and the RELLIS Campus in one map.',
+  introductionText: 'Explore bike amenities and EV charge stations across Main Campus and the RELLIS Campus in one map.',
   mapCenter: [-96.34643, 30.61313],
   eventDates: [],
   zoom: 15

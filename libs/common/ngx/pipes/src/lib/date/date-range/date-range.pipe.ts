@@ -1,8 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-  name: 'dateRange'
-})
+@Pipe({ name: 'dateRange' })
 export class DateRangePipe implements PipeTransform {
   public transform(dates: Array<ParseableDate>): string {
     if (dates === undefined || dates === null) {

@@ -1,38 +1,39 @@
-import { Component, Input, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, distinctUntilChanged, shareReplay, startWith } from 'rxjs/operators';
+import { MobileTabNavigationComponent } from '../container/container.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-mobile-nav-tab',
   templateUrl: './tab.component.html',
-  styleUrls: ['./tab.component.scss']
+  styleUrls: ['./tab.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [MobileTabNavigationComponent, AsyncPipe]
 })
 export class MobileTabNavigationTabComponent implements OnInit {
-  @Input()
-  public route: string;
+  private router = inject(Router);
 
-  @Input()
-  public icon: string;
+  public readonly route = input<string>(undefined);
 
-  @Input()
-  public label: string;
+  public readonly icon = input<string>(undefined);
+
+  public readonly label = input<string>(undefined);
 
   public activeTab: Observable<boolean>;
 
-  @HostListener('click', ['$event'])
+  @HostListener('click')
   public navigate() {
-    this.router.navigate([this.route]);
+    this.router.navigate([this.route()]);
   }
-
-  constructor(private router: Router) {}
 
   public ngOnInit() {
     this.activeTab = this.router.events.pipe(
       startWith(true),
       switchMap(() => {
         return of(
-          this.router.isActive(this.route, {
+          this.router.isActive(this.route(), {
             paths: 'subset',
             queryParams: 'subset',
             fragment: 'ignored',

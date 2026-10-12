@@ -1,7 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
-import { buildMapColumnGroups, getApplicationRoute, MapColumnDefinition, MapColumnGroup, sortApplicationsByName } from '../discover.utils';
+import {
+  buildMapColumnGroups,
+  getApplicationRoute,
+  MapColumnDefinition,
+  MapColumnGroup,
+  sortApplicationsByName
+} from '../discover.utils';
+import { MapsPageHeaderComponent } from '../maps-page-header/maps-page-header.component';
+import { MapColumnsComponent } from '../map-columns/map-columns.component';
+
+import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 /**
  * Parking Maps page. Renders the parking maps grouped into the General / Business / Permit columns
@@ -10,9 +20,13 @@ import { buildMapColumnGroups, getApplicationRoute, MapColumnDefinition, MapColu
 @Component({
   selector: 'tamu-gisc-aggiemap-parking-maps',
   templateUrl: './parking-maps.component.html',
-  styleUrls: ['./parking-maps.component.scss']
+  styleUrls: ['./parking-maps.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [MapsPageHeaderComponent, MapColumnsComponent, FooterComponent]
 })
 export class ParkingMapsComponent implements OnInit {
+  private readonly discoveryService = inject(DiscoveryService);
+
   public columns: MapColumnGroup[] = [];
 
   public readonly getApplicationRoute = getApplicationRoute;
@@ -21,8 +35,6 @@ export class ParkingMapsComponent implements OnInit {
     { id: 'business', heading: 'Business Parking' },
     { id: 'permit', heading: 'Permit Parking' }
   ];
-
-  constructor(private readonly discoveryService: DiscoveryService) {}
 
   public ngOnInit(): void {
     const applications = sortApplicationsByName(

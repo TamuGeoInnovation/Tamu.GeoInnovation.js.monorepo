@@ -1,36 +1,50 @@
-import { Component } from '@angular/core';
-import { UntypedFormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { Geocode, CensusYear, GeocodeResult, IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { BasicSummaryBlurbComponent } from '../../../common/basic-summary-blurb/basic-summary-blurb.component';
+import { TabsComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TabComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { GeocodeResultTableComponent } from '../../../../../result-tables/components/geocoding/geocode-result-table/geocode-result-table.component';
+import { ResultMapComponent } from '../../../common/result-map/result-map.component';
+import { InteractiveResponseMetadataComponent } from '../../../common/interactive-response-metadata/interactive-response-metadata.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-geocoding-basic',
   templateUrl: './geocoding-basic.component.html',
-  styleUrls: ['./geocoding-basic.component.scss']
+  styleUrls: ['./geocoding-basic.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    SelectComponent,
+    ButtonComponent,
+    BasicSummaryBlurbComponent,
+    TabsComponent,
+    TabComponent,
+    GeocodeResultTableComponent,
+    ResultMapComponent,
+    InteractiveResponseMetadataComponent,
+    AsyncPipe
+  ]
 })
 export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<GeocodeResult, IGeocodeOptions> {
+  private fb = inject(UntypedFormBuilder);
+  private readonly as = inject(AuthService);
+
   public states = STATES_TITLECASE;
   public censusYears = CENSUS_YEARS;
-
-  constructor(
-    private fb: UntypedFormBuilder,
-    private readonly rt: Router,
-    private readonly ar: ActivatedRoute,
-    private readonly ls: LocalStoreService,
-    private readonly as: AuthService,
-    private readonly en: EnvironmentService
-  ) {
-    super(fb, rt, ar, ls, as, en);
-  }
 
   public buildForm() {
     return this.fb.group({

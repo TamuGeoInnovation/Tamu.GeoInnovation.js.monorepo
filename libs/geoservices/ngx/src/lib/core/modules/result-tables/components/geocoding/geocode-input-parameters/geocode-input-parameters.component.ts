@@ -1,24 +1,25 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { Observable, filter, from, reduce } from 'rxjs';
 
 import { IGeocodeDeserializedInputParametersMap } from '@tamu-gisc/geoprocessing-v5';
 
 import { GeocodeInputParameterLabel } from '../../../../../util/dictionaries';
+import { AsyncPipe, KeyValuePipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-geocode-input-parameters',
   templateUrl: './geocode-input-parameters.component.html',
-  styleUrls: ['./geocode-input-parameters.component.scss']
+  styleUrls: ['./geocode-input-parameters.component.scss'],
+  imports: [AsyncPipe, KeyValuePipe]
 })
 export class GeocodeInputParametersComponent implements OnInit {
-  @Input()
-  public parameters: IGeocodeDeserializedInputParametersMap;
+  public readonly parameters = input<IGeocodeDeserializedInputParametersMap>(undefined);
 
   public filteredProps: Observable<{ [key: string]: unknown }>;
   public propsDict = GeocodeInputParameterLabel;
 
   public ngOnInit(): void {
-    this.filteredProps = from(Object.entries(this.parameters)).pipe(
+    this.filteredProps = from(Object.entries(this.parameters())).pipe(
       // Filter only properties whose values are primitives and arrays
       filter(([, value]) => {
         return value instanceof Object === false || Array.isArray(value) === true;

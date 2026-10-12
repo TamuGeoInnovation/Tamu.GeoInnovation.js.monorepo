@@ -54,8 +54,7 @@ interface LineSymbolAutoCastOptions {
 
 interface MarkerSymbolAutoCastOptions {
   symbol:
-    | (SimpleMarkerSymbol & esri.SimpleMarkerSymbolProperties)
-    | (PictureMarkerSymbol & esri.PictureMarkerSymbolProperties);
+    (SimpleMarkerSymbol & esri.SimpleMarkerSymbolProperties) | (PictureMarkerSymbol & esri.PictureMarkerSymbolProperties);
 }
 
 interface Symbol3DAutoCastOptions {
@@ -291,8 +290,11 @@ export type LayerSource = LayerSourceType & {
 
   /**
    * Display value used for UI representation.
+   *
+   * Optional: left out, the layer shows the name its service publishes, which is the name its
+   * owner chose. Set it only where the service cannot supply a usable name - see docs/map-layers.md.
    */
-  title: string;
+  title?: string;
 
   /**
    * Determines whether the layer will be listed by the layer component.

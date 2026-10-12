@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, distinctUntilChanged, filter, map, merge, of, race, shareReplay, switchMap, take } from 'rxjs';
 
@@ -15,15 +15,42 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-speaker-add-edit-form',
   templateUrl: './speaker-add-edit-form.component.html',
-  styleUrls: ['./speaker-add-edit-form.component.scss']
+  styleUrls: ['./speaker-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    FileComponent,
+    SelectComponent,
+    CheckboxComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class SpeakerAddEditFormComponent implements OnInit {
-  @Input()
-  public type: 'create' | 'edit';
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly rt = inject(Router);
+  private readonly at = inject(ActivatedRoute);
+  private readonly ss = inject(SpeakerService);
+  private readonly as = inject(AssetsService);
+  private readonly us = inject(UniversityService);
+  private readonly os = inject(OrganizationService);
+  private readonly sn = inject(DomSanitizer);
+  private readonly ns = inject(NotificationService);
+  private readonly sss = inject(SeasonService);
+
+  public readonly type = input<'create' | 'edit'>(undefined);
 
   public entity$: Observable<Partial<Speaker>>;
   public universities$: Observable<Array<Partial<University>>>;
@@ -31,19 +58,6 @@ export class SpeakerAddEditFormComponent implements OnInit {
   public speakerPhotoUrl$: Observable<SafeUrl>;
 
   public form: UntypedFormGroup;
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly rt: Router,
-    private readonly at: ActivatedRoute,
-    private readonly ss: SpeakerService,
-    private readonly as: AssetsService,
-    private readonly us: UniversityService,
-    private readonly os: OrganizationService,
-    private readonly sn: DomSanitizer,
-    private readonly ns: NotificationService,
-    private readonly sss: SeasonService
-  ) {}
 
   public ngOnInit() {
     this.form = this.fb.group({
@@ -105,7 +119,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
       )
     );
 
-    if (this.type === 'edit') {
+    if (this.type() === 'edit') {
       this.entity$.subscribe((entity) => {
         this.form.patchValue({
           ...entity,
@@ -128,7 +142,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
   }
 
   public handleSubmission() {
-    if (this.type === 'create') {
+    if (this.type() === 'create') {
       this._createEntity();
     } else {
       this._updateEntity();

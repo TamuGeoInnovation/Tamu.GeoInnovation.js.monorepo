@@ -1,8 +1,8 @@
-import { Component, Injectable, Type } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { BehaviorSubject, Subject } from 'rxjs';
 
-import { HitTestSnapshot } from '@tamu-gisc/maps/esri';
+import { HitTestSnapshot, PopupComponentReference } from '@tamu-gisc/maps/esri';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
@@ -16,6 +16,8 @@ type PopupDataEntry = PopupDataDefinition[string];
 
 @Injectable({ providedIn: 'root' })
 export class PopupService {
+  private environment = inject(EnvironmentService);
+
   private _show: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public show = this._show.asObservable();
 
@@ -33,8 +35,6 @@ export class PopupService {
    * no reason. See #1244.
    */
   public readonly opened = this._opened.asObservable();
-
-  constructor(private environment: EnvironmentService) {}
 
   /**
    * Determine component ID by one of two methods:
@@ -219,7 +219,7 @@ export class PopupService {
 }
 
 interface ILayerWithPopupComponent extends esri.Layer {
-  popupComponent: Type<Component>;
+  popupComponent: PopupComponentReference;
   popupData?: PopupDataDefinition;
   popupDataResolutionStrategy?: PopupDataResolutionStrategy;
 }

@@ -1,19 +1,21 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit, inject, input, output } from '@angular/core';
 import { Observable, Subject, map, pipe, startWith } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-basic-summary-blurb',
   templateUrl: './basic-summary-blurb.component.html',
-  styleUrls: ['./basic-summary-blurb.component.scss']
+  styleUrls: ['./basic-summary-blurb.component.scss'],
+  imports: [AsyncPipe]
 })
 export class BasicSummaryBlurbComponent implements OnInit {
-  @Input()
-  public keyFragment: string;
+  private readonly ls = inject(LocalStoreService);
 
-  @Output()
-  public navigateFull: EventEmitter<void> = new EventEmitter();
+  public readonly keyFragment = input<string>(undefined);
+
+  public readonly navigateFull = output<void>();
 
   public showBlurb: Observable<boolean>;
 
@@ -21,11 +23,9 @@ export class BasicSummaryBlurbComponent implements OnInit {
   private _primaryKey = 'geoservices';
   private _subKey: string;
 
-  constructor(private readonly ls: LocalStoreService) {}
-
   public ngOnInit(): void {
     this.showBlurb = this._trigger.pipe(startWith(false), this.getSummaryNoticeSetting());
-    this._subKey = `summary_notice_dismissed__${this.keyFragment}`;
+    this._subKey = `summary_notice_dismissed__${this.keyFragment()}`;
   }
 
   public emitNavigationRequest() {

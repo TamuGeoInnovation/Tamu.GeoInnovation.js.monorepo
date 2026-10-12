@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { SearchService, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { TitleCasePipe } from '@angular/common';
 
 // Pre-defined search source reference to use in the building department search.
 const searchReference = 'university-departments-exact';
@@ -12,11 +13,15 @@ const searchReference = 'university-departments-exact';
   selector: 'tamu-gisc-building-department-list',
   templateUrl: './building-department-list.component.html',
   styleUrls: ['./building-department-list.component.scss'],
-  providers: [SearchService]
+  providers: [SearchService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [TitleCasePipe]
 })
 export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
-  @Input()
-  public buildingNumber: string;
+  private searchService = inject(SearchService);
+  private environment = inject(EnvironmentService);
+
+  public readonly buildingNumber = input<string>(undefined);
 
   public result: any[] = [];
 
@@ -26,7 +31,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(private searchService: SearchService, private environment: EnvironmentService) {
+  constructor() {
     if (this.environment.value('SearchSources')) {
       this._sources = this.environment.value('SearchSources');
     }
@@ -39,7 +44,8 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    if (!this.buildingNumber) {
+    const buildingNumber = this.buildingNumber();
+    if (!buildingNumber) {
       console.warn(`Building number not provided. Could not perform department home lookup.`);
     }
 
@@ -47,7 +53,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
     this.searchService
       .search({
         sources: [searchReference],
-        values: [this.buildingNumber],
+        values: [buildingNumber],
         stateful: false
       })
       .pipe(takeUntil(this._destroy$))

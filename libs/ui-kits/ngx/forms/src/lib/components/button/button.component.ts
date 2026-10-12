@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostBinding } from '@angular/core';
+import { Component, HostBinding, input, output } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-button',
@@ -12,14 +12,12 @@ export class ButtonComponent {
    * `button` does not perform a default action and requires listening for the `go` event
    * to perform a custom action on the parent component.
    */
-  @Input()
-  public type: 'button' | 'reset' | 'submit' = 'button';
+  public readonly type = input<'button' | 'reset' | 'submit'>('button');
 
   /**
    * Button display text.
    */
-  @Input()
-  public value = 'Button';
+  public readonly value = input('Button');
 
   /**
    * Templating style.
@@ -28,40 +26,37 @@ export class ButtonComponent {
    *
    * `snug` will take only its minimum box-content space.
    */
-  @Input()
-  public fit: 'snug' | 'relaxed' = 'relaxed';
+  public readonly fit = input<'snug' | 'relaxed'>('relaxed');
 
   /**
    * Sets the visual style of the button.
    */
-  @Input()
-  public look: 'default' | 'secondary' | 'tertiary' | 'success' | 'danger' | 'warning';
+  public readonly look = input<'default' | 'secondary' | 'tertiary' | 'success' | 'danger' | 'warning'>(undefined);
 
   /**
    * Event emitted on inner button trigger.
    *
    * Not required for `reset` or `submit` types.
    */
-  @Output()
-  public go: EventEmitter<boolean> = new EventEmitter();
+  // Emitted with no value; it was declared as boolean but has never carried one.
+  public readonly go = output<void>();
 
   /**
    * Describes the components active state in a form, or otherwise.
    */
-  @Input()
-  public disabled = false;
+  public readonly disabled = input(false);
 
   /**
    * Attaches class on host used to style the component appropriately.
    */
   @HostBinding('class.snug')
   private get _fitSnug() {
-    return this.fit === 'snug';
+    return this.fit() === 'snug';
   }
 
   @HostBinding('class.relaxed')
   private get _fitRelaxed() {
-    return this.fit === 'relaxed';
+    return this.fit() === 'relaxed';
   }
 
   /**
@@ -69,31 +64,31 @@ export class ButtonComponent {
    */
   @HostBinding('class.disabled')
   private get _disabled() {
-    return this.disabled;
+    return this.disabled();
   }
 
   @HostBinding('class.secondary')
   private get _styleSecondary() {
-    return this.look === 'secondary';
+    return this.look() === 'secondary';
   }
 
   @HostBinding('class.tertiary')
   private get _styleTertiary() {
-    return this.look === 'tertiary';
+    return this.look() === 'tertiary';
   }
 
   @HostBinding('class.success')
   private get _styleSuccess() {
-    return this.look === 'success';
+    return this.look() === 'success';
   }
 
   @HostBinding('class.danger')
   private get _styleDanger() {
-    return this.look === 'danger';
+    return this.look() === 'danger';
   }
 
   @HostBinding('class.warning')
   private get _styleWarning() {
-    return this.look === 'warning';
+    return this.look() === 'warning';
   }
 }

@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   catchError,
   filter,
@@ -21,13 +21,49 @@ import { CheckinService, EventService, RsvpService, UserService } from '@tamu-gi
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GISDayRoles, parseDateStrings } from '@tamu-gisc/gisday/platform/ngx/common';
+import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
+import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { PresenterCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
   templateUrl: './event-detail.component.html',
-  styleUrls: ['./event-detail.component.scss']
+  styleUrls: ['./event-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    NgIf,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    ButtonComponent,
+    RouterLink,
+    NgFor,
+    PresenterCardComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    AsyncPipe,
+    DatePipe,
+    ParseDateTimeStringsPipe,
+    MarkdownParsePipe
+  ]
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+  private readonly auth = inject(AuthService);
+  private readonly eventService = inject(EventService);
+  private readonly checkinService = inject(CheckinService);
+  private readonly userRsvpService = inject(RsvpService);
+  private readonly ns = inject(NotificationService);
+  private readonly us = inject(UserService);
+  private readonly fb = inject(UntypedFormBuilder);
+
   public appRoles = GISDayRoles;
 
   public event$: Observable<Partial<Event>>;
@@ -51,17 +87,6 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   private _refresh$: Subject<boolean> = new Subject();
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly auth: AuthService,
-    private readonly eventService: EventService,
-    private readonly checkinService: CheckinService,
-    private readonly userRsvpService: RsvpService,
-    private readonly ns: NotificationService,
-    private readonly us: UserService,
-    private readonly fb: UntypedFormBuilder
-  ) {}
 
   public ngOnInit(): void {
     this.attendanceForm = this.fb.group({

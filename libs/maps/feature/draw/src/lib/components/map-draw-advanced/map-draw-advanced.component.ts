@@ -1,34 +1,36 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
 
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseDrawComponent, ISketchViewModelEvent } from '../base/base.component';
+import { NgClass, NgStyle } from '@angular/common';
+import { TooltipComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-map-draw-advanced',
   templateUrl: './map-draw-advanced.component.html',
-  styleUrls: ['./map-draw-advanced.component.scss']
+  styleUrls: ['./map-draw-advanced.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass, TooltipComponent, TooltipTriggerComponent, NgStyle]
 })
 export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnInit {
   /**
    * Defines whether or not the color tools will be visible.
    */
-  @Input()
-  public colorTools = false;
+  public readonly colorTools = input(false);
 
   /**
    * Defines whether or not the drawing help tools will be visible.
    */
-  @Input()
-  public helpTools = false;
+  public readonly helpTools = input(false);
 
   /**
    * Represents a list of pre-defined colors.
    */
-  @Input()
-  public colorPresets: Array<string> = [
+  public readonly colorPresets = input<Array<string>>([
     '#F44336',
     '#E91E63',
     '#9C27B0',
@@ -49,7 +51,7 @@ export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnIni
     '#9E9E9E',
     '#607D8B',
     '#FFFFFF'
-  ];
+  ]);
 
   /**
    * Default and actively selected color

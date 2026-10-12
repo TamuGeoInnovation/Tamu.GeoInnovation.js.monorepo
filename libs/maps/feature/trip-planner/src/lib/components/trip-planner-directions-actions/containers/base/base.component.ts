@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil, pluck } from 'rxjs/operators';
@@ -8,13 +8,23 @@ import { v4 as guid } from 'uuid';
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 
+import { AsyncPipe } from '@angular/common';
+import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+
 @Component({
   selector: 'tamu-gisc-trip-planner-directions-actions',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy {
+  private cd = inject(ChangeDetectorRef);
+  private analytics = inject(Angulartics2);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private plannerService = inject(TripPlannerService);
+
   /**
    * Constructed share URL based on planner service stops parameters.
    *
@@ -27,14 +37,6 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
   public animating: Observable<boolean>;
 
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(
-    private cd: ChangeDetectorRef,
-    private analytics: Angulartics2,
-    private router: Router,
-    private route: ActivatedRoute,
-    private plannerService: TripPlannerService
-  ) {}
 
   public ngOnInit(): void {
     this.plannerService.TravelOptions.pipe(

@@ -26,7 +26,6 @@ export const MotoristAssistanceColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MotoristAssistanceDefinitions.SERVICE_AREA.id,
-    title: MotoristAssistanceDefinitions.SERVICE_AREA.name,
     url: MotoristAssistanceDefinitions.SERVICE_AREA.url,
     visible: true,
     listMode: 'show',

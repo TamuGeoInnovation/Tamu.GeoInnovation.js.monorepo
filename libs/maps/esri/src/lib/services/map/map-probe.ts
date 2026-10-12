@@ -1,8 +1,11 @@
+import { loadModules } from 'esri-loader';
+
 import esri = __esri;
 
 // Type-only: `map.service.ts` imports `registerMapProbe` from here, so a value import would create
 // a runtime cycle between the two modules.
 import type { MapServiceInstance } from './map.service';
+import { publishesDefaultSymbology, symbologySourceOf } from './portal-symbology';
 
 /**
  * Read-only view of one layer's health, as reported to automated tests.
@@ -58,6 +61,16 @@ export interface MapLayerProbe {
    * Decided by `SpatialReference.equals`, which knows 102100 and 3857 are the same reference.
    */
   drawable: boolean | null;
+
+  /**
+   * Where the layer's symbology comes from (#1578): `own`, `portal` or `service` as the map service
+   * recorded it, or `default` when it draws ArcGIS's default symbol because neither its definition nor
+   * its source supplies one - a GeoJSON or CSV layer with no renderer, or a feature layer whose service
+   * publishes no drawing info or only `RedSphere.png`. `null` for layers that have no renderer.
+   *
+   * `default` is what Dining and AggiePrint were for two days on production (#1576).
+   */
+  symbology: 'own' | 'portal' | 'service' | 'default' | null;
 }
 
 export interface MapProbeSnapshot {
@@ -87,6 +100,11 @@ export interface MapProbeSnapshot {
   layers: MapLayerProbe[];
 }
 
+export interface MapFraming {
+  zoom: number;
+  center: [number, number];
+}
+
 export interface MapProbe {
   /**
    * Whether the view is still drawing.
@@ -103,6 +121,7 @@ export interface MapProbe {
 
   /**
    * Whether a map is registered and all of its layers have finished loading, successfully or not.
+   * Also waits, briefly, until `framing` can be read: see there.
    *
    * This is the signal tests poll before taking a snapshot: it means "layer state is now worth
    * reading", which is exactly what the layer assertions need. Esri takes tens of seconds to get
@@ -110,8 +129,34 @@ export interface MapProbe {
    */
   readonly ready: boolean;
 
+  /**
+   * Where the view is looking: its zoom and its WGS 84 `[longitude, latitude]` center, or `null`
+   * before a view exists.
+   *
+   * In any spatial reference. Esri fills in a point's `longitude` and `latitude` only for geographic
+   * and Web Mercator references; dev's main map, on the Texas Centric vector tile basemap (wkid
+   * 32139), reported `[null, null]`. Such a center is projected with Esri's projection engine, which
+   * is synchronous once loaded but loads asynchronously. So the first read of a view in another
+   * reference starts loading it and reports `null`, and `ready` stays false until it has loaded:
+   * after `ready`, a map with a view always has a framing. The basemap gallery has usually loaded
+   * the engine already, since a view needs it to change spatial reference at all.
+   *
+   * How a test sees that a map opened where it was meant to. An event map framed by its builder
+   * choice opened at the default zoom once ArcGIS 4.27 started dropping a `goTo` made before the
+   * view was ready - silently, with every layer loaded and drawn (#1379).
+   */
+  readonly framing: MapFraming | null;
+
   /** Resolves layer health. Queries feature counts, so it performs network requests. */
   snapshot(): Promise<MapProbeSnapshot>;
+
+  /**
+   * Each layer's renderer as ArcGIS JSON, keyed by layer id, as the layer is drawing it now: its own,
+   * its portal item's or its service's. `null` for a layer with no renderer. For the symbology
+   * inventory in `docs/layer-symbology.md` (#1578), so it records what is actually drawn rather than
+   * what a definition file appears to say.
+   */
+  renderers(): Record<string, unknown>;
 }
 
 /**
@@ -173,7 +218,7 @@ export function registerMapProbe(instance: MapServiceInstance | undefined, owner
   if (target[MAP_PROBE_GLOBAL] === undefined) {
     target[MAP_PROBE_GLOBAL] = {
       get ready(): boolean {
-        return layersSettled();
+        return probeReady();
       },
       get drawing(): boolean {
         // True only when a view exists and says it is updating. With no view there is nothing being
@@ -181,9 +226,63 @@ export function registerMapProbe(instance: MapServiceInstance | undefined, owner
         // drawing to finish should not wait forever on a page that has no map.
         return (current?.view as unknown as { updating?: boolean })?.updating === true;
       },
-      snapshot: takeSnapshot
+      get framing(): MapFraming | null {
+        return framing();
+      },
+      snapshot: takeSnapshot,
+      renderers: readRenderers
     };
   }
+}
+
+/** Esri's projection engine once loaded; see `MapProbe.framing`. */
+let projection: typeof esri.projection | undefined;
+let projectionRequested = false;
+
+function framing(): MapFraming | null {
+  const view = current?.view as esri.MapView | undefined;
+  const center = view?.center;
+
+  if (!view || !center) {
+    return null;
+  }
+
+  if (typeof center.longitude === 'number' && typeof center.latitude === 'number') {
+    return { zoom: view.zoom, center: [center.longitude, center.latitude] };
+  }
+
+  if (!projection) {
+    requestProjection();
+
+    return null;
+  }
+
+  const geographic = projection.project(center, { wkid: 4326 }) as esri.Point;
+
+  return { zoom: view.zoom, center: [geographic.x, geographic.y] };
+}
+
+function requestProjection(): void {
+  if (projectionRequested) {
+    return;
+  }
+
+  projectionRequested = true;
+
+  loadModules<[typeof esri.projection]>(['esri/geometry/projection'])
+    .then(async ([engine]) => {
+      await engine.load();
+      projection = engine;
+    })
+    .catch(() => {
+      // Asked again on the next read.
+      projectionRequested = false;
+    });
+}
+
+/** Layers settled, and `framing` readable if there is a view to frame. */
+function probeReady(): boolean {
+  return layersSettled() && (!current?.view?.center || framing() !== null);
 }
 
 /**
@@ -251,7 +350,7 @@ async function takeSnapshot(): Promise<MapProbeSnapshot> {
   }
 
   return {
-    ready: layersSettled(),
+    ready: probeReady(),
     viewReady: current.view?.ready === true,
     spatialReference: readSpatialReference(current.view),
     layers: await Promise.all(layers.map(probeLayer))
@@ -269,7 +368,8 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
     featureCount: null,
     graphicTypes: countGraphicTypes(layer),
     spatialReference: readSpatialReference(layer),
-    drawable: isDrawable(layer)
+    drawable: isDrawable(layer),
+    symbology: readSymbology(layer)
   };
 
   // A layer that failed to load cannot be queried, and asking would replace a useful load error
@@ -279,6 +379,38 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
   }
 
   return { ...base, featureCount: await countFeatures(layer) };
+}
+
+/** See `MapProbe.renderers`. */
+function readRenderers(): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+
+  for (const layer of registeredLayers()) {
+    const renderer = (layer as unknown as { renderer?: { toJSON?: () => unknown } }).renderer;
+
+    out[layer.id] = renderer?.toJSON ? renderer.toJSON() : null;
+  }
+
+  return out;
+}
+
+/** See `MapLayerProbe.symbology`. Read after the layer has loaded, so `sourceJSON` is there. */
+function readSymbology(layer: esri.Layer): MapLayerProbe['symbology'] {
+  const source = symbologySourceOf(layer);
+
+  if (source === undefined) {
+    return null;
+  }
+
+  if (source === 'none') {
+    return 'default';
+  }
+
+  if (source === 'service' && publishesDefaultSymbology((layer as unknown as { sourceJSON?: unknown }).sourceJSON)) {
+    return 'default';
+  }
+
+  return source;
 }
 
 /**

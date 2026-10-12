@@ -10,7 +10,7 @@ export const AggiemapRasterBasemap: BaseMapProperties = {
   baseLayers: [
     {
       type: 'TileLayer',
-      url: `https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer`,
+      url: `https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer`,
       spatialReference: {
         wkid: 102100
       },
@@ -23,7 +23,7 @@ export const AggiemapRasterBasemap: BaseMapProperties = {
   ],
   id: 'aggie_basemap',
   title: 'Aggieland',
-  thumbnailUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer/info/thumbnail'
+  thumbnailUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer/info/thumbnail'
 };
 
 /**
@@ -62,6 +62,24 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
  * explicitly allowed - the rule that keeps bus routes off production. Production is the default here,
  * so a caller that cannot tell which environment it is in gets the published basemap.
  */
+/**
+ * The deepest scale the campus basemap has tiles for: level 21, 1:282 (#1577).
+ *
+ * `TAMU_Basemap_20261008`'s tiling scheme lists 24 levels, down to 1:70, but its cache stops at level 21
+ * and the service says so in its own `maxScale`. A view allowed past it zooms into levels with no tiles,
+ * and the map goes white under the layers. Every AggieMap view stops here: use this as
+ * `constraints.maxScale`, never `0`.
+ *
+ * Set just below level 21's 282.124294 rather than equal to it: at exactly that value the view stopped a
+ * level early, at 20.
+ *
+ * This asked whoever republished the basemap to raise the number to the new service's `maxScale`, and
+ * when one was (#1695) the number was right only because the October 2026 cache happens to stop at the
+ * same level the June one did. A comment cannot be relied on to be read, so `services.spec.ts` now asks
+ * the named service for its `maxScale` and fails when this disagrees with it.
+ */
+export const AGGIEMAP_BASEMAP_MAX_SCALE = 282;
+
 export function aggiemapBasemap(isTesting: boolean): BaseMapProperties {
   return isTesting ? AggiemapVectorBasemap : AggiemapRasterBasemap;
 }

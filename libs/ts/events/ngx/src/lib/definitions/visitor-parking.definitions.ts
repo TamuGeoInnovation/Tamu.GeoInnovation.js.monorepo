@@ -1,8 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -10,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum VISITOR_PARKING_LAYERS {
   VISITOR_KIOSKS = 'Visitor Kiosks',
@@ -37,9 +36,8 @@ export const VisitorParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: VisitorParkingDefinitions.VISITOR_KIOSKS.id,
-    title: VisitorParkingDefinitions.VISITOR_KIOSKS.name,
     url: VisitorParkingDefinitions.VISITOR_KIOSKS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     visible: true,
     native: {
       outFields: ['*']
@@ -49,9 +47,8 @@ export const VisitorParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: VisitorParkingDefinitions.VISITOR_PARKING_LOTS.id,
-    title: VisitorParkingDefinitions.VISITOR_PARKING_LOTS.name,
     url: VisitorParkingDefinitions.VISITOR_PARKING_LOTS.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.LotName',
@@ -63,22 +60,8 @@ export const VisitorParkingColdLayerSources: LayerSource[] = [
       }
     },
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'GIS.TS.Lot_Use.Visitor_Lot',
-        uniqueValueInfos: [
-          {
-            value: '1',
-            label: 'Hourly Visitor Parking',
-            symbol: {
-              type: 'simple-fill',
-              color: 'rgb(0, 77, 168)'
-            } as unknown as esri.SimpleFillSymbolProperties
-          }
-        ]
-      }
-    },
+      outFields: ['*']
+    }
   }
 ];
 

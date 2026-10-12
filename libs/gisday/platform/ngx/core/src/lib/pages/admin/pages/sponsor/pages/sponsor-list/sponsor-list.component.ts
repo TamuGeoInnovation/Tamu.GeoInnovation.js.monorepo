@@ -1,27 +1,22 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
-import { SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe } from '@angular/common';
+import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
   selector: 'tamu-gisc-sponsor-list',
   templateUrl: './sponsor-list.component.html',
-  styleUrls: ['./sponsor-list.component.scss']
+  styleUrls: ['./sponsor-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe]
 })
 export class SponsorListComponent extends BaseAdminListComponent<Sponsor> {
-  constructor(
-    private readonly sponsorService: SponsorService,
-    private readonly ss: SeasonService,
-    private readonly ar: ActivatedRoute,
-    private readonly rt: Router,
-    private readonly ms: ModalService,
-    private readonly ns: NotificationService
-  ) {
-    super(sponsorService, ss, ar, rt, ms, ns);
-  }
+  protected readonly entityService = inject(SponsorService);
 }

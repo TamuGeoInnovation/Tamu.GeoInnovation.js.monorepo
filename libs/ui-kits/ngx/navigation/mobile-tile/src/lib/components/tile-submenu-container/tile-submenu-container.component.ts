@@ -1,4 +1,13 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, OnDestroy, HostBinding } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewContainerRef,
+  OnDestroy,
+  HostBinding,
+  ChangeDetectionStrategy,
+  inject,
+  viewChild
+} from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -13,11 +22,13 @@ import { submenuListStagger } from '../../animations/animations';
   // This animation apparently needs to be in a parent component, and not
   // in the self-component otherwise it can't query anything entering into view
   // because the whole thing is entering into view.
-  animations: [submenuListStagger]
+  animations: [submenuListStagger],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
-  @ViewChild('container', { static: true, read: ViewContainerRef })
-  private _container: ViewContainerRef;
+  private service = inject(TileService);
+
+  private readonly _container = viewChild('container', { read: ViewContainerRef });
 
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -27,8 +38,6 @@ export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  constructor(private service: TileService) {}
-
   public ngOnInit() {
     // A click even is registered on the TileComponent.
     //
@@ -37,9 +46,9 @@ export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
     // the submenu template reference.
     this.service.activeSubMenu.pipe(takeUntil(this._$destroy)).subscribe((res) => {
       if (res) {
-        this._container.clear();
+        this._container().clear();
 
-        this._container.createEmbeddedView(res.template);
+        this._container().createEmbeddedView(res.template);
       }
     });
   }

@@ -1,19 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { FieldEnumerator, EnumeratorKeyValuePairs } from '@tamu-gisc/common/utils/object';
 import { IReverseGeocodeRecord, ReverseGeocodeRecordField } from '@tamu-gisc/geoprocessing-v5';
 
 import { ReverseGeocodeFieldLabel } from '../../../../../util/dictionaries';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-reverse-geocoding-result-table',
   templateUrl: './reverse-geocoding-result-table.component.html',
-  styleUrls: ['./reverse-geocoding-result-table.component.scss']
+  styleUrls: ['./reverse-geocoding-result-table.component.scss'],
+  imports: [AsyncPipe]
 })
 export class ReverseGeocodingResultTableComponent implements OnInit {
-  @Input()
-  public result: IReverseGeocodeRecord;
+  public readonly result = input<IReverseGeocodeRecord>(undefined);
 
   public filteredProps: Observable<EnumeratorKeyValuePairs>;
 
@@ -35,7 +36,7 @@ export class ReverseGeocodingResultTableComponent implements OnInit {
   ];
 
   public ngOnInit(): void {
-    this.filteredProps = of(this.result).pipe(
+    this.filteredProps = of(this.result()).pipe(
       map((result) => {
         return new FieldEnumerator(result).filter('exclude', this._excludedProps).order(this._defaultOrder);
       })

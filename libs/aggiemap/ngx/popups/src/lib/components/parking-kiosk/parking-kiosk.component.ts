@@ -1,29 +1,14 @@
-import { Component } from '@angular/core';
-
-import { Router, ActivatedRoute } from '@angular/router';
-import { Angulartics2 } from 'angulartics2';
-
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 
 @Component({
   selector: 'tamu-gisc-parking-kiosk-popup-component',
   templateUrl: './parking-kiosk.component.html',
-  styleUrls: ['../base/base.popup.component.scss']
+  styleUrls: ['../base/base.popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ParkingKioskPopupComponent extends BaseDirectionsComponent {
-  constructor(
-    private rtr: Router,
-    private rt: ActivatedRoute,
-    private ps: TripPlannerService,
-    private anl: Angulartics2,
-    private mp: EsriMapService
-  ) {
-    super(rtr, rt, ps, anl, mp);
-  }
-
   public startDirections() {
     super.startDirections(`ObjectID ${this.data.attributes.OBJECTID}`);
   }

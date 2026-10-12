@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, pluck, tap } from 'rxjs/operators';
 
@@ -11,13 +11,13 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   providedIn: 'root'
 })
 export class FormService {
+  private readonly http = inject(HttpClient);
+  private readonly env = inject(EnvironmentService);
+  private readonly ns = inject(NotificationService);
+
   public resource: string;
 
-  constructor(
-    private readonly http: HttpClient,
-    private readonly env: EnvironmentService,
-    private readonly ns: NotificationService
-  ) {
+  constructor() {
     this.resource = `${this.env.value('api_url')}/competitions/forms`;
   }
 

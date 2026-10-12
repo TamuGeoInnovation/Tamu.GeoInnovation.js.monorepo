@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
 
 import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
+import { ServiceAttributeAccordionComponent } from '../../components/fragments/common/service-attribute-accordion/service-attribute-accordion.component';
+import { ApiVersionFragmentComponent } from '../../components/fragments/common/api-version-fragment/api-version-fragment.component';
+import { QueryStatusFragmentComponent } from '../../components/fragments/common/query-status-fragment/query-status-fragment.component';
 
 @Component({
   selector: 'tamu-gisc-reverse-geocoding',
   templateUrl: './reverse-geocoding.component.html',
-  styleUrls: ['./reverse-geocoding.component.scss']
+  styleUrls: ['./reverse-geocoding.component.scss'],
+  imports: [ServiceAttributeAccordionComponent, ApiVersionFragmentComponent, QueryStatusFragmentComponent]
 })
 export class ReverseGeocodingComponent {
   public apiVersion = '5.0';

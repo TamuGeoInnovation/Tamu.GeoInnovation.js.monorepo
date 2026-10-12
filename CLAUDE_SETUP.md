@@ -29,8 +29,9 @@ Read these before starting. Each one exists because it has cost real debugging t
   looks like. If the check does not match, stop and diagnose rather than continuing.
 - **Stop and ask the user for anything needing credentials or a browser.** You cannot add an
   SSH key to GitHub or authorize SSO; those steps belong to the user.
-- **Never edit files while a Docker run is in flight.** The bind mount is live, so a run
-  picks up partial edits and reports on a state that never existed. Kill it and restart.
+- **Never edit files while the dev server is compiling them.** Its source is bind-mounted
+  live, so a build picks up partial edits and reports on a state that never existed. Checks
+  run by `scripts/check-in-volume.sh` are unaffected: they run on a fetched commit.
 - **Do not pipe `nx` output into `tail`, `head` or `grep`.** The pipeline's exit code hides
   the task's, so a task that never ran still looks like a pass. Redirect to a file, capture
   the exit code on its own line, then filter the file.
@@ -55,7 +56,7 @@ Notes:
 
 - **Node.js on the host is not required and not used.** Every Node command runs inside
   Docker against the checkout. If the machine has Node installed, ignore it - its version is
-  irrelevant, and the commands below pin Node 20.18.1.
+  irrelevant, and the commands below pin Node 22.23.3.
 - On Windows, `python3` may open the Microsoft Store alias. Use `python`.
 - If `gh` was installed after this session started, it may not be on `PATH` yet. Ask the
   user to restart the session, or call the executable by its full path.
@@ -140,38 +141,49 @@ write access. Do not try to change access yourself.
 
 ## Phase 3 - Install dependencies
 
-Run from the repository root, substituting the real path in `-v`.
+This installs the dev server's `node_modules` into a Docker volume, `tamu-js-dev-nm`, rather
+than into the Windows checkout: file reads across the Windows-to-Linux bind mount are several
+times slower (CLAUDE.md, "Why checks run in a volume"). Run from the repository root,
+substituting the real path in `-v`.
 
 Git Bash:
 
 ```
-MSYS_NO_PATHCONV=1 docker run --rm -m 8g -v "C:\path\to\repo:/w" -w /w -e CYPRESS_INSTALL_BINARY=0 node:20.18.1 sh -c "npm ci"
+MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:\path\to\repo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:22.23.3 npm ci --no-audit --no-fund
 ```
 
 PowerShell, where `MSYS_NO_PATHCONV` is unnecessary:
 
 ```
-docker run --rm -m 8g -v "${PWD}:/w" -w /w -e CYPRESS_INSTALL_BINARY=0 node:20.18.1 sh -c "npm ci"
+docker run --rm -m 16g -v "${PWD}:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:22.23.3 npm ci --no-audit --no-fund
 ```
 
 **Expect:** roughly 2,200 packages. Budget real time - the first run also pulls the
-`node:20.18.1` image, and on a slow link this phase has taken close to an hour.
+`node:22.23.3` image, and on a slow link this phase has taken close to an hour.
 
-- `CYPRESS_INSTALL_BINARY=0` skips an ~800 MB download that `--rm` discards after every run.
-  Drop the flag only if the user needs Cypress.
 - A full-tunnel VPN slows this badly. Suggest disconnecting it for this step.
 - Tell the user when this starts. It is long enough that silence looks like a hang.
 
 ## Phase 4 - Prove the toolchain
 
-Use `node node_modules/nx/bin/nx.js`, never bare `nx` or `npx nx` - `node_modules/.bin` may
-not be populated.
+Run the first check, from Git Bash in the repository root:
 
 ```
-docker run --rm -m 8g -v "<path>:/w" -w /w node:20.18.1 sh -c "node node_modules/nx/bin/nx.js build aggiemap-angular --skip-nx-cache"
+scripts/check-in-volume.sh development aggiemap-angular
+echo "exit $?"
 ```
 
-**Expect:** `Successfully ran target build`, after a few minutes.
+It clones the committed `development` branch into its own Docker volume (`tamu-js-development`),
+runs `npm ci` there, then lints, tests and builds `aggiemap-angular`. This is how every check
+runs here; CLAUDE.md has the rest (`affected`, `all`, a list of projects).
+
+**Expect:** `exit 0`, after a few minutes, and a log at
+`check-tamu-js-development-aggiemap-angular.log` in the repository root that
+reports `Successfully ran targets lint, test, build`. A later run reuses the volume, skips `npm ci` unless
+the lock changed, and replays unchanged tasks from the Nx cache in about a second.
+
+Inside the containers, Nx runs as `node node_modules/nx/dist/bin/nx.js`, never bare `nx` or
+`npx nx` - `node_modules/.bin` may not be populated.
 
 **Build, not just test.** Most libraries have no `build` target at all, so
 `nx build <library>` answers `Cannot find configuration for task` and typechecks nothing. To
@@ -182,7 +194,7 @@ only compiles what the specs import, and `nx lint` does not typecheck at all.
 ## Phase 5 - Run the app
 
 ```
-docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v "<path>:/w" -w /w node:20.18.1 sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v "<path>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:22.23.3 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 **Expect:** compiled in roughly three to four minutes, then the app answers on port 4200.
@@ -208,6 +220,62 @@ the same layer is fine on the live site. Check the browser console for a CORS me
 concluding anything, and use `localhost:4200` for everyday work.
 
 Stop it with `docker rm -f aggiemap-dev`.
+
+## Phase 6 - Run GIS Day locally (optional)
+
+**Skip this phase unless the user is going to work on GIS Day.** Nothing else needs it.
+
+`scripts/gisday-local.sh` runs the whole GIS Day site in Docker: SQL Server, Redis, the API
+(`gisday-nest`) and the front end's dev server (`gisday-angular`).
+[`docs/gisday-local.md`](docs/gisday-local.md) explains each part; this phase is only the steps and
+what to expect after each.
+
+### What the user must already have
+
+One file, in a folder outside the repository (`GISDAY_LOCAL_DIR`, default `C:/TAMU/gisday-local`):
+`gisday-api.local.env`, the API's settings, started from `apps/gisday-nest/local.env.sample`.
+
+```
+ls "${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}"
+```
+
+**Expect:** `gisday-api.local.env` listed. If it is missing, stop and ask the user: it comes from the
+maintainer until settings with no production secrets exist
+([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623)). Do not
+write it yourself, do not print its contents, and never copy it into the repository.
+
+Nothing else is needed. The `db` step writes the database's local passwords (`local-db.env`) the
+first time it runs, and the database comes from the scrubbed copy in the repository
+([`docs/gisday-local.md`](docs/gisday-local.md#a-copy-with-no-personal-data)).
+
+### The steps
+
+From Git Bash in the repository root, one at a time:
+
+| Step | Expect |
+| --- | --- |
+| `scripts/gisday-local.sh install` | `npm ci` finishes in about two minutes. Phase 3 already filled the same volume, so this is needed only when `package-lock.json` has changed since |
+| `scripts/gisday-local.sh db` | `gisday-db is ready.` within two minutes; the first run also pulls the SQL Server image |
+| `scripts/gisday-local.sh restore` | progress in steps of 10 percent, then `Restored apps/gisday-nest/src/database/gisday-local.bak into gisday-nest-eh and mapped gisday_app.` A few seconds |
+| `scripts/gisday-local.sh api` | `Successfully ran target build`, then `gisday-api started`. <http://localhost:3333/api/seasons/active> answers 200 |
+| `scripts/gisday-local.sh web` | `gisday-dev started`. The first compile takes several minutes; follow it with `docker logs -f gisday-dev`. Then <http://localhost:4201> shows the site with the restored data |
+| `scripts/gisday-local.sh status` | four containers, all `Up`: `gisday-db`, `gisday-redis`, `gisday-api`, `gisday-dev` |
+
+Then ask the user to sign in at <http://localhost:4201> with their own GIS Day account; you cannot do
+that for them. **Expect:** they return to the site signed in. The port cannot be changed, because
+sign-in only returns to `localhost:4201`. The accounts are the real ones, so nobody edits users from
+a local copy.
+
+`scripts/gisday-local.sh stop` removes the containers and keeps the database, so `restore` is needed
+only once. To change the schema, follow [`docs/gisday-migrations.md`](docs/gisday-migrations.md).
+
+### Known not to work
+
+- **Uploaded images** (sponsor logos, speaker photos) are missing: they are not in the database
+  ([#1625](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1625)).
+- **Email** is never sent, deliberately.
+- [`docs/gisday-local.md`](docs/gisday-local.md#things-that-look-broken) lists errors that look like
+  faults and are not.
 
 ## Known false alarms
 

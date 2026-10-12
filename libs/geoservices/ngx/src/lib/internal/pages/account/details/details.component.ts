@@ -1,21 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormGroup, UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import { AccountDetailsService, IAccountDetails } from '@tamu-gisc/geoservices/data-access';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-details',
   templateUrl: './details.component.html',
-  styleUrls: ['./details.component.scss']
+  styleUrls: ['./details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent]
 })
 export class DetailsComponent implements OnInit {
+  private service = inject(AccountDetailsService);
+  private fb = inject(UntypedFormBuilder);
+
   public data: Observable<IAccountDetails>;
 
   public form: UntypedFormGroup;
-
-  constructor(private service: AccountDetailsService, private fb: UntypedFormBuilder) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

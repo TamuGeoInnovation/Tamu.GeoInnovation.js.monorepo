@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'tamu-gisc-tamu-block',
   templateUrl: './tamu-block.component.html',
-  styleUrls: ['./tamu-block.component.scss']
+  styleUrls: ['./tamu-block.component.scss'],
+  imports: [RouterLink]
 })
 export class TamuBlockBrandingComponent {}

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, forkJoin, of, switchMap, tap } from 'rxjs';
@@ -7,21 +7,23 @@ import * as Papa from 'papaparse';
 
 import { ClassService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { ClassAddEditFormComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-class-edit',
   templateUrl: './class-edit.component.html',
-  styleUrls: ['./class-edit.component.scss']
+  styleUrls: ['./class-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ClassAddEditFormComponent, AsyncPipe, DatePipe]
 })
 export class ClassEditComponent implements OnInit {
+  private readonly at = inject(ActivatedRoute);
+  private readonly cs = inject(ClassService);
+  private readonly ns = inject(NotificationService);
+
   public students$: Observable<Array<Partial<UserClass>>>;
   public isExporting$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
-  constructor(
-    private readonly at: ActivatedRoute,
-    private readonly cs: ClassService,
-    private readonly ns: NotificationService
-  ) {}
 
   public ngOnInit(): void {
     this.students$ = this.cs.getClassStudents(this.at.snapshot.params.guid);

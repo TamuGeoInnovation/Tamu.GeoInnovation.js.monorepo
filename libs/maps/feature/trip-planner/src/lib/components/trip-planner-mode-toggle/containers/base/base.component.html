@@ -1,12 +1,18 @@
-<div [title]="name" [attr.alt]="label" type="domElement" [ngClass]="{ active: active | async, error: (status | async)?.isError, disabled: (meta_status | async).isModeRestricted || (!(meta_status | async).allPristine && !(meta_status | async).toggleHasResult) }" (click)="setTravelMode()" tabindex="0">
-  <i class="material-icons">{{ iconName }}</i>
+<div [title]="name()" [attr.alt]="label()" type="domElement" [ngClass]="{ active: active | async, error: $safeNavigationMigration((status | async)?.isError), disabled: (meta_status | async).isModeRestricted || (!(meta_status | async).allPristine && !(meta_status | async).toggleHasResult) }" (click)="setTravelMode()" tabindex="0">
+  <i class="material-icons">{{ iconName() }}</i>
 
   <!-- If trip result error, show ETA placeholder and apply error class. -->
-  <span class="eta" *ngIf="(status | async)?.isFulfilled && (status | async)?.isError">--</span>
+  @if ((status | async)?.isFulfilled && (status | async)?.isError) {
+  <span class="eta">--</span>
+  }
 
   <!-- If trip result is processing, show ETA placeholder. -->
-  <span class="eta" *ngIf="(status | async)?.isProcessing">--</span>
+  @if ((status | async)?.isProcessing) {
+  <span class="eta">--</span>
+  }
 
   <!-- If trip result was successful and directions exist, display ETA. -->
-  <span class="eta" *ngIf="(status | async)?.isFulfilled && (status | async)?.directions?.totalTime">{{ (status | async)?.directions?.totalDriveTime | timeUntil }}</span>
+  @if ((status | async)?.isFulfilled && (status | async)?.directions?.totalTime) {
+  <span class="eta">{{ $safeNavigationMigration((status | async)?.directions?.totalDriveTime) | timeUntil }}</span>
+  }
 </div>

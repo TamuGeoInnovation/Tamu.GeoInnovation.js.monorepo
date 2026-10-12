@@ -1,33 +1,36 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
 
 import { ApiBase, TransformersMap } from '@tamu-gisc/geoprocessing-core';
+import { HighlightModule } from 'ngx-highlightjs';
 
 @Component({
   selector: 'tamu-gisc-response-viewer',
   templateUrl: './response-viewer.component.html',
-  styleUrls: ['./response-viewer.component.scss']
+  styleUrls: ['./response-viewer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [HighlightModule]
 })
 export class ResponseViewerComponent<Type extends object, Res extends object> implements OnInit {
-  @Input()
-  public runner: ApiBase<TransformersMap<Type>, Type, Res>;
+  public readonly runner = input<ApiBase<TransformersMap<Type>, Type, Res>>(undefined);
 
-  @Input()
-  public format;
+  public readonly format = input(undefined);
 
   public result;
 
   public ngOnInit() {
-    this.runner.asObservable().subscribe((res) => {
-      if (res instanceof XMLDocument) {
-        const serialized = new XMLSerializer().serializeToString(res);
+    this.runner()
+      .asObservable()
+      .subscribe((res) => {
+        if (res instanceof XMLDocument) {
+          const serialized = new XMLSerializer().serializeToString(res);
 
-        this.result = this.formatSerializedXML(serialized);
-      } else if (res instanceof Object) {
-        this.result = JSON.stringify(res, null, '   ');
-      } else {
-        this.result = res;
-      }
-    });
+          this.result = this.formatSerializedXML(serialized);
+        } else if (res instanceof Object) {
+          this.result = JSON.stringify(res, null, '   ');
+        } else {
+          this.result = res;
+        }
+      });
   }
 
   private formatSerializedXML(xml: string) {

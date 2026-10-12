@@ -1,7 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -9,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+import { EventPopups } from '../modules/popups/popups';
 
 export enum SOFTBALL_LAYERS {
   SOFTBALL_ROUTES = 'softball-routes',
@@ -38,47 +38,13 @@ export const SoftballLayerSources: LayerSource[] = [
     id: SoftballEventDefinitions.SOFTBALL_ROUTES.id,
     title: SoftballEventDefinitions.SOFTBALL_ROUTES.name,
     url: SoftballEventDefinitions.SOFTBALL_ROUTES.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.Type',
       description: 'attributes.description'
     },
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'name',
-        uniqueValueInfos: [
-          {
-            value: 'Fast Route',
-            label: 'Fast Route',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(56, 168, 0)',
-              width: 2,
-              marker: {
-                style: 'arrow',
-                color: 'rgb(56, 168, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          },
-          {
-            value: 'Expect Delays',
-            label: 'Expect Delays',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(230, 0, 0)',
-              width: 2,
-              marker: {
-                style: 'arrow',
-                color: 'rgb(230, 0, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          }
-        ]
-      }
+      outFields: ['*']
     }
   },
   {
@@ -86,7 +52,7 @@ export const SoftballLayerSources: LayerSource[] = [
     id: SoftballEventDefinitions.SOFTBALL_LOCATIONS.id,
     title: SoftballEventDefinitions.SOFTBALL_LOCATIONS.name,
     url: SoftballEventDefinitions.SOFTBALL_LOCATIONS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.Type',
       description: 'attributes.description'

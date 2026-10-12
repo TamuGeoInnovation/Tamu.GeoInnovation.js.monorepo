@@ -1,15 +1,45 @@
 import { TestBed } from '@angular/core/testing';
 
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import {
+  SelectComponent,
+  CheckboxComponent,
+  CheckboxGroupComponent,
+  DateTimePickerComponent,
+  TextboxComponent,
+  AutocompleteComponent,
+  AutocompleteOptionTemplateDirective,
+  ButtonComponent,
+  FileComponent,
+  RadioGroupComponent,
+  RangeComponent,
+  SlideToggleComponent,
+  SelectListComponent,
+  TurnstileChallengeComponent
+} from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { EventPassedWarningComponent } from './event-passed-warning.component';
 
 describe('EventPassedWarningComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UIFormsModule],
-      declarations: [EventPassedWarningComponent],
+      imports: [
+        SelectComponent,
+        CheckboxComponent,
+        CheckboxGroupComponent,
+        DateTimePickerComponent,
+        TextboxComponent,
+        AutocompleteComponent,
+        AutocompleteOptionTemplateDirective,
+        ButtonComponent,
+        FileComponent,
+        RadioGroupComponent,
+        RangeComponent,
+        SlideToggleComponent,
+        SelectListComponent,
+        TurnstileChallengeComponent,
+        EventPassedWarningComponent
+      ],
       providers: [
         { provide: ModalRefService, useValue: { close: jest.fn() } },
         {
@@ -30,5 +60,23 @@ describe('EventPassedWarningComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('tamu-gisc-button')).toBeTruthy();
+  });
+
+  it('should keep the default follow-up message when none is provided', () => {
+    const fixture = TestBed.createComponent(EventPassedWarningComponent);
+
+    expect(fixture.componentInstance.followupMessage).toBe(
+      'A new map will be released as we get closer to the next upcoming date for this event.'
+    );
+  });
+
+  it('should use a provided follow-up message', () => {
+    TestBed.overrideProvider(MODAL_DATA, {
+      useValue: { followupMessage: 'Tailgate zones are subject to change before next season.' }
+    });
+
+    const fixture = TestBed.createComponent(EventPassedWarningComponent);
+
+    expect(fixture.componentInstance.followupMessage).toBe('Tailgate zones are subject to change before next season.');
   });
 });

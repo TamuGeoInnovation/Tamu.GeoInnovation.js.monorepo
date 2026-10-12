@@ -195,6 +195,18 @@ at step 6 then guarantees nothing.
 
 If the suite failed and a tag was already pushed, delete it: `git push origin :dev-2026-09-29`.
 
+### 3a. The team tests on dev
+
+The suite proves the maps load and draw; it does not prove a change does what it was meant to. Before
+production, the team works through **What to test on dev** in [`unreleased.md`](unreleased.md): one
+row per visible change, each with a dev link and what to look for. Each pull request with a visible
+result adds its own row, in the same pull request, so the list is complete by the time a release is
+cut and nobody has to reconstruct it (#1360).
+
+Update the line above the table naming the build on dev, so testers know which build they are looking
+at. Anything they find is fixed and the release re-cut from step 1, or recorded in the notes as known.
+Production waits until the team has tested; a release can sit on dev over a weekend.
+
 ### 4. Merge the release notes
 
 **Write them as soon as step 2 passes, without being asked.** This step belongs to whoever is running
@@ -207,13 +219,17 @@ Open one pull request that:
 1. **Renames** `unreleased.md` to `YYYY-MM-DD.md` for the day it will ship. If the deploy slips, rename
    before merging.
 2. **Records the dev run from step 2** - the numbers that cleared it.
-3. **Points the *What to test* links at production**, since that is where anyone following them will
+3. **Moves the *What to test on dev* rows into the notes**, recording who tested them on dev and what
+   they found, and points the links at production, since that is where anyone following them will
    look once it is out. Anything deliberately not on production keeps its dev link and says why.
 4. **Ends with the "What went into this release" table** - every pull request and the issue behind it
    (#1139).
 5. **Leaves a pointer in a fresh `unreleased.md`**, because links to it get shared while people are
    testing on dev and the rename alone leaves them on an empty page. Carry forward anything not part
    of this release, such as a work-in-flight section.
+6. **Refreshes [`docs/testing.md`](../testing.md)**: its smoke suite counts and their date, from the
+   step 2 run. That page is what people outside the team are pointed at, so its numbers say when
+   they were measured.
 
 Then **merge it**. Nothing about the notes happens after this point.
 
@@ -246,6 +262,26 @@ not ship, in a follow-up, rather than quietly editing the record.
 Production numbers are not recorded by hand. The
 [smoke workflow](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/actions/workflows/aggiemap-smoke.yml)
 checks production daily and opens a health issue when something breaks.
+
+### 8. Capture the baseline images
+
+```bash
+node tools/visual-baselines/capture.mjs --env production
+```
+
+Every map, both viewports, written under the release tag:
+`<baselines>/production/prod-2026-10-06-2/`. Do the same for dev after step 3.
+
+**Capture after the deploy, not before.** A "before" set is only worth having if it was taken while
+it was still true, and the set that matters for the next release is this one — today's production, as
+shipped. Capturing ahead of a change photographs maps that are about to be restyled.
+
+The release tag is the key because that is the question people ask months later: what did this map
+look like in that release. [`tools/visual-baselines`](../../tools/visual-baselines/README.md) explains
+the layout, and why the manifest records the bundle hash as well as the tag.
+
+Baselines live outside the repository and are per machine. They are evidence for review, not a
+check that gates anything — nothing fails if a set is missing, and the suite is what gates a release.
 
 ### What the tags are for
 

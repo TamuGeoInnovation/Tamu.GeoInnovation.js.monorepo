@@ -20,3 +20,8 @@ export * from './lib/selection-symbols';
 export * from './lib/polygons';
 
 export * from './lib/utils/definitionFactory';
+
+// The last map a visitor looked at. Here, not with the All Maps pages that use it, because the
+// application shell constructs it at startup: importing it from their library put those pages in the
+// first download (#1454).
+export * from './lib/services/last-map/last-map.service';

@@ -1,7 +1,8 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { take } from 'rxjs';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
@@ -9,26 +10,31 @@ import esri = __esri;
   selector: 'tamu-gisc-result-map',
   templateUrl: './result-map.component.html',
   styleUrls: ['./result-map.component.scss'],
-  providers: [EsriMapService]
+  providers: [EsriMapService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [EsriMapComponent]
 })
 export class ResultMapComponent implements OnInit {
-  @Input()
-  public points: Array<{ latitude: number; longitude: number }>;
+  private readonly ms = inject(EsriMapService);
 
-  @Input()
-  public size: 'sm' | 'lg' = 'sm';
+  public readonly points = input<
+    Array<{
+      latitude: number;
+      longitude: number;
+    }>
+  >(undefined);
+
+  public readonly size = input<'sm' | 'lg'>('sm');
 
   public baseConfig: MapConfig;
 
   @HostBinding('class')
   public get styleClasses() {
-    return [this.size];
+    return [this.size()];
   }
 
-  constructor(private readonly ms: EsriMapService) {}
-
   public ngOnInit(): void {
-    const [first] = this.points;
+    const [first] = this.points();
     const center = [(first as esri.Point)?.longitude, (first as esri.Point)?.latitude];
 
     this.baseConfig = {
@@ -45,7 +51,7 @@ export class ResultMapComponent implements OnInit {
     } as MapConfig;
 
     this.ms.store.pipe(take(1)).subscribe(() => {
-      const graphics = this.points.map((p) => {
+      const graphics = this.points().map((p) => {
         return {
           attributes: { lat: p.latitude, lon: p.longitude },
           geometry: {

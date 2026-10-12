@@ -1,12 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { EventPopups } from '../modules/popups/popups';
 
 export enum AVP_PARKING_LAYERS {
   AVP_PARKING_LOTS = 'AVP-parking-lots'
@@ -27,11 +27,10 @@ export const AVPParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: AVPParkingDefinitions.AVP_PARKING_LOTS.id,
-    title: AVPParkingDefinitions.AVP_PARKING_LOTS.name,
     url: AVPParkingDefinitions.AVP_PARKING_LOTS.url,
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.LotName',

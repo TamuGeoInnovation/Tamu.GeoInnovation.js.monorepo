@@ -1,14 +1,14 @@
-import { Component, TemplateRef, Output, EventEmitter, Input } from '@angular/core';
+import { Component, TemplateRef, input, output } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-step-toggle',
   templateUrl: './step-toggle.component.html',
-  styleUrls: ['./step-toggle.component.scss']
+  styleUrls: ['./step-toggle.component.scss'],
+  imports: [NgTemplateOutlet]
 })
 export class StepToggleComponent {
-  @Input()
-  public template: TemplateRef<unknown>;
+  public readonly template = input<TemplateRef<unknown>>(undefined);
 
-  @Output()
-  public stepToggleClicked: EventEmitter<boolean> = new EventEmitter();
+  public readonly stepToggleClicked = output<boolean>();
 }

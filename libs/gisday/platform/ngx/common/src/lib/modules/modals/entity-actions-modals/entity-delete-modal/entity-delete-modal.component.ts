@@ -1,15 +1,24 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { AsyncPipe, LowerCasePipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-entity-delete-modal',
   templateUrl: './entity-delete-modal.component.html',
-  styleUrls: ['./entity-delete-modal.component.scss']
+  styleUrls: ['./entity-delete-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe, LowerCasePipe]
 })
 export class EntityDeleteModalComponent implements OnInit {
+  readonly data = inject<EntityDeleteData>(MODAL_DATA);
+  private readonly modalRef = inject(ModalRefService);
+  private readonly fb = inject(UntypedFormBuilder);
+
   public form: UntypedFormGroup;
   public matchingConfirmationCount$: Observable<boolean>;
 
@@ -27,12 +36,6 @@ export class EntityDeleteModalComponent implements OnInit {
       return this.data.entityType;
     }
   }
-
-  constructor(
-    @Inject(MODAL_DATA) public readonly data: EntityDeleteData,
-    private readonly modalRef: ModalRefService,
-    private readonly fb: UntypedFormBuilder
-  ) {}
 
   public ngOnInit(): void {
     console.log(`EntityDeleteModalComponent initialized`);

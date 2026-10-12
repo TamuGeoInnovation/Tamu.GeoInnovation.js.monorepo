@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -10,19 +10,16 @@ import { BuilderModuleBaseComponent } from '../builder-module-base/builder-modul
 @Component({
   selector: 'tamu-gisc-intro',
   templateUrl: './intro.component.html',
-  styleUrls: ['./intro.component.scss', '../builder-module-base/builder-module-base.component.scss']
+  styleUrls: ['./intro.component.scss', '../builder-module-base/builder-module-base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class IntroComponent extends BuilderModuleBaseComponent implements OnInit {
-  public settings: EventConfiguration | null;
+  private readonly router = inject(Router);
+  private readonly rt = inject(ActivatedRoute);
+  private readonly anl = inject(Angulartics2);
+  private readonly es = inject(EventSettingsService);
 
-  constructor(
-    private readonly router: Router,
-    private readonly rt: ActivatedRoute,
-    private readonly anl: Angulartics2,
-    private readonly es: EventSettingsService
-  ) {
-    super();
-  }
+  public settings: EventConfiguration | null;
 
   public ngOnInit(): void {
     this.settings = this.es.eventConfiguration()?.configuration;

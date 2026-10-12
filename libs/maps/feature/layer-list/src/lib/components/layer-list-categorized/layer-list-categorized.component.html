@@ -1,22 +1,31 @@
 <div class="sidebar-component-name">
-  <span class="material-icons" *ngIf="responsive?.isMobile" (click)="backAction()">arrow_back</span>
+  @if (responsive?.isMobile) {
+  <span class="material-icons" (click)="backAction()">arrow_back</span>
+  }
   <p>Layers</p>
 </div>
 
 <div class="sidebar-component-content-container">
-  <div class="category" *ngFor="let category of layers | async">
+  @for (category of layers | async; track category) {
+  <div class="category">
     <tamu-gisc-accordion>
       <tamu-gisc-accordion-header>{{category.title}}</tamu-gisc-accordion-header>
       <tamu-gisc-accordion-content>
-        <div [ngSwitch]="category.children.length">
-          <div *ngSwitchCase="0">
+        <div>
+          @switch (category.children.length) { @case (0) {
+          <div>
             <tamu-gisc-layer-list-item [listItem]="category"></tamu-gisc-layer-list-item>
           </div>
-          <div *ngSwitchDefault>
-            <tamu-gisc-layer-list-item *ngFor="let layer of category.children.toArray()" [listItem]="layer"></tamu-gisc-layer-list-item>
+          } @default {
+          <div>
+            @for (layer of category.children.toArray(); track layer) {
+            <tamu-gisc-layer-list-item [listItem]="layer"></tamu-gisc-layer-list-item>
+            }
           </div>
+          } }
         </div>
       </tamu-gisc-accordion-content>
     </tamu-gisc-accordion>
   </div>
+  }
 </div>

@@ -1,9 +1,13 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { AccordionDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionHeaderDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AccordionContentDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
   selector: 'tamu-gisc-service-attribute-accordion',
   templateUrl: './service-attribute-accordion.component.html',
-  styleUrls: ['./service-attribute-accordion.component.scss']
+  styleUrls: ['./service-attribute-accordion.component.scss'],
+  imports: [AccordionDirective, AccordionHeaderDirective, AccordionContentDirective]
 })
 export class ServiceAttributeAccordionComponent {
   /**
@@ -18,6 +22,5 @@ export class ServiceAttributeAccordionComponent {
    *
    * Defaults to `true`.
    */
-  @Input()
-  public collapsable = true;
+  public readonly collapsable = input(true);
 }

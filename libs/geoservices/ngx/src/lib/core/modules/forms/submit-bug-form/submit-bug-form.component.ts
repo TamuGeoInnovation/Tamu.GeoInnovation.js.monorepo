@@ -1,26 +1,38 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ContactService } from '@tamu-gisc/geoservices/data-access';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TurnstileChallengeComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-submit-bug-form',
   templateUrl: './submit-bug-form.component.html',
-  styleUrls: ['./submit-bug-form.component.scss']
+  styleUrls: ['./submit-bug-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    TurnstileChallengeComponent,
+    NgClass,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class SubmitBugFormComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly ns = inject(NotificationService);
+  private readonly cs = inject(ContactService);
+
   public form: UntypedFormGroup;
 
   public submissionState: ReplaySubject<string> = new ReplaySubject();
   public submissionStateText: BehaviorSubject<string> = new BehaviorSubject('Submit bug report');
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly ns: NotificationService,
-    private readonly cs: ContactService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

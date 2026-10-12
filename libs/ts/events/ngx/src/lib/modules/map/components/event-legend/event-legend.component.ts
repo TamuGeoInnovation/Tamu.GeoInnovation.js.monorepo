@@ -1,21 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
 import { SidebarInfoPanel } from '../../../../interfaces/special-event.interface';
+import { NgStyle } from '@angular/common';
+import { LegendComponent } from '@tamu-gisc/maps/feature/legend';
 
 @Component({
   selector: 'tamu-gisc-event-legend',
   templateUrl: './event-legend.component.html',
-  styleUrls: ['./event-legend.component.scss']
+  styleUrls: ['./event-legend.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgStyle, LegendComponent]
 })
 export class EventLegendComponent implements OnInit {
+  private readonly eventSettingsService = inject(EventSettingsService);
+
   public deduplicate = true;
   public respectDefinitionExpression = true;
   public allowVisibilityToggle = true;
   public combineChildrenUnderPrimary = false;
   public sidebarInfo: SidebarInfoPanel | undefined;
-
-  constructor(private readonly eventSettingsService: EventSettingsService) {}
 
   public ngOnInit(): void {
     const config = this.eventSettingsService.eventConfiguration()?.configuration;

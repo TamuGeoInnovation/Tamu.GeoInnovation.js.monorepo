@@ -1,15 +1,19 @@
-import { Inject, Injectable, InjectionToken, Optional, Type } from '@angular/core';
+import { Injectable, InjectionToken, inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, from, Observable, of, BehaviorSubject, timer } from 'rxjs';
 import { catchError, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 
-import toHex from 'colornames';
 import { v4 as guid } from 'uuid';
 import { Angulartics2 } from 'angulartics2';
 
 import { Point as LatLon } from '@tamu-gisc/common/types';
-import { EsriMapService, MapServiceInstance, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import {
+  EsriMapService,
+  MapServiceInstance,
+  EsriModuleProviderService,
+  PopupComponentReference
+} from '@tamu-gisc/maps/esri';
 import { dateForDateTimeString } from '@tamu-gisc/common/utils/date';
 import { relativeDistance } from '@tamu-gisc/common/utils/geometry/generic';
 
@@ -25,10 +29,17 @@ const ROUTE_NUMBER_REGEX = /on ([0-9\-A-Za-z]+)$/;
  * (it would create a circular dependency), so the concrete component is supplied at the application
  * root via this token. When not provided, bus features simply have no popup.
  */
-export const BUS_STOP_POPUP_COMPONENT = new InjectionToken<Type<unknown>>('BUS_STOP_POPUP_COMPONENT');
+export const BUS_STOP_POPUP_COMPONENT = new InjectionToken<PopupComponentReference>('BUS_STOP_POPUP_COMPONENT');
 
 @Injectable({ providedIn: 'root' })
 export class BusService {
+  private http = inject(HttpClient);
+  private moduleProvider = inject(EsriModuleProviderService);
+  private mapService = inject(EsriMapService);
+  private location = inject(Location);
+  private readonly analytics = inject(Angulartics2);
+  private busStopPopupComponent = inject<PopupComponentReference>(BUS_STOP_POPUP_COMPONENT, { optional: true });
+
   // Legacy Transportation Services API. It is no longer available; the methods still referencing it
   // (waypoints/stops/timetable/live-bus, used only by the currently-disabled trip-planner bus mode)
   // are kept for compilation but are not exercised by the bus map.
@@ -60,14 +71,7 @@ export class BusService {
 
   private _busLocationsLayer: esri.FeatureLayer;
 
-  constructor(
-    private http: HttpClient,
-    private moduleProvider: EsriModuleProviderService,
-    private mapService: EsriMapService,
-    private location: Location,
-    private readonly analytics: Angulartics2,
-    @Optional() @Inject(BUS_STOP_POPUP_COMPONENT) private busStopPopupComponent: Type<unknown>
-  ) {
+  constructor() {
     from(this.mapService.store).subscribe((mapInstance: MapServiceInstance) => {
       this._map = mapInstance.map;
       this._view = mapInstance.view;
@@ -672,7 +676,7 @@ export class BusService {
         // Attach the popup component (if the app provided one) so clicking a stop/route graphic on this
         // layer is resolved to a rendered popup by the popup service (which reads `layer.popupComponent`).
         if (this.busStopPopupComponent) {
-          (layer as unknown as { popupComponent: Type<unknown> }).popupComponent = this.busStopPopupComponent;
+          (layer as unknown as { popupComponent: PopupComponentReference }).popupComponent = this.busStopPopupComponent;
         }
 
         this._map.add(layer);
@@ -681,11 +685,7 @@ export class BusService {
     );
   }
 
-  public toggleMapRoute(
-    short_name: string,
-    symbols?: ('route' | 'stops' | 'buses')[],
-    zoomToRoute = true
-  ): void {
+  public toggleMapRoute(short_name: string, symbols?: ('route' | 'stops' | 'buses')[], zoomToRoute = true): void {
     // Check if there are any existing graphics at all in the bus layer.
     const existingGraphics = this._busLayer.getValue().graphics.length > 0;
 
@@ -727,12 +727,9 @@ export class BusService {
 
         const route = routes.find((r) => r.ShortName === short_name);
 
-        let color = route ? route.Color : '#500000';
-
-        // Only convert named colors, ESRI correctly maps other html colors such as #0f0 or rgb(102, 0, 102)
-        if (!color.startsWith('#') && !color.startsWith('rgb')) {
-          color = toHex(color);
-        }
+        // A route's colour is `rgb(...)`, built from the Bus Routes layer's renderer, or the maroon default;
+        // ArcGIS takes either as written.
+        const color = route ? route.Color : '#500000';
 
         const stopGraphics = stops.map((stop) => {
           return new Graphic({

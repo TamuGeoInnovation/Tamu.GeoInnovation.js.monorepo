@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, forwardRef } from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, forwardRef, output } from '@angular/core';
+import { NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 
 import { AbstractValueAccessorFormComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-place-link-form',
@@ -14,11 +15,11 @@ import { AbstractValueAccessorFormComponent } from '@tamu-gisc/ui-kits/ngx/forms
       multi: true
     }
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TextboxComponent, FormsModule]
 })
 export class PlaceLinkFormComponent extends AbstractValueAccessorFormComponent<PlaceLinkControlSchema> {
-  @Output()
-  public remove: EventEmitter<boolean> = new EventEmitter();
+  public readonly remove = output<boolean>();
 
   public emitRemove() {
     this.remove.emit(true);

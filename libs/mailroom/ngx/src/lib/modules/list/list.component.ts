@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
@@ -9,21 +9,23 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { DeleteEmailModalComponent } from './modal/delete-email-modal.component';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-list',
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, AsyncPipe, DatePipe]
 })
 export class ListComponent implements OnInit {
+  readonly emailService = inject(EmailService);
+  private ns = inject(NotificationService);
+  private readonly modal = inject(ModalService);
+
   private _$refresh: Subject<boolean> = new Subject();
   public $emails: Observable<Array<MailroomEmail>>;
-
-  constructor(
-    public readonly emailService: EmailService,
-    private ns: NotificationService,
-    private readonly modal: ModalService
-  ) {}
 
   public ngOnInit() {
     this.$emails = this._$refresh.pipe(

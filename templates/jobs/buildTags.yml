@@ -18,13 +18,20 @@ jobs:
           #
           # Command substitution uses backticks: Azure Pipelines rewrites $(...) as its own
           # variable syntax before bash ever sees it.
+          #
+          # The app list comes from Nx's project graph. `nx print-affected` stopped working here with
+          # Nx 16.10 (#1354): even with --all it resolves the default base branch, which the agent
+          # has no local ref for, so it failed and printed its usage instead. `nx show projects
+          # --type app` is no substitute - 16.10 ignores --type and lists libraries too.
+          GRAPH=/tmp/project-graph.json
           if [ "$(IS_DEPLOYABLE)" = "True" ]; then
             echo "Deployable branch: tagging every non-excluded application."
-            APPS=`npx nx print-affected --all --type=app --select=projects`
+            npx nx graph --file=$GRAPH
           else
             echo "Validation build: tagging affected applications."
-            APPS=`npx nx print-affected --base=$(baseSha) --head=$(HEAD_SHA) --type=app --select=projects`
+            npx nx graph --affected --base=$(baseSha) --head=$(HEAD_SHA) --file=$GRAPH
           fi
+          APPS=`node -e "const nodes = require('$GRAPH').graph.nodes; console.log(Object.values(nodes).filter((p) => p.type === 'app').map((p) => p.name).join(','))"`
 
           EXCLUDED=",$(EXCLUDED_PROJECTS),"
           TAGGED=0
@@ -39,7 +46,15 @@ jobs:
             TAGGED=`expr $TAGGED + 1`
           done
 
+          # On a deployable branch an untagged build is a release hazard, not a curiosity: a release
+          # filtering on an app tag falls back to the latest build on any branch. This has gone
+          # silently empty after two Nx upgrades now, so it is an error there; it still cannot fail
+          # the build (continueOnError below), but it shows red on the step.
           if [ "$TAGGED" -eq 0 ]; then
+            if [ "$(IS_DEPLOYABLE)" = "True" ]; then
+              echo "##vso[task.logissue type=error]No application tags were applied to a deployable build. A release filtering on an application tag will not match it and may deploy a different build (#1354)."
+              exit 1
+            fi
             echo "##vso[task.logissue type=warning]No application tags were applied. A release filtering on an application tag will not match this build."
           fi
         displayName: 'Add Build Tags for Built Projects'

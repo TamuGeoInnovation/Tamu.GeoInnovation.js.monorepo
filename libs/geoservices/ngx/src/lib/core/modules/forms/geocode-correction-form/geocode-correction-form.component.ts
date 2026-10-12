@@ -1,29 +1,43 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ContactService } from '@tamu-gisc/geoservices/data-access';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TurnstileChallengeComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-geocode-correction-form',
   templateUrl: './geocode-correction-form.component.html',
-  styleUrls: ['./geocode-correction-form.component.scss']
+  styleUrls: ['./geocode-correction-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    SelectComponent,
+    TurnstileChallengeComponent,
+    NgClass,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class GeocodeCorrectionFormComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly ns = inject(NotificationService);
+  private readonly cs = inject(ContactService);
+
   public form: UntypedFormGroup;
 
   public states = STATES_TITLECASE;
 
   public submissionState: ReplaySubject<string> = new ReplaySubject();
   public submissionStateText: BehaviorSubject<string> = new BehaviorSubject('Submit correction');
-
-  constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly ns: NotificationService,
-    private readonly cs: ContactService
-  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

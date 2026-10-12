@@ -2,8 +2,11 @@
 
 <div *giscAccordion="let parent;">
   <div class="pill" [giscAccordionHeader]="parent">
-    <div *ngIf="!parent.expanded"><span>Show Comparison Table</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-    <div *ngIf="parent.expanded"><span>Hide Comparison Table</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+    @if (!parent.expanded) {
+    <div><span>Show Comparison Table</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+    } @if (parent.expanded) {
+    <div><span>Hide Comparison Table</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+    }
   </div>
 
   <div class="attribute-node" *giscAccordionContent="parent.expanded">

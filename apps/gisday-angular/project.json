@@ -4,15 +4,21 @@
   "projectType": "application",
   "sourceRoot": "apps/gisday-angular/src",
   "prefix": "tamu-gisc",
+  "tags": [],
+  "implicitDependencies": ["assets", "sass", "gisday-sass"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath.base}"],
+      "defaultConfiguration": "",
       "options": {
         "crossOrigin": "anonymous",
-        "outputPath": "dist/apps/gisday-angular",
+        "outputPath": {
+          "base": "dist/apps/gisday-angular",
+          "browser": ""
+        },
         "index": "apps/gisday-angular/src/index.html",
-        "main": "apps/gisday-angular/src/main.ts",
-        "polyfills": "apps/gisday-angular/src/polyfills.ts",
+        "polyfills": ["apps/gisday-angular/src/polyfills.ts"],
         "tsConfig": "apps/gisday-angular/tsconfig.app.json",
         "assets": [
           "apps/gisday-angular/src/favicon.ico",
@@ -29,17 +35,26 @@
           }
         ],
         "styles": ["apps/gisday-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "scripts": [],
-        "vendorChunk": true,
         "extractLicenses": false,
-        "buildOptimizer": false,
         "sourceMap": true,
         "optimization": false,
-        "namedChunks": true
+        "namedChunks": true,
+        "browser": "apps/gisday-angular/src/main.ts"
       },
       "configurations": {
+        "local": {
+          "fileReplacements": [
+            {
+              "replace": "apps/gisday-angular/src/environments/environment.ts",
+              "with": "apps/gisday-angular/src/environments/environment.local.ts"
+            }
+          ]
+        },
         "production": {
-          "ngswConfigPath": "apps/gisday-angular/ngsw-config.json",
           "fileReplacements": [
             {
               "replace": "apps/gisday-angular/src/environments/environment.ts",
@@ -51,9 +66,7 @@
           "sourceMap": false,
           "namedChunks": false,
           "extractLicenses": false,
-          "vendorChunk": false,
-          "buildOptimizer": true,
-          "serviceWorker": true,
+          "serviceWorker": "apps/gisday-angular/ngsw-config.json",
           "budgets": [
             {
               "type": "initial",
@@ -68,7 +81,6 @@
           ]
         },
         "development": {
-          "ngswConfigPath": "apps/gisday-angular/ngsw-config.json",
           "fileReplacements": [
             {
               "replace": "apps/gisday-angular/src/environments/environment.ts",
@@ -80,9 +92,7 @@
           "sourceMap": false,
           "namedChunks": false,
           "extractLicenses": false,
-          "vendorChunk": false,
-          "buildOptimizer": true,
-          "serviceWorker": true,
+          "serviceWorker": "apps/gisday-angular/ngsw-config.json",
           "budgets": [
             {
               "type": "initial",
@@ -96,8 +106,7 @@
             }
           ]
         }
-      },
-      "defaultConfiguration": ""
+      }
     },
     "image-build": {
       "executor": "nx:run-commands",
@@ -112,40 +121,40 @@
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "continuous": true,
       "options": {
-        "browserTarget": "gisday-angular:build",
-        "host": "0.0.0.0"
+        "host": "0.0.0.0",
+        "buildTarget": "gisday-angular:build"
       },
       "configurations": {
         "production": {
-          "browserTarget": "gisday-angular:build:production"
+          "buildTarget": "gisday-angular:build:production"
         },
         "development": {
-          "browserTarget": "gisday-angular:build:development"
+          "buildTarget": "gisday-angular:build:development"
+        },
+        "local": {
+          "buildTarget": "gisday-angular:build:local",
+          "proxyConfig": "apps/gisday-angular/proxy.local.json"
         }
       }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "gisday-angular:build"
+        "buildTarget": "gisday-angular:build"
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/gisday-angular"],
       "options": {
         "jestConfig": "apps/gisday-angular/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "outputs": ["{workspaceRoot}/coverage/apps/gisday-angular"]
+        "tsConfig": "apps/gisday-angular/tsconfig.spec.json"
+      }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/gisday-angular/src/**/*.ts", "apps/gisday-angular/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["assets", "sass", "gisday-sass"]
+  }
 }

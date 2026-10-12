@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { ClipboardCopyDirective, CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 import { CodeRunnerComponent } from './code-runner.component';
 
@@ -10,10 +10,9 @@ describe('CodeRunnerComponent', () => {
   let component: CodeRunnerComponent;
   let fixture: ComponentFixture<CodeRunnerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HighlightPlusModule, UIClipboardModule],
-      declarations: [CodeRunnerComponent]
+      imports: [HighlightPlusModule, ClipboardCopyDirective, CopyComponent, CodeRunnerComponent]
     }).compileComponents();
   }));
 

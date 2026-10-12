@@ -1,11 +1,11 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs';
 
 import { LineChartComponent } from './line.component';
 import { LineChartConfiguration, ChartContainerComponent } from '../chart-container/chart-container.component';
 
 describe('LineChartComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({ providers: [LineChartComponent] }).compileComponents();
   }));
 

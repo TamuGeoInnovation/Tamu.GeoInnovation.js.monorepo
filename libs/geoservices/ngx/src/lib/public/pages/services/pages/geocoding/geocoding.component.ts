@@ -1,22 +1,44 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
 import { Geocode, CensusYear, GeocodeReferenceFeature } from '@tamu-gisc/geoprocessing-v5';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { GeocodingBasicComponent } from '../../../../../core/modules/interactive/components/geocoding/basic/geocoding-basic/geocoding-basic.component';
+import { TabsComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { TabComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { CodeRunnerComponent } from '@tamu-gisc/ui-kits/ngx/layout/code';
+import { RouterLink } from '@angular/router';
+import { StepperComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { StepComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { StepperToggleDirective } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AsyncPipe } from '@angular/common';
+import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
 @Component({
   selector: 'tamu-gisc-geocoding',
   templateUrl: './geocoding.component.html',
-  styleUrls: ['./geocoding.component.scss']
+  styleUrls: ['./geocoding.component.scss'],
+  imports: [
+    GeocodingBasicComponent,
+    TabsComponent,
+    TabComponent,
+    CodeRunnerComponent,
+    RouterLink,
+    StepperComponent,
+    StepComponent,
+    StepperToggleDirective,
+    AsyncPipe,
+    HighlightPlusModule
+  ]
 })
 export class GeocodingComponent implements OnInit {
+  private readonly env = inject(EnvironmentService);
+
   private geocode: Geocode;
   public result: Observable<string>;
 
   public url: string;
-
-  constructor(private readonly env: EnvironmentService) {}
 
   public ngOnInit(): void {
     this.geocode = new Geocode({

@@ -1,5 +1,16 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, forwardRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ElementRef,
+  forwardRef,
+  ChangeDetectionStrategy,
+  input,
+  viewChild
+} from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-checkbox',
@@ -11,10 +22,12 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
       useExisting: forwardRef(() => CheckboxComponent),
       multi: true
     }
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass]
 })
 export class CheckboxComponent implements ControlValueAccessor {
-  @ViewChild('checkboxInput', { static: true }) public ref: ElementRef;
+  public readonly ref = viewChild<ElementRef>('checkboxInput');
 
   /**
    * Determines the checked state of the checkbox ref element.
@@ -43,8 +56,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    * **REQUIRED** on checkbox groups, where a property in this object is referenced and used to create a composite
    * value of selected items in the list.
    */
-  @Input()
-  public data: object;
+  public readonly data = input<object>(undefined);
 
   /**
    * Determines the interaction state of the component, preventing or allowing user input.
@@ -60,16 +72,14 @@ export class CheckboxComponent implements ControlValueAccessor {
    *
    * Defaults to "Checkbox input".
    */
-  @Input()
-  public ariaLabel = 'Checkbox input';
+  public readonly ariaLabel = input('Checkbox input');
 
   /**
    * Populates the checkbox label property.
    *
    * Defaults to "Checkbox".
    */
-  @Input()
-  public label = 'Checkbox';
+  public readonly label = input('Checkbox');
 
   @Input()
   public description = '';
@@ -79,8 +89,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    *
    * Defaults to "checkbox".
    */
-  @Input()
-  public name = 'checkbox';
+  public readonly name = input('checkbox');
 
   /**
    * Output event emitter, used to bubble up the event value to the parent component.

@@ -1,25 +1,36 @@
-import { AfterContentInit, Component, ContentChildren, Input, OnDestroy, QueryList } from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  ContentChildren,
+  OnDestroy,
+  QueryList,
+  ChangeDetectionStrategy,
+  inject,
+  input
+} from '@angular/core';
 import { from, merge, Subject } from 'rxjs';
 import { mergeMap, pluck, switchMap, takeUntil } from 'rxjs/operators';
 
 import { TileLinkDirective } from '../../directives/tile-link/tile-link.directive';
 import { TileService } from '../../services/tile.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-tile-submenu',
   templateUrl: './tile-submenu.component.html',
-  styleUrls: ['./tile-submenu.component.scss']
+  styleUrls: ['./tile-submenu.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe]
 })
 export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
-  @Input()
-  public title = this.service.activeSubMenu.pipe(pluck('title'));
+  private service = inject(TileService);
+
+  public readonly title = input(this.service.activeSubMenu.pipe(pluck('title')));
 
   @ContentChildren(TileLinkDirective, { descendants: true })
   public links: QueryList<TileLinkDirective>;
 
   private _destroy$: Subject<null> = new Subject();
-
-  constructor(private service: TileService) {}
 
   public ngAfterContentInit(): void {
     merge(

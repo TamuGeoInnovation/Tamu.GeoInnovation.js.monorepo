@@ -9,25 +9,26 @@
         <p class="trailer-1">The following is a list of all events for which you have registered your attendance.</p>
       </div>
 
-      <table class="floating-table" *ngIf="(checkins$ | async) ?.length > 0; else noCheckins">
+      @if ((checkins$ | async) ?.length > 0) {
+      <table class="floating-table">
         <thead>
           <tr>
             <th>Event Name</th>
             <th>Date</th>
           </tr>
         </thead>
-
         <tbody>
-          <tr *ngFor="let checkin of (checkins$ | async)">
+          @for (checkin of (checkins$ | async); track checkin) {
+          <tr>
             <td>{{checkin?.event?.name}}</td>
             <td>{{checkin.created | date:'short'}}</td>
           </tr>
+          }
         </tbody>
       </table>
-
-      <ng-template #noCheckins>
-        <p>You have not checked into any events yet.</p>
-      </ng-template>
+      } @else {
+      <p>You have not checked into any events yet.</p>
+      }
     </div>
   </div>
 </div>

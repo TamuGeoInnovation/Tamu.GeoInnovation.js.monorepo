@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding, input } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-lockup',
@@ -6,14 +6,12 @@ import { Component, HostBinding, Input } from '@angular/core';
   styleUrls: ['./lockup.component.scss']
 })
 export class LockupComponent {
-  @Input()
-  public theme: 'light' | 'dark' = 'light';
+  public readonly theme = input<'light' | 'dark'>('light');
 
-  @Input()
-  public type: 'college' | 'department' | 'division' | 'service' | 'deptWDivision' = 'college';
+  public readonly type = input<'college' | 'department' | 'division' | 'service' | 'deptWDivision'>('college');
 
   @HostBinding('class')
   public get componentDecoration() {
-    return [this.type, this.theme];
+    return [this.type(), this.theme()];
   }
 }

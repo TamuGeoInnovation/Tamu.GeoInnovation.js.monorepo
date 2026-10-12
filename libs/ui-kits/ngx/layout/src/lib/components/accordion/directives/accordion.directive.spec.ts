@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { AccordionDirective } from './accordion.directive';
@@ -14,14 +14,16 @@ import { AccordionDirective } from './accordion.directive';
  * passed regardless of whether the directive worked.
  */
 @Component({
-  template: `<div *giscAccordion>accordion content</div>`
+  template: `<div *giscAccordion>accordion content</div>`,
+  imports: [AccordionDirective],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 class HostComponent {}
 
 describe('AccordionDirective', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AccordionDirective, HostComponent]
+      imports: [AccordionDirective, HostComponent]
     }).compileComponents();
   });
 

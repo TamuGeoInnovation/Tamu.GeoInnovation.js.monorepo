@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, Subject, combineLatest, forkJoin, merge } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ActiveSeasonDto, Event, GisDayAppMetadata, Place, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import {
@@ -16,13 +16,41 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
+import { SeasonDayCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-event-view',
   templateUrl: './event-view.component.html',
-  styleUrls: ['./event-view.component.scss']
+  styleUrls: ['./event-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    RouterLink,
+    SeasonDayCardComponent,
+    NgClass,
+    FormsModule,
+    ReactiveFormsModule,
+    CheckboxGroupComponent,
+    CheckboxComponent,
+    AsyncPipe
+  ]
 })
 export class EventViewComponent implements OnInit, OnDestroy {
+  private readonly eventService = inject(EventService);
+  private readonly tagService = inject(TagService);
+  private readonly ss = inject(SeasonService);
+  private readonly os = inject(PlaceService);
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly rs = inject(RsvpService);
+  private readonly us = inject(UserService);
+  private readonly ns = inject(NotificationService);
+  private readonly st = inject(SettingsService);
+  private readonly as = inject(AuthService);
+  private readonly at = inject(ActivatedRoute);
+  private readonly rt = inject(Router);
+
   public activeSeason$: Observable<ActiveSeasonDto>;
   public events$: Observable<Array<Partial<Event>>>;
   public tags$: Observable<Array<Partial<Tag>>>;
@@ -45,21 +73,6 @@ export class EventViewComponent implements OnInit, OnDestroy {
    * be passed into the day cards to filter events.
    */
   public form: UntypedFormGroup;
-
-  constructor(
-    private readonly eventService: EventService,
-    private readonly tagService: TagService,
-    private readonly ss: SeasonService,
-    private readonly os: PlaceService,
-    private readonly fb: UntypedFormBuilder,
-    private readonly rs: RsvpService,
-    private readonly us: UserService,
-    private readonly ns: NotificationService,
-    private readonly st: SettingsService,
-    private readonly as: AuthService,
-    private readonly at: ActivatedRoute,
-    private readonly rt: Router
-  ) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { combineLatest, fromEventPattern, Observable, ReplaySubject } from 'rxjs';
 import { map, scan, startWith, switchMap } from 'rxjs/operators';
 
@@ -7,16 +7,23 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
 
+/**
+ * Whether a layer gets a legend entry. A layer hidden from the Layers list never does, and a listed
+ * layer can opt out with the Maps SDK's own `legendEnabled: false`, for something worth toggling
+ * that needs no key of its own.
+ */
+export function showsInLegend(layer: esri.Layer): boolean {
+  return layer.listMode !== 'hide' && (layer as esri.FeatureLayer).legendEnabled !== false;
+}
+
 @Injectable()
 export class LegendService {
+  private moduleProvider = inject(EsriModuleProviderService);
+  private mapService = inject(EsriMapService);
+  private env = inject(EnvironmentService);
+
   private _legendItems: ReplaySubject<Array<esri.ActiveLayerInfo>> = new ReplaySubject(1);
   public legendItems: Observable<Array<esri.ActiveLayerInfo>> = this._legendItems.asObservable();
-
-  constructor(
-    private moduleProvider: EsriModuleProviderService,
-    private mapService: EsriMapService,
-    private env: EnvironmentService
-  ) {}
 
   public legend(options?: LegendOptions) {
     const excludedLayerIds = new Set(options?.excludedLayerIds ?? []);
@@ -47,7 +54,7 @@ export class LegendService {
           startWith({ target: model.activeLayerInfos }),
           map((event: IActiveLayerInfosChangeEvent) => {
             return event.target
-              .filter((l) => l.layer.listMode !== 'hide')
+              .filter((l) => showsInLegend(l.layer))
               .filter((l) => !excludedLayerIds.has(l.layer.id))
               .filter((l) => allowedLayerIds.length === 0 || allowedLayerIds.includes(l.layer.id))
               .toArray();
@@ -62,10 +69,7 @@ export class LegendService {
           // start hidden (e.g. an off-by-default layer in a mutually-exclusive group that
           // should still be listed in the legend so users know it exists).
           scan(
-            (
-              acc: { allowedIds: Set<string>; result: esri.ActiveLayerInfo[] },
-              items: esri.ActiveLayerInfo[]
-            ) => {
+            (acc: { allowedIds: Set<string>; result: esri.ActiveLayerInfo[] }, items: esri.ActiveLayerInfo[]) => {
               const allowedIds = new Set(acc.allowedIds);
               items.filter((l) => l.layer.visible).forEach((l) => allowedIds.add(l.layer.id));
               return { allowedIds, result: items.filter((l) => allowedIds.has(l.layer.id)) };

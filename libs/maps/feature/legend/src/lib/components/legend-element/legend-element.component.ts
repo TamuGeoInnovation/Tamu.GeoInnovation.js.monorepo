@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 
 import { EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
 import { LayerLegendOverride } from '@tamu-gisc/common/types';
@@ -15,6 +15,9 @@ import {
   shareReplay,
   toArray
 } from 'rxjs';
+import { NgStyle, AsyncPipe } from '@angular/common';
+
+import { ElementInsertDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import esri = __esri;
 
@@ -37,13 +40,13 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-legend-element',
   templateUrl: './legend-element.component.html',
-  styleUrls: ['./legend-element.component.scss']
+  styleUrls: ['./legend-element.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgStyle, ElementInsertDirective, AsyncPipe]
 })
 export class LegendElementComponent implements OnInit {
-  constructor(
-    private readonly moduleProvider: EsriModuleProviderService,
-    private readonly layerSourcesService: LayerSourcesService
-  ) {}
+  private readonly moduleProvider = inject(EsriModuleProviderService);
+  private readonly layerSourcesService = inject(LayerSourcesService);
 
   private readonly sportsSafetyFirstLayerIds = new Set([
     'softball-parking-safety-first',
@@ -62,31 +65,26 @@ export class LegendElementComponent implements OnInit {
   @Input()
   public element: ILegendElement;
 
-  @Input()
-  public layer: ILayer;
+  public readonly layer = input<ILayer>(undefined);
 
-  @Input()
-  public groupTitle: string;
+  public readonly groupTitle = input<string>(undefined);
 
   /**
    * Certain layers may have duplicate icon/label entries as a result of their unique value renderer definitions.
    *
    * This flag will de-duplicate the legend entries based on the layer title.
    */
-  @Input()
-  public deduplicateChildren = false;
+  public readonly deduplicateChildren = input(false);
 
-  @Input()
-  public respectDefinitionExpression = false;
+  public readonly respectDefinitionExpression = input(false);
 
-  @Input()
-  public hideGroupHeader = false;
+  public readonly hideGroupHeader = input(false);
 
   public infos: Observable<Array<LegendInfo>>;
   public expanded = true;
 
   public get showGroupHeader(): boolean {
-    if (this.hideGroupHeader) {
+    if (this.hideGroupHeader()) {
       return false;
     }
 
@@ -100,7 +98,25 @@ export class LegendElementComponent implements OnInit {
   }
 
   public get displayGroupTitle(): string {
-    return this.groupTitle;
+    return this.groupTitle();
+  }
+
+  /**
+   * Whether a nested symbol table holds more symbol tables, rather than the classes themselves.
+   *
+   * A unique value renderer published from ArcGIS Pro carries `uniqueValueGroups` headed by the field
+   * name, so its classes arrive one level down, as plain legend infos. Those are rendered as one
+   * element; only nested tables are recursed into one by one.
+   */
+  public holdsNestedTables(info: unknown): boolean {
+    const infos = (info as { infos?: Array<{ type?: string }> })?.infos ?? [];
+
+    return infos.some((child) => child?.type === 'symbol-table');
+  }
+
+  /** A nested symbol table whose entries are the classes themselves (see `holdsNestedTables`). */
+  public isGroupOfClasses(info: unknown): boolean {
+    return (info as { type?: string })?.type === 'symbol-table' && !this.holdsNestedTables(info);
   }
 
   public toggleExpanded(): void {
@@ -119,7 +135,7 @@ export class LegendElementComponent implements OnInit {
 
     this.infos = iif(
       () => {
-        return this.deduplicateChildren;
+        return this.deduplicateChildren();
       },
       from(
         operableInfos.filter((info, index, self) => {
@@ -130,7 +146,8 @@ export class LegendElementComponent implements OnInit {
     ).pipe(
       concatMap((info: LegendInfo) => {
         // If we are not respecting definition expressions, return the current legend info as-is
-        if (this.respectDefinitionExpression === false || this.layer === undefined) {
+        const layer = this.layer();
+        if (this.respectDefinitionExpression() === false || layer === undefined) {
           return of(info);
         }
 
@@ -140,7 +157,7 @@ export class LegendElementComponent implements OnInit {
           return of(info);
         }
 
-        const operableLayer = this.layer as esri.FeatureLayer;
+        const operableLayer = layer as esri.FeatureLayer;
 
         // If operable layer has no definition expression, return the current legend info as-is
         if (operableLayer.definitionExpression === null || operableLayer.definitionExpression === undefined) {
@@ -189,10 +206,10 @@ export class LegendElementComponent implements OnInit {
    * override applies for either top-level feature layers or sublayers of map-image layers.
    */
   public get legendOverride(): LayerLegendOverride | undefined {
-    const candidateIds = [
-      this.layer?.id,
-      (this.layer as unknown as esri.Sublayer)?.layer?.id
-    ].filter((id): id is string => typeof id === 'string');
+    const layer = this.layer();
+    const candidateIds = [layer?.id, (layer as unknown as esri.Sublayer)?.layer?.id].filter(
+      (id): id is string => typeof id === 'string'
+    );
 
     for (const id of candidateIds) {
       const match = this.layerSourcesService?.getLegendOverride?.(id);
@@ -289,7 +306,7 @@ export class LegendElementComponent implements OnInit {
   }
 
   private _extractSymbolUrl(info: unknown): string | null {
-    const renderer = (this.layer as esri.FeatureLayer)?.renderer;
+    const renderer = (this.layer() as esri.FeatureLayer)?.renderer;
     if (!renderer) {
       return null;
     }
@@ -329,9 +346,10 @@ export class LegendElementComponent implements OnInit {
   }
 
   public useSportsSafetyFirstFallback(): boolean {
+    const layer = this.layer();
     return (
-      this.sportsSafetyFirstLayerIds.has(this.layer?.id) ||
-      this.sportsSafetyFirstLayerIds.has((this.layer as unknown as esri.Sublayer)?.layer?.id)
+      this.sportsSafetyFirstLayerIds.has(layer?.id) ||
+      this.sportsSafetyFirstLayerIds.has((layer as unknown as esri.Sublayer)?.layer?.id)
     );
   }
 
@@ -491,7 +509,6 @@ export class LegendElementComponent implements OnInit {
       return of(null);
     }
   }
-
 }
 
 // Browser doesn't like direct esri types for inputs.
@@ -501,8 +518,4 @@ export class LegendElementComponent implements OnInit {
 type ILegendElement = esri.LegendElement;
 type ILayer = esri.Layer;
 type LegendInfo =
-  | esri.SymbolTableElementType
-  | esri.ColorRampStop
-  | esri.OpacityRampStop
-  | esri.SizeRampStop
-  | esri.HeatmapRampStop;
+  esri.SymbolTableElementType | esri.ColorRampStop | esri.OpacityRampStop | esri.SizeRampStop | esri.HeatmapRampStop;

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -12,15 +12,24 @@ import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { BasePopupComponent } from '../base/base.popup.component';
+import { AsyncPipe, KeyValuePipe } from '@angular/common';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-base-directions',
   templateUrl: './base-directions.component.html',
-  styleUrls: ['./base-directions.component.scss']
+  styleUrls: ['./base-directions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [AsyncPipe, KeyValuePipe]
 })
 export class BaseDirectionsComponent extends BasePopupComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private plannerService = inject(TripPlannerService);
+  private analytics = inject(Angulartics2);
+  private mapService = inject(EsriMapService);
+
   /**
    * Data set by the parent popup component.
    */
@@ -48,16 +57,6 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
   private _stops: TripPoint[];
 
   private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private plannerService: TripPlannerService,
-    private analytics: Angulartics2,
-    private mapService: EsriMapService
-  ) {
-    super();
-  }
 
   protected _makeShareUrl(): string {
     const origin = window.location.origin;

@@ -19,7 +19,6 @@ export enum MAIN_MAP_LAYERS {
   ACESSIBLE_ENTRANCES = 'accessible-entrances-layer',
   EMERGENCY_PHONES = 'emergency-phones-layer',
   BIKE_RACKS = 'bike-racks-layer',
-  BIKE_LOCATIONS = 'bike-locations-layer',
   DINING_LOCATIONS = 'dining-locations-layer',
   AGGIEPRINT_LOCATIONS = 'aggieprint-locations-layer',
   SINGLE_OCCUPANCY_RESTROOMS = 'single-occupancy-restroom-locations-layer',
@@ -28,12 +27,7 @@ export enum MAIN_MAP_LAYERS {
   CAMPUS_BIKE_LANES = 'bike-lanes-layer',
   BIKE_FIX_STATIONS = 'bike-fix-stations-layer',
   BIKE_RACKS_MAP = 'bike-racks-map-layer',
-  EV_CHARGE_STATIONS = 'ev-charge-stations-layer',
-  EVENT_150_OPENING_EVENT_LOCATIONS = 'event-150-opening-event-locations-layer',
-  EVENT_150_OPENING_SHUTTLE_ROUTE = 'event-150-opening-shuttle-route-layer',
-  EVENT_150_OPENING_PARKING = 'event-150-opening-parking-layer',
-  EVENT_150_KICKOFF_AT_KYLE = 'event-150-kickoff-at-kyle-layer',
-  EVENT_150_SPIRIT_WEEK = 'event-150-spirit-week-layer'
+  EV_CHARGE_STATIONS = 'ev-charge-stations-layer'
 }
 
 export interface IDefinition {
@@ -57,7 +51,6 @@ export interface IComposedIDefinitions {
   ACESSIBLE_ENTRANCES: IDefinition;
   EMERGENCY_PHONES: IDefinition;
   BIKE_RACKS: IDefinition;
-  BIKE_LOCATIONS: IDefinition;
   DINING_LOCATIONS: IDefinition;
   AGGIEPRINT_LOCATIONS: IDefinition;
   SINGLE_OCCUPANCY_RESTROOMS: IDefinition;
@@ -67,18 +60,13 @@ export interface IComposedIDefinitions {
   BIKE_FIX_STATIONS: IDefinition;
   BIKE_RACKS_MAP: IDefinition;
   EV_CHARGE_STATIONS: IDefinition;
-  EVENT_150_OPENING_EVENT_LOCATIONS: IDefinition;
-  EVENT_150_OPENING_SHUTTLE_ROUTE: IDefinition;
-  EVENT_150_OPENING_PARKING: IDefinition;
-  EVENT_150_KICKOFF_AT_KYLE: IDefinition;
-  EVENT_150_SPIRIT_WEEK: IDefinition;
 }
 
 export const commonLayerProps = {
   outFields: ['*'],
   minScale: 100000,
   maxScale: 0,
-  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerElevationInfo,
+  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerBaseElevationInfo,
   popupEnabled: false
 };
 
@@ -165,58 +153,12 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       name: 'Bike Racks',
       url: `${connections.bikeRacksUrl}`
     },
-    BIKE_LOCATIONS: {
-      id: 'bike-locations',
-      layerId: MAIN_MAP_LAYERS.BIKE_LOCATIONS,
-      name: 'VeoRide Bikes',
-      url: `${connections.bikeLocationsUrl}`
-    },
     DINING_LOCATIONS: {
       id: 'dining-locations',
       layerId: MAIN_MAP_LAYERS.DINING_LOCATIONS,
       name: 'Dining Locations',
       url: `${connections.diningLocationsUrl}`,
       popupComponent: Popups.DiningPopupComponent
-    },
-
-    // 150th anniversary event layers, shown on the main map in a "150th Events" group (#1017).
-    // Aggie Family Parade is excluded because it is April 2027 and not part of this autumn's set.
-    // Live at the Station is excluded because it is not a 150th event (#1125).
-    EVENT_150_OPENING_EVENT_LOCATIONS: {
-      id: 'event-150-opening-event-locations',
-      layerId: MAIN_MAP_LAYERS.EVENT_150_OPENING_EVENT_LOCATIONS,
-      name: 'Event Locations',
-      url: `${connections.kickoff150thUrl}/0`,
-      popupComponent: Popups.MarkdownPopupComponent
-    },
-    EVENT_150_OPENING_SHUTTLE_ROUTE: {
-      id: 'event-150-opening-shuttle-route',
-      layerId: MAIN_MAP_LAYERS.EVENT_150_OPENING_SHUTTLE_ROUTE,
-      name: 'Shuttle Route',
-      url: `${connections.kickoff150thUrl}/1`
-    },
-    EVENT_150_OPENING_PARKING: {
-      id: 'event-150-opening-parking',
-      layerId: MAIN_MAP_LAYERS.EVENT_150_OPENING_PARKING,
-      name: 'Parking',
-      url: `${connections.kickoff150thUrl}/2`,
-      popupComponent: Popups.MarkdownPopupComponent
-    },
-    EVENT_150_KICKOFF_AT_KYLE: {
-      id: 'event-150-kickoff-at-kyle',
-      layerId: MAIN_MAP_LAYERS.EVENT_150_KICKOFF_AT_KYLE,
-      name: 'Kickoff at Kyle',
-      url: `${connections.kickoffAtKyleUrl}/0`,
-      popupComponent: Popups.MarkdownPopupComponent
-    },
-    EVENT_150_SPIRIT_WEEK: {
-      id: 'event-150-spirit-week',
-      layerId: MAIN_MAP_LAYERS.EVENT_150_SPIRIT_WEEK,
-      // The event is one day of cake and ice cream, not the week around it. The id and layer key
-      // keep the old name so shared links and the layer's own key are undisturbed (#1142).
-      name: '150 Cake & Ice Cream',
-      url: `${connections.spiritOf150WeekUrl}/0`,
-      popupComponent: Popups.MarkdownPopupComponent
     },
     AGGIEPRINT_LOCATIONS: {
       id: 'aggieprint-locations',
@@ -295,18 +237,7 @@ export function MainMapLayerSources(
       layerIndex: 1,
       native: {
         ...commonLayerProps,
-        legendEnabled: false,
-        renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'simple-fill',
-            style: 'solid',
-            color: [0, 0, 0, 0.01],
-            outline: {
-              width: '0'
-            }
-          }
-        }
+        legendEnabled: false
       }
     },
     {
@@ -324,21 +255,6 @@ export function MainMapLayerSources(
         // The hosted service has no Status field (unlike the legacy FCOR service), so
         // "currently active" construction is now determined solely by end date.
         definitionExpression: `enddate > CAST('${new Date().toISOString()}' AS DATE )`,
-        // Override the hosted service's own per-owner unique-value renderer so the main
-        // map keeps showing a single, undifferentiated orange/red hatch for all construction,
-        // matching the legacy FCOR service's look.
-        renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'simple-fill',
-            style: 'diagonal-cross',
-            color: [255, 85, 0, 255],
-            outline: {
-              color: [255, 85, 0, 255],
-              width: 1
-            }
-          }
-        }
       }
     },
     {
@@ -350,16 +266,7 @@ export function MainMapLayerSources(
       listMode: 'show',
       visible: false,
       native: {
-        ...commonLayerProps,
-        renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'picture-marker',
-            url: '/assets/images/markers/statue-icon.png',
-            width: '20px',
-            height: '30.2px'
-          }
-        }
+        ...commonLayerProps
       }
     },
     {
@@ -372,17 +279,7 @@ export function MainMapLayerSources(
       visible: true,
       native: {
         ...commonLayerProps,
-        labelingInfo: [],
-        renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'simple-fill',
-            color: [0, 0, 0, 0.0],
-            outline: {
-              width: 0
-            }
-          }
-        }
+        labelingInfo: []
       }
     },
     {
@@ -446,16 +343,6 @@ export function MainMapLayerSources(
       native: {
         ...commonLayerProps,
         legendEnabled: false,
-        renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'simple-marker',
-            style: 'circle',
-            size: 0,
-            color: [0, 0, 0, 0],
-            outline: { width: 0, color: [0, 0, 0, 0] }
-          }
-        },
         labelsVisible: false
       }
     },
@@ -502,26 +389,6 @@ export function MainMapLayerSources(
       visible: true,
       native: {
         ...commonLayerProps
-      }
-    },
-    {
-      type: 'geojson',
-      id: definitions.BIKE_LOCATIONS.layerId,
-      title: definitions.BIKE_LOCATIONS.name,
-      url: definitions.BIKE_LOCATIONS.url,
-      listMode: 'show',
-      visible: false,
-      native: {
-        ...commonLayerProps,
-        renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'simple-marker',
-            style: 'circle',
-            size: 8,
-            color: '#03C4A6'
-          }
-        }
       }
     },
     {
@@ -648,6 +515,8 @@ export function MainMapLayerSources(
       popupComponent: definitions.DINING_LOCATIONS.popupComponent,
       native: {
         ...commonLayerProps,
+        // Overridden deliberately (#1576): this is a GeoJSON feed, which carries no symbology, so without
+        // a renderer ArcGIS draws a plain default marker. The icons show open and closed, food truck or not.
         renderer: {
           type: 'unique-value',
           field: 'label',
@@ -711,6 +580,8 @@ export function MainMapLayerSources(
       },
       native: {
         ...commonLayerProps,
+        // Overridden deliberately (#1576): the service publishes only ArcGIS's default RedSphere marker,
+        // not printer icons. The icons tell campus-accessible printers from restricted ones.
         renderer: {
           type: 'unique-value',
           valueExpression: `When($feature.Access == 'Campus Member Accessible', 'all',  'restricted')`,
@@ -755,144 +626,6 @@ export function MainMapLayerSources(
         ...commonLayerProps,
         definitionExpression: "showOnAggieMap = 'Y'"
       }
-    },
-
-    // 150th anniversary event layers (#1017), under a "150th Events" heading. Each event set is off
-    // by default and toggled on its own, so these are opt-in on the landing map rather than a change
-    // to what every visitor sees.
-    //
-    // Each event set's date is shown after its name in the layer list (`listNote`, #1126).
-    //
-    // Esri's layer list shows a group's children in reverse draw order (the last source is listed
-    // first), so these sources are written in reverse of the order they appear in the list:
-    // Opening Ceremony, Kickoff at Kyle, 150 Cake & Ice Cream.
-    //
-    // Live at the Station is not a 150th event, so it is not listed here (#1125). Its own map is
-    // unchanged.
-    //
-    // These draw the same services as the standalone event maps. 150 Cake & Ice Cream uses the
-    // service's own symbology rather than the cake marker on its own map: that marker is an inline
-    // image in the events library, which cannot be imported here without a dependency cycle.
-    {
-      type: 'group',
-      id: 'event-150-group-layer',
-      title: '150th Events',
-      listMode: 'show',
-      // Listed as a heading with no toggle of its own; each event set below is toggled separately.
-      listHeading: true,
-      sources: [
-        {
-          type: 'feature',
-          id: definitions.EVENT_150_SPIRIT_WEEK.layerId,
-          title: definitions.EVENT_150_SPIRIT_WEEK.name,
-          listNote: 'Oct. 5, 2026',
-          url: definitions.EVENT_150_SPIRIT_WEEK.url,
-          popupComponent: definitions.EVENT_150_SPIRIT_WEEK.popupComponent,
-          listMode: 'show',
-          visible: false,
-          popupData: {
-            name: '{attributes.name}',
-            description: '{attributes.description}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: definitions.EVENT_150_KICKOFF_AT_KYLE.layerId,
-          title: definitions.EVENT_150_KICKOFF_AT_KYLE.name,
-          listNote: 'Oct. 2, 2026',
-          url: definitions.EVENT_150_KICKOFF_AT_KYLE.url,
-          popupComponent: definitions.EVENT_150_KICKOFF_AT_KYLE.popupComponent,
-          listMode: 'show',
-          visible: false,
-          // Lots carry `name` (lot numbers) and `description` ("Free Event Parking" and similar).
-          popupData: {
-            name: '{attributes.name}',
-            description: '{attributes.description}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          // The Opening Ceremony service has three layers, kept together in one group that the layer
-          // list shows as a single entry. Parking is listed first so it draws beneath the other two.
-          type: 'group',
-          id: 'event-150-opening-ceremony-group-layer',
-          title: 'Opening Ceremony',
-          listNote: 'Oct. 2, 2026',
-          listMode: 'show',
-          visible: false,
-          sources: [
-            {
-              type: 'feature',
-              id: definitions.EVENT_150_OPENING_PARKING.layerId,
-              title: definitions.EVENT_150_OPENING_PARKING.name,
-              url: definitions.EVENT_150_OPENING_PARKING.url,
-              popupComponent: definitions.EVENT_150_OPENING_PARKING.popupComponent,
-              listMode: 'show',
-              visible: true,
-              popupData: {
-                name: '{attributes.name}',
-                description: '{attributes.description}'
-              },
-              native: {
-                ...commonLayerProps
-              }
-            },
-            {
-              type: 'feature',
-              id: definitions.EVENT_150_OPENING_SHUTTLE_ROUTE.layerId,
-              title: definitions.EVENT_150_OPENING_SHUTTLE_ROUTE.name,
-              url: definitions.EVENT_150_OPENING_SHUTTLE_ROUTE.url,
-              listMode: 'show',
-              visible: true,
-              native: {
-                ...commonLayerProps,
-                // Same symbol as the standalone Opening Ceremony map: the route is digitized from the
-                // PRG shuttle stop to the Lot 54 stop, so an arrowhead at the end shows the direction.
-                renderer: {
-                  type: 'simple',
-                  label: 'Shuttle Route',
-                  symbol: {
-                    type: 'simple-line',
-                    color: 'rgb(38, 115, 0)',
-                    width: 2,
-                    style: 'solid',
-                    marker: {
-                      style: 'arrow',
-                      color: 'rgb(38, 115, 0)',
-                      placement: 'end'
-                    }
-                  }
-                }
-              }
-            },
-            {
-              type: 'feature',
-              id: definitions.EVENT_150_OPENING_EVENT_LOCATIONS.layerId,
-              title: definitions.EVENT_150_OPENING_EVENT_LOCATIONS.name,
-              url: definitions.EVENT_150_OPENING_EVENT_LOCATIONS.url,
-              popupComponent: definitions.EVENT_150_OPENING_EVENT_LOCATIONS.popupComponent,
-              listMode: 'show',
-              visible: true,
-              popupData: {
-                name: '{attributes.name}',
-                description: '{attributes.description}'
-              },
-              native: {
-                ...commonLayerProps
-              }
-            }
-          ],
-          // One toggle for all three layers, like Sustainable Transportation.
-          native: {
-            listMode: 'hide-children'
-          }
-        }
-      ]
     }
   ];
 

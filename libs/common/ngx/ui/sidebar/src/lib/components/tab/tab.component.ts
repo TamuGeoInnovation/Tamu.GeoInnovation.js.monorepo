@@ -1,10 +1,11 @@
-import { Component, Input, HostListener } from '@angular/core';
+import { Component, Input, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-sidebar-tab',
   templateUrl: './tab.component.html',
-  styleUrls: ['./tab.component.scss']
+  styleUrls: ['./tab.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class SidebarTabComponent {
   /**
@@ -47,7 +48,7 @@ export class SidebarTabComponent {
   public $clicked: Observable<TabHostClick> = this._$clicked.asObservable();
 
   @HostListener('click', ['$event'])
-  private clicked(event: MouseEvent) {
+  protected clicked(event: MouseEvent) {
     this._$clicked.next({ event: event, native: this });
   }
 }

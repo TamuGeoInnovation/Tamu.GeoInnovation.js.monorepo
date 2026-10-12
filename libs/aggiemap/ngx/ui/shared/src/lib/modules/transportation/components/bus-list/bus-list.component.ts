@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -6,15 +6,22 @@ import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { groupBy, Group } from '@tamu-gisc/common/utils/collection';
+import { BusRouteComponent } from '../bus-route/bus-route.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-bus-list',
   templateUrl: './bus-list.component.html',
-  styleUrls: ['./bus-list.component.scss']
+  styleUrls: ['./bus-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [BusRouteComponent, AsyncPipe]
 })
 export class BusListComponent implements OnInit, OnDestroy {
-  @Input()
-  public selectionAction: 'route' | 'in-place' = 'in-place';
+  private busService = inject(BusService);
+  private responsiveService = inject(ResponsiveService);
+  private testing = inject(TestingService);
+
+  public readonly selectionAction = input<'route' | 'in-place'>('in-place');
 
   public routes: Observable<Group<TSRoute>[]>;
 
@@ -36,12 +43,6 @@ export class BusListComponent implements OnInit, OnDestroy {
   public busRoutesAvailable: Observable<boolean>;
 
   public responsive: ResponsiveSnapshot;
-
-  constructor(
-    private busService: BusService,
-    private responsiveService: ResponsiveService,
-    private testing: TestingService
-  ) {}
 
   public ngOnInit(): void {
     this.busRoutesAvailable = this.testing.get('isTesting');

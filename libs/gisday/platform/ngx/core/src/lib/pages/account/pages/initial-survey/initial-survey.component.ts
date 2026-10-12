@@ -1,24 +1,45 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { InitialSurveyService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { InitialSurveyQuestion } from '@tamu-gisc/gisday/platform/data-api';
+import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { RadioGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-initial-survey',
   templateUrl: './initial-survey.component.html',
-  styleUrls: ['./initial-survey.component.scss']
+  styleUrls: ['./initial-survey.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    NgTemplateOutlet,
+    FormsModule,
+    ReactiveFormsModule,
+    RadioGroupComponent,
+    TextboxComponent,
+    CheckboxGroupComponent,
+    CheckboxComponent,
+    SelectComponent,
+    ButtonComponent,
+    AsyncPipe
+  ]
 })
 export class InitialSurveyComponent implements OnInit, OnDestroy {
+  private fb = inject(UntypedFormBuilder);
+  private readonly initialSurveyService = inject(InitialSurveyService);
+
   public dataGroup: UntypedFormGroup;
   public $tookSurveyAlready: Observable<boolean>;
   public $initalSurveyQuestions: Observable<Array<Partial<IInitialSurveyQuestionResponse>>>;
   private _$destroy: Subject<boolean> = new Subject();
-
-  constructor(private fb: UntypedFormBuilder, private readonly initialSurveyService: InitialSurveyService) {}
 
   public ngOnInit() {
     this.dataGroup = this.fb.group({});

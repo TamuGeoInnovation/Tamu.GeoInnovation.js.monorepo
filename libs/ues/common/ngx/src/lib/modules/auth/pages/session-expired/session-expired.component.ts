@@ -1,17 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { interval, Observable } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
 import { LegacyAuthService } from '@tamu-gisc/common/ngx/auth';
 import { ActivatedRoute } from '@angular/router';
+import { UESTamuBlockComponent } from '../../../core-ui/components/branding/ues-tamu-block/ues-tamu-block.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-session-expired',
   templateUrl: './session-expired.component.html',
-  styleUrls: ['./session-expired.component.scss']
+  styleUrls: ['./session-expired.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [UESTamuBlockComponent, AsyncPipe]
 })
 export class SessionExpiredComponent {
-  constructor(private auth: LegacyAuthService, private route: ActivatedRoute) {}
+  private auth = inject(LegacyAuthService);
+  private route = inject(ActivatedRoute);
 
   /**
    * Seconds before redirect

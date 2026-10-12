@@ -1,8 +1,8 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 import { OrderByPipe } from './order-by.pipe';
 
 describe('orderBy.pipe', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [OrderByPipe]
     }).compileComponents();
@@ -26,7 +26,7 @@ describe('orderBy.pipe', () => {
 
   it('should error for invalid direction', inject([OrderByPipe], (pipe: OrderByPipe) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(() => pipe.transform([{ test: 1 }, { test: 2 }], 'test', 'south' as any)).toThrowError(
+    expect(() => pipe.transform([{ test: 1 }, { test: 2 }], 'test', 'south' as any)).toThrow(
       new Error('Invalid ordering direction specified')
     );
   }));

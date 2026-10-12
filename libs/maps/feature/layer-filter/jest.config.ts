@@ -1,5 +1,5 @@
 /* eslint-disable */
-export default {
+module.exports = {
   coverageDirectory: '../../../../coverage/libs/maps/feature/layer-filter',
 
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
@@ -21,7 +21,7 @@ export default {
         // `strict: true` type-checks the source of every library it imports under its own
         // settings, so a non-strict library fails as a dependency of a strict one while
         // compiling fine on its own and in the build. Each project owns its own types.
-        diagnostics: { exclude: ['!<rootDir>/**'] },
+        diagnostics: { exclude: ['!<rootDir>/**'] }
       }
     ]
   },

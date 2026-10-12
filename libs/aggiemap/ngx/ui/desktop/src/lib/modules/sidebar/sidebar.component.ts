@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
@@ -6,15 +6,34 @@ import { v4 as guid } from 'uuid';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
+import { TamuBlockBrandingComponent } from '@tamu-gisc/ui-kits/ngx/branding';
+import { RouterOutlet } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { SidebarComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
+import { SidebarTabComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
+import { PopupComponent } from '@tamu-gisc/maps/feature/popup';
+import { RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
+
 @Component({
   selector: 'tamu-gisc-aggiemap-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  styleUrls: ['./sidebar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    SidebarComponent,
+    SidebarTabComponent,
+    PopupComponent,
+    RevealSidebarOnPopupDirective,
+    TamuBlockBrandingComponent,
+    RouterOutlet,
+    AsyncPipe
+  ]
 })
 export class AggiemapSidebarComponent implements OnInit {
-  public isDev: Observable<boolean>;
+  private devTools = inject(TestingService);
+  private readonly analytics = inject(Angulartics2);
 
-  constructor(private devTools: TestingService, private readonly analytics: Angulartics2) {}
+  public isDev: Observable<boolean>;
 
   public ngOnInit() {
     this.isDev = this.devTools.get('isTesting');

@@ -1,6 +1,5 @@
-import { DOCUMENT } from '@angular/common';
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, DOCUMENT, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -11,7 +10,8 @@ import { AuthOptions } from '@tamu-gisc/oidc/client';
   providedIn: 'root'
 })
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(@Inject(DOCUMENT) private document: Document, private environment: EnvironmentService) {}
+  private document = inject<Document>(DOCUMENT);
+  private environment = inject(EnvironmentService);
 
   public intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const urlOrOptions: string | AuthOptions =

@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 import { Angulartics2Module } from 'angulartics2';
 import * as WebFont from 'webfontloader';
@@ -12,7 +12,25 @@ import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { AuthenticationGuard, AuthRoutingModule } from '@tamu-gisc/oidc/ngx';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 import { NotificationModule, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import {
+  DrawerComponent,
+  AccordionComponent,
+  AccordionHeaderComponent,
+  AccordionContentComponent,
+  TooltipComponent,
+  TooltipTriggerComponent,
+  TabsComponent,
+  TabComponent,
+  AccordionDirective,
+  AccordionHeaderDirective,
+  AccordionContentDirective,
+  StepperComponent,
+  StepComponent,
+  StepToggleComponent,
+  StepperToggleDirective,
+  RenderHostDirective,
+  ElementInsertDirective
+} from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
@@ -25,7 +43,7 @@ const routes: Routes = [
   },
   {
     path: 'users',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.UsersModule),
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.usersRoutes),
     canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
   },
   {
@@ -60,6 +78,8 @@ export function getHighlightLanguages() {
 }
 
 @NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
   imports: [
     Angulartics2Module.forRoot(),
     AuthModule.forRoot({
@@ -83,19 +103,33 @@ export function getHighlightLanguages() {
     EnvironmentModule,
     LocalStoreModule,
     NotificationModule,
-    UILayoutModule,
-    HttpClientModule,
+    DrawerComponent,
+    AccordionComponent,
+    AccordionHeaderComponent,
+    AccordionContentComponent,
+    TooltipComponent,
+    TooltipTriggerComponent,
+    TabsComponent,
+    TabComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective,
+    StepperComponent,
+    StepComponent,
+    StepToggleComponent,
+    StepperToggleDirective,
+    RenderHostDirective,
+    ElementInsertDirective,
     AuthRoutingModule
   ],
-  declarations: [AppComponent],
   providers: [
     NotificationService,
     {
       provide: env,
       useValue: environment
     },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
-  ],
-  bootstrap: [AppComponent]
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    provideHttpClient(withXhr(), withInterceptorsFromDi())
+  ]
 })
 export class AppModule {}
