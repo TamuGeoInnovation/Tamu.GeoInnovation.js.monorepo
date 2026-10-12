@@ -116,8 +116,7 @@ export class DateTimePickerComponent implements ControlValueAccessor {
   /**
    * The finest unit offered. `day` or coarser picks a date only.
    */
-  @Input()
-  public minView: DateTimePickerView = 'minute';
+  public readonly minView = input<DateTimePickerView>('minute');
 
   /**
    * The coarsest unit offered. `hour` picks a time of day only.
@@ -164,7 +163,7 @@ export class DateTimePickerComponent implements ControlValueAccessor {
   }
 
   public get inputType() {
-    return inputTypeFor(this.minView, this.maxView());
+    return inputTypeFor(this.minView(), this.maxView());
   }
 
   public get inputValue() {

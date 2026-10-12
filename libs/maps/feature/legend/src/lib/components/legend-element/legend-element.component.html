@@ -26,9 +26,9 @@
         @case ('symbol-table') {
         <div>
           @if (holdsNestedTables(info)) { @for (subInfo of $any(info).infos; track subInfo) {
-          <tamu-gisc-legend-element [element]="subInfo" [layer]="layer" [groupTitle]="$any(info).title" [deduplicateChildren]="deduplicateChildren()" [respectDefinitionExpression]="respectDefinitionExpression()" [hideGroupHeader]="hideGroupHeader()"></tamu-gisc-legend-element>
+          <tamu-gisc-legend-element [element]="subInfo" [layer]="layer()" [groupTitle]="$any(info).title" [deduplicateChildren]="deduplicateChildren()" [respectDefinitionExpression]="respectDefinitionExpression()" [hideGroupHeader]="hideGroupHeader()"></tamu-gisc-legend-element>
           } } @else {
-          <tamu-gisc-legend-element [element]="info" [layer]="layer" [groupTitle]="groupTitle" [deduplicateChildren]="deduplicateChildren()" [respectDefinitionExpression]="respectDefinitionExpression()" [hideGroupHeader]="true"></tamu-gisc-legend-element>
+          <tamu-gisc-legend-element [element]="info" [layer]="layer()" [groupTitle]="groupTitle()" [deduplicateChildren]="deduplicateChildren()" [respectDefinitionExpression]="respectDefinitionExpression()" [hideGroupHeader]="true"></tamu-gisc-legend-element>
           }
           <!-- A unique value group's classes, listed under the layer's own title. The group heading is
                       the renderer's field name, which means nothing to a visitor, so it is not shown. -->

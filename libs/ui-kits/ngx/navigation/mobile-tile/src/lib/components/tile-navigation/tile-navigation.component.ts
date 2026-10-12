@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy, inject, output } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, output, input } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 
@@ -19,8 +19,7 @@ import { AsyncPipe } from '@angular/common';
 export class TileNavigationComponent implements OnInit, OnDestroy {
   service = inject(TileService);
 
-  @Input()
-  public toggle: Observable<boolean>;
+  public readonly toggle = input<Observable<boolean>>(undefined);
 
   /**
    * While the main control mechanism for the tile nav component is the input
@@ -53,8 +52,9 @@ export class TileNavigationComponent implements OnInit, OnDestroy {
   private _$destroy: Subject<boolean> = new Subject();
 
   public ngOnInit() {
-    if (this.toggle !== undefined) {
-      this.toggle.pipe(takeUntil(this._$destroy)).subscribe((v) => {
+    const toggle = this.toggle();
+    if (toggle !== undefined) {
+      toggle.pipe(takeUntil(this._$destroy)).subscribe((v) => {
         this.switchState(v);
       });
 

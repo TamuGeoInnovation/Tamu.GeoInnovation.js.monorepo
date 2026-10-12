@@ -25,7 +25,7 @@ export class MapsPageHeaderComponent {
   /**
    * Page title and the label shown as the active breadcrumb.
    */
-  @Input() public title: string;
+  public readonly title = input<string>(undefined);
 
   /**
    * Optional intro paragraph rendered beneath the title.
