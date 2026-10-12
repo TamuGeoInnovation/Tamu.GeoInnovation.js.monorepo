@@ -3,15 +3,14 @@ import {
   OnInit,
   ElementRef,
   ViewChild,
-  Output,
-  EventEmitter,
   Input,
   OnDestroy,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   HostListener,
   inject,
-  input
+  input,
+  output
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -117,49 +116,42 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Event emitter that will emit to parent component, the value of the selected item
    */
-  @Output()
   // eslint-disable-next-line @angular-eslint/no-output-native
-  public result: EventEmitter<SearchSelection<unknown>> = new EventEmitter();
+  public readonly result = output<SearchSelection<unknown>>();
 
   /**
    * Event emitter that will emit when the value has changed and is no longer the same as initial.
    */
-  @Output()
-  public dirty: EventEmitter<SearchEvent> = new EventEmitter();
+  public readonly dirty = output<SearchEvent>();
 
   /**
    * Event emitter that will emit when the input box in the template is set focus
    */
-  @Output()
   // eslint-disable-next-line @angular-eslint/no-output-native
-  public focus: EventEmitter<boolean> = new EventEmitter();
+  public readonly focus = output<boolean>();
 
   /**
    * Event emitter that will emit when the input box in the template loses focus
    */
-  @Output()
   // eslint-disable-next-line @angular-eslint/no-output-native
-  public blur: EventEmitter<boolean> = new EventEmitter();
+  public readonly blur = output<boolean>();
 
   /**
    * Event emitter that will emit when the value has been cleared.
    */
-  @Output()
-  public empty: EventEmitter<SearchEvent> = new EventEmitter();
+  public readonly empty = output<SearchEvent>();
 
   /**
    * Event emitter that will emit when the left side action icon is pressed.
    * Up to the parent component on how to handle interaction.
    */
-  @Output()
-  public leftAction: EventEmitter<boolean> = new EventEmitter();
+  public readonly leftAction = output<boolean>();
 
   /**
    * Event emitter that will emit when the right side action icon is pressed.
    * Up to the parent component on how to handle interaction.
    */
-  @Output()
-  public rightAction: EventEmitter<boolean> = new EventEmitter();
+  public readonly rightAction = output<boolean>();
 
   // ===========================================================================
 

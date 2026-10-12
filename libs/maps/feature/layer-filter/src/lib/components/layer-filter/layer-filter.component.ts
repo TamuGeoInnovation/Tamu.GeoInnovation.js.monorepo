@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 import { Observable, Subject, from, combineLatest, of, iif, forkJoin, zip } from 'rxjs';
 import {
   pluck,
@@ -51,11 +51,9 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
 
   public readonly executeFilterQuery = input<boolean>(undefined);
 
-  @Output()
-  public filterCompleted: EventEmitter<string> = new EventEmitter();
+  public readonly filterCompleted = output<string>();
 
-  @Output()
-  public filterQueryResults: EventEmitter<esri.Graphic[]> = new EventEmitter();
+  public readonly filterQueryResults = output<esri.Graphic[]>();
 
   /**
    * Resolved layer from layer list service.

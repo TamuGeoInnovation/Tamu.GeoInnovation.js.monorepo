@@ -1,15 +1,14 @@
 import {
   Component,
-  EventEmitter,
   HostListener,
   Input,
   OnChanges,
   OnInit,
-  Output,
   SimpleChanges,
   ChangeDetectionStrategy,
   inject,
-  input
+  input,
+  output
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 'rxjs';
@@ -37,8 +36,7 @@ export class EventRowComponent implements OnChanges, OnInit {
 
   public readonly rsvps = input<Array<string>>(undefined);
 
-  @Output()
-  public rowToggle: EventEmitter<boolean> = new EventEmitter();
+  public readonly rowToggle = output<boolean>();
 
   public isRsvp$: Observable<boolean>;
   private _rsvps$: ReplaySubject<Array<string>> = new ReplaySubject<Array<string>>();

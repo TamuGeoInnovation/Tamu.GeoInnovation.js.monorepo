@@ -1,4 +1,4 @@
-import { Component, TemplateRef, Output, EventEmitter, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, TemplateRef, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
@@ -11,6 +11,5 @@ import { NgTemplateOutlet } from '@angular/common';
 export class StepToggleComponent {
   public readonly template = input<TemplateRef<unknown>>(undefined);
 
-  @Output()
-  public stepToggleClicked: EventEmitter<boolean> = new EventEmitter();
+  public readonly stepToggleClicked = output<boolean>();
 }

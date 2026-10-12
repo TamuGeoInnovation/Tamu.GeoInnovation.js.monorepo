@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, output } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -32,8 +32,7 @@ export class DesignQuestionComponent {
   @Input()
   public control: UntypedFormGroup;
 
-  @Output()
-  public removed: EventEmitter<void> = new EventEmitter();
+  public readonly removed = output<void>();
 
   /**
    * Question input type (text, select, checkbox, etc)
@@ -71,7 +70,7 @@ export class DesignQuestionComponent {
   ];
 
   public emitRemove() {
-    this.removed.next();
+    this.removed.emit();
   }
 
   public updateOptionPoints(index: number, value: string) {

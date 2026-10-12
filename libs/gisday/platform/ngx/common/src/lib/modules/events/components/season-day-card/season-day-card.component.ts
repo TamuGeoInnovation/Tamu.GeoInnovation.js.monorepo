@@ -1,14 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ChangeDetectionStrategy,
-  inject,
-  input
-} from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 import { BehaviorSubject, Observable, ReplaySubject, combineLatest, map, shareReplay, withLatestFrom } from 'rxjs';
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
@@ -42,11 +32,9 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
 
   public readonly rsvps = input<Array<string>>([]);
 
-  @Output()
-  public register: EventEmitter<string> = new EventEmitter();
+  public readonly register = output<string>();
 
-  @Output()
-  public unregister: EventEmitter<string> = new EventEmitter();
+  public readonly unregister = output<string>();
 
   public events$: Observable<Array<SimplifiedEvent>>;
   public filteredEvents$: Observable<Array<SimplifiedEvent>>;

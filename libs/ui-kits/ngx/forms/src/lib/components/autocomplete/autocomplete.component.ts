@@ -1,13 +1,12 @@
 import {
   Component,
-  Output,
-  EventEmitter,
   ChangeDetectionStrategy,
   ContentChild,
   TemplateRef,
   OnInit,
   OnDestroy,
-  input
+  input,
+  output
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -50,8 +49,7 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy {
 
   public readonly placeholder = input('Start typing to search...');
 
-  @Output()
-  public optionSelected = new EventEmitter<T>();
+  public readonly optionSelected = output<T>();
 
   /**
    * Optional user-provided template for rendering each option

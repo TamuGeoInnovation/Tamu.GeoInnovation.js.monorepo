@@ -1,14 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  OnDestroy,
-  Output,
-  EventEmitter,
-  OnChanges,
-  SimpleChanges,
-  inject,
-  input
-} from '@angular/core';
+import { Directive, ElementRef, OnDestroy, OnChanges, SimpleChanges, inject, input, output } from '@angular/core';
 
 import { Observable, timer } from 'rxjs';
 import { mapTo, startWith } from 'rxjs/operators';
@@ -30,11 +20,9 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
    */
   public readonly text = input<string>(undefined);
 
-  @Output()
-  public copying: EventEmitter<Observable<boolean>> = new EventEmitter();
+  public readonly copying = output<Observable<boolean>>();
 
-  @Output()
-  public err: EventEmitter<boolean> = new EventEmitter();
+  public readonly err = output<boolean>();
 
   /**
    * Clipboard JS class container.

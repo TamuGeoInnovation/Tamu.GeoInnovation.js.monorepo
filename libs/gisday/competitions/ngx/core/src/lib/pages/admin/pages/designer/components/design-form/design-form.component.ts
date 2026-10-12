@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, output } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { catchError, map, pluck, shareReplay, startWith, switchMap } from 'rxjs/operators';
@@ -25,8 +25,7 @@ export class DesignFormComponent implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly fs = inject(FormService);
 
-  @Output()
-  public updated: EventEmitter<Array<ICompetitionSeasonFormQuestion>> = new EventEmitter();
+  public readonly updated = output<Array<ICompetitionSeasonFormQuestion>>();
 
   public currentSeasonForm$: Observable<CompetitionSeason>;
   public urlFields$: Observable<Array<Field>>;
@@ -65,12 +64,12 @@ export class DesignFormComponent implements OnInit {
           )
         });
 
-        this.updated.next(res.form.model);
+        this.updated.emit(res.form.model);
       }
     });
 
     this.formModel.valueChanges.pipe(startWith(this.formModel.getRawValue())).subscribe((changes) => {
-      this.updated.next(changes.fields);
+      this.updated.emit(changes.fields);
     });
   }
 
@@ -122,7 +121,7 @@ export class DesignFormComponent implements OnInit {
     const fieldsArray = this.formModel.get('fields') as UntypedFormArray;
     fieldsArray.removeAt(index);
 
-    this.updated.next(this.formModel.getRawValue().fields);
+    this.updated.emit(this.formModel.getRawValue().fields);
   }
 
   public saveForm(): void {

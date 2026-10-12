@@ -1,14 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Renderer2,
-  ElementRef,
-  Output,
-  EventEmitter,
-  ChangeDetectionStrategy,
-  inject,
-  input
-} from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-backdrop',
@@ -43,8 +33,7 @@ export class BackdropComponent implements OnInit {
     'off-top' | 'off-right' | 'off-bottom' | 'off-left' | 'on-top' | 'on-right' | 'on-bottom' | 'on-left'
   >(undefined);
 
-  @Output()
-  public voidClick: EventEmitter<MouseEvent> = new EventEmitter();
+  public readonly voidClick = output<MouseEvent>();
 
   public ngOnInit() {
     const rootElement = this.element.nativeElement;

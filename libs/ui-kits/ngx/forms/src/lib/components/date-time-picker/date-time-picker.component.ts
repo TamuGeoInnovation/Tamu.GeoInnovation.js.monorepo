@@ -1,13 +1,4 @@
-import {
-  Component,
-  Input,
-  forwardRef,
-  ViewChild,
-  Output,
-  EventEmitter,
-  ChangeDetectionStrategy,
-  input
-} from '@angular/core';
+import { Component, Input, forwardRef, ViewChild, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { TooltipComponent, TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -160,8 +151,7 @@ export class DateTimePickerComponent implements ControlValueAccessor {
    */
   public readonly iconName = input('calendar_today');
 
-  @Output()
-  public changed: EventEmitter<DateTimePickerChange<Date>> = new EventEmitter();
+  public readonly changed = output<DateTimePickerChange<Date>>();
 
   public get value() {
     return new Date(this._value.getTime());

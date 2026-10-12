@@ -4,11 +4,10 @@ import {
   ViewChild,
   ElementRef,
   Input,
-  Output,
-  EventEmitter,
   OnDestroy,
   ChangeDetectionStrategy,
-  inject
+  inject,
+  output
 } from '@angular/core';
 import { take } from 'rxjs/operators';
 
@@ -26,8 +25,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   @Input()
   public config: MapConfig;
 
-  @Output()
-  public loaded: EventEmitter<MapServiceInstance> = new EventEmitter();
+  public readonly loaded = output<MapServiceInstance>();
 
   @ViewChild('container', { static: true })
   private container: ElementRef;
