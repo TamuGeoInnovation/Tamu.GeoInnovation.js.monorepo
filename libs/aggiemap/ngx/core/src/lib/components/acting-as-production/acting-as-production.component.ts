@@ -22,8 +22,12 @@ export class ActingAsProductionComponent {
   public readonly active = inject(TestingService).actingAsProduction;
 
   /**
-   * This page again, as dev. A plain link, not a router link: what the switch decides is settled when
-   * the page loads, so turning it off means loading the page.
+   * This page again, as dev. Loads it, not routes to it: what the switch decides is settled when the
+   * page loads. The address is read at the click, because the shell outlives every navigation and the
+   * page it was created on is rarely the one being looked at.
    */
-  public readonly backToDevelopment = `${window.location.pathname}?as=development`;
+  public backToDevelopment(event: Event): void {
+    event.preventDefault();
+    window.location.assign(`${window.location.pathname}?as=development`);
+  }
 }
