@@ -30,6 +30,19 @@ tiles are republished in Web Mercator ([#1741](https://github.com/TamuGeoInnovat
 | --- | --- |
 | ![The panel in 3D marking the vector basemap as chosen](../screenshots/vector-basemap-in-3d/before-dev-3d-vector-offered.png) | ![The panel in 3D with the vector basemap greyed and marked 2D only](../screenshots/vector-basemap-in-3d/after-3d-vector-unavailable.png) |
 
+### The Aerial Imagery timeline sits clear of "View as production", with arrows (dev only)
+
+The timeline that steps Aerial Imagery back through Nearmap's captures ([#1541](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1541)) sat under the
+"View as production" switch a dev host shows at the bottom of the window, and its year labels, placed
+between captures, could sit beside the wrong ticks ([#1750](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1750)).
+
+It now sits above the switch. The ticks are unlabelled but for "2016" and "Latest" at the ends; each
+shows its date on hover, and the date the timeline is on is beside the title, with ‹ › arrows to step
+one capture at a time - the easy way to the captures days apart, 22 and 26 November 2025.
+
+| Before | After |
+| --- | --- |
+| ![The timeline's year labels under the View as production switch](../screenshots/nearmap-timeline-restyle/before.png) | ![The timeline above the switch, with the date between arrows](../screenshots/nearmap-timeline-restyle/after.png) |
 ### GIS Day: the 2026 VGI competition, the Monument Trail Challenge
 
 The VGI Competition pages still described 2025's Art Trail Challenge. This year's competition collects
@@ -167,6 +180,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: button labels centred ([#1708](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1708)) | Not on dev, for the same reason. Locally, `/competitions/vgi`, `/competitions/posters`, `/competitions/presentation` and `/sponsors/tamu` | The label of every button is in the middle of the button, not at its left edge: Read Event Details, Submit Your Poster, Submit Your Presentation. The sponsor page's buttons look as they did |
 | GIS Day additional sponsorship opportunities ([#1658](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1658)) | Not on dev, for the same reason. Locally, `/sponsors/tamu` | Under the four levels: "Additional Sponsorship Opportunities", ten rows from Daily Coffee Break Sponsor ($1,500 per day) to VGI Competition Sponsor ($1,000), and a "Send Us a Message" button |
 | GIS Day: university banner on a presenter's own page ([#1703](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1703)) | Not on dev, for the same reason. Locally, `/presenters`, then open any presenter | The banner on the card (for example "TAMU '24") is also across the top-left corner of the photograph on the presenter's own page, same text and colour. A presenter whose card has no banner has none on their page. Narrow the window to phone width: the banner stays inside the photograph. The Presenters page itself looks as it did |
+| Aerial Imagery timeline restyled ([#1750](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1750)) | [Football Tailgating on 22 November 2025](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?imagery=2025-11-22) | The timeline is above **View as production**, not under it. Ticks have no labels but "2016" and "Latest"; hovering one shows its date. ‹ › beside the date step one capture: from Nov 22, 2025, › goes to Nov 26, 2025, then to Oct 5, 2026 (latest), where › greys out. Not on production |
 
 ---
 
