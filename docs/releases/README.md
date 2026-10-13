@@ -324,6 +324,53 @@ Steps 3 and 6 are manual, which is fine for proving the sequence and will not su
 Automating them needs the build to say which commit it came from (#1148); until then the smoke suite
 tests a URL and cannot know what it verified.
 
+## Releasing GIS Day
+
+Everything above is AggieMap's path. GIS Day (`gisday-angular` and `gisday-nest`, at `txgisday.org`)
+is released differently, and was first released this way on 12 October 2026.
+
+**How it differs.** Its images are built by GitHub Actions, not Azure DevOps. It has no dev site yet
+([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)), so production is the first place a built image runs: check the change on the
+local stack first ([`docs/gisday-local.md`](../gisday-local.md)). The smoke suite does not cover it.
+
+**The steps, in order.**
+
+1. **Merge to `development`.** The `Quabity Assuance` workflow builds an image for each application the
+   merge affected and pushes it to the organization's container registry with two tags:
+   `sha-<first seven characters of the commit>`, written once and never moved, and `stable`, which
+   moves on every build. **Production pins the `sha-` tag.** `stable` is not a pin.
+2. **Find the tag.** The run's `Publish` jobs name the applications it built. An application the merge
+   did not affect gets no image, so the newest `gisday-angular` tag can be older than the tip of
+   `development`.
+
+   ```bash
+   gh run list --branch development --limit 5
+   gh api "orgs/TamuGeoInnovation/packages/container/gisday-angular/versions?per_page=5" --jq '.[] | "\(.updated_at) \(.metadata.container.tags | join(","))"'
+   ```
+
+3. **Decide what to promote.** The front end alone is the usual case. Promote the API only when the
+   change needs it, and only after comparing the entities between the commit production runs and the
+   new one; if they differ, the build changes the database schema, and
+   [`docs/gisday-migrations.md`](../gisday-migrations.md) says what that takes.
+
+   ```bash
+   git diff <deployed sha>..<new sha> -- libs/gisday/platform/data-api/src/lib/entities
+   ```
+
+4. **Promote it.** The maintainer points the production deployment at the new tag and watches it roll
+   out. The commands, the check to run before promoting the API and the rollback are written down in
+   the private cluster configuration repository, under its GIS Day folder: "Promoting a new build to
+   production". They are kept there, not here, because this repository is public.
+5. **Check the site** in a private window: the home page, Sessions, Presenters and one presenter, the
+   competition pages, the sponsor page, then sign in and open one admin page. Sign-in and the admin
+   pages are the two that nothing automated checks.
+6. **Record it.** A pull request on the cluster configuration repository updates the pinned tag, with
+   the tag it replaced as the rollback target, so the manifests match what is running.
+
+**Not settled yet.** `scripts/tag-build.sh prod` refuses a commit with no `dev-*` tag, which GIS Day
+cannot have until it has a dev site, so the 12 October release carries no `prod-*` tag. Its entries
+are still in [`unreleased.md`](unreleased.md) with AggieMap's. Both wait on [#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525).
+
 ## What belongs here
 
 Notes written for the person who will _use_ or _check_ the change: what shipped, where to see
