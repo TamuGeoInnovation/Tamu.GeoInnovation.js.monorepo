@@ -236,6 +236,9 @@ export interface RangeTick {
   /** Text under the tick. */
   label?: string;
 
+  /** Text shown on hovering the tick, such as the date it stands for when it has no label. */
+  title?: string;
+
   /** Whether to draw the mark itself. Defaults to `true`; `false` leaves only the label. */
   mark?: boolean;
 }
