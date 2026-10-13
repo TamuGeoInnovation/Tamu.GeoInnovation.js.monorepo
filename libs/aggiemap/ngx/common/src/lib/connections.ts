@@ -1,3 +1,5 @@
+import { actingAsProduction } from './acting-as-production';
+
 function createConnections(gisHost: string): IComposedConnections {
   const tsgisHost = getDefaultGisHosts().tsgisHost;
   return {
@@ -121,7 +123,8 @@ export function getDefaultGisHost(): string {
  */
 export function getDefaultGisHosts() {
   const hostname = globalThis.location?.hostname;
-  const isDev = hostname?.includes('dev');
+  // A dev host asked to behave as production draws from production's GIS server too (#1722).
+  const isDev = hostname?.includes('dev') && !actingAsProduction();
 
   const gisHost = isDev ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
   // TEMP: force tsgisHost to production host until dev host is available

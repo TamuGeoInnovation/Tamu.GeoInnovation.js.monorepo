@@ -4,6 +4,8 @@ import * as WebFont from 'webfontloader';
 
 import * as environment from './environments/environment';
 import { env } from '@tamu-gisc/common/ngx/environment';
+import { ACTING_AS_PRODUCTION } from '@tamu-gisc/dev-tools/application-testing';
+import { actingAsProduction } from '@tamu-gisc/aggiemap/ngx/common';
 import { notificationStorage, AGGIEMAP_NOTIFICATION_STORE_KEY } from '@tamu-gisc/common/ngx/ui/notification';
 import { EVENT_NOTIFICATION_DEFINITIONS, aggiemapRoutes } from '@tamu-gisc/aggiemap/ngx/core';
 import { BUS_STOP_POPUP_COMPONENT } from '@tamu-gisc/maps/feature/trip-planner';
@@ -38,6 +40,8 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(Angulartics2Module.forRoot(), BrowserModule, BrowserAnimationsModule),
     provideRouter(aggiemapRoutes),
     { provide: env, useValue: environment },
+    // `?as=production` makes a development host behave as production, for the tab (#1722).
+    { provide: ACTING_AS_PRODUCTION, useFactory: () => actingAsProduction() },
     { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
     // Loaded after startup, not with it: every event map's definition is a large download that the
     // first paint does not need (#1454).

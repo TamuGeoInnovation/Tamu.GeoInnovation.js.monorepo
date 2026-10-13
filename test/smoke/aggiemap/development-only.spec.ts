@@ -163,3 +163,110 @@ test.describe(`development-only map controls ${VISIBLE ? 'are offered here' : 's
     });
   }
 });
+
+
+/**
+ * `?as=production` makes a development host behave as production, for the tab (#1722).
+ *
+ * Checked on the main map's development-only tabs, which the tests above have already shown to be
+ * offered on a development host and absent on production. The switch must take them away on a
+ * development host, say that it has, last when the address no longer carries it, and give them back
+ * on `?as=development`. On production it must do nothing either way: it can turn development
+ * behaviour off and never on.
+ */
+test.describe('acting as production', () => {
+  const BANNER = 'tamu-gisc-acting-as-production .acting-as-production';
+
+  async function mainMap(page: Page, query = ''): Promise<void> {
+    await page.goto(`/map${query}`);
+
+    await expect
+      .poll(async () => probeReady(page), {
+        message: `/map${query} never finished loading`,
+        timeout: 120_000,
+        intervals: [1_000]
+      })
+      .toBe(true);
+  }
+
+  async function tabsOffered(page: Page): Promise<number[]> {
+    return Promise.all(DEVELOPMENT_ONLY_SECTIONS.map((section) => sidebarTabs(page, section)));
+  }
+
+  /** The All Maps page's way in: a section only a development host shows. */
+  const ALL_MAPS_LINK = 'a[href="/all-maps?as=production"]';
+
+  async function allMaps(page: Page): Promise<void> {
+    await page.goto('/all-maps');
+    await expect(page.locator('h1.maps-page-title'), '/all-maps never drew its title').toBeVisible({ timeout: 90_000 });
+  }
+
+  const none = DEVELOPMENT_ONLY_SECTIONS.map(() => 0);
+  const all = DEVELOPMENT_ONLY_SECTIONS.map(() => 1);
+
+  if (VISIBLE) {
+    test('?as=production takes the development sections away until ?as=development', async ({ page }) => {
+      test.setTimeout(420_000);
+      await blockAnalytics(page);
+
+      // Acting as production reaches the GIS server too: nothing may be asked of the development one.
+      const developmentGisRequests: string[] = [];
+      page.on('request', (request) => {
+        if (new URL(request.url()).hostname.startsWith('gis-dev.')) {
+          developmentGisRequests.push(request.url());
+        }
+      });
+
+      await mainMap(page, '?as=production');
+      expect(await tabsOffered(page), 'development sections are still offered with ?as=production').toEqual(none);
+      expect(developmentGisRequests, 'the development GIS server was asked while acting as production').toEqual([]);
+      await expect(page.locator(BANNER), 'nothing on the page says it is acting as production').toBeVisible();
+
+      // Moving between maps drops query parameters, so the switch has to outlast the address.
+      await mainMap(page);
+      expect(await tabsOffered(page), 'the switch was lost when the address no longer carried it').toEqual(none);
+      await expect(page.locator(BANNER)).toBeVisible();
+
+      await mainMap(page, '?as=development');
+      expect(await tabsOffered(page), 'development sections did not come back with ?as=development').toEqual(all);
+      await expect(page.locator(BANNER)).toHaveCount(0);
+    });
+    test('All Maps offers the switch, and following it turns it on', async ({ page }) => {
+      test.setTimeout(300_000);
+      await blockAnalytics(page);
+
+      await allMaps(page);
+      await expect(page.locator(ALL_MAPS_LINK), 'All Maps does not offer View as Production here').toBeVisible();
+
+      await page.locator(ALL_MAPS_LINK).click();
+      await expect(page.locator(BANNER), 'following the link did not turn the switch on').toBeVisible({ timeout: 90_000 });
+      // Hidden with every other development feature while the switch is on; the banner is the way back.
+      await expect(page.locator(ALL_MAPS_LINK)).toHaveCount(0);
+
+      await page.locator(`${BANNER} a`).click();
+      await expect(page.locator(ALL_MAPS_LINK), 'Back to dev did not bring the development sections back').toBeVisible({
+        timeout: 90_000
+      });
+      await expect(page.locator(BANNER)).toHaveCount(0);
+    });
+  } else {
+    test('All Maps does not offer the switch here', async ({ page }) => {
+      await blockAnalytics(page);
+
+      await allMaps(page);
+      await expect(page.locator(ALL_MAPS_LINK), 'View as Production must not be offered on production').toHaveCount(0);
+    });
+
+    test('neither ?as=development nor ?as=production changes anything here', async ({ page }) => {
+      test.setTimeout(300_000);
+      await blockAnalytics(page);
+
+      await mainMap(page, '?as=development');
+      expect(await tabsOffered(page), '?as=development turned development sections on').toEqual(none);
+
+      await mainMap(page, '?as=production');
+      expect(await tabsOffered(page)).toEqual(none);
+      await expect(page.locator(BANNER), 'the acting-as-production banner must not show here').toHaveCount(0);
+    });
+  }
+});
