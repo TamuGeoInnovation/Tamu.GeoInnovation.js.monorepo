@@ -1,6 +1,20 @@
 import { BaseMapProperties } from '@tamu-gisc/maps/esri';
 
 /**
+ * The picture of a campus basemap in the basemap panel, shipped with the application (#1730).
+ *
+ * Each campus basemap used to name its own thumbnail, on its GIS service or its portal item. Those
+ * answer `max-age=0`, so every map load fetched every one again - three copies of the same 133 KB
+ * picture for the raster versions and another for the vector one - and on dev, where the panel lists
+ * four, they could be watched arriving one after another.
+ *
+ * One image for all of them: at this size the vector basemap and the raster versions look the same.
+ * When one comes to look clearly different, give it a picture of its own beside this one. Captured
+ * from `TAMU_Basemap_20261008`'s own thumbnail and resampled to twice the size the panel draws it at.
+ */
+const CAMPUS_BASEMAP_THUMBNAIL = '/assets/images/basemap_thumbnails/aggieland.png';
+
+/**
  * The campus basemap, as raster tiles. What production shows.
  *
  * The vector tile cache below is not published for production, so production keeps this one until
@@ -23,7 +37,7 @@ export const AggiemapRasterBasemap: BaseMapProperties = {
   ],
   id: 'aggie_basemap',
   title: 'Aggieland',
-  thumbnailUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer/info/thumbnail'
+  thumbnailUrl: CAMPUS_BASEMAP_THUMBNAIL
 };
 
 /**
@@ -52,8 +66,7 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
   // Dated like the raster versions beside it in the dev gallery (#1582): the cache was published on
   // 30 September 2026. Name it plain "Aggieland" when it becomes production's basemap.
   title: 'Aggieland vector, September 2026',
-  thumbnailUrl:
-    'https://divops.tamu.edu/portal/sharing/rest/content/items/0786efd67d0a467e8da4d889b7364ddb/info/thumbnail/_7B6C3A79E6-2D18-4FB5-87C9-99192ACA9248_7D.png'
+  thumbnailUrl: CAMPUS_BASEMAP_THUMBNAIL
 };
 
 /**
@@ -97,7 +110,7 @@ export const AggiemapRasterBasemapJune2026: BaseMapProperties = {
   baseLayers: [rasterLayer('https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer')],
   id: 'aggie_basemap_raster_2026_06',
   title: 'Aggieland raster, June 2026',
-  thumbnailUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer/info/thumbnail'
+  thumbnailUrl: CAMPUS_BASEMAP_THUMBNAIL
 };
 
 /** The raster campus basemap of May 2026, still published. Development only, as above (#1582). */
@@ -105,7 +118,7 @@ export const AggiemapRasterBasemapMay2026: BaseMapProperties = {
   baseLayers: [rasterLayer('https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_05152026/MapServer')],
   id: 'aggie_basemap_raster_2026_05',
   title: 'Aggieland raster, May 2026',
-  thumbnailUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_05152026/MapServer/info/thumbnail'
+  thumbnailUrl: CAMPUS_BASEMAP_THUMBNAIL
 };
 
 /**
@@ -172,5 +185,5 @@ export const NearmapCSBasemap: BaseMapProperties = {
   ],
   id: 'nearmap_cs_basemap',
   title: 'Aerial Imagery',
-  thumbnailUrl: 'https://aggiemap.tamu.edu/images/basemap_thumbnails/nearmap_imagery.png'
+  thumbnailUrl: '/assets/images/basemap_thumbnails/nearmap_imagery.png'
 };
