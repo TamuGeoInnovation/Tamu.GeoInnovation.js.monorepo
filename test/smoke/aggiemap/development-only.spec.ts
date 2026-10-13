@@ -175,7 +175,10 @@ test.describe(`development-only map controls ${VISIBLE ? 'are offered here' : 's
  * behaviour off and never on.
  */
 test.describe('acting as production', () => {
-  const BANNER = 'tamu-gisc-acting-as-production .acting-as-production';
+  /** Shown while the switch is on, with the way back. */
+  const BANNER = 'tamu-gisc-acting-as-production .acting-as-production--on';
+  /** Shown on every page of a development host while it is off: one click turns it on. */
+  const OFFER = 'tamu-gisc-acting-as-production .acting-as-production--offer';
 
   async function mainMap(page: Page, query = ''): Promise<void> {
     await page.goto(`/map${query}`);
@@ -230,6 +233,13 @@ test.describe('acting as production', () => {
       await mainMap(page, '?as=development');
       expect(await tabsOffered(page), 'development sections did not come back with ?as=development').toEqual(all);
       await expect(page.locator(BANNER)).toHaveCount(0);
+
+      // And from the map itself, without typing an address: the offer is on every page.
+      await page.locator(OFFER).click();
+      await expect(page.locator(BANNER), 'the offer on the map did not turn the switch on').toBeVisible({
+        timeout: 90_000
+      });
+      expect(new URL(page.url()).pathname, 'the offer left the page it was on').toMatch(/^\/map/);
     });
     test('All Maps offers the switch, and following it turns it on', async ({ page }) => {
       test.setTimeout(300_000);
@@ -267,6 +277,7 @@ test.describe('acting as production', () => {
       await mainMap(page, '?as=production');
       expect(await tabsOffered(page)).toEqual(none);
       await expect(page.locator(BANNER), 'the acting-as-production banner must not show here').toHaveCount(0);
+      await expect(page.locator(OFFER), 'View as production must not be offered on production').toHaveCount(0);
     });
   }
 });

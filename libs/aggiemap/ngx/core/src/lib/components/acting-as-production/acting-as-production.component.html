@@ -1,6 +1,12 @@
-@if (active) {
-<div class="acting-as-production" role="status">
+@if (production) {
+<div class="acting-as-production acting-as-production--on" role="status">
+  <span class="material-icons" aria-hidden="true">public</span>
   <span>Viewing as production</span>
-  <a href="?as=development" (click)="backToDevelopment($event)">Back to dev</a>
+  <a href="?as=development" (click)="view('development', $event)">Back to dev</a>
 </div>
+} @else if (development) {
+<a class="acting-as-production acting-as-production--offer" href="?as=production" title="See this page as a visitor to production will" (click)="view('production', $event)">
+  <span class="material-icons" aria-hidden="true">public</span>
+  <span>View as production</span>
+</a>
 }
