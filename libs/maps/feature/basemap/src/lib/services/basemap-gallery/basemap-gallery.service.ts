@@ -5,7 +5,7 @@ import { combineLatest, firstValueFrom, from, map, switchMap } from 'rxjs';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
-import { aggiemapBasemap, NearmapCSBasemap } from '../../shared/basemaps.definition';
+import { aggiemapGalleryBasemaps, NearmapCSBasemap } from '../../shared/basemaps.definition';
 
 import esri = __esri;
 
@@ -114,28 +114,24 @@ export class BasemapGalleryService {
               // To work around this, we need ton construct a new instance of the layer class and pass in the base
 
               // Vector tiles on dev, raster on production, until the vector tiles are published there (#1229).
-              const campusBasemap = aggiemapBasemap(this.ts.isTesting);
+              // Dev also offers every published raster version, to compare them (#1582).
+              const campusBasemaps = aggiemapGalleryBasemaps(this.ts.isTesting).map((campusBasemap) => {
+                // Clone the base layer JSON object, without its type: assigning it is a read-only property error.
+                const { type, ...baseLayerJSON } = JSON.parse(JSON.stringify(campusBasemap.baseLayers[0]));
 
-              // Clone the base layer JSON object
-              const baseLayerJSON = JSON.parse(JSON.stringify(campusBasemap.baseLayers[0]));
-              const baseLayerType = baseLayerJSON.type;
+                const baseLayer =
+                  type === 'VectorTileLayer' ? new VectorTileLayer({ ...baseLayerJSON }) : new TileLayer({ ...baseLayerJSON });
 
-              // Remove the type property to prevent read-only property assignment error.
-              delete baseLayerJSON.type;
+                return new Basemap({ ...campusBasemap, baseLayers: [baseLayer] });
+              });
 
-              const baseLayers =
-                baseLayerType === 'VectorTileLayer'
-                  ? new VectorTileLayer({ ...baseLayerJSON })
-                  : new TileLayer({ ...baseLayerJSON });
-
-              const instancedAggiemapBasemap = new Basemap({ ...campusBasemap, baseLayers: [baseLayers] });
               const nearmapCSBasemap = this.makeNearmapBasemap(Basemap, WMSLayer);
 
               const model = new BasemapGalleryViewModel({
                 view: instances.view,
                 source: new LocalBasemapsSource({
                   basemaps: [
-                    instancedAggiemapBasemap,
+                    ...campusBasemaps,
                     Basemap.fromId('topo-vector'),
                     Basemap.fromId('streets-relief-vector'),
                     Basemap.fromId('streets-navigation-vector'),
