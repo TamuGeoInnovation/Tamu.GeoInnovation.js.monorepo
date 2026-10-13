@@ -186,14 +186,22 @@ export class EsriMapService {
     return vProps;
   }
 
-  public setView(view: esri.SceneView | esri.MapView) {
+  /**
+   * Makes `view` the map's view, in place of the current one.
+   *
+   * `place` is where the incoming view should look. Without it the outgoing view's own viewpoint is
+   * copied, which is right between two views of the same kind and wrong out of a tilted 3D scene: that
+   * viewpoint describes the scene's camera, and a 2D view given it centres on where the camera was
+   * standing, not on what it was looking at (#1724). A caller that changes perspective says where.
+   */
+  public setView(view: esri.SceneView | esri.MapView, place?: esri.ViewpointProperties) {
     this.destroyViewClickEventHandler();
 
     // Carry the current camera/extent across the swap. A reused view otherwise re-attaches with
     // a stale viewpoint, and disconnecting/reconnecting the map below resets the camera to a
     // default extent - either way the campus-only basemap (minScale 100000) and the buildings
     // render nothing and the canvas looks blank.
-    const viewpoint = this._modules.view?.viewpoint?.clone();
+    const viewpoint = place ?? this._modules.view?.viewpoint?.clone();
 
     // Detach the outgoing view from BOTH the DOM and the shared map.
     //
@@ -228,7 +236,7 @@ export class EsriMapService {
       this._modules.view.map = this._modules.map;
     }
     if (viewpoint) {
-      this._modules.view.viewpoint = viewpoint;
+      this._modules.view.viewpoint = viewpoint as esri.Viewpoint;
     }
     this._modules.view.container = viewContainer;
 
