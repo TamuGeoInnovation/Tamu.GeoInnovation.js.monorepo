@@ -1,6 +1,7 @@
 # Unreleased
 
-Since the second 12 October release: GIS Day changes only, waiting for GIS Day's own deploy.
+Since the second 12 October release: every published campus basemap in the gallery on dev, and GIS Day
+changes waiting for GIS Day's own deploy.
 
 **The last release is [12 October 2026, second release](2026-10-12-2.md)**, built from `f29b7e47d` (build
 20261012.21). The quick tier cleared it on dev: 245 passed, none failed. The release before it is
@@ -15,6 +16,23 @@ result adds its own entry below, in that pull request**, with its before/after s
 ---
 
 ## Summary
+
+### Every published campus basemap, in the gallery on dev (dev only)
+
+Dev opens on the vector tile campus basemap, which production does not have yet
+([#1229](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1229)), and its gallery offered that one alone under the name Aggieland. So the
+raster basemap production shows could not be seen on dev at all, and on 12 October a new raster cache
+went to production without anyone having seen it drawn there ([#1695](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1695)).
+
+On dev, the basemap gallery now lists the raster campus basemaps as well, each under its date:
+October 2026, which is what production shows, and the June and May 2026 versions that are still
+published, so they can be compared. The vector one is named the same way, "Aggieland vector, September
+2026" ([#1582](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1582)). Choosing one moves the map to it and back
+without losing the place. Production's gallery is unchanged: one Aggieland basemap.
+
+| Before, on dev | After, on dev | After, as production shows it |
+| --- | --- | --- |
+| ![The gallery on dev with one Aggieland basemap](../screenshots/dev-campus-basemaps/before-dev-gallery.png) | ![The gallery on dev with three dated raster basemaps under Aggieland, October 2026 chosen and drawn](../screenshots/dev-campus-basemaps/after-october-raster-chosen.png) | ![The gallery as production shows it, with one Aggieland basemap](../screenshots/dev-campus-basemaps/after-production-gallery.png) |
 
 ### GIS Day: the 2026 VGI competition, the Monument Trail Challenge
 
@@ -140,10 +158,11 @@ photographs, so the grey placeholder in the "after" column is the local copy and
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** nothing for AggieMap beyond the [second 12 October release](2026-10-12-2.md) itself.
+**Currently on dev for testing:** the first row, once a build with it reaches dev.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Dated raster campus basemaps in the gallery ([#1582](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1582)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings) | First **Aggieland vector, September 2026**, then **Aggieland raster, October 2026**, **June 2026** and **May 2026**, each with a thumbnail. Choose October: the map redraws on the raster basemap in the same place, with the buildings and labels on top, and zooming all the way in never shows white. Choose the vector one again: it comes back. Reload: the map opens on the vector one. [Production](https://aggiemap.tamu.edu/map/d/settings) lists a single Aggieland |
 | GIS Day: 2026 VGI competition page ([#1665](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1665)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions/vgi` and `/competitions/monuments` | The VGI page says "November 9-20, 2026" and "2026 Competition: Texas A&M University Monument Trail Challenge", with 2025's Art Trail Challenge first under Prior Competitions. "Read Event Details" opens the new page: two things to collect, one point each, winners Thursday November 19, University Architect logo, no broken images |
 | GIS Day: poster and presentation competition dates moved to 2026 ([#1662](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1662)) | Not on dev, for the same reason. Locally, `/competitions/posters` and `/competitions/presentation` | No 2025 date on either page. Posters: Tuesday November 17th, 2026, due Monday November 9th. Presentations: Tuesday November 17th and Wednesday November 18th, 2026 |
 | GIS Day: Aggie Map Design Competition removed ([#1661](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1661)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions` | The Competitions menu and page list VGI, Poster and Presentation only; `/competitions/aggie-map` goes to the home page |
