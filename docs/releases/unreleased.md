@@ -17,6 +17,23 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### 3D works on every campus basemap (dev only)
+
+On dev, switching the main map to 3D on the vector tile basemap tilted it and left every building
+flat, and choosing a raster basemap while in 3D turned the view into pale bands
+([#1735](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1735)). The vector basemap is in a state plane reference and a 3D scene is a
+globe: handed that map, the scene came up in the wrong reference, where the 3D buildings cannot be
+drawn, and the basemap panel then moved it to another.
+
+A 3D scene is now always a Web Mercator globe. On a basemap it cannot draw, the raster campus basemap
+stands in while the map is in 3D, and the chosen one comes back in 2D. Production, which has one
+campus basemap in Web Mercator, was not affected.
+
+| Before, on dev | After |
+| --- | --- |
+| ![3D on the vector basemap with flat buildings](../screenshots/3d-on-dev/before-dev-2-3d.png) | ![3D with the buildings standing](../screenshots/3d-on-dev/after-local-dev-2-3d.png) |
+| ![The view after choosing a raster basemap in 3D: pale bands](../screenshots/3d-on-dev/before-dev-3-3d-after-choosing.png) | ![The same step, a drawn 3D map](../screenshots/3d-on-dev/after-local-dev-3-3d-after-choosing.png) |
+
 ### Switching between 2D and 3D keeps the map where it was
 
 Switching the main map to 3D moved it about 2.4 km south, and switching back to 2D left it there, so a
@@ -236,6 +253,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| 3D on every campus basemap ([#1735](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1735)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), then the **2D** button beside All Maps | On **Aggieland vector**, click **2D**: the map tilts and **the buildings stand up in 3D**. While in 3D choose **Aggieland raster, October 2026**: still a 3D map, not pale bands. Click **3D** to come back: flat, in the same place, on the raster basemap. Repeat starting from a raster basemap |
 | 2D and 3D keep the place ([#1724](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1724)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), then the **2D** button beside All Maps | Note what is in the middle of the map. Click **2D**: the map tilts into 3D with the same place in the middle. Click **3D**: it comes back flat, in the same place, at the same zoom. Pan or zoom in 3D first and come back: 2D shows where 3D was looking |
 | Basemap pictures ship with the app ([#1730](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1730)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), and the same on [an event map](https://dev.aggiemap.tamu.edu/parking/visitor-parking/map/d/settings) | Every campus basemap row and Aerial Imagery has its picture as soon as the panel is drawn, not one after another. Reload: still at once. The Esri basemaps' pictures still come from Esri |
 | View as production ([#1722](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1722)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), and [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | A small white **View as production** control at the bottom of every page. Click it: the page reloads with a yellow **Viewing as production** banner, the Directions, Bus Routes and Experiments tabs are gone, and the basemap panel lists one Aggieland. Open another map from All Maps: the banner is still there. **Back to dev** returns to the same page with everything back. All Maps has a **View as Production** section at the bottom while the switch is off. On [production](https://aggiemap.tamu.edu/map/d?as=production) nothing changes and there is no control |
