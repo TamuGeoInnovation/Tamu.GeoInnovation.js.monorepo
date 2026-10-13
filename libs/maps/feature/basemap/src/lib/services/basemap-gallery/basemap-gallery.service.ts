@@ -5,7 +5,7 @@ import { combineLatest, firstValueFrom, from, map, switchMap } from 'rxjs';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
-import { aggiemapGalleryBasemaps, NearmapCSBasemap } from '../../shared/basemaps.definition';
+import { aggiemapBasemap, aggiemapGalleryBasemaps, NearmapCSBasemap } from '../../shared/basemaps.definition';
 
 import esri = __esri;
 
@@ -38,6 +38,12 @@ export class BasemapGalleryService {
   private readonly ms = inject(EsriMapService);
   private readonly ts = inject(TestingService);
   private readonly router = inject(Router);
+
+  /**
+   * The basemap to show when the map is next in 2D: one put aside because a scene could not draw it,
+   * or chosen in the basemap panel while in 3D (#1735). `undefined` when 2D shows what 3D showed.
+   */
+  private basemapAfterScene: esri.Basemap | undefined;
 
   /**
    * Which sublayers each Nearmap layer showed when it loaded, so "Latest" can put them back.
@@ -173,9 +179,25 @@ export class BasemapGalleryService {
       await baseLayer.load();
     }
 
+    const target = baseLayer && (baseLayer as unknown as { spatialReference?: esri.SpatialReference }).spatialReference;
+
+    // A 3D scene is a globe and stays in Web Mercator. Moving it to another reference, as a 2D view
+    // is moved below, leaves a scene of bands with no map in it (#1735). So in 3D the reference is
+    // never touched, and a basemap the scene cannot draw - the campus vector tiles, in EPSG:32139 -
+    // is kept for when the map goes back to 2D.
+    if (instance.view.type === '3d') {
+      if (drawsInAScene(target)) {
+        this.basemapAfterScene = undefined;
+        instance.map.basemap = basemap;
+      } else {
+        this.basemapAfterScene = basemap;
+      }
+
+      return;
+    }
+
     instance.map.basemap = basemap;
 
-    const target = baseLayer && (baseLayer as unknown as { spatialReference?: esri.SpatialReference }).spatialReference;
     const current = instance.view.spatialReference;
 
     if (target && current && !target.equals(current)) {
@@ -183,6 +205,76 @@ export class BasemapGalleryService {
     }
 
     await this.whenViewIdle(instance.view);
+  }
+
+  /**
+   * Gets the map ready to be shown in 3D (#1735). Call before the scene takes the map.
+   *
+   * On development the campus basemap is a vector tile cache in EPSG:32139. A scene given that map
+   * comes up in that reference and not as a globe, and the 3D buildings cannot be drawn in it: 3D
+   * tilted, with every building flat. So a basemap a scene cannot draw is put aside and the raster
+   * campus basemap, which every environment has in Web Mercator, stands in until the map is 2D again.
+   */
+  public async prepareForScene(): Promise<void> {
+    const instance = await firstValueFrom(this.ms.store);
+    const basemap = instance.map.basemap;
+    const baseLayer = basemap?.baseLayers.getItemAt(0);
+
+    if (baseLayer && 'load' in baseLayer) {
+      await baseLayer.load().catch(() => undefined);
+    }
+
+    const reference =
+      (baseLayer as unknown as { spatialReference?: esri.SpatialReference } | undefined)?.spatialReference ??
+      instance.view.spatialReference;
+
+    if (drawsInAScene(reference)) {
+      return;
+    }
+
+    const [Basemap, TileLayer] = (await this.mp.require(['Basemap', 'TileLayer'])) as [
+      esri.BasemapConstructor,
+      esri.TileLayerConstructor
+    ];
+    // What production shows: the raster campus basemap.
+    const raster = aggiemapBasemap(false);
+    const { type, ...layer } = JSON.parse(JSON.stringify(raster.baseLayers[0]));
+
+    this.basemapAfterScene = basemap;
+    instance.map.basemap = new Basemap({ ...raster, baseLayers: [new TileLayer({ ...layer })] });
+  }
+
+  /**
+   * The basemap a 2D view should show when the map comes back from 3D, and the spatial reference the
+   * view must be in to show it (#1735). Call before the 2D view takes the map.
+   *
+   * That is the basemap put aside for the scene, or one chosen while in it, or simply the one the
+   * scene was showing. The caller gives it to the map between the two views: a scene handed the
+   * campus vector tiles fails to draw them, and a 2D view moved to another reference once it is
+   * showing a map rescales, which brought the map back from 3D a zoom level out.
+   */
+  public async basemapForFlat(): Promise<{ basemap: esri.Basemap | undefined; reference: esri.SpatialReference | undefined }> {
+    const instance = await firstValueFrom(this.ms.store);
+    const basemap = this.basemapAfterScene ?? instance.map.basemap ?? undefined;
+
+    this.basemapAfterScene = undefined;
+
+    if (!basemap) {
+      return { basemap: undefined, reference: undefined };
+    }
+
+    await basemap.load();
+
+    const baseLayer = basemap.baseLayers.getItemAt(0);
+
+    if (baseLayer && 'load' in baseLayer) {
+      await baseLayer.load();
+    }
+
+    return {
+      basemap,
+      reference: (baseLayer as unknown as { spatialReference?: esri.SpatialReference } | undefined)?.spatialReference
+    };
   }
 
   /**
@@ -446,4 +538,12 @@ export class BasemapGalleryService {
       });
     });
   }
+}
+
+/**
+ * Whether a 3D scene can draw a basemap in this spatial reference. A scene here is a globe, which
+ * takes Web Mercator and WGS 84 and nothing else; an unknown reference is given the benefit of the doubt.
+ */
+function drawsInAScene(reference: esri.SpatialReference | undefined | null): boolean {
+  return !reference || reference.isWebMercator || reference.isWGS84;
 }
