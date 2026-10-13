@@ -91,6 +91,12 @@ export interface QuickSet {
   specs: string[];
   /** Routes whose tests in the per-route specs run, e.g. `/events/mens-basketball`. */
   routes: string[];
+  /**
+   * Stems of changed definition files, e.g. `move-out`. Every route whose id contains one runs too:
+   * a file can declare several maps, and `move-out.definitions.ts` builds `spring-move-out` and two
+   * more from a function, where no id can be read from the source (#1691).
+   */
+  stems: string[];
   /** Changed files nothing here maps to a test. The core is all that covers them. */
   unmapped: string[];
 }
@@ -106,6 +112,7 @@ export function quickSetFor(
 ): QuickSet {
   const specs = new Set(CORE_SPECS);
   const routes = new Set(CORE_ROUTES);
+  const stems = new Set<string>();
   const unmapped: string[] = [];
 
   for (const file of changed) {
@@ -130,14 +137,15 @@ export function quickSetFor(
     const name = file.startsWith(DEFINITIONS_PREFIX) ? file.slice(DEFINITIONS_PREFIX.length) : null;
     const definition = name?.endsWith('.definitions.ts') ? parseDefinition(name, readFile(name)) : null;
 
-    if (definition) {
+    if (definition && name) {
       routes.add(definition.route);
+      stems.add(name.slice(0, -'.definitions.ts'.length));
     } else if (features.length === 0) {
       unmapped.push(file);
     }
   }
 
-  return { specs: [...specs].sort(), routes: [...routes], unmapped };
+  return { specs: [...specs].sort(), routes: [...routes], stems: [...stems], unmapped };
 }
 
 /** Escape a value for use inside a regular expression. */
@@ -153,8 +161,9 @@ function escape(value: string): string {
  */
 export function routeGrep(set: QuickSet): RegExp {
   const routes = set.routes.map((route) => `(?<=^| )${escape(route)}(?=[ /?]|$)`);
+  const stems = set.stems.map((stem) => `(?<=^| )/[a-z-]+/[a-z0-9-]*${escape(stem)}[a-z0-9-]*(?=[ /?]|$)`);
 
-  return new RegExp([...routes, ...CORE_TITLES.map(escape)].join('|'));
+  return new RegExp([...routes, ...stems, ...CORE_TITLES.map(escape)].join('|'));
 }
 
 /** What a quick run chose and why, for the run's output. */
@@ -162,7 +171,8 @@ export function describeQuickSet(set: QuickSet): string {
   const lines = [
     `Quick tier: ${set.specs.length} spec files whole, and ${set.routes.length} routes in ${ROUTE_SPECS.join(', ')}.`,
     `  Whole: ${set.specs.join(' ')}`,
-    `  Routes: ${set.routes.join(' ')}`
+    `  Routes: ${set.routes.join(' ')}`,
+    `  And every route whose id contains: ${set.stems.join(' ') || '(none)'}`
   ];
 
   if (set.unmapped.length > 0) {

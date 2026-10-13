@@ -56,7 +56,20 @@ test.describe('choosing the quick set for a change', () => {
 
     expect(set.specs).toEqual([...CORE_SPECS].sort());
     expect(set.routes).toEqual(CORE_ROUTES);
+    expect(set.stems).toEqual([]);
     expect(set.unmapped).toEqual([]);
+  });
+
+  test('selects every map a definitions file declares, not only the first', () => {
+    // move-out.definitions.ts declares `move-out` and builds `spring-move-out`, `summer-i-move-out`
+    // and `summer-ii-move-out` from a function, so only the first id can be read from the source.
+    // The first quick run, on 12 October, loaded one of the four for exactly that reason.
+    const grep = routeGrep(quickSetFor([`${DEFINITIONS}move-in.definitions.ts`], read));
+
+    expect('/parking/move-in loads and serves its layers').toMatch(grep);
+    expect('/events/fall-move-in loads and serves its layers').toMatch(grep);
+    expect('/events/fall-move-in/map/d?day=1 opens where it does on production').toMatch(grep);
+    expect('/events/move-out loads and serves its layers').not.toMatch(grep);
   });
 
   test('adds a changed event definition as its own route', () => {
@@ -129,10 +142,16 @@ test.describe('selecting tests by route', () => {
     });
   }
 
+  test('errs towards more: a stem inside another id selects that map too', () => {
+    // `mens-basketball` is inside `womens-basketball`. Running one map too many costs a minute;
+    // the other mistake is the silent one.
+    expect('/events/womens-basketball loads and serves its layers').toMatch(grep);
+  });
+
   for (const title of [
     'test/smoke/aggiemap/maps.spec.ts /events/muster loads and serves its layers',
     '/events/ring-day/map/d?event-day=day2 opens where it does on production',
-    '/events/womens-basketball loads and serves its layers',
+    '/events/t-camp loads and serves its layers',
     '/parking/ts-main-parking-2 loads and serves its layers'
   ]) {
     test(`leaves out "${title}"`, () => {
