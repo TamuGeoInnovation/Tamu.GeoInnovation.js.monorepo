@@ -9,10 +9,20 @@
 #                                     # the same dev server as production renders it: 127.0.0.1 is not
 #                                     # a dev host, so development-only features are hidden
 #
-# Anything after the environment is passed to `playwright test`, e.g. `--grep "gameday"`.
+# A tier may follow the environment (#1717). The README says when each is run and when it must not be:
 #
-# A local run checks a release, so framing.spec.ts opens one route per map (#1426). The scheduled
-# workflow on GitHub checks all of them; to do the same here, set AGGIEMAP_SMOKE_FRAMING=full.
+#   test/smoke/aggiemap/run-local.sh development quick     # a fixed core, plus what changed since the
+#                                                          # last dev-* tag; clears a dev release
+#   test/smoke/aggiemap/run-local.sh development release   # every map once; clears production (default)
+#   test/smoke/aggiemap/run-local.sh development full      # everything, as the nightly GitHub run does
+#
+# quick compares this checkout with the newest dev-* tag (prod-* for production), so the checkout must
+# be at the commit that was built. AGGIEMAP_SMOKE_BASE names another base. It prints what it chose and
+# which changed files it could not map to a test; test/smoke/aggiemap/scope.ts decides.
+#
+# Anything after that is passed to `playwright test`, e.g. `--grep "gameday"`.
+#
+# A release run opens one route per map in framing.spec.ts (#1426); full opens all of them.
 # Needs only Docker and bash (Git Bash on Windows); Node runs inside the container. The first run
 # downloads the Playwright image, about 2 GB.
 #
@@ -65,14 +75,40 @@ fi
 
 volume=tamu-js-smoke-nm
 
-echo "Smoke suite: $env_name, $image"
+tier=release
+case "${2:-}" in
+  quick | release | full)
+    tier=$2
+    set -- "$1" "${@:3}"
+    ;;
+esac
+
+if [ "$tier" = full ]; then
+  export AGGIEMAP_SMOKE_FRAMING=full
+fi
+
+if [ "$tier" = quick ]; then
+  tags='refs/tags/dev-*'
+  if [ "$env_name" = production ]; then tags='refs/tags/prod-*'; fi
+  base=${AGGIEMAP_SMOKE_BASE:-$(git for-each-ref --count=1 --sort=-creatordate --format='%(refname:short)' "$tags")}
+  if ! git rev-parse --verify --quiet "$base^{commit}" >/dev/null; then
+    echo "The quick tier needs a base to compare with, and '$base' is not one. Fetch the tags, or set AGGIEMAP_SMOKE_BASE." >&2
+    exit 2
+  fi
+  echo "Quick tier: what changed between $base and $(git rev-parse --short HEAD)"
+  export AGGIEMAP_SMOKE_TIER=quick
+  AGGIEMAP_SMOKE_CHANGED=$(git diff --name-only "$base"...HEAD | paste -sd, -)
+  export AGGIEMAP_SMOKE_CHANGED
+fi
+
+echo "Smoke suite: $env_name, $tier tier, $image"
 
 # The output is copied to a file for Playwright's totals, which go into the run's record.
 output="$(mktemp)"
 trap 'rm -f "$output"' EXIT
 set +e
 docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -v "$volume:/work/node_modules" -w /work \
-  -e SMOKE_ENV="$env_name" -e SMOKE_VOLUME="$volume" -e PW_VERSION="$pw_version" -e NPM_CONFIG_UPDATE_NOTIFIER=false -e UPDATE_FRAMING_BASELINE \
+  -e SMOKE_ENV="$env_name" -e SMOKE_VOLUME="$volume" -e PW_VERSION="$pw_version" -e NPM_CONFIG_UPDATE_NOTIFIER=false -e UPDATE_FRAMING_BASELINE -e AGGIEMAP_SMOKE_TIER -e AGGIEMAP_SMOKE_CHANGED \
   -e AGGIEMAP_SMOKE_FRAMING="${AGGIEMAP_SMOKE_FRAMING:-release}" "$image" \
   node -e '
     const fs = require("fs");
@@ -120,5 +156,5 @@ docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -v "$v
 code=${PIPESTATUS[0]}
 set -e
 run_times_record docs/build-times/runs "$started" smoke \
-  "$env_name framing=${AGGIEMAP_SMOKE_FRAMING:-release}${*:+ $*}" "$code" "$(run_times_smoke_summary "$output")" "$SECONDS"
+  "$env_name $tier framing=${AGGIEMAP_SMOKE_FRAMING:-release}${*:+ $*}" "$code" "$(run_times_smoke_summary "$output")" "$SECONDS"
 exit "$code"

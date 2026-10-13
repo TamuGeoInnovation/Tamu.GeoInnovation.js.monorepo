@@ -4,6 +4,7 @@ import * as path from 'path';
 
 import { blockAnalytics } from './analytics';
 import { retiredMaps } from './retired';
+import { describeQuickSet, quickSetFor } from './scope';
 
 /**
  * Discovers every map the target environment lists, and writes it to a manifest the spec reads at
@@ -61,6 +62,11 @@ export const BUS_NOTICE = '.bus-routes-notice';
 export const MANIFEST_PATH = path.join(__dirname, 'map-manifest.generated.json');
 
 export default async function globalSetup(): Promise<void> {
+  if (process.env.AGGIEMAP_SMOKE_TIER === 'quick') {
+    // Once per run, before anything loads: what the quick tier chose and what it could not map.
+    console.log(describeQuickSet(quickSetFor((process.env.AGGIEMAP_SMOKE_CHANGED ?? '').split(',').filter(Boolean))));
+  }
+
   const baseUrl = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');
 
   const browser = await chromium.launch();

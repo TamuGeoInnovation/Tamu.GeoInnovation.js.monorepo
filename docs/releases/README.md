@@ -171,16 +171,21 @@ Confirm dev is actually serving the new code before going on: the bundle hash un
 changed, and should contain something only this build has. The release reporting success is not the
 same claim.
 
-### 2. Run the full suite against dev
+### 2. Run the quick tier against dev
 
 ```bash
-test/smoke/aggiemap/run-local.sh development
+test/smoke/aggiemap/run-local.sh development quick
 ```
 
-This is the gate. Nothing below happens if it fails.
+From a checkout at the commit that was built. It runs a fixed core plus the tests for what changed
+since the last `dev-*` tag, in six to ten minutes, and prints what it chose and any changed file it
+could not map to a test. The suite's [README](../../test/smoke/aggiemap/README.md#the-three-tiers)
+defines the tiers.
 
-Record what it says - passed, failed, skipped, duration. Those numbers go in the notes at step 4, and
-they are what cleared the release.
+This is the gate for the tag. Nothing below happens if it fails.
+
+**It is not the gate for production.** Not every build that reaches dev is released; the one that is
+gets the release tier at step 3b.
 
 ### 3. Tag the dev build
 
@@ -189,8 +194,8 @@ bash scripts/tag-build.sh dev
 git push origin dev-2026-09-29
 ```
 
-**Only after the suite passes.** `dev-*` means "deployed to dev and verified there", which is the
-claim the production tag depends on. Tagging before the run makes it mean "deployed", and the check
+**Only after the quick tier passes.** `dev-*` means "deployed to dev, and what changed was checked
+there", which is the claim the production tag depends on. Tagging before the run makes it mean "deployed", and the check
 at step 6 then guarantees nothing.
 
 If the suite failed and a tag was already pushed, delete it: `git push origin :dev-2026-09-29`.
@@ -206,6 +211,19 @@ cut and nobody has to reconstruct it (#1360).
 Update the line above the table naming the build on dev, so testers know which build they are looking
 at. Anything they find is fixed and the release re-cut from step 1, or recorded in the notes as known.
 Production waits until the team has tested; a release can sit on dev over a weekend.
+
+### 3b. Run the release tier on the build going to production
+
+```bash
+test/smoke/aggiemap/run-local.sh development release
+```
+
+Every map once, about thirty minutes. Run it once, on the build that will be promoted, not on every
+build that reaches dev. This is the gate for production: the quick tier checked what changed, and
+this checks that nothing else moved.
+
+Record what it says - passed, failed, skipped, duration. Those numbers go in the notes at step 4, and
+they are what cleared the release.
 
 ### 4. Merge the release notes
 

@@ -48,8 +48,7 @@ mkdir -p "$(dirname "$output")"
 
 # The Playwright image ships the browsers, not the module, so it resolves `playwright-core` from this
 # checkout. A fresh worktree has no `node_modules` and would fail inside the container with a bare
-# MODULE_NOT_FOUND, which says nothing about the cause. `smoke-scoped.sh` guards its ts-node the same
-# way.
+# MODULE_NOT_FOUND, which says nothing about the cause.
 if [ ! -d node_modules/playwright-core ]; then
   echo "node_modules/playwright-core is missing here. Run npm ci in this checkout first," >&2
   echo "or run this from the main checkout. (A git worktree needs its own install; see CLAUDE.md.)" >&2
