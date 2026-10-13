@@ -67,7 +67,8 @@ describe('LegendElementComponent', () => {
       infos: [{ label: 'Reserved', src: 'baseball-icon', value: 'reserved' }]
     } as unknown as __esri.LegendElement);
 
-    await component.ngOnInit();
+    // Setting the element is enough: the component reads it whenever it is replaced (#1721).
+    fixture.detectChanges();
 
     expect(component.showGroupHeader).toBe(false);
     expect(component.useGroupTitleLabel).toBe(true);
@@ -92,7 +93,8 @@ describe('LegendElementComponent', () => {
       ]
     } as unknown as __esri.LegendElement);
 
-    await component.ngOnInit();
+    // Setting the element is enough: the component reads it whenever it is replaced (#1721).
+    fixture.detectChanges();
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
@@ -104,5 +106,32 @@ describe('LegendElementComponent', () => {
     expect(text).toContain('Open Access');
     // The layer's title belongs to the collection header above; it is not a class of its own.
     expect(text).not.toContain('West Campus Tailgating');
+  });
+
+  it('redraws its symbol when the layer is given a new legend element (#1721)', async () => {
+    // A hosted layer loads with the symbol its service publishes and is then given the one its portal
+    // item publishes (#1497), and ArcGIS replaces the layer's legend element when that happens. The two
+    // elements carry the same label and value, so the list keeps this component and hands it the new
+    // element. It used to read its element once, on creation, and went on showing the first symbol:
+    // the Football micromobility legend showed Entry Routes as a 15-point bar, the service's flattened
+    // symbol, beside a map drawing a thin line with an arrowhead.
+    const entry = (src: string) =>
+      ({ type: 'symbol-table', infos: [{ label: 'Entry Routes', src }] }) as unknown as __esri.LegendElement;
+
+    fixture.componentRef.setInput('element', entry('service-symbol.png'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const shown = () => (fixture.nativeElement as HTMLElement).querySelector('img')?.getAttribute('src');
+
+    expect(shown()).toBe('service-symbol.png');
+
+    fixture.componentRef.setInput('element', entry('portal-symbol.png'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(shown()).toBe('portal-symbol.png');
   });
 });

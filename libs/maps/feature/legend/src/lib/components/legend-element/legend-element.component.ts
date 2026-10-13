@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy, inject, input } from '@angular/core';
 
 import { EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
 import { LayerLegendOverride } from '@tamu-gisc/common/types';
@@ -44,7 +44,7 @@ import esri = __esri;
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgStyle, ElementInsertDirective, AsyncPipe]
 })
-export class LegendElementComponent implements OnInit {
+export class LegendElementComponent implements OnChanges {
   private readonly moduleProvider = inject(EsriModuleProviderService);
   private readonly layerSourcesService = inject(LayerSourcesService);
 
@@ -125,7 +125,20 @@ export class LegendElementComponent implements OnInit {
     }
   }
 
-  public async ngOnInit(): Promise<void> {
+  /**
+   * Reads the element's symbols again whenever the element is replaced, not once on creation.
+   *
+   * ArcGIS replaces a layer's legend element when the layer's renderer changes, and a hosted layer's
+   * renderer changes shortly after it loads: it arrives with the symbol its service publishes and is
+   * then given the one its portal item publishes (#1497). The new element has the same label and value
+   * as the old, so the list above keeps this component and hands it the new element. Read once, the
+   * legend went on showing the service's symbol beside a map drawing the portal's (#1721).
+   */
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (!changes['element']) {
+      return;
+    }
+
     if (!this.element?.infos) {
       this.infos = of([]);
       return;
