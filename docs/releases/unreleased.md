@@ -15,6 +15,21 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### In 3D, the basemap panel says which basemaps it cannot show (dev only)
+
+On dev, with the map in 3D, the vector campus basemap could not be chosen again after another had
+been: clicking it did nothing ([#1740](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1740)). A 3D scene cannot draw that basemap, which is
+published in a state plane reference, and draws the raster campus basemap in its place; the panel went
+on offering the vector one as though it could.
+
+While the map is in 3D the panel now shows such a basemap greyed and marked "2D only", and marks the
+basemap that is actually on screen. Back in 2D it returns. It stops applying by itself when the vector
+tiles are republished in Web Mercator ([#1741](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1741)).
+
+| Before, on dev, in 3D | After |
+| --- | --- |
+| ![The panel in 3D marking the vector basemap as chosen](../screenshots/vector-basemap-in-3d/before-dev-3d-vector-offered.png) | ![The panel in 3D with the vector basemap greyed and marked 2D only](../screenshots/vector-basemap-in-3d/after-3d-vector-unavailable.png) |
+
 ### GIS Day: the 2026 VGI competition, the Monument Trail Challenge
 
 The VGI Competition pages still described 2025's Art Trail Challenge. This year's competition collects
@@ -139,10 +154,11 @@ photographs, so the grey placeholder in the "after" column is the local copy and
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** nothing for AggieMap beyond the [13 October release](2026-10-13.md) itself.
+**Currently on dev for testing:** the first row, once a build with it reaches dev.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Basemaps a 3D scene cannot show ([#1740](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1740)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), then the **2D** button beside All Maps | In 3D, **Aggieland vector** is greyed and says **2D only**, and **Aggieland raster, October 2026** is marked as chosen, which is what the map shows. Clicking the greyed one does nothing. Choose another basemap and it is still greyed. Click **3D** to go back: the vector basemap is back, marked, and can be chosen |
 | GIS Day: 2026 VGI competition page ([#1665](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1665)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions/vgi` and `/competitions/monuments` | The VGI page says "November 9-20, 2026" and "2026 Competition: Texas A&M University Monument Trail Challenge", with 2025's Art Trail Challenge first under Prior Competitions. "Read Event Details" opens the new page: two things to collect, one point each, winners Thursday November 19, University Architect logo, no broken images |
 | GIS Day: poster and presentation competition dates moved to 2026 ([#1662](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1662)) | Not on dev, for the same reason. Locally, `/competitions/posters` and `/competitions/presentation` | No 2025 date on either page. Posters: Tuesday November 17th, 2026, due Monday November 9th. Presentations: Tuesday November 17th and Wednesday November 18th, 2026 |
 | GIS Day: Aggie Map Design Competition removed ([#1661](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1661)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions` | The Competitions menu and page list VGI, Poster and Presentation only; `/competitions/aggie-map` goes to the home page |
@@ -285,6 +301,10 @@ the lock file with a clean `npm ci` before pushing (CLAUDE.md, [#1347](https://g
 - **Signage does not build from its current source** ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)).
 
 ### Waiting on someone else
+
+**Everything waiting on the GIS teams is in one list: [#1745](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1745).** The basemap republished in Web
+Mercator and with its tree cutoffs corrected, bus route data on a production server, routing, the
+symbology review and the rest, each with its issue and the AggieMap work that follows it.
 
 **Bus route stops are a data fix, not a code fix
 ([#1174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1174)).** Five
