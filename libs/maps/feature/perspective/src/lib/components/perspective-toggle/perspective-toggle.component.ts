@@ -46,13 +46,36 @@ export class PerspectiveToggleComponent implements OnInit {
   public hostClick() {
     const nextViewType = this.oppositeViewType();
 
-    this.makeView(nextViewType).subscribe((view) => {
+    forkJoin([this.makeView(nextViewType), this.ms.store.pipe(take(1))]).subscribe(([view, leaving]) => {
+      // Where the map is looking now, said in a way both kinds of view agree on: the point at the
+      // centre of the screen, the scale there, and which way is up. Not the outgoing view's viewpoint,
+      // which out of a tilted scene describes the camera (#1724).
+      const place = placeOf(leaving.view);
+
       this.removePerspectiveLayers();
 
-      this.ms.setView(view);
+      this.ms.setView(view, place);
       this.activeMode = nextViewType;
 
       this.addPerspectiveLayers();
+
+      if (view.type === '3d' && place) {
+        // A scene given a flat viewpoint looks straight down, which makes the 3D buildings
+        // indistinguishable from the 2D map. Tilt it, around the place: told only to tilt, the
+        // camera swings and the centre of the screen lands somewhere else - about 2.4 km south on
+        // the main map, and the map then came back to 2D still there.
+        view.when(() => {
+          view
+            .goTo(
+              { target: place.targetGeometry, scale: place.scale, heading: (360 - place.rotation) % 360, tilt: DEFAULT_3D_TILT },
+              { animate: false }
+            )
+            .catch(() => {
+              // `goTo` rejects when it is interrupted (e.g. the user toggles back to 2D
+              // mid-transition). This is expected and safe to ignore.
+            });
+        });
+      }
     });
   }
 
@@ -93,17 +116,6 @@ export class PerspectiveToggleComponent implements OnInit {
             });
 
             this.perspectives.threeD = view;
-
-            // A SceneView cloned from the 2D viewpoint starts looking straight down, which makes the
-            // newly loaded 3D buildings indistinguishable from the 2D map. Once the view is ready
-            // (after its container is attached in `setView`), tilt the camera so the buildings are
-            // clearly visible from an angle.
-            view.when(() => {
-              view.goTo({ tilt: DEFAULT_3D_TILT }).catch(() => {
-                // `goTo` rejects when the animation is interrupted (e.g. the user toggles back to 2D
-                // mid-transition). This is expected and safe to ignore.
-              });
-            });
 
             return view;
           } else {
@@ -157,9 +169,30 @@ export class PerspectiveToggleComponent implements OnInit {
 
 type PerspectiveType = '2D' | '3D';
 
+/** Where a view is looking, in terms a view of either kind can be given. */
+interface Place {
+  targetGeometry: esri.Point;
+  scale: number;
+  /** Degrees, as a 2D view counts them. A scene's heading runs the other way round. */
+  rotation: number;
+}
+
 /**
- * Camera tilt (in degrees) applied the first time the 3D perspective is activated. `0` is top-down;
- * higher values produce a more oblique view that highlights building heights. Because the SceneView
- * is cached for the lifetime of the component, this angle carries over to subsequent 3D activations.
+ * The place a view is looking at: the point at the centre of the screen, the scale there, and the
+ * rotation. `undefined` for a view that has not got that far, when there is nothing to carry.
+ */
+function placeOf(view: esri.MapView | esri.SceneView | undefined): Place | undefined {
+  if (!view?.center || !view.scale) {
+    return undefined;
+  }
+
+  const rotation = view.type === '3d' ? (360 - (view.camera?.heading ?? 0)) % 360 : (view.rotation ?? 0);
+
+  return { targetGeometry: view.center.clone(), scale: view.scale, rotation };
+}
+
+/**
+ * Camera tilt (in degrees) applied each time the 3D perspective is activated. `0` is top-down;
+ * higher values produce a more oblique view that highlights building heights.
  */
 const DEFAULT_3D_TILT = 45;
