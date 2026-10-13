@@ -49,7 +49,9 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
     }
   ],
   id: 'aggie_basemap',
-  title: 'Aggieland',
+  // Dated like the raster versions beside it in the dev gallery (#1582): the cache was published on
+  // 30 September 2026. Name it plain "Aggieland" when it becomes production's basemap.
+  title: 'Aggieland vector, September 2026',
   thumbnailUrl:
     'https://divops.tamu.edu/portal/sharing/rest/content/items/0786efd67d0a467e8da4d889b7364ddb/info/thumbnail/_7B6C3A79E6-2D18-4FB5-87C9-99192ACA9248_7D.png'
 };

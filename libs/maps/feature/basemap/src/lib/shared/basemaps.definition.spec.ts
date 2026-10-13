@@ -60,13 +60,14 @@ describe('campus basemap', () => {
 
     // Production: the one basemap it has always had, and nothing dated or development-only.
     expect(gallery(false)).toEqual([resolve(false)]);
+    expect(gallery(false).map((basemap) => basemap.title)).toEqual(['Aggieland']);
 
     const dev = gallery(true);
 
     // The map opens on the first entry, so it must be the one the view was built with.
     expect(dev[0]).toEqual(resolve(true));
     expect(dev.map((basemap) => basemap.title)).toEqual([
-      'Aggieland',
+      'Aggieland vector, September 2026',
       'Aggieland raster, October 2026',
       'Aggieland raster, June 2026',
       'Aggieland raster, May 2026'
