@@ -67,7 +67,8 @@ describe('LegendElementComponent', () => {
       infos: [{ label: 'Reserved', src: 'baseball-icon', value: 'reserved' }]
     } as unknown as __esri.LegendElement);
 
-    await component.ngOnInit();
+    // Setting the element is enough: the component reads it whenever it is replaced (#1721).
+    fixture.detectChanges();
 
     expect(component.showGroupHeader).toBe(false);
     expect(component.useGroupTitleLabel).toBe(true);
@@ -92,7 +93,8 @@ describe('LegendElementComponent', () => {
       ]
     } as unknown as __esri.LegendElement);
 
-    await component.ngOnInit();
+    // Setting the element is enough: the component reads it whenever it is replaced (#1721).
+    fixture.detectChanges();
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
