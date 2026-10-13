@@ -51,6 +51,34 @@ describe('campus basemap', () => {
     expect(urlsOf(resolve(true)).some((url) => url.includes(VECTOR_SERVICE))).toBe(true);
   });
 
+  it('offers production one campus basemap, and development every published version (#1582)', () => {
+    const gallery = (definitions as unknown as Record<string, unknown>)['aggiemapGalleryBasemaps'] as
+      ((isTesting: boolean) => Array<Basemap & { id: string; title: string }>) | undefined;
+    const resolve = (definitions as unknown as Record<string, (isTesting: boolean) => Basemap>)['aggiemapBasemap'];
+
+    expect(gallery).toBeInstanceOf(Function);
+
+    // Production: the one basemap it has always had, and nothing dated or development-only.
+    expect(gallery(false)).toEqual([resolve(false)]);
+
+    const dev = gallery(true);
+
+    // The map opens on the first entry, so it must be the one the view was built with.
+    expect(dev[0]).toEqual(resolve(true));
+    expect(dev.map((basemap) => basemap.title)).toEqual([
+      'Aggieland',
+      'Aggieland raster, October 2026',
+      'Aggieland raster, June 2026',
+      'Aggieland raster, May 2026'
+    ]);
+
+    // The gallery marks the active basemap, and restores a saved one, by id.
+    expect(new Set(dev.map((basemap) => basemap.id)).size).toBe(dev.length);
+
+    // The raster basemap production shows is among them, so it can be seen drawn before a release.
+    expect(urlsOf(dev[1])).toEqual(urlsOf(resolve(false)));
+  });
+
   it('is used only by views that let the basemap decide the spatial reference', () => {
     // The vector tile cache is EPSG:32139 and Esri does not reproject vector tiles, so a view that
     // pins its own spatial reference loads the basemap correctly and draws nothing. #1227 removed the
@@ -76,7 +104,7 @@ describe('campus basemap', () => {
         const text = fs.readFileSync(path.join(REPO_ROOT, file), 'utf8');
 
         return (
-          text.includes(VECTOR_SERVICE) || /\b(AggiemapBasemap|AggiemapVectorBasemap|AggiemapRasterBasemap)\b/.test(text)
+          text.includes(VECTOR_SERVICE) || /\b(AggiemapBasemap|AggiemapVectorBasemap|AggiemapRasterBasemap\w*)\b/.test(text)
         );
       });
 

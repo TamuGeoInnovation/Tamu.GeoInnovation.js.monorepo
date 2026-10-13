@@ -84,6 +84,54 @@ export function aggiemapBasemap(isTesting: boolean): BaseMapProperties {
   return isTesting ? AggiemapVectorBasemap : AggiemapRasterBasemap;
 }
 
+/** An earlier raster campus basemap, drawn exactly as the current one is. */
+const rasterLayer = (url: string) => ({ ...AggiemapRasterBasemap.baseLayers[0], url });
+
+/**
+ * The raster campus basemap production showed from June 2026 until the October one replaced it
+ * (#1695). Development only, in the gallery, for comparing versions (#1582).
+ */
+export const AggiemapRasterBasemapJune2026: BaseMapProperties = {
+  baseLayers: [rasterLayer('https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer')],
+  id: 'aggie_basemap_raster_2026_06',
+  title: 'Aggieland raster, June 2026',
+  thumbnailUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer/info/thumbnail'
+};
+
+/** The raster campus basemap of May 2026, still published. Development only, as above (#1582). */
+export const AggiemapRasterBasemapMay2026: BaseMapProperties = {
+  baseLayers: [rasterLayer('https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_05152026/MapServer')],
+  id: 'aggie_basemap_raster_2026_05',
+  title: 'Aggieland raster, May 2026',
+  thumbnailUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_05152026/MapServer/info/thumbnail'
+};
+
+/**
+ * The campus basemaps the gallery offers in this environment (#1582).
+ *
+ * Production offers one, the raster basemap, as `aggiemapBasemap()` gives it. Development opens on the
+ * vector tiles and could not show the raster basemap at all, so a new raster cache went to production
+ * without anyone having seen it drawn on dev (#1695). Development therefore also offers the raster
+ * basemap production shows, under its own id and dated, and the earlier versions still published, so
+ * they can be compared before one is chosen.
+ *
+ * The first entry is the one the map opens on, and is always `aggiemapBasemap()`.
+ *
+ * When a raster version is republished, date the current one here and add the one it replaces.
+ */
+export function aggiemapGalleryBasemaps(isTesting: boolean): BaseMapProperties[] {
+  if (!isTesting) {
+    return [aggiemapBasemap(isTesting)];
+  }
+
+  return [
+    aggiemapBasemap(isTesting),
+    { ...AggiemapRasterBasemap, id: 'aggie_basemap_raster_2026_10', title: 'Aggieland raster, October 2026' },
+    AggiemapRasterBasemapJune2026,
+    AggiemapRasterBasemapMay2026
+  ];
+}
+
 export const NearmapCSBasemap: BaseMapProperties = {
   baseLayers: [
     {
