@@ -87,7 +87,7 @@ minutes, with release scope and 6 workers. Production lists fewer maps than dev,
 | Notices and alerts | `campus-notifications.spec.ts`, `map-notice.spec.ts`, `code-maroon.spec.ts` | 16 | College Station notices stay off other campuses' maps; a map's notice shows and stays dismissed; the Code Maroon page reads its feed | [#1281](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1281), the 150th venue change ([#1193](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1193)), [#1304](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1304) |
 | Production gating | `directions.spec.ts`, `development-only.spec.ts` | 13 | Features still in development, such as directions, bus routes and the Aerial Imagery timeline, appear on dev and never on production, checked both ways | [#1003](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1003), [#1090](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1090), [#1229](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1229) |
 | Production services | `gis-hosts.spec.ts` | 15 | No map on a production environment may request a development GIS host. The rule is its own tested module, because a host pattern that quietly matches nothing reports green for the one thing it was added to catch | [#1483](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1483), filed on the way to linking the campus maps on production ([#1482](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1482)) |
-| Choosing what to run | `scope.spec.ts` | 9 | The rule that decides which part of the suite a change needs, so a one-map fix is not gated by all 436 tests. Tested because its failure is silent: it would run *fewer* tests than it should | [#1427](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1427) |
+| Choosing what to run | `scope.spec.ts` | 21 | The rule that picks the quick tier's tests from what a build changed, so a dev release is not gated by every map. Tested because its failure is silent: it would run *fewer* tests than it should | [#1427](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1427), [#1717](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1717) |
 | Build and runtime | `analytics.spec.ts`, `esri-runtime.spec.ts`, `build-banner.spec.ts` | 6 | Each site reports to its own Google Analytics; the maps run the intended ArcGIS version; the page says which build it is | [#1037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1037) (dev was reporting into production's analytics), [#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219), [#1306](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1306) |
 | Interaction | `bus.spec.ts`, `popup.spec.ts` | 27 | Every bus route draws its stops, one test per route (25 on dev; [#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473)); clicking a feature opens a popup with its data | [#1174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1174), [#1117](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1117) |
 | Map framing | `framing.spec.ts` | 71 | Every map, and every builder choice, opens at the zoom and center it opens at on production, compared with a baseline recorded from production: 412 routes, plus one report of the routes only one side has. On dev, 7 maps production does not list are reported and skipped | [#1380](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1380), after event maps opened at the default zoom on dev with every layer drawn ([#1379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1379)) |
@@ -147,6 +147,17 @@ or both, for example straight after a deploy.
 **From a workstation**, [`run-local.sh`](../test/smoke/aggiemap/run-local.sh) runs the identical suite
 with the identical settings, against dev, production, or a developer's own copy of the site. **It is
 how every release is checked before it goes to production** (see [People](#people-the-team-tests-on-dev)).
+
+**The suite is run at three sizes** ([#1717](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1717)):
+
+| Tier | What it runs | When | What it decides |
+| --- | --- | --- | --- |
+| Quick | A fixed core, plus the tests for what the build changed | After every build reaches the test site, in six to ten minutes | Whether the build is tagged as checked on the test site |
+| Release | Every map once | Once, on the build going to production, in about thirty minutes | Whether that build may go to production |
+| Full | Every map and every saved view, on both sites | Nightly, on GitHub | Nothing about a release. It notices a map that broke with no release, and opens an issue |
+
+The quick tier samples: it loads the maps a build touched and three it did not. A map nobody touched
+is checked by the release tier before production and by the nightly run after it.
 
 GIS Day has a smaller smoke check of its own, which loads txgisday.org every six hours.
 
