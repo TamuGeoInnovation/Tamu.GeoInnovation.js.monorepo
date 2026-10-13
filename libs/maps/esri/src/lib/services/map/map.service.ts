@@ -193,8 +193,12 @@ export class EsriMapService {
    * copied, which is right between two views of the same kind and wrong out of a tilted 3D scene: that
    * viewpoint describes the scene's camera, and a 2D view given it centres on where the camera was
    * standing, not on what it was looking at (#1724). A caller that changes perspective says where.
+   *
+   * `between` runs once the outgoing view has let go of the map and before the incoming one takes
+   * it: the moment to change something neither view could have shown the other's version of, such
+   * as a basemap a 3D scene cannot draw (#1735).
    */
-  public setView(view: esri.SceneView | esri.MapView, place?: esri.ViewpointProperties) {
+  public setView(view: esri.SceneView | esri.MapView, place?: esri.ViewpointProperties, between?: (map: esri.Map) => void) {
     this.destroyViewClickEventHandler();
 
     // Carry the current camera/extent across the swap. A reused view otherwise re-attaches with
@@ -233,6 +237,7 @@ export class EsriMapService {
     // swap), restore the camera, and attach it to its fresh container.
     this._modules.view = view;
     if (this._modules.map) {
+      between?.(this._modules.map);
       this._modules.view.map = this._modules.map;
     }
     if (viewpoint) {
