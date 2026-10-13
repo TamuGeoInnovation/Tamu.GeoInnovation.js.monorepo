@@ -17,6 +17,28 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### Dev can show what production will (dev only)
+
+Dev differs from production on purpose: it turns on features that are not released, and it draws from
+the development GIS server. So dev could not show what a visitor to production would get, and on
+12 October a new basemap went to production without having been seen drawn on dev
+([#1722](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1722)).
+
+On a development host, every page now has a small **View as production** control at the bottom. One
+click reloads the page as production shows it: development-only features off, and production's GIS
+services. A yellow **Viewing as production** banner then stays on every page of that browser tab, with
+**Back to dev**. The All Maps page has a section for it as well, and any address works with
+`?as=production` added, so a link can be sent to someone.
+
+It lasts for the tab, because moving between maps drops what is in the address. It can only turn
+development behaviour off: on production the control is not there and the parameter does nothing.
+
+| On dev | Switched on |
+| --- | --- |
+| ![The main map on dev with a small View as production control at the bottom](../screenshots/dev-as-production/before-dev.png) | ![The same map with a yellow Viewing as production banner, the development tabs gone and one Aggieland basemap](../screenshots/dev-as-production/after-as-production.png) |
+
+![The All Maps page on dev with a View as Production section](../screenshots/dev-as-production/all-maps-section.png)
+
 ### A legend shows the symbol its map draws
 
 On some visits a legend showed one symbol while the map drew another. On the Football Transportation map
@@ -186,6 +208,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| View as production ([#1722](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1722)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), and [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | A small white **View as production** control at the bottom of every page. Click it: the page reloads with a yellow **Viewing as production** banner, the Directions, Bus Routes and Experiments tabs are gone, and the basemap panel lists one Aggieland. Open another map from All Maps: the banner is still there. **Back to dev** returns to the same page with everything back. All Maps has a **View as Production** section at the bottom while the switch is off. On [production](https://aggiemap.tamu.edu/map/d?as=production) nothing changes and there is no control |
 | Legend symbols match the map ([#1721](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1721)) | [Football Transportation, Micromobility, Entry](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry) | In the legend, **Entry Routes is a thin purple line with an arrowhead**, as on the map, not a wide purple bar. Reload several times: it is the same every time. It was intermittent before, so one good load proves little; the suite forces the bad order and checks it |
 | Dated raster campus basemaps in the gallery ([#1582](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1582)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings) | First **Aggieland vector, September 2026**, then **Aggieland raster, October 2026**, **June 2026** and **May 2026**, each with a thumbnail. Choose October: the map redraws on the raster basemap in the same place, with the buildings and labels on top, and zooming all the way in never shows white. Choose the vector one again: it comes back. Reload: the map opens on the vector one. [Production](https://aggiemap.tamu.edu/map/d/settings) lists a single Aggieland |
 | GIS Day: 2026 VGI competition page ([#1665](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1665)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions/vgi` and `/competitions/monuments` | The VGI page says "November 9-20, 2026" and "2026 Competition: Texas A&M University Monument Trail Challenge", with 2025's Art Trail Challenge first under Prior Competitions. "Read Event Details" opens the new page: two things to collect, one point each, winners Thursday November 19, University Architect logo, no broken images |

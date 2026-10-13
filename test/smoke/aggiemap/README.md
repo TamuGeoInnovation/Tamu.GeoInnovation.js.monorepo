@@ -106,6 +106,14 @@ Anything after the environment and tier goes to `playwright test`, for example `
 needs only Docker and bash (Git Bash on Windows). The first run downloads the Playwright image, about
 2 GB.
 
+### Seeing dev as production
+
+`?as=production` on any address of a development host makes it behave as production for that browser
+tab: development-only features off, and production's GIS services (#1722). `?as=development` turns it
+off. Every page of a development host carries a control for it. This is for looking by hand; the suite
+checks it in `development-only.spec.ts`, and still runs production's own expectations against
+production and against `local-production`.
+
 ### The three tiers
 
 The suite is run at one of three sizes. They answer different questions, and running a bigger one than

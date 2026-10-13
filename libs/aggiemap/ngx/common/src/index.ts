@@ -1,6 +1,9 @@
 // Web GIS resource endpoints
 export * from './lib/connections';
 
+// The switch that makes a development host behave as production (#1722)
+export * from './lib/acting-as-production';
+
 // // Dictionary of map layer definitions
 // export * from './lib/definitions';
 
