@@ -41,7 +41,7 @@ env_name="${1:-}"
 case "$env_name" in
   development | production | local | local-production) shift ;;
   *)
-    echo "usage: $0 development|production|local|local-production [playwright args...]" >&2
+    echo "usage: $0 development|production|local|local-production [quick|release|full] [playwright args...]" >&2
     exit 2
     ;;
 esac
@@ -76,10 +76,10 @@ fi
 volume=tamu-js-smoke-nm
 
 tier=release
-case "${2:-}" in
+case "${1:-}" in
   quick | release | full)
-    tier=$2
-    set -- "$1" "${@:3}"
+    tier=$1
+    shift
     ;;
 esac
 
