@@ -80,6 +80,31 @@ describe('campus basemap', () => {
     expect(urlsOf(dev[1])).toEqual(urlsOf(resolve(false)));
   });
 
+  it('turns every id the gallery can save back into a basemap (#1726)', () => {
+    const exported = definitions as unknown as Record<string, unknown>;
+    const forSavedId = exported['basemapForSavedId'] as (id: string, isTesting: boolean) => Basemap | string;
+    const gallery = exported['aggiemapGalleryBasemaps'] as (isTesting: boolean) => Array<Basemap & { id: string }>;
+    const resolve = exported['aggiemapBasemap'] as (isTesting: boolean) => Basemap;
+
+    // Each campus basemap development offers comes back as itself, never as a bare id: ArcGIS knows
+    // none of these names, and a map handed one draws no basemap at all.
+    for (const basemap of gallery(true)) {
+      expect(forSavedId(basemap.id, true)).toEqual(basemap);
+    }
+
+    // A dated basemap saved on development and opened on production, which does not offer it.
+    for (const basemap of gallery(true)) {
+      expect(forSavedId(basemap.id, false)).toEqual(resolve(false));
+    }
+
+    // A campus id nobody offers any more.
+    expect(forSavedId('aggie_basemap_raster_2024_01', true)).toEqual(resolve(true));
+
+    // ArcGIS's own basemaps are named, not defined here.
+    expect(forSavedId('topo-vector', true)).toBe('topo-vector');
+    expect(forSavedId('streets-vector', false)).toBe('streets-vector');
+  });
+
   it('is used only by views that let the basemap decide the spatial reference', () => {
     // The vector tile cache is EPSG:32139 and Esri does not reproject vector tiles, so a view that
     // pins its own spatial reference loads the basemap correctly and draws nothing. #1227 removed the
@@ -92,7 +117,8 @@ describe('campus basemap', () => {
       // The definition file is where the resolver lives, and the raster basemap declares its own
       // Web Mercator reference there, correctly.
       .filter((file) => path.normalize(file) !== DEFINITION)
-      .filter((file) => fs.readFileSync(path.join(REPO_ROOT, file), 'utf8').includes('aggiemapBasemap('))
+      // Either way in: the resolver itself, or a saved choice turned back into a basemap (#1726).
+      .filter((file) => /aggiemapBasemap\(|basemapForSavedId\(/.test(fs.readFileSync(path.join(REPO_ROOT, file), 'utf8')))
       .filter((file) => /spatialReference:\s*\{[^}]*wkid:\s*\d+/.test(fs.readFileSync(path.join(REPO_ROOT, file), 'utf8')));
 
     expect(offenders).toEqual([]);

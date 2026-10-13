@@ -14,7 +14,7 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import {
-  aggiemapBasemap,
+  basemapForSavedId,
   AGGIEMAP_BASEMAP_MAX_SCALE,
   BasemapGalleryService,
   NearmapDateSliderComponent
@@ -210,9 +210,8 @@ export class MapComponent implements OnInit, OnDestroy {
         : isSatelliteCampus
           ? 'topo-vector'
           : settings && settings.basemap
-            ? settings.basemap && settings.basemap !== 'aggie_basemap'
-              ? settings.basemap
-              : aggiemapBasemap(this.ts.isTesting)
+            ? // Not the saved id itself: a campus basemap's id means nothing to ArcGIS (#1726).
+              basemapForSavedId(settings.basemap, this.ts.isTesting)
             : 'topo-vector'
     };
 
