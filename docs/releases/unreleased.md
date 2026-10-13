@@ -17,6 +17,21 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### Switching between 2D and 3D keeps the map where it was
+
+Switching the main map to 3D moved it about 2.4 km south, and switching back to 2D left it there, so a
+visitor looking at the middle of campus ended up over the fields beyond George Bush Drive
+([#1724](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1724)).
+
+The 3D view was tilted without being told what to tilt around, so its camera swung and the centre of
+the screen landed somewhere else; the 2D view then took the tilted scene's position as its own. The
+switch now carries the place itself - the point at the centre of the screen, the scale there and the
+rotation - and the 3D view tilts around it.
+
+| Before: back in 2D after a look at 3D | After |
+| --- | --- |
+| ![The main map over the fields south of campus after switching to 3D and back](../screenshots/2d-3d-switch/before-production-3-back-to-2d.png) | ![The main map where it started after switching to 3D and back](../screenshots/2d-3d-switch/after-local-as-production-3-back-to-2d.png) |
+
 ### The basemap panel's pictures are there when it opens
 
 Each campus basemap's picture in the basemap panel was fetched from its GIS service on every map
@@ -221,6 +236,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| 2D and 3D keep the place ([#1724](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1724)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), then the **2D** button beside All Maps | Note what is in the middle of the map. Click **2D**: the map tilts into 3D with the same place in the middle. Click **3D**: it comes back flat, in the same place, at the same zoom. Pan or zoom in 3D first and come back: 2D shows where 3D was looking |
 | Basemap pictures ship with the app ([#1730](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1730)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), and the same on [an event map](https://dev.aggiemap.tamu.edu/parking/visitor-parking/map/d/settings) | Every campus basemap row and Aerial Imagery has its picture as soon as the panel is drawn, not one after another. Reload: still at once. The Esri basemaps' pictures still come from Esri |
 | View as production ([#1722](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1722)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), and [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | A small white **View as production** control at the bottom of every page. Click it: the page reloads with a yellow **Viewing as production** banner, the Directions, Bus Routes and Experiments tabs are gone, and the basemap panel lists one Aggieland. Open another map from All Maps: the banner is still there. **Back to dev** returns to the same page with everything back. All Maps has a **View as Production** section at the bottom while the switch is off. On [production](https://aggiemap.tamu.edu/map/d?as=production) nothing changes and there is no control |
 | Legend symbols match the map ([#1721](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1721)) | [Football Transportation, Micromobility, Entry](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry) | In the legend, **Entry Routes is a thin purple line with an arrowhead**, as on the map, not a wide purple bar. Reload several times: it is the same every time. It was intermittent before, so one good load proves little; the suite forces the bad order and checks it |

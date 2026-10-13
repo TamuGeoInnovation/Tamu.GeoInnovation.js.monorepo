@@ -65,6 +65,7 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
   },
   { paths: /^libs\/maps\/feature\/trip-planner\//, specs: ['directions.spec.ts'] },
   { paths: /^libs\/maps\/feature\/legend\//, specs: ['legend.spec.ts'] },
+  { paths: /^libs\/maps\/feature\/perspective\//, specs: ['perspective.spec.ts'] },
   {
     paths: /^libs\/aggiemap\/ngx\/common\/src\/lib\/(connections|search-sources)\.ts$/,
     specs: ['services.spec.ts', 'search.spec.ts', 'search-sources.spec.ts']
