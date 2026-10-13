@@ -9,9 +9,10 @@
   @if ((gallery | async); as gallery) {
   <div class="flex flex-column">
     @for (basemap of gallery.items; track basemap) {
-    <div class="basemap flex flex-row align-center" [ngClass]="{active: gallery.activeBasemap?.id === basemap.basemap.id}" (click)="selectBasemap(basemap)">
+    <div class="basemap flex flex-row align-center" [ngClass]="{active: gallery.activeBasemap?.id === basemap.basemap.id, unavailable: unavailable(basemap)}" [attr.aria-disabled]="unavailable(basemap) ? 'true' : null" [attr.title]="unavailable(basemap) ? 'Not available in 3D. Switch to 2D to use this basemap.' : null" (click)="selectBasemap(basemap)">
       <img [src]="basemap.basemap.thumbnailUrl" alt="Basemap thumbnail" />
-      <p class="basemap-title">{{ basemap.basemap.title }}</p>
+      <!-- The title's text starts the element, with nothing before it: the smoke suite reads it as written. -->
+      <p class="basemap-title">{{ basemap.basemap.title }}@if (unavailable(basemap)) {<span class="basemap-note">2D only</span>}</p>
       @if (loadingBasemapId === basemap.basemap.id) {
       <div class="spinning-loader" aria-label="Loading basemap"></div>
       }

@@ -45,6 +45,12 @@ export class BasemapGalleryService {
    */
   private basemapAfterScene: esri.Basemap | undefined;
 
+  /** Whether the map is showing a 3D scene now. */
+  private readonly inScene = signal(false);
+
+  /** The ids of the basemaps the panel offers that a 3D scene cannot draw, found as each one loads. */
+  private readonly notForScenes = signal<ReadonlySet<string>>(new Set());
+
   /**
    * Which sublayers each Nearmap layer showed when it loaded, so "Latest" can put them back.
    *
@@ -109,6 +115,8 @@ export class BasemapGalleryService {
           ],
           MapServiceInstance
         ]) => {
+          this.inScene.set(instances.view?.type === '3d');
+
           // On dev the Aggieland basemap is published in EPSG:32139 and the rest of the gallery is in Web Mercator.
           // Switching between them changes the view's spatial reference, which the API supports from 4.23 -
           // but only with the projection engine loaded. Without it the view's center does not survive the
@@ -130,6 +138,20 @@ export class BasemapGalleryService {
 
                 return new Basemap({ ...campusBasemap, baseLayers: [baseLayer] });
               });
+
+              // Which of them a 3D scene cannot draw is known only once each has read its service.
+              for (const basemap of campusBasemaps) {
+                const baseLayer = basemap.baseLayers.getItemAt(0);
+
+                baseLayer
+                  ?.load()
+                  .then(() => {
+                    if (!drawsInAScene((baseLayer as unknown as { spatialReference?: esri.SpatialReference }).spatialReference)) {
+                      this.notForScenes.update((ids) => new Set([...ids, basemap.id]));
+                    }
+                  })
+                  .catch(() => undefined);
+              }
 
               const nearmapCSBasemap = this.makeNearmapBasemap(Basemap, WMSLayer);
 
@@ -189,10 +211,10 @@ export class BasemapGalleryService {
       if (drawsInAScene(target)) {
         this.basemapAfterScene = undefined;
         instance.map.basemap = basemap;
-      } else {
-        this.basemapAfterScene = basemap;
       }
 
+      // Otherwise nothing: the basemap panel shows such a basemap as unavailable while the map is in
+      // 3D and does not offer it (#1740), so this is reached only by something that did not ask first.
       return;
     }
 
@@ -232,16 +254,39 @@ export class BasemapGalleryService {
       return;
     }
 
+    this.basemapAfterScene = basemap;
+    instance.map.basemap = await this.standIn();
+  }
+
+  /**
+   * The basemap a scene shows in place of one it cannot draw: the raster campus basemap, which every
+   * environment has in Web Mercator. Taken from the list the panel is built from, under its own id,
+   * so the panel marks it as the basemap on screen, which it is: the first campus basemap offered
+   * here that is not vector tiles, or production's where none is.
+   */
+  private async standIn(): Promise<esri.Basemap> {
     const [Basemap, TileLayer] = (await this.mp.require(['Basemap', 'TileLayer'])) as [
       esri.BasemapConstructor,
       esri.TileLayerConstructor
     ];
-    // What production shows: the raster campus basemap.
-    const raster = aggiemapBasemap(false);
+    const raster =
+      aggiemapGalleryBasemaps(this.ts.isTesting).find((basemap) => basemap.baseLayers[0].type !== 'VectorTileLayer') ??
+      aggiemapBasemap(false);
     const { type, ...layer } = JSON.parse(JSON.stringify(raster.baseLayers[0]));
 
-    this.basemapAfterScene = basemap;
-    instance.map.basemap = new Basemap({ ...raster, baseLayers: [new TileLayer({ ...layer })] });
+    return new Basemap({ ...raster, baseLayers: [new TileLayer({ ...layer })] });
+  }
+
+  /**
+   * Whether the basemap panel should show a basemap as unavailable: the map is in 3D, and this is a
+   * basemap a scene cannot draw (#1740).
+   *
+   * Before this, choosing the campus vector tiles in 3D did nothing a visitor could see - the scene
+   * cannot draw them, so the choice was kept for 2D - and the basemap simply looked broken. It is
+   * now said outright, and stops applying when the vector tiles are published in Web Mercator.
+   */
+  public unavailable(basemap: esri.Basemap): boolean {
+    return this.inScene() && this.notForScenes().has(basemap.id);
   }
 
   /**

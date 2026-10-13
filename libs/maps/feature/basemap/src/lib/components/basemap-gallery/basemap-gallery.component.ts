@@ -43,7 +43,16 @@ export class BasemapGalleryComponent implements OnInit {
     this.isMobile = this.rs.isMobile;
   }
 
+  /** Whether a basemap cannot be shown as the map is now: one a 3D scene cannot draw, in 3D (#1740). */
+  public unavailable(item: esri.BasemapGalleryItem): boolean {
+    return this.bs.unavailable(item.basemap);
+  }
+
   public async selectBasemap(event: esri.BasemapGalleryItem) {
+    if (this.unavailable(event)) {
+      return;
+    }
+
     this.loadingBasemapId = event.basemap.id;
 
     this.store.setStorageObjectKeyValue({
