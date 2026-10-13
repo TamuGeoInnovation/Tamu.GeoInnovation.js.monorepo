@@ -17,6 +17,14 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### The basemap panel's pictures are there when it opens
+
+Each campus basemap's picture in the basemap panel was fetched from its GIS service on every map
+load, 133 KB at a time and never kept, so on a slower connection the rows filled in one after another.
+The application now ships one small picture for the campus basemaps and uses it for all of them, and
+serves Aerial Imagery's from the same place ([#1730](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1730)). Nothing looks different once it
+has loaded; it is there sooner.
+
 ### Dev can show what production will (dev only)
 
 Dev differs from production on purpose: it turns on features that are not released, and it draws from
@@ -213,6 +221,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Basemap pictures ship with the app ([#1730](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1730)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), and the same on [an event map](https://dev.aggiemap.tamu.edu/parking/visitor-parking/map/d/settings) | Every campus basemap row and Aerial Imagery has its picture as soon as the panel is drawn, not one after another. Reload: still at once. The Esri basemaps' pictures still come from Esri |
 | View as production ([#1722](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1722)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), and [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | A small white **View as production** control at the bottom of every page. Click it: the page reloads with a yellow **Viewing as production** banner, the Directions, Bus Routes and Experiments tabs are gone, and the basemap panel lists one Aggieland. Open another map from All Maps: the banner is still there. **Back to dev** returns to the same page with everything back. All Maps has a **View as Production** section at the bottom while the switch is off. On [production](https://aggiemap.tamu.edu/map/d?as=production) nothing changes and there is no control |
 | Legend symbols match the map ([#1721](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1721)) | [Football Transportation, Micromobility, Entry](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry) | In the legend, **Entry Routes is a thin purple line with an arrowhead**, as on the map, not a wide purple bar. Reload several times: it is the same every time. It was intermittent before, so one good load proves little; the suite forces the bad order and checks it |
 | Dated raster campus basemaps in the gallery ([#1582](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1582)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings) | First **Aggieland vector, September 2026**, then **Aggieland raster, October 2026**, **June 2026** and **May 2026**, each with a thumbnail. Choose October: the map redraws on the raster basemap in the same place, with the buildings and labels on top, and zooming all the way in never shows white. Choose the vector one again: it comes back. Reload: the map opens on the vector one. **Then, with a dated one still chosen, open [Outdoor Track Parking](https://dev.aggiemap.tamu.edu/parking/outdoor-track-parking) and [Football Transportation](https://dev.aggiemap.tamu.edu/events/gameday-parking): each draws on that basemap, framed on its own lots, not white ([#1726](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1726)).** [Production](https://aggiemap.tamu.edu/map/d/settings) lists a single Aggieland |

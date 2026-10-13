@@ -105,6 +105,21 @@ describe('campus basemap', () => {
     expect(forSavedId('streets-vector', false)).toBe('streets-vector');
   });
 
+  it('draws every basemap it defines from a picture shipped with the application (#1730)', () => {
+    // A thumbnail named on a GIS service or a portal is fetched again on every map load, and the
+    // panel fills in one row at a time. Each must be a file under libs/assets, which every build ships.
+    const defined = Object.values(definitions as unknown as Record<string, unknown>).filter(
+      (value): value is { thumbnailUrl: string } => typeof (value as { thumbnailUrl?: unknown })?.thumbnailUrl === 'string'
+    );
+
+    expect(defined.length).toBeGreaterThan(3);
+
+    for (const basemap of defined) {
+      expect(basemap.thumbnailUrl).toMatch(/^\/assets\/images\/basemap_thumbnails\/[a-z_]+\.png$/);
+      expect(fs.existsSync(path.join(REPO_ROOT, 'libs', basemap.thumbnailUrl))).toBe(true);
+    }
+  });
+
   it('is used only by views that let the basemap decide the spatial reference', () => {
     // The vector tile cache is EPSG:32139 and Esri does not reproject vector tiles, so a view that
     // pins its own spatial reference loads the basemap correctly and draws nothing. #1227 removed the

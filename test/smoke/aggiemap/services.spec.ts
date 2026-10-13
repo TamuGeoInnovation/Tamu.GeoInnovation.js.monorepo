@@ -172,13 +172,17 @@ const basemaps = basemapServices();
  */
 const basemapRoots = [...new Map(basemaps.map(([constant, url]) => [serviceRoot(url), constant])).entries()];
 
-/** The URLs that are not a service root: the thumbnails. */
-const basemapResources = basemaps.filter(([, url]) => url !== serviceRoot(url));
+/**
+ * The pictures the basemap panel shows, which ship with the application (#1730). They used to be
+ * named on the services themselves and were checked there.
+ */
+const basemapThumbnails = [...new Set([...BASEMAP_DEFINITION.matchAll(/'(\/assets\/images\/basemap_thumbnails\/[^']+)'/g)].map((match) => match[1]))];
 
 test.describe('campus basemap services', () => {
   test('the basemap definitions yield services to check', () => {
     // As above: guards against the regex or the file's shape changing and emptying this quietly.
     expect(basemapRoots.length, 'no service URLs were read from basemaps.definition.ts').toBeGreaterThan(1);
+    expect(basemapThumbnails.length, 'no thumbnails were read from basemaps.definition.ts').toBeGreaterThan(1);
   });
 
   for (const [root, constant] of basemapRoots) {
@@ -192,14 +196,14 @@ test.describe('campus basemap services', () => {
     });
   }
 
-  for (const [constant, url] of basemapResources) {
-    test(`${constant}: ${url.split('/MapServer/')[1] ?? 'sub-resource'} is an image`, async ({ request }) => {
-      // The gallery's thumbnail. Broken, it leaves a blank tile in the basemap picker that nobody
-      // would report.
-      const response = await request.get(url, { timeout: 30_000, failOnStatusCode: false });
+  for (const thumbnail of basemapThumbnails) {
+    test(`${thumbnail} is served with the application`, async ({ request, baseURL }) => {
+      // The basemap panel's pictures ship with the build (#1730). Broken, one leaves a blank tile in
+      // the panel that nobody would report.
+      const response = await request.get(`${baseURL}${thumbnail}`, { timeout: 30_000, failOnStatusCode: false });
 
-      expect(response.status(), `${constant}: ${url} did not return 200`).toBe(200);
-      expect(response.headers()['content-type'] ?? '', `${constant}: ${url} is not an image`).toContain('image/');
+      expect(response.status(), `${thumbnail} did not return 200`).toBe(200);
+      expect(response.headers()['content-type'] ?? '', `${thumbnail} is not an image`).toContain('image/');
     });
   }
 
