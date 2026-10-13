@@ -134,6 +134,30 @@ export function aggiemapGalleryBasemaps(isTesting: boolean): BaseMapProperties[]
   ];
 }
 
+/**
+ * What a saved basemap choice means in this environment (#1726).
+ *
+ * The gallery saves the id of the basemap a visitor chose, and a map that restores it has to turn the
+ * id back into a basemap. A campus basemap's id means nothing to ArcGIS: handed over as it is, the map
+ * gets no basemap at all, and with it no spatial reference and no zoom levels. So:
+ *
+ * - a campus basemap this environment offers is returned as its definition;
+ * - a campus basemap it does not offer falls back to the environment's own campus basemap. That is a
+ *   dated basemap saved on development and then opened on production, or an id retired since;
+ * - anything else is one of ArcGIS's own basemap names and is returned unchanged.
+ *
+ * Every campus id starts with the campus basemap's own, which is what marks one that is no longer offered.
+ */
+export function basemapForSavedId(id: string, isTesting: boolean): BaseMapProperties | string {
+  const offered = aggiemapGalleryBasemaps(isTesting).find((basemap) => basemap.id === id);
+
+  if (offered) {
+    return offered;
+  }
+
+  return id.startsWith(AggiemapRasterBasemap.id) ? aggiemapBasemap(isTesting) : id;
+}
+
 export const NearmapCSBasemap: BaseMapProperties = {
   baseLayers: [
     {
