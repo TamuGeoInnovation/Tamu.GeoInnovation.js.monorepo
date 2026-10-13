@@ -154,4 +154,52 @@ test.describe('2D and 3D', () => {
     expect(back.zoom, 'coming back to 2D changed the zoom').toBe(flat.zoom);
     await expect(page.locator('.basemap.active .basemap-title')).toHaveText(campus[campus.length - 1], { timeout: 60_000 });
   });
+
+  /**
+   * In 3D, a basemap the scene cannot draw can still be chosen (#1740).
+   *
+   * The campus vector tiles are in EPSG:32139 and a scene is a Web Mercator globe, so in 3D the
+   * raster campus basemap stands in for them. Chosen on the way into 3D that worked; chosen again
+   * while already in 3D, after another basemap, the click did nothing at all - the panel went on
+   * marking the other basemap, and to the visitor the vector one could not be selected.
+   *
+   * Needs two campus basemaps, so it runs where the panel offers more than one: a development host.
+   */
+  test('in 3D, the first campus basemap can be chosen again after choosing another', async ({ page }) => {
+    test.setTimeout(600_000);
+    await blockAnalytics(page);
+    await page.goto(`${MAP}/settings`);
+    await waitForSettledFraming(page, `${MAP} as loaded`);
+
+    const campus = (await page.locator('.basemap-title').allTextContents()).filter((title) => title.startsWith('Aggieland'));
+
+    test.skip(campus.length < 2, 'this environment offers one campus basemap, so there is no other to come back from');
+
+    const [first, other] = campus;
+    const toggle = page.locator(TOGGLE).first();
+    const chosen = page.locator('.basemap.active .basemap-title');
+    const reference = () =>
+      page.evaluate(async () => {
+        const probe = (window as unknown as Record<string, { snapshot(): Promise<{ spatialReference: number | null }> }>)['__tamuGiscMapProbe'];
+
+        return (await probe.snapshot()).spatialReference;
+      });
+
+    await expect(chosen, `the map did not open on ${first}`).toHaveText(first, { timeout: 60_000 });
+
+    await toggle.click();
+    await expect(toggle).toHaveText('3D', { timeout: 60_000 });
+
+    await page.locator('.basemap', { hasText: other }).first().click();
+    await expect(chosen, `${other} could not be chosen in 3D`).toHaveText(other, { timeout: 60_000 });
+
+    await page.locator('.basemap', { hasText: first }).first().click();
+    await expect(chosen, `${first} could not be chosen again in 3D after ${other}`).toHaveText(first, { timeout: 60_000 });
+    expect([102100, 3857], 'choosing it moved the scene out of Web Mercator').toContain(await reference());
+
+    // And 2D then shows that basemap itself, not its stand-in: the view is in the basemap's own reference.
+    await toggle.click();
+    await expect(toggle).toHaveText('2D', { timeout: 60_000 });
+    await expect(chosen, `2D did not come back on ${first}`).toHaveText(first, { timeout: 60_000 });
+  });
 });
