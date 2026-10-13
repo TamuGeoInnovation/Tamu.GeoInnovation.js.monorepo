@@ -17,6 +17,30 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### A legend shows the symbol its map draws
+
+On some visits a legend showed one symbol while the map drew another. On the Football Transportation map
+for Micromobility, Entry, the legend's Entry Routes was a wide purple bar beside a map drawing thin
+purple lines with arrowheads ([#1721](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1721)).
+
+A layer loads with the symbol its service publishes and is then given the one its portal item
+publishes, which is the one it was authored with ([#1497](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1497), on production since
+6 October). The legend kept whichever it drew first. Usually the portal's answer was in before the
+legend was drawn; when it was not, the legend was left showing the service's flattened version. It
+was not one map or one layer: every hosted layer on every map could do it, and how wrong it looked
+depended on how far the two symbols differ. Entry Routes is the worst case, because its service turns a
+1.95-point line with a 15-point arrowhead into a 15-point line.
+
+The legend now redraws a symbol whenever its layer's symbol is replaced.
+
+| Before | After |
+| --- | --- |
+| ![The legend with Entry Routes as a wide purple bar, a larger pin and a grey No Ride Zone](../screenshots/legend-line-symbols/before-production-symbology-arrives-late.png) | ![The legend with Entry Routes as a thin purple arrow, as the map draws it](../screenshots/legend-line-symbols/after-local-symbology-arrives-late.png) |
+
+Both were taken with the portal's answer held back for 20 seconds, so the legend was drawn first: the
+left on production, the right on a local server with the fix. All five entries differ, not only the
+routes.
+
 ### Every published campus basemap, in the gallery on dev (dev only)
 
 Dev opens on the vector tile campus basemap, which production does not have yet
@@ -162,6 +186,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Legend symbols match the map ([#1721](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1721)) | [Football Transportation, Micromobility, Entry](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry) | In the legend, **Entry Routes is a thin purple line with an arrowhead**, as on the map, not a wide purple bar. Reload several times: it is the same every time. It was intermittent before, so one good load proves little; the suite forces the bad order and checks it |
 | Dated raster campus basemaps in the gallery ([#1582](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1582)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings) | First **Aggieland vector, September 2026**, then **Aggieland raster, October 2026**, **June 2026** and **May 2026**, each with a thumbnail. Choose October: the map redraws on the raster basemap in the same place, with the buildings and labels on top, and zooming all the way in never shows white. Choose the vector one again: it comes back. Reload: the map opens on the vector one. [Production](https://aggiemap.tamu.edu/map/d/settings) lists a single Aggieland |
 | GIS Day: 2026 VGI competition page ([#1665](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1665)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions/vgi` and `/competitions/monuments` | The VGI page says "November 9-20, 2026" and "2026 Competition: Texas A&M University Monument Trail Challenge", with 2025's Art Trail Challenge first under Prior Competitions. "Read Event Details" opens the new page: two things to collect, one point each, winners Thursday November 19, University Architect logo, no broken images |
 | GIS Day: poster and presentation competition dates moved to 2026 ([#1662](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1662)) | Not on dev, for the same reason. Locally, `/competitions/posters` and `/competitions/presentation` | No 2025 date on either page. Posters: Tuesday November 17th, 2026, due Monday November 9th. Presentations: Tuesday November 17th and Wednesday November 18th, 2026 |
