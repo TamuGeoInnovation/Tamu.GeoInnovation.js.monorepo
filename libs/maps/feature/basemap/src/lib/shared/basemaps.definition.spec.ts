@@ -105,6 +105,17 @@ describe('campus basemap', () => {
     expect(forSavedId('streets-vector', false)).toBe('streets-vector');
   });
 
+  it('turns a saved Aerial Imagery choice back into the Nearmap basemap, on every environment (#1692)', () => {
+    const exported = definitions as unknown as Record<string, unknown>;
+    const forSavedId = exported['basemapForSavedId'] as (id: string, isTesting: boolean) => Basemap | string;
+    const nearmap = exported['NearmapCSBasemap'] as Basemap & { id: string };
+
+    // Handed over as its id, which ArcGIS does not know, it left an event map with no basemap and no
+    // zoom levels: the map's layers a speck on a white page.
+    expect(forSavedId(nearmap.id, true)).toEqual(nearmap);
+    expect(forSavedId(nearmap.id, false)).toEqual(nearmap);
+  });
+
   it('draws every basemap it defines from a picture shipped with the application (#1730)', () => {
     // A thumbnail named on a GIS service or a portal is fetched again on every map load, and the
     // panel fills in one row at a time. Each must be a file under libs/assets, which every build ships.

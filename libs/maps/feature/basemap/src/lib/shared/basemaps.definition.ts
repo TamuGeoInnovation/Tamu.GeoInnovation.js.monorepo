@@ -168,6 +168,11 @@ export function basemapForSavedId(id: string, isTesting: boolean): BaseMapProper
     return offered;
   }
 
+  // Aerial Imagery is offered on every environment, and its id means as little to ArcGIS (#1692).
+  if (id === NearmapCSBasemap.id) {
+    return NearmapCSBasemap;
+  }
+
   return id.startsWith(AggiemapRasterBasemap.id) ? aggiemapBasemap(isTesting) : id;
 }
 
