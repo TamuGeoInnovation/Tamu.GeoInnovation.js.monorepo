@@ -1,3 +1,5 @@
+import { actingAsProduction } from '@tamu-gisc/aggiemap/ngx/common';
+
 import { FourHRoundupTs } from './4h-roundup.definitions';
 import { AggielandSaturdayEventTs } from './aggieland-saturday.definitions';
 import { BigEventTs } from './big-event.definitions';
@@ -74,12 +76,13 @@ import { McAllenTs } from './campus/mcallen.definitions';
 import { DCBushSchoolTs } from './campus/dc-bush-school.definitions';
 
 /**
- * Uses the same rule as the application `TestingService`: a host containing `dev`, or localhost.
+ * Uses the same rule as the application `TestingService`: a host containing `dev`, or localhost, and
+ * not one asked to behave as production (#1722, #1734).
  */
 function isDevelopmentHost(): boolean {
   const host = globalThis.location?.host ?? '';
 
-  return host.includes('dev') || host.includes('localhost');
+  return (host.includes('dev') || host.includes('localhost')) && !actingAsProduction();
 }
 
 /**
