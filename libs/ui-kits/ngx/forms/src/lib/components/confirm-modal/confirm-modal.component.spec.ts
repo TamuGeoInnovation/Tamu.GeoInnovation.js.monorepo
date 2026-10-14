@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MODAL_DATA } from '../../tokens/modal.tokens';
-import { ModalRefService } from '../../services/modal-ref/modal-ref.service';
+import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+
 import { ConfirmModalComponent, ConfirmModalData } from './confirm-modal.component';
 
 describe('ConfirmModalComponent', () => {

@@ -1,12 +1,16 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
-import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
-import { MODAL_DATA } from '../../tokens/modal.tokens';
-import { ModalRefService } from '../../services/modal-ref/modal-ref.service';
+import { ButtonComponent } from '../button/button.component';
 
 /**
- * A question with two answers, for `ModalService.open`. It closes with `true` for the confirm button and
+ * A question with two answers, for `ModalService` in `@tamu-gisc/ui-kits/ngx/layout/modal`.
+ *
+ * It lives here, beside the button it uses, rather than in the modal library: applications with
+ * stricter compiler settings use the modal library, and importing the button there made them compile
+ * this whole library too.
+ * It closes with `true` for the confirm button and
  * `false` for the cancel button.
  *
  * ```ts

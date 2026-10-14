@@ -42,7 +42,8 @@ import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common'
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import { getGeolocation, isLatLonPolygon, LatLon } from '@tamu-gisc/common/utils/geometry';
 import { CHECK_IN_ZONE_EVENT_MODE, CheckInZoneRefusal } from '@tamu-gisc/gisday/common';
-import { ConfirmModalComponent, ConfirmModalData, ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { ConfirmModalComponent, ConfirmModalData } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
