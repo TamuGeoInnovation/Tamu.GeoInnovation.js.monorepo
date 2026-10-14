@@ -82,35 +82,84 @@ export class SeasonService extends BaseProvider<Season> {
       relations: ['days', 'days.events']
     });
 
-    if (season) {
-      const ordered = { ...season, days: this._orderDays(season.days), firstEventTime: null } as ActiveSeasonDto;
-
-      if (ordered.days.length > 0) {
-        const firstDay = ordered.days[0];
-        const extendedDay = await this.seasonDayRepo.findOne({
-          where: {
-            guid: firstDay.guid
-          },
-          relations: ['events']
-        });
-
-        const activeEventsForDay = extendedDay.events.filter((event) => {
-          return event.active;
-        });
-
-        if (activeEventsForDay && activeEventsForDay.length > 0) {
-          const orderedActiveEvents = activeEventsForDay.sort((a, b) => {
-            return a.startTime < b.startTime ? -1 : 1;
-          });
-
-          ordered.firstEventTime = orderedActiveEvents[0].startTime;
-        }
-      }
-
-      return ordered;
+    if (!season) {
+      throw new NotFoundException('No active season found.');
     }
 
-    throw new NotFoundException('No active season found.');
+    return this._withFirstEventTime(season);
+  }
+
+  /**
+   * Finds the season for a year, in the same shape as the active season, so a page can show a past
+   * year exactly as it shows the current one (#1758).
+   */
+  public async findOneByYear(year: number) {
+    if (!Number.isInteger(year)) {
+      throw new BadRequestException('A season is looked up by a whole year, for example 2025.');
+    }
+
+    const season = await this.seasonRepo.findOne({
+      where: {
+        year
+      },
+      relations: ['days', 'days.events']
+    });
+
+    if (!season) {
+      throw new NotFoundException(`No season found for ${year}.`);
+    }
+
+    return this._withFirstEventTime(season);
+  }
+
+  /**
+   * A season by its guid with its days and their events, which is what listing the people speaking at
+   * a season's events needs.
+   */
+  public async findOneWithDaysAndEvents(guid: string) {
+    const season = await this.seasonRepo.findOne({
+      where: {
+        guid
+      },
+      relations: ['days', 'days.events']
+    });
+
+    if (!season) {
+      throw new NotFoundException();
+    }
+
+    return season;
+  }
+
+  /**
+   * Orders a season's days and adds the start time of the earliest active event on its first day.
+   */
+  private async _withFirstEventTime(season: Season) {
+    const ordered = { ...season, days: this._orderDays(season.days), firstEventTime: null } as ActiveSeasonDto;
+
+    if (ordered.days.length > 0) {
+      const firstDay = ordered.days[0];
+      const extendedDay = await this.seasonDayRepo.findOne({
+        where: {
+          guid: firstDay.guid
+        },
+        relations: ['events']
+      });
+
+      const activeEventsForDay = extendedDay.events.filter((event) => {
+        return event.active;
+      });
+
+      if (activeEventsForDay && activeEventsForDay.length > 0) {
+        const orderedActiveEvents = activeEventsForDay.sort((a, b) => {
+          return a.startTime < b.startTime ? -1 : 1;
+        });
+
+        ordered.firstEventTime = orderedActiveEvents[0].startTime;
+      }
+    }
+
+    return ordered;
   }
 
   public async create(createSeasonDto?: Partial<Season>) {

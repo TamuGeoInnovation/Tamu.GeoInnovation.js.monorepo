@@ -29,6 +29,10 @@ export class SpeakerService extends BaseService<Speaker> {
     return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/participating`);
   }
 
+  public getParticipatingPresentersForSeason(seasonGuid: string) {
+    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/participating/season/${seasonGuid}`);
+  }
+
   public getActivePresenters() {
     return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/season/active`);
   }
