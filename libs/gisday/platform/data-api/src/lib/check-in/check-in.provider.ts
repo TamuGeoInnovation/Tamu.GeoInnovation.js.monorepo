@@ -8,6 +8,7 @@ import {
   CHECK_IN_ZONE_EVENT_MODE,
   CHECK_IN_ZONE_MARGIN,
   CheckInZoneRefusal,
+  CheckInZoneStatus,
   checkInWindow,
   checkInZoneMessage,
   formatCheckInTime
@@ -47,7 +48,7 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
    * shows the button, so nobody checks in early by calling the API.
    *
    * @param confirmOutsideZone The attendee was told they are outside the zone, or gave no location,
-   * and chose to check in anyway. The check-in is recorded with `outsideZone` set, for organizers.
+   * and chose to check in anyway. The check-in is saved with the matching `zoneStatus`.
    */
   public async insertUserCheckin(
     eventGuid: string,
@@ -89,12 +90,14 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
     }
 
     const zone = event.location?.checkInZone;
-    let outsideZone = false;
+    let zoneStatus: CheckInZoneStatus = null;
 
     if (event.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(zone)) {
       const hasLocation = isLatLon(location);
 
-      if (!hasLocation || !isWithinPolygon(location, zone, CHECK_IN_ZONE_MARGIN)) {
+      if (hasLocation && isWithinPolygon(location, zone, CHECK_IN_ZONE_MARGIN)) {
+        zoneStatus = CheckInZoneStatus.InZone;
+      } else {
         if (confirmOutsideZone !== true) {
           throw new ForbiddenException({
             statusCode: 403,
@@ -106,14 +109,14 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
           });
         }
 
-        outsideZone = true;
+        zoneStatus = hasLocation ? CheckInZoneStatus.OutsideZone : CheckInZoneStatus.LocationBlocked;
       }
     }
 
     const checkin = this.checkInRepo.create({
       event: event,
       accountGuid: accountGuid,
-      outsideZone: outsideZone
+      zoneStatus: zoneStatus
     });
 
     return checkin.save();

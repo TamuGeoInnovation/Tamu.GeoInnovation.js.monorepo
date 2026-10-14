@@ -150,7 +150,7 @@
             <div *ngIf="needsCheckInLocation(event)" class="trailer-1">
               <p class="trailer-1"><strong>This session uses location-based check-in.</strong></p>
               <p class="trailer-1">Check-in opens when the session starts{{ checkInOpensAt(event) ? ', at ' + checkInOpensAt(event) : '' }}, not before. When you press Check In, your browser asks for your location, and you need to be at {{ event.location.building }} (within {{ checkInZoneMargin }} m of it).</p>
-              <p>Your location is only checked, never saved. If you are outside the zone, or block location access, you can still check in, and organizers will see that you did.</p>
+              <p>Your location is only checked, never saved. If you block location access, you cannot check in to this session.</p>
             </div>
 
             <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInCheckin">

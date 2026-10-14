@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddCheckInZones1792005052319 implements MigrationInterface {
-  name = 'AddCheckInZones1792005052319';
+export class AddCheckInZones1792006274327 implements MigrationInterface {
+  name = 'AddCheckInZones1792006274327';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -10,16 +10,13 @@ export class AddCheckInZones1792005052319 implements MigrationInterface {
         `);
     await queryRunner.query(`
             ALTER TABLE "checkins"
-            ADD "outsideZone" bit NOT NULL CONSTRAINT "DF_15a415333aac89fe238b0135226" DEFAULT 0
+            ADD "zoneStatus" nvarchar(255)
         `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-            ALTER TABLE "checkins" DROP CONSTRAINT "DF_15a415333aac89fe238b0135226"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "checkins" DROP COLUMN "outsideZone"
+            ALTER TABLE "checkins" DROP COLUMN "zoneStatus"
         `);
     await queryRunner.query(`
             ALTER TABLE "event_location" DROP COLUMN "checkInZone"

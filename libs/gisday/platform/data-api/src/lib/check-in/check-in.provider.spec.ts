@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
 
-import { CheckInZoneRefusal, checkInZoneMessage } from '@tamu-gisc/gisday/common';
+import { CheckInZoneRefusal, CheckInZoneStatus, checkInZoneMessage } from '@tamu-gisc/gisday/common';
 
 import { CheckIn, Event } from '../entities/all.entity';
 import { CheckInProvider } from './check-in.provider';
@@ -75,7 +75,7 @@ describe('CheckInProvider', () => {
       jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
-      expect(checkInRepo.create).toHaveBeenCalledWith({ event, accountGuid: 'acct-1', outsideZone: false });
+      expect(checkInRepo.create).toHaveBeenCalledWith({ event, accountGuid: 'acct-1', zoneStatus: null });
     });
 
     it('refuses a second check-in for the same attendee and event', async () => {
@@ -159,10 +159,11 @@ describe('CheckInProvider', () => {
       expect(eventRepo.findOne).toHaveBeenCalledWith({ where: { guid: 'e-1' }, relations: ['location', 'day'] });
     });
 
-    it('checks in an attendee inside the zone', async () => {
+    it('checks in an attendee inside the zone, saved as "in zone"', async () => {
       withEvent('in-person');
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1', middleOfMsc)).resolves.toEqual({ guid: 'c-new' });
+      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ zoneStatus: 'in zone' }));
     });
 
     it('checks in an attendee just outside the walls, within the margin for GPS error', async () => {
@@ -181,34 +182,38 @@ describe('CheckInProvider', () => {
       expect(save).not.toHaveBeenCalled();
     });
 
-    it('records an attendee outside the zone who checks in anyway, flagged for organizers', async () => {
+    it('saves an attendee outside the zone who checks in anyway as "checked-in outside of zone"', async () => {
       withEvent('in-person');
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1', kyleField, true)).resolves.toEqual({ guid: 'c-new' });
-      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ accountGuid: 'acct-1', outsideZone: true }));
+      expect(checkInRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({ accountGuid: 'acct-1', zoneStatus: 'checked-in outside of zone' })
+      );
     });
 
-    it('records an attendee with no location who checks in anyway, flagged', async () => {
+    it('saves an attendee with no location who checks in anyway as "location access blocked"', async () => {
       withEvent('in-person');
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, true)).resolves.toEqual({ guid: 'c-new' });
-      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ outsideZone: true }));
+      expect(checkInRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({ zoneStatus: CheckInZoneStatus.LocationBlocked })
+      );
     });
 
-    it('does not flag an attendee inside the zone, whatever they confirmed', async () => {
+    it('saves an attendee inside the zone as "in zone", whatever they confirmed', async () => {
       withEvent('in-person');
 
       await provider.insertUserCheckin('e-1', 'acct-1', middleOfMsc, true);
 
-      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ outsideZone: false }));
+      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ zoneStatus: CheckInZoneStatus.InZone }));
     });
 
-    it('does not flag a hybrid event', async () => {
+    it('saves no zone status for a hybrid event', async () => {
       withEvent('hybrid');
 
       await provider.insertUserCheckin('e-1', 'acct-1', kyleField, true);
 
-      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ outsideZone: false }));
+      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ zoneStatus: null }));
     });
 
     it('refuses an attendee at Kyle Field', async () => {

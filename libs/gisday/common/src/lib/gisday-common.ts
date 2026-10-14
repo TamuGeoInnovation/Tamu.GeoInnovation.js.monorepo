@@ -18,7 +18,7 @@ export const CHECK_IN_ZONE_EVENT_MODE = 'in-person';
 
 /**
  * Why a check-in to an in-person event was refused, in the API's 403 response as `reason`. The page
- * then offers to check in anyway, which records the check-in with `outsideZone` set (#1766).
+ * then offers to check in anyway, which saves the matching `CheckInZoneStatus` (#1766).
  */
 export enum CheckInZoneRefusal {
   /**
@@ -30,6 +30,28 @@ export enum CheckInZoneRefusal {
    * The attendee gave no location, for example because they blocked location access.
    */
   NoLocation = 'no-location'
+}
+
+/**
+ * What is saved with a check-in to an in-person event at a location with a check-in zone, as
+ * `CheckIn.zoneStatus` (#1766). Any other check-in saves none.
+ */
+export enum CheckInZoneStatus {
+  /**
+   * The attendee was inside the zone.
+   */
+  InZone = 'in zone',
+
+  /**
+   * The attendee was outside the zone and chose to check in anyway.
+   */
+  OutsideZone = 'checked-in outside of zone',
+
+  /**
+   * The attendee gave no location, because they blocked location access or their device could not
+   * find one, and chose to check in anyway.
+   */
+  LocationBlocked = 'location access blocked'
 }
 
 /**

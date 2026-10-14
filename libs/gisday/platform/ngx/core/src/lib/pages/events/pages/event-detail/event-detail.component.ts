@@ -339,12 +339,10 @@ export class EventDetailComponent implements OnInit, OnDestroy {
    * location.
    */
   private _checkInAnywayQuestion(refusal: { reason: string; message: string }): ConfirmModalData {
-    const flagged = 'If you are at this session, you can check in anyway. Organizers will see that you checked in';
-
     if (refusal.reason === CheckInZoneRefusal.NoLocation) {
       return {
-        title: 'We could not get your location',
-        message: `This session checks your location when you check in. Allow this site to use your location and try again. ${flagged} without a location.`,
+        title: 'Location access blocked',
+        message: 'This session checks your location when you check in. Allow this site to use your location and try again.',
         confirm: 'Check-in anyway',
         cancel: 'Cancel'
       };
@@ -352,7 +350,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
     return {
       title: 'You are outside the check-in zone',
-      message: `${refusal.message} ${flagged} from outside the zone.`,
+      message: refusal.message,
       confirm: 'Check-in anyway',
       cancel: 'Cancel'
     };
