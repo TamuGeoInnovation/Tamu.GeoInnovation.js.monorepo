@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
 
-import { checkInZoneMessage } from '@tamu-gisc/gisday/common';
+import { CheckInZoneRefusal, checkInZoneMessage } from '@tamu-gisc/gisday/common';
 
 import { CheckIn, Event } from '../entities/all.entity';
 import { CheckInProvider } from './check-in.provider';
@@ -75,7 +75,7 @@ describe('CheckInProvider', () => {
       jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
-      expect(checkInRepo.create).toHaveBeenCalledWith({ event, accountGuid: 'acct-1' });
+      expect(checkInRepo.create).toHaveBeenCalledWith({ event, accountGuid: 'acct-1', outsideZone: false });
     });
 
     it('refuses a second check-in for the same attendee and event', async () => {
@@ -171,13 +171,44 @@ describe('CheckInProvider', () => {
       await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(20))).resolves.toEqual({ guid: 'c-new' });
     });
 
-    it('refuses an attendee beyond the margin, and names where to be', async () => {
+    it('refuses an attendee beyond the margin, says why, and names where to be', async () => {
       withEvent('in-person');
 
-      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(60))).rejects.toThrow(
-        new ForbiddenException(checkInZoneMessage(venue))
-      );
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(60))).rejects.toMatchObject({
+        status: 403,
+        response: { reason: CheckInZoneRefusal.OutsideZone, message: checkInZoneMessage(venue) }
+      });
       expect(save).not.toHaveBeenCalled();
+    });
+
+    it('records an attendee outside the zone who checks in anyway, flagged for organizers', async () => {
+      withEvent('in-person');
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', kyleField, true)).resolves.toEqual({ guid: 'c-new' });
+      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ accountGuid: 'acct-1', outsideZone: true }));
+    });
+
+    it('records an attendee with no location who checks in anyway, flagged', async () => {
+      withEvent('in-person');
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, true)).resolves.toEqual({ guid: 'c-new' });
+      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ outsideZone: true }));
+    });
+
+    it('does not flag an attendee inside the zone, whatever they confirmed', async () => {
+      withEvent('in-person');
+
+      await provider.insertUserCheckin('e-1', 'acct-1', middleOfMsc, true);
+
+      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ outsideZone: false }));
+    });
+
+    it('does not flag a hybrid event', async () => {
+      withEvent('hybrid');
+
+      await provider.insertUserCheckin('e-1', 'acct-1', kyleField, true);
+
+      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ outsideZone: false }));
     });
 
     it('refuses an attendee at Kyle Field', async () => {
@@ -187,10 +218,12 @@ describe('CheckInProvider', () => {
       expect(save).not.toHaveBeenCalled();
     });
 
-    it('refuses a check-in with no usable location', async () => {
+    it('refuses a check-in with no usable location, and says why', async () => {
       withEvent('in-person');
 
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(ForbiddenException);
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toMatchObject({
+        response: { reason: CheckInZoneRefusal.NoLocation }
+      });
       await expect(
         provider.insertUserCheckin('e-1', 'acct-1', { latitude: undefined, longitude: undefined })
       ).rejects.toThrow(ForbiddenException);

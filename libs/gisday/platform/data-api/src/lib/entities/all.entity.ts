@@ -698,6 +698,13 @@ export class CheckIn extends GuidIdentity {
 
   @Column({ nullable: false })
   public accountGuid: string;
+
+  /**
+   * The attendee checked in to an in-person event from outside its location's check-in zone, or
+   * without sharing a location, and chose to check in anyway (#1766). For organizers to review.
+   */
+  @Column({ nullable: false, default: false })
+  public outsideZone: boolean;
 }
 
 @Entity({

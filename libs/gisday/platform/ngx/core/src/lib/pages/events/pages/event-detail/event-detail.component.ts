@@ -14,11 +14,19 @@ import {
   startWith,
   Subject,
   switchMap,
-  takeUntil
+  take,
+  takeUntil,
+  throwError
 } from 'rxjs';
 
 import { Event, EventAttendanceDto, GisDayAppMetadata } from '@tamu-gisc/gisday/platform/data-api';
-import { CheckinService, EventService, RsvpService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import {
+  CheckinService,
+  EventService,
+  isCheckInZoneRefusal,
+  RsvpService,
+  UserService
+} from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GISDayRoles, parseDateStrings } from '@tamu-gisc/gisday/platform/ngx/common';
@@ -32,7 +40,14 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import { getGeolocation, isLatLonPolygon, LatLon } from '@tamu-gisc/common/utils/geometry';
-import { CHECK_IN_ZONE_EVENT_MODE, CHECK_IN_ZONE_MARGIN, checkInWindow, formatCheckInTime } from '@tamu-gisc/gisday/common';
+import {
+  CHECK_IN_ZONE_EVENT_MODE,
+  CHECK_IN_ZONE_MARGIN,
+  CheckInZoneRefusal,
+  checkInWindow,
+  formatCheckInTime
+} from '@tamu-gisc/gisday/common';
+import { ConfirmModalComponent, ConfirmModalData, ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
@@ -66,6 +81,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   private readonly ns = inject(NotificationService);
   private readonly us = inject(UserService);
   private readonly fb = inject(UntypedFormBuilder);
+  private readonly modal = inject(ModalService);
 
   public appRoles = GISDayRoles;
   public readonly checkInZoneMargin = CHECK_IN_ZONE_MARGIN;
@@ -282,23 +298,29 @@ export class EventDetailComponent implements OnInit, OnDestroy {
             return this.checkinService.insertUserCheckin(event.guid);
           }
 
-          // The API decides whether the location is inside the zone, and says so if it is not.
+          // The API decides whether the location is inside the zone. Outside it, or with no location,
+          // the attendee may check in anyway, and the check-in is flagged for organizers (#1766).
           return getGeolocation(true, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }).pipe(
-            catchError(() => {
-              this.ns.toast({
-                id: 'checkin-location-failure',
-                title: 'Event Check-In',
-                message:
-                  'Checking in to this event needs your location. Allow this site to use your location, then try again.'
-              });
+            map((coords): LatLon => ({ latitude: coords.latitude, longitude: coords.longitude })),
+            catchError(() => of<LatLon>(undefined)),
+            switchMap((location) =>
+              this.checkinService.insertUserCheckin(event.guid, location).pipe(
+                catchError((err) => {
+                  if (!isCheckInZoneRefusal(err)) {
+                    return throwError(() => err);
+                  }
 
-              return EMPTY;
-            }),
-            switchMap((coords) => {
-              const location: LatLon = { latitude: coords.latitude, longitude: coords.longitude };
-
-              return this.checkinService.insertUserCheckin(event.guid, location);
-            })
+                  return this.modal
+                    .open<boolean>(ConfirmModalComponent, { data: this._checkInAnywayQuestion(err.error) })
+                    .pipe(
+                      take(1),
+                      switchMap((confirmed) =>
+                        confirmed ? this.checkinService.insertUserCheckin(event.guid, location, true) : EMPTY
+                      )
+                    );
+                })
+              )
+            )
           );
         })
       )
@@ -310,6 +332,30 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           console.log(`Error registering for event. ${err.status}: ${err.message}`);
         }
       });
+  }
+
+  /**
+   * What to ask an attendee whose check-in was refused for being outside the zone, or for giving no
+   * location.
+   */
+  private _checkInAnywayQuestion(refusal: { reason: string; message: string }): ConfirmModalData {
+    const flagged = 'If you are at this session, you can check in anyway. Organizers will see that you checked in';
+
+    if (refusal.reason === CheckInZoneRefusal.NoLocation) {
+      return {
+        title: 'We could not get your location',
+        message: `This session checks your location when you check in. Allow this site to use your location and try again. ${flagged} without a location.`,
+        confirm: 'Check-in anyway',
+        cancel: 'Cancel'
+      };
+    }
+
+    return {
+      title: 'You are outside the check-in zone',
+      message: `${refusal.message} ${flagged} from outside the zone.`,
+      confirm: 'Check-in anyway',
+      cancel: 'Cancel'
+    };
   }
 
   /**

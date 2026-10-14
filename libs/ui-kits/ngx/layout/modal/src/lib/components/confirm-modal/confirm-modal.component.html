@@ -1,0 +1,8 @@
+<h2 class="trailer-1">{{ data.title }}</h2>
+
+<p class="trailer-2">{{ data.message }}</p>
+
+<div class="flex flex-row justify-end button-container">
+  <tamu-gisc-button fit="snug" look="secondary" [value]="data.cancel || 'Cancel'" (click)="answer(false)"></tamu-gisc-button>
+  <tamu-gisc-button fit="snug" [value]="data.confirm || 'OK'" (click)="answer(true)"></tamu-gisc-button>
+</div>

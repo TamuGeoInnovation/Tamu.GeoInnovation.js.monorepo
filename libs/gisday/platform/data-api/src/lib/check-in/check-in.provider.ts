@@ -7,6 +7,7 @@ import { isLatLon, isLatLonPolygon, isWithinPolygon, LatLon } from '@tamu-gisc/c
 import {
   CHECK_IN_ZONE_EVENT_MODE,
   CHECK_IN_ZONE_MARGIN,
+  CheckInZoneRefusal,
   checkInWindow,
   checkInZoneMessage,
   formatCheckInTime
@@ -44,8 +45,16 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
    *
    * Any event accepts a check-in only from its start until 15 minutes after its end, as its page
    * shows the button, so nobody checks in early by calling the API.
+   *
+   * @param confirmOutsideZone The attendee was told they are outside the zone, or gave no location,
+   * and chose to check in anyway. The check-in is recorded with `outsideZone` set, for organizers.
    */
-  public async insertUserCheckin(eventGuid: string, accountGuid: string, location?: LatLon) {
+  public async insertUserCheckin(
+    eventGuid: string,
+    accountGuid: string,
+    location?: LatLon,
+    confirmOutsideZone?: boolean
+  ) {
     const existing = await this.checkInRepo.findOne({
       where: {
         event: { guid: eventGuid },
@@ -80,20 +89,31 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
     }
 
     const zone = event.location?.checkInZone;
+    let outsideZone = false;
 
     if (event.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(zone)) {
-      if (!isLatLon(location)) {
-        throw new ForbiddenException('Checking in to this event needs your location.');
-      }
+      const hasLocation = isLatLon(location);
 
-      if (!isWithinPolygon(location, zone, CHECK_IN_ZONE_MARGIN)) {
-        throw new ForbiddenException(checkInZoneMessage(event.location.building));
+      if (!hasLocation || !isWithinPolygon(location, zone, CHECK_IN_ZONE_MARGIN)) {
+        if (confirmOutsideZone !== true) {
+          throw new ForbiddenException({
+            statusCode: 403,
+            error: 'Forbidden',
+            reason: hasLocation ? CheckInZoneRefusal.OutsideZone : CheckInZoneRefusal.NoLocation,
+            message: hasLocation
+              ? checkInZoneMessage(event.location.building)
+              : 'Checking in to this event needs your location.'
+          });
+        }
+
+        outsideZone = true;
       }
     }
 
     const checkin = this.checkInRepo.create({
       event: event,
-      accountGuid: accountGuid
+      accountGuid: accountGuid,
+      outsideZone: outsideZone
     });
 
     return checkin.save();

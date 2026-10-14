@@ -17,6 +17,22 @@ export const CHECK_IN_ZONE_MARGIN = 30;
 export const CHECK_IN_ZONE_EVENT_MODE = 'in-person';
 
 /**
+ * Why a check-in to an in-person event was refused, in the API's 403 response as `reason`. The page
+ * then offers to check in anyway, which records the check-in with `outsideZone` set (#1766).
+ */
+export enum CheckInZoneRefusal {
+  /**
+   * The attendee's location is outside the zone.
+   */
+  OutsideZone = 'outside-zone',
+
+  /**
+   * The attendee gave no location, for example because they blocked location access.
+   */
+  NoLocation = 'no-location'
+}
+
+/**
  * What an attendee outside the zone is told, by the API and by the page.
  *
  * @param venue The location's name, such as "TAMU Rudder Plaza", when it has one.
