@@ -10,6 +10,7 @@ export * from './lib/pipes/submission-review-status/submission-review-status.pip
 export * from './lib/utils/form-to-form-data';
 export * from './lib/utils/parse-date-strings';
 export * from './lib/utils/events-by-day';
+export * from './lib/utils/event-form-problems';
 export * from './lib/utils/speakers';
 
 // Enums
