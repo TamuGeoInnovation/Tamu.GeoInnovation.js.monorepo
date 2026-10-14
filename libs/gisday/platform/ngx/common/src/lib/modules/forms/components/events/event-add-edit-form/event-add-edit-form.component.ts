@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input, signal } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -38,6 +38,7 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectListComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PresenterCardComponent } from '../../../../people/components/presenter-card/presenter-card.component';
+import { eventFormProblems } from '../../../../../utils/event-form-problems';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -73,6 +74,11 @@ export class EventAddEditFormComponent implements OnInit {
   private readonly eventBroadcastService = inject(BroadcastService);
   private readonly eventService = inject(EventService);
   private readonly ns = inject(NotificationService);
+
+  /**
+   * What stops the event being saved, shown above the buttons after a save is tried (#1773).
+   */
+  public readonly problems = signal<Array<string>>([]);
 
   public readonly type = input<'create' | 'edit'>(undefined);
 
@@ -352,6 +358,20 @@ export class EventAddEditFormComponent implements OnInit {
   }
 
   public handleSubmission() {
+    // An event needs its day, real times, a name, an abstract and its four choices before it is saved
+    // (#1773). An incomplete one is not sent, and the form says what is missing.
+    this.problems.set(eventFormProblems(this.form.getRawValue()));
+
+    if (this.problems().length > 0) {
+      this.ns.toast({
+        id: 'event-incomplete',
+        title: this.type() === 'create' ? 'Create event' : 'Update Event',
+        message: 'The event was not saved. See what is missing above the buttons.'
+      });
+
+      return;
+    }
+
     if (this.type() === 'create') {
       this._createEntity();
     } else {
