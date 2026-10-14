@@ -30,6 +30,26 @@ tiles are republished in Web Mercator ([#1741](https://github.com/TamuGeoInnovat
 | --- | --- |
 | ![The panel in 3D marking the vector basemap as chosen](../screenshots/vector-basemap-in-3d/before-dev-3d-vector-offered.png) | ![The panel in 3D with the vector basemap greyed and marked 2D only](../screenshots/vector-basemap-in-3d/after-3d-vector-unavailable.png) |
 
+### GIS Day: the admin speaker form shows the university banner, and follows the form
+
+Editing a speaker on the admin pages showed the photograph without the university and class-year banner
+the public Presenters page and presenter page draw on it ([#1703](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1703)). It is now on the photograph
+in the form too, and it changes as the University and Graduation Year fields change, before saving, so an
+administrator sees what the public pages will show. Clearing the university removes it
+([#1757](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1757)).
+
+The photograph in the form is now shown at the size of a presenter's card, so the banner is drawn exactly
+as the card draws it. The banner's look, written out twice in the app's stylesheet, is now one shared
+style used by the card, the presenter page and the form; the card and presenter page measure the same as
+before.
+
+The images are the form on a scratch page of the local site, with a sample photograph, because the admin
+pages need a sign-in.
+
+| Before | After | After changing the university and year |
+| --- | --- | --- |
+| ![The form's photograph with no banner](../screenshots/1757-admin-speaker-banner/before-admin-speaker-form.png) | ![The photograph with a maroon TAMU '24 banner](../screenshots/1757-admin-speaker-banner/after-admin-speaker-form.png) | ![The same photograph with a purple LSU '22 banner](../screenshots/1757-admin-speaker-banner/after-admin-speaker-form-changed.png) |
+
 ### GIS Day: the 2026 VGI competition, the Monument Trail Challenge
 
 The VGI Competition pages still described 2025's Art Trail Challenge. This year's competition collects
@@ -159,6 +179,7 @@ dated notes as what was tested, and this table empties.
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | Basemaps a 3D scene cannot show ([#1740](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1740)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), then the **2D** button beside All Maps | In 3D, **Aggieland vector** is greyed and says **2D only**, and **Aggieland raster, October 2026** is marked as chosen, which is what the map shows. Clicking the greyed one does nothing. Choose another basemap and it is still greyed. Click **3D** to go back: the vector basemap is back, marked, and can be chosen |
+| GIS Day: university banner in the admin speaker form ([#1757](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1757)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Speakers, edit a speaker who has a photograph | The university and class-year banner on the photograph, as on the Presenters page. Change the University or the Graduation Year: the banner changes at once, before saving. Choose no university: it goes. The public Presenters page and a presenter's page look as they did |
 | GIS Day: 2026 VGI competition page ([#1665](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1665)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions/vgi` and `/competitions/monuments` | The VGI page says "November 9-20, 2026" and "2026 Competition: Texas A&M University Monument Trail Challenge", with 2025's Art Trail Challenge first under Prior Competitions. "Read Event Details" opens the new page: two things to collect, one point each, winners Thursday November 19, University Architect logo, no broken images |
 | GIS Day: poster and presentation competition dates moved to 2026 ([#1662](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1662)) | Not on dev, for the same reason. Locally, `/competitions/posters` and `/competitions/presentation` | No 2025 date on either page. Posters: Tuesday November 17th, 2026, due Monday November 9th. Presentations: Tuesday November 17th and Wednesday November 18th, 2026 |
 | GIS Day: Aggie Map Design Competition removed ([#1661](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1661)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions` | The Competitions menu and page list VGI, Poster and Presentation only; `/competitions/aggie-map` goes to the home page |

@@ -1,5 +1,6 @@
 @import 'libs/gisday/sass/variables';
 @import 'libs/sass/mixins';
+@import 'libs/gisday/sass/class-banner';
 @import 'libs/sass/1140';
 @import 'libs/sass/colors'; // Imports complete material design colors for use as classes in markup
 @import 'libs/sass/modules/forms';
@@ -591,31 +592,7 @@ footer .logo-container {
     }
 
     .class-banner {
-      text-transform: uppercase;
-      font-family: $title-font;
-      font-weight: 400;
-      font-size: 1.25rem;
-      position: absolute;
-      display: block;
-      background: $aggie-maroon;
-      top: 1.75rem;
-      left: -8.7rem;
-      width: 100%;
-      z-index: 1;
-      color: #ffffff;
-      @include transform(rotate(-45deg));
-      text-align: center;
-      padding: 0.5rem 0;
-
-      .text-container {
-        width: 40%;
-        margin: 0 auto;
-      }
-
-      span {
-        display: block;
-        white-space: nowrap;
-      }
+      @include class-banner(1.25rem, -8.7rem);
     }
   }
 
@@ -1415,31 +1392,7 @@ img.jumbo {
   }
 
   .class-banner {
-    text-transform: uppercase;
-    font-family: $title-font;
-    font-weight: 400;
-    font-size: 1rem;
-    position: absolute;
-    display: block;
-    background: $aggie-maroon;
-    top: 1.75rem;
-    left: -5rem;
-    width: 100%;
-    z-index: 1;
-    color: #ffffff;
-    @include transform(rotate(-45deg));
-    text-align: center;
-    padding: 0.5rem 0;
-
-    .text-container {
-      width: 40%;
-      margin: 0 auto;
-    }
-
-    span {
-      display: block;
-      white-space: nowrap;
-    }
+    @include class-banner(1rem, -5rem);
   }
 
   &:hover {

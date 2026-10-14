@@ -1,0 +1,35 @@
+// The university and class-year banner across the corner of a presenter's photograph.
+//
+// Drawn by `tamu-gisc-speaker-class-banner`; its look lives here so that every place showing a photograph
+// draws the same banner. The photograph's box must be `position: relative` (or otherwise positioned) and
+// `overflow: hidden`, which clips the banner to a corner. A larger photograph wants a larger banner set
+// further left, hence the two arguments.
+//
+// Needs `variables` and `libs/sass/mixins` imported first.
+@mixin class-banner($font-size: 1rem, $left: -5rem) {
+  text-transform: uppercase;
+  font-family: $title-font;
+  font-weight: 400;
+  font-size: $font-size;
+  position: absolute;
+  display: block;
+  background: $aggie-maroon;
+  top: 1.75rem;
+  left: $left;
+  width: 100%;
+  z-index: 1;
+  color: #ffffff;
+  @include transform(rotate(-45deg));
+  text-align: center;
+  padding: 0.5rem 0;
+
+  .text-container {
+    width: 40%;
+    margin: 0 auto;
+  }
+
+  span {
+    display: block;
+    white-space: nowrap;
+  }
+}
