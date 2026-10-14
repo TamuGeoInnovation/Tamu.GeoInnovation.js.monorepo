@@ -7,5 +7,10 @@
     </p>
   </tamu-gisc-tooltip-trigger>
 
+  @if (inputType === 'time') {
+  <input class="date-time-picker-input" [matTimepicker]="timepicker" [value]="timeValue" (valueChange)="handleTimePicked($event)" aria-label="Time" />
+  <mat-timepicker #timepicker [interval]="interval" panelClass="tamu-gisc-date-time-picker-panel" (closed)="close()"></mat-timepicker>
+  } @else {
   <input class="date-time-picker-input" [type]="inputType" [value]="inputValue" [attr.step]="step" (change)="handleInputChange($any($event.target).value)" />
+  }
 </tamu-gisc-tooltip>

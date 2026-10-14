@@ -19,6 +19,7 @@ import { TileSubmenuDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-t
 import { TileSubmenuComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
+import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
 
 @Component({
   selector: 'tamu-gisc-app-header',
@@ -37,7 +38,8 @@ import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
     NgClass,
     RouterLink,
     AsyncPipe,
-    HasRolesPipe
+    HasRolesPipe,
+    SeasonLinkPipe
   ]
 })
 export class HeaderComponent implements OnInit {
@@ -51,6 +53,7 @@ export class HeaderComponent implements OnInit {
   public userRoles$: Observable<Array<string>>;
   public appRoles = GISDayRoles;
   public activeSeason$: Observable<ActiveSeasonDto>;
+  public viewedYear$: Observable<number | null>;
   public places$: Observable<Array<Partial<Place>>>;
 
   public mobileNavToggle: Subject<boolean> = new Subject();
@@ -71,7 +74,9 @@ export class HeaderComponent implements OnInit {
   public ngOnInit() {
     this.loggedIn$ = this.as.isAuthenticated$;
     this.userRoles$ = this.as.userRoles$;
-    this.activeSeason$ = this.ss.activeSeason$;
+    // The year being looked at, so a past year's pages say which year they are (#1758).
+    this.activeSeason$ = this.ss.viewedSeason$;
+    this.viewedYear$ = this.ss.viewedYear$;
     this.places$ = this.ps.getEntitiesForActiveSeason().pipe(
       mergeMap((places) => places),
       filter((place) => place?.visibilitySettings && place.visibilitySettings.includes(PlaceVisibilityOptions.Header)),

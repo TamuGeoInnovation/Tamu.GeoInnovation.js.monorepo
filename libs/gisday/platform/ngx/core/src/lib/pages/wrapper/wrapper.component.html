@@ -1,3 +1,16 @@
 <tamu-gisc-app-header></tamu-gisc-app-header>
+@if ((viewedYear$ | async); as year) { @if (isPastSeason$ | async) {
+<div class="container12 leader-1" id="past-season-banner">
+  @if (viewedSeason$ | async) {
+  <div class="info-block notice">
+    <p>You are looking at TxGIS Day {{year}}. <a [routerLink]="['/sessions']">See this year's sessions</a></p>
+  </div>
+  } @else {
+  <div class="info-block warning">
+    <p>There is no TxGIS Day {{year}} on this site. <a [routerLink]="['/sessions']">See this year's sessions</a></p>
+  </div>
+  }
+</div>
+} }
 <router-outlet></router-outlet>
 <tamu-gisc-app-footer></tamu-gisc-app-footer>

@@ -10,12 +10,20 @@
           </div>
         </a>
         <p>Three days of workshops and programs celebrating geospatial technology.</p>
+        @if ((pastYears$ | async); as years) { @if (years.length > 0) {
+        <p class="footer-column-title leader-1">Past Years</p>
+        <ul>
+          @for (year of years; track year) {
+          <li><a [routerLink]="['/seasons', year]">TxGIS Day {{year}}</a></li>
+          }
+        </ul>
+        } }
       </div>
       <div class="column3">
         <p class="footer-column-title">Quick Links</p>
         <ul>
-          <li><a [routerLink]="['/sessions']">Sessions</a></li>
-          <li><a [routerLink]="['/presenters']">Presenters</a></li>
+          <li><a [routerLink]="'sessions' | seasonLink : (viewedYear$ | async)">Sessions</a></li>
+          <li><a [routerLink]="'presenters' | seasonLink : (viewedYear$ | async)">Presenters</a></li>
           <li><a [routerLink]="['/competitions']">Competitions</a></li>
         </ul>
       </div>
@@ -24,7 +32,7 @@
         <ul>
           <li><a [routerLink]="['/about']">Overview</a></li>
           <li><a [routerLink]="['/faq']">FAQ</a></li>
-          <li><a [routerLink]="['/sponsors']">Sponsors</a></li>
+          <li><a [routerLink]="'sponsors' | seasonLink : (viewedYear$ | async)">Sponsors</a></li>
         </ul>
       </div>
       <div class="column3">

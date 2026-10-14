@@ -1,8 +1,11 @@
-import { Component, Input, forwardRef, ChangeDetectionStrategy, input, output, viewChild } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, Input, forwardRef, ChangeDetectionStrategy, inject, input, output, viewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { TooltipComponent, TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { DatePipe } from '@angular/common';
+import { MATERIAL_ANIMATIONS, provideNativeDateAdapter } from '@angular/material/core';
+import { MatTimepicker, MatTimepickerInput } from '@angular/material/timepicker';
 
 /**
  * The finest and coarsest units a picker offers, in the vocabulary of the library this component used
@@ -83,9 +86,14 @@ export function fromInputValue(raw: string, type: ReturnType<typeof inputTypeFor
 /**
  * A date and/or time picker, as a form control.
  *
- * Renders the browser's own date, time or date-time input inside a tooltip. It wrapped
+ * Renders the browser's own date or date-time input inside a tooltip. It wrapped
  * `angular-bootstrap-datetimepicker` until #1220: that library has no Ivy release and only worked because
  * `ngcc` rewrote it, which Angular 16 removes. The inputs and the `changed` output are unchanged.
+ *
+ * A time of day is Angular Material's time picker instead: a field to type in with the list of times,
+ * in steps of `minuteStep`, open beside it. The browser's own time input only offers its list after a
+ * second click on a small icon, and in some browsers not at all, which left the GIS Day event form with
+ * nothing to choose from (#1747).
  */
 @Component({
   selector: 'tamu-gisc-date-time-picker',
@@ -96,17 +104,49 @@ export function fromInputValue(raw: string, type: ReturnType<typeof inputTypeFor
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => DateTimePickerComponent),
       multi: true
-    }
+    },
+    // Provided here, not by each application, so that no caller has to change to get the time picker.
+    provideNativeDateAdapter(),
+    // Without its fade, the list of times leaves the page the moment it closes. With it, the list waits
+    // for an animation to end, and that never happens once the tooltip around it has been taken away.
+    { provide: MATERIAL_ANIMATIONS, useValue: { animationsDisabled: true } }
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [TooltipComponent, TooltipTriggerComponent, DatePipe]
+  imports: [TooltipComponent, TooltipTriggerComponent, DatePipe, MatTimepicker, MatTimepickerInput]
 })
-export class DateTimePickerComponent implements ControlValueAccessor {
+export class DateTimePickerComponent implements ControlValueAccessor, AfterViewInit {
   // Get reference for the tooltip component rendered inside this date time picker component.
   //
   // Used to set the visible state of the tooltip content whenever the date time picker component
   // emits a value change.
   private readonly tooltipComponent = viewChild(TooltipComponent);
+
+  // The list of times, when this picker picks a time of day. It exists whether or not the tooltip is
+  // open: what a component is handed to project is created with it, and only shown when projected.
+  private readonly timepicker = viewChild(MatTimepicker);
+
+  private readonly destroyRef = inject(DestroyRef);
+
+  public ngAfterViewInit() {
+    // Opening the picker is what the user asked for, so the list of times opens with it, not after a
+    // second click on the field, and goes when it goes. It must not open before then: the list is drawn
+    // beside its field, and until the tooltip is open the field is nowhere on the page.
+    this.tooltipComponent()
+      .tooltipContentVisible.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((visible) => {
+        const timepicker = this.timepicker();
+
+        if (!timepicker) {
+          return;
+        }
+
+        if (visible) {
+          timepicker.open();
+        } else {
+          timepicker.close();
+        }
+      });
+  }
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
@@ -169,6 +209,19 @@ export class DateTimePickerComponent implements ControlValueAccessor {
     return toInputValue(this._value, this.inputType);
   }
 
+  /**
+   * The value as the time picker reads it. The same `Date` between changes: a new object on every read
+   * would look like a new value to the picker each time the view is checked.
+   */
+  public get timeValue() {
+    return this._value;
+  }
+
+  /** How far apart the offered times are, as Angular Material's time picker takes it. */
+  public get interval() {
+    return `${this.minuteStep()}min`;
+  }
+
   /** The native input's step, in seconds. Dates step by day, which is the input's default. */
   public get step() {
     return this.inputType === 'date' ? undefined : this.minuteStep() * 60;
@@ -194,6 +247,31 @@ export class DateTimePickerComponent implements ControlValueAccessor {
     this.tooltipComponent().isVisible = false;
 
     this.changed.emit(new DateTimePickerChange(picked));
+  }
+
+  /**
+   * A time chosen from the list or typed into the field. Only its hours and minutes are taken: the
+   * time picker knows nothing of the date this value belongs to.
+   */
+  public handleTimePicked(picked: Date | null) {
+    if (!picked || (picked.getHours() === this._value.getHours() && picked.getMinutes() === this._value.getMinutes())) {
+      return;
+    }
+
+    const next = new Date(this._value.getTime());
+    next.setHours(picked.getHours(), picked.getMinutes(), 0, 0);
+
+    this.value = next;
+
+    this.changed.emit(new DateTimePickerChange(next));
+  }
+
+  /**
+   * The list of times and the tooltip go together: once the list has closed, on a choice, Enter, Escape
+   * or a click elsewhere, a tooltip holding only the field has nothing left to offer.
+   */
+  public close() {
+    this.tooltipComponent().isVisible = false;
   }
 
   public writeValue(v) {

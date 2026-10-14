@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angu
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, distinctUntilChanged, filter, map, merge, of, race, shareReplay, switchMap, take } from 'rxjs';
+import { Observable, combineLatest, distinctUntilChanged, filter, map, merge, of, race, shareReplay, startWith, switchMap, take } from 'rxjs';
 
 import { Organization, Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 import {
@@ -21,6 +21,7 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
+import { SpeakerClassBannerComponent } from '../../../../people/components/speaker-class-banner/speaker-class-banner.component';
 
 @Component({
   selector: 'tamu-gisc-speaker-add-edit-form',
@@ -35,7 +36,8 @@ import { AsyncPipe } from '@angular/common';
     SelectComponent,
     CheckboxComponent,
     ButtonComponent,
-    AsyncPipe
+    AsyncPipe,
+    SpeakerClassBannerComponent
   ]
 })
 export class SpeakerAddEditFormComponent implements OnInit {
@@ -56,6 +58,12 @@ export class SpeakerAddEditFormComponent implements OnInit {
   public universities$: Observable<Array<Partial<University>>>;
   public organizations$: Observable<Array<Partial<Organization>>>;
   public speakerPhotoUrl$: Observable<SafeUrl>;
+
+  /**
+   * The speaker as the banner on the photograph sees it: the university chosen in the form and the year
+   * typed into it, so the banner shows what the public pages will once the form is saved.
+   */
+  public bannerSpeaker$: Observable<Partial<Speaker>>;
 
   public form: UntypedFormGroup;
 
@@ -79,8 +87,21 @@ export class SpeakerAddEditFormComponent implements OnInit {
       season: [null]
     });
 
-    this.universities$ = this.us.getEntitiesForActiveSeason();
+    this.universities$ = this.us.getEntitiesForActiveSeason().pipe(shareReplay(1));
     this.organizations$ = this.os.getEntitiesForActiveSeason();
+
+    this.bannerSpeaker$ = combineLatest([
+      this.form.valueChanges.pipe(startWith(this.form.getRawValue())),
+      this.universities$.pipe(startWith([] as Array<Partial<University>>))
+    ]).pipe(
+      map(
+        ([value, universities]) =>
+          ({
+            university: (universities ?? []).find((university) => university.guid === value.university) ?? null,
+            graduationYear: value.graduationYear ?? ''
+          }) as Partial<Speaker>
+      )
+    );
 
     this.entity$ = this.at.params.pipe(
       map((params) => params.guid),

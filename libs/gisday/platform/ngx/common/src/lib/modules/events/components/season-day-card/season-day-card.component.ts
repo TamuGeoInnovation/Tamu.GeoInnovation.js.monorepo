@@ -32,6 +32,11 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
 
   public readonly rsvps = input<Array<string>>([]);
 
+  /**
+   * False on a past year, whose sessions can no longer be registered for.
+   */
+  public readonly canRegister = input<boolean>(true);
+
   public readonly register = output<string>();
 
   public readonly unregister = output<string>();
