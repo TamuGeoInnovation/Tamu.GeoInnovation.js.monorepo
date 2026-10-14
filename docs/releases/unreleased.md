@@ -238,6 +238,39 @@ FAQ, About and home pages are the current year's whichever year is being looked 
 | No such page | ![1999, which has no season, saying so](../screenshots/1758-past-seasons/after-no-such-year.png) |
 | ![A 2025 session's page offering Registration and Checkin](../screenshots/1758-past-seasons/before-session-2025-details.png) | ![The same page going from the description to its presenters](../screenshots/1758-past-seasons/after-session-2025-details.png) |
 
+### GIS Day: check-in to an in-person session needs the attendee to be there
+
+Anyone could check in to a session from anywhere, so a check-in proved nothing about attending. Now an
+admin can give each venue a **check-in zone**: its corners, typed on the venue form one
+`latitude, longitude` per line, as Google Maps copies them. For an **in-person** session at a venue with
+a zone, pressing Check In asks the browser for the attendee's location, and the page says so beside the
+button ("Check-in for this session uses your location: you need to be at TAMU Rudder Plaza.").
+
+- **Inside the zone**, or within 30 m of it for GPS error indoors, the attendee checks in as before.
+- **Outside it**, a pop-up in the middle of the screen says "You are outside the check-in zone", names the
+  venue, and offers **Check-in anyway** or **Cancel**. With location access blocked, the same pop-up says
+  "Location access blocked".
+- **Every such check-in records where the attendee was**: "in zone", "checked-in outside of zone" or
+  "location access blocked". The location itself is never saved.
+- **Hybrid and virtual sessions**, and venues with no zone (such as the bar for Mappy Hour), check in as
+  before.
+- **No session accepts a check-in before it starts** or more than 15 minutes after it ends. The page
+  already hid the button then; now the API refuses too, so it cannot be done by calling the API directly.
+
+It needs a database migration, `AddCheckInZones`, run on production before this release; the plan is on
+[#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766). Until a venue is given a zone, its sessions check in exactly as today. The 2026 zones
+for the Memorial Student Center, Rudder Plaza and the OMB lobby are on the issue.
+
+The images are a local copy. The location was set in the browser for the outside, inside and blocked
+cases, and the venue form is not pictured: it is on the admin site, which the account used cannot open.
+
+| Before | After |
+| --- | --- |
+| ![The check-in section with only the CHECKIN button](../screenshots/1766-gisday-checkin-zone/before-checkin-section.png) | ![The check-in section with a line saying check-in uses your location at TAMU Rudder Plaza](../screenshots/1766-gisday-checkin-zone/after-checkin-section.png) |
+| Checked in from anywhere | ![A pop-up in the middle of the screen: You are outside the check-in zone, with Cancel and Check-in anyway](../screenshots/1766-gisday-checkin-zone/after-outside-zone-popup.jpg) |
+| No such pop-up | ![The same pop-up titled Location access blocked](../screenshots/1766-gisday-checkin-zone/after-location-blocked-popup.jpg) |
+| | ![The check-in section after Check-in anyway: Your attendance has been registered](../screenshots/1766-gisday-checkin-zone/after-checked-in.jpg) |
+
 ---
 
 ## What to test on dev
@@ -265,6 +298,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day additional sponsorship opportunities ([#1658](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1658)) | Not on dev, for the same reason. Locally, `/sponsors/tamu` | Under the four levels: "Additional Sponsorship Opportunities", ten rows from Daily Coffee Break Sponsor ($1,500 per day) to VGI Competition Sponsor ($1,000), and a "Send Us a Message" button |
 | GIS Day: university banner on a presenter's own page ([#1703](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1703)) | Not on dev, for the same reason. Locally, `/presenters`, then open any presenter | The banner on the card (for example "TAMU '24") is also across the top-left corner of the photograph on the presenter's own page, same text and colour. A presenter whose card has no banner has none on their page. Narrow the window to phone width: the banner stays inside the photograph. The Presenters page itself looks as it did |
 | GIS Day: past years ([#1758](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1758)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/seasons/2025` | 2025's sessions under a "TxGIS Day 2025" header and a banner, with no register boxes. Presenters and Sponsors in the header and footer stay in 2025; Sponsors shows who sponsored, without "Interested in Becoming a Sponsor?". The footer's Past Years list opens each year, and moving from one year to another changes the sessions as well as the header. Opening one of 2025's sessions shows no Registration or Checkin, while a 2026 session still does. `/sessions` is unchanged, and `/seasons/1999` says there is no TxGIS Day 1999 |
+| GIS Day: location-based check-in ([#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)), and the migration has not run anywhere but a local copy. Locally, after `scripts/gisday-local.sh migrate run`: as an administrator, Admin, Venues, give a venue corners; then, during an in-person session there, the session's page | The line "Check-in for this session uses your location" names the venue. Inside the zone, Check In works with no pop-up. Outside it (DevTools, Sensors, set a location elsewhere), a centred pop-up "You are outside the check-in zone" with Cancel and Check-in anyway: Cancel saves nothing, Check-in anyway checks in. Block location access: the pop-up says "Location access blocked". A hybrid session, or a venue with no corners, never asks. Before a session starts there is no button, and the API refuses a check-in |
 
 ---
 
@@ -322,6 +356,9 @@ map's definition only when its map opens ([#1646](https://github.com/TamuGeoInno
   explains it and `CLAUDE_SETUP.md` Phase 6 is the step-by-step ([#1621](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1621), [#1522](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1522)).
 - **A new developer still has to be given one file**, the API's settings, because it holds production's
   Auth0 credentials until a separate development tenant exists ([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623), medium).
+- **The first schema change since `InitialSchema` is waiting for production**: `AddCheckInZones`, for
+  location-based check-in ([#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766)). It adds two nullable columns, so it can run before the
+  release that needs it; the step-by-step plan, for the maintainer, is a comment on the issue.
 - **No development database exists outside a developer's machine.** [#1511](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1511) (medium) is open for
   that: one on the cluster, then a migration run and reverted there, following
   [`docs/gisday-migrations.md`](../gisday-migrations.md). It is the first step of the dev site
