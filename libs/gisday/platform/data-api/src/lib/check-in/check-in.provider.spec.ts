@@ -156,7 +156,7 @@ describe('CheckInProvider', () => {
 
       await provider.insertUserCheckin('e-1', 'acct-1', middleOfMsc);
 
-      expect(eventRepo.findOne).toHaveBeenCalledWith({ where: { guid: 'e-1' }, relations: ['location'] });
+      expect(eventRepo.findOne).toHaveBeenCalledWith({ where: { guid: 'e-1' }, relations: ['location', 'day'] });
     });
 
     it('checks in an attendee inside the zone', async () => {
@@ -215,6 +215,90 @@ describe('CheckInProvider', () => {
       // Fewer than three corners is not a zone.
       withEvent('in-person', msc.slice(0, 2));
       await expect(provider.insertUserCheckin('e-1', 'acct-1', kyleField)).resolves.toEqual({ guid: 'c-new' });
+    });
+  });
+
+  /**
+   * #1766: check-in opens when an event starts and closes 15 minutes after it ends, in the API as on
+   * the page, so nobody checks in early by calling the API directly.
+   */
+  describe('.insertUserCheckin() and when check-in is open', () => {
+    // 18 November 2026, 4:00 to 5:00 PM Central, stored as GIS Day stores them.
+    const event = {
+      guid: 'e-1',
+      mode: 'hybrid',
+      startTime: '16:00:00 GMT-0600 (Central Standard Time)',
+      endTime: '17:00:00 GMT-0600 (Central Standard Time)',
+      day: { date: new Date('2026-11-18T06:00:00Z') }
+    } as unknown as Event;
+
+    let save: jest.Mock;
+
+    beforeEach(() => {
+      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
+      save = jest.fn().mockResolvedValue({ guid: 'c-new' });
+      jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    const at = (iso: string) => jest.useFakeTimers({ now: new Date(iso), doNotFake: ['nextTick', 'setImmediate'] });
+
+    it('refuses a check-in before the event starts, and says when it opens', async () => {
+      at('2026-11-18T21:59:00Z'); // 3:59 PM Central
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
+        new ForbiddenException('Check-in for this event opens when it starts, at 4:00 PM.')
+      );
+      expect(save).not.toHaveBeenCalled();
+    });
+
+    it('refuses a check-in the day before', async () => {
+      at('2026-11-17T22:30:00Z');
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(ForbiddenException);
+    });
+
+    it('accepts a check-in from the moment the event starts', async () => {
+      at('2026-11-18T22:00:00Z'); // 4:00 PM Central
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
+    });
+
+    it('accepts a check-in up to 15 minutes after the event ends', async () => {
+      at('2026-11-18T23:15:00Z'); // 5:15 PM Central
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
+    });
+
+    it('refuses a check-in after that', async () => {
+      at('2026-11-18T23:16:00Z');
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
+        new ForbiddenException('Check-in for this event has closed.')
+      );
+      expect(save).not.toHaveBeenCalled();
+    });
+
+    it('checks the time before the location, so an early attendee is told when, not where', async () => {
+      at('2026-11-18T21:00:00Z');
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
+        ...event,
+        mode: 'in-person',
+        location: {
+          building: 'TAMU Rudder Plaza',
+          checkInZone: [
+            { latitude: 30.613149134544702, longitude: -96.34032883332456 },
+            { latitude: 30.61341806004229, longitude: -96.34058900760697 },
+            { latitude: 30.613209152317065, longitude: -96.34093233037139 }
+          ]
+        }
+      } as unknown as Event);
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens when it starts/);
     });
   });
 

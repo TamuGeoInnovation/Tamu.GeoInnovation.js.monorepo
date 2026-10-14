@@ -147,6 +147,12 @@
           <div>
             <h3 class="trailer-1">Checkin</h3>
 
+            <div *ngIf="needsCheckInLocation(event)" class="trailer-1">
+              <p class="trailer-1"><strong>This session uses location-based check-in.</strong></p>
+              <p class="trailer-1">Check-in opens when the session starts{{ checkInOpensAt(event) ? ', at ' + checkInOpensAt(event) : '' }}, not before. When you press Check In, your browser asks for your location, and you need to be at {{ event.location.building }} (within {{ checkInZoneMargin }} m of it).</p>
+              <p>Your location is only checked, never saved. If you block location access, you cannot check in to this session.</p>
+            </div>
+
             <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInCheckin">
               <ng-container *ngIf="userProfileComplete$ | async; else profileNotComplete">
                 <div *ngIf="(eventElapsed$ | async) === true; else eventHasNotElapsed">
@@ -161,7 +167,6 @@
                   <ng-template #notCheckedIn>
                     <div *ngIf="eventLive$ | async; else eventNotOngoing">
                       <p class="trailer-1">Check-in to register your attendance for this event.</p>
-                      <p class="trailer-1" *ngIf="needsCheckInLocation(event)">Check-in for this session uses your location: you need to be at {{ event.location.building }}.</p>
                       <tamu-gisc-button fit="snug" [look]="'secondary'" value="CHECKIN" (click)="checkin()"></tamu-gisc-button>
                     </div>
                   </ng-template>

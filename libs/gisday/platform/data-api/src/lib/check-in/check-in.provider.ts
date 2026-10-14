@@ -4,7 +4,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { isLatLon, isLatLonPolygon, isWithinPolygon, LatLon } from '@tamu-gisc/common/utils/geometry';
-import { CHECK_IN_ZONE_EVENT_MODE, CHECK_IN_ZONE_MARGIN, checkInZoneMessage } from '@tamu-gisc/gisday/common';
+import {
+  CHECK_IN_ZONE_EVENT_MODE,
+  CHECK_IN_ZONE_MARGIN,
+  checkInWindow,
+  checkInZoneMessage,
+  formatCheckInTime
+} from '@tamu-gisc/gisday/common';
 
 import { CheckIn, Event } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
@@ -35,6 +41,9 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
    * Checks the attendee in. For an in-person event whose location has a check-in zone, `location`
    * must be inside it (#1766); it is checked and not stored. Hybrid and virtual events, and
    * locations with no zone, need no location.
+   *
+   * Any event accepts a check-in only from its start until 15 minutes after its end, as its page
+   * shows the button, so nobody checks in early by calling the API.
    */
   public async insertUserCheckin(eventGuid: string, accountGuid: string, location?: LatLon) {
     const existing = await this.checkInRepo.findOne({
@@ -52,11 +61,22 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
       where: {
         guid: eventGuid
       },
-      relations: ['location']
+      relations: ['location', 'day']
     });
 
     if (!event) {
       throw new UnprocessableEntityException(null, 'Event could not be found');
+    }
+
+    const checkInTimes = checkInWindow(event.day?.date, event.startTime, event.endTime);
+    const now = new Date();
+
+    if (checkInTimes && now < checkInTimes.opens) {
+      throw new ForbiddenException(`Check-in for this event opens when it starts, at ${formatCheckInTime(checkInTimes.opens)}.`);
+    }
+
+    if (checkInTimes && now > checkInTimes.closes) {
+      throw new ForbiddenException('Check-in for this event has closed.');
     }
 
     const zone = event.location?.checkInZone;
