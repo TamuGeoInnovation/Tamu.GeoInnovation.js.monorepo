@@ -99,6 +99,16 @@ output {
     &.unmarked {
       background: transparent;
     }
+
+    // A mark is a pixel wide; a titled one gets a wider, invisible area to hover.
+    &.titled::after {
+      content: '';
+      position: absolute;
+      top: -0.2rem;
+      left: -0.3rem;
+      width: 0.6rem;
+      height: 0.8rem;
+    }
   }
 
   .tick-label {

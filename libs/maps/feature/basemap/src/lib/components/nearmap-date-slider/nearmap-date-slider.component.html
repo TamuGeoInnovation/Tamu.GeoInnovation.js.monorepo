@@ -5,7 +5,15 @@
     @if (loading()) {
     <div class="spinning-loader" aria-label="Loading imagery"></div>
     }
-    <p class="current">{{ currentLabel() }}</p>
+    <div class="current flex flex-row align-center">
+      <button type="button" class="step" (click)="step(-1)" [disabled]="atFirst()" aria-label="Earlier capture" title="Earlier capture">
+        <span class="material-icons" aria-hidden="true">chevron_left</span>
+      </button>
+      <p aria-live="polite">{{ currentLabel() }}</p>
+      <button type="button" class="step" (click)="step(1)" [disabled]="atLast()" aria-label="Later capture" title="Later capture">
+        <span class="material-icons" aria-hidden="true">chevron_right</span>
+      </button>
+    </div>
   </div>
   <tamu-gisc-range [formControl]="position" [min]="0" [max]="sliderLength" [step]="1" [ticks]="ticks()" [showLimits]="false"></tamu-gisc-range>
 </div>

@@ -19,7 +19,7 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { RangeComponent, RangeTick } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { BasemapGalleryService } from '../../services/basemap-gallery/basemap-gallery.service';
-import { SLIDER_LENGTH, dayOf, positionOfDay, spreadPositions } from './nearmap-timeline';
+import { SLIDER_LENGTH, dayOf, spreadPositions } from './nearmap-timeline';
 
 import esri = __esri;
 
@@ -58,28 +58,26 @@ export class NearmapDateSliderComponent implements OnInit, OnDestroy {
 
   public readonly sliderLength = SLIDER_LENGTH;
 
-  /** A mark per capture, and each year's label at its 1 January, without a mark. */
+  /**
+   * A mark per capture, unlabelled but for the two ends - the first capture's year and "Latest" - so
+   * the spacing reads as a timeline without fifteen dates crowding it. Each mark shows its date on
+   * hover; the date the slider is on is beside the title.
+   */
   public readonly ticks = computed<RangeTick[]>(() => {
     const steps = this.steps();
     const positions = this.positions();
+    const last = steps.length - 1;
 
-    if (steps.length === 0) {
-      return [];
-    }
-
-    const days = steps.map((capture) => dayOf(capture.date));
-    const firstYear = Number(steps[0].date.slice(0, 4));
-    const lastYear = Number(steps[steps.length - 1].date.slice(0, 4));
-    const yearStep = lastYear - firstYear > 12 ? 2 : 1;
-    const years: RangeTick[] = [];
-
-    for (let year = firstYear + 1; year <= lastYear; year += yearStep) {
-      years.push({ value: positionOfDay(dayOf(`${year}-01-01`), days, positions), label: `${year}`, mark: false });
-    }
-
-    return [...positions.map((value) => ({ value })), ...years];
+    return steps.map((capture, i) => ({
+      value: positions[i],
+      title: capture.label,
+      label: i === 0 && last > 0 ? capture.date.slice(0, 4) : i === last ? 'Latest' : undefined
+    }));
   });
 
+  /** Whether the slider is on the oldest capture, or on the latest, for the step buttons. */
+  public readonly atFirst = computed(() => this.nearest()?.index === 0);
+  public readonly atLast = computed(() => this.nearest()?.index === this.steps().length - 1);
   public readonly visible = computed(() => this.steps().length > 0);
 
   /** Where the slider is while it is dragged, before anything is requested. */
@@ -109,7 +107,7 @@ export class NearmapDateSliderComponent implements OnInit, OnDestroy {
       return '';
     }
 
-    return nearest.index === this.steps().length - 1 ? `Latest (${nearest.capture.label})` : nearest.capture.label;
+    return nearest.index === this.steps().length - 1 ? `${nearest.capture.label} (latest)` : nearest.capture.label;
   });
 
   public readonly loading = this.bs.nearmapLoading;
@@ -153,32 +151,43 @@ export class NearmapDateSliderComponent implements OnInit, OnDestroy {
     this.position.valueChanges.pipe(debounceTime(400), takeUntil(this._destroy$)).subscribe(() => {
       const nearest = this.nearest();
 
-      if (!nearest) {
-        return;
+      if (nearest) {
+        this.choose(nearest.index);
       }
-
-      const snapped = this.positions()[nearest.index];
-      const date = nearest.index === this.steps().length - 1 ? undefined : nearest.capture.date;
-
-      this.position.setValue(snapped, { emitEvent: false });
-      this.at.set(snapped);
-
-      if (date === this.bs.nearmapDate()) {
-        return;
-      }
-
-      this.anl.eventTrack.next({
-        action: 'nearmap_date_select',
-        properties: {
-          category: 'ui_interaction',
-          gstCustom: date ?? 'latest'
-        }
-      });
-
-      this.bs.setNearmapCapture(date);
     });
   }
 
+  /** Moves one capture earlier (`-1`) or later (`1`): the way to captures whose ticks sit close. */
+  public step(by: -1 | 1): void {
+    const nearest = this.nearest();
+
+    if (nearest) {
+      this.choose(Math.min(Math.max(nearest.index + by, 0), this.steps().length - 1));
+    }
+  }
+
+  /** Puts the slider on a capture, by its place oldest first, and shows it. The last is the latest. */
+  private choose(index: number): void {
+    const snapped = this.positions()[index];
+    const date = index === this.steps().length - 1 ? undefined : this.steps()[index].date;
+
+    this.position.setValue(snapped, { emitEvent: false });
+    this.at.set(snapped);
+
+    if (date === this.bs.nearmapDate()) {
+      return;
+    }
+
+    this.anl.eventTrack.next({
+      action: 'nearmap_date_select',
+      properties: {
+        category: 'ui_interaction',
+        gstCustom: date ?? 'latest'
+      }
+    });
+
+    this.bs.setNearmapCapture(date);
+  }
   public ngOnDestroy(): void {
     this._destroy$.next();
     this._destroy$.complete();

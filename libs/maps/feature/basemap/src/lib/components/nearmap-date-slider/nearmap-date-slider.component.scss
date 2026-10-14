@@ -1,9 +1,10 @@
 @import 'libs/sass/modules/loaders';
 
 // Moved into the view's manual UI container, which spans the map, so this centres on the map itself.
+// Raised clear of the "View as production" switch a development host shows at the bottom centre.
 :host {
   position: absolute;
-  bottom: 2rem;
+  bottom: 3.75rem;
   left: 50%;
   transform: translateX(-50%);
   width: min(26rem, 75%);
@@ -18,10 +19,34 @@
 .title p {
   padding-bottom: 0;
   font-weight: 600;
+}
 
-  &.current {
-    margin-left: auto;
+.current {
+  margin-left: auto;
+
+  p {
     font-weight: normal;
+    min-width: 7.5rem;
+    text-align: center;
+  }
+}
+
+// Bare chevrons beside the date. The shared `.button` is a full-width pill, too large for this.
+.step {
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  line-height: 0;
+  cursor: pointer;
+
+  .material-icons {
+    font-size: 1.25rem;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
   }
 }
 

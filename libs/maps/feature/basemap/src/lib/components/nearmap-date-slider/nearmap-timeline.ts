@@ -47,16 +47,3 @@ export function spreadPositions(days: number[]): number[] {
 
   return days.map((_, i) => (i * SLIDER_LENGTH) / (days.length - 1));
 }
-
-/** Where a day falls on the slider, between the positions of the captures either side of it. */
-export function positionOfDay(day: number, days: number[], positions: number[]): number {
-  const after = days.findIndex((d) => d >= day);
-
-  if (after <= 0) {
-    return after === 0 ? positions[0] : positions[positions.length - 1];
-  }
-
-  const share = (day - days[after - 1]) / (days[after] - days[after - 1]);
-
-  return positions[after - 1] + share * (positions[after] - positions[after - 1]);
-}
