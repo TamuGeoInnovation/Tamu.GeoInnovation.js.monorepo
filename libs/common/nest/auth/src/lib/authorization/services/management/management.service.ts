@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  ServiceUnavailableException,
   UnprocessableEntityException
 } from '@nestjs/common';
 
@@ -20,6 +21,14 @@ export class ManagementService {
   }
 
   private _initManagement() {
+    if (this.config.disabled) {
+      Logger.warn(
+        'Auth0 management is disabled: anything that reads or changes Auth0 users answers 503.',
+        'ManagementService'
+      );
+      return;
+    }
+
     Logger.log('Initializing Auth0 management client...', 'ManagementService');
 
     if (!this.config.domain || !this.config.clientId || !this.config.clientSecret) {
@@ -33,13 +42,28 @@ export class ManagementService {
     });
   }
 
+  /**
+   * The Auth0 client, or a 503 when management is disabled, so the API can run without the
+   * management credentials (locally, #1759).
+   */
+  private get client(): ManagementClient {
+    if (!this._client) {
+      throw new ServiceUnavailableException('Auth0 management is not configured on this server.');
+    }
+
+    return this._client;
+  }
+
   public async getUserMetadata(
     userId: string,
     filters?: Auth0UserProfileFilters,
     suppressError?: boolean
   ): Promise<Auth0UserProfile> {
+    // Outside the try, so a disabled client answers 503 rather than 500.
+    const client = this.client;
+
     try {
-      const user = await this._client.getUser({ id: userId });
+      const user = await client.getUser({ id: userId });
 
       if (!user) {
         throw new NotFoundException();
@@ -63,7 +87,7 @@ export class ManagementService {
    * @param {Auth0UserProfileFilters} filters Defines and limits which properties can be updated. This serves as a safety mechanism to prevent unwanted updates to other application metadata or user grouping properties.
    */
   public async updateUserMetadata(userId: string, info: Auth0UserProfile, filters: Auth0UserProfileFilters) {
-    const user = await this._client.getUser({ id: userId });
+    const user = await this.client.getUser({ id: userId });
 
     if (!user) {
       throw new NotFoundException('User not found.');
@@ -94,7 +118,7 @@ export class ManagementService {
         }
       }
 
-      const updatedMetadata = await this._client.updateUser({ id: userId }, payload);
+      const updatedMetadata = await this.client.updateUser({ id: userId }, payload);
 
       return this._composeMetadata(updatedMetadata, filters);
     } catch (err) {
@@ -104,7 +128,7 @@ export class ManagementService {
   }
 
   public async getUsers(filters?: Auth0UserProfileFilters) {
-    const users = await this._client.getUsers({
+    const users = await this.client.getUsers({
       sort: 'name:1'
     });
 
@@ -235,6 +259,13 @@ export interface ManagementConfig {
   domain: string;
   clientId: string;
   clientSecret: string;
+
+  /**
+   * Run without an Auth0 management client. Only for local development, where no management
+   * credentials are given out: every method answers 503. Without it, missing credentials stop the
+   * application at startup.
+   */
+  disabled?: boolean;
 }
 
 export interface Auth0UserProfile {

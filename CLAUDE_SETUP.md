@@ -230,19 +230,21 @@ Stop it with `docker rm -f aggiemap-dev`.
 [`docs/gisday-local.md`](docs/gisday-local.md) explains each part; this phase is only the steps and
 what to expect after each.
 
-### What the user must already have
+### The API's settings
 
 One file, in a folder outside the repository (`GISDAY_LOCAL_DIR`, default `C:/TAMU/gisday-local`):
-`gisday-api.local.env`, the API's settings, started from `apps/gisday-nest/local.env.sample`.
+`gisday-api.local.env`, a copy of `apps/gisday-nest/local.env.sample`. The sample holds no secrets and
+works as it stands; nobody is given production Auth0 credentials for local use
+([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623)), so the API
+runs without them ([#1759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1759)).
 
 ```
-ls "${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}"
+mkdir -p "${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}"
+cp -n apps/gisday-nest/local.env.sample "${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}/gisday-api.local.env"
 ```
 
-**Expect:** `gisday-api.local.env` listed. If it is missing, stop and ask the user: it comes from the
-maintainer until settings with no production secrets exist
-([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623)). Do not
-write it yourself, do not print its contents, and never copy it into the repository.
+**Expect:** `gisday-api.local.env` in that folder. `-n` keeps one that is already there. Never copy it
+back into the repository.
 
 Nothing else is needed. The `db` step writes the database's local passwords (`local-db.env`) the
 first time it runs, and the database comes from the scrubbed copy in the repository
@@ -274,6 +276,9 @@ only once. To change the schema, follow [`docs/gisday-migrations.md`](docs/gisda
 - **Uploaded images** (sponsor logos, speaker photos) are missing: they are not in the database
   ([#1625](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1625)).
 - **Email** is never sent, deliberately.
+- **Anything that reads or changes Auth0 users** (the admin Users page, a signed-in user's profile)
+  answers 503: the local API has no management credentials
+  ([#1759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1759)).
 - [`docs/gisday-local.md`](docs/gisday-local.md#things-that-look-broken) lists errors that look like
   faults and are not.
 

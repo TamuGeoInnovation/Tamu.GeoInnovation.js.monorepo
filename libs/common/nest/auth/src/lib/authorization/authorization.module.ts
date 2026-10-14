@@ -28,7 +28,8 @@ export class AuthorizationModule {
           useValue: {
             domain: config.management.domain,
             clientId: config.management.clientId,
-            clientSecret: config.management.clientSecret
+            clientSecret: config.management.clientSecret,
+            disabled: config.management.disabled
           }
         },
         JwtStrategy,

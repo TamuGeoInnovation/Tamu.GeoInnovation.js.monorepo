@@ -20,12 +20,20 @@ with the AggieMap dev server (see CLAUDE.md), so that volume must match the chec
 
 - `local-db.env`: `SA_PASSWORD` and `GISDAY_APP_PASSWORD`, local passwords for this container only.
   The `db` step writes it, with new random values, the first time it runs.
-- `gisday-api.local.env`: the API's settings. Start from `apps/gisday-nest/local.env.sample`. The
-  database settings must point at `gisday-db`, never production or the shared dev server, and every
-  `MAILROOM_` value stays blank so no email is sent. Leave `TYPEORM_PASSWORD` blank; the script
-  passes the one it wrote. This is the one file a new developer has to be given (#1623).
+- `gisday-api.local.env`: the API's settings, a copy of `apps/gisday-nest/local.env.sample`, which
+  holds no secrets and works as it stands. The database settings must point at `gisday-db`, never
+  production or the shared dev server, and every `MAILROOM_` value stays blank so no email is sent.
+  Leave `TYPEORM_PASSWORD` blank; the script passes the one it wrote.
+  `AUTH0_MANAGEMENT_DISABLED=true` lets the API start without Auth0 management credentials, which
+  nobody is given for local use (#1623, #1759).
 
-The database itself needs nothing from anyone: `restore` uses the scrubbed copy in the repository.
+Nothing needs to come from anyone: the settings are a copy of the sample, and `restore` uses the
+scrubbed copy of the database in the repository.
+
+```bash
+mkdir -p C:/TAMU/gisday-local
+cp apps/gisday-nest/local.env.sample C:/TAMU/gisday-local/gisday-api.local.env
+```
 
 ## Steps, in order
 
@@ -121,15 +129,17 @@ serve configuration adds `apps/gisday-angular/proxy.local.json`, which sends tho
 - Sign-in, with your own GIS Day account. The `local` serve configuration swaps in
   `apps/gisday-angular/src/environments/environment.local.ts`, which holds the settings of the
   "GIS Day (local development)" Auth0 application. That application accepts only sign-ins that return
-  to `http://localhost:4201`, so the port cannot be changed. It is the same Auth0 tenant as production:
-  the accounts are real, and the local API holds whatever Auth0 credentials its settings file was
-  given, so do not edit users from a local copy.
+  to `http://localhost:4201`, so the port cannot be changed. It is the same Auth0 tenant as production,
+  so the accounts are real.
 
 What does not, yet:
 
 - **Real people, logos and photographs.** The scrubbed copy has made-up speakers and one placeholder
   image for every upload; the real files are on the production site, not in the database.
 - **Email**, deliberately: every `MAILROOM_` value is blank.
+- **Anything that reads or changes Auth0 users** answers `503 Service Unavailable`: the admin Users
+  page, a signed-in user's profile, and class and competition lookups by user. The local API has no
+  management credentials (#1759) until a development tenant with test users exists (#1623).
 
 ## Things that look broken
 

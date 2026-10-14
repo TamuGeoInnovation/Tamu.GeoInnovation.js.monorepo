@@ -58,7 +58,8 @@ import { GISDAY_COMPETITIONS_ENTITIES, GisdayCompetitionsDataApiModule } from '@
       management: {
         domain: environment.auth0_management_domain,
         clientId: environment.auth0_management_clientId,
-        clientSecret: environment.auth0_management_clientSecret
+        clientSecret: environment.auth0_management_clientSecret,
+        disabled: environment.auth0_management_disabled
       }
     }),
     CheckInModule,
