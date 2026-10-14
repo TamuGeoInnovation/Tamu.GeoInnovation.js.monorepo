@@ -271,6 +271,25 @@ placeholders are the local copy and not part of the change.
 | ![The 2025 career fair's presenters, names only, in no order](../screenshots/1768-presenter-affiliation/before-career-fair-presenters.jpg) | ![The same list grouped by company, each with their company underneath and Aggies with their class year](../screenshots/1768-presenter-affiliation/after-career-fair-presenters.png) |
 | | ![The list at phone width](../screenshots/1768-presenter-affiliation/after-career-fair-presenters-phone.png) |
 
+### GIS Day: one event time that cannot be read no longer breaks the site
+
+On 14 October an event's start time was saved as the text "Invalid Date". From then on the event
+could not be opened in the admin pages to correct it, and the public Sessions page and the session's
+own page failed on it ([#1772](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1772)). The data was repaired directly in the database the same afternoon.
+
+Now a time that cannot be read is shown as "Time TBD" on the Sessions page and as no time on the
+session's page, and the rest of each page draws as usual. The event form opens such an event with an
+empty time to fill in, never saves a time that is not valid, and the time picker builds a newly picked
+time on today's date when the stored one cannot be read, so choosing a time always fixes it.
+
+The images are the local site, with one local event's start time set to "Invalid Date" as production's
+was. Before, the page logged `Unable to convert "Invalid Date" into a date`; after, it logs nothing.
+
+| Before | After |
+| --- | --- |
+| ![The Sessions page on the code production ran, failing on the event](../screenshots/1772-invalid-event-time/before-sessions.png) | ![The Sessions page drawing every session](../screenshots/1772-invalid-event-time/after-sessions.png) |
+| ![The session's page failing](../screenshots/1772-invalid-event-time/before-session-page.png) | ![The session's page drawing](../screenshots/1772-invalid-event-time/after-session-page.png) |
+
 ---
 
 ## What to test on dev
@@ -299,6 +318,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day additional sponsorship opportunities ([#1658](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1658)) | Not on dev, for the same reason. Locally, `/sponsors/tamu` | Under the four levels: "Additional Sponsorship Opportunities", ten rows from Daily Coffee Break Sponsor ($1,500 per day) to VGI Competition Sponsor ($1,000), and a "Send Us a Message" button |
 | GIS Day: university banner on a presenter's own page ([#1703](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1703)) | Not on dev, for the same reason. Locally, `/presenters`, then open any presenter | The banner on the card (for example "TAMU '24") is also across the top-left corner of the photograph on the presenter's own page, same text and colour. A presenter whose card has no banner has none on their page. Narrow the window to phone width: the banner stays inside the photograph. The Presenters page itself looks as it did |
 | GIS Day: past years ([#1758](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1758)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/seasons/2025` | 2025's sessions under a "TxGIS Day 2025" header and a banner, with no register boxes. Presenters and Sponsors in the header and footer stay in 2025; Sponsors shows who sponsored, without "Interested in Becoming a Sponsor?". The footer's Past Years list opens each year, and moving from one year to another changes the sessions as well as the header. Opening one of 2025's sessions shows no Registration or Checkin, while a 2026 session still does. `/sessions` is unchanged, and `/seasons/1999` says there is no TxGIS Day 1999 |
+| GIS Day: an unreadable event time no longer breaks the site ([#1772](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1772)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: Admin, Events, edit any event and change its start time | The time can be picked from the list and typed, and saving keeps it. Sessions and the session's page show the new time. No event on production has a bad time now, so the broken case is checked only locally |
 | GIS Day: presenters' company and class year, grouped by company ([#1768](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1768), [#1769](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1769)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally or on production, any session's page, e.g. the career fair | Under each presenter's name is their company. Texas A&M former students have their class year after their name ('14). The people from one company are next to each other, companies in alphabetical order, and people without a company last |
 
 ---
