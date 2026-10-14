@@ -40,13 +40,7 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import { getGeolocation, isLatLonPolygon, LatLon } from '@tamu-gisc/common/utils/geometry';
-import {
-  CHECK_IN_ZONE_EVENT_MODE,
-  CHECK_IN_ZONE_MARGIN,
-  CheckInZoneRefusal,
-  checkInWindow,
-  formatCheckInTime
-} from '@tamu-gisc/gisday/common';
+import { CHECK_IN_ZONE_EVENT_MODE, CheckInZoneRefusal } from '@tamu-gisc/gisday/common';
 import { ConfirmModalComponent, ConfirmModalData, ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 @Component({
@@ -84,7 +78,6 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   private readonly modal = inject(ModalService);
 
   public appRoles = GISDayRoles;
-  public readonly checkInZoneMargin = CHECK_IN_ZONE_MARGIN;
 
 
   public event$: Observable<Partial<Event>>;
@@ -362,16 +355,6 @@ export class EventDetailComponent implements OnInit, OnDestroy {
    */
   public needsCheckInLocation(event: Partial<Event>): boolean {
     return event?.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(event?.location?.checkInZone);
-  }
-
-  /**
-   * When check-in to this event opens, in Central time, for example `4:00 PM`; empty when its times
-   * cannot be read.
-   */
-  public checkInOpensAt(event: Partial<Event>): string {
-    const times = checkInWindow(event?.day?.date, event?.startTime, event?.endTime);
-
-    return times ? formatCheckInTime(times.opens) : '';
   }
 
   public updateAttendance() {
