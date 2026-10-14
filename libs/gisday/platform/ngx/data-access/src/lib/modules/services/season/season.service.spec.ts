@@ -61,6 +61,34 @@ describe('SeasonService', () => {
     http.verify();
   });
 
+  describe('.isPastSeasonDay()', () => {
+    const withDays = { ...active, days: [{ guid: 'day-2026-1' }, { guid: 'day-2026-2' }] };
+
+    it("is true for a day that is not one of the active season's", async () => {
+      const result = firstValueFrom(service.isPastSeasonDay('day-2025-1'));
+
+      http.expectOne('api/seasons/active').flush(withDays);
+
+      await expect(result).resolves.toBe(true);
+    });
+
+    it("is false for one of the active season's days", async () => {
+      const result = firstValueFrom(service.isPastSeasonDay('day-2026-2'));
+
+      http.expectOne('api/seasons/active').flush(withDays);
+
+      await expect(result).resolves.toBe(false);
+    });
+
+    it('is false for a session with no day', async () => {
+      const result = firstValueFrom(service.isPastSeasonDay(undefined));
+
+      http.expectOne('api/seasons/active').flush(withDays);
+
+      await expect(result).resolves.toBe(false);
+    });
+  });
+
   describe('.seasonForRoute()', () => {
     /**
      * Regression coverage (#1758). Moving from 2025's Sessions to 2024's showed 2024 in the header

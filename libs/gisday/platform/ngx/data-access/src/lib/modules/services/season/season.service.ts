@@ -124,6 +124,18 @@ export class SeasonService extends BaseService<Season> {
   }
 
   /**
+   * True when a season day is not one of the active season's days, so the session on it is from a past
+   * year and can no longer be registered or checked in for (#1758). A session with no day is not
+   * treated as past.
+   */
+  public isPastSeasonDay(dayGuid: string | undefined): Observable<boolean> {
+    return this.activeSeason$.pipe(
+      take(1),
+      map((active) => Boolean(dayGuid) && !(active?.days ?? []).some((day) => day.guid === dayGuid))
+    );
+  }
+
+  /**
    * The season a page is opened for, read from the route being opened rather than from
    * `viewedSeason$`: a page starts before the navigation ends, while `viewedSeason$` still holds the
    * year the visitor is leaving.
