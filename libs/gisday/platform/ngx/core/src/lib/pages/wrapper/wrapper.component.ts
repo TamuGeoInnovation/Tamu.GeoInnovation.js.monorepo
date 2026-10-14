@@ -1,13 +1,22 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { HeaderComponent } from '@tamu-gisc/gisday/platform/ngx/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 import { FooterComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-wrapper',
   templateUrl: './wrapper.component.html',
   styleUrls: ['./wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [HeaderComponent, RouterOutlet, FooterComponent]
+  imports: [HeaderComponent, RouterOutlet, RouterLink, AsyncPipe, FooterComponent]
 })
-export class WrapperComponent {}
+export class WrapperComponent {
+  private readonly seasons = inject(SeasonService);
+
+  // On a past year's pages, a banner says which year is shown and links back to this year (#1758).
+  public viewedYear$ = this.seasons.viewedYear$;
+  public viewedSeason$ = this.seasons.viewedSeason$;
+  public isPastSeason$ = this.seasons.isPastSeason$;
+}

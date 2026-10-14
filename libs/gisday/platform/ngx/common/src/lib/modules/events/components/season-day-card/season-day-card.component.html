@@ -3,7 +3,7 @@
 
   @if ((events$ | async)?.length > 0) { @if ((filteredEvents$ | async)?.length > 0) { @for (event of filteredEvents$ | async; track event) {
   <div>
-    <tamu-gisc-event-row [event]="event" [day]="seasonDay()" (rowToggle)="handoff(event, $event)" [rsvps]="rsvpsForDay$ | async"></tamu-gisc-event-row>
+    <tamu-gisc-event-row [event]="event" [day]="seasonDay()" (rowToggle)="handoff(event, $event)" [rsvps]="rsvpsForDay$ | async" [canRegister]="canRegister()"></tamu-gisc-event-row>
   </div>
   } } @else {
   <div class="row">

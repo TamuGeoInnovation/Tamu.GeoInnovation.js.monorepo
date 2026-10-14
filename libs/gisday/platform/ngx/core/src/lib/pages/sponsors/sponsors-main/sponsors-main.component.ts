@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
-import { Observable, filter, mergeMap, pipe, shareReplay, toArray } from 'rxjs';
+import { Observable, filter, map, mergeMap, of, pipe, shareReplay, switchMap, toArray } from 'rxjs';
 
 import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
-import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { RouterLink } from '@angular/router';
+import { SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { AssetUrlPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
@@ -16,6 +16,10 @@ import { AssetUrlPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 })
 export class SponsorsMainComponent implements OnInit {
   private readonly ss = inject(SponsorService);
+  private readonly seasons = inject(SeasonService);
+  private readonly route = inject(ActivatedRoute);
+
+  public isPastSeason$: Observable<boolean>;
 
   private _sponsors$: Observable<Array<Partial<Sponsor>>>;
   public rasterSponsors$: Observable<Array<Partial<Sponsor>>>;
@@ -24,7 +28,20 @@ export class SponsorsMainComponent implements OnInit {
   public pointSponsors$: Observable<Array<Partial<Sponsor>>>;
 
   public ngOnInit(): void {
-    this._sponsors$ = this.ss.getEntitiesForActiveSeason().pipe(shareReplay(1));
+    // A past year shows that year's sponsors; the current year keeps its own lookup (#1758).
+    const viewed = this.seasons.seasonForRoute(this.route.snapshot).pipe(shareReplay(1));
+
+    this.isPastSeason$ = viewed.pipe(map(({ isPast }) => isPast));
+    this._sponsors$ = viewed.pipe(
+      switchMap(({ season, isPast }) => {
+        if (!isPast) {
+          return this.ss.getEntitiesForActiveSeason();
+        }
+
+        return season ? this.ss.getEntitiesForSeason(season.guid) : of([]);
+      }),
+      shareReplay(1)
+    );
     this.rasterSponsors$ = this._sponsors$.pipe(this.filterSponsors('raster'));
     this.polygonSponsors$ = this._sponsors$.pipe(this.filterSponsors('polygon'));
     this.lineSponsors$ = this._sponsors$.pipe(this.filterSponsors('line'));

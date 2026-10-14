@@ -17,7 +17,13 @@ import {
 } from 'rxjs';
 
 import { Event, EventAttendanceDto, GisDayAppMetadata } from '@tamu-gisc/gisday/platform/data-api';
-import { CheckinService, EventService, RsvpService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import {
+  CheckinService,
+  EventService,
+  RsvpService,
+  SeasonService,
+  UserService
+} from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GISDayRoles, parseDateStrings } from '@tamu-gisc/gisday/platform/ngx/common';
@@ -63,6 +69,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   private readonly ns = inject(NotificationService);
   private readonly us = inject(UserService);
   private readonly fb = inject(UntypedFormBuilder);
+  private readonly seasonService = inject(SeasonService);
 
   public appRoles = GISDayRoles;
 
@@ -81,6 +88,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   );
   public eventLive$: Observable<boolean>;
   public eventElapsed$: Observable<boolean>;
+  public isPastSeason$: Observable<boolean>;
 
   public attendanceForm: UntypedFormGroup;
   public isCheckinOpen = false;
@@ -118,6 +126,11 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     this.event$ = this.route.params.pipe(
       map((params) => params['guid']),
       switchMap((eventGuid) => this.eventService.getEvent(eventGuid)),
+      shareReplay()
+    );
+
+    this.isPastSeason$ = this.event$.pipe(
+      switchMap((event) => this.seasonService.isPastSeasonDay(event?.day?.guid)),
       shareReplay()
     );
 

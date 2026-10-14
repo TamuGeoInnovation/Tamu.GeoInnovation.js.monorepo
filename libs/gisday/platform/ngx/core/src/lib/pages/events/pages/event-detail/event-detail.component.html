@@ -117,7 +117,8 @@
           <div class="trailer-2 session-description" *ngIf="event?.abstract && event.abstract.length > 0" [innerHTML]="event.abstract | markdownParse"></div>
         </div>
 
-        <div class="trailer-1 flex flex-row half-children wrap">
+        <!-- A past year's session can no longer be registered or checked in for (#1758). -->
+        <div class="trailer-1 flex flex-row half-children wrap" *ngIf="(isPastSeason$ | async) === false">
           <div>
             <h3 class="trailer-1">Registration</h3>
 
