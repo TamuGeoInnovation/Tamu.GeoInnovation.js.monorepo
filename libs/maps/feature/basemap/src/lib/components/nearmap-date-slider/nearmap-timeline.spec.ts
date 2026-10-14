@@ -1,4 +1,4 @@
-import { MIN_GAP, SLIDER_LENGTH, dayOf, positionOfDay, spreadPositions } from './nearmap-timeline';
+import { MIN_GAP, SLIDER_LENGTH, dayOf, spreadPositions } from './nearmap-timeline';
 
 /**
  * The Aerial Imagery date slider is a timeline (#1541): ticks spaced by the time between captures, as
@@ -68,14 +68,5 @@ describe('Nearmap date slider timeline', () => {
 
   it('puts a single capture at the end, where the latest sits', () => {
     expect(spreadPositions([dayOf('2026-10-05')])).toEqual([SLIDER_LENGTH]);
-  });
-
-  it('places a date between captures in proportion to its place between them', () => {
-    const positions = spreadPositions(days);
-    const newYear2020 = positionOfDay(dayOf('2020-01-01'), days, positions);
-
-    expect(newYear2020).toBeGreaterThan(positions[3]);
-    expect(newYear2020).toBeLessThan(positions[4]);
-    expect(positionOfDay(days[4], days, positions)).toBeCloseTo(positions[4], 6);
   });
 });

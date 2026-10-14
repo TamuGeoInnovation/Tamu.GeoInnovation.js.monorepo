@@ -15,6 +15,20 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### The Football Tailgating map opens on the campus basemap (dev only)
+
+The Tailgating map opened on whatever basemap a visitor last chose on any map. For anyone who last
+chose Aerial Imagery that was no basemap at all, and with it no zoom levels: the zones drew as a speck
+on a white page ([#1692](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1692)). It now always opens on the campus basemap - Aggieland vector,
+September 2026, on dev - since its tents and zones are read against campus ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)). A link
+naming a `?basemap=` still opens on that one, and the other event maps are unchanged.
+
+Any event map can now ask for this with `basemap: 'campus'` in its configuration. On production it
+opens on the campus basemap production has.
+
+| Before, with Aerial Imagery last chosen | After |
+| --- | --- |
+| ![The Tailgating map with no basemap, its zones a speck in the middle](../screenshots/tailgating-campus-basemap/before.png) | ![The Tailgating map on the September 2026 campus basemap](../screenshots/tailgating-campus-basemap/after.png) |
 ### In 3D, the basemap panel says which basemaps it cannot show (dev only)
 
 On dev, with the map in 3D, the vector campus basemap could not be chosen again after another had
@@ -30,6 +44,19 @@ tiles are republished in Web Mercator ([#1741](https://github.com/TamuGeoInnovat
 | --- | --- |
 | ![The panel in 3D marking the vector basemap as chosen](../screenshots/vector-basemap-in-3d/before-dev-3d-vector-offered.png) | ![The panel in 3D with the vector basemap greyed and marked 2D only](../screenshots/vector-basemap-in-3d/after-3d-vector-unavailable.png) |
 
+### The Aerial Imagery timeline sits clear of "View as production", with arrows (dev only)
+
+The timeline that steps Aerial Imagery back through Nearmap's captures ([#1541](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1541)) sat under the
+"View as production" switch a dev host shows at the bottom of the window, and its year labels, placed
+between captures, could sit beside the wrong ticks ([#1750](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1750)).
+
+It now sits above the switch. The ticks are unlabelled but for "2016" and "Latest" at the ends; each
+shows its date on hover, and the date the timeline is on is beside the title, with ‹ › arrows to step
+one capture at a time - the easy way to the captures days apart, 22 and 26 November 2025.
+
+| Before | After |
+| --- | --- |
+| ![The timeline's year labels under the View as production switch](../screenshots/nearmap-timeline-restyle/before.png) | ![The timeline above the switch, with the date between arrows](../screenshots/nearmap-timeline-restyle/after.png) |
 ### GIS Day: an event's time is chosen from a list again
 
 Editing an event's start or end time on the GIS Day admin pages had stopped offering times to choose
@@ -51,6 +78,26 @@ sign-in.
 | Before | After |
 | --- | --- |
 | ![The picker open on a single typed time field](../screenshots/1747-time-picker-options/before-time-picker.png) | ![The picker open with a list of times, 3:45 PM highlighted](../screenshots/1747-time-picker-options/after-time-picker.png) |
+
+### GIS Day: the admin speaker form shows the university banner, and follows the form
+
+Editing a speaker on the admin pages showed the photograph without the university and class-year banner
+the public Presenters page and presenter page draw on it ([#1703](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1703)). It is now on the photograph
+in the form too, and it changes as the University and Graduation Year fields change, before saving, so an
+administrator sees what the public pages will show. Clearing the university removes it
+([#1757](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1757)).
+
+The photograph in the form is now shown at the size of a presenter's card, so the banner is drawn exactly
+as the card draws it. The banner's look, written out twice in the app's stylesheet, is now one shared
+style used by the card, the presenter page and the form; the card and presenter page measure the same as
+before.
+
+The images are the form on a scratch page of the local site, with a sample photograph, because the admin
+pages need a sign-in.
+
+| Before | After | After changing the university and year |
+| --- | --- | --- |
+| ![The form's photograph with no banner](../screenshots/1757-admin-speaker-banner/before-admin-speaker-form.png) | ![The photograph with a maroon TAMU '24 banner](../screenshots/1757-admin-speaker-banner/after-admin-speaker-form.png) | ![The same photograph with a purple LSU '22 banner](../screenshots/1757-admin-speaker-banner/after-admin-speaker-form-changed.png) |
 
 ### GIS Day: the 2026 VGI competition, the Monument Trail Challenge
 
@@ -167,6 +214,30 @@ photographs, so the grey placeholder in the "after" column is the local copy and
 | ![The same page at phone width, no banner](../screenshots/1703-presenter-class-banner/before-presenter-phone.png) | ![The page at phone width with the banner clipped to the photograph](../screenshots/1703-presenter-class-banner/after-presenter-phone.png) |
 | ![The Presenters page, each card with its banner](../screenshots/1703-presenter-class-banner/before-presenters-list.png) | ![The Presenters page, the banners in the same place](../screenshots/1703-presenter-class-banner/after-presenters-list.png) |
 
+### GIS Day: past years' sessions, presenters and sponsors
+
+Every year's sessions, presenters and sponsors were still in the database, but the site only ever
+showed the current year, so last year's programme could not be looked up: `/seasons/2025` on
+production today is a blank page. `/seasons/2025` now opens
+2025's Sessions, and from there its Presenters and Sponsors, drawn from that year's records exactly
+as the current year's pages are ([#1758](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1758)).
+
+On a past year the header says which year it is, a banner says so and links back to this year, and the
+Sessions, Presenters and Sponsors links stay in that year. Registering for a session (on the list and
+on a session's own page, where check-in goes too), the profile reminder, and the sponsor page's "become a sponsor" and logistics sections are left out, since they are
+about this year. The footer lists every past year. A year with no TxGIS Day says so. The competitions,
+FAQ, About and home pages are the current year's whichever year is being looked at.
+
+| Before | After |
+| --- | --- |
+| ![A blank white page: production today sends /seasons/2025 to the home address and draws nothing](../screenshots/1758-past-seasons/before-production-seasons-2025.png) | ![2025's Sessions, headed TxGIS Day 2025, with the past-year banner](../screenshots/1758-past-seasons/after-sessions-2025.png) |
+| No way to reach a past year | ![The footer with a Past Years list: 2025, 2024, 2023](../screenshots/1758-past-seasons/after-footer-past-years.png) |
+| No such page | ![2024's Presenters](../screenshots/1758-past-seasons/after-presenters-2024.png) |
+| No such page | ![2024's Sponsors, without the become-a-sponsor section](../screenshots/1758-past-seasons/after-sponsors-2024.png) |
+| No such page | ![2025's Sessions at phone width](../screenshots/1758-past-seasons/after-sessions-2025-phone.png) |
+| No such page | ![1999, which has no season, saying so](../screenshots/1758-past-seasons/after-no-such-year.png) |
+| ![A 2025 session's page offering Registration and Checkin](../screenshots/1758-past-seasons/before-session-2025-details.png) | ![The same page going from the description to its presenters](../screenshots/1758-past-seasons/after-session-2025-details.png) |
+
 ---
 
 ## What to test on dev
@@ -180,8 +251,11 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Football Tailgating opens on the campus basemap ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)) | Choose **Aerial Imagery** on any map, then open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | The map opens on **Aggieland vector, September 2026** with its zones at the normal zoom, not on a white page. [The same map with ?basemap=gray-vector](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?basemap=gray-vector) opens on Light Gray Canvas. Other event maps still open on the basemap last chosen |
 | Basemaps a 3D scene cannot show ([#1740](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1740)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), then the **2D** button beside All Maps | In 3D, **Aggieland vector** is greyed and says **2D only**, and **Aggieland raster, October 2026** is marked as chosen, which is what the map shows. Clicking the greyed one does nothing. Choose another basemap and it is still greyed. Click **3D** to go back: the vector basemap is back, marked, and can be chosen |
+| Aerial Imagery timeline restyled ([#1750](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1750)) | [Football Tailgating on 22 November 2025](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?imagery=2025-11-22) | The timeline is above **View as production**, not under it. Ticks have no labels but "2016" and "Latest"; hovering one shows its date. ‹ › beside the date step one capture: from Nov 22, 2025, › goes to Nov 26, 2025, then to Oct 5, 2026 (latest), where › greys out. Not on production |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
+| GIS Day: university banner in the admin speaker form ([#1757](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1757)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Speakers, edit a speaker who has a photograph | The university and class-year banner on the photograph, as on the Presenters page. Change the University or the Graduation Year: the banner changes at once, before saving. Choose no university: it goes. The public Presenters page and a presenter's page look as they did |
 | GIS Day: 2026 VGI competition page ([#1665](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1665)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions/vgi` and `/competitions/monuments` | The VGI page says "November 9-20, 2026" and "2026 Competition: Texas A&M University Monument Trail Challenge", with 2025's Art Trail Challenge first under Prior Competitions. "Read Event Details" opens the new page: two things to collect, one point each, winners Thursday November 19, University Architect logo, no broken images |
 | GIS Day: poster and presentation competition dates moved to 2026 ([#1662](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1662)) | Not on dev, for the same reason. Locally, `/competitions/posters` and `/competitions/presentation` | No 2025 date on either page. Posters: Tuesday November 17th, 2026, due Monday November 9th. Presentations: Tuesday November 17th and Wednesday November 18th, 2026 |
 | GIS Day: Aggie Map Design Competition removed ([#1661](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1661)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions` | The Competitions menu and page list VGI, Poster and Presentation only; `/competitions/aggie-map` goes to the home page |
@@ -190,6 +264,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: button labels centred ([#1708](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1708)) | Not on dev, for the same reason. Locally, `/competitions/vgi`, `/competitions/posters`, `/competitions/presentation` and `/sponsors/tamu` | The label of every button is in the middle of the button, not at its left edge: Read Event Details, Submit Your Poster, Submit Your Presentation. The sponsor page's buttons look as they did |
 | GIS Day additional sponsorship opportunities ([#1658](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1658)) | Not on dev, for the same reason. Locally, `/sponsors/tamu` | Under the four levels: "Additional Sponsorship Opportunities", ten rows from Daily Coffee Break Sponsor ($1,500 per day) to VGI Competition Sponsor ($1,000), and a "Send Us a Message" button |
 | GIS Day: university banner on a presenter's own page ([#1703](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1703)) | Not on dev, for the same reason. Locally, `/presenters`, then open any presenter | The banner on the card (for example "TAMU '24") is also across the top-left corner of the photograph on the presenter's own page, same text and colour. A presenter whose card has no banner has none on their page. Narrow the window to phone width: the banner stays inside the photograph. The Presenters page itself looks as it did |
+| GIS Day: past years ([#1758](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1758)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/seasons/2025` | 2025's sessions under a "TxGIS Day 2025" header and a banner, with no register boxes. Presenters and Sponsors in the header and footer stay in 2025; Sponsors shows who sponsored, without "Interested in Becoming a Sponsor?". The footer's Past Years list opens each year, and moving from one year to another changes the sessions as well as the header. Opening one of 2025's sessions shows no Registration or Checkin, while a 2026 session still does. `/sessions` is unchanged, and `/seasons/1999` says there is no TxGIS Day 1999 |
 
 ---
 

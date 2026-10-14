@@ -194,6 +194,16 @@ export interface EventConfiguration {
   referenceLayerListOrder?: 'title' | 'source';
 
   /**
+   * `campus` opens the map on the campus basemap every time - the vector tiles on development, the
+   * raster basemap on production, as `aggiemapBasemap()` gives them - rather than on the basemap the
+   * visitor last chose on any map. An explicit `?basemap=` in the link still wins.
+   *
+   * For a map that is read against campus itself, such as tailgating's tents and zones. Defaults to the
+   * visitor's saved basemap, or Topographic, when omitted.
+   */
+  basemap?: 'campus';
+
+  /**
    * Layer ids that should always appear in the legend, even when they start hidden by default.
    * The legend normally only lists layers that have been visible at least once; use this to keep
    * an off-by-default layer listed (for example, the "off" half of a mutually-exclusive group).
@@ -657,7 +667,6 @@ export interface DiscoverMetadata {
    * home must name that here as well.
    */
   mapTypes?: DiscoverMapType[];
-
 
   /**
    * Optional sub-category used to group parking maps into named columns (General / Business / Permit)

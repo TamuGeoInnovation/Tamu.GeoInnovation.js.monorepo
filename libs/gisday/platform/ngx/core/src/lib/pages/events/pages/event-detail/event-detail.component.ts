@@ -25,6 +25,7 @@ import {
   EventService,
   isCheckInZoneRefusal,
   RsvpService,
+  SeasonService,
   UserService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
@@ -76,6 +77,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   private readonly us = inject(UserService);
   private readonly fb = inject(UntypedFormBuilder);
   private readonly modal = inject(ModalService);
+  private readonly seasonService = inject(SeasonService);
 
   public appRoles = GISDayRoles;
 
@@ -95,6 +97,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   );
   public eventLive$: Observable<boolean>;
   public eventElapsed$: Observable<boolean>;
+  public isPastSeason$: Observable<boolean>;
 
   public attendanceForm: UntypedFormGroup;
   public isCheckinOpen = false;
@@ -132,6 +135,11 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     this.event$ = this.route.params.pipe(
       map((params) => params['guid']),
       switchMap((eventGuid) => this.eventService.getEvent(eventGuid)),
+      shareReplay()
+    );
+
+    this.isPastSeason$ = this.event$.pipe(
+      switchMap((event) => this.seasonService.isPastSeasonDay(event?.day?.guid)),
       shareReplay()
     );
 

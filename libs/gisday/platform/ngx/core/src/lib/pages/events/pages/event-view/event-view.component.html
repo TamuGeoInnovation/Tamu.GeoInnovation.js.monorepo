@@ -13,7 +13,7 @@
         <div id="links-container">
           @for (day of (activeSeason$ | async)?.days; track day; let i = $index) {
           <p>
-            <a [routerLink]="['/sessions']" [fragment]="'day' + (i+1) ">Day {{i + 1}}</a>
+            <a [routerLink]="'sessions' | seasonLink : (viewedYear$ | async)" [fragment]="'day' + (i+1) ">Day {{i + 1}}</a>
           </p>
           }
 
@@ -27,12 +27,12 @@
     <div class="trailer-3" id="sessions-container">
       @if (activeSeason$ | async; as season;) {
       <div id="default-content">
-        @if ((userInfo$ | async) && (userProfileComplete$ | async) === false) {
+        @if ((userInfo$ | async) && (userProfileComplete$ | async) === false && (isPastSeason$ | async) === false) {
         <div class="info-block warning">
           <p>You must complete your TxGIS Day <a routerLink="/account/details">profile</a> before registering for events.</p>
         </div>
         } @for (day of season?.days; track day; let i = $index) {
-        <tamu-gisc-season-day-card [seasonDay]="day" [index]="i" [tags]="activeTagFilters$ | async" [organizations]="activeOrgFilters$ | async" [rsvps]="rsvps$ | async" (register)="registerEvent($event)" (unregister)="unregisterEvent($event)"></tamu-gisc-season-day-card>
+        <tamu-gisc-season-day-card [seasonDay]="day" [index]="i" [tags]="activeTagFilters$ | async" [organizations]="activeOrgFilters$ | async" [rsvps]="rsvps$ | async" [canRegister]="(isPastSeason$ | async) === false" (register)="registerEvent($event)" (unregister)="unregisterEvent($event)"></tamu-gisc-season-day-card>
         }
       </div>
       }

@@ -39,7 +39,10 @@ describe('SpeakerProvider', () => {
         { provide: getRepositoryToken(Season), useValue: repoMock() },
         { provide: getRepositoryToken(Asset), useValue: repoMock() },
         { provide: AssetsService, useValue: { saveAsset: jest.fn() } },
-        { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } }
+        {
+          provide: SeasonService,
+          useValue: { findOne: jest.fn(), findOneActive: jest.fn(), findOneWithDaysAndEvents: jest.fn() }
+        }
       ]
     }).compile();
 
@@ -167,6 +170,38 @@ describe('SpeakerProvider', () => {
         .mockResolvedValue([{ guid: 'e-1', speakers: [speaker('s-1')] }] as unknown as Event[]);
 
       await expect(provider.getSpeakersForActiveSeasonInEvents()).resolves.toHaveLength(1);
+    });
+  });
+
+  describe('.getSpeakersForSeasonInEvents()', () => {
+    const pastSeason = (days: Array<unknown>) => ({ guid: 'season-2025', year: 2025, days }) as unknown as Season;
+
+    it('collects the speakers from the events of the season asked for, not the active one', async () => {
+      const lookup = jest
+        .spyOn(seasonService, 'findOneWithDaysAndEvents')
+        .mockResolvedValue(pastSeason([{ events: [{ guid: 'e-2025' }] }]) as never);
+      jest
+        .spyOn(eventRepo, 'find')
+        .mockResolvedValue([{ guid: 'e-2025', speakers: [speaker('s-2025')] }] as unknown as Event[]);
+
+      const result = await provider.getSpeakersForSeasonInEvents('season-2025');
+
+      expect(lookup).toHaveBeenCalledWith('season-2025');
+      expect(seasonService.findOneActive).not.toHaveBeenCalled();
+      expect(result.map((s) => s.guid)).toEqual(['s-2025']);
+    });
+
+    it('applies the same bio and image filter as the active season', async () => {
+      jest
+        .spyOn(seasonService, 'findOneWithDaysAndEvents')
+        .mockResolvedValue(pastSeason([{ events: [{ guid: 'e-1' }] }]) as never);
+      jest.spyOn(eventRepo, 'find').mockResolvedValue([
+        { guid: 'e-1', speakers: [speaker('s-complete'), speaker('s-no-image', { images: [] })] }
+      ] as unknown as Event[]);
+
+      const result = await provider.getSpeakersForSeasonInEvents('season-2025', true);
+
+      expect(result.map((s) => s.guid)).toEqual(['s-complete']);
     });
   });
 

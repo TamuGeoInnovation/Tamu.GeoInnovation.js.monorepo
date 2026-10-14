@@ -1,4 +1,5 @@
 <section>
+  @if ((isPastSeason$ | async) === false) {
   <div class="container12 flex flex-column justify-center align-center" id="opportunities">
     <div class="large-partition column12 flex flex-column align-center">
       <h1 class="trailer-1">Interested in Becoming a Sponsor?</h1>
@@ -17,6 +18,7 @@
       </div>
     </div>
   </div>
+  }
 
   <div class="container12 flex flex-column justify-center align-center trailer-2" id="current">
     <h1 class="trailer-1">Sponsors</h1>
@@ -95,6 +97,7 @@
     </div>
   </div>
 
+  @if ((isPastSeason$ | async) === false) {
   <div class="container12 flex flex-column justify-center align-center trailer-2" id="logistics">
     <h1>Logistics</h1>
   </div>
@@ -203,4 +206,5 @@
       </div>
     </div>
   </div>
+  }
 </section>
