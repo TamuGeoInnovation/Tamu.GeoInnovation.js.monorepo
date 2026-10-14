@@ -148,6 +148,16 @@
 
   <div class="form-section leader-2">
     <div class="form-section-body">
+      @if (problems().length > 0) {
+      <div class="info-block warning trailer-1" id="event-form-problems">
+        <p><strong>The event was not saved:</strong></p>
+        <ul>
+          @for (problem of problems(); track problem) {
+          <li>{{ problem }}</li>
+          }
+        </ul>
+      </div>
+      }
       <div class="form-collection row">
         @if (type() === 'edit') {
         <tamu-gisc-button type="button" look="danger" value="Delete Event" (click)="deleteEntity()"></tamu-gisc-button>
