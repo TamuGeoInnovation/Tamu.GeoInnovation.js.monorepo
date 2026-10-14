@@ -4,6 +4,7 @@ export * from './lib/modules/modals/entity-actions-modals/entity-delete-modal/en
 export * from './lib/pipes/asset-url/asset-url.pipe';
 export * from './lib/pipes/order-by/order-by.pipe';
 export * from './lib/pipes/parse-date-time-strings/parse-date-time-strings.pipe';
+export * from './lib/pipes/season-link/season-link.pipe';
 export * from './lib/pipes/submission-review-status/submission-review-status.pipe';
 
 export * from './lib/utils/form-to-form-data';

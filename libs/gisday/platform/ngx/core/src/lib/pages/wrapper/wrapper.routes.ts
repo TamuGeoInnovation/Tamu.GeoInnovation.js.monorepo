@@ -17,6 +17,11 @@ export const wrapperRoutes: Routes = [
         loadChildren: () => import('../events/event.routes').then((m) => m.eventRoutes)
       },
       {
+        // A past year's Sessions, Presenters and Sponsors, drawn from that year's season (#1758).
+        path: 'seasons/:seasonYear',
+        loadChildren: () => import('../seasons/seasons.routes').then((m) => m.seasonsRoutes)
+      },
+      {
         path: 'faq',
         loadChildren: () => import('../faq/faq.routes').then((m) => m.faqRoutes)
       },

@@ -9,7 +9,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, DeleteResult, In, Repository } from 'typeorm';
 
-import { Speaker, EntityRelationsLUT, University, Organization, Event, Asset } from '../entities/all.entity';
+import { Speaker, EntityRelationsLUT, University, Organization, Event, Asset, Season } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
@@ -90,6 +90,22 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   public async getSpeakersForActiveSeasonInEvents(limitToPopulated?: boolean) {
     const season = await this.seasonService.findOneActive();
 
+    return this._speakersInEvents(season, limitToPopulated);
+  }
+
+  /**
+   * Returns the speakers participating in a season's events: the same list as the active season's,
+   * for any season, so a past year's Presenters page shows who spoke that year (#1758).
+   *
+   * @param limitToPopulated If true, further filters speakers that have a photo an bio.
+   */
+  public async getSpeakersForSeasonInEvents(seasonGuid: string, limitToPopulated?: boolean) {
+    const season = await this.seasonService.findOneWithDaysAndEvents(seasonGuid);
+
+    return this._speakersInEvents(season, limitToPopulated);
+  }
+
+  private async _speakersInEvents(season: Partial<Season>, limitToPopulated?: boolean) {
     if (!season) {
       return [];
     }

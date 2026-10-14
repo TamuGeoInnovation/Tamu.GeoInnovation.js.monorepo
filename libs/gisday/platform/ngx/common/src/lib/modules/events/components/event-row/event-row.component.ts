@@ -36,6 +36,8 @@ export class EventRowComponent implements OnChanges, OnInit {
 
   public readonly rsvps = input<Array<string>>(undefined);
 
+  public readonly canRegister = input<boolean>(true);
+
   public readonly rowToggle = output<boolean>();
 
   public isRsvp$: Observable<boolean>;

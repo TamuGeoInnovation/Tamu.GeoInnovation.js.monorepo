@@ -173,6 +173,60 @@ describe('SeasonService', () => {
     });
   });
 
+  describe('.findOneByYear()', () => {
+    it('looks the season up by year and returns it in the active season shape', async () => {
+      const first = day('d-first', '2025-11-17');
+      jest
+        .spyOn(seasonRepo, 'findOne')
+        .mockResolvedValue({ ...seasonWithDays([day('d-second', '2025-11-18'), first]), year: 2025, active: false } as Season);
+      jest.spyOn(seasonDayRepo, 'findOne').mockResolvedValue({
+        ...first,
+        events: [{ guid: 'e-workshop', active: true, startTime: '09:00' }]
+      } as unknown as SeasonDay);
+
+      const season = await service.findOneByYear(2025);
+
+      expect(seasonRepo.findOne).toHaveBeenCalledWith({
+        where: { year: 2025 },
+        relations: ['days', 'days.events']
+      });
+      expect(season.days.map((d) => d.guid)).toEqual(['d-first', 'd-second']);
+      expect(season.firstEventTime).toBe('09:00');
+    });
+
+    it('throws NotFound when there is no season for that year', async () => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+
+      await expect(service.findOneByYear(1999)).rejects.toThrow(NotFoundException);
+    });
+
+    it('rejects a year that is not a whole number before reaching the database', async () => {
+      const findOne = jest.spyOn(seasonRepo, 'findOne');
+
+      await expect(service.findOneByYear(2025.5)).rejects.toThrow(BadRequestException);
+      expect(findOne).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('.findOneWithDaysAndEvents()', () => {
+    it('loads the season with its days and their events', async () => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([]));
+
+      await service.findOneWithDaysAndEvents('season-1');
+
+      expect(seasonRepo.findOne).toHaveBeenCalledWith({
+        where: { guid: 'season-1' },
+        relations: ['days', 'days.events']
+      });
+    });
+
+    it('throws NotFound when no season has that guid', async () => {
+      jest.spyOn(seasonRepo, 'findOne').mockResolvedValue(null);
+
+      await expect(service.findOneWithDaysAndEvents('nope')).rejects.toThrow(NotFoundException);
+    });
+  });
+
   describe('.create()', () => {
     /**
      * Regression coverage. The existence check read `existing === undefined`, but TypeORM 0.3
