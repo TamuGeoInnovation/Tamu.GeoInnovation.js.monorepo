@@ -1,3 +1,4 @@
+@use '@angular/material' as mat;
 @import 'libs/sass/mixins';
 
 tamu-gisc-tooltip-trigger {
@@ -20,4 +21,32 @@ tamu-gisc-tooltip-trigger {
   font: inherit;
   padding: 0.5rem;
   box-sizing: border-box;
+}
+// The list of times is drawn by Angular Material in an overlay at the end of <body>, outside this
+// component, and takes its look from theme values an application would normally set once for all of
+// Material. No application here uses Material for anything else, so the handful the list reads are set
+// on the list's own panel, through Material's override mixins, and it inherits the application's font.
+::ng-deep .tamu-gisc-date-time-picker-panel {
+  @include mat.timepicker-overrides(
+    (
+      container-background-color: #ffffff,
+      container-shape: 4px,
+      container-elevation-shadow: 0 3px 12px rgba(0, 0, 0, 0.25)
+    )
+  );
+
+  @include mat.option-overrides(
+    (
+      label-text-color: #212121,
+      label-text-font: inherit,
+      label-text-size: 1rem,
+      label-text-weight: 400,
+      label-text-line-height: 1.5,
+      label-text-tracking: normal,
+      hover-state-layer-color: rgba(0, 0, 0, 0.06),
+      focus-state-layer-color: rgba(0, 0, 0, 0.1),
+      selected-state-layer-color: #e3ecf9,
+      selected-state-label-text-color: #1a3f73
+    )
+  );
 }
