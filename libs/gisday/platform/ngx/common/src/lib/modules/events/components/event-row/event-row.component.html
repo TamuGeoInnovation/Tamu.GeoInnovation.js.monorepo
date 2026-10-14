@@ -6,7 +6,7 @@
 
 <div class="event-meta">
   <div class="event-time">
-    @if (day?.date && event?.startTime && event?.endTime) {
+    @if ((day?.date | parseDateTimeStrings : event?.startTime) && (day?.date | parseDateTimeStrings : event?.endTime)) {
     <span>{{day.date | parseDateTimeStrings : event.startTime | date: 'h:mm a'}}</span>
     <span id="detail-time"> - {{day.date | parseDateTimeStrings : event.endTime | date: 'h:mm a'}}</span>
     } @else {

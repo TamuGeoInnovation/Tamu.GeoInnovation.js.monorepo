@@ -208,7 +208,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         const start = parseDateStrings(event?.day?.date, event?.startTime);
         const end = parseDateStrings(event?.day?.date, event?.endTime);
 
-        end.setMinutes(end.getMinutes() + 15);
+        // A time that cannot be read (#1772) means the session is never live, rather than an error.
+        end?.setMinutes(end.getMinutes() + 15);
 
         return {
           start,
@@ -224,7 +225,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           startWith(0),
           map(() => {
             const now = new Date();
-            return now > startEndTimes.end;
+            return startEndTimes.end !== null && now > startEndTimes.end;
           })
         );
       })
@@ -236,7 +237,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           startWith(0),
           map(() => {
             const now = new Date();
-            return now >= startEndTimes.start && now <= startEndTimes.end;
+            return startEndTimes.start !== null && startEndTimes.end !== null && now >= startEndTimes.start && now <= startEndTimes.end;
           })
         );
       })
