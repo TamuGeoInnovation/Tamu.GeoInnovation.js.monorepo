@@ -245,5 +245,45 @@ describe('DateTimePickerComponent', () => {
 
       expect(emitted).toHaveLength(0);
     });
+
+    /**
+     * Regression coverage (#1772). A GIS Day event's start time was stored as the text "Invalid Date",
+     * and the form handed the picker an invalid Date built from it. Every time picked after that was
+     * built on that invalid Date, so it came out invalid too: the event could not be corrected, and
+     * each save wrote "Invalid Date" again.
+     */
+    describe('a value that is not a valid date', () => {
+      it('turns a time chosen from the list into a valid time', () => {
+        const emitted: DateTimePickerChange<Date>[] = [];
+        component.changed.subscribe((e) => emitted.push(e));
+        component.writeValue(new Date('Invalid Date'));
+
+        component.handleTimePicked(new Date(2000, 0, 1, 14, 0));
+
+        expect(emitted).toHaveLength(1);
+        expect(isNaN(emitted[0].value.getTime())).toBe(false);
+        expect([emitted[0].value.getHours(), emitted[0].value.getMinutes()]).toEqual([14, 0]);
+      });
+
+      it('turns a typed time into a valid time', () => {
+        fixture.componentRef.setInput('maxView', 'hour');
+        const emitted: DateTimePickerChange<Date>[] = [];
+        component.changed.subscribe((e) => emitted.push(e));
+        component.writeValue(new Date('Invalid Date'));
+
+        component.handleInputChange('16:00');
+
+        expect(emitted).toHaveLength(1);
+        expect([emitted[0].value.getHours(), emitted[0].value.getMinutes()]).toEqual([16, 0]);
+      });
+
+      it('shows an empty field rather than NaN, and does not throw without a value', () => {
+        expect(toInputValue(new Date('Invalid Date'), 'time')).toBe('');
+        expect(toInputValue(null, 'datetime-local')).toBe('');
+        expect(() => component.writeValue(null)).not.toThrow();
+        expect(component.value).toBeNull();
+        expect(fromInputValue('09:30', 'time', new Date('Invalid Date')).getHours()).toBe(9);
+      });
+    });
   });
 });

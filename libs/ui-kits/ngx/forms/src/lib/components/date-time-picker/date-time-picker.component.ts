@@ -41,8 +41,24 @@ export function inputTypeFor(minView: DateTimePickerView, maxView: DateTimePicke
 
 const pad = (n: number) => n.toString().padStart(2, '0');
 
-/** A `Date` as a native input's value, in local time. */
+function startOfToday() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  return today;
+}
+
+/** True for a `Date` that holds an actual moment; false for `null`, a non-date or an invalid `Date`. */
+export function isValidDate(value: unknown): value is Date {
+  return value instanceof Date && !isNaN(value.getTime());
+}
+
+/** A `Date` as a native input's value, in local time. Empty for a missing or invalid value. */
 export function toInputValue(date: Date, type: ReturnType<typeof inputTypeFor>): string {
+  if (!isValidDate(date)) {
+    return '';
+  }
+
   const day = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
   const time = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 
@@ -54,7 +70,9 @@ export function toInputValue(date: Date, type: ReturnType<typeof inputTypeFor>):
  * `base`'s time, so picking one half never loses the other. Returns `null` for an empty or invalid value.
  */
 export function fromInputValue(raw: string, type: ReturnType<typeof inputTypeFor>, base: Date): Date | null {
-  const result = new Date(base.getTime());
+  // A missing or invalid base (a stored time that could not be read, #1772) would make every choice
+  // invalid too, so the field could never be corrected. Today stands in for it.
+  const result = isValidDate(base) ? new Date(base.getTime()) : startOfToday();
 
   if (type === 'time') {
     const m = /^(\d{2}):(\d{2})/.exec(raw);
@@ -192,12 +210,12 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
   public readonly changed = output<DateTimePickerChange<Date>>();
 
   public get value() {
-    return new Date(this._value.getTime());
+    return isValidDate(this._value) ? new Date(this._value.getTime()) : null;
   }
 
   public set value(v) {
-    this._value = new Date(v.getTime());
-    this._onChange(new Date(v.getTime()));
+    this._value = isValidDate(v) ? new Date(v.getTime()) : null;
+    this._onChange(this.value);
     this._onTouched();
   }
 
@@ -214,7 +232,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
    * would look like a new value to the picker each time the view is checked.
    */
   public get timeValue() {
-    return this._value;
+    return isValidDate(this._value) ? this._value : null;
   }
 
   /** How far apart the offered times are, as Angular Material's time picker takes it. */
@@ -254,11 +272,14 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
    * time picker knows nothing of the date this value belongs to.
    */
   public handleTimePicked(picked: Date | null) {
-    if (!picked || (picked.getHours() === this._value.getHours() && picked.getMinutes() === this._value.getMinutes())) {
+    const current = isValidDate(this._value) ? this._value : null;
+
+    if (!isValidDate(picked) || (current && picked.getHours() === current.getHours() && picked.getMinutes() === current.getMinutes())) {
       return;
     }
 
-    const next = new Date(this._value.getTime());
+    // Built on the current value's date, or today's when there is no valid value to build on (#1772).
+    const next = current ? new Date(current.getTime()) : startOfToday();
     next.setHours(picked.getHours(), picked.getMinutes(), 0, 0);
 
     this.value = next;
