@@ -290,6 +290,7 @@ was. Before, the page logged `Unable to convert "Invalid Date" into a date`; aft
 | ![The Sessions page on the code production ran, failing on the event](../screenshots/1772-invalid-event-time/before-sessions.png) | ![The Sessions page drawing every session](../screenshots/1772-invalid-event-time/after-sessions.png) |
 | ![The session's page failing](../screenshots/1772-invalid-event-time/before-session-page.png) | ![The session's page drawing](../screenshots/1772-invalid-event-time/after-session-page.png) |
 
+
 ### GIS Day: the admin event form refuses an incomplete event and says what is missing
 
 The admin form for adding or editing an event saved whatever it was given, including an event with no
