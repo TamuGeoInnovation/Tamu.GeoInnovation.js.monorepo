@@ -27,6 +27,7 @@ import {
   recordSymbologySource,
   rendererForLayer
 } from './portal-symbology';
+import { BaseLayerConstructors, makeBaseLayer } from './basemap-layers';
 
 import esri = __esri;
 
@@ -85,31 +86,33 @@ export class EsriMapService {
     // If properties specifies 2d mode, load 2d map view.
     if (viewProperties.mode === '2d') {
       this.moduleProvider
-        .require(['Map', 'MapView', 'TileLayer', 'VectorTileLayer', 'Basemap'])
+        .require(['Map', 'MapView', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap'])
         .then(
-          ([Map, MapView, TileLayer, VectorTileLayer, Basemap]: [
+          ([Map, MapView, TileLayer, VectorTileLayer, WMSLayer, Basemap]: [
             esri.MapConstructor,
             esri.MapViewConstructor,
             esri.TileLayerConstructor,
             esri.VectorTileLayerConstructor,
+            esri.WMSLayerConstructor,
             esri.BasemapConstructor
           ]) => {
-            this.next(mapProperties, viewProperties, Map, MapView, TileLayer, VectorTileLayer, Basemap);
+            this.next(mapProperties, viewProperties, Map, MapView, { TileLayer, VectorTileLayer, WMSLayer }, Basemap);
           }
         );
     } else if (viewProperties.mode === '3d') {
       // If properties specifies 3d mode, load 3d scene view.
       this.moduleProvider
-        .require(['Map', 'SceneView', 'TileLayer', 'VectorTileLayer', 'Basemap'])
+        .require(['Map', 'SceneView', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap'])
         .then(
-          ([Map, MapView, TileLayer, VectorTileLayer, Basemap]: [
+          ([Map, MapView, TileLayer, VectorTileLayer, WMSLayer, Basemap]: [
             esri.MapConstructor,
             esri.SceneViewConstructor,
             esri.TileLayerConstructor,
             esri.VectorTileLayerConstructor,
+            esri.WMSLayerConstructor,
             esri.BasemapConstructor
           ]) => {
-            this.next(mapProperties, viewProperties, Map, MapView, TileLayer, VectorTileLayer, Basemap);
+            this.next(mapProperties, viewProperties, Map, MapView, { TileLayer, VectorTileLayer, WMSLayer }, Basemap);
           }
         );
     }
@@ -122,8 +125,7 @@ export class EsriMapService {
    * @param {MapViewProperties} ViewProperties
    * @param {esri.MapConstructor} Map
    * @param {esri.MapViewConstructor} MapView MapView or SceneView depending on mode
-   * @param {esri.TileLayerConstructor} TileLayer
-   * @param {esri.VectorTileLayerConstructor} VectorTileLayer
+   * @param {BaseLayerConstructors} layers The classes a basemap's base layers are made from
    * @param {esri.BasemapConstructor} Basemap
    */
   private async next(
@@ -131,11 +133,10 @@ export class EsriMapService {
     ViewProps: ViewProperties,
     Map: esri.MapConstructor,
     MapView: esri.MapViewConstructor | esri.SceneViewConstructor,
-    TileLayer: esri.TileLayerConstructor,
-    VectorTileLayer: esri.VectorTileLayerConstructor,
+    layers: BaseLayerConstructors,
     Basemap: esri.BasemapConstructor
   ): Promise<void> {
-    const basemap = this.makeBasemap(Properties, TileLayer, VectorTileLayer, Basemap);
+    const basemap = this.makeBasemap(Properties, layers, Basemap);
     this._modules.map = new Map(basemap);
 
     this._mapContainer = ViewProps.properties.container as HTMLDivElement;
@@ -281,12 +282,7 @@ export class EsriMapService {
   /**
    * Makes a basemap using custom basemap options or a simple basemap string id name.
    */
-  private makeBasemap(
-    mapProperties,
-    TileLayer: esri.TileLayerConstructor,
-    VectorTileLayer: esri.VectorTileLayerConstructor,
-    Basemap: esri.BasemapConstructor
-  ): esri.MapProperties {
+  private makeBasemap(mapProperties, layers: BaseLayerConstructors, Basemap: esri.BasemapConstructor): esri.MapProperties {
     if (!mapProperties) {
       throw new Error(`No map properties were provided.`);
     }
@@ -310,27 +306,7 @@ export class EsriMapService {
       }
 
       // Create Instantiate base layers depending on their type.
-      mProps.basemap.baseLayers = mProps.basemap.baseLayers.map((l) => {
-        if (!l.type) {
-          throw new Error(`Layer type is required.`);
-        }
-
-        // Remove the type property because it conflicts as a read-only property when instantiating the class.
-        const { type, ...props } = l;
-
-        if (type === `TileLayer`) {
-          return new TileLayer(props);
-        }
-
-        if (type === `VectorTileLayer`) {
-          return new VectorTileLayer(props);
-        }
-
-        // Anything else used to fall out of this map as `undefined`, which Esri only reports much
-        // later as "Cannot read properties of undefined (reading 'parent')" from deep inside
-        // Basemap.addMany - a stack trace with nothing in it pointing here. Fail where the mistake is.
-        throw new Error(`Unsupported basemap layer type '${type}'. Add a case here to support it.`);
-      });
+      mProps.basemap.baseLayers = mProps.basemap.baseLayers.map((l) => makeBaseLayer(l, layers));
 
       // Create an instance of the basemap.
       const bm = new Basemap(mProps.basemap);
