@@ -3,6 +3,7 @@ import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule 
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   catchError,
+  EMPTY,
   filter,
   interval,
   map,
@@ -30,6 +31,8 @@ import { PresenterCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
+import { getGeolocation, LatLon } from '@tamu-gisc/common/utils/geometry';
+import { CHECK_IN_ZONE_EVENT_MODE } from '@tamu-gisc/gisday/common';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
@@ -65,6 +68,11 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   private readonly fb = inject(UntypedFormBuilder);
 
   public appRoles = GISDayRoles;
+
+  /**
+   * Events in this mode check in only from inside the check-in zone (#1766).
+   */
+  public readonly checkInZoneMode = CHECK_IN_ZONE_EVENT_MODE;
 
   public event$: Observable<Partial<Event>>;
   public isLoggedIn$: Observable<boolean> = this.auth.isAuthenticated$;
@@ -273,7 +281,28 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     this.event$
       .pipe(
         switchMap((event) => {
-          return this.checkinService.insertUserCheckin(event.guid);
+          if (event.mode !== CHECK_IN_ZONE_EVENT_MODE) {
+            return this.checkinService.insertUserCheckin(event.guid);
+          }
+
+          // The API decides whether the location is inside the zone, and says so if it is not.
+          return getGeolocation(true, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }).pipe(
+            catchError(() => {
+              this.ns.toast({
+                id: 'checkin-location-failure',
+                title: 'Event Check-In',
+                message:
+                  'Checking in to this event needs your location. Allow this site to use your location, then try again.'
+              });
+
+              return EMPTY;
+            }),
+            switchMap((coords) => {
+              const location: LatLon = { latitude: coords.latitude, longitude: coords.longitude };
+
+              return this.checkinService.insertUserCheckin(event.guid, location);
+            })
+          );
         })
       )
       .subscribe({

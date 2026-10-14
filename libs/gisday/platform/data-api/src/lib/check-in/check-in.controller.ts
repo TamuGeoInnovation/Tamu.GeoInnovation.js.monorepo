@@ -53,12 +53,18 @@ export class CheckInController {
 
   @UseGuards(JwtGuard)
   @Post()
-  public async insertUserCheckin(@Req() req, @Body('eventGuid') eventGuid) {
+  public async insertUserCheckin(
+    @Req() req,
+    @Body('eventGuid') eventGuid,
+    @Body('latitude') latitude?: number,
+    @Body('longitude') longitude?: number
+  ) {
     if (!eventGuid) {
       throw new BadRequestException('Event guid is missing');
     }
 
-    return this.provider.insertUserCheckin(eventGuid, req.user.sub);
+    // An in-person event needs the attendee's location (#1766); the provider checks it.
+    return this.provider.insertUserCheckin(eventGuid, req.user.sub, { latitude, longitude });
   }
 
   @UseGuards(JwtGuard)

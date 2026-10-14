@@ -1,4 +1,4 @@
-import { Observable, from, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
 import { Point } from '@tamu-gisc/common/types';
@@ -8,31 +8,9 @@ import { centroidFromGeometry, FeatureUnion } from '@tamu-gisc/common/utils/geom
 
 import * as gju from 'geojson-utils';
 
-/**
- * Gets user geolocation if user allows.
- */
-export function getGeolocation(asObservable?: false): Promise<GeolocationCoordinates>;
-export function getGeolocation(asObservable?: true): Observable<GeolocationCoordinates>;
-export function getGeolocation(
-  asObservable?: boolean
-): Promise<GeolocationCoordinates> | Observable<GeolocationCoordinates> {
-  const promise: Promise<GeolocationCoordinates> = new Promise((r, rj) => {
-    window.navigator.geolocation.getCurrentPosition(
-      (e) => {
-        r(e.coords);
-      },
-      (err) => {
-        rj(err);
-      }
-    );
-  });
-
-  if (asObservable) {
-    return from(promise);
-  } else {
-    return promise;
-  }
-}
+// Lives in the framework-free geometry library, so code that loads no map library can use it too
+// (#1766). Re-exported here so existing callers are unchanged.
+export { getGeolocation } from '@tamu-gisc/common/utils/geometry';
 
 export class TrackLocation {
   private _trackID: number;
