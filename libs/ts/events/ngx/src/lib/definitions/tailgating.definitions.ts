@@ -231,6 +231,9 @@ export const TailgatingConfiguration: EventConfiguration = {
   mapCenter: [-96.3415, 30.6082],
   zoom: 16,
   referenceLayerListOrder: 'source',
+  // Tents and zones are read against campus, so the map opens on the campus basemap whatever basemap
+  // the visitor last chose elsewhere.
+  basemap: 'campus',
   searchSources: TailgatingLinkSources
 };
 
