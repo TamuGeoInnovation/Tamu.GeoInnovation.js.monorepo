@@ -46,6 +46,62 @@ export function getGeolocation(
 }
 
 /**
+ * Whether a value is a usable polygon: at least three corners, each a latitude and longitude in
+ * range.
+ */
+export function isLatLonPolygon(value: unknown): value is Array<LatLon> {
+  return Array.isArray(value) && value.length >= 3 && value.every((c) => isLatLon(c));
+}
+
+/**
+ * Whether a value is a latitude and longitude in range.
+ */
+export function isLatLon(value: unknown): value is LatLon {
+  const c = value as LatLon;
+
+  return (
+    Number.isFinite(c?.latitude) &&
+    Number.isFinite(c?.longitude) &&
+    Math.abs(c.latitude) <= 90 &&
+    Math.abs(c.longitude) <= 180
+  );
+}
+
+/**
+ * Reads corners typed one per line as `latitude, longitude`, as Google Maps copies them.
+ *
+ * @returns The corners, an empty list for blank text, or `undefined` when a line is not a
+ * latitude and longitude in range.
+ */
+export function parseLatLonLines(text: string): Array<LatLon> | undefined {
+  const lines = (text ?? '')
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
+
+  const corners = lines.map((line) => {
+    const parts = line.split(/[\s,]+/).filter((p) => p.length > 0);
+
+    if (parts.length !== 2) {
+      return undefined;
+    }
+
+    const corner = { latitude: Number(parts[0]), longitude: Number(parts[1]) };
+
+    return isLatLon(corner) ? corner : undefined;
+  });
+
+  return corners.every((c) => c !== undefined) ? corners : undefined;
+}
+
+/**
+ * Writes corners one per line as `latitude, longitude`, the form `parseLatLonLines` reads.
+ */
+export function formatLatLonLines(corners: Array<LatLon>): string {
+  return (corners ?? []).map((c) => `${c.latitude}, ${c.longitude}`).join('\n');
+}
+
+/**
  * Mean radius of the earth, in metres.
  */
 const EARTH_RADIUS = 6371008.8;

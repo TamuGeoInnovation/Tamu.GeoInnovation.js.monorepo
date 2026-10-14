@@ -1,4 +1,4 @@
-import { isWithinPolygon, LatLon } from './common-utils-geometry';
+import { formatLatLonLines, isLatLonPolygon, isWithinPolygon, LatLon, parseLatLonLines } from './common-utils-geometry';
 
 describe('isWithinPolygon', () => {
   // About 1 metre in degrees of latitude, and of longitude at this latitude.
@@ -56,5 +56,55 @@ describe('isWithinPolygon', () => {
 
   it('treats fewer than three corners as containing nothing', () => {
     expect(isWithinPolygon({ latitude: south, longitude: west }, square.slice(0, 2), 30)).toBe(false);
+  });
+});
+
+describe('parseLatLonLines', () => {
+  it('reads corners as Google Maps copies them, one per line', () => {
+    const text = '30.61134149709473, -96.34182507980555\n  30.612176343177023,-96.34258857834743  \r\n\n30.6132 -96.3409\n';
+
+    expect(parseLatLonLines(text)).toEqual([
+      { latitude: 30.61134149709473, longitude: -96.34182507980555 },
+      { latitude: 30.612176343177023, longitude: -96.34258857834743 },
+      { latitude: 30.6132, longitude: -96.3409 }
+    ]);
+  });
+
+  it('reads blank text as no corners', () => {
+    expect(parseLatLonLines('')).toEqual([]);
+    expect(parseLatLonLines(' \n ')).toEqual([]);
+    expect(parseLatLonLines(undefined)).toEqual([]);
+  });
+
+  it('refuses a line that is not a latitude and longitude in range', () => {
+    expect(parseLatLonLines('30.61, -96.34\nRudder Plaza')).toBeUndefined();
+    expect(parseLatLonLines('30.61, -96.34, 12')).toBeUndefined();
+    expect(parseLatLonLines('30.61, -96.34\n130.61, -96.34')).toBeUndefined();
+  });
+
+  it('reads back what formatLatLonLines writes', () => {
+    const corners = [
+      { latitude: 30.61134149709473, longitude: -96.34182507980555 },
+      { latitude: 30.612176343177023, longitude: -96.34258857834743 }
+    ];
+
+    expect(parseLatLonLines(formatLatLonLines(corners))).toEqual(corners);
+    expect(formatLatLonLines(null)).toBe('');
+  });
+});
+
+describe('isLatLonPolygon', () => {
+  const corner = { latitude: 30.61, longitude: -96.34 };
+
+  it('accepts three or more corners in range', () => {
+    expect(isLatLonPolygon([corner, corner, corner])).toBe(true);
+  });
+
+  it('refuses fewer than three corners, anything out of range, and anything not a list', () => {
+    expect(isLatLonPolygon([corner, corner])).toBe(false);
+    expect(isLatLonPolygon([corner, corner, { latitude: 95, longitude: -96.34 }])).toBe(false);
+    expect(isLatLonPolygon([corner, corner, { latitude: '30.61', longitude: -96.34 }])).toBe(false);
+    expect(isLatLonPolygon(null)).toBe(false);
+    expect(isLatLonPolygon('30.61, -96.34')).toBe(false);
   });
 });

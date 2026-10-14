@@ -31,7 +31,7 @@ import { PresenterCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
-import { getGeolocation, LatLon } from '@tamu-gisc/common/utils/geometry';
+import { getGeolocation, isLatLonPolygon, LatLon } from '@tamu-gisc/common/utils/geometry';
 import { CHECK_IN_ZONE_EVENT_MODE } from '@tamu-gisc/gisday/common';
 
 @Component({
@@ -69,10 +69,6 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   public appRoles = GISDayRoles;
 
-  /**
-   * Events in this mode check in only from inside the check-in zone (#1766).
-   */
-  public readonly checkInZoneMode = CHECK_IN_ZONE_EVENT_MODE;
 
   public event$: Observable<Partial<Event>>;
   public isLoggedIn$: Observable<boolean> = this.auth.isAuthenticated$;
@@ -281,7 +277,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     this.event$
       .pipe(
         switchMap((event) => {
-          if (event.mode !== CHECK_IN_ZONE_EVENT_MODE) {
+          if (!this.needsCheckInLocation(event)) {
             return this.checkinService.insertUserCheckin(event.guid);
           }
 
@@ -313,6 +309,14 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           console.log(`Error registering for event. ${err.status}: ${err.message}`);
         }
       });
+  }
+
+  /**
+   * Whether checking in to this event needs the attendee's location: an in-person event at a
+   * location with a check-in zone (#1766). The API makes the same decision.
+   */
+  public needsCheckInLocation(event: Partial<Event>): boolean {
+    return event?.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(event?.location?.checkInZone);
   }
 
   public updateAttendance() {
