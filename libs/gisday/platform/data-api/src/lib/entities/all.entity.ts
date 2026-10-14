@@ -1028,7 +1028,9 @@ export class ManholeSubmission {
 }
 
 export const EntityRelationsLUT = {
-  event: ['speakers', 'speakers.images', 'tags', 'sponsors', 'location', 'location.place', 'broadcast', 'day'],
+  // A speaker's organization and university are what a session's presenter list shows under and
+  // after their name (#1768).
+  event: ['speakers', 'speakers.images', 'speakers.organization', 'speakers.university', 'tags', 'sponsors', 'location', 'location.place', 'broadcast', 'day'],
   speaker: ['images', 'university', 'organization'],
   getRelation: (entity?: string) => {
     if (!entity) {
