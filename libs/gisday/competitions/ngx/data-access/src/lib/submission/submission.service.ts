@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
 
 import {
   ICompetitionSubmission,
@@ -9,7 +8,6 @@ import {
   SubmissionMediaDto
 } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +15,6 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 export class SubmissionService {
   private env = inject(EnvironmentService);
   private http = inject(HttpClient);
-  private readonly ns = inject(NotificationService);
 
   public resource: string;
 
@@ -32,23 +29,14 @@ export class SubmissionService {
       })
     };
 
-    return this.http
-      .post(`${this.resource}`, submission, {
-        reportProgress: true,
-        observe: 'events',
-        headers: httpOptions.headers
-      })
-      .pipe(
-        catchError((err) => {
-          this.ns.toast({
-            id: 'submission-upload-failure',
-            title: 'Server Error Uploading Submission',
-            message: `The server experienced an error processing your submission. ${err.error.message} (${err.status})`
-          });
-
-          throw new Error(`Failed uploading submission.`);
-        })
-      );
+    // A failure is passed on as it is: the submission form says what went wrong and offers to try
+    // again (#1784). Replacing it with a plain Error hid whether it was the connection, the sign-in or
+    // the server.
+    return this.http.post(`${this.resource}`, submission, {
+      reportProgress: true,
+      observe: 'events',
+      headers: httpOptions.headers
+    });
   }
 
   public getSubmissionDetails(submissionGuid: string) {
