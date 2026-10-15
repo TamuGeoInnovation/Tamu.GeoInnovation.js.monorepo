@@ -6,10 +6,27 @@ import { Repository } from 'typeorm';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
 import { ManagementService } from '@tamu-gisc/common/nest/auth';
+import { distanceInMetres } from '@tamu-gisc/common/utils/geometry';
 
 import { CompetitionSeason, CompetitionSubmission, SubmissionLocation, SubmissionMedia } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
+
+/**
+ * Points for a submission of something nobody had submitted before in the season (#1781).
+ */
+export const NEW_FIND_POINTS = 2;
+
+/**
+ * Points for a submission of something already submitted, by anyone, the submitter included.
+ */
+export const ALREADY_SUBMITTED_POINTS = 1;
+
+/**
+ * Two submissions with the same type, this close together, are taken to be of the same thing. It
+ * allows for phone GPS error; two different things closer than this are scored as one.
+ */
+export const SAME_THING_DISTANCE_METRES = 15;
 
 interface LeaderboardCache {
   data: Array<{ identity: string; guid: string; points: number }>;
@@ -99,56 +116,53 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     return subs;
   }
 
+  /**
+   * Scores a season's submissions (#1781): the first submission of a thing scores `NEW_FIND_POINTS`,
+   * and every later submission of it, by anyone, `ALREADY_SUBMITTED_POINTS`. A later submission is of
+   * the same thing when it is within `SAME_THING_DISTANCE_METRES` of an earlier one and gave the same
+   * answer to the form's type question (its discriminator question; with none, distance alone decides).
+   * Discarded submissions neither score nor count as earlier ones. A submission with no usable location
+   * cannot be shown to be new, so it scores `ALREADY_SUBMITTED_POINTS`.
+   */
   private async calculateLeaderboard(
     competitionSeason: CompetitionSeason
   ): Promise<Array<{ identity: string; guid: string; points: number }>> {
-    // Find the discriminator question
-    const discriminatorQuestion = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true);
+    const typeAttribute = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true)?.attribute;
 
-    // Fetch all submissions for this season, excluding discarded ones
+    // Oldest first, so each submission is compared only with those made before it.
     const submissions = await this.submissionRepo.find({
       where: {
         season: { guid: competitionSeason.guid }
       },
-      relations: ['validationStatus']
+      relations: ['validationStatus', 'location'],
+      order: { created: 'ASC' }
     });
 
-    // Filter out discarded submissions
-    const validSubmissions = submissions.filter(
+    const counted = submissions.filter(
       (submission) =>
         !submission.validationStatus ||
         submission.validationStatus.status === COMPETITION_VALIDATION_STATUS.unverified ||
         submission.validationStatus.status === COMPETITION_VALIDATION_STATUS.verified
     );
 
-    // Calculate points per user
+    const earlierFinds: Array<{ location: { latitude: number; longitude: number }; type: unknown }> = [];
     const userPointsMap = new Map<string, number>();
 
-    for (const submission of validSubmissions) {
-      const userGuid = submission.userGuid;
-      let points = 1; // Default points
+    for (const submission of counted) {
+      const location = usableLocation(submission.location);
+      const type = typeAttribute ? submission.value?.[typeAttribute] : undefined;
+      let points = ALREADY_SUBMITTED_POINTS;
 
-      if (discriminatorQuestion && submission.value) {
-        try {
-          // Parse submission value as flat object
-          const submissionValue = submission.value;
-          const discriminatorAttribute = discriminatorQuestion.attribute;
-          const submittedValue = submissionValue[discriminatorAttribute];
+      if (location) {
+        const alreadySubmitted = earlierFinds.some(
+          (earlier) => earlier.type === type && distanceInMetres(earlier.location, location) <= SAME_THING_DISTANCE_METRES
+        );
 
-          // Find matching option and get points
-          if (submittedValue !== undefined && discriminatorQuestion.options) {
-            const matchingOption = discriminatorQuestion.options.find((opt) => opt.value === submittedValue);
-            points = matchingOption?.points || 1;
-          }
-        } catch (error) {
-          // If parsing fails or no match, default to 1 point
-          points = 1;
-        }
+        points = alreadySubmitted ? ALREADY_SUBMITTED_POINTS : NEW_FIND_POINTS;
+        earlierFinds.push({ location, type });
       }
 
-      // Aggregate points for user
-      const currentPoints = userPointsMap.get(userGuid) || 0;
-      userPointsMap.set(userGuid, currentPoints + points);
+      userPointsMap.set(submission.userGuid, (userPointsMap.get(submission.userGuid) || 0) + points);
     }
 
     // Convert map to array and sort by points descending
@@ -182,4 +196,19 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
 
     return allResolvedUsers.toPromise();
   }
+}
+
+/**
+ * A submission's latitude and longitude as numbers, or `undefined` when it has none. The database
+ * returns decimals as text, and a submission sent with no location was saved at 0, 0.
+ */
+function usableLocation(location: SubmissionLocation): { latitude: number; longitude: number } | undefined {
+  const latitude = Number(location?.latitude);
+  const longitude = Number(location?.longitude);
+
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || (latitude === 0 && longitude === 0)) {
+    return undefined;
+  }
+
+  return { latitude, longitude };
 }
