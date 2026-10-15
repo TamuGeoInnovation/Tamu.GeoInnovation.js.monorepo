@@ -200,8 +200,11 @@ export interface EventConfiguration {
    *
    * For a map that is read against campus itself, such as tailgating's tents and zones. Defaults to the
    * visitor's saved basemap, or Topographic, when omitted.
+   *
+   * `campus-raster` does the same with the raster campus basemap, Aggieland raster, October 2026, in
+   * every environment.
    */
-  basemap?: 'campus';
+  basemap?: 'campus' | 'campus-raster';
 
   /**
    * Layer ids that should always appear in the legend, even when they start hidden by default.
@@ -257,6 +260,15 @@ export interface EventConfiguration {
    * When omitted, the sidebar search falls back to the application-wide search sources as usual.
    */
   searchSources?: SearchSource[];
+
+  /**
+   * When `true`, this map's searchable sources are added to the application-wide ones (buildings,
+   * parking) rather than replacing them. For a campus map whose own features - tailgating's tents and
+   * named areas - should be found alongside the buildings around them.
+   *
+   * Defaults to `false`, which keeps a satellite campus's search to its own data.
+   */
+  searchSourcesWithCampus?: boolean;
 
   /**
    * Which of this map's building attributes the shared building popup (`CampusBuildingPopupComponent`)

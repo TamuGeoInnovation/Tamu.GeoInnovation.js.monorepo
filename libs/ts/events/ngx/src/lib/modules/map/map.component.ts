@@ -15,6 +15,7 @@ import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import {
   aggiemapBasemap,
+  aggiemapRasterBasemap,
   basemapForSavedId,
   AGGIEMAP_BASEMAP_MAX_SCALE,
   BasemapGalleryService,
@@ -212,10 +213,12 @@ export class MapComponent implements OnInit, OnDestroy {
           ? 'topo-vector'
           : root?.configuration?.basemap === 'campus'
             ? aggiemapBasemap(this.ts.isTesting)
-            : settings && settings.basemap
-              ? // Not the saved id itself: a campus basemap's id means nothing to ArcGIS (#1726).
-                basemapForSavedId(settings.basemap, this.ts.isTesting)
-              : 'topo-vector'
+            : root?.configuration?.basemap === 'campus-raster'
+              ? aggiemapRasterBasemap(this.ts.isTesting)
+              : settings && settings.basemap
+                ? // Not the saved id itself: a campus basemap's id means nothing to ArcGIS (#1726).
+                  basemapForSavedId(settings.basemap, this.ts.isTesting)
+                : 'topo-vector'
     };
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {

@@ -58,6 +58,9 @@ export class EventService {
   public specialEventLayerReferences: Array<string>;
 
   private _map: esri.Map;
+
+  /** The layer sources the current map was drawn with, for selecting one of their features later. */
+  private _sources: LayerSource[] = [];
   private _view: esri.MapView;
   private _exclusiveVisibilityHandles: Array<esri.Handle> = [];
 
@@ -184,6 +187,7 @@ export class EventService {
         });
 
       if (sources.length > 0) {
+        this._sources = sources;
         await this.mapService.loadLayers(sources);
         this.applyExclusiveLayerVisibility();
         await this.selectFeatureFromUrl(sources);
@@ -465,6 +469,17 @@ export class EventService {
    */
   private getAttributeList(features: esri.Graphic[], attribute: string): string[] {
     return features.map((f) => f.attributes[attribute]);
+  }
+
+  /**
+   * Selects and shows the map's feature whose value in one of `fields` is `value`, as a `?zone=` or
+   * `?tent=` link does: the feature from the map's own layer, with that layer's popup. For a result from
+   * the map's own search sources, which come back as plain query results with no layer or popup.
+   *
+   * @returns `true` if a matching feature was found and selected.
+   */
+  public selectFeatureByValue(value: string, fields: string[]): Promise<boolean> {
+    return this.selectFeatureByFieldMatch(this._sources, value, fields);
   }
 
   private async selectFeatureFromUrl(sources: LayerSource[]): Promise<void> {
