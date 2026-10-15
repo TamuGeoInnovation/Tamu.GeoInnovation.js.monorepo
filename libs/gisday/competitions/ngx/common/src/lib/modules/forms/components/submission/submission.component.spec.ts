@@ -144,6 +144,19 @@ describe('SubmissionComponent', () => {
     expect(data.has('userGuid')).toBe(false);
   });
 
+  it('goes to the confirmation page after a saved submission, with no failure message', () => {
+    const fixture = create();
+    const router = TestBed.inject(Router);
+    watchers[0].ok(position());
+    complete(fixture.componentInstance);
+
+    fixture.componentInstance.submitResponse();
+
+    expect(router.navigate).toHaveBeenCalledWith(['complete'], expect.anything());
+    expect(toast).not.toHaveBeenCalled();
+    expect(fixture.componentInstance.submissionStatus.getValue()).not.toBe(-1);
+  });
+
   it('says why a failed upload was not saved and offers to try again', () => {
     postSubmission.mockReturnValue(throwError(() => ({ status: 422, error: { message: 'Competition season not found.' } })));
     const fixture = create();

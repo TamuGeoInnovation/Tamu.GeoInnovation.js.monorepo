@@ -220,6 +220,10 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
                     return EMPTY;
                   } else if (event.type === HttpEventType.Response) {
                     this.router.navigate(['complete'], { relativeTo: this.route });
+
+                    // Returning nothing here made switchMap throw, so a saved submission went on to
+                    // the failure message (#1784).
+                    return EMPTY;
                   } else {
                     return EMPTY;
                   }
