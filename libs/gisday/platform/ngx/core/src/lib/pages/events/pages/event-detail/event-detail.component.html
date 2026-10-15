@@ -190,7 +190,7 @@
           <div class="border-divider leader-2 trailer-2"></div>
           <h3>Presenters</h3>
           <div class="flex flex-row leader-1 wrap justify-between">
-            <tamu-gisc-presenter-card *ngFor="let presenter of (event.speakers)" [speaker]="presenter"></tamu-gisc-presenter-card>
+            <tamu-gisc-presenter-card *ngFor="let presenter of (presenters$ | async)" [speaker]="presenter"></tamu-gisc-presenter-card>
           </div>
         </div>
 

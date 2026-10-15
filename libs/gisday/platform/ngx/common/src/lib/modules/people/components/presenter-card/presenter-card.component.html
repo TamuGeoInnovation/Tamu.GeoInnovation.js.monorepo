@@ -11,13 +11,15 @@
     <div class="name">
       <div>
         @switch (linkable()) { @case (false) {
-        <p>{{speaker().firstName}} {{speaker().lastName}}</p>
+        <p>{{speaker().firstName}} {{speaker().lastName}}@if (classYear()) {<span class="class-year"> {{classYear()}}</span>}</p>
         } @default {
-        <a [routerLink]="['/presenters', 'details', speaker().guid]"> {{speaker().firstName}} {{speaker().lastName}} </a>
+        <a [routerLink]="['/presenters', 'details', speaker().guid]"> {{speaker().firstName}} {{speaker().lastName}}@if (classYear()) {<span class="class-year"> {{classYear()}}</span>} </a>
         } }
       </div>
     </div>
 
-    <div class="organization">{{speaker()?.organization?.name}}</div>
+    @if (affiliation()) {
+    <div class="organization">{{affiliation()}}</div>
+    }
   </div>
 </div>

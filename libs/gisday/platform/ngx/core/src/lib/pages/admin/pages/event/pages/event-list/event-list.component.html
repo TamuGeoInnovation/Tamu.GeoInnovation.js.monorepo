@@ -9,32 +9,36 @@
     </div>
 
     <div class="form-section-body">
-      @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as events) { @if (events.length > 0) {
+      @if (eventsByDay$ | async; as days) { @if (days.length > 0) {
+      <!-- One table per day, in the same dated card the public Sessions page uses for each day, so the
+           rows of one day do not run into the next (#1775). -->
+      @for (group of days; track group.key) {
+      <div class="card">
+      <h2>@if (group.date) {{{ group.date | date: 'MMMM dd' }}} @else {No day set}</h2>
       <table class="floating-table">
         <thead>
           <tr>
-            <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(events)" [checked]="(selectedRows$ | async)?.length === events.length "></tamu-gisc-checkbox></th>
+            <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(group.events)" [checked]="allSelected(selectedRows$ | async, group.events)"></tamu-gisc-checkbox></th>
             <th>Name</th>
             <th>Location</th>
-            <th>Day</th>
             <th class="nowrap">Start Time</th>
             <th class="nowrap">End Time</th>
           </tr>
         </thead>
         <tbody>
-          @for (entity of (entitiesForActiveSeasonOrForSeasonGuid$ | async); track entity) {
+          @for (entity of group.events; track entity.guid) {
           <tr class="selectable" [routerLink]="['edit', entity.guid]">
             <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow($safeNavigationMigration(entity?.guid))" [checked]="(selectedRows$ | async) | exists: $safeNavigationMigration(entity?.guid)"></tamu-gisc-checkbox></td>
             <td>{{entity?.name}}</td>
             <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
-            <td>{{$safeNavigationMigration(entity?.day?.date) | date:'shortDate'}}</td>
             <td>{{$safeNavigationMigration(entity?.day?.date) | parseDateTimeStrings: $safeNavigationMigration(entity?.startTime) | date: 'h:mm a'}}</td>
             <td>{{$safeNavigationMigration(entity?.day?.date) | parseDateTimeStrings: $safeNavigationMigration(entity?.endTime) | date: 'h:mm a'}}</td>
           </tr>
           }
         </tbody>
       </table>
-      } @else {
+      </div>
+      } } @else {
       <p>There are no events for the selected season.</p>
       } @if ((selectedRows$ | async)?.length > 0) {
       <div class="selected-action-container info-block context">

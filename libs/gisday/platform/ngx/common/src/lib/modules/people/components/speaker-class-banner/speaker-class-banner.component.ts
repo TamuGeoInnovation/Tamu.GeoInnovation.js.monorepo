@@ -3,6 +3,8 @@ import { NgStyle } from '@angular/common';
 
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 
+import { shortClassYear } from '../../../../utils/speakers';
+
 /**
  * The corner banner on a presenter's photograph: the university they attended and their class year,
  * in that university's colour. Renders nothing for a presenter without both.
@@ -21,19 +23,9 @@ export class SpeakerClassBannerComponent {
 
   public readonly acronym = computed(() => this.speaker()?.university?.acronym);
   public readonly background = computed(() => `#${this.speaker()?.university?.hexTriplet}`);
-  public readonly classYear = computed(() => this._truncateGraduationYear(this.speaker()?.graduationYear));
+  public readonly classYear = computed(() => shortClassYear(this.speaker()?.graduationYear));
 
   // An empty string, not a missing year, is what hides the banner: a presenter with a university and no
   // year recorded still shows the university alone, as the card always has.
   public readonly visible = computed(() => Boolean(this.acronym()) && this.speaker()?.graduationYear !== '');
-
-  private _truncateGraduationYear(year: string) {
-    if (year?.length === 4) {
-      return `'${year.substring(2, 4)}`;
-    } else if (year?.length === 2) {
-      return `' ${year}`;
-    } else {
-      return '';
-    }
-  }
 }

@@ -19,5 +19,7 @@ export function parseDateStrings(dateString: string | Date, timeString: string) 
 
   const parsedDateTime = new Date(qualifiedDateString);
 
-  return parsedDateTime;
+  // A stored time that cannot be read, such as "Invalid Date" (#1772), answers null like a missing one.
+  // An invalid Date makes Angular's date pipe throw, which took the whole Sessions page down.
+  return isNaN(parsedDateTime.getTime()) ? null : parsedDateTime;
 }

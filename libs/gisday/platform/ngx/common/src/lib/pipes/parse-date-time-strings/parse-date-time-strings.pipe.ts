@@ -14,7 +14,7 @@ import { parseDateStrings } from '../../utils/parse-date-strings';
  */
 @Pipe({ name: 'parseDateTimeStrings' })
 export class ParseDateTimeStringsPipe implements PipeTransform {
-  public transform(dateString: string | Date, timeString: string): Date {
+  public transform(dateString: string | Date, timeString: string): Date | null {
     return parseDateStrings(dateString, timeString);
   }
 }

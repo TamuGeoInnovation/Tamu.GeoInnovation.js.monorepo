@@ -19,7 +19,7 @@ import {
   throwError
 } from 'rxjs';
 
-import { Event, EventAttendanceDto, GisDayAppMetadata } from '@tamu-gisc/gisday/platform/data-api';
+import { Event, EventAttendanceDto, GisDayAppMetadata, Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import {
   CheckinService,
   EventService,
@@ -30,7 +30,7 @@ import {
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { GISDayRoles, parseDateStrings } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GISDayRoles, parseDateStrings, sortSpeakersByAffiliation } from '@tamu-gisc/gisday/platform/ngx/common';
 import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -84,6 +84,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
 
   public event$: Observable<Partial<Event>>;
+  public presenters$: Observable<Array<Partial<Speaker>>>;
   public isLoggedIn$: Observable<boolean> = this.auth.isAuthenticated$;
   public userInfo$: Observable<Partial<GisDayAppMetadata>>;
   public userProfileComplete$: Observable<boolean>;
@@ -138,6 +139,9 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       switchMap((eventGuid) => this.eventService.getEvent(eventGuid)),
       shareReplay()
     );
+
+    // Grouped by company, then by name, so the people from one company sit together (#1769).
+    this.presenters$ = this.event$.pipe(map((event) => sortSpeakersByAffiliation(event?.speakers)));
 
     this.isPastSeason$ = this.event$.pipe(
       switchMap((event) => this.seasonService.isPastSeasonDay(event?.day?.guid)),
@@ -214,7 +218,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         const start = parseDateStrings(event?.day?.date, event?.startTime);
         const end = parseDateStrings(event?.day?.date, event?.endTime);
 
-        end.setMinutes(end.getMinutes() + 15);
+        // A time that cannot be read (#1772) means the session is never live, rather than an error.
+        end?.setMinutes(end.getMinutes() + 15);
 
         return {
           start,
@@ -230,7 +235,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           startWith(0),
           map(() => {
             const now = new Date();
-            return now > startEndTimes.end;
+            return startEndTimes.end !== null && now > startEndTimes.end;
           })
         );
       })
@@ -242,7 +247,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           startWith(0),
           map(() => {
             const now = new Date();
-            return now >= startEndTimes.start && now <= startEndTimes.end;
+            return startEndTimes.start !== null && startEndTimes.end !== null && now >= startEndTimes.start && now <= startEndTimes.end;
           })
         );
       })

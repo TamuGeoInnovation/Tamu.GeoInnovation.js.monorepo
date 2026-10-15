@@ -20,7 +20,7 @@ describe('SpeakerClassBannerComponent', () => {
   });
 
   it('keeps a two-digit class year as it was entered', () => {
-    expect(text({ university: { acronym: 'LSU', hexTriplet: '461d7c' }, graduationYear: '22' })).toBe("LSU ' 22");
+    expect(text({ university: { acronym: 'LSU', hexTriplet: '461d7c' }, graduationYear: '22' })).toBe("LSU '22");
   });
 
   it('shows the university alone when no class year was recorded', () => {
