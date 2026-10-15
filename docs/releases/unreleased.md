@@ -330,6 +330,29 @@ their own submissions and photographs, organizers with the competition permissio
 submission is always recorded for the person signed in. Nothing looks different to a participant; the
 public submissions map is unchanged.
 
+### GIS Day: the competition app keeps looking for a location, and says why a submission was not sent
+
+On the VGI competition's submission form, a phone that took more than 2.5 seconds to find a precise
+location, common on a first fix or beside buildings, never got one while the form was open, and the
+form said location services were disabled. Pressing Submit then showed only "Error!" and the submission
+was lost; a failed upload showed the same ([#1784](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1784)).
+
+Now the form keeps looking until it has a location, and says above the Submit button whether it is
+finding it, has found it (with how accurate it is), or has been refused it. Pressing Submit without a
+location says why and sends nothing. A failed upload says why (no connection, signed out, or the
+server's reason) and the button reads **Try Again**. Submissions also keep the accuracy the phone
+reported, which was saved as 0, so reviewers can tell a precise fix from a rough one.
+
+The images are a local copy at phone size, with the location set in the browser. "Signed out" in the
+last one is because the copy was opened without signing in.
+
+| Before | After |
+| --- | --- |
+| ![The form saying location services are disabled after a slow location fix](../screenshots/1784-vgi-submit-errors/before-timeout.jpg) | ![The form saying Finding your location, and Submit explaining it is still finding it](../screenshots/1784-vgi-submit-errors/after-finding.jpg) |
+| ![Submit showing only Error!](../screenshots/1784-vgi-submit-errors/before-error.jpg) | ![Location found, accurate to about 9 m](../screenshots/1784-vgi-submit-errors/after-found.jpg) |
+| | ![A failed upload: Submission Not Saved, You have been signed out, and a Try Again button](../screenshots/1784-vgi-submit-errors/after-upload-failed.jpg) |
+| | ![Location access is blocked, with how to allow it](../screenshots/1784-vgi-submit-errors/after-blocked.jpg) |
+
 ---
 
 ## What to test on dev
@@ -363,6 +386,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: the admin event list grouped by day ([#1775](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1775)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: Admin, Events | One card per day, headed by its date (November 16 to 20 for 2026), each with its own table in start-time order. A table's header checkbox selects that day's events, and Copy and Delete act on what is selected. Changing the season shows that season's days |
 | GIS Day: presenters' company and class year, grouped by company ([#1768](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1768), [#1769](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1769)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally or on production, any session's page, e.g. the career fair | Under each presenter's name is their company. Texas A&M former students have their class year after their name ('14). The people from one company are next to each other, companies in alphabetical order, and people without a company last |
 | GIS Day: competition submissions need a sign-in ([#1780](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1780)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone with the competition app installed, once the 2026 competition is taking submissions | Signed in, a submission uploads, the app says it was saved, it appears on the public submissions map, and the leaderboard counts it. (Not under Account, My VGI submissions: that page shows nothing for anyone, for an unrelated reason, [#1791](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1791).) As an organizer, Admin, VGI Competition, Submissions lists everyone's with their photographs. Opening the submissions address in a browser without signing in answers 401 |
+| GIS Day: competition app location and submit errors ([#1784](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1784)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone with the competition app installed, once the 2026 competition is taking submissions | The form says Finding your location, then Location found with its accuracy, including indoors where the fix is slow. Press Submit before it is found: a message says to wait, and nothing is sent. Turn location off for the site: the form says it is blocked. Turn off mobile data and press Submit: the message blames the connection and the button reads Try Again; turn data back on and press it: the submission is saved |
 
 ---
 
