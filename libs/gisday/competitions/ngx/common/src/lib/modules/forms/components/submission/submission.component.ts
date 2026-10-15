@@ -27,7 +27,6 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
 import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
-import { AuthService } from '@auth0/auth0-angular';
 import { NgStyle, AsyncPipe } from '@angular/common';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -41,7 +40,6 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 })
 export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   private readonly fb = inject(UntypedFormBuilder);
-  private readonly as = inject(AuthService);
   private readonly ns = inject(NotificationService);
   private readonly analytics = inject(Angulartics2);
   private readonly ss = inject(SubmissionService);
@@ -157,11 +155,9 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   public submitResponse() {
     return (
-      // combineLatest([this.as.user$])
-      combineLatest([this.file.pipe(take(1)), this.file2.pipe(take(1)), this.as.user$])
+      combineLatest([this.file.pipe(take(1)), this.file2.pipe(take(1))])
         .pipe(
-          // switchMap(([file, user]) => {
-          switchMap(([file, file2, user]) => {
+          switchMap(([file, file2]) => {
             // if (file !== undefined && this.form.valid && this.submissionStatus.getValue() !== 1) {
             const formModel = this.formModel();
             if (this.form.valid && this.submissionStatus.getValue() !== 1 && formModel?.allowSubmissions === true) {
@@ -184,7 +180,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
                 return acc;
               }, {});
 
-              data.append('userGuid', `${user.sub}`);
+              // Who is submitting comes from the sign-in the request carries, not from the form (#1780).
               data.append('location', JSON.stringify(location));
               data.append('value', JSON.stringify(value));
               data.append('season', formModel.season.guid);
