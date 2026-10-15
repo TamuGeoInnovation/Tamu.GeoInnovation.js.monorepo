@@ -1,14 +1,14 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpEventType } from '@angular/common/http';
-import { of, throwError } from 'rxjs';
+import { defer, of, throwError } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
-import { SubmissionComponent, submissionFailureMessage } from './submission.component';
+import { SubmissionComponent, submissionFailureMessage, uploadMayBeRetried } from './submission.component';
 
 /**
  * #1784: the form keeps looking for a location until it has one, shows where it stands, and says why
@@ -40,6 +40,11 @@ describe('SubmissionComponent', () => {
 
     return fixture;
   };
+
+  /**
+   * Lets the photographs be shrunk, which happens asynchronously, before the upload starts (#1786).
+   */
+  const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
 
   /**
    * Fills in the form so that only the location can stop it being sent.
@@ -164,12 +169,13 @@ describe('SubmissionComponent', () => {
     expect(postSubmission).toHaveBeenCalledTimes(1);
   });
 
-  it('sends the submission with the location and its accuracy, and no account id', () => {
+  it('sends the submission with the location and its accuracy, and no account id', async () => {
     const fixture = create();
     watchers[0].ok(position(8));
     complete(fixture.componentInstance);
 
     fixture.componentInstance.submitResponse();
+    await settle();
 
     expect(postSubmission).toHaveBeenCalledTimes(1);
     const data: FormData = postSubmission.mock.calls[0][0];
@@ -177,31 +183,113 @@ describe('SubmissionComponent', () => {
     expect(data.has('userGuid')).toBe(false);
   });
 
-  it('goes to the confirmation page after a saved submission, with no failure message', () => {
+  it('goes to the confirmation page after a saved submission, with no failure message', async () => {
     const fixture = create();
     const router = TestBed.inject(Router);
     watchers[0].ok(position());
     complete(fixture.componentInstance);
 
     fixture.componentInstance.submitResponse();
+    await settle();
 
     expect(router.navigate).toHaveBeenCalledWith(['complete'], expect.anything());
     expect(toast).not.toHaveBeenCalled();
     expect(fixture.componentInstance.submissionStatus.getValue()).not.toBe(-1);
   });
 
-  it('says why a failed upload was not saved and offers to try again', () => {
+  it('says why a failed upload was not saved and offers to try again', async () => {
     postSubmission.mockReturnValue(throwError(() => ({ status: 422, error: { message: 'Competition season not found.' } })));
     const fixture = create();
     watchers[0].ok(position());
     complete(fixture.componentInstance);
 
     fixture.componentInstance.submitResponse();
+    await settle();
     fixture.detectChanges();
 
     expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: 'Competition season not found. Press Try Again to resend it.' }));
     expect(fixture.nativeElement.textContent).toContain('Try Again');
     expect(fixture.nativeElement.textContent).not.toContain('Error!');
+  });
+
+  /**
+   * #1786: an upload that does not reach the server is sent again, after 2, 5 and 10 seconds, before
+   * the form gives up; one the server refused is not.
+   */
+  describe('retrying an upload', () => {
+    let attempts: number;
+
+    /**
+     * An upload whose first `failures` attempts fail with `error`, and which then succeeds.
+     */
+    const upload = (failures: number, error: unknown) => {
+      attempts = 0;
+      postSubmission.mockReturnValue(
+        defer(() => (++attempts <= failures ? throwError(() => error) : of({ type: HttpEventType.Response })))
+      );
+    };
+
+    const submitted = () => {
+      const fixture = create();
+      watchers[0].ok(position());
+      complete(fixture.componentInstance);
+      fixture.componentInstance.submitResponse();
+      flushMicrotasks();
+      tick(0);
+
+      return fixture;
+    };
+
+    it('sends it again when it did not reach the server, and saves it once it does', fakeAsync(() => {
+      upload(2, { status: 0 });
+      const router = TestBed.inject(Router);
+      submitted();
+
+      expect(attempts).toBe(1);
+      tick(2000);
+      expect(attempts).toBe(2);
+      tick(5000);
+      expect(attempts).toBe(3);
+
+      expect(router.navigate).toHaveBeenCalledWith(['complete'], expect.anything());
+      expect(toast).not.toHaveBeenCalled();
+    }));
+
+    it('gives up after three more tries, and says the connection is the problem', fakeAsync(() => {
+      upload(10, { status: 0 });
+      const fixture = submitted();
+
+      tick(2000 + 5000 + 10000);
+
+      expect(attempts).toBe(4);
+      expect(fixture.componentInstance.submissionStatus.getValue()).toBe(-1);
+      expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('did not reach the server') }));
+
+      tick(60000);
+      expect(attempts).toBe(4);
+    }));
+
+    it('does not send again what the server refused', fakeAsync(() => {
+      upload(10, { status: 422, error: { message: 'Competition season not found.' } });
+      submitted();
+
+      tick(60000);
+
+      expect(attempts).toBe(1);
+      expect(toast).toHaveBeenCalledTimes(1);
+    }));
+
+    it('does not send a second time when Submit is tapped again while it is sending', fakeAsync(() => {
+      upload(1, { status: 0 });
+      const fixture = submitted();
+
+      fixture.componentInstance.submitResponse();
+      flushMicrotasks();
+      tick(2000);
+
+      expect(postSubmission).toHaveBeenCalledTimes(1);
+      expect(attempts).toBe(2);
+    }));
   });
 });
 
@@ -209,6 +297,12 @@ describe('submissionFailureMessage', () => {
   it('blames the connection when the request never reached the server', () => {
     expect(submissionFailureMessage({ status: 0 })).toContain('did not reach the server');
     expect(submissionFailureMessage(undefined)).toContain('did not reach the server');
+  });
+
+  it('says a photograph is too large when the server refuses its size', () => {
+    expect(submissionFailureMessage({ status: 413, error: { message: 'File too large' } })).toBe(
+      'A photograph is too large to upload. Take it again, then press Try Again.'
+    );
   });
 
   it('asks a signed-out participant to sign in again', () => {
@@ -223,5 +317,22 @@ describe('submissionFailureMessage', () => {
 
   it('has a general message when the server gave none', () => {
     expect(submissionFailureMessage({ status: 500, error: {} })).toBe('The server could not save it. Press Try Again to resend it.');
+  });
+});
+
+describe('uploadMayBeRetried', () => {
+  it('retries an upload that never reached the server, or met a gateway that was briefly down', () => {
+    expect(uploadMayBeRetried({ status: 0 })).toBe(true);
+    expect(uploadMayBeRetried(undefined)).toBe(true);
+    expect(uploadMayBeRetried({ status: 502 })).toBe(true);
+    expect(uploadMayBeRetried({ status: 503 })).toBe(true);
+    expect(uploadMayBeRetried({ status: 504 })).toBe(true);
+  });
+
+  it('does not retry what the server answered', () => {
+    expect(uploadMayBeRetried({ status: 400 })).toBe(false);
+    expect(uploadMayBeRetried({ status: 401 })).toBe(false);
+    expect(uploadMayBeRetried({ status: 413 })).toBe(false);
+    expect(uploadMayBeRetried({ status: 500 })).toBe(false);
   });
 });

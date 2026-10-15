@@ -17,14 +17,15 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, EMPTY, NEVER, Observable, of, Subject } from 'rxjs';
-import { catchError, filter, map, shareReplay, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, EMPTY, from, Observable, of, Subject, throwError, timer } from 'rxjs';
+import { catchError, filter, map, retry, shareReplay, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { HttpEventType } from '@angular/common/http';
 
 import { Angulartics2 } from 'angulartics2';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
+import { shrinkImage } from '@tamu-gisc/common/utils/ui';
 import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { NgStyle, AsyncPipe, DecimalPipe } from '@angular/common';
@@ -191,89 +192,96 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
       return undefined;
     }
 
-    return (
-      combineLatest([this.file.pipe(take(1)), this.file2.pipe(take(1))])
-        .pipe(
-          switchMap(([file, file2]) => {
-            // if (file !== undefined && this.form.valid && this.submissionStatus.getValue() !== 1) {
-            const formModel = this.formModel();
-            if (this.form.valid && this.submissionStatus.getValue() !== 1 && formModel?.allowSubmissions === true) {
-              // FormData gets sent as multi-part form in request.
-              const data: FormData = new FormData();
+    const formModel = this.formModel();
 
-              const location = {
-                latitude: this.location.coords.latitude,
-                longitude: this.location.coords.longitude,
-                accuracy: this.location.coords.accuracy,
-                altitude: this.location.coords.altitude,
-                altitudeAccuracy: this.location.coords.altitudeAccuracy,
-                heading: this.location.coords.heading,
-                speed: this.location.coords.speed
-              };
+    if (!this.form?.valid || this.submissionStatus.getValue() === 1 || formModel?.allowSubmissions !== true) {
+      return undefined;
+    }
 
-              const value = this.form.getRawValue().fields.reduce((acc, curr) => {
-                acc[curr.attribute] = curr.value;
+    // Busy from the first tap, so a second tap while the photographs shrink cannot submit twice.
+    this.submissionStatus.next(1);
+    this.submissionProgress.next(0);
 
-                return acc;
-              }, {});
+    return combineLatest([this.file.pipe(take(1)), this.file2.pipe(take(1))])
+      .pipe(
+        // Shrink the photographs on the phone before upload (#1786); a photograph that cannot be shrunk
+        // is sent as it is.
+        switchMap(([file, file2]) => from(Promise.all([shrinkImage(file), file2 !== undefined ? shrinkImage(file2) : undefined]))),
+        switchMap(([file, file2]) => {
+          // FormData gets sent as multi-part form in request.
+          const data: FormData = new FormData();
 
-              // Who is submitting comes from the sign-in the request carries, not from the form (#1780).
-              data.append('location', JSON.stringify(location));
-              data.append('value', JSON.stringify(value));
-              data.append('season', formModel.season.guid);
-              data.append('head1', file);
-              if (file2 !== undefined) {
-                data.append('head2', file2);
+          const location = {
+            latitude: this.location.coords.latitude,
+            longitude: this.location.coords.longitude,
+            accuracy: this.location.coords.accuracy,
+            altitude: this.location.coords.altitude,
+            altitudeAccuracy: this.location.coords.altitudeAccuracy,
+            heading: this.location.coords.heading,
+            speed: this.location.coords.speed
+          };
+
+          const value = this.form.getRawValue().fields.reduce((acc, curr) => {
+            acc[curr.attribute] = curr.value;
+
+            return acc;
+          }, {});
+
+          // Who is submitting comes from the sign-in the request carries, not from the form (#1780).
+          data.append('location', JSON.stringify(location));
+          data.append('value', JSON.stringify(value));
+          data.append('season', formModel.season.guid);
+          data.append('head1', file);
+          if (file2 !== undefined) {
+            data.append('head2', file2);
+          }
+
+          return this.ss.postSubmission(data).pipe(
+            // An upload that did not reach the server is sent again a few times before giving up, for a
+            // weak signal on campus (#1786). One the server refused is not.
+            retry({
+              count: UPLOAD_RETRY_DELAYS.length,
+              delay: (err, attempt) => (uploadMayBeRetried(err) ? timer(UPLOAD_RETRY_DELAYS[attempt - 1]) : throwError(() => err))
+            }),
+            switchMap((event) => {
+              if (event.type === HttpEventType.UploadProgress) {
+                this.submissionProgress.next(event.total ? event.loaded / event.total : 0);
+                return EMPTY;
+              } else if (event.type === HttpEventType.Response) {
+                this.router.navigate(['complete'], { relativeTo: this.route });
+
+                // Returning nothing here made switchMap throw, so a saved submission went on to
+                // the failure message (#1784).
+                return EMPTY;
+              } else {
+                return EMPTY;
               }
+            })
+          );
+        }),
+        catchError((err) => {
+          this.submissionStatus.next(-1);
 
-              return this.ss.postSubmission(data).pipe(
-                switchMap((event) => {
-                  if (event.type === HttpEventType.UploadProgress) {
-                    if (this.submissionStatus.getValue() !== 1) {
-                      this.submissionStatus.next(1);
-                    }
+          this.ns.toast({
+            id: 'submission-failure',
+            title: 'Submission Not Saved',
+            message: submissionFailureMessage(err)
+          });
 
-                    this.submissionProgress.next(event.loaded / event.total);
-                    return EMPTY;
-                  } else if (event.type === HttpEventType.Response) {
-                    this.router.navigate(['complete'], { relativeTo: this.route });
-
-                    // Returning nothing here made switchMap throw, so a saved submission went on to
-                    // the failure message (#1784).
-                    return EMPTY;
-                  } else {
-                    return EMPTY;
-                  }
-                })
-              );
-            } else {
-              return NEVER;
+          this.analytics.eventTrack.next({
+            action: 'submission_fail',
+            properties: {
+              category: 'error',
+              gstCustom: {
+                message: err.message
+              }
             }
-          }),
-          catchError((err) => {
-            this.submissionStatus.next(-1);
+          });
 
-            this.ns.toast({
-              id: 'submission-failure',
-              title: 'Submission Not Saved',
-              message: submissionFailureMessage(err)
-            });
-
-            this.analytics.eventTrack.next({
-              action: 'submission_fail',
-              properties: {
-                category: 'error',
-                gstCustom: {
-                  message: err.message
-                }
-              }
-            });
-
-            return of(err);
-          })
-        )
-        .subscribe()
-    );
+          return of(err);
+        })
+      )
+      .subscribe();
   }
 }
 
@@ -294,11 +302,28 @@ const NO_LOCATION_MESSAGES: Record<Exclude<SubmissionLocationStatus, 'found'>, s
 };
 
 /**
+ * Seconds to wait before each new attempt at an upload that did not reach the server (#1786).
+ */
+export const UPLOAD_RETRY_DELAYS = [2000, 5000, 10000];
+
+/**
+ * Whether an upload failed in a way sending it again may fix: it never reached the server, or a
+ * gateway in front of the server was briefly unavailable.
+ */
+export function uploadMayBeRetried(err: { status?: number }): boolean {
+  return !err?.status || err.status === 502 || err.status === 503 || err.status === 504;
+}
+
+/**
  * What to tell a participant whose upload failed.
  */
 export function submissionFailureMessage(err: { status?: number; error?: { message?: string | Array<string> } }): string {
   if (!err?.status) {
     return 'The upload did not reach the server. Check your connection, then press Try Again.';
+  }
+
+  if (err.status === 413) {
+    return 'A photograph is too large to upload. Take it again, then press Try Again.';
   }
 
   if (err.status === 401) {

@@ -36,6 +36,11 @@ import { Multer } from 'multer';
  */
 export const READ_ALL_SUBMISSIONS = 'read:competitions';
 
+/**
+ * The largest photograph the API accepts, in bytes.
+ */
+export const MAX_PHOTO_BYTES = 15 * 1024 * 1024;
+
 @Controller('competitions/submissions')
 export class SubmissionController {
   constructor(private service: SubmissionService, private formService: FormService) {}
@@ -124,7 +129,9 @@ export class SubmissionController {
    */
   @UseGuards(JwtGuard)
   @Post('')
-  @UseInterceptors(AnyFilesInterceptor())
+  // Up to two photographs of at most 15 MB each; the app shrinks them first (#1786). A larger one
+  // answers 413.
+  @UseInterceptors(AnyFilesInterceptor({ limits: { fileSize: MAX_PHOTO_BYTES, files: 2 } }))
   public async insert(@Req() req, @Body() body, @UploadedFiles() files?: Array<Express.Multer.File>) {
     const season = await this.formService.getSeason(body.season);
 
