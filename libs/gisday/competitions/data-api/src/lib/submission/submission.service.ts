@@ -58,7 +58,9 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
           entity.location.longitude !== undefined && entity.location.longitude !== null
             ? parseFloat(entity.location.longitude.toFixed(5))
             : 0.0,
-        accuracy: 0,
+        // What the phone reported, in metres, so reviewers can tell a precise fix from a rough one
+        // (#1784). The column holds up to 999.99.
+        accuracy: clampAccuracy(entity.location.accuracy),
         altitude: 0.0,
         altitudeAccuracy: 0.0,
         heading: 0.0,
@@ -310,4 +312,18 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         : undefined
     }));
   }
+}
+
+/**
+ * A reported location accuracy in metres, rounded to centimetres and kept within its column
+ * (decimal 5, 2): 0 when none was reported.
+ */
+export function clampAccuracy(accuracy: unknown): number {
+  const metres = Number(accuracy);
+
+  if (accuracy === null || accuracy === undefined || !Number.isFinite(metres) || metres < 0) {
+    return 0;
+  }
+
+  return Math.min(Math.round(metres * 100) / 100, 999.99);
 }
