@@ -35,7 +35,9 @@ describe('SubmissionController', () => {
       getUserSubmissions: jest.fn(() => Promise.resolve([])),
       getSubmissionImages: jest.fn(() => Promise.resolve([])),
       getSubmissionByGuid: jest.fn((guid) => Promise.resolve(guid === 'missing' ? null : { guid, userGuid: 'auth0|ann' })),
-      getOne: jest.fn(() => Promise.resolve({ blobs: [] })),
+      getOne: jest.fn(({ where }) =>
+        Promise.resolve(where.guid === 'missing' ? null : { guid: where.guid, userGuid: 'auth0|ann', blobs: [] })
+      ),
       getAdminSubmissions: jest.fn(() => Promise.resolve([])),
       getMany: jest.fn(() => Promise.resolve([])),
       createCompetitionSubmission: jest.fn((sub) => Promise.resolve(sub)),
@@ -118,6 +120,18 @@ describe('SubmissionController', () => {
 
     it('answers 404, rather than failing, for a submission with no photograph', async () => {
       await expect(controller.getSubmissionImage(ann, { guid: 's-1' }, {})).rejects.toThrow(NotFoundException);
+    });
+
+    it('answers 404 for the photograph of a submission that does not exist', async () => {
+      await expect(controller.getSubmissionImage(ann, { guid: 'missing' }, {})).rejects.toThrow(NotFoundException);
+    });
+
+    it('reads a submission once to send its photograph, and checks the owner on that row', async () => {
+      await expect(controller.getSubmissionImage(organizer, { guid: 's-1' }, {})).rejects.toThrow(NotFoundException);
+
+      expect(service.getOne).toHaveBeenCalledTimes(1);
+      expect(service.getOne).toHaveBeenCalledWith(expect.objectContaining({ relations: expect.arrayContaining(['blobs']) }));
+      expect(service.getSubmissionByGuid).not.toHaveBeenCalled();
     });
   });
 });

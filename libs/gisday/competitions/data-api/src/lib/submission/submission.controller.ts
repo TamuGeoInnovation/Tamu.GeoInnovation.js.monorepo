@@ -19,7 +19,7 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { DeepPartial } from 'typeorm';
 import { Duplex } from 'stream';
 
-import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { isOwnerOrPermitted, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { CompetitionSubmission, SubmissionMedia } from '../entities/all.entities';
 
@@ -43,7 +43,7 @@ export class SubmissionController {
   @UseGuards(JwtGuard)
   @Get('user/:userGuid')
   public async getUserSubmissions(@Req() req, @Param('userGuid') userGuid: string, @Query('seasonGuid') seasonGuid?: string) {
-    assertOwnerOrReader(req, userGuid);
+    assertCanRead(req, userGuid);
 
     return this.service.getUserSubmissions({ userGuid, seasonGuid });
   }
@@ -59,16 +59,21 @@ export class SubmissionController {
   @UseGuards(JwtGuard)
   @Get(':guid/image')
   public async getSubmissionImage(@Req() req, @Param() param, @Res() res) {
-    await this._assertCanRead(req, param.guid);
-
+    // One read: the row that carries the photograph also says whose it is.
     const submission = await this.service.getOne({
       where: {
         guid: param.guid
       },
-      relations: ['location', 'season', 'blobs']
+      relations: ['blobs']
     });
 
-    if (!submission?.blobs?.length) {
+    if (!submission) {
+      throw new NotFoundException('Submission not found.');
+    }
+
+    assertCanRead(req, submission.userGuid);
+
+    if (!submission.blobs?.length) {
       throw new NotFoundException('This submission has no image.');
     }
 
@@ -165,7 +170,7 @@ export class SubmissionController {
       throw new NotFoundException('Submission not found.');
     }
 
-    assertOwnerOrReader(req, submission.userGuid);
+    assertCanRead(req, submission.userGuid);
 
     return submission;
   }
@@ -174,11 +179,8 @@ export class SubmissionController {
 /**
  * Lets the request through when it is from `ownerGuid` or from someone who may read every submission.
  */
-function assertOwnerOrReader(req, ownerGuid: string) {
-  const user = req?.user;
-  const canReadAll = Array.isArray(user?.permissions) && user.permissions.includes(READ_ALL_SUBMISSIONS);
-
-  if (!user?.sub || (user.sub !== ownerGuid && !canReadAll)) {
+function assertCanRead(req, ownerGuid: string) {
+  if (!isOwnerOrPermitted(req?.user, ownerGuid, READ_ALL_SUBMISSIONS)) {
     throw new ForbiddenException('You can only see your own submissions.');
   }
 }
