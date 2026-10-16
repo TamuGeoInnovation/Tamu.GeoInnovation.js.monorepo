@@ -1,6 +1,7 @@
 # Unreleased
 
-Since the 16 October release: GIS Day changes only, waiting for GIS Day's own deploy.
+Since the 16 October release: one AggieMap fix (map search with an apostrophe or a percent sign), and GIS
+Day changes waiting for GIS Day's own deploy.
 
 **The last release is [16 October 2026](2026-10-16.md)**, built from `264eebb42` (build 20261016.11,
 Release-473) and promoted to production on the morning of 16 October. The release tier on dev was still
@@ -16,6 +17,22 @@ result adds its own entry below, in that pull request**, with its before/after s
 ---
 
 ## Summary
+
+### Map search works with an apostrophe or a percent sign
+
+Searching for `Cain '51` found nothing, on every map: the apostrophe ended the query's text early, and
+every GIS service the search asks rejected it. A `%` or `_` was read as a wildcard, so searching `%` on
+the Football Tailgating map listed every tent and zone. What is typed is now escaped once, where every
+map's search builds its query: an apostrophe is doubled, and in a "contains" search `%`, `_` and `\` are
+matched as themselves. Searching `Cain '51` finds the James J. Cain '51 Building; `%` finds nothing,
+because no name has one. The bus routes and the event maps' links, which escaped apostrophes on their
+own, now use the same function
+([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)).
+
+| Before | After |
+| --- | --- |
+| ![Searching Cain '51 on the main map: No results found](../screenshots/search-escape/before-apostrophe.png) | ![Searching Cain '51 lists James J. Cain '51 Building (0391)](../screenshots/search-escape/after-apostrophe.png) |
+| ![Searching % on Football Tailgating lists every tent and zone](../screenshots/search-escape/before-percent.png) | ![Searching % finds nothing](../screenshots/search-escape/after-percent.png) |
 
 ### GIS Day: an event's time is chosen from a list again
 
@@ -391,6 +408,19 @@ is gone, and new images of the refusal, waiting and timeout messages are still t
 | ![The check-in section with only the CHECKIN button](../screenshots/1766-gisday-checkin-zone/before-checkin-section.png) | ![The check-in section with a line saying check-in uses your location at TAMU Rudder Plaza](../screenshots/1766-gisday-checkin-zone/after-checkin-section.png) |
 | | ![The check-in section after checking in: Your attendance has been registered](../screenshots/1766-gisday-checkin-zone/after-checked-in.jpg) |
 
+### GIS Day: My VGI Submissions shows a participant's own submissions again
+
+**Account, My VGI Submissions** showed "No data to display" for everyone ([#1791](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1791)). The page
+looked up who was signed in through a setting that only the old standalone competitions app had, and
+failed on the GIS Day site. It now asks the server for the signed-in participant's own submissions,
+and nobody can list anyone else's.
+
+The images are a local copy, with one test submission made by the account signed in.
+
+| Before | After |
+| --- | --- |
+| ![My VGI Competition Submissions with No data to display](../screenshots/1791-vgi-my-submissions/before-my-submissions.jpg) | ![The same page listing the submission, a Statue or Monument, Unverified](../screenshots/1791-vgi-my-submissions/after-my-submissions.jpg) |
+
 ### GIS Day: the sponsorship levels are back at last year's prices
 
 At the Texas A&M Foundation's request, because companies had been quoted different amounts, the four
@@ -412,10 +442,11 @@ and the additional sponsorship opportunities are unchanged ([#1821](https://gith
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** nothing; every AggieMap row went out in the 16 October release. The rows below are GIS Day's, which has no dev site.
+**Currently on dev for testing:** the search fix ([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)) once it is deployed; every other AggieMap row went out in the 16 October release. The other rows are GIS Day's, which has no dev site.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Map search with an apostrophe or a percent sign ([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)) | [dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu), then [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Search `Cain '51`: James J. Cain '51 Building is listed. Search `O'` or `Aggie's`: no error, results or "No results found". On Football Tailgating, search `%`: "No results found", not every tent. Ordinary searches still work: `MSC`, `O12`, `Creamery` |
 | GIS Day: sponsorship levels back at last year's prices ([#1821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1821)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [the sponsor page](https://txgisday.org/sponsors/tamu) | Point $256, Line $512, Polygon $1,024, Raster $2,048, each level's perks as before |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
 | GIS Day: university banner in the admin speaker form ([#1757](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1757)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Speakers, edit a speaker who has a photograph | The university and class-year banner on the photograph, as on the Presenters page. Change the University or the Graduation Year: the banner changes at once, before saving. Choose no university: it goes. The public Presenters page and a presenter's page look as they did |
@@ -438,6 +469,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: presenters' company and class year, grouped by company ([#1768](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1768), [#1769](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1769)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally or on production, any session's page, e.g. the career fair | Under each presenter's name is their company. Texas A&M former students have their class year after their name ('14). The people from one company are next to each other, companies in alphabetical order, and people without a company last |
 | GIS Day: an admin's added check-in is the attendee's ([#1767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1767)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, signed in as an administrator whose account has `create:checkins`: Admin, Check-ins, Add, with another person's account id and an event they have not checked in to | Admin, Check-ins lists the new check-in under that person, not the admin. Adding the same person to the same event again is refused as already checked in. An attendee checking in from a session's page still checks in themselves |
 | GIS Day: location-based check-in ([#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)), and the migration has not run anywhere but a local copy. Locally, after `scripts/gisday-local.sh migrate run`: as an administrator, Admin, Venues, give a venue corners; then, during an in-person session there, the session's page | The line "Check-in for this session uses your location" names the venue. Inside the zone, Check In works. Outside it (DevTools, Sensors, set a location elsewhere), the reason shows under the button and nothing is saved; there is no check-in anyway. While waiting, "Finding your location…". Block location access: the page asks for it. A hybrid session, or a venue with no corners, never asks. On the venue form, corners out of order (sides crossing) are refused. As an administrator, Admin, Check-ins, Add checks in another account to that in-person session with no location, from anywhere |
+| GIS Day: My VGI Submissions lists your own ([#1791](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1791)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, signed in with an account that has made a competition submission: Account, My VGI Submissions | Your own submissions are listed, with their date and status. Another account sees only its own. An account with none sees an empty list, not an error |
 
 ---
 
