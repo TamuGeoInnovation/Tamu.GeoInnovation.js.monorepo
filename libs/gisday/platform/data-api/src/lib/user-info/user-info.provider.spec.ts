@@ -1,4 +1,4 @@
-import { NotImplementedException, UnprocessableEntityException } from '@nestjs/common';
+import { NotImplementedException, ServiceUnavailableException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -295,6 +295,34 @@ describe('UserInfoProvider', () => {
         expect(payload.user_metadata.occupation.employer).toBe('org-new');
         expect(uniFind).not.toHaveBeenCalled();
       });
+    });
+
+    /**
+     * Regression coverage (#1759).
+     *
+     * With Auth0 management disabled, as the local API runs, a profile naming an "other" university
+     * created that university in the database and only then answered 503 when the profile itself
+     * could not be written: a row for a profile that was never saved.
+     */
+    it('answers 503 before writing anything when Auth0 management is disabled', async () => {
+      const withoutManagement = new UserInfoProvider(
+        undefined,
+        universityRepo,
+        organizationRepo,
+        new ManagementService({ domain: '', clientId: '', clientSecret: '', disabled: true })
+      );
+      const payload = validPayload(ParticipantType.Student);
+      payload.user_metadata.education.institution = 'other';
+      payload.user_metadata.education.otherInstitution = 'Rice University';
+
+      jest.spyOn(universityRepo, 'findOne').mockResolvedValue(null);
+      jest.spyOn(universityRepo, 'create').mockReturnValue({ name: 'Rice University' } as never);
+      const save = jest.spyOn(universityRepo, 'save').mockResolvedValue({ guid: 'uni-new' } as never);
+
+      await expect(withoutManagement.updateUserMetadata('auth0|abc', payload)).rejects.toThrow(
+        ServiceUnavailableException
+      );
+      expect(save).not.toHaveBeenCalled();
     });
 
     it('marks the profile complete and writes it back to Auth0', async () => {
