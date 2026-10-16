@@ -15,20 +15,38 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### The Football Tailgating map opens on the raster campus basemap, and searches its tents and areas (dev only)
+
+The map now always opens on **Aggieland raster, October 2026** rather than the vector campus basemap,
+and its search finds **tents** by id and **named areas** by name or zone id, alongside the usual
+buildings and parking ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788)). Picking a tent or area opens it as a `?tent=` or `?zone=` link does:
+the map's own feature, with its popup. An area not yet given a name lists by its zone id, and a result
+no longer on the map says so rather than doing nothing.
+
+| Before | After |
+| --- | --- |
+| ![Searching O12 finds nothing, on the vector basemap](../screenshots/tailgating-raster-basemap-search/before-search.png) | ![Searching O12 finds Tent O12, on the raster basemap](../screenshots/tailgating-raster-basemap-search/after-search.png) |
+
+![Ortega Lawn opened from the search, with its popup](../screenshots/tailgating-raster-basemap-search/after-area-popup.png)
+
 ### The Football Tailgating map opens on the campus basemap (dev only)
 
 The Tailgating map opened on whatever basemap a visitor last chose on any map. For anyone who last
 chose Aerial Imagery that was no basemap at all, and with it no zoom levels: the zones drew as a speck
-on a white page ([#1692](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1692)). It now always opens on the campus basemap - Aggieland vector,
-September 2026, on dev - since its tents and zones are read against campus ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)). A link
-naming a `?basemap=` still opens on that one, and the other event maps are unchanged.
+on a white page ([#1692](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1692)). It now always opens on a campus basemap, since its tents and zones
+are read against campus ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)). This change opened it on Aggieland vector, September 2026, as
+the image below shows; the entry above has since moved it to **Aggieland raster, October 2026**, in
+every environment ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788)). A link naming a `?basemap=` still opens on that one, and the other
+event maps are unchanged.
 
-Any event map can now ask for this with `basemap: 'campus'` in its configuration. On production it
-opens on the campus basemap production has.
+Any event map can ask for the campus basemap with `basemap: 'campus'` in its configuration - the vector
+one on dev, the raster one production has - or for Aggieland raster, October 2026, everywhere, with
+`basemap: 'campus-raster'`.
 
 | Before, with Aerial Imagery last chosen | After |
 | --- | --- |
-| ![The Tailgating map with no basemap, its zones a speck in the middle](../screenshots/tailgating-campus-basemap/before.png) | ![The Tailgating map on the September 2026 campus basemap](../screenshots/tailgating-campus-basemap/after.png) |
+| ![The Tailgating map with no basemap, its zones a speck in the middle](../screenshots/tailgating-campus-basemap/before.png) | ![The Tailgating map on the September 2026 campus basemap, before the raster basemap replaced it](../screenshots/tailgating-campus-basemap/after.png) |
+
 ### In 3D, the basemap panel says which basemaps it cannot show (dev only)
 
 On dev, with the map in 3D, the vector campus basemap could not be chosen again after another had
@@ -397,7 +415,8 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
-| Football Tailgating opens on the campus basemap ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)) | Choose **Aerial Imagery** on any map, then open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | The map opens on **Aggieland vector, September 2026** with its zones at the normal zoom, not on a white page. [The same map with ?basemap=gray-vector](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?basemap=gray-vector) opens on Light Gray Canvas. Other event maps still open on the basemap last chosen |
+| Football Tailgating basemap and search ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Opens on **Aggieland raster, October 2026**, marked in the Basemap panel. Search **O12**: Tent O12, which opens its popup. **Ortega**: Ortega Lawn. **Lot E**: the West Campus Lot E zones. **MSC**: still the Memorial Student Center and its parking |
+| Football Tailgating opens on the campus basemap ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)) | Choose **Aerial Imagery** on any map, then open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | The map opens on **Aggieland raster, October 2026** ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788); it was Aggieland vector, September 2026, before) with its zones at the normal zoom, not on a white page. [The same map with ?basemap=gray-vector](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?basemap=gray-vector) opens on Light Gray Canvas. Other event maps still open on the basemap last chosen |
 | Basemaps a 3D scene cannot show ([#1740](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1740)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), then the **2D** button beside All Maps | In 3D, **Aggieland vector** is greyed and says **2D only**, and **Aggieland raster, October 2026** is marked as chosen, which is what the map shows. Clicking the greyed one does nothing. Choose another basemap and it is still greyed. Click **3D** to go back: the vector basemap is back, marked, and can be chosen |
 | Aerial Imagery timeline restyled ([#1750](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1750)) | [Football Tailgating on 22 November 2025](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?imagery=2025-11-22) | The timeline is above **View as production**, not under it. Ticks have no labels but "2016" and "Latest"; hovering one shows its date. ‹ › beside the date step one capture: from Nov 22, 2025, › goes to Nov 26, 2025, then to Oct 5, 2026 (latest), where › greys out. Not on production |
 | A saved Aerial Imagery choice ([#1692](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1692)) | Choose **Aerial Imagery** on any map, then open [Accessible Parking](https://dev.aggiemap.tamu.edu/events/accessible-parking/map/d) | The map opens on Aerial Imagery with its parking spaces, not on a white page with the spaces floating. Reload: still Aerial Imagery. Choose another basemap and reload: that one. Also on production |

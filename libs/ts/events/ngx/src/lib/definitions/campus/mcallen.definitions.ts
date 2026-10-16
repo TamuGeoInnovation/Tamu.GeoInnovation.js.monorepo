@@ -1,6 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
-import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
+import { SearchSource, containsSearch } from '@tamu-gisc/ui-kits/ngx/search';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -21,15 +21,6 @@ export enum MCALLEN_LAYERS {
   BASEMAP = 'mcallen-basemap-layer',
   BUILDINGS = 'mcallen-buildings-layer'
 }
-
-const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
-  f: 'json',
-  resultRecordCount: 5,
-  outFields: '*',
-  outSR: 4326,
-  returnGeometry: true,
-  spatialRel: 'esriSpatialRelIntersects'
-};
 
 export const McAllenLayerSources: LayerSource[] = [
   {
@@ -70,13 +61,7 @@ export const McAllenSearchSources: SearchSource[] = [
     name: 'Building',
     url: `${Connections.mcallenFeatureServerUrl}/2`,
     queryParams: {
-      ...commonQueryParams,
-      where: {
-        keys: ['name', 'abbrev', 'number'],
-        operators: ['LIKE', 'LIKE', 'LIKE'],
-        wildcards: ['includes', 'includes', 'includes'],
-        transformations: ['UPPER', 'UPPER', 'UPPER']
-      },
+      ...containsSearch(['name', 'abbrev', 'number']),
       scoringWhere: {
         keys: ['name', 'abbrev'],
         operators: ['LIKE', 'LIKE'],

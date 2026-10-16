@@ -99,6 +99,16 @@ export function aggiemapBasemap(isTesting: boolean): BaseMapProperties {
   return isTesting ? AggiemapVectorBasemap : AggiemapRasterBasemap;
 }
 
+/**
+ * The raster campus basemap, Aggieland raster, October 2026, for a map that opens on it in every
+ * environment. On development it is the gallery's dated entry, so the panel marks it as the one showing.
+ */
+export function aggiemapRasterBasemap(isTesting: boolean): BaseMapProperties {
+  return isTesting
+    ? { ...AggiemapRasterBasemap, id: 'aggie_basemap_raster_2026_10', title: 'Aggieland raster, October 2026' }
+    : AggiemapRasterBasemap;
+}
+
 /** An earlier raster campus basemap, drawn exactly as the current one is. */
 const rasterLayer = (url: string) => ({ ...AggiemapRasterBasemap.baseLayers[0], url });
 
@@ -141,7 +151,7 @@ export function aggiemapGalleryBasemaps(isTesting: boolean): BaseMapProperties[]
 
   return [
     aggiemapBasemap(isTesting),
-    { ...AggiemapRasterBasemap, id: 'aggie_basemap_raster_2026_10', title: 'Aggieland raster, October 2026' },
+    aggiemapRasterBasemap(isTesting),
     AggiemapRasterBasemapJune2026,
     AggiemapRasterBasemapMay2026
   ];
