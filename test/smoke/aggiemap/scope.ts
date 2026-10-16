@@ -71,7 +71,8 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
     specs: ['services.spec.ts', 'search.spec.ts', 'search-sources.spec.ts']
   },
   { paths: /^libs\/aggiemap\/ngx\/core\/src\/lib\/pages\/map\//, specs: ['isolation.spec.ts', 'directions.spec.ts'] },
-  { paths: /^libs\/ts\/events\/ngx\/src\/lib\/modules\/map\//, specs: ['isolation.spec.ts'] }
+  { paths: /^libs\/ts\/events\/ngx\/src\/lib\/modules\/map\//, specs: ['isolation.spec.ts'] },
+  { paths: /^libs\/maps\/esri\/src\/lib\/services\/map\/(selection-layer|hit-order)\.ts$/, specs: ['selection.spec.ts'] }
 ];
 
 /** Paths that cannot change what a deployed AggieMap map does. GIS Day is another site with its own checks. */
