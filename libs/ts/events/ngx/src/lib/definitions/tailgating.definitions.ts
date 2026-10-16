@@ -272,7 +272,21 @@ export const TailgatingConfiguration: EventConfiguration = {
   // the visitor last chose elsewhere.
   basemap: 'campus-raster',
   searchSources: [...TailgatingLinkSources, ...TailgatingSearchSources],
-  searchSourcesWithCampus: true
+  searchSourcesWithCampus: true,
+  // Raised on the same game days as the Football toast, and second, because the map is registered
+  // right after Football's (#1817).
+  toast: {
+    id: 'tailgating-notification',
+    title: 'Football Tailgating Map Available',
+    message: 'Tailgating on game day? Click me to open the Football Tailgating Map to find tailgating zones and tents.',
+    imgUrl: './assets/images/icons/sports/Football.png',
+    imgAltText: 'Football Icon',
+    acknowledge: true,
+    action: {
+      type: 'internal',
+      value: '/events/tailgating'
+    }
+  }
 };
 
 export const TailgatingOptions: SpecialEventOptions = [];

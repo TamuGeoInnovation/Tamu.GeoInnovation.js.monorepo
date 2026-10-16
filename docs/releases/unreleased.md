@@ -15,6 +15,14 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### On game days, Football Tailgating has its own notice
+
+In the week before a home game and on the day, the main map now shows **Football Tailgating Map
+Available** below the Football Transportation one; clicking it opens the Tailgating map
+([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)). It uses the Football map's game days, so the two notices come and go together.
+
+<!-- screenshots: docs/screenshots/1817-tailgating-toast/ -->
+
 ### The Football Tailgating map is on production
 
 **Football Tailgating** (`/events/tailgating`) is now on production, listed under Athletics beside
@@ -595,6 +603,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Football Tailgating game-day notice ([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)) | [The main map](https://dev.aggiemap.tamu.edu/map/d) in a private window, in the week before a home game | Two notices, **Football Transportation Map Available** then **Football Tailgating Map Available**; clicking the second opens the Tailgating map |
 | Football Tailgating on production ([#1814](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1814)) | [Football Tailgating as production](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?as=production), then [All Maps as production](https://dev.aggiemap.tamu.edu/all-maps?as=production) | The Tailgating map opens with its zones and tents, not the main map, and All Maps lists **Football Tailgating** under Athletics with no "Beta" label. On production after release: [aggiemap.tamu.edu/events/tailgating](https://aggiemap.tamu.edu/events/tailgating) |
 | Football Tailgating basemap and search ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Opens on **Aggieland raster, October 2026**, marked in the Basemap panel. Search **O12**: Tent O12, which opens its popup. **Ortega**: Ortega Lawn. **Lot E**: the West Campus Lot E zones. **MSC**: still the Memorial Student Center and its parking |
 | Night / Weekend parking map ([#836](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/836)) | [Night / Weekend](https://dev.aggiemap.tamu.edu/parking/night-weekend) | The layers list and the legend read **Night & Weekend Lots**. Under the title **Night / Weekend Transportation Map**, two blocks: **Night Privileges**, Monday - Thursday 5:00 p.m. - 6:00 a.m., and **Weekend Privileges**, Friday 6:00 p.m. - Monday 6:00 a.m. On a phone they sit above the legend. |
