@@ -1,6 +1,7 @@
 # Unreleased
 
-Since the 16 October release: GIS Day changes only, waiting for GIS Day's own deploy.
+Since the 16 October release: one AggieMap fix (map search with an apostrophe or a percent sign), and GIS
+Day changes waiting for GIS Day's own deploy.
 
 **The last release is [16 October 2026](2026-10-16.md)**, built from `264eebb42` (build 20261016.11,
 Release-473) and promoted to production on the morning of 16 October. The release tier on dev was still
@@ -16,6 +17,22 @@ result adds its own entry below, in that pull request**, with its before/after s
 ---
 
 ## Summary
+
+### Map search works with an apostrophe or a percent sign
+
+Searching for `Cain '51` found nothing, on every map: the apostrophe ended the query's text early, and
+every GIS service the search asks rejected it. A `%` or `_` was read as a wildcard, so searching `%` on
+the Football Tailgating map listed every tent and zone. What is typed is now escaped once, where every
+map's search builds its query: an apostrophe is doubled, and in a "contains" search `%`, `_` and `\` are
+matched as themselves. Searching `Cain '51` finds the James J. Cain '51 Building; `%` finds nothing,
+because no name has one. The bus routes and the event maps' links, which escaped apostrophes on their
+own, now use the same function
+([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)).
+
+| Before | After |
+| --- | --- |
+| ![Searching Cain '51 on the main map: No results found](../screenshots/search-escape/before-apostrophe.png) | ![Searching Cain '51 lists James J. Cain '51 Building (0391)](../screenshots/search-escape/after-apostrophe.png) |
+| ![Searching % on Football Tailgating lists every tent and zone](../screenshots/search-escape/before-percent.png) | ![Searching % finds nothing](../screenshots/search-escape/after-percent.png) |
 
 ### GIS Day: an event's time is chosen from a list again
 
@@ -400,10 +417,11 @@ is gone, and new images of the refusal, waiting and timeout messages are still t
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** nothing; every AggieMap row went out in the 16 October release. The rows below are GIS Day's, which has no dev site.
+**Currently on dev for testing:** the search fix ([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)) once it is deployed; every other AggieMap row went out in the 16 October release. The other rows are GIS Day's, which has no dev site.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Map search with an apostrophe or a percent sign ([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)) | [dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu), then [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Search `Cain '51`: James J. Cain '51 Building is listed. Search `O'` or `Aggie's`: no error, results or "No results found". On Football Tailgating, search `%`: "No results found", not every tent. Ordinary searches still work: `MSC`, `O12`, `Creamery` |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
 | GIS Day: university banner in the admin speaker form ([#1757](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1757)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Speakers, edit a speaker who has a photograph | The university and class-year banner on the photograph, as on the Presenters page. Change the University or the Graduation Year: the banner changes at once, before saving. Choose no university: it goes. The public Presenters page and a presenter's page look as they did |
 | GIS Day: competition submissions need a sign-in ([#1780](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1780)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone with the competition app installed, once the 2026 competition is taking submissions | Signed in, a submission uploads, the app says it was saved, it appears on the public submissions map, and the leaderboard counts it. (Not under Account, My VGI submissions: that page shows nothing for anyone, for an unrelated reason, [#1791](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1791).) As an organizer, Admin, VGI Competition, Submissions lists everyone's with their photographs. Opening the submissions address in a browser without signing in answers 401 |
