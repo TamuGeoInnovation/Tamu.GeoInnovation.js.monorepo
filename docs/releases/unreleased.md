@@ -29,6 +29,18 @@ no longer on the map says so rather than doing nothing.
 
 ![Ortega Lawn opened from the search, with its popup](../screenshots/tailgating-raster-basemap-search/after-area-popup.png)
 
+### The Night / Weekend parking map names its lots and says when they can be used
+
+The map's layer now reads **Night & Weekend Lots**, the name its service gives it, in the layers list
+and the legend, rather than "Night Privileges 5:00pm - 6:00am", which left weekends out
+([#836](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/836)). Between the map's title and its layers it now says when each privilege applies:
+**Night Privileges**, Monday - Thursday 5:00 p.m. - 6:00 a.m., and **Weekend Privileges**, Friday
+6:00 p.m. - Monday 6:00 a.m. Transportation Services asked for both.
+
+| Before | After |
+| --- | --- |
+| ![Night / Weekend sidebar: title, privilege hours, layers and legend, before](../screenshots/night-weekend-836/before-sidebar.png) | ![Night / Weekend sidebar: title, privilege hours, layers and legend, after](../screenshots/night-weekend-836/after-sidebar.png) |
+
 ### The Football Tailgating map opens on the campus basemap (dev only)
 
 The Tailgating map opened on whatever basemap a visitor last chose on any map. For anyone who last
@@ -568,6 +580,7 @@ dated notes as what was tested, and this table empties.
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | Football Tailgating basemap and search ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Opens on **Aggieland raster, October 2026**, marked in the Basemap panel. Search **O12**: Tent O12, which opens its popup. **Ortega**: Ortega Lawn. **Lot E**: the West Campus Lot E zones. **MSC**: still the Memorial Student Center and its parking |
+| Night / Weekend parking map ([#836](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/836)) | [Night / Weekend](https://dev.aggiemap.tamu.edu/parking/night-weekend) | The layers list and the legend read **Night & Weekend Lots**. Under the title **Night / Weekend Transportation Map**, two blocks: **Night Privileges**, Monday - Thursday 5:00 p.m. - 6:00 a.m., and **Weekend Privileges**, Friday 6:00 p.m. - Monday 6:00 a.m. On a phone they sit above the legend. |
 | Football Tailgating opens on the campus basemap ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)) | Choose **Aerial Imagery** on any map, then open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | The map opens on **Aggieland raster, October 2026** ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788); it was Aggieland vector, September 2026, before) with its zones at the normal zoom, not on a white page. [The same map with ?basemap=gray-vector](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?basemap=gray-vector) opens on Light Gray Canvas. Other event maps still open on the basemap last chosen |
 | Men's Basketball reads its new service ([#1749](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1749)) | [Men's Basketball](https://dev.aggiemap.tamu.edu/events/mens-basketball) | 8 icons, 7 closures and 21 lots draw. In the browser's network panel, their requests go to gis.tamu.edu `Hosted/MBskt_view`, not the transportation server. Clicking a lot shows its name as the popup title (e.g. **Lot 74**), not a bare dash. Layer names and symbols look acceptable |
 | Basemaps a 3D scene cannot show ([#1740](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1740)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), then the **2D** button beside All Maps | In 3D, **Aggieland vector** is greyed and says **2D only**, and **Aggieland raster, October 2026** is marked as chosen, which is what the map shows. Clicking the greyed one does nothing. Choose another basemap and it is still greyed. Click **3D** to go back: the vector basemap is back, marked, and can be chosen |
