@@ -74,6 +74,13 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   private _destroy$: Subject<boolean> = new Subject();
   private _trackLocation: TrackLocation;
 
+  /**
+   * This submission's id, made on the first Submit and kept for every automatic retry and Try Again,
+   * so a submission whose answer was lost and is sent again is saved once (#1786). Undefined on a
+   * browser that cannot make one; the server then makes its own.
+   */
+  private _submissionGuid: string;
+
   public ngOnInit(): void {
     this._trackPosition();
   }
@@ -202,6 +209,8 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
     this.submissionStatus.next(1);
     this.submissionProgress.next(0);
 
+    this._submissionGuid ??= globalThis.crypto?.randomUUID?.();
+
     return combineLatest([this.file.pipe(take(1)), this.file2.pipe(take(1))])
       .pipe(
         // Shrink the photographs on the phone before upload (#1786); a photograph that cannot be shrunk
@@ -231,6 +240,9 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           data.append('location', JSON.stringify(location));
           data.append('value', JSON.stringify(value));
           data.append('season', formModel.season.guid);
+          if (this._submissionGuid !== undefined) {
+            data.append('guid', this._submissionGuid);
+          }
           data.append('head1', file);
           if (file2 !== undefined) {
             data.append('head2', file2);
@@ -238,7 +250,8 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
           return this.ss.postSubmission(data).pipe(
             // An upload that did not reach the server is sent again a few times before giving up, for a
-            // weak signal on campus (#1786). One the server refused is not.
+            // weak signal on campus (#1786). One the server refused is not. Each attempt carries the same
+            // id, so one that was saved but whose answer was lost is not saved twice.
             retry({
               count: UPLOAD_RETRY_DELAYS.length,
               delay: (err, attempt) => (uploadMayBeRetried(err) ? timer(UPLOAD_RETRY_DELAYS[attempt - 1]) : throwError(() => err))
@@ -248,6 +261,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
                 this.submissionProgress.next(event.total ? event.loaded / event.total : 0);
                 return EMPTY;
               } else if (event.type === HttpEventType.Response) {
+                this._submissionGuid = undefined;
                 this.router.navigate(['complete'], { relativeTo: this.route });
 
                 // Returning nothing here made switchMap throw, so a saved submission went on to

@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   ForbiddenException,
   Get,
@@ -18,6 +19,7 @@ import {
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { DeepPartial } from 'typeorm';
 import { Duplex } from 'stream';
+import { validate as isUuid } from 'uuid';
 
 import { isOwnerOrPermitted, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
@@ -126,6 +128,10 @@ export class SubmissionController {
   /**
    * Records a submission for the signed-in participant. Who submitted it comes from the sign-in, never
    * from the request, so nobody can submit as someone else (#1780).
+   *
+   * The app names each submission with a `guid` of its own, the same on every attempt to send it, so an
+   * upload sent again after its answer was lost returns the submission already saved instead of saving
+   * a second one (#1786).
    */
   @UseGuards(JwtGuard)
   @Post('')
@@ -143,7 +149,24 @@ export class SubmissionController {
       throw new BadRequestException('Submissions are disabled for this season.');
     }
 
+    if (body.guid !== undefined) {
+      if (!isUuid(body.guid)) {
+        throw new BadRequestException('A submission id must be a UUID.');
+      }
+
+      const existing = await this.service.getSubmissionByGuid(body.guid);
+
+      if (existing) {
+        if (!isOwnerOrPermitted(req.user, existing.userGuid)) {
+          throw new ConflictException('A submission with this id already exists.');
+        }
+
+        return existing;
+      }
+    }
+
     const sub: DeepPartial<CompetitionSubmission> = {
+      guid: body.guid,
       value: JSON.parse(body.value),
       userGuid: req.user.sub,
       location: JSON.parse(body.location),

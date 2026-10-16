@@ -11,19 +11,15 @@ export interface ShrinkImageOptions {
 }
 
 /**
- * Images already this small, and within `maxDimension`, are sent as they are.
- */
-const SMALL_ENOUGH_BYTES = 1024 * 1024;
-
-/**
  * Shrinks a photograph in the browser before it is uploaded: at most `maxDimension` pixels on its
  * longest side, as a JPEG, turned the right way up from the camera's orientation. A phone's 2 to 8 MB
  * photograph typically becomes a few hundred kilobytes.
  *
- * The result carries none of the original's embedded data (EXIF), such as where it was taken.
+ * Every image the browser can read is redrawn, however small it already is, so the result never
+ * carries the original's embedded data (EXIF), such as where it was taken.
  *
- * Never fails: when the browser cannot read or redraw the image, or the result would be no smaller,
- * the original file is returned.
+ * Never fails: when the browser cannot read or redraw the image, the original file is returned, and
+ * that one keeps whatever embedded data it has.
  */
 export async function shrinkImage(file: File, options: ShrinkImageOptions = {}): Promise<File> {
   const maxDimension = options.maxDimension ?? 1600;
@@ -36,13 +32,10 @@ export async function shrinkImage(file: File, options: ShrinkImageOptions = {}):
   let bitmap: ImageBitmap;
 
   try {
-    bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    bitmap = await decodeImage(file, maxDimension);
 
+    // The decode may already be at the right size; this also covers a browser that ignored the size.
     const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
-
-    if (scale === 1 && file.size <= SMALL_ENOUGH_BYTES) {
-      return file;
-    }
 
     const canvas = document.createElement('canvas');
     canvas.width = Math.max(1, Math.round(bitmap.width * scale));
@@ -51,7 +44,7 @@ export async function shrinkImage(file: File, options: ShrinkImageOptions = {}):
 
     const blob = await new Promise<Blob>((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
 
-    if (!blob || blob.size >= file.size) {
+    if (!blob) {
       return file;
     }
 
@@ -64,4 +57,47 @@ export async function shrinkImage(file: File, options: ShrinkImageOptions = {}):
   } finally {
     bitmap?.close?.();
   }
+}
+
+/**
+ * Decodes an image upright, and no larger than it needs to be: when its size can be read first and it
+ * is over `maxDimension`, straight to `maxDimension` on its longest side, so a 12-megapixel photograph
+ * is never held in memory at full size and is scaled with the browser's best filter. Otherwise, or when
+ * the browser refuses the resize options, at full size.
+ */
+async function decodeImage(file: File, maxDimension: number): Promise<ImageBitmap> {
+  const size = await readImageSize(file).catch((): undefined => undefined);
+
+  if (size && Math.max(size.width, size.height) > maxDimension) {
+    // One side only: the browser keeps the proportions, even if it reads the orientation differently.
+    const resize = size.width >= size.height ? { resizeWidth: maxDimension } : { resizeHeight: maxDimension };
+
+    try {
+      return await createImageBitmap(file, { ...resize, resizeQuality: 'high', imageOrientation: 'from-image' });
+    } catch {
+      // Decoded at full size below.
+    }
+  }
+
+  return createImageBitmap(file, { imageOrientation: 'from-image' });
+}
+
+/**
+ * An image's width and height, upright, read without drawing it.
+ */
+function readImageSize(file: File): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+
+    image.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve({ width: image.naturalWidth, height: image.naturalHeight });
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('The image could not be read.'));
+    };
+    image.src = url;
+  });
 }

@@ -1,14 +1,19 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
+  INestApplication,
   NotFoundException,
   UnprocessableEntityException
 } from '@nestjs/common';
 import { GUARDS_METADATA } from '@nestjs/common/constants';
+import { Test } from '@nestjs/testing';
 
 import { JwtGuard, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
-import { SubmissionController } from './submission.controller';
+import { FormService } from '../form/form.service';
+import { SubmissionService } from './submission.service';
+import { MAX_PHOTO_BYTES, SubmissionController } from './submission.controller';
 
 /**
  * #1780: every competition submission endpoint needs a signed-in user; an ordinary participant sees
@@ -77,6 +82,43 @@ describe('SubmissionController', () => {
       expect(service.createCompetitionSubmission).not.toHaveBeenCalled();
     });
 
+    /**
+     * #1786: the app sends a submission again when its answer did not arrive, with the same id each
+     * time, so a submission that was saved but whose answer was lost is not saved twice.
+     */
+    describe('sent again with the same id', () => {
+      const id = '7f1c5a52-3b0e-4d36-9a55-2f8e8f4c1b6a';
+
+      it("saves a new id as the submission's own", async () => {
+        service.getSubmissionByGuid.mockResolvedValueOnce(null);
+
+        await controller.insert(ann, { ...body, guid: id }, []);
+
+        expect(service.createCompetitionSubmission).toHaveBeenCalledWith(expect.objectContaining({ guid: id, userGuid: 'auth0|ann' }), []);
+      });
+
+      it('returns the submission already saved, and saves nothing', async () => {
+        const saved = { guid: id, userGuid: 'auth0|ann' };
+        service.getSubmissionByGuid.mockResolvedValueOnce(saved);
+
+        await expect(controller.insert(ann, { ...body, guid: id }, [])).resolves.toBe(saved);
+        expect(service.createCompetitionSubmission).not.toHaveBeenCalled();
+        expect(service.createOne).not.toHaveBeenCalled();
+      });
+
+      it("refuses someone else's id, and saves nothing", async () => {
+        service.getSubmissionByGuid.mockResolvedValueOnce({ guid: id, userGuid: 'auth0|ann' });
+
+        await expect(controller.insert(bob, { ...body, guid: id }, [])).rejects.toThrow(ConflictException);
+        expect(service.createCompetitionSubmission).not.toHaveBeenCalled();
+      });
+
+      it('refuses an id that is not a UUID', async () => {
+        await expect(controller.insert(ann, { ...body, guid: 'not-a-uuid' }, [])).rejects.toThrow(BadRequestException);
+        expect(service.createCompetitionSubmission).not.toHaveBeenCalled();
+      });
+    });
+
     it('still refuses a season that is not taking submissions', async () => {
       formService.getSeason.mockResolvedValue({ guid: 'cs-1', allowSubmissions: false });
 
@@ -133,5 +175,77 @@ describe('SubmissionController', () => {
       expect(service.getOne).toHaveBeenCalledWith(expect.objectContaining({ relations: expect.arrayContaining(['blobs']) }));
       expect(service.getSubmissionByGuid).not.toHaveBeenCalled();
     });
+  });
+});
+
+/**
+ * #1786: the API refuses a photograph over 15 MB with 413, and more than two files, before anything is
+ * saved. Sent over HTTP, because the limits live in the upload interceptor.
+ */
+describe('SubmissionController upload limits', () => {
+  let app: INestApplication;
+  let url: string;
+  let createCompetitionSubmission: jest.Mock;
+
+  const send = (...photos: Array<number>) => {
+    const form = new FormData();
+    form.append('season', 'cs-1');
+    form.append('value', '{"kind":"monument"}');
+    form.append('location', '{"latitude":30.6,"longitude":-96.3}');
+    photos.forEach((bytes, i) => form.append(`head${i + 1}`, new Blob([new Uint8Array(bytes)], { type: 'image/jpeg' }), 'photo.jpg'));
+
+    return fetch(`${url}/competitions/submissions`, { method: 'POST', body: form });
+  };
+
+  beforeAll(async () => {
+    createCompetitionSubmission = jest.fn((sub) => Promise.resolve(sub));
+
+    const moduleRef = await Test.createTestingModule({
+      controllers: [SubmissionController],
+      providers: [
+        { provide: SubmissionService, useValue: { createCompetitionSubmission, getSubmissionByGuid: jest.fn() } },
+        { provide: FormService, useValue: { getSeason: () => Promise.resolve({ guid: 'cs-1', allowSubmissions: true }) } }
+      ]
+    })
+      .overrideGuard(JwtGuard)
+      .useValue({
+        canActivate: (context) => {
+          context.switchToHttp().getRequest().user = { sub: 'auth0|bob', permissions: [] };
+
+          return true;
+        }
+      })
+      .compile();
+
+    app = moduleRef.createNestApplication();
+    await app.listen(0, '127.0.0.1');
+    url = await app.getUrl();
+  });
+
+  afterAll(async () => {
+    await app?.close();
+  });
+
+  beforeEach(() => createCompetitionSubmission.mockClear());
+
+  it('accepts two photographs within the limit', async () => {
+    const res = await send(1024, 1024);
+
+    expect(res.status).toBe(201);
+    expect(createCompetitionSubmission).toHaveBeenCalledTimes(1);
+  });
+
+  it('answers 413 for a photograph over 15 MB, and saves nothing', async () => {
+    const res = await send(MAX_PHOTO_BYTES + 1);
+
+    expect(res.status).toBe(413);
+    expect(createCompetitionSubmission).not.toHaveBeenCalled();
+  });
+
+  it('refuses more than two files, and saves nothing', async () => {
+    const res = await send(1024, 1024, 1024);
+
+    expect(res.status).toBe(400);
+    expect(createCompetitionSubmission).not.toHaveBeenCalled();
   });
 });

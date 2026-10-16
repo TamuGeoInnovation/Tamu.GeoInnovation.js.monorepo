@@ -55,6 +55,11 @@ describe('SubmissionComponent', () => {
   };
 
   beforeEach(() => {
+    // jsdom may not have crypto.randomUUID, which a phone's browser does.
+    if (typeof globalThis.crypto?.randomUUID !== 'function') {
+      Object.defineProperty(globalThis, 'crypto', { value: jest.requireActual('crypto').webcrypto, configurable: true });
+    }
+
     watchers = [];
     (navigator as unknown as { geolocation: unknown }).geolocation = {
       watchPosition: jest.fn((ok, fail) => watchers.push({ ok, fail }) - 1),
@@ -153,7 +158,7 @@ describe('SubmissionComponent', () => {
     expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('Location access is blocked') }));
   });
 
-  it('starts looking again when Submit is pressed while blocked, so allowing access then submitting works', () => {
+  it('starts looking again when Submit is pressed while blocked, so allowing access then submitting works', async () => {
     const fixture = create();
     watchers[0].fail({ code: 1 });
     complete(fixture.componentInstance);
@@ -165,6 +170,7 @@ describe('SubmissionComponent', () => {
 
     watchers[1].ok(position());
     fixture.componentInstance.submitResponse();
+    await settle();
 
     expect(postSubmission).toHaveBeenCalledTimes(1);
   });
@@ -277,6 +283,37 @@ describe('SubmissionComponent', () => {
 
       expect(attempts).toBe(1);
       expect(toast).toHaveBeenCalledTimes(1);
+    }));
+
+    it('sends one id for the submission, the same on every retry and on Try Again', fakeAsync(() => {
+      upload(10, { status: 0 });
+      const fixture = submitted();
+      tick(2000 + 5000 + 10000);
+      expect(attempts).toBe(4);
+
+      // Try Again.
+      fixture.componentInstance.submitResponse();
+      flushMicrotasks();
+      tick(2000 + 5000 + 10000);
+
+      const ids = postSubmission.mock.calls.map(([data]) => (data as FormData).get('guid'));
+      expect(ids).toHaveLength(2);
+      expect(ids[0]).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+      expect(ids[1]).toBe(ids[0]);
+    }));
+
+    it('keeps the id for Try Again after the server refused it', fakeAsync(() => {
+      upload(1, { status: 500, error: {} });
+      const fixture = submitted();
+      expect(fixture.componentInstance.submissionStatus.getValue()).toBe(-1);
+
+      fixture.componentInstance.submitResponse();
+      flushMicrotasks();
+      tick(0);
+
+      const ids = postSubmission.mock.calls.map(([data]) => (data as FormData).get('guid'));
+      expect(ids).toHaveLength(2);
+      expect(ids[1]).toBe(ids[0]);
     }));
 
     it('does not send a second time when Submit is tapped again while it is sending', fakeAsync(() => {
