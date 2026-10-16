@@ -17,6 +17,7 @@ describe('LeaderboardService', () => {
   let seasonForm: unknown;
   let service: LeaderboardService;
   let find: jest.Mock;
+  let findCompetitionSeason: jest.Mock;
 
   /**
    * A submission as the database returns it: decimals as text, oldest first.
@@ -43,12 +44,13 @@ describe('LeaderboardService', () => {
     submissions = [];
     seasonForm = form;
     find = jest.fn(() => Promise.resolve(submissions));
+    findCompetitionSeason = jest.fn(() => Promise.resolve({ guid: 'cs-1', form: seasonForm }));
 
     service = new LeaderboardService(
       { find } as never,
       undefined,
       undefined,
-      { findOne: jest.fn(() => Promise.resolve({ guid: 'cs-1', form: seasonForm })) } as never,
+      { findOne: findCompetitionSeason } as never,
       { findOne: jest.fn(() => Promise.resolve({ guid: 's-1', active: true })) } as never,
       undefined
     );
@@ -68,11 +70,11 @@ describe('LeaderboardService', () => {
     expect(await scores()).toEqual({ ann: 3 });
   });
 
-  it('compares submissions oldest first', async () => {
+  it('compares submissions oldest first, and two made in the same instant in a fixed order', async () => {
     submissions = [submission('ann', monument), submission('bob', north(2))];
     await scores();
 
-    expect(find).toHaveBeenCalledWith(expect.objectContaining({ order: { created: 'ASC' } }));
+    expect(find).toHaveBeenCalledWith(expect.objectContaining({ order: { created: 'ASC', guid: 'ASC' } }));
   });
 
   it('scores 2 for a different kind of thing at the same spot', async () => {
@@ -87,11 +89,12 @@ describe('LeaderboardService', () => {
     expect(await scores()).toEqual({ ann: 2, bob: 2 });
   });
 
-  it('counts a thing as already submitted if any earlier submission is close, not only the first', async () => {
-    // Bob is 12 m from Ann (already submitted). Cat is 22 m from Ann but 10 m from Bob.
+  it('compares a submission only with earlier new finds, so already-submitted ones do not chain', async () => {
+    // Bob is 12 m from Ann's new find, so already submitted. Cat is 22 m from Ann and 10 m from Bob:
+    // Bob's was not a new find, so Cat's is.
     submissions = [submission('ann', monument), submission('bob', north(12)), submission('cat', north(22))];
 
-    expect(await scores()).toEqual({ ann: 2, bob: 1, cat: 1 });
+    expect(await scores()).toEqual({ ann: 2, bob: 1, cat: 2 });
   });
 
   it('ignores a discarded earlier submission, so the next one is the first', async () => {
@@ -132,6 +135,18 @@ describe('LeaderboardService', () => {
       ['auth0|bob', 4],
       ['auth0|ann', 2],
       ['auth0|cat', 1]
+    ]);
+  });
+
+  it('scores a season named by its guid the same way as the active one', async () => {
+    submissions = [submission('ann', monument), submission('bob', north(5)), submission('bob', north(40))];
+
+    const board = await service.getLeaderBoardItemsForSeason('cs-1');
+
+    expect(findCompetitionSeason).toHaveBeenCalledWith(expect.objectContaining({ where: { guid: 'cs-1' } }));
+    expect(board.map((row) => [row.guid, row.points])).toEqual([
+      ['auth0|bob', 3],
+      ['auth0|ann', 2]
     ]);
   });
 });

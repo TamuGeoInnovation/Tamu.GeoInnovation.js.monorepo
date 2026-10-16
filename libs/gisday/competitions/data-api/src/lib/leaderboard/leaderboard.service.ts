@@ -23,8 +23,9 @@ export const NEW_FIND_POINTS = 2;
 export const ALREADY_SUBMITTED_POINTS = 1;
 
 /**
- * Two submissions with the same type, this close together, are taken to be of the same thing. It
- * allows for phone GPS error; two different things closer than this are scored as one.
+ * A submission this close to an earlier new find with the same type is taken to be of the same thing.
+ * It allows for phone GPS error; two different things closer than this are scored as one. The same in
+ * every season.
  */
 export const SAME_THING_DISTANCE_METRES = 15;
 
@@ -47,12 +48,6 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     private readonly ms: ManagementService
   ) {
     super(submissionRepo);
-  }
-
-  public getAllLeaderboardItems() {
-    return this.submissionRepo.query(
-      'SELECT RIGHT(userGuid, 4) as [identity], userGuid as guid, COUNT(userGuid) as points FROM submissions GROUP BY userGuid ORDER BY points DESC'
-    );
   }
 
   public async getLeaderBoardItemsForActiveSeason(resolveIdentities?: boolean) {
@@ -100,42 +95,44 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     return leaderboardData;
   }
 
-  public async getLeaderBoardItemsForSeason(seasonGuid?: string) {
-    const subs = await this.submissionRepo
-      .createQueryBuilder('submissions')
-      .leftJoin('submissions.season', 'season')
-      .select('RIGHT(submissions.userGuid, 4)', 'identity')
-      .addSelect('submissions.userGuid', 'guid')
-      .addSelect('COUNT(submissions.userGuid)', 'points')
-      .groupBy('submissions.userGuid')
-      .orderBy('points', 'DESC')
-      .where('season.guid = :season')
-      .setParameter('season', seasonGuid)
-      .getRawMany();
+  /**
+   * The leaderboard of the competition season with this guid, scored as the active one is.
+   */
+  public async getLeaderBoardItemsForSeason(competitionSeasonGuid: string) {
+    const competitionSeason = await this.compSeasonRepo.findOne({
+      where: { guid: competitionSeasonGuid },
+      relations: ['form']
+    });
 
-    return subs;
+    if (!competitionSeason) {
+      throw new NotFoundException('No competition season found.');
+    }
+
+    return this.calculateLeaderboard(competitionSeason);
   }
 
   /**
    * Scores a season's submissions (#1781): the first submission of a thing scores `NEW_FIND_POINTS`,
    * and every later submission of it, by anyone, `ALREADY_SUBMITTED_POINTS`. A later submission is of
-   * the same thing when it is within `SAME_THING_DISTANCE_METRES` of an earlier one and gave the same
-   * answer to the form's type question (its discriminator question; with none, distance alone decides).
-   * Discarded submissions neither score nor count as earlier ones. A submission with no usable location
-   * cannot be shown to be new, so it scores `ALREADY_SUBMITTED_POINTS`.
+   * the same thing when it is within `SAME_THING_DISTANCE_METRES` of an earlier new find and gave the
+   * same answer to the form's type question (its discriminator question; with none, distance alone
+   * decides). Only new finds are compared with, so a run of submissions a few metres apart does not
+   * chain into one thing. Discarded submissions neither score nor count as earlier ones. A submission
+   * with no usable location cannot be shown to be new, so it scores `ALREADY_SUBMITTED_POINTS`.
    */
   private async calculateLeaderboard(
     competitionSeason: CompetitionSeason
   ): Promise<Array<{ identity: string; guid: string; points: number }>> {
     const typeAttribute = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true)?.attribute;
 
-    // Oldest first, so each submission is compared only with those made before it.
+    // Oldest first, so each submission is compared only with those made before it; the guid orders two
+    // made in the same instant, so the same submissions always score the same.
     const submissions = await this.submissionRepo.find({
       where: {
         season: { guid: competitionSeason.guid }
       },
       relations: ['validationStatus', 'location'],
-      order: { created: 'ASC' }
+      order: { created: 'ASC', guid: 'ASC' }
     });
 
     const counted = submissions.filter(
@@ -145,7 +142,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
         submission.validationStatus.status === COMPETITION_VALIDATION_STATUS.verified
     );
 
-    const earlierFinds: Array<{ location: { latitude: number; longitude: number }; type: unknown }> = [];
+    const newFinds: Array<{ location: { latitude: number; longitude: number }; type: unknown }> = [];
     const userPointsMap = new Map<string, number>();
 
     for (const submission of counted) {
@@ -153,13 +150,14 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       const type = typeAttribute ? submission.value?.[typeAttribute] : undefined;
       let points = ALREADY_SUBMITTED_POINTS;
 
-      if (location) {
-        const alreadySubmitted = earlierFinds.some(
-          (earlier) => earlier.type === type && distanceInMetres(earlier.location, location) <= SAME_THING_DISTANCE_METRES
-        );
-
-        points = alreadySubmitted ? ALREADY_SUBMITTED_POINTS : NEW_FIND_POINTS;
-        earlierFinds.push({ location, type });
+      if (
+        location &&
+        !newFinds.some(
+          (find) => find.type === type && distanceInMetres(find.location, location) <= SAME_THING_DISTANCE_METRES
+        )
+      ) {
+        points = NEW_FIND_POINTS;
+        newFinds.push({ location, type });
       }
 
       userPointsMap.set(submission.userGuid, (userPointsMap.get(submission.userGuid) || 0) + points);

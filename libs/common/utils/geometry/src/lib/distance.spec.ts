@@ -1,4 +1,4 @@
-import { distanceInMetres } from './common-utils-geometry';
+import { distanceInMetres } from './distance';
 
 describe('distanceInMetres', () => {
   const msc = { latitude: 30.6122, longitude: -96.3414 };
