@@ -19,6 +19,7 @@ import { EsriModuleProviderService } from '../module-provider/module-provider.se
 import { LayerSourcesService } from '../layer-sources/layer-sources.service';
 import { registerMapProbe } from './map-probe';
 import { orderHitsForPopup, SELECTION_LAYER_ID } from './hit-order';
+import { keepSelectionLayerOnTop } from './selection-layer';
 import { PopupComponentReference } from '../../popup-reference';
 import {
   declaresOwnRenderer,
@@ -138,6 +139,7 @@ export class EsriMapService {
   ): Promise<void> {
     const basemap = this.makeBasemap(Properties, layers, Basemap);
     this._modules.map = new Map(basemap);
+    keepSelectionLayerOnTop(this._modules.map);
 
     this._mapContainer = ViewProps.properties.container as HTMLDivElement;
 
