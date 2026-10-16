@@ -89,7 +89,11 @@ The same change left Physics Fest's three groups, which the map makes itself and
 with no name in the legend or the layer list. They are General Parking, Buses Entering from Eastbound
 University Dr and Buses Entering from Westbound University Dr again.
 
-<!-- screenshots: docs/screenshots/1803-route-arrows/ -->
+| Before | After |
+| --- | --- |
+| ![HS Graduation arrival and departure routes, before](../screenshots/1803-route-arrows/before-hs-graduation.png) | ![HS Graduation arrival and departure routes, after](../screenshots/1803-route-arrows/after-hs-graduation.png) |
+| ![Physics Fest pedestrian path and group names, before](../screenshots/1803-route-arrows/before-phys-eng-fest.png) | ![Physics Fest pedestrian path and group names, after](../screenshots/1803-route-arrows/after-phys-eng-fest.png) |
+| ![Fish Camp, sessions A-F, routes, before](../screenshots/1803-route-arrows/before-fish-camp.png) | ![Fish Camp, sessions A-F, routes, after](../screenshots/1803-route-arrows/after-fish-camp.png) |
 
 ### An event map opens on Aerial Imagery again when that was the last basemap chosen
 
