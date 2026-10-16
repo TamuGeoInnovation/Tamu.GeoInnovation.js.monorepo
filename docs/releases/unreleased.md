@@ -97,7 +97,9 @@ lists every permit the lots accept, and a legend row let a long label squeeze th
 every map's legend, on desktop and phone, dev and production
 ([#1804](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1804)).
 
-<!-- screenshots: docs/screenshots/1804-legend-swatch/ -->
+| Before | After |
+| --- | --- |
+| ![Baseball Event Map legend, the $5 Event Parking entry (swatch 4 px wide before, 22 px after), before](../screenshots/1804-legend-swatch/before-baseball.png) | ![Baseball Event Map legend, the $5 Event Parking entry (swatch 4 px wide before, 22 px after), after](../screenshots/1804-legend-swatch/after-baseball.png) |
 
 ### GIS Day: an event's time is chosen from a list again
 
