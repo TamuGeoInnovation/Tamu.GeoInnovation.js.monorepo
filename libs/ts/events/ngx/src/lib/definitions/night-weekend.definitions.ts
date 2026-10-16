@@ -18,7 +18,6 @@ export const NightWeekendDefinitions = {
   NIGHT_PRIVILEGES: {
     id: NIGHT_WEEKEND_LAYERS.NIGHT_PRIVILEGES,
     layerId: NIGHT_WEEKEND_LAYERS.NIGHT_PRIVILEGES,
-    name: 'Night Privileges 5:00pm - 6:00am',
     url: `${eventUrl}/0`
   }
 };
@@ -27,7 +26,6 @@ export const NightWeekendColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: NightWeekendDefinitions.NIGHT_PRIVILEGES.id,
-    title: NightWeekendDefinitions.NIGHT_PRIVILEGES.name,
     url: NightWeekendDefinitions.NIGHT_PRIVILEGES.url,
     visible: true,
     listMode: 'show',
@@ -78,7 +76,19 @@ export const NightWeekendConfiguration: EventConfiguration = {
   shortApplicationName: 'Night / Weekend Map',
   mapCenter: [-96.34731, 30.60543],
   eventDates: [],
-  zoom: 16
+  zoom: 16,
+  sidebarInfo: {
+    sections: [
+      {
+        heading: 'Night Privileges',
+        items: ['Monday - Thursday 5:00 p.m. - 6:00 a.m.']
+      },
+      {
+        heading: 'Weekend Privileges',
+        items: ['Friday 6:00 p.m. - Monday 6:00 a.m.']
+      }
+    ]
+  }
 };
 
 export const NightWeekendOptions: SpecialEventOptions = [];
@@ -92,7 +102,7 @@ export const NightWeekendTs: AggiemapCustomMapConfiguration = {
   discover: {
     id: NightWeekendConfiguration.id,
     name: NightWeekendConfiguration.name,
-    description: 'Parking lot information for Night Privileges (5:00pm - 6:00am) and weekend parking.',
+    description: 'Parking lot information for night and weekend privileges.',
     source: 'internal',
     type: 'parking',
     parkingCategory: 'permit',
