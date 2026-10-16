@@ -60,7 +60,8 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   public location: GeolocationPosition;
 
   /**
-   * Whether the form has the phone's location yet (#1784): still finding it, found, or refused.
+   * Whether the form has the phone's location yet (#1784): still finding it, finding it slowly (after
+   * a few failed attempts), found, or refused.
    */
   public locationStatus: BehaviorSubject<SubmissionLocationStatus> = new BehaviorSubject('finding');
 
@@ -71,7 +72,6 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
   private _trackLocation: TrackLocation;
-  private _retryTracking: ReturnType<typeof setTimeout>;
 
   public ngOnInit(): void {
     this._trackPosition();
@@ -112,7 +112,6 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public ngOnDestroy() {
-    clearTimeout(this._retryTracking);
     this._trackLocation?.dispose();
     this._destroy$.next(undefined);
     this._destroy$.complete();
@@ -120,11 +119,26 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Follows the phone's location. A timeout or a position not yet available is common on a first fix
-   * or beside buildings, so tracking starts again; only refused access stops it.
+   * or beside buildings, so it keeps watching through them, and after a few says to check that Location
+   * is on; only refused access stops it.
    */
   private _trackPosition() {
+    let failures = 0;
+
     this._trackLocation?.dispose();
-    this._trackLocation = new TrackLocation({ enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 });
+    this.locationStatus.next('finding');
+    this._trackLocation = new TrackLocation({
+      enableHighAccuracy: true,
+      maximumAge: 10000,
+      timeout: 10000,
+      keepWatching: () => {
+        failures++;
+
+        if (failures >= LOCATION_FAILURES_BEFORE_HINT && this.locationStatus.getValue() === 'finding') {
+          this.locationStatus.next('slow');
+        }
+      }
+    });
 
     this._trackLocation
       .track()
@@ -135,12 +149,9 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           this.locationStatus.next('found');
         },
         error: (err: GeolocationPositionError) => {
-          if (err?.code === LOCATION_PERMISSION_DENIED) {
-            this.locationStatus.next('blocked');
-            this.ns.preset('no_gps');
-          } else {
-            this._retryTracking = setTimeout(() => this._trackPosition(), 2000);
-          }
+          // TrackLocation keeps watching through every other error, so this is a refusal.
+          this.locationStatus.next('blocked');
+          this.ns.preset('no_gps');
         }
       });
   }
@@ -162,14 +173,20 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   public submitResponse() {
     // Without a location the submission cannot be placed, so say why instead of failing (#1784).
     if (this.location === undefined && this.form?.valid && this.formModel()?.allowSubmissions === true) {
+      // Not 'found': that comes with a location.
+      const status = this.locationStatus.getValue() as Exclude<SubmissionLocationStatus, 'found'>;
+
       this.ns.toast({
         id: 'submission-no-location',
         title: 'No Location Yet',
-        message:
-          this.locationStatus.getValue() === 'blocked'
-            ? 'Location access is blocked. Allow this site to use your location in your phone settings, then submit again.'
-            : 'Your phone is still finding your location. Wait until the form shows it has been found, then submit again.'
+        message: NO_LOCATION_MESSAGES[status]
       });
+
+      // Refused access ends tracking, so start again: if the participant has since allowed it, the
+      // location arrives and the next Submit sends it.
+      if (status === 'blocked') {
+        this._trackPosition();
+      }
 
       return undefined;
     }
@@ -260,12 +277,21 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   }
 }
 
-export type SubmissionLocationStatus = 'finding' | 'found' | 'blocked';
+export type SubmissionLocationStatus = 'finding' | 'slow' | 'found' | 'blocked';
 
 /**
- * `GeolocationPositionError.PERMISSION_DENIED`, which is not defined outside a browser.
+ * How many timeouts or unavailable positions before the form suggests checking that Location is on.
  */
-const LOCATION_PERMISSION_DENIED = 1;
+const LOCATION_FAILURES_BEFORE_HINT = 3;
+
+/**
+ * What Submit says when there is no location yet, by why there is none.
+ */
+const NO_LOCATION_MESSAGES: Record<Exclude<SubmissionLocationStatus, 'found'>, string> = {
+  finding: 'Your phone is still finding your location. Wait until the form shows it has been found, then submit again.',
+  slow: "Your phone has not found your location yet. Make sure Location is on in your phone's settings, then submit again.",
+  blocked: 'Location access is blocked. Allow this site to use your location in your phone settings, then submit again.'
+};
 
 /**
  * What to tell a participant whose upload failed.

@@ -83,21 +83,38 @@ describe('SubmissionComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Location found, accurate to about 12 m.');
   });
 
-  it('keeps looking after a timeout, instead of giving up for good', fakeAsync(() => {
+  it('keeps looking after a timeout, instead of giving up for good', () => {
     const fixture = create();
 
     watchers[0].fail({ code: 3 });
-    tick(2000);
     fixture.detectChanges();
 
-    expect(watchers.length).toBe(2);
+    expect(navigator.geolocation.clearWatch).not.toHaveBeenCalled();
     expect(fixture.componentInstance.locationStatus.getValue()).toBe('finding');
 
-    watchers[1].ok(position());
+    watchers[0].ok(position());
     expect(fixture.componentInstance.locationStatus.getValue()).toBe('found');
 
     fixture.destroy();
-  }));
+  });
+
+  it('after a few failed attempts, says to check that Location is on', () => {
+    const fixture = create();
+    complete(fixture.componentInstance);
+
+    watchers[0].fail({ code: 2 });
+    watchers[0].fail({ code: 3 });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).not.toContain('Make sure Location is on');
+
+    watchers[0].fail({ code: 2 });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain("Make sure Location is on in your phone's settings");
+
+    fixture.componentInstance.submitResponse();
+    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('Make sure Location is on') }));
+    expect(postSubmission).not.toHaveBeenCalled();
+  });
 
   it('stops and says so when location access is refused', fakeAsync(() => {
     const fixture = create();
@@ -129,6 +146,22 @@ describe('SubmissionComponent', () => {
 
     expect(postSubmission).not.toHaveBeenCalled();
     expect(toast).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('Location access is blocked') }));
+  });
+
+  it('starts looking again when Submit is pressed while blocked, so allowing access then submitting works', () => {
+    const fixture = create();
+    watchers[0].fail({ code: 1 });
+    complete(fixture.componentInstance);
+
+    fixture.componentInstance.submitResponse();
+
+    expect(watchers.length).toBe(2);
+    expect(fixture.componentInstance.locationStatus.getValue()).toBe('finding');
+
+    watchers[1].ok(position());
+    fixture.componentInstance.submitResponse();
+
+    expect(postSubmission).toHaveBeenCalledTimes(1);
   });
 
   it('sends the submission with the location and its accuracy, and no account id', () => {

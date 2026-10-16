@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { BehaviorSubject } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 
 import { Device, IDeviceOSVersion } from '@tamu-gisc/common/utils/device';
 import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
@@ -34,23 +34,28 @@ export class InstallComponent implements OnInit {
     if (this.locationRequested.getValue() === false) {
       this.locationRequested.next(true);
 
-      new TrackLocation({ enableHighAccuracy: true, maximumAge: 10000, timeout: 2500 })
+      // Only a refusal is an error: a slow first fix is waited for (#1784). The watch is released once
+      // the first position arrives.
+      const tracker = new TrackLocation({ enableHighAccuracy: true, maximumAge: 10000, timeout: 2500, keepWatching: true });
+
+      tracker
         .track()
         .pipe(
           take(1),
-          catchError(() => {
-            this.ns.preset('no_gps');
-
-            throw new Error('Location forbidden');
-          })
+          finalize(() => tracker.dispose())
         )
-        .subscribe(() => {
-          this.ns.toast({
-            id: 'location-request-success',
-            title: 'Location Access Granted',
-            message:
-              'Your device has successfully granted location access to this application! You can now upload submissions'
-          });
+        .subscribe({
+          next: () => {
+            this.ns.toast({
+              id: 'location-request-success',
+              title: 'Location Access Granted',
+              message:
+                'Your device has successfully granted location access to this application! You can now upload submissions'
+            });
+          },
+          error: () => {
+            this.ns.preset('no_gps');
+          }
         });
     }
   }

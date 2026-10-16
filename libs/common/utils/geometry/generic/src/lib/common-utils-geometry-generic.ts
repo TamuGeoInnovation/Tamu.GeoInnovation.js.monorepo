@@ -34,13 +34,33 @@ export function getGeolocation(
   }
 }
 
+export interface TrackLocationOptions extends PositionOptions {
+  /**
+   * Keep watching through a timeout or a position that is not available yet, both common on a first fix,
+   * indoors or beside buildings, and error only when location access is refused (#1784). A function
+   * is also told of each failure it keeps watching through, for example to count them.
+   *
+   * Without it, the first error of any kind ends tracking.
+   */
+  keepWatching?: boolean | ((error: GeolocationPositionError) => void);
+}
+
+/**
+ * `GeolocationPositionError.PERMISSION_DENIED`, which is not defined outside a browser.
+ */
+const PERMISSION_DENIED = 1;
+
 export class TrackLocation {
   private _trackID: number;
   private _options: PositionOptions;
+  private _keepWatching: TrackLocationOptions['keepWatching'];
   private _location: BehaviorSubject<GeolocationPosition>;
 
-  constructor(options?: PositionOptions) {
-    this._options = { ...options };
+  constructor(options?: TrackLocationOptions) {
+    const { keepWatching, ...positionOptions } = { ...options };
+
+    this._options = positionOptions;
+    this._keepWatching = keepWatching;
 
     this._location = new BehaviorSubject(undefined);
   }
@@ -54,6 +74,15 @@ export class TrackLocation {
         this._location.next(position);
       },
       (error) => {
+        // The browser's watch carries on after any error but a refusal, so there is nothing to restart.
+        if (this._keepWatching && error?.code !== PERMISSION_DENIED) {
+          if (typeof this._keepWatching === 'function') {
+            this._keepWatching(error);
+          }
+
+          return;
+        }
+
         this._location.error(error);
         this.dispose();
       },
