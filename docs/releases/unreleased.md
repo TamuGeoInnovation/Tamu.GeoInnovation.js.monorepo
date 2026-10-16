@@ -15,7 +15,20 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-### The Football Tailgating map opens on the raster campus basemap, and searches its tents and areas (dev only)
+### The Football Tailgating map is on production
+
+**Football Tailgating** (`/events/tailgating`) is now on production, listed under Athletics beside
+Football ([#1814](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1814)). It had been on dev only since it was built as a prototype ([#1422](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1422)):
+production left it out of the map list, so its links led to the main map. Its tailgating zones come from a
+public layer in TAMU's ArcGIS Online organization, which production may now request. It no longer
+carries a "Beta" label.
+
+Its game days are now the Football map's own list rather than a copy, so the two maps say the season
+is over on the same day.
+
+<!-- screenshots: docs/screenshots/1814-tailgating-production/ -->
+
+### The Football Tailgating map opens on the raster campus basemap, and searches its tents and areas
 
 The map now always opens on **Aggieland raster, October 2026** rather than the vector campus basemap,
 and its search finds **tents** by id and **named areas** by name or zone id, alongside the usual
@@ -29,7 +42,7 @@ no longer on the map says so rather than doing nothing.
 
 ![Ortega Lawn opened from the search, with its popup](../screenshots/tailgating-raster-basemap-search/after-area-popup.png)
 
-### The Football Tailgating map opens on the campus basemap (dev only)
+### The Football Tailgating map opens on the campus basemap
 
 The Tailgating map opened on whatever basemap a visitor last chose on any map. For anyone who last
 chose Aerial Imagery that was no basemap at all, and with it no zoom levels: the zones drew as a speck
@@ -517,6 +530,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Football Tailgating on production ([#1814](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1814)) | [Football Tailgating as production](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?as=production), then [All Maps as production](https://dev.aggiemap.tamu.edu/all-maps?as=production) | The Tailgating map opens with its zones and tents, not the main map, and All Maps lists **Football Tailgating** under Athletics with no "Beta" label. On production after release: [aggiemap.tamu.edu/events/tailgating](https://aggiemap.tamu.edu/events/tailgating) |
 | Football Tailgating basemap and search ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Opens on **Aggieland raster, October 2026**, marked in the Basemap panel. Search **O12**: Tent O12, which opens its popup. **Ortega**: Ortega Lawn. **Lot E**: the West Campus Lot E zones. **MSC**: still the Memorial Student Center and its parking |
 | Football Tailgating opens on the campus basemap ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)) | Choose **Aerial Imagery** on any map, then open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | The map opens on **Aggieland raster, October 2026** ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788); it was Aggieland vector, September 2026, before) with its zones at the normal zoom, not on a white page. [The same map with ?basemap=gray-vector](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?basemap=gray-vector) opens on Light Gray Canvas. Other event maps still open on the basemap last chosen |
 | Basemaps a 3D scene cannot show ([#1740](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1740)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), then the **2D** button beside All Maps | In 3D, **Aggieland vector** is greyed and says **2D only**, and **Aggieland raster, October 2026** is marked as chosen, which is what the map shows. Clicking the greyed one does nothing. Choose another basemap and it is still greyed. Click **3D** to go back: the vector basemap is back, marked, and can be chosen |
