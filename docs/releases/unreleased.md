@@ -140,7 +140,9 @@ that button's panel. That includes ☰ when the details were opened from it, whi
 panel. On every map with a sidebar, on desktop; links that open a feature's details, such as `?tent=`,
 still open them.
 
-<!-- screenshots: docs/screenshots/1806-details-dismiss/ -->
+| Before | After |
+| --- | --- |
+| ![Tent L1 details open, then the gear clicked, before](../screenshots/1806-details-dismiss/before-gear-with-details-open.png) | ![Tent L1 details open, then the gear clicked, after](../screenshots/1806-details-dismiss/after-gear-with-details-open.png) |
 
 ### GIS Day: competition submissions need a sign-in, and are recorded for whoever is signed in
 
