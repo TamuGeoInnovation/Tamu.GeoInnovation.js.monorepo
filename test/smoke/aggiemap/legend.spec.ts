@@ -22,6 +22,19 @@ const LAYER = 'Entry Routes';
 /** Longer than a legend takes to draw, shorter than anyone would wait. */
 const HELD_MS = 15_000;
 
+/**
+ * A legend symbol keeps its size beside a long label (#1804).
+ *
+ * Each legend row is a flex row of the symbol and its label. The symbol's wrapper was allowed to shrink,
+ * so a long enough label squeezed it: on the Baseball Event Map the main event parking entry, whose
+ * label lists every permit it accepts, drew its 24-pixel symbol 4 pixels wide (#1778).
+ */
+const LONG_LABEL_MAP = '/parking/baseball-parking/map/d?map-mode=event';
+const LONG_LABEL = 'Event Parking';
+
+/** Narrower than any symbol a service publishes, wider than a squeezed one. */
+const MIN_SYMBOL_PX = 12;
+
 test.describe('legend', () => {
   test('a symbol follows its layer when the portal symbology arrives after the legend is drawn', async ({ page }) => {
     test.setTimeout(180_000);
@@ -56,5 +69,26 @@ test.describe('legend', () => {
         timeout: HELD_MS + 60_000
       })
       .not.toBe(first);
+  });
+
+  test('a symbol keeps its size beside a long label', async ({ page }) => {
+    test.setTimeout(120_000);
+    await blockAnalytics(page);
+    await page.goto(LONG_LABEL_MAP);
+
+    const rows = page.locator('tamu-gisc-legend-element .legend-info:visible', { has: page.locator('.image-container') });
+    await expect(rows.filter({ hasText: LONG_LABEL }).first(), `the legend never listed ${LONG_LABEL}`).toBeVisible({
+      timeout: 90_000
+    });
+
+    const symbols = await rows.evaluateAll((elements) =>
+      elements.map((row) => ({
+        label: (row.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 80),
+        width: Math.round((row.querySelector('.image-container')?.getBoundingClientRect().width ?? 0) * 10) / 10
+      }))
+    );
+    const squeezed = symbols.filter((symbol) => symbol.width < MIN_SYMBOL_PX);
+
+    expect(squeezed, `legend symbols narrower than ${MIN_SYMBOL_PX} px, of ${symbols.length}`).toEqual([]);
   });
 });

@@ -51,7 +51,8 @@ function createConnections(gisHost: string): IComposedConnections {
     liveAtTheStationUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Live_at_the_Station/FeatureServer`,
     maintenanceParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MaintenanceParking/MapServer`,
     mediaParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MediaParking/MapServer`,
-    mensBasketballUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/MensBasketballParking_view/FeatureServer`,
+    // Moved to the production GIS server for the editor map (#1749); not on the transportation host, so named outright.
+    mensBasketballUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/MBskt_view/FeatureServer',
     motorcycleParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MotorcycleParking/MapServer`,
     motoristAssistanceUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MotoristAssistance/MapServer`,
     moveInParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/FallMoveInParking_view/FeatureServer`,

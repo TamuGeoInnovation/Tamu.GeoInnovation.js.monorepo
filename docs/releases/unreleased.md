@@ -42,6 +42,18 @@ no longer on the map says so rather than doing nothing.
 
 ![Ortega Lawn opened from the search, with its popup](../screenshots/tailgating-raster-basemap-search/after-area-popup.png)
 
+### The Night / Weekend parking map names its lots and says when they can be used
+
+The map's layer now reads **Night & Weekend Lots**, the name its service gives it, in the layers list
+and the legend, rather than "Night Privileges 5:00pm - 6:00am", which left weekends out
+([#836](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/836)). Between the map's title and its layers it now says when each privilege applies:
+**Night Privileges**, Monday - Thursday 5:00 p.m. - 6:00 a.m., and **Weekend Privileges**, Friday
+6:00 p.m. - Monday 6:00 a.m. Transportation Services asked for both.
+
+| Before | After |
+| --- | --- |
+| ![Night / Weekend sidebar: title, privilege hours, layers and legend, before](../screenshots/night-weekend-836/before-sidebar.png) | ![Night / Weekend sidebar: title, privilege hours, layers and legend, after](../screenshots/night-weekend-836/after-sidebar.png) |
+
 ### The Football Tailgating map opens on the campus basemap
 
 The Tailgating map opened on whatever basemap a visitor last chose on any map. For anyone who last
@@ -59,6 +71,22 @@ one on dev, the raster one production has - or for Aggieland raster, October 202
 | Before, with Aerial Imagery last chosen | After |
 | --- | --- |
 | ![The Tailgating map with no basemap, its zones a speck in the middle](../screenshots/tailgating-campus-basemap/before.png) | ![The Tailgating map on the September 2026 campus basemap, before the raster basemap replaced it](../screenshots/tailgating-campus-basemap/after.png) |
+
+### The Men's Basketball map reads Transportation's new service, and names the lot clicked
+
+Transportation moved the Men's Basketball parking map to the production GIS server, so it can be kept
+up to date from their editor map ([#1749](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1749)). The map now reads its icons, closures and lots
+from that service, `MBskt_view` on gis.tamu.edu, in every environment; the old service on the
+transportation server is no longer updated. The layers, fields and features are the same. The new
+service's portal item has no saved style, so icons and lots are drawn with the service's own symbols,
+and the layer list may title them slightly differently.
+
+Clicking a parking lot also showed a popup with no title: it was built from two fields, `lottype` and
+`lotnum`, that neither service has. It now shows the lot's name, such as **Lot 74**.
+
+| Before | After |
+| --- | --- |
+| ![Men's Basketball map, layer list and legend, before](../screenshots/mens-basketball-1749/before-map.png) | ![Men's Basketball map, layer list and legend, after](../screenshots/mens-basketball-1749/after-map.png) |
 
 ### In 3D, the basemap panel says which basemaps it cannot show (dev only)
 
@@ -102,6 +130,26 @@ one capture at a time - the easy way to the captures days apart, 22 and 26 Novem
 | Before | After |
 | --- | --- |
 | ![The timeline's year labels under the View as production switch](../screenshots/nearmap-timeline-restyle/before.png) | ![The timeline above the switch, with the date between arrows](../screenshots/nearmap-timeline-restyle/after.png) |
+
+### HS Graduation, Physics Fest and Fish Camp draw their routes as arrows again, and Physics Fest's groups have names
+
+On HS Graduation and Physics Fest the routes drew as thick lines with no direction ([#1778](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1778)),
+and Fish Camp's did the same. [#1526](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1526) removed their arrow renderers on the understanding that
+each map's portal item supplies the symbol its owner drew. These three are MapServer services, whose
+portal items carry no symbology, and whose services publish only a flattened 9 to 15 pt line with no
+arrowheads. The arrows are back, each with the reason beside it in the definition, to be removed when
+the service is republished as a hosted view that carries them ([#1803](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1803)).
+
+The same change left Physics Fest's three groups, which the map makes itself and no service names,
+with no name in the legend or the layer list. They are General Parking, Buses Entering from Eastbound
+University Dr and Buses Entering from Westbound University Dr again.
+
+| Before | After |
+| --- | --- |
+| ![HS Graduation arrival and departure routes, before](../screenshots/1803-route-arrows/before-hs-graduation.png) | ![HS Graduation arrival and departure routes, after](../screenshots/1803-route-arrows/after-hs-graduation.png) |
+| ![Physics Fest pedestrian path and group names, before](../screenshots/1803-route-arrows/before-phys-eng-fest.png) | ![Physics Fest pedestrian path and group names, after](../screenshots/1803-route-arrows/after-phys-eng-fest.png) |
+| ![Fish Camp, sessions A-F, routes, before](../screenshots/1803-route-arrows/before-fish-camp.png) | ![Fish Camp, sessions A-F, routes, after](../screenshots/1803-route-arrows/after-fish-camp.png) |
+
 ### An event map opens on Aerial Imagery again when that was the last basemap chosen
 
 A visitor whose last basemap choice was Aerial Imagery opened every event map with no basemap at all,
@@ -114,6 +162,20 @@ comes back as Aerial Imagery, on dev and production, as a saved campus basemap a
 | Before, Accessible Parking with Aerial Imagery last chosen | After |
 | --- | --- |
 | ![Accessible Parking with no basemap, its spaces on a white page](../screenshots/saved-aerial-imagery/before.png) | ![Accessible Parking on Aerial Imagery](../screenshots/saved-aerial-imagery/after.png) |
+
+### A legend symbol keeps its size beside a long label
+
+On the Baseball Event Map, the legend's entry for main event parking showed no symbol
+([#1778](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1778)). Its label
+lists every permit the lots accept, and a legend row let a long label squeeze the symbol beside it: the
+24-pixel symbol was drawn 4 pixels wide. A symbol now keeps its size and the label wraps beside it, on
+every map's legend, on desktop and phone, dev and production
+([#1804](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1804)).
+
+| Before | After |
+| --- | --- |
+| ![Baseball Event Map legend, the $5 Event Parking entry (swatch 4 px wide before, 22 px after), before](../screenshots/1804-legend-swatch/before-baseball.png) | ![Baseball Event Map legend, the $5 Event Parking entry (swatch 4 px wide before, 22 px after), after](../screenshots/1804-legend-swatch/after-baseball.png) |
+
 ### GIS Day: an event's time is chosen from a list again
 
 Editing an event's start or end time on the GIS Day admin pages had stopped offering times to choose
@@ -532,11 +594,15 @@ dated notes as what was tested, and this table empties.
 | --- | --- | --- |
 | Football Tailgating on production ([#1814](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1814)) | [Football Tailgating as production](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?as=production), then [All Maps as production](https://dev.aggiemap.tamu.edu/all-maps?as=production) | The Tailgating map opens with its zones and tents, not the main map, and All Maps lists **Football Tailgating** under Athletics with no "Beta" label. On production after release: [aggiemap.tamu.edu/events/tailgating](https://aggiemap.tamu.edu/events/tailgating) |
 | Football Tailgating basemap and search ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Opens on **Aggieland raster, October 2026**, marked in the Basemap panel. Search **O12**: Tent O12, which opens its popup. **Ortega**: Ortega Lawn. **Lot E**: the West Campus Lot E zones. **MSC**: still the Memorial Student Center and its parking |
+| Night / Weekend parking map ([#836](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/836)) | [Night / Weekend](https://dev.aggiemap.tamu.edu/parking/night-weekend) | The layers list and the legend read **Night & Weekend Lots**. Under the title **Night / Weekend Transportation Map**, two blocks: **Night Privileges**, Monday - Thursday 5:00 p.m. - 6:00 a.m., and **Weekend Privileges**, Friday 6:00 p.m. - Monday 6:00 a.m. On a phone they sit above the legend. |
 | Football Tailgating opens on the campus basemap ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)) | Choose **Aerial Imagery** on any map, then open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | The map opens on **Aggieland raster, October 2026** ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788); it was Aggieland vector, September 2026, before) with its zones at the normal zoom, not on a white page. [The same map with ?basemap=gray-vector](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?basemap=gray-vector) opens on Light Gray Canvas. Other event maps still open on the basemap last chosen |
+| Men's Basketball reads its new service ([#1749](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1749)) | [Men's Basketball](https://dev.aggiemap.tamu.edu/events/mens-basketball) | 8 icons, 7 closures and 21 lots draw. In the browser's network panel, their requests go to gis.tamu.edu `Hosted/MBskt_view`, not the transportation server. Clicking a lot shows its name as the popup title (e.g. **Lot 74**), not a bare dash. Layer names and symbols look acceptable |
 | Basemaps a 3D scene cannot show ([#1740](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1740)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), then the **2D** button beside All Maps | In 3D, **Aggieland vector** is greyed and says **2D only**, and **Aggieland raster, October 2026** is marked as chosen, which is what the map shows. Clicking the greyed one does nothing. Choose another basemap and it is still greyed. Click **3D** to go back: the vector basemap is back, marked, and can be chosen |
 | Event map layer names ([#1802](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1802)) | [Aggie Family Parade](https://dev.aggiemap.tamu.edu/events/aggie-family-parade/map/d), [Aggieland Saturday](https://dev.aggiemap.tamu.edu/events/aggieland-saturday/map/d), [MS150](https://dev.aggiemap.tamu.edu/events/ms150/map/d), [Family Weekend](https://dev.aggiemap.tamu.edu/events/family-weekend-2026/map/d) | The layer list and legend read **Parade Route**, **Bus Stops**, **MS150 Route**, **Friday Parking Lots**: the layer's own name, with no service name and no "view" before it |
 | Aerial Imagery timeline restyled ([#1750](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1750)) | [Football Tailgating on 22 November 2025](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?imagery=2025-11-22) | The timeline is above **View as production**, not under it. Ticks have no labels but "2016" and "Latest"; hovering one shows its date. ‹ › beside the date step one capture: from Nov 22, 2025, › goes to Nov 26, 2025, then to Oct 5, 2026 (latest), where › greys out. Not on production |
+| Route arrows on three event maps, Physics Fest group names ([#1803](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1803)) | [HS Graduation](https://dev.aggiemap.tamu.edu/events/hs-graduation-2026), [Physics Fest](https://dev.aggiemap.tamu.edu/events/phys-eng-fest), [Fish Camp, sessions A-F](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=sessions-a-f) | Every route is a thin line with an arrowhead at its end, not a thick band: green and red on HS Graduation, for both Arrival and Departure, green paths and blue and red bus routes on Physics Fest, green driving and dashed blue walking routes on Fish Camp. On Physics Fest the legend and layer list name the groups **General Parking**, **Buses Entering from Eastbound University Dr** and **Buses Entering from Westbound University Dr**; switch the two bus groups on to see their routes |
 | A saved Aerial Imagery choice ([#1692](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1692)) | Choose **Aerial Imagery** on any map, then open [Accessible Parking](https://dev.aggiemap.tamu.edu/events/accessible-parking/map/d) | The map opens on Aerial Imagery with its parking spaces, not on a white page with the spaces floating. Reload: still Aerial Imagery. Choose another basemap and reload: that one. Also on production |
+| A legend symbol beside a long label ([#1804](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1804)) | [Baseball Event Map](https://dev.aggiemap.tamu.edu/parking/baseball-parking/map/d?map-mode=event), then its legend under Event Parking Lots | The **$5 Event Parking, Any Valid Texas A&M Permit, ...** entry shows its parking symbol at full size beside the label, which wraps; before, there was only a sliver. Other legend entries are unchanged. Also on production |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
 | A tent's or area's link always highlights it ([#1805](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1805)) | [Tent L1](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?tent=L1), then [area AP-7](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-7) | Reload each several times: the tent or area is filled with the yellow highlight on every load, never in its normal fill with the sidebar alone naming it |
 | GIS Day: university banner in the admin speaker form ([#1757](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1757)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Speakers, edit a speaker who has a photograph | The university and class-year banner on the photograph, as on the Presenters page. Change the University or the Graduation Year: the banner changes at once, before saving. Choose no university: it goes. The public Presenters page and a presenter's page look as they did |

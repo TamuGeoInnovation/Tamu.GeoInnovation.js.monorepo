@@ -77,8 +77,39 @@ const popup = {
 
 // Routes are directional, so render each type with an arrowhead at the end of the line to show the
 // direction of travel. Colors match the published service renderer (green = vehicle, blue = walking).
+//
+// This renderer is an override. The MapServer and its portal item publish no arrow symbol (the service
+// flattens it to a plain 9-pt line); remove when the service is republished as a hosted view with the
+// arrows (#1803).
 const routesNative: NonNullable<FeatureLayerSourceProperties['native']> = {
-  outFields: ['*']
+  outFields: ['*'],
+  renderer: {
+    type: 'unique-value',
+    field: 'name',
+    uniqueValueInfos: [
+      {
+        value: 'Preferred Vehicle Route',
+        symbol: {
+          type: 'simple-line',
+          color: [0, 115, 76, 255],
+          width: 4,
+          marker: { type: 'line-marker', style: 'arrow', color: [0, 115, 76, 255], placement: 'end' }
+        } as unknown as esri.SimpleLineSymbolProperties
+      },
+      {
+        value: 'Preferred Walking Route',
+        // Walking routes read as a dashed line (vehicle routes stay solid) to visually
+        // distinguish pedestrian travel; keep the end arrowhead to show direction.
+        symbol: {
+          type: 'simple-line',
+          color: [0, 92, 230, 255],
+          width: 3,
+          style: 'dash',
+          marker: { type: 'line-marker', style: 'arrow', color: [0, 92, 230, 255], placement: 'end' }
+        } as unknown as esri.SimpleLineSymbolProperties
+      }
+    ]
+  }
 };
 
 /**
