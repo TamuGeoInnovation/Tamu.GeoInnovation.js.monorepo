@@ -57,7 +57,6 @@ export interface SubmissionReviewDto {
   guid: string;
   created: Date;
   questionValue: string;
-  pointValue: number;
   validationStatus: string;
   userGuid?: string;
   resolvedIdentity?: string;

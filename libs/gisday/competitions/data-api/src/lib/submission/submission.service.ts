@@ -248,19 +248,17 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
 
     return submissions.map((submission) => {
       let questionValue = '';
-      let pointValue = 1;
 
       if (discriminatorQuestion && submission.value) {
         const submissionValue = submission.value;
         const discriminatorAttribute = discriminatorQuestion.attribute;
         const submittedValue = submissionValue[discriminatorAttribute];
 
-        // Find matching option to get title-cased value and points
+        // Find matching option to get title-cased value
         if (submittedValue !== undefined && discriminatorQuestion.options) {
           const matchingOption = discriminatorQuestion.options.find((opt) => opt.value === submittedValue);
           if (matchingOption) {
             questionValue = this.toTitleCase(matchingOption.name);
-            pointValue = matchingOption.points || 1;
           }
         }
       }
@@ -269,7 +267,6 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         guid: submission.guid,
         created: submission.created,
         questionValue,
-        pointValue,
         validationStatus: submission.validationStatus?.status || COMPETITION_VALIDATION_STATUS.unverified,
         userGuid: submission.userGuid,
         location: {
