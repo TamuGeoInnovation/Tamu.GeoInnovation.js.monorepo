@@ -89,6 +89,26 @@ one capture at a time - the easy way to the captures days apart, 22 and 26 Novem
 | Before | After |
 | --- | --- |
 | ![The timeline's year labels under the View as production switch](../screenshots/nearmap-timeline-restyle/before.png) | ![The timeline above the switch, with the date between arrows](../screenshots/nearmap-timeline-restyle/after.png) |
+
+### HS Graduation, Physics Fest and Fish Camp draw their routes as arrows again, and Physics Fest's groups have names
+
+On HS Graduation and Physics Fest the routes drew as thick lines with no direction ([#1778](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1778)),
+and Fish Camp's did the same. [#1526](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1526) removed their arrow renderers on the understanding that
+each map's portal item supplies the symbol its owner drew. These three are MapServer services, whose
+portal items carry no symbology, and whose services publish only a flattened 9 to 15 pt line with no
+arrowheads. The arrows are back, each with the reason beside it in the definition, to be removed when
+the service is republished as a hosted view that carries them ([#1803](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1803)).
+
+The same change left Physics Fest's three groups, which the map makes itself and no service names,
+with no name in the legend or the layer list. They are General Parking, Buses Entering from Eastbound
+University Dr and Buses Entering from Westbound University Dr again.
+
+| Before | After |
+| --- | --- |
+| ![HS Graduation arrival and departure routes, before](../screenshots/1803-route-arrows/before-hs-graduation.png) | ![HS Graduation arrival and departure routes, after](../screenshots/1803-route-arrows/after-hs-graduation.png) |
+| ![Physics Fest pedestrian path and group names, before](../screenshots/1803-route-arrows/before-phys-eng-fest.png) | ![Physics Fest pedestrian path and group names, after](../screenshots/1803-route-arrows/after-phys-eng-fest.png) |
+| ![Fish Camp, sessions A-F, routes, before](../screenshots/1803-route-arrows/before-fish-camp.png) | ![Fish Camp, sessions A-F, routes, after](../screenshots/1803-route-arrows/after-fish-camp.png) |
+
 ### An event map opens on Aerial Imagery again when that was the last basemap chosen
 
 A visitor whose last basemap choice was Aerial Imagery opened every event map with no basemap at all,
@@ -522,6 +542,7 @@ dated notes as what was tested, and this table empties.
 | Basemaps a 3D scene cannot show ([#1740](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1740)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), then the **2D** button beside All Maps | In 3D, **Aggieland vector** is greyed and says **2D only**, and **Aggieland raster, October 2026** is marked as chosen, which is what the map shows. Clicking the greyed one does nothing. Choose another basemap and it is still greyed. Click **3D** to go back: the vector basemap is back, marked, and can be chosen |
 | Event map layer names ([#1802](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1802)) | [Aggie Family Parade](https://dev.aggiemap.tamu.edu/events/aggie-family-parade/map/d), [Aggieland Saturday](https://dev.aggiemap.tamu.edu/events/aggieland-saturday/map/d), [MS150](https://dev.aggiemap.tamu.edu/events/ms150/map/d), [Family Weekend](https://dev.aggiemap.tamu.edu/events/family-weekend-2026/map/d) | The layer list and legend read **Parade Route**, **Bus Stops**, **MS150 Route**, **Friday Parking Lots**: the layer's own name, with no service name and no "view" before it |
 | Aerial Imagery timeline restyled ([#1750](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1750)) | [Football Tailgating on 22 November 2025](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?imagery=2025-11-22) | The timeline is above **View as production**, not under it. Ticks have no labels but "2016" and "Latest"; hovering one shows its date. ‹ › beside the date step one capture: from Nov 22, 2025, › goes to Nov 26, 2025, then to Oct 5, 2026 (latest), where › greys out. Not on production |
+| Route arrows on three event maps, Physics Fest group names ([#1803](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1803)) | [HS Graduation](https://dev.aggiemap.tamu.edu/events/hs-graduation-2026), [Physics Fest](https://dev.aggiemap.tamu.edu/events/phys-eng-fest), [Fish Camp, sessions A-F](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=sessions-a-f) | Every route is a thin line with an arrowhead at its end, not a thick band: green and red on HS Graduation, for both Arrival and Departure, green paths and blue and red bus routes on Physics Fest, green driving and dashed blue walking routes on Fish Camp. On Physics Fest the legend and layer list name the groups **General Parking**, **Buses Entering from Eastbound University Dr** and **Buses Entering from Westbound University Dr**; switch the two bus groups on to see their routes |
 | A saved Aerial Imagery choice ([#1692](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1692)) | Choose **Aerial Imagery** on any map, then open [Accessible Parking](https://dev.aggiemap.tamu.edu/events/accessible-parking/map/d) | The map opens on Aerial Imagery with its parking spaces, not on a white page with the spaces floating. Reload: still Aerial Imagery. Choose another basemap and reload: that one. Also on production |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
 | A tent's or area's link always highlights it ([#1805](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1805)) | [Tent L1](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?tent=L1), then [area AP-7](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-7) | Reload each several times: the tent or area is filled with the yellow highlight on every load, never in its normal fill with the sidebar alone naming it |
