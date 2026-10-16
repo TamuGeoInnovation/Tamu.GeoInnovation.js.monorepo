@@ -119,7 +119,9 @@ highlight's and be drawn over it. The highlight is now moved back above every la
 added, on every map, and a smoke check opens tent and area links several times each and fails if any
 layer is drawn over it.
 
-<!-- screenshots: docs/screenshots/1805-tent-highlight/ -->
+| Before | After |
+| --- | --- |
+|  | ![Football Tailgating ?tent=L1: the tent highlighted above the tents and areas, after](../screenshots/1805-tent-highlight/after-tent-link.png) |
 
 ### GIS Day: the admin speaker form shows the university banner, and follows the form
 
