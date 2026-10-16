@@ -54,7 +54,8 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   public visibilitySettingsOptions = [
     { label: 'Header', value: PlaceVisibilityOptions.Header },
     { label: 'Footer', value: PlaceVisibilityOptions.Footer },
-    { label: 'About Page', value: PlaceVisibilityOptions.OrgPage }
+    { label: 'About Page', value: PlaceVisibilityOptions.OrgPage },
+    { label: 'Hide from Sessions Filter', value: PlaceVisibilityOptions.HiddenFromSessionsFilter }
   ];
 
   public ngOnInit(): void {
