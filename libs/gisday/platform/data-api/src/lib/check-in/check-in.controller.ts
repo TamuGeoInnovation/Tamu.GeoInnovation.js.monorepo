@@ -68,6 +68,22 @@ export class CheckInController {
     return this.provider.insertUserCheckin(eventGuid, req.user.sub, { latitude, longitude, accuracy });
   }
 
+  /**
+   * Checks in the attendee named in the body, for an organizer adding a check-in by hand (the admin
+   * page's Check-ins > Add). The endpoint above checks in whoever is signed in, and so ignores a
+   * `userGuid` it is sent (#1767).
+   */
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['create:checkins'])
+  @Post('admin')
+  public async insertAttendeeCheckin(@Body('userGuid') userGuid: string, @Body('eventGuid') eventGuid: string) {
+    if (!userGuid || !eventGuid) {
+      throw new BadRequestException('User guid and event guid are required');
+    }
+
+    return this.provider.insertUserCheckin(eventGuid, userGuid);
+  }
+
   @UseGuards(JwtGuard)
   @Patch(':guid')
   public async updateEntity() {

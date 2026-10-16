@@ -21,6 +21,14 @@ export class CheckinService extends BaseService<CheckIn> {
     super('check-ins');
   }
 
+  /**
+   * Checks in the attendee in `checkin.userGuid`, not the signed-in admin. The admin page's
+   * Check-ins > Add creates its entity through this (#1767).
+   */
+  public override createEntity(checkin?: Partial<CheckIn> & { userGuid?: string; eventGuid?: string }) {
+    return this.http1.post<Partial<CheckIn>>(`${this.resource}/admin`, checkin);
+  }
+
   public getUserCheckins() {
     return this.http1.get<Array<Partial<CheckIn>>>(`${this.resource}/user`);
   }
