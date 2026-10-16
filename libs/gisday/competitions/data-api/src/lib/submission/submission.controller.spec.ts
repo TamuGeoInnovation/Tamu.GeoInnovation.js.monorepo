@@ -6,7 +6,7 @@ import {
   NotFoundException,
   UnprocessableEntityException
 } from '@nestjs/common';
-import { GUARDS_METADATA } from '@nestjs/common/constants';
+import { GUARDS_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { Test } from '@nestjs/testing';
 
 import { JwtGuard, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
@@ -53,7 +53,7 @@ describe('SubmissionController', () => {
   });
 
   describe('needs a signed-in user', () => {
-    it.each(['getUserSubmissions', 'getSubmissionImages', 'getSubmissionImage', 'getAdminSubmissions', 'getSubmission', 'getAll', 'insert'])(
+    it.each(['getMySubmissions', 'getUserSubmissions', 'getSubmissionImages', 'getSubmissionImage', 'getAdminSubmissions', 'getSubmission', 'getAll', 'insert'])(
       '%s',
       (method) => {
         expect(guardsOf(method)).toContain(JwtGuard);
@@ -141,6 +141,31 @@ describe('SubmissionController', () => {
       formService.getSeason.mockResolvedValue({ guid: 'cs-1', allowSubmissions: false });
 
       await expect(controller.insert(bob, body, [])).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  /**
+   * #1791: My VGI Submissions lists the signed-in participant's own submissions, taking who they are
+   * from the sign-in.
+   */
+  describe('my submissions', () => {
+    it("lists the signed-in participant's own", async () => {
+      await controller.getMySubmissions(ann);
+
+      expect(service.getUserSubmissions).toHaveBeenCalledWith({ userGuid: 'auth0|ann', seasonGuid: undefined });
+    });
+
+    it('passes on a season', async () => {
+      await controller.getMySubmissions(bob, 's-2025');
+
+      expect(service.getUserSubmissions).toHaveBeenCalledWith({ userGuid: 'auth0|bob', seasonGuid: 's-2025' });
+    });
+
+    it('is reached at user/me, declared before user/:userGuid so that "me" is not taken for an account id', () => {
+      const methods = Object.getOwnPropertyNames(SubmissionController.prototype);
+
+      expect(Reflect.getMetadata(PATH_METADATA, SubmissionController.prototype['getMySubmissions'])).toBe('user/me');
+      expect(methods.indexOf('getMySubmissions')).toBeLessThan(methods.indexOf('getUserSubmissions'));
     });
   });
 

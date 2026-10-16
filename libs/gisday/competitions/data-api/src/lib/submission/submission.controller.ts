@@ -47,6 +47,17 @@ export const MAX_PHOTO_BYTES = 15 * 1024 * 1024;
 export class SubmissionController {
   constructor(private service: SubmissionService, private formService: FormService) {}
 
+  /**
+   * The signed-in participant's own submissions, for My VGI Submissions (#1791). Who they are comes
+   * from the sign-in, so nothing on the page has to know their account id. Declared before
+   * `user/:userGuid`, which would otherwise take `me` for an account id.
+   */
+  @UseGuards(JwtGuard)
+  @Get('user/me')
+  public async getMySubmissions(@Req() req, @Query('seasonGuid') seasonGuid?: string) {
+    return this.service.getUserSubmissions({ userGuid: req.user.sub, seasonGuid });
+  }
+
   @UseGuards(JwtGuard)
   @Get('user/:userGuid')
   public async getUserSubmissions(@Req() req, @Param('userGuid') userGuid: string, @Query('seasonGuid') seasonGuid?: string) {

@@ -408,6 +408,19 @@ is gone, and new images of the refusal, waiting and timeout messages are still t
 | ![The check-in section with only the CHECKIN button](../screenshots/1766-gisday-checkin-zone/before-checkin-section.png) | ![The check-in section with a line saying check-in uses your location at TAMU Rudder Plaza](../screenshots/1766-gisday-checkin-zone/after-checkin-section.png) |
 | | ![The check-in section after checking in: Your attendance has been registered](../screenshots/1766-gisday-checkin-zone/after-checked-in.jpg) |
 
+### GIS Day: My VGI Submissions shows a participant's own submissions again
+
+**Account, My VGI Submissions** showed "No data to display" for everyone ([#1791](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1791)). The page
+looked up who was signed in through a setting that only the old standalone competitions app had, and
+failed on the GIS Day site. It now asks the server for the signed-in participant's own submissions,
+and nobody can list anyone else's.
+
+The images are a local copy, with one test submission made by the account signed in.
+
+| Before | After |
+| --- | --- |
+| ![My VGI Competition Submissions with No data to display](../screenshots/1791-vgi-my-submissions/before-my-submissions.jpg) | ![The same page listing the submission, a Statue or Monument, Unverified](../screenshots/1791-vgi-my-submissions/after-my-submissions.jpg) |
+
 ---
 
 ## What to test on dev
@@ -443,6 +456,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: presenters' company and class year, grouped by company ([#1768](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1768), [#1769](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1769)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally or on production, any session's page, e.g. the career fair | Under each presenter's name is their company. Texas A&M former students have their class year after their name ('14). The people from one company are next to each other, companies in alphabetical order, and people without a company last |
 | GIS Day: an admin's added check-in is the attendee's ([#1767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1767)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, signed in as an administrator whose account has `create:checkins`: Admin, Check-ins, Add, with another person's account id and an event they have not checked in to | Admin, Check-ins lists the new check-in under that person, not the admin. Adding the same person to the same event again is refused as already checked in. An attendee checking in from a session's page still checks in themselves |
 | GIS Day: location-based check-in ([#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)), and the migration has not run anywhere but a local copy. Locally, after `scripts/gisday-local.sh migrate run`: as an administrator, Admin, Venues, give a venue corners; then, during an in-person session there, the session's page | The line "Check-in for this session uses your location" names the venue. Inside the zone, Check In works. Outside it (DevTools, Sensors, set a location elsewhere), the reason shows under the button and nothing is saved; there is no check-in anyway. While waiting, "Finding your location…". Block location access: the page asks for it. A hybrid session, or a venue with no corners, never asks. On the venue form, corners out of order (sides crossing) are refused. As an administrator, Admin, Check-ins, Add checks in another account to that in-person session with no location, from anywhere |
+| GIS Day: My VGI Submissions lists your own ([#1791](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1791)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, signed in with an account that has made a competition submission: Account, My VGI Submissions | Your own submissions are listed, with their date and status. Another account sees only its own. An account with none sees an empty list, not an error |
 
 ---
 
