@@ -15,7 +15,23 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-### The Football Tailgating map opens on the raster campus basemap, and searches its tents and areas (dev only)
+### The Football Tailgating map is on production
+
+**Football Tailgating** (`/events/tailgating`) is now on production, listed under Athletics beside
+Football ([#1814](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1814)). It had been on dev only since it was built as a prototype ([#1422](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1422)):
+production left it out of the map list, so its links led to the main map. Its tailgating zones come from a
+public layer in TAMU's ArcGIS Online organization, which production may now request. It no longer
+carries a "Beta" label.
+
+Its game days are now the Football map's own list rather than a copy, so the two maps say the season
+is over on the same day.
+
+| Before | After |
+| --- | --- |
+| ![/events/tailgating on production: the main map before; the Tailgating map after (local server as production), before](../screenshots/1814-tailgating-production/before-production-link.png) | ![/events/tailgating on production: the main map before; the Tailgating map after (local server as production), after](../screenshots/1814-tailgating-production/after-as-production.png) |
+|  | ![All Maps as production: Football Tailgating under Upcoming Events, next 10/17/2026 like Football, after](../screenshots/1814-tailgating-production/after-all-maps-as-production.png) |
+
+### The Football Tailgating map opens on the raster campus basemap, and searches its tents and areas
 
 The map now always opens on **Aggieland raster, October 2026** rather than the vector campus basemap,
 and its search finds **tents** by id and **named areas** by name or zone id, alongside the usual
@@ -41,7 +57,7 @@ and the legend, rather than "Night Privileges 5:00pm - 6:00am", which left weeke
 | --- | --- |
 | ![Night / Weekend sidebar: title, privilege hours, layers and legend, before](../screenshots/night-weekend-836/before-sidebar.png) | ![Night / Weekend sidebar: title, privilege hours, layers and legend, after](../screenshots/night-weekend-836/after-sidebar.png) |
 
-### The Football Tailgating map opens on the campus basemap (dev only)
+### The Football Tailgating map opens on the campus basemap
 
 The Tailgating map opened on whatever basemap a visitor last chose on any map. For anyone who last
 chose Aerial Imagery that was no basemap at all, and with it no zoom levels: the zones drew as a speck
@@ -579,6 +595,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Football Tailgating on production ([#1814](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1814)) | [Football Tailgating as production](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?as=production), then [All Maps as production](https://dev.aggiemap.tamu.edu/all-maps?as=production) | The Tailgating map opens with its zones and tents, not the main map, and All Maps lists **Football Tailgating** under Athletics with no "Beta" label. On production after release: [aggiemap.tamu.edu/events/tailgating](https://aggiemap.tamu.edu/events/tailgating) |
 | Football Tailgating basemap and search ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Opens on **Aggieland raster, October 2026**, marked in the Basemap panel. Search **O12**: Tent O12, which opens its popup. **Ortega**: Ortega Lawn. **Lot E**: the West Campus Lot E zones. **MSC**: still the Memorial Student Center and its parking |
 | Night / Weekend parking map ([#836](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/836)) | [Night / Weekend](https://dev.aggiemap.tamu.edu/parking/night-weekend) | The layers list and the legend read **Night & Weekend Lots**. Under the title **Night / Weekend Transportation Map**, two blocks: **Night Privileges**, Monday - Thursday 5:00 p.m. - 6:00 a.m., and **Weekend Privileges**, Friday 6:00 p.m. - Monday 6:00 a.m. On a phone they sit above the legend. |
 | Football Tailgating opens on the campus basemap ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)) | Choose **Aerial Imagery** on any map, then open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | The map opens on **Aggieland raster, October 2026** ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788); it was Aggieland vector, September 2026, before) with its zones at the normal zoom, not on a white page. [The same map with ?basemap=gray-vector](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?basemap=gray-vector) opens on Light Gray Canvas. Other event maps still open on the basemap last chosen |

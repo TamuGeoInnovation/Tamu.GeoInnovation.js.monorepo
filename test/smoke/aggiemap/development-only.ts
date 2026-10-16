@@ -84,12 +84,6 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<string, { reason: string; pages: 
   '/code-maroon/feed.xml': {
     reason: '#1289: the Code Maroon proof of concept',
     pages: ['/map', '/parking/visitor-parking', '/events/tailgating']
-  },
-  // The Tailgating map's zones, published from ArcGIS Pro to TAMU's ArcGIS Online organization. The
-  // map is registered on development hosts only, so on production its link redirects to the main map.
-  'TAMU_Tailgate_Zones/FeatureServer': {
-    reason: '#1422: the Football Tailgating map prototype',
-    pages: ['/events/tailgating']
   }
 };
 

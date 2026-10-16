@@ -18,10 +18,6 @@ import { EventPopups } from '../modules/popups/popups';
  * drawing info, so styling is changed by republishing the layer, not here. Popups read the `name`
  * and `type` fields, so keep those field names when editing the data.
  *
- * This service has no production counterpart yet, so the map is development-only
- * (`DevelopmentOnlyEventDefinitions`) and the service is listed in the smoke suite's
- * `DEVELOPMENT_ONLY_SERVICES`, with this map's route (`/events/tailgating`) as the page that uses it.
- *
  * The event service adds these in reverse order, and a layer added later draws above the ones before
  * it, so the first entry draws on top: the circled numbers, then the tents, then the zones.
  */
@@ -86,13 +82,6 @@ const constructionPopupData: NonNullable<LayerSource['popupData']> = {
   name: '{attributes.projectName}',
   description: `<strong>Start Date:</strong> {attributes.startDate}<br><strong>End Date:</strong> {attributes.endDate}`
 };
-
-/** Season-over state tracks the football map's home game dates, so both update together. */
-const seasonDates = FootballParkingConfiguration.eventDates.map((date) =>
-  // A bare 'YYYY-MM-DD' parses as UTC midnight, which is the evening before in College Station.
-  // Treat each game day as lasting until 11:59 PM local time instead.
-  typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) ? `${date}T23:59:59` : date
-);
 
 const zonePopupData: LayerSource['popupData'] = {
   name: 'attributes.name',
@@ -268,7 +257,8 @@ export const TailgatingConfiguration: EventConfiguration = {
   applicationName: 'Football Tailgating Map',
   shortApplicationName: 'Tailgating',
   introductionText: 'Tailgating zones at Aggie Park and West Campus for',
-  eventDates: seasonDates,
+  // The football map's home game days, so the two maps' season-over state always agree (#1814).
+  eventDates: FootballParkingConfiguration.eventDates,
   scheduleUrl: FootballParkingConfiguration.scheduleUrl,
   eventPassedWarning: {
     title: 'Football season is over',
@@ -300,8 +290,6 @@ export const TailgatingTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     mapType: 'athletics',
-    // Prototype: registered on development hosts only (see `DevelopmentOnlyEventDefinitions`).
-    labels: ['Beta'],
     keywords: [
       'tailgating',
       'tailgate',
