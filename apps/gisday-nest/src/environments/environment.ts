@@ -8,7 +8,10 @@ export const environment = {
   auth0_issuerUrl: process?.env?.AUTH0_ISSUER_URL,
   auth0_management_domain: process?.env?.AUTH0_MANAGEMENT_DOMAIN,
   auth0_management_clientId: process?.env?.AUTH0_MANAGEMENT_CLIENT,
-  auth0_management_clientSecret: process?.env?.AUTH0_MANAGEMENT_SECRET
+  auth0_management_clientSecret: process?.env?.AUTH0_MANAGEMENT_SECRET,
+  // Local development only (#1759): start without the management credentials above. Only this file
+  // has it; the dev and production builds replace this file, so a server always needs them.
+  auth0_management_disabled: process?.env?.AUTH0_MANAGEMENT_DISABLED === 'true'
 };
 
 export const ormConfig = {

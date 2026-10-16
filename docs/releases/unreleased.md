@@ -320,6 +320,19 @@ The images are the list on a scratch page of the local site, because the admin p
 | ![One table of every event, with a Day column](../screenshots/1775-event-list-by-day/before-event-list.png) | ![The first day's card, November 16, with its own table](../screenshots/1775-event-list-by-day/after-event-list.png) |
 | | ![Where one day ends and the next, November 17, begins](../screenshots/1775-event-list-by-day/after-event-list-day-break.png) |
 
+### GIS Day: an admin adding a check-in checks in the attendee, not the admin
+
+The admin page's Check-ins, Add asks for an attendee's account id and an event, but it checked in the
+admin who pressed the button: it sent both to the endpoint attendees use to check themselves in, which
+records whoever is signed in and ignores any account id it is sent ([#1767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1767)). A second
+add for another attendee then failed with "Check-in already exists". The page now sends them to a
+separate admin endpoint, which needs the `create:checkins` permission and checks in the account given.
+It still refuses an event that does not exist or a check-in that is already recorded, and asks for no
+location, so an organizer can check in someone whose phone could not. Attendees checking themselves in
+are unchanged.
+
+The page looks the same; what changes is whose name appears in the check-in list afterwards.
+
 ### GIS Day: competition submissions need a sign-in, and are recorded for whoever is signed in
 
 The VGI competition's submissions could be read without signing in: one address answered every
@@ -389,6 +402,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: the event form refuses an incomplete event ([#1773](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1773)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: Admin, Events, Add event, then Create without filling anything in | A list above the buttons names each missing item and the event is not created. Filling everything in (with times other than 12:00 AM) creates it. Editing an existing complete event still saves |
 | GIS Day: the admin event list grouped by day ([#1775](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1775)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: Admin, Events | One card per day, headed by its date (November 16 to 20 for 2026), each with its own table in start-time order. A table's header checkbox selects that day's events, and Copy and Delete act on what is selected. Changing the season shows that season's days |
 | GIS Day: presenters' company and class year, grouped by company ([#1768](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1768), [#1769](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1769)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally or on production, any session's page, e.g. the career fair | Under each presenter's name is their company. Texas A&M former students have their class year after their name ('14). The people from one company are next to each other, companies in alphabetical order, and people without a company last |
+| GIS Day: an admin's added check-in is the attendee's ([#1767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1767)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, signed in as an administrator whose account has `create:checkins`: Admin, Check-ins, Add, with another person's account id and an event they have not checked in to | Admin, Check-ins lists the new check-in under that person, not the admin. Adding the same person to the same event again is refused as already checked in. An attendee checking in from a session's page still checks in themselves |
 | GIS Day: competition submissions need a sign-in ([#1780](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1780)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone with the competition app installed, once the 2026 competition is taking submissions | Signed in, a submission uploads, the app says it was saved, it appears on the public submissions map, and the leaderboard counts it. (Not under Account, My VGI submissions: that page shows nothing for anyone, for an unrelated reason, [#1791](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1791).) As an organizer, Admin, VGI Competition, Submissions lists everyone's with their photographs. Opening the submissions address in a browser without signing in answers 401 |
 | GIS Day: competition app location and submit errors ([#1784](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1784)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone with the competition app installed, once the 2026 competition is taking submissions | The form says Finding your location, then Location found with its accuracy, including indoors where the fix is slow. Press Submit before it is found: a message says to wait, and nothing is sent. With Location turned off in the phone's settings, after about half a minute the form says to make sure Location is on. Block location for the site: the form says it is blocked; allow it again in the phone's settings and press Submit: the location is found and the next Submit sends it. Turn off mobile data and press Submit: the message blames the connection and the button reads Try Again; turn data back on and press it: the submission is saved |
 
@@ -445,8 +459,13 @@ map's definition only when its map opens ([#1646](https://github.com/TamuGeoInno
 - **The whole GIS Day stack runs locally** from `scripts/gisday-local.sh`, with sign-in, on a starting
   database kept in the repository that holds nobody's real data. [`docs/gisday-local.md`](../gisday-local.md)
   explains it and `CLAUDE_SETUP.md` Phase 6 is the step-by-step ([#1621](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1621), [#1522](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1522)).
-- **A new developer still has to be given one file**, the API's settings, because it holds production's
-  Auth0 credentials until a separate development tenant exists ([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623), medium).
+- **A new developer is given nothing**: the API's local settings are a copy of
+  `apps/gisday-nest/local.env.sample`, with no secrets, and the API runs without Auth0 management
+  credentials, so locally the admin Users page and a user's own profile answer 503 (and with them
+  event registration and check-in), while class rosters and competition results show placeholders
+  for names and emails
+  ([#1759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1759)). A development tenant with test users, which would make those work too, waits on
+  the maintainer creating it ([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623), medium).
 - **No development database exists outside a developer's machine.** [#1511](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1511) (medium) is open for
   that: one on the cluster, then a migration run and reverted there, following
   [`docs/gisday-migrations.md`](../gisday-migrations.md). It is the first step of the dev site
