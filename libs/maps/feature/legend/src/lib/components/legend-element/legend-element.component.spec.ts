@@ -134,4 +134,28 @@ describe('LegendElementComponent', () => {
 
     expect(shown()).toBe('portal-symbol.png');
   });
+
+  it('marks a symbol as a swatch that keeps its size, and a nested group as free to shrink (#1804)', async () => {
+    // The stylesheet stops a .swatch from shrinking, so a long label wraps instead of squeezing its
+    // symbol to a sliver. A row of nested elements must still shrink, or its labels could not wrap.
+    fixture.componentRef.setInput('element', {
+      type: 'symbol-table',
+      infos: [
+        { label: '$5 Event Parking, Any Valid Texas A&M Permit, Baseball Season Permit', src: 'lot.png' },
+        { type: 'symbol-table', title: 'type', infos: [{ label: 'Open Access', src: 'open.png' }] }
+      ]
+    } as unknown as __esri.LegendElement);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    // The first group in document order is this element's own; the nested group's rows sit inside it.
+    const group = (fixture.nativeElement as HTMLElement).querySelector('.element-group') as HTMLElement;
+    const rows = Array.from(group.children).filter((child) => child.classList.contains('legend-info'));
+    const wrapper = (row: Element) => row.firstElementChild as HTMLElement;
+
+    expect(rows).toHaveLength(2);
+    expect(wrapper(rows[0]).classList).toContain('swatch');
+    expect(wrapper(rows[1]).classList).not.toContain('swatch');
+  });
 });

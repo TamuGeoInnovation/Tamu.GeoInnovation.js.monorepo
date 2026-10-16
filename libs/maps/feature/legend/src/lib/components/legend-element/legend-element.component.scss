@@ -27,6 +27,12 @@
   @include align-items(center);
 
   margin-bottom: 0.5rem;
+
+  // A symbol keeps its size however long its label is; the label wraps instead (#1804). A row holding
+  // nested legend elements has no swatch, so its wrapper can still shrink and let them wrap.
+  > .swatch {
+    flex-shrink: 0;
+  }
 }
 
 .image-container {
