@@ -26,7 +26,10 @@ carries a "Beta" label.
 Its game days are now the Football map's own list rather than a copy, so the two maps say the season
 is over on the same day.
 
-<!-- screenshots: docs/screenshots/1814-tailgating-production/ -->
+| Before | After |
+| --- | --- |
+| ![/events/tailgating on production: the main map before; the Tailgating map after (local server as production), before](../screenshots/1814-tailgating-production/before-production-link.png) | ![/events/tailgating on production: the main map before; the Tailgating map after (local server as production), after](../screenshots/1814-tailgating-production/after-as-production.png) |
+|  | ![All Maps as production: Football Tailgating under Upcoming Events, next 10/17/2026 like Football, after](../screenshots/1814-tailgating-production/after-all-maps-as-production.png) |
 
 ### The Football Tailgating map opens on the raster campus basemap, and searches its tents and areas
 
