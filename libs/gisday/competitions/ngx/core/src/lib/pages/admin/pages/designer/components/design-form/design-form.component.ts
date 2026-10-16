@@ -87,7 +87,7 @@ export class DesignFormComponent implements OnInit {
               field.domain && field.domain.codedValues !== null
                 ? this.fb.array(
                     field.domain.codedValues.map((cv) => {
-                      return this.fb.control({ name: cv.name, value: cv.code, points: cv.points || 1 });
+                      return this.fb.control({ name: cv.name, value: cv.code });
                     })
                   )
                 : this.fb.array([]);
@@ -158,9 +158,5 @@ interface IEsriRestLayerSchema {
 }
 
 export interface Field extends esri.Field {
-  domain: CodedValueDomainWithPoints;
-}
-
-export interface CodedValueDomainWithPoints extends esri.CodedValueDomain {
-  codedValues: Array<esri.CodedValue & { points?: number }>;
+  domain: esri.CodedValueDomain;
 }

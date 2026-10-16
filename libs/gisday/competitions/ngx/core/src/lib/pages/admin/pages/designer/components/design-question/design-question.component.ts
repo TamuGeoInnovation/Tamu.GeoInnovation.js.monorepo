@@ -1,5 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy, output } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -71,15 +71,5 @@ export class DesignQuestionComponent {
 
   public emitRemove() {
     this.removed.emit();
-  }
-
-  public updateOptionPoints(index: number, value: string) {
-    const optionsArray = this.control.get('options') as UntypedFormArray;
-    if (optionsArray && optionsArray.at(index)) {
-      const option = optionsArray.at(index);
-      const currentValue = option.value;
-      const points = parseFloat(value) || 1;
-      option.setValue({ ...currentValue, points });
-    }
   }
 }

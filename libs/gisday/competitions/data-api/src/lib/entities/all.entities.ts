@@ -203,7 +203,6 @@ export interface ICompetitionSeasonFormQuestion {
   options?: Array<{
     name: string;
     value: string | number | boolean;
-    points?: number;
   }>;
   type: string;
 }
