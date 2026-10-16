@@ -263,6 +263,24 @@ describe('CheckInProvider', () => {
       withEvent('in-person', msc.slice(0, 2));
       await expect(provider.insertUserCheckin('e-1', 'acct-1', kyleField)).resolves.toEqual({ guid: 'c-new' });
     });
+    /**
+     * #1767: the admin page's Check-ins > Add is how organizers add the exceptions the zone
+     * refuses, so it is never held to the zone.
+     */
+    it('checks in an attendee an organizer names to an in-person event with a zone, with no position', async () => {
+      withEvent('in-person');
+
+      await expect(provider.insertAttendeeCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
+      expect(checkInRepo.create).toHaveBeenCalledWith({ event: expect.anything(), accountGuid: 'acct-1' });
+    });
+
+    it('still refuses an organizer a second check-in for the same attendee and event', async () => {
+      withEvent('in-person');
+      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue({ guid: 'c-existing' } as CheckIn);
+
+      await expect(provider.insertAttendeeCheckin('e-1', 'acct-1')).rejects.toThrow(UnprocessableEntityException);
+      expect(save).not.toHaveBeenCalled();
+    });
   });
 
   describe('.getUserCheckinForEvent()', () => {
