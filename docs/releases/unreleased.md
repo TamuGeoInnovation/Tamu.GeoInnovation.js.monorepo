@@ -402,6 +402,46 @@ are unchanged.
 
 The page looks the same; what changes is whose name appears in the check-in list afterwards.
 
+### GIS Day: check-in to an in-person session needs the attendee to be there
+
+Anyone could check in to a session from anywhere, so a check-in proved nothing about attending. Now an
+admin can give each venue a **check-in zone**: its corners, typed on the venue form one
+`latitude, longitude` per line, as Google Maps copies them. For an **in-person** session at a venue with
+a zone, pressing Check In asks the browser for the attendee's location, and the page says so beside the
+button ("Check-in for this session uses your location: you need to be at TAMU Rudder Plaza.").
+
+- **Inside the zone** the attendee checks in as before. A phone reports how accurate its location is;
+  an attendee counts as inside when that circle reaches the zone, with the accuracy counted up to
+  100 m, so someone at a window of a large building gets in and a vague position from across town
+  does not.
+- **Outside it**, check-in is refused, and the reason shows under the button: "You need to be inside
+  the check-in zone at TAMU Rudder Plaza to check in to this event." The API makes the decision, so
+  calling it directly does not get round it. There is no checking in anyway: an organizer adds an
+  exception from Admin, Check-ins, Add ([#1767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1767)), which checks in the attendee named, asks for no
+  location and is not held to the zone.
+- **While the browser looks for the location** the page says "Finding your location…" and the button
+  waits. If location access is blocked, the page asks for it; if finding the location takes too long,
+  it says so and suggests trying near a window.
+- **Hybrid and virtual sessions**, and venues with no zone (such as the bar for Mappy Hour), check in as
+  before. Nothing about where an attendee was is saved.
+- **A zone typed wrongly is refused**: fewer than three corners, a line that is not a latitude and
+  longitude, or corners out of order so its sides cross.
+
+A determined person can still make their browser report a made-up location; the server cannot tell.
+This stops checking in from home, not deliberate spoofing.
+
+It needs a database migration, `AddCheckInZones`, run on production before this release; the plan is on
+[#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766). Until a venue is given a zone, its sessions check in exactly as today. The 2026 zones
+for the Memorial Student Center, Rudder Plaza and the OMB lobby are on the issue.
+
+The images are a local copy, taken before the review changes: the pop-up offering to check in anyway
+is gone, and new images of the refusal, waiting and timeout messages are still to be taken.
+
+| Before | After |
+| --- | --- |
+| ![The check-in section with only the CHECKIN button](../screenshots/1766-gisday-checkin-zone/before-checkin-section.png) | ![The check-in section with a line saying check-in uses your location at TAMU Rudder Plaza](../screenshots/1766-gisday-checkin-zone/after-checkin-section.png) |
+| | ![The check-in section after checking in: Your attendance has been registered](../screenshots/1766-gisday-checkin-zone/after-checked-in.jpg) |
+
 ---
 
 ## What to test on dev
@@ -439,6 +479,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: the admin event list grouped by day ([#1775](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1775)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: Admin, Events | One card per day, headed by its date (November 16 to 20 for 2026), each with its own table in start-time order. A table's header checkbox selects that day's events, and Copy and Delete act on what is selected. Changing the season shows that season's days |
 | GIS Day: presenters' company and class year, grouped by company ([#1768](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1768), [#1769](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1769)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally or on production, any session's page, e.g. the career fair | Under each presenter's name is their company. Texas A&M former students have their class year after their name ('14). The people from one company are next to each other, companies in alphabetical order, and people without a company last |
 | GIS Day: an admin's added check-in is the attendee's ([#1767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1767)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, signed in as an administrator whose account has `create:checkins`: Admin, Check-ins, Add, with another person's account id and an event they have not checked in to | Admin, Check-ins lists the new check-in under that person, not the admin. Adding the same person to the same event again is refused as already checked in. An attendee checking in from a session's page still checks in themselves |
+| GIS Day: location-based check-in ([#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)), and the migration has not run anywhere but a local copy. Locally, after `scripts/gisday-local.sh migrate run`: as an administrator, Admin, Venues, give a venue corners; then, during an in-person session there, the session's page | The line "Check-in for this session uses your location" names the venue. Inside the zone, Check In works. Outside it (DevTools, Sensors, set a location elsewhere), the reason shows under the button and nothing is saved; there is no check-in anyway. While waiting, "Finding your location…". Block location access: the page asks for it. A hybrid session, or a venue with no corners, never asks. On the venue form, corners out of order (sides crossing) are refused. As an administrator, Admin, Check-ins, Add checks in another account to that in-person session with no location, from anywhere |
 
 ---
 
@@ -500,6 +541,9 @@ map's definition only when its map opens ([#1646](https://github.com/TamuGeoInno
   for names and emails
   ([#1759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1759)). A development tenant with test users, which would make those work too, waits on
   the maintainer creating it ([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623), medium).
+- **The first schema change since `InitialSchema` is waiting for production**: `AddCheckInZones`, for
+  location-based check-in ([#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766)). It adds one nullable column, so it can run before the
+  release that needs it; the step-by-step plan, for the maintainer, is a comment on the issue.
 - **No development database exists outside a developer's machine.** [#1511](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1511) (medium) is open for
   that: one on the cluster, then a migration run and reverted there, following
   [`docs/gisday-migrations.md`](../gisday-migrations.md). It is the first step of the dev site

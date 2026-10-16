@@ -53,18 +53,26 @@ export class CheckInController {
 
   @UseGuards(JwtGuard)
   @Post()
-  public async insertUserCheckin(@Req() req, @Body('eventGuid') eventGuid) {
+  public async insertUserCheckin(
+    @Req() req,
+    @Body('eventGuid') eventGuid,
+    @Body('latitude') latitude?: number,
+    @Body('longitude') longitude?: number,
+    @Body('accuracy') accuracy?: number
+  ) {
     if (!eventGuid) {
       throw new BadRequestException('Event guid is missing');
     }
 
-    return this.provider.insertUserCheckin(eventGuid, req.user.sub);
+    // An in-person event needs the attendee's position (#1766); the provider checks it.
+    return this.provider.insertUserCheckin(eventGuid, req.user.sub, { latitude, longitude, accuracy });
   }
 
   /**
    * Checks in the attendee named in the body, for an organizer adding a check-in by hand (the admin
    * page's Check-ins > Add). The endpoint above checks in whoever is signed in, and so ignores a
-   * `userGuid` it is sent (#1767).
+   * `userGuid` it is sent (#1767). It asks for no location and is not held to the event's check-in
+   * zone (#1766): it is how organizers add the exceptions the zone refuses.
    */
   @UseGuards(JwtGuard, PermissionsGuard)
   @Permissions(['create:checkins'])
@@ -74,7 +82,7 @@ export class CheckInController {
       throw new BadRequestException('User guid and event guid are required');
     }
 
-    return this.provider.insertUserCheckin(eventGuid, userGuid);
+    return this.provider.insertAttendeeCheckin(eventGuid, userGuid);
   }
 
   @UseGuards(JwtGuard)

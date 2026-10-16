@@ -162,7 +162,10 @@
                   <ng-template #notCheckedIn>
                     <div *ngIf="eventLive$ | async; else eventNotOngoing">
                       <p class="trailer-1">Check-in to register your attendance for this event.</p>
-                      <tamu-gisc-button fit="snug" [look]="'secondary'" value="CHECKIN" (click)="checkin()"></tamu-gisc-button>
+                      <p class="trailer-1" *ngIf="needsCheckInLocation(event)">Check-in for this session uses your location: you need to be at {{ event.location.building }}.</p>
+                      <tamu-gisc-button fit="snug" [look]="'secondary'" value="CHECKIN" [disabled]="findingLocation" (click)="checkin()"></tamu-gisc-button>
+                      <p class="leader-1" *ngIf="findingLocation">Finding your location…</p>
+                      <p class="leader-1 error" *ngIf="checkInFailure">{{ checkInFailure }}</p>
                     </div>
                   </ng-template>
                 </ng-template>
