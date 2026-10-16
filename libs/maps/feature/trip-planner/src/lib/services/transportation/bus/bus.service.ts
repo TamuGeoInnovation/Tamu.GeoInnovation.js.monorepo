@@ -14,6 +14,7 @@ import {
   EsriModuleProviderService,
   PopupComponentReference
 } from '@tamu-gisc/maps/esri';
+import { escapeSqlString } from '@tamu-gisc/common/utils/database';
 import { dateForDateTimeString } from '@tamu-gisc/common/utils/date';
 import { relativeDistance } from '@tamu-gisc/common/utils/geometry/generic';
 
@@ -806,7 +807,7 @@ export class BusService {
     const stopFields = Array.from({ length: 31 }, (_, i) => `Stop${i + 1}`);
 
     return this.arcgisQuery(1, {
-      where: `RouteNum='${this.escapeSql(short_name)}'`,
+      where: `RouteNum='${escapeSqlString(short_name)}'`,
       outFields: stopFields.join(','),
       returnGeometry: 'false'
     }).pipe(
@@ -831,7 +832,7 @@ export class BusService {
    */
   private routeGeometry(short_name: string): Observable<number[][][]> {
     return this.arcgisQuery(1, {
-      where: `RouteNum='${this.escapeSql(short_name)}'`,
+      where: `RouteNum='${escapeSqlString(short_name)}'`,
       outFields: 'RouteNum',
       returnGeometry: 'true',
       outSR: '4326'
@@ -862,7 +863,7 @@ export class BusService {
    */
   private routeStops(short_name: string): Observable<MapStop[]> {
     return this.arcgisQuery(0, {
-      where: `Route LIKE '%${this.escapeSql(short_name)}%'`,
+      where: `Route LIKE '%${escapeSqlString(short_name)}%'`,
       outFields: 'OBJECTID,StopName,Route,StopType,StopClass',
       returnGeometry: 'true',
       outSR: '4326'
@@ -932,10 +933,6 @@ export class BusService {
     }
 
     return colors;
-  }
-
-  private escapeSql(value: string): string {
-    return value.replace(/'/g, "''");
   }
 
   /**

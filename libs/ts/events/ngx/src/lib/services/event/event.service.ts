@@ -12,6 +12,7 @@ import {
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
+import { escapeSqlString } from '@tamu-gisc/common/utils/database';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { hasTemplateExpression, TemplateRenderer } from '@tamu-gisc/common/utils/string';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
@@ -681,7 +682,7 @@ export class EventService {
     value: string,
     candidateFields: string[]
   ): Promise<boolean> {
-    const escapedValue = value.replace(/'/g, "''").toUpperCase();
+    const escapedValue = escapeSqlString(value).toUpperCase();
 
     const candidates: Array<{ source: LayerSource; layer: esri.FeatureLayer; fields: string[]; priority: number }> = [];
 
