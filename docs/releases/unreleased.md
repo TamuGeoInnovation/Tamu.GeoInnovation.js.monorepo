@@ -37,7 +37,9 @@ and the legend, rather than "Night Privileges 5:00pm - 6:00am", which left weeke
 **Night Privileges**, Monday - Thursday 5:00 p.m. - 6:00 a.m., and **Weekend Privileges**, Friday
 6:00 p.m. - Monday 6:00 a.m. Transportation Services asked for both.
 
-<!-- screenshots: docs/screenshots/night-weekend-836/ -->
+| Before | After |
+| --- | --- |
+| ![Night / Weekend sidebar: title, privilege hours, layers and legend, before](../screenshots/night-weekend-836/before-sidebar.png) | ![Night / Weekend sidebar: title, privilege hours, layers and legend, after](../screenshots/night-weekend-836/after-sidebar.png) |
 
 ### The Football Tailgating map opens on the campus basemap (dev only)
 
