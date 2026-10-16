@@ -45,6 +45,10 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
   }
 
   public async updateUserMetadata(guid: string, updatedUserInfo: GisDayAppMetadata) {
+    // Before anything below writes a university or organization: without Auth0 management (locally,
+    // #1759) the profile cannot be saved, and those rows would be left behind.
+    this.ms.assertAvailable();
+
     // Validate that the user metadata is complete based on the user's participant type.
 
     if (!updatedUserInfo || !updatedUserInfo.app_metadata || !updatedUserInfo.user_metadata) {
