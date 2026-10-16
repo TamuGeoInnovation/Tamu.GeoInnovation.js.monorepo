@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
   filter,
+  finalize,
   interval,
   map,
   mapTo,
@@ -13,17 +15,12 @@ import {
   startWith,
   Subject,
   switchMap,
+  take,
   takeUntil
 } from 'rxjs';
 
 import { Event, EventAttendanceDto, GisDayAppMetadata, Speaker } from '@tamu-gisc/gisday/platform/data-api';
-import {
-  CheckinService,
-  EventService,
-  RsvpService,
-  SeasonService,
-  UserService
-} from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { CheckinService, EventService, RsvpService, SeasonService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GISDayRoles, parseDateStrings, sortSpeakersByAffiliation } from '@tamu-gisc/gisday/platform/ngx/common';
@@ -36,6 +33,8 @@ import { PresenterCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
+import { getGeolocation, isLatLonPolygon } from '@tamu-gisc/common/utils/geometry';
+import { CHECK_IN_ZONE_EVENT_MODE } from '@tamu-gisc/gisday/common';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
@@ -93,6 +92,16 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   public attendanceForm: UntypedFormGroup;
   public isCheckinOpen = false;
+
+  /**
+   * Waiting for the browser to say where the attendee is, for a session that checks location.
+   */
+  public findingLocation = false;
+
+  /**
+   * Why the last check-in did not work, shown beside the button.
+   */
+  public checkInFailure: string;
 
   private _refresh$: Subject<boolean> = new Subject();
   private _destroy$: Subject<boolean> = new Subject();
@@ -288,20 +297,50 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   }
 
   public checkin() {
+    this.checkInFailure = undefined;
+
     this.event$
       .pipe(
-        switchMap((event) => {
-          return this.checkinService.insertUserCheckin(event.guid);
-        })
+        take(1),
+        switchMap((event) =>
+          this._checkInPosition(event).pipe(
+            switchMap((position) => this.checkinService.insertUserCheckin(event.guid, position))
+          )
+        )
       )
       .subscribe({
         next: () => {
           this._refresh$.next(true);
         },
         error: (err) => {
-          console.log(`Error registering for event. ${err.status}: ${err.message}`);
+          this.checkInFailure = checkInFailureMessage(err);
         }
       });
+  }
+
+  /**
+   * Whether checking in to this event needs the attendee's location: an in-person event at a
+   * location with a check-in zone (#1766). The API makes the same decision, and decides whether
+   * the location is inside the zone.
+   */
+  public needsCheckInLocation(event: Partial<Event>): boolean {
+    return event?.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(event?.location?.checkInZone);
+  }
+
+  /**
+   * Where the attendee is, and how accurately, when the event needs it; nothing otherwise.
+   */
+  private _checkInPosition(event: Partial<Event>): Observable<{ latitude: number; longitude: number; accuracy: number }> {
+    if (!this.needsCheckInLocation(event)) {
+      return of(undefined);
+    }
+
+    this.findingLocation = true;
+
+    return getGeolocation(true, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }).pipe(
+      map((coords) => ({ latitude: coords.latitude, longitude: coords.longitude, accuracy: coords.accuracy })),
+      finalize(() => (this.findingLocation = false))
+    );
   }
 
   public updateAttendance() {
@@ -369,5 +408,24 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       id: 'gisday-attendance-update-failure',
       title: 'Attendance Update'
     });
+  }
+}
+
+/**
+ * What to tell an attendee whose check-in did not work: the API's reason, such as being outside the
+ * check-in zone, or why their location could not be found.
+ */
+function checkInFailureMessage(err: unknown): string {
+  if (err instanceof HttpErrorResponse) {
+    return err.error?.message ?? 'Check-in did not work. Please try again.';
+  }
+
+  switch ((err as GeolocationPositionError)?.code) {
+    case 1:
+      return 'Check-in for this session needs your location. Allow this site to use your location, then try again.';
+    case 3:
+      return 'Finding your location took too long. Try again, near a window or outdoors if you can.';
+    default:
+      return 'Your location could not be found. Turn on location services, then try again.';
   }
 }

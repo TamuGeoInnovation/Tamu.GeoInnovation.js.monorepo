@@ -1,5 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
+import { SearchSource, containsSearch } from '@tamu-gisc/ui-kits/ngx/search';
 import { getDefaultGisHosts, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
@@ -187,7 +187,8 @@ export const TailgatingColdLayerSources: LayerSource[] = [
  * Readable links: `?zone=AP-7` and `?tent=O12`, which a popup's copy button also writes. Matched,
  * case-insensitively, on the `zone_ID` and `tent_id` fields set in ArcGIS Pro, so a link survives a
  * republish that renumbers object ids. A zone without a `zone_ID` keeps the generic `feature=` link.
- * Not searchable from the sidebar (`searchActive: false`), which keeps the usual campus search.
+ * Not searched themselves (`searchActive: false`): an exact match, for links. `TailgatingSearchSources`
+ * below are what the sidebar search uses.
  */
 const TailgatingLinkSources: SearchSource[] = [
   {
@@ -214,6 +215,52 @@ const TailgatingLinkSources: SearchSource[] = [
   }
 ] as SearchSource[];
 
+/**
+ * What the sidebar search finds on this map, alongside the usual buildings and parking
+ * (`searchSourcesWithCampus`): tents by their id, and the named areas by name or zone id. A result
+ * opens the map's own feature and popup, as a `?tent=` or `?zone=` link does: the feature of the layer
+ * with the same `url`, by object id. A named area whose `name` is empty is still found by its `zone_ID`,
+ * and lists by it until it is given a name.
+ */
+const TailgatingSearchSources: SearchSource[] = [
+  {
+    source: 'tailgating-tent-search',
+    name: 'Aggie Park Tents',
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.TENTS}`,
+    queryParams: containsSearch(['tent_id']),
+    featuresLocation: 'features',
+    displayTemplate: 'Tent {attributes.tent_id}',
+    searchActive: true
+  },
+  {
+    source: 'tailgating-simpson-tent-search',
+    name: 'Simpson Drill Field Tents',
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.SIMPSON_TENTS}`,
+    queryParams: containsSearch(['tent_id']),
+    featuresLocation: 'features',
+    displayTemplate: 'Tent {attributes.tent_id}',
+    searchActive: true
+  },
+  {
+    source: 'tailgating-aggie-park-area-search',
+    name: 'Aggie Park Tailgating',
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.AGGIE_PARK}`,
+    queryParams: containsSearch(['name', 'zone_ID']),
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.name|attributes.zone_ID}',
+    searchActive: true
+  },
+  {
+    source: 'tailgating-west-campus-area-search',
+    name: 'West Campus Tailgating',
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.WEST_CAMPUS}`,
+    queryParams: containsSearch(['name', 'zone_ID']),
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.name|attributes.zone_ID}',
+    searchActive: true
+  }
+] as SearchSource[];
+
 export const TailgatingConfiguration: EventConfiguration = {
   id: 'tailgating',
   // Sorts directly under "Football" in the alphabetical Athletics Events list.
@@ -233,8 +280,9 @@ export const TailgatingConfiguration: EventConfiguration = {
   referenceLayerListOrder: 'source',
   // Tents and zones are read against campus, so the map opens on the campus basemap whatever basemap
   // the visitor last chose elsewhere.
-  basemap: 'campus',
-  searchSources: TailgatingLinkSources
+  basemap: 'campus-raster',
+  searchSources: [...TailgatingLinkSources, ...TailgatingSearchSources],
+  searchSourcesWithCampus: true
 };
 
 export const TailgatingOptions: SpecialEventOptions = [];

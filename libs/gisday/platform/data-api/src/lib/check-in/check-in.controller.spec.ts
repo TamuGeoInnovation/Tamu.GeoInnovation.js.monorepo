@@ -16,7 +16,7 @@ describe('CheckInController', () => {
   let app: INestApplication;
   let url: string;
   let permissions: Array<string>;
-  const provider = { insertUserCheckin: jest.fn() };
+  const provider = { insertUserCheckin: jest.fn(), insertAttendeeCheckin: jest.fn() };
 
   const post = (path: string, body: object) =>
     fetch(`${url}/check-ins${path}`, {
@@ -28,6 +28,7 @@ describe('CheckInController', () => {
   beforeEach(async () => {
     permissions = [];
     provider.insertUserCheckin.mockReset().mockResolvedValue({ guid: 'checkin-1' });
+    provider.insertAttendeeCheckin.mockReset().mockResolvedValue({ guid: 'checkin-1' });
 
     const module = await Test.createTestingModule({
       controllers: [CheckInController],
@@ -56,19 +57,30 @@ describe('CheckInController', () => {
       const response = await post('', { userGuid: 'attendee-1', eventGuid: 'event-1' });
 
       expect(response.status).toBe(201);
-      expect(provider.insertUserCheckin).toHaveBeenCalledWith('event-1', 'admin-1');
+      expect(provider.insertUserCheckin).toHaveBeenCalledWith('event-1', 'admin-1', expect.anything());
+      expect(provider.insertAttendeeCheckin).not.toHaveBeenCalled();
+    });
+
+    it('passes the position on, for the zone check (#1766)', async () => {
+      const position = { latitude: 30.6122, longitude: -96.3414, accuracy: 12 };
+
+      await post('', { eventGuid: 'event-1', ...position });
+
+      expect(provider.insertUserCheckin).toHaveBeenCalledWith('event-1', 'admin-1', position);
     });
   });
 
   describe('POST /check-ins/admin (#1767)', () => {
-    it('records the attendee given, not the admin, with no location', async () => {
+    it('records the attendee given, not the admin, with no location and no zone check', async () => {
       permissions = ['create:checkins'];
 
       const response = await post('/admin', { userGuid: 'attendee-1', eventGuid: 'event-1' });
 
       expect(response.status).toBe(201);
-      expect(provider.insertUserCheckin).toHaveBeenCalledTimes(1);
-      expect(provider.insertUserCheckin).toHaveBeenCalledWith('event-1', 'attendee-1');
+      expect(provider.insertAttendeeCheckin).toHaveBeenCalledTimes(1);
+      expect(provider.insertAttendeeCheckin).toHaveBeenCalledWith('event-1', 'attendee-1');
+      // The attendee path is the one held to the zone (#1766).
+      expect(provider.insertUserCheckin).not.toHaveBeenCalled();
     });
 
     it('refuses an account without create:checkins', async () => {
@@ -77,7 +89,7 @@ describe('CheckInController', () => {
       const response = await post('/admin', { userGuid: 'attendee-1', eventGuid: 'event-1' });
 
       expect(response.status).toBe(403);
-      expect(provider.insertUserCheckin).not.toHaveBeenCalled();
+      expect(provider.insertAttendeeCheckin).not.toHaveBeenCalled();
     });
 
     it('refuses a request missing the attendee or the event', async () => {
@@ -85,7 +97,7 @@ describe('CheckInController', () => {
 
       expect((await post('/admin', { eventGuid: 'event-1' })).status).toBe(400);
       expect((await post('/admin', { userGuid: 'attendee-1' })).status).toBe(400);
-      expect(provider.insertUserCheckin).not.toHaveBeenCalled();
+      expect(provider.insertAttendeeCheckin).not.toHaveBeenCalled();
     });
 
     it('is guarded by a token and the create:checkins permission', () => {

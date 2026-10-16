@@ -58,6 +58,9 @@ export class EventService {
   public specialEventLayerReferences: Array<string>;
 
   private _map: esri.Map;
+
+  /** The layer sources the map was last drawn with, for selecting one of their features later. */
+  private _sources: LayerSource[] = [];
   private _view: esri.MapView;
   private _exclusiveVisibilityHandles: Array<esri.Handle> = [];
 
@@ -182,6 +185,9 @@ export class EventService {
 
           return source;
         });
+
+      // Set before the check, so a drawing with no layers leaves none of an earlier drawing's to select.
+      this._sources = sources;
 
       if (sources.length > 0) {
         await this.mapService.loadLayers(sources);
@@ -467,6 +473,28 @@ export class EventService {
     return features.map((f) => f.attributes[attribute]);
   }
 
+  /**
+   * Selects and shows the map's own feature behind a result from one of its search sources, as a
+   * `?tent=` or `?zone=` link does: from the layer drawn from the same `url`, by the result's object id,
+   * with that layer's popup. A search result is a plain query result, with no layer or popup of its own.
+   *
+   * @returns `true` if the feature was found and selected.
+   */
+  public async selectSearchResult(searchSource: SearchSource, attributes: Record<string, unknown>): Promise<boolean> {
+    const source = this.findLayerSource(this._sources, (s) => (s as { url?: string }).url === searchSource.url);
+    const layer = source && (this.findMapLayerById(source.id) as esri.FeatureLayer | undefined);
+
+    if (!source || !layer) {
+      return false;
+    }
+
+    await layer.load();
+
+    const objectId = Number(attributes[layer.objectIdField]);
+
+    return !Number.isNaN(objectId) && this.selectFeatureByObjectId(source, layer, objectId);
+  }
+
   private async selectFeatureFromUrl(sources: LayerSource[]): Promise<void> {
     const params = new URLSearchParams(window.location.search);
     const selectedFeature = params.get('feature');
@@ -501,7 +529,7 @@ export class EventService {
     }
 
     const layer = this.findMapLayerById(layerId) as esri.FeatureLayer | undefined;
-    const source = this.findLayerSourceById(sources, layerId);
+    const source = this.findLayerSource(sources, (s) => s.id === layerId);
 
     if (!layer || !source) {
       console.warn(`EventService.selectFeatureFromUrl: Layer '${layerId}' not found.`);
@@ -510,6 +538,18 @@ export class EventService {
 
     await layer.load();
 
+    if (!(await this.selectFeatureByObjectId(source, layer, objectId))) {
+      console.warn(`EventService.selectFeatureFromUrl: Feature '${selectedFeature}' not found.`);
+    }
+  }
+
+  /**
+   * Queries `layer`, drawn from `source`, for the feature with `objectId`, then selects and shows it
+   * with the source's popup.
+   *
+   * @returns `true` if the feature was found and selected.
+   */
+  private async selectFeatureByObjectId(source: LayerSource, layer: esri.FeatureLayer, objectId: number): Promise<boolean> {
     const result = await layer.queryFeatures({
       objectIds: [objectId],
       outFields: ['*'],
@@ -519,13 +559,19 @@ export class EventService {
     const feature = result.features[0];
 
     if (!feature) {
-      console.warn(`EventService.selectFeatureFromUrl: Feature '${selectedFeature}' not found.`);
-      return;
+      return false;
     }
 
+    this.showFeature(feature, source, objectId);
+
+    return true;
+  }
+
+  /** Selects a queried feature of `source`'s layer and shows it with its popup, as a click on it does. */
+  private showFeature(feature: esri.Graphic, source: LayerSource, objectId: unknown): void {
     feature.attributes = {
       ...feature.attributes,
-      __featureLayerId: layerId,
+      __featureLayerId: source.id,
       __featureObjectId: objectId
     };
 
@@ -560,17 +606,17 @@ export class EventService {
   }
 
   /**
-   * Resolves a layer source by id, walking nested group sources. The counterpart to
+   * Resolves the layer source `matches` picks, walking nested group sources. The counterpart to
    * `findMapLayerById` for the definition side of a grouped layer.
    */
-  private findLayerSourceById(sources: LayerSource[], layerId: string): LayerSource | undefined {
+  private findLayerSource(sources: LayerSource[], matches: (source: LayerSource) => boolean): LayerSource | undefined {
     for (const source of sources) {
-      if (source.id === layerId) {
+      if (matches(source)) {
         return source;
       }
 
       const children = (source as { sources?: LayerSource[] }).sources;
-      const nested = children ? this.findLayerSourceById(children, layerId) : undefined;
+      const nested = children ? this.findLayerSource(children, matches) : undefined;
 
       if (nested) {
         return nested;
@@ -674,19 +720,7 @@ export class EventService {
       const feature = result.features[0];
 
       if (feature) {
-        feature.attributes = {
-          ...feature.attributes,
-          __featureLayerId: source.id,
-          __featureObjectId: feature.attributes[layer.objectIdField]
-        };
-
-        this.hydrateFeaturePopupData(feature, source);
-
-        this.mapService.selectFeatures({
-          graphics: [feature],
-          shouldShowPopup: true,
-          popupComponent: this.getPopupComponent(source)
-        });
+        this.showFeature(feature, source, feature.attributes[layer.objectIdField]);
 
         return true;
       }

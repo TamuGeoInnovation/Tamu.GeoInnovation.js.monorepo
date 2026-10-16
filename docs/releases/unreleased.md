@@ -15,20 +15,38 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### The Football Tailgating map opens on the raster campus basemap, and searches its tents and areas (dev only)
+
+The map now always opens on **Aggieland raster, October 2026** rather than the vector campus basemap,
+and its search finds **tents** by id and **named areas** by name or zone id, alongside the usual
+buildings and parking ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788)). Picking a tent or area opens it as a `?tent=` or `?zone=` link does:
+the map's own feature, with its popup. An area not yet given a name lists by its zone id, and a result
+no longer on the map says so rather than doing nothing.
+
+| Before | After |
+| --- | --- |
+| ![Searching O12 finds nothing, on the vector basemap](../screenshots/tailgating-raster-basemap-search/before-search.png) | ![Searching O12 finds Tent O12, on the raster basemap](../screenshots/tailgating-raster-basemap-search/after-search.png) |
+
+![Ortega Lawn opened from the search, with its popup](../screenshots/tailgating-raster-basemap-search/after-area-popup.png)
+
 ### The Football Tailgating map opens on the campus basemap (dev only)
 
 The Tailgating map opened on whatever basemap a visitor last chose on any map. For anyone who last
 chose Aerial Imagery that was no basemap at all, and with it no zoom levels: the zones drew as a speck
-on a white page ([#1692](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1692)). It now always opens on the campus basemap - Aggieland vector,
-September 2026, on dev - since its tents and zones are read against campus ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)). A link
-naming a `?basemap=` still opens on that one, and the other event maps are unchanged.
+on a white page ([#1692](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1692)). It now always opens on a campus basemap, since its tents and zones
+are read against campus ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)). This change opened it on Aggieland vector, September 2026, as
+the image below shows; the entry above has since moved it to **Aggieland raster, October 2026**, in
+every environment ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788)). A link naming a `?basemap=` still opens on that one, and the other
+event maps are unchanged.
 
-Any event map can now ask for this with `basemap: 'campus'` in its configuration. On production it
-opens on the campus basemap production has.
+Any event map can ask for the campus basemap with `basemap: 'campus'` in its configuration - the vector
+one on dev, the raster one production has - or for Aggieland raster, October 2026, everywhere, with
+`basemap: 'campus-raster'`.
 
 | Before, with Aerial Imagery last chosen | After |
 | --- | --- |
-| ![The Tailgating map with no basemap, its zones a speck in the middle](../screenshots/tailgating-campus-basemap/before.png) | ![The Tailgating map on the September 2026 campus basemap](../screenshots/tailgating-campus-basemap/after.png) |
+| ![The Tailgating map with no basemap, its zones a speck in the middle](../screenshots/tailgating-campus-basemap/before.png) | ![The Tailgating map on the September 2026 campus basemap, before the raster basemap replaced it](../screenshots/tailgating-campus-basemap/after.png) |
+
 ### In 3D, the basemap panel says which basemaps it cannot show (dev only)
 
 On dev, with the map in 3D, the vector campus basemap could not be chosen again after another had
@@ -110,6 +128,57 @@ pages need a sign-in.
 | Before | After | After changing the university and year |
 | --- | --- | --- |
 | ![The form's photograph with no banner](../screenshots/1757-admin-speaker-banner/before-admin-speaker-form.png) | ![The photograph with a maroon TAMU '24 banner](../screenshots/1757-admin-speaker-banner/after-admin-speaker-form.png) | ![The same photograph with a purple LSU '22 banner](../screenshots/1757-admin-speaker-banner/after-admin-speaker-form-changed.png) |
+
+### GIS Day: competition submissions need a sign-in, and are recorded for whoever is signed in
+
+The VGI competition's submissions could be read without signing in: one address answered every
+submission of every year with the submitter's account id and where they were. And a submission was
+recorded for whichever account the request named, so anyone could submit as anyone and add to their
+score ([#1780](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1780)). Now every submission address needs a signed-in user, a participant sees only
+their own submissions and photographs, organizers with the competition permission see everyone's, and a
+submission is always recorded for the person signed in. Nothing looks different to a participant; the
+public submissions map is unchanged.
+
+### GIS Day: the competition app keeps looking for a location, and says why a submission was not sent
+
+On the VGI competition's submission form, a phone that took more than 2.5 seconds to find a precise
+location, common on a first fix or beside buildings, never got one while the form was open, and the
+form said location services were disabled. Pressing Submit then showed only "Error!" and the submission
+was lost; a failed upload showed the same ([#1784](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1784)).
+
+Now the form keeps looking until it has a location, and says above the Submit button whether it is
+finding it, has found it (with how accurate it is), or has been refused it. After a few failed
+attempts it adds "Make sure Location is on in your phone's settings". Pressing Submit without a
+location says why and sends nothing; pressing it after access was refused also asks for the location
+again, so allowing it in the phone's settings and pressing Submit again works without reloading. The
+install page's location check waits through a slow fix the same way, and stops watching once it has
+one. A failed upload says why (no connection, signed out, or the
+server's reason) and the button reads **Try Again**. Submissions also keep the accuracy the phone
+reported, which was saved as 0, so reviewers can tell a precise fix from a rough one.
+
+The images are a local copy at phone size, with the location set in the browser. "Signed out" in the
+last one is because the copy was opened without signing in.
+
+| Before | After |
+| --- | --- |
+| ![The form saying location services are disabled after a slow location fix](../screenshots/1784-vgi-submit-errors/before-timeout.jpg) | ![The form saying Finding your location, and Submit explaining it is still finding it](../screenshots/1784-vgi-submit-errors/after-finding.jpg) |
+| ![Submit showing only Error!](../screenshots/1784-vgi-submit-errors/before-error.jpg) | ![Location found, accurate to about 9 m](../screenshots/1784-vgi-submit-errors/after-found.jpg) |
+| | ![A failed upload: Submission Not Saved, You have been signed out, and a Try Again button](../screenshots/1784-vgi-submit-errors/after-upload-failed.jpg) |
+| | ![Location access is blocked, with how to allow it](../screenshots/1784-vgi-submit-errors/after-blocked.jpg) |
+
+### GIS Day: the competition app uploads smaller photographs, and tries again on a weak signal
+
+The VGI competition app uploaded each photograph as the phone's camera took it, typically 2 to 8 MB,
+over mobile data on campus ([#1786](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1786)). It now shrinks each photograph on the phone first, to at
+most 1,600 px on its longest side: a 12.3 MB test photograph went up as 0.67 MB. The phone decodes it
+straight to that size, so a large photograph does not have to fit in its memory at full size. Every
+photograph is redrawn, even one that is already small, so none carries the camera's embedded data,
+such as where it was taken. An upload that does not reach the server is sent again after 2, 5 and 10
+seconds before the app shows Try Again, and a second tap on Submit while it is sending no longer
+submits twice. Each submission carries an id the app makes once, the same on every retry and on Try
+Again, so an upload that was saved but whose answer was lost on the way back is not saved a second
+time. The server refuses a photograph over 15 MB with a message saying so. Nothing on the screen looks
+different.
 
 ### GIS Day: the 2026 VGI competition, the Monument Trail Challenge
 
@@ -352,6 +421,46 @@ are unchanged.
 
 The page looks the same; what changes is whose name appears in the check-in list afterwards.
 
+### GIS Day: check-in to an in-person session needs the attendee to be there
+
+Anyone could check in to a session from anywhere, so a check-in proved nothing about attending. Now an
+admin can give each venue a **check-in zone**: its corners, typed on the venue form one
+`latitude, longitude` per line, as Google Maps copies them. For an **in-person** session at a venue with
+a zone, pressing Check In asks the browser for the attendee's location, and the page says so beside the
+button ("Check-in for this session uses your location: you need to be at TAMU Rudder Plaza.").
+
+- **Inside the zone** the attendee checks in as before. A phone reports how accurate its location is;
+  an attendee counts as inside when that circle reaches the zone, with the accuracy counted up to
+  100 m, so someone at a window of a large building gets in and a vague position from across town
+  does not.
+- **Outside it**, check-in is refused, and the reason shows under the button: "You need to be inside
+  the check-in zone at TAMU Rudder Plaza to check in to this event." The API makes the decision, so
+  calling it directly does not get round it. There is no checking in anyway: an organizer adds an
+  exception from Admin, Check-ins, Add ([#1767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1767)), which checks in the attendee named, asks for no
+  location and is not held to the zone.
+- **While the browser looks for the location** the page says "Finding your location…" and the button
+  waits. If location access is blocked, the page asks for it; if finding the location takes too long,
+  it says so and suggests trying near a window.
+- **Hybrid and virtual sessions**, and venues with no zone (such as the bar for Mappy Hour), check in as
+  before. Nothing about where an attendee was is saved.
+- **A zone typed wrongly is refused**: fewer than three corners, a line that is not a latitude and
+  longitude, or corners out of order so its sides cross.
+
+A determined person can still make their browser report a made-up location; the server cannot tell.
+This stops checking in from home, not deliberate spoofing.
+
+It needs a database migration, `AddCheckInZones`, run on production before this release; the plan is on
+[#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766). Until a venue is given a zone, its sessions check in exactly as today. The 2026 zones
+for the Memorial Student Center, Rudder Plaza and the OMB lobby are on the issue.
+
+The images are a local copy, taken before the review changes: the pop-up offering to check in anyway
+is gone, and new images of the refusal, waiting and timeout messages are still to be taken.
+
+| Before | After |
+| --- | --- |
+| ![The check-in section with only the CHECKIN button](../screenshots/1766-gisday-checkin-zone/before-checkin-section.png) | ![The check-in section with a line saying check-in uses your location at TAMU Rudder Plaza](../screenshots/1766-gisday-checkin-zone/after-checkin-section.png) |
+| | ![The check-in section after checking in: Your attendance has been registered](../screenshots/1766-gisday-checkin-zone/after-checked-in.jpg) |
+
 ---
 
 ## What to test on dev
@@ -365,12 +474,16 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
-| Football Tailgating opens on the campus basemap ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)) | Choose **Aerial Imagery** on any map, then open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | The map opens on **Aggieland vector, September 2026** with its zones at the normal zoom, not on a white page. [The same map with ?basemap=gray-vector](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?basemap=gray-vector) opens on Light Gray Canvas. Other event maps still open on the basemap last chosen |
+| Football Tailgating basemap and search ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Opens on **Aggieland raster, October 2026**, marked in the Basemap panel. Search **O12**: Tent O12, which opens its popup. **Ortega**: Ortega Lawn. **Lot E**: the West Campus Lot E zones. **MSC**: still the Memorial Student Center and its parking |
+| Football Tailgating opens on the campus basemap ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)) | Choose **Aerial Imagery** on any map, then open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | The map opens on **Aggieland raster, October 2026** ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788); it was Aggieland vector, September 2026, before) with its zones at the normal zoom, not on a white page. [The same map with ?basemap=gray-vector](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?basemap=gray-vector) opens on Light Gray Canvas. Other event maps still open on the basemap last chosen |
 | Basemaps a 3D scene cannot show ([#1740](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1740)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), then the **2D** button beside All Maps | In 3D, **Aggieland vector** is greyed and says **2D only**, and **Aggieland raster, October 2026** is marked as chosen, which is what the map shows. Clicking the greyed one does nothing. Choose another basemap and it is still greyed. Click **3D** to go back: the vector basemap is back, marked, and can be chosen |
 | Aerial Imagery timeline restyled ([#1750](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1750)) | [Football Tailgating on 22 November 2025](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?imagery=2025-11-22) | The timeline is above **View as production**, not under it. Ticks have no labels but "2016" and "Latest"; hovering one shows its date. ‹ › beside the date step one capture: from Nov 22, 2025, › goes to Nov 26, 2025, then to Oct 5, 2026 (latest), where › greys out. Not on production |
 | A saved Aerial Imagery choice ([#1692](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1692)) | Choose **Aerial Imagery** on any map, then open [Accessible Parking](https://dev.aggiemap.tamu.edu/events/accessible-parking/map/d) | The map opens on Aerial Imagery with its parking spaces, not on a white page with the spaces floating. Reload: still Aerial Imagery. Choose another basemap and reload: that one. Also on production |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
 | GIS Day: university banner in the admin speaker form ([#1757](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1757)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Speakers, edit a speaker who has a photograph | The university and class-year banner on the photograph, as on the Presenters page. Change the University or the Graduation Year: the banner changes at once, before saving. Choose no university: it goes. The public Presenters page and a presenter's page look as they did |
+| GIS Day: competition submissions need a sign-in ([#1780](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1780)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone with the competition app installed, once the 2026 competition is taking submissions | Signed in, a submission uploads, the app says it was saved, it appears on the public submissions map, and the leaderboard counts it. (Not under Account, My VGI submissions: that page shows nothing for anyone, for an unrelated reason, [#1791](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1791).) As an organizer, Admin, VGI Competition, Submissions lists everyone's with their photographs. Opening the submissions address in a browser without signing in answers 401 |
+| GIS Day: competition app location and submit errors ([#1784](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1784)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone with the competition app installed, once the 2026 competition is taking submissions | The form says Finding your location, then Location found with its accuracy, including indoors where the fix is slow. Press Submit before it is found: a message says to wait, and nothing is sent. With Location turned off in the phone's settings, after about half a minute the form says to make sure Location is on. Block location for the site: the form says it is blocked; allow it again in the phone's settings and press Submit: the location is found and the next Submit sends it. Turn off mobile data and press Submit: the message blames the connection and the button reads Try Again; turn data back on and press it: the submission is saved |
+| GIS Day: smaller competition uploads, retried on a weak signal ([#1786](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1786)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone with the competition app installed, once the 2026 competition is taking submissions | A submission with a photograph from the camera uploads in a few seconds on mobile data. Organizers: the photograph in Admin, VGI Competition, Submissions is the right way up and about 1,600 px wide. Turn on airplane mode, press Submit, and turn it off within 15 seconds: the submission is saved without pressing Try Again, and appears once in Admin, VGI Competition, Submissions. Organizers: a downloaded photograph has no location in its details (EXIF) |
 | GIS Day: 2026 VGI competition page ([#1665](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1665)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/competitions/vgi` and `/competitions/monuments` | The VGI page says "November 9-20, 2026" and "2026 Competition: Texas A&M University Monument Trail Challenge", with 2025's Art Trail Challenge first under Prior Competitions. "Read Event Details" opens the new page: two things to collect, one point each, winners Thursday November 19, University Architect logo, no broken images |
 | GIS Day: VGI points for new finds ([#1781](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1781)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally or on production, `/competitions/monuments`, then the competition app's leaderboard once the 2026 competition is set up and taking submissions | The page says 2 points for something nobody has submitted yet and 1 for something already submitted, within 15 meters of an earlier 2-point submission. On the leaderboard, two people submitting the same monument score 2 and 1; the same person submitting it twice scores 3; a different monument scores 2 again. In the competition admin, the form designer's dropdown options have no Points column and the type question is called "Type Question"; the submission list and a submission's details have no Points |
 | GIS Day: poster and presentation competition dates moved to 2026 ([#1662](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1662)) | Not on dev, for the same reason. Locally, `/competitions/posters` and `/competitions/presentation` | No 2025 date on either page. Posters: Tuesday November 17th, 2026, due Monday November 9th. Presentations: Tuesday November 17th and Wednesday November 18th, 2026 |
@@ -386,6 +499,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: the admin event list grouped by day ([#1775](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1775)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: Admin, Events | One card per day, headed by its date (November 16 to 20 for 2026), each with its own table in start-time order. A table's header checkbox selects that day's events, and Copy and Delete act on what is selected. Changing the season shows that season's days |
 | GIS Day: presenters' company and class year, grouped by company ([#1768](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1768), [#1769](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1769)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally or on production, any session's page, e.g. the career fair | Under each presenter's name is their company. Texas A&M former students have their class year after their name ('14). The people from one company are next to each other, companies in alphabetical order, and people without a company last |
 | GIS Day: an admin's added check-in is the attendee's ([#1767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1767)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, signed in as an administrator whose account has `create:checkins`: Admin, Check-ins, Add, with another person's account id and an event they have not checked in to | Admin, Check-ins lists the new check-in under that person, not the admin. Adding the same person to the same event again is refused as already checked in. An attendee checking in from a session's page still checks in themselves |
+| GIS Day: location-based check-in ([#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)), and the migration has not run anywhere but a local copy. Locally, after `scripts/gisday-local.sh migrate run`: as an administrator, Admin, Venues, give a venue corners; then, during an in-person session there, the session's page | The line "Check-in for this session uses your location" names the venue. Inside the zone, Check In works. Outside it (DevTools, Sensors, set a location elsewhere), the reason shows under the button and nothing is saved; there is no check-in anyway. While waiting, "Finding your location…". Block location access: the page asks for it. A hybrid session, or a venue with no corners, never asks. On the venue form, corners out of order (sides crossing) are refused. As an administrator, Admin, Check-ins, Add checks in another account to that in-person session with no location, from anywhere |
 
 ---
 
@@ -447,6 +561,9 @@ map's definition only when its map opens ([#1646](https://github.com/TamuGeoInno
   for names and emails
   ([#1759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1759)). A development tenant with test users, which would make those work too, waits on
   the maintainer creating it ([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623), medium).
+- **The first schema change since `InitialSchema` is waiting for production**: `AddCheckInZones`, for
+  location-based check-in ([#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766)). It adds one nullable column, so it can run before the
+  release that needs it; the step-by-step plan, for the maintainer, is a comment on the issue.
 - **No development database exists outside a developer's machine.** [#1511](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1511) (medium) is open for
   that: one on the cluster, then a migration run and reverted there, following
   [`docs/gisday-migrations.md`](../gisday-migrations.md). It is the first step of the dev site

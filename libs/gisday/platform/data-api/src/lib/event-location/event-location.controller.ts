@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { isLatLonPolygon } from '@tamu-gisc/common/utils/geometry';
 
 import { EventLocation } from '../entities/all.entity';
 import { EventLocationService } from './event-location.service';
@@ -45,6 +46,8 @@ export class EventLocationController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
   public async insertEntity(@Body() body: Partial<EventLocation>) {
+    assertCheckInZone(body);
+
     return this.ebs.create(body);
   }
 
@@ -52,6 +55,8 @@ export class EventLocationController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
   public async updateEntity(@Param('guid') guid: string, @Body() body: Partial<EventLocation>) {
+    assertCheckInZone(body);
+
     return this.ebs.update(guid, body);
   }
 
@@ -67,5 +72,16 @@ export class EventLocationController {
   @Delete()
   public deleteMany(@Body('guid') guid: string) {
     return this.ebs.deleteEntities(guid);
+  }
+}
+
+/**
+ * A check-in zone, when one is given, must be at least three corners in range, in order around it so
+ * its sides do not cross: a malformed one would refuse every check-in, or let in people who are not
+ * there (#1766). `null` removes it.
+ */
+function assertCheckInZone(body: Partial<EventLocation>) {
+  if (body?.checkInZone !== undefined && body.checkInZone !== null && !isLatLonPolygon(body.checkInZone)) {
+    throw new BadRequestException('A check-in zone needs at least three corners, in order around it, each a latitude and longitude.');
   }
 }

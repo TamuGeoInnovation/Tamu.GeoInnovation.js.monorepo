@@ -1,7 +1,4 @@
-/**
- * Mean radius of the earth, in metres.
- */
-const EARTH_RADIUS = 6371008.8;
+import { EARTH_RADIUS } from './common-utils-geometry';
 
 /**
  * The distance between two points in metres, along the earth's surface (haversine). Runs anywhere: in

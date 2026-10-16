@@ -105,6 +105,18 @@ describe('campus basemap', () => {
     expect(forSavedId('streets-vector', false)).toBe('streets-vector');
   });
 
+  it("gives a map that opens on the raster campus basemap the gallery's own October 2026 entry", () => {
+    const exported = definitions as unknown as Record<string, unknown>;
+    const raster = exported['aggiemapRasterBasemap'] as (isTesting: boolean) => Basemap & { id: string; title: string };
+    const gallery = exported['aggiemapGalleryBasemaps'] as (isTesting: boolean) => Array<Basemap & { id: string }>;
+
+    // On development it is the gallery's dated entry, so the panel marks it as the one showing.
+    expect(raster(true).title).toBe('Aggieland raster, October 2026');
+    expect(gallery(true)).toContainEqual(raster(true));
+
+    // Production has one campus basemap, and it is this raster one.
+    expect(raster(false)).toEqual(exported['AggiemapRasterBasemap']);
+  });
   it('turns a saved Aerial Imagery choice back into the Nearmap basemap, on every environment (#1692)', () => {
     const exported = definitions as unknown as Record<string, unknown>;
     const forSavedId = exported['basemapForSavedId'] as (id: string, isTesting: boolean) => Basemap | string;

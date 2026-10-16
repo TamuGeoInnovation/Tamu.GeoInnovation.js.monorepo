@@ -35,6 +35,11 @@
         <p class="trailer-1">A venue is typically assumed to be within an organization's host campus/building. In some cases, sessions may be hosted in venues in the surrounding area (restaurant, bar, conference center, etc). Use this field to display a different street address than the hosting organization.</p>
         <tamu-gisc-textbox formControlName="streetAddressOverride" placeholder="Street Address Override (Optional)" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
+
+      <div class="form-collection column">
+        <p class="trailer-1">Attendees of an in-person session here can only check in from inside this zone, or close enough that their phone's reported accuracy (up to {{ checkInMaxAccuracy }} m) reaches it. Type its corners in order around it, one per line, each as <em>latitude, longitude</em>: in Google Maps, right-click a corner and click the coordinates to copy them. Leave it empty for no location check. Hybrid and virtual sessions never check location.</p>
+        <tamu-gisc-textbox formControlName="checkInZoneText" placeholder="Check-In Zone Corners (Optional)" type="textarea" [rows]="5" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
     </div>
   </div>
 

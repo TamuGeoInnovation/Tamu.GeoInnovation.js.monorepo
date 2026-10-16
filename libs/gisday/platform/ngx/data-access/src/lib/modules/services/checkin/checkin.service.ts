@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, tap } from 'rxjs';
+import { tap } from 'rxjs';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { LatLon } from '@tamu-gisc/common/utils/geometry';
 import { CheckIn } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
@@ -36,10 +37,20 @@ export class CheckinService extends BaseService<CheckIn> {
     return this.http1.get<Partial<CheckIn>>(`${this.resource}/user/event/${eventGuid}`);
   }
 
-  public insertUserCheckin(eventGuid: string) {
+  /**
+   * @param position Where the attendee is, and how accurately. An in-person event at a location
+   * with a check-in zone needs it (#1766).
+   *
+   * A failure is passed on as the API sent it, with no message here: the page shows the API's
+   * reason beside the button.
+   */
+  public insertUserCheckin(eventGuid: string, position?: LatLon & { accuracy?: number }) {
     return this.http1
       .post(`${this.resource}`, {
-        eventGuid: eventGuid
+        eventGuid: eventGuid,
+        latitude: position?.latitude,
+        longitude: position?.longitude,
+        accuracy: position?.accuracy
       })
       .pipe(
         tap(() => {
@@ -48,15 +59,6 @@ export class CheckinService extends BaseService<CheckIn> {
             title: 'Event Check-In',
             message: `Successfully checked-in for this event.`
           });
-        }),
-        catchError((err) => {
-          this.ns.toast({
-            id: 'checkin-create-failure',
-            title: 'Event Check-In',
-            message: `There was error checking-in for this event. ${err.error.message}`
-          });
-
-          throw new Error(`Failed to check-in`);
         })
       );
   }

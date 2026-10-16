@@ -6,6 +6,8 @@ import { Observable, filter, map, switchMap, take } from 'rxjs';
 import { EventLocation, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { LocationService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { formatLatLonLines, isLatLonPolygon, parseLatLonLines } from '@tamu-gisc/common/utils/geometry';
+import { CHECK_IN_MAX_ACCURACY } from '@tamu-gisc/gisday/common';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -32,6 +34,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
   public entity$: Observable<Partial<EventLocation>>;
   public places$: Observable<Array<Partial<Place>>>;
   public form: UntypedFormGroup;
+  public readonly checkInMaxAccuracy = CHECK_IN_MAX_ACCURACY;
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -42,6 +45,9 @@ export class EventLocationAddEditFormComponent implements OnInit {
       link: [null],
       place: [null],
       streetAddressOverride: [null],
+      // The check-in zone's corners as typed, one `latitude, longitude` per line (#1766). Sent as
+      // `checkInZone`.
+      checkInZoneText: [''],
       season: [null]
     });
 
@@ -57,7 +63,8 @@ export class EventLocationAddEditFormComponent implements OnInit {
       this.entity$.pipe(take(1)).subscribe((entity) => {
         this.form.patchValue({
           ...entity,
-          place: entity.place?.guid
+          place: entity.place?.guid,
+          checkInZoneText: formatLatLonLines(entity.checkInZone)
         });
 
         // If the entity has a season, remove the season control from the form
@@ -102,7 +109,11 @@ export class EventLocationAddEditFormComponent implements OnInit {
   }
 
   private _updateEntity() {
-    const rawValue = this.form.getRawValue();
+    const rawValue = this._valueWithCheckInZone();
+
+    if (!rawValue) {
+      return;
+    }
 
     this.els.updateEntity(rawValue.guid, rawValue).subscribe({
       next: () => {
@@ -125,7 +136,11 @@ export class EventLocationAddEditFormComponent implements OnInit {
   }
 
   private _createEntity() {
-    const rawValue = this.form.getRawValue();
+    const rawValue = this._valueWithCheckInZone();
+
+    if (!rawValue) {
+      return;
+    }
 
     this.els.createEntity(rawValue).subscribe({
       next: () => {
@@ -145,6 +160,28 @@ export class EventLocationAddEditFormComponent implements OnInit {
         });
       }
     });
+  }
+
+  /**
+   * The form's value with the typed corners read into `checkInZone`: `null` when none were typed,
+   * or `undefined`, with a message, when they cannot be used.
+   */
+  private _valueWithCheckInZone(): Partial<EventLocation> | undefined {
+    const { checkInZoneText, ...value } = this.form.getRawValue();
+    const corners = parseLatLonLines(checkInZoneText);
+
+    // The API refuses the same zones; this says why before sending.
+    if (corners === undefined || (corners.length > 0 && !isLatLonPolygon(corners))) {
+      this.ns.toast({
+        id: 'event-location-check-in-zone-error',
+        title: 'Check-In Zone',
+        message: 'Type at least three corners, in order around the zone, one per line, each as latitude, longitude.'
+      });
+
+      return undefined;
+    }
+
+    return { ...value, checkInZone: corners.length > 0 ? corners : null };
   }
 
   private _navigateBack() {

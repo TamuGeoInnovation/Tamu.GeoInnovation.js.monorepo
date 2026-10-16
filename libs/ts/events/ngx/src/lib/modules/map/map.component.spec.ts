@@ -8,7 +8,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { BasemapGalleryService, aggiemapBasemap } from '@tamu-gisc/maps/feature/basemap';
+import { BasemapGalleryService, aggiemapBasemap, aggiemapRasterBasemap } from '@tamu-gisc/maps/feature/basemap';
 import { MapConfig } from '@tamu-gisc/maps/esri';
 
 import { TailgatingConfiguration } from '../../definitions/tailgating.definitions';
@@ -133,7 +133,18 @@ describe('MapComponent (opening basemap)', () => {
     expect(openingBasemap({ saved: 'gray-vector' })).toBe('gray-vector');
   });
 
-  it('opens Football Tailgating on the campus basemap', () => {
-    expect(TailgatingConfiguration.basemap).toBe('campus');
+  it('opens a raster-campus map on Aggieland raster, October 2026, even after Aerial Imagery was last chosen', () => {
+    const basemap = openingBasemap({ configuration: { basemap: 'campus-raster' }, saved: 'nearmap_cs_basemap' });
+
+    expect(basemap).toEqual(aggiemapRasterBasemap(true));
+    expect((basemap as { title: string }).title).toBe('Aggieland raster, October 2026');
+  });
+
+  it('still opens a raster-campus map on a basemap named in its link', () => {
+    expect(openingBasemap({ configuration: { basemap: 'campus-raster' }, urlBasemap: 'gray-vector' })).toBe('gray-vector');
+  });
+
+  it('opens Football Tailgating on Aggieland raster, October 2026', () => {
+    expect(TailgatingConfiguration.basemap).toBe('campus-raster');
   });
 });

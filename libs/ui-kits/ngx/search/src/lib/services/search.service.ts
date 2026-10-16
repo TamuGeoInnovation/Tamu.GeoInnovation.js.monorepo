@@ -708,6 +708,35 @@ export interface SearchSourceWhereProperties {
 }
 
 /**
+ * The query parameters every ArcGIS feature search shares: JSON, five results, every field, and the
+ * geometry in WGS 84. A source adds its own `where` to these.
+ */
+export const searchQueryParams: Partial<SearchSourceQueryParamsProperties> = {
+  f: 'json',
+  resultRecordCount: 5,
+  outFields: '*',
+  outSR: 4326,
+  returnGeometry: true,
+  spatialRel: 'esriSpatialRelIntersects'
+};
+
+/**
+ * A search that finds what is typed anywhere in any of `keys`, ignoring case: `searchQueryParams` with a
+ * `LIKE '%TERM%'` on each upper-cased key. Spread it to add a `scoringWhere` or an `orderByFields`.
+ */
+export function containsSearch(keys: string[]): Partial<SearchSourceQueryParamsProperties> {
+  return {
+    ...searchQueryParams,
+    where: {
+      keys,
+      operators: keys.map(() => 'LIKE'),
+      wildcards: keys.map(() => 'includes' as const),
+      transformations: keys.map(() => 'UPPER' as const)
+    }
+  };
+}
+
+/**
  * Defines the properties used to perform a secondary query based on the results of an initial query.
  *
  * @interface CrossSearchQueryProperties
