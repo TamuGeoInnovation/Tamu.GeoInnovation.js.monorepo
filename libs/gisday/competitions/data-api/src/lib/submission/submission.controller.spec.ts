@@ -113,6 +113,24 @@ describe('SubmissionController', () => {
         expect(service.createCompetitionSubmission).not.toHaveBeenCalled();
       });
 
+      it('returns the saved one when a copy sent at the same time was saved first, and saves nothing more', async () => {
+        const saved = { guid: id, userGuid: 'auth0|ann' };
+        // The check finds nothing, then the INSERT meets the copy that was saved in the meantime.
+        service.getSubmissionByGuid.mockResolvedValueOnce(null).mockResolvedValueOnce(saved);
+        service.createCompetitionSubmission.mockRejectedValueOnce({ driverError: { number: 2627 } });
+
+        await expect(controller.insert(ann, { ...body, guid: id }, [])).resolves.toBe(saved);
+        expect(service.createCompetitionSubmission).toHaveBeenCalledTimes(1);
+        expect(service.createOne).not.toHaveBeenCalled();
+      });
+
+      it("refuses a copy that meets someone else's submission at the same time", async () => {
+        service.getSubmissionByGuid.mockResolvedValueOnce(null).mockResolvedValueOnce({ guid: id, userGuid: 'auth0|ann' });
+        service.createCompetitionSubmission.mockRejectedValueOnce({ driverError: { number: 2627 } });
+
+        await expect(controller.insert(bob, { ...body, guid: id }, [])).rejects.toThrow(ConflictException);
+      });
+
       it('refuses an id that is not a UUID', async () => {
         await expect(controller.insert(ann, { ...body, guid: 'not-a-uuid' }, [])).rejects.toThrow(BadRequestException);
         expect(service.createCompetitionSubmission).not.toHaveBeenCalled();

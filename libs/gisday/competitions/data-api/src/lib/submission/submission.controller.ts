@@ -26,7 +26,7 @@ import { isOwnerOrPermitted, JwtGuard, Permissions, PermissionsGuard } from '@ta
 import { CompetitionSubmission, SubmissionMedia } from '../entities/all.entities';
 
 import { FormService } from '../form/form.service';
-import { SubmissionService } from './submission.service';
+import { isDuplicateKey, SubmissionService } from './submission.service';
 import { GetSubmissionDto, ValidateSubmissionDto } from '../dtos/dtos';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -149,20 +149,14 @@ export class SubmissionController {
       throw new BadRequestException('Submissions are disabled for this season.');
     }
 
-    if (body.guid !== undefined) {
-      if (!isUuid(body.guid)) {
-        throw new BadRequestException('A submission id must be a UUID.');
-      }
+    if (body.guid !== undefined && !isUuid(body.guid)) {
+      throw new BadRequestException('A submission id must be a UUID.');
+    }
 
-      const existing = await this.service.getSubmissionByGuid(body.guid);
+    const existing = await this._alreadySaved(req, body.guid);
 
-      if (existing) {
-        if (!isOwnerOrPermitted(req.user, existing.userGuid)) {
-          throw new ConflictException('A submission with this id already exists.');
-        }
-
-        return existing;
-      }
+    if (existing) {
+      return existing;
     }
 
     const sub: DeepPartial<CompetitionSubmission> = {
@@ -173,21 +167,42 @@ export class SubmissionController {
       season: season
     };
 
-    if (files) {
-      const entityFiles = files.map((file) => {
-        const _file: DeepPartial<SubmissionMedia> = {
-          blob: file.buffer,
-          mimeType: file.mimetype,
-          fieldName: file.fieldname
-        };
+    const entityFiles = (files ?? []).map((file) => {
+      const _file: DeepPartial<SubmissionMedia> = {
+        blob: file.buffer,
+        mimeType: file.mimetype,
+        fieldName: file.fieldname
+      };
 
-        return _file;
-      });
+      return _file;
+    });
 
-      return this.service.createCompetitionSubmission(sub, entityFiles);
-    } else {
-      return this.service.createOne(sub);
+    try {
+      return await this.service.createCompetitionSubmission(sub, entityFiles);
+    } catch (err) {
+      // The same submission, sent again while the first was still being saved: return that one.
+      const saved = isDuplicateKey(err) ? await this._alreadySaved(req, body.guid) : undefined;
+
+      if (saved) {
+        return saved;
+      }
+
+      throw err;
     }
+  }
+
+  /**
+   * The submission already saved under the id the app sent, when the signed-in user saved it; 409 when
+   * someone else did (#1786).
+   */
+  private async _alreadySaved(req, submissionGuid?: string) {
+    const existing = submissionGuid !== undefined ? await this.service.getSubmissionByGuid(submissionGuid) : undefined;
+
+    if (existing && !isOwnerOrPermitted(req.user, existing.userGuid)) {
+      throw new ConflictException('A submission with this id already exists.');
+    }
+
+    return existing ?? undefined;
   }
 
   /**

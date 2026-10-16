@@ -10,6 +10,7 @@ import {
   CompetitionSeason,
   CompetitionSubmission,
   CompetitionSubmissionValidationStatus,
+  SubmissionLocation,
   SubmissionMedia
 } from '../entities/all.entities';
 import {
@@ -67,22 +68,21 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         speed: 0.0
       };
 
-      const withTrunc = { ...entity, location: truncated };
+      // INSERT, never save(): save() updates a row whose guid already exists, and the app chooses the
+      // guid (#1786). A duplicate fails on the primary key and rolls back its location and photographs.
+      return this.submissionRepo.manager.transaction(async (em) => {
+        const location = await em.save(em.create(SubmissionLocation, truncated));
+        const sub = em.create(CompetitionSubmission, { ...entity, location });
 
-      const sub = await this.submissionRepo.create(withTrunc).save();
+        await em.insert(CompetitionSubmission, sub);
 
-      if (blobs) {
-        await Promise.all(
-          blobs.map((b) => {
-            b.submission = sub;
-            return this.mediaRepo.create(b).save();
-          })
-        );
+        if (blobs?.length) {
+          await em.insert(SubmissionMedia, blobs.map((b) => em.create(SubmissionMedia, { ...b, submission: sub })));
+          Logger.log(`Created submission with media attachments.`, 'SubmissionService');
+        }
 
-        Logger.log(`Created submission with media attachments.`, 'SubmissionService');
-      }
-
-      return sub;
+        return sub;
+      });
     } else {
       throw new BadRequestException('Incomplete submission.');
     }
@@ -326,4 +326,14 @@ export function clampAccuracy(accuracy: unknown): number {
   }
 
   return Math.min(Math.round(metres * 100) / 100, 999.99);
+}
+
+/**
+ * Whether the database refused an INSERT because the key already exists (SQL Server 2627, or 2601 for
+ * a unique index).
+ */
+export function isDuplicateKey(err): boolean {
+  const number = err?.driverError?.number ?? err?.number;
+
+  return number === 2627 || number === 2601;
 }
