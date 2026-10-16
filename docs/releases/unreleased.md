@@ -24,7 +24,10 @@ In the week before a home game and on the day, the main map now shows **Football
 Available** below the Football Transportation one; clicking it opens the Tailgating map
 ([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)). It uses the Football map's game days, so the two notices come and go together.
 
-<!-- screenshots: docs/screenshots/1817-tailgating-toast/ -->
+| Before | After |
+| --- | --- |
+| ![The main map's notice panel, first page, before](../screenshots/1817-tailgating-toast/before-main-map-toasts.png) | ![The main map's notice panel, first page, after](../screenshots/1817-tailgating-toast/after-notices-1.png) |
+|  | ![The second page: Football Tailgating Map Available, after](../screenshots/1817-tailgating-toast/after-notices-2.png) |
 
 ### Map search works with an apostrophe or a percent sign
 
