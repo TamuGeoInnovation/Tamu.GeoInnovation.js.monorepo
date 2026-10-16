@@ -18,16 +18,16 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-### GIS Day: leave an organization out of the Sessions page's filter
+### GIS Day: choose which organizations the Sessions page's filter lists
 
 The Organizations filter on the Sessions page listed every organization of the season. The organization
-form in Admin now has a fourth visibility setting, **Hide from Sessions Filter**, beside Header, Footer
-and About Page. An organization with it ticked is left out of the filter; every other organization is
-still listed, so nothing changes until someone ticks it ([#1825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1825)).
+form in Admin now has a fourth visibility setting, **Sessions Filter**, beside Header, Footer and About
+Page, and the filter lists only the organizations that have it ticked. **Until organizations are
+ticked, the filter is empty**, on this year's Sessions page and on past years' ([#1825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1825)).
 
-| Before | After, with two organizations hidden |
+| Before | After, with four organizations ticked |
 | --- | --- |
-| ![Twelve organizations in the filter](../screenshots/gisday-sessions-org-filter/before-sessions-filter.png) | ![Ten organizations in the filter](../screenshots/gisday-sessions-org-filter/after-sessions-filter.png) |
+| ![Twelve organizations in the filter](../screenshots/gisday-sessions-org-filter/before-sessions-filter.png) | ![Four organizations in the filter](../screenshots/gisday-sessions-org-filter/after-sessions-filter.png) |
 
 ### Map search works with an apostrophe or a percent sign
 
@@ -457,7 +457,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
-| GIS Day: hide an organization from the Sessions filter ([#1825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1825)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, Admin, Organizations, then `/sessions` | The organization form has a fourth checkbox, Hide from Sessions Filter. Tick it on one organization and save: that organization is gone from the Organizations filter on `/sessions`, and still in the header and footer if it was before |
+| GIS Day: choose the organizations in the Sessions filter ([#1825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1825)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, Admin, Organizations, then `/sessions` | The organization form has a fourth checkbox, Sessions Filter. Tick it on two organizations and save: the Organizations filter on `/sessions` lists exactly those two, and their header and footer settings are unchanged |
 | Map search with an apostrophe or a percent sign ([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)) | [dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu), then [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Search `Cain '51`: James J. Cain '51 Building is listed. Search `O'` or `Aggie's`: no error, results or "No results found". On Football Tailgating, search `%`: "No results found", not every tent. Ordinary searches still work: `MSC`, `O12`, `Creamery` |
 | GIS Day: sponsorship levels back at last year's prices ([#1821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1821)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [the sponsor page](https://txgisday.org/sponsors/tamu) | Point $256, Line $512, Polygon $1,024, Raster $2,048, each level's perks as before |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |

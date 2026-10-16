@@ -114,7 +114,7 @@ export class EventViewComponent implements OnInit, OnDestroy {
     );
     this.organizations$ = this.activeSeason$.pipe(
       switchMap((season) => (season ? this.os.getEntitiesForSeason(season.guid) : of([]))),
-      map((places) => places.filter((place) => !place?.visibilitySettings?.includes(PlaceVisibilityOptions.HiddenFromSessionsFilter))),
+      map((places) => places.filter((place) => place?.visibilitySettings?.includes(PlaceVisibilityOptions.SessionsFilter))),
       shareReplay(1)
     );
 
