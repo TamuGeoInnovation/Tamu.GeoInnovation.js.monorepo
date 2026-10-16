@@ -72,7 +72,9 @@ our services are the hosted `*_view` ones. Every untitled layer on an event or p
 named by its own name in the service: "Parade Route", "Bus Stops", "Friday Parking Lots". A layer whose
 map names it is unchanged.
 
-<!-- screenshots: docs/screenshots/1802-layer-names/ -->
+| Before | After |
+| --- | --- |
+| ![Aggie Family Parade layer list and legend, before](../screenshots/1802-layer-names/before-aggie-family-parade.png) | ![Aggie Family Parade layer list and legend, after](../screenshots/1802-layer-names/after-aggie-family-parade.png) |
 
 ### The Aerial Imagery timeline sits clear of "View as production", with arrows (dev only)
 
