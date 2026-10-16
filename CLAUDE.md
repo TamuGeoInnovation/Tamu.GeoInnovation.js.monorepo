@@ -220,14 +220,21 @@ on 30 September - is caught before merging, while the run is watched. Anything t
 (an upgrade, a dependency change, a shared-library refactor) still runs the full check before pushing.
 
 **Owners and maintainers open pull requests ready for review. Everyone else opens a draft** and marks
-it ready once CI is green. The draft exists so nobody is asked to look at a contribution that has not
+it ready once the GitHub Actions checks are green. The draft exists so nobody is asked to look at a contribution that has not
 passed yet; a maintainer opening their own pull request is already the person watching the run and
 merging it, so it only makes the list harder to read - eight in one batch on 6 October all showed as
 works in progress and each had to be converted by hand (#1494).
 
-Opening ready costs no extra build, and a draft buys none: converting a draft does not re-run
-anything, because no workflow lists `ready_for_review` in its `types:` and `main.yml` runs on
-`[opened, synchronize, reopened]`.
+**A draft cannot be merged until it is marked ready, and marking it ready starts a build.** The GitHub
+Actions workflows run on drafts and do not run again on conversion: none lists `ready_for_review` in
+its `types:`, and `main.yml` runs on `[opened, synchronize, reopened]`. The required Azure Pipelines
+check `Monorepo` does not run on a draft at all. It starts when the pull request is marked ready, so a
+draft whose Actions are all green still waits a full Azure run after it is converted. On 15 October,
+five pull requests had review fixes pushed to them while still drafts, showed green, and each waited
+for Azure once converted.
+
+So a draft that is meant to merge is marked ready as soon as its last commit is pushed, not after its
+checks pass, including by anyone pushing to someone else's draft. Opening ready costs nothing extra.
 
 The rest is unchanged: the issue first, a regression test proven red against the unfixed code, then
 green, before and after screenshots, and a row in the release notes.
