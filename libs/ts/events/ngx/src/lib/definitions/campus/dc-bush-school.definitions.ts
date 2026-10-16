@@ -1,6 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
-import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
+import { SearchSource, containsSearch } from '@tamu-gisc/ui-kits/ngx/search';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -21,15 +21,6 @@ export enum DC_BUSH_SCHOOL_LAYERS {
   BASEMAP = 'dc-bush-school-basemap-layer',
   PROPERTY = 'dc-bush-school-property-layer'
 }
-
-const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
-  f: 'json',
-  resultRecordCount: 5,
-  outFields: '*',
-  outSR: 4326,
-  returnGeometry: true,
-  spatialRel: 'esriSpatialRelIntersects'
-};
 
 export const DCBushSchoolLayerSources: LayerSource[] = [
   {
@@ -72,13 +63,7 @@ export const DCBushSchoolSearchSources: SearchSource[] = [
     name: 'Property',
     url: `${Connections.dcBushSchoolFeatureServerUrl}/0`,
     queryParams: {
-      ...commonQueryParams,
-      where: {
-        keys: ['bldgname', 'bldgabbr', 'number'],
-        operators: ['LIKE', 'LIKE', 'LIKE'],
-        wildcards: ['includes', 'includes', 'includes'],
-        transformations: ['UPPER', 'UPPER', 'UPPER']
-      },
+      ...containsSearch(['bldgname', 'bldgabbr', 'number']),
       scoringWhere: {
         keys: ['bldgname', 'bldgabbr'],
         operators: ['LIKE', 'LIKE'],

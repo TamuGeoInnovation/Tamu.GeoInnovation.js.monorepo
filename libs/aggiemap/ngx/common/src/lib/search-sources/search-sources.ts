@@ -1,18 +1,9 @@
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
-import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
+import { SearchSource, containsSearch, searchQueryParams } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { IComposedConnections } from '../connections';
 import { IComposedIDefinitions } from '../definitions';
 import { IFactoryExcludeOptions } from '../utils/definitionFactory';
-
-const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
-  f: 'json',
-  resultRecordCount: 5,
-  outFields: '*',
-  outSR: 4326,
-  returnGeometry: true,
-  spatialRel: 'esriSpatialRelIntersects'
-};
 
 // Search sources used for querying features.
 import { getDefaultGisHost } from '../connections';
@@ -30,13 +21,7 @@ export function SearchSources(
       name: 'Building',
       url: `${connections.basemapUrl}/1`,
       queryParams: {
-        ...commonQueryParams,
-        where: {
-          keys: ['Number', 'BldgAbbrev', 'BldgName'],
-          operators: ['LIKE', 'LIKE', 'LIKE'],
-          wildcards: ['includes', 'includes', 'includes'],
-          transformations: ['UPPER', 'UPPER', 'UPPER']
-        },
+        ...containsSearch(['Number', 'BldgAbbrev', 'BldgName']),
         scoringWhere: {
           keys: ['BldgName', 'BldgAbbrev'],
           operators: ['LIKE', 'LIKE'],
@@ -55,7 +40,7 @@ export function SearchSources(
       name: 'Building',
       url: `${connections.basemapUrl}/1`,
       queryParams: {
-        ...commonQueryParams,
+        ...searchQueryParams,
         where: {
           keys: ['Number'],
           operators: ['=']
@@ -77,7 +62,7 @@ export function SearchSources(
       name: 'Building',
       url: `${connections.basemapUrl}/1`,
       queryParams: {
-        ...commonQueryParams,
+        ...searchQueryParams,
         where: {
           keys: ['BldgAbbrev'],
           operators: ['='],
@@ -96,13 +81,7 @@ export function SearchSources(
       name: 'University Departments',
       url: `${connections.departmentUrl}`,
       queryParams: {
-        ...commonQueryParams,
-        where: {
-          keys: ['DeptName', 'CollegeName', 'DeptAbbre'],
-          operators: ['LIKE', 'LIKE', 'LIKE'],
-          wildcards: ['includes', 'includes', 'includes'],
-          transformations: ['UPPER', 'UPPER', 'UPPER']
-        }
+        ...containsSearch(['DeptName', 'CollegeName', 'DeptAbbre'])
       },
       featuresLocation: 'features',
       displayTemplate: '{attributes.DeptName}',
@@ -120,7 +99,7 @@ export function SearchSources(
       name: 'University Departments',
       url: `${connections.departmentUrl}`,
       queryParams: {
-        ...commonQueryParams,
+        ...searchQueryParams,
         resultRecordCount: 100,
         where: {
           keys: ['HOME1'],
@@ -136,7 +115,7 @@ export function SearchSources(
       name: 'Parking',
       url: `${definitions.TRANSPORTATION_PARKING.url}`,
       queryParams: {
-        ...commonQueryParams,
+        ...searchQueryParams,
         returnGeometry: true,
         resultRecordCount: '*',
         outFields: `GIS.TS.ParkingLots.FAC_CODE,
@@ -158,7 +137,7 @@ export function SearchSources(
       name: 'Visitor Parking',
       url: `${definitions.TRANSPORTATION_PARKING.url}`,
       queryParams: {
-        ...commonQueryParams,
+        ...searchQueryParams,
         returnGeometry: true,
         resultRecordCount: '*',
         outFields: `GIS.TS.ParkingLots.FAC_CODE,
@@ -180,7 +159,7 @@ export function SearchSources(
       // The night-privilege layer has no FAC_CODE; the trip planner matches its lots by name (#1162).
       url: connections.nightParkingUrl,
       queryParams: {
-        ...commonQueryParams,
+        ...searchQueryParams,
         returnGeometry: true,
         resultRecordCount: '*',
         outFields: `GIS.TS.ParkingLots.LotName,
@@ -199,7 +178,7 @@ export function SearchSources(
       name: 'Parking',
       url: `${definitions.TRANSPORTATION_PARKING.url}`,
       queryParams: {
-        ...commonQueryParams,
+        ...searchQueryParams,
         returnGeometry: true,
         resultRecordCount: '*',
         outFields: `GIS.TS.ParkingLots.AggieMap,
@@ -216,13 +195,7 @@ export function SearchSources(
       name: 'Parking Garage',
       url: `${connections.basemapUrl}/0`,
       queryParams: {
-        ...commonQueryParams,
-        where: {
-          keys: ['LotName', 'Name'],
-          operators: ['LIKE', 'LIKE'],
-          wildcards: ['includes', 'includes'],
-          transformations: ['UPPER', 'UPPER']
-        }
+        ...containsSearch(['LotName', 'Name'])
       },
       featuresLocation: 'features',
       displayTemplate: '{attributes.LotName}',
@@ -251,16 +224,10 @@ export function SearchSources(
       name: 'Parking Lot',
       url: `${connections.basemapUrl}/9`,
       queryParams: {
-        ...commonQueryParams,
+        // `FAC_CODE` is matched alongside the display names so the zero-padded facility number
+        // used by TS links (`?lot=077`) resolves as readily as the unpadded `Name` (`?lot=77`).
+        ...containsSearch(['LotName', 'Name', 'FAC_CODE']),
         orderByFields: 'AggieMap DESC, CIT_CODE ASC',
-        where: {
-          // `FAC_CODE` is matched alongside the display names so the zero-padded facility number
-          // used by TS links (`?lot=077`) resolves as readily as the unpadded `Name` (`?lot=77`).
-          keys: ['LotName', 'Name', 'FAC_CODE'],
-          operators: ['LIKE', 'LIKE', 'LIKE'],
-          wildcards: ['includes', 'includes', 'includes'],
-          transformations: ['UPPER', 'UPPER', 'UPPER']
-        }
       },
       // Ranks an exact identifier match above the partial ones the `includes` wildcards let through,
       // so `?lot=100` cannot settle on `Lot 1001` when `Lot 100` exists.
@@ -277,7 +244,7 @@ export function SearchSources(
       name: 'Points of Interest',
       url: definitions.POINTS_OF_INTEREST.url,
       queryParams: {
-        ...commonQueryParams,
+        ...searchQueryParams,
         where: {
           keys: ['OBJECTID'],
           operators: ['=']
@@ -295,13 +262,7 @@ export function SearchSources(
       name: 'Points of Interest',
       url: definitions.POINTS_OF_INTEREST.url,
       queryParams: {
-        ...commonQueryParams,
-        where: {
-          keys: ['name'],
-          operators: ['LIKE'],
-          wildcards: ['includes'],
-          transformations: ['UPPER']
-        }
+        ...containsSearch(['name'])
       },
       featuresLocation: 'features',
       displayTemplate: '{attributes.name}',
@@ -313,7 +274,7 @@ export function SearchSources(
       name: 'Bike Racks',
       url: `${connections.bikeRacksUrl}`,
       queryParams: {
-        ...commonQueryParams,
+        ...searchQueryParams,
         resultRecordCount: 9999,
         where: {
           keys: ['1'],
@@ -332,7 +293,7 @@ export function SearchSources(
       name: 'Bus Stop',
       url: `${connections.busRoutesUrl}/0`,
       queryParams: {
-        ...commonQueryParams,
+        ...searchQueryParams,
         where: {
           keys: ['OBJECTID'],
           operators: ['=']
