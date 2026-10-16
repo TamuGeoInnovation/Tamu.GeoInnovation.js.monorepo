@@ -59,7 +59,9 @@ and the layer list may title them slightly differently.
 Clicking a parking lot also showed a popup with no title: it was built from two fields, `lottype` and
 `lotnum`, that neither service has. It now shows the lot's name, such as **Lot 74**.
 
-<!-- screenshots: docs/screenshots/mens-basketball-1749/ -->
+| Before | After |
+| --- | --- |
+| ![Men's Basketball map, layer list and legend, before](../screenshots/mens-basketball-1749/before-map.png) | ![Men's Basketball map, layer list and legend, after](../screenshots/mens-basketball-1749/after-map.png) |
 
 ### In 3D, the basemap panel says which basemaps it cannot show (dev only)
 
