@@ -47,6 +47,20 @@ one on dev, the raster one production has - or for Aggieland raster, October 202
 | --- | --- |
 | ![The Tailgating map with no basemap, its zones a speck in the middle](../screenshots/tailgating-campus-basemap/before.png) | ![The Tailgating map on the September 2026 campus basemap, before the raster basemap replaced it](../screenshots/tailgating-campus-basemap/after.png) |
 
+### The Men's Basketball map reads Transportation's new service, and names the lot clicked
+
+Transportation moved the Men's Basketball parking map to the production GIS server, so it can be kept
+up to date from their editor map ([#1749](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1749)). The map now reads its icons, closures and lots
+from that service, `MBskt_view` on gis.tamu.edu, in every environment; the old service on the
+transportation server is no longer updated. The layers, fields and features are the same. The new
+service's portal item has no saved style, so icons and lots are drawn with the service's own symbols,
+and the layer list may title them slightly differently.
+
+Clicking a parking lot also showed a popup with no title: it was built from two fields, `lottype` and
+`lotnum`, that neither service has. It now shows the lot's name, such as **Lot 74**.
+
+<!-- screenshots: docs/screenshots/mens-basketball-1749/ -->
+
 ### In 3D, the basemap panel says which basemaps it cannot show (dev only)
 
 On dev, with the map in 3D, the vector campus basemap could not be chosen again after another had
@@ -476,6 +490,7 @@ dated notes as what was tested, and this table empties.
 | --- | --- | --- |
 | Football Tailgating basemap and search ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788)) | [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Opens on **Aggieland raster, October 2026**, marked in the Basemap panel. Search **O12**: Tent O12, which opens its popup. **Ortega**: Ortega Lawn. **Lot E**: the West Campus Lot E zones. **MSC**: still the Memorial Student Center and its parking |
 | Football Tailgating opens on the campus basemap ([#1751](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1751)) | Choose **Aerial Imagery** on any map, then open [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | The map opens on **Aggieland raster, October 2026** ([#1788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1788); it was Aggieland vector, September 2026, before) with its zones at the normal zoom, not on a white page. [The same map with ?basemap=gray-vector](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?basemap=gray-vector) opens on Light Gray Canvas. Other event maps still open on the basemap last chosen |
+| Men's Basketball reads its new service ([#1749](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1749)) | [Men's Basketball](https://dev.aggiemap.tamu.edu/events/mens-basketball) | 8 icons, 7 closures and 21 lots draw. In the browser's network panel, their requests go to gis.tamu.edu `Hosted/MBskt_view`, not the transportation server. Clicking a lot shows its name as the popup title (e.g. **Lot 74**), not a bare dash. Layer names and symbols look acceptable |
 | Basemaps a 3D scene cannot show ([#1740](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1740)) | [The main map's basemap panel](https://dev.aggiemap.tamu.edu/map/d/settings), then the **2D** button beside All Maps | In 3D, **Aggieland vector** is greyed and says **2D only**, and **Aggieland raster, October 2026** is marked as chosen, which is what the map shows. Clicking the greyed one does nothing. Choose another basemap and it is still greyed. Click **3D** to go back: the vector basemap is back, marked, and can be chosen |
 | Aerial Imagery timeline restyled ([#1750](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1750)) | [Football Tailgating on 22 November 2025](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?imagery=2025-11-22) | The timeline is above **View as production**, not under it. Ticks have no labels but "2016" and "Latest"; hovering one shows its date. ‹ › beside the date step one capture: from Nov 22, 2025, › goes to Nov 26, 2025, then to Oct 5, 2026 (latest), where › greys out. Not on production |
 | A saved Aerial Imagery choice ([#1692](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1692)) | Choose **Aerial Imagery** on any map, then open [Accessible Parking](https://dev.aggiemap.tamu.edu/events/accessible-parking/map/d) | The map opens on Aerial Imagery with its parking spaces, not on a white page with the spaces floating. Reload: still Aerial Imagery. Choose another basemap and reload: that one. Also on production |
