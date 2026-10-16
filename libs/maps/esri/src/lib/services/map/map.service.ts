@@ -401,6 +401,7 @@ export class EsriMapService {
         recordSymbologySource(layer, declaresOwnRenderer(source) ? 'own' : 'service');
         this.applyLegendOverrideToLayerSymbols(layer, legendOverride);
         this.applyPortalItemSymbology(layer, source);
+        this.applyServiceLayerName(layer, (props as { title?: unknown }).title);
         return layer;
       });
     } else if (source.type === 'map-image') {
@@ -675,6 +676,35 @@ export class EsriMapService {
       })
       .catch(() => {
         // See above: a layer that draws its service's symbology is the previous behaviour, not a fault.
+      });
+  }
+
+  /**
+   * An untitled feature layer is named by its own name in the service (#1802).
+   *
+   * #1526 took the titles out of the definitions so that names would come from the services. But a
+   * layer loaded by URL with no title is named by ArcGIS "<service name> - <layer name>", and our
+   * services are the hosted `*_view` ones, so Aggie Family Parade's route read "Aggie Family Parade
+   * view - Parade Route". `sourceJSON.name` is the layer's name as its service publishes it.
+   *
+   * A title the definition chose is left alone, and a layer that fails to load keeps ArcGIS's title.
+   */
+  private applyServiceLayerName(layer: esri.FeatureLayer, title: unknown): void {
+    if (title) {
+      return;
+    }
+
+    layer
+      .when()
+      .then(() => {
+        const name = (layer as unknown as { sourceJSON?: { name?: string } }).sourceJSON?.name;
+
+        if (name) {
+          layer.title = name;
+        }
+      })
+      .catch(() => {
+        // Nothing loaded, so there is no name to take; the load failure is reported where it happens.
       });
   }
 

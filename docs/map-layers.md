@@ -135,6 +135,11 @@ removing.
 { type: 'feature', id: ..., title: 'Bike Dismount Zones', url: ... }
 ```
 
+Without one, a feature layer is named by its own name in the service (`sourceJSON.name`), which the
+map service sets once the layer loads. Left to itself, ArcGIS names an untitled layer `<service name> -
+<layer name>`, which on our hosted `*_view` services read "Aggie Family Parade view - Parade Route"
+([#1802][1802]).
+
 ### When it is right
 
 Same answer as symbology: **when the service cannot supply one.** The layer's name is the owner's
@@ -209,3 +214,4 @@ rediscover the reason — or, more likely, leave it alone because they cannot te
 [1497]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1497
 [1501]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1501
 [1508]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1508
+[1802]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1802
