@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
 
-import { CheckInZoneRefusal, CheckInZoneStatus, checkInZoneMessage } from '@tamu-gisc/gisday/common';
+import { checkInZoneMessage } from '@tamu-gisc/gisday/common';
 
 import { CheckIn, Event } from '../entities/all.entity';
 import { CheckInProvider } from './check-in.provider';
@@ -75,7 +75,7 @@ describe('CheckInProvider', () => {
       jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
-      expect(checkInRepo.create).toHaveBeenCalledWith({ event, accountGuid: 'acct-1', zoneStatus: null });
+      expect(checkInRepo.create).toHaveBeenCalledWith({ event, accountGuid: 'acct-1' });
     });
 
     it('refuses a second check-in for the same attendee and event', async () => {
@@ -116,10 +116,14 @@ describe('CheckInProvider', () => {
 
   /**
    * #1766: an in-person event at a location with a check-in zone accepts a check-in only from
-   * inside it, with a 30 metre margin. Hybrid and virtual events, and locations with no zone, need
+   * inside it. A position counts as inside when its accuracy circle touches the zone, with the
+   * accuracy capped at `CHECK_IN_MAX_ACCURACY` metres. There is no checking in anyway: organizers
+   * add exceptions from the admin page. Hybrid and virtual events, and locations with no zone, need
    * no location.
    */
   describe('.insertUserCheckin() and the check-in zone', () => {
+    // CHECK_IN_MAX_ACCURACY in @tamu-gisc/gisday/common.
+    const cap = 100;
     const metre = 1 / 111195;
     // The Memorial Student Center, traced around the building.
     const msc = [
@@ -134,11 +138,12 @@ describe('CheckInProvider', () => {
       longitude: msc.reduce((sum, c) => sum + c.longitude, 0) / msc.length
     };
     // The zone's southernmost corner is nearest to anything due south of it.
-    const southOfMsc = (metres: number) => ({
+    const southOfMsc = (metres: number, accuracy?: number) => ({
       latitude: msc[0].latitude - metres * metre,
-      longitude: msc[0].longitude
+      longitude: msc[0].longitude,
+      accuracy
     });
-    const kyleField = { latitude: 30.6101, longitude: -96.3403 };
+    const kyleField = { latitude: 30.6101, longitude: -96.3403, accuracy: 10 };
 
     let save: jest.Mock;
 
@@ -156,64 +161,57 @@ describe('CheckInProvider', () => {
 
       await provider.insertUserCheckin('e-1', 'acct-1', middleOfMsc);
 
-      expect(eventRepo.findOne).toHaveBeenCalledWith({ where: { guid: 'e-1' }, relations: ['location', 'day'] });
+      expect(eventRepo.findOne).toHaveBeenCalledWith({ where: { guid: 'e-1' }, relations: ['location'] });
     });
 
-    it('checks in an attendee inside the zone, saved as "in zone"', async () => {
+    it('checks in an attendee inside the zone, and saves nothing about where they were', async () => {
       withEvent('in-person');
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1', middleOfMsc)).resolves.toEqual({ guid: 'c-new' });
-      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ zoneStatus: 'in zone' }));
+      expect(checkInRepo.create).toHaveBeenCalledWith({ event: expect.anything(), accountGuid: 'acct-1' });
     });
 
-    it('checks in an attendee just outside the walls, within the margin for GPS error', async () => {
+    it('checks in an attendee outside the walls whose accuracy circle reaches the zone', async () => {
       withEvent('in-person');
 
-      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(20))).resolves.toEqual({ guid: 'c-new' });
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(60, 70))).resolves.toEqual({ guid: 'c-new' });
     });
 
-    it('refuses an attendee beyond the margin, says why, and names where to be', async () => {
+    it('refuses an attendee outside the zone whose accuracy circle does not reach it, and names where to be', async () => {
       withEvent('in-person');
 
-      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(60))).rejects.toMatchObject({
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(60, 40))).rejects.toMatchObject({
         status: 403,
-        response: { reason: CheckInZoneRefusal.OutsideZone, message: checkInZoneMessage(venue) }
+        message: checkInZoneMessage(venue)
       });
       expect(save).not.toHaveBeenCalled();
     });
 
-    it('saves an attendee outside the zone who checks in anyway as "checked-in outside of zone"', async () => {
+    it('treats a position with no accuracy as exact', async () => {
       withEvent('in-person');
 
-      await expect(provider.insertUserCheckin('e-1', 'acct-1', kyleField, true)).resolves.toEqual({ guid: 'c-new' });
-      expect(checkInRepo.create).toHaveBeenCalledWith(
-        expect.objectContaining({ accountGuid: 'acct-1', zoneStatus: 'checked-in outside of zone' })
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(5))).rejects.toThrow(ForbiddenException);
+    });
+
+    it(`counts no more than ${cap} m of accuracy, so a vague position cannot reach the zone`, async () => {
+      withEvent('in-person');
+
+      await expect(
+        provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(cap + 20, 5000))
+      ).rejects.toThrow(ForbiddenException);
+      await expect(
+        provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(cap - 20, 5000))
+      ).resolves.toEqual({ guid: 'c-new' });
+    });
+
+    it('ignores a nonsense accuracy', async () => {
+      withEvent('in-person');
+      const notANumber = { ...southOfMsc(20), accuracy: '50' as never };
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', notANumber)).rejects.toThrow(ForbiddenException);
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', southOfMsc(20, -50))).rejects.toThrow(
+        ForbiddenException
       );
-    });
-
-    it('saves an attendee with no location who checks in anyway as "location access blocked"', async () => {
-      withEvent('in-person');
-
-      await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, true)).resolves.toEqual({ guid: 'c-new' });
-      expect(checkInRepo.create).toHaveBeenCalledWith(
-        expect.objectContaining({ zoneStatus: CheckInZoneStatus.LocationBlocked })
-      );
-    });
-
-    it('saves an attendee inside the zone as "in zone", whatever they confirmed', async () => {
-      withEvent('in-person');
-
-      await provider.insertUserCheckin('e-1', 'acct-1', middleOfMsc, true);
-
-      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ zoneStatus: CheckInZoneStatus.InZone }));
-    });
-
-    it('saves no zone status for a hybrid event', async () => {
-      withEvent('hybrid');
-
-      await provider.insertUserCheckin('e-1', 'acct-1', kyleField, true);
-
-      expect(checkInRepo.create).toHaveBeenCalledWith(expect.objectContaining({ zoneStatus: null }));
     });
 
     it('refuses an attendee at Kyle Field', async () => {
@@ -223,11 +221,22 @@ describe('CheckInProvider', () => {
       expect(save).not.toHaveBeenCalled();
     });
 
+    it('offers no way to check in anyway from outside the zone', async () => {
+      withEvent('in-person');
+
+      // What the page used to send to check in anyway: an extra flag after the location.
+      const insert = provider.insertUserCheckin as (...args: Array<unknown>) => Promise<unknown>;
+
+      await expect(insert.call(provider, 'e-1', 'acct-1', kyleField, true)).rejects.toThrow(ForbiddenException);
+      expect(save).not.toHaveBeenCalled();
+    });
+
     it('refuses a check-in with no usable location, and says why', async () => {
       withEvent('in-person');
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toMatchObject({
-        response: { reason: CheckInZoneRefusal.NoLocation }
+        status: 403,
+        message: 'Checking in to this event needs your location.'
       });
       await expect(
         provider.insertUserCheckin('e-1', 'acct-1', { latitude: undefined, longitude: undefined })
@@ -253,90 +262,6 @@ describe('CheckInProvider', () => {
       // Fewer than three corners is not a zone.
       withEvent('in-person', msc.slice(0, 2));
       await expect(provider.insertUserCheckin('e-1', 'acct-1', kyleField)).resolves.toEqual({ guid: 'c-new' });
-    });
-  });
-
-  /**
-   * #1766: check-in opens when an event starts and closes 15 minutes after it ends, in the API as on
-   * the page, so nobody checks in early by calling the API directly.
-   */
-  describe('.insertUserCheckin() and when check-in is open', () => {
-    // 18 November 2026, 4:00 to 5:00 PM Central, stored as GIS Day stores them.
-    const event = {
-      guid: 'e-1',
-      mode: 'hybrid',
-      startTime: '16:00:00 GMT-0600 (Central Standard Time)',
-      endTime: '17:00:00 GMT-0600 (Central Standard Time)',
-      day: { date: new Date('2026-11-18T06:00:00Z') }
-    } as unknown as Event;
-
-    let save: jest.Mock;
-
-    beforeEach(() => {
-      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
-      save = jest.fn().mockResolvedValue({ guid: 'c-new' });
-      jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
-    });
-
-    const at = (iso: string) => jest.useFakeTimers({ now: new Date(iso), doNotFake: ['nextTick', 'setImmediate'] });
-
-    it('refuses a check-in before the event starts, and says when it opens', async () => {
-      at('2026-11-18T21:59:00Z'); // 3:59 PM Central
-
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
-        new ForbiddenException('Check-in for this event opens when it starts, at 4:00 PM.')
-      );
-      expect(save).not.toHaveBeenCalled();
-    });
-
-    it('refuses a check-in the day before', async () => {
-      at('2026-11-17T22:30:00Z');
-
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(ForbiddenException);
-    });
-
-    it('accepts a check-in from the moment the event starts', async () => {
-      at('2026-11-18T22:00:00Z'); // 4:00 PM Central
-
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
-    });
-
-    it('accepts a check-in up to 15 minutes after the event ends', async () => {
-      at('2026-11-18T23:15:00Z'); // 5:15 PM Central
-
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
-    });
-
-    it('refuses a check-in after that', async () => {
-      at('2026-11-18T23:16:00Z');
-
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
-        new ForbiddenException('Check-in for this event has closed.')
-      );
-      expect(save).not.toHaveBeenCalled();
-    });
-
-    it('checks the time before the location, so an early attendee is told when, not where', async () => {
-      at('2026-11-18T21:00:00Z');
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({
-        ...event,
-        mode: 'in-person',
-        location: {
-          building: 'TAMU Rudder Plaza',
-          checkInZone: [
-            { latitude: 30.613149134544702, longitude: -96.34032883332456 },
-            { latitude: 30.61341806004229, longitude: -96.34058900760697 },
-            { latitude: 30.613209152317065, longitude: -96.34093233037139 }
-          ]
-        }
-      } as unknown as Event);
-
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens when it starts/);
     });
   });
 

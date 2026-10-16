@@ -1,4 +1,11 @@
-import { formatLatLonLines, isLatLonPolygon, isWithinPolygon, LatLon, parseLatLonLines } from './common-utils-geometry';
+import {
+  distanceToPolygonEdge,
+  formatLatLonLines,
+  isLatLonPolygon,
+  isWithinPolygon,
+  LatLon,
+  parseLatLonLines
+} from './common-utils-geometry';
 
 describe('isWithinPolygon', () => {
   // About 1 metre in degrees of latitude, and of longitude at this latitude.
@@ -57,6 +64,23 @@ describe('isWithinPolygon', () => {
   it('treats fewer than three corners as containing nothing', () => {
     expect(isWithinPolygon({ latitude: south, longitude: west }, square.slice(0, 2), 30)).toBe(false);
   });
+
+  describe('distanceToPolygonEdge', () => {
+    it('measures from a point outside to the nearest side, in metres', () => {
+      expect(distanceToPolygonEdge({ latitude: north + 20 * metre, longitude: west + 50 * metreEast }, square)).toBeCloseTo(20, 0);
+      expect(distanceToPolygonEdge({ latitude: middle, longitude: east + 40 * metreEast }, square)).toBeCloseTo(40, 0);
+    });
+
+    it('measures past a corner to the corner itself', () => {
+      const beyondCorner = { latitude: north + 30 * metre, longitude: east + 40 * metreEast };
+
+      expect(distanceToPolygonEdge(beyondCorner, square)).toBeCloseTo(50, 0);
+    });
+
+    it('measures from a point inside to the nearest side too', () => {
+      expect(distanceToPolygonEdge({ latitude: south + 10 * metre, longitude: (west + east) / 2 }, square)).toBeCloseTo(10, 0);
+    });
+  });
 });
 
 describe('parseLatLonLines', () => {
@@ -98,6 +122,18 @@ describe('isLatLonPolygon', () => {
 
   it('accepts three or more corners in range', () => {
     expect(isLatLonPolygon([corner, corner, corner])).toBe(true);
+  });
+
+  it('refuses corners that are not in order around the zone, so its sides cross', () => {
+    const sw = { latitude: 30.612, longitude: -96.342 };
+    const nw = { latitude: 30.613, longitude: -96.342 };
+    const ne = { latitude: 30.613, longitude: -96.341 };
+    const se = { latitude: 30.612, longitude: -96.341 };
+
+    expect(isLatLonPolygon([sw, nw, ne, se])).toBe(true);
+    expect(isLatLonPolygon([sw, nw, ne, se, sw])).toBe(true);
+    // A bow tie: south-west to north-east crosses north-west to south-east.
+    expect(isLatLonPolygon([sw, ne, nw, se])).toBe(false);
   });
 
   it('refuses fewer than three corners, anything out of range, and anything not a list', () => {
