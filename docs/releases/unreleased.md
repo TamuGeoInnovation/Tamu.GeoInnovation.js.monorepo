@@ -325,13 +325,15 @@ The images are the list on a scratch page of the local site, because the admin p
 The VGI leaderboard gave every submission 1 point, or the points of its type answer, so ten people
 photographing one monument scored ten times what one did ([#1781](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1781)). Now the first submission
 of a thing scores **2 points**, and every later submission of it, by anyone, the first submitter
-included, scores **1 point**. A submission is of something already submitted when an earlier one with
-the same type was made within 15 m of it; the distance allows for phone GPS error. Discarded
-submissions do not count, so if the first one is discarded the next becomes the new find. The type
-question's per-answer points are no longer used. The 2026 competition page says how points work now.
-
-Re-scored this way, 2025's 1,182 counted submissions were 398 new finds and 784 of things already
-submitted.
+included, scores **1 point**. A submission is of something already submitted when it is within 15 m
+of an earlier new find with the same type; the distance, the same every season, allows for phone GPS
+error. Only new finds are compared with, so submissions a few metres apart in a line do not chain
+into one thing. Two submissions made in the same instant are always taken in the same order.
+Discarded submissions do not count, so if the first one is discarded the next becomes the new find.
+The type question's per-answer points are no longer used: the form designer no longer asks for them,
+and the admin and participant submission lists no longer show a Points column that disagreed with the
+leaderboard. The leaderboard for a past season, by its guid, is scored the same way. The 2026
+competition page says how points work now.
 
 | Before | After |
 | --- | --- |
@@ -369,7 +371,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: the event form refuses an incomplete event ([#1773](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1773)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: Admin, Events, Add event, then Create without filling anything in | A list above the buttons names each missing item and the event is not created. Filling everything in (with times other than 12:00 AM) creates it. Editing an existing complete event still saves |
 | GIS Day: the admin event list grouped by day ([#1775](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1775)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: Admin, Events | One card per day, headed by its date (November 16 to 20 for 2026), each with its own table in start-time order. A table's header checkbox selects that day's events, and Copy and Delete act on what is selected. Changing the season shows that season's days |
 | GIS Day: presenters' company and class year, grouped by company ([#1768](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1768), [#1769](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1769)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally or on production, any session's page, e.g. the career fair | Under each presenter's name is their company. Texas A&M former students have their class year after their name ('14). The people from one company are next to each other, companies in alphabetical order, and people without a company last |
-| GIS Day: VGI points for new finds ([#1781](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1781)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally or on production, `/competitions/monuments`, then the competition app's leaderboard once the 2026 competition is set up and taking submissions | The page says 2 points for something nobody has submitted yet and 1 for something already submitted, within 15 meters. On the leaderboard, two people submitting the same monument score 2 and 1; the same person submitting it twice scores 3; a different monument scores 2 again |
+| GIS Day: VGI points for new finds ([#1781](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1781)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally or on production, `/competitions/monuments`, then the competition app's leaderboard once the 2026 competition is set up and taking submissions | The page says 2 points for something nobody has submitted yet and 1 for something already submitted, within 15 meters of an earlier 2-point submission. On the leaderboard, two people submitting the same monument score 2 and 1; the same person submitting it twice scores 3; a different monument scores 2 again. In the competition admin, the form designer's dropdown options have no Points column and the type question is called "Type Question"; the submission list and a submission's details have no Points |
 
 ---
 
