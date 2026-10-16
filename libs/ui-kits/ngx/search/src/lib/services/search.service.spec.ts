@@ -97,6 +97,7 @@ describe('containsSearch', () => {
 
     const sql = makeWhere(where.keys, ['o12', 'o12'], where.operators, where.wildcards as string[], where.transformations as string[]);
 
-    expect(sql).toBe("UPPER(name) LIKE '%O12%' OR UPPER(zone_ID) LIKE '%O12%'");
+    // ESCAPE lets a typed `%` or `_` be matched literally (#1790).
+    expect(sql).toBe("UPPER(name) LIKE '%O12%' ESCAPE '\\' OR UPPER(zone_ID) LIKE '%O12%' ESCAPE '\\'");
   });
 });
