@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { AltSearchHelper, SearchSelection, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
@@ -30,7 +31,7 @@ export class SidebarReferenceComponent implements OnInit {
   private readonly helper = inject(AltSearchHelper);
   private readonly mapService = inject(EsriMapService);
   private readonly eventSettingsService = inject(EventSettingsService);
-  private readonly environment = inject(EnvironmentService);
+  private readonly ns = inject(NotificationService);
   private readonly eventService = inject(EventService);
 
   public shareUrl: string;
@@ -60,10 +61,11 @@ export class SidebarReferenceComponent implements OnInit {
     // search then keeps the application-wide sources rather than searching nothing. One that searches
     // its own sources keeps the application-wide ones too when it asks to (`searchSourcesWithCampus`).
     const ownSources = this.configuration?.searchSources;
-    const campusSources: SearchSource[] = this.configuration?.searchSourcesWithCampus
-      ? (this.environment.value('SearchSources', true) ?? [])
-      : [];
-    this.searchSources = ownSources?.some((source) => source.searchActive) ? [...campusSources, ...ownSources] : undefined;
+    this.searchSources = !ownSources?.some((source) => source.searchActive)
+      ? undefined
+      : this.configuration?.searchSourcesWithCampus
+        ? this.eventSettingsService.configuredSearchSources()
+        : ownSources;
     const settings = this.eventSettingsService.settings();
     const options = this.eventSettingsService.eventOptions();
     this.eventLayerIds = this.eventSettingsService
@@ -85,23 +87,26 @@ export class SidebarReferenceComponent implements OnInit {
     this.mergedSettings = this.eventSettingsService.getMergedSettings();
   }
 
-  public onSearchResult(result: SearchSelection<unknown>): void {
+  public async onSearchResult(result: SearchSelection<unknown>): Promise<void> {
     // A tent or named area from the map's own sources opens as the map's own feature, with its popup,
     // the way a `?tent=` or `?zone=` link does. Everything else is a campus result, handled below.
-    const picked = (result.result as { breadcrumbs?: { source?: Partial<SearchSource> } })?.breadcrumbs?.source;
+    const picked = (result.result as { breadcrumbs?: { source?: SearchSource } })?.breadcrumbs?.source;
     const own = this.configuration?.searchSources?.find((source) => source.searchActive && source.source === picked?.source);
 
     if (own) {
-      const fields = own.queryParams?.where?.keys ?? [];
-      const attributes = (result.selection as { attributes?: Record<string, unknown> })?.attributes ?? {};
-      const value = fields
-        .map((field) => attributes[field])
-        .find((candidate) => candidate !== null && candidate !== undefined && `${candidate}`.trim() !== '');
+      const selection = (result.selection ?? {}) as { attributes?: Record<string, unknown> };
 
-      if (value !== undefined) {
-        this.eventService.selectFeatureByValue(`${value}`, fields);
-        return;
+      if (!(await this.eventService.selectSearchResult(own, selection.attributes ?? {}))) {
+        const label = new TemplateRenderer({ lookup: selection, template: own.displayTemplate }).render() ?? own.name;
+
+        this.ns.toast({
+          id: 'search-result-not-found',
+          title: 'Not Found on the Map',
+          message: `${label} could not be shown on the map. Search again, or pick it on the map.`
+        });
       }
+
+      return;
     }
 
     this.helper.handleSearchResultFeatureSelection(result as SearchSelection<object>).subscribe((res) => {

@@ -262,9 +262,10 @@ export interface EventConfiguration {
   searchSources?: SearchSource[];
 
   /**
-   * When `true`, this map's searchable sources are added to the application-wide ones (buildings,
-   * parking) rather than replacing them. For a campus map whose own features - tailgating's tents and
-   * named areas - should be found alongside the buildings around them.
+   * When `true`, this map's searchable sources are searched alongside the application-wide ones
+   * (buildings, parking), listed first, rather than replacing them: the sidebar searches
+   * `EventSettingsService.configuredSearchSources()`. For a campus map whose own features - tailgating's
+   * tents and named areas - should be found alongside the buildings around them.
    *
    * Defaults to `false`, which keeps a satellite campus's search to its own data.
    */

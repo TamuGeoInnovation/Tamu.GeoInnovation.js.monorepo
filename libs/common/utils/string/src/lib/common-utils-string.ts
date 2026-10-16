@@ -7,7 +7,8 @@ const TEMPLATE_EXPRESSION_GLOBAL_PATTERN = /\{.*?\}/g;
  * Rendering class able to accept a single string and replace values between and including double curly
  * braces {{ }} with provided value.
  *
- * Also capable of rendering a template string based on a provided object property.
+ * Also capable of rendering a template string based on a provided object property. A block may list
+ * several property paths, `{attributes.name|attributes.zone_ID}`, and renders the first with a value.
  */
 export class TemplateRenderer {
   public template: TemplateRendererOptions['template'];
@@ -41,8 +42,16 @@ export class TemplateRenderer {
       });
     } else if (this.template && this.lookup) {
       return this.template.replace(TEMPLATE_EXPRESSION_GLOBAL_PATTERN, (match: string) => {
-        // Remove template braces before setting value from lookup object.
-        const resolved = getPropertyValue<unknown>(this.lookup, match.replace('{', '').replace('}', ''));
+        // Remove template braces before setting value from lookup object. `{a|b}` is the first of its
+        // paths with a value, a blank one counting as none, so a fallback can stand in for an empty field.
+        const values = match
+          .slice(1, -1)
+          .split('|')
+          .map((path) => getPropertyValue<unknown>(this.lookup, path));
+        const resolved =
+          values.length === 1
+            ? values[0]
+            : values.find((value) => value !== undefined && value !== null && `${value}`.trim() !== '');
 
         if (resolved === undefined || resolved === null) {
           // Keep placeholder when no nullish replacement is provided.

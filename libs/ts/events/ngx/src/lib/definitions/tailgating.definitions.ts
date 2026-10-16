@@ -1,5 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
+import { SearchSource, containsSearch } from '@tamu-gisc/ui-kits/ngx/search';
 import { getDefaultGisHosts, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
@@ -215,34 +215,19 @@ const TailgatingLinkSources: SearchSource[] = [
   }
 ] as SearchSource[];
 
-/** A search that matches what is typed anywhere in the given fields, ignoring case. */
-const searchByFields = (keys: string[]) => ({
-  f: 'json',
-  resultRecordCount: 5,
-  outFields: '*',
-  outSR: 4326,
-  returnGeometry: true,
-  spatialRel: 'esriSpatialRelIntersects',
-  where: {
-    keys,
-    operators: keys.map(() => 'LIKE'),
-    wildcards: keys.map(() => 'includes'),
-    transformations: keys.map(() => 'UPPER')
-  }
-});
-
 /**
  * What the sidebar search finds on this map, alongside the usual buildings and parking
  * (`searchSourcesWithCampus`): tents by their id, and the named areas by name or zone id. A result
- * opens the map's own feature and popup, as a `?tent=` or `?zone=` link does. A named area whose
- * `name` is empty is still found by its `zone_ID`, but lists without a name until it is given one.
+ * opens the map's own feature and popup, as a `?tent=` or `?zone=` link does: the feature of the layer
+ * with the same `url`, by object id. A named area whose `name` is empty is still found by its `zone_ID`,
+ * and lists by it until it is given a name.
  */
 const TailgatingSearchSources: SearchSource[] = [
   {
     source: 'tailgating-tent-search',
     name: 'Aggie Park Tents',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.TENTS}`,
-    queryParams: searchByFields(['tent_id']),
+    queryParams: containsSearch(['tent_id']),
     featuresLocation: 'features',
     displayTemplate: 'Tent {attributes.tent_id}',
     searchActive: true
@@ -251,7 +236,7 @@ const TailgatingSearchSources: SearchSource[] = [
     source: 'tailgating-simpson-tent-search',
     name: 'Simpson Drill Field Tents',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.SIMPSON_TENTS}`,
-    queryParams: searchByFields(['tent_id']),
+    queryParams: containsSearch(['tent_id']),
     featuresLocation: 'features',
     displayTemplate: 'Tent {attributes.tent_id}',
     searchActive: true
@@ -260,18 +245,18 @@ const TailgatingSearchSources: SearchSource[] = [
     source: 'tailgating-aggie-park-area-search',
     name: 'Aggie Park Tailgating',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.AGGIE_PARK}`,
-    queryParams: searchByFields(['name', 'zone_ID']),
+    queryParams: containsSearch(['name', 'zone_ID']),
     featuresLocation: 'features',
-    displayTemplate: '{attributes.name}',
+    displayTemplate: '{attributes.name|attributes.zone_ID}',
     searchActive: true
   },
   {
     source: 'tailgating-west-campus-area-search',
     name: 'West Campus Tailgating',
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.WEST_CAMPUS}`,
-    queryParams: searchByFields(['name', 'zone_ID']),
+    queryParams: containsSearch(['name', 'zone_ID']),
     featuresLocation: 'features',
-    displayTemplate: '{attributes.name}',
+    displayTemplate: '{attributes.name|attributes.zone_ID}',
     searchActive: true
   }
 ] as SearchSource[];
