@@ -51,6 +51,14 @@ export class SubmissionService {
     return this.http.post(`${this.resource}/validate`, params);
   }
 
+  /**
+   * The signed-in participant's own submissions (#1791).
+   */
+  public getMySubmissions(seasonGuid?: string) {
+    const params = seasonGuid ? { seasonGuid } : {};
+    return this.http.get<SubmissionReviewDto[]>(`${this.resource}/user/me`, { params });
+  }
+
   public getUserSubmissions(userGuid: string, seasonGuid?: string) {
     const params = seasonGuid ? { seasonGuid } : {};
     return this.http.get<SubmissionReviewDto[]>(`${this.resource}/user/${userGuid}`, { params });
