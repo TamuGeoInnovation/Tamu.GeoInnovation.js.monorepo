@@ -55,7 +55,12 @@ describe('UserInfoProvider', () => {
         },
         {
           provide: ManagementService,
-          useValue: { getUsers: jest.fn(), getUserMetadata: jest.fn(), updateUserMetadata: jest.fn() }
+          useValue: {
+            assertAvailable: jest.fn(),
+            getUsers: jest.fn(),
+            getUserMetadata: jest.fn(),
+            updateUserMetadata: jest.fn()
+          }
         }
       ]
     }).compile();

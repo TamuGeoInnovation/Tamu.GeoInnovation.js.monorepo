@@ -224,7 +224,9 @@ map's definition only when its map opens ([#1646](https://github.com/TamuGeoInno
   explains it and `CLAUDE_SETUP.md` Phase 6 is the step-by-step ([#1621](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1621), [#1522](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1522)).
 - **A new developer is given nothing**: the API's local settings are a copy of
   `apps/gisday-nest/local.env.sample`, with no secrets, and the API runs without Auth0 management
-  credentials, so anything that reads or changes Auth0 users answers 503 locally
+  credentials, so locally the admin Users page and a user's own profile answer 503 (and with them
+  event registration and check-in), while class rosters and competition results show placeholders
+  for names and emails
   ([#1759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1759)). A development tenant with test users, which would make those work too, waits on
   the maintainer creating it ([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623), medium).
 - **No development database exists outside a developer's machine.** [#1511](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1511) (medium) is open for

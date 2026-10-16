@@ -7,7 +7,7 @@ import { MANAGEMENT_CONFIG, ManagementConfig, ManagementService } from './servic
 
 @Module({})
 export class AuthorizationModule {
-  public static forRoot(config: { jwt: JwtConfig; management?: ManagementConfig }): DynamicModule {
+  public static forRoot(config: { jwt: JwtConfig; management: ManagementConfig }): DynamicModule {
     if (process.env.LOGGING) {
       console.log('Auth', config);
     }
@@ -16,22 +16,8 @@ export class AuthorizationModule {
       global: true,
       module: AuthorizationModule,
       providers: [
-        {
-          provide: JWT_CONFIG,
-          useValue: {
-            issuerUrl: config.jwt.issuerUrl,
-            audience: config.jwt.audience
-          }
-        },
-        {
-          provide: MANAGEMENT_CONFIG,
-          useValue: {
-            domain: config.management.domain,
-            clientId: config.management.clientId,
-            clientSecret: config.management.clientSecret,
-            disabled: config.management.disabled
-          }
-        },
+        { provide: JWT_CONFIG, useValue: config.jwt },
+        { provide: MANAGEMENT_CONFIG, useValue: config.management },
         JwtStrategy,
         ManagementService
       ],

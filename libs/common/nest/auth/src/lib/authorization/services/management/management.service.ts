@@ -43,13 +43,18 @@ export class ManagementService {
   }
 
   /**
-   * The Auth0 client, or a 503 when management is disabled, so the API can run without the
-   * management credentials (locally, #1759).
+   * Answers 503 when management is disabled, so the API can run without the management credentials
+   * (locally, #1759). A caller that writes anything else before changing a user calls this first, so
+   * nothing is written for a change that cannot be made.
    */
-  private get client(): ManagementClient {
+  public assertAvailable(): void {
     if (!this._client) {
       throw new ServiceUnavailableException('Auth0 management is not configured on this server.');
     }
+  }
+
+  private get client(): ManagementClient {
+    this.assertAvailable();
 
     return this._client;
   }

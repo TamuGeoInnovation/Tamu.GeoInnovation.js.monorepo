@@ -276,9 +276,11 @@ only once. To change the schema, follow [`docs/gisday-migrations.md`](docs/gisda
 - **Uploaded images** (sponsor logos, speaker photos) are missing: they are not in the database
   ([#1625](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1625)).
 - **Email** is never sent, deliberately.
-- **Anything that reads or changes Auth0 users** (the admin Users page, a signed-in user's profile)
-  answers 503: the local API has no management credentials
-  ([#1759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1759)).
+- **Auth0 user profiles**: the admin Users page and a signed-in user's own profile answer 503, so
+  event registration and check-in do not work, and class rosters and competition results show
+  placeholders instead of names and emails. The local API has no management credentials
+  ([#1759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1759));
+  [`docs/gisday-local.md`](docs/gisday-local.md#what-works-locally) has the details.
 - [`docs/gisday-local.md`](docs/gisday-local.md#things-that-look-broken) lists errors that look like
   faults and are not.
 

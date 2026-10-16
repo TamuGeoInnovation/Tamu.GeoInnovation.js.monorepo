@@ -59,6 +59,8 @@ import { GISDAY_COMPETITIONS_ENTITIES, GisdayCompetitionsDataApiModule } from '@
         domain: environment.auth0_management_domain,
         clientId: environment.auth0_management_clientId,
         clientSecret: environment.auth0_management_clientSecret,
+        // Set only in environment.ts, the local build's (#1759); undefined in the dev and production
+        // builds, which therefore stop at startup without the three values above.
         disabled: environment.auth0_management_disabled
       }
     }),

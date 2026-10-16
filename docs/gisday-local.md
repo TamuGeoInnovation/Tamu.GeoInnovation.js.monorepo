@@ -31,9 +31,11 @@ Nothing needs to come from anyone: the settings are a copy of the sample, and `r
 scrubbed copy of the database in the repository.
 
 ```bash
-mkdir -p C:/TAMU/gisday-local
-cp apps/gisday-nest/local.env.sample C:/TAMU/gisday-local/gisday-api.local.env
+mkdir -p "${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}"
+cp -n apps/gisday-nest/local.env.sample "${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}/gisday-api.local.env"
 ```
+
+`-n` keeps a settings file that is already there.
 
 ## Steps, in order
 
@@ -137,9 +139,15 @@ What does not, yet:
 - **Real people, logos and photographs.** The scrubbed copy has made-up speakers and one placeholder
   image for every upload; the real files are on the production site, not in the database.
 - **Email**, deliberately: every `MAILROOM_` value is blank.
-- **Anything that reads or changes Auth0 users** answers `503 Service Unavailable`: the admin Users
-  page, a signed-in user's profile, and class and competition lookups by user. The local API has no
-  management credentials (#1759) until a development tenant with test users exists (#1623).
+- **Anything that needs a user's Auth0 profile.** The local API has no management credentials (#1759)
+  until a development tenant with test users exists (#1623), so:
+  - The admin Users page, and reading or saving a signed-in user's own profile (Account > My
+    details), answer `503 Service Unavailable`. A refused save writes nothing.
+  - Because the profile cannot be read, a signed-in user cannot register for or check in to an
+    event: the event's page asks for the profile to be completed.
+  - Nothing else fails: a class's attendance lists each student with `N/A` for name, email and UIN
+    (attendance counts are still right), and the competition leaderboard and submission review show
+    the last four characters of each user's id instead of an email.
 
 ## Things that look broken
 

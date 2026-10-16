@@ -16,6 +16,10 @@ describe('ManagementService', () => {
       expect(service).toBeDefined();
     });
 
+    it('answers 503 when asked whether it can change users', () => {
+      expect(() => service.assertAvailable()).toThrow(ServiceUnavailableException);
+    });
+
     it('answers 503 for a user, not 500', async () => {
       await expect(service.getUserMetadata('auth0|1')).rejects.toBeInstanceOf(ServiceUnavailableException);
     });
@@ -38,8 +42,10 @@ describe('ManagementService', () => {
       );
     });
 
-    it('starts with every credential', () => {
-      expect(new ManagementService(credentials)).toBeDefined();
+    it('starts with every credential, and can change users', () => {
+      const service = new ManagementService(credentials);
+
+      expect(() => service.assertAvailable()).not.toThrow();
     });
   });
 });
