@@ -698,14 +698,6 @@ export class CheckIn extends GuidIdentity {
 
   @Column({ nullable: false })
   public accountGuid: string;
-
-  /**
-   * Where the attendee was, for an in-person event at a location with a check-in zone (#1766): one
-   * of `CheckInZoneStatus` in `@tamu-gisc/gisday/common`, such as "in zone". Empty for any other
-   * check-in. The location itself is never saved.
-   */
-  @Column({ nullable: true })
-  public zoneStatus?: string;
 }
 
 @Entity({

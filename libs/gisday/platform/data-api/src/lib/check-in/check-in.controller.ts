@@ -58,14 +58,14 @@ export class CheckInController {
     @Body('eventGuid') eventGuid,
     @Body('latitude') latitude?: number,
     @Body('longitude') longitude?: number,
-    @Body('confirmOutsideZone') confirmOutsideZone?: boolean
+    @Body('accuracy') accuracy?: number
   ) {
     if (!eventGuid) {
       throw new BadRequestException('Event guid is missing');
     }
 
-    // An in-person event needs the attendee's location (#1766); the provider checks it.
-    return this.provider.insertUserCheckin(eventGuid, req.user.sub, { latitude, longitude }, confirmOutsideZone === true);
+    // An in-person event needs the attendee's position (#1766); the provider checks it.
+    return this.provider.insertUserCheckin(eventGuid, req.user.sub, { latitude, longitude, accuracy });
   }
 
   @UseGuards(JwtGuard)

@@ -76,11 +76,12 @@ export class EventLocationController {
 }
 
 /**
- * A check-in zone, when one is given, must be at least three corners in range: a malformed one
- * would refuse every check-in, or none (#1766). `null` removes it.
+ * A check-in zone, when one is given, must be at least three corners in range, in order around it so
+ * its sides do not cross: a malformed one would refuse every check-in, or let in people who are not
+ * there (#1766). `null` removes it.
  */
 function assertCheckInZone(body: Partial<EventLocation>) {
   if (body?.checkInZone !== undefined && body.checkInZone !== null && !isLatLonPolygon(body.checkInZone)) {
-    throw new BadRequestException('A check-in zone needs at least three corners, each a latitude and longitude.');
+    throw new BadRequestException('A check-in zone needs at least three corners, in order around it, each a latitude and longitude.');
   }
 }

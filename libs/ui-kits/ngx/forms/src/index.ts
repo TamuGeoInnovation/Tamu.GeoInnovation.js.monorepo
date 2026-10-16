@@ -13,4 +13,3 @@ export * from './lib/components/select/select.component';
 export * from './lib/components/slide-toggle/slide-toggle.component';
 export * from './lib/components/turnstile-challenge/turnstile-challenge.component';
 export * from './lib/components/select-list/select-list.component';
-export * from './lib/components/confirm-modal/confirm-modal.component';

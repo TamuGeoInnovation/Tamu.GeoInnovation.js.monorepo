@@ -5,10 +5,16 @@ export enum COMPETITION_VALIDATION_STATUS {
 }
 
 /**
- * Metres outside a location's check-in zone that still count as inside it, for GPS error indoors
- * (#1766). The zone itself is on each event location, as `checkInZone`.
+ * The most of a phone's reported accuracy, in metres, that counts towards reaching a location's
+ * check-in zone (#1766). An attendee counts as inside when the circle their phone reports, their
+ * position with its accuracy as the radius, touches the zone.
+ *
+ * A phone with GPS usually reports a few metres to a few tens of metres, and more indoors, so 100 m
+ * lets in an attendee deep inside a large building like the Memorial Student Center. A position
+ * from cell towers alone can report kilometres; the cap means a position that vague cannot reach
+ * the zone from across town.
  */
-export const CHECK_IN_ZONE_MARGIN = 30;
+export const CHECK_IN_MAX_ACCURACY = 100;
 
 /**
  * The one event mode whose check-in needs the attendee inside its location's zone. Hybrid and
@@ -17,45 +23,7 @@ export const CHECK_IN_ZONE_MARGIN = 30;
 export const CHECK_IN_ZONE_EVENT_MODE = 'in-person';
 
 /**
- * Why a check-in to an in-person event was refused, in the API's 403 response as `reason`. The page
- * then offers to check in anyway, which saves the matching `CheckInZoneStatus` (#1766).
- */
-export enum CheckInZoneRefusal {
-  /**
-   * The attendee's location is outside the zone.
-   */
-  OutsideZone = 'outside-zone',
-
-  /**
-   * The attendee gave no location, for example because they blocked location access.
-   */
-  NoLocation = 'no-location'
-}
-
-/**
- * What is saved with a check-in to an in-person event at a location with a check-in zone, as
- * `CheckIn.zoneStatus` (#1766). Any other check-in saves none.
- */
-export enum CheckInZoneStatus {
-  /**
-   * The attendee was inside the zone.
-   */
-  InZone = 'in zone',
-
-  /**
-   * The attendee was outside the zone and chose to check in anyway.
-   */
-  OutsideZone = 'checked-in outside of zone',
-
-  /**
-   * The attendee gave no location, because they blocked location access or their device could not
-   * find one, and chose to check in anyway.
-   */
-  LocationBlocked = 'location access blocked'
-}
-
-/**
- * What an attendee outside the zone is told, by the API and by the page.
+ * What an attendee outside the zone is told.
  *
  * @param venue The location's name, such as "TAMU Rudder Plaza", when it has one.
  */
@@ -63,79 +31,4 @@ export function checkInZoneMessage(venue?: string): string {
   return venue
     ? `You need to be inside the check-in zone at ${venue} to check in to this event.`
     : 'You need to be inside the check-in zone for this event to check in.';
-}
-
-/**
- * Minutes after an event's end that check-in stays open, for attendees who check in late.
- */
-export const CHECK_IN_GRACE_MINUTES = 15;
-
-/**
- * The time zone GIS Day's days are kept in: a day is stored as its midnight there.
- */
-const GISDAY_TIME_ZONE = 'America/Chicago';
-
-/**
- * When check-in to an event opens and closes: from its start until `CHECK_IN_GRACE_MINUTES` after its
- * end, as the event page shows it.
- *
- * @param day The event's day, `SeasonDay.date`.
- * @param startTime The event's start, as stored, for example `16:00:00 GMT-0600 (Central Standard Time)`.
- * @param endTime The event's end, the same way.
- * @returns `undefined` when the day or either time is missing or cannot be read.
- */
-export function checkInWindow(day: Date | string, startTime: string, endTime: string): { opens: Date; closes: Date } | undefined {
-  if (!day || !startTime || !endTime) {
-    return undefined;
-  }
-
-  const date = new Date(day);
-
-  if (isNaN(date.getTime())) {
-    return undefined;
-  }
-
-  // The calendar day in Central time, as YYYY-MM-DD.
-  const calendarDay = new Intl.DateTimeFormat('en-CA', {
-    timeZone: GISDAY_TIME_ZONE,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  }).format(date);
-
-  const opens = atTime(calendarDay, startTime);
-  const closes = atTime(calendarDay, endTime);
-
-  if (!opens || !closes) {
-    return undefined;
-  }
-
-  closes.setMinutes(closes.getMinutes() + CHECK_IN_GRACE_MINUTES);
-
-  return { opens, closes };
-}
-
-/**
- * A time of day in Central time, for showing when check-in opens, for example `4:00 PM`.
- */
-export function formatCheckInTime(time: Date): string {
-  return new Intl.DateTimeFormat('en-US', { timeZone: GISDAY_TIME_ZONE, hour: 'numeric', minute: '2-digit' }).format(time);
-}
-
-/**
- * The instant a stored time (`HH:mm[:ss] GMT±hhmm ...`) falls on a calendar day (`YYYY-MM-DD`).
- */
-function atTime(calendarDay: string, time: string): Date | undefined {
-  const parts = /^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*GMT([+-])(\d{2})(\d{2})/.exec(time.trim());
-
-  if (!parts) {
-    return undefined;
-  }
-
-  const [, hours, minutes, seconds, sign, offsetHours, offsetMinutes] = parts;
-  const instant = new Date(
-    `${calendarDay}T${hours.padStart(2, '0')}:${minutes}:${seconds ?? '00'}${sign}${offsetHours}:${offsetMinutes}`
-  );
-
-  return isNaN(instant.getTime()) ? undefined : instant;
 }

@@ -4,15 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { isLatLon, isLatLonPolygon, isWithinPolygon, LatLon } from '@tamu-gisc/common/utils/geometry';
-import {
-  CHECK_IN_ZONE_EVENT_MODE,
-  CHECK_IN_ZONE_MARGIN,
-  CheckInZoneRefusal,
-  CheckInZoneStatus,
-  checkInWindow,
-  checkInZoneMessage,
-  formatCheckInTime
-} from '@tamu-gisc/gisday/common';
+import { CHECK_IN_MAX_ACCURACY, CHECK_IN_ZONE_EVENT_MODE, checkInZoneMessage } from '@tamu-gisc/gisday/common';
 
 import { CheckIn, Event } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
@@ -40,22 +32,16 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
   }
 
   /**
-   * Checks the attendee in. For an in-person event whose location has a check-in zone, `location`
-   * must be inside it (#1766); it is checked and not stored. Hybrid and virtual events, and
-   * locations with no zone, need no location.
+   * Checks the attendee in. For an in-person event whose location has a check-in zone, `position`
+   * must reach it (#1766): inside it, or with its accuracy circle touching it, the accuracy capped
+   * at `CHECK_IN_MAX_ACCURACY`. Anything else is refused; organizers add exceptions from the admin
+   * page. The position is checked and not stored. Hybrid and virtual events, and locations with no
+   * zone, need no position.
    *
-   * Any event accepts a check-in only from its start until 15 minutes after its end, as its page
-   * shows the button, so nobody checks in early by calling the API.
-   *
-   * @param confirmOutsideZone The attendee was told they are outside the zone, or gave no location,
-   * and chose to check in anyway. The check-in is saved with the matching `zoneStatus`.
+   * The position is whatever the browser sends, so a made-up one cannot be told from a real one.
+   * This stops checking in from home, not deliberate spoofing.
    */
-  public async insertUserCheckin(
-    eventGuid: string,
-    accountGuid: string,
-    location?: LatLon,
-    confirmOutsideZone?: boolean
-  ) {
+  public async insertUserCheckin(eventGuid: string, accountGuid: string, position?: LatLon & { accuracy?: number }) {
     const existing = await this.checkInRepo.findOne({
       where: {
         event: { guid: eventGuid },
@@ -71,52 +57,28 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
       where: {
         guid: eventGuid
       },
-      relations: ['location', 'day']
+      relations: ['location']
     });
 
     if (!event) {
       throw new UnprocessableEntityException(null, 'Event could not be found');
     }
 
-    const checkInTimes = checkInWindow(event.day?.date, event.startTime, event.endTime);
-    const now = new Date();
-
-    if (checkInTimes && now < checkInTimes.opens) {
-      throw new ForbiddenException(`Check-in for this event opens when it starts, at ${formatCheckInTime(checkInTimes.opens)}.`);
-    }
-
-    if (checkInTimes && now > checkInTimes.closes) {
-      throw new ForbiddenException('Check-in for this event has closed.');
-    }
-
     const zone = event.location?.checkInZone;
-    let zoneStatus: CheckInZoneStatus = null;
 
     if (event.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(zone)) {
-      const hasLocation = isLatLon(location);
+      if (!isLatLon(position)) {
+        throw new ForbiddenException('Checking in to this event needs your location.');
+      }
 
-      if (hasLocation && isWithinPolygon(location, zone, CHECK_IN_ZONE_MARGIN)) {
-        zoneStatus = CheckInZoneStatus.InZone;
-      } else {
-        if (confirmOutsideZone !== true) {
-          throw new ForbiddenException({
-            statusCode: 403,
-            error: 'Forbidden',
-            reason: hasLocation ? CheckInZoneRefusal.OutsideZone : CheckInZoneRefusal.NoLocation,
-            message: hasLocation
-              ? checkInZoneMessage(event.location.building)
-              : 'Checking in to this event needs your location.'
-          });
-        }
-
-        zoneStatus = hasLocation ? CheckInZoneStatus.OutsideZone : CheckInZoneStatus.LocationBlocked;
+      if (!isWithinPolygon(position, zone, reach(position.accuracy))) {
+        throw new ForbiddenException(checkInZoneMessage(event.location.building));
       }
     }
 
     const checkin = this.checkInRepo.create({
       event: event,
-      accountGuid: accountGuid,
-      zoneStatus: zoneStatus
+      accountGuid: accountGuid
     });
 
     return checkin.save();
@@ -136,4 +98,12 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
 
     return checkin;
   }
+}
+
+/**
+ * How far outside the zone a position may be and still reach it: its reported accuracy, capped at
+ * `CHECK_IN_MAX_ACCURACY`. A missing or nonsense accuracy counts as exact.
+ */
+function reach(accuracy: unknown): number {
+  return typeof accuracy === 'number' && accuracy > 0 ? Math.min(accuracy, CHECK_IN_MAX_ACCURACY) : 0;
 }

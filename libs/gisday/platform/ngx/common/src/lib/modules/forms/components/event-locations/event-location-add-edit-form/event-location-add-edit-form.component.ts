@@ -6,8 +6,8 @@ import { Observable, filter, map, switchMap, take } from 'rxjs';
 import { EventLocation, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { LocationService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { formatLatLonLines, LatLon, parseLatLonLines } from '@tamu-gisc/common/utils/geometry';
-import { CHECK_IN_ZONE_MARGIN } from '@tamu-gisc/gisday/common';
+import { formatLatLonLines, isLatLonPolygon, parseLatLonLines } from '@tamu-gisc/common/utils/geometry';
+import { CHECK_IN_MAX_ACCURACY } from '@tamu-gisc/gisday/common';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -34,7 +34,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
   public entity$: Observable<Partial<EventLocation>>;
   public places$: Observable<Array<Partial<Place>>>;
   public form: UntypedFormGroup;
-  public readonly checkInZoneMargin = CHECK_IN_ZONE_MARGIN;
+  public readonly checkInMaxAccuracy = CHECK_IN_MAX_ACCURACY;
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -168,13 +168,14 @@ export class EventLocationAddEditFormComponent implements OnInit {
    */
   private _valueWithCheckInZone(): Partial<EventLocation> | undefined {
     const { checkInZoneText, ...value } = this.form.getRawValue();
-    const corners: Array<LatLon> = parseLatLonLines(checkInZoneText);
+    const corners = parseLatLonLines(checkInZoneText);
 
-    if (corners === undefined || (corners.length > 0 && corners.length < 3)) {
+    // The API refuses the same zones; this says why before sending.
+    if (corners === undefined || (corners.length > 0 && !isLatLonPolygon(corners))) {
       this.ns.toast({
         id: 'event-location-check-in-zone-error',
         title: 'Check-In Zone',
-        message: 'Type at least three corners, one per line, each as latitude, longitude.'
+        message: 'Type at least three corners, in order around the zone, one per line, each as latitude, longitude.'
       });
 
       return undefined;
