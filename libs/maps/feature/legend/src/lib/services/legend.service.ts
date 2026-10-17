@@ -31,7 +31,7 @@ export class LegendService {
     const forceShowLayerIds = options?.forceShowLayerIds ?? [];
 
     return combineLatest([this.moduleProvider.require(['LegendViewModel']), this.mapService.store]).pipe(
-      switchMap(([[LegendViewModel], instances]: [[esri.LegendViewModelConstructor], MapServiceInstance]) => {
+      switchMap(([[LegendViewModel], instances]: [[typeof esri.LegendViewModel], MapServiceInstance]) => {
         // Use respectLayerVisibility: false so that ESRI never removes a layer from
         // activeLayerInfos when its visibility changes. This keeps toggled-off layers
         // in the list so the legend-collection component can collapse (not destroy) them.

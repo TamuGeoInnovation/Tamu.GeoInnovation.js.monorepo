@@ -138,7 +138,7 @@ export class PerspectiveToggleComponent implements OnInit {
     const from = place.targetGeometry.spatialReference;
     const [projection, SpatialReference] = (await this.mp.require(['projection', 'SpatialReference'])) as [
       esri.projection,
-      esri.SpatialReferenceConstructor
+      typeof esri.SpatialReference
     ];
     const to =
       reference instanceof SpatialReference
@@ -184,7 +184,7 @@ export class PerspectiveToggleComponent implements OnInit {
   private makeView(type: PerspectiveType): Observable<esri.SceneView | esri.MapView> {
     if (type === '3D') {
       return forkJoin([this.mp.require(['SceneView']), this.ms.store.pipe(take(1))]).pipe(
-        map(([[SceneView], instance]: [[esri.SceneViewConstructor], MapServiceInstance]) => {
+        map(([[SceneView], instance]: [[typeof esri.SceneView], MapServiceInstance]) => {
           if (this.perspectives.threeD === undefined) {
             // A globe in Web Mercator, said outright: left to work it out from the map, a scene on
             // the campus vector basemap came up in that basemap's state plane reference (#1735). No
@@ -206,7 +206,7 @@ export class PerspectiveToggleComponent implements OnInit {
       );
     } else {
       return forkJoin([this.mp.require(['MapView']), this.ms.store.pipe(take(1))]).pipe(
-        map(([[MapView], instance]: [[esri.MapViewConstructor], MapServiceInstance]) => {
+        map(([[MapView], instance]: [[typeof esri.MapView], MapServiceInstance]) => {
           if (this.perspectives.twoD === undefined) {
             this.perspectives.twoD = new MapView({
               map: instance.map,

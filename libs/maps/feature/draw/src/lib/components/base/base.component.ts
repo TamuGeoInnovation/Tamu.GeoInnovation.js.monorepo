@@ -79,7 +79,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
     if (this.reference() !== undefined) {
       combineLatest([from(this.moduleProvider.require(['SketchViewModel'])), this.mapService.store])
         .pipe(takeUntil(this._$destroy))
-        .subscribe(([[SketchViewModel], mapInstance]: [[esri.SketchViewModelConstructor], MapServiceInstance]) => {
+        .subscribe(([[SketchViewModel], mapInstance]: [[typeof esri.SketchViewModel], MapServiceInstance]) => {
           const l = mapInstance.map.findLayerById(this.reference());
 
           this.model = new SketchViewModel({

@@ -90,12 +90,12 @@ export class EsriMapService {
         .require(['Map', 'MapView', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap'])
         .then(
           ([Map, MapView, TileLayer, VectorTileLayer, WMSLayer, Basemap]: [
-            esri.MapConstructor,
-            esri.MapViewConstructor,
-            esri.TileLayerConstructor,
-            esri.VectorTileLayerConstructor,
-            esri.WMSLayerConstructor,
-            esri.BasemapConstructor
+            typeof esri.Map,
+            typeof esri.MapView,
+            typeof esri.TileLayer,
+            typeof esri.VectorTileLayer,
+            typeof esri.WMSLayer,
+            typeof esri.Basemap
           ]) => {
             this.next(mapProperties, viewProperties, Map, MapView, { TileLayer, VectorTileLayer, WMSLayer }, Basemap);
           }
@@ -106,12 +106,12 @@ export class EsriMapService {
         .require(['Map', 'SceneView', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap'])
         .then(
           ([Map, MapView, TileLayer, VectorTileLayer, WMSLayer, Basemap]: [
-            esri.MapConstructor,
-            esri.SceneViewConstructor,
-            esri.TileLayerConstructor,
-            esri.VectorTileLayerConstructor,
-            esri.WMSLayerConstructor,
-            esri.BasemapConstructor
+            typeof esri.Map,
+            typeof esri.SceneView,
+            typeof esri.TileLayer,
+            typeof esri.VectorTileLayer,
+            typeof esri.WMSLayer,
+            typeof esri.Basemap
           ]) => {
             this.next(mapProperties, viewProperties, Map, MapView, { TileLayer, VectorTileLayer, WMSLayer }, Basemap);
           }
@@ -124,18 +124,18 @@ export class EsriMapService {
    *
    * @param {MapProperties} Properties
    * @param {MapViewProperties} ViewProperties
-   * @param {esri.MapConstructor} Map
-   * @param {esri.MapViewConstructor} MapView MapView or SceneView depending on mode
+   * @param {typeof esri.Map} Map
+   * @param {typeof esri.MapView} MapView MapView or SceneView depending on mode
    * @param {BaseLayerConstructors} layers The classes a basemap's base layers are made from
-   * @param {esri.BasemapConstructor} Basemap
+   * @param {typeof esri.Basemap} Basemap
    */
   private async next(
     Properties: MapProperties,
     ViewProps: ViewProperties,
-    Map: esri.MapConstructor,
-    MapView: esri.MapViewConstructor | esri.SceneViewConstructor,
+    Map: typeof esri.Map,
+    MapView: typeof esri.MapView | typeof esri.SceneView,
     layers: BaseLayerConstructors,
-    Basemap: esri.BasemapConstructor
+    Basemap: typeof esri.Basemap
   ): Promise<void> {
     const basemap = this.makeBasemap(Properties, layers, Basemap);
     this._modules.map = new Map(basemap);
@@ -284,7 +284,7 @@ export class EsriMapService {
   /**
    * Makes a basemap using custom basemap options or a simple basemap string id name.
    */
-  private makeBasemap(mapProperties, layers: BaseLayerConstructors, Basemap: esri.BasemapConstructor): esri.MapProperties {
+  private makeBasemap(mapProperties, layers: BaseLayerConstructors, Basemap: typeof esri.Basemap): esri.MapProperties {
     if (!mapProperties) {
       throw new Error(`No map properties were provided.`);
     }
@@ -394,7 +394,7 @@ export class EsriMapService {
     }
 
     if (source.type === 'feature') {
-      return this.moduleProvider.require(['FeatureLayer']).then(([FeatureLayer]: [esri.FeatureLayerConstructor]) => {
+      return this.moduleProvider.require(['FeatureLayer']).then(([FeatureLayer]: [typeof esri.FeatureLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
@@ -407,7 +407,7 @@ export class EsriMapService {
         return layer;
       });
     } else if (source.type === 'map-image') {
-      return this.moduleProvider.require(['MapImageLayer']).then(([ImageLayer]: [esri.MapImageLayerConstructor]) => {
+      return this.moduleProvider.require(['MapImageLayer']).then(([ImageLayer]: [typeof esri.MapImageLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
@@ -415,7 +415,7 @@ export class EsriMapService {
         return new ImageLayer(props as esri.MapImageLayerProperties);
       });
     } else if (source.type === 'scene') {
-      return this.moduleProvider.require(['SceneLayer']).then(([SceneLayer]: [esri.SceneLayerConstructor]) => {
+      return this.moduleProvider.require(['SceneLayer']).then(([SceneLayer]: [typeof esri.SceneLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
@@ -423,7 +423,7 @@ export class EsriMapService {
         return new SceneLayer(props as esri.SceneViewProperties);
       });
     } else if (source.type === 'graphics') {
-      return this.moduleProvider.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
+      return this.moduleProvider.require(['GraphicsLayer']).then(([GraphicsLayer]: [typeof esri.GraphicsLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
@@ -431,7 +431,7 @@ export class EsriMapService {
         return new GraphicsLayer(props as esri.GraphicsLayerProperties);
       });
     } else if (source.type === 'geojson') {
-      return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
+      return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [typeof esri.GeoJSONLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
@@ -443,7 +443,7 @@ export class EsriMapService {
     } else if (source.type === 'vector-tile') {
       return this.moduleProvider
         .require(['VectorTileLayer'])
-        .then(([VectorTileLayer]: [esri.VectorTileLayerConstructor]) => {
+        .then(([VectorTileLayer]: [typeof esri.VectorTileLayer]) => {
           // Delete the type property as it cannot be set on layer creation.
           delete props.type;
 
@@ -451,7 +451,7 @@ export class EsriMapService {
           return new VectorTileLayer(props as esri.VectorTileLayerProperties);
         });
     } else if (source.type === 'csv') {
-      return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
+      return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [typeof esri.CSVLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
@@ -461,7 +461,7 @@ export class EsriMapService {
         return layer;
       });
     } else if (source.type === 'group') {
-      return this.moduleProvider.require(['GroupLayer']).then(async ([GroupLayer]: [esri.GroupLayerConstructor]) => {
+      return this.moduleProvider.require(['GroupLayer']).then(async ([GroupLayer]: [typeof esri.GroupLayer]) => {
         const s: GroupLayerSourceProperties = source;
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
@@ -498,7 +498,7 @@ export class EsriMapService {
         return group;
       });
     } else if (source.type === 'unknown') {
-      return this.moduleProvider.require(['Layer']).then(async ([L]: [esri.LayerConstructor]) => {
+      return this.moduleProvider.require(['Layer']).then(async ([L]: [typeof esri.Layer]) => {
         return L.fromArcGISServerUrl({
           url: source.url
         }).then((l) => {
@@ -802,7 +802,7 @@ export class EsriMapService {
     if (sourcesWithAuthInfo.length > 0) {
       return this.moduleProvider
         .require(['IdentityManager', 'OAuthInfo'])
-        .then(([IdentityManager, OAuthInfo]: [esri.IdentityManager, esri.OAuthInfoConstructor]) => {
+        .then(([IdentityManager, OAuthInfo]: [esri.IdentityManager, typeof esri.OAuthInfo]) => {
           const sourcesNotYetInIdentityManager = sourcesWithAuthInfo.filter((source) => {
             const identityManagerInfo = IdentityManager.findOAuthInfo(source.auth.info.portalUrl);
 

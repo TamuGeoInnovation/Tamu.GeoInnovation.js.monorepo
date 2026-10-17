@@ -2,9 +2,9 @@ import esri = __esri;
 
 /** The layer classes a basemap's base layers can be made from, keyed by the `type` a definition names. */
 export interface BaseLayerConstructors {
-  TileLayer: esri.TileLayerConstructor;
-  VectorTileLayer: esri.VectorTileLayerConstructor;
-  WMSLayer: esri.WMSLayerConstructor;
+  TileLayer: typeof esri.TileLayer;
+  VectorTileLayer: typeof esri.VectorTileLayer;
+  WMSLayer: typeof esri.WMSLayer;
 }
 
 /**
