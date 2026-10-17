@@ -108,6 +108,22 @@ own, now use the same function
 | ![Searching Cain '51 on the main map: No results found](../screenshots/search-escape/before-apostrophe.png) | ![Searching Cain '51 lists James J. Cain '51 Building (0391)](../screenshots/search-escape/after-apostrophe.png) |
 | ![Searching % on Football Tailgating lists every tent and zone](../screenshots/search-escape/before-percent.png) | ![Searching % finds nothing](../screenshots/search-escape/after-percent.png) |
 
+### The maps load ArcGIS from `@arcgis/core`, still at 4.27
+
+Every map's ArcGIS code is now part of the build, from Esri's `@arcgis/core` package at 4.27.6, instead
+of being fetched from Esri's CDN at run time by `esri-loader`. The version is the same 4.27, so the maps
+should look and behave as before; what changes is where the code comes from, and that newer Esri
+releases, which are published only as `@arcgis/core`, can now be reached one at a time. Esri's workers,
+fonts and translations still come from its CDN, from the path for 4.27. The map's widget stylesheet now
+comes from the same path: it had been 4.23's since the runtime moved to 4.27. The layer filter's
+`FeatureFilter` is loaded from where 4.27 keeps it; the old path no longer exists on Esri's CDN
+([#1844](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1844)).
+
+| Before | After |
+| --- | --- |
+| ![The main map, before](../screenshots/1844-arcgis-core/before-map.png) | ![The main map, after, drawn by @arcgis/core](../screenshots/1844-arcgis-core/after-map.png) |
+| ![Football Tailgating, before](../screenshots/1844-arcgis-core/before-tailgating.png) | ![Football Tailgating, after](../screenshots/1844-arcgis-core/after-tailgating.png) |
+
 ### On game days, Football Tailgating has its own notice
 
 In the week before a home game and on the day, the main map now shows **Football Tailgating Map
@@ -536,6 +552,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: payment page instead of the giving site ([#1829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1829)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Sponsor TxGIS Day At TAMU" opens `/sponsors/payment` in the same tab: check payable to the Texas A&M Foundation with "2026-27 GIS Day #73982" on the memo line, the remit-to address, and the ACH or wire contact. No link anywhere goes to the giving site |
 | GIS Day: choose the organizations in the Sessions filter ([#1825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1825)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, Admin, Organizations, then `/sessions` | The organization form has a fourth checkbox, Sessions Filter. Tick it on two organizations and save: the Organizations filter on `/sessions` lists exactly those two, and their header and footer settings are unchanged |
 | GIS Day: buttons the same height ([#1831](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1831)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Send Us a Message" and "Sponsor TxGIS Day At TAMU" are the same height; filled buttons elsewhere (Sessions, the competition pages) are 4 px taller than before and otherwise unchanged |
+| Maps load ArcGIS from `@arcgis/core` 4.27 ([#1844](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1844)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d), [Aerial Imagery](https://dev.aggiemap.tamu.edu/map/d?imagery=2020-10-06), 3D, directions | Nothing different: every map draws as before; the zoom, locate and compass buttons look as they did; popups, search, the basemap gallery, the imagery date slider, 3D and directions work. In the browser's network panel, nothing is requested from `js.arcgis.com/4.27/init.js` or `js.arcgis.com/4.23` |
 | Map search with an apostrophe or a percent sign ([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)) | [dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu), then [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Search `Cain '51`: James J. Cain '51 Building is listed. Search `O'` or `Aggie's`: no error, results or "No results found". On Football Tailgating, search `%`: "No results found", not every tent. Ordinary searches still work: `MSC`, `O12`, `Creamery` |
 | Football Tailgating game-day notice ([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)) | [The main map](https://dev.aggiemap.tamu.edu/map/d) in a private window, in the week before a home game | Two notices, **Football Transportation Map Available** then **Football Tailgating Map Available**; clicking the second opens the Tailgating map |
 | GIS Day: sponsorship levels back at last year's prices ([#1821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1821)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [the sponsor page](https://txgisday.org/sponsors/tamu) | Point $256, Line $512, Polygon $1,024, Raster $2,048, each level's perks as before |
