@@ -16,7 +16,7 @@ export class EsriModuleProviderService {
   public require(modules: EsriAmdModule[], asObject: true): Promise<any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public require(modules: EsriAmdModule[], asObject?: boolean): Promise<any> {
-    return Promise.all(modules.map((name) => dictionary[name]().then(moduleValue)))
+    return Promise.all(modules.map(load))
       .then((resolvedModules) => {
         if (asObject) {
           const obj = {};
@@ -34,6 +34,30 @@ export class EsriModuleProviderService {
         throw new Error(`Could not resolve at least one of the modules ${modules.join(', ')}: ${error}`);
       });
   }
+}
+
+/** Each module's value once it has been asked for; see `load`. */
+const loaded = new Map<EsriAmdModule, Promise<unknown>>();
+
+/**
+ * Imports `name` once, and hands every later caller the same settled promise (#1849).
+ *
+ * An `import()` of a module that has already loaded still waits for a task from the browser before it
+ * resolves, and while ArcGIS 4.34 is drawing that wait was measured at 1.2 to 2.5 seconds per call. The map
+ * service asks for `FeatureLayer` once per layer, one layer at a time, so the Football Transportation shuttle
+ * map took over 90 seconds to add its 57 layers on dev. `esri-loader` answered a loaded module at once. A
+ * settled promise resolves in a microtask, as that did. A failed import is not kept, so it can be tried again.
+ */
+function load(name: EsriAmdModule): Promise<unknown> {
+  let module = loaded.get(name);
+
+  if (!module) {
+    module = dictionary[name]().then(moduleValue);
+    module.catch(() => loaded.delete(name));
+    loaded.set(name, module);
+  }
+
+  return module;
 }
 
 /**

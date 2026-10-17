@@ -90,3 +90,88 @@ describe('EsriMapService feature layer titles', () => {
     expect(layer.title).toBe('Parade');
   });
 });
+
+/**
+ * Two callers asking for the same layer at once get one layer (#1849).
+ *
+ * A layer is only on the map once it has been made, which takes at least one await. The main map's set
+ * and a Football Tailgating `?tent=` link both asked for the selection layer in that window, each made
+ * one, and the map ended up with two layers called `selection-layer`: the tent's highlight on one, the
+ * other empty, and the empty one sometimes on top.
+ */
+describe('EsriMapService layers asked for twice at once', () => {
+  class FakeGraphicsLayer {
+    public id: string;
+    public graphics: unknown[] = [];
+
+    constructor(props: { id: string }) {
+      this.id = props.id;
+    }
+
+    public removeAll(): void {
+      this.graphics = [];
+    }
+
+    public addMany(graphics: unknown[]): void {
+      this.graphics.push(...graphics);
+    }
+  }
+
+  const selectionSource = { type: 'graphics', id: 'selection-layer', title: 'Selected Buildings' } as LayerSource;
+
+  let service: EsriMapService;
+  let layers: FakeGraphicsLayer[];
+
+  beforeEach(() => {
+    layers = [];
+
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: EsriModuleProviderService, useValue: { require: () => Promise.resolve([FakeGraphicsLayer]) } },
+        { provide: Router, useValue: {} },
+        { provide: ActivatedRoute, useValue: {} },
+        { provide: SearchService, useValue: {} },
+        {
+          provide: EnvironmentService,
+          useValue: {
+            value: (key: string) => (key === 'LayerSources' ? [selectionSource] : { polygon: { type: 'simple-fill' } })
+          }
+        },
+        { provide: HttpClient, useValue: {} },
+        { provide: LayerSourcesService, useValue: {} }
+      ]
+    });
+
+    service = TestBed.inject(EsriMapService);
+    service['_modules'].map = {
+      findLayerById: (id: string) => layers.find((layer) => layer.id === id),
+      add: (layer: FakeGraphicsLayer) => layers.push(layer)
+    } as unknown as __esri.Map;
+    jest.spyOn(service, 'zoomTo').mockReturnValue(undefined);
+  });
+
+  /** Lets every pending promise settle. */
+  const settle = () => new Promise((resolve) => setTimeout(resolve));
+
+  it('makes one layer when two callers ask for it before it is on the map', async () => {
+    const [first, second] = await Promise.all([
+      service.findLayerOrCreateFromSource(selectionSource),
+      service.findLayerOrCreateFromSource(selectionSource)
+    ]);
+
+    expect(layers).toHaveLength(1);
+    expect(second).toBe(first);
+  });
+
+  it('puts a selection made while the map is making the selection layer on that one layer', async () => {
+    const feature = { geometry: { type: 'polygon' }, attributes: {} } as unknown as __esri.Graphic;
+
+    const loading = service.findLayerOrCreateFromSource(selectionSource);
+    service.selectFeatures({ graphics: [feature], zoom: 17 });
+    await loading;
+    await settle();
+
+    expect(layers).toHaveLength(1);
+    expect(layers[0].graphics).toEqual([feature]);
+  });
+});
