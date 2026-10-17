@@ -1,5 +1,4 @@
-// Pins the ArcGIS runtime as a side effect of importing this library, so every consumer gets the
-// same version without each call site having to remember (#1219).
+// The ArcGIS runtime version this workspace runs (#1219, #1844).
 export * from './lib/esri-runtime';
 
 export * from './lib/popup-reference';

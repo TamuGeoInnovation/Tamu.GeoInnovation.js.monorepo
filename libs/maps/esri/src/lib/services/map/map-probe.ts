@@ -1,5 +1,3 @@
-import { loadModules } from 'esri-loader';
-
 import esri = __esri;
 
 // Type-only: `map.service.ts` imports `registerMapProbe` from here, so a value import would create
@@ -269,8 +267,8 @@ function requestProjection(): void {
 
   projectionRequested = true;
 
-  loadModules<[typeof esri.projection]>(['esri/geometry/projection'])
-    .then(async ([engine]) => {
+  import('@arcgis/core/geometry/projection.js')
+    .then(async (engine) => {
       await engine.load();
       projection = engine;
     })

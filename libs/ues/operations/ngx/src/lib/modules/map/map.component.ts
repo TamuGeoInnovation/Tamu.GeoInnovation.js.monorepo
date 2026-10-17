@@ -2,8 +2,6 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { loadModules } from 'esri-loader';
-
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -121,8 +119,8 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public continue(instances: MapServiceInstance) {
-    loadModules(['esri/widgets/Track', 'esri/widgets/Compass'])
-      .then(([Track, Compass]) => {
+    Promise.all([import('@arcgis/core/widgets/Track.js'), import('@arcgis/core/widgets/Compass.js')])
+      .then(([{ default: Track }, { default: Compass }]) => {
         instances.view.when(() => {
           //
           // Loader disable

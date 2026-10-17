@@ -2,8 +2,6 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@
 import { Subject, ReplaySubject, Observable } from 'rxjs';
 import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 
-import { loadModules } from 'esri-loader';
-
 import {
   aggiemapBasemap,
   AGGIEMAP_BASEMAP_MAX_SCALE,
@@ -169,8 +167,8 @@ export class MapComponent implements OnInit, OnDestroy {
     // A link naming an Aerial Imagery capture, `?imagery=2025-11-22`, opens on it (#1541).
     this.basemaps.applyNearmapCaptureFromUrl();
 
-    loadModules(['esri/widgets/Track', 'esri/widgets/Compass'])
-      .then(([Track, Compass]) => {
+    Promise.all([import('@arcgis/core/widgets/Track.js'), import('@arcgis/core/widgets/Compass.js')])
+      .then(([{ default: Track }, { default: Compass }]) => {
         instances.view.when(() => {
           //
           // Loader disable
