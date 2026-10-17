@@ -18,6 +18,23 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### GIS Day: the sponsorship levels match the 2026 prospectus
+
+The sponsor page now says what the 2026 prospectus says. Each level's tile shows how many
+representatives it includes (Point 1, Line 2, Polygon 3, Raster 4), and each level's benefits gain the
+complimentary lunch reservations and sponsor ribbon. Polygon and Raster add the post-event attendee
+list; Raster's speaking slot is 20 minutes, not 5, and it adds a dedicated email to registered
+attendees. A note says extra representatives are welcome at no charge. The older one-line summaries
+are gone, "complementary" is spelled "complimentary", and the site is named txgisday.org. On the
+sponsors' logistics page, the parking passes are now for sponsors at the Line level and above, and the
+days carry 2026's dates ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)).
+
+| Before | After |
+| --- | --- |
+| ![The four level tiles with prices only](../screenshots/gisday-tiers-2026/before-tiles.png) | ![The tiles with the representatives under each price](../screenshots/gisday-tiers-2026/after-tiles.png) |
+| ![Raster's benefits before](../screenshots/gisday-tiers-2026/before-raster.png) | ![Raster's benefits after](../screenshots/gisday-tiers-2026/after-raster.png) |
+| ![The logistics section with 2025's dates](../screenshots/gisday-tiers-2026/before-logistics.png) | ![The logistics section with 2026's dates and sponsor parking](../screenshots/gisday-tiers-2026/after-logistics.png) |
+
 ### GIS Day: sponsors are told how to pay, instead of being sent to the giving site
 
 The "Sponsor TxGIS Day at TAMU" button on the sponsor page went to the Texas A&M Foundation's giving
@@ -493,6 +510,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| GIS Day: sponsorship levels match the prospectus ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` and `/sponsors` | Tiles show 1 to 4 representatives; each level's perks include lunches and a ribbon; Raster says 20-minute speaking slot; the extra-representatives note; on `/sponsors`, parking passes for Line and above and days dated 16 to 20 November |
 | GIS Day: payment page instead of the giving site ([#1829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1829)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Sponsor TxGIS Day At TAMU" opens `/sponsors/payment` in the same tab: check payable to the Texas A&M Foundation with "2026-27 GIS Day #73982" on the memo line, the remit-to address, and the ACH or wire contact. No link anywhere goes to the giving site |
 | GIS Day: choose the organizations in the Sessions filter ([#1825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1825)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, Admin, Organizations, then `/sessions` | The organization form has a fourth checkbox, Sessions Filter. Tick it on two organizations and save: the Organizations filter on `/sessions` lists exactly those two, and their header and footer settings are unchanged |
 | GIS Day: buttons the same height ([#1831](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1831)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Send Us a Message" and "Sponsor TxGIS Day At TAMU" are the same height; filled buttons elsewhere (Sessions, the competition pages) are 4 px taller than before and otherwise unchanged |
