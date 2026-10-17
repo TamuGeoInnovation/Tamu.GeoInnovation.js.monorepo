@@ -1,10 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'tamu-gisc-sponsors-tamu',
   templateUrl: './sponsors-tamu.component.html',
   styleUrls: ['./sponsors-tamu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink]
 })
 export class SponsorsTamuComponent implements OnInit {
   public ngOnInit(): void {
