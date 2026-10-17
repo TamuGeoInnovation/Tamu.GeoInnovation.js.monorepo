@@ -11,7 +11,7 @@
             <span>{{year}}</span>
             }
           </h1>
-          <img [src]="site.logo" />
+          <img [src]="site.banner" />
         </div>
 
         <div class="landing-container">
@@ -44,9 +44,11 @@
 
           <a routerLink="/sessions" class="button snug leader-2 trailer-2">Explore Events</a>
 
+          @if ('tamu' | siteHas) {
           <a href="https://tinyurl.com/GISDay2023SpeedMentoring" class="trailer-1">Sign up for Career Cupid Speed Mentoring Events</a>
 
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSccFIEVIGU1gxvGpTWtvwL0Qp6JKW_Md528LEJwKue9Kgw8Xw/viewform" class="trailer-1">Nominate a TX GIS Hero</a>
+          }
 
           <a href="https://www.youtube.com/watch?v=eigWXfjN9BU&feature=youtu.be">Watch the how to get started video</a>
         </div>
@@ -62,7 +64,11 @@
         <img class="medium" src="assets/images/icons/network.png" />
         <div class="red-line small"></div>
         <h3 class="trailer-1">Network</h3>
+        @if ('tamu' | siteHas) {
         <p class="pre-1 post-1">Hosting one of the largest GIS Day events in the world on one of the largest campuses in the State of Texas, generates a great opportunity to come an greet like-minded people and industry professionals.</p>
+        } @else {
+        <p class="pre-1 post-1">Meet like-minded people and industry professionals from across the GIS community, and make connections that last well beyond the event.</p>
+        }
       </div>
       <div class="column4">
         <img class="medium" src="assets/images/icons/speakers.png" />
@@ -117,7 +123,7 @@
 
     <div class="container12 flex flex-column align-center">
       <div class="column9">
-        <p>TxGIS Day {{(activeSeason$ | async)?.year}} would not be possible without the expertise, support, and personnel from the following participating organizations.</p>
+        <p>{{ site.name }} {{(activeSeason$ | async)?.year}} would not be possible without the expertise, support, and personnel from the following participating organizations.</p>
       </div>
 
       <div class="icon-grid column12">

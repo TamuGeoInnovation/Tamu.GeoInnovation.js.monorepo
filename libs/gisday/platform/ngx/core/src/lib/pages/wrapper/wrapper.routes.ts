@@ -19,6 +19,7 @@ export const wrapperRoutes: Routes = [
       {
         // A past year's Sessions, Presenters and Sponsors, drawn from that year's season (#1758).
         path: 'seasons/:seasonYear',
+        canActivate: [siteFeatureGuard('pastYears')],
         loadChildren: () => import('../seasons/seasons.routes').then((m) => m.seasonsRoutes)
       },
       {
@@ -54,6 +55,7 @@ export const wrapperRoutes: Routes = [
       },
       {
         path: 'wayback',
+        canActivate: [siteFeatureGuard('pastYears')],
         loadChildren: () => import('../wayback/wayback.routes').then((m) => m.waybackRoutes)
       },
       {

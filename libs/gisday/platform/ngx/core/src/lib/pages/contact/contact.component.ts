@@ -18,6 +18,7 @@ import { AsyncPipe } from '@angular/common';
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe]
 })
 export class ContactComponent implements OnInit {
+  public readonly site = inject(GISDAY_SITE);
   private titleService = inject(Title);
   private fb = inject(UntypedFormBuilder);
   private contactService = inject(ContactService);
@@ -27,7 +28,7 @@ export class ContactComponent implements OnInit {
   public buttonText: Observable<string>;
 
   constructor() {
-    this.titleService.setTitle(`Contact | ${inject(GISDAY_SITE).name}`);
+    this.titleService.setTitle(`Contact | ${this.site.name}`);
   }
 
   public ngOnInit(): void {

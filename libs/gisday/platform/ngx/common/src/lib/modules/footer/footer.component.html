@@ -4,20 +4,23 @@
       <div class="column4">
         <a class="logo-container" [routerLink]="['/']">
           <div class="site-logo greyscale">
-            TxGIS Day @if ((activeSeason$ | async)?.year; as year) {
+            {{ site.name }} @if ((activeSeason$ | async)?.year; as year) {
             <span>{{year}}</span>
             }
           </div>
         </a>
+        @if ('tamu' | siteHas) {
         <p>Three days of workshops and programs celebrating geospatial technology.</p>
-        @if ((pastYears$ | async); as years) { @if (years.length > 0) {
+        } @else {
+        <p>Workshops and programs celebrating geospatial technology.</p>
+        } @if ('pastYears' | siteHas) { @if ((pastYears$ | async); as years) { @if (years.length > 0) {
         <p class="footer-column-title leader-1">Past Years</p>
         <ul>
           @for (year of years; track year) {
-          <li><a [routerLink]="['/seasons', year]">TxGIS Day {{year}}</a></li>
+          <li><a [routerLink]="['/seasons', year]">{{ site.name }} {{year}}</a></li>
           }
         </ul>
-        } }
+        } } }
       </div>
       <div class="column3">
         <p class="footer-column-title">Quick Links</p>
@@ -51,7 +54,7 @@
         </ul>
       </div>
       <div class="column3">
-        <p class="footer-column-title">TxGIS Day Partners</p>
+        <p class="footer-column-title">{{ site.name }} Partners</p>
 
         @if (organizations$ | async; as orgs) { @if (orgs.length > 0) {
         <ul>
@@ -70,14 +73,19 @@
   <div class="bottom-section">
     <div class="container12 flex flex-column justify-center align-center wrap">
       <div class="column8 copyright">
-        <p>&copy; {{currentYear}} GeoInnovation Service Center -</p>
+        @if ('tamu' | siteHas) {
+        <p>&copy; {{currentYear}} {{ site.owner }} -</p>
         <a href="https://www.tamu.edu" target="_blank">Texas A&amp;M University - </a>
         <a href="javascript:void(0)" target="_blank">Webmaster - </a>
         <a href="http://www.tamu.edu/emergency/index.html" target="_blank">Emergency Protocol - </a>
         <a href="http://itaccessibility.tamu.edu/" target="_blank">Accessibility - </a>
         <a href="http://www.tamu.edu/statements/index.html" target="_blank">Policies</a>
+        } @else {
+        <p>&copy; {{currentYear}} {{ site.owner }}</p>
+        }
       </div>
 
+      @if ('tamu' | siteHas) {
       <div class="column8 legal">
         <a href="http://www.texas.gov/" target="_blank">State of Texas - </a>
         <a href="http://veterans.portal.texas.gov/" target="_blank">Texas Veterans Portal - </a>
@@ -95,6 +103,7 @@
       <div class="column8 statement">
         <p>Texas A&amp;M University is a member of the Texas A&amp;M University System</p>
       </div>
+      }
     </div>
   </div>
 </footer>

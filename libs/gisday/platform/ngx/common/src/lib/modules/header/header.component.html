@@ -27,12 +27,13 @@
     <tamu-gisc-tile-icon><div class="material-icons">info</div></tamu-gisc-tile-icon>
     <tamu-gisc-tile-title>About</tamu-gisc-tile-title>
     <tamu-gisc-tile-submenu *giscTileSubmenu>
-      <p tamuGiscTileLink location="/about">About TxGIS Day</p>
+      <p tamuGiscTileLink location="/about">About {{ site.name }}</p>
       @if ('sponsors' | siteHas) {
       <p tamuGiscTileLink location="/sponsors">Sponsors</p>
-      }
+      } @if ('tamu' | siteHas) {
       <p tamuGiscTileLink location="/about" fragment="student-volunteer">Volunteer</p>
       <p tamuGiscTileLink location="http://www.houstonareagisday.org/">High School Portal</p>
+      }
     </tamu-gisc-tile-submenu>
   </tamu-gisc-tile>
 
@@ -156,12 +157,14 @@
         }
 
         <ul class="dropdown">
-          <a [routerLink]="['/about']" id="linkAbout">About <span class="material-icons">arrow_drop_down</span></a>
+          <a [routerLink]="['/about']" id="linkAbout">About @if ('tamu' | siteHas) {<span class="material-icons">arrow_drop_down</span>}</a>
+          @if ('tamu' | siteHas) {
           <ul>
             <li><a [routerLink]="['/about']" fragment="committee">Organizing Committee</a></li>
             <li><a [routerLink]="['/about']" fragment="student-volunteer">Volunteer Opportunities</a></li>
             <li><a [routerLink]="['/about']" fragment="resume-bank">Resume Bank</a></li>
           </ul>
+          }
         </ul>
         <ul>
           <a [routerLink]="['/contact']" id="linkContact">Contact</a>

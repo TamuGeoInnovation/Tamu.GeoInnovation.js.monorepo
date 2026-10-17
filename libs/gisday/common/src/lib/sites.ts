@@ -7,8 +7,13 @@
  * - `sponsors`: the Sponsor menu and pages, and the homepage's sponsor section.
  * - `classes`: the profile's Classes, and the class endpoints.
  * - `checkIns`: event check-in, the profile's Check-ins, and the check-in endpoints.
+ * - `pastYears`: the footer's Past Years, and past years' pages (`/seasons/<year>`, `/wayback`).
+ * - `tamu`: what only Texas A&M's site has: the Organizing Committee, Student Opportunities and Resume
+ *   Bank on the About page, the High School Portal, the homepage's mentoring and TX GIS Hero links, the
+ *   Texas wording on the homepage and About page, and the university's and state's required links in
+ *   the footer.
  */
-export type GisdayFeature = 'competitions' | 'faq' | 'sponsors' | 'classes' | 'checkIns';
+export type GisdayFeature = 'competitions' | 'faq' | 'sponsors' | 'classes' | 'checkIns' | 'pastYears' | 'tamu';
 
 /**
  * One deployment of the GIS Day site: its name, its images, and the features it leaves out.
@@ -21,8 +26,14 @@ export interface GisdaySite {
   /** As it appears in the header, on the homepage and in the browser tab, such as "TxGIS Day". */
   name: string;
 
-  /** The logo in the header and on the homepage, relative to the front end's root. */
+  /** The small square logo beside the name in the header, relative to the front end's root. */
   logo: string;
+
+  /** The large image in the middle of the homepage, relative to the front end's root. */
+  banner: string;
+
+  /** Who runs the site, for the footer's copyright line. */
+  owner: string;
 
   /** The browser tab's icon, relative to the front end's root. */
   favicon: string;
@@ -35,8 +46,20 @@ export const GISDAY_SITES = {
   txgisday: {
     name: 'TxGIS Day',
     logo: 'assets/images/2022-TIN-sq-1080px.png',
+    banner: 'assets/images/2022-TIN-sq-1080px.png',
+    owner: 'GeoInnovation Service Center',
     favicon: 'favicon.ico',
     off: []
+  },
+  // gisday.ucgis.org, for UCGIS member universities (#1837). Its images are UCGIS's own, from its websites; the
+  // banner's white surround was made transparent so it sits on the homepage's background.
+  ucgis: {
+    name: 'UCGIS GIS Day',
+    logo: 'assets/images/sites/ucgis/logo.png',
+    banner: 'assets/images/sites/ucgis/banner.png',
+    owner: 'University Consortium for Geographic Information Science',
+    favicon: 'assets/images/sites/ucgis/favicon.png',
+    off: ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu']
   }
 } satisfies Record<string, GisdaySite>;
 
