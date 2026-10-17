@@ -214,12 +214,14 @@ export class EventService {
    *
    * Opt-in: a no-op unless at least two of the configured ids resolve to layers on the map.
    */
-  private applyExclusiveLayerVisibility(): void {
+  private async applyExclusiveLayerVisibility(): Promise<void> {
     const exclusiveLayerIds = this.eventSettingsService.eventConfiguration()?.configuration?.exclusiveLayerIds;
 
     if (!exclusiveLayerIds || !this._map) {
       return;
     }
+
+    const [reactiveUtils] = (await this.moduleProvider.require(['reactiveUtils'])) as [esri.reactiveUtils];
 
     // drawEvent re-runs whenever the map service emits a new instance. Drop the previous instance's
     // handles so a re-draw doesn't stack duplicate handlers on the same layers.
@@ -253,11 +255,14 @@ export class EventService {
     this._exclusiveVisibilityHandles = layers.map((layer) =>
       // Only reacting to a layer turning *on* keeps this from re-entering: the `visible = false`
       // writes in hideOthers fire these same handlers, but fall through this guard.
-      layer.watch('visible', (visible: boolean) => {
-        if (visible) {
-          hideOthers(layer);
+      reactiveUtils.watch(
+        () => layer.visible,
+        (visible) => {
+          if (visible) {
+            hideOthers(layer);
+          }
         }
-      })
+      )
     );
   }
 

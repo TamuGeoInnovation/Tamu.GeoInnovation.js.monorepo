@@ -10,7 +10,7 @@ import {
 } from '@tamu-gisc/maps/feature/basemap';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, HIDDEN_DEFAULT_HIGHLIGHT } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
@@ -108,10 +108,7 @@ export class MapComponent implements OnInit, OnDestroy {
                 position: 'bottom-right'
               }
             },
-            highlightOptions: {
-              haloOpacity: 0,
-              fillOpacity: 0
-            }
+            highlights: HIDDEN_DEFAULT_HIGHLIGHT
           }
         }
       });

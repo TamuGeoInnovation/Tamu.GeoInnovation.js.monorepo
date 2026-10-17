@@ -233,8 +233,8 @@ export function registerMapProbe(instance: MapServiceInstance | undefined, owner
   }
 }
 
-/** Esri's projection engine once loaded; see `MapProbe.framing`. */
-let projection: typeof esri.projection | undefined;
+/** Esri's project operator once loaded, and the reference it projects to; see `MapProbe.framing`. */
+let projection: { operator: esri.projectOperator; geographic: esri.SpatialReference } | undefined;
 let projectionRequested = false;
 
 function framing(): MapFraming | null {
@@ -255,7 +255,7 @@ function framing(): MapFraming | null {
     return null;
   }
 
-  const geographic = projection.project(center, { wkid: 4326 }) as esri.Point;
+  const geographic = projection.operator.execute(center, projection.geographic) as esri.Point;
 
   return { zoom: view.zoom, center: [geographic.x, geographic.y] };
 }
@@ -267,10 +267,13 @@ function requestProjection(): void {
 
   projectionRequested = true;
 
-  import('@arcgis/core/geometry/projection.js')
-    .then(async (engine) => {
-      await engine.load();
-      projection = engine;
+  Promise.all([
+    import('@arcgis/core/geometry/operators/projectOperator.js'),
+    import('@arcgis/core/geometry/SpatialReference.js')
+  ])
+    .then(async ([operator, { default: SpatialReference }]) => {
+      await operator.load();
+      projection = { operator, geographic: SpatialReference.WGS84 };
     })
     .catch(() => {
       // Asked again on the next read.
