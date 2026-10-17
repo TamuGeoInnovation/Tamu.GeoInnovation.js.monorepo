@@ -186,12 +186,21 @@ export class MapComponent implements OnInit, OnDestroy {
 
         const track: esri.Track = new Track({
           view: instances.view,
-          useHeadingEnabled: true,
+          rotationEnabled: true,
           goToLocationEnabled: false
         });
 
+        // The Compass swaps its needle for an arrow whenever the view's spatial reference is not Web
+        // Mercator or WGS84, because true north is not straight up in a projected coordinate system. The
+        // campus basemap is a vector tile cache in EPSG:32139, so the icon changed the moment the map
+        // moved onto it, and changed again each time a Web Mercator basemap was selected.
+        //
+        // Keep the needle. At campus scale the convergence angle is negligible, and an icon that changes
+        // when you switch basemap reads as a glitch. Until ArcGIS 4.28 this was a stylesheet override of
+        // the dial's font glyph; the widget is drawn with Calcite icons since, and takes its icon (#1845).
         const compass = new Compass({
-          view: instances.view
+          view: instances.view,
+          icon: 'compass-needle'
         });
 
         if (this.isMobile) {

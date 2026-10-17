@@ -304,7 +304,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
         const track: esri.Track = new Track({
           view: instances.view,
-          useHeadingEnabled: true,
+          rotationEnabled: true,
           goToLocationEnabled: false
         });
 
