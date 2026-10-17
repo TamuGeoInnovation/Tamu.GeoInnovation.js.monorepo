@@ -7,12 +7,13 @@
  * - `sponsors`: the Sponsor menu and pages, and the homepage's sponsor section.
  * - `classes`: the profile's Classes, and the class endpoints.
  * - `checkIns`: event check-in, the profile's Check-ins, and the check-in endpoints.
+ * - `pastYears`: the footer's Past Years, and past years' pages (`/seasons/<year>`, `/wayback`).
  * - `tamu`: what only Texas A&M's site has: the Organizing Committee, Student Opportunities and Resume
  *   Bank on the About page, the High School Portal, the homepage's mentoring and TX GIS Hero links, the
  *   Texas wording on the homepage and About page, and the university's and state's required links in
  *   the footer.
  */
-export type GisdayFeature = 'competitions' | 'faq' | 'sponsors' | 'classes' | 'checkIns' | 'tamu';
+export type GisdayFeature = 'competitions' | 'faq' | 'sponsors' | 'classes' | 'checkIns' | 'pastYears' | 'tamu';
 
 /**
  * One deployment of the GIS Day site: its name, its images, and the features it leaves out.
@@ -58,7 +59,7 @@ export const GISDAY_SITES = {
     banner: 'assets/images/sites/ucgis/banner.png',
     owner: 'University Consortium for Geographic Information Science',
     favicon: 'assets/images/sites/ucgis/favicon.png',
-    off: ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'tamu']
+    off: ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu']
   }
 } satisfies Record<string, GisdaySite>;
 

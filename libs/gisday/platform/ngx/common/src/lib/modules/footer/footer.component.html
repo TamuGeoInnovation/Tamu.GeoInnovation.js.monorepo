@@ -13,14 +13,14 @@
         <p>Three days of workshops and programs celebrating geospatial technology.</p>
         } @else {
         <p>Workshops and programs celebrating geospatial technology.</p>
-        } @if ((pastYears$ | async); as years) { @if (years.length > 0) {
+        } @if ('pastYears' | siteHas) { @if ((pastYears$ | async); as years) { @if (years.length > 0) {
         <p class="footer-column-title leader-1">Past Years</p>
         <ul>
           @for (year of years; track year) {
           <li><a [routerLink]="['/seasons', year]">{{ site.name }} {{year}}</a></li>
           }
         </ul>
-        } }
+        } } }
       </div>
       <div class="column3">
         <p class="footer-column-title">Quick Links</p>

@@ -48,6 +48,7 @@ test('the UCGIS menus leave out what the site does not have', async ({ page }) =
     await expect(footer.getByRole('link', { name, exact: true }), `${name} should not be in the footer`).toHaveCount(0);
   }
   await expect(footer).toContainText('University Consortium for Geographic Information Science');
+  await expect(footer.getByText('Past Years')).toHaveCount(0);
 
   await expect(page.getByRole('heading', { name: 'Event Sponsors' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Nominate a TX GIS Hero' })).toHaveCount(0);
@@ -65,7 +66,15 @@ test('the About page leaves out what only Texas A&M has', async ({ page }) => {
 });
 
 // The profile's Classes and Check-ins are behind sign-in as well, so a visitor never reaches them.
-for (const path of ['/faq', '/sponsors', '/competitions', '/competitions/vgi', '/app']) {
+for (const path of [
+  '/faq',
+  '/sponsors',
+  '/competitions',
+  '/competitions/vgi',
+  '/app',
+  '/seasons/2025/sessions',
+  '/wayback'
+]) {
   test(`${path} goes to the homepage on the UCGIS site`, async ({ page }) => {
     await open(page, path);
     await expect.poll(() => new URL(page.url()).pathname, { timeout: 15_000 }).toBe('/');

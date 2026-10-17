@@ -46,7 +46,8 @@ sidebars, its pages go to the homepage, and the API does not serve its endpoints
 site is txgisday.org, which is unchanged ([#1835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1835)).
 
 The first other site is **UCGIS GIS Day**, for UCGIS member universities at gisday.ucgis.org, with its own
-database and UCGIS's logos. It leaves out the competitions, FAQ, sponsors, classes and check-ins, and what
+database and UCGIS's logos. It leaves out the competitions, FAQ, sponsors, classes, check-ins and past
+years, and what
 only Texas A&M has: the Organizing Committee, Student Opportunities and Resume Bank on the About page, the
 High School Portal, the mentoring and TX GIS Hero links, the Texas wording, and the university's and
 state's links in the footer ([#1837](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1837)). It is not deployed yet.

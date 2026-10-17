@@ -30,7 +30,7 @@ describe('SiteHasPipe', () => {
     setUp();
     const pipe = TestBed.runInInjectionContext(() => new SiteHasPipe());
 
-    for (const feature of ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'tamu'] as const) {
+    for (const feature of ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu'] as const) {
       expect(pipe.transform(feature)).toBe(true);
     }
   });
