@@ -69,6 +69,12 @@ export class EsriMapService {
    */
   private _portalItemData = new Map<string, Promise<PortalItemData | null>>();
 
+  /**
+   * The layers being made and not yet on the map, keyed by source id, so two callers asking for the same
+   * layer at once get one layer rather than two (#1849). See `findLayerOrCreateFromSource`.
+   */
+  private _creating = new Map<string, Promise<esri.Layer | Array<esri.Layer>>>();
+
   public hitTest: Observable<HitTestSnapshot> = this._hitTest.asObservable();
 
   // Exposed observable that will be responsible for emitting values to subscribers
@@ -562,24 +568,37 @@ export class EsriMapService {
           rj(err);
         }
       });
-    } else {
-      // Generate the layer
-      return this.generateLayer(source).then((layerOrLayers) => {
+    }
+
+    // A layer is only on the map once it has been made, which takes at least one await. A second caller
+    // in that window used to make and add a second layer with the same id: the main map's set and a
+    // Football Tailgating `?tent=` link each added a selection layer, the highlight went on one of them,
+    // and the other, empty one could be the one on top (#1849). The second caller now waits for the first.
+    const pending = this._creating.get(source.id);
+
+    if (pending) {
+      return pending;
+    }
+
+    // Generate the layer
+    const created = this.generateLayer(source)
+      .then((layerOrLayers) => {
         if (layerOrLayers instanceof Array) {
           // Add layer to map
           (<esri.Map>this._modules.map).addMany(layerOrLayers, source.layerIndex ?? undefined);
-
-          // Return layer in case further manipulation is needed.
-          return layerOrLayers;
         } else {
           // Add layer to map
           (<esri.Map>this._modules.map).add(layerOrLayers, source.layerIndex ?? undefined);
-
-          // Return layer in case further manipulation is needed.
-          return layerOrLayers;
         }
-      });
-    }
+
+        // Return layer in case further manipulation is needed.
+        return layerOrLayers;
+      })
+      .finally(() => this._creating.delete(source.id));
+
+    this._creating.set(source.id, created);
+
+    return created;
   }
 
   public async resolveUnloadedLayers(args: IResolveUnloadedLayersProperties): Promise<Array<esri.Layer>> {
@@ -1130,54 +1149,30 @@ export class EsriMapService {
       return feature;
     });
 
-    if (this.layerExists(source.id)) {
-      // If the layer has been added before, graphics will simply be replaced
-      this.findLayerOrCreateFromSource(source)
-        .then((layerOrLayers) => {
-          const layer = layerOrLayers as esri.GraphicsLayer;
-          layer.removeAll();
-          layer.addMany(features);
-          return layer;
-        })
-        .then((layer) => {
-          if (shouldShowPopup) {
-            this._hitTest.next({ graphics: graphics, popupComponent: properties.popupComponent });
-          }
+    // Made here if the map has not made it yet. Either way it gets this selection's graphics, so a caller
+    // that is making it at the same moment cannot leave it empty (#1849).
+    this.findLayerOrCreateFromSource(source)
+      .then((layerOrLayers) => {
+        const layer = layerOrLayers as esri.GraphicsLayer;
+        layer.removeAll();
+        layer.addMany(features);
 
-          return layer.graphics.toArray();
-        })
-        .then((grfx) => {
-          const zoomPromise = requestedZoom !== undefined ? Promise.resolve(requestedZoom) : this.computeZoomLevel(grfx);
+        if (shouldShowPopup) {
+          this._hitTest.next({ graphics: graphics, popupComponent: properties.popupComponent });
+        }
 
-          zoomPromise.then((zoom) => {
-            this.zoomTo({
-              graphics: grfx,
-              zoom: zoom
-            });
+        return layer.graphics.toArray();
+      })
+      .then((grfx) => {
+        const zoomPromise = requestedZoom !== undefined ? Promise.resolve(requestedZoom) : this.computeZoomLevel(grfx);
+
+        zoomPromise.then((zoom) => {
+          this.zoomTo({
+            graphics: grfx,
+            zoom: zoom
           });
         });
-    } else {
-      // If the layer has not been added before, instantiate it with the features as a source
-      this.findLayerOrCreateFromSource(Object.assign(source, { graphics: features }))
-        .then((layerOrLayers) => {
-          const layer = layerOrLayers as esri.GraphicsLayer;
-          if (properties.shouldShowPopup) {
-            this._hitTest.next({ graphics: graphics, popupComponent: properties.popupComponent });
-          }
-
-          return layer.graphics.toArray();
-        })
-        .then((grfx) => {
-          const zoomPromise = requestedZoom !== undefined ? Promise.resolve(requestedZoom) : this.computeZoomLevel(grfx);
-
-          zoomPromise.then((zoom) => {
-            this.zoomTo({
-              graphics: grfx,
-              zoom: zoom
-            });
-          });
-        });
-    }
+      });
   }
 
   /**
