@@ -46,7 +46,7 @@ function busRouteArrow(color: string): AutoCastSimpleLineSymbol {
     type: 'simple-line',
     color,
     width: 3.5,
-    marker: { type: 'line-marker', style: 'arrow', color, placement: 'end' }
+    marker: { style: 'arrow', color, placement: 'end' }
   };
 }
 

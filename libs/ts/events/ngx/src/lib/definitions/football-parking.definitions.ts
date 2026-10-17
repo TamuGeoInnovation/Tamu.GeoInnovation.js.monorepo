@@ -208,7 +208,7 @@ const arrowLineSymbol = (color: string, width = 3): esri.SimpleLineSymbolPropert
   color,
   width,
   style: 'solid',
-  marker: { type: 'line-marker', style: 'arrow', color, placement: 'end' }
+  marker: { style: 'arrow', color, placement: 'end' }
 });
 
 /** Renderer for a route layer whose features are all a single travel type. */
