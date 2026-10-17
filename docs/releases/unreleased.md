@@ -36,6 +36,25 @@ days carry 2026's dates, and the "Sponsor through Houston Area TxGIS Day" button
 | ![The sponsors page offering Texas A&M and Houston Area](../screenshots/gisday-tiers-2026/before-sponsor-options.png) | ![The sponsors page offering Texas A&M only](../screenshots/gisday-tiers-2026/after-sponsor-options.png) |
 | ![The logistics section with 2025's dates](../screenshots/gisday-tiers-2026/before-logistics.png) | ![The logistics section with 2026's dates and sponsor parking](../screenshots/gisday-tiers-2026/after-logistics.png) |
 
+### GIS Day: one code base for more than one organization's site, starting with UCGIS
+
+The GIS Day site can now run for another organization from the same image. A deployment names its site
+(`ANGULAR_SITE` for the website, `GISDAY_SITE` for the API), and each site, defined in
+`libs/gisday/common/src/lib/sites.ts`, has its own name, logo, homepage image, tab icon, copyright line and
+the features it leaves out. A feature that is off goes from the menus, the footer and the profile and Admin
+sidebars, its pages go to the homepage, and the API does not serve its endpoints. With no site named, the
+site is txgisday.org, which is unchanged ([#1835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1835)).
+
+The first other site is **UCGIS GIS Day**, for UCGIS member universities at gisday.ucgis.org, with its own
+database and UCGIS's logos. It leaves out the competitions, FAQ, sponsors, classes and check-ins, and what
+only Texas A&M has: the Organizing Committee, Student Opportunities and Resume Bank on the About page, the
+High School Portal, the mentoring and TX GIS Hero links, the Texas wording, and the university's and
+state's links in the footer ([#1837](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1837)). It is not deployed yet.
+
+| The UCGIS homepage | Its About page | Its footer |
+| --- | --- | --- |
+| ![UCGIS GIS Day 2026 with the UCGIS logo, and no Sponsor, Competitions or FAQ menu](../screenshots/gisday-ucgis/ucgis-home.png) | ![About UCGIS GIS Day, with participating organizations and no committee or resume bank](../screenshots/gisday-ucgis/ucgis-about.png) | ![The footer with UCGIS's copyright line and no Texas A&M links](../screenshots/gisday-ucgis/ucgis-footer.png) |
+
 ### GIS Day: sponsors are told how to pay, instead of being sent to the giving site
 
 The "Sponsor TxGIS Day at TAMU" button on the sponsor page went to the Texas A&M Foundation's giving
@@ -512,6 +531,7 @@ dated notes as what was tested, and this table empties.
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | GIS Day: sponsorship levels match the prospectus ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` and `/sponsors` | Tiles show 1 to 4 representatives; each level's perks include lunches and a ribbon; Raster says 20-minute speaking slot; the extra-representatives note; on `/sponsors`, only "Sponsor through Texas A&M" under Interested in Becoming a Sponsor, parking passes for Line and above, and days dated 16 to 20 November |
+| GIS Day: more than one organization's site, starting with UCGIS ([#1835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1835), [#1837](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1837)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [txgisday.org](https://txgisday.org); the UCGIS site once it is deployed | txgisday.org is unchanged: the same menus, footer, logo, tab title and icon, and the About page's committee and resume bank. On the UCGIS site: UCGIS GIS Day and its logo; no Sponsor, Competitions or FAQ menu; no Classes, Check-ins or Student Competitions on the profile; no check-in on an event page; and `/faq`, `/sponsors` and `/competitions` go to the homepage |
 | GIS Day: payment page instead of the giving site ([#1829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1829)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Sponsor TxGIS Day At TAMU" opens `/sponsors/payment` in the same tab: check payable to the Texas A&M Foundation with "2026-27 GIS Day #73982" on the memo line, the remit-to address, and the ACH or wire contact. No link anywhere goes to the giving site |
 | GIS Day: choose the organizations in the Sessions filter ([#1825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1825)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, Admin, Organizations, then `/sessions` | The organization form has a fourth checkbox, Sessions Filter. Tick it on two organizations and save: the Organizations filter on `/sessions` lists exactly those two, and their header and footer settings are unchanged |
 | GIS Day: buttons the same height ([#1831](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1831)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Send Us a Message" and "Sponsor TxGIS Day At TAMU" are the same height; filled buttons elsewhere (Sessions, the competition pages) are 4 px taller than before and otherwise unchanged |
