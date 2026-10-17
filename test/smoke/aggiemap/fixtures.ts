@@ -10,9 +10,8 @@ import { test as base, Route } from '@playwright/test';
  * fresh context starts with an empty HTTP cache.
  *
  * The page still requests the same URLs, so what it asks for is unchanged: `esri-runtime.spec.ts` still
- * reads the requested version from the script tag, and the version the kernel reports is the one that
- * was fetched. A file is cached only once it has been fetched successfully, so a failing CDN still fails
- * the test that met it, and is fetched again by the next.
+ * reads the version from the requested URLs. A file is cached only once it has been fetched successfully,
+ * so a failing CDN still fails the test that met it, and is fetched again by the next.
  *
  * Workers are separate processes, so each keeps its own cache; it lives as long as the worker does.
  */
