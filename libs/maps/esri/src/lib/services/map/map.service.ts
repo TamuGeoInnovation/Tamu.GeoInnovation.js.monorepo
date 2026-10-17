@@ -1019,9 +1019,9 @@ export class EsriMapService {
         const validGraphics = queryResults.results.reduce((collection, resultItem) => {
           if (resultItem.features?.length) {
             const primaryGraphic = resultItem.features[0];
-            const clonedGraphic = { ...primaryGraphic };
+            const clonedGraphic = { ...primaryGraphic } as esri.Graphic;
             (<{ type: unknown }>clonedGraphic.geometry).type = getGeometryType(primaryGraphic.geometry);
-            collection.push(clonedGraphic as esri.Graphic);
+            collection.push(clonedGraphic);
           }
           return collection;
         }, [] as esri.Graphic[]);
@@ -1220,8 +1220,7 @@ export class EsriMapService {
    */
   public computeZoomLevel(graphics: Array<esri.Graphic>): Promise<number> {
     return this.moduleProvider.require(['GeometryEngine']).then(([GeometryEngine]: [esri.geometryEngine]) => {
-      const geometries: esri.Geometry[] = graphics.map((graphic) => graphic.geometry);
-      const result = GeometryEngine.union(geometries);
+      const result = GeometryEngine.union(graphics.map((graphic) => graphic.geometry));
 
       if (result.extent) {
         const xMin = result.extent.xmin;
@@ -1256,7 +1255,7 @@ export interface MapConfig {
   view: ViewProperties;
 }
 
-interface MapProperties extends esri.MapProperties {
+interface MapProperties extends Omit<esri.MapProperties, 'basemap'> {
   basemap:
     | BaseMapProperties
     | (
@@ -1280,7 +1279,7 @@ interface MapProperties extends esri.MapProperties {
       );
 }
 
-export interface BaseMapProperties extends esri.BasemapProperties {
+export interface BaseMapProperties extends Omit<esri.BasemapProperties, 'baseLayers'> {
   baseLayers: [LayerProperties];
 }
 

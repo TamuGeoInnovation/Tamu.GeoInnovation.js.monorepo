@@ -43,13 +43,13 @@ export class LayerListComponent implements OnInit {
     this.layers = this.layerListService.layers().pipe(
       map((layers) => {
         const filtered =
-          this.allowedLayerIds().length > 0 ? layers.filter((l) => this.allowedLayerIds().includes(l.layer.id)) : layers;
+          this.allowedLayerIds().length > 0 ? layers.filter((l) => this.allowedLayerIds().includes(l.layer.id as string)) : layers;
 
         if (this.orderBy() === 'allowed' && this.allowedLayerIds().length > 0) {
           // `filtered` only contains allowed ids here, so order by their position in the list to
           // match an external draw order (e.g. the legend).
           return filtered.sort(
-            (a, b) => this.allowedLayerIds().indexOf(a.layer.id) - this.allowedLayerIds().indexOf(b.layer.id)
+            (a, b) => this.allowedLayerIds().indexOf(a.layer.id as string) - this.allowedLayerIds().indexOf(b.layer.id as string)
           );
         }
 

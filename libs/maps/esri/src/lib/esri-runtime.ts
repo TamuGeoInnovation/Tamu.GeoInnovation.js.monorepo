@@ -18,4 +18,4 @@
  * Moving to a newer release: change `@arcgis/core` in `package.json`, this constant, and the stylesheet's
  * URL in `esri-map.component.scss`, together.
  */
-export const ESRI_RUNTIME_VERSION = '4.31';
+export const ESRI_RUNTIME_VERSION = '4.32';

@@ -58,7 +58,7 @@ export class ResultMapComponent implements OnInit {
             type: 'point',
             latitude: p.latitude,
             longitude: p.longitude
-          } as esri.PointProperties,
+          } as esri.PointProperties & { type: 'point' },
           symbol: {
             type: 'simple-marker',
             color: [255, 0, 0],
@@ -67,7 +67,7 @@ export class ResultMapComponent implements OnInit {
               color: [255, 255, 255],
               width: 2
             }
-          } as esri.SimpleMarkerSymbolProperties
+          } as esri.SimpleMarkerSymbolProperties & { type: 'simple-marker' }
         };
       });
 

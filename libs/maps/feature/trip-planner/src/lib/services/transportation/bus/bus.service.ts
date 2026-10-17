@@ -738,7 +738,7 @@ export class BusService {
               type: 'point',
               longitude: stop.longitude,
               latitude: stop.latitude
-            } as unknown as esri.GeometryProperties,
+            },
             attributes: {
               id: short_name,
               type: 'waypoints',
@@ -998,7 +998,7 @@ export class BusService {
                 type: 'point',
                 latitude: bus.point.latitude,
                 longitude: bus.point.longitude
-              } as unknown as esri.GeometryProperties,
+              },
               attributes: {
                 name: bus.name,
                 route: short_name,
@@ -1061,7 +1061,7 @@ export class BusService {
                     rotationType: 'geographic'
                   }
                 ]
-              } as esri.RendererProperties
+              } as unknown as esri.FeatureLayerProperties['renderer']
             });
 
             this._map.add(featureLayer);

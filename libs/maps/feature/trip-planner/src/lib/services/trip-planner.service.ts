@@ -1906,7 +1906,7 @@ export class TripPlannerService implements OnDestroy {
                 },
                 paths: el.paths
               }),
-              symbol: getSymbol(el.mode)
+              symbol: getSymbol(el.mode) as esri.GraphicProperties['symbol']
             });
 
             graphicCollection.push(graphic);
@@ -2333,8 +2333,7 @@ export class TripPlannerService implements OnDestroy {
 
   public computeZoomLevel(graphics: Array<esri.Graphic>): Promise<number> {
     return this.moduleProvider.require(['GeometryEngine', 'Point']).then(([GeometryEngine]: [esri.geometryEngine]) => {
-      const geometries: esri.Geometry[] = graphics.map((graphic) => graphic.geometry);
-      const result = GeometryEngine.union(geometries);
+      const result = GeometryEngine.union(graphics.map((graphic) => graphic.geometry));
 
       const xMin = result.extent.xmin;
       const xMax = result.extent.xmax;
