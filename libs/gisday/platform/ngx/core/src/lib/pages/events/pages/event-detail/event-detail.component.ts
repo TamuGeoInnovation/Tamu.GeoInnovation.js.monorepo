@@ -20,7 +20,13 @@ import {
 } from 'rxjs';
 
 import { Event, EventAttendanceDto, GisDayAppMetadata, Speaker } from '@tamu-gisc/gisday/platform/data-api';
-import { CheckinService, EventService, RsvpService, SeasonService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import {
+  CheckinService,
+  EventService,
+  RsvpService,
+  SeasonService,
+  UserService
+} from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GISDayRoles, parseDateStrings, sortSpeakersByAffiliation } from '@tamu-gisc/gisday/platform/ngx/common';
@@ -35,6 +41,7 @@ import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common'
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import { getGeolocation, isLatLonPolygon } from '@tamu-gisc/common/utils/geometry';
 import { CHECK_IN_ZONE_EVENT_MODE } from '@tamu-gisc/gisday/common';
+import { SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
@@ -42,6 +49,7 @@ import { CHECK_IN_ZONE_EVENT_MODE } from '@tamu-gisc/gisday/common';
   styleUrls: ['./event-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
+    SiteHasPipe,
     NgIf,
     AccordionComponent,
     AccordionHeaderComponent,
@@ -246,7 +254,12 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           startWith(0),
           map(() => {
             const now = new Date();
-            return startEndTimes.start !== null && startEndTimes.end !== null && now >= startEndTimes.start && now <= startEndTimes.end;
+            return (
+              startEndTimes.start !== null &&
+              startEndTimes.end !== null &&
+              now >= startEndTimes.start &&
+              now <= startEndTimes.end
+            );
           })
         );
       })

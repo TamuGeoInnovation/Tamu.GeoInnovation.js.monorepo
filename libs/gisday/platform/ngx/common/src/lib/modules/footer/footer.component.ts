@@ -8,13 +8,14 @@ import { PlaceVisibilityOptions } from '../../enums/place-visibility-options.enu
 import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
+import { SiteHasPipe } from '../../site/site';
 
 @Component({
   selector: 'tamu-gisc-app-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [RouterLink, AsyncPipe, SeasonLinkPipe]
+  imports: [SiteHasPipe, RouterLink, AsyncPipe, SeasonLinkPipe]
 })
 export class FooterComponent implements OnInit {
   private readonly ss = inject(SeasonService);

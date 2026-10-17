@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 
+import { siteFeatureGuard } from '@tamu-gisc/gisday/platform/ngx/common';
+
 import { AdminComponent } from './admin.component';
 
 export const adminRoutes: Routes = [
@@ -13,10 +15,12 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'classes',
+        canActivate: [siteFeatureGuard('classes')],
         loadChildren: () => import('./pages/class/admin-class.routes').then((m) => m.adminClassRoutes)
       },
       {
         path: 'competitions',
+        canActivate: [siteFeatureGuard('competitions')],
         children: [
           {
             path: 'designer',
@@ -59,6 +63,7 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'research-competition',
+        canActivate: [siteFeatureGuard('competitions')],
         loadChildren: () =>
           import('./pages/research-competition/research-competition.routes').then((m) => m.researchCompetitionRoutes)
       },

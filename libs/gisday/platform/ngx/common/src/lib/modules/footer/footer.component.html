@@ -24,22 +24,29 @@
         <ul>
           <li><a [routerLink]="'sessions' | seasonLink : (viewedYear$ | async)">Sessions</a></li>
           <li><a [routerLink]="'presenters' | seasonLink : (viewedYear$ | async)">Presenters</a></li>
+          @if ('competitions' | siteHas) {
           <li><a [routerLink]="['/competitions']">Competitions</a></li>
+          }
         </ul>
       </div>
       <div class="column3">
         <p class="footer-column-title">About</p>
         <ul>
           <li><a [routerLink]="['/about']">Overview</a></li>
+          @if ('faq' | siteHas) {
           <li><a [routerLink]="['/faq']">FAQ</a></li>
+          } @if ('sponsors' | siteHas) {
           <li><a [routerLink]="'sponsors' | seasonLink : (viewedYear$ | async)">Sponsors</a></li>
+          }
         </ul>
       </div>
       <div class="column3">
         <p class="footer-column-title">My Account</p>
         <ul>
           <li><a [routerLink]="['/sessions']">Registered Sessions</a></li>
+          @if ('classes' | siteHas) {
           <li><a [routerLink]="['/me/classes']">My Classes</a></li>
+          }
           <li><a [routerLink]="['/me']">Profile Details</a></li>
         </ul>
       </div>

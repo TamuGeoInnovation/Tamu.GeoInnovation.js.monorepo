@@ -22,6 +22,7 @@ import { PlaceVisibilityOptions } from '@tamu-gisc/gisday/platform/ngx/common';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { AssetUrlPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GISDAY_SITE, SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 const numberDictionary = {
   0: 'Zero',
@@ -42,7 +43,7 @@ const numberDictionary = {
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
+  imports: [SiteHasPipe, RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
 })
 export class LandingComponent implements OnInit {
   private titleService = inject(Title);
@@ -50,7 +51,8 @@ export class LandingComponent implements OnInit {
   private readonly sponsorService = inject(SponsorService);
   private readonly placeService = inject(PlaceService);
 
-  private title = 'TxGIS Day';
+  public readonly site = inject(GISDAY_SITE);
+  private title = this.site.name;
   public timeTill: Date = new Date();
   public daysTill: string;
   public subscription: Subscription;
