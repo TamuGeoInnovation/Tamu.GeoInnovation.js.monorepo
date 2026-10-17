@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 import { Observable, filter, map, mergeMap, shareReplay, startWith, toArray } from 'rxjs';
 
 import { ActiveSeasonDto, Place, SeasonDay, Speaker } from '@tamu-gisc/gisday/platform/data-api';
@@ -46,7 +47,7 @@ export class AboutComponent implements OnInit {
   public organizingMembers$: Observable<Array<Partial<Speaker>>>;
 
   constructor() {
-    this.titleService.setTitle('About | TxGIS Day');
+    this.titleService.setTitle(`About | ${inject(GISDAY_SITE).name}`);
   }
 
   public ngOnInit(): void {

@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
+import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
 
 import { ContactService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -26,7 +27,7 @@ export class ContactComponent implements OnInit {
   public buttonText: Observable<string>;
 
   constructor() {
-    this.titleService.setTitle('Contact | TxGIS Day');
+    this.titleService.setTitle(`Contact | ${inject(GISDAY_SITE).name}`);
   }
 
   public ngOnInit(): void {

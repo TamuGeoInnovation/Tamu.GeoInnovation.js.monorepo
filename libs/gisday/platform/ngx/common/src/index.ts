@@ -38,3 +38,6 @@ export * from './lib/modules/forms/components/sponsors/sponsor-add-edit-form/spo
 export * from './lib/modules/forms/components/tags/tag-add-edit-form/tag-add-edit-form.component';
 export * from './lib/modules/forms/components/universities/university-add-edit-form/university-add-edit-form.component';
 export * from './lib/modules/forms/components/user-submissions/user-submission-add-edit-form/user-submission-add-edit-form.component';
+
+// The site this deployment is (#1835)
+export * from './lib/site/site';

@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -13,7 +14,7 @@ export class FaqComponent {
   private titleService = inject(Title);
 
   constructor() {
-    this.titleService.setTitle('FAQ | TxGIS Day');
+    this.titleService.setTitle(`FAQ | ${inject(GISDAY_SITE).name}`);
   }
 
   public onFaqItemClick(event) {

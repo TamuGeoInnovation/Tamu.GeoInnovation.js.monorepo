@@ -34,6 +34,15 @@ import { AuthorizationModule } from '@tamu-gisc/common/nest/auth';
 import { AppService } from './app.service';
 import { environment, ormConfig } from '../environments/environment';
 import { GISDAY_COMPETITIONS_ENTITIES, GisdayCompetitionsDataApiModule } from '@tamu-gisc/gisday/competitions/data-api';
+import { GisdayFeature, gisdaySite, siteHas } from '@tamu-gisc/gisday/common';
+
+/**
+ * The site this API serves (#1835), from `GISDAY_SITE`; unset, it is txgisday.org. A feature the site
+ * leaves out has no endpoints, so its data can't be written by calling the API directly. Its tables
+ * stay, so every site's database has the same schema and the same migrations.
+ */
+const site = gisdaySite(process.env.GISDAY_SITE);
+const onlyWith = <T>(feature: GisdayFeature, modules: Array<T>): Array<T> => (siteHas(site, feature) ? modules : []);
 
 @Module({
   imports: [
@@ -64,8 +73,9 @@ import { GISDAY_COMPETITIONS_ENTITIES, GisdayCompetitionsDataApiModule } from '@
         disabled: environment.auth0_management_disabled
       }
     }),
-    CheckInModule,
-    ClassModule,
+    ...onlyWith('checkIns', [CheckInModule]),
+    ...onlyWith('classes', [ClassModule, UserClassModule]),
+    ...onlyWith('competitions', [UserSubmissionModule, GisdayCompetitionsDataApiModule]),
     EventModule,
     InitialSurveyModule,
     QuestionTypeModule,
@@ -76,10 +86,8 @@ import { GISDAY_COMPETITIONS_ENTITIES, GisdayCompetitionsDataApiModule } from '@
     SubmissionTypeModule,
     TagModule,
     UniversityModule,
-    UserClassModule,
     UserInfoModule,
     UserRsvpModule,
-    UserSubmissionModule,
     SeasonDayModule,
     SeasonModule,
     OrganizationModule,
@@ -88,7 +96,6 @@ import { GISDAY_COMPETITIONS_ENTITIES, GisdayCompetitionsDataApiModule } from '@
     PlaceModule,
     AssetsModule,
     ContactModule,
-    GisdayCompetitionsDataApiModule,
     BullModule.forRoot({
       redis: {
         host: process.env.REDIS_HOST || 'localhost',

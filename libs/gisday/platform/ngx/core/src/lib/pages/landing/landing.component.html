@@ -7,11 +7,11 @@
       <div class="flex flex-column align-center">
         <div class="logo-container">
           <h1 class="site-logo">
-            TxGIS Day @if ((activeSeason$ | async)?.year; as year) {
+            {{ site.name }} @if ((activeSeason$ | async)?.year; as year) {
             <span>{{year}}</span>
             }
           </h1>
-          <img src="assets/images/2022-TIN-sq-1080px.png" />
+          <img [src]="site.logo" />
         </div>
 
         <div class="landing-container">
@@ -87,6 +87,7 @@
     <div style="background-image: url('assets/images/photos/14210_593.jpg')"></div>
   </div>
 
+  @if ('sponsors' | siteHas) {
   <div class="medium-partition bg-md-grey-50">
     <h1>Event Sponsors</h1>
     <div class="red-line medium"></div>
@@ -107,6 +108,7 @@
       }
     </div>
   </div>
+  }
 
   <div class="medium-partition">
     <h1>Participating Organizations</h1>

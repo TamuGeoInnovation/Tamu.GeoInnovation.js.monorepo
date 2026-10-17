@@ -13,10 +13,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes, ExtraOptions } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app/app.component';
+import { gisdaySite } from '@tamu-gisc/gisday/common';
+import { GISDAY_SITE, siteFeatureGuard } from '@tamu-gisc/gisday/platform/ngx/common';
 
 const routes: Routes = [
   {
     path: 'app',
+    canActivate: [siteFeatureGuard('competitions')],
     loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.publicRoutes)
   },
   {
@@ -32,6 +35,12 @@ const routeOptions: ExtraOptions = {
   scrollPositionRestoration: 'enabled',
   anchorScrolling: 'enabled'
 };
+
+const site = gisdaySite(environment.site);
+
+// index.html carries txgisday.org's title and icon, which the other sites replace here.
+document.title = site.name;
+document.querySelector<HTMLLinkElement>('link[rel="icon"]')?.setAttribute('href', site.favicon);
 
 if (environment.environment.production) {
   enableProdMode();
@@ -77,6 +86,10 @@ bootstrapApplication(AppComponent, {
       ReactiveFormsModule
     ),
     Title,
+    {
+      provide: GISDAY_SITE,
+      useValue: site
+    },
     {
       provide: env,
       useValue: environment

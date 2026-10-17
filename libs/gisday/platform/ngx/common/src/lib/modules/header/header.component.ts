@@ -20,6 +20,7 @@ import { TileSubmenuComponent } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-t
 import { NgClass, AsyncPipe } from '@angular/common';
 import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
 import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
+import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
 
 @Component({
   selector: 'tamu-gisc-app-header',
@@ -27,6 +28,7 @@ import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
+    SiteHasPipe,
     HamburgerTriggerComponent,
     TileNavigationComponent,
     TileComponent,
@@ -44,6 +46,7 @@ import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
 })
 export class HeaderComponent implements OnInit {
   private readonly as = inject(AuthService);
+  public readonly site = inject(GISDAY_SITE);
   private readonly ss = inject(SeasonService);
   private readonly ps = inject(PlaceService);
   private readonly rt = inject(Router);
