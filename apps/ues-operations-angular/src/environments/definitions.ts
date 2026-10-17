@@ -106,7 +106,7 @@ const commonLayerProps = {
   outFields: ['*'],
   minScale: 100000,
   maxScale: 0,
-  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerBaseElevationInfo,
+  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.ElevationInfoProperties,
   popupEnabled: false
 };
 
