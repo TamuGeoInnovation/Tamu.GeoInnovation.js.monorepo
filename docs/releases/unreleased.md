@@ -25,7 +25,8 @@ site, which issues a receipt saying the giver receives nothing in return. Sponso
 values, so the Foundation asked for that link to go. The button now opens a new page,
 `/sponsors/payment`, with the Foundation's wording: pay by check to the Texas A&M Foundation with
 "2026-27 GIS Day #73982" on the memo line, sent to the address given, or arrange an ACH or wire
-transfer with the Foundation. Nothing on the site links to the giving site any more
+transfer with the Foundation. The same button now also sits beside "Send Us a Message" under the
+additional sponsorships table. Nothing on the site links to the giving site any more
 ([#1829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1829)).
 
 | Before | After |
