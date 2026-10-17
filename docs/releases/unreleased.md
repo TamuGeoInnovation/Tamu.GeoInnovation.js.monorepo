@@ -18,16 +18,41 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-### On game days, Football Tailgating has its own notice
+### GIS Day: sponsors are told how to pay, instead of being sent to the giving site
 
-In the week before a home game and on the day, the main map now shows **Football Tailgating Map
-Available** below the Football Transportation one; clicking it opens the Tailgating map
-([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)). It uses the Football map's game days, so the two notices come and go together.
+The "Sponsor TxGIS Day at TAMU" button on the sponsor page went to the Texas A&M Foundation's giving
+site, which issues a receipt saying the giver receives nothing in return. Sponsorships have fair market
+values, so the Foundation asked for that link to go. The button now opens a new page,
+`/sponsors/payment`, with the Foundation's wording: pay by check to the Texas A&M Foundation with
+"2026-27 GIS Day #73982" on the memo line, sent to the address given, or arrange an ACH or wire
+transfer with the Foundation. The same button now also sits beside "Send Us a Message" under the
+additional sponsorships table. Nothing on the site links to the giving site any more
+([#1829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1829)).
 
 | Before | After |
 | --- | --- |
-| ![The main map's notice panel, first page, before](../screenshots/1817-tailgating-toast/before-main-map-toasts.png) | ![The main map's notice panel, first page, after](../screenshots/1817-tailgating-toast/after-notices-1.png) |
-|  | ![The second page: Football Tailgating Map Available, after](../screenshots/1817-tailgating-toast/after-notices-2.png) |
+| ![The sponsor page's buttons; the sponsor button opened the giving site in a new tab](../screenshots/gisday-sponsor-payment/before-sponsor-buttons.png) | ![The new payment page](../screenshots/gisday-sponsor-payment/after-payment-page.png) |
+
+### GIS Day: choose which organizations the Sessions page's filter lists
+
+The Organizations filter on the Sessions page listed every organization of the season. The organization
+form in Admin now has a fourth visibility setting, **Sessions Filter**, beside Header, Footer and About
+Page, and the filter lists only the organizations that have it ticked. **Until organizations are
+ticked, the filter is empty**, on this year's Sessions page and on past years' ([#1825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1825)).
+
+| Before | After, with four organizations ticked |
+| --- | --- |
+| ![Twelve organizations in the filter](../screenshots/gisday-sessions-org-filter/before-sessions-filter.png) | ![Four organizations in the filter](../screenshots/gisday-sessions-org-filter/after-sessions-filter.png) |
+
+### GIS Day: buttons side by side are the same height
+
+On the GIS Day site an outlined button, such as "Send Us a Message", stood 4 px taller than a filled
+one beside it, so pairs of them did not line up. Every button now has the same border, invisible on the
+filled ones, so they are the same size across the site ([#1831](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1831)).
+
+| Before | After |
+| --- | --- |
+| ![Send Us a Message 46 px tall, Sponsor TxGIS Day at TAMU 42 px](../screenshots/gisday-button-heights/before-sponsor-buttons.png) | ![Both 46 px tall](../screenshots/gisday-button-heights/after-sponsor-buttons.png) |
 
 ### Map search works with an apostrophe or a percent sign
 
@@ -44,6 +69,17 @@ own, now use the same function
 | --- | --- |
 | ![Searching Cain '51 on the main map: No results found](../screenshots/search-escape/before-apostrophe.png) | ![Searching Cain '51 lists James J. Cain '51 Building (0391)](../screenshots/search-escape/after-apostrophe.png) |
 | ![Searching % on Football Tailgating lists every tent and zone](../screenshots/search-escape/before-percent.png) | ![Searching % finds nothing](../screenshots/search-escape/after-percent.png) |
+
+### On game days, Football Tailgating has its own notice
+
+In the week before a home game and on the day, the main map now shows **Football Tailgating Map
+Available** below the Football Transportation one; clicking it opens the Tailgating map
+([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)). It uses the Football map's game days, so the two notices come and go together.
+
+| Before | After |
+| --- | --- |
+| ![The main map's notice panel, first page, before](../screenshots/1817-tailgating-toast/before-main-map-toasts.png) | ![The main map's notice panel, first page, after](../screenshots/1817-tailgating-toast/after-notices-1.png) |
+|  | ![The second page: Football Tailgating Map Available, after](../screenshots/1817-tailgating-toast/after-notices-2.png) |
 
 ### GIS Day: an event's time is chosen from a list again
 
@@ -457,8 +493,11 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
-| Football Tailgating game-day notice ([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)) | [The main map](https://dev.aggiemap.tamu.edu/map/d) in a private window, in the week before a home game | Two notices, **Football Transportation Map Available** then **Football Tailgating Map Available**; clicking the second opens the Tailgating map |
+| GIS Day: payment page instead of the giving site ([#1829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1829)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Sponsor TxGIS Day At TAMU" opens `/sponsors/payment` in the same tab: check payable to the Texas A&M Foundation with "2026-27 GIS Day #73982" on the memo line, the remit-to address, and the ACH or wire contact. No link anywhere goes to the giving site |
+| GIS Day: choose the organizations in the Sessions filter ([#1825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1825)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, Admin, Organizations, then `/sessions` | The organization form has a fourth checkbox, Sessions Filter. Tick it on two organizations and save: the Organizations filter on `/sessions` lists exactly those two, and their header and footer settings are unchanged |
+| GIS Day: buttons the same height ([#1831](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1831)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Send Us a Message" and "Sponsor TxGIS Day At TAMU" are the same height; filled buttons elsewhere (Sessions, the competition pages) are 4 px taller than before and otherwise unchanged |
 | Map search with an apostrophe or a percent sign ([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)) | [dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu), then [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Search `Cain '51`: James J. Cain '51 Building is listed. Search `O'` or `Aggie's`: no error, results or "No results found". On Football Tailgating, search `%`: "No results found", not every tent. Ordinary searches still work: `MSC`, `O12`, `Creamery` |
+| Football Tailgating game-day notice ([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)) | [The main map](https://dev.aggiemap.tamu.edu/map/d) in a private window, in the week before a home game | Two notices, **Football Transportation Map Available** then **Football Tailgating Map Available**; clicking the second opens the Tailgating map |
 | GIS Day: sponsorship levels back at last year's prices ([#1821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1821)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [the sponsor page](https://txgisday.org/sponsors/tamu) | Point $256, Line $512, Polygon $1,024, Raster $2,048, each level's perks as before |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
 | GIS Day: university banner in the admin speaker form ([#1757](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1757)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Speakers, edit a speaker who has a photograph | The university and class-year banner on the photograph, as on the Presenters page. Change the University or the Graduation Year: the banner changes at once, before saving. Choose no university: it goes. The public Presenters page and a presenter's page look as they did |
