@@ -5,7 +5,13 @@ import { takeUntil } from 'rxjs/operators';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { MapServiceInstance, MapConfig, EsriMapService, LayerSourcesService } from '@tamu-gisc/maps/esri';
+import {
+  MapServiceInstance,
+  MapConfig,
+  EsriMapService,
+  LayerSourcesService,
+  HIDDEN_DEFAULT_HIGHLIGHT
+} from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -250,10 +256,7 @@ export class MapComponent implements OnInit, OnDestroy {
                 position: 'bottom-right'
               }
             },
-            highlightOptions: {
-              haloOpacity: 0,
-              fillOpacity: 0
-            }
+            highlights: HIDDEN_DEFAULT_HIGHLIGHT
           }
         }
       });

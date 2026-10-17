@@ -775,18 +775,11 @@ export class EsriMapService {
       }
     };
 
-    // The renderer is typically populated by the service after the layer loads. Apply once on
-    // load, and again any time the renderer is reassigned.
-    layer
-      .when()
-      .then(() => {
-        applyToRenderer(layer.renderer);
-      })
-      .catch(() => {
-        /* swallow — the layer may fail to load for unrelated reasons */
-      });
-
-    layer.watch('renderer', (renderer: esri.Renderer) => applyToRenderer(renderer));
+    // The renderer is typically populated by the service after the layer loads. Apply to the one it
+    // has now, and again any time it is set: when the layer loads, and on any later reassignment.
+    this.moduleProvider.require(['reactiveUtils']).then(([reactiveUtils]: [esri.reactiveUtils]) => {
+      reactiveUtils.watch(() => layer.renderer, applyToRenderer, { initial: true });
+    });
   }
 
   /**
@@ -1219,8 +1212,8 @@ export class EsriMapService {
    * value to determine a best-fit zoom level.
    */
   public computeZoomLevel(graphics: Array<esri.Graphic>): Promise<number> {
-    return this.moduleProvider.require(['GeometryEngine']).then(([GeometryEngine]: [esri.geometryEngine]) => {
-      const result = GeometryEngine.union(graphics.map((graphic) => graphic.geometry));
+    return this.moduleProvider.require(['unionOperator']).then(([unionOperator]: [esri.unionOperator]) => {
+      const result = unionOperator.executeMany(graphics.map((graphic) => graphic.geometry));
 
       if (result.extent) {
         const xMin = result.extent.xmin;

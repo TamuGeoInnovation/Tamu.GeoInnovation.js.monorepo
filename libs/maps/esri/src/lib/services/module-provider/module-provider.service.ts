@@ -38,7 +38,7 @@ export class EsriModuleProviderService {
 
 /**
  * What `esri-loader` handed back for a module: a class module's default export (`Map`, `FeatureLayer`), or
- * the module itself for one made of functions (`projection`, `webMercatorUtils`, `rest/route`), which has no
+ * the module itself for one made of functions (`projectOperator`, `webMercatorUtils`, `rest/route`), which has no
  * default export.
  */
 function moduleValue(module: { default?: unknown }): unknown {
@@ -56,7 +56,8 @@ const dictionary = {
   VectorTileLayer: () => import('@arcgis/core/layers/VectorTileLayer.js'),
   // Required before the view's spatial reference can change, which happens when a basemap in a
   // different projection is selected. Without it the view's center does not survive the switch.
-  projection: () => import('@arcgis/core/geometry/projection.js'),
+  // Replaces the `projection` module, deprecated in 4.32; its load() loads the same engine.
+  projectOperator: () => import('@arcgis/core/geometry/operators/projectOperator.js'),
   Basemap: () => import('@arcgis/core/Basemap.js'),
   GraphicsLayer: () => import('@arcgis/core/layers/GraphicsLayer.js'),
   webMercatorUtils: () => import('@arcgis/core/geometry/support/webMercatorUtils.js'),
@@ -74,7 +75,10 @@ const dictionary = {
   FeatureFilter: () => import('@arcgis/core/layers/support/FeatureFilter.js'),
   SimpleLineSymbol: () => import('@arcgis/core/symbols/SimpleLineSymbol.js'),
   SimpleMarkerSymbol: () => import('@arcgis/core/symbols/SimpleMarkerSymbol.js'),
-  GeometryEngine: () => import('@arcgis/core/geometry/geometryEngine.js'),
+  // The geometry operators replace `geometryEngine`, deprecated in 4.32.
+  unionOperator: () => import('@arcgis/core/geometry/operators/unionOperator.js'),
+  // Replaces `Accessor.watch`, deprecated in 4.32.
+  reactiveUtils: () => import('@arcgis/core/core/reactiveUtils.js'),
   PictureMarkerSymbol: () => import('@arcgis/core/symbols/PictureMarkerSymbol.js'),
   GeoJSONLayer: () => import('@arcgis/core/layers/GeoJSONLayer.js'),
   CSVLayer: () => import('@arcgis/core/layers/CSVLayer.js'),

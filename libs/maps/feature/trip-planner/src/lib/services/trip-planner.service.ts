@@ -36,6 +36,7 @@ import * as gju from 'geojson-utils';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { findNearestIndex, isCoordinatePair, getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
+import { centroidFromPolygonGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 import { minBy, pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
@@ -1003,12 +1004,11 @@ export class TripPlannerService implements OnDestroy {
                     });
                   }
 
+                  // The lots are the search service's JSON, not Polygon instances, so they have rings
+                  // and no centroid of their own; the shared helper handles both.
                   const centroids = result.map((f) => {
                     return {
-                      geometry: {
-                        latitude: (<esri.geometryPolygon>f.geometry).centroid.latitude,
-                        longitude: (<esri.geometryPolygon>f.geometry).centroid.longitude
-                      }
+                      geometry: centroidFromPolygonGeometry(<esri.Polygon>f.geometry)
                     };
                   });
 
@@ -1020,10 +1020,7 @@ export class TripPlannerService implements OnDestroy {
                     centroids
                   );
 
-                  const nearestGeometry = {
-                    latitude: (<esri.geometryPolygon>result[nearest].geometry).centroid.latitude,
-                    longitude: (<esri.geometryPolygon>result[nearest].geometry).centroid.longitude
-                  };
+                  const nearestGeometry = centroids[nearest].geometry;
 
                   // If nearby bike returns a result, compose a trip point with its location
                   // and splice it into the other stops.
@@ -2332,8 +2329,8 @@ export class TripPlannerService implements OnDestroy {
   }
 
   public computeZoomLevel(graphics: Array<esri.Graphic>): Promise<number> {
-    return this.moduleProvider.require(['GeometryEngine', 'Point']).then(([GeometryEngine]: [esri.geometryEngine]) => {
-      const result = GeometryEngine.union(graphics.map((graphic) => graphic.geometry));
+    return this.moduleProvider.require(['unionOperator']).then(([unionOperator]: [esri.unionOperator]) => {
+      const result = unionOperator.executeMany(graphics.map((graphic) => graphic.geometry));
 
       const xMin = result.extent.xmin;
       const xMax = result.extent.xmax;

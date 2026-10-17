@@ -79,10 +79,11 @@ export class BasemapGalleryService {
   constructor() {
     let watch: { remove(): void } | undefined;
 
-    this.ms.store.subscribe((instance) => {
+    this.ms.store.subscribe(async (instance) => {
+      const [reactiveUtils] = (await this.mp.require(['reactiveUtils'])) as [esri.reactiveUtils];
+
       watch?.remove();
-      watch = instance.map.watch('basemap', () => this.onBasemapChange(instance));
-      this.onBasemapChange(instance);
+      watch = reactiveUtils.watch(() => instance.map.basemap, () => this.onBasemapChange(instance), { initial: true });
     });
   }
 
@@ -95,13 +96,13 @@ export class BasemapGalleryService {
         'TileLayer',
         'VectorTileLayer',
         'WMSLayer',
-        'projection'
+        'projectOperator'
       ]),
       this.ms.store
     ]).pipe(
       switchMap(
         ([
-          [BasemapGalleryViewModel, LocalBasemapsSource, Basemap, TileLayer, VectorTileLayer, WMSLayer, projection],
+          [BasemapGalleryViewModel, LocalBasemapsSource, Basemap, TileLayer, VectorTileLayer, WMSLayer, projectOperator],
           instances
         ]: [
           [
@@ -111,7 +112,7 @@ export class BasemapGalleryService {
             typeof esri.TileLayer,
             typeof esri.VectorTileLayer,
             typeof esri.WMSLayer,
-            esri.projection
+            esri.projectOperator
           ],
           MapServiceInstance
         ]) => {
@@ -121,7 +122,7 @@ export class BasemapGalleryService {
           // Switching between them changes the view's spatial reference, which the API supports from 4.23 -
           // but only with the projection engine loaded. Without it the view's center does not survive the
           // switch. Loading it before the gallery exists means the first switch is already safe.
-          return from(projection.load()).pipe(
+          return from(projectOperator.load()).pipe(
             map(() => {
               // There is a bug in the current version of the JS API (4.23) that prevents Aggiemap basemap from loading
               // from an auto-castable source because the baseLayers are not an instance of a class and the load() method does not exist.
@@ -187,7 +188,7 @@ export class BasemapGalleryService {
    * widget*. This sets `map.basemap` directly, which does not carry the view with it - the basemap
    * swaps, the view stays put, and the new basemap silently draws nothing.
    *
-   * So the view is moved explicitly. `projection` is loaded in `gallery()` above, without which the
+   * So the view is moved explicitly. `projectOperator` is loaded in `gallery()` above, without which the
    * view's center does not survive the change.
    */
   public async setBasemap(basemap: esri.Basemap): Promise<void> {
@@ -348,7 +349,7 @@ export class BasemapGalleryService {
       typeof esri.WMSLayer
     ];
 
-    await this.loadProjection();
+    await this.loadProjectOperator();
 
     await this.setBasemap(this.makeNearmapBasemap(Basemap, WMSLayer));
     await this.setNearmapCapture(date);
@@ -447,7 +448,7 @@ export class BasemapGalleryService {
 
     await layer.load();
 
-    const projection = await this.loadProjection();
+    const projectOperator = await this.loadProjectOperator();
 
     const center = instance.view.center;
     const byDate = new Map<string, NearmapCapture>();
@@ -460,7 +461,7 @@ export class BasemapGalleryService {
         return;
       }
 
-      const point = extent && projection.project(center, extent.spatialReference);
+      const point = extent && projectOperator.execute(center, extent.spatialReference);
 
       if (extent && point && !extent.contains(point as esri.Point)) {
         return;
@@ -540,13 +541,13 @@ export class BasemapGalleryService {
     return new Basemap({ ...NearmapCSBasemap, baseLayers: [new WMSLayer({ ...nearmapJSON })] });
   }
 
-  /** The projection engine, loaded: `setBasemap` needs it to move the view between references. */
-  private async loadProjection(): Promise<esri.projection> {
-    const [projection] = (await this.mp.require(['projection'])) as [esri.projection];
+  /** The project operator, loaded: `setBasemap` needs it to move the view between references. */
+  private async loadProjectOperator(): Promise<esri.projectOperator> {
+    const [projectOperator] = (await this.mp.require(['projectOperator'])) as [esri.projectOperator];
 
-    await projection.load();
+    await projectOperator.load();
 
-    return projection;
+    return projectOperator;
   }
 
   /** The Aerial Imagery layer, when that is the basemap the map is showing. */
@@ -569,19 +570,10 @@ export class BasemapGalleryService {
    * state need the later moment, which is what makes the Aerial Imagery wait visible rather than
    * looking like nothing happened.
    */
-  private whenViewIdle(view: esri.MapView | esri.SceneView): Promise<void> {
-    if (!view.updating) {
-      return Promise.resolve();
-    }
+  private async whenViewIdle(view: esri.MapView | esri.SceneView): Promise<void> {
+    const [reactiveUtils] = (await this.mp.require(['reactiveUtils'])) as [esri.reactiveUtils];
 
-    return new Promise((resolve) => {
-      const handle = view.watch('updating', (updating: boolean) => {
-        if (!updating) {
-          handle.remove();
-          resolve();
-        }
-      });
-    });
+    await reactiveUtils.whenOnce(() => !view.updating);
   }
 }
 
