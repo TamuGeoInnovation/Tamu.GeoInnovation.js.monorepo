@@ -27,7 +27,7 @@
 # downloads the Playwright image, about 2 GB.
 #
 # The checkout's node_modules is not used, so a checkout or worktree without an install can run the
-# suite (#1459). The suite needs three packages: @playwright/test, pngjs and esri-loader. They live in
+# suite (#1459). The suite needs two packages: @playwright/test and pngjs (esri-loader until #1844). They live in
 # the Docker volume tamu-js-smoke-nm, mounted over /work/node_modules, at the versions package-lock.json
 # records. The first run installs them, in a few seconds, and so does any run after those versions
 # change. Docker leaves an empty node_modules folder in a checkout that had none.
@@ -113,9 +113,9 @@ docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -v "$v
   node -e '
     const fs = require("fs");
 
-    // Install the three packages into the volume unless it already holds the versions the lock records.
+    // Install the two packages into the volume unless it already holds the versions the lock records.
     const lock = require("./package-lock.json").packages;
-    const wanted = ["@playwright/test", "pngjs", "esri-loader"]
+    const wanted = ["@playwright/test", "pngjs"]
       .map((name) => `${name}@${lock["node_modules/" + name].version}`)
       .join(" ");
     if (!wanted.startsWith(`@playwright/test@${process.env.PW_VERSION} `)) {

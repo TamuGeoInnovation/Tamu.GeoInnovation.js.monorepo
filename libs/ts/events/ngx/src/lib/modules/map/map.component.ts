@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Subject, ReplaySubject, Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { loadModules } from 'esri-loader';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -286,8 +285,8 @@ export class MapComponent implements OnInit, OnDestroy {
     // A link naming an Aerial Imagery capture, `?imagery=2025-11-22`, opens on it (#1541).
     this.basemaps.applyNearmapCaptureFromUrl();
 
-    loadModules(['esri/widgets/Track', 'esri/widgets/Compass'])
-      .then(([Track, Compass]) => {
+    Promise.all([import('@arcgis/core/widgets/Track.js'), import('@arcgis/core/widgets/Compass.js')])
+      .then(([{ default: Track }, { default: Compass }]) => {
         instances.view.when(() => {
           //
           // Loader disable

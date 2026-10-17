@@ -153,7 +153,7 @@ tier.
 production" means release. Nobody asks for full; it runs by itself.
 
 **It does not use the checkout's `node_modules`** (#1459), so a checkout or worktree that was never
-installed can run it. The suite needs three packages, `@playwright/test`, `pngjs` and `esri-loader`,
+installed can run it. The suite needs two packages, `@playwright/test` and `pngjs`,
 and the script keeps them in the Docker volume `tamu-js-smoke-nm`, mounted over `/work/node_modules`.
 The first run installs them at the versions `package-lock.json` records, which takes a few seconds,
 and any run after those versions change installs them again. A full `npm ci` is 2,594 packages and,

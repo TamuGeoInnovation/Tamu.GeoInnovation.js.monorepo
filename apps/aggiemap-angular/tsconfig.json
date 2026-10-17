@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["node", "jest", "arcgis-js-api"],
+    "types": ["node", "jest", "../../node_modules/@arcgis/core/interfaces"],
     "target": "es2020",
     "module": "preserve",
     "moduleResolution": "bundler"

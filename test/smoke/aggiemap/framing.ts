@@ -27,7 +27,7 @@ const SETTLE_TIMEOUT_MS = 30_000;
  *
  * The map probe's `framing` (#1379), which reports a WGS 84 center in any spatial reference (#1380).
  * Builds whose probe predates it - production until its first deploy after #1379 - fall back to Esri's
- * own list of live views: the apps load ArcGIS through esri-loader, so its AMD `require` is on
+ * own list of live views: those builds load ArcGIS through esri-loader, so its AMD `require` is on
  * `window`, and `esri/views/View`'s `views` holds every view the page has created. The map is the 2D
  * one. Those builds frame every map in geographic or Web Mercator coordinates, which carry a longitude
  * and latitude, so the fallback has nothing to project.
