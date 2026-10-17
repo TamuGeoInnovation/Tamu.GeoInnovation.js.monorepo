@@ -16,7 +16,7 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
-import { SeasonDayCardComponent, SeasonLinkPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import { PlaceVisibilityOptions, SeasonDayCardComponent, SeasonLinkPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -114,6 +114,7 @@ export class EventViewComponent implements OnInit, OnDestroy {
     );
     this.organizations$ = this.activeSeason$.pipe(
       switchMap((season) => (season ? this.os.getEntitiesForSeason(season.guid) : of([]))),
+      map((places) => places.filter((place) => place?.visibilitySettings?.includes(PlaceVisibilityOptions.SessionsFilter))),
       shareReplay(1)
     );
 

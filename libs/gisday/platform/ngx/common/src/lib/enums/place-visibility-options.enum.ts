@@ -1,5 +1,6 @@
 export enum PlaceVisibilityOptions {
   Header = 'header',
   Footer = 'footer',
-  OrgPage = 'org-page'
+  OrgPage = 'org-page',
+  SessionsFilter = 'sessions-filter'
 }
