@@ -307,14 +307,10 @@ export function MainMapLayerSources(
         ...commonLayerProps,
         legendEnabled: false,
         opacity: 0.0,
-        labelingInfo: [
-          {
-            symbol: {
-              type: 'text',
-              color: [0, 0, 0, 0]
-            }
-          }
-        ]
+        // The lots are drawn by the basemap; this invisible layer exists for its popups and search, so the
+        // service's own lot-name labels are not drawn. This was a label class with a transparent symbol and
+        // no expression, which ArcGIS 4.29 and later log as an error ("Unable to create computed field").
+        labelsVisible: false
       }
     },
     {
@@ -564,7 +560,7 @@ export function MainMapLayerSources(
               }
             }
           ]
-        } as unknown as esri.UniqueValueRenderer
+        }
       }
     },
     {
@@ -607,7 +603,7 @@ export function MainMapLayerSources(
               }
             }
           ]
-        } as unknown as esri.UniqueValueRenderer
+        }
       }
     },
     {

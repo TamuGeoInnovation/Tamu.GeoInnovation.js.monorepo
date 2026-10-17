@@ -8,8 +8,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
-
 /**
  * Layer ids used by the Dining kiosk map. `BUILDINGS` is the same always-on basemap layer shown by
  * default on the main map, and `DINING_LOCATIONS` is the one layer this kiosk map exists to show, on
@@ -98,7 +96,7 @@ export const DiningKioskLayerSources: LayerSource[] = [
             }
           }
         ]
-      } as unknown as esri.UniqueValueRenderer
+      }
     }
   }
 ];
