@@ -254,6 +254,9 @@ a {
   @include transition(color 0.3s, background 0.3s);
 
   border-radius: 1.5rem;
+  // The outlined variants below draw this border; the filled one keeps it transparent, so every
+  // variant is the same size and a pair of them lines up (#1831).
+  border: 1.5pt solid transparent;
   overflow: hidden;
   color: #fafafa;
   background: rgba(85, 138, 216, 1);

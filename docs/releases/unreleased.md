@@ -18,6 +18,16 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### GIS Day: buttons side by side are the same height
+
+On the GIS Day site an outlined button, such as "Send Us a Message", stood 4 px taller than a filled
+one beside it, so pairs of them did not line up. Every button now has the same border, invisible on the
+filled ones, so they are the same size across the site ([#1831](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1831)).
+
+| Before | After |
+| --- | --- |
+| ![Send Us a Message 46 px tall, Sponsor TxGIS Day at TAMU 42 px](../screenshots/gisday-button-heights/before-sponsor-buttons.png) | ![Both 46 px tall](../screenshots/gisday-button-heights/after-sponsor-buttons.png) |
+
 ### Map search works with an apostrophe or a percent sign
 
 Searching for `Cain '51` found nothing, on every map: the apostrophe ended the query's text early, and
@@ -446,6 +456,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| GIS Day: buttons the same height ([#1831](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1831)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Send Us a Message" and "Sponsor TxGIS Day At TAMU" are the same height; filled buttons elsewhere (Sessions, the competition pages) look as before, 4 px taller |
 | Map search with an apostrophe or a percent sign ([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)) | [dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu), then [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Search `Cain '51`: James J. Cain '51 Building is listed. Search `O'` or `Aggie's`: no error, results or "No results found". On Football Tailgating, search `%`: "No results found", not every tent. Ordinary searches still work: `MSC`, `O12`, `Creamery` |
 | GIS Day: sponsorship levels back at last year's prices ([#1821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1821)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [the sponsor page](https://txgisday.org/sponsors/tamu) | Point $256, Line $512, Polygon $1,024, Raster $2,048, each level's perks as before |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
