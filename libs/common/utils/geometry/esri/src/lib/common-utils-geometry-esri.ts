@@ -165,8 +165,8 @@ export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): Autocast
 
 export class CoordinateConverter {
   private modules: {
-    point: esri.PointConstructor;
-    spatialReference: esri.SpatialReferenceConstructor;
+    point: typeof esri.Point;
+    spatialReference: typeof esri.SpatialReference;
     webMercatorUtils: esri.webMercatorUtils;
   } = { point: undefined, spatialReference: undefined, webMercatorUtils: undefined };
 

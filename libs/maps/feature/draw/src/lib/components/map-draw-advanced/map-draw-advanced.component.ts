@@ -61,12 +61,12 @@ export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnIni
   /**
    * Color class container necessary for color format conversion (hex to rgb, for example).
    */
-  private _color: esri.ColorConstructor;
+  private _color: typeof esri.Color;
 
   public ngOnInit(): void {
     super.ngOnInit();
 
-    this.moduleProvider.require(['Color']).then(([color]: [esri.ColorConstructor]) => {
+    this.moduleProvider.require(['Color']).then(([color]: [typeof esri.Color]) => {
       this._color = color;
     });
   }

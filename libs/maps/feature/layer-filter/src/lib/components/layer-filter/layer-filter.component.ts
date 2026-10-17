@@ -64,7 +64,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
 
   private mapView: Observable<esri.View>;
 
-  private featureFilterModule: Observable<esri.FeatureFilterConstructor>;
+  private featureFilterModule: Observable<typeof esri.FeatureFilter>;
 
   /**
    * Field operator definition dictionary.

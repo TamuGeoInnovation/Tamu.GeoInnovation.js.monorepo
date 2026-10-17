@@ -105,12 +105,12 @@ export class BasemapGalleryService {
           instances
         ]: [
           [
-            esri.BasemapGalleryViewModelConstructor,
-            esri.LocalBasemapsSourceConstructor,
-            esri.BasemapConstructor,
-            esri.TileLayerConstructor,
-            esri.VectorTileLayerConstructor,
-            esri.WMSLayerConstructor,
+            typeof esri.BasemapGalleryViewModel,
+            typeof esri.LocalBasemapsSource,
+            typeof esri.Basemap,
+            typeof esri.TileLayer,
+            typeof esri.VectorTileLayer,
+            typeof esri.WMSLayer,
             esri.projection
           ],
           MapServiceInstance
@@ -266,8 +266,8 @@ export class BasemapGalleryService {
    */
   private async standIn(): Promise<esri.Basemap> {
     const [Basemap, TileLayer] = (await this.mp.require(['Basemap', 'TileLayer'])) as [
-      esri.BasemapConstructor,
-      esri.TileLayerConstructor
+      typeof esri.Basemap,
+      typeof esri.TileLayer
     ];
     const raster =
       aggiemapGalleryBasemaps(this.ts.isTesting).find((basemap) => basemap.baseLayers[0].type !== 'VectorTileLayer') ??
@@ -344,8 +344,8 @@ export class BasemapGalleryService {
     }
 
     const [Basemap, WMSLayer] = (await this.mp.require(['Basemap', 'WMSLayer'])) as [
-      esri.BasemapConstructor,
-      esri.WMSLayerConstructor
+      typeof esri.Basemap,
+      typeof esri.WMSLayer
     ];
 
     await this.loadProjection();
@@ -531,7 +531,7 @@ export class BasemapGalleryService {
     });
   }
 
-  private makeNearmapBasemap(Basemap: esri.BasemapConstructor, WMSLayer: esri.WMSLayerConstructor): esri.Basemap {
+  private makeNearmapBasemap(Basemap: typeof esri.Basemap, WMSLayer: typeof esri.WMSLayer): esri.Basemap {
     const nearmapJSON = JSON.parse(JSON.stringify(NearmapCSBasemap.baseLayers[0]));
 
     // Remove the type property to prevent read-only property assignment error.

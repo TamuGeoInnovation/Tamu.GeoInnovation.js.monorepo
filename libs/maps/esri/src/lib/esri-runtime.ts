@@ -16,6 +16,8 @@
  * the same path, so its version has to move with the package's.
  *
  * Moving to a newer release: change `@arcgis/core` in `package.json`, this constant, and the stylesheet's
- * URL in `esri-map.component.scss`, together.
+ * URL in `esri-map.component.scss`, together. #1845 went from 4.27 to 4.34 that way, one minor release per
+ * commit, each with the breaking changes it needed written in its commit message; read Esri's release notes
+ * for every release skipped, since its typings change between minors (4.30 to 4.32 rewrote them).
  */
-export const ESRI_RUNTIME_VERSION = '4.27';
+export const ESRI_RUNTIME_VERSION = '4.34';

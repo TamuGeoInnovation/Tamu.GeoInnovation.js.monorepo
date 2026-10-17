@@ -27,9 +27,9 @@ export class FeatureCollectorService extends FeatureSelectorService {
             if (options && options.layers !== undefined) {
               layerFiltered = eventGraphics.filter((graphic) => {
                 if (options.layers instanceof Array) {
-                  return options.layers.includes(graphic.layer.id);
+                  return options.layers.includes(graphic.layer?.id);
                 } else if (typeof options.layers === 'string') {
-                  return options.layers === graphic.layer.id;
+                  return options.layers === graphic.layer?.id;
                 }
               });
             } else {

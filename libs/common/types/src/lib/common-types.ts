@@ -121,9 +121,27 @@ type SimpleRendererNativeOptions = Omit<esri.SimpleRendererProperties, 'symbol'>
  * Auto-castable unique value interface inheriting most of the Esri Unique Value Renderer properties except some which are overwritten
  * where they support auto-casting.
  */
-type UniqueValueRendererNativeOptions = Omit<esri.UniqueValueRendererProperties, 'backgroundFillSymbol'> & {
+type UniqueValueRendererNativeOptions = Omit<esri.UniqueValueRendererProperties, 'backgroundFillSymbol' | 'uniqueValueInfos'> & {
   type: 'unique-value';
   backgroundFillSymbol?: SimpleFillSymbol | PictureFillSymbol | Polygon3DSymbol;
+  // ArcGIS 4.31's typings give a unique value's symbol as the abstract `SymbolProperties`, which has no `type`,
+  // so a symbol to be autocast from its `type` did not compile (#1845).
+  uniqueValueInfos?: (Omit<esri.UniqueValueInfoProperties, 'symbol'> & {
+    symbol?:
+      | esri.SymbolProperties
+      | SimpleFillSymbol
+      | PictureFillSymbol
+      | SimpleLineSymbol
+      | SimpleMarkerSymbol
+      | PictureMarkerSymbol
+      | TextSymbol
+      | Point3DSymbol
+      | Line3DSymbol
+      | Polygon3DSymbol
+      | Mesh3DSymbol
+      | Label3DSymbol
+      | WebStyleSymbol;
+  })[];
 };
 
 type RendererAutoCastNativeOptions =

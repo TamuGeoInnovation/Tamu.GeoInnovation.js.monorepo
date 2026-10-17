@@ -15,7 +15,7 @@ export class LayerListService {
 
   public layers() {
     return combineLatest([from(this.moduleProvider.require(['LayerListViewModel'])), this.mapService.store]).pipe(
-      switchMap(([[LayerListViewModel], instance]: [[esri.LayerListViewModelConstructor], MapServiceInstance]) => {
+      switchMap(([[LayerListViewModel], instance]: [[typeof esri.LayerListViewModel], MapServiceInstance]) => {
         this._model = new LayerListViewModel({
           view: instance.view
         });

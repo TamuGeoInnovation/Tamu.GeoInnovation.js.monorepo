@@ -1678,9 +1678,9 @@ export class TripPlannerService implements OnDestroy {
       .require(['GraphicsLayer', 'Graphic', 'Point'])
       .then(
         ([GraphicsLayer, Graphic, Point]: [
-          esri.GraphicsLayerConstructor,
-          esri.GraphicConstructor,
-          esri.PointConstructor
+          typeof esri.GraphicsLayer,
+          typeof esri.Graphic,
+          typeof esri.Point
         ]) => {
           // Check map for existing trip points layer, to avoid creating multiple layers.
           let layer = <esri.GraphicsLayer>this._map.findLayerById(id);
@@ -1822,10 +1822,10 @@ export class TripPlannerService implements OnDestroy {
       .require(['GraphicsLayer', 'Graphic', 'Polyline', 'Point'])
       .then(
         ([GraphicsLayer, Graphic, Polyline]: [
-          esri.GraphicsLayerConstructor,
-          esri.GraphicConstructor,
-          esri.PolylineConstructor,
-          esri.PointConstructor
+          typeof esri.GraphicsLayer,
+          typeof esri.Graphic,
+          typeof esri.Polyline,
+          typeof esri.Point
         ]) => {
           const id = 'route-segments-layer';
 
@@ -1906,7 +1906,7 @@ export class TripPlannerService implements OnDestroy {
                 },
                 paths: el.paths
               }),
-              symbol: getSymbol(el.mode)
+              symbol: getSymbol(el.mode) as esri.GraphicProperties['symbol']
             });
 
             graphicCollection.push(graphic);
@@ -2333,8 +2333,7 @@ export class TripPlannerService implements OnDestroy {
 
   public computeZoomLevel(graphics: Array<esri.Graphic>): Promise<number> {
     return this.moduleProvider.require(['GeometryEngine', 'Point']).then(([GeometryEngine]: [esri.geometryEngine]) => {
-      const geometries: esri.Geometry[] = graphics.map((graphic) => graphic.geometry);
-      const result = GeometryEngine.union(geometries);
+      const result = GeometryEngine.union(graphics.map((graphic) => graphic.geometry));
 
       const xMin = result.extent.xmin;
       const xMax = result.extent.xmax;
@@ -2533,7 +2532,7 @@ export class TripPlannerService implements OnDestroy {
                 const distanceRef = [];
                 const distanceValue = [];
 
-                this.moduleProvider.require(['Point'], true).then((modules: { Point: esri.PointConstructor }) => {
+                this.moduleProvider.require(['Point'], true).then((modules: { Point: typeof esri.Point }) => {
                   doors.forEach((door) => {
                     // Point used to calculate euclidean distance between it and the reference point
                     const currentPoint = new modules.Point({
@@ -2921,12 +2920,12 @@ interface CollectionConstructor {
 }
 
 interface TripPlannerModules {
-  RouteParameters: esri.RouteParametersConstructor;
-  FeatureSet: esri.FeatureSetConstructor;
-  Graphic: esri.GraphicConstructor;
+  RouteParameters: typeof esri.RouteParameters;
+  FeatureSet: typeof esri.FeatureSet;
+  Graphic: typeof esri.Graphic;
   route: esri.route;
   networkService: esri.networkService;
-  Stop: esri.StopConstructor;
+  Stop: typeof esri.Stop;
   Collection: CollectionConstructor;
 }
 

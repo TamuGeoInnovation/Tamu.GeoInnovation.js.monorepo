@@ -152,7 +152,7 @@ export class LegendElementComponent implements OnChanges {
       },
       from(
         operableInfos.filter((info, index, self) => {
-          return index === self.findIndex((t) => t.label === info.label);
+          return index === self.findIndex((t) => legendInfoLabel(t) === legendInfoLabel(info));
         }) as Array<LegendInfo>
       ),
       from(operableInfos)
@@ -532,3 +532,8 @@ type ILegendElement = esri.LegendElement;
 type ILayer = esri.Layer;
 type LegendInfo =
   esri.SymbolTableElementType | esri.ColorRampStop | esri.OpacityRampStop | esri.SizeRampStop | esri.HeatmapRampStop;
+
+/** The label a legend row shows. Since ArcGIS 4.32 the typings no longer declare it on every kind of row (#1845). */
+function legendInfoLabel(info: LegendInfo): unknown {
+  return (info as { label?: unknown }).label;
+}
