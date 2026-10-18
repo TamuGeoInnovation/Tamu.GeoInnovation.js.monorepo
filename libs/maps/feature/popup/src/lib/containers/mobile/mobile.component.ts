@@ -6,7 +6,7 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
 import { NgClass, AsyncPipe } from '@angular/common';
 
-import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable/directive';
 import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
