@@ -1,4 +1,4 @@
-import { enableProdMode, provideZonelessChangeDetection, importProvidersFrom } from '@angular/core';
+import { enableProdMode, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection, importProvidersFrom } from '@angular/core';
 
 import * as WebFont from 'webfontloader';
 
@@ -39,6 +39,10 @@ bootstrapApplication(AppComponent, {
     // a pass. Zoneless is already Angular 21's default; it is named here so nobody reads its absence
     // as an oversight. The other apps still load zone.js and keep provideZoneChangeDetection().
     provideZonelessChangeDetection(),
+    // Zone.js handed an error thrown in a timer, a promise or an ArcGIS callback to Angular's
+    // ErrorHandler, which logs it as "ERROR ...". Without a zone it would go straight to the browser as
+    // an uncaught error; these listeners keep it going through the ErrorHandler.
+    provideBrowserGlobalErrorListeners(),
     importProvidersFrom(Angulartics2Module.forRoot(), BrowserModule, BrowserAnimationsModule),
     provideRouter(aggiemapRoutes),
     { provide: env, useValue: environment },
