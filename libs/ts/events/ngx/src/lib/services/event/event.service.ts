@@ -76,7 +76,11 @@ export class EventService {
     }
 
     // A kiosk map shows exactly what its own definition says: none of the main map's layers (#1392).
-    if (this.eventSettingsService.eventConfiguration()?.discover?.type === 'kiosk') {
+    // So does a satellite campus map: College Station's layers can show nothing on another campus, and
+    // loading them cost DC 26 layers, 40 console errors and 100 seconds of painting on ArcGIS 5.1 (#1910).
+    const mapType = this.eventSettingsService.eventConfiguration()?.discover?.type;
+
+    if (mapType === 'kiosk' || mapType === 'satellite-campus') {
       this.mapService.withoutMainLayers();
     }
 

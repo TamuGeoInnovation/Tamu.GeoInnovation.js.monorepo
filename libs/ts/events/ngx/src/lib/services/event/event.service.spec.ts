@@ -79,6 +79,28 @@ describe('EventService', () => {
     expect(mainLayersLoadedFor(DiningKioskTs)).toEqual([]);
   });
 
+  /**
+   * A satellite campus map shows only its own campus (#1910).
+   *
+   * Galveston, McAllen and DC loaded every College Station layer too: 26 on DC, ten of them failing
+   * there, and RNS Spaces' 44,980 points, which left the DC map painting for 100 seconds on ArcGIS 5.1.
+   * None of them can show anything on another campus.
+   */
+  const satelliteCampuses = EventDefinitions.filter((definition) => definition.discover?.type === 'satellite-campus');
+
+  it('finds the satellite campus maps to check', () => {
+    expect(satelliteCampuses.map((definition) => definition.configuration?.id)).toEqual(
+      expect.arrayContaining(['galveston', 'mcallen', 'dc-bush-school'])
+    );
+  });
+
+  it.each(satelliteCampuses.map((definition) => [definition.configuration?.id, definition] as const))(
+    "builds the %s campus map with none of the main map's layers",
+    (_id, definition) => {
+      expect(mainLayersLoadedFor(definition)).toEqual([]);
+    }
+  );
+
   it("builds any other event map with the main map's layers, as before", () => {
     expect(mainLayersLoadedFor(BreakSummerParkingTs)).toEqual(MAIN_LAYERS.map((source) => source.id));
   });
