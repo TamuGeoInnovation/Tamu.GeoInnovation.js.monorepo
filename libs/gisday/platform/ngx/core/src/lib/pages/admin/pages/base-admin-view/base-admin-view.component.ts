@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
@@ -9,22 +9,16 @@ import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   template: '',
   standalone: false
 })
-export abstract class BaseAdminViewComponent<T> implements IBaseAdminViewComponent, OnInit, OnDestroy {
+export abstract class BaseAdminViewComponent<T> implements IBaseAdminViewComponent, OnInit {
   /** The service for this page's entity. Each page injects its own. */
   public abstract readonly entityService: BaseService<T>;
 
   public $entities: Observable<Array<Partial<T>>>;
-  private _$destroy: Subject<boolean> = new Subject();
 
   // Not in a constructor: a page's own fields, its entity service among them, are not set until this
   // class's constructor has returned.
   public ngOnInit(): void {
     this.fetchEntities();
-  }
-
-  public ngOnDestroy(): void {
-    this._$destroy.next(undefined);
-    this._$destroy.complete();
   }
 
   public fetchEntities() {

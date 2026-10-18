@@ -2,7 +2,8 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
-import { waitForSettledFraming } from './framing';
+import { directionsAvailable } from './directions';
+import { readGraphicTypes, waitForSettledFraming } from './framing';
 
 /**
  * The main map in 2D answers a click with its latitude and longitude, and the keyboard viewfinder lists
@@ -13,15 +14,22 @@ import { waitForSettledFraming } from './framing';
  * on a null latitude, so every click logged a TypeError and showed nothing, and the viewfinder queried
  * the buildings with a polygon made of nulls, which found none. In 3D, in Web Mercator, both worked, and
  * every layer loaded and drew, so nothing else in the suite noticed.
+ *
+ * A click in directions sets a stop where it lands, from the same latitude and longitude: on dev it threw
+ * on the null latitude and set no stop.
  */
 
 const MAP = '/map/d';
+const DIRECTIONS = '/map/d/trip';
+
+/** The layer the trip planner draws its stops in. */
+const TRIP_POINTS_LAYER = 'trip-points-layer';
 
 /** Opens the main map, waits until it has settled, and collects the script errors it logs from then on. */
-async function openMainMap(page: Page): Promise<string[]> {
+async function openMainMap(page: Page, path = MAP): Promise<string[]> {
   await blockAnalytics(page);
-  await page.goto(MAP);
-  await waitForSettledFraming(page, MAP);
+  await page.goto(path);
+  await waitForSettledFraming(page, path);
 
   const errors: string[] = [];
 
@@ -36,13 +44,13 @@ async function openMainMap(page: Page): Promise<string[]> {
   return errors;
 }
 
-/** Clicks the middle of the map view. */
-async function clickMap(page: Page): Promise<void> {
+/** Clicks the map view at a fraction of its width and height: the middle unless told otherwise. */
+async function clickMap(page: Page, at = { x: 0.5, y: 0.5 }): Promise<void> {
   const box = await page.locator('.esri-view-surface').first().boundingBox();
 
   expect(box, `${MAP} has no map view to click`).not.toBeNull();
 
-  await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2);
+  await page.mouse.click(box!.x + box!.width * at.x, box!.y + box!.height * at.y);
 }
 
 test.describe('the main map in 2D', () => {
@@ -78,5 +86,26 @@ test.describe('the main map in 2D', () => {
       'the viewfinder listed no buildings in the middle of campus'
     ).toBeVisible({ timeout: 30_000 });
     expect(errors, 'moving the map with the keyboard logged an error about coordinates').toEqual([]);
+  });
+
+  test('a click on the map in directions sets a stop where it lands', async ({ page }) => {
+    test.skip(!directionsAvailable(), 'directions are not offered in this environment');
+    test.setTimeout(180_000);
+
+    const errors = await openMainMap(page, DIRECTIONS);
+
+    // Simpson Drill Field, a lawn: on a building the stop takes the building's name, and a stop with no
+    // building is named by its latitude and longitude, which is what threw. Routing need not answer: the
+    // stop is drawn as soon as it is set, before any route is asked for.
+    await clickMap(page, { x: 0.55, y: 0.465 });
+
+    await expect
+      .poll(async () => Object.values(await readGraphicTypes(page, TRIP_POINTS_LAYER)).reduce((a, b) => a + b, 0), {
+        message: `a click on ${DIRECTIONS} drew no stop`,
+        // Each reading is a whole probe snapshot, which counts every layer's features and takes seconds.
+        timeout: 60_000
+      })
+      .toBe(1);
+    expect(errors, 'a click in directions logged an error about its coordinates').toEqual([]);
   });
 });
