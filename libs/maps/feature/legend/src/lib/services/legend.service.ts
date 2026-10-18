@@ -29,6 +29,7 @@ export class LegendService {
     const excludedLayerIds = new Set(options?.excludedLayerIds ?? []);
     const allowedLayerIds = options?.allowedLayerIds ?? [];
     const forceShowLayerIds = options?.forceShowLayerIds ?? [];
+    const keepSwitchedOff = options?.keepSwitchedOff ?? false;
 
     const modules = this.moduleProvider.require(['LegendViewModel', 'reactiveUtils']) as Promise<
       [typeof esri.LegendViewModel, esri.reactiveUtils]
@@ -73,8 +74,9 @@ export class LegendService {
             // Track layers that have ever been visible. Initially-hidden layers (e.g. alternate
             // map-mode layers, base-map layers that are off by default) are never added to the
             // allowed set and therefore never appear in the legend. Once a layer has been seen
-            // as visible it stays in the legend permanently so that toggling it off collapses
-            // the entry instead of removing it.
+            // as visible it stays in the legend so that toggling it off from its legend title
+            // collapses the entry instead of removing it (`keepSwitchedOff`). A legend without
+            // such titles drops a layer switched off, which the map no longer draws (#1871).
             //
             // `forceShowLayerIds` seeds the set so those layers always appear, even when they
             // start hidden (e.g. an off-by-default layer in a mutually-exclusive group that
@@ -83,7 +85,10 @@ export class LegendService {
               (acc: { allowedIds: Set<string>; result: esri.ActiveLayerInfo[] }, items: esri.ActiveLayerInfo[]) => {
                 const allowedIds = new Set(acc.allowedIds);
                 items.filter((l) => l.layer.visible).forEach((l) => allowedIds.add(l.layer.id));
-                return { allowedIds, result: items.filter((l) => allowedIds.has(l.layer.id)) };
+                const result = items.filter((l) =>
+                  keepSwitchedOff ? allowedIds.has(l.layer.id) : l.layer.visible || forceShowLayerIds.includes(l.layer.id)
+                );
+                return { allowedIds, result };
               },
               { allowedIds: new Set<string>(forceShowLayerIds), result: [] as esri.ActiveLayerInfo[] }
             ),
@@ -105,4 +110,11 @@ interface LegendOptions {
    * mutually-exclusive group). Must also satisfy `allowedLayerIds`/`excludedLayerIds` filtering.
    */
   forceShowLayerIds?: string[];
+
+  /**
+   * Keep a layer listed after it is switched off, for a legend whose titles switch layers on and off
+   * (`allowVisibilityToggle`): its collapsed title is how it is switched back on. Otherwise a layer
+   * switched off leaves the legend, as it has left the map (#1871).
+   */
+  keepSwitchedOff?: boolean;
 }
