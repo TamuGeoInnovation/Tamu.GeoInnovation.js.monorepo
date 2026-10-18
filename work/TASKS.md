@@ -71,6 +71,30 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 9 (prepared 18 October 2026, about 5:10 PM) — the final test, after batch 8 passes
+
+**Decided** (the maintainer, 18 October): production waits for this. The final dev build is compared with what
+production serves now; there should be no significant differences, and any there are, he wants to see.
+
+1. **#1849: clear Release-482 (build 20261018.33, `70f0e424b`) for production**
+   - Start only after batch 8 has **passed** on the same release. If batch 8 failed, do not start: report and wait.
+   - Run, from the worktree at `70f0e424b`, one after another, nothing else on this machine meanwhile:
+     1. **The full tier:** `test/smoke/aggiemap/run-local.sh development full`. Report passed, failed, flaky and
+        skipped, the duration, every failure by layer and cause, and whether the three `@heavy` tests passed on
+        their first attempt.
+     2. **Dev's screenshot set, as production renders it:** the `tools/visual-baselines` capture with
+        `--env development --as production --release <the dev-* tag name step 4 will use, or the commit>` (#1885,
+        merged as #1887). Not while the tier runs.
+     3. **The comparison:** `node tools/visual-baselines/review.mjs <production/prod-2026-10-16> <development-as-production/...> <diffDir> <out.html>`.
+        Report how many shots differ, sorted by how much, and for each of the most changed say what moved (layer,
+        symbol, basemap, text, layout) and whether it is expected from this release (ArcGIS 4.27 to 5.1, Esri's zoom
+        and locate buttons and our compass, campus maps without College Station's layers, the legend fix). Put the
+        comparison page and its images where the maintainer can open them, and say where.
+   - Report on: #1849, a new section "Final test of Release-482".
+   - Then: **if the full tier passed outright**, `scripts/tag-build.sh dev 70f0e424b...` (full commit) and push the
+     tag. Do not tag on a tier with failures, known or not; report them for the director. The comparison does not
+     gate the tag; the maintainer judges it.
+
 ## Batch 8 (prepared 18 October 2026, about 4 PM) — after batch 7
 
 **Decided:** #1673 (OnPush on the map, UES included, PR #1908) and #1905 (UES in CI, PR #1907) are merged.
