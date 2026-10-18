@@ -104,7 +104,7 @@ autocomplete component, which All Maps is the only user of today ([#1868](https:
 | Before | After |
 | --- | --- |
 | ![Searching Campus Main Parking on All Maps lists it](../screenshots/1868-all-maps-search/before-development-result-listed.png) | |
-| ![After clicking the result: still on All Maps, the list gone, the text left in the box](../screenshots/1868-all-maps-search/before-development-after-choosing.png) | Choosing the result opens Campus Main Parking |
+| ![After clicking the result: still on All Maps, the list gone, the text left in the box](../screenshots/1868-all-maps-search/before-development-after-choosing.png) | ![After clicking the result: Campus Main Parking opens (a local build of the fix)](../screenshots/1868-all-maps-search/after-local-build-map-opened.png) |
 
 ### Map search works with an apostrophe or a percent sign
 
