@@ -82,9 +82,9 @@
     <div class="form-section-body" formArrayName="links">
       <p>Organization links are displayed in the header under the "<strong>Organizations</strong>" item. Examples of links are sponsorship and volunteer opportunities/forms and paper/presentation submission portals. Please keep the link label short and descriptive to prevent multi-line spanning.</p>
 
-      @if (form.controls['links']['controls']?.length > 0;) { @for (control of form.controls['links']['controls']; track control; let i = $index) {
+      @for (control of links(); track control; let i = $index) {
       <tamu-gisc-place-link-form [formControlName]="i" (remove)="removeOrgLink(i)"></tamu-gisc-place-link-form>
-      } }
+      }
     </div>
   </div>
 

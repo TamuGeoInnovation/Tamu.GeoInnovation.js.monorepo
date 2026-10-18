@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, forkJoin, of, switchMap, tap } from 'rxjs';
@@ -14,7 +14,6 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   selector: 'tamu-gisc-class-edit',
   templateUrl: './class-edit.component.html',
   styleUrls: ['./class-edit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ClassAddEditFormComponent, AsyncPipe, DatePipe]
 })
 export class ClassEditComponent implements OnInit {

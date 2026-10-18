@@ -25,13 +25,11 @@
       <div class="days-list-container flex flex-row">
         <tamu-gisc-seasons-day-tile (added)="addDay()"></tamu-gisc-seasons-day-tile>
 
-        @if (form?.get('days')?.['controls']; as controls) {
         <ng-container formArrayName="days">
-          @for (day of controls; track day; let i = $index) {
+          @for (day of days(); track day; let i = $index) {
           <tamu-gisc-seasons-day-tile [day]="day.value" title="Edit" (updated)="patchModifiedDay(i, $event)" (deleted)="deleteDay(i)"></tamu-gisc-seasons-day-tile>
           }
         </ng-container>
-        }
       </div>
     </div>
   </div>

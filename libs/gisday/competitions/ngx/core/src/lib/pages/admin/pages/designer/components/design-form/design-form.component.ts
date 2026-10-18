@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ChangeDetectionStrategy, inject, output } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, inject, output, signal } from '@angular/core';
+import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { catchError, map, pluck, shareReplay, startWith, switchMap } from 'rxjs/operators';
 
@@ -17,7 +17,6 @@ import esri = __esri;
   selector: 'tamu-gisc-design-form',
   templateUrl: './design-form.component.html',
   styleUrls: ['./design-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, CheckboxComponent, DesignQuestionComponent]
 })
 export class DesignFormComponent implements OnInit {
@@ -30,17 +29,24 @@ export class DesignFormComponent implements OnInit {
   public currentSeasonForm$: Observable<CompetitionSeason>;
   public urlFields$: Observable<Array<Field>>;
   public loadSchemaForm: UntypedFormGroup;
-  public formModel: UntypedFormGroup;
+  public readonly formModel = signal<UntypedFormGroup>(undefined);
+
+  /**
+   * The questions in the form, as a new list whenever one is added or removed.
+   */
+  public readonly fields = signal<Array<AbstractControl>>([]);
 
   public ngOnInit(): void {
     this.loadSchemaForm = this.fb.group({
       source: ''
     });
 
-    this.formModel = this.fb.group({
-      fields: this.fb.array([]),
-      allowSubmissions: [false]
-    });
+    this.formModel.set(
+      this.fb.group({
+        fields: this.fb.array([]),
+        allowSubmissions: [false]
+      })
+    );
 
     this.currentSeasonForm$ = this.fs.getFormForActiveSeason().pipe(
       catchError(() => {
@@ -55,22 +61,27 @@ export class DesignFormComponent implements OnInit {
       }
 
       if (res && res.form.model) {
-        this.formModel = this.fb.group({
-          allowSubmissions: [res.allowSubmissions],
-          fields: this.fb.array(
-            res.form.model.map((q) => {
-              return this.fb.group({ ...q, options: q.options.length > 0 ? this.fb.array(q.options) : this.fb.array([]) });
-            })
-          )
-        });
+        this.formModel.set(
+          this.fb.group({
+            allowSubmissions: [res.allowSubmissions],
+            fields: this.fb.array(
+              res.form.model.map((q) => {
+                return this.fb.group({ ...q, options: q.options.length > 0 ? this.fb.array(q.options) : this.fb.array([]) });
+              })
+            )
+          })
+        );
+        this._syncFields();
 
         this.updated.emit(res.form.model);
       }
     });
 
-    this.formModel.valueChanges.pipe(startWith(this.formModel.getRawValue())).subscribe((changes) => {
-      this.updated.emit(changes.fields);
-    });
+    this.formModel()
+      .valueChanges.pipe(startWith(this.formModel().getRawValue()))
+      .subscribe((changes) => {
+        this.updated.emit(changes.fields);
+      });
   }
 
   public getSchema() {
@@ -109,24 +120,26 @@ export class DesignFormComponent implements OnInit {
         })
       )
       .subscribe((controls) => {
-        const fieldsArray = this.formModel.get('fields') as UntypedFormArray;
+        const fieldsArray = this.formModel().get('fields') as UntypedFormArray;
         fieldsArray.clear();
         controls.forEach((control) => {
           fieldsArray.push(control);
         });
+        this._syncFields();
       });
   }
 
   public removeQuestion(index: number) {
-    const fieldsArray = this.formModel.get('fields') as UntypedFormArray;
+    const fieldsArray = this.formModel().get('fields') as UntypedFormArray;
     fieldsArray.removeAt(index);
+    this._syncFields();
 
-    this.updated.emit(this.formModel.getRawValue().fields);
+    this.updated.emit(this.formModel().getRawValue().fields);
   }
 
   public saveForm(): void {
     const sourceForm = this.loadSchemaForm.getRawValue();
-    const modelForm = this.formModel.getRawValue();
+    const modelForm = this.formModel().getRawValue();
     const fields = modelForm.fields;
 
     const payload = {
@@ -150,6 +163,10 @@ export class DesignFormComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  private _syncFields() {
+    this.fields.set([...(this.formModel().get('fields') as UntypedFormArray).controls]);
   }
 }
 

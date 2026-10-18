@@ -4,7 +4,6 @@ import {
   ViewContainerRef,
   OnDestroy,
   HostBinding,
-  ChangeDetectionStrategy,
   inject,
   viewChild
 } from '@angular/core';
@@ -22,8 +21,7 @@ import { submenuListStagger } from '../../animations/animations';
   // This animation apparently needs to be in a parent component, and not
   // in the self-component otherwise it can't query anything entering into view
   // because the whole thing is entering into view.
-  animations: [submenuListStagger],
-  changeDetection: ChangeDetectionStrategy.Eager
+  animations: [submenuListStagger]
 })
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   private service = inject(TileService);

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 
@@ -17,7 +17,6 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-review',
   templateUrl: './review.component.html',
   styleUrls: ['./review.component.scss', '../builder-module-base/builder-module-base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ButtonComponent]
 })
 export class ReviewComponent implements OnInit {

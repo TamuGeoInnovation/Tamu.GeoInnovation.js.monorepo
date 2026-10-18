@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { CensusIntersectionBasicComponent } from '../../basic/census-intersection-basic/census-intersection-basic.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,7 +19,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-census-intersection-advanced',
   templateUrl: './census-intersection-advanced.component.html',
   styleUrls: ['./census-intersection-advanced.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

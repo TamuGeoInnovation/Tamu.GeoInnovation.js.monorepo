@@ -52,7 +52,7 @@
   </div>
   }
   @switch (locationStatus | async) { @case ('found') {
-  <p class="info-block success">Location found, accurate to about {{ location?.coords?.accuracy | number: '1.0-0' }} m.</p>
+  <p class="info-block success">Location found, accurate to about {{ location()?.coords?.accuracy | number: '1.0-0' }} m.</p>
   } @case ('slow') {
   <p class="info-block warning">Still finding your location. Make sure Location is on in your phone's settings.</p>
   } @case ('blocked') {

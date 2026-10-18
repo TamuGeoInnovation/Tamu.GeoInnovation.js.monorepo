@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, input, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -14,7 +14,6 @@ const searchReference = 'university-departments-exact';
   templateUrl: './building-department-list.component.html',
   styleUrls: ['./building-department-list.component.scss'],
   providers: [SearchService],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TitleCasePipe]
 })
 export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
@@ -23,7 +22,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
 
   public readonly buildingNumber = input<string>(undefined);
 
-  public result: any[] = [];
+  public readonly result = signal<any[]>([]);
 
   private source: number;
 
@@ -59,7 +58,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroy$))
       .subscribe((result) => {
         // Store the result in component scope.
-        this.result = result.features();
+        this.result.set(result.features());
       });
   }
 

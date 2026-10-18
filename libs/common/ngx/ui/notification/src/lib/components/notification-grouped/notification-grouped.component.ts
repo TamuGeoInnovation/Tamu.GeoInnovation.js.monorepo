@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, input, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -25,7 +25,6 @@ import { NgClass } from '@angular/common';
   selector: 'tamu-gisc-notification-grouped',
   templateUrl: './notification-grouped.component.html',
   styleUrls: ['./notification-grouped.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass]
 })
 export class NotificationGroupedComponent implements OnInit, OnDestroy {
@@ -37,7 +36,7 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
   public readonly position = input<'left' | 'center' | 'right'>('center');
 
   // Grouped mode state
-  public groupedItems: Notification[] = [];
+  public readonly groupedItems = signal<Notification[]>([]);
 
   /**
    * Which notification is on screen. The panel shows one at a time (#1327): with four of them stacked
@@ -46,10 +45,10 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
    * Kept as an index rather than a copy of the item, so that a notification being removed - actioned,
    * acknowledged, or cleared by its own service - cannot leave a stale object showing.
    */
-  public groupIndex = 0;
-  public groupVisible = false;
-  public groupShowing = false;
-  public groupTimerPercent = 0;
+  public readonly groupIndex = signal(0);
+  public readonly groupVisible = signal(false);
+  public readonly groupShowing = signal(false);
+  public readonly groupTimerPercent = signal(0);
 
   /**
    * Held back because a modal is open.
@@ -60,7 +59,7 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
    * it is still there to be read once the modal is dismissed instead of having quietly expired behind
    * it. See #1246.
    */
-  public blockedByModal = false;
+  public readonly blockedByModal = signal(false);
 
   private _groupTimerStep = 50;
   private _groupTimerCurrent = 0;
@@ -87,20 +86,21 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this._groupSubscription = this.service.notifications.subscribe((items) => {
-      const hadItems = this.groupedItems.length > 0;
-      this.groupedItems = NotificationGroupedComponent.byPriority(items);
+      const hadItems = this.groupedItems().length > 0;
+      const grouped = NotificationGroupedComponent.byPriority(items);
+      this.groupedItems.set(grouped);
 
       // The list changes underneath this component - a notification is actioned, acknowledged, or
       // cleared by its own service - so the index is clamped rather than trusted. Without this,
       // removing the notification currently on screen leaves the panel rendering nothing (#1327).
-      if (this.groupIndex > this.groupedItems.length - 1) {
-        this.groupIndex = Math.max(0, this.groupedItems.length - 1);
+      if (this.groupIndex() > grouped.length - 1) {
+        this.groupIndex.set(Math.max(0, grouped.length - 1));
       }
 
-      if (items.length > 0 && !this.groupVisible) {
-        this.groupVisible = true;
+      if (items.length > 0 && !this.groupVisible()) {
+        this.groupVisible.set(true);
         setTimeout(() => {
-          this.groupShowing = true;
+          this.groupShowing.set(true);
         });
         this._startGroupTimer();
       } else if (items.length === 0 && hadItems) {
@@ -109,11 +109,11 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
     });
 
     this._modalSubscription = this.modal?.isOpen.subscribe((open) => {
-      this.blockedByModal = open;
+      this.blockedByModal.set(open);
 
       if (open) {
         this._stopGroupTimer();
-      } else if (this.groupedItems.length > 0) {
+      } else if (this.groupedItems().length > 0) {
         this._startGroupTimer();
       }
     });
@@ -157,12 +157,12 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
 
   /** The notification on screen, or `undefined` while the group is emptying. */
   public get currentItem(): Notification | undefined {
-    return this.groupedItems[this.groupIndex];
+    return this.groupedItems()[this.groupIndex()];
   }
 
   /** Whether there is more than one, and so whether the stepper is worth showing at all. */
   public get hasMultiple(): boolean {
-    return this.groupedItems.length > 1;
+    return this.groupedItems().length > 1;
   }
 
   /**
@@ -175,22 +175,26 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
     event?.preventDefault();
     event?.stopPropagation();
 
-    if (this.groupedItems.length === 0) {
+    const count = this.groupedItems().length;
+
+    if (count === 0) {
       return;
     }
 
-    this.groupIndex = (this.groupIndex + 1) % this.groupedItems.length;
+    this.groupIndex.update((index) => (index + 1) % count);
   }
 
   public previousItem(event?: Event): void {
     event?.preventDefault();
     event?.stopPropagation();
 
-    if (this.groupedItems.length === 0) {
+    const count = this.groupedItems().length;
+
+    if (count === 0) {
       return;
     }
 
-    this.groupIndex = (this.groupIndex - 1 + this.groupedItems.length) % this.groupedItems.length;
+    this.groupIndex.update((index) => (index - 1 + count) % count);
   }
 
   public pauseGroup(): void {
@@ -203,7 +207,7 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
 
   public closeGroup(): void {
     this._stopGroupTimer();
-    const toRemove = [...this.groupedItems];
+    const toRemove = [...this.groupedItems()];
     this._triggerGroupHide();
     setTimeout(() => {
       toRemove.forEach((item) => this.service.remove(item));
@@ -239,7 +243,7 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
     this.action(item);
 
     this._stopGroupTimer();
-    [...this.groupedItems].forEach((grouped) => this.service.remove(grouped));
+    [...this.groupedItems()].forEach((grouped) => this.service.remove(grouped));
 
     if (this.router) {
       this.router.navigate([item.action.value]);
@@ -247,14 +251,14 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
   }
 
   private _triggerGroupHide(): void {
-    if (!this.groupVisible) {
+    if (!this.groupVisible()) {
       return;
     }
-    this.groupShowing = false;
+    this.groupShowing.set(false);
     setTimeout(() => {
-      this.groupVisible = false;
+      this.groupVisible.set(false);
       this._groupTimerCurrent = 0;
-      this.groupTimerPercent = 0;
+      this.groupTimerPercent.set(0);
     }, 300);
   }
 
@@ -263,7 +267,7 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
     this._groupTimerCurrent = 0;
     this._groupTimerInterval = setInterval(() => {
       this._groupTimerCurrent += this._groupTimerStep;
-      this.groupTimerPercent = (this._groupTimerCurrent / this._groupTimerLimit) * 100;
+      this.groupTimerPercent.set((this._groupTimerCurrent / this._groupTimerLimit) * 100);
       if (this._groupTimerCurrent >= this._groupTimerLimit) {
         this.closeGroup();
       }

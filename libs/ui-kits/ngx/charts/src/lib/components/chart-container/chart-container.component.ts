@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, ChangeDetectionStrategy, viewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, viewChild } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -9,8 +9,7 @@ import 'chartjs-plugin-colorschemes';
 @Component({
   selector: 'tamu-gisc-chart-container',
   templateUrl: './chart-container.component.html',
-  styleUrls: ['./chart-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager
+  styleUrls: ['./chart-container.component.scss']
 })
 export class ChartContainerComponent implements OnDestroy {
   public readonly container = viewChild<ElementRef>('chartContainer');

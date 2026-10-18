@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, input, contentChildren } from '@angular/core';
+import { Component, inject, input, contentChildren } from '@angular/core';
 import { outputToObservable, takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { merge } from 'rxjs';
 import { pluck, switchMap } from 'rxjs/operators';
@@ -11,7 +11,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-tile-submenu',
   templateUrl: './tile-submenu.component.html',
   styleUrls: ['./tile-submenu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AsyncPipe]
 })
 export class TileSubmenuComponent {

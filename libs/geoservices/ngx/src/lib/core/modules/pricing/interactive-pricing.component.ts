@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
@@ -16,7 +16,6 @@ import { AsyncPipe, CurrencyPipe } from '@angular/common';
   selector: 'tamu-gisc-interactive-pricing',
   templateUrl: './interactive-pricing.component.html',
   styleUrls: ['./interactive-pricing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

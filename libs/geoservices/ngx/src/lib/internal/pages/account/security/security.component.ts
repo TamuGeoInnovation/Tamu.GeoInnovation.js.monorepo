@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 
@@ -11,7 +11,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-security',
   templateUrl: './security.component.html',
   styleUrls: ['./security.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, AsyncPipe]
 })
 export class SecurityComponent implements OnInit {

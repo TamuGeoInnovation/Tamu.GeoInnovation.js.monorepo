@@ -17,7 +17,7 @@ describe('NotificationItemComponent', () => {
 
   it('should create', inject([NotificationItemComponent], (notificationItemComponent: NotificationItemComponent) => {
     expect(notificationItemComponent).toBeTruthy();
-    expect(notificationItemComponent.timer.current).toEqual(0);
+    expect(notificationItemComponent.timer.current()).toEqual(0);
     expect(notificationItemComponent.ngOnDestroy()).toBeUndefined();
   }));
 
@@ -44,19 +44,19 @@ describe('NotificationItemComponent', () => {
     notificationItemComponent.ngOnInit();
 
     jest.advanceTimersByTime(step + 10);
-    expect(notificationItemComponent.timer.current).toEqual(step);
+    expect(notificationItemComponent.timer.current()).toEqual(step);
 
     // Paused: further time passing must not advance the counter.
     notificationItemComponent.pause();
     jest.advanceTimersByTime(1000);
-    expect(notificationItemComponent.timer.current).toEqual(step);
+    expect(notificationItemComponent.timer.current()).toEqual(step);
 
     notificationItemComponent.resume();
     jest.advanceTimersByTime(step + 10);
-    expect(notificationItemComponent.timer.current).toEqual(step * 2);
+    expect(notificationItemComponent.timer.current()).toEqual(step * 2);
 
     jest.advanceTimersByTime(10000);
-    expect(notificationItemComponent.animateStatus).toBeFalsy();
+    expect(notificationItemComponent.animateStatus()).toBeFalsy();
 
     notificationItemComponent.closeNotification.subscribe((closed) => {
       expect(closed).toEqual(testNotification);
@@ -64,8 +64,8 @@ describe('NotificationItemComponent', () => {
     });
     jest.advanceTimersByTime(500);
 
-    notificationItemComponent.animateStatus = true;
+    notificationItemComponent.animateStatus.set(true);
     notificationItemComponent.action();
-    expect(notificationItemComponent.animateStatus).toBeFalsy();
+    expect(notificationItemComponent.animateStatus()).toBeFalsy();
   });
 });

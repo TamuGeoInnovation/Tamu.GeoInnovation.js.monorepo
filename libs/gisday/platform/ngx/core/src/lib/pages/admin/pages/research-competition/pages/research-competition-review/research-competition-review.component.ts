@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, shareReplay, switchMap } from 'rxjs';
@@ -15,7 +15,6 @@ import { AsyncPipe, TitleCasePipe } from '@angular/common';
   selector: 'tamu-gisc-research-competition-review',
   templateUrl: './research-competition-review.component.html',
   styleUrls: ['./research-competition-review.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

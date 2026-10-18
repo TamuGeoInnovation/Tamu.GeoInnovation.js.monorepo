@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 import { EventConfiguration } from '../../interfaces/special-event.interface';
@@ -8,7 +8,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'tamu-gisc-builder',
   templateUrl: './builder.component.html',
   styleUrls: ['./builder.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterOutlet]
 })
 export class BuilderComponent implements OnInit {

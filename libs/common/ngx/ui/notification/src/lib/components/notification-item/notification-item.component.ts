@@ -3,10 +3,10 @@ import {
   OnInit,
   OnDestroy,
   HostBinding,
-  ChangeDetectionStrategy,
   inject,
   input,
-  output
+  output,
+  signal
 } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
@@ -33,8 +33,7 @@ import { Notification } from '../../helpers/notification.helper';
       ),
       transition('* => *', [animate('250ms 0ms cubic-bezier(.25, 0, .25, 1.0)')])
     ])
-  ],
-  changeDetection: ChangeDetectionStrategy.Eager
+  ]
 })
 export class NotificationItemComponent implements OnInit, OnDestroy {
   private router = inject(Router);
@@ -61,7 +60,7 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
   public readonly actionNotification = output<Notification>();
 
   // Animation trigger value.
-  public animateStatus = true;
+  public readonly animateStatus = signal(true);
 
   /**
    * Step: Defines the rate at which each spawned notification updates its auto-dismiss progress.
@@ -74,7 +73,7 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
    */
   public timer = {
     step: 50,
-    current: 0,
+    current: signal(0),
     limit: 10000,
     fn: undefined
   };
@@ -99,7 +98,7 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
     clearInterval(this.timer.fn);
 
     // Set animation trigger variable
-    this.animateStatus = false;
+    this.animateStatus.set(false);
 
     // Emit a closeNotification event after the notification node is out of the view.
     // The parent component communicates with the notification service to remove it.
@@ -116,7 +115,7 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
     clearInterval(this.timer.fn);
 
     // Set animation trigger variable
-    this.animateStatus = false;
+    this.animateStatus.set(false);
 
     // Emit an acknowledgeNotification event after the notification node is out of the view.
     // The parent component communicates with the notification service to acknowledge it.
@@ -150,9 +149,9 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
    */
   private countdown(): void {
     this.timer.fn = setInterval(() => {
-      this.timer.current += this.timer.step;
+      this.timer.current.update((current) => current + this.timer.step);
 
-      if (this.timer.current >= this.timer.limit) {
+      if (this.timer.current() >= this.timer.limit) {
         this.close();
       }
     }, this.timer.step);

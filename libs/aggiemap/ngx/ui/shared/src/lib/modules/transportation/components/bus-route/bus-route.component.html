@@ -1,4 +1,4 @@
-<div [ngClass]="{ loaded: isActive, loading: isLoading }">
+<div [ngClass]="{ loaded: isActive(), loading: isLoading() }">
   <tamu-gisc-accordion>
     <tamu-gisc-bus-list-header>
       <div class="route-overview" (click)="toggleRoute()">
@@ -7,7 +7,7 @@
       </div>
     </tamu-gisc-bus-list-header>
 
-    @if (isActive) {
+    @if (isActive()) {
     <tamu-gisc-accordion-content>
       <tamu-gisc-bus-timetable [route]="route()"></tamu-gisc-bus-timetable>
     </tamu-gisc-accordion-content>
