@@ -6,7 +6,11 @@
     @if ((getOptions() | async); as opts;) { @if (opts.length === 0) {
     <div class="no-results" role="option" aria-disabled="true">No results found.</div>
     } @for (opt of opts; track opt) {
-    <div class="autocomplete-item" (click)="onSelect(opt)" role="option" [attr.aria-selected]="false">
+    <!--
+    Focusable, so pressing an option moves focus to it rather than out of the component. Otherwise the
+    list closes on that focus change, before the click that chooses the option arrives (#1868).
+    -->
+    <div class="autocomplete-item" tabindex="-1" (click)="onSelect(opt)" role="option" [attr.aria-selected]="false">
       @if (optionTemplate(); as template) {
       <ng-container *ngTemplateOutlet="template; context: { $implicit: opt }"></ng-container>
       } @else { {{ displayWith()(opt) }} }
