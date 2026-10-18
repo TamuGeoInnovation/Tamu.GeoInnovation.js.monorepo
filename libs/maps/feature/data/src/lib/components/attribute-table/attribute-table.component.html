@@ -6,18 +6,12 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngIf="sortFn() !== undefined; else noInitialSort ">
-      <tr *ngFor="let row of data() | keyvalue : sortFn()">
+    <!-- With no sortFn, keyvalue sorts by key, as it did when the two cases were separate branches. -->
+    @for (row of data() | keyvalue : sortFn(); track row.key) {
+      <tr>
         <td>{{row.key}}</td>
         <td>{{row.value | json}}</td>
       </tr>
-    </ng-container>
-
-    <ng-template #noInitialSort>
-      <tr *ngFor="let row of data() | keyvalue">
-        <td>{{row.key}}</td>
-        <td>{{row.value | json}}</td>
-      </tr>
-    </ng-template>
+    }
   </tbody>
 </table>
