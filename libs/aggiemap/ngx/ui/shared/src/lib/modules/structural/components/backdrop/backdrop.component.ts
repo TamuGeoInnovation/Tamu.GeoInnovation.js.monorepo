@@ -1,10 +1,9 @@
-import { Component, OnInit, Renderer2, ElementRef, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, inject, input, output } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-backdrop',
   templateUrl: './backdrop.component.html',
-  styleUrls: ['./backdrop.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager
+  styleUrls: ['./backdrop.component.scss']
 })
 export class BackdropComponent implements OnInit {
   private renderer = inject(Renderer2);

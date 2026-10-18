@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, input } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -13,7 +13,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-bus-list',
   templateUrl: './bus-list.component.html',
   styleUrls: ['./bus-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [BusRouteComponent, AsyncPipe]
 })
 export class BusListComponent implements OnInit, OnDestroy {
