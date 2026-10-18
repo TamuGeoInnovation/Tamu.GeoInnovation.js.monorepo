@@ -1549,7 +1549,7 @@ export class TripPlannerService implements OnDestroy {
         const label = {
           guid: guid(),
           date: Date.now(),
-          http_status: tripResult.error.details.httpStatus,
+          http_status: tripResult.error.details?.httpStatus,
           message: tripResult.error.message,
           travel_mode: tripResult.params.travelMode.id,
           connection: tripResult.connection.name,
@@ -1577,7 +1577,7 @@ export class TripPlannerService implements OnDestroy {
         const label = {
           guid: guid(),
           date: Date.now(),
-          http_status: tripResult.error.details.httpStatus,
+          http_status: tripResult.error.details?.httpStatus,
           message: tripResult.error.message,
           travel_mode: tripResult.params.travelMode.id,
           connection: tripResult.connection.name,
@@ -1606,7 +1606,7 @@ export class TripPlannerService implements OnDestroy {
       const label = {
         guid: guid(),
         date: Date.now(),
-        http_status: tripResult.error.details.httpStatus,
+        http_status: tripResult.error.details?.httpStatus,
         travel_mode: tripResult.params.travelMode.id,
         connection: tripResult.connection.name,
         try_count: tripResult.tryCount,
@@ -2905,7 +2905,7 @@ export interface TravelOptions {
 export type TimeModeOption = 'now' | 'leave' | 'arrive';
 
 interface EsriError extends Error {
-  details: esri.EsriErrorDetails;
+  details?: esri.EsriErrorDetails;
 }
 
 interface TripPointAttributesWithBldgNumber extends TripPointAttributes {

@@ -12,13 +12,18 @@ jest.mock('@esri/calcite-components/components/calcite-icon', () => ({}), { virt
  * The compass that replaced Esri's Compass widget, keeping its needle on every basemap (#1853, #1845).
  */
 describe('MapCompassComponent', () => {
-  /** Stands in for a MapView: its rotation, its UI corners and `goTo`. */
+  /** Stands in for a MapView: its rotation, its viewpoint, its UI corners and `goTo`. */
   function makeView() {
-    return {
+    const view = {
       rotation: 0,
+      get viewpoint() {
+        return { clone: () => ({ scale: 4000, rotation: view.rotation }) };
+      },
       ui: { add: jest.fn(), remove: jest.fn() },
       goTo: jest.fn(() => Promise.resolve())
     };
+
+    return view;
   }
 
   let view: ReturnType<typeof makeView>;
@@ -97,7 +102,7 @@ describe('MapCompassComponent', () => {
 
     button(fixture.nativeElement).click();
 
-    expect(view.goTo).toHaveBeenCalledWith({ rotation: 0 });
+    expect(view.goTo).toHaveBeenCalledWith({ scale: 4000, rotation: 0 });
   });
 
   it('ignores a turn back to north that is interrupted', async () => {
