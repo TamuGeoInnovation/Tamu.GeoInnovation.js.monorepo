@@ -14,10 +14,17 @@ describe('making a base layer from its description', () => {
     ) {}
   }
 
+  // Functions, not arrows: the code calls them with `new`, and Vitest constructs a mock's implementation.
   const constructors = {
-    TileLayer: jest.fn((props) => new Made('tile', props)),
-    VectorTileLayer: jest.fn((props) => new Made('vector-tile', props)),
-    WMSLayer: jest.fn((props) => new Made('wms', props))
+    TileLayer: vi.fn(function (props) {
+      return new Made('tile', props);
+    }),
+    VectorTileLayer: vi.fn(function (props) {
+      return new Made('vector-tile', props);
+    }),
+    WMSLayer: vi.fn(function (props) {
+      return new Made('wms', props);
+    })
   } as unknown as BaseLayerConstructors;
 
   it('makes a WMS layer, which Aerial Imagery is', () => {

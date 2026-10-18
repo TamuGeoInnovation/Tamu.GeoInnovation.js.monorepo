@@ -147,7 +147,7 @@ describe('EsriMapService layers asked for twice at once', () => {
       findLayerById: (id: string) => layers.find((layer) => layer.id === id),
       add: (layer: FakeGraphicsLayer) => layers.push(layer)
     } as unknown as __esri.Map;
-    jest.spyOn(service, 'zoomTo').mockReturnValue(undefined);
+    vi.spyOn(service, 'zoomTo').mockReturnValue(undefined);
   });
 
   /** Lets every pending promise settle. */
