@@ -64,6 +64,19 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 6 (prepared 18 October 2026, afternoon) — after batch 5
+
+**Decided:** ArcGIS 5.1 ships with this round (#1894 merged). A dev build and quick tier follow it.
+
+1. **#1867: the quick tier on dev's first ArcGIS 5.1 build**
+   - Goal: the dev build of `development` at **`c03c56144`** (#1894) or later passes the quick tier.
+   - Run: wait until Azure lists a release at `c03c56144` or later with its dev stage succeeded (the maintainer
+     builds it; it may not exist yet when you read this; keep watching, as for a new batch). Then, from a worktree at
+     that release's commit: `test/smoke/aggiemap/run-local.sh development quick`. Say what it chose to run.
+   - Report on: #1867. Results, and each failure by layer and cause. Note any map that was slow to finish drawing:
+     5.1 is known to be slow under software WebGL with large layers (#1867, #1897).
+   - Then: **if it passed**, `scripts/tag-build.sh dev <full commit>` and push the tag.
+
 ## Batch 5 (prepared 18 October 2026, afternoon) — after batch 4
 
 **Decided** (the maintainer, 18 October):
