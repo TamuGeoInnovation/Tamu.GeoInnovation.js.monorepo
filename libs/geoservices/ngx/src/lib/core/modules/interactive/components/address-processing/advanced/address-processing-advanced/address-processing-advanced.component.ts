@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { AddressProcessingBasicComponent } from '../../basic/address-processing-basic/address-processing-basic.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,7 +20,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-address-processing-advanced',
   templateUrl: './address-processing-advanced.component.html',
   styleUrls: ['./address-processing-advanced.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,
