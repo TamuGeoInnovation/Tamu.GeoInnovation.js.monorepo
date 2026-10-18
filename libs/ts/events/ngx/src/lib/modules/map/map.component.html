@@ -73,9 +73,9 @@
 a feature would otherwise show nothing. Render the same popup panel directly here instead — it's
 self-contained (listens to the map's hit-test stream on its own) and independent of the rest of
 the sidebar UI (search, tabs, settings), so this alone restores feature-click details. -->
-@if (hideSidebar) { @if (isMobile()) { @if (kioskMobilePopup(); as popup) {
-<ng-container *ngComponentOutlet="popup"></ng-container>
-} } @else {
+@if (hideSidebar) { @if (isMobile()) {
+<tamu-gisc-feature-mobile-popup-deferred></tamu-gisc-feature-mobile-popup-deferred>
+} @else {
 <tamu-gisc-feature-popup></tamu-gisc-feature-popup>
 } }
 

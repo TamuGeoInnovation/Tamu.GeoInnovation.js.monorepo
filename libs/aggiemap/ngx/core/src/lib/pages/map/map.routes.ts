@@ -6,7 +6,7 @@ import { LayerListComponent, LayerListService } from '@tamu-gisc/maps/feature/la
 
 import { LegendComponent, LegendService } from '@tamu-gisc/maps/feature/legend';
 import { loadTripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
-import { loadPopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
+import { PopupMobileDeferredComponent } from '@tamu-gisc/maps/feature/popup';
 
 import { ModalComponent, ReportBadRouteComponent, ExperimentsListComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import {
@@ -67,7 +67,7 @@ export const mapRoutes: Routes = [
             path: '',
             children: [
               { path: '', component: OmnisearchComponent },
-              { path: '', loadComponent: loadPopupMobileComponent, outlet: 'outlet-2' }
+              { path: '', component: PopupMobileDeferredComponent, outlet: 'outlet-2' }
             ]
           },
           {
