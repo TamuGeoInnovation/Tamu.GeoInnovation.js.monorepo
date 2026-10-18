@@ -3,76 +3,50 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **5:05 PM Central, 18 October 2026**.
+Last written **5:40 PM Central, 18 October 2026**.
 
-**Last batch done: 7.** Batch 5 is finished. **Batch 8 is running now.** Batch 9 is read and queued behind it.
+**Last batch done: 8.** Batches 5 and 8 are both finished. **Batch 9 is held by the director.** Watching the branch.
 
 ## Running now
 
-**Batch 8 (#1673): the quick tier on Release-482.** Started **5:15 PM Central, 18 October**.
+Nothing. Only the branch watcher, waiting for the release the director names for batch 9.
 
-| | |
-| --- | --- |
-| Release | **Release-482, build 20261018.33** — dev stage succeeded |
-| Commit | **`70f0e424b`** (#1911, "Load only a satellite campus map's own layers"), its own worktree |
-| Command | `test/smoke/aggiemap/run-local.sh development quick` |
-| For | batch 8, which runs on this release and not on Release-481 (`dfba74033`) |
+## work: finished — batch 8, and it passed
 
-Nothing else is running on this machine. On this commit a `/campus/dc-bush-school` failure counts as **new**, as
-batch 8 says, and so do `campus-layers.spec.ts`'s three campus tests — that spec exists at this commit and is in
-`scope.ts`'s campus group.
+**#1673: the quick tier on Release-482. 277 passed, 0 failed, 1 flaky, 8 skipped of 286, 16.5 minutes, exit 0.**
+**Tagged `dev-2026-10-18-3` on `70f0e424b` and pushed to `origin`.** Posted on #1673
+([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1673#issuecomment-6255884185)).
+Report: `work/reports/2026-10-18-6.md`, which also covers batch 5.
 
-**Batch 9 is read, and read again at 5:25 PM: it is held.** The 5:20 PM revision says **do not start it on
-Release-482** — a legend fix (#1871) goes into this release, so the final test runs on the release that carries it,
-which the director will name. So after batch 8 this machine waits, and does not go on to the full tier, the
-`--as production` capture or the comparison. Batch 8 itself is unaffected and is running on Release-482 as
-directed.
-
-## work: finished — batch 5, production's "before" set
-
-**848 of 848 shots, 0 failed.** Posted on #1849
-([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1849#issuecomment-6255683209)).
-
-| | |
-| --- | --- |
-| Container | `vb-prod-2026-10-16`, exit 0 |
-| Command | `capture.mjs --env production --release prod-2026-10-16 --out /out` |
-| From | a worktree at `447d403e6` (`origin/development`) |
-| Build captured | `main-TK2R62YY.js`, which is what production serves; the manifest records it |
-| Shots | **848** — 424 desktop (1440x900) and 424 phone (390x844) |
-| Failed | **0** |
-| Started / finished | 1:48 PM / **4:47 PM Central**, 2 h 59 m including two pauses for batches 6 and 7 |
-| Out | `C:/TAMU/visual-baselines/production/prod-2026-10-16` |
-
-**It is one build throughout, which is what makes it usable.** A production stage was `inProgress` on Azure while
-the capture ran, so the served bundle was recorded every two minutes: `main-TK2R62YY.js` at every sample from
-start to finish. A set spanning a deploy would have been a mix of two builds and worth nothing as a baseline.
-Read-only — one GET of the home page; nothing of this machine's touched production.
-
-**The home session may want to check that the promotion now in flight is intended.** At 5:00 PM Central
-Release-481 (`dfba74033`) shows `GIS-1P Production = inProgress`, while the note further down this file says
-earlier production cancellations were deliberate because the maintainer is holding production. Production still
-served the old bundle at 5:00 PM. This machine has done nothing about it and will not.
+- **#1911 holds.** `/campus/dc-bush-school` passed in 32.1 s, where it had failed all three attempts in batch 6
+  and both no-retry runs in batch 7. `campus-layers.spec.ts`'s three campus tests all passed. Those were exactly
+  the tests that would have counted as new failures on this commit.
+- **The `@heavy` tests: two of three on the first attempt.** `basemap-zoom` and `perspective` passed first time;
+  `popup.spec.ts:109` (`/map/d?bldg=0468`) failed its first attempt and passed on retry #1. That is the run's only
+  flaky result, and it is the College Station main map, which #1911 does not touch. Batch 6 was three of three, so
+  this says #1901 reduced those failures rather than removing them — a question for the director, in the report.
+- **The tier chose** 23 spec files whole and 3 routes, five more specs than batch 6, because it spans ArcGIS 5.1,
+  OnPush, UES and #1911 together. 132 changed files map to no test of their own.
 
 ## Queued
 
-**Batch 8 (#1673) — the quick tier on dev's build with OnPush on the map.** The 5 PM revision is read: it runs on
-the release at **`70f0e424b`** (#1910's fix, PR #1911), **not** the one at `dfba74033`. The Azure watcher was
-changed to match that commit, so the `dfba74033` release will not start it by mistake.
+**Batch 9 (#1849) — the final test, held by the director.** Its 5:20 PM revision says **do not start it on
+Release-482**: a legend fix (#1871) goes into this release, so the final test runs on the release that carries it,
+which the director will name here. So this machine has **not** gone on to the full tier, the `--as production`
+capture or the comparison. It is watching the branch for that release, with nothing else running.
 
-Azure at 5:00 PM Central:
+Azure at 5:32 PM Central:
 
-| Release | Build | Commit | Dev stage |
-| --- | --- | --- | --- |
-| Release-481 | 20261018.31 | `dfba74033` | **inProgress** — not batch 8's target |
-| Release-480 | 20261018.27 | `98c2056be` | succeeded (batch 6 ran on this) |
+| Release | Build | Commit | Dev stage | Production stage |
+| --- | --- | --- | --- | --- |
+| Release-482 | 20261018.33 | `70f0e424b` | succeeded — **batch 8 ran on this, and it is now `dev-2026-10-18-3`** | inProgress |
+| Release-481 | 20261018.31 | `dfba74033` | succeeded — skipped deliberately, not batch 8's target | canceled |
+| Release-480 | 20261018.27 | `98c2056be` | succeeded — batch 6 ran on this | canceled |
 
-No release for `70f0e424b` yet. Two watchers are running, one on Azure and one on this branch, so batch 8 starts
-on its own. Nothing else is running now, so it gets the machine to itself.
-
-Also understood from batch 8's **Decided**: on `70f0e424b` a `/campus/dc-bush-school` failure is **new**, not
-known, and so are `campus-layers.spec.ts`'s three campus tests. Batch 7's `0/0` layers was this machine's script
-reading the wrong probe field, not a probe fault — the suite's layer checks stand.
+**A watcher nearly started batch 8 on the wrong build.** The revision naming `70f0e424b` arrived while a watcher
+keyed to "any release newer than Release-480" was live, and Release-481 (`dfba74033`) reached dev first. It was
+caught by reading the revised batch. The watcher is now keyed to the commit, and `DIRECTOR.md` may want the rule:
+a batch that names a commit is watched **by commit**, never by "newer than".
 
 ## Finished
 
@@ -107,9 +81,11 @@ reading the wrong probe field, not a probe fault — the suite's layer checks st
 
 Recorded, not requests. Nothing here is started without a batch.
 
-- **`/campus/dc-bush-school` takes ~100 s to stop painting on 5.1.** Now explained by **#1910**. Whether a
-  visitor sees it is still unknown: the suite runs headless Chromium with software WebGL, and a real browser with
-  a GPU may be unaffected. The maintainer is looking at dev by hand.
+- **`/campus/dc-bush-school`'s ~100 s paint is fixed.** #1911 shipped in Release-482 and batch 8 saw the page
+  pass in 32.1 s. Closed by measurement, not by argument.
+- **`/map/d?bldg=0468` failed its first attempt again in batch 8**, after batch 6 was the one run where it did
+  not. Two anecdotes pointing opposite ways: #1901 looks to have reduced those failures rather than removed them.
+  A question for the director, with options, in `work/reports/2026-10-18-6.md`.
 - **The 100 s has no 4.34 counterpart.** One three-minute run on production would give it; not run.
 - **The probe "sees no layers" finding is withdrawn.** Batch 8 says the probe does list all 26 layers from a
   browser; batch 7's script read the wrong field. The suite's layer assertions are not vacuous.
