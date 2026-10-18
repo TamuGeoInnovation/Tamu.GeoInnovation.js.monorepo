@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, HIDDEN_DEFAULT_HIGHLIGHT } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
@@ -94,10 +94,7 @@ export class MapComponent implements OnInit, OnDestroy {
               position: 'bottom-right'
             }
           },
-          highlightOptions: {
-            haloOpacity: 0,
-            fillOpacity: 0
-          }
+          highlights: HIDDEN_DEFAULT_HIGHLIGHT
         }
       }
     };

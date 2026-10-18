@@ -1,6 +1,8 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+import { HIDDEN_DEFAULT_HIGHLIGHT } from '@tamu-gisc/maps/esri';
+
 import esri = __esri;
 
 @Component({
@@ -57,10 +59,7 @@ export class MapComponent {
             position: 'bottom-right'
           }
         },
-        highlightOptions: {
-          haloOpacity: 0,
-          fillOpacity: 0
-        }
+        highlights: HIDDEN_DEFAULT_HIGHLIGHT
       }
     }
   };

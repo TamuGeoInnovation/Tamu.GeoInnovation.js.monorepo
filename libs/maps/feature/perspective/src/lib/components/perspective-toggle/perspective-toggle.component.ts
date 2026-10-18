@@ -136,8 +136,8 @@ export class PerspectiveToggleComponent implements OnInit {
    */
   private async projected(place: Place, reference: esri.SpatialReference | esri.SpatialReferenceProperties | undefined): Promise<Place> {
     const from = place.targetGeometry.spatialReference;
-    const [projection, SpatialReference] = (await this.mp.require(['projection', 'SpatialReference'])) as [
-      esri.projection,
+    const [projectOperator, SpatialReference] = (await this.mp.require(['projectOperator', 'SpatialReference'])) as [
+      esri.projectOperator,
       typeof esri.SpatialReference
     ];
     const to =
@@ -151,9 +151,9 @@ export class PerspectiveToggleComponent implements OnInit {
       return place;
     }
 
-    await projection.load();
+    await projectOperator.load();
 
-    return { ...place, targetGeometry: projection.project(place.targetGeometry, to) as esri.Point };
+    return { ...place, targetGeometry: projectOperator.execute(place.targetGeometry, to) as esri.Point };
   }
 
   public ngOnInit(): void {

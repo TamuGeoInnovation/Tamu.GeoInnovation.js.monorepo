@@ -1,10 +1,12 @@
-import * as projectionEngine from '@arcgis/core/geometry/projection.js';
+import * as projectOperator from '@arcgis/core/geometry/operators/projectOperator.js';
 
 import { MAP_PROBE_GLOBAL, registerMapProbe } from './map-probe';
 
-// Esri's projection engine, which the probe loads only for a view in a projected reference. Mocked, so the
+// Esri's project operator, which the probe loads only for a view in a projected reference. Mocked, so the
 // test neither loads @arcgis/core's ES modules nor depends on the engine's WebAssembly.
-jest.mock('@arcgis/core/geometry/projection.js', () => ({ load: jest.fn(), project: jest.fn() }));
+const mockWGS84 = { wkid: 4326 };
+jest.mock('@arcgis/core/geometry/operators/projectOperator.js', () => ({ load: jest.fn(), execute: jest.fn() }));
+jest.mock('@arcgis/core/geometry/SpatialReference.js', () => ({ __esModule: true, default: { WGS84: mockWGS84 } }));
 
 /**
  * The smoke suite cannot import this module -- doing so pulls the Angular dependency graph into the
@@ -271,8 +273,8 @@ describe('map probe', () => {
       const center = { x: 1082345.89, y: 3111767.64, longitude: null, latitude: null };
       const project = jest.fn(() => ({ x: -96.34467, y: 30.61306 }));
 
-      (projectionEngine.load as jest.Mock).mockResolvedValue(undefined);
-      (projectionEngine.project as jest.Mock).mockImplementation(project);
+      (projectOperator.load as jest.Mock).mockResolvedValue(undefined);
+      (projectOperator.execute as jest.Mock).mockImplementation(project);
 
       const nowSpy = jest.spyOn(Date, 'now');
 
@@ -298,9 +300,9 @@ describe('map probe', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
 
         expect(probe.framing).toEqual({ zoom: 16, center: [-96.34467, 30.61306] });
-        expect(project).toHaveBeenCalledWith(center, { wkid: 4326 });
+        expect(project).toHaveBeenCalledWith(center, mockWGS84);
         expect(probe.ready).toBe(true);
-        expect(projectionEngine.load).toHaveBeenCalledTimes(1);
+        expect(projectOperator.load).toHaveBeenCalledTimes(1);
       } finally {
         nowSpy.mockRestore();
         registerMapProbe(undefined, owner);
