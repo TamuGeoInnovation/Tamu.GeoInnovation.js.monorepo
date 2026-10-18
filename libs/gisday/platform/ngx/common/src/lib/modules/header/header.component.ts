@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, HostBinding, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, mergeMap, startWith, tap, toArray } from 'rxjs/operators';
@@ -26,7 +26,6 @@ import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
   selector: 'tamu-gisc-app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     SiteHasPipe,
     HamburgerTriggerComponent,
@@ -67,11 +66,11 @@ export class HeaderComponent implements OnInit {
   // Ideally we'd use the same logoVisible$ observable, but
   // cannot return an observable from a getter HostBinding and have it
   // evaluated correctly.
-  public isHeaderSeamless = false;
+  public readonly isHeaderSeamless = signal(false);
 
   @HostBinding('class.seamless')
   public get headerSeamless() {
-    return this.isHeaderSeamless;
+    return this.isHeaderSeamless();
   }
 
   public ngOnInit() {
@@ -103,7 +102,7 @@ export class HeaderComponent implements OnInit {
       tap((visible) => {
         // Put on the next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
         setTimeout(() => {
-          this.isHeaderSeamless = !visible;
+          this.isHeaderSeamless.set(!visible);
         }, 0);
       })
     );

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { RouterLink } from '@angular/router';
 
@@ -16,7 +16,6 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-event-list',
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, ExistsPipe]
 })
 export class EventListComponent extends BaseAdminListComponent<Event> implements OnInit {

@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnDestroy, OnInit, inject, input, signal } from '@angular/core';
+import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { filter, map, Observable, shareReplay, startWith, Subject, switchMap, take, tap } from 'rxjs';
 
 import { Submission, SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
@@ -16,7 +16,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-user-submission-add-edit-form',
   templateUrl: './user-submission-add-edit-form.component.html',
   styleUrls: ['./user-submission-add-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -39,6 +38,11 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   public readonly type = input<'create' | 'edit'>(undefined);
 
   public form: UntypedFormGroup;
+
+  /**
+   * The participant controls, as a new list whenever one is added or removed.
+   */
+  public readonly participants = signal<Array<AbstractControl>>([]);
 
   public presentationStudentTypeOptions = [
     {
@@ -112,6 +116,8 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
           while (this._getParticipantsControl().length > 1) {
             this._getParticipantsControl().removeAt(1);
           }
+
+          this._syncParticipants();
         }
       });
 
@@ -197,6 +203,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
 
   public addParticipant() {
     this._getParticipantsControl().push(this._createParticipantGroup());
+    this._syncParticipants();
   }
 
   private _createSubmission() {
@@ -263,6 +270,10 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
 
   private _getParticipantsControl() {
     return this.form.get('participants') as UntypedFormArray;
+  }
+
+  private _syncParticipants() {
+    this.participants.set([...this._getParticipantsControl().controls]);
   }
 }
 

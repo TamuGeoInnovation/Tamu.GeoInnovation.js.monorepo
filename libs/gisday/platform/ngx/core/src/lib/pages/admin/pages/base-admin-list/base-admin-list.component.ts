@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { iif, merge, Observable, of, Subject } from 'rxjs';
@@ -18,7 +18,6 @@ import {
 @Component({
   selector: 'tamu-gisc-base-admin-edit',
   template: '',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export abstract class BaseAdminListComponent<T extends GuidIdentity> implements IBaseAdminEditComponent, OnInit, OnDestroy {

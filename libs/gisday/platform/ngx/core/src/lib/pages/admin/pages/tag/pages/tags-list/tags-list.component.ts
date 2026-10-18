@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -14,7 +14,6 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-tags-list',
   templateUrl: './tags-list.component.html',
   styleUrls: ['./tags-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe]
 })
 export class TagsListComponent extends BaseAdminListComponent<Tag> {
