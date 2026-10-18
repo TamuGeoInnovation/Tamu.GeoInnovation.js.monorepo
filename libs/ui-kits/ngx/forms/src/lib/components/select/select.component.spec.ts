@@ -22,15 +22,16 @@ describe('SelectComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should respond to keyboard events', (done) => {
-    component.changed.subscribe((event) => {
-      expect(event).toEqual({ test: 'value' });
-      done();
-    });
+  it('should respond to keyboard events', () =>
+    new Promise<void>((done) => {
+      component.changed.subscribe((event) => {
+        expect(event).toEqual({ test: 'value' });
+        done();
+      });
 
-    component.value = { test: 'value' };
-    component.changeEvent();
-  });
+      component.value = { test: 'value' };
+      component.changeEvent();
+    }));
 
   it('getDataItemValue should handle template being undefined', () => {
     expect(component.getDataItemValue({ test: 'value' })).toEqual({ test: 'value' });

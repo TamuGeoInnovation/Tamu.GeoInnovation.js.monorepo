@@ -6,14 +6,6 @@
   "sourceRoot": "libs/ui-kits/ngx/forms/src",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/forms"],
-      "options": {
-        "jestConfig": "libs/ui-kits/ngx/forms/jest.config.ts",
-        "tsConfig": "libs/ui-kits/ngx/forms/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

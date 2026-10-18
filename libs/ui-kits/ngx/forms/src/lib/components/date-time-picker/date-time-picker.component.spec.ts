@@ -153,7 +153,8 @@ describe('DateTimePickerComponent', () => {
     // The native time input replaced a grid of hours and minutes with a typed field, and the GIS Day
     // event form, which nobody could run at the time, lost its list of times to choose from (#1747).
     describe('a time of day (GIS Day event times)', () => {
-      const offered = () => Array.from(document.querySelectorAll('.tamu-gisc-date-time-picker-panel mat-option'), (o) => o.textContent.trim());
+      const offered = () =>
+        Array.from(document.querySelectorAll('.tamu-gisc-date-time-picker-panel mat-option'), (o) => o.textContent.trim());
 
       const open = async () => {
         fixture.componentRef.setInput('maxView', 'hour');
@@ -176,7 +177,7 @@ describe('DateTimePickerComponent', () => {
 
       // The list scrolls the current time into view when it opens, which jsdom does not implement.
       beforeAll(() => {
-        Element.prototype.scrollIntoView = jest.fn();
+        Element.prototype.scrollIntoView = vi.fn();
       });
 
       afterEach(() => {
@@ -206,9 +207,9 @@ describe('DateTimePickerComponent', () => {
 
         await open();
 
-        const option = Array.from(document.querySelectorAll<HTMLElement>('.tamu-gisc-date-time-picker-panel mat-option')).find(
-          (o) => o.textContent.trim() === '4:15 PM'
-        );
+        const option = Array.from(
+          document.querySelectorAll<HTMLElement>('.tamu-gisc-date-time-picker-panel mat-option')
+        ).find((o) => o.textContent.trim() === '4:15 PM');
         option.click();
         await settle();
 
