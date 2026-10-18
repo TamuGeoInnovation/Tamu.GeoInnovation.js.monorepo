@@ -1,9 +1,10 @@
 @let item = listItem();
+@let s = state();
 
-<div class="layer-item" [ngClass]="{ 'visible': $safeNavigationMigration(item?.visible), 'outside-extent': item.visibleAtCurrentScale === false, 'error': $safeNavigationMigration(item?.error), 'has-children': $safeNavigationMigration(item?.children?.length) > 0, 'heading': isHeading}">
+<div class="layer-item" [ngClass]="{ 'visible': s.visible, 'outside-extent': s.visibleAtCurrentScale === false, 'error': s.error, 'has-children': s.children.length > 0, 'heading': isHeading}">
   @if (!isHeading) {
   <div (click)="toggleLayer()">
-    @switch (item.updating) { @case (false) {
+    @switch (s.updating) { @case (false) {
     <div class="layer-visibility-dot"></div>
     } @default {
     <div>
@@ -13,13 +14,13 @@
     </div>
     } }
   </div>
-  } @if (item?.children?.length > 0) {
+  } @if (s.children.length > 0) {
   <span class="expand-toggle material-icons" (click)="toggleExpanded()">
     <div>@switch (expanded()) { @case (true) { arrow_drop_down } @default { arrow_right } }</div>
   </span>
   }
 
-  <p (click)="toggleLayer()">{{ item.title }}@if (item.layer?.['listNote']) { - {{ item.layer['listNote'] }} }</p>
+  <p (click)="toggleLayer()">{{ s.title }}@if (item.layer?.['listNote']) { - {{ item.layer['listNote'] }} }</p>
 
   @if (item.layer['description']) {
   <tamu-gisc-tooltip width="20rem" height="25rem" [positioningStrategy]="'fixed'">
@@ -29,9 +30,9 @@
   }
 </div>
 
-@if (item?.children?.length && expanded()) {
+@if (s.children.length && expanded()) {
 <div class="list-item-children">
-  @for (child of item.children.toArray(); track child) {
+  @for (child of s.children; track child) {
   <tamu-gisc-layer-list-item [listItem]="child"></tamu-gisc-layer-list-item>
   }
 </div>

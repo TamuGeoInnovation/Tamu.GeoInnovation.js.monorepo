@@ -6,7 +6,7 @@
 </div>
 
 <div class="sidebar-component-content-container">
-  @for (category of layers | async; track category) {
+  @for (category of categories(); track category.item) {
   <div class="category">
     <tamu-gisc-accordion>
       <tamu-gisc-accordion-header>{{category.title}}</tamu-gisc-accordion-header>
@@ -14,11 +14,11 @@
         <div>
           @switch (category.children.length) { @case (0) {
           <div>
-            <tamu-gisc-layer-list-item [listItem]="category"></tamu-gisc-layer-list-item>
+            <tamu-gisc-layer-list-item [listItem]="category.item"></tamu-gisc-layer-list-item>
           </div>
           } @default {
           <div>
-            @for (layer of category.children.toArray(); track layer) {
+            @for (layer of category.children; track layer) {
             <tamu-gisc-layer-list-item [listItem]="layer"></tamu-gisc-layer-list-item>
             }
           </div>
