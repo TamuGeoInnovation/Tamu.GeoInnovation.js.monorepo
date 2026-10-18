@@ -194,6 +194,17 @@ context, but the ArcGIS SDK is downloaded once per worker and served from memory
 `./fixtures`, not from `@playwright/test`. A context a spec makes by hand with `browser.newContext()`
 does not get the cache; it still works, and downloads the SDK itself.
 
+**A few tests run last, two at a time** (#1716). A test tagged `HEAVY` (from [`fixtures.ts`](fixtures.ts))
+drives one map through many slow steps: 3D on every campus basemap, zooming to the deepest level, popup
+after popup. Sharing the machine with five other map loads, each step slows until the test's own clock
+runs out, and three such tests failed their first attempt in every release tier on 18 October while
+passing first time alone. So the config runs them in a `heavy` project after every other test has
+finished, whether those passed or not, with at most two at once. A run's list shows them as `[heavy]`,
+at the end, and still run after `-x` has stopped the rest. `one` runs a spec or test as asked, with
+nothing held back (`--no-deps`). Tag a test only
+when it has failed a tier's first attempt and passes alone; a test that is slow alone is not heavy, it
+is slow.
+
 The commands below are what the script runs, for reference or for running without it. Node runs in
 Docker here, so Playwright runs in a container. They take the packages from the `tamu-js-smoke-nm`
 volume, so run the script once first; or drop that mount to use the checkout's own install.

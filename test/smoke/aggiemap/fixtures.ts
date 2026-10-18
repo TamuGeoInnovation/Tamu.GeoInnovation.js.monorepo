@@ -80,3 +80,11 @@ export const test = base.extend<{ esriSdkCache: void }>({
 });
 
 export { expect } from '@playwright/test';
+
+/**
+ * Marks a test that drives one map through many slow steps, so it runs after the rest of the suite,
+ * two at a time, instead of sharing the machine with five other map loads (#1716). The config says why.
+ * Use it for a test that failed its first attempt in a tier and passes alone, not to make a slow test
+ * pass: `test('...', HEAVY, async ({ page }) => ...)`.
+ */
+export const HEAVY = { tag: '@heavy' };
