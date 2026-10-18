@@ -1,6 +1,6 @@
-import { Component, OnInit, ElementRef, Output, ChangeDetectionStrategy, inject, input, viewChild } from '@angular/core';
-import { Observable } from 'rxjs';
-import { MapboxOptions, Map } from 'mapbox-gl';
+import { Component, OnInit, ElementRef, ChangeDetectionStrategy, inject, input, viewChild } from '@angular/core';
+import { outputFromObservable } from '@angular/core/rxjs-interop';
+import { MapboxOptions } from 'mapbox-gl';
 
 import { MapboxMapService } from '../../services/mapbox-map.service';
 
@@ -25,8 +25,11 @@ export class MapboxMapComponent implements OnInit {
 
   public readonly maxZoom = input<MapboxOptions['maxZoom']>(undefined);
 
-  @Output()
-  public loaded: Observable<Map>;
+  /**
+   * Emits the map once it has loaded. It was declared as an output and never assigned, so no caller
+   * listens to it; it now emits what its name says.
+   */
+  public readonly loaded = outputFromObservable(this.mapService.loaded);
 
   public ngOnInit() {
     this.mapService.createMap({

@@ -1,4 +1,4 @@
-import { Component, Input, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
@@ -14,6 +14,5 @@ export class AttributeTableComponent {
    * Function used to initially sort data. Passed in directly to the ngFor directive
    * responsible for iterating through all the properties.
    */
-  @Input()
-  public sortFn: () => boolean;
+  public readonly sortFn = input<() => boolean>(undefined);
 }

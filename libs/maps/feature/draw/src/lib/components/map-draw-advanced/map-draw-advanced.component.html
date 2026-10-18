@@ -37,13 +37,13 @@
 <div class="tool-set version">
   @if (undoTool()) {
   <p class="material-icons" title="Undo" [ngClass]="{ available: $safeNavigationMigration(model?.canUndo()) }" (click)="versionAction('undo')">undo</p>
-  } @if (redoTool) {
+  } @if (redoTool()) {
   <p class="material-icons" title="Redo" [ngClass]="{ available: $safeNavigationMigration(model?.canRedo()) }" (click)="versionAction('redo')">redo</p>
   }
 </div>
 } @if (helpTools()) {
 <div class="tool-set help">
-  @if (redoTool) {
+  @if (redoTool()) {
   <div title="Help" class="available">
     <tamu-gisc-tooltip [positioningStrategy]="'fixed'" width="25rem" height="30rem">
       <tamu-gisc-tooltip-trigger>
@@ -69,7 +69,7 @@
         <p><span class="material-icons">format_color_fill</span> <strong>Color tool</strong>: Sets the color for the selected shape or next drawn shape.</p>
         } @if (undoTool()) {
         <p><span class="material-icons">undo</span> <strong>Undo tool</strong>: When available, undos the last drawing operation.</p>
-        } @if (redoTool) {
+        } @if (redoTool()) {
         <p><span class="material-icons">redo</span> <strong>Redo tool</strong>: When available, redos the last undone drawing operation.</p>
         }
       </div>

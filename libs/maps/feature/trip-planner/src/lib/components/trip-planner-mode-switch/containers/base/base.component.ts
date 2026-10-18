@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 
 import { TripResult } from '../../../../core/trip-planner-core';
 import { TripModeSwitch, TripPlannerService } from '../../../../services/trip-planner.service';
@@ -18,8 +18,7 @@ export class TripPlannerModeSwitchComponent implements OnInit {
   private tripPlanner = inject(TripPlannerService);
   private busService = inject(BusService);
 
-  @Input()
-  public modeSwitch: TripModeSwitch = null;
+  public readonly modeSwitch = input<TripModeSwitch>(null);
 
   public readonly result = input<TripResult>(undefined);
 
@@ -44,7 +43,9 @@ export class TripPlannerModeSwitchComponent implements OnInit {
 
     // `walking` refers to the segment speed identification by the trip planner `speed` fn as part of a
     // successful trip query
-    if (this.modeSwitch && this.modeSwitch.type === 'walking') {
+    const modeSwitch = this.modeSwitch();
+
+    if (modeSwitch && modeSwitch.type === 'walking') {
       travelMode = '1';
     }
 

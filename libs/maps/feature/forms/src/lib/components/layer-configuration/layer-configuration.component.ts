@@ -1,17 +1,8 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  OnDestroy,
-  OnChanges,
-  SimpleChanges,
-  ChangeDetectionStrategy,
-  inject,
-  input
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
 import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BehaviorSubject, forkJoin, from } from 'rxjs';
+import { forkJoin, from } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, filter, withLatestFrom, pluck, take } from 'rxjs/operators';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
@@ -38,12 +29,6 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
   private mp = inject(EsriModuleProviderService);
 
   /**
-   * Internal value. The input is piped through here so that the http query
-   * rate can be throttled as the user types in a URL address.
-   */
-  private _url: BehaviorSubject<string> = new BehaviorSubject(undefined);
-
-  /**
    * URL of an existing layer configuration.
    *
    * Loads configuration on initialization and attempts to populate
@@ -57,24 +42,25 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
    *
    * https://domain.com/arcgis/rest/services/ExampleServer/MapServer/0
    */
-  @Input()
-  public set url(v) {
-    this._url.next(v);
-  }
+  public readonly url = input<string>(undefined);
 
-  public get url() {
-    return this._url.getValue();
-  }
+  /**
+   * The input as a stream, so that the http query rate can be throttled as the user types in a URL address.
+   */
+  private _url = toObservable(this.url);
 
   /**
    * Component model initialization parameters.
    *
    * Used to override server-side definitions or set them if not declared.
+   *
+   * Read as the component model, `config`, which it initializes.
    */
-  @Input()
-  public set configOptions(options: ILayerConfiguration | UntypedFormGroup) {
-    this.config = new LayerConfiguration(this.fb, options);
-  }
+  // eslint-disable-next-line @angular-eslint/no-input-rename
+  public readonly config = input<LayerConfiguration, ILayerConfiguration | UntypedFormGroup>(undefined, {
+    alias: 'configOptions',
+    transform: (options: ILayerConfiguration | UntypedFormGroup) => new LayerConfiguration(this.fb, options)
+  });
 
   /**
    * Describes whether the layer will be loaded/unloaded from the map upon configuration resolution (load)
@@ -92,14 +78,8 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
 
   private layer: LayerConfigLayer;
 
-  /**
-   * Component model. Initializes a form group that is used to attach it to the parent
-   * form group, if any.
-   */
-  public config: LayerConfiguration;
-
   public ngOnInit() {
-    if (this._url.getValue() !== undefined) {
+    if (this.url() !== undefined) {
       this._url
         .pipe(
           debounceTime(1000),
@@ -160,7 +140,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
     }
 
     // Configure listeners for property edits to the form (opacity, etc)
-    this.config.form.valueChanges
+    this.config().form.valueChanges
       .pipe(
         pluck('info'),
         filter((config) => config !== undefined),
@@ -177,13 +157,15 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
     // Update form values
     this.layer = layer;
 
-    if (this.config) {
-      this.config.applyConfigValuesToLayer(this.layer);
+    const config = this.config();
+
+    if (config) {
+      config.applyConfigValuesToLayer(this.layer);
     }
 
     //
     // If there is no config, apply default values from the layer instance.
-    this.config.updateFormValues(LayerConfiguration.normalizeOptions(layer));
+    config.updateFormValues(LayerConfiguration.normalizeOptions(layer));
   }
 
   public ngOnChanges(changes: SimpleChanges) {

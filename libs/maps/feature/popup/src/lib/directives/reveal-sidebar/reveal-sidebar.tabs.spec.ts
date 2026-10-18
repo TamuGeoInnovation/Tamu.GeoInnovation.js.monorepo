@@ -98,7 +98,7 @@ describe('RevealSidebarOnPopupDirective with sidebar tabs', () => {
 
     expect(navigate).toHaveBeenCalledWith(['./settings'], expect.anything());
     expect(detailsShowing()).toBe(false);
-    expect(fixture.componentInstance.sidebar().visible).toBe(true);
+    expect(fixture.componentInstance.sidebar().visible()).toBe(true);
   });
 
   it('closes them as their [X] does, clearing the selection too', () => {
@@ -118,13 +118,13 @@ describe('RevealSidebarOnPopupDirective with sidebar tabs', () => {
     clickTab('features');
 
     expect(detailsShowing()).toBe(false);
-    expect(fixture.componentInstance.sidebar().visible).toBe(true);
+    expect(fixture.componentInstance.sidebar().visible()).toBe(true);
   });
 
   it('still collapses the panel from its own tab when no details are open', () => {
     clickTab('features');
 
-    expect(fixture.componentInstance.sidebar().visible).toBe(false);
+    expect(fixture.componentInstance.sidebar().visible()).toBe(false);
     expect(map.clearHitTest).not.toHaveBeenCalled();
   });
 
@@ -133,7 +133,7 @@ describe('RevealSidebarOnPopupDirective with sidebar tabs', () => {
 
     expect(map.clearHitTest).not.toHaveBeenCalled();
     expect(map.clearSelectedFeatures).not.toHaveBeenCalled();
-    expect(fixture.componentInstance.sidebar().visible).toBe(true);
+    expect(fixture.componentInstance.sidebar().visible()).toBe(true);
   });
 
   it('does not close the details for a click elsewhere in the panel', () => {

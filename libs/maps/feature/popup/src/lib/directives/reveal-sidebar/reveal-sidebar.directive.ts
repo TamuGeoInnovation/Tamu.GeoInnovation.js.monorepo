@@ -1,4 +1,4 @@
-import { ContentChild, Directive, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
+import { Directive, HostListener, OnDestroy, OnInit, inject, contentChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { SidebarComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
@@ -33,8 +33,7 @@ export class RevealSidebarOnPopupDirective implements OnInit, OnDestroy {
   private readonly popup = inject(PopupService);
 
   /** The popup panel rendered in this sidebar's content, whose [X] a tab click reuses. */
-  @ContentChild(PopupComponent, { descendants: true })
-  public popupPanel: PopupComponent | undefined;
+  public readonly popupPanel = contentChild(PopupComponent, { descendants: true });
 
   private _showing = false;
 
@@ -44,8 +43,8 @@ export class RevealSidebarOnPopupDirective implements OnInit, OnDestroy {
     this._subscription = this.popup.opened.subscribe(() => {
       // Only ever opens. Closing it here would fight the user, who may have closed it deliberately
       // while a popup was up.
-      if (this.sidebar.visible !== true) {
-        this.sidebar.visible = true;
+      if (this.sidebar.visible() !== true) {
+        this.sidebar.visible.set(true);
       }
     });
 
@@ -62,8 +61,8 @@ export class RevealSidebarOnPopupDirective implements OnInit, OnDestroy {
       return;
     }
 
-    this.popupPanel?.close();
-    this.sidebar.visible = true;
+    this.popupPanel()?.close();
+    this.sidebar.visible.set(true);
   }
 
   public ngOnDestroy(): void {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 import { from, Subject, combineLatest, ReplaySubject } from 'rxjs';
 import { takeUntil, filter, switchMap, take, map } from 'rxjs/operators';
 
@@ -63,8 +63,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
 
   public readonly undoTool = input(true);
 
-  @Input()
-  public redoTool = true;
+  public readonly redoTool = input(true);
 
   public readonly export = output<esri.Graphic[] | esri.Graphic>();
 

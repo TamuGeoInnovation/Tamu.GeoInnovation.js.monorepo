@@ -8,6 +8,6 @@
 <div class="sidebar-component-content-container">
   <!-- Followed by dynamic legend items -->
   @for (group of legend | async; track group) {
-  <tamu-gisc-legend-collection [group]="group" [layer]="group.layer" [deduplicate]="deduplicate" [respectDefinitionExpression]="respectDefinitionExpression" [allowVisibilityToggle]="allowVisibilityToggle" [combineChildrenUnderPrimary]="combineChildrenUnderPrimary"></tamu-gisc-legend-collection>
+  <tamu-gisc-legend-collection [group]="group" [layer]="group.layer" [deduplicate]="deduplicate()" [respectDefinitionExpression]="respectDefinitionExpression()" [allowVisibilityToggle]="allowVisibilityToggle()" [combineChildrenUnderPrimary]="combineChildrenUnderPrimary()"></tamu-gisc-legend-collection>
   }
 </div>

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, ChangeDetectionStrategy, inject, input } from '@angular/core';
 
 import { EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
 import { LayerLegendOverride } from '@tamu-gisc/common/types';
@@ -62,8 +62,7 @@ export class LegendElementComponent implements OnChanges {
 
   private readonly sportsSafetyFirstLegendLabel = 'Please use marked crosswalks. No mid-street crossing.';
 
-  @Input()
-  public element: ILegendElement;
+  public readonly element = input<ILegendElement>(undefined);
 
   public readonly layer = input<ILayer>(undefined);
 
@@ -88,13 +87,13 @@ export class LegendElementComponent implements OnChanges {
       return false;
     }
 
-    const infos = this.element?.infos as { length?: number } | undefined;
+    const infos = this.element()?.infos as { length?: number } | undefined;
 
     return typeof infos?.length === 'number' && infos.length > 1;
   }
 
   public get useGroupTitleLabel(): boolean {
-    return this.element?.infos?.length === 1;
+    return this.element()?.infos?.length === 1;
   }
 
   public get displayGroupTitle(): string {
@@ -139,12 +138,12 @@ export class LegendElementComponent implements OnChanges {
       return;
     }
 
-    if (!this.element?.infos) {
+    if (!this.element()?.infos) {
       this.infos = of([]);
       return;
     }
 
-    const operableInfos = (this.element.infos ?? []) as Array<LegendInfo>;
+    const operableInfos = (this.element().infos ?? []) as Array<LegendInfo>;
 
     this.infos = iif(
       () => {
