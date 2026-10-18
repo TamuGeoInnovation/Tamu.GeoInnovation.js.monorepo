@@ -5,10 +5,24 @@ finishes. The home session reads it before writing a batch or asking the maintai
 
 Last written **2:05 PM Central, 18 October 2026**.
 
+Last batch done: 4.
+
 ## Running now
 
-**Nothing.** The machine is idle and free for the next batch. No suite, no capture, no containers of this
-machine's running.
+**Batch 5: production's visual-baselines set**, started **1:48 PM Central, 18 October**.
+
+| | |
+| --- | --- |
+| Container | `vb-prod-2026-10-16` |
+| Command | `capture.mjs --env production --release prod-2026-10-16 --out /out` |
+| From | a worktree at `447d403e6` (`origin/development`) |
+| Confirmed | build `main-TK2R62YY.js`, which is what production serves |
+| Scale | **848 shots**, 424 routes x 2 viewports, 0 already on disk |
+| Out | `C:/TAMU/visual-baselines/production/prod-2026-10-16` |
+| Expected | about two hours, so roughly 3:50 PM |
+
+It resumes if interrupted, so a restart costs only what it had not reached. Nothing else should run
+against production while it does.
 
 ## Finished since the last report
 
@@ -27,10 +41,7 @@ machine's running.
 
 ## Not started
 
-- **Batch 5** — capture production's complete `tools/visual-baselines` set as tonight's "before", about two
-  hours. **Not started.** The maintainer asked this machine to wrap up instead. It is ready to start on a word,
-  and nothing else is running against production, so the tool's "never while a suite runs against the same
-  environment" rule is satisfied right now.
+- (Batch 5 is now running; see above.)
 - **Batch 4's own method** — three attempts per test per commit with `--retries=0`. Not run; what was run
   establishes that a first attempt alone succeeds, not a failure rate.
 
