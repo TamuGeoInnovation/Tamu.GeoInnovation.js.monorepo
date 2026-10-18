@@ -74,6 +74,11 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
 ## Batch 6 (prepared 18 October 2026, afternoon) — after batch 5
 
 **Decided:** ArcGIS 5.1 ships with this round (#1894 merged). A dev build and quick tier follow it.
+- (Added 3:25 PM.) **The build is on dev: Release-480, build 20261018.27, `98c2056be`.** Besides 5.1 it carries #1892,
+  #1893, #1900 (the zoom, locate and compass buttons found on ArcGIS 4.x or 5.x) and #1901 (the three contended
+  tests, tagged `@heavy`, run last in their own project, two at a time). Run the tier from a worktree at
+  `98c2056be`, so those suite changes are in it. Report whether the heavy tests passed on their first attempt and
+  ran after everything else: that is #1716's first proof.
 
 1. **#1867: the quick tier on dev's first ArcGIS 5.1 build**
    - Goal: the dev build of `development` at **`c03c56144`** (#1894) or later passes the quick tier.
