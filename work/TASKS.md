@@ -31,18 +31,29 @@ each round; git history keeps the old ones.
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
-## Batch 1 (prepared 18 October 2026)
+## Batch 2 (prepared 18 October 2026, afternoon)
 
-1. **#1849: the release tier on dev's ArcGIS 5.0 build**
-   - Goal: clear the dev build that carries ArcGIS 5.0.19 (#1861), with everything since `prod-2026-10-16`, for production.
+Batch 1 is done (report `work/reports/2026-10-18-1.md`). This machine has no `AZURE_DEVOPS_PAT`, so identify the build
+from what dev serves, as batch 1 did. Name the commit, not a release number.
+
+1. **#1849: the release tier on dev's build after the signals and OnPush pages**
+   - Goal: clear the dev build of `development` at **`3cb5b6fdb`** (#1866) or later, for production. Since
+     `dev-2026-10-18` it carries #1864 (OnPush on AggieMap's ten pages), #1865 (every remaining decorator input,
+     output and query made a signal), #1866 (four new smoke checks that the view follows an interaction) and #1863 (docs).
    - Run:
-     - Find dev's newest AggieMap build: the first release after Release-476 on Azure DevOps release definition 13. Read it
-       with the `AZURE_DEVOPS_PAT` user environment variable if this machine has one; never print the token. Its commit
-       must be `f800c2edf` (#1861) or later on `development`. If no such build is on dev yet, say so in the report and stop.
-     - Put that commit in its own worktree and run `test/smoke/aggiemap/run-local.sh development release` from there.
-       Nothing else heavy should run on this machine meanwhile.
-   - Report on: #1849. Comment when it starts (release, build, commit), and post the result when it finishes. A
-     status comment every few minutes while it runs is welcome.
-   - Then: **if it passed**, run `scripts/tag-build.sh dev <full commit>` and `git push origin <tag>`. **If anything
-     failed**, tag nothing; explain each failure by layer and cause, and say whether it also fails on production
-     (`run-local.sh production` with `--grep` for just those tests) or appeared with this build.
+     - Confirm dev serves a build of `3cb5b6fdb` or later. `git fetch` and read `development`'s head, then check that dev's
+       deployed bundles differ from the `dev-2026-10-18` build: for example, a chunk name the earlier run recorded is no
+       longer served. If dev still serves `f800c2edf`'s build, say so in the report and stop.
+     - Put the commit dev serves in its own worktree and run `test/smoke/aggiemap/run-local.sh development release` from
+       there. Nothing else heavy should run on this machine meanwhile.
+   - Report on: #1849, as a new section headed "Release tier on the build after #1866". Comment when it starts
+     (commit, how the build was identified) and when it finishes.
+   - Then: **if it passed**, run `scripts/tag-build.sh dev <full commit>` and `git push origin <tag>`. Today's tag
+     `dev-2026-10-18` already exists, so the script will choose the next name; record what it chose. **If anything
+     failed**, tag nothing; explain each failure by layer and cause, and say whether it also fails on
+     `dev-2026-10-18`'s commit (`run-local.sh development release --grep <test>` from a worktree at `f800c2edf`).
+     The four new interaction tests (`legend.spec.ts` "a layer switched off and on…", `popup.spec.ts` "clicking one
+     building after another…", `search.spec.ts` "searching "Wehner" then "Bonfire"…", `basemap-gallery.spec.ts`)
+     run on dev for the first time here; report each one's result by name.
+   - Also: compare this run's duration with batch 1's 41.6 minutes, to answer batch 1's decision 1.
+
