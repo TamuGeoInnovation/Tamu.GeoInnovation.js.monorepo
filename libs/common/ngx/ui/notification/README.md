@@ -88,7 +88,7 @@ In `example.component.ts`:
 ```js
 export class ExampleComponent implements OnInit {
 
-  constructor(private ns: NotificationService) {}
+  private readonly ns = inject(NotificationService);
 
   public ngOnInit(): void {
     this.ns.toast({
@@ -109,7 +109,7 @@ In `example.component.ts`:
 ```js
 export class ExampleComponent implements OnInit {
 
-  constructor(private ns: NotificationService) {}
+  private readonly ns = inject(NotificationService);
 
   public ngOnInit(): void {
     this.ns.toast('example-toast');

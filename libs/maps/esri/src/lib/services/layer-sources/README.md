@@ -14,9 +14,10 @@ This service provides a centralized store for managing layer sources from the en
 ### Basic Layer Sources Management
 
 ```typescript
+import { inject } from '@angular/core';
 import { LayerSourcesService } from '@tamu-gisc/maps/esri';
 
-constructor(private layerSourcesService: LayerSourcesService) {}
+private readonly layerSourcesService = inject(LayerSourcesService);
 
 // Get current layer sources
 const sources = this.layerSourcesService.getLayerSources();
@@ -58,9 +59,10 @@ const overrides = this.layerSourcesService.getLayerOverrides('parking-lots');
 The map service now automatically uses the layer sources service:
 
 ```typescript
+import { inject } from '@angular/core';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
-constructor(private mapService: EsriMapService) {}
+private readonly mapService = inject(EsriMapService);
 
 // Access layer sources service through map service
 const layerSourcesService = this.mapService.getLayerSourcesService();

@@ -48,7 +48,7 @@ In a component or guard:
 
 ```js
 export class CustomComponent implements OnInit {
-  constructor(private auth: AuthService) {}
+  private readonly auth = inject(AuthService);
 
   public ngOnInit() {
     this.auth.isAuthenticated().subscribe(status => {
