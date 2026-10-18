@@ -18,6 +18,21 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### Campus maps load only their own campus
+
+The Galveston, McAllen and DC / Bush School maps also loaded every College Station layer: 26 layers on
+DC, among them Buildings, parking, bus routes, bike lanes and RNS Spaces with all 44,980 parking-space
+points, none of which can show anything on another campus. On dev ten of them failed to load and filled
+the console with errors, and on ArcGIS 5.1 the RNS Spaces load kept the DC map painting for about a
+minute and a half. The map looks the same afterwards, because none of those layers had anything to draw
+there; what changes is how fast it finishes and the console. A campus map now loads only its basemap and its own campus's layers, as the dining
+kiosk already did; College Station's maps are unchanged. A smoke check now fails if any campus map loads
+a layer that is not its own ([#1910](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1910)).
+
+| Before | After |
+| --- | --- |
+| ![DC / Bush School on dev before the fix: 26 layers, 10 of them failing with 20 console errors, and 92 seconds until it stopped drawing](../screenshots/1910-campus-layers/before-dc-bush-school-dev.png) | ![The same map on a local production build of the fix, on ArcGIS 5.1: 4 layers, no errors, finished drawing in 8 seconds](../screenshots/1910-campus-layers/after-dc-bush-school-local.png) |
+
 ### GIS Day: the sponsorship levels match the 2026 prospectus
 
 The sponsor page now says what the 2026 prospectus says. Each level's tile shows how many
@@ -660,6 +675,7 @@ dated notes as what was tested, and this table empties.
 | Map search with an apostrophe or a percent sign ([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)) | [dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu), then [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Search `Cain '51`: James J. Cain '51 Building is listed. Search `O'` or `Aggie's`: no error, results or "No results found". On Football Tailgating, search `%`: "No results found", not every tent. Ordinary searches still work: `MSC`, `O12`, `Creamery` |
 | All Maps: choosing a search result opens the map ([#1868](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1868)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | Type `Campus Main Parking` in Search Maps and click the result: Campus Main Parking opens. Arrow down and Enter does the same |
 | Main map in 2D: click coordinates and the viewfinder ([#1875](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1875)) | [/map/d](https://dev.aggiemap.tamu.edu/map/d) | In 2D, click the map: its latitude and longitude (about 30.61, -96.34) show bottom left, and the browser console has no `toFixed` error. Then press an arrow key: the box in the middle of the map lists the buildings under it, numbered |
+| Campus maps load only their own campus ([#1910](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1910)) | [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school), [Galveston](https://dev.aggiemap.tamu.edu/campus/galveston), [McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen) | Each map draws its campus within a few seconds, as before but faster on DC; the browser console shows no "Failed to load layer" errors for Bike Racks, Lactation Rooms and the like; clicking a building still opens its popup and search still finds it |
 | Football Tailgating game-day notice ([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)) | [The main map](https://dev.aggiemap.tamu.edu/map/d) in a private window, in the week before a home game | Two notices, **Football Transportation Map Available** then **Football Tailgating Map Available**; clicking the second opens the Tailgating map |
 | GIS Day: sponsorship levels back at last year's prices ([#1821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1821)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [the sponsor page](https://txgisday.org/sponsors/tamu) | Point $256, Line $512, Polygon $1,024, Raster $2,048, each level's perks as before |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
