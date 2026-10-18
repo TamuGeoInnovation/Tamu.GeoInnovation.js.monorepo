@@ -116,6 +116,10 @@ test.describe(`the trip planner ${AVAILABLE ? 'is offered' : 'is not offered'} a
       await expect(page.locator(STOPS), '/map/d/trip did not show the from and to boxes').toHaveCount(2, {
         timeout: 30_000
       });
+      // No stop is chosen yet, so both are empty, not the word "undefined".
+      for (const box of await page.locator(STOPS).all()) {
+        await expect(box, 'a from or to box is not empty before a stop is chosen').toHaveValue('');
+      }
       await expect(page.locator(MAINTENANCE), '/map/d/trip still shows the maintenance message').toHaveCount(0);
     });
 

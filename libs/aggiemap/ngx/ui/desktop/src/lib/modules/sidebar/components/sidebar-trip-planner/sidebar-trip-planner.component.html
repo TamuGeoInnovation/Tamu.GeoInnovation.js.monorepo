@@ -6,7 +6,7 @@
   <div>
     <!-- Trip from and to input components. By default, two blanks are automatically generated given that a trip has a minimum of two points -->
     @for (stop of stops | async; track $index) {
-    <tamu-gisc-search (result)="setSearchResultAsTripStop($event)" (dirty)="eventClearRoute()" (empty)="eventClearStop($event)" [placeholder]="'Choose point or click on the map'" [canGeolocate]="true" [value]="stop?.attributes?.name" [index]="stop.index" [rightActionIcon]="'close'"></tamu-gisc-search>
+    <tamu-gisc-search (result)="setSearchResultAsTripStop($event)" (dirty)="eventClearRoute()" (empty)="eventClearStop($event)" [placeholder]="'Choose point or click on the map'" [canGeolocate]="true" [value]="stop?.attributes?.name ?? ''" [index]="stop.index" [rightActionIcon]="'close'"></tamu-gisc-search>
     }
   </div>
 

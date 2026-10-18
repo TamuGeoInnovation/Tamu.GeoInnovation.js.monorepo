@@ -48,7 +48,11 @@ describe('TripPlannerTopComponent', () => {
   it('offers the from and to boxes and the travel modes on a development host', () => {
     const element = render(true);
 
-    expect(element.querySelectorAll('.points input').length).toBe(2);
+    const boxes = Array.from(element.querySelectorAll<HTMLInputElement>('.points input'));
+
+    expect(boxes.length).toBe(2);
+    // A stop not yet chosen has no name: an empty box, not the word "undefined".
+    expect(boxes.map((box) => box.value)).toEqual(['', '']);
     expect(element.querySelector('tamu-gisc-trip-planner-mode-picker-mobile')).not.toBeNull();
     expect(element.querySelector('.maintenance-message')).toBeNull();
   });

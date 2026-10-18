@@ -7,7 +7,7 @@
       <!-- Routing has no production service, so the planner is offered on development hosts only, for testing its components. -->
       @if (dev | async) { @for (stop of stops | async; track $index; let i = $index) {
       <div>
-        <input type="text" [placeholder]="'Search location'" [value]="stop?.attributes?.name" (click)="summonOmnisearch(i)" />
+        <input type="text" [placeholder]="'Search location'" [value]="stop?.attributes?.name ?? ''" (click)="summonOmnisearch(i)" />
       </div>
       } } @else {
       <p class="maintenance-message">The Aggie Map routing services are currently undergoing maintenance and are unavailable. We apologize for the inconvenience while this work is underway.</p>
