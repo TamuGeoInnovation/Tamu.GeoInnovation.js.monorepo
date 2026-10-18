@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, ChangeDetectionStrategy, input, model, contentChildren } from '@angular/core';
+import { Component, OnInit, forwardRef, input, model, contentChildren } from '@angular/core';
 import { outputToObservable, takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { merge } from 'rxjs';
@@ -17,8 +17,7 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
       useExisting: forwardRef(() => CheckboxGroupComponent),
       multi: true
     }
-  ],
-  changeDetection: ChangeDetectionStrategy.Eager
+  ]
 })
 export class CheckboxGroupComponent implements OnInit, ControlValueAccessor {
   public readonly checkboxes = contentChildren(CheckboxComponent);
