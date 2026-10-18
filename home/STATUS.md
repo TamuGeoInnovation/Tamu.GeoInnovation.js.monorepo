@@ -1,6 +1,6 @@
 # Home machine: status
 
-Written only by the home session, while it listens (see `LEADER.md`).
+Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
 
