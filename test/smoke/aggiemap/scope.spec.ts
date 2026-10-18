@@ -97,7 +97,9 @@ test.describe('choosing the quick set for a change', () => {
   test('adds the specs that check a changed feature', () => {
     const set = quickSetFor(['libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts'], read);
 
-    expect(set.specs).toEqual(expect.arrayContaining(['services.spec.ts', 'basemap-zoom.spec.ts', 'campus-basemap.spec.ts']));
+    expect(set.specs).toEqual(
+      expect.arrayContaining(['services.spec.ts', 'basemap-zoom.spec.ts', 'campus-basemap.spec.ts', 'basemap-gallery.spec.ts'])
+    );
     expect(set.unmapped).toEqual([]);
   });
 

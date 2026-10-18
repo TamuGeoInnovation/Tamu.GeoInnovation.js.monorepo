@@ -57,14 +57,15 @@ export const CORE_TITLES = ['lists at least'];
 const FEATURES: { paths: RegExp; specs: string[] }[] = [
   {
     paths: /^libs\/maps\/feature\/basemap\//,
-    specs: ['services.spec.ts', 'basemap-zoom.spec.ts', 'campus-basemap.spec.ts']
+    specs: ['services.spec.ts', 'basemap-zoom.spec.ts', 'campus-basemap.spec.ts', 'basemap-gallery.spec.ts']
   },
   {
     paths: /^libs\/(maps\/feature\/popup|aggiemap\/ngx\/popups|ts\/events\/ngx\/src\/lib\/modules\/popups)\//,
     specs: ['popup.spec.ts', 'directions.spec.ts', 'search-sources.spec.ts']
   },
   { paths: /^libs\/maps\/feature\/trip-planner\//, specs: ['directions.spec.ts'] },
-  { paths: /^libs\/maps\/feature\/legend\//, specs: ['legend.spec.ts'] },
+  { paths: /^libs\/maps\/feature\/(legend|layer-list)\//, specs: ['legend.spec.ts'] },
+  { paths: /^libs\/ui-kits\/ngx\/search\//, specs: ['search.spec.ts', 'search-sources.spec.ts'] },
   { paths: /^libs\/maps\/feature\/perspective\//, specs: ['perspective.spec.ts'] },
   {
     paths: /^libs\/aggiemap\/ngx\/common\/src\/lib\/(connections|search-sources)\.ts$/,
