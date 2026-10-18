@@ -7,7 +7,7 @@ art squeezed into the declared box — on the map and in the legend swatch — s
 The hint is a workaround for a value that is wrong at the source. This tool finds every one of them.
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -v "C:/TAMU/<checkout>:/repo" -w /repo node:22.23.3 \
+MSYS_NO_PATHCONV=1 docker run --rm -v "C:/TAMU/<checkout>:/repo" -w /repo node:24.22.0 \
   node tools/layer-symbols/compare.mjs
 ```
 

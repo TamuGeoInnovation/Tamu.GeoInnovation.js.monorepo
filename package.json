@@ -156,7 +156,7 @@
     "@types/jwt-decode": "^3.1.0",
     "@types/mapbox-gl": "^1.9.1",
     "@types/multer": "^1.4.3",
-    "@types/node": "18.19.99",
+    "@types/node": "24.19.2",
     "@types/oidc-provider": "^7.8.1",
     "@types/yargs": "^16.0.1",
     "@typescript-eslint/eslint-plugin": "8.71.1",
