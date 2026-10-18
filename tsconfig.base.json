@@ -15,7 +15,6 @@
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": ".",
     "strictPropertyInitialization": false,
     "paths": {
       "@tamu-gisc/aggiemap/ngx/common": ["libs/aggiemap/ngx/common/src/index.ts"],
@@ -123,8 +122,7 @@
     "strict": false,
     "noUncheckedSideEffectImports": false,
     "types": ["*"],
-    "esModuleInterop": true,
-    "ignoreDeprecations": "6.0"
+    "esModuleInterop": true
   },
   "exclude": ["node_modules", "tmp"]
 }

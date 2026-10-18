@@ -3,7 +3,7 @@ import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Chart } from 'chart.js';
-import * as deepMerge from 'deepmerge';
+import deepMerge from 'deepmerge';
 import 'chartjs-plugin-colorschemes';
 
 @Component({
