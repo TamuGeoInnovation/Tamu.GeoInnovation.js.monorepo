@@ -215,7 +215,7 @@ describe('DateTimePickerComponent', () => {
         expect(emitted).toHaveLength(1);
         expect(emitted[0].value).toEqual(new Date(2026, 10, 18, 16, 15));
         expect(component.value).toEqual(new Date(2026, 10, 18, 16, 15));
-        expect(fixture.debugElement.query((d) => d.name === 'tamu-gisc-tooltip').componentInstance.isVisible).toBe(false);
+        expect(fixture.debugElement.query((d) => d.name === 'tamu-gisc-tooltip').componentInstance.isVisible()).toBe(false);
       });
 
       it('does not open the list before the picker itself is opened', async () => {

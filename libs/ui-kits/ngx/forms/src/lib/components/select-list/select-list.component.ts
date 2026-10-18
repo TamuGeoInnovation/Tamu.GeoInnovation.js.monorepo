@@ -1,10 +1,8 @@
 import {
   Component,
   forwardRef,
-  Input,
   OnChanges,
   OnInit,
-  Output,
   Renderer2,
   SimpleChanges,
   TemplateRef,
@@ -61,14 +59,7 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   /**
    * Template reference to use for rendering each row in the select list.
    */
-  @Input()
-  public rowTemplate: TemplateRef<T>;
-
-  /**
-   * When a selection is made, the selected value will be emitted.
-   */
-  @Output()
-  public selected: T;
+  public readonly rowTemplate = input<TemplateRef<T>>(undefined);
 
   public form: UntypedFormGroup = this.fb.group({
     search: ['']

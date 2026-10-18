@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, forwardRef, ChangeDetectionStrategy, input, model } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
@@ -23,22 +23,25 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
 
   /**
    * INTERNAL USE ONLY. Use `value` getter/setter instead.
+   *
+   * A model rather than an input: the component sets it itself, from the user and the forms API.
+   * Callers set the value through the forms API; none binds `[value]`.
    */
-  public _value = undefined;
+  // eslint-disable-next-line @angular-eslint/no-input-rename
+  public readonly _value = model<Value>(undefined, { alias: 'value' });
 
-  @Input()
   public set value(v) {
-    this._value = v;
+    this._value.set(v);
 
     this.onInitialValue(v);
   }
 
   public get value() {
-    return this._value;
+    return this._value();
   }
 
-  @Input()
-  public disabled = false;
+  // A model rather than an input: the forms API sets it.
+  public readonly disabled = model(false);
 
   public readonly displayPath = input<string>(undefined);
 
@@ -69,7 +72,7 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
   }
 
   public setDisabledState(disabled: boolean) {
-    this.disabled = disabled;
+    this.disabled.set(disabled);
   }
 
   public writeValue(value: Value) {
@@ -87,7 +90,7 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
   public evaluateSetValue(option: Option) {
     let value;
 
-    if (this.disabled === false) {
+    if (this.disabled() === false) {
       value = this.renderTemplate(option, this.valuePath());
 
       this.value = value;

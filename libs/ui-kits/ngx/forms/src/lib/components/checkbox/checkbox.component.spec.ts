@@ -39,7 +39,7 @@ describe('CheckboxComponent', () => {
   });
   it('should correctly evaluate setDisabledState', () => {
     component.setDisabledState(true);
-    expect(component.disabled).toEqual(true);
+    expect(component.disabled()).toEqual(true);
   });
 
   it('should correctly evaluate _setValueNoEmit', () => {

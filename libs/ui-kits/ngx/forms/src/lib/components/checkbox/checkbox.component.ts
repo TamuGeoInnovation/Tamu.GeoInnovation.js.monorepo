@@ -1,14 +1,4 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  ElementRef,
-  forwardRef,
-  ChangeDetectionStrategy,
-  input,
-  viewChild
-} from '@angular/core';
+import { Component, ElementRef, forwardRef, ChangeDetectionStrategy, input, model, output, viewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { NgClass } from '@angular/common';
 
@@ -35,16 +25,16 @@ export class CheckboxComponent implements ControlValueAccessor {
    * Defaults to `false`.
    */
 
+  // A model rather than an input: the component sets it itself, from the user and the forms API.
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('checked')
-  private _checked = false;
+  private readonly _checked = model(false, { alias: 'checked' });
 
   public get checked() {
-    return this._checked;
+    return this._checked();
   }
 
   public set checked(c) {
-    this._checked = c;
+    this._checked.set(c);
     this._onChange(c);
     this._onTouch();
     this.changed.emit(c);
@@ -64,8 +54,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    *
    * Defaults to `false`.
    */
-  @Input()
-  public disabled = false;
+  public readonly disabled = model(false);
 
   /**
    * Populates the aria-label attribute property.
@@ -81,8 +70,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    */
   public readonly label = input('Checkbox');
 
-  @Input()
-  public description = '';
+  public readonly description = input('');
 
   /**
    * Populates the form name properties on the label and input elements.
@@ -94,8 +82,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   /**
    * Output event emitter, used to bubble up the event value to the parent component.
    */
-  @Output()
-  public changed: EventEmitter<boolean> = new EventEmitter();
+  public readonly changed = output<boolean>();
 
   private _onChange = (v) => {
     return v;
@@ -109,7 +96,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    * Mouse event handler, emitting the raw checked value of the reference checkbox
    */
   public handleMouseEvent(): void {
-    this.checked = !this._checked;
+    this.checked = !this._checked();
   }
 
   /**
@@ -133,7 +120,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   }
 
   public setDisabledState(disabled?: boolean) {
-    this.disabled = disabled;
+    this.disabled.set(disabled);
   }
 
   /**
@@ -142,6 +129,6 @@ export class CheckboxComponent implements ControlValueAccessor {
    * Sets value without calling the Forms API or emitting a `changed` event.
    */
   public _setValueNoEmit(value: boolean) {
-    this._checked = value;
+    this._checked.set(value);
   }
 }

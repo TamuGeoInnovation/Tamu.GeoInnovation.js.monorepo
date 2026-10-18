@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, forwardRef, ChangeDetectionStrategy, input, model, output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -15,9 +15,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class FileComponent implements ControlValueAccessor {
+  // A model rather than an input: the component sets it itself, from the user and the forms API.
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('value')
-  private _value = null;
+  private readonly _value = model<File | boolean>(null, { alias: 'value' });
 
   /**
    * File formats to accept. Default is all.
@@ -40,11 +40,11 @@ export class FileComponent implements ControlValueAccessor {
   public fileExtension: string;
 
   public get checked() {
-    return this._value;
+    return this._value();
   }
 
   public set value(c) {
-    this._value = c;
+    this._value.set(c);
     this._onChange(c);
     this._onTouch();
   }

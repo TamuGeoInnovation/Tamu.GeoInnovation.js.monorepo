@@ -51,7 +51,7 @@ export class SlideToggleComponent<Option extends object, Value>
   }
 
   public ngAfterViewInit(): void {
-    this._findActiveElement(this._value);
+    this._findActiveElement(this._value());
   }
 
   public override onInitialValue(v: Value): void {

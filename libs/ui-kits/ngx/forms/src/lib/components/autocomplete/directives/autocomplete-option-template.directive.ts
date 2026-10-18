@@ -1,4 +1,4 @@
-import { Directive, Input, TemplateRef, inject } from '@angular/core';
+import { Directive, TemplateRef, inject, input } from '@angular/core';
 
 /**
  * Directive to mark a user-provided template for rendering autocomplete options.
@@ -22,11 +22,8 @@ export class AutocompleteOptionTemplateDirective<T = unknown> {
    *   {{ item.name }}
    * </ng-template>
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Input('tamuGiscAutocompleteOptionOf')
-  public set of(_value: ReadonlyArray<T> | null | undefined) {
-    // No-op: used purely for Angular template type inference; not read at runtime.
-  }
+  // Used purely for Angular template type inference; not read at runtime.
+  public readonly of = input<ReadonlyArray<T> | null | undefined>(undefined, { alias: 'tamuGiscAutocompleteOptionOf' });
 
   /**
    * Informs Angular's template type checker about the context available inside the template.

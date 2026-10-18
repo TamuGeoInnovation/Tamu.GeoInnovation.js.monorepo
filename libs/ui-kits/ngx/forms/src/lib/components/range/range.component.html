@@ -1,7 +1,7 @@
-@if (label !== undefined) {
-<label [for]="formControlName()">{{label}}</label>
+@if (label() !== undefined) {
+<label [for]="formControlName()">{{label()}}</label>
 }
-<input #rangeElement type="range" [name]="formControlName()" [id]="formControlName() + 'range'" [(ngModel)]="value" [disabled]="disabled" [min]="min()" [max]="max" [step]="step()" />
+<input #rangeElement type="range" [name]="formControlName()" [id]="formControlName() + 'range'" [(ngModel)]="value" [disabled]="disabled()" [min]="min()" [max]="max()" [step]="step()" />
 @if (showTooltip()) {
 <output #liveValue name="liveValue" [for]="formControlName() + 'range'"></output>
 } @if (ticks()?.length) {

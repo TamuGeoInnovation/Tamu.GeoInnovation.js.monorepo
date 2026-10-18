@@ -1,13 +1,4 @@
-import {
-  Component,
-  Input,
-  ChangeDetectionStrategy,
-  forwardRef,
-  ChangeDetectorRef,
-  inject,
-  input,
-  output
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, forwardRef, ChangeDetectorRef, inject, input, model, output } from '@angular/core';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
@@ -33,21 +24,22 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    * Functions as the initial/default or state value of the select element.
    *
    * If no `model` is provided from the parent, the placeholder is automatically selected.
+   *
+   * A model rather than an input: the component sets it itself, from the user and the forms API.
    */
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('value')
-  private _value: string = undefined;
+  private readonly _value = model<string>(undefined, { alias: 'value' });
 
   public readonly formControlName = input('default');
 
   public readonly floatLabel = input(false);
 
   public get value() {
-    return this._value;
+    return this._value();
   }
 
   public set value(value: string) {
-    this._value = value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value;
+    this._value.set(value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value);
     this._onChange(value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value);
     this._onTouched();
     this.cd.markForCheck();
@@ -56,8 +48,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   /**
    * Iterable data collection that will be used to generate the drop-down options.
    */
-  @Input()
-  public data: T[];
+  public readonly data = input<T[]>(undefined);
 
   /**
    * Dot-notation string representing the evaluated property used in the display of the option element.
@@ -72,16 +63,16 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   /**
    * Custom string used as the initial/undefined default option.
    */
-  @Input()
-  public placeholder?: string;
+  public readonly placeholder = input<string>(undefined);
 
   /**
    * Determines interactivity availability.
    *
    * Default to `false`;
+   *
+   * A model rather than an input: the forms API sets it.
    */
-  @Input()
-  public disabled = false;
+  public readonly disabled = model(false);
 
   /**
    * Event emitted when the value of the select input element is changed.
@@ -127,6 +118,6 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   }
 
   public setDisabledState(disabled: boolean) {
-    this.disabled = disabled;
+    this.disabled.set(disabled);
   }
 }

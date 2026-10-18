@@ -1,6 +1,5 @@
 import {
   Component,
-  Input,
   forwardRef,
   ChangeDetectionStrategy,
   ElementRef,
@@ -40,8 +39,7 @@ export class TextboxComponent extends AbstractValueAccessorFormComponent<string>
   /**
    * Responsible for rendering the correct input element (input vs textarea), and setting its associated type attribute.
    */
-  @Input()
-  public type: 'email' | 'number' | 'password' | 'tel' | 'text' | 'url' | 'textarea';
+  public readonly type = input<'email' | 'number' | 'password' | 'tel' | 'text' | 'url' | 'textarea'>(undefined);
 
   /**
    * Used for `textarea` type, binding to its rows attribute.
@@ -53,8 +51,7 @@ export class TextboxComponent extends AbstractValueAccessorFormComponent<string>
   /**
    * Text used in the accompanying label.
    */
-  @Input()
-  public placeholder: string;
+  public readonly placeholder = input<string>(undefined);
 
   /**
    * Describes the behavior of the accompanying label.

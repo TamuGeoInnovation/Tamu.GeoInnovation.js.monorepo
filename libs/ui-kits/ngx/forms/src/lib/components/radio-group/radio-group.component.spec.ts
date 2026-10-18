@@ -29,7 +29,7 @@ describe('RadioGroupComponent', () => {
 
   it('should correctly evaluate setDisabledState', () => {
     component.setDisabledState(false);
-    expect(component.disabled).toBe(false);
+    expect(component.disabled()).toBe(false);
   });
 
   it('should correctly evaluate evaluateSetValue with a valid valuePath', () => {

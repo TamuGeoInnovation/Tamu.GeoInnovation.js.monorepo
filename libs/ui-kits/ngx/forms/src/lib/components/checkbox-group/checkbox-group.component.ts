@@ -1,18 +1,8 @@
-import {
-  Component,
-  OnInit,
-  ContentChildren,
-  QueryList,
-  AfterContentInit,
-  Input,
-  OnDestroy,
-  forwardRef,
-  ChangeDetectionStrategy,
-  input
-} from '@angular/core';
+import { Component, OnInit, forwardRef, ChangeDetectionStrategy, input, model, contentChildren } from '@angular/core';
+import { outputToObservable, takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { from, of, Subject, merge } from 'rxjs';
-import { switchMap, mergeMap, takeUntil } from 'rxjs/operators';
+import { merge } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 import { CheckboxComponent } from '../checkbox/checkbox.component';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
@@ -30,9 +20,8 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
   ],
   changeDetection: ChangeDetectionStrategy.Eager
 })
-export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentInit, ControlValueAccessor {
-  @ContentChildren(CheckboxComponent)
-  public checkboxes: QueryList<CheckboxComponent>;
+export class CheckboxGroupComponent implements OnInit, ControlValueAccessor {
+  public readonly checkboxes = contentChildren(CheckboxComponent);
 
   /**
    * A property in a checkbox model that is evaluated and used to generate a list of
@@ -55,21 +44,19 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
    */
   public readonly referenceId = input<string>(undefined);
 
+  // A model rather than an input: the component sets it itself, from its checkboxes and the forms API.
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('value')
-  private _value: Array<string | number> = [];
+  private readonly _value = model<Array<string | number>>([], { alias: 'value' });
 
   public get value() {
-    return [...this._value];
+    return [...this._value()];
   }
 
   public set value(values) {
-    this._value = [...values];
+    this._value.set([...values]);
     this._onChange([...values]);
     this._onTouched();
   }
-
-  private _$destroy: Subject<boolean> = new Subject();
 
   private _onChange = (values: Array<string | number>) => {
     return values;
@@ -85,37 +72,23 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
     }
   }
 
-  public ngOnDestroy() {
-    this._$destroy.next(undefined);
-    this._$destroy.complete();
-  }
-
-  public ngAfterContentInit() {
-    this.setChildrenValue();
-
-    this.checkboxes.changes.subscribe(() => {
-      this.setChildrenValue();
-    });
-
-    // Subscribe to the immediate QueryList which will capture
-    // resolved checkbox components and also subscribe to the QueryList changes stream.
-    //
-    // This will ensure that this component is able to handle both immediately-available
-    // checkbox components, as well as those generated with the *ngFor directive.
-    merge(of(this.checkboxes), this.checkboxes.changes)
+  constructor() {
+    // Each time the projected checkboxes change, including the first time they resolve, reflect the
+    // group value on them and listen for changes on the new set. This handles both immediately-available
+    // checkbox components and those generated with a loop.
+    toObservable(this.checkboxes)
       .pipe(
-        switchMap((checkboxes: QueryList<CheckboxComponent>) => {
-          return from(checkboxes.toArray()).pipe(
-            mergeMap((checkbox) => {
-              return checkbox.changed.pipe(
-                switchMap(() => {
-                  return of(getPropertyValue<string>(checkbox.data(), this.referenceId()));
-                })
+        tap(() => this.setChildrenValue()),
+        switchMap((checkboxes) => {
+          return merge(
+            ...checkboxes.map((checkbox) => {
+              return outputToObservable(checkbox.changed).pipe(
+                map(() => getPropertyValue<string>(checkbox.data(), this.referenceId()))
               );
             })
           );
         }),
-        takeUntil(this._$destroy)
+        takeUntilDestroyed()
       )
       .subscribe((res) => {
         this.toggle(res);
@@ -147,8 +120,8 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
    * Set the checked state of children checkbox components to reflect the group value.
    */
   private setChildrenValue() {
-    if (this.checkboxes && this.checkboxes.length > 0) {
-      this.checkboxes.forEach((checkbox) => {
+    if (this.checkboxes().length > 0) {
+      this.checkboxes().forEach((checkbox) => {
         const propValue = getPropertyValue<string>(checkbox.data(), this.referenceId());
 
         // Use == to handle cases where the value is a coerced string or number

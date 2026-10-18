@@ -1,14 +1,4 @@
-import {
-  Component,
-  Input,
-  forwardRef,
-  ChangeDetectionStrategy,
-  OnChanges,
-  SimpleChanges,
-  ElementRef,
-  input,
-  viewChild
-} from '@angular/core';
+import { Component, forwardRef, ChangeDetectionStrategy, OnChanges, SimpleChanges, ElementRef, input, model, viewChild } from '@angular/core';
 
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
 import { NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
@@ -36,8 +26,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    */
   public readonly formControlName = input('default');
 
-  @Input()
-  public label: string;
+  public readonly label = input<string>(undefined);
 
   /**
    * Pins the minimum value of the slider.
@@ -48,9 +37,10 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    * Pins the maximum value of the slider.
    *
    * Will override the length of the `customDataMap` if provided.
+   *
+   * A model rather than an input: a `customDataMap` sets it.
    */
-  @Input()
-  public max = 9;
+  public readonly max = model(9);
 
   /**
    * The granularity of the slider. The value must be greater than zero, and should divide the difference between `max` and `min` evenly.
@@ -156,7 +146,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
       // Set the tooltip position to the center of the slider.
       // This is based on the fact that the slider is broken down into even steps from 0 to max
       // and the tooltip is positioned as a percentage of the slider width minus half the width of the tooltip.
-      liveValue.nativeElement.style.left = `calc(${(this.value / this.max) * 100}% - ${tooltipOffset}px)`;
+      liveValue.nativeElement.style.left = `calc(${(this.value / this.max()) * 100}% - ${tooltipOffset}px)`;
     }
   }
 
@@ -167,7 +157,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
       // and the limits will not update.
       const customDataMap = this.customDataMap();
       if (customDataMap) {
-        this.max = customDataMap.length - 1;
+        this.max.set(customDataMap.length - 1);
 
         this.minDisplay = customDataMap[0].display;
         this.maxDisplay = customDataMap[customDataMap.length - 1].display;
@@ -175,12 +165,12 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
         // When the data map value changes, the maximum value of the slider can potentially be higher than the size
         // of the new data map. This will cause the slider to be out of bounds. To prevent this, we need to
         // set the value to the maximum value of the data map.
-        if (this.value > this.max) {
-          this.value = this.max;
+        if (this.value > this.max()) {
+          this.value = this.max();
         }
       } else {
         this.minDisplay = this.min();
-        this.maxDisplay = this.max;
+        this.maxDisplay = this.max();
       }
     }
   }
@@ -190,7 +180,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    * The thumb's centre travels from half its width (1.25rem) at the minimum to the same short of the end.
    */
   public tickLeft(value: number): string {
-    const span = this.max - this.min();
+    const span = this.max() - this.min();
     const ratio = span > 0 ? Math.min(Math.max((value - this.min()) / span, 0), 1) : 0;
 
     return `calc(0.625rem + ${ratio} * (100% - 1.25rem))`;
@@ -202,7 +192,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    * Before the midpoint, the offset is negative. After the midpoint, the offset is positive.
    */
   private get offsetDirection(): number {
-    const position = this.value / this.max;
+    const position = this.value / this.max();
 
     if (position === 0.5) {
       return 0;
@@ -220,9 +210,9 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
     if (this.offsetDirection === 0) {
       return 0;
     } else if (this.offsetDirection === 1) {
-      return (this.value - this.max / 2) / (this.max / 2);
+      return (this.value - this.max() / 2) / (this.max() / 2);
     } else {
-      return (this.max / 2 - this.value) / (this.max / 2);
+      return (this.max() / 2 - this.value) / (this.max() / 2);
     }
   }
 }
