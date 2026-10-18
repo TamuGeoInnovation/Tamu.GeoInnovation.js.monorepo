@@ -68,7 +68,7 @@ describe('stepping through grouped notifications', () => {
     build([make('a'), make('b'), make('c')]);
 
     expect(component.currentItem?.id).toBe('a');
-    expect(component.groupIndex).toBe(0);
+    expect(component.groupIndex()).toBe(0);
   });
 
   it('shows the highest priority one first, as the stack did', () => {
@@ -124,7 +124,7 @@ describe('stepping through grouped notifications', () => {
 
     service.remove(items[2]);
 
-    expect(component.groupIndex).toBe(1);
+    expect(component.groupIndex()).toBe(1);
     expect(component.currentItem?.id).toBe('b');
   });
 
