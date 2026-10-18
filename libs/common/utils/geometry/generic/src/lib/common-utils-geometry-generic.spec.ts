@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import {
   findNearestIndex,
   getGeolocation,
@@ -37,16 +38,18 @@ describe('getGeolocation', () => {
     await expect(getGeolocation(false)).resolves.toEqual(coords);
   });
 
-  it('emits the coordinates in observable form', (done) => {
+  it('emits the coordinates in observable form', () =>
+    new Promise<void>((done) => {
     mockGeolocationSuccess();
 
     getGeolocation(true).subscribe((c) => {
       expect(c).toEqual(coords);
       done();
     });
-  });
+  }));
 
-  it('should throw error on fail', (done) => {
+  it('should throw error on fail', () =>
+    new Promise<void>((done) => {
     // TODO: The tests work but the geolocation mock probably needs to be a global
     (window.navigator as unknown as { geolocation: unknown }).geolocation = {
       getCurrentPosition: (_, fail) => {
@@ -57,7 +60,7 @@ describe('getGeolocation', () => {
       expect(err).toEqual(new Error("I just don't feel like it"));
       done();
     });
-  });
+  }));
 });
 
 describe('isCoordinatePair', () => {
@@ -95,19 +98,19 @@ describe('relativeDistance', () => {
 describe('TrackLocation', () => {
   let ok: (p: unknown) => void;
   let fail: (e: unknown) => void;
-  let watchPosition: jest.Mock;
-  let clearWatch: jest.Mock;
+  let watchPosition: Mock;
+  let clearWatch: Mock;
 
   const position = { coords: { latitude: 30.6, longitude: -96.3, accuracy: 10 }, timestamp: 1 };
 
   beforeEach(() => {
-    watchPosition = jest.fn((o, f) => {
+    watchPosition = vi.fn((o, f) => {
       ok = o;
       fail = f;
 
       return 7;
     });
-    clearWatch = jest.fn();
+    clearWatch = vi.fn();
     (window.navigator as unknown as { geolocation: unknown }).geolocation = { watchPosition, clearWatch };
   });
 
@@ -121,7 +124,7 @@ describe('TrackLocation', () => {
   });
 
   it('without keepWatching, ends at the first error of any kind', () => {
-    const error = jest.fn();
+    const error = vi.fn();
     new TrackLocation().track().subscribe({ error });
 
     fail({ code: 3 });
@@ -131,9 +134,9 @@ describe('TrackLocation', () => {
   });
 
   it('with keepWatching, keeps watching through a timeout and a position not yet available (#1784)', () => {
-    const next = jest.fn();
-    const error = jest.fn();
-    const failures = jest.fn();
+    const next = vi.fn();
+    const error = vi.fn();
+    const failures = vi.fn();
     new TrackLocation({ keepWatching: failures }).track().subscribe({ next, error });
 
     fail({ code: 3 });
@@ -147,8 +150,8 @@ describe('TrackLocation', () => {
   });
 
   it('with keepWatching, still ends when location access is refused', () => {
-    const error = jest.fn();
-    const failures = jest.fn();
+    const error = vi.fn();
+    const failures = vi.fn();
     new TrackLocation({ keepWatching: failures }).track().subscribe({ error });
 
     fail({ code: 1 });
