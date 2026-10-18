@@ -1,10 +1,9 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
   selector: 'tamu-gisc-bus-list-header',
   templateUrl: './bus-list-header.component.html',
-  styleUrls: ['./bus-list-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager
+  styleUrls: ['./bus-list-header.component.scss']
 })
 export class BusListHeaderComponent extends AccordionHeaderComponent {}

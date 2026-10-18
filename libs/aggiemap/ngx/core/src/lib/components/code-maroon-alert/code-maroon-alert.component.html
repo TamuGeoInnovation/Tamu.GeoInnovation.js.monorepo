@@ -2,7 +2,7 @@
 Shown only on /code-maroon, and only where development features are on. Nothing here reaches
 production (#1289).
 -->
-@if (enabled && (state | async); as current) { @if (!dismissed) {
+@if (enabled && (state | async); as current) { @if (!dismissed()) {
 <div class="code-maroon" role="alert" aria-live="assertive">
   <!--
       The sample banner is deliberately the first thing in the box and cannot be dismissed

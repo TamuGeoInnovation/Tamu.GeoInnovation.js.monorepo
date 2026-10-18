@@ -1,4 +1,4 @@
-@for (item of result; track item) {
+@for (item of result(); track item) {
 <div class="department-item">
   <p class="department-name">{{ item.attributes.DeptName | titlecase }}</p>
   <p class="college-name">{{ item.attributes.CollegeName | titlecase }}</p>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
@@ -14,7 +14,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-contact',
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, AsyncPipe]
 })
 export class ContactComponent implements OnInit {

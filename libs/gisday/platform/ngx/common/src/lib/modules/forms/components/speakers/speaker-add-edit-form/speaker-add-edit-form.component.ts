@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,7 +27,6 @@ import { SpeakerClassBannerComponent } from '../../../../people/components/speak
   selector: 'tamu-gisc-speaker-add-edit-form',
   templateUrl: './speaker-add-edit-form.component.html',
   styleUrls: ['./speaker-add-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

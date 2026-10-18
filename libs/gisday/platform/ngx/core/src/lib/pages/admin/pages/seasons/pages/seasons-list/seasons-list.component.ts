@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -13,7 +13,6 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   selector: 'tamu-gisc-seasons-list',
   templateUrl: './seasons-list.component.html',
   styleUrls: ['./seasons-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, AsyncPipe, DatePipe]
 })
 export class SeasonsListComponent extends BaseAdminListComponent<Season> implements OnInit {

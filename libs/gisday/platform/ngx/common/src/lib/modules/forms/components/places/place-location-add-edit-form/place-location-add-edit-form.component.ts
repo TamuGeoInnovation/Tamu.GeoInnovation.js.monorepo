@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
@@ -22,7 +22,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-place-location-add-edit-form',
   templateUrl: './place-location-add-edit-form.component.html',
   styleUrls: ['./place-location-add-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -48,6 +47,12 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   public readonly type = input<'create' | 'edit'>(undefined);
 
   public form: UntypedFormGroup;
+
+  /**
+   * The link controls, as a new list whenever a link is added or removed.
+   */
+  public readonly links = signal<Array<AbstractControl>>([]);
+
   public entity$: Observable<Partial<Place>>;
   public logoUrl$: Observable<SafeUrl>;
 
@@ -87,6 +92,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         this.form.patchValue({ ...entity });
 
         links.forEach((l) => (this.form.get('links') as UntypedFormArray).push(l));
+        this._syncLinks();
 
         // If the entity has a season, remove the season control from the form
         this.form.removeControl('season');
@@ -150,10 +156,16 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
     const control = this._createOrgLink();
 
     (this.form.get('links') as UntypedFormArray).push(control);
+    this._syncLinks();
   }
 
   public removeOrgLink(index: number) {
     (this.form.get('links') as UntypedFormArray).removeAt(index);
+    this._syncLinks();
+  }
+
+  private _syncLinks() {
+    this.links.set([...(this.form.get('links') as UntypedFormArray).controls]);
   }
 
   private _createOrgLink(values?: Partial<PlaceLink>) {

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { Submission } from '@tamu-gisc/gisday/platform/data-api';
@@ -16,7 +16,6 @@ import { SubmissionReviewStatusPipe } from '@tamu-gisc/gisday/platform/ngx/commo
   selector: 'tamu-gisc-research-competition-list',
   templateUrl: './research-competition-list.component.html',
   styleUrls: ['./research-competition-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     SelectComponent,
     CheckboxComponent,

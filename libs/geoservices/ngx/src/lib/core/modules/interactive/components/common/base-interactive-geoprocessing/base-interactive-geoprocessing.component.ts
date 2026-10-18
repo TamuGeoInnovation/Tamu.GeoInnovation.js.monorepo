@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { style, transition, trigger, animate } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntypedFormGroup } from '@angular/forms';
@@ -36,7 +36,6 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
       ])
     ])
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamType> implements OnInit {

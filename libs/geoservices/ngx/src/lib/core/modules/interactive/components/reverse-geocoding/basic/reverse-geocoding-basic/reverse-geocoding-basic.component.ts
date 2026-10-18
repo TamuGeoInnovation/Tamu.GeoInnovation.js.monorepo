@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { pipe, withLatestFrom, map, switchMap } from 'rxjs';
 
@@ -22,7 +22,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-reverse-geocoding-basic',
   templateUrl: './reverse-geocoding-basic.component.html',
   styleUrls: ['./reverse-geocoding-basic.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

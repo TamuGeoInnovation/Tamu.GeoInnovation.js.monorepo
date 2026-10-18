@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { catchError, of } from 'rxjs';
 
@@ -8,8 +8,7 @@ import { ModalRefService, MODAL_DATA } from '@tamu-gisc/ui-kits/ngx/layout/modal
 @Component({
   selector: 'tamu-gisc-modal',
   templateUrl: './delete-email-modal.component.html',
-  styleUrls: ['./delete-email-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager
+  styleUrls: ['./delete-email-modal.component.scss']
 })
 export class DeleteEmailModalComponent {
   readonly data = inject<{

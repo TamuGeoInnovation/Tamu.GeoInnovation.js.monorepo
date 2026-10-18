@@ -4,9 +4,9 @@ import {
   OnDestroy,
   OnInit,
   SimpleChanges,
-  ChangeDetectionStrategy,
   inject,
-  input
+  input,
+  signal
 } from '@angular/core';
 import {
   UntypedFormArray,
@@ -36,7 +36,6 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-submission',
   templateUrl: './submission.component.html',
   styleUrls: ['./submission.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, NgStyle, SelectComponent, TextboxComponent, AsyncPipe, DecimalPipe]
 })
 export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
@@ -58,7 +57,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   public fileUrl2: Observable<string> = this.file2.pipe(map((f) => (f !== undefined ? URL.createObjectURL(f) : undefined)));
 
-  public location: GeolocationPosition;
+  public readonly location = signal<GeolocationPosition>(undefined);
 
   /**
    * Whether the form has the phone's location yet (#1784): still finding it, finding it slowly (after
@@ -153,7 +152,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
       .pipe(takeUntil(this._destroy$))
       .subscribe({
         next: (res) => {
-          this.location = res;
+          this.location.set(res);
           this.locationStatus.next('found');
         },
         error: (err: GeolocationPositionError) => {
@@ -180,7 +179,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   public submitResponse() {
     // Without a location the submission cannot be placed, so say why instead of failing (#1784).
-    if (this.location === undefined && this.form?.valid && this.formModel()?.allowSubmissions === true) {
+    if (this.location() === undefined && this.form?.valid && this.formModel()?.allowSubmissions === true) {
       // Not 'found': that comes with a location.
       const status = this.locationStatus.getValue() as Exclude<SubmissionLocationStatus, 'found'>;
 
@@ -221,13 +220,13 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           const data: FormData = new FormData();
 
           const location = {
-            latitude: this.location.coords.latitude,
-            longitude: this.location.coords.longitude,
-            accuracy: this.location.coords.accuracy,
-            altitude: this.location.coords.altitude,
-            altitudeAccuracy: this.location.coords.altitudeAccuracy,
-            heading: this.location.coords.heading,
-            speed: this.location.coords.speed
+            latitude: this.location().coords.latitude,
+            longitude: this.location().coords.longitude,
+            accuracy: this.location().coords.accuracy,
+            altitude: this.location().coords.altitude,
+            altitudeAccuracy: this.location().coords.altitudeAccuracy,
+            heading: this.location().coords.heading,
+            speed: this.location().coords.speed
           };
 
           const value = this.form.getRawValue().fields.reduce((acc, curr) => {

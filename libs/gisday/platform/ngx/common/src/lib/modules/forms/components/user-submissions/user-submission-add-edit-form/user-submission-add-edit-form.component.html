@@ -34,7 +34,7 @@
       </div>
 
       <div class="form-collection column">
-        @for (author of form.get('participants')['controls']; track author; let i = $index) {
+        @for (author of participants(); track author; let i = $index) {
         <ng-container formArrayName="participants">
           <div class="form-collection row" [formGroupName]="i">
             <tamu-gisc-textbox formControlName="name" placeholder="Full Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>

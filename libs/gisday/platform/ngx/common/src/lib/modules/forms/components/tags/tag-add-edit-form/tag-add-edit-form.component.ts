@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
@@ -13,7 +13,6 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-tag-add-edit-form',
   templateUrl: './tag-add-edit-form.component.html',
   styleUrls: ['./tag-add-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class TagAddEditFormComponent implements OnInit {

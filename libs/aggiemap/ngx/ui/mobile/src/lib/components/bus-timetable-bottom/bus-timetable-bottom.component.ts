@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, mergeMap, Observable, take, withLatestFrom } from 'rxjs';
 
@@ -13,7 +13,6 @@ import { BusRouteComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
   selector: 'tamu-gisc-bus-timetable-bottom',
   templateUrl: './bus-timetable-bottom.component.html',
   styleUrls: ['./bus-timetable-bottom.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DragDirective, BusRouteComponent, AsyncPipe]
 })
 export class BusTimetableBottomComponent implements OnInit, OnDestroy {

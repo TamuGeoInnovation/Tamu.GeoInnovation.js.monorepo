@@ -1,5 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, inject, input, signal } from '@angular/core';
 import {
+  AbstractControl,
   UntypedFormArray,
   UntypedFormBuilder,
   UntypedFormControl,
@@ -22,7 +23,6 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-season-add-edit-form',
   templateUrl: './season-add-edit-form.component.html',
   styleUrls: ['./season-add-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, CheckboxComponent, SeasonsDayTileComponent, ButtonComponent]
 })
 export class SeasonAddEditFormComponent implements OnInit {
@@ -36,6 +36,11 @@ export class SeasonAddEditFormComponent implements OnInit {
 
   public entity$: Observable<Partial<Season>>;
   public form: UntypedFormGroup;
+
+  /**
+   * The day controls, as a new list whenever a day is added or removed.
+   */
+  public readonly days = signal<Array<AbstractControl>>([]);
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -81,6 +86,7 @@ export class SeasonAddEditFormComponent implements OnInit {
     const arrayGroup = this.form.get('days') as UntypedFormArray;
 
     arrayGroup.push(this.fb.control(d));
+    this.days.set([...arrayGroup.controls]);
 
     this.form.markAllAsTouched();
   }
@@ -92,6 +98,7 @@ export class SeasonAddEditFormComponent implements OnInit {
     const arrayGroup = this.form.get('days') as UntypedFormArray;
 
     arrayGroup.removeAt(index);
+    this.days.set([...arrayGroup.controls]);
 
     this.form.markAllAsTouched();
   }

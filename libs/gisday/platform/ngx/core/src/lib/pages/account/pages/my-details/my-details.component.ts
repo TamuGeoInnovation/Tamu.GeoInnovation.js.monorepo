@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -60,7 +60,6 @@ const infoCompletionValidator: ValidatorFn = (control: UntypedFormGroup): { [key
   selector: 'tamu-gisc-my-details',
   templateUrl: './my-details.component.html',
   styleUrls: ['./my-details.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     RouterLink,
     FormsModule,

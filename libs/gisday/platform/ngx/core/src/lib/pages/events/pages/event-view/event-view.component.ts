@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, Subject, combineLatest, forkJoin, merge, of } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -25,7 +25,6 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-event-view',
   templateUrl: './event-view.component.html',
   styleUrls: ['./event-view.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     RouterLink,
     SeasonDayCardComponent,

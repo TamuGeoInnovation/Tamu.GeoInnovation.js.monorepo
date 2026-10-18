@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -36,7 +36,7 @@ export class BasemapGalleryComponent implements OnInit {
    * Aerial Imagery is a WMS and takes noticeably longer than the rest, so without this the map looks
    * unchanged and reads as broken rather than busy.
    */
-  public loadingBasemapId: string;
+  public readonly loadingBasemapId = signal<string>(undefined);
 
   public ngOnInit(): void {
     this.gallery = this.bs.gallery();
@@ -53,7 +53,7 @@ export class BasemapGalleryComponent implements OnInit {
       return;
     }
 
-    this.loadingBasemapId = event.basemap.id;
+    this.loadingBasemapId.set(event.basemap.id);
 
     this.store.setStorageObjectKeyValue({
       primaryKey: 'user-preferences',
@@ -74,7 +74,7 @@ export class BasemapGalleryComponent implements OnInit {
     try {
       await this.bs.setBasemap(event.basemap);
     } finally {
-      this.loadingBasemapId = undefined;
+      this.loadingBasemapId.set(undefined);
     }
   }
 

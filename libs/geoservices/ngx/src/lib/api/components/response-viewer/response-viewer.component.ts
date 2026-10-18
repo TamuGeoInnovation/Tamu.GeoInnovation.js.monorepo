@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, OnInit, input, signal } from '@angular/core';
 
 import { ApiBase, TransformersMap } from '@tamu-gisc/geoprocessing-core';
 import { HighlightModule } from 'ngx-highlightjs';
@@ -7,7 +7,6 @@ import { HighlightModule } from 'ngx-highlightjs';
   selector: 'tamu-gisc-response-viewer',
   templateUrl: './response-viewer.component.html',
   styleUrls: ['./response-viewer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [HighlightModule]
 })
 export class ResponseViewerComponent<Type extends object, Res extends object> implements OnInit {
@@ -15,7 +14,7 @@ export class ResponseViewerComponent<Type extends object, Res extends object> im
 
   public readonly format = input(undefined);
 
-  public result;
+  public readonly result = signal<string>(undefined);
 
   public ngOnInit() {
     this.runner()
@@ -24,11 +23,11 @@ export class ResponseViewerComponent<Type extends object, Res extends object> im
         if (res instanceof XMLDocument) {
           const serialized = new XMLSerializer().serializeToString(res);
 
-          this.result = this.formatSerializedXML(serialized);
+          this.result.set(this.formatSerializedXML(serialized));
         } else if (res instanceof Object) {
-          this.result = JSON.stringify(res, null, '   ');
+          this.result.set(JSON.stringify(res, null, '   '));
         } else {
-          this.result = res;
+          this.result.set(res as unknown as string);
         }
       });
   }

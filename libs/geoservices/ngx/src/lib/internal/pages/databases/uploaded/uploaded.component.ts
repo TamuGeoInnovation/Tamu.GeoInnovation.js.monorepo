@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -10,7 +10,6 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   selector: 'tamu-gisc-uploaded',
   templateUrl: './uploaded.component.html',
   styleUrls: ['./uploaded.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, AsyncPipe, DatePipe]
 })
 export class UploadedComponent implements OnInit {

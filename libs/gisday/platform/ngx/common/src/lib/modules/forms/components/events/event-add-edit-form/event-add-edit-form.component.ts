@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input, signal } from '@angular/core';
+import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -46,7 +46,6 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-event-add-edit-form',
   templateUrl: './event-add-edit-form.component.html',
   styleUrls: ['./event-add-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,
