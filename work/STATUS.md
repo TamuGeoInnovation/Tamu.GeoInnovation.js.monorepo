@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **4:05 PM Central, 18 October 2026**.
+Last written **5:10 PM Central, 18 October 2026**.
 
 **Last batch done: 7.** Batch 8 read and queued; batch 5 still running.
 
@@ -24,16 +24,33 @@ resumed 3:50 PM.
 It resumes if interrupted, so a pause costs only what it had not reached. Nothing else should run against
 production while it does.
 
+**Watch this: Release-480's production stage is `inProgress`.** Batch 5's set is only a usable "before" if
+production serves one build throughout. Production still serves `main-TK2R62YY.js`, checked twice at 5:08 PM
+Central, so the set is coherent so far. A recorder is now logging the served bundle every two minutes with the
+capture's shot count, so if it changes the boundary is known exactly rather than guessed at — the set would then
+be a mix of two builds from that shot on. Read-only; nothing of this machine's touches production. The home
+session may want to know whether that promotion is intended, since the earlier note here says the production
+cancellations were deliberate.
+
 ## Queued
 
-**Batch 8 (#1673) — the quick tier on dev's build with OnPush on the map.** Waiting on Azure to list a release at
-`dfba74033` or later with its dev stage succeeded; the newest is **Release-480 at `98c2056be`**. Two watchers are
-running, one on Azure and one on this branch, so it starts on its own. Batch 5's capture will be paused for its
-duration, as it was for batches 6 and 7.
+**Batch 8 (#1673) — the quick tier on dev's build with OnPush on the map.** The 5 PM revision is read: it runs on
+the release at **`70f0e424b`** (#1910's fix, PR #1911), **not** the one at `dfba74033`. The Azure watcher was
+changed to match that commit, so the `dfba74033` release will not start it by mistake.
 
-Batch 8's **Decided** section is read and understood: a `/campus/dc-bush-school` failure is **#1910**, already
-known and being fixed on the home machine, and batch 7's `0/0` layers was this machine's script reading the wrong
-probe field, not a probe fault — the suite's layer checks stand.
+Azure at 5:08 PM Central:
+
+| Release | Build | Commit | Dev stage |
+| --- | --- | --- | --- |
+| Release-481 | 20261018.31 | `dfba74033` | **inProgress** — not batch 8's target |
+| Release-480 | 20261018.27 | `98c2056be` | succeeded (batch 6 ran on this) |
+
+No release for `70f0e424b` yet. Two watchers are running, one on Azure and one on this branch, so batch 8 starts
+on its own. Batch 5's capture will be paused for its duration, as it was for batches 6 and 7.
+
+Also understood from batch 8's **Decided**: on `70f0e424b` a `/campus/dc-bush-school` failure is **new**, not
+known, and so are `campus-layers.spec.ts`'s three campus tests. Batch 7's `0/0` layers was this machine's script
+reading the wrong probe field, not a probe fault — the suite's layer checks stand.
 
 ## Finished
 
