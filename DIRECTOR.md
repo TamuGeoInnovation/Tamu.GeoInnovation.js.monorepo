@@ -31,6 +31,12 @@ and does its own job itself.
   done by the director on the side.
 
 ## Every listener
+- **A new batch in its `TASKS.md` is its instruction.** It starts it at once, without asking or waiting for the
+  maintainer. "Wait for instructions" means: start nothing that is not in a batch. It never means waiting for him
+  before running a batch.
+- **Its branch watcher is always running in the background.** It starts the watcher again after every batch and
+  after every reply to the maintainer, so a batch pushed while it was answering him is still picked up. If its
+  Background tasks panel shows nothing running, it is not watching, and that is a fault.
 - Watches the branch with one background command that exits when it changes, for example
   `old=$(git ls-remote origin refs/heads/work-mailbox | cut -f1); until [ "$(git ls-remote origin refs/heads/work-mailbox | cut -f1)" != "$old" ]; do sleep 120; done`,
   then pulls and reads this file and its own `TASKS.md`.
