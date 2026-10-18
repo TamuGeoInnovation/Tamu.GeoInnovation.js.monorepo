@@ -5,11 +5,26 @@ finishes. The home session reads it before writing a batch or asking the maintai
 
 Last written **5:05 PM Central, 18 October 2026**.
 
-**Last batch done: 7.** **Batch 5 is finished.** Batch 8 is queued, waiting on its build.
+**Last batch done: 7.** Batch 5 is finished. **Batch 8 is running now.** Batch 9 is read and queued behind it.
 
 ## Running now
 
-Nothing. Only the watchers: one on Azure for the `70f0e424b` release, one on this branch.
+**Batch 8 (#1673): the quick tier on Release-482.** Started **5:15 PM Central, 18 October**.
+
+| | |
+| --- | --- |
+| Release | **Release-482, build 20261018.33** — dev stage succeeded |
+| Commit | **`70f0e424b`** (#1911, "Load only a satellite campus map's own layers"), its own worktree |
+| Command | `test/smoke/aggiemap/run-local.sh development quick` |
+| For | batch 8, which runs on this release and not on Release-481 (`dfba74033`) |
+
+Nothing else is running on this machine. On this commit a `/campus/dc-bush-school` failure counts as **new**, as
+batch 8 says, and so do `campus-layers.spec.ts`'s three campus tests — that spec exists at this commit and is in
+`scope.ts`'s campus group.
+
+**Batch 9 is read: it starts only if batch 8 passes**, and it is the final test of this same release — full tier,
+then dev's screenshots captured as production renders them, then the comparison against batch 5's set. If batch 8
+fails, batch 9 does not start; this machine reports and waits.
 
 ## work: finished — batch 5, production's "before" set
 
