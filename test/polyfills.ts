@@ -1,25 +1,26 @@
 /**
  * Globals that Node provides but the test environment does not.
  *
- * Loaded via `setupFiles` in jest.preset.js, which runs before the test framework is installed and
- * therefore before any module under test is imported.
+ * Loaded before any module under test is imported: by `setupFiles` in jest.preset.js for the
+ * projects still on Jest, and by `setupFiles` in vitest.preset.mts for the projects on Vitest (#1479).
  */
+import { TextDecoder, TextEncoder } from 'util';
+
+const globals = globalThis as Record<string, unknown>;
 
 /**
  * jsdom has never shipped TextEncoder/TextDecoder, and an increasing number of dependencies assume
  * they exist. Under Node 20 this surfaced as `ReferenceError: TextEncoder is not defined` across
  * many suites -- all of which failed to even compile, so no assertion in them had run in years.
  *
- * Projects using `testEnvironment: 'node'` already have these; the guards make this a no-op there.
+ * Projects using the `node` test environment already have these; the guards make this a no-op there.
  */
-const { TextEncoder, TextDecoder } = require('util');
-
-if (typeof globalThis.TextEncoder === 'undefined') {
-  globalThis.TextEncoder = TextEncoder;
+if (typeof globals['TextEncoder'] === 'undefined') {
+  globals['TextEncoder'] = TextEncoder;
 }
 
-if (typeof globalThis.TextDecoder === 'undefined') {
-  globalThis.TextDecoder = TextDecoder;
+if (typeof globals['TextDecoder'] === 'undefined') {
+  globals['TextDecoder'] = TextDecoder;
 }
 
 /**
@@ -35,6 +36,6 @@ if (typeof globalThis.TextDecoder === 'undefined') {
  *
  * A stub is enough -- the metadata is never read, only evaluated.
  */
-if (typeof globalThis.__esri === 'undefined') {
-  globalThis.__esri = {};
+if (typeof globals['__esri'] === 'undefined') {
+  globals['__esri'] = {};
 }
