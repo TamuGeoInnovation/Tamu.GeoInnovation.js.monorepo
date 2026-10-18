@@ -50,6 +50,18 @@ const MIN_SYMBOL_PX = 12;
 const TOGGLE_MAP = '/parking/visitor-parking';
 const TOGGLE_LAYER = 'Visitor Kiosks';
 
+/**
+ * The main map's legend lists a layer switched on from the Layers list (#1857).
+ *
+ * Every layer on the main map loads hidden. The legend keeps a layer it has once seen visible, so that
+ * one switched off collapses instead of disappearing, and it only looked again when Esri's list of
+ * layers changed. That list keeps hidden layers too, so switching one on never changed it, and the main
+ * map's legend stayed empty whatever was switched on. The Visitor Parking map above was unaffected
+ * because its layers load visible.
+ */
+const MAIN_MAP = '/map/d';
+const MAIN_MAP_LAYERS = ['Visitor Parking', 'Construction Zones'];
+
 test.describe('legend', () => {
   test('a symbol follows its layer when the portal symbology arrives after the legend is drawn', async ({ page }) => {
     test.setTimeout(180_000);
@@ -171,5 +183,32 @@ test.describe('legend', () => {
 
     await listItem.locator('p').click();
     await expectAllShow(true, 'switching it back on in the Layers list');
+  });
+
+  test('a layer that loads hidden is listed once it is switched on in the Layers list', async ({ page }) => {
+    test.setTimeout(180_000);
+    await blockAnalytics(page);
+    await page.goto(MAIN_MAP);
+
+    for (const title of MAIN_MAP_LAYERS) {
+      const exactly = new RegExp(`^\\s*${title}\\s*$`);
+      const listItem = page
+        .locator('tamu-gisc-layer-list-item .layer-item')
+        .filter({ has: page.locator('p', { hasText: exactly }) });
+      const entrySymbol = page
+        .locator('tamu-gisc-legend tamu-gisc-legend-collection')
+        .filter({ has: page.locator('.collection-group-title-text', { hasText: exactly }) })
+        .locator('.collection-group-content .legend-info')
+        .first();
+
+      await expect(listItem, `the Layers list never listed ${title}`).toBeVisible({ timeout: 90_000 });
+      await expect(listItem, `${title} is already on, so switching it on tests nothing`).not.toHaveClass(/\bvisible\b/);
+      await expect(entrySymbol, `the legend lists ${title} before it is switched on`).toBeHidden();
+
+      await listItem.locator('p').click();
+
+      await expect(listItem, `the Layers list does not show ${title} on`).toHaveClass(/\bvisible\b/);
+      await expect(entrySymbol, `the legend never listed ${title} after it was switched on`).toBeVisible({ timeout: 60_000 });
+    }
   });
 });
