@@ -79,6 +79,19 @@ visible, such as Visitor Parking's own map, were not affected ([#1857](https://g
 | --- | --- |
 | ![The main map with Visitor Parking and Construction Zones on, and an empty legend](../screenshots/1857-empty-legend/before-main-map-legend.png) | ![The same, with both layers and their symbols in the legend](../screenshots/1857-empty-legend/after-main-map-legend.png) |
 
+### The main map's legend drops a layer switched off
+
+Once [#1857](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1857)'s fix listed a layer switched on in the main map's legend, switching it off again left it
+there, symbols and all, though the map no longer drew it. The legend keeps a layer it has seen visible
+so that it can collapse instead of disappearing, which is right on the event maps, where the collapsed
+title is how the layer is switched back on; the main map's legend has no such titles. A legend that does
+not switch layers now drops one switched off and lists it again when it is switched on. Event maps'
+legends keep it collapsed, as before ([#1871](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1871)).
+
+| Before | After |
+| --- | --- |
+| ![The main map with Visitor Parking switched off again, still listed in the legend with its symbols](../screenshots/1871-legend-hide-off/before-main-map-switched-off.png) | ![The same on a local production build of the fix: the legend no longer lists Visitor Parking](../screenshots/1871-legend-hide-off/after-main-map-switched-off.png) |
+
 ### GIS Day: one code base for more than one organization's site, starting with UCGIS
 
 The GIS Day site can now run for another organization from the same image. A deployment names its site
@@ -679,6 +692,7 @@ dated notes as what was tested, and this table empties.
 | --- | --- | --- |
 | GIS Day: sponsorship levels match the prospectus ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` and `/sponsors` | Tiles show 1 to 4 representatives; each level's perks include lunches and a ribbon; Raster says 20-minute speaking slot; the extra-representatives note; on `/sponsors`, only "Sponsor through Texas A&M" under Interested in Becoming a Sponsor, parking passes for Line and above, and days dated 16 to 20 November |
 | The main map's legend lists layers switched on ([#1857](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1857)) | [/map/d](https://dev.aggiemap.tamu.edu/map/d) | Once the map has finished loading, switch Visitor Parking and Construction Zones on in the Layers list: each appears under Legend with its symbols within a few seconds |
+| The main map's legend drops a layer switched off ([#1871](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1871)) | [/map/d](https://dev.aggiemap.tamu.edu/map/d) | Once the map has finished loading, switch Visitor Parking on in the Layers list, then off: it leaves the Legend; switched on again, it comes back. On [/parking/visitor-parking](https://dev.aggiemap.tamu.edu/parking/visitor-parking), Visitor Kiosks switched off still shows its collapsed title in the legend, and clicking it switches the layer back on |
 | GIS Day: more than one organization's site, starting with UCGIS ([#1835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1835), [#1837](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1837)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [txgisday.org](https://txgisday.org); the UCGIS site once it is deployed | txgisday.org is unchanged: the same menus, footer, logo, tab title and icon, and the About page's committee and resume bank. On the UCGIS site: UCGIS GIS Day and its logo; no Sponsor, Competitions or FAQ menu; no Classes, Check-ins or Student Competitions on the profile; no check-in on an event page; and `/faq`, `/sponsors` and `/competitions` go to the homepage |
 | GIS Day: payment page instead of the giving site ([#1829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1829)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Sponsor TxGIS Day At TAMU" opens `/sponsors/payment` in the same tab: check payable to the Texas A&M Foundation with "2026-27 GIS Day #73982" on the memo line, the remit-to address, and the ACH or wire contact. No link anywhere goes to the giving site |
 | GIS Day: choose the organizations in the Sessions filter ([#1825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1825)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, Admin, Organizations, then `/sessions` | The organization form has a fourth checkbox, Sessions Filter. Tick it on two organizations and save: the Organizations filter on `/sessions` lists exactly those two, and their header and footer settings are unchanged |
