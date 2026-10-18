@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { events } from '../changelog-events';
 import { RouterLink } from '@angular/router';
@@ -12,7 +12,6 @@ import { SafeHtmlPipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-aggiemap-changelog',
   templateUrl: './changelog.component.html',
   styleUrls: ['./changelog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, FooterComponent, DatePipe, SafeHtmlPipe]
 })
 export class ChangelogComponent {

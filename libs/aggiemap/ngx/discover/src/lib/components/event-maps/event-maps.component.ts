@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { DiscoverMapType } from '@tamu-gisc/ts/events/ngx';
@@ -40,7 +40,6 @@ interface EventMapsRouteData {
   selector: 'tamu-gisc-aggiemap-event-maps',
   templateUrl: './event-maps.component.html',
   styleUrls: ['./event-maps.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MapsPageHeaderComponent, MapColumnsComponent, QuickLinksComponent, FooterComponent]
 })
 export class EventMapsComponent implements OnInit {
