@@ -99,6 +99,9 @@ case "${1:-}" in
       exit 2
     fi
     shift 2
+    # --no-deps: the heavy tests run after the rest only in a tier (#1716). Without it, Playwright runs every
+    # heavy test in the suite after the one spec asked for.
+    set -- --no-deps "$@"
     if [ -f "test/smoke/aggiemap/${target##*/}" ] && [[ "$target" == *.spec.ts ]]; then
       set -- "test/smoke/aggiemap/${target##*/}" "$@"
       echo "One spec: test/smoke/aggiemap/${target##*/}"

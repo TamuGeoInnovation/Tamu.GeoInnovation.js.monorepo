@@ -128,6 +128,14 @@ Anything after the environment and tier goes to `playwright test`, for example `
 needs only Docker and bash (Git Bash on Windows). The first run downloads the Playwright image, about
 2 GB.
 
+### One suite, two ArcGIS versions
+
+Dev and production can serve different major versions of ArcGIS: dev has 5.0 (#1859), production stays
+on 4.34 until it is promoted. The map's own buttons have different markup in each, so a spec finds the
+zoom, locate and compass controls through `controls.ts`, which matches either (#1890). A new check that
+clicks or looks for one of them uses it rather than a selector of its own, or it times out against
+whichever environment it was not written on and reads as a broken map.
+
 ### Seeing dev as production
 
 `?as=production` on any address of a development host makes it behave as production for that browser
@@ -193,6 +201,17 @@ context, but the ArcGIS SDK is downloaded once per worker and served from memory
 ([`fixtures.ts`](fixtures.ts)), so a spec that opens a page imports `test` and `expect` from
 `./fixtures`, not from `@playwright/test`. A context a spec makes by hand with `browser.newContext()`
 does not get the cache; it still works, and downloads the SDK itself.
+
+**A few tests run last, two at a time** (#1716). A test tagged `HEAVY` (from [`fixtures.ts`](fixtures.ts))
+drives one map through many slow steps: 3D on every campus basemap, zooming to the deepest level, popup
+after popup. Sharing the machine with five other map loads, each step slows until the test's own clock
+runs out, and three such tests failed their first attempt in every release tier on 18 October while
+passing first time alone. So the config runs them in a `heavy` project after every other test has
+finished, whether those passed or not, with at most two at once. A run's list shows them as `[heavy]`,
+at the end, and still run after `-x` has stopped the rest. `one` runs a spec or test as asked, with
+nothing held back (`--no-deps`). Tag a test only
+when it has failed a tier's first attempt and passes alone; a test that is slow alone is not heavy, it
+is slow.
 
 The commands below are what the script runs, for reference or for running without it. Node runs in
 Docker here, so Playwright runs in a container. They take the packages from the `tamu-js-smoke-nm`

@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-import { expect, test } from './fixtures';
+import { expect, HEAVY, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { waitForSettledFraming } from './framing';
 
@@ -106,7 +106,7 @@ test.describe('popup', () => {
    * the same place on screen: Harrington to its left and Peterson below to the right, at the suite's
    * viewport. If the link's framing changes, the first click names the building it expected.
    */
-  test(`/map/d?bldg=0468: clicking one building after another shows each one's popup in turn`, async ({ page }) => {
+  test(`/map/d?bldg=0468: clicking one building after another shows each one's popup in turn`, HEAVY, async ({ page }) => {
     test.setTimeout(180_000);
 
     const mapPath = '/map/d?bldg=0468';
