@@ -24,4 +24,4 @@
  * commit, each with the breaking changes it needed written in its commit message; read Esri's release notes
  * for every release skipped, since its typings change between minors (4.30 to 4.32 rewrote them).
  */
-export const ESRI_RUNTIME_VERSION = '5.0.19';
+export const ESRI_RUNTIME_VERSION = '5.1.27';
