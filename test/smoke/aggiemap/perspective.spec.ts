@@ -1,5 +1,6 @@
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { MAP_CONTROLS } from './controls';
 import { Framing, waitForSettledFraming } from './framing';
 
 /**
@@ -72,8 +73,11 @@ test.describe('2D and 3D', () => {
 
     // The map's buttons come back with it. Esri's zoom and locate components destroy themselves when
     // they leave the page, as the 2D view does while 3D is shown, so back in 2D they had gone (#1853).
-    for (const control of ['arcgis-zoom', 'arcgis-track', 'tamu-gisc-map-compass']) {
-      await expect(page.locator(`.esri-ui-top-left ${control}`), `back in 2D, ${control} is missing`).toBeVisible();
+    for (const [name, control] of Object.entries(MAP_CONTROLS)) {
+      await expect(
+        page.locator('.esri-ui-top-left').locator(control),
+        `back in 2D, the ${name} button is missing`
+      ).toBeVisible();
     }
   });
 
