@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SidebarTabComponent } from './tab.component';
 
@@ -6,11 +6,11 @@ describe('SidebarTabComponent', () => {
   let component: SidebarTabComponent;
   let fixture: ComponentFixture<SidebarTabComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [SidebarTabComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SidebarTabComponent);

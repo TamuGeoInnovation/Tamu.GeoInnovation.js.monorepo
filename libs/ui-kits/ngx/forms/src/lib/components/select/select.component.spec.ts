@@ -1,4 +1,4 @@
-import { waitForAsync, TestBed, ComponentFixture } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 
 import { SelectComponent } from './select.component';
@@ -6,11 +6,11 @@ import { SelectComponent } from './select.component';
 describe('SelectComponent', () => {
   let component: SelectComponent<{ test: 'value' }>;
   let fixture: ComponentFixture<SelectComponent<{ test: 'value' }>>;
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [FormsModule, SelectComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent<SelectComponent<{ test: 'value' }>>(SelectComponent);

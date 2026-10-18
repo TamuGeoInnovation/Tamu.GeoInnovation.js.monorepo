@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RadioGroupComponent } from './radio-group.component';
 
@@ -6,11 +6,11 @@ describe('RadioGroupComponent', () => {
   let component: RadioGroupComponent<{ test: number }, number>;
   let fixture: ComponentFixture<RadioGroupComponent<{ test: number }, number>>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [RadioGroupComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent<RadioGroupComponent<{ test: 2 }, number>>(RadioGroupComponent);

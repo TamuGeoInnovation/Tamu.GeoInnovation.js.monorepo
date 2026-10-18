@@ -1,5 +1,5 @@
 import { ElementRef } from '@angular/core';
-import { waitForAsync, inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
@@ -9,8 +9,8 @@ import { SearchComponent, SearchMobileComponent, SearchResultPipe } from '@tamu-
 import { EsriMapComponent } from './esri-map.component';
 
 describe('EsriMapComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       providers: [
         EsriMapComponent,
         {
@@ -27,7 +27,7 @@ describe('EsriMapComponent', () => {
         HttpClientTestingModule
       ]
     }).compileComponents();
-  }));
+  });
 
   it('should create', inject([EsriMapComponent], (esriMapComponent: EsriMapComponent) => {
     expect(esriMapComponent).toBeTruthy();

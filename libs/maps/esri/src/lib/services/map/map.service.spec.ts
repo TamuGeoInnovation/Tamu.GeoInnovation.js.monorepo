@@ -102,18 +102,19 @@ describe('EsriMapService feature layer titles', () => {
 describe('EsriMapService layers asked for twice at once', () => {
   class FakeGraphicsLayer {
     public id: string;
-    public graphics: unknown[] = [];
+    // A collection, as Esri's is: selectFeatures reads it back with toArray().
+    public graphics = { items: [] as unknown[], toArray: () => [...this.graphics.items] };
 
     constructor(props: { id: string }) {
       this.id = props.id;
     }
 
     public removeAll(): void {
-      this.graphics = [];
+      this.graphics.items = [];
     }
 
     public addMany(graphics: unknown[]): void {
-      this.graphics.push(...graphics);
+      this.graphics.items.push(...graphics);
     }
   }
 
@@ -172,6 +173,6 @@ describe('EsriMapService layers asked for twice at once', () => {
     await settle();
 
     expect(layers).toHaveLength(1);
-    expect(layers[0].graphics).toEqual([feature]);
+    expect(layers[0].graphics.toArray()).toEqual([feature]);
   });
 });
