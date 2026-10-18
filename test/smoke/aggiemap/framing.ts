@@ -23,6 +23,27 @@ const SETTLED_FOR_MS = 1_000;
 const SETTLE_TIMEOUT_MS = 30_000;
 
 /**
+ * What a graphics layer has drawn: its graphics counted by `attributes.type`, from the map probe's
+ * `graphicTypes`. Empty when the layer is not on the map, or holds nothing.
+ */
+export async function readGraphicTypes(page: Page, layerId: string): Promise<Record<string, number>> {
+  return await page.evaluate(
+    async ({ probeName, id }) => {
+      const probe = (
+        window as unknown as Record<
+          string,
+          { snapshot: () => Promise<{ layers: { id: string; graphicTypes: Record<string, number> | null }[] }> }
+        >
+      )[probeName];
+      const layer = (await probe.snapshot()).layers.find((l) => l.id === id);
+
+      return layer?.graphicTypes ?? {};
+    },
+    { probeName: PROBE_GLOBAL, id: layerId }
+  );
+}
+
+/**
  * The view's framing, or `null` when there is no map view or its framing cannot be read.
  *
  * The map probe's `framing` (#1379), which reports a WGS 84 center in any spatial reference (#1380).

@@ -63,7 +63,7 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
     paths: /^libs\/(maps\/feature\/popup|aggiemap\/ngx\/popups|ts\/events\/ngx\/src\/lib\/modules\/popups)\//,
     specs: ['popup.spec.ts', 'directions.spec.ts', 'search-sources.spec.ts']
   },
-  { paths: /^libs\/maps\/feature\/trip-planner\//, specs: ['directions.spec.ts'] },
+  { paths: /^libs\/maps\/feature\/trip-planner\//, specs: ['directions.spec.ts', 'map-coordinates.spec.ts'] },
   {
     paths: /^libs\/maps\/(feature\/(coordinates|accessibility)\/|esri\/src\/lib\/geographic\.ts$)/,
     specs: ['map-coordinates.spec.ts']
