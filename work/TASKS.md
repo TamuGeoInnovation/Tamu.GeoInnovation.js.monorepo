@@ -5,9 +5,16 @@ on the maintainer's **work machine**. Its job is testing, so the home machine's 
 development (#1862). Read this file, do the current batch, report, and stop. The home session rewrites the batch for
 each round; git history keeps the old ones.
 
+**Read `LEADER.md` at the top of this branch first, every time the branch changes.** It says which machine leads
+(home, today) and what the listener does; its rules win over anything older below. In short, as the listener this
+machine: never asks the maintainer anything, never offers or suggests work, and takes no decisions from him (if he
+tells it something anyway, it does only that and records it under **Told directly**); files issues without a
+priority, suggesting one in its report; starts every commit message with `work:`; and ends each turn with a
+one-line status. The leader's commits here start with `home:`.
+
 **Who does what (18 October, after both machines asked the maintainer the same questions):**
 - **Only the home session asks the maintainer to decide anything.** This machine never asks him. Anything that
-  needs a decision goes in the report under **Questions for the home session**, each with options and a
+  needs a decision goes in the report under **Questions for the leader**, each with options and a
   recommendation; the home session asks him once, and the answers come back in the next batch, under **Decided**.
 - **`work/STATUS.md` says what this machine is doing, and only this machine writes it.** Update it and push it
   the moment anything starts or finishes: what is running, from which commit, started when (US Central), and for
@@ -52,7 +59,7 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
 
   Cover each task: what ran, from which commit, the result per environment (passed, failed, flaky, skipped),
   each failure explained by layer and cause, the issue comments posted, and anything that could not be done.
-  Put anything that needs deciding under **Questions for the home session**, numbered, with lettered options and a
+  Put anything that needs deciding under **Questions for the leader**, numbered, with lettered options and a
   recommendation. Don't ask the maintainer; the home session does.
 - **Say "work report ready: <file>"** when done, then go back to watching (see Watch mode).
 
