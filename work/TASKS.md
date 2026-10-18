@@ -31,34 +31,31 @@ each round; git history keeps the old ones.
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
-## Batch 2 (prepared 18 October 2026, afternoon)
+## Batch 3 (prepared 18 October 2026, afternoon)
 
-Batch 1 is done (report `work/reports/2026-10-18-1.md`). This machine now has `AZURE_DEVOPS_PAT`, so name the release,
-the build number and the commit it was built from.
+Batch 2 is done (report `work/reports/2026-10-18-2.md`). Its finding, that the suite passed on an empty legend, is
+answered by #1870, which is in this build. This machine has `AZURE_DEVOPS_PAT`: name the release, build and commit.
 
-1. **#1849: the release tier on dev's build after the signals and OnPush pages**
-   - Goal: clear the dev build of `development` at **`3cb5b6fdb`** (#1866) or later, for production. Since
-     `dev-2026-10-18` it carries #1864 (OnPush on AggieMap's ten pages), #1865 (every remaining decorator input,
-     output and query made a signal), #1866 (four new smoke checks that the view follows an interaction) and #1863 (docs).
-   - Run:
-     - Confirm dev serves a build of `3cb5b6fdb` or later. `git fetch` and read `development`'s head, then check that dev's
-       deployed bundles differ from the `dev-2026-10-18` build: for example, a chunk name the earlier run recorded is no
-       longer served. If dev still serves `f800c2edf`'s build, say so in the report and stop.
-     - Put the commit dev serves in its own worktree and run `test/smoke/aggiemap/run-local.sh development release` from
-       there. Nothing else heavy should run on this machine meanwhile.
-   - Report on: #1849, as a new section headed "Release tier on the build after #1866". Comment when it starts
-     (commit, how the build was identified) and when it finishes.
-   - Then: **if it passed**, run `scripts/tag-build.sh dev <full commit>` and `git push origin <tag>`. Today's tag
-     `dev-2026-10-18` already exists, so the script will choose the next name; record what it chose. **If anything
-     failed**, tag nothing; explain each failure by layer and cause, and say whether it also fails on
-     `dev-2026-10-18`'s commit (`run-local.sh development release --grep <test>` from a worktree at `f800c2edf`).
-     The four new interaction tests (`legend.spec.ts` "a layer switched off and on…", `popup.spec.ts` "clicking one
-     building after another…", `search.spec.ts` "searching "Wehner" then "Bonfire"…", `basemap-gallery.spec.ts`)
-     run on dev for the first time here; report each one's result by name.
-   - Also: compare this run's duration with batch 1's 41.6 minutes, to answer batch 1's decision 1.
-   - **Known bug on this build: the main map's legend is empty (#1857).** Dan knows; the run goes ahead to find out
-     whether the suite catches it. Report plainly which tests, if any, failed because of it (by name, with the
-     failure message), and whether it was caught at all. The check written for #1857 is not on `development` yet,
-     so a miss is a real finding, not a mistake: say so if nothing failed. Because of #1857 this build does **not**
-     get a `dev-*` tag even if everything passes; say that in the #1849 comment.
-
+1. **#1849: clear the dev build of `86893756c` for production**
+   - Goal: the dev build of `development` at **`86893756c`** (#1873) passes, gets a `dev-*` tag, and is the build
+     the maintainer promotes. Since `3cb5b6fdb` it carries #1869 (All Maps: choosing a search result opens the map),
+     #1870 (the main map's legend lists layers switched on) and #1873 (the `one` option for `run-local.sh`).
+   - Run, from a worktree at `86893756c`, in this order:
+     1. Wait until dev serves that build: Azure release definition 13 lists a release at `86893756c` with its dev
+        stage succeeded, and dev's main bundle is no longer `main-LUOZGHMK.js`. If it is not there within two hours,
+        report that and stop.
+     2. The two fixes first, alone, so a failure is seen in minutes rather than after the whole tier:
+        - `test/smoke/aggiemap/run-local.sh development one "loads hidden is listed"` (#1870's check; it failed on
+          all three attempts against the previous build, as it should have);
+        - `test/smoke/aggiemap/run-local.sh development one all-maps-search.spec.ts` (#1869's two checks).
+        If either fails, report it and stop: do not run the tier.
+     3. `test/smoke/aggiemap/run-local.sh development release`. Nothing else heavy on this machine meanwhile.
+   - Report on: #1849, a new section headed "Release tier on the build after #1873": when it starts (release, build,
+     commit), the two fixes' results, then the tier's result.
+   - Then: **if everything passed**, `scripts/tag-build.sh dev <full commit>` and `git push origin <tag>`; record the
+     tag name it chose. **If anything failed**, tag nothing; explain each failure by layer and cause.
+   - Also report:
+     - `popup.spec.ts` "clicking one building after another…": did it pass first time? It was flaky on batch 2's run
+       (#1866 has the note); the maintainer chose to watch one more run before changing anything.
+     - any test flaky again on `/map?bldg=0468`, and whether `perspective.spec.ts` was flaky a third time.
+   - The duration needs no comparison; the question was dropped.
