@@ -1,7 +1,7 @@
 # Unreleased
 
-Since the 16 October release: one AggieMap fix (map search with an apostrophe or a percent sign), and GIS
-Day changes waiting for GIS Day's own deploy.
+Since the 16 October release: two AggieMap fixes (map search with an apostrophe or a percent sign, and
+choosing a result in All Maps' search), and GIS Day changes waiting for GIS Day's own deploy.
 
 **The last release is [16 October 2026](2026-10-16.md)**, built from `264eebb42` (build 20261016.11,
 Release-473) and promoted to production on the morning of 16 October. The release tier on dev was still
@@ -35,6 +35,19 @@ days carry 2026's dates, and the "Sponsor through Houston Area TxGIS Day" button
 | ![Raster's benefits before](../screenshots/gisday-tiers-2026/before-raster.png) | ![Raster's benefits after](../screenshots/gisday-tiers-2026/after-raster.png) |
 | ![The sponsors page offering Texas A&M and Houston Area](../screenshots/gisday-tiers-2026/before-sponsor-options.png) | ![The sponsors page offering Texas A&M only](../screenshots/gisday-tiers-2026/after-sponsor-options.png) |
 | ![The logistics section with 2025's dates](../screenshots/gisday-tiers-2026/before-logistics.png) | ![The logistics section with 2026's dates and sponsor parking](../screenshots/gisday-tiers-2026/after-logistics.png) |
+
+### The main map's legend lists the layers switched on
+
+The main map's legend stayed empty whatever was switched on in the Layers list, on production as well as
+dev. Every layer on the main map loads hidden, and the legend only lists a layer once it has seen it
+visible, so that a layer switched off collapses instead of disappearing. It looked only when ArcGIS's
+list of layers changed, and switching a layer on does not change that list, so once the map had loaded
+it never looked again. It now also looks when a layer is switched on or off. Maps whose layers load
+visible, such as Visitor Parking's own map, were not affected ([#1857](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1857)).
+
+| Before | After |
+| --- | --- |
+| ![The main map with Visitor Parking and Construction Zones on, and an empty legend](../screenshots/1857-empty-legend/before-main-map-legend.png) | ![The same, with both layers and their symbols in the legend](../screenshots/1857-empty-legend/after-main-map-legend.png) |
 
 ### GIS Day: one code base for more than one organization's site, starting with UCGIS
 
@@ -91,6 +104,20 @@ filled ones, so they are the same size across the site ([#1831](https://github.c
 | Before | After |
 | --- | --- |
 | ![Send Us a Message 46 px tall, Sponsor TxGIS Day at TAMU 42 px](../screenshots/gisday-button-heights/before-sponsor-buttons.png) | ![Both 46 px tall](../screenshots/gisday-button-heights/after-sponsor-buttons.png) |
+
+### All Maps: choosing a search result opens the map
+
+On the All Maps page, a map found with the search box could not be opened with the mouse. Pressing a
+result took focus out of the search box, the list of results closed on that, and the click that should
+have chosen the map landed on the page behind it. The box kept the typed text, so the page looked as if
+it had simply not reacted. The keyboard worked throughout (arrow down, then Enter). A result is now
+focusable, so pressing it keeps focus inside the search and the click arrives. The fix is in the shared
+autocomplete component, which All Maps is the only user of today ([#1868](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1868)).
+
+| Before | After |
+| --- | --- |
+| ![Searching Campus Main Parking on All Maps lists it](../screenshots/1868-all-maps-search/before-development-result-listed.png) | |
+| ![After clicking the result: still on All Maps, the list gone, the text left in the box](../screenshots/1868-all-maps-search/before-development-after-choosing.png) | ![After clicking the result: Campus Main Parking opens (a local build of the fix)](../screenshots/1868-all-maps-search/after-local-build-map-opened.png) |
 
 ### Map search works with an apostrophe or a percent sign
 
@@ -605,6 +632,7 @@ dated notes as what was tested, and this table empties.
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | GIS Day: sponsorship levels match the prospectus ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` and `/sponsors` | Tiles show 1 to 4 representatives; each level's perks include lunches and a ribbon; Raster says 20-minute speaking slot; the extra-representatives note; on `/sponsors`, only "Sponsor through Texas A&M" under Interested in Becoming a Sponsor, parking passes for Line and above, and days dated 16 to 20 November |
+| The main map's legend lists layers switched on ([#1857](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1857)) | [/map/d](https://dev.aggiemap.tamu.edu/map/d) | Once the map has finished loading, switch Visitor Parking and Construction Zones on in the Layers list: each appears under Legend with its symbols within a few seconds |
 | GIS Day: more than one organization's site, starting with UCGIS ([#1835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1835), [#1837](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1837)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [txgisday.org](https://txgisday.org); the UCGIS site once it is deployed | txgisday.org is unchanged: the same menus, footer, logo, tab title and icon, and the About page's committee and resume bank. On the UCGIS site: UCGIS GIS Day and its logo; no Sponsor, Competitions or FAQ menu; no Classes, Check-ins or Student Competitions on the profile; no check-in on an event page; and `/faq`, `/sponsors` and `/competitions` go to the homepage |
 | GIS Day: payment page instead of the giving site ([#1829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1829)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Sponsor TxGIS Day At TAMU" opens `/sponsors/payment` in the same tab: check payable to the Texas A&M Foundation with "2026-27 GIS Day #73982" on the memo line, the remit-to address, and the ACH or wire contact. No link anywhere goes to the giving site |
 | GIS Day: choose the organizations in the Sessions filter ([#1825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1825)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, Admin, Organizations, then `/sessions` | The organization form has a fourth checkbox, Sessions Filter. Tick it on two organizations and save: the Organizations filter on `/sessions` lists exactly those two, and their header and footer settings are unchanged |
@@ -614,6 +642,7 @@ dated notes as what was tested, and this table empties.
 | Map buttons on Esri's components ([#1853](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1853)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d), [the main map on a phone](https://dev.aggiemap.tamu.edu/map/m), 3D | Zoom, locate and compass in the top left on desktop, the locate button alone at the bottom right on a phone. Turn the map (right-drag): the needle turns; press the compass, or Tab to it and press Enter, and the map points north. Locate follows you and turns the map without jumping to you. Switch to 3D and back: all three buttons are still there. Focus rings are maroon. No "deprecated" warning about Track in the console |
 | Maps run ArcGIS 5.0 ([#1859](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1859)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d), [Gameday Parking](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d), [the main map on a phone](https://dev.aggiemap.tamu.edu/map/m) | Every map draws the same layers as before, with the same zoom, locate and compass buttons, legend, layer list and basemap panels; no "Powered by Esri" bar across the bottom of the map; the basemap panel's spinner stops once the map has drawn. In the network panel, every `js.arcgis.com` request is under `/5.0.19/` |
 | Map search with an apostrophe or a percent sign ([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)) | [dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu), then [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Search `Cain '51`: James J. Cain '51 Building is listed. Search `O'` or `Aggie's`: no error, results or "No results found". On Football Tailgating, search `%`: "No results found", not every tent. Ordinary searches still work: `MSC`, `O12`, `Creamery` |
+| All Maps: choosing a search result opens the map ([#1868](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1868)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | Type `Campus Main Parking` in Search Maps and click the result: Campus Main Parking opens. Arrow down and Enter does the same |
 | Football Tailgating game-day notice ([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)) | [The main map](https://dev.aggiemap.tamu.edu/map/d) in a private window, in the week before a home game | Two notices, **Football Transportation Map Available** then **Football Tailgating Map Available**; clicking the second opens the Tailgating map |
 | GIS Day: sponsorship levels back at last year's prices ([#1821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1821)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [the sponsor page](https://txgisday.org/sponsors/tamu) | Point $256, Line $512, Polygon $1,024, Raster $2,048, each level's perks as before |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
