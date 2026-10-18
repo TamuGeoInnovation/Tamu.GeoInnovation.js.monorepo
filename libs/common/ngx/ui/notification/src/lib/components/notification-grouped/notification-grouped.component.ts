@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -34,8 +34,7 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
   private readonly modal = inject(ModalService, { optional: true });
   private readonly service = inject(NotificationService);
 
-  @Input()
-  public position: 'left' | 'center' | 'right' = 'center';
+  public readonly position = input<'left' | 'center' | 'right'>('center');
 
   // Grouped mode state
   public groupedItems: Notification[] = [];

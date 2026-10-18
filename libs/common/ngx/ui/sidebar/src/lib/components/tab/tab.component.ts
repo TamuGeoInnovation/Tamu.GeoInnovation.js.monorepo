@@ -1,4 +1,4 @@
-import { Component, Input, HostListener, ChangeDetectionStrategy } from '@angular/core';
+import { Component, HostListener, ChangeDetectionStrategy, input } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 @Component({
@@ -13,20 +13,17 @@ export class SidebarTabComponent {
    *
    * It is a used to render the icon inside the tab item.
    */
-  @Input()
-  public material_icon = 'menu';
+  public readonly material_icon = input('menu');
 
   /**
    * Metadata label that is used as the title and other aria-tags.
    */
-  @Input()
-  public title = 'Tab';
+  public readonly title = input('Tab');
 
   /**
   //  * Metadata label that is used in aria-tags for accessibility purposes.
    */
-  @Input()
-  public description = 'Sidebar tab';
+  public readonly description = input('Sidebar tab');
 
   /**
    * Optional: A configured application route name relative to the base route in which
@@ -41,8 +38,7 @@ export class SidebarTabComponent {
    * within the sidebar content container in which content will be rendered based on application
    * routes.
    */
-  @Input()
-  public route: string = undefined;
+  public readonly route = input<string>(undefined);
 
   private _$clicked: Subject<TabHostClick> = new Subject();
   public $clicked: Observable<TabHostClick> = this._$clicked.asObservable();

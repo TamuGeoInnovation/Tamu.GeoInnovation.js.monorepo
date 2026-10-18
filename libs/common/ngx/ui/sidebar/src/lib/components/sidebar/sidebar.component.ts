@@ -1,12 +1,4 @@
-import {
-  Component,
-  ContentChildren,
-  AfterContentInit,
-  QueryList,
-  OnDestroy,
-  ChangeDetectionStrategy,
-  inject
-} from '@angular/core';
+import { Component, AfterContentInit, OnDestroy, ChangeDetectionStrategy, inject, contentChildren } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { from, Subject } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
@@ -30,8 +22,7 @@ export class SidebarComponent extends AbstractSlidingDrawerComponent implements 
 
   private _$destroy: Subject<null> = new Subject();
 
-  @ContentChildren(SidebarTabComponent, { descendants: true })
-  public tabs: QueryList<SidebarTabComponent>;
+  public readonly tabs = contentChildren(SidebarTabComponent, { descendants: true });
 
   public ngAfterContentInit() {
     // Which tab the sidebar is already showing.
@@ -43,7 +34,7 @@ export class SidebarComponent extends AbstractSlidingDrawerComponent implements 
     // recorded the view. The panel did not move until the second click (#1249).
     this.currentView = this._currentTabRoute();
 
-    from(this.tabs.toArray())
+    from(this.tabs())
       .pipe(
         takeUntil(this._$destroy),
         mergeMap((e) => {
@@ -52,8 +43,8 @@ export class SidebarComponent extends AbstractSlidingDrawerComponent implements 
       )
       .subscribe((event) => {
         if (event && event.native) {
-          this._changeRoute(event.native.route);
-          this._toggleVisibility(event.native.route);
+          this._changeRoute(event.native.route());
+          this._toggleVisibility(event.native.route());
         }
       });
   }
@@ -77,9 +68,9 @@ export class SidebarComponent extends AbstractSlidingDrawerComponent implements 
       .filter((segment) => segment.length > 0);
     const last = segments[segments.length - 1];
 
-    const match = this.tabs.find((tab) => tab.route !== undefined && tab.route.length > 0 && tab.route === last);
+    const match = this.tabs().find((tab) => tab.route() !== undefined && tab.route().length > 0 && tab.route() === last);
 
-    return match ? match.route : '';
+    return match ? match.route() : '';
   }
 
   /**
@@ -98,7 +89,7 @@ export class SidebarComponent extends AbstractSlidingDrawerComponent implements 
       this.toggleVisibility();
     } else {
       // If selected view name is different than current, show sidebar (in case it's hidden), store the selected view name as the current, and navigate to that route
-      this.visible = true;
+      this.visible.set(true);
       this.currentView = viewName;
     }
   }
