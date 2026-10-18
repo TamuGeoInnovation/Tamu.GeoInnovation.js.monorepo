@@ -77,7 +77,9 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
 production serves now; there should be no significant differences, and any there are, he wants to see.
 
 1. **#1849: clear Release-482 (build 20261018.33, `70f0e424b`) for production**
-   - Start only after batch 8 has **passed** on the same release. If batch 8 failed, do not start: report and wait.
+   - **Held (the maintainer, about 5:20 PM): do not start on Release-482.** A legend fix (#1871) goes into this
+     release, so batch 9 runs on the release that carries it. The director will name that release here; until then,
+     after batch 8, wait.
    - Run, from the worktree at `70f0e424b`, one after another, nothing else on this machine meanwhile:
      1. **The full tier:** `test/smoke/aggiemap/run-local.sh development full`. Report passed, failed, flaky and
         skipped, the duration, every failure by layer and cause, and whether the three `@heavy` tests passed on
