@@ -105,4 +105,11 @@ interface LegendOptions {
    * mutually-exclusive group). Must also satisfy `allowedLayerIds`/`excludedLayerIds` filtering.
    */
   forceShowLayerIds?: string[];
+
+  /**
+   * Keep a layer listed after it is switched off, for a legend whose titles switch layers on and off
+   * (`allowVisibilityToggle`): its collapsed title is how it is switched back on. Otherwise a layer
+   * switched off leaves the legend, as it has left the map (#1871).
+   */
+  keepSwitchedOff?: boolean;
 }
