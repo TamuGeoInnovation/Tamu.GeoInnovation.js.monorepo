@@ -1,4 +1,4 @@
-import { Component, Input, HostBinding, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, HostBinding, OnInit, ChangeDetectionStrategy, input, model } from '@angular/core';
 
 import { slide } from '../../animations/drawer';
 import { AnimationOptions } from '@angular/animations';
@@ -10,25 +10,15 @@ import { AnimationOptions } from '@angular/animations';
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class AbstractSlidingDrawerComponent implements OnInit {
-  private _visible: boolean;
-
   /**
    * Describes sliding component visible state.
    *
    * Defaults to `true`
+   *
+   * A model rather than an input: the component toggles it itself. It used to accept the strings
+   * 'true' and 'false' as well; no caller binds it at all.
    */
-  @Input()
-  public set visible(value: string | boolean) {
-    if (typeof value === 'string') {
-      this._visible = value.toLowerCase() === 'true';
-    } else {
-      this._visible = value;
-    }
-  }
-
-  public get visible() {
-    return this._visible !== undefined ? this._visible : true;
-  }
+  public readonly visible = model(true);
 
   /**
    * Describes the left or right adjustment (depending on positioning) applied
@@ -67,7 +57,7 @@ export class AbstractSlidingDrawerComponent implements OnInit {
   @HostBinding('@slide')
   private get toggleDrawer() {
     return {
-      value: this.visible,
+      value: this.visible(),
       ...this._params
     };
   }
@@ -104,7 +94,7 @@ export class AbstractSlidingDrawerComponent implements OnInit {
    * Toggles (on/off) drawer visibility.
    */
   public toggleVisibility() {
-    this.visible = !this.visible;
+    this.visible.set(!this.visible());
   }
 
   /**

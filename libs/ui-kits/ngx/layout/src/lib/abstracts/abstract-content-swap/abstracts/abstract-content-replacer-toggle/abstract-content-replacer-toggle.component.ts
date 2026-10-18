@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, TemplateRef, ChangeDetectionStrategy, input, viewChild } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-abstract-content-replacer-toggle',
@@ -6,9 +6,7 @@ import { Component, Input, ViewChild, TemplateRef, ChangeDetectionStrategy } fro
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class AbstractContentReplacerToggleComponent {
-  @Input()
-  public label: string;
+  public readonly label = input<string>(undefined);
 
-  @ViewChild('template', { static: true })
-  public template: TemplateRef<unknown>;
+  public readonly template = viewChild.required<TemplateRef<unknown>>('template');
 }

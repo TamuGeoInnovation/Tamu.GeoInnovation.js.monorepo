@@ -1,4 +1,4 @@
-import { Component, ContentChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, contentChild } from '@angular/core';
 
 import { AbstractContentReplacerToggleComponent } from '../../../../abstracts/abstract-content-swap/abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
 import { StepperToggleDirective } from '../../directives/stepper-toggle.directive';
@@ -10,6 +10,5 @@ import { StepperToggleDirective } from '../../directives/stepper-toggle.directiv
   changeDetection: ChangeDetectionStrategy.Eager
 })
 export class StepComponent extends AbstractContentReplacerToggleComponent {
-  @ContentChild(StepperToggleDirective, { static: true })
-  public toggle: StepperToggleDirective;
+  public readonly toggle = contentChild.required(StepperToggleDirective);
 }

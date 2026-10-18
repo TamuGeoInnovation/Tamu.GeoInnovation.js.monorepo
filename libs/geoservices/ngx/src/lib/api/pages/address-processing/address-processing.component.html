@@ -482,14 +482,14 @@
 
             <div *giscAccordion="let parent;">
               <div class="pill" [giscAccordionHeader]="parent">
-                @if (!parent.expanded) {
+                @if (!parent.expanded()) {
                 <div><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                } @if (parent.expanded) {
+                } @if (parent.expanded()) {
                 <div><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                 }
               </div>
 
-              <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
+              <div class="attribute-list" *giscAccordionContent="parent.expanded()" defaultDisplay="block">
                 <tamu-gisc-address-attribute-list></tamu-gisc-address-attribute-list>
               </div>
             </div>

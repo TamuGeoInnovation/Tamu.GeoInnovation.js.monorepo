@@ -1,4 +1,4 @@
-import { Directive, HostBinding, Input, TemplateRef, ViewContainerRef, inject, input } from '@angular/core';
+import { Directive, HostBinding, TemplateRef, ViewContainerRef, effect, inject, input } from '@angular/core';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -20,13 +20,17 @@ export class AccordionContentDirective {
 
   public readonly defaultDisplay = input<'initial' | 'inherit' | 'block' | 'inline' | 'inline-block'>('initial');
 
-  @Input()
-  public set giscAccordionContent(expanded: boolean) {
-    if (expanded) {
-      this.viewContainer.createEmbeddedView(this.templateRef);
-    } else {
-      this.viewContainer.clear();
-    }
+  public readonly giscAccordionContent = input<boolean>(undefined);
+
+  constructor() {
+    // Renders the content while expanded, and removes it when collapsed.
+    effect(() => {
+      if (this.giscAccordionContent()) {
+        this.viewContainer.createEmbeddedView(this.templateRef);
+      } else {
+        this.viewContainer.clear();
+      }
+    });
   }
 
   @HostBinding('style.display')

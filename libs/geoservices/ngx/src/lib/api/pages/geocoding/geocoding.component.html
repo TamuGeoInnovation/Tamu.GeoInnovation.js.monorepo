@@ -1191,14 +1191,14 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                @if (!parent.expanded) {
+                @if (!parent.expanded()) {
                 <div><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                } @if (parent.expanded) {
+                } @if (parent.expanded()) {
                 <div><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                 }
               </div>
 
-              <div *giscAccordionContent="parent.expanded" class="attribute-list" defaultDisplay="block">
+              <div *giscAccordionContent="parent.expanded()" class="attribute-list" defaultDisplay="block">
                 <div class="attribute-unit">
                   <div class="attribute-header">
                     <div class="attribute-name">number</div>
@@ -1529,14 +1529,14 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                @if (!parent.expanded) {
+                @if (!parent.expanded()) {
                 <div><span>Expand possible values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                } @if (parent.expanded) {
+                } @if (parent.expanded()) {
                 <div><span>Collapse possible values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                 }
               </div>
 
-              <div *giscAccordionContent="parent.expanded" class="attribute-node" defaultDisplay="block">
+              <div *giscAccordionContent="parent.expanded()" class="attribute-node" defaultDisplay="block">
                 <p>A full list of quality codes is as follows</p>
                 <ul>
                   <li>Unmatchable</li>
@@ -1597,14 +1597,14 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                @if (!parent.expanded) {
+                @if (!parent.expanded()) {
                 <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                } @if (parent.expanded) {
+                } @if (parent.expanded()) {
                 <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                 }
               </div>
 
-              <div *giscAccordionContent="parent.expanded" class="attribute-node">
+              <div *giscAccordionContent="parent.expanded()" class="attribute-node">
                 <table>
                   <thead>
                     <tr>
@@ -1671,14 +1671,14 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                @if (!parent.expanded) {
+                @if (!parent.expanded()) {
                 <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                } @if (parent.expanded) {
+                } @if (parent.expanded()) {
                 <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                 }
               </div>
 
-              <div *giscAccordionContent="parent.expanded" class="attribute-node">
+              <div *giscAccordionContent="parent.expanded()" class="attribute-node">
                 <p><strong>Exact</strong></p>
 
                 <p>The input date exactly matched a feature in the reference data source:</p>
@@ -1749,14 +1749,14 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                @if (!parent.expanded) {
+                @if (!parent.expanded()) {
                 <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                } @if (parent.expanded) {
+                } @if (parent.expanded()) {
                 <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                 }
               </div>
 
-              <div *giscAccordionContent="parent.expanded" class="attribute-node">
+              <div *giscAccordionContent="parent.expanded()" class="attribute-node">
                 <tamu-gisc-address-match-type-attribute-list></tamu-gisc-address-match-type-attribute-list>
               </div>
             </div>
@@ -1774,14 +1774,14 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                @if (!parent.expanded) {
+                @if (!parent.expanded()) {
                 <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                } @if (parent.expanded) {
+                } @if (parent.expanded()) {
                 <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                 }
               </div>
 
-              <div *giscAccordionContent="parent.expanded" class="attribute-node">
+              <div *giscAccordionContent="parent.expanded()" class="attribute-node">
                 <table>
                   <thead>
                     <tr>
@@ -1818,14 +1818,14 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                @if (!parent.expanded) {
+                @if (!parent.expanded()) {
                 <div><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                } @if (parent.expanded) {
+                } @if (parent.expanded()) {
                 <div><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                 }
               </div>
 
-              <div *giscAccordionContent="parent.expanded" class="attribute-list">
+              <div *giscAccordionContent="parent.expanded()" class="attribute-list">
                 <div class="attribute-unit">
                   <div class="attribute-header">
                     <div class="attribute-name">gisCoordinateQualityCode</div>
@@ -1844,14 +1844,14 @@
 
                     <div *giscAccordion="let parent;">
                       <div [giscAccordionHeader]="parent" class="pill">
-                        @if (!parent.expanded) {
+                        @if (!parent.expanded()) {
                         <div><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                        } @if (parent.expanded) {
+                        } @if (parent.expanded()) {
                         <div><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                         }
                       </div>
 
-                      <div *giscAccordionContent="parent.expanded" class="attribute-list">
+                      <div *giscAccordionContent="parent.expanded()" class="attribute-list">
                         <table>
                           <thead>
                             <tr>
@@ -1979,14 +1979,14 @@
 
                     <div *giscAccordion="let parent;">
                       <div [giscAccordionHeader]="parent" class="pill">
-                        @if (!parent.expanded) {
+                        @if (!parent.expanded()) {
                         <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                        } @if (parent.expanded) {
+                        } @if (parent.expanded()) {
                         <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                         }
                       </div>
 
-                      <div *giscAccordionContent="parent.expanded" class="attribute-list">
+                      <div *giscAccordionContent="parent.expanded()" class="attribute-list">
                         <table>
                           <thead>
                             <tr>
@@ -2149,14 +2149,14 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                @if (!parent.expanded) {
+                @if (!parent.expanded()) {
                 <div><span>Show Possible Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                } @if (parent.expanded) {
+                } @if (parent.expanded()) {
                 <div><span>Hide Possible Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                 }
               </div>
 
-              <div *giscAccordionContent="parent.expanded" class="attribute-node">
+              <div *giscAccordionContent="parent.expanded()" class="attribute-node">
                 <ul>
                   <li>FeatureClassBased</li>
                   <li>UncertaintySingleFeatureArea</li>
@@ -2194,14 +2194,14 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                @if (!parent.expanded) {
+                @if (!parent.expanded()) {
                 <div><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                } @if (parent.expanded) {
+                } @if (parent.expanded()) {
                 <div><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                 }
               </div>
 
-              <div *giscAccordionContent="parent.expanded" class="attribute-list">
+              <div *giscAccordionContent="parent.expanded()" class="attribute-list">
                 <tamu-gisc-address-attribute-list></tamu-gisc-address-attribute-list>
               </div>
             </div>
@@ -2219,14 +2219,14 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                @if (!parent.expanded) {
+                @if (!parent.expanded()) {
                 <div><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                } @if (parent.expanded) {
+                } @if (parent.expanded()) {
                 <div><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                 }
               </div>
 
-              <div *giscAccordionContent="parent.expanded" class="attribute-list">
+              <div *giscAccordionContent="parent.expanded()" class="attribute-list">
                 <tamu-gisc-reference-feature-attribute-list></tamu-gisc-reference-feature-attribute-list>
               </div>
             </div>

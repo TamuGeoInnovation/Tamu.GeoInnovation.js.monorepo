@@ -6,7 +6,7 @@
   <ng-content select=".content"></ng-content>
 </div>
 
-<div class="toggle material-icons" (click)="toggleVisibility()" [ngClass]="{ visible: visible }">
+<div class="toggle material-icons" (click)="toggleVisibility()" [ngClass]="{ visible: visible() }">
   @if (position() === 'left') {
   <span>chevron_right</span>
   } @if (position() === 'right') {

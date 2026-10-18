@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { AbstractContentReplacerToggleComponent } from '../../../abstracts/abstract-content-swap/abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
 
@@ -8,10 +8,4 @@ import { AbstractContentReplacerToggleComponent } from '../../../abstracts/abstr
   styleUrls: ['./tab.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager
 })
-export class TabComponent extends AbstractContentReplacerToggleComponent {
-  @Input()
-  public label: string;
-
-  @ViewChild('template', { static: true })
-  public template: TemplateRef<TabComponent>;
-}
+export class TabComponent extends AbstractContentReplacerToggleComponent {}
