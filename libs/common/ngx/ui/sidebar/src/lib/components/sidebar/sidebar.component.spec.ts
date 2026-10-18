@@ -1,4 +1,5 @@
 import { waitForAsync, TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SidebarComponent } from './sidebar.component';
@@ -7,7 +8,10 @@ import { SidebarTabComponent } from '../tab/tab.component';
 describe('SidebarComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([{ path: 'test', component: SidebarComponent }]), SidebarComponent]
+      imports: [RouterTestingModule.withRoutes([{ path: 'test', component: SidebarComponent }]), SidebarComponent],
+      // Without an animations provider the sidebar's @slide binding throws NG05105 when change detection
+      // reaches it, which under Vitest it does (#1479).
+      providers: [provideNoopAnimations()]
     }).compileComponents();
   }));
 

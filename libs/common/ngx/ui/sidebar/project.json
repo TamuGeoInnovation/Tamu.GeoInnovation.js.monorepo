@@ -6,14 +6,6 @@
   "sourceRoot": "libs/common/ngx/ui/sidebar/src",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/common/ngx/ui/sidebar"],
-      "options": {
-        "jestConfig": "libs/common/ngx/ui/sidebar/jest.config.ts",
-        "tsConfig": "libs/common/ngx/ui/sidebar/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
