@@ -33,6 +33,21 @@ a layer that is not its own ([#1910](https://github.com/TamuGeoInnovation/Tamu.G
 | --- | --- |
 | ![DC / Bush School on dev before the fix: 26 layers, 10 of them failing with 20 console errors, and 92 seconds until it stopped drawing](../screenshots/1910-campus-layers/before-dc-bush-school-dev.png) | ![The same map on a local production build of the fix, on ArcGIS 5.1: 4 layers, no errors, finished drawing in 8 seconds](../screenshots/1910-campus-layers/after-dc-bush-school-local.png) |
 
+### Accessible and motorcycle parking maps finish drawing in seconds
+
+The Accessible Parking and Motorcycle Parking maps each draw one kind of space, from a service that holds
+every parking space on campus: 44,980 points. Their symbology has symbols only for accessible spaces
+(H/C and Visitor H/C, 1,263 of them) or motorcycle spaces (M/C, 1,016), so every other space was
+downloaded and never drawn. On ArcGIS 5.1 in a headless browser the two maps took 104 to 177 seconds
+to finish drawing. Each map now asks for its own spaces only. The maps look the same, because the same
+spaces are drawn; on a local production build they finished drawing in 16 to 27 seconds. A smoke check
+now fails if either map holds a space its symbology does not draw ([#1897](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1897)).
+
+| Before | After |
+| --- | --- |
+| ![Accessible Parking before the fix, on a local production build: 44,980 spaces loaded, 104 seconds until it stopped drawing](../screenshots/1897-parking-spaces/before-accessible-parking.png) | ![The same map with the fix: 1,263 spaces loaded, the same symbols, 21 seconds until it stopped drawing](../screenshots/1897-parking-spaces/after-accessible-parking.png) |
+| ![Motorcycle Parking before the fix: 44,980 spaces loaded, 177 seconds until it stopped drawing](../screenshots/1897-parking-spaces/before-motorcycle-parking.png) | ![The same map with the fix: 1,016 spaces loaded, the same symbols, 21 seconds until it stopped drawing](../screenshots/1897-parking-spaces/after-motorcycle-parking.png) |
+
 ### GIS Day: the sponsorship levels match the 2026 prospectus
 
 The sponsor page now says what the 2026 prospectus says. Each level's tile shows how many
@@ -676,6 +691,7 @@ dated notes as what was tested, and this table empties.
 | All Maps: choosing a search result opens the map ([#1868](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1868)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | Type `Campus Main Parking` in Search Maps and click the result: Campus Main Parking opens. Arrow down and Enter does the same |
 | Main map in 2D: click coordinates and the viewfinder ([#1875](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1875)) | [/map/d](https://dev.aggiemap.tamu.edu/map/d) | In 2D, click the map: its latitude and longitude (about 30.61, -96.34) show bottom left, and the browser console has no `toFixed` error. Then press an arrow key: the box in the middle of the map lists the buildings under it, numbered |
 | Campus maps load only their own campus ([#1910](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1910)) | [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school), [Galveston](https://dev.aggiemap.tamu.edu/campus/galveston), [McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen) | Each map draws its campus within a few seconds, as before but faster on DC; the browser console shows no "Failed to load layer" errors for Bike Racks, Lactation Rooms and the like; clicking a building still opens its popup and search still finds it |
+| Accessible and motorcycle parking load only their own spaces ([#1897](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1897)) | [Accessible Parking](https://dev.aggiemap.tamu.edu/parking/accessible-parking), [Motorcycle Parking](https://dev.aggiemap.tamu.edu/parking/motorcycle-parking) | The same blue accessible and pink motorcycle symbols in the same places as before, drawn within about half a minute rather than minutes. On Motorcycle Parking, clicking a space still opens its popup. In the network panel, the layer's queries carry `spc_type IN ('H/C', 'Visitor H/C')` or `Spc_Type = 'M/C'` |
 | Football Tailgating game-day notice ([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)) | [The main map](https://dev.aggiemap.tamu.edu/map/d) in a private window, in the week before a home game | Two notices, **Football Transportation Map Available** then **Football Tailgating Map Available**; clicking the second opens the Tailgating map |
 | GIS Day: sponsorship levels back at last year's prices ([#1821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1821)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [the sponsor page](https://txgisday.org/sponsors/tamu) | Point $256, Line $512, Polygon $1,024, Raster $2,048, each level's perks as before |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
