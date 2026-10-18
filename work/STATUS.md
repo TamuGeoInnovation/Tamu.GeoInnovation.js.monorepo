@@ -3,14 +3,15 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **5:40 PM Central, 18 October 2026**.
+Last written **5:40 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
+commit timestamp, not estimated.
 
 **Last batch done: 8.** Batches 5 and 8 are both finished. **Batch 9 is held by the director.** Watching the branch.
 
 ## Running now
 
 **Batch 10 (#1849): dev's screenshot set as production renders it, for the preview comparison.** Started
-**5:50 PM Central, 18 October**.
+**5:38 PM Central, 18 October**.
 
 | | |
 | --- | --- |
@@ -48,7 +49,7 @@ Release-482**: a legend fix (#1871) goes into this release, so the final test ru
 which the director will name here. So this machine has **not** gone on to the full tier, the `--as production`
 capture or the comparison. It is watching the branch for that release, with nothing else running.
 
-Azure at 5:32 PM Central:
+Azure at 5:30 PM Central:
 
 | Release | Build | Commit | Dev stage | Production stage |
 | --- | --- | --- | --- | --- |
