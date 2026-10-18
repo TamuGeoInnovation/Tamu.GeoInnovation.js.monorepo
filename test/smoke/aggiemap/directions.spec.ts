@@ -86,3 +86,45 @@ test.describe(`directions ${AVAILABLE ? 'offered' : 'hidden'} while routing is $
     });
   }
 });
+
+/**
+ * The trip planner itself is offered at its address only where directions are.
+ *
+ * Its markup was commented out in March 2026 (#683) for a "routing services are undergoing maintenance"
+ * message on every host. It is back on development hosts, so its components can be tested, and the
+ * message stays everywhere else. The tab is hidden on production (the checks above), but the address
+ * still opens the panel, and a shared link is how a visitor would reach it. Checked both ways, and on a
+ * development host also with `?as=production` (#1722), which must hide it as production does.
+ */
+test.describe(`the trip planner ${AVAILABLE ? 'is offered' : 'is not offered'} at its address`, () => {
+  const PLANNER = 'tamu-gisc-sidebar-trip-planner';
+  const STOPS = `${PLANNER} tamu-gisc-search input`;
+  const MAINTENANCE = `${PLANNER} .maintenance-message`;
+
+  async function expectHidden(page: Page, address: string): Promise<void> {
+    await openMap(page, address);
+
+    await expect(page.locator(MAINTENANCE), `${address} does not say routing is unavailable`).toBeVisible();
+    await expect(page.locator(STOPS), `${address} offers the trip planner's from and to boxes`).toHaveCount(0);
+  }
+
+  if (AVAILABLE) {
+    test('/map/d/trip shows the from and to boxes', async ({ page }) => {
+      await openMap(page, '/map/d/trip');
+
+      // A trip has at least two points, so the planner starts with two empty boxes.
+      await expect(page.locator(STOPS), '/map/d/trip did not show the from and to boxes').toHaveCount(2, {
+        timeout: 30_000
+      });
+      await expect(page.locator(MAINTENANCE), '/map/d/trip still shows the maintenance message').toHaveCount(0);
+    });
+
+    test('/map/d/trip?as=production shows the maintenance message instead', async ({ page }) => {
+      await expectHidden(page, '/map/d/trip?as=production');
+    });
+  } else {
+    test('/map/d/trip shows the maintenance message instead of the from and to boxes', async ({ page }) => {
+      await expectHidden(page, '/map/d/trip');
+    });
+  }
+});

@@ -65,6 +65,10 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
   },
   { paths: /^libs\/maps\/feature\/trip-planner\//, specs: ['directions.spec.ts', 'map-coordinates.spec.ts'] },
   {
+    paths: /^libs\/aggiemap\/ngx\/ui\/.*\/(sidebar-trip-planner|trip-planner-top)\//,
+    specs: ['directions.spec.ts', 'map-coordinates.spec.ts']
+  },
+  {
     paths: /^libs\/maps\/(feature\/(coordinates|accessibility)\/|esri\/src\/lib\/geographic\.ts$)/,
     specs: ['map-coordinates.spec.ts']
   },
