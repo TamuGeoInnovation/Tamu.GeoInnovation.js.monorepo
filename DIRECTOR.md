@@ -27,6 +27,8 @@ and does its own job itself.
 - Watches the branch and reads every listener's `STATUS.md` and reports as they land, so he relays nothing.
 - Before asking him anything or writing a batch, reads every listener's `STATUS.md`, including **Told directly**,
   and never queues what a listener is already running.
+- Applies the same rule to itself: work a listener is better placed for goes into that listener's batch, never
+  done by the director on the side.
 
 ## Every listener
 - Watches the branch with one background command that exits when it changes, for example
@@ -39,6 +41,9 @@ and does its own job itself.
   ends with a one-line status. Questions go in its report under **Questions for the director**, with options and a
   recommendation.
 - Files issues **without a priority**; its report suggests one, and the director asks.
+- Records ideas, possible work and things noticed under **Findings** in its `STATUS.md`. A finding is never a
+  request and is never acted on until a batch asks for it; the director reads them and brings any worth doing
+  to the maintainer. Batches not reached yet go under **Queued**, never mixed with findings.
 - If the maintainer does tell it something, it does only that, and records it at once in its `STATUS.md` under
   **Told directly**, so the director never asks him again.
 
