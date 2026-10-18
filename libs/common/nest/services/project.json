@@ -7,14 +7,9 @@
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/common/nest/services"],
-      "options": {
-        "jestConfig": "libs/common/nest/services/jest.config.ts"
-      }
+      "outputs": [
+        "{options.outputFile}"
+      ]
     }
   }
 }
