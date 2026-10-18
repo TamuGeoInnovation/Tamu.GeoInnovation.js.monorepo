@@ -64,6 +64,10 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
     specs: ['popup.spec.ts', 'directions.spec.ts', 'search-sources.spec.ts']
   },
   { paths: /^libs\/maps\/feature\/trip-planner\//, specs: ['directions.spec.ts'] },
+  {
+    paths: /^libs\/maps\/(feature\/(coordinates|accessibility)\/|esri\/src\/lib\/geographic\.ts$)/,
+    specs: ['map-coordinates.spec.ts']
+  },
   { paths: /^libs\/maps\/feature\/(legend|layer-list)\//, specs: ['legend.spec.ts'] },
   { paths: /^libs\/ui-kits\/ngx\/search\//, specs: ['search.spec.ts', 'search-sources.spec.ts'] },
   { paths: /^libs\/maps\/feature\/perspective\//, specs: ['perspective.spec.ts'] },

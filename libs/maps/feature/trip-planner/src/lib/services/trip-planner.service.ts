@@ -41,7 +41,7 @@ import { minBy, pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapServiceInstance, toGeographic } from '@tamu-gisc/maps/esri';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { SearchService, SearchResult, SearchResultItem } from '@tamu-gisc/ui-kits/ngx/search';
 import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common/ngx/settings';
@@ -372,19 +372,22 @@ export class TripPlannerService implements OnDestroy {
 
         // Allow click coordinates only when on the trip planner route
         if (this.router.url.includes('trip')) {
-          this.mapService.featuresIntersectingPoint(layer, event.mapPoint).then((res) => {
+          this.mapService.featuresIntersectingPoint(layer, event.mapPoint).then(async (res) => {
+            // Latitude and longitude, which a view in a projected reference does not give (#1875).
+            const { latitude, longitude } = await toGeographic(event.mapPoint);
+
             // If the query returns a feature in the value use the first item in that list
             if (res.features.length > 0) {
               this.setStops([
                 new TripPoint({
                   source: 'map-event',
                   originAttributes: res.features[0].attributes,
-                  originGeometry: { latitude: event.mapPoint.latitude, longitude: event.mapPoint.longitude },
+                  originGeometry: { latitude, longitude },
                   originParameters: {
                     type: 'map-event',
                     value: {
-                      latitude: event.mapPoint.latitude,
-                      longitude: event.mapPoint.longitude
+                      latitude,
+                      longitude
                     }
                   }
                 })
@@ -394,12 +397,12 @@ export class TripPlannerService implements OnDestroy {
               this.setStops([
                 new TripPoint({
                   source: 'map-event',
-                  originGeometry: { latitude: event.mapPoint.latitude, longitude: event.mapPoint.longitude },
+                  originGeometry: { latitude, longitude },
                   originParameters: {
                     type: 'map-event',
                     value: {
-                      latitude: event.mapPoint.latitude,
-                      longitude: event.mapPoint.longitude
+                      latitude,
+                      longitude
                     }
                   }
                 })

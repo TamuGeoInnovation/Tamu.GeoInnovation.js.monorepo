@@ -119,6 +119,22 @@ autocomplete component, which All Maps is the only user of today ([#1868](https:
 | ![Searching Campus Main Parking on All Maps lists it](../screenshots/1868-all-maps-search/before-development-result-listed.png) | |
 | ![After clicking the result: still on All Maps, the list gone, the text left in the box](../screenshots/1868-all-maps-search/before-development-after-choosing.png) | ![After clicking the result: Campus Main Parking opens (a local build of the fix)](../screenshots/1868-all-maps-search/after-local-build-map-opened.png) |
 
+### Main map in 2D on dev: a click shows its coordinates, and the viewfinder lists buildings
+
+On dev, the main map in 2D did not show the latitude and longitude of a click, bottom left, and logged
+`Cannot read properties of null (reading 'toFixed')` instead. Moving the map with the arrow keys showed the
+viewfinder with no buildings listed. Dev's 2D campus basemap is in Texas Centric (wkid 32139), and ArcGIS
+gives a point's latitude and longitude only in a geographic or Web Mercator reference, so both read null
+there. A click's position is now projected to latitude and longitude, and the viewfinder asks for the
+buildings in the map's own reference, which needs no latitude at all. A click in directions, which sets a
+stop at the point clicked, read the same null latitude, and is projected the same way. 3D and production,
+whose basemaps are not in Texas Centric, were not affected ([#1875](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1875)).
+
+| Before | After |
+| --- | --- |
+| ![A click on dev's main map: no coordinates bottom left](../screenshots/1875-2d-click-coordinates/before-click-dev.png) | ![The same click on a local build of the fix: latitude and longitude bottom left](../screenshots/1875-2d-click-coordinates/after-click-local.png) |
+| ![The arrow keys on dev's main map: no buildings listed](../screenshots/1875-2d-click-coordinates/before-viewfinder-dev.png) | ![The same on a local build of the fix: the viewfinder lists the buildings under it](../screenshots/1875-2d-click-coordinates/after-viewfinder-local.png) |
+
 ### Map search works with an apostrophe or a percent sign
 
 Searching for `Cain '51` found nothing, on every map: the apostrophe ended the query's text early, and
@@ -643,6 +659,7 @@ dated notes as what was tested, and this table empties.
 | Maps run ArcGIS 5.0 ([#1859](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1859)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d), [Gameday Parking](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d), [the main map on a phone](https://dev.aggiemap.tamu.edu/map/m) | Every map draws the same layers as before, with the same zoom, locate and compass buttons, legend, layer list and basemap panels; no "Powered by Esri" bar across the bottom of the map; the basemap panel's spinner stops once the map has drawn. In the network panel, every `js.arcgis.com` request is under `/5.0.19/` |
 | Map search with an apostrophe or a percent sign ([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)) | [dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu), then [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Search `Cain '51`: James J. Cain '51 Building is listed. Search `O'` or `Aggie's`: no error, results or "No results found". On Football Tailgating, search `%`: "No results found", not every tent. Ordinary searches still work: `MSC`, `O12`, `Creamery` |
 | All Maps: choosing a search result opens the map ([#1868](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1868)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | Type `Campus Main Parking` in Search Maps and click the result: Campus Main Parking opens. Arrow down and Enter does the same |
+| Main map in 2D: click coordinates and the viewfinder ([#1875](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1875)) | [/map/d](https://dev.aggiemap.tamu.edu/map/d) | In 2D, click the map: its latitude and longitude (about 30.61, -96.34) show bottom left, and the browser console has no `toFixed` error. Then press an arrow key: the box in the middle of the map lists the buildings under it, numbered |
 | Football Tailgating game-day notice ([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)) | [The main map](https://dev.aggiemap.tamu.edu/map/d) in a private window, in the week before a home game | Two notices, **Football Transportation Map Available** then **Football Tailgating Map Available**; clicking the second opens the Tailgating map |
 | GIS Day: sponsorship levels back at last year's prices ([#1821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1821)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [the sponsor page](https://txgisday.org/sponsors/tamu) | Point $256, Line $512, Polygon $1,024, Raster $2,048, each level's perks as before |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
