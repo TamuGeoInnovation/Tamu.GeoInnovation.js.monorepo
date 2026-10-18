@@ -7,7 +7,7 @@
     "useDefineForClassFields": false,
     "moduleResolution": "bundler"
   },
-  "files": ["src/main.ts", "src/polyfills.ts"],
+  "files": ["src/main.ts"],
   "exclude": ["jest.config.ts"],
   "angularCompilerOptions": {
     "strictTemplates": false

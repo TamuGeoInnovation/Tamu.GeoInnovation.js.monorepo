@@ -1,4 +1,4 @@
-import { enableProdMode, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
+import { enableProdMode, provideZonelessChangeDetection, importProvidersFrom } from '@angular/core';
 
 import * as WebFont from 'webfontloader';
 
@@ -34,10 +34,11 @@ WebFont.load({
 
 bootstrapApplication(AppComponent, {
   providers: [
-    // Zone.js still starts change detection: AggieMap's components are OnPush (#1673), but going
-    // zoneless is its own step. Without this, bootstrapApplication runs zoneless since Angular 21
-    // (#1563, #1478).
-    provideZoneChangeDetection(),
+    // No Zone.js (#1478): Angular checks a view only when a signal it reads changes, an input or a
+    // template event marks it, or markForCheck is called, so ArcGIS's many events no longer each start
+    // a pass. Zoneless is already Angular 21's default; it is named here so nobody reads its absence
+    // as an oversight. The other apps still load zone.js and keep provideZoneChangeDetection().
+    provideZonelessChangeDetection(),
     importProvidersFrom(Angulartics2Module.forRoot(), BrowserModule, BrowserAnimationsModule),
     provideRouter(aggiemapRoutes),
     { provide: env, useValue: environment },
