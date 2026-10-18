@@ -12,7 +12,7 @@ describe('SubmissionReviewListComponent', () => {
 
   beforeEach(async () => {
     mockModalService = {
-      open: jest.fn()
+      open: jest.fn().mockReturnValue(of(undefined))
     } as unknown as jest.Mocked<ModalService>;
 
     await TestBed.configureTestingModule({

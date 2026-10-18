@@ -7,8 +7,8 @@
   </div>
 </form>
 
-@if ((formModel.get('fields').value.length > 0)) {
-<form [formGroup]="formModel" (submit)="saveForm()">
+@if (fields().length > 0) {
+<form [formGroup]="formModel()" (submit)="saveForm()">
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-title">Basic</div>
@@ -24,7 +24,7 @@
       <div class="form-section-title">Questions</div>
     </div>
     <div class="form-section-body">
-      @for (c of formModel.controls['fields']['controls']; track c) {
+      @for (c of fields(); track c) {
       <div class="form-collection row pad-top">
         <tamu-gisc-design-question [control]="c"></tamu-gisc-design-question>
       </div>

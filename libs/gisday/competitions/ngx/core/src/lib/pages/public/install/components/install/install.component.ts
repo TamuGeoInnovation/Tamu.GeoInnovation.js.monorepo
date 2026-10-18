@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { BehaviorSubject } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
@@ -14,7 +14,6 @@ import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
   selector: 'tamu-gisc-install',
   templateUrl: './install.component.html',
   styleUrls: ['./install.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent, AsyncPipe]
 })
 export class InstallComponent implements OnInit {
