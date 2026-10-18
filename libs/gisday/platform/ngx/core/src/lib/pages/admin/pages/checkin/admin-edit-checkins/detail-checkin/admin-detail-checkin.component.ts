@@ -15,6 +15,8 @@ export class AdminDetailCheckinComponent extends BaseAdminDetailComponent<CheckI
   protected readonly entityService = inject(CheckinService);
 
   public ngOnInit() {
+    super.ngOnInit();
+
     this.form = formExporter();
   }
 }

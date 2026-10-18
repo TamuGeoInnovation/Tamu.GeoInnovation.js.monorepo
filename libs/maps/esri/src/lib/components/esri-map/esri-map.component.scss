@@ -5,7 +5,7 @@
 //  ==========================================================================
 // Esri's widget stylesheet, from the same CDN path as the SDK's other assets. Its version moves with
 // `@arcgis/core`'s; see esri-runtime.ts (#1844).
-@import 'https://js.arcgis.com/5.0.19/@arcgis/core/assets/esri/themes/light/main.css';
+@import 'https://js.arcgis.com/5.1.27/@arcgis/core/assets/esri/themes/light/main.css';
 
 :host {
   & > div {

@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil, switchMap, pluck } from 'rxjs/operators';
 
@@ -21,17 +20,12 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
   private tripPlanner = inject(TripPlannerService);
   private analytics = inject(Angulartics2);
   private router = inject(Router);
-  private location = inject(Location);
   private notificationService = inject(NotificationService);
 
   public result: TripResult;
 
   public description: string;
   public email: string;
-
-  public submitted: boolean;
-
-  private _lastRoute: string;
 
   private _destroy$: Subject<boolean> = new Subject();
 
