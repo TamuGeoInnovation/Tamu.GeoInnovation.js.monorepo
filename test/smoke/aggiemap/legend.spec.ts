@@ -186,19 +186,35 @@ test.describe('legend', () => {
   });
 
   test('a layer that loads hidden is listed once it is switched on in the Layers list', async ({ page }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(300_000);
     await blockAnalytics(page);
     await page.goto(MAIN_MAP);
+
+    // Switch layers on once the map has finished, as a visitor would. While layers are still loading,
+    // Esri's list keeps changing, and a layer switched on then was listed by the old legend too. The main
+    // map took about a minute to finish drawing on a local dev server.
+    await page.waitForFunction(
+      () => {
+        const probe = (window as unknown as Record<string, { ready?: boolean; drawing?: boolean } | undefined>)[
+          '__tamuGiscMapProbe'
+        ];
+
+        return probe?.ready === true && probe.drawing === false;
+      },
+      null,
+      { timeout: 180_000 }
+    );
 
     for (const title of MAIN_MAP_LAYERS) {
       const exactly = new RegExp(`^\\s*${title}\\s*$`);
       const listItem = page
         .locator('tamu-gisc-layer-list-item .layer-item')
         .filter({ has: page.locator('p', { hasText: exactly }) });
+      // The main map's legend gives a layer no title of its own: one symbol is labelled with the layer's
+      // title, and several are headed by it.
       const entrySymbol = page
-        .locator('tamu-gisc-legend tamu-gisc-legend-collection')
-        .filter({ has: page.locator('.collection-group-title-text', { hasText: exactly }) })
-        .locator('.collection-group-content .legend-info')
+        .locator('tamu-gisc-legend tamu-gisc-legend-collection', { hasText: title })
+        .locator('.legend-info')
         .first();
 
       await expect(listItem, `the Layers list never listed ${title}`).toBeVisible({ timeout: 90_000 });
@@ -208,7 +224,9 @@ test.describe('legend', () => {
       await listItem.locator('p').click();
 
       await expect(listItem, `the Layers list does not show ${title} on`).toHaveClass(/\bvisible\b/);
-      await expect(entrySymbol, `the legend never listed ${title} after it was switched on`).toBeVisible({ timeout: 60_000 });
+      await expect(entrySymbol, `the legend never listed ${title} after it was switched on`).toBeVisible({
+        timeout: 60_000
+      });
     }
   });
 });

@@ -82,7 +82,10 @@ describe('LegendService', () => {
     TestBed.configureTestingModule({
       providers: [
         LegendService,
-        { provide: EsriModuleProviderService, useValue: { require: () => Promise.resolve([FakeLegendViewModel, reactiveUtils]) } },
+        {
+          provide: EsriModuleProviderService,
+          useValue: { require: () => Promise.resolve([FakeLegendViewModel, reactiveUtils]) }
+        },
         { provide: EsriMapService, useValue: { store: new BehaviorSubject({ view: {} }) } },
         { provide: EnvironmentService, useValue: {} }
       ]
