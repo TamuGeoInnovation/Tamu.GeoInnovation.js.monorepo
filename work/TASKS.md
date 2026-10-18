@@ -97,6 +97,9 @@ Angular 22.2). So compare **now**, and anything significant is found hours befor
 production serves now; there should be no significant differences, and any there are, he wants to see.
 
 1. **#1849: clear Release-482 (build 20261018.33, `70f0e424b`) for production**
+   - **Still held (the maintainer, about 6 PM): the final build will carry #1912 (the trip planner on dev) and #1923
+     (Angular 22.2.3) as well, about 1.5 hours away. The release building now (`af33dc01e`) is not the final one:
+     do nothing with it. The director names the final release here.**
    - **Held (the maintainer, about 5:20 PM): do not start on Release-482.** A legend fix (#1871) goes into this
      release, so batch 9 runs on the release that carries it. The director will name that release here; until then,
      after batch 8, wait.
