@@ -7,6 +7,7 @@ import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 
 import { MapComponent } from './map.component';
 
@@ -31,7 +32,8 @@ describe('Aggiemap MapComponent (beta flow)', () => {
         { provide: EnvironmentService, useValue: {} },
         { provide: ModalService, useValue: mockModalService },
         { provide: SettingsService, useValue: mockSettingsService },
-        { provide: TestingService, useValue: {} }
+        { provide: TestingService, useValue: {} },
+        { provide: BasemapGalleryService, useValue: { applyNearmapCaptureFromUrl: jest.fn() } }
       ]
     }).runInInjectionContext(() => new MapComponent());
   });

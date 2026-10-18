@@ -5,7 +5,7 @@ import { map, Observable, switchMap } from 'rxjs';
 
 import { SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
-import { SpeakerAvatarComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { SpeakerAvatarComponent, SpeakerClassBannerComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
@@ -15,7 +15,7 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   templateUrl: './people-details.component.html',
   styleUrls: ['./people-details.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [SpeakerAvatarComponent, RouterLink, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, MarkdownParsePipe]
+  imports: [SpeakerAvatarComponent, SpeakerClassBannerComponent, RouterLink, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, MarkdownParsePipe]
 })
 export class PeopleDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);

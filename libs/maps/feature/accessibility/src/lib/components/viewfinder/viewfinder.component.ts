@@ -144,7 +144,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
               });
 
             // Use module provider to get polygon class object
-            this.mp.require(['Polygon']).then(([Polygon]: [esri.PolygonConstructor]) => {
+            this.mp.require(['Polygon']).then(([Polygon]: [typeof esri.Polygon]) => {
               // Create a polygon that will be used to query the feature layer to get intersecting features
               const polygon = new Polygon({
                 rings: [mapCoords]

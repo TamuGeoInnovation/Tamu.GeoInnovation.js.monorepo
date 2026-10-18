@@ -3,32 +3,37 @@
 <tamu-gisc-tile-navigation [toggle]="mobileNavToggle" (closed)="mobileNavToggle.next(false)">
   <tamu-gisc-tile>
     <tamu-gisc-tile-icon><div class="material-icons">widgets</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title tamuGiscTileLink location="sessions">Sessions</tamu-gisc-tile-title>
+    <tamu-gisc-tile-title tamuGiscTileLink [location]="('sessions' | seasonLink : (viewedYear$ | async)).join('/')">Sessions</tamu-gisc-tile-title>
   </tamu-gisc-tile>
 
   <tamu-gisc-tile>
     <tamu-gisc-tile-icon><div class="material-icons">people</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title tamuGiscTileLink location="presenters">Presenters</tamu-gisc-tile-title>
+    <tamu-gisc-tile-title tamuGiscTileLink [location]="('presenters' | seasonLink : (viewedYear$ | async)).join('/')">Presenters</tamu-gisc-tile-title>
   </tamu-gisc-tile>
 
+  @if ('competitions' | siteHas) {
   <tamu-gisc-tile>
     <tamu-gisc-tile-icon><div class="material-icons">workspace_premium</div></tamu-gisc-tile-icon>
     <tamu-gisc-tile-title tamuGiscTileLink location="competitions">Competitions</tamu-gisc-tile-title>
   </tamu-gisc-tile>
-
+  } @if ('faq' | siteHas) {
   <tamu-gisc-tile>
     <tamu-gisc-tile-icon><div class="material-icons">question_answer</div></tamu-gisc-tile-icon>
     <tamu-gisc-tile-title tamuGiscTileLink location="faq">FAQs</tamu-gisc-tile-title>
   </tamu-gisc-tile>
+  }
 
   <tamu-gisc-tile>
     <tamu-gisc-tile-icon><div class="material-icons">info</div></tamu-gisc-tile-icon>
     <tamu-gisc-tile-title>About</tamu-gisc-tile-title>
     <tamu-gisc-tile-submenu *giscTileSubmenu>
-      <p tamuGiscTileLink location="/about">About TxGIS Day</p>
+      <p tamuGiscTileLink location="/about">About {{ site.name }}</p>
+      @if ('sponsors' | siteHas) {
       <p tamuGiscTileLink location="/sponsors">Sponsors</p>
+      } @if ('tamu' | siteHas) {
       <p tamuGiscTileLink location="/about" fragment="student-volunteer">Volunteer</p>
       <p tamuGiscTileLink location="http://www.houstonareagisday.org/">High School Portal</p>
+      }
     </tamu-gisc-tile-submenu>
   </tamu-gisc-tile>
 
@@ -43,8 +48,11 @@
     <tamu-gisc-tile-title>Account</tamu-gisc-tile-title>
     <tamu-gisc-tile-submenu *giscTileSubmenu>
       <p tamuGiscTileLink location="/account/details">Profile</p>
+      @if ('classes' | siteHas) {
       <p tamuGiscTileLink location="/account/classes">Classes</p>
+      } @if ('checkIns' | siteHas) {
       <p tamuGiscTileLink location="/account/checkins">Checkins</p>
+      }
       <p (click)="logout()">Logout</p>
     </tamu-gisc-tile-submenu>
   </tamu-gisc-tile>
@@ -57,9 +65,9 @@
       <a class="logo-container" [routerLink]="['/']">
         <h1 class="site-logo">
           <span class="site-logo-image-container">
-            <img src="assets/images/2022-TIN-sq-1080px.png" height="50px" width="50px" />
+            <img [src]="site.logo" height="50px" width="50px" />
           </span>
-          TxGIS Day @if ((activeSeason$ | async)?.year; as year) {
+          {{ site.name }} @if ((activeSeason$ | async)?.year; as year) {
           <span>{{year}}</span>
           }
         </h1>
@@ -93,8 +101,7 @@
             }
           </ul>
         </ul>
-        }
-
+        } @if ('sponsors' | siteHas) {
         <ul class="dropdown">
           <a [routerLink]="['/sponsors']" id="linkSponsors">Sponsor <span class="material-icons">arrow_drop_down</span></a>
 
@@ -104,8 +111,7 @@
             <li><a [routerLink]="['/sponsors']" fragment="logistics">Logistics</a></li>
           </ul>
         </ul>
-
-        @if ((loggedIn$ | async)) {
+        } @if ((loggedIn$ | async)) {
         <ul class="dropdown">
           <a [routerLink]="['/account/details']" id="linkAccount">Account <span class="material-icons">arrow_drop_down</span></a>
           <ul>
@@ -128,10 +134,11 @@
 
       <div class="primary">
         <ul>
-          <a [routerLink]="['/sessions']" id="linkSessions">Sessions</a>
-          <a [routerLink]="['/presenters']" id="linkPresenters">Presenters</a>
+          <a [routerLink]="'sessions' | seasonLink : (viewedYear$ | async)" id="linkSessions">Sessions</a>
+          <a [routerLink]="'presenters' | seasonLink : (viewedYear$ | async)" id="linkPresenters">Presenters</a>
         </ul>
 
+        @if ('competitions' | siteHas) {
         <ul class="dropdown">
           <a [routerLink]="['/competitions']" id="linkCompetitions">Competitions <span class="material-icons">arrow_drop_down</span></a>
 
@@ -143,18 +150,21 @@
             <li><a [routerLink]="['/competitions/posters']">Poster Competition</a></li>
           </ul>
         </ul>
-
+        } @if ('faq' | siteHas) {
         <ul>
           <a [routerLink]="['/faq']" id="linkFAQ">FAQ</a>
         </ul>
+        }
 
         <ul class="dropdown">
-          <a [routerLink]="['/about']" id="linkAbout">About <span class="material-icons">arrow_drop_down</span></a>
+          <a [routerLink]="['/about']" id="linkAbout">About @if ('tamu' | siteHas) {<span class="material-icons">arrow_drop_down</span>}</a>
+          @if ('tamu' | siteHas) {
           <ul>
             <li><a [routerLink]="['/about']" fragment="committee">Organizing Committee</a></li>
             <li><a [routerLink]="['/about']" fragment="student-volunteer">Volunteer Opportunities</a></li>
             <li><a [routerLink]="['/about']" fragment="resume-bank">Resume Bank</a></li>
           </ul>
+          }
         </ul>
         <ul>
           <a [routerLink]="['/contact']" id="linkContact">Contact</a>

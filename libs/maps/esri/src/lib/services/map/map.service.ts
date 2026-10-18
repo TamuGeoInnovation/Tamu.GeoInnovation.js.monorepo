@@ -19,7 +19,9 @@ import { EsriModuleProviderService } from '../module-provider/module-provider.se
 import { LayerSourcesService } from '../layer-sources/layer-sources.service';
 import { registerMapProbe } from './map-probe';
 import { orderHitsForPopup, SELECTION_LAYER_ID } from './hit-order';
+import { keepSelectionLayerOnTop } from './selection-layer';
 import { PopupComponentReference } from '../../popup-reference';
+import { useZoomComponent } from '../../map-controls';
 import {
   declaresOwnRenderer,
   PortalItemData,
@@ -27,6 +29,7 @@ import {
   recordSymbologySource,
   rendererForLayer
 } from './portal-symbology';
+import { BaseLayerConstructors, makeBaseLayer } from './basemap-layers';
 
 import esri = __esri;
 
@@ -67,6 +70,12 @@ export class EsriMapService {
    */
   private _portalItemData = new Map<string, Promise<PortalItemData | null>>();
 
+  /**
+   * The layers being made and not yet on the map, keyed by source id, so two callers asking for the same
+   * layer at once get one layer rather than two (#1849). See `findLayerOrCreateFromSource`.
+   */
+  private _creating = new Map<string, Promise<esri.Layer | Array<esri.Layer>>>();
+
   public hitTest: Observable<HitTestSnapshot> = this._hitTest.asObservable();
 
   // Exposed observable that will be responsible for emitting values to subscribers
@@ -85,31 +94,33 @@ export class EsriMapService {
     // If properties specifies 2d mode, load 2d map view.
     if (viewProperties.mode === '2d') {
       this.moduleProvider
-        .require(['Map', 'MapView', 'TileLayer', 'VectorTileLayer', 'Basemap'])
+        .require(['Map', 'MapView', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap'])
         .then(
-          ([Map, MapView, TileLayer, VectorTileLayer, Basemap]: [
-            esri.MapConstructor,
-            esri.MapViewConstructor,
-            esri.TileLayerConstructor,
-            esri.VectorTileLayerConstructor,
-            esri.BasemapConstructor
+          ([Map, MapView, TileLayer, VectorTileLayer, WMSLayer, Basemap]: [
+            typeof esri.Map,
+            typeof esri.MapView,
+            typeof esri.TileLayer,
+            typeof esri.VectorTileLayer,
+            typeof esri.WMSLayer,
+            typeof esri.Basemap
           ]) => {
-            this.next(mapProperties, viewProperties, Map, MapView, TileLayer, VectorTileLayer, Basemap);
+            this.next(mapProperties, viewProperties, Map, MapView, { TileLayer, VectorTileLayer, WMSLayer }, Basemap);
           }
         );
     } else if (viewProperties.mode === '3d') {
       // If properties specifies 3d mode, load 3d scene view.
       this.moduleProvider
-        .require(['Map', 'SceneView', 'TileLayer', 'VectorTileLayer', 'Basemap'])
+        .require(['Map', 'SceneView', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap'])
         .then(
-          ([Map, MapView, TileLayer, VectorTileLayer, Basemap]: [
-            esri.MapConstructor,
-            esri.SceneViewConstructor,
-            esri.TileLayerConstructor,
-            esri.VectorTileLayerConstructor,
-            esri.BasemapConstructor
+          ([Map, MapView, TileLayer, VectorTileLayer, WMSLayer, Basemap]: [
+            typeof esri.Map,
+            typeof esri.SceneView,
+            typeof esri.TileLayer,
+            typeof esri.VectorTileLayer,
+            typeof esri.WMSLayer,
+            typeof esri.Basemap
           ]) => {
-            this.next(mapProperties, viewProperties, Map, MapView, TileLayer, VectorTileLayer, Basemap);
+            this.next(mapProperties, viewProperties, Map, MapView, { TileLayer, VectorTileLayer, WMSLayer }, Basemap);
           }
         );
     }
@@ -120,28 +131,28 @@ export class EsriMapService {
    *
    * @param {MapProperties} Properties
    * @param {MapViewProperties} ViewProperties
-   * @param {esri.MapConstructor} Map
-   * @param {esri.MapViewConstructor} MapView MapView or SceneView depending on mode
-   * @param {esri.TileLayerConstructor} TileLayer
-   * @param {esri.VectorTileLayerConstructor} VectorTileLayer
-   * @param {esri.BasemapConstructor} Basemap
+   * @param {typeof esri.Map} Map
+   * @param {typeof esri.MapView} MapView MapView or SceneView depending on mode
+   * @param {BaseLayerConstructors} layers The classes a basemap's base layers are made from
+   * @param {typeof esri.Basemap} Basemap
    */
   private async next(
     Properties: MapProperties,
     ViewProps: ViewProperties,
-    Map: esri.MapConstructor,
-    MapView: esri.MapViewConstructor | esri.SceneViewConstructor,
-    TileLayer: esri.TileLayerConstructor,
-    VectorTileLayer: esri.VectorTileLayerConstructor,
-    Basemap: esri.BasemapConstructor
+    Map: typeof esri.Map,
+    MapView: typeof esri.MapView | typeof esri.SceneView,
+    layers: BaseLayerConstructors,
+    Basemap: typeof esri.Basemap
   ): Promise<void> {
-    const basemap = this.makeBasemap(Properties, TileLayer, VectorTileLayer, Basemap);
+    const basemap = this.makeBasemap(Properties, layers, Basemap);
     this._modules.map = new Map(basemap);
+    keepSelectionLayerOnTop(this._modules.map);
 
     this._mapContainer = ViewProps.properties.container as HTMLDivElement;
 
     const props = this.makeMapView(ViewProps.properties, this._modules.map);
     this._modules.view = new MapView(props as esri.MapViewProperties & esri.SceneViewProperties);
+    useZoomComponent(this._modules.view);
 
     // Set the value of the async subject
     this._store.next({
@@ -186,14 +197,26 @@ export class EsriMapService {
     return vProps;
   }
 
-  public setView(view: esri.SceneView | esri.MapView) {
+  /**
+   * Makes `view` the map's view, in place of the current one.
+   *
+   * `place` is where the incoming view should look. Without it the outgoing view's own viewpoint is
+   * copied, which is right between two views of the same kind and wrong out of a tilted 3D scene: that
+   * viewpoint describes the scene's camera, and a 2D view given it centres on where the camera was
+   * standing, not on what it was looking at (#1724). A caller that changes perspective says where.
+   *
+   * `between` runs once the outgoing view has let go of the map and before the incoming one takes
+   * it: the moment to change something neither view could have shown the other's version of, such
+   * as a basemap a 3D scene cannot draw (#1735).
+   */
+  public setView(view: esri.SceneView | esri.MapView, place?: esri.ViewpointProperties, between?: (map: esri.Map) => void) {
     this.destroyViewClickEventHandler();
 
     // Carry the current camera/extent across the swap. A reused view otherwise re-attaches with
     // a stale viewpoint, and disconnecting/reconnecting the map below resets the camera to a
     // default extent - either way the campus-only basemap (minScale 100000) and the buildings
     // render nothing and the canvas looks blank.
-    const viewpoint = this._modules.view?.viewpoint?.clone();
+    const viewpoint = place ?? this._modules.view?.viewpoint?.clone();
 
     // Detach the outgoing view from BOTH the DOM and the shared map.
     //
@@ -225,12 +248,15 @@ export class EsriMapService {
     // swap), restore the camera, and attach it to its fresh container.
     this._modules.view = view;
     if (this._modules.map) {
+      between?.(this._modules.map);
       this._modules.view.map = this._modules.map;
     }
     if (viewpoint) {
-      this._modules.view.viewpoint = viewpoint;
+      this._modules.view.viewpoint = viewpoint as esri.Viewpoint;
     }
     this._modules.view.container = viewContainer;
+    // A view made elsewhere, such as the perspective toggle's 3D scene, gets the same zoom buttons.
+    useZoomComponent(this._modules.view);
 
     this._store.next({ ...this._store.getValue(), view: this._modules.view });
 
@@ -268,12 +294,7 @@ export class EsriMapService {
   /**
    * Makes a basemap using custom basemap options or a simple basemap string id name.
    */
-  private makeBasemap(
-    mapProperties,
-    TileLayer: esri.TileLayerConstructor,
-    VectorTileLayer: esri.VectorTileLayerConstructor,
-    Basemap: esri.BasemapConstructor
-  ): esri.MapProperties {
+  private makeBasemap(mapProperties, layers: BaseLayerConstructors, Basemap: typeof esri.Basemap): esri.MapProperties {
     if (!mapProperties) {
       throw new Error(`No map properties were provided.`);
     }
@@ -297,27 +318,7 @@ export class EsriMapService {
       }
 
       // Create Instantiate base layers depending on their type.
-      mProps.basemap.baseLayers = mProps.basemap.baseLayers.map((l) => {
-        if (!l.type) {
-          throw new Error(`Layer type is required.`);
-        }
-
-        // Remove the type property because it conflicts as a read-only property when instantiating the class.
-        const { type, ...props } = l;
-
-        if (type === `TileLayer`) {
-          return new TileLayer(props);
-        }
-
-        if (type === `VectorTileLayer`) {
-          return new VectorTileLayer(props);
-        }
-
-        // Anything else used to fall out of this map as `undefined`, which Esri only reports much
-        // later as "Cannot read properties of undefined (reading 'parent')" from deep inside
-        // Basemap.addMany - a stack trace with nothing in it pointing here. Fail where the mistake is.
-        throw new Error(`Unsupported basemap layer type '${type}'. Add a case here to support it.`);
-      });
+      mProps.basemap.baseLayers = mProps.basemap.baseLayers.map((l) => makeBaseLayer(l, layers));
 
       // Create an instance of the basemap.
       const bm = new Basemap(mProps.basemap);
@@ -403,7 +404,7 @@ export class EsriMapService {
     }
 
     if (source.type === 'feature') {
-      return this.moduleProvider.require(['FeatureLayer']).then(([FeatureLayer]: [esri.FeatureLayerConstructor]) => {
+      return this.moduleProvider.require(['FeatureLayer']).then(([FeatureLayer]: [typeof esri.FeatureLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
@@ -412,10 +413,11 @@ export class EsriMapService {
         recordSymbologySource(layer, declaresOwnRenderer(source) ? 'own' : 'service');
         this.applyLegendOverrideToLayerSymbols(layer, legendOverride);
         this.applyPortalItemSymbology(layer, source);
+        this.applyServiceLayerName(layer, (props as { title?: unknown }).title);
         return layer;
       });
     } else if (source.type === 'map-image') {
-      return this.moduleProvider.require(['MapImageLayer']).then(([ImageLayer]: [esri.MapImageLayerConstructor]) => {
+      return this.moduleProvider.require(['MapImageLayer']).then(([ImageLayer]: [typeof esri.MapImageLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
@@ -423,7 +425,7 @@ export class EsriMapService {
         return new ImageLayer(props as esri.MapImageLayerProperties);
       });
     } else if (source.type === 'scene') {
-      return this.moduleProvider.require(['SceneLayer']).then(([SceneLayer]: [esri.SceneLayerConstructor]) => {
+      return this.moduleProvider.require(['SceneLayer']).then(([SceneLayer]: [typeof esri.SceneLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
@@ -431,7 +433,7 @@ export class EsriMapService {
         return new SceneLayer(props as esri.SceneViewProperties);
       });
     } else if (source.type === 'graphics') {
-      return this.moduleProvider.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
+      return this.moduleProvider.require(['GraphicsLayer']).then(([GraphicsLayer]: [typeof esri.GraphicsLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
@@ -439,7 +441,7 @@ export class EsriMapService {
         return new GraphicsLayer(props as esri.GraphicsLayerProperties);
       });
     } else if (source.type === 'geojson') {
-      return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
+      return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [typeof esri.GeoJSONLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
@@ -451,7 +453,7 @@ export class EsriMapService {
     } else if (source.type === 'vector-tile') {
       return this.moduleProvider
         .require(['VectorTileLayer'])
-        .then(([VectorTileLayer]: [esri.VectorTileLayerConstructor]) => {
+        .then(([VectorTileLayer]: [typeof esri.VectorTileLayer]) => {
           // Delete the type property as it cannot be set on layer creation.
           delete props.type;
 
@@ -459,7 +461,7 @@ export class EsriMapService {
           return new VectorTileLayer(props as esri.VectorTileLayerProperties);
         });
     } else if (source.type === 'csv') {
-      return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
+      return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [typeof esri.CSVLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
@@ -469,7 +471,7 @@ export class EsriMapService {
         return layer;
       });
     } else if (source.type === 'group') {
-      return this.moduleProvider.require(['GroupLayer']).then(async ([GroupLayer]: [esri.GroupLayerConstructor]) => {
+      return this.moduleProvider.require(['GroupLayer']).then(async ([GroupLayer]: [typeof esri.GroupLayer]) => {
         const s: GroupLayerSourceProperties = source;
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
@@ -506,7 +508,7 @@ export class EsriMapService {
         return group;
       });
     } else if (source.type === 'unknown') {
-      return this.moduleProvider.require(['Layer']).then(async ([L]: [esri.LayerConstructor]) => {
+      return this.moduleProvider.require(['Layer']).then(async ([L]: [typeof esri.Layer]) => {
         return L.fromArcGISServerUrl({
           url: source.url
         }).then((l) => {
@@ -570,24 +572,37 @@ export class EsriMapService {
           rj(err);
         }
       });
-    } else {
-      // Generate the layer
-      return this.generateLayer(source).then((layerOrLayers) => {
+    }
+
+    // A layer is only on the map once it has been made, which takes at least one await. A second caller
+    // in that window used to make and add a second layer with the same id: the main map's set and a
+    // Football Tailgating `?tent=` link each added a selection layer, the highlight went on one of them,
+    // and the other, empty one could be the one on top (#1849). The second caller now waits for the first.
+    const pending = this._creating.get(source.id);
+
+    if (pending) {
+      return pending;
+    }
+
+    // Generate the layer
+    const created = this.generateLayer(source)
+      .then((layerOrLayers) => {
         if (layerOrLayers instanceof Array) {
           // Add layer to map
           (<esri.Map>this._modules.map).addMany(layerOrLayers, source.layerIndex ?? undefined);
-
-          // Return layer in case further manipulation is needed.
-          return layerOrLayers;
         } else {
           // Add layer to map
           (<esri.Map>this._modules.map).add(layerOrLayers, source.layerIndex ?? undefined);
-
-          // Return layer in case further manipulation is needed.
-          return layerOrLayers;
         }
-      });
-    }
+
+        // Return layer in case further manipulation is needed.
+        return layerOrLayers;
+      })
+      .finally(() => this._creating.delete(source.id));
+
+    this._creating.set(source.id, created);
+
+    return created;
   }
 
   public async resolveUnloadedLayers(args: IResolveUnloadedLayersProperties): Promise<Array<esri.Layer>> {
@@ -690,6 +705,35 @@ export class EsriMapService {
   }
 
   /**
+   * An untitled feature layer is named by its own name in the service (#1802).
+   *
+   * #1526 took the titles out of the definitions so that names would come from the services. But a
+   * layer loaded by URL with no title is named by ArcGIS "<service name> - <layer name>", and our
+   * services are the hosted `*_view` ones, so Aggie Family Parade's route read "Aggie Family Parade
+   * view - Parade Route". `sourceJSON.name` is the layer's name as its service publishes it.
+   *
+   * A title the definition chose is left alone, and a layer that fails to load keeps ArcGIS's title.
+   */
+  private applyServiceLayerName(layer: esri.FeatureLayer, title: unknown): void {
+    if (title) {
+      return;
+    }
+
+    layer
+      .when()
+      .then(() => {
+        const name = (layer as unknown as { sourceJSON?: { name?: string } }).sourceJSON?.name;
+
+        if (name) {
+          layer.title = name;
+        }
+      })
+      .catch(() => {
+        // Nothing loaded, so there is no name to take; the load failure is reported where it happens.
+      });
+  }
+
+  /**
    * One portal item's data, fetched once however many layers come from it.
    *
    * The 128 layers measured in #1497 come from 36 items, so without this the same document would be
@@ -754,18 +798,11 @@ export class EsriMapService {
       }
     };
 
-    // The renderer is typically populated by the service after the layer loads. Apply once on
-    // load, and again any time the renderer is reassigned.
-    layer
-      .when()
-      .then(() => {
-        applyToRenderer(layer.renderer);
-      })
-      .catch(() => {
-        /* swallow — the layer may fail to load for unrelated reasons */
-      });
-
-    layer.watch('renderer', (renderer: esri.Renderer) => applyToRenderer(renderer));
+    // The renderer is typically populated by the service after the layer loads. Apply to the one it
+    // has now, and again any time it is set: when the layer loads, and on any later reassignment.
+    this.moduleProvider.require(['reactiveUtils']).then(([reactiveUtils]: [esri.reactiveUtils]) => {
+      reactiveUtils.watch(() => layer.renderer, applyToRenderer, { initial: true });
+    });
   }
 
   /**
@@ -781,7 +818,7 @@ export class EsriMapService {
     if (sourcesWithAuthInfo.length > 0) {
       return this.moduleProvider
         .require(['IdentityManager', 'OAuthInfo'])
-        .then(([IdentityManager, OAuthInfo]: [esri.IdentityManager, esri.OAuthInfoConstructor]) => {
+        .then(([IdentityManager, OAuthInfo]: [esri.IdentityManager, typeof esri.OAuthInfo]) => {
           const sourcesNotYetInIdentityManager = sourcesWithAuthInfo.filter((source) => {
             const identityManagerInfo = IdentityManager.findOAuthInfo(source.auth.info.portalUrl);
 
@@ -998,9 +1035,9 @@ export class EsriMapService {
         const validGraphics = queryResults.results.reduce((collection, resultItem) => {
           if (resultItem.features?.length) {
             const primaryGraphic = resultItem.features[0];
-            const clonedGraphic = { ...primaryGraphic };
+            const clonedGraphic = { ...primaryGraphic } as esri.Graphic;
             (<{ type: unknown }>clonedGraphic.geometry).type = getGeometryType(primaryGraphic.geometry);
-            collection.push(clonedGraphic as esri.Graphic);
+            collection.push(clonedGraphic);
           }
           return collection;
         }, [] as esri.Graphic[]);
@@ -1109,54 +1146,30 @@ export class EsriMapService {
       return feature;
     });
 
-    if (this.layerExists(source.id)) {
-      // If the layer has been added before, graphics will simply be replaced
-      this.findLayerOrCreateFromSource(source)
-        .then((layerOrLayers) => {
-          const layer = layerOrLayers as esri.GraphicsLayer;
-          layer.removeAll();
-          layer.addMany(features);
-          return layer;
-        })
-        .then((layer) => {
-          if (shouldShowPopup) {
-            this._hitTest.next({ graphics: graphics, popupComponent: properties.popupComponent });
-          }
+    // Made here if the map has not made it yet. Either way it gets this selection's graphics, so a caller
+    // that is making it at the same moment cannot leave it empty (#1849).
+    this.findLayerOrCreateFromSource(source)
+      .then((layerOrLayers) => {
+        const layer = layerOrLayers as esri.GraphicsLayer;
+        layer.removeAll();
+        layer.addMany(features);
 
-          return layer.graphics.toArray();
-        })
-        .then((grfx) => {
-          const zoomPromise = requestedZoom !== undefined ? Promise.resolve(requestedZoom) : this.computeZoomLevel(grfx);
+        if (shouldShowPopup) {
+          this._hitTest.next({ graphics: graphics, popupComponent: properties.popupComponent });
+        }
 
-          zoomPromise.then((zoom) => {
-            this.zoomTo({
-              graphics: grfx,
-              zoom: zoom
-            });
+        return layer.graphics.toArray();
+      })
+      .then((grfx) => {
+        const zoomPromise = requestedZoom !== undefined ? Promise.resolve(requestedZoom) : this.computeZoomLevel(grfx);
+
+        zoomPromise.then((zoom) => {
+          this.zoomTo({
+            graphics: grfx,
+            zoom: zoom
           });
         });
-    } else {
-      // If the layer has not been added before, instantiate it with the features as a source
-      this.findLayerOrCreateFromSource(Object.assign(source, { graphics: features }))
-        .then((layerOrLayers) => {
-          const layer = layerOrLayers as esri.GraphicsLayer;
-          if (properties.shouldShowPopup) {
-            this._hitTest.next({ graphics: graphics, popupComponent: properties.popupComponent });
-          }
-
-          return layer.graphics.toArray();
-        })
-        .then((grfx) => {
-          const zoomPromise = requestedZoom !== undefined ? Promise.resolve(requestedZoom) : this.computeZoomLevel(grfx);
-
-          zoomPromise.then((zoom) => {
-            this.zoomTo({
-              graphics: grfx,
-              zoom: zoom
-            });
-          });
-        });
-    }
+      });
   }
 
   /**
@@ -1198,9 +1211,8 @@ export class EsriMapService {
    * value to determine a best-fit zoom level.
    */
   public computeZoomLevel(graphics: Array<esri.Graphic>): Promise<number> {
-    return this.moduleProvider.require(['GeometryEngine']).then(([GeometryEngine]: [esri.geometryEngine]) => {
-      const geometries: esri.Geometry[] = graphics.map((graphic) => graphic.geometry);
-      const result = GeometryEngine.union(geometries);
+    return this.moduleProvider.require(['unionOperator']).then(([unionOperator]: [esri.unionOperator]) => {
+      const result = unionOperator.executeMany(graphics.map((graphic) => graphic.geometry));
 
       if (result.extent) {
         const xMin = result.extent.xmin;
@@ -1235,7 +1247,7 @@ export interface MapConfig {
   view: ViewProperties;
 }
 
-interface MapProperties extends esri.MapProperties {
+interface MapProperties extends Omit<esri.MapProperties, 'basemap'> {
   basemap:
     | BaseMapProperties
     | (
@@ -1259,7 +1271,7 @@ interface MapProperties extends esri.MapProperties {
       );
 }
 
-export interface BaseMapProperties extends esri.BasemapProperties {
+export interface BaseMapProperties extends Omit<esri.BasemapProperties, 'baseLayers'> {
   baseLayers: [LayerProperties];
 }
 

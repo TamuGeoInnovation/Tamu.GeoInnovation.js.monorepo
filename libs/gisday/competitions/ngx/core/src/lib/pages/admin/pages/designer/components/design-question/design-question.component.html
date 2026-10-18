@@ -45,9 +45,9 @@
 
       @if (control.get('type').value === 'select') {
       <div class="question-control">
-        <p class="question-control-header">Point Discriminator</p>
-        <p>Enable this to use this question's option values as the point discriminator for leaderboard scoring. Only one question per form should be marked as the discriminator.</p>
-        <tamu-gisc-checkbox formControlName="isDiscriminator" label="Use this question as the point discriminator"></tamu-gisc-checkbox>
+        <p class="question-control-header">Type Question</p>
+        <p>Enable this to use this question's answer to tell kinds of thing apart for leaderboard scoring: a submission within 15 meters of an earlier new find counts as already submitted only when both gave the same answer here. Mark exactly one question per form.</p>
+        <tamu-gisc-checkbox formControlName="isDiscriminator" label="Use this question as the type question"></tamu-gisc-checkbox>
       </div>
       } @if (control.get('type').value === 'select') {
       <div class="question-control">
@@ -61,17 +61,13 @@
                 <div class="floating-row">
                   <div class="column">Label</div>
                   <div class="column">Value</div>
-                  <div class="column">Points</div>
                 </div>
               </div>
               <div class="floating-table-body" formArrayName="options">
-                @for (optControl of control.get('options')['controls']; track optControl; let i = $index) {
+                @for (optControl of control.get('options')['controls']; track optControl) {
                 <div class="floating-row">
                   <div>{{optControl.value.name}}</div>
                   <div>{{optControl.value.value}}</div>
-                  <div>
-                    <input type="number" min="0" step="1" [value]="optControl.value.points || 1" (input)="updateOptionPoints(i, $any($event.target).value)" style="width: 80px" />
-                  </div>
                 </div>
                 }
               </div>

@@ -2,6 +2,8 @@ import { HttpException, Injectable, InternalServerErrorException, Logger, NotFou
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
+
 import { SubmissionType, Submission } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
@@ -97,7 +99,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       throw new NotFoundException('Presentation not found');
     }
 
-    if (presentation.accountGuid !== userGuid && requestorPermissions.indexOf('read:competitions') === -1) {
+    const requestor = { sub: userGuid, permissions: requestorPermissions };
+
+    if (!isOwnerOrPermitted(requestor, presentation.accountGuid, 'read:competitions')) {
       throw new UnauthorizedException();
     }
 
@@ -140,7 +144,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       throw new NotFoundException('Submission not found.');
     }
 
-    if (existingSubmission.accountGuid !== userGuid && requestorPermissions.indexOf('update:competitions') === -1) {
+    const requestor = { sub: userGuid, permissions: requestorPermissions };
+
+    if (!isOwnerOrPermitted(requestor, existingSubmission.accountGuid, 'update:competitions')) {
       throw new UnauthorizedException();
     }
 
@@ -217,7 +223,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       throw new NotFoundException('Submission not found.');
     }
 
-    if (submission.accountGuid !== accountGuid && requestorPermissions.indexOf('delete:competitions') === -1) {
+    const requestor = { sub: accountGuid, permissions: requestorPermissions };
+
+    if (!isOwnerOrPermitted(requestor, submission.accountGuid, 'delete:competitions')) {
       throw new UnauthorizedException();
     }
 

@@ -21,10 +21,6 @@
           <span>{{ submission.questionValue }}</span>
         </div>
         <div class="info-row">
-          <label>Points:</label>
-          <span>{{ submission.pointValue }}</span>
-        </div>
-        <div class="info-row">
           <label>Status:</label>
           <span [class]="'status-badge status-' + submission.validationStatus"> {{ submission.validationStatus }} </span>
         </div>

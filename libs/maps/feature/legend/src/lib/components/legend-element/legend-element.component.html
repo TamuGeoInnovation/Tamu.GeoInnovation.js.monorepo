@@ -9,7 +9,7 @@
   <!-- Safety First layers always use the hardcoded fallback regardless of element type -->
   @if (useSportsSafetyFirstFallback()) {
   <div class="legend-info">
-    <div class="image-container">
+    <div class="image-container swatch">
       <img [src]="getSportsSafetyFirstLegendSrc()" alt="Safety First icon" />
     </div>
     <div class="label">{{ getSportsSafetyFirstLegendLabel() }}</div>
@@ -20,7 +20,7 @@
   <div class="element-group">
     @for (info of infos | async; track info) {
     <div class="legend-info" [hidden]="showGroupHeader && !expanded">
-      <div>
+      <div [class.swatch]="$any(info).type !== 'symbol-table'">
         @switch ($any(info).type) {
         <!-- Support for infos with nested infos. This case will continue to recursively iterate through n-nested infos until reaching the last node. -->
         @case ('symbol-table') {

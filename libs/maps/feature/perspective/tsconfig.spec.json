@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "../../../../dist/out-tsc",
     "module": "preserve",
-    "types": ["jest", "node", "arcgis-js-api"],
+    "types": ["jest", "node", "../../node_modules/@arcgis/core/interfaces"],
     "target": "es2016",
     "moduleResolution": "bundler",
     "isolatedModules": true

@@ -6,6 +6,7 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { commonSymbols } from './common.definitions';
 
 import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
@@ -111,7 +112,25 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         visible: true,
         listMode: 'show',
         native: {
-          outFields: ['*']
+          outFields: ['*'],
+          // The MapServer and its portal item publish no arrow symbol (the service flattens it to a plain
+          // 15-pt line); remove when the service is republished as a hosted view with the arrows (#1803).
+          renderer: {
+            type: 'unique-value',
+            field: 'name',
+            uniqueValueInfos: [
+              {
+                value: 'Fast Route',
+                label: 'Fast Route',
+                symbol: commonSymbols.GREEN_ARROW
+              },
+              {
+                value: 'Expect Delays',
+                label: 'Expect Delays',
+                symbol: commonSymbols.RED_ARROW
+              }
+            ]
+          } as unknown as esri.UniqueValueRendererProperties
         } as unknown as FeatureNative
       },
       {
@@ -188,7 +207,20 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         visible: true,
         listMode: 'show',
         native: {
-          outFields: ['*']
+          outFields: ['*'],
+          // The MapServer and its portal item publish no arrow symbol (the service flattens it to a plain
+          // 15-pt line); remove when the service is republished as a hosted view with the arrows (#1803).
+          renderer: {
+            type: 'unique-value',
+            field: 'name',
+            uniqueValueInfos: [
+              {
+                value: 'Departing - Recommended Route',
+                label: 'Departing - Recommended Route',
+                symbol: commonSymbols.GREEN_ARROW
+              }
+            ]
+          } as unknown as esri.UniqueValueRendererProperties
         } as unknown as FeatureNative
       }
     ],

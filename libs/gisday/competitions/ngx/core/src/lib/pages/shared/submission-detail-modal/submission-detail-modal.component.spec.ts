@@ -27,7 +27,6 @@ describe('SubmissionDetailModalComponent', () => {
       guid: 'test-guid',
       created: new Date(),
       questionValue: 'Test Question',
-      pointValue: 5,
       validationStatus: 'unverified',
       location: { latitude: 0, longitude: 0 },
       imageGuids: []

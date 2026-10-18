@@ -1,6 +1,5 @@
 import { Point } from '@tamu-gisc/common/types';
 
-import { loadModules } from 'esri-loader';
 import { default as tCentroid } from '@turf/centroid';
 import { polygon as tPolygon, Feature as tFeature, Point as tPoint } from '@turf/helpers';
 
@@ -166,14 +165,18 @@ export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): Autocast
 
 export class CoordinateConverter {
   private modules: {
-    point: esri.PointConstructor;
-    spatialReference: esri.SpatialReferenceConstructor;
+    point: typeof esri.Point;
+    spatialReference: typeof esri.SpatialReference;
     webMercatorUtils: esri.webMercatorUtils;
   } = { point: undefined, spatialReference: undefined, webMercatorUtils: undefined };
 
   constructor() {
-    loadModules(['esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'])
-      .then(([p, s, u]: [esri.PointConstructor, esri.SpatialReferenceConstructor, esri.webMercatorUtils]) => {
+    Promise.all([
+      import('@arcgis/core/geometry/Point.js'),
+      import('@arcgis/core/geometry/SpatialReference.js'),
+      import('@arcgis/core/geometry/support/webMercatorUtils.js')
+    ])
+      .then(([{ default: p }, { default: s }, u]) => {
         this.modules.point = p;
         this.modules.spatialReference = s;
         this.modules.webMercatorUtils = u;

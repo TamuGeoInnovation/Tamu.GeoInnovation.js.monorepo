@@ -1,4 +1,4 @@
-import { Observable, from, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
 import { Point } from '@tamu-gisc/common/types';
@@ -8,39 +8,37 @@ import { centroidFromGeometry, FeatureUnion } from '@tamu-gisc/common/utils/geom
 
 import * as gju from 'geojson-utils';
 
-/**
- * Gets user geolocation if user allows.
- */
-export function getGeolocation(asObservable?: false): Promise<GeolocationCoordinates>;
-export function getGeolocation(asObservable?: true): Observable<GeolocationCoordinates>;
-export function getGeolocation(
-  asObservable?: boolean
-): Promise<GeolocationCoordinates> | Observable<GeolocationCoordinates> {
-  const promise: Promise<GeolocationCoordinates> = new Promise((r, rj) => {
-    window.navigator.geolocation.getCurrentPosition(
-      (e) => {
-        r(e.coords);
-      },
-      (err) => {
-        rj(err);
-      }
-    );
-  });
+// Lives in the framework-free geometry library, so code that loads no map library can use it too
+// (#1766). Re-exported here so existing callers are unchanged.
+export { getGeolocation } from '@tamu-gisc/common/utils/geometry';
 
-  if (asObservable) {
-    return from(promise);
-  } else {
-    return promise;
-  }
+export interface TrackLocationOptions extends PositionOptions {
+  /**
+   * Keep watching through a timeout or a position that is not available yet, both common on a first fix,
+   * indoors or beside buildings, and error only when location access is refused (#1784). A function
+   * is also told of each failure it keeps watching through, for example to count them.
+   *
+   * Without it, the first error of any kind ends tracking.
+   */
+  keepWatching?: boolean | ((error: GeolocationPositionError) => void);
 }
+
+/**
+ * `GeolocationPositionError.PERMISSION_DENIED`, which is not defined outside a browser.
+ */
+const PERMISSION_DENIED = 1;
 
 export class TrackLocation {
   private _trackID: number;
   private _options: PositionOptions;
+  private _keepWatching: TrackLocationOptions['keepWatching'];
   private _location: BehaviorSubject<GeolocationPosition>;
 
-  constructor(options?: PositionOptions) {
-    this._options = { ...options };
+  constructor(options?: TrackLocationOptions) {
+    const { keepWatching, ...positionOptions } = { ...options };
+
+    this._options = positionOptions;
+    this._keepWatching = keepWatching;
 
     this._location = new BehaviorSubject(undefined);
   }
@@ -54,6 +52,15 @@ export class TrackLocation {
         this._location.next(position);
       },
       (error) => {
+        // The browser's watch carries on after any error but a refusal, so there is nothing to restart.
+        if (this._keepWatching && error?.code !== PERMISSION_DENIED) {
+          if (typeof this._keepWatching === 'function') {
+            this._keepWatching(error);
+          }
+
+          return;
+        }
+
         this._location.error(error);
         this.dispose();
       },

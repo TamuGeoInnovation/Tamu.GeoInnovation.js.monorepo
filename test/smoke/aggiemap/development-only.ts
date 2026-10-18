@@ -17,6 +17,47 @@ import * as path from 'path';
 export const DEVELOPMENT_ONLY_SECTIONS = ['Directions', 'Bus Routes', 'Experiments'];
 
 /**
+ * Controls drawn on the map itself that are not ready for production, each with the issue keeping it
+ * off and the address that should bring it up (#1541).
+ *
+ * `DEVELOPMENT_ONLY_SECTIONS` covers the sidebar's tabs and `DEVELOPMENT_ONLY_SERVICES` the services
+ * a page requests. A control on the map is neither: it has no tab, and the Aerial Imagery date slider
+ * asks for nothing new - it reads the captures out of the WMS capabilities the basemap already
+ * fetches - so no list here would have noticed it reaching production.
+ *
+ * `page` carries whatever brings the control up, which for the date slider is the link it writes
+ * itself: `?imagery=<date>` opens Aerial Imagery on that capture. Testing it through the link rather
+ * than through the basemap gallery asks the sharper question, because a link is the way a visitor
+ * would meet a development-only control without looking for it - someone shares one, and on
+ * production it must do nothing.
+ *
+ * When a control goes to production, take it out of this list and out of the code's gate together;
+ * the checks then require it to be present everywhere instead.
+ */
+export const DEVELOPMENT_ONLY_CONTROLS: Array<{
+  name: string;
+  selector: string;
+  page: string;
+  reason: string;
+}> = [
+  {
+    name: 'the Aerial Imagery date slider',
+    selector: '.nearmap-date-slider',
+    // One of Nearmap's captures of campus. A date with no capture would snap to the nearest, so this
+    // does not depend on the exact list staying the same.
+    page: '/map/d?imagery=2020-10-06',
+    reason: '#1541: an older capture may be billed differently from the current one, to be known first'
+  },
+  {
+    name: 'the dated raster campus basemaps in the gallery',
+    // One of them is enough: they are offered together or not at all.
+    selector: '.basemap-title:text-is("Aggieland raster, October 2026")',
+    page: '/map/d/settings',
+    reason: '#1582: production offers one campus basemap; the dated versions are for comparing on dev'
+  }
+];
+
+/**
  * GIS services with no production counterpart, each with the issue that keeps it off production and
  * the pages that request it.
  *
@@ -43,12 +84,6 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<string, { reason: string; pages: 
   '/code-maroon/feed.xml': {
     reason: '#1289: the Code Maroon proof of concept',
     pages: ['/map', '/parking/visitor-parking', '/events/tailgating']
-  },
-  // The Tailgating map's zones, published from ArcGIS Pro to TAMU's ArcGIS Online organization. The
-  // map is registered on development hosts only, so on production its link redirects to the main map.
-  'TAMU_Tailgate_Zones/FeatureServer': {
-    reason: '#1422: the Football Tailgating map prototype',
-    pages: ['/events/tailgating']
   }
 };
 

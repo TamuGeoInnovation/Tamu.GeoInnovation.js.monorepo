@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 
 import { RoleGuard } from '@tamu-gisc/common/ngx/auth';
-import { GISDayRoles } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GISDayRoles, siteFeatureGuard } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { WrapperComponent } from './wrapper.component';
 
@@ -17,11 +17,19 @@ export const wrapperRoutes: Routes = [
         loadChildren: () => import('../events/event.routes').then((m) => m.eventRoutes)
       },
       {
+        // A past year's Sessions, Presenters and Sponsors, drawn from that year's season (#1758).
+        path: 'seasons/:seasonYear',
+        canActivate: [siteFeatureGuard('pastYears')],
+        loadChildren: () => import('../seasons/seasons.routes').then((m) => m.seasonsRoutes)
+      },
+      {
         path: 'faq',
+        canActivate: [siteFeatureGuard('faq')],
         loadChildren: () => import('../faq/faq.routes').then((m) => m.faqRoutes)
       },
       {
         path: 'sponsors',
+        canActivate: [siteFeatureGuard('sponsors')],
         loadChildren: () => import('../sponsors/sponsors.routes').then((m) => m.sponsorsRoutes)
       },
       {
@@ -34,6 +42,7 @@ export const wrapperRoutes: Routes = [
       },
       {
         path: 'competitions',
+        canActivate: [siteFeatureGuard('competitions')],
         loadChildren: () => import('../competitions/competitions.routes').then((m) => m.competitionsRoutes)
       },
       {
@@ -46,6 +55,7 @@ export const wrapperRoutes: Routes = [
       },
       {
         path: 'wayback',
+        canActivate: [siteFeatureGuard('pastYears')],
         loadChildren: () => import('../wayback/wayback.routes').then((m) => m.waybackRoutes)
       },
       {

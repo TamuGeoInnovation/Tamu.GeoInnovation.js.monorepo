@@ -69,7 +69,7 @@ export interface EventConfiguration {
     followupMessage?: string;
   };
 
-  mapCenter?: Array<number>;
+  mapCenter?: [number, number];
 
   zoom?: number;
 
@@ -194,6 +194,19 @@ export interface EventConfiguration {
   referenceLayerListOrder?: 'title' | 'source';
 
   /**
+   * `campus` opens the map on the campus basemap every time - the vector tiles on development, the
+   * raster basemap on production, as `aggiemapBasemap()` gives them - rather than on the basemap the
+   * visitor last chose on any map. An explicit `?basemap=` in the link still wins.
+   *
+   * For a map that is read against campus itself, such as tailgating's tents and zones. Defaults to the
+   * visitor's saved basemap, or Topographic, when omitted.
+   *
+   * `campus-raster` does the same with the raster campus basemap, Aggieland raster, October 2026, in
+   * every environment.
+   */
+  basemap?: 'campus' | 'campus-raster';
+
+  /**
    * Layer ids that should always appear in the legend, even when they start hidden by default.
    * The legend normally only lists layers that have been visible at least once; use this to keep
    * an off-by-default layer listed (for example, the "off" half of a mutually-exclusive group).
@@ -247,6 +260,16 @@ export interface EventConfiguration {
    * When omitted, the sidebar search falls back to the application-wide search sources as usual.
    */
   searchSources?: SearchSource[];
+
+  /**
+   * When `true`, this map's searchable sources are searched alongside the application-wide ones
+   * (buildings, parking), listed first, rather than replacing them: the sidebar searches
+   * `EventSettingsService.configuredSearchSources()`. For a campus map whose own features - tailgating's
+   * tents and named areas - should be found alongside the buildings around them.
+   *
+   * Defaults to `false`, which keeps a satellite campus's search to its own data.
+   */
+  searchSourcesWithCampus?: boolean;
 
   /**
    * Which of this map's building attributes the shared building popup (`CampusBuildingPopupComponent`)
@@ -657,7 +680,6 @@ export interface DiscoverMetadata {
    * home must name that here as well.
    */
   mapTypes?: DiscoverMapType[];
-
 
   /**
    * Optional sub-category used to group parking maps into named columns (General / Business / Permit)

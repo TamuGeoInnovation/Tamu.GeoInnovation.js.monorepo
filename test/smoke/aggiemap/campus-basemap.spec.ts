@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as path from 'path';
 
 import { expect, test } from './fixtures';
 import { APP_ROOT, MANIFEST_PATH, MapManifest } from './global-setup';
@@ -32,6 +33,30 @@ const campusMaps = manifest.maps.filter((path) => path.startsWith('/campus/'));
  * `aggie_basemap` is the id the gallery stores for Aggieland, and the value that triggered this.
  */
 const SAVED_PREFERENCE = { settings: { basemap: 'aggie_basemap' } };
+
+/**
+ * Every id the gallery can save for a campus basemap, read from the definitions (#1726).
+ *
+ * The gallery gained dated campus basemaps with ids of their own (#1582), and the event map knew one
+ * campus id only: anything else it handed to ArcGIS as one of ArcGIS's own basemap names. A visitor
+ * who had chosen a dated basemap then found every event and parking map blank. Read from the file, not
+ * listed here, so the next id added is checked without anyone remembering to.
+ */
+const CAMPUS_BASEMAP_IDS = [
+  ...new Set(
+    [
+      ...fs
+        .readFileSync(
+          path.join(__dirname, '..', '..', '..', 'libs', 'maps', 'feature', 'basemap', 'src', 'lib', 'shared', 'basemaps.definition.ts'),
+          'utf8'
+        )
+        .matchAll(/id: '(aggie_basemap\w*)'/g)
+    ].map((match) => match[1])
+  )
+];
+
+/** A permanent map built on the event framework, reachable without a builder choice. */
+const EVENT_FRAMEWORK_MAP = '/parking/visitor-parking';
 
 test.describe('satellite campus basemaps', () => {
   test('the environment lists some campus maps to check', () => {
@@ -80,3 +105,37 @@ test.describe('satellite campus basemaps', () => {
     });
   }
 });
+
+test.describe('a saved campus basemap on an event map', () => {
+  test('the basemap definitions yield campus basemap ids to check', () => {
+    expect(CAMPUS_BASEMAP_IDS.length, 'no campus basemap ids were read from basemaps.definition.ts').toBeGreaterThan(1);
+  });
+
+  for (const id of CAMPUS_BASEMAP_IDS) {
+    // On every environment: a dated id is offered on development only, and a browser that saved one
+    // there can still open production, where the map must fall back and draw.
+    test(`${EVENT_FRAMEWORK_MAP} draws for a visitor who saved ${id}`, async ({ page }) => {
+      await blockAnalytics(page);
+
+      await page.addInitScript((preference) => {
+        try {
+          localStorage.setItem('user-preferences', JSON.stringify(preference));
+        } catch {
+          // Private browsing; the test still exercises the default branch.
+        }
+      }, { settings: { basemap: id } });
+
+      await page.goto(EVENT_FRAMEWORK_MAP);
+      await expect(page.locator(APP_ROOT)).not.toBeEmpty();
+
+      const paint = await waitForPaint(page);
+
+      expect(
+        paint.paintedAfterMs,
+        `${EVENT_FRAMEWORK_MAP} never painted for a visitor who had saved the basemap ${id}: the canvas is ` +
+          `${paint.share.toFixed(3)} ${paint.colour}, and a map that has drawn is below ${BLANK_ABOVE}`
+      ).not.toBeNull();
+    });
+  }
+});
+

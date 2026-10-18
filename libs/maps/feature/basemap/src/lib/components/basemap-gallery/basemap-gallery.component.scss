@@ -19,6 +19,18 @@
       border-color: #616161;
     }
   }
+
+  // A basemap the map cannot show as it is now: one a 3D scene cannot draw, while in 3D (#1740).
+  &.unavailable {
+    cursor: not-allowed;
+    opacity: 0.5;
+
+    .basemap-note {
+      display: block;
+      font-size: 0.8em;
+      font-style: italic;
+    }
+  }
 }
 
 // Sized down from the shared loader's default; it sits beside a title, not in a panel of its own.

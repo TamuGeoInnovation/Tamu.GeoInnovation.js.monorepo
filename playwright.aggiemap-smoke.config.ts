@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+import { quickSetFor, routeGrep, ROUTE_SPECS } from './test/smoke/aggiemap/scope';
+
 /**
  * AggieMap smoke configuration, run against an already-deployed environment.
  *
@@ -15,6 +17,17 @@ import { defineConfig, devices } from '@playwright/test';
  *
  * Target with AGGIEMAP_SMOKE_BASE_URL; defaults to production.
  */
+// The quick tier (#1717): run-local.sh sets the tier and the files changed since the last cleared
+// build, and scope.ts turns them into two projects, because a file filter and a title filter given
+// together select only what matches both. One runs the chosen spec files whole; the other runs the
+// chosen routes in the per-route specs. Without the tier there is one project and everything runs.
+const quick =
+  process.env.AGGIEMAP_SMOKE_TIER === 'quick'
+    ? quickSetFor((process.env.AGGIEMAP_SMOKE_CHANGED ?? '').split(',').filter(Boolean))
+    : null;
+
+const chrome = { ...devices['Desktop Chrome'] };
+
 export default defineConfig({
   testDir: './test/smoke/aggiemap',
 
@@ -49,5 +62,15 @@ export default defineConfig({
     ignoreHTTPSErrors: false
   },
 
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }]
+  projects: quick
+    ? [
+        { name: 'quick-files', use: chrome, testMatch: quick.specs.map((spec) => `**/${spec}`) },
+        {
+          name: 'quick-routes',
+          use: chrome,
+          testMatch: ROUTE_SPECS.filter((spec) => !quick.specs.includes(spec)).map((spec) => `**/${spec}`),
+          grep: routeGrep(quick)
+        }
+      ]
+    : [{ name: 'chromium', use: chrome }]
 });

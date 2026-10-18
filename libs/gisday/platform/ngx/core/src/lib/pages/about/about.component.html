@@ -1,19 +1,28 @@
 <section>
   <div class="small-partition">
     <div>
-      <h1 class="trailer-1">About TxGIS Day</h1>
+      <h1 class="trailer-1">About {{ site.name }}</h1>
 
       <div class="container12">
+        @if ('tamu' | siteHas) {
         <p class="sub-section-heading">
           GIS Day, the annual worldwide salute to geospatial technology and its power to transform and enhance lives, is going to be extra "spatial" this year in Texas, where the TxGIS Day celebration, one of the world's largest, is expanding to encompass {{dayCountText$ | async}}@if (dateRange$ | async; as dates) {
           <span>, {{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</span>
           }.
         </p>
+        } @else {
+        <p class="sub-section-heading">
+          GIS Day is the annual worldwide salute to geospatial technology and its power to transform and enhance lives. {{ site.name }} brings students, faculty and professionals from participating organizations together for {{dayCountText$ | async}} of sessions, talks and workshops@if (dateRange$ | async; as dates) {
+          <span>, {{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</span>
+          }.
+        </p>
+        }
       </div>
     </div>
   </div>
 
   <div class="medium-partition no-pad top" id="committee">
+    @if ('tamu' | siteHas) {
     <div class="container12 flex flex-column align-center">
       <h2 class="trailer-1">Organizing Committee</h2>
       <div class="column9">
@@ -35,11 +44,13 @@
       </div>
     </div>
 
+    }
+
     <div class="container12 flex flex-column align-center leader-5" id="orgs">
       <div class="container12 flex flex-column align-center">
         <h2 class="trailer-1">Participating Organizations</h2>
         <div class="column9">
-          <p>TxGIS Day {{(activeSeason$ | async)?.year }} would not be possible without the expertise, support, and personnel from the following participating organizations.</p>
+          <p>{{ site.name }} {{(activeSeason$ | async)?.year }} would not be possible without the expertise, support, and personnel from the following participating organizations.</p>
         </div>
 
         <div class="icon-grid column12">
@@ -57,6 +68,7 @@
       </div>
     </div>
 
+    @if ('tamu' | siteHas) {
     <div class="container12 flex flex-column align-center leader-5" id="student-volunteer">
       <h2 class="trailer-1">Student Opportunities</h2>
       <div class="column9">
@@ -157,5 +169,6 @@
         </div>
       </div>
     </div>
+    }
   </div>
 </section>

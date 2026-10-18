@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { AddressProcessingAdvancedComponent } from '../../../../../../../core/modules/interactive/components/address-processing/advanced/address-processing-advanced/address-processing-advanced.component';
@@ -7,7 +7,6 @@ import { AddressProcessingAdvancedComponent } from '../../../../../../../core/mo
   selector: 'tamu-gisc-interactive',
   templateUrl: './interactive.component.html',
   styleUrls: ['./interactive.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AddressProcessingAdvancedComponent]
 })
 export class InteractiveComponent implements OnInit {

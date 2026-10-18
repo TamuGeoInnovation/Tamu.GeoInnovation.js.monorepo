@@ -8,9 +8,10 @@ front end's dev server (`gisday-angular`). Part of #1511.
 | `gisday-db` | SQL Server 2022 Developer, data in volume `gisday-db-data` | 14330 |
 | `gisday-redis` | Redis 7, the API's job queue | none outside Docker |
 | `gisday-api` | `node dist/apps/gisday-nest/main.js` on Node 22.23.3 | 3333 |
-| `gisday-dev` | `nx serve gisday-angular --configuration=local` on Node 22.23.3 | 4201 |
+| `gisday-dev` | `nx serve gisday-angular --configuration=local` on Node 22.23.3 | 4201, or 4202 with `--site` |
+| `gisday-site` | Only with `web --site <key>`: serves the dev server as that site ([below](#another-organizations-site)) | 4201 |
 
-All four share the Docker network `gisday-local`, so they reach each other by container name. The
+All of them share the Docker network `gisday-local`, so they reach each other by container name. The
 API and the dev server bind-mount the checkout and share the `node_modules` volume `tamu-js-dev-nm`
 with the AggieMap dev server (see CLAUDE.md), so that volume must match the checkout's lock file.
 
@@ -20,12 +21,22 @@ with the AggieMap dev server (see CLAUDE.md), so that volume must match the chec
 
 - `local-db.env`: `SA_PASSWORD` and `GISDAY_APP_PASSWORD`, local passwords for this container only.
   The `db` step writes it, with new random values, the first time it runs.
-- `gisday-api.local.env`: the API's settings. Start from `apps/gisday-nest/local.env.sample`. The
-  database settings must point at `gisday-db`, never production or the shared dev server, and every
-  `MAILROOM_` value stays blank so no email is sent. Leave `TYPEORM_PASSWORD` blank; the script
-  passes the one it wrote. This is the one file a new developer has to be given (#1623).
+- `gisday-api.local.env`: the API's settings, a copy of `apps/gisday-nest/local.env.sample`, which
+  holds no secrets and works as it stands. The database settings must point at `gisday-db`, never
+  production or the shared dev server, and every `MAILROOM_` value stays blank so no email is sent.
+  Leave `TYPEORM_PASSWORD` blank; the script passes the one it wrote.
+  `AUTH0_MANAGEMENT_DISABLED=true` lets the API start without Auth0 management credentials, which
+  nobody is given for local use (#1623, #1759).
 
-The database itself needs nothing from anyone: `restore` uses the scrubbed copy in the repository.
+Nothing needs to come from anyone: the settings are a copy of the sample, and `restore` uses the
+scrubbed copy of the database in the repository.
+
+```bash
+mkdir -p "${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}"
+cp -n apps/gisday-nest/local.env.sample "${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}/gisday-api.local.env"
+```
+
+`-n` keeps a settings file that is already there.
 
 ## Steps, in order
 
@@ -41,6 +52,22 @@ scripts/gisday-local.sh web                     # first compile takes several mi
 
 Then open <http://localhost:4201>. `status` lists the containers; `stop` removes them and keeps the
 database volume, so the restore is needed only once.
+
+### Another organization's site
+
+The same code serves more than one organization's GIS Day site; each is defined in
+`libs/gisday/common/src/lib/sites.ts` and chosen per deployment by `ANGULAR_SITE` (#1835). To review
+one locally, start the web step with its key:
+
+```bash
+scripts/gisday-local.sh web --site ucgis
+```
+
+<http://localhost:4201> is then that site and <http://localhost:4202> is txgisday.org, from the same
+dev server. `gisday-site` replaces the site placeholder in the scripts the dev server sends, as a
+deployed container does when it starts. Sign-in works only on 4201, the one address the local Auth0
+application accepts. The API is still the one `api` started, which serves every feature, and the data
+is the local database's.
 
 `migrate` shows, generates, runs and reverts schema migrations on the local database;
 [gisday-migrations.md](gisday-migrations.md) has the process for changing the schema.
@@ -121,15 +148,23 @@ serve configuration adds `apps/gisday-angular/proxy.local.json`, which sends tho
 - Sign-in, with your own GIS Day account. The `local` serve configuration swaps in
   `apps/gisday-angular/src/environments/environment.local.ts`, which holds the settings of the
   "GIS Day (local development)" Auth0 application. That application accepts only sign-ins that return
-  to `http://localhost:4201`, so the port cannot be changed. It is the same Auth0 tenant as production:
-  the accounts are real, and the local API holds whatever Auth0 credentials its settings file was
-  given, so do not edit users from a local copy.
+  to `http://localhost:4201`, so the port cannot be changed. It is the same Auth0 tenant as production,
+  so the accounts are real.
 
 What does not, yet:
 
 - **Real people, logos and photographs.** The scrubbed copy has made-up speakers and one placeholder
   image for every upload; the real files are on the production site, not in the database.
 - **Email**, deliberately: every `MAILROOM_` value is blank.
+- **Anything that needs a user's Auth0 profile.** The local API has no management credentials (#1759)
+  until a development tenant with test users exists (#1623), so:
+  - The admin Users page, and reading or saving a signed-in user's own profile (Account > My
+    details), answer `503 Service Unavailable`. A refused save writes nothing.
+  - Because the profile cannot be read, a signed-in user cannot register for or check in to an
+    event: the event's page asks for the profile to be completed.
+  - Nothing else fails: a class's attendance lists each student with `N/A` for name, email and UIN
+    (attendance counts are still right), and the competition leaderboard and submission review show
+    the last four characters of each user's id instead of an email.
 
 ## Things that look broken
 

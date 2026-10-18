@@ -1,0 +1,177 @@
+import { TestBed } from '@angular/core/testing';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { LayerSource } from '@tamu-gisc/common/types';
+
+import { EsriModuleProviderService } from '../module-provider/module-provider.service';
+import { LayerSourcesService } from '../layer-sources/layer-sources.service';
+import { EsriMapService } from './map.service';
+
+/**
+ * What a feature layer is called when its definition does not name it (#1802).
+ *
+ * #1526 took the titles out of the definitions so that names would come from the services. Loaded by
+ * URL with no title, though, ArcGIS names a layer "<service name> - <layer name>", and our services
+ * are the hosted `*_view` ones, so Aggie Family Parade's route read "Aggie Family Parade view - Parade
+ * Route" in the layer list and the legend.
+ */
+describe('EsriMapService feature layer titles', () => {
+  /**
+   * Stands in for ArcGIS's FeatureLayer, loading the way the real one does for a layer of the hosted
+   * Aggie Family Parade service: the service describes the layer as "Parade Route", and an untitled
+   * layer is titled from the service and layer names together.
+   */
+  class LoadingFeatureLayer {
+    public title: string;
+    public url: string;
+    public sourceJSON: { name?: string };
+
+    private readonly loaded: Promise<void>;
+
+    constructor(props: { title?: string; url: string }) {
+      Object.assign(this, props);
+
+      this.loaded = Promise.resolve().then(() => {
+        this.sourceJSON = { name: 'Parade Route' };
+
+        if (this.title === undefined) {
+          this.title = 'Aggie Family Parade view - Parade Route';
+        }
+      });
+    }
+
+    public when(): Promise<this> {
+      return this.loaded.then(() => this);
+    }
+  }
+
+  const url = 'https://example.test/arcgis/rest/services/Hosted/Aggie_Family_Parade_view/FeatureServer/1';
+
+  let service: EsriMapService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: EsriModuleProviderService, useValue: { require: () => Promise.resolve([LoadingFeatureLayer]) } },
+        { provide: Router, useValue: {} },
+        { provide: ActivatedRoute, useValue: {} },
+        { provide: SearchService, useValue: {} },
+        { provide: EnvironmentService, useValue: { value: () => undefined } },
+        { provide: HttpClient, useValue: {} },
+        { provide: LayerSourcesService, useValue: {} }
+      ]
+    });
+
+    service = TestBed.inject(EsriMapService);
+  });
+
+  /** Makes a layer from a source and lets it finish loading. */
+  async function loaded(source: LayerSource): Promise<LoadingFeatureLayer> {
+    const layer = (await service.generateLayer(source)) as unknown as LoadingFeatureLayer;
+
+    await layer.when();
+    await new Promise((resolve) => setTimeout(resolve));
+
+    return layer;
+  }
+
+  it("names an untitled layer by the layer's own name in the service, not the service's", async () => {
+    const layer = await loaded({ type: 'feature', id: 'route', url });
+
+    expect(layer.title).toBe('Parade Route');
+  });
+
+  it('leaves a title the definition chose alone', async () => {
+    const layer = await loaded({ type: 'feature', id: 'route', title: 'Parade', url });
+
+    expect(layer.title).toBe('Parade');
+  });
+});
+
+/**
+ * Two callers asking for the same layer at once get one layer (#1849).
+ *
+ * A layer is only on the map once it has been made, which takes at least one await. The main map's set
+ * and a Football Tailgating `?tent=` link both asked for the selection layer in that window, each made
+ * one, and the map ended up with two layers called `selection-layer`: the tent's highlight on one, the
+ * other empty, and the empty one sometimes on top.
+ */
+describe('EsriMapService layers asked for twice at once', () => {
+  class FakeGraphicsLayer {
+    public id: string;
+    public graphics: unknown[] = [];
+
+    constructor(props: { id: string }) {
+      this.id = props.id;
+    }
+
+    public removeAll(): void {
+      this.graphics = [];
+    }
+
+    public addMany(graphics: unknown[]): void {
+      this.graphics.push(...graphics);
+    }
+  }
+
+  const selectionSource = { type: 'graphics', id: 'selection-layer', title: 'Selected Buildings' } as LayerSource;
+
+  let service: EsriMapService;
+  let layers: FakeGraphicsLayer[];
+
+  beforeEach(() => {
+    layers = [];
+
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: EsriModuleProviderService, useValue: { require: () => Promise.resolve([FakeGraphicsLayer]) } },
+        { provide: Router, useValue: {} },
+        { provide: ActivatedRoute, useValue: {} },
+        { provide: SearchService, useValue: {} },
+        {
+          provide: EnvironmentService,
+          useValue: {
+            value: (key: string) => (key === 'LayerSources' ? [selectionSource] : { polygon: { type: 'simple-fill' } })
+          }
+        },
+        { provide: HttpClient, useValue: {} },
+        { provide: LayerSourcesService, useValue: {} }
+      ]
+    });
+
+    service = TestBed.inject(EsriMapService);
+    service['_modules'].map = {
+      findLayerById: (id: string) => layers.find((layer) => layer.id === id),
+      add: (layer: FakeGraphicsLayer) => layers.push(layer)
+    } as unknown as __esri.Map;
+    jest.spyOn(service, 'zoomTo').mockReturnValue(undefined);
+  });
+
+  /** Lets every pending promise settle. */
+  const settle = () => new Promise((resolve) => setTimeout(resolve));
+
+  it('makes one layer when two callers ask for it before it is on the map', async () => {
+    const [first, second] = await Promise.all([
+      service.findLayerOrCreateFromSource(selectionSource),
+      service.findLayerOrCreateFromSource(selectionSource)
+    ]);
+
+    expect(layers).toHaveLength(1);
+    expect(second).toBe(first);
+  });
+
+  it('puts a selection made while the map is making the selection layer on that one layer', async () => {
+    const feature = { geometry: { type: 'polygon' }, attributes: {} } as unknown as __esri.Graphic;
+
+    const loading = service.findLayerOrCreateFromSource(selectionSource);
+    service.selectFeatures({ graphics: [feature], zoom: 17 });
+    await loading;
+    await settle();
+
+    expect(layers).toHaveLength(1);
+    expect(layers[0].graphics).toEqual([feature]);
+  });
+});

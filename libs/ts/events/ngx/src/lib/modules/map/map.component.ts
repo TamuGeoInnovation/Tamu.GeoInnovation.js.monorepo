@@ -2,18 +2,30 @@ import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Subject, ReplaySubject, Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { loadModules } from 'esri-loader';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { MapServiceInstance, MapConfig, EsriMapService, LayerSourcesService } from '@tamu-gisc/maps/esri';
+import {
+  MapServiceInstance,
+  MapConfig,
+  EsriMapService,
+  LayerSourcesService,
+  HIDDEN_DEFAULT_HIGHLIGHT
+} from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
-import { aggiemapBasemap, AGGIEMAP_BASEMAP_MAX_SCALE, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
+import {
+  aggiemapBasemap,
+  aggiemapRasterBasemap,
+  basemapForSavedId,
+  AGGIEMAP_BASEMAP_MAX_SCALE,
+  BasemapGalleryService,
+  NearmapDateSliderComponent
+} from '@tamu-gisc/maps/feature/basemap';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { eventHasPassed } from '@tamu-gisc/common/utils/date';
 
@@ -28,7 +40,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
-import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent, MapCompassComponent, addTrack } from '@tamu-gisc/maps/esri';
 import { PerspectiveToggleComponent } from '@tamu-gisc/maps/feature/perspective';
 import { PopupComponent } from '@tamu-gisc/maps/feature/popup';
 import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
@@ -61,6 +73,7 @@ const EVENT_PASSED_GRACE_DAYS = 1;
     RouterLink,
     ClickCoordinatesComponent,
     EsriMapComponent,
+    MapCompassComponent,
     NgClass,
     PerspectiveToggleComponent,
     ClipboardCopyDirective,
@@ -68,6 +81,7 @@ const EVENT_PASSED_GRACE_DAYS = 1;
     PopupComponent,
     PopupMobileComponent,
     MapViewfinderComponent,
+    NearmapDateSliderComponent,
     AsyncPipe
   ]
 })
@@ -82,6 +96,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private readonly eventsSettingsService = inject(EventSettingsService);
   private readonly eventService = inject(EventService);
   private readonly ms = inject(ModalService);
+  private readonly basemaps = inject(BasemapGalleryService);
 
   public map: esri.Map;
   public view: esri.MapView;
@@ -202,11 +217,14 @@ export class MapComponent implements OnInit, OnDestroy {
         ? basemapIdFromUrl
         : isSatelliteCampus
           ? 'topo-vector'
-          : settings && settings.basemap
-            ? settings.basemap && settings.basemap !== 'aggie_basemap'
-              ? settings.basemap
-              : aggiemapBasemap(this.ts.isTesting)
-            : 'topo-vector'
+          : root?.configuration?.basemap === 'campus'
+            ? aggiemapBasemap(this.ts.isTesting)
+            : root?.configuration?.basemap === 'campus-raster'
+              ? aggiemapRasterBasemap(this.ts.isTesting)
+              : settings && settings.basemap
+                ? // Not the saved id itself: a campus basemap's id means nothing to ArcGIS (#1726).
+                  basemapForSavedId(settings.basemap, this.ts.isTesting)
+                : 'topo-vector'
     };
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
@@ -230,7 +248,8 @@ export class MapComponent implements OnInit, OnDestroy {
             },
             zoom: root?.configuration?.zoom !== undefined ? root.configuration.zoom : 16,
             ui: {
-              components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
+              // The attribution is the view's own since ArcGIS 5.0 (`attributionVisible`), no longer a UI component.
+              components: this.isMobile ? [] : ['zoom']
             },
             popup: {
               dockOptions: {
@@ -239,10 +258,7 @@ export class MapComponent implements OnInit, OnDestroy {
                 position: 'bottom-right'
               }
             },
-            highlightOptions: {
-              haloOpacity: 0,
-              fillOpacity: 0
-            }
+            highlights: HIDDEN_DEFAULT_HIGHLIGHT
           }
         }
       });
@@ -271,43 +287,25 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public continue(instances: MapServiceInstance) {
-    loadModules(['esri/widgets/Track', 'esri/widgets/Compass'])
-      .then(([Track, Compass]) => {
-        instances.view.when(() => {
-          //
-          // Loader disable
-          //
-          document.querySelector('.loader .progress-bar')?.classList.remove('anim');
+    // A link naming an Aerial Imagery capture, `?imagery=2025-11-22`, opens on it (#1541).
+    this.basemaps.applyNearmapCaptureFromUrl();
 
-          setTimeout(() => {
-            document.querySelector('.loader')?.classList.add('fade-out');
+    instances.view.when(() => {
+      //
+      // Loader disable
+      //
+      document.querySelector('.loader .progress-bar')?.classList.remove('anim');
 
-            setTimeout(() => {
-              (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
-            }, 300);
-          }, 300);
-        });
+      setTimeout(() => {
+        document.querySelector('.loader')?.classList.add('fade-out');
 
-        const track: esri.Track = new Track({
-          view: instances.view,
-          useHeadingEnabled: true,
-          goToLocationEnabled: false
-        });
+        setTimeout(() => {
+          (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
+        }, 300);
+      }, 300);
+    });
 
-        const compass = new Compass({
-          view: instances.view
-        });
-
-        if (this.isMobile) {
-          instances.view.ui.add(track, 'bottom-right');
-        } else {
-          instances.view.ui.add(track, 'top-left');
-          instances.view.ui.add(compass, 'top-left');
-        }
-      })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    addTrack(instances.view as esri.MapView, this.isMobile ? 'bottom-right' : 'top-left');
   }
 
   /**

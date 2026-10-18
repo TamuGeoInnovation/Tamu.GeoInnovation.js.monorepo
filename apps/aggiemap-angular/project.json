@@ -32,6 +32,7 @@
           }
         ],
         "scripts": [],
+        "loader": { ".woff2": "file", ".woff": "file", ".ttf": "file" },
         "styles": ["apps/aggiemap-angular/src/styles.scss"],
         "stylePreprocessorOptions": {
           "includePaths": ["."]

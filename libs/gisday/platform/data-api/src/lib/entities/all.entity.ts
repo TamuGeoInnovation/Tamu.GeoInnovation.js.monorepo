@@ -300,6 +300,13 @@ export class EventLocation extends GuidIdentity {
   @Column({ nullable: true })
   public streetAddressOverride?: string;
 
+  /**
+   * Where an attendee must be to check in to an in-person event here: the zone's corners, in order
+   * around it (#1766). Without one, check-in needs no location.
+   */
+  @Column({ nullable: true, type: 'simple-json' })
+  public checkInZone?: Array<{ latitude: number; longitude: number }>;
+
   @OneToMany(() => Event, (event) => event.location, { nullable: true, cascade: true })
   public events?: Event[];
 
@@ -1028,7 +1035,9 @@ export class ManholeSubmission {
 }
 
 export const EntityRelationsLUT = {
-  event: ['speakers', 'speakers.images', 'tags', 'sponsors', 'location', 'location.place', 'broadcast', 'day'],
+  // A speaker's organization and university are what a session's presenter list shows under and
+  // after their name (#1768).
+  event: ['speakers', 'speakers.images', 'speakers.organization', 'speakers.university', 'tags', 'sponsors', 'location', 'location.place', 'broadcast', 'day'],
   speaker: ['images', 'university', 'organization'],
   getRelation: (entity?: string) => {
     if (!entity) {

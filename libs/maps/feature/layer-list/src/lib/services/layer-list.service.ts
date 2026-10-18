@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { from, fromEventPattern, combineLatest } from 'rxjs';
 import { switchMap, startWith, map } from 'rxjs/operators';
 
-import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
@@ -14,8 +14,12 @@ export class LayerListService {
   private _model: esri.LayerListViewModel;
 
   public layers() {
-    return combineLatest([from(this.moduleProvider.require(['LayerListViewModel'])), this.mapService.store]).pipe(
-      switchMap(([[LayerListViewModel], instance]: [[esri.LayerListViewModelConstructor], MapServiceInstance]) => {
+    const modules = this.moduleProvider.require(['LayerListViewModel', 'reactiveUtils']) as Promise<
+      [typeof esri.LayerListViewModel, esri.reactiveUtils]
+    >;
+
+    return combineLatest([from(modules), this.mapService.store]).pipe(
+      switchMap(([[LayerListViewModel, reactiveUtils], instance]) => {
         this._model = new LayerListViewModel({
           view: instance.view
         });
@@ -23,7 +27,7 @@ export class LayerListService {
         let handle: esri.Handle;
 
         const add = (handler) => {
-          handle = this._model.operationalItems.watch('length', handler);
+          handle = reactiveUtils.watch(() => this._model.operationalItems.length, handler);
         };
 
         const remove = (): void => {

@@ -39,6 +39,7 @@
           "includePaths": ["."]
         },
         "scripts": [],
+        "loader": { ".woff2": "file", ".woff": "file", ".ttf": "file" },
         "extractLicenses": false,
         "sourceMap": true,
         "optimization": false,

@@ -1,5 +1,6 @@
 @import 'libs/gisday/sass/variables';
 @import 'libs/sass/mixins';
+@import 'libs/gisday/sass/class-banner';
 @import 'libs/sass/1140';
 @import 'libs/sass/colors'; // Imports complete material design colors for use as classes in markup
 @import 'libs/sass/modules/forms';
@@ -246,9 +247,16 @@ a {
   cursor: pointer;
   text-transform: capitalize;
 
+  // An anchor styled as a button is a block (`button-anchors`, below), where `justify-content` does
+  // nothing, so its label sat at the left edge. Centred here as the shared `button-base` centres it.
+  text-align: center;
+
   @include transition(color 0.3s, background 0.3s);
 
   border-radius: 1.5rem;
+  // The outlined variants below draw this border; the filled one keeps it transparent, so every
+  // variant is the same size and a pair of them lines up (#1831).
+  border: 1.5pt solid transparent;
   overflow: hidden;
   color: #fafafa;
   background: rgba(85, 138, 216, 1);
@@ -587,31 +595,7 @@ footer .logo-container {
     }
 
     .class-banner {
-      text-transform: uppercase;
-      font-family: $title-font;
-      font-weight: 400;
-      font-size: 1.25rem;
-      position: absolute;
-      display: block;
-      background: $aggie-maroon;
-      top: 1.75rem;
-      left: -8.7rem;
-      width: 100%;
-      z-index: 1;
-      color: #ffffff;
-      @include transform(rotate(-45deg));
-      text-align: center;
-      padding: 0.5rem 0;
-
-      .text-container {
-        width: 40%;
-        margin: 0 auto;
-      }
-
-      span {
-        display: block;
-        white-space: nowrap;
-      }
+      @include class-banner(1.25rem, -8.7rem);
     }
   }
 
@@ -1411,31 +1395,7 @@ img.jumbo {
   }
 
   .class-banner {
-    text-transform: uppercase;
-    font-family: $title-font;
-    font-weight: 400;
-    font-size: 1rem;
-    position: absolute;
-    display: block;
-    background: $aggie-maroon;
-    top: 1.75rem;
-    left: -5rem;
-    width: 100%;
-    z-index: 1;
-    color: #ffffff;
-    @include transform(rotate(-45deg));
-    text-align: center;
-    padding: 0.5rem 0;
-
-    .text-container {
-      width: 40%;
-      margin: 0 auto;
-    }
-
-    span {
-      display: block;
-      white-space: nowrap;
-    }
+    @include class-banner(1rem, -5rem);
   }
 
   &:hover {

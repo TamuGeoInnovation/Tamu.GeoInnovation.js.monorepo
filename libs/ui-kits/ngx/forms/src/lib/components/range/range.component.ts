@@ -73,6 +73,20 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
   public readonly showTooltip = input(false);
 
   /**
+   * Marks drawn under the track at the given values, each with an optional label - for example one
+   * mark per date on a timeline, spaced by the time between them. A tick with `mark: false` shows only
+   * its label.
+   */
+  public readonly ticks = input<RangeTick[]>(undefined);
+
+  /**
+   * Whether to show the minimum and maximum under the track. Ticks often say the same thing.
+   *
+   * Defaults to `true`.
+   */
+  public readonly showLimits = input(true);
+
+  /**
    * When provided, each native step in the slider will be mapped to a custom
    * value and display string. This is useful when the slider is used to select
    * from a set of discrete values and the values are either not numeric or do not
@@ -172,6 +186,17 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
   }
 
   /**
+   * Where a tick sits, as a CSS `left`: under the centre of the thumb when the slider is at that value.
+   * The thumb's centre travels from half its width (1.25rem) at the minimum to the same short of the end.
+   */
+  public tickLeft(value: number): string {
+    const span = this.max - this.min();
+    const ratio = span > 0 ? Math.min(Math.max((value - this.min()) / span, 0), 1) : 0;
+
+    return `calc(0.625rem + ${ratio} * (100% - 1.25rem))`;
+  }
+
+  /**
    * Offsets are different depending on the current point in the slider (before or after the midpoint).
    *
    * Before the midpoint, the offset is negative. After the midpoint, the offset is positive.
@@ -203,6 +228,20 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
 }
 
 export type RangeInputDataMap = Array<RangeInputDataMapEntry>;
+
+export interface RangeTick {
+  /** The slider value the tick marks. */
+  value: number;
+
+  /** Text under the tick. */
+  label?: string;
+
+  /** Text shown on hovering the tick, such as the date it stands for when it has no label. */
+  title?: string;
+
+  /** Whether to draw the mark itself. Defaults to `true`; `false` leaves only the label. */
+  mark?: boolean;
+}
 
 export interface RangeInputDataMapEntry {
   /**

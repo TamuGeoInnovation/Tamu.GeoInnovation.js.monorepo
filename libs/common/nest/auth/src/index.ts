@@ -10,3 +10,5 @@ export * from './lib/authorization/services/management/management.service';
 
 export * from './lib/authorization/decorators/permissions.decorator';
 export * from './lib/authorization/decorators/allow-any.decorator';
+
+export * from './lib/authorization/ownership/is-owner-or-permitted';

@@ -7,14 +7,14 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 import { campusOnNavigation, EventNotificationsService } from '@tamu-gisc/aggiemap/ngx/core';
 import { NotificationGroupedComponent } from '@tamu-gisc/common/ngx/ui/notification';
-import { CodeMaroonAlertComponent } from '@tamu-gisc/aggiemap/ngx/core';
+import { ActingAsProductionComponent, CodeMaroonAlertComponent } from '@tamu-gisc/aggiemap/ngx/core';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [RouterOutlet, NotificationGroupedComponent, CodeMaroonAlertComponent]
+  imports: [RouterOutlet, NotificationGroupedComponent, CodeMaroonAlertComponent, ActingAsProductionComponent]
 })
 export class AppComponent implements OnInit, OnDestroy {
   analytics = inject(Angulartics2GoogleGlobalSiteTag);

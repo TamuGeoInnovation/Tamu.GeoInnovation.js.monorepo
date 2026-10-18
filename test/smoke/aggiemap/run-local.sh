@@ -9,15 +9,25 @@
 #                                     # the same dev server as production renders it: 127.0.0.1 is not
 #                                     # a dev host, so development-only features are hidden
 #
-# Anything after the environment is passed to `playwright test`, e.g. `--grep "gameday"`.
+# A tier may follow the environment (#1717). The README says when each is run and when it must not be:
 #
-# A local run checks a release, so framing.spec.ts opens one route per map (#1426). The scheduled
-# workflow on GitHub checks all of them; to do the same here, set AGGIEMAP_SMOKE_FRAMING=full.
+#   test/smoke/aggiemap/run-local.sh development quick     # a fixed core, plus what changed since the
+#                                                          # last dev-* tag; clears a dev release
+#   test/smoke/aggiemap/run-local.sh development release   # every map once; clears production (default)
+#   test/smoke/aggiemap/run-local.sh development full      # everything, as the nightly GitHub run does
+#
+# quick compares this checkout with the newest dev-* tag (prod-* for production), so the checkout must
+# be at the commit that was built. AGGIEMAP_SMOKE_BASE names another base. It prints what it chose and
+# which changed files it could not map to a test; test/smoke/aggiemap/scope.ts decides.
+#
+# Anything after that is passed to `playwright test`, e.g. `--grep "gameday"`.
+#
+# A release run opens one route per map in framing.spec.ts (#1426); full opens all of them.
 # Needs only Docker and bash (Git Bash on Windows); Node runs inside the container. The first run
 # downloads the Playwright image, about 2 GB.
 #
 # The checkout's node_modules is not used, so a checkout or worktree without an install can run the
-# suite (#1459). The suite needs three packages: @playwright/test, pngjs and esri-loader. They live in
+# suite (#1459). The suite needs two packages: @playwright/test and pngjs (esri-loader until #1844). They live in
 # the Docker volume tamu-js-smoke-nm, mounted over /work/node_modules, at the versions package-lock.json
 # records. The first run installs them, in a few seconds, and so does any run after those versions
 # change. Docker leaves an empty node_modules folder in a checkout that had none.
@@ -31,7 +41,7 @@ env_name="${1:-}"
 case "$env_name" in
   development | production | local | local-production) shift ;;
   *)
-    echo "usage: $0 development|production|local|local-production [playwright args...]" >&2
+    echo "usage: $0 development|production|local|local-production [quick|release|full] [playwright args...]" >&2
     exit 2
     ;;
 esac
@@ -65,21 +75,47 @@ fi
 
 volume=tamu-js-smoke-nm
 
-echo "Smoke suite: $env_name, $image"
+tier=release
+case "${1:-}" in
+  quick | release | full)
+    tier=$1
+    shift
+    ;;
+esac
+
+if [ "$tier" = full ]; then
+  export AGGIEMAP_SMOKE_FRAMING=full
+fi
+
+if [ "$tier" = quick ]; then
+  tags='refs/tags/dev-*'
+  if [ "$env_name" = production ]; then tags='refs/tags/prod-*'; fi
+  base=${AGGIEMAP_SMOKE_BASE:-$(git for-each-ref --count=1 --sort=-creatordate --format='%(refname:short)' "$tags")}
+  if ! git rev-parse --verify --quiet "$base^{commit}" >/dev/null; then
+    echo "The quick tier needs a base to compare with, and '$base' is not one. Fetch the tags, or set AGGIEMAP_SMOKE_BASE." >&2
+    exit 2
+  fi
+  echo "Quick tier: what changed between $base and $(git rev-parse --short HEAD)"
+  export AGGIEMAP_SMOKE_TIER=quick
+  AGGIEMAP_SMOKE_CHANGED=$(git diff --name-only "$base"...HEAD | paste -sd, -)
+  export AGGIEMAP_SMOKE_CHANGED
+fi
+
+echo "Smoke suite: $env_name, $tier tier, $image"
 
 # The output is copied to a file for Playwright's totals, which go into the run's record.
 output="$(mktemp)"
 trap 'rm -f "$output"' EXIT
 set +e
 docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -v "$volume:/work/node_modules" -w /work \
-  -e SMOKE_ENV="$env_name" -e SMOKE_VOLUME="$volume" -e PW_VERSION="$pw_version" -e NPM_CONFIG_UPDATE_NOTIFIER=false -e UPDATE_FRAMING_BASELINE \
+  -e SMOKE_ENV="$env_name" -e SMOKE_VOLUME="$volume" -e PW_VERSION="$pw_version" -e NPM_CONFIG_UPDATE_NOTIFIER=false -e UPDATE_FRAMING_BASELINE -e AGGIEMAP_SMOKE_TIER -e AGGIEMAP_SMOKE_CHANGED \
   -e AGGIEMAP_SMOKE_FRAMING="${AGGIEMAP_SMOKE_FRAMING:-release}" "$image" \
   node -e '
     const fs = require("fs");
 
-    // Install the three packages into the volume unless it already holds the versions the lock records.
+    // Install the two packages into the volume unless it already holds the versions the lock records.
     const lock = require("./package-lock.json").packages;
-    const wanted = ["@playwright/test", "pngjs", "esri-loader"]
+    const wanted = ["@playwright/test", "pngjs"]
       .map((name) => `${name}@${lock["node_modules/" + name].version}`)
       .join(" ");
     if (!wanted.startsWith(`@playwright/test@${process.env.PW_VERSION} `)) {
@@ -120,5 +156,5 @@ docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -v "$v
 code=${PIPESTATUS[0]}
 set -e
 run_times_record docs/build-times/runs "$started" smoke \
-  "$env_name framing=${AGGIEMAP_SMOKE_FRAMING:-release}${*:+ $*}" "$code" "$(run_times_smoke_summary "$output")" "$SECONDS"
+  "$env_name $tier framing=${AGGIEMAP_SMOKE_FRAMING:-release}${*:+ $*}" "$code" "$(run_times_smoke_summary "$output")" "$SECONDS"
 exit "$code"

@@ -118,7 +118,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
             // cannot auto-instantiate the layer type correct as is the case with map-image layers. It renders them as `feature` layers.
             return forkJoin([
               from(this.mp.require(['Layer'])).pipe(
-                switchMap(([Layer]: [esri.LayerConstructor]) => {
+                switchMap(([Layer]: [typeof esri.Layer]) => {
                   return Layer.fromArcGISServerUrl({
                     url
                   });

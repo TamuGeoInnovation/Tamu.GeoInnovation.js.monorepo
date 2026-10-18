@@ -2,15 +2,13 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { loadModules } from 'esri-loader';
-
-import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, HIDDEN_DEFAULT_HIGHLIGHT } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
-import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent, MapCompassComponent, addTrack } from '@tamu-gisc/maps/esri';
 import { NgClass } from '@angular/common';
 import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
 import { UESTamuBlockComponent } from '@tamu-gisc/ues/common/ngx';
@@ -27,6 +25,7 @@ import esri = __esri;
     RouterLink,
     ClickCoordinatesComponent,
     EsriMapComponent,
+    MapCompassComponent,
     NgClass,
     RouterOutlet,
     MapViewfinderComponent,
@@ -87,7 +86,8 @@ export class MapComponent implements OnInit, OnDestroy {
           },
           zoom: 16,
           ui: {
-            components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
+            // The attribution is the view's own since ArcGIS 5.0 (`attributionVisible`), no longer a UI component.
+            components: this.isMobile ? [] : ['zoom']
           },
           popup: {
             dockOptions: {
@@ -96,10 +96,7 @@ export class MapComponent implements OnInit, OnDestroy {
               position: 'bottom-right'
             }
           },
-          highlightOptions: {
-            haloOpacity: 0,
-            fillOpacity: 0
-          }
+          highlights: HIDDEN_DEFAULT_HIGHLIGHT
         }
       }
     };
@@ -121,43 +118,22 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public continue(instances: MapServiceInstance) {
-    loadModules(['esri/widgets/Track', 'esri/widgets/Compass'])
-      .then(([Track, Compass]) => {
-        instances.view.when(() => {
-          //
-          // Loader disable
-          //
-          document.querySelector('.loader .progress-bar').classList.remove('anim');
+    instances.view.when(() => {
+      //
+      // Loader disable
+      //
+      document.querySelector('.loader .progress-bar').classList.remove('anim');
 
-          setTimeout(() => {
-            document.querySelector('.loader').classList.add('fade-out');
+      setTimeout(() => {
+        document.querySelector('.loader').classList.add('fade-out');
 
-            setTimeout(() => {
-              (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
-            }, 300);
-          }, 300);
-        });
+        setTimeout(() => {
+          (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
+        }, 300);
+      }, 300);
+    });
 
-        const track: esri.Track = new Track({
-          view: instances.view,
-          useHeadingEnabled: true,
-          goToLocationEnabled: false
-        });
-
-        const compass = new Compass({
-          view: instances.view
-        });
-
-        if (this.isMobile) {
-          instances.view.ui.add(track, 'bottom-right');
-        } else {
-          instances.view.ui.add(track, 'top-left');
-          instances.view.ui.add(compass, 'top-left');
-        }
-      })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    addTrack(instances.view as esri.MapView, this.isMobile ? 'bottom-right' : 'top-left');
   }
 
   /**

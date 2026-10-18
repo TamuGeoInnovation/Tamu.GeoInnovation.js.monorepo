@@ -5,9 +5,11 @@
         <a [routerLink]="['./broadcasts']" queryParamsHandling="merge" routerLinkActive="active"><span class="material-icons">podcasts</span>Broadcasts</a>
       </li>
 
+      @if ('classes' | siteHas) {
       <li>
         <a [routerLink]="['./classes']" queryParamsHandling="merge" routerLinkActive="active"><span class="material-icons">menu_book</span> Classes</a>
       </li>
+      }
 
       <li>
         <a [routerLink]="['./events']" queryParamsHandling="merge" routerLinkActive="active"><span class="material-icons">event</span> Events</a>
@@ -49,6 +51,7 @@
         <a [routerLink]="['./universities']" queryParamsHandling="merge" routerLinkActive="active"><span class="material-icons">school</span> Universities</a>
       </li>
 
+      @if ('competitions' | siteHas) {
       <li>
         <a [routerLink]="['./research-competition']" queryParamsHandling="merge" routerLinkActive="active"><span class="material-icons">co_present</span> Research Competitions</a>
       </li>
@@ -73,6 +76,7 @@
           </li>
         </ul>
       </li>
+      }
     </ul>
 
     <div class="column9 content">

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { AddressProcessing, AddressProcessingAddressFormat } from '@tamu-gisc/geoprocessing-v5';
@@ -18,7 +18,6 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
   selector: 'tamu-gisc-address-processing',
   templateUrl: './address-processing.component.html',
   styleUrls: ['./address-processing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     AddressProcessingBasicComponent,
     TabsComponent,

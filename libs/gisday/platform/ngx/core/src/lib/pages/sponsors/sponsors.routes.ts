@@ -18,6 +18,10 @@ export const sponsorsRoutes: Routes = [
       {
         path: 'tamu',
         loadChildren: () => import('./sponsors-tamu/sponsors-tamu.routes').then((m) => m.sponsorsTamuRoutes)
+      },
+      {
+        path: 'payment',
+        loadChildren: () => import('./sponsors-payment/sponsors-payment.routes').then((m) => m.sponsorsPaymentRoutes)
       }
     ]
   }

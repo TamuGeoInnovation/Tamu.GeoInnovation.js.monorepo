@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { InteractivePricingComponent } from '../../../core/modules/pricing/interactive-pricing.component';
@@ -8,7 +8,6 @@ import { RouterLink } from '@angular/router';
   selector: 'tamu-gisc-pricing',
   templateUrl: './pricing.component.html',
   styleUrls: ['./pricing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [InteractivePricingComponent, RouterLink]
 })
 export class PricingComponent implements OnInit {

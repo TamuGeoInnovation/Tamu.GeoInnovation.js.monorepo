@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { AddressProcessing, AddressProcessingAddressFormat } from '@tamu-gisc/geoprocessing-v5';
 import { RouterLink } from '@angular/router';
@@ -15,7 +15,6 @@ import { AddressAttributeListComponent } from '../../components/fragments/common
   selector: 'tamu-gisc-address-processing',
   templateUrl: './address-processing.component.html',
   styleUrls: ['./address-processing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     RouterLink,
     ServiceAttributeAccordionComponent,

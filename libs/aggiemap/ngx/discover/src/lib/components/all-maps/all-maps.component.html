@@ -250,6 +250,19 @@
       }
     </div>
   </div>
+  } @if ((isDev | async) === true) {
+  <!--
+  Development only, like the section above, and for the opposite purpose: to see this site as a
+  visitor to production will (#1722). A plain link, not a router link, because what the switch decides
+  is settled when the page loads. While it is on, this section is hidden with every other development
+  feature, and the banner the shell shows carries the way back.
+  -->
+  <div class="experimental-applications-section view-as-production-section">
+    <h2>View as Production</h2>
+    <p class="section-description">See this site as a visitor to production will</p>
+    <div class="info-block trailer-1">This section is visible only in development mode. It hides everything that is development only, and draws from production's GIS services, in this browser tab, until you choose "Back to dev" in the banner at the bottom of the page or close the tab. Any address works the same way with <code>?as=production</code> added, so a link can be sent to someone.</div>
+    <a class="button maroon" href="/all-maps?as=production">View this site as production</a>
+  </div>
   }
 </div>
 

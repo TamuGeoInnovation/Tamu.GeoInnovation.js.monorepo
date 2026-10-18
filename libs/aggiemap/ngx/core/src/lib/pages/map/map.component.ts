@@ -2,12 +2,15 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@
 import { Subject, ReplaySubject, Observable } from 'rxjs';
 import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 
-import { loadModules } from 'esri-loader';
-
-import { aggiemapBasemap, AGGIEMAP_BASEMAP_MAX_SCALE } from '@tamu-gisc/maps/feature/basemap';
+import {
+  aggiemapBasemap,
+  AGGIEMAP_BASEMAP_MAX_SCALE,
+  BasemapGalleryService,
+  NearmapDateSliderComponent
+} from '@tamu-gisc/maps/feature/basemap';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, HIDDEN_DEFAULT_HIGHLIGHT } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
@@ -19,7 +22,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { NgClass, AsyncPipe } from '@angular/common';
 
 import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
-import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent, MapCompassComponent, addTrack } from '@tamu-gisc/maps/esri';
 import { PerspectiveToggleComponent } from '@tamu-gisc/maps/feature/perspective';
 import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
 
@@ -34,10 +37,12 @@ import esri = __esri;
     RouterLink,
     ClickCoordinatesComponent,
     EsriMapComponent,
+    MapCompassComponent,
     NgClass,
     PerspectiveToggleComponent,
     RouterOutlet,
     MapViewfinderComponent,
+    NearmapDateSliderComponent,
     AsyncPipe
   ]
 })
@@ -47,6 +52,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private readonly ms = inject(ModalService);
   private readonly ss = inject(SettingsService);
   private readonly ts = inject(TestingService);
+  private readonly basemaps = inject(BasemapGalleryService);
 
   public map: esri.Map;
   public view: esri.MapView;
@@ -94,7 +100,8 @@ export class MapComponent implements OnInit, OnDestroy {
             },
             zoom: 16,
             ui: {
-              components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
+              // The attribution is the view's own since ArcGIS 5.0 (`attributionVisible`), no longer a UI component.
+              components: this.isMobile ? [] : ['zoom']
             },
             popup: {
               dockOptions: {
@@ -103,10 +110,7 @@ export class MapComponent implements OnInit, OnDestroy {
                 position: 'bottom-right'
               }
             },
-            highlightOptions: {
-              haloOpacity: 0,
-              fillOpacity: 0
-            }
+            highlights: HIDDEN_DEFAULT_HIGHLIGHT
           }
         }
       });
@@ -159,43 +163,25 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public continue(instances: MapServiceInstance) {
-    loadModules(['esri/widgets/Track', 'esri/widgets/Compass'])
-      .then(([Track, Compass]) => {
-        instances.view.when(() => {
-          //
-          // Loader disable
-          //
-          document.querySelector('.loader .progress-bar')?.classList.remove('anim');
+    // A link naming an Aerial Imagery capture, `?imagery=2025-11-22`, opens on it (#1541).
+    this.basemaps.applyNearmapCaptureFromUrl();
 
-          setTimeout(() => {
-            document.querySelector('.loader')?.classList.add('fade-out');
+    instances.view.when(() => {
+      //
+      // Loader disable
+      //
+      document.querySelector('.loader .progress-bar')?.classList.remove('anim');
 
-            setTimeout(() => {
-              (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
-            }, 300);
-          }, 300);
-        });
+      setTimeout(() => {
+        document.querySelector('.loader')?.classList.add('fade-out');
 
-        const track: esri.Track = new Track({
-          view: instances.view,
-          useHeadingEnabled: true,
-          goToLocationEnabled: false
-        });
+        setTimeout(() => {
+          (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
+        }, 300);
+      }, 300);
+    });
 
-        const compass = new Compass({
-          view: instances.view
-        });
-
-        if (this.isMobile) {
-          instances.view.ui.add(track, 'bottom-right');
-        } else {
-          instances.view.ui.add(track, 'top-left');
-          instances.view.ui.add(compass, 'top-left');
-        }
-      })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    addTrack(instances.view as esri.MapView, this.isMobile ? 'bottom-right' : 'top-left');
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { CensusIntersection, CensusYear } from '@tamu-gisc/geoprocessing-v5';
@@ -18,7 +18,6 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
   selector: 'tamu-gisc-census-intersection',
   templateUrl: './census-intersection.component.html',
   styleUrls: ['./census-intersection.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CensusIntersectionBasicComponent,
     TabsComponent,

@@ -6,6 +6,7 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { commonSymbols } from './common.definitions';
 
 import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
@@ -30,17 +31,30 @@ const eventUrl = Connections.physicsFestUrl;
 
 type AutoCastSimpleLineSymbol = { type: 'simple-line' } & esri.SimpleLineSymbolProperties;
 
-const GREEN_ARROW_LINE_NATIVE: NonNullable<FeatureLayerSourceProperties['native']> = {
-  outFields: ['*']
-};
+// The three renderers below are overrides. The MapServer and its portal item publish no arrow symbol
+// (the service flattens it to a plain 14-pt line); remove when the service is republished as a hosted
+// view with the arrows (#1803).
 
-const EASTBOUND_BUS_ROUTE_LINE_NATIVE: NonNullable<FeatureLayerSourceProperties['native']> = {
-  outFields: ['*']
-};
+/** Draws every feature of a line layer with one symbol. */
+function arrowLineNative(symbol: AutoCastSimpleLineSymbol): NonNullable<FeatureLayerSourceProperties['native']> {
+  return { outFields: ['*'], renderer: { type: 'simple', symbol } };
+}
 
-const WESTBOUND_BUS_ROUTE_LINE_NATIVE: NonNullable<FeatureLayerSourceProperties['native']> = {
-  outFields: ['*']
-};
+/** A bus route: a 3.5-pt line in the given colour with an arrowhead where it ends. */
+function busRouteArrow(color: string): AutoCastSimpleLineSymbol {
+  return {
+    type: 'simple-line',
+    color,
+    width: 3.5,
+    marker: { style: 'arrow', color, placement: 'end' }
+  };
+}
+
+const GREEN_ARROW_LINE_NATIVE = arrowLineNative(commonSymbols.GREEN_ARROW as AutoCastSimpleLineSymbol);
+
+const EASTBOUND_BUS_ROUTE_LINE_NATIVE = arrowLineNative(busRouteArrow('blue'));
+
+const WESTBOUND_BUS_ROUTE_LINE_NATIVE = arrowLineNative(busRouteArrow('red'));
 
 export const PhysEngFestDefinitions = {
   GENERAL_PARKING_GROUP: {
@@ -133,6 +147,8 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
   {
     type: 'group',
     id: PhysEngFestDefinitions.GENERAL_PARKING_GROUP.id,
+    // A group made here has no service to name it, so without a title it is listed with none (#1803).
+    title: PhysEngFestDefinitions.GENERAL_PARKING_GROUP.name,
     visible: true,
     listMode: 'show',
     sources: [
@@ -165,6 +181,8 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
   {
     type: 'group',
     id: PhysEngFestDefinitions.EASTBOUND_UNIVERSITY_GROUP.id,
+    // A group made here has no service to name it, so without a title it is listed with none (#1803).
+    title: PhysEngFestDefinitions.EASTBOUND_UNIVERSITY_GROUP.name,
     visible: false,
     listMode: 'show',
     sources: [
@@ -216,6 +234,8 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
   {
     type: 'group',
     id: PhysEngFestDefinitions.WESTBOUND_UNIVERSITY_GROUP.id,
+    // A group made here has no service to name it, so without a title it is listed with none (#1803).
+    title: PhysEngFestDefinitions.WESTBOUND_UNIVERSITY_GROUP.name,
     visible: false,
     listMode: 'show',
     sources: [

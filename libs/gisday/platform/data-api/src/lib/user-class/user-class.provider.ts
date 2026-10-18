@@ -9,6 +9,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
+
 import { Class, UserClass } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 
@@ -89,7 +91,7 @@ export class UserClassProvider extends BaseProvider<UserClass> {
       throw new NotFoundException('User class not found');
     }
 
-    if (foundClass && foundClass.accountGuid !== accountGuid) {
+    if (!isOwnerOrPermitted({ sub: accountGuid }, foundClass.accountGuid)) {
       throw new ForbiddenException();
     }
 

@@ -2,8 +2,19 @@
 <label [for]="formControlName()">{{label}}</label>
 }
 <input #rangeElement type="range" [name]="formControlName()" [id]="formControlName() + 'range'" [(ngModel)]="value" [disabled]="disabled" [min]="min()" [max]="max" [step]="step()" />
+@if (showTooltip()) {
 <output #liveValue name="liveValue" [for]="formControlName() + 'range'"></output>
-
+} @if (ticks()?.length) {
+<div class="ticks" aria-hidden="true">
+  @for (tick of ticks(); track $index) {
+  <span class="tick" [class.unmarked]="tick.mark === false" [class.titled]="tick.title" [style.left]="tickLeft(tick.value)" [attr.title]="tick.title">
+    @if (tick.label) {
+    <span class="tick-label">{{ tick.label }}</span>
+    }
+  </span>
+  }
+</div>
+} @if (showLimits()) {
 @if (limitFormat() === 'none') {
 <div class="labels">
   <div>{{minDisplay}}</div>
@@ -19,4 +30,4 @@
   <div>{{minDisplay | number}}</div>
   <div>{{maxDisplay | number}}</div>
 </div>
-}
+} }

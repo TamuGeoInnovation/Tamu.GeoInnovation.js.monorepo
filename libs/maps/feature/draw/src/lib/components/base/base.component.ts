@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, inject, i
 import { from, Subject, combineLatest, ReplaySubject } from 'rxjs';
 import { takeUntil, filter, switchMap, take, map } from 'rxjs/operators';
 
-import { EsriModuleProviderService, EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EsriModuleProviderService, EsriMapService } from '@tamu-gisc/maps/esri';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
 
 import esri = __esri;
@@ -70,16 +70,20 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
 
   private _$destroy: Subject<boolean> = new Subject();
   private _$loaded: ReplaySubject<boolean> = new ReplaySubject();
-  private _activeToolWatchHandle: esri.WatchHandle;
+  private _activeToolWatchHandle: esri.Handle;
   private _layersAddWatchHandle: esri.WatchHandle;
 
   public ngOnInit() {
     this.activeUpdateTool = this.defaultUpdateTool();
 
     if (this.reference() !== undefined) {
-      combineLatest([from(this.moduleProvider.require(['SketchViewModel'])), this.mapService.store])
+      const modules = this.moduleProvider.require(['SketchViewModel', 'reactiveUtils']) as Promise<
+        [typeof esri.SketchViewModel, esri.reactiveUtils]
+      >;
+
+      combineLatest([from(modules), this.mapService.store])
         .pipe(takeUntil(this._$destroy))
-        .subscribe(([[SketchViewModel], mapInstance]: [[esri.SketchViewModelConstructor], MapServiceInstance]) => {
+        .subscribe(([[SketchViewModel, reactiveUtils], mapInstance]) => {
           const l = mapInstance.map.findLayerById(this.reference());
 
           this.model = new SketchViewModel({
@@ -121,13 +125,16 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
             this.reorder(mapInstance.map);
           });
 
-          this._activeToolWatchHandle = this.model.watch('activeTool', (tool) => {
-            if (tool === null) {
-              this.activeUpdateTool = this.defaultUpdateTool();
-            } else {
-              this.activeUpdateTool = tool;
+          this._activeToolWatchHandle = reactiveUtils.watch(
+            () => this.model.activeTool,
+            (tool) => {
+              if (tool === null) {
+                this.activeUpdateTool = this.defaultUpdateTool();
+              } else {
+                this.activeUpdateTool = tool;
+              }
             }
-          });
+          );
 
           this._$loaded.next(true);
 

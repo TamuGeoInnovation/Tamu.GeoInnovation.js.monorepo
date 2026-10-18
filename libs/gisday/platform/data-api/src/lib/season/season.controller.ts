@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
@@ -12,6 +12,11 @@ export class SeasonController {
   @Get('active')
   public findActiveSeason() {
     return this.seasonService.findOneActive();
+  }
+
+  @Get('year/:year')
+  public findOneByYear(@Param('year', ParseIntPipe) year: number) {
+    return this.seasonService.findOneByYear(year);
   }
 
   @Get(':guid')

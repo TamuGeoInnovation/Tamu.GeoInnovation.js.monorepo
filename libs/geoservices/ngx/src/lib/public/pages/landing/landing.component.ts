@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { RouterLinkActive, RouterLink } from '@angular/router';
@@ -9,7 +9,6 @@ import { TabComponent } from '@tamu-gisc/ui-kits/ngx/layout';
   selector: 'tamu-gisc-landing',
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLinkActive, RouterLink, TabsComponent, TabComponent]
 })
 export class LandingComponent implements OnInit {

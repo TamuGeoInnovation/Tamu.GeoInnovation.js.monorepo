@@ -71,7 +71,7 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     url: MensBasketball_Definitions.PARKING.url,
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.lottype} - {attributes.lotnum}',
+      name: '{attributes.name}',
       description: `{attributes.description}`
     },
     visible: true,

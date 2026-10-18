@@ -220,14 +220,21 @@ on 30 September - is caught before merging, while the run is watched. Anything t
 (an upgrade, a dependency change, a shared-library refactor) still runs the full check before pushing.
 
 **Owners and maintainers open pull requests ready for review. Everyone else opens a draft** and marks
-it ready once CI is green. The draft exists so nobody is asked to look at a contribution that has not
+it ready once the GitHub Actions checks are green. The draft exists so nobody is asked to look at a contribution that has not
 passed yet; a maintainer opening their own pull request is already the person watching the run and
 merging it, so it only makes the list harder to read - eight in one batch on 6 October all showed as
 works in progress and each had to be converted by hand (#1494).
 
-Opening ready costs no extra build, and a draft buys none: converting a draft does not re-run
-anything, because no workflow lists `ready_for_review` in its `types:` and `main.yml` runs on
-`[opened, synchronize, reopened]`.
+**A draft cannot be merged until it is marked ready, and marking it ready starts a build.** The GitHub
+Actions workflows run on drafts and do not run again on conversion: none lists `ready_for_review` in
+its `types:`, and `main.yml` runs on `[opened, synchronize, reopened]`. The required Azure Pipelines
+check `Monorepo` does not run on a draft at all. It starts when the pull request is marked ready, so a
+draft whose Actions are all green still waits a full Azure run after it is converted. On 15 October,
+five pull requests had review fixes pushed to them while still drafts, showed green, and each waited
+for Azure once converted.
+
+So a draft that is meant to merge is marked ready as soon as its last commit is pushed, not after its
+checks pass, including by anyone pushing to someone else's draft. Opening ready costs nothing extra.
 
 The rest is unchanged: the issue first, a regression test proven red against the unfixed code, then
 green, before and after screenshots, and a row in the release notes.
@@ -265,13 +272,29 @@ is unclear, ask.
 
 | The user says | Run |
 | --- | --- |
-| "run the test suite on dev", "smoke test dev" | `test/smoke/aggiemap/run-local.sh development`, from this machine |
-| "... on prod", "... on production" | `test/smoke/aggiemap/run-local.sh production` |
+| "smoke test dev", "test the dev release", "run the quick tests" | `test/smoke/aggiemap/run-local.sh development quick`, from this machine: the core plus what changed since the last `dev-*` tag |
+| "clear this for production", "run the release tests", "run the test suite on dev" | `test/smoke/aggiemap/run-local.sh development release`: every map once |
+| "run everything", "run the full suite" | `test/smoke/aggiemap/run-local.sh development full`. Normally only the nightly GitHub run does this |
+| "... on prod", "... on production" | The same tier with `production` in place of `development`. After a production deploy, `release` |
 | "... on both" | Both of the above, one after the other |
 | "... locally", "... against my dev server" | `test/smoke/aggiemap/run-local.sh local`, with the dev server running in the `aggiemap-dev` container |
 | "... locally as production", "check the production gating" | `test/smoke/aggiemap/run-local.sh local-production`: the same dev server at `127.0.0.1`, which is not a dev host, so development-only features are hidden as on production |
 | "... on GitHub", "run the smoke workflow" | `gh workflow run aggiemap-smoke.yml -f environment=development` (or `production`, `both`), then `gh run watch` |
 | "run the tests", "run the unit tests" (no environment) | `nx test` for the affected projects, in Docker as in CLAUDE_SETUP.md |
+
+**Three tiers, and the smallest one that answers the question** (#1717). The suite's
+[README](test/smoke/aggiemap/README.md#the-three-tiers) defines them, with when each is run and when it
+must not be:
+
+- **quick** clears a build on dev for its `dev-*` tag. Six to ten minutes. Never used to clear
+  production, and it cannot find a map that broke without a release.
+- **release** clears the one build that is going to production. About thirty minutes. Not run on
+  every dev build.
+- **full** is the nightly GitHub run on both environments. Nobody waits on it and it clears nothing.
+
+Before a quick run, **say what it will run**: it prints its set, and the files it could not map to a
+test, before the first test starts. If the request does not say which tier and it is not obvious from
+the table, ask; do not default to a bigger one.
 
 **Local runs are the default.** `run-local.sh` runs the suite in the Playwright container on this
 machine with the same settings as the scheduled workflow, because both read

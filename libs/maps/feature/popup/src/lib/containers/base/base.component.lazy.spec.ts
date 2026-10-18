@@ -6,6 +6,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapService, HitTestSnapshot, lazyPopup, PopupComponentReference } from '@tamu-gisc/maps/esri';
 
 import { PopupComponent } from './base.component';
+import { PopupService } from '../../services/popup.service';
 
 /**
  * A definition may name its popup as a component or as something that loads one (#1454). The container
@@ -101,6 +102,52 @@ describe('PopupComponent with lazily loaded popups', () => {
     slow.finish();
     await settle();
 
+    expect(text()).not.toContain('first popup');
+  });
+
+  /**
+   * The sidebar shows its own default panel whenever nothing is asking for the popup panel. Asking
+   * for it only after the component had downloaded left a gap: between one feature's popup closing
+   * and the next one's component arriving, the sidebar fell back to its default view for about
+   * 100 ms - the Share Map and Layers panel on an event map (#1684).
+   *
+   * A dynamic import never resolves in the same tick, so the gap was there even with the chunk
+   * cached, which is why it showed on every feature-to-feature selection rather than only the first.
+   */
+  it('asks for the popup panel before the component has loaded, so the sidebar does not fall back', async () => {
+    const popup = TestBed.inject(PopupService);
+    const shown: Array<boolean> = [];
+
+    popup.show.subscribe((value) => shown.push(value));
+    popup.hidePopup();
+
+    const slow = deferred(FirstPopupComponent);
+
+    open(slow.reference);
+    await settle();
+
+    expect(text()).not.toContain('first popup');
+    expect(shown[shown.length - 1]).toBe(true);
+
+    slow.finish();
+    await settle();
+    expect(text()).toContain('first popup');
+  });
+
+  it('leaves the panel hidden when the popup is closed while its component is still loading', async () => {
+    const popup = TestBed.inject(PopupService);
+    const shown: Array<boolean> = [];
+
+    popup.show.subscribe((value) => shown.push(value));
+
+    const slow = deferred(FirstPopupComponent);
+
+    open(slow.reference);
+    hitTest.next({ graphics: [] });
+    slow.finish();
+    await settle();
+
+    expect(shown[shown.length - 1]).toBe(false);
     expect(text()).not.toContain('first popup');
   });
 });

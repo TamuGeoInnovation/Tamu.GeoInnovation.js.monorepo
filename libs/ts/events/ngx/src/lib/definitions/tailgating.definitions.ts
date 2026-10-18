@@ -1,5 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
+import { SearchSource, containsSearch } from '@tamu-gisc/ui-kits/ngx/search';
 import { getDefaultGisHosts, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
@@ -17,10 +17,6 @@ import { EventPopups } from '../modules/popups/popups';
  * in ArcGIS Pro. Their colors, outlines and the circled zone numbers come from the service's own
  * drawing info, so styling is changed by republishing the layer, not here. Popups read the `name`
  * and `type` fields, so keep those field names when editing the data.
- *
- * This service has no production counterpart yet, so the map is development-only
- * (`DevelopmentOnlyEventDefinitions`) and the service is listed in the smoke suite's
- * `DEVELOPMENT_ONLY_SERVICES`, with this map's route (`/events/tailgating`) as the page that uses it.
  *
  * The event service adds these in reverse order, and a layer added later draws above the ones before
  * it, so the first entry draws on top: the circled numbers, then the tents, then the zones.
@@ -86,13 +82,6 @@ const constructionPopupData: NonNullable<LayerSource['popupData']> = {
   name: '{attributes.projectName}',
   description: `<strong>Start Date:</strong> {attributes.startDate}<br><strong>End Date:</strong> {attributes.endDate}`
 };
-
-/** Season-over state tracks the football map's home game dates, so both update together. */
-const seasonDates = FootballParkingConfiguration.eventDates.map((date) =>
-  // A bare 'YYYY-MM-DD' parses as UTC midnight, which is the evening before in College Station.
-  // Treat each game day as lasting until 11:59 PM local time instead.
-  typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) ? `${date}T23:59:59` : date
-);
 
 const zonePopupData: LayerSource['popupData'] = {
   name: 'attributes.name',
@@ -187,7 +176,8 @@ export const TailgatingColdLayerSources: LayerSource[] = [
  * Readable links: `?zone=AP-7` and `?tent=O12`, which a popup's copy button also writes. Matched,
  * case-insensitively, on the `zone_ID` and `tent_id` fields set in ArcGIS Pro, so a link survives a
  * republish that renumbers object ids. A zone without a `zone_ID` keeps the generic `feature=` link.
- * Not searchable from the sidebar (`searchActive: false`), which keeps the usual campus search.
+ * Not searched themselves (`searchActive: false`): an exact match, for links. `TailgatingSearchSources`
+ * below are what the sidebar search uses.
  */
 const TailgatingLinkSources: SearchSource[] = [
   {
@@ -214,6 +204,52 @@ const TailgatingLinkSources: SearchSource[] = [
   }
 ] as SearchSource[];
 
+/**
+ * What the sidebar search finds on this map, alongside the usual buildings and parking
+ * (`searchSourcesWithCampus`): tents by their id, and the named areas by name or zone id. A result
+ * opens the map's own feature and popup, as a `?tent=` or `?zone=` link does: the feature of the layer
+ * with the same `url`, by object id. A named area whose `name` is empty is still found by its `zone_ID`,
+ * and lists by it until it is given a name.
+ */
+const TailgatingSearchSources: SearchSource[] = [
+  {
+    source: 'tailgating-tent-search',
+    name: 'Aggie Park Tents',
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.TENTS}`,
+    queryParams: containsSearch(['tent_id']),
+    featuresLocation: 'features',
+    displayTemplate: 'Tent {attributes.tent_id}',
+    searchActive: true
+  },
+  {
+    source: 'tailgating-simpson-tent-search',
+    name: 'Simpson Drill Field Tents',
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.SIMPSON_TENTS}`,
+    queryParams: containsSearch(['tent_id']),
+    featuresLocation: 'features',
+    displayTemplate: 'Tent {attributes.tent_id}',
+    searchActive: true
+  },
+  {
+    source: 'tailgating-aggie-park-area-search',
+    name: 'Aggie Park Tailgating',
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.AGGIE_PARK}`,
+    queryParams: containsSearch(['name', 'zone_ID']),
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.name|attributes.zone_ID}',
+    searchActive: true
+  },
+  {
+    source: 'tailgating-west-campus-area-search',
+    name: 'West Campus Tailgating',
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.WEST_CAMPUS}`,
+    queryParams: containsSearch(['name', 'zone_ID']),
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.name|attributes.zone_ID}',
+    searchActive: true
+  }
+] as SearchSource[];
+
 export const TailgatingConfiguration: EventConfiguration = {
   id: 'tailgating',
   // Sorts directly under "Football" in the alphabetical Athletics Events list.
@@ -221,7 +257,8 @@ export const TailgatingConfiguration: EventConfiguration = {
   applicationName: 'Football Tailgating Map',
   shortApplicationName: 'Tailgating',
   introductionText: 'Tailgating zones at Aggie Park and West Campus for',
-  eventDates: seasonDates,
+  // The football map's home game days, so the two maps' season-over state always agree (#1814).
+  eventDates: FootballParkingConfiguration.eventDates,
   scheduleUrl: FootballParkingConfiguration.scheduleUrl,
   eventPassedWarning: {
     title: 'Football season is over',
@@ -231,7 +268,25 @@ export const TailgatingConfiguration: EventConfiguration = {
   mapCenter: [-96.3415, 30.6082],
   zoom: 16,
   referenceLayerListOrder: 'source',
-  searchSources: TailgatingLinkSources
+  // Tents and zones are read against campus, so the map opens on the campus basemap whatever basemap
+  // the visitor last chose elsewhere.
+  basemap: 'campus-raster',
+  searchSources: [...TailgatingLinkSources, ...TailgatingSearchSources],
+  searchSourcesWithCampus: true,
+  // Raised on the same game days as the Football toast, and second, because the map is registered
+  // right after Football's (#1817).
+  toast: {
+    id: 'tailgating-notification',
+    title: 'Football Tailgating Map Available',
+    message: 'Tailgating on game day? Click me to open the Football Tailgating Map to find tailgating zones and tents.',
+    imgUrl: './assets/images/icons/sports/Football.png',
+    imgAltText: 'Football Icon',
+    acknowledge: true,
+    action: {
+      type: 'internal',
+      value: '/events/tailgating'
+    }
+  }
 };
 
 export const TailgatingOptions: SpecialEventOptions = [];
@@ -249,8 +304,6 @@ export const TailgatingTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     mapType: 'athletics',
-    // Prototype: registered on development hosts only (see `DevelopmentOnlyEventDefinitions`).
-    labels: ['Beta'],
     keywords: [
       'tailgating',
       'tailgate',

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input, signal } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -38,6 +38,7 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectListComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PresenterCardComponent } from '../../../../people/components/presenter-card/presenter-card.component';
+import { eventFormProblems } from '../../../../../utils/event-form-problems';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -73,6 +74,11 @@ export class EventAddEditFormComponent implements OnInit {
   private readonly eventBroadcastService = inject(BroadcastService);
   private readonly eventService = inject(EventService);
   private readonly ns = inject(NotificationService);
+
+  /**
+   * What stops the event being saved, shown above the buttons after a save is tried (#1773).
+   */
+  public readonly problems = signal<Array<string>>([]);
 
   public readonly type = input<'create' | 'edit'>(undefined);
 
@@ -260,6 +266,9 @@ export class EventAddEditFormComponent implements OnInit {
       this.entity$.pipe(take(1)).subscribe((event) => {
         this.form.patchValue({
           ...event,
+          // A stored time that cannot be read is cleared, so saving the event does not write it back (#1772).
+          startTime: this._readableTime(event, 'startTime'),
+          endTime: this._readableTime(event, 'endTime'),
           day: event?.day?.guid,
           tags: event?.tags?.map((tag) => tag.guid),
           speakers: event?.speakers?.map((speaker) => speaker.guid),
@@ -326,6 +335,12 @@ export class EventAddEditFormComponent implements OnInit {
   }
 
   public setEventTime(time: DateTimePickerChange<Date>, which: 'start' | 'end') {
+    // A Date that is not valid would be stored as the text "Invalid Date", which made the event
+    // impossible to open again and broke the Sessions page (#1772). Leave the stored time as it was.
+    if (!(time?.value instanceof Date) || isNaN(time.value.getTime())) {
+      return;
+    }
+
     // Get only the time portion of the date
     const timeString = time.value.toTimeString();
 
@@ -343,6 +358,20 @@ export class EventAddEditFormComponent implements OnInit {
   }
 
   public handleSubmission() {
+    // An event needs its day, real times, a name, an abstract and its four choices before it is saved
+    // (#1773). An incomplete one is not sent, and the form says what is missing.
+    this.problems.set(eventFormProblems(this.form.getRawValue()));
+
+    if (this.problems().length > 0) {
+      this.ns.toast({
+        id: 'event-incomplete',
+        title: this.type() === 'create' ? 'Create event' : 'Update Event',
+        message: 'The event was not saved. See what is missing above the buttons.'
+      });
+
+      return;
+    }
+
     if (this.type() === 'create') {
       this._createEntity();
     } else {
@@ -447,12 +476,26 @@ export class EventAddEditFormComponent implements OnInit {
         const dateStringFromEvent = event?.day !== null ? new Date(event?.day?.date).toDateString() : null;
         const timeStringFromEvent = event?.[timeProp];
 
-        if (dateStringFromEvent === null || timeStringFromEvent === null || timeStringFromEvent === undefined) {
+        const parsed = new Date(`${dateStringFromEvent} ${timeStringFromEvent}`);
+
+        // A missing or unreadable stored time opens on the default rather than as an invalid Date,
+        // which left the whole event uneditable (#1772).
+        if (dateStringFromEvent === null || !timeStringFromEvent || isNaN(parsed.getTime())) {
           return this._defaultTimeFromSelectedEvent$();
         } else {
-          return of(new Date(`${dateStringFromEvent} ${timeStringFromEvent}`));
+          return of(parsed);
         }
       })
     );
+  }
+
+  /**
+   * The event's stored time if it can be read, or null. "Invalid Date" was stored by #1772.
+   */
+  private _readableTime(event: Partial<Event>, timeProp: 'startTime' | 'endTime') {
+    const time = event?.[timeProp];
+    const day = event?.day?.date ? new Date(event.day.date).toDateString() : new Date().toDateString();
+
+    return time && !isNaN(new Date(`${day} ${time}`).getTime()) ? time : null;
   }
 }

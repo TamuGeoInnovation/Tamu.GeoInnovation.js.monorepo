@@ -14,6 +14,7 @@ import {
   EsriModuleProviderService,
   PopupComponentReference
 } from '@tamu-gisc/maps/esri';
+import { escapeSqlString } from '@tamu-gisc/common/utils/database';
 import { dateForDateTimeString } from '@tamu-gisc/common/utils/date';
 import { relativeDistance } from '@tamu-gisc/common/utils/geometry/generic';
 
@@ -86,8 +87,8 @@ export class BusService {
 
       // TODO: Probably have to dispose of this event handlers on service destroy.
       // Detect bus layer changes and set graphics as the service value.
-      busLayer.graphics.on('change', (event: { target: esri.Collection<esri.Graphic> }) => {
-        return this._busLayerGraphics.next(event.target.clone().toArray());
+      busLayer.graphics.on('change', () => {
+        return this._busLayerGraphics.next(busLayer.graphics.toArray());
       });
     });
   }
@@ -184,7 +185,7 @@ export class BusService {
       this.moduleProvider.require(['Point', 'SpatialReference', 'webMercatorUtils'])
     ]).pipe(
       switchMap(
-        (argument: [TSWaypoint[], [esri.PointConstructor, esri.SpatialReferenceConstructor, esri.webMercatorUtils]]) => {
+        (argument: [TSWaypoint[], [typeof esri.Point, typeof esri.SpatialReference, esri.webMercatorUtils]]) => {
           const [waypoints_raw, [Point, SpatialReference, webMercatorUtils]] = argument;
           const waypoints: Waypoint[] = [];
           for (const waypoint of waypoints_raw) {
@@ -234,7 +235,7 @@ export class BusService {
       this.moduleProvider.require(['Point', 'SpatialReference', 'webMercatorUtils'])
     ]).pipe(
       switchMap(
-        (argument: [TSStopJson[], [esri.PointConstructor, esri.SpatialReferenceConstructor, esri.webMercatorUtils]]) => {
+        (argument: [TSStopJson[], [typeof esri.Point, typeof esri.SpatialReference, esri.webMercatorUtils]]) => {
           const [stops_raw, [Point, SpatialReference, webMercatorUtils]] = argument;
           const stops: BusStop[] = [];
           for (const stop of stops_raw) {
@@ -633,7 +634,7 @@ export class BusService {
       ),
       this.moduleProvider.require(['Point', 'SpatialReference', 'webMercatorUtils'])
     ]).pipe(
-      map((argument: [TSBus[], [esri.PointConstructor, esri.SpatialReferenceConstructor, esri.webMercatorUtils]]) => {
+      map((argument: [TSBus[], [typeof esri.Point, typeof esri.SpatialReference, esri.webMercatorUtils]]) => {
         const [buses_raw, [Point, SpatialReference, webMercatorUtils]] = argument;
         const buses = buses_raw.map((bus_raw) => {
           const point = <esri.Point>webMercatorUtils.webMercatorToGeographic(
@@ -666,7 +667,7 @@ export class BusService {
     }
 
     return from(this.moduleProvider.require(['GraphicsLayer'])).pipe(
-      switchMap(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
+      switchMap(([GraphicsLayer]: [typeof esri.GraphicsLayer]) => {
         layer = new GraphicsLayer({
           id: id,
           title: 'Bus Routes',
@@ -714,10 +715,10 @@ export class BusService {
           number[][][],
           MapStop[],
           [
-            esri.GraphicConstructor,
-            esri.SimpleLineSymbolConstructor,
-            esri.SimpleMarkerSymbolConstructor,
-            esri.PolylineConstructor
+            typeof esri.Graphic,
+            typeof esri.SimpleLineSymbol,
+            typeof esri.SimpleMarkerSymbol,
+            typeof esri.Polyline
           ]
         ]
       ) => {
@@ -737,7 +738,7 @@ export class BusService {
               type: 'point',
               longitude: stop.longitude,
               latitude: stop.latitude
-            } as unknown as esri.GeometryProperties,
+            },
             attributes: {
               id: short_name,
               type: 'waypoints',
@@ -806,7 +807,7 @@ export class BusService {
     const stopFields = Array.from({ length: 31 }, (_, i) => `Stop${i + 1}`);
 
     return this.arcgisQuery(1, {
-      where: `RouteNum='${this.escapeSql(short_name)}'`,
+      where: `RouteNum='${escapeSqlString(short_name)}'`,
       outFields: stopFields.join(','),
       returnGeometry: 'false'
     }).pipe(
@@ -831,7 +832,7 @@ export class BusService {
    */
   private routeGeometry(short_name: string): Observable<number[][][]> {
     return this.arcgisQuery(1, {
-      where: `RouteNum='${this.escapeSql(short_name)}'`,
+      where: `RouteNum='${escapeSqlString(short_name)}'`,
       outFields: 'RouteNum',
       returnGeometry: 'true',
       outSR: '4326'
@@ -862,7 +863,7 @@ export class BusService {
    */
   private routeStops(short_name: string): Observable<MapStop[]> {
     return this.arcgisQuery(0, {
-      where: `Route LIKE '%${this.escapeSql(short_name)}%'`,
+      where: `Route LIKE '%${escapeSqlString(short_name)}%'`,
       outFields: 'OBJECTID,StopName,Route,StopType,StopClass',
       returnGeometry: 'true',
       outSR: '4326'
@@ -934,10 +935,6 @@ export class BusService {
     return colors;
   }
 
-  private escapeSql(value: string): string {
-    return value.replace(/'/g, "''");
-  }
-
   /**
    * Adds, updates, or removes buses (icons) from the map.
    */
@@ -984,10 +981,10 @@ export class BusService {
         (
           result: [
             [
-              esri.PointConstructor,
-              esri.GraphicConstructor,
-              esri.FeatureLayerConstructor,
-              esri.PictureMarkerSymbolConstructor
+              typeof esri.Point,
+              typeof esri.Graphic,
+              typeof esri.FeatureLayer,
+              typeof esri.PictureMarkerSymbol
             ],
             RouteBus[],
             esri.Graphic[]
@@ -1001,7 +998,7 @@ export class BusService {
                 type: 'point',
                 latitude: bus.point.latitude,
                 longitude: bus.point.longitude
-              } as unknown as esri.GeometryProperties,
+              },
               attributes: {
                 name: bus.name,
                 route: short_name,
@@ -1064,7 +1061,7 @@ export class BusService {
                     rotationType: 'geographic'
                   }
                 ]
-              } as esri.RendererProperties
+              } as unknown as esri.FeatureLayerProperties['renderer']
             });
 
             this._map.add(featureLayer);

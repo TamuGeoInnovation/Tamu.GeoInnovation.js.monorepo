@@ -6,6 +6,12 @@ export { metadata } from '@tamu-gisc/common/ngx/environment';
 
 export const api_url = '___ANGULAR_API_URL___';
 
+/**
+ * Which GIS Day site this deployment is, a key of `GISDAY_SITES` in `@tamu-gisc/gisday/common` (#1835).
+ * Left unset, as it is for txgisday.org, the placeholder stays and the site is txgisday.org.
+ */
+export const site = '___ANGULAR_SITE___';
+
 export const auth0 = {
   domain: '___ANGULAR_AUTH0_DOMAIN___',
   client_id: '___ANGULAR_AUTH0_CLIENT_ID___',

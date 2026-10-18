@@ -1,0 +1,23 @@
+@import 'libs/gisday/sass/variables';
+@import 'libs/sass/mixins';
+@import 'libs/gisday/sass/class-banner';
+
+// The photograph at the size of a presenter's card on the public Presenters page, so its banner is
+// drawn exactly as the card draws it.
+.speaker-photo {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  width: 17rem;
+  max-width: 100%;
+  border-radius: 3px;
+
+  img {
+    display: block;
+    width: 100%;
+  }
+
+  ::ng-deep .class-banner {
+    @include class-banner(1rem, -5rem);
+  }
+}

@@ -106,6 +106,16 @@ describe('TemplateRenderer', () => {
     expect(value).toBe('Mary had a little lamb named .');
   });
 
+  it('renders the first alternative with a value, skipping blank ones', () => {
+    const render = (lookup: object) => new TemplateRenderer({ lookup, template: 'Area {name|zone_ID}' }).render();
+
+    expect(render({ name: 'Ortega Lawn', zone_ID: 'AP-7' })).toBe('Area Ortega Lawn');
+    expect(render({ name: null, zone_ID: 'AP-7' })).toBe('Area AP-7');
+    expect(render({ name: '  ', zone_ID: 'AP-7' })).toBe('Area AP-7');
+    // With none, it keeps the placeholder, as a single path does.
+    expect(render({})).toBe('Area {name|zone_ID}');
+  });
+
   it('should identify template expressions', () => {
     expect(hasTemplateExpression('Mary had a little {value}.')).toBe(true);
     expect(hasTemplateExpression('Mary had a little lamb.')).toBe(false);

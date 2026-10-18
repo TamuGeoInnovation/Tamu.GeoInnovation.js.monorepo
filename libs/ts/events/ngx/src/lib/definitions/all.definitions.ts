@@ -30,7 +30,7 @@ import { AprilRingDayEvent } from './april-ring-day.definitions';
 import { AggiemapCustomMapConfiguration } from '../interfaces/special-event.interface';
 import { MensBasketball_Ts } from './mens-basketball.definitions';
 import { WomensBasketball_Ts } from './womens-basketball.definitions';
-import { MoveOut } from './move-out.definitions';
+import { MoveOut, SpringMoveOut, SummerOneMoveOut, SummerTwoMoveOut } from './move-out.definitions';
 import { GisDayTs } from './gis-day-map.definitions';
 import { ContractorParkingTs } from './contractor-parking.definitions';
 import { TimedParking_Ts } from './timed-parking.definitions';
@@ -73,22 +73,6 @@ import { GalvestonTs } from './campus/galveston.definitions';
 import { McAllenTs } from './campus/mcallen.definitions';
 import { DCBushSchoolTs } from './campus/dc-bush-school.definitions';
 
-/**
- * Uses the same rule as the application `TestingService`: a host containing `dev`, or localhost.
- */
-function isDevelopmentHost(): boolean {
-  const host = globalThis.location?.host ?? '';
-
-  return host.includes('dev') || host.includes('localhost');
-}
-
-/**
- * Maps that exist on development hosts only. Production leaves them out of the registry entirely,
- * so their links do not resolve and they never appear in search or the map listings. Use this for
- * prototypes; `discover.visible: false` only keeps a map off production's lists.
- */
-const DevelopmentOnlyEventDefinitions: Array<AggiemapCustomMapConfiguration> = [TailgatingTs];
-
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
   AggielandSaturdayEventTs,
@@ -114,12 +98,16 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   VolleyballParkingTs,
   TroubadourTs,
   FootballParkingEvent,
+  TailgatingTs,
   AprilRingDayEvent,
   NovemberRingDayEvent,
   RingDayEvent,
   WomensBasketball_Ts,
   GisDayTs,
   MoveOut,
+  SpringMoveOut,
+  SummerOneMoveOut,
+  SummerTwoMoveOut,
   ContractorParkingTs,
   TimedParking_Ts,
   VendorParking_Ts,
@@ -161,6 +149,5 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   DCBushSchoolTs,
   DiningKioskTs,
   KickoffAtKyleTs,
-  LiveAtTheStationTs,
-  ...(isDevelopmentHost() ? DevelopmentOnlyEventDefinitions : [])
+  LiveAtTheStationTs
 ];

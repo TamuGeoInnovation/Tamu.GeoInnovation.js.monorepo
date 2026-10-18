@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
 import { SidebarComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
 
@@ -34,7 +34,7 @@ describe('RevealSidebarOnPopupDirective', () => {
       .configureTestingModule({
         providers: [
           { provide: SidebarComponent, useValue: sidebar },
-          { provide: PopupService, useValue: { opened: opened.asObservable() } }
+          { provide: PopupService, useValue: { opened: opened.asObservable(), show: of(false) } }
         ]
       })
       .runInInjectionContext(() => new RevealSidebarOnPopupDirective());

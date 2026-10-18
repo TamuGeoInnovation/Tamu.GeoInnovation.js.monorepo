@@ -1,4 +1,17 @@
 /**
+ * The character that makes the next `%`, `_` or itself literal in a LIKE pattern. Both the campus GIS
+ * server and ArcGIS Online accept `ESCAPE '\'`.
+ */
+const LIKE_ESCAPE = '\\';
+
+/**
+ * Makes a value safe to put between single quotes in a where clause, by doubling every apostrophe.
+ */
+export function escapeSqlString(value: string): string {
+  return value.replace(/'/g, "''");
+}
+
+/**
  * Simple SQL builder for use in Esri services.
  *
  * Includes a uppercase key transformation, as well as automatically upper-casing values.
@@ -49,15 +62,21 @@ export function makeWhere(
     let str = '';
 
     // TODO: This could be simplified to co-apply transformations to keys and values.
-    const getValueDeclaration = (wildcard, value) => {
+    //
+    // The value is text a visitor typed, so it is escaped before it is quoted (#1790): an apostrophe is
+    // doubled, and in a LIKE comparison `%`, `_` and the escape character are matched literally.
+    const getValueDeclaration = (wildcard, value: string, isLike: boolean) => {
+      const escaped = escapeSqlString(isLike ? value.replace(/[\\%_]/g, (c) => `${LIKE_ESCAPE}${c}`) : value);
+      const escapeClause = isLike ? ` ESCAPE '${LIKE_ESCAPE}'` : '';
+
       if (wildcard === 'startsWith') {
-        return `'${value}%'`.toUpperCase();
+        return `'${escaped}%'`.toUpperCase() + escapeClause;
       } else if (wildcard === 'endsWith') {
-        return `'%${value}'`.toUpperCase();
+        return `'%${escaped}'`.toUpperCase() + escapeClause;
       } else if (wildcard === 'includes') {
-        return `'%${value}%'`.toUpperCase();
+        return `'%${escaped}%'`.toUpperCase() + escapeClause;
       } else {
-        return `'${value}'`.toUpperCase();
+        return `'${escaped}'`.toUpperCase() + escapeClause;
       }
     };
 
@@ -102,7 +121,8 @@ export function makeWhere(
 
       const transformedKey = getKeyTransformation(ts[i], k);
       const operator = getOperator(currentOperator, 'comparison');
-      const value = typeof values[i] === 'string' ? getValueDeclaration(wc[i], values[i]) : values[i];
+      const value =
+        typeof values[i] === 'string' ? getValueDeclaration(wc[i], values[i], /\bLIKE\b/i.test(operator)) : values[i];
 
       str += `${transformedKey} ${operator} ${value}`;
     });
@@ -116,5 +136,5 @@ export function makeWhere(
 export interface CompoundOperator {
   logical?: 'AND' | 'BETWEEN' | 'IN' | 'NOT IN' | 'LIKE' | 'NOT LIKE' | 'NOT' | 'OR';
 
-  comparison?: 'IS NULL' | '=' | '>' | '>=' | '<=' | '<' | '!=';
+  comparison?: 'IS NULL' | '=' | '>' | '>=' | '<=' | '<' | '!=' | 'LIKE' | 'NOT LIKE';
 }

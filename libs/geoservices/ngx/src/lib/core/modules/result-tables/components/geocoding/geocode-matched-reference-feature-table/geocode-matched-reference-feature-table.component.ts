@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { GeocodeReferenceFeatureField, IGeocodeReferenceFeature } from '@tamu-gisc/geoprocessing-v5';
@@ -12,7 +12,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-geocode-matched-reference-feature-table',
   templateUrl: './geocode-matched-reference-feature-table.component.html',
   styleUrls: ['./geocode-matched-reference-feature-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ParsedAddressResultTableComponent, AsyncPipe]
 })
 export class GeocodeMatchedReferenceFeatureTableComponent implements OnInit {

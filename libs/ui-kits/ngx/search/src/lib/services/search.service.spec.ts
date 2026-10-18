@@ -1,8 +1,9 @@
 import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 
-import { SearchProperties, SearchResult, SearchService } from './search.service';
+import { SearchProperties, SearchResult, SearchService, containsSearch, searchQueryParams } from './search.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { env } from '@tamu-gisc/common/ngx/environment';
+import { makeWhere } from '@tamu-gisc/common/utils/database';
 
 describe('SearchService (no SearchSources)', () => {
   beforeEach(waitForAsync(() => {
@@ -71,5 +72,32 @@ describe('SearchResult', () => {
       ]
     });
     expect(search_result.features()).toEqual(['test', 'test2']);
+  });
+});
+
+describe('containsSearch', () => {
+  it('finds what is typed anywhere in each key, ignoring case, with the shared query parameters', () => {
+    expect(containsSearch(['name', 'zone_ID'])).toEqual({
+      ...searchQueryParams,
+      where: {
+        keys: ['name', 'zone_ID'],
+        operators: ['LIKE', 'LIKE'],
+        wildcards: ['includes', 'includes'],
+        transformations: ['UPPER', 'UPPER']
+      }
+    });
+  });
+
+  it('builds a where clause matching the term anywhere in any key, as the search service sends it', () => {
+    const where = containsSearch(['name', 'zone_ID']).where;
+
+    if (!where) {
+      throw new Error('containsSearch gave no where clause');
+    }
+
+    const sql = makeWhere(where.keys, ['o12', 'o12'], where.operators, where.wildcards as string[], where.transformations as string[]);
+
+    // ESCAPE lets a typed `%` or `_` be matched literally (#1790).
+    expect(sql).toBe("UPPER(name) LIKE '%O12%' ESCAPE '\\' OR UPPER(zone_ID) LIKE '%O12%' ESCAPE '\\'");
   });
 });

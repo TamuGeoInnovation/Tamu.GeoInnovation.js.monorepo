@@ -33,6 +33,7 @@
           "includePaths": ["."]
         },
         "scripts": [],
+        "loader": { ".woff2": "file", ".woff": "file", ".ttf": "file" },
         "browser": "apps/ts-events-angular/src/main.ts"
       },
       "configurations": {

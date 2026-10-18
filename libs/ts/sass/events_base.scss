@@ -630,11 +630,8 @@ body.mapping {
   }
 }
 
-.esri-zoom .esri-widget--button:last-child {
-  border-top: solid 1px rgba(50, 50, 50, 0.25);
-}
-
-.esri-component.esri-attribution.esri-widget {
+// Since ArcGIS 5.0 the attribution is the view's own and no longer an `.esri-component` (#1859).
+.esri-attribution.esri-widget {
   display: none;
 }
 

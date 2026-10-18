@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, Subject, combineLatest, forkJoin, merge } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, Subject, combineLatest, forkJoin, merge, of } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -16,7 +16,7 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
-import { SeasonDayCardComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { PlaceVisibilityOptions, SeasonDayCardComponent, SeasonLinkPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -34,7 +34,8 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
     ReactiveFormsModule,
     CheckboxGroupComponent,
     CheckboxComponent,
-    AsyncPipe
+    AsyncPipe,
+    SeasonLinkPipe
   ]
 })
 export class EventViewComponent implements OnInit, OnDestroy {
@@ -52,6 +53,8 @@ export class EventViewComponent implements OnInit, OnDestroy {
   private readonly rt = inject(Router);
 
   public activeSeason$: Observable<ActiveSeasonDto>;
+  public viewedYear$: Observable<number | null>;
+  public isPastSeason$: Observable<boolean>;
   public events$: Observable<Array<Partial<Event>>>;
   public tags$: Observable<Array<Partial<Tag>>>;
   public organizations$: Observable<Array<Partial<Place>>>;
@@ -98,8 +101,22 @@ export class EventViewComponent implements OnInit, OnDestroy {
       })
       .pipe(shareReplay());
 
-    this.tags$ = this.tagService.getEntitiesForActiveSeason().pipe(shareReplay(1));
-    this.organizations$ = this.os.getEntitiesForActiveSeason().pipe(shareReplay(1));
+    // The season in the address, or the active one (#1758).
+    const viewed = this.ss.seasonForRoute(this.at.snapshot).pipe(shareReplay(1));
+
+    this.activeSeason$ = viewed.pipe(map(({ season }) => season));
+    this.viewedYear$ = viewed.pipe(map(({ year }) => year));
+    this.isPastSeason$ = viewed.pipe(map(({ isPast }) => isPast));
+
+    this.tags$ = this.activeSeason$.pipe(
+      switchMap((season) => (season ? this.tagService.getEntitiesForSeason(season.guid) : of([]))),
+      shareReplay(1)
+    );
+    this.organizations$ = this.activeSeason$.pipe(
+      switchMap((season) => (season ? this.os.getEntitiesForSeason(season.guid) : of([]))),
+      map((places) => places.filter((place) => place?.visibilitySettings?.includes(PlaceVisibilityOptions.SessionsFilter))),
+      shareReplay(1)
+    );
 
     // Subscription needs to remain active for the lifetime of the component, otherwise
     // the settings will not be written to localStorage when `updateSettings` is called.
@@ -170,7 +187,6 @@ export class EventViewComponent implements OnInit, OnDestroy {
       });
 
     this.isAuthed$ = this.as.isAuthenticated$;
-    this.activeSeason$ = this.ss.activeSeason$.pipe(shareReplay());
     this.userInfo$ = this.isAuthed$.pipe(
       filter((auth) => {
         return auth === true;

@@ -4,10 +4,14 @@ export * from './lib/modules/modals/entity-actions-modals/entity-delete-modal/en
 export * from './lib/pipes/asset-url/asset-url.pipe';
 export * from './lib/pipes/order-by/order-by.pipe';
 export * from './lib/pipes/parse-date-time-strings/parse-date-time-strings.pipe';
+export * from './lib/pipes/season-link/season-link.pipe';
 export * from './lib/pipes/submission-review-status/submission-review-status.pipe';
 
 export * from './lib/utils/form-to-form-data';
 export * from './lib/utils/parse-date-strings';
+export * from './lib/utils/events-by-day';
+export * from './lib/utils/event-form-problems';
+export * from './lib/utils/speakers';
 
 // Enums
 export * from './lib/enums/submission-review-status.enum';
@@ -29,7 +33,11 @@ export * from './lib/modules/events/components/season-day-card/season-day-card.c
 export * from './lib/modules/forms/components/speakers/speaker-add-edit-form/speaker-add-edit-form.component';
 export * from './lib/modules/people/components/speaker-avatar/speaker-avatar.component';
 export * from './lib/modules/people/components/speaker-card/speaker-card.component';
+export * from './lib/modules/people/components/speaker-class-banner/speaker-class-banner.component';
 export * from './lib/modules/forms/components/sponsors/sponsor-add-edit-form/sponsor-add-edit-form.component';
 export * from './lib/modules/forms/components/tags/tag-add-edit-form/tag-add-edit-form.component';
 export * from './lib/modules/forms/components/universities/university-add-edit-form/university-add-edit-form.component';
 export * from './lib/modules/forms/components/user-submissions/user-submission-add-edit-form/user-submission-add-edit-form.component';
+
+// The site this deployment is (#1835)
+export * from './lib/site/site';

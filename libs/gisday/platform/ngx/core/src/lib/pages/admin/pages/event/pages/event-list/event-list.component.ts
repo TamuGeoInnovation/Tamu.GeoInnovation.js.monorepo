@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Observable, map } from 'rxjs';
 import { RouterLink } from '@angular/router';
 
 import { EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -8,7 +9,7 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import { EventDayGroup, ParseDateTimeStringsPipe, groupEventsByDay } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 
 @Component({
@@ -18,8 +19,26 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ParseDateTimeStringsPipe, ExistsPipe]
 })
-export class EventListComponent extends BaseAdminListComponent<Event> {
+export class EventListComponent extends BaseAdminListComponent<Event> implements OnInit {
   protected readonly entityService = inject(EventService);
+
+  /**
+   * The season's events as one table per day, under its date (#1775).
+   */
+  public eventsByDay$: Observable<Array<EventDayGroup<Partial<Event>>>>;
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+
+    this.eventsByDay$ = this.entitiesForActiveSeasonOrForSeasonGuid$.pipe(map((events) => groupEventsByDay(events)));
+  }
+
+  /**
+   * Whether every event of one day's table is selected, for that table's header checkbox.
+   */
+  public allSelected(selected: Array<string> | null, events: Array<Partial<Event>>): boolean {
+    return events.length > 0 && events.every((event) => (selected ?? []).includes(event.guid));
+  }
 
   public override promptCopyModal() {
     super.promptCopyModal(

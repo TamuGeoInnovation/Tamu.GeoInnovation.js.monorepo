@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { Geocode, CensusYear, GeocodeReferenceFeature } from '@tamu-gisc/geoprocessing-v5';
 import { ServiceAttributeAccordionComponent } from '../../components/fragments/common/service-attribute-accordion/service-attribute-accordion.component';
 import { CensusYearsParameterFragmentComponent } from '../../components/fragments/common/census-years-parameter-fragment/census-years-parameter-fragment.component';
@@ -16,7 +16,6 @@ import { ReferenceFeatureAttributeListComponent } from '../../components/fragmen
   selector: 'tamu-gisc-geocoding',
   templateUrl: './geocoding.component.html',
   styleUrls: ['./geocoding.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ServiceAttributeAccordionComponent,
     CensusYearsParameterFragmentComponent,

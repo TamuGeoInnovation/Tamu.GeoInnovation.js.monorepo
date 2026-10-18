@@ -13,7 +13,8 @@
           <img src="../assets/images/icons/location.svg" class="default" />
           <img src="../assets/images/icons/location-color.svg" class="active" />
           <br />
-          <p class="point">$512</p>
+          <p class="point">$256</p>
+          <p>1 representative</p>
           <p class="cta">View perks</p>
         </div>
         <div class="swap-content-toggle plaque active" rank="line" (click)="changeRank('line')">
@@ -22,7 +23,8 @@
           <img src="../assets/images/icons/connection.svg" class="default" />
           <img src="../assets/images/icons/connection-color.svg" class="active" />
           <br />
-          <p class="line">$1,024</p>
+          <p class="line">$512</p>
+          <p>2 representatives</p>
           <p class="cta">View perks</p>
         </div>
         <div class="swap-content-toggle plaque active" rank="polygon" (click)="changeRank('polygon')">
@@ -31,7 +33,8 @@
           <img src="../assets/images/icons/polygon.svg" class="default" />
           <img src="../assets/images/icons/polygon-color.svg" class="active" />
           <br />
-          <p class="poly">$2,048</p>
+          <p class="poly">$1,024</p>
+          <p>3 representatives</p>
           <p class="cta">View Perks</p>
         </div>
         <div class="swap-content-toggle plaque active" rank="raster" (click)="changeRank('raster')">
@@ -40,25 +43,34 @@
           <img src="../assets/images/icons/grid.svg" class="default" />
           <img src="../assets/images/icons/grid-color.svg" class="active" />
           <br />
-          <p class="raster">$4,096</p>
+          <p class="raster">$2,048</p>
+          <p>4 representatives</p>
           <p class="cta">View Perks</p>
         </div>
       </div>
 
       <div class="cta-links">
         <a href="https://goo.gl/forms/HlOQOhwD1LpoMAv22" class="button secondary column4 leader-2 trailer-2" target="_blank">Send Us a Message</a>
-        <a href="http://give.am/gisday" class="button primary column4 leader-2 trailer-2" target="_blank">Sponsor TxGIS Day at TAMU</a>
+        <a [routerLink]="['/sponsors/payment']" class="button primary column4 leader-2 trailer-2">Sponsor TxGIS Day at TAMU</a>
       </div>
 
       <div class="column12 sponsor-description-blocks-container">
         <div class="content-block point" rank="point">
-          <p>As a Point sponsor, enjoy the following benefits:</p>
+          <p>As a Point sponsor, with 1 representative included, enjoy the following benefits:</p>
           <div class="category-container">
             <div class="category">
               <p>Recruiting Opportunities</p>
               <ul>
                 <li>Participation in TxGIS Day Speed-Dating event</li>
                 <li>Table at TxGIS Day Career Fair event</li>
+              </ul>
+            </div>
+
+            <div class="category">
+              <p>Hospitality</p>
+              <ul>
+                <li>One complimentary lunch reservation for an attending representative</li>
+                <li>Sponsor ribbon for identification</li>
               </ul>
             </div>
 
@@ -82,7 +94,7 @@
             <div class="category">
               <p>Pre-conference Recognition</p>
               <ul>
-                <li>Recognition as Point Sponsor on website (gisday.tamu.edu) pending your company approval</li>
+                <li>Recognition as Point Sponsor on website (txgisday.org) pending your company approval</li>
                 <li>Recognition as Point Sponsor on social media pages pending your company approval</li>
               </ul>
             </div>
@@ -90,9 +102,7 @@
         </div>
 
         <div class="content-block line" rank="line">
-          <p>Help us sponsor the event and get a booth plus a small logo on our website.</p>
-
-          <p>As a Line sponsor, enjoy the following benefits:</p>
+          <p>As a Line sponsor, with 2 representatives included, enjoy the following benefits:</p>
 
           <div class="category-container">
             <div class="category">
@@ -102,6 +112,14 @@
                 <li>Participation in TxGIS Day Speed-Dating event</li>
                 <li>Table at TxGIS Day Career Fair event</li>
                 <li>Your organization's job postings distributed to students in advance of TxGIS Day</li>
+              </ul>
+            </div>
+
+            <div class="category">
+              <p>Hospitality</p>
+              <ul>
+                <li>Two complimentary lunch reservations for attending representatives</li>
+                <li>Sponsor ribbon for identification</li>
               </ul>
             </div>
 
@@ -125,7 +143,7 @@
             <div class="category">
               <p>Pre-conference Recognition</p>
               <ul>
-                <li>Recognition as Line Sponsor on website (gisday.tamu.edu) pending your company approval</li>
+                <li>Recognition as Line Sponsor on website (txgisday.org) pending your company approval</li>
                 <li>Recognition as Line Sponsor on social media pages pending your company approval</li>
               </ul>
             </div>
@@ -133,16 +151,14 @@
             <div class="category">
               <p>Logistical Benefits</p>
               <ul>
-                <li>Complementary parking on campus each day</li>
+                <li>Complimentary parking on campus each day</li>
               </ul>
             </div>
           </div>
         </div>
 
         <div class="content-block polygon" rank="polygon">
-          <p>Help us sponsor the refreshments and get a booth, a medium logo on our website & other marketing materials, plus recognition on our social media & other GIS events.</p>
-
-          <p>As a Polygon sponsor, enjoy the following benefits:</p>
+          <p>As a Polygon sponsor, with 3 representatives included, enjoy the following benefits:</p>
 
           <div class="category-container">
             <div class="category">
@@ -153,6 +169,15 @@
                 <li>Participation in TxGIS Day Speed-Dating event</li>
                 <li>Table at TxGIS Day Career Fair event</li>
                 <li>Your organization's job postings distributed to students in advance of TxGIS Day</li>
+                <li>Post-event attendee list with opt-in contact emails</li>
+              </ul>
+            </div>
+
+            <div class="category">
+              <p>Hospitality</p>
+              <ul>
+                <li>Three complimentary lunch reservations for attending representatives</li>
+                <li>Sponsor ribbon for identification</li>
               </ul>
             </div>
 
@@ -185,25 +210,23 @@
             <div class="category">
               <p>Pre-conference Recognition</p>
               <ul>
-                <li>Recognition as Polygon Sponsor on website (gisday.tamu.edu) pending your company approval</li>
+                <li>Recognition as Polygon Sponsor on website (txgisday.org) pending your company approval</li>
                 <li>Recognition as Polygon Sponsor on social media pages pending your company approval</li>
-                <li>Your organization's speakers featured on website (gisday.tamu.edu) pending your company approval</li>
+                <li>Your organization's speakers featured on website (txgisday.org) pending your company approval</li>
               </ul>
             </div>
 
             <div class="category">
               <p>Logistical Benefits</p>
               <ul>
-                <li>Complementary parking on campus each day</li>
+                <li>Complimentary parking on campus each day</li>
               </ul>
             </div>
           </div>
         </div>
 
         <div class="content-block raster" rank="raster">
-          <p>Help us sponsor the venue and get a booth, a large logo on our website & other marketing materials, recognition on our social media & other GIS events, plus a slot on the agenda for a presentation or demo</p>
-
-          <p>As a Raster sponsor, enjoy the following benefits:</p>
+          <p>As a Raster sponsor, with 4 representatives included, enjoy the following benefits:</p>
 
           <div class="category-container">
             <div class="category">
@@ -215,6 +238,15 @@
                 <li>Table at TxGIS Day Career Fair event</li>
                 <li>Your organization's job postings distributed to students in advance of TxGIS Day</li>
                 <li>GIS student ambassador to answer questions and provide insight into their academic departments</li>
+                <li>Post-event attendee list with opt-in contact emails</li>
+              </ul>
+            </div>
+
+            <div class="category">
+              <p>Hospitality</p>
+              <ul>
+                <li>Four complimentary lunch reservations for attending representatives</li>
+                <li>Sponsor ribbon for identification</li>
               </ul>
             </div>
 
@@ -240,7 +272,7 @@
             <div class="category">
               <p>Conference Opportunities</p>
               <ul>
-                <li>Optional 5-minute speaking opportunity to the entire group of attendees during general sessions</li>
+                <li>Optional 20-minute speaking opportunity to the entire group of attendees during general sessions</li>
                 <li>Optional dedicated special breakout session with students during general sessions</li>
                 <li>One reserved panelist seat on each of the two lunch panels</li>
               </ul>
@@ -249,21 +281,24 @@
             <div class="category">
               <p>Pre-conference Recognition</p>
               <ul>
-                <li>Recognition as Raster Sponsor on website (gisday.tamu.edu) pending your company approval</li>
+                <li>Recognition as Raster Sponsor on website (txgisday.org) pending your company approval</li>
                 <li>Recognition as Raster Sponsor on social media pages pending your company approval</li>
-                <li>Your organization's speakers featured on website (gisday.tamu.edu) pending your company approval</li>
+                <li>Your organization's speakers featured on website (txgisday.org) pending your company approval</li>
+                <li>One dedicated email sent to registered attendees on your organization's behalf ahead of the event</li>
               </ul>
             </div>
 
             <div class="category">
               <p>Logistical Benefits</p>
               <ul>
-                <li>Complementary parking on campus each day</li>
+                <li>Complimentary parking on campus each day</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
+
+      <p class="column12 leader-2"><strong>Additional representatives:</strong> TxGIS Day has no admission fee, so representatives beyond your level's included number are always welcome at the Career Fair and the sessions at no charge. Let us know ahead of time if you'd like lunch reservations for them, so we can order enough.</p>
 
       <div class="column12 leader-2" id="additional-opportunities">
         <h2 class="trailer-1">Additional Sponsorship Opportunities</h2>
@@ -317,6 +352,7 @@
 
       <div class="cta-links">
         <a href="https://goo.gl/forms/HlOQOhwD1LpoMAv22" class="button secondary column4 leader-2 trailer-2" target="_blank">Send Us a Message</a>
+        <a [routerLink]="['/sponsors/payment']" class="button primary column4 leader-2 trailer-2">Sponsor TxGIS Day at TAMU</a>
       </div>
     </div>
   </div>

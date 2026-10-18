@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, forkJoin, map, take } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapConfig, HIDDEN_DEFAULT_HIGHLIGHT } from '@tamu-gisc/maps/esri';
 import { EsriMapComponent } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
@@ -45,10 +45,7 @@ export class MapComponent implements OnInit {
             position: 'bottom-right'
           }
         },
-        highlightOptions: {
-          haloOpacity: 0,
-          fillOpacity: 0
-        }
+        highlights: HIDDEN_DEFAULT_HIGHLIGHT
       }
     }
   } as MapConfig;

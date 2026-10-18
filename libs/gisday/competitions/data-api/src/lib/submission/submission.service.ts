@@ -10,6 +10,7 @@ import {
   CompetitionSeason,
   CompetitionSubmission,
   CompetitionSubmissionValidationStatus,
+  SubmissionLocation,
   SubmissionMedia
 } from '../entities/all.entities';
 import {
@@ -58,29 +59,30 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
           entity.location.longitude !== undefined && entity.location.longitude !== null
             ? parseFloat(entity.location.longitude.toFixed(5))
             : 0.0,
-        accuracy: 0,
+        // What the phone reported, in metres, so reviewers can tell a precise fix from a rough one
+        // (#1784). The column holds up to 999.99.
+        accuracy: clampAccuracy(entity.location.accuracy),
         altitude: 0.0,
         altitudeAccuracy: 0.0,
         heading: 0.0,
         speed: 0.0
       };
 
-      const withTrunc = { ...entity, location: truncated };
+      // INSERT, never save(): save() updates a row whose guid already exists, and the app chooses the
+      // guid (#1786). A duplicate fails on the primary key and rolls back its location and photographs.
+      return this.submissionRepo.manager.transaction(async (em) => {
+        const location = await em.save(em.create(SubmissionLocation, truncated));
+        const sub = em.create(CompetitionSubmission, { ...entity, location });
 
-      const sub = await this.submissionRepo.create(withTrunc).save();
+        await em.insert(CompetitionSubmission, sub);
 
-      if (blobs) {
-        await Promise.all(
-          blobs.map((b) => {
-            b.submission = sub;
-            return this.mediaRepo.create(b).save();
-          })
-        );
+        if (blobs?.length) {
+          await em.insert(SubmissionMedia, blobs.map((b) => em.create(SubmissionMedia, { ...b, submission: sub })));
+          Logger.log(`Created submission with media attachments.`, 'SubmissionService');
+        }
 
-        Logger.log(`Created submission with media attachments.`, 'SubmissionService');
-      }
-
-      return sub;
+        return sub;
+      });
     } else {
       throw new BadRequestException('Incomplete submission.');
     }
@@ -246,19 +248,17 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
 
     return submissions.map((submission) => {
       let questionValue = '';
-      let pointValue = 1;
 
       if (discriminatorQuestion && submission.value) {
         const submissionValue = submission.value;
         const discriminatorAttribute = discriminatorQuestion.attribute;
         const submittedValue = submissionValue[discriminatorAttribute];
 
-        // Find matching option to get title-cased value and points
+        // Find matching option to get title-cased value
         if (submittedValue !== undefined && discriminatorQuestion.options) {
           const matchingOption = discriminatorQuestion.options.find((opt) => opt.value === submittedValue);
           if (matchingOption) {
             questionValue = this.toTitleCase(matchingOption.name);
-            pointValue = matchingOption.points || 1;
           }
         }
       }
@@ -267,7 +267,6 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         guid: submission.guid,
         created: submission.created,
         questionValue,
-        pointValue,
         validationStatus: submission.validationStatus?.status || COMPETITION_VALIDATION_STATUS.unverified,
         userGuid: submission.userGuid,
         location: {
@@ -310,4 +309,28 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         : undefined
     }));
   }
+}
+
+/**
+ * A reported location accuracy in metres, rounded to centimetres and kept within its column
+ * (decimal 5, 2): 0 when none was reported.
+ */
+export function clampAccuracy(accuracy: unknown): number {
+  const metres = Number(accuracy);
+
+  if (accuracy === null || accuracy === undefined || !Number.isFinite(metres) || metres < 0) {
+    return 0;
+  }
+
+  return Math.min(Math.round(metres * 100) / 100, 999.99);
+}
+
+/**
+ * Whether the database refused an INSERT because the key already exists (SQL Server 2627, or 2601 for
+ * a unique index).
+ */
+export function isDuplicateKey(err): boolean {
+  const number = err?.driverError?.number ?? err?.number;
+
+  return number === 2627 || number === 2601;
 }

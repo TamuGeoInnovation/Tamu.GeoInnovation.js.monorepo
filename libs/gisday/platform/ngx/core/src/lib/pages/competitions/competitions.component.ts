@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -13,6 +14,6 @@ export class CompetitionsComponent {
   private titleService = inject(Title);
 
   constructor() {
-    this.titleService.setTitle('Competitions | TxGIS Day');
+    this.titleService.setTitle(`Competitions | ${inject(GISDAY_SITE).name}`);
   }
 }

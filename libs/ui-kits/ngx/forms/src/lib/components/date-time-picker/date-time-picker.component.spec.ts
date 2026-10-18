@@ -150,6 +150,93 @@ describe('DateTimePickerComponent', () => {
       expect(toForm).toEqual([new Date(2026, 9, 2, 9, 0)]);
     });
 
+    // The native time input replaced a grid of hours and minutes with a typed field, and the GIS Day
+    // event form, which nobody could run at the time, lost its list of times to choose from (#1747).
+    describe('a time of day (GIS Day event times)', () => {
+      const offered = () => Array.from(document.querySelectorAll('.tamu-gisc-date-time-picker-panel mat-option'), (o) => o.textContent.trim());
+
+      const open = async () => {
+        fixture.componentRef.setInput('maxView', 'hour');
+        component.writeValue(new Date(2026, 10, 18, 15, 45));
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('tamu-gisc-tooltip-trigger').click();
+        fixture.detectChanges();
+
+        // The tooltip reports itself open a moment after it is drawn, and the list opens on that.
+        await settle();
+      };
+
+      const settle = async () => {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        fixture.detectChanges();
+        await fixture.whenStable();
+        fixture.detectChanges();
+      };
+
+      // The list scrolls the current time into view when it opens, which jsdom does not implement.
+      beforeAll(() => {
+        Element.prototype.scrollIntoView = jest.fn();
+      });
+
+      afterEach(() => {
+        fixture.destroy();
+      });
+
+      it('offers the times to choose from as soon as the picker opens, in steps of minuteStep', async () => {
+        await open();
+
+        const times = offered();
+
+        expect(times).toHaveLength(288);
+        expect(times.slice(0, 3)).toEqual(['12:00 AM', '12:05 AM', '12:10 AM']);
+        expect(times).toContain('3:45 PM');
+      });
+
+      it('follows a different minuteStep', async () => {
+        fixture.componentRef.setInput('minuteStep', 15);
+        await open();
+
+        expect(offered()).toHaveLength(96);
+      });
+
+      it('sets the time, keeps the date, tells the caller and closes when a time is chosen', async () => {
+        const emitted: DateTimePickerChange<Date>[] = [];
+        component.changed.subscribe((e) => emitted.push(e));
+
+        await open();
+
+        const option = Array.from(document.querySelectorAll<HTMLElement>('.tamu-gisc-date-time-picker-panel mat-option')).find(
+          (o) => o.textContent.trim() === '4:15 PM'
+        );
+        option.click();
+        await settle();
+
+        expect(emitted).toHaveLength(1);
+        expect(emitted[0].value).toEqual(new Date(2026, 10, 18, 16, 15));
+        expect(component.value).toEqual(new Date(2026, 10, 18, 16, 15));
+        expect(fixture.debugElement.query((d) => d.name === 'tamu-gisc-tooltip').componentInstance.isVisible).toBe(false);
+      });
+
+      it('does not open the list before the picker itself is opened', async () => {
+        fixture.componentRef.setInput('maxView', 'hour');
+        fixture.detectChanges();
+        await settle();
+
+        expect(document.querySelectorAll('mat-option')).toHaveLength(0);
+      });
+
+      it('takes the list away with the picker', async () => {
+        await open();
+        expect(offered().length).toBeGreaterThan(0);
+
+        document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+        await settle();
+
+        expect(document.querySelectorAll('mat-option')).toHaveLength(0);
+      });
+    });
+
     it('emits nothing for a cleared input', () => {
       const emitted: DateTimePickerChange<Date>[] = [];
 
@@ -157,6 +244,46 @@ describe('DateTimePickerComponent', () => {
       component.handleInputChange('');
 
       expect(emitted).toHaveLength(0);
+    });
+
+    /**
+     * Regression coverage (#1772). A GIS Day event's start time was stored as the text "Invalid Date",
+     * and the form handed the picker an invalid Date built from it. Every time picked after that was
+     * built on that invalid Date, so it came out invalid too: the event could not be corrected, and
+     * each save wrote "Invalid Date" again.
+     */
+    describe('a value that is not a valid date', () => {
+      it('turns a time chosen from the list into a valid time', () => {
+        const emitted: DateTimePickerChange<Date>[] = [];
+        component.changed.subscribe((e) => emitted.push(e));
+        component.writeValue(new Date('Invalid Date'));
+
+        component.handleTimePicked(new Date(2000, 0, 1, 14, 0));
+
+        expect(emitted).toHaveLength(1);
+        expect(isNaN(emitted[0].value.getTime())).toBe(false);
+        expect([emitted[0].value.getHours(), emitted[0].value.getMinutes()]).toEqual([14, 0]);
+      });
+
+      it('turns a typed time into a valid time', () => {
+        fixture.componentRef.setInput('maxView', 'hour');
+        const emitted: DateTimePickerChange<Date>[] = [];
+        component.changed.subscribe((e) => emitted.push(e));
+        component.writeValue(new Date('Invalid Date'));
+
+        component.handleInputChange('16:00');
+
+        expect(emitted).toHaveLength(1);
+        expect([emitted[0].value.getHours(), emitted[0].value.getMinutes()]).toEqual([16, 0]);
+      });
+
+      it('shows an empty field rather than NaN, and does not throw without a value', () => {
+        expect(toInputValue(new Date('Invalid Date'), 'time')).toBe('');
+        expect(toInputValue(null, 'datetime-local')).toBe('');
+        expect(() => component.writeValue(null)).not.toThrow();
+        expect(component.value).toBeNull();
+        expect(fromInputValue('09:30', 'time', new Date('Invalid Date')).getHours()).toBe(9);
+      });
     });
   });
 });

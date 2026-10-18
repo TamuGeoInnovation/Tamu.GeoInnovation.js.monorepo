@@ -2,7 +2,7 @@
   <div>
     <div class="container12 leader-3 flex flex-row">
       <h1 class="session-title">{{event.name}}</h1>
-      <div id="qr-toggle" *ngIf="event" class="popup" href="" magnific-popup>
+      <div id="qr-toggle" *ngIf="event && ('checkIns' | siteHas)" class="popup" href="" magnific-popup>
         <i class="fa fa-qrcode fa-3x"></i>
         <span>Checkin QR</span>
       </div>
@@ -117,7 +117,8 @@
           <div class="trailer-2 session-description" *ngIf="event?.abstract && event.abstract.length > 0" [innerHTML]="event.abstract | markdownParse"></div>
         </div>
 
-        <div class="trailer-1 flex flex-row half-children wrap">
+        <!-- A past year's session can no longer be registered or checked in for (#1758). -->
+        <div class="trailer-1 flex flex-row half-children wrap" *ngIf="(isPastSeason$ | async) === false">
           <div>
             <h3 class="trailer-1">Registration</h3>
 
@@ -144,7 +145,7 @@
             </ng-template>
           </div>
 
-          <div>
+          <div *ngIf="'checkIns' | siteHas">
             <h3 class="trailer-1">Checkin</h3>
 
             <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInCheckin">
@@ -161,7 +162,10 @@
                   <ng-template #notCheckedIn>
                     <div *ngIf="eventLive$ | async; else eventNotOngoing">
                       <p class="trailer-1">Check-in to register your attendance for this event.</p>
-                      <tamu-gisc-button fit="snug" [look]="'secondary'" value="CHECKIN" (click)="checkin()"></tamu-gisc-button>
+                      <p class="trailer-1" *ngIf="needsCheckInLocation(event)">Check-in for this session uses your location: you need to be at {{ event.location.building }}.</p>
+                      <tamu-gisc-button fit="snug" [look]="'secondary'" value="CHECKIN" [disabled]="findingLocation" (click)="checkin()"></tamu-gisc-button>
+                      <p class="leader-1" *ngIf="findingLocation">Finding your location…</p>
+                      <p class="leader-1 error" *ngIf="checkInFailure">{{ checkInFailure }}</p>
                     </div>
                   </ng-template>
                 </ng-template>
@@ -188,7 +192,7 @@
           <div class="border-divider leader-2 trailer-2"></div>
           <h3>Presenters</h3>
           <div class="flex flex-row leader-1 wrap justify-between">
-            <tamu-gisc-presenter-card *ngFor="let presenter of (event.speakers)" [speaker]="presenter"></tamu-gisc-presenter-card>
+            <tamu-gisc-presenter-card *ngFor="let presenter of (presenters$ | async)" [speaker]="presenter"></tamu-gisc-presenter-card>
           </div>
         </div>
 
