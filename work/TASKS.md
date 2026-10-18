@@ -44,6 +44,26 @@ each round; git history keeps the old ones.
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 5 (prepared 18 October 2026, afternoon) — after batch 4
+
+**Decided** (the maintainer, 18 October):
+- Production waits. Today's remaining modernization steps (ArcGIS 5.1, dead-code deletions, the #1716 fixes and
+  OnPush on the map, #1673) merge first. **A dev build and quick tier follow each risky step** (5.1, then #1673);
+  the home session will add each as its own batch when the build is on dev.
+- **The final check compares the final dev build with what production serves now.** There should be no
+  significant differences; any there are, the maintainer wants to see.
+
+1. **Capture production's complete screenshot set now, as the "before"**
+   - Goal: a full `tools/visual-baselines` set of production at `prod-2026-10-16` (production serves `264eebb42`,
+     and will until the final promotion), so the final dev build can be compared with it tonight.
+   - Run: from a worktree at `origin/development`, after batch 4 has finished (never while a suite runs against
+     the same environment; see the tool's README): the README's capture command with `--env production`, no
+     `--routes-only`. Let it default the release to `prod-2026-10-16`; confirm the manifest's bundle hash is
+     production's. About two hours; it resumes if interrupted.
+   - Report on: #1849, one comment when it starts and one when it finishes: shot count, any page that failed.
+   - Then: nothing to tag. Keep the set; tonight's batch will compare against it.
+   - Put it in `STATUS.md` while it runs.
+
 ## Batch 4 (prepared 18 October 2026, afternoon)
 
 Batch 3 is done (report `work/reports/2026-10-18-3.md`): Release-479 passed and is tagged `dev-2026-10-18-2`.
