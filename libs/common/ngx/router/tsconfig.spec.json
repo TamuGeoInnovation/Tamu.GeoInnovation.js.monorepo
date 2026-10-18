@@ -8,5 +8,5 @@
     "moduleResolution": "bundler",
     "isolatedModules": true
   },
-  "include": ["**/*.spec.ts", "**/*.test.ts", "**/*.d.ts", "vitest.config.mts"]
+  "include": ["**/*.spec.ts", "**/*.test.ts", "**/*.d.ts"]
 }
