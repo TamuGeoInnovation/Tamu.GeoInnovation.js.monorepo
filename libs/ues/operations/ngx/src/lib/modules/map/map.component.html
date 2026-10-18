@@ -31,6 +31,10 @@
 
 <!-- Map component -->
 <tamu-gisc-esri-map [config]="config" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }"></tamu-gisc-esri-map>
+@if (!isMobile) {
+<!-- Moves itself into the map's top-left corner, below the zoom and locate buttons. -->
+<tamu-gisc-map-compass></tamu-gisc-map-compass>
+}
 
 <!-- Router outlet where desktop and mobile controls are rendered -->
 <router-outlet></router-outlet>

@@ -21,6 +21,7 @@ import { registerMapProbe } from './map-probe';
 import { orderHitsForPopup, SELECTION_LAYER_ID } from './hit-order';
 import { keepSelectionLayerOnTop } from './selection-layer';
 import { PopupComponentReference } from '../../popup-reference';
+import { useZoomComponent } from '../../map-controls';
 import {
   declaresOwnRenderer,
   PortalItemData,
@@ -151,6 +152,7 @@ export class EsriMapService {
 
     const props = this.makeMapView(ViewProps.properties, this._modules.map);
     this._modules.view = new MapView(props as esri.MapViewProperties & esri.SceneViewProperties);
+    useZoomComponent(this._modules.view);
 
     // Set the value of the async subject
     this._store.next({
@@ -253,6 +255,8 @@ export class EsriMapService {
       this._modules.view.viewpoint = viewpoint as esri.Viewpoint;
     }
     this._modules.view.container = viewContainer;
+    // A view made elsewhere, such as the perspective toggle's 3D scene, gets the same zoom buttons.
+    useZoomComponent(this._modules.view);
 
     this._store.next({ ...this._store.getValue(), view: this._modules.view });
 

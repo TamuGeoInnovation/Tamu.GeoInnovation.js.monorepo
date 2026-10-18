@@ -8,7 +8,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
-import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent, MapCompassComponent, addTrack } from '@tamu-gisc/maps/esri';
 import { NgClass } from '@angular/common';
 import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
 import { UESTamuBlockComponent } from '@tamu-gisc/ues/common/ngx';
@@ -25,6 +25,7 @@ import esri = __esri;
     RouterLink,
     ClickCoordinatesComponent,
     EsriMapComponent,
+    MapCompassComponent,
     NgClass,
     RouterOutlet,
     MapViewfinderComponent,
@@ -116,43 +117,22 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public continue(instances: MapServiceInstance) {
-    Promise.all([import('@arcgis/core/widgets/Track.js'), import('@arcgis/core/widgets/Compass.js')])
-      .then(([{ default: Track }, { default: Compass }]) => {
-        instances.view.when(() => {
-          //
-          // Loader disable
-          //
-          document.querySelector('.loader .progress-bar').classList.remove('anim');
+    instances.view.when(() => {
+      //
+      // Loader disable
+      //
+      document.querySelector('.loader .progress-bar').classList.remove('anim');
 
-          setTimeout(() => {
-            document.querySelector('.loader').classList.add('fade-out');
+      setTimeout(() => {
+        document.querySelector('.loader').classList.add('fade-out');
 
-            setTimeout(() => {
-              (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
-            }, 300);
-          }, 300);
-        });
+        setTimeout(() => {
+          (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
+        }, 300);
+      }, 300);
+    });
 
-        const track: esri.Track = new Track({
-          view: instances.view,
-          rotationEnabled: true,
-          goToLocationEnabled: false
-        });
-
-        const compass = new Compass({
-          view: instances.view
-        });
-
-        if (this.isMobile) {
-          instances.view.ui.add(track, 'bottom-right');
-        } else {
-          instances.view.ui.add(track, 'top-left');
-          instances.view.ui.add(compass, 'top-left');
-        }
-      })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    addTrack(instances.view as esri.MapView, this.isMobile ? 'bottom-right' : 'top-left');
   }
 
   /**

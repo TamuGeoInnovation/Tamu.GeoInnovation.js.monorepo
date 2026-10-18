@@ -1,0 +1,11 @@
+// Esri's `.esri-widget--button` gives the size, colours and hover of the other map buttons; the compass
+// is the round one, as the widget was.
+button {
+  border: none;
+  border-radius: 50%;
+
+  &:focus-visible {
+    outline: 2px solid var(--calcite-color-brand);
+    outline-offset: 2px;
+  }
+}

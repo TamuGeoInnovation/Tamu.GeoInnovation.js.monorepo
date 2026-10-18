@@ -69,6 +69,12 @@ test.describe('2D and 3D', () => {
       `coming back to 2D left the map at ${back.center}, not ${flat.center} where it started`
     ).toBeLessThan(BACK_IN_2D_WITHIN_M);
     expect(back.zoom, 'coming back to 2D changed the zoom').toBe(flat.zoom);
+
+    // The map's buttons come back with it. Esri's zoom and locate components destroy themselves when
+    // they leave the page, as the 2D view does while 3D is shown, so back in 2D they had gone (#1853).
+    for (const control of ['arcgis-zoom', 'arcgis-track', 'tamu-gisc-map-compass']) {
+      await expect(page.locator(`.esri-ui-top-left ${control}`), `back in 2D, ${control} is missing`).toBeVisible();
+    }
   });
 
   /**

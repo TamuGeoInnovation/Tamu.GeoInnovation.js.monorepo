@@ -14,8 +14,8 @@ import { readFraming } from './framing';
  * empty. Every layer still reported itself loaded and drawn, which is why nothing else noticed.
  */
 
-/** The zoom-in button of Esri's zoom widget. */
-const ZOOM_IN = '.esri-zoom .esri-widget--button >> nth=0';
+/** The zoom-in button of Esri's zoom component, `<arcgis-zoom>` (#1853). Playwright reaches into its shadow DOM. */
+const ZOOM_IN = 'arcgis-zoom calcite-button.arcgis-zoom__zoom-in';
 
 test.describe('the basemap at the deepest zoom', () => {
   test('the main map has basemap tiles at every level it lets you zoom to', async ({ page }) => {
@@ -28,10 +28,10 @@ test.describe('the basemap at the deepest zoom', () => {
     await expect(page.locator(APP_ROOT)).not.toBeEmpty();
     await waitForPaint(page);
 
-    // Zoom in until the widget refuses: that is the deepest level the view allows.
+    // Zoom in until the button is disabled: that is the deepest level the view allows.
     const zoomIn = page.locator(ZOOM_IN);
 
-    for (let i = 0; i < 30 && !(await zoomIn.getAttribute('class'))?.includes('esri-disabled'); i++) {
+    for (let i = 0; i < 30 && (await zoomIn.getAttribute('disabled')) === null; i++) {
       await zoomIn.click();
       await page.waitForTimeout(1_000);
     }

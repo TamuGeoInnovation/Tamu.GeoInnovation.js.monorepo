@@ -40,7 +40,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
-import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent, MapCompassComponent, addTrack } from '@tamu-gisc/maps/esri';
 import { PerspectiveToggleComponent } from '@tamu-gisc/maps/feature/perspective';
 import { PopupComponent } from '@tamu-gisc/maps/feature/popup';
 import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
@@ -73,6 +73,7 @@ const EVENT_PASSED_GRACE_DAYS = 1;
     RouterLink,
     ClickCoordinatesComponent,
     EsriMapComponent,
+    MapCompassComponent,
     NgClass,
     PerspectiveToggleComponent,
     ClipboardCopyDirective,
@@ -288,43 +289,22 @@ export class MapComponent implements OnInit, OnDestroy {
     // A link naming an Aerial Imagery capture, `?imagery=2025-11-22`, opens on it (#1541).
     this.basemaps.applyNearmapCaptureFromUrl();
 
-    Promise.all([import('@arcgis/core/widgets/Track.js'), import('@arcgis/core/widgets/Compass.js')])
-      .then(([{ default: Track }, { default: Compass }]) => {
-        instances.view.when(() => {
-          //
-          // Loader disable
-          //
-          document.querySelector('.loader .progress-bar')?.classList.remove('anim');
+    instances.view.when(() => {
+      //
+      // Loader disable
+      //
+      document.querySelector('.loader .progress-bar')?.classList.remove('anim');
 
-          setTimeout(() => {
-            document.querySelector('.loader')?.classList.add('fade-out');
+      setTimeout(() => {
+        document.querySelector('.loader')?.classList.add('fade-out');
 
-            setTimeout(() => {
-              (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
-            }, 300);
-          }, 300);
-        });
+        setTimeout(() => {
+          (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
+        }, 300);
+      }, 300);
+    });
 
-        const track: esri.Track = new Track({
-          view: instances.view,
-          rotationEnabled: true,
-          goToLocationEnabled: false
-        });
-
-        const compass = new Compass({
-          view: instances.view
-        });
-
-        if (this.isMobile) {
-          instances.view.ui.add(track, 'bottom-right');
-        } else {
-          instances.view.ui.add(track, 'top-left');
-          instances.view.ui.add(compass, 'top-left');
-        }
-      })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    addTrack(instances.view as esri.MapView, this.isMobile ? 'bottom-right' : 'top-left');
   }
 
   /**
