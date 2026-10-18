@@ -7,11 +7,14 @@ describe('NearestDatePipe', () => {
   beforeEach(() => {
     pipe = new NearestDatePipe();
     mockNow = new Date(2025, 8, 6, 12, 0, 0);
-    jest.spyOn(global as { Date }, 'Date').mockImplementation(() => mockNow);
+    // A function, not an arrow: the pipe calls `new Date()`, and Vitest 4 constructs the implementation.
+    vi.spyOn(global as { Date }, 'Date').mockImplementation(function () {
+      return mockNow;
+    });
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('create an instance', () => {
