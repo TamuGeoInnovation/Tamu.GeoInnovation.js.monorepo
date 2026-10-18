@@ -20,7 +20,7 @@ describe('ContainerComponent', () => {
           // RouterlessTracking. Mocked rather than importing the real module, matching
           // the pattern in parking-lot.component.spec.ts.
           provide: Angulartics2,
-          useValue: { eventTrack: { next: jest.fn() } }
+          useValue: { eventTrack: { next: vi.fn() } }
         },
         {
           provide: AppStorage,

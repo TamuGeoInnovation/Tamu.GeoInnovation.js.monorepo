@@ -27,7 +27,8 @@ describe('NotificationItemComponent', () => {
    * original assertions expected 60 and 120 after advancing 60ms twice, which assumed the latter.
    * With a step of 50 the real values are 50 and 100.
    */
-  it('should count down', (done) => {
+  it('should count down', () =>
+    new Promise<void>((done) => {
     const fixture = TestBed.createComponent(NotificationItemComponent);
     const notificationItemComponent = fixture.componentInstance;
     const testNotification = new Notification({
@@ -40,32 +41,32 @@ describe('NotificationItemComponent', () => {
 
     const step = notificationItemComponent.timer.step;
 
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     notificationItemComponent.ngOnInit();
 
-    jest.advanceTimersByTime(step + 10);
+    vi.advanceTimersByTime(step + 10);
     expect(notificationItemComponent.timer.current()).toEqual(step);
 
     // Paused: further time passing must not advance the counter.
     notificationItemComponent.pause();
-    jest.advanceTimersByTime(1000);
+    vi.advanceTimersByTime(1000);
     expect(notificationItemComponent.timer.current()).toEqual(step);
 
     notificationItemComponent.resume();
-    jest.advanceTimersByTime(step + 10);
+    vi.advanceTimersByTime(step + 10);
     expect(notificationItemComponent.timer.current()).toEqual(step * 2);
 
-    jest.advanceTimersByTime(10000);
+    vi.advanceTimersByTime(10000);
     expect(notificationItemComponent.animateStatus()).toBeFalsy();
 
     notificationItemComponent.closeNotification.subscribe((closed) => {
       expect(closed).toEqual(testNotification);
       done();
     });
-    jest.advanceTimersByTime(500);
+    vi.advanceTimersByTime(500);
 
     notificationItemComponent.animateStatus.set(true);
     notificationItemComponent.action();
     expect(notificationItemComponent.animateStatus()).toBeFalsy();
-  });
+  }));
 });
