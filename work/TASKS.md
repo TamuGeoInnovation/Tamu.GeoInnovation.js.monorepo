@@ -33,8 +33,8 @@ each round; git history keeps the old ones.
 
 ## Batch 2 (prepared 18 October 2026, afternoon)
 
-Batch 1 is done (report `work/reports/2026-10-18-1.md`). This machine has no `AZURE_DEVOPS_PAT`, so identify the build
-from what dev serves, as batch 1 did. Name the commit, not a release number.
+Batch 1 is done (report `work/reports/2026-10-18-1.md`). This machine now has `AZURE_DEVOPS_PAT`, so name the release,
+the build number and the commit it was built from.
 
 1. **#1849: the release tier on dev's build after the signals and OnPush pages**
    - Goal: clear the dev build of `development` at **`3cb5b6fdb`** (#1866) or later, for production. Since
@@ -56,4 +56,9 @@ from what dev serves, as batch 1 did. Name the commit, not a release number.
      building after another…", `search.spec.ts` "searching "Wehner" then "Bonfire"…", `basemap-gallery.spec.ts`)
      run on dev for the first time here; report each one's result by name.
    - Also: compare this run's duration with batch 1's 41.6 minutes, to answer batch 1's decision 1.
+   - **Known bug on this build: the main map's legend is empty (#1857).** Dan knows; the run goes ahead to find out
+     whether the suite catches it. Report plainly which tests, if any, failed because of it (by name, with the
+     failure message), and whether it was caught at all. The check written for #1857 is not on `development` yet,
+     so a miss is a real finding, not a mistake: say so if nothing failed. Because of #1857 this build does **not**
+     get a `dev-*` tag even if everything passes; say that in the #1849 comment.
 
