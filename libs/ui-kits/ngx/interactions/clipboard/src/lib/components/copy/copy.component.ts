@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, input, model } from '@angular/core';
+import { Component, inject, input, model } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 import { Observable } from 'rxjs';
 
@@ -10,7 +10,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-copy-field',
   templateUrl: './copy.component.html',
   styleUrls: ['./copy.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class CopyComponent {
