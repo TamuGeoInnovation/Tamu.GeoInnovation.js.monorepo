@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { RouterOutlet } from '@angular/router';
@@ -8,7 +8,6 @@ import { NotificationContainerComponent } from '@tamu-gisc/common/ngx/ui/notific
   selector: 'tamu-gisc-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterOutlet, NotificationContainerComponent]
 })
 export class AppComponent {

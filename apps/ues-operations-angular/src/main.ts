@@ -24,8 +24,9 @@ WebFont.load({
 
 bootstrapApplication(AppComponent, {
   providers: [
-    // Every component still relies on Zone.js (ChangeDetectionStrategy.Eager); without this,
-    // bootstrapApplication runs zoneless since Angular 21 (#1563, #1478).
+    // Zone.js still starts change detection: the components are OnPush (#1673), but going
+    // zoneless is its own step. Without this, bootstrapApplication runs zoneless since Angular 21
+    // (#1563, #1478).
     provideZoneChangeDetection(),
     importProvidersFrom(BrowserModule, BrowserAnimationsModule, Angulartics2Module.forRoot()),
     provideRouter(uesOperationsRoutes, withEnabledBlockingInitialNavigation()),
