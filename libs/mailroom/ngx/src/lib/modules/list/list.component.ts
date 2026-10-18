@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
@@ -16,7 +16,6 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   selector: 'tamu-gisc-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, AsyncPipe, DatePipe]
 })
 export class ListComponent implements OnInit {
