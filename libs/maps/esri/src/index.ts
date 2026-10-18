@@ -5,6 +5,9 @@ export * from './lib/popup-reference';
 export * from './lib/highlights';
 export * from './lib/geographic';
 
+// Reads ArcGIS objects changed in place into a signal, for OnPush templates (#1673).
+export * from './lib/arcgis-signal';
+
 export * from './lib/services/module-provider/module-provider.service';
 
 export * from './lib/services/map/map.service';

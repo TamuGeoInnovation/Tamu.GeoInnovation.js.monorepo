@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, OnDestroy, ChangeDetectionStrategy, inject, input, output, viewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, OnDestroy, inject, input, output, viewChild } from '@angular/core';
 import { take } from 'rxjs/operators';
 
 import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/map/map.service';
@@ -6,8 +6,7 @@ import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/ma
 @Component({
   selector: 'tamu-gisc-esri-map',
   templateUrl: './esri-map.component.html',
-  styleUrls: ['./esri-map.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager
+  styleUrls: ['./esri-map.component.scss']
 })
 export class EsriMapComponent implements OnInit, OnDestroy {
   private mapService = inject(EsriMapService);
