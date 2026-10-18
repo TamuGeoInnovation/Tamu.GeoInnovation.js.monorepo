@@ -22,7 +22,7 @@ describe('TooltipTriggerComponent', () => {
     expect(component).toBeTruthy();
   });
   it('should repsond to Mouse Event', () => {
-    const yeet = jest.spyOn(component.triggerActivate, 'emit');
+    const yeet = vi.spyOn(component.triggerActivate, 'emit');
 
     component.click();
 
