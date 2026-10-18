@@ -1,14 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ElementRef,
-  Input,
-  OnDestroy,
-  ChangeDetectionStrategy,
-  inject,
-  output,
-  viewChild
-} from '@angular/core';
+import { Component, OnInit, ElementRef, OnDestroy, ChangeDetectionStrategy, inject, input, output, viewChild } from '@angular/core';
 import { take } from 'rxjs/operators';
 
 import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/map/map.service';
@@ -22,21 +12,22 @@ import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/ma
 export class EsriMapComponent implements OnInit, OnDestroy {
   private mapService = inject(EsriMapService);
 
-  @Input()
-  public config: MapConfig;
+  public readonly config = input<MapConfig>(undefined);
 
   public readonly loaded = output<MapServiceInstance>();
 
   private readonly container = viewChild<ElementRef>('container');
 
   public ngOnInit() {
-    if (this.config && this.config.view && this.config.view.properties) {
-      this.config.view.properties.container = this.container().nativeElement;
+    const config = this.config();
+
+    if (config && config.view && config.view.properties) {
+      config.view.properties.container = this.container().nativeElement;
     } else {
       throw new Error(`Incorrectly formed configuration provided.`);
     }
 
-    this.mapService.loadMap(this.config.basemap, this.config.view);
+    this.mapService.loadMap(config.basemap, config.view);
 
     this.mapService.store.pipe(take(1)).subscribe((store) => {
       this.loaded.emit(store);

@@ -166,8 +166,8 @@
     <tamu-gisc-tile-title>Services</tamu-gisc-tile-title>
     <tamu-gisc-tile-submenu *giscTileSubmenu>
       <div class="submenu__row" *giscAccordion="let parent">
-        <div class="row__title" [giscAccordionHeader]="parent" [ngClass]="{active: parent.expanded}">Address Processing <span class="material-icons">expand_more</span></div>
-        <div class="row__content" *giscAccordionContent="parent.expanded" [@growAnimation]>
+        <div class="row__title" [giscAccordionHeader]="parent" [ngClass]="{active: parent.expanded()}">Address Processing <span class="material-icons">expand_more</span></div>
+        <div class="row__content" *giscAccordionContent="parent.expanded()" [@growAnimation]>
           <ul>
             <li tamuGiscTileLink location="services/address-processing">Demo</li>
             <li tamuGiscTileLink location="services/address-processing/interactive">Interactive</li>
@@ -177,8 +177,8 @@
         </div>
       </div>
       <div class="submenu__row" *giscAccordion="let parent">
-        <div class="row__title" [giscAccordionHeader]="parent" [ngClass]="{active: parent.expanded}">Geocoding <span class="material-icons">expand_more</span></div>
-        <div class="row__content" *giscAccordionContent="parent.expanded" [@growAnimation]>
+        <div class="row__title" [giscAccordionHeader]="parent" [ngClass]="{active: parent.expanded()}">Geocoding <span class="material-icons">expand_more</span></div>
+        <div class="row__content" *giscAccordionContent="parent.expanded()" [@growAnimation]>
           <ul>
             <li tamuGiscTileLink location="services/geocoding">Demo</li>
             <li tamuGiscTileLink location="services/geocoding/interactive">Interactive</li>
@@ -188,8 +188,8 @@
         </div>
       </div>
       <div class="submenu__row" *giscAccordion="let parent">
-        <div class="row__title" [giscAccordionHeader]="parent" [ngClass]="{active: parent.expanded}">Reverse Geocoding <span class="material-icons">expand_more</span></div>
-        <div class="row__content" *giscAccordionContent="parent.expanded" [@growAnimation]>
+        <div class="row__title" [giscAccordionHeader]="parent" [ngClass]="{active: parent.expanded()}">Reverse Geocoding <span class="material-icons">expand_more</span></div>
+        <div class="row__content" *giscAccordionContent="parent.expanded()" [@growAnimation]>
           <ul>
             <li tamuGiscTileLink location="services/reverse-geocoding">Demo</li>
             <li tamuGiscTileLink location="services/reverse-geocoding/interactive">Interactive</li>
@@ -199,8 +199,8 @@
         </div>
       </div>
       <div class="submenu__row" *giscAccordion="let parent">
-        <div class="row__title" [giscAccordionHeader]="parent" [ngClass]="{active: parent.expanded}">Census Intersection <span class="material-icons">expand_more</span></div>
-        <div class="row__content" *giscAccordionContent="parent.expanded" [@growAnimation]>
+        <div class="row__title" [giscAccordionHeader]="parent" [ngClass]="{active: parent.expanded()}">Census Intersection <span class="material-icons">expand_more</span></div>
+        <div class="row__content" *giscAccordionContent="parent.expanded()" [@growAnimation]>
           <ul>
             <li tamuGiscTileLink location="services/census-intersection">Demo</li>
             <li tamuGiscTileLink location="services/census-intersection/interactive">Interactive</li>

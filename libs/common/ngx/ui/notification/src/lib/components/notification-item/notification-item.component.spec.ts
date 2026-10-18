@@ -28,44 +28,44 @@ describe('NotificationItemComponent', () => {
    * With a step of 50 the real values are 50 and 100.
    */
   it('should count down', (done) => {
-    inject([NotificationItemComponent], (notificationItemComponent: NotificationItemComponent) => {
-      const testNotification = new Notification({
-        id: '0',
-        title: 'test',
-        message: 'howdy',
-        action: { type: 'test', value: 'value' }
-      });
-      notificationItemComponent.notification = testNotification;
+    const fixture = TestBed.createComponent(NotificationItemComponent);
+    const notificationItemComponent = fixture.componentInstance;
+    const testNotification = new Notification({
+      id: '0',
+      title: 'test',
+      message: 'howdy',
+      action: { type: 'test', value: 'value' }
+    });
+    fixture.componentRef.setInput('notification', testNotification);
 
-      const step = notificationItemComponent.timer.step;
+    const step = notificationItemComponent.timer.step;
 
-      jest.useFakeTimers();
-      notificationItemComponent.ngOnInit();
+    jest.useFakeTimers();
+    notificationItemComponent.ngOnInit();
 
-      jest.advanceTimersByTime(step + 10);
-      expect(notificationItemComponent.timer.current).toEqual(step);
+    jest.advanceTimersByTime(step + 10);
+    expect(notificationItemComponent.timer.current).toEqual(step);
 
-      // Paused: further time passing must not advance the counter.
-      notificationItemComponent.pause();
-      jest.advanceTimersByTime(1000);
-      expect(notificationItemComponent.timer.current).toEqual(step);
+    // Paused: further time passing must not advance the counter.
+    notificationItemComponent.pause();
+    jest.advanceTimersByTime(1000);
+    expect(notificationItemComponent.timer.current).toEqual(step);
 
-      notificationItemComponent.resume();
-      jest.advanceTimersByTime(step + 10);
-      expect(notificationItemComponent.timer.current).toEqual(step * 2);
+    notificationItemComponent.resume();
+    jest.advanceTimersByTime(step + 10);
+    expect(notificationItemComponent.timer.current).toEqual(step * 2);
 
-      jest.advanceTimersByTime(10000);
-      expect(notificationItemComponent.animateStatus).toBeFalsy();
+    jest.advanceTimersByTime(10000);
+    expect(notificationItemComponent.animateStatus).toBeFalsy();
 
-      notificationItemComponent.closeNotification.subscribe((closed) => {
-        expect(closed).toEqual(testNotification);
-        done();
-      });
-      jest.advanceTimersByTime(500);
+    notificationItemComponent.closeNotification.subscribe((closed) => {
+      expect(closed).toEqual(testNotification);
+      done();
+    });
+    jest.advanceTimersByTime(500);
 
-      notificationItemComponent.animateStatus = true;
-      notificationItemComponent.action();
-      expect(notificationItemComponent.animateStatus).toBeFalsy();
-    })();
+    notificationItemComponent.animateStatus = true;
+    notificationItemComponent.action();
+    expect(notificationItemComponent.animateStatus).toBeFalsy();
   });
 });

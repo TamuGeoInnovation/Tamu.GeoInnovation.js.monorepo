@@ -8,14 +8,14 @@
     <!-- <p>Input address for the executed transaction.</p> -->
     <div *giscAccordion="let parent;">
       <div class="pill" [giscAccordionHeader]="parent">
-        @if (!parent.expanded) {
+        @if (!parent.expanded()) {
         <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-        } @if (parent.expanded) {
+        } @if (parent.expanded()) {
         <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
         }
       </div>
 
-      <div class="attribute-node" *giscAccordionContent="parent.expanded">
+      <div class="attribute-node" *giscAccordionContent="parent.expanded()">
         <tamu-gisc-address-attribute-list></tamu-gisc-address-attribute-list>
       </div>
     </div>
@@ -154,14 +154,14 @@
 
     <div *giscAccordion="let parent;">
       <div class="pill" [giscAccordionHeader]="parent">
-        @if (!parent.expanded) {
+        @if (!parent.expanded()) {
         <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-        } @if (parent.expanded) {
+        } @if (parent.expanded()) {
         <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
         }
       </div>
 
-      <div class="attribute-node" *giscAccordionContent="parent.expanded">
+      <div class="attribute-node" *giscAccordionContent="parent.expanded()">
         <tamu-gisc-reference-feature-interpolation-type-attribute-list></tamu-gisc-reference-feature-interpolation-type-attribute-list>
       </div>
     </div>
@@ -179,14 +179,14 @@
 
     <div *giscAccordion="let parent;">
       <div class="pill" [giscAccordionHeader]="parent">
-        @if (!parent.expanded) {
+        @if (!parent.expanded()) {
         <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-        } @if (parent.expanded) {
+        } @if (parent.expanded()) {
         <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
         }
       </div>
 
-      <div class="attribute-node" *giscAccordionContent="parent.expanded">
+      <div class="attribute-node" *giscAccordionContent="parent.expanded()">
         <tamu-gisc-reference-feature-interpolation-sub-type-attribute-list></tamu-gisc-reference-feature-interpolation-sub-type-attribute-list>
       </div>
     </div>

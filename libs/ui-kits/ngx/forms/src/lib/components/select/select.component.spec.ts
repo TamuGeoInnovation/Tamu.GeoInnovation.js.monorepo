@@ -41,6 +41,6 @@ describe('SelectComponent', () => {
 
   it('should correctly evaluate setDisabledState', () => {
     component.setDisabledState(true);
-    expect(component.disabled).toBeTruthy();
+    expect(component.disabled()).toBeTruthy();
   });
 });

@@ -24,8 +24,8 @@ describe('AbstractContentReplacerComponent', () => {
 
   it('should use SwapContent correctly', () => {
     component.swapContent({ index: 9, label: 'yeet', template: undefined });
-    expect(component.toggleIndex).toEqual(9);
+    expect(component.toggleIndex()).toEqual(9);
     component.swapContent(8);
-    expect(component.toggleIndex).toEqual(8);
+    expect(component.toggleIndex()).toEqual(8);
   });
 });

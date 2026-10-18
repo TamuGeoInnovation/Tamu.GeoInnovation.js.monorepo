@@ -1,13 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  ContentChild,
-  TemplateRef,
-  OnInit,
-  OnDestroy,
-  input,
-  output
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, TemplateRef, OnInit, OnDestroy, contentChild, input, output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
@@ -65,8 +56,10 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy {
    * ```
    * If no template is provided the component will fall back to `displayWith(item)`.
    */
-  @ContentChild(AutocompleteOptionTemplateDirective, { read: TemplateRef, static: false })
-  public optionTemplate: TemplateRef<{ $implicit: T }> | null = null;
+  public readonly optionTemplate = contentChild<AutocompleteOptionTemplateDirective, TemplateRef<{ $implicit: T }>>(
+    AutocompleteOptionTemplateDirective,
+    { read: TemplateRef }
+  );
 
   /**
    * Map function to render option label (optional)

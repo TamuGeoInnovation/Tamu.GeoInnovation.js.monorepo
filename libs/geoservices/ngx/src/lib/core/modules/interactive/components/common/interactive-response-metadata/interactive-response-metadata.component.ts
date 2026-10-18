@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { TooltipComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { TooltipTriggerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { DecimalPipe } from '@angular/common';
@@ -11,14 +11,11 @@ import { DecimalPipe } from '@angular/common';
   imports: [TooltipComponent, TooltipTriggerComponent, DecimalPipe]
 })
 export class InteractiveResponseMetadataComponent {
-  @Input()
-  public status: string;
+  public readonly status = input<string>(undefined);
 
-  @Input()
-  public timeTaken: number;
+  public readonly timeTaken = input<number>(undefined);
 
-  @Input()
-  public guid: string;
+  public readonly guid = input<string>(undefined);
 
   public readonly resetTrigger = output<null>();
 

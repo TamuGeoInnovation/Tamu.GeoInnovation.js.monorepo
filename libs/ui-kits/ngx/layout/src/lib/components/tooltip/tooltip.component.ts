@@ -1,20 +1,21 @@
 import {
   Component,
   OnInit,
-  Input,
   ElementRef,
   HostListener,
   AfterContentInit,
   OnDestroy,
-  ViewChild,
   ChangeDetectionStrategy,
   inject,
   input,
-  contentChild
+  model,
+  contentChild,
+  viewChild
 } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { TooltipTriggerComponent } from './components/tooltip-trigger/tooltip-trigger.component';
-import { debounceTime, map, shareReplay, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { debounceTime, filter, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
 import { AbstractSlidingDrawerComponent } from '../../abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component';
 
@@ -27,8 +28,6 @@ import { AbstractSlidingDrawerComponent } from '../../abstracts/abstract-sliding
 })
 export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   private elementRef = inject(ElementRef);
-
-  private _isVisible: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   public readonly width = input<string>(undefined);
 
@@ -48,35 +47,29 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    */
   public readonly position = input<'left' | 'right' | 'bottom' | 'top'>(undefined);
 
-  @Input()
-  public set isVisible(value) {
-    this._isVisible.next(value);
-  }
-
   /**
    * The value passed in from the tooltip trigger to initiate the hiding/showing
    * of the tooltip content.
+   *
+   * A model rather than an input: the trigger and outside clicks set it.
    */
-  public get isVisible() {
-    return this._isVisible.getValue();
-  }
+  public readonly isVisible = model(false);
 
   public readonly trigger = contentChild(TooltipTriggerComponent);
 
   public readonly triggerElem = contentChild(TooltipTriggerComponent, { read: ElementRef });
 
-  @ViewChild('tooltipContainer') set content(c: ElementRef) {
-    if (c) {
-      // Container will be set when the *ngIf that determines its rendered state
-      // is true
-      this._container.next(c.nativeElement);
-    }
-  }
+  private readonly content = viewChild<ElementRef>('tooltipContainer');
 
   /**
    * The container that wraps the projected tooltip content.
+   *
+   * Set when the `@if` that determines its rendered state is true.
    */
-  private _container: Subject<HTMLElement> = new Subject();
+  private _container: Observable<HTMLElement> = toObservable(this.content).pipe(
+    filter((c) => !!c),
+    map((c) => c.nativeElement)
+  );
 
   /**
    * X (left) and Y (top) offsets relative to the trigger
@@ -93,7 +86,7 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    * This is done AFTER it has been added to the DOM and the position
    * offsets applied when using the fixed positioning strategy.
    */
-  public tooltipContentVisible: Observable<boolean>;
+  public tooltipContentVisible: Observable<boolean> = toObservable(this.isVisible).pipe(debounceTime(1));
 
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -102,8 +95,8 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    */
   @HostListener('document:mousedown', ['$event'])
   public clickOutside(event) {
-    if (this.isVisible && !this.elementRef.nativeElement.contains(event.target)) {
-      this.isVisible = false;
+    if (this.isVisible() && !this.elementRef.nativeElement.contains(event.target)) {
+      this.isVisible.set(false);
     }
   }
 
@@ -127,15 +120,14 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
     // And again when the offsets are applied.
     //
     // Tooltips are hidden by default and set to visible AFTER the offsets are applied to avoid
-    // the position flashing.
-    this.tooltipContentVisible = this._isVisible.pipe(debounceTime(1));
+    // the position flashing: `tooltipContentVisible` follows `isVisible` a moment later.
   }
 
   public ngAfterContentInit() {
     const trigger = this.trigger();
     if (trigger) {
       trigger.triggerActivate.pipe(takeUntil(this._$destroy)).subscribe(() => {
-        this.isVisible = !this.isVisible;
+        this.isVisible.set(!this.isVisible());
       });
     }
   }

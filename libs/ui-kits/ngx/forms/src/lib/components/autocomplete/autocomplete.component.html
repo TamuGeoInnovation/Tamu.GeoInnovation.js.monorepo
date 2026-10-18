@@ -7,8 +7,8 @@
     <div class="no-results" role="option" aria-disabled="true">No results found.</div>
     } @for (opt of opts; track opt) {
     <div class="autocomplete-item" (click)="onSelect(opt)" role="option" [attr.aria-selected]="false">
-      @if (optionTemplate) {
-      <ng-container *ngTemplateOutlet="optionTemplate; context: { $implicit: opt }"></ng-container>
+      @if (optionTemplate(); as template) {
+      <ng-container *ngTemplateOutlet="template; context: { $implicit: opt }"></ng-container>
       } @else { {{ displayWith()(opt) }} }
     </div>
     } }

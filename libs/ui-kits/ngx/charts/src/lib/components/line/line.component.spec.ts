@@ -14,14 +14,15 @@ describe('LineChartComponent', () => {
   }));
 
   it('should set baseConfig', inject([LineChartComponent], (component: LineChartComponent) => {
-    component.source = new Observable<unknown[]>();
-    (component as unknown as { chart: Partial<ChartContainerComponent> }).chart = {
+    component.source.set(new Observable<unknown[]>());
+    // The chart container is a signal query; stand in for it with a function returning a stub.
+    (component as unknown as { chart: () => Partial<ChartContainerComponent> }).chart = () => ({
       create: () => {
         return {
           type: 'line'
         };
       }
-    };
+    });
 
     component.ngAfterViewInit();
     expect(component.baseConfig).toEqual(new LineChartConfiguration());

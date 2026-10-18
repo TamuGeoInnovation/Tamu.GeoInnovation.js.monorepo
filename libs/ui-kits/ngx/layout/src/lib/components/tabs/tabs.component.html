@@ -1,11 +1,11 @@
 <div class="tabs">
   @for (toggle of toggles; track toggle) {
-  <div class="tab" (click)="swapContent(toggle)" [ngClass]="{ active: toggle.index === toggleIndex }">
+  <div class="tab" (click)="swapContent(toggle)" [ngClass]="{ active: toggle.index === toggleIndex() }">
     <p>{{ toggle.label }}</p>
   </div>
   }
 </div>
 
 <div class="content" [ngClass]="{forwards: contentDirection() === 'forwards', reverse: contentDirection() === 'reverse'}">
-  <ng-container [ngTemplateOutlet]="toggles[toggleIndex].template"></ng-container>
+  <ng-container [ngTemplateOutlet]="toggles[toggleIndex()].template"></ng-container>
 </div>

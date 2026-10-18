@@ -1,3 +1,4 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { of, Subject } from 'rxjs';
 
@@ -17,7 +18,7 @@ import { PopupService } from '../../services/popup.service';
  */
 
 class FakeSidebar {
-  public visible: string | boolean = true;
+  public readonly visible = signal(true);
 }
 
 describe('RevealSidebarOnPopupDirective', () => {
@@ -28,7 +29,7 @@ describe('RevealSidebarOnPopupDirective', () => {
   const build = (visible: boolean) => {
     opened = new Subject<void>();
     sidebar = new FakeSidebar();
-    sidebar.visible = visible;
+    sidebar.visible.set(visible);
 
     directive = TestBed.resetTestingModule()
       .configureTestingModule({
@@ -52,7 +53,7 @@ describe('RevealSidebarOnPopupDirective', () => {
 
     opened.next();
 
-    expect(sidebar.visible).toBe(true);
+    expect(sidebar.visible()).toBe(true);
   });
 
   it('leaves an already open sidebar alone', () => {
@@ -60,13 +61,13 @@ describe('RevealSidebarOnPopupDirective', () => {
 
     opened.next();
 
-    expect(sidebar.visible).toBe(true);
+    expect(sidebar.visible()).toBe(true);
   });
 
   it('does not touch the sidebar before any popup opens', () => {
     build(false);
 
-    expect(sidebar.visible).toBe(false);
+    expect(sidebar.visible()).toBe(false);
   });
 
   it('never closes the sidebar', () => {
@@ -76,7 +77,7 @@ describe('RevealSidebarOnPopupDirective', () => {
     opened.next();
     opened.next();
 
-    expect(sidebar.visible).toBe(true);
+    expect(sidebar.visible()).toBe(true);
   });
 
   it('stops reacting once destroyed', () => {
@@ -85,6 +86,6 @@ describe('RevealSidebarOnPopupDirective', () => {
 
     opened.next();
 
-    expect(sidebar.visible).toBe(false);
+    expect(sidebar.visible()).toBe(false);
   });
 });

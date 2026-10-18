@@ -37,10 +37,12 @@ describe('EsriMapComponent', () => {
     expect(() => esriMapComponent.ngOnInit()).toThrow(new Error('Incorrectly formed configuration provided.'));
   }));
 
-  it('should correctly configure map service', inject([EsriMapComponent], (esriMapComponent: EsriMapComponent) => {
-    esriMapComponent.config = { basemap: null, view: { properties: {}, mode: '2d' } };
+  it('should correctly configure map service', () => {
+    const fixture = TestBed.createComponent(EsriMapComponent);
+    const esriMapComponent = fixture.componentInstance;
+    fixture.componentRef.setInput('config', { basemap: null, view: { properties: {}, mode: '2d' } });
     // The container is a signal query; stand in for it with a function returning the element reference.
     (esriMapComponent as unknown as { container: () => ElementRef }).container = () => ({ nativeElement: null });
     expect(esriMapComponent.ngOnInit()).toBeUndefined();
-  }));
+  });
 });

@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, input, model } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 import { Observable } from 'rxjs';
 
@@ -18,8 +18,8 @@ export class CopyComponent {
 
   public readonly text = input<string>(undefined);
 
-  @Input()
-  public copying: Observable<boolean>;
+  // A model rather than an input: the copy directive inside sets it.
+  public readonly copying = model<Observable<boolean>>(undefined);
 
   public copyCoordsClick() {
     const label = {

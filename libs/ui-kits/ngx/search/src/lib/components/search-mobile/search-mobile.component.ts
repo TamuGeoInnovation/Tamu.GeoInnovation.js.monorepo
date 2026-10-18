@@ -14,8 +14,8 @@ import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
 })
 export class SearchMobileComponent extends SearchComponent {
   public emitLeftActionEvent(): void {
-    if (this.leftActionIcon) {
-      if (this.leftActionIcon === 'arrow_back') {
+    if (this.leftActionIcon()) {
+      if (this.leftActionIcon() === 'arrow_back') {
         this.loseFocus();
       }
       this.leftAction.emit();

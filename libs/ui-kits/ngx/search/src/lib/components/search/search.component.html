@@ -1,9 +1,9 @@
 <div>
   <div class="input-action-container" (keydown)="keyControl($event, 'focus', '.focusable')" (focus)="setFocus()">
-    @if (leftActionIcon) {
-    <i class="action-icons material-icons left" (mousedown)="setFocus(); emitLeftActionEvent()">{{ leftActionIcon }}</i>
-    } @if (rightActionIcon && value && (searchStatus | async) === false) {
-    <i class="action-icons material-icons right" (mousedown)="setFocus(); emitRightActionEvent()">{{ rightActionIcon }}</i>
+    @if (leftActionIcon()) {
+    <i class="action-icons material-icons left" (mousedown)="setFocus(); emitLeftActionEvent()">{{ leftActionIcon() }}</i>
+    } @if (rightActionIcon() && value() && (searchStatus | async) === false) {
+    <i class="action-icons material-icons right" (mousedown)="setFocus(); emitRightActionEvent()">{{ rightActionIcon() }}</i>
     } @if ((searchStatus | async)) {
     <div class="action-icons right lds-ring">
       <div></div>
@@ -13,7 +13,7 @@
     </div>
     }
 
-    <input #search type="text" (keyup)="change($event)" (keydown.escape)="loseFocus()" (focus)="setFocus()" (blur)="loseFocus()" [value]="value" [placeholder]="placeholder()" aria-owns="search-results-container" aria-autocomplete="both" aria-autocomplete="list" role="textbox" [ngClass]="{ 'margin-left': leftActionIcon, 'margin-right': rightActionIcon }" />
+    <input #search type="text" (keyup)="change($event)" (keydown.escape)="loseFocus()" (focus)="setFocus()" (blur)="loseFocus()" [value]="value()" [placeholder]="placeholder()" aria-owns="search-results-container" aria-autocomplete="both" aria-autocomplete="list" role="textbox" [ngClass]="{ 'margin-left': leftActionIcon(), 'margin-right': rightActionIcon() }" />
   </div>
 
   <div class="search-results-container" role="listbox" (keydown)="keyControl($event, 'focus', '.focusable')">

@@ -7,6 +7,7 @@ import {
   inject,
   contentChild
 } from '@angular/core';
+import { outputToObservable } from '@angular/core/rxjs-interop';
 import { Subject, takeUntil } from 'rxjs';
 
 import { TileTitleComponent } from '../tile-title/tile-title.component';
@@ -52,9 +53,11 @@ export class TileComponent implements AfterContentInit, OnDestroy {
   public ngAfterContentInit(): void {
     const link = this.link();
     if (link) {
-      link.clicked.pipe(takeUntil(this._destroy$)).subscribe(() => {
-        this.service.toggleMenu(false);
-      });
+      outputToObservable(link.clicked)
+        .pipe(takeUntil(this._destroy$))
+        .subscribe(() => {
+          this.service.toggleMenu(false);
+        });
     }
   }
 

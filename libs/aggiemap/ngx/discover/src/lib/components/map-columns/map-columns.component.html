@@ -1,4 +1,4 @@
-@if (columns.length > 0) {
+@if (columns().length > 0) {
 <div class="parking-columns">
   <!--
     `--titled` marks a column that is a real section rather than a layout split. On a phone
@@ -6,7 +6,7 @@
     one keeps its separation because its heading gives it meaning. Set here rather than
     inferred in CSS so it does not depend on `:has()`.
     -->
-  @for (column of columns; track column) {
+  @for (column of columns(); track column) {
   <div class="parking-column" [class.parking-column--titled]="column.heading">
     @if (column.heading) {
     <h2 class="parking-column-heading">{{ column.heading }}</h2>

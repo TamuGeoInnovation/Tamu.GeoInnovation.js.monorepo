@@ -1,4 +1,3 @@
-import { QueryList } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -20,12 +19,12 @@ import { SidebarTabComponent } from '../tab/tab.component';
  */
 
 const tab = (route: string) => {
-  const clicked = new Subject<{ native: { route: string } }>();
+  const clicked = new Subject<{ native: { route: () => string } }>();
 
   return {
-    route,
+    route: () => route,
     $clicked: clicked.asObservable(),
-    click: () => clicked.next({ native: { route } })
+    click: () => clicked.next({ native: { route: () => route } })
   };
 };
 
@@ -44,9 +43,8 @@ const build = (url: string, tabs: FakeTab[]) => {
     })
     .runInInjectionContext(() => new SidebarComponent());
 
-  const list = new QueryList<SidebarTabComponent>();
-  list.reset(tabs as unknown as SidebarTabComponent[]);
-  component.tabs = list;
+  // The tabs a template would project, stated outright in place of the content query.
+  Object.defineProperty(component, 'tabs', { value: () => tabs as unknown as SidebarTabComponent[] });
 
   component.ngAfterContentInit();
 
@@ -65,11 +63,11 @@ describe('SidebarComponent first click', () => {
     const features = tab('');
     const { component } = build('/map/d', [features, tab('trip'), tab('settings')]);
 
-    expect(component.visible).toBe(true);
+    expect(component.visible()).toBe(true);
 
     features.click();
 
-    expect(component.visible).toBe(false);
+    expect(component.visible()).toBe(false);
   });
 
   it('reopens it on the second click, rather than needing a third', () => {
@@ -79,7 +77,7 @@ describe('SidebarComponent first click', () => {
     features.click();
     features.click();
 
-    expect(component.visible).toBe(true);
+    expect(component.visible()).toBe(true);
   });
 
   it('starts on the tab the URL names, for a deep link', () => {
@@ -100,7 +98,7 @@ describe('SidebarComponent first click', () => {
 
     settings.click();
 
-    expect(component.visible).toBe(true);
+    expect(component.visible()).toBe(true);
     expect(component.currentView).toBe('settings');
     expect(navigated).toEqual([['./settings']]);
   });

@@ -1,14 +1,14 @@
 <tamu-gisc-accordion>
   <tamu-gisc-accordion-header>
     <p>
-      {{control.get('title').value}} @if (control.get('enabled').value === false) {
+      {{control().get('title').value}} @if (control().get('enabled').value === false) {
       <span>(Disabled)</span>
       }
     </p>
   </tamu-gisc-accordion-header>
 
   <tamu-gisc-accordion-content (submit)="emitRemove()">
-    <form [formGroup]="control">
+    <form [formGroup]="control()">
       <div class="question-control">
         <p class="question-control-header">Question Availability</p>
         <p>Describes if the question should be visible on the participant form submission. Enable this value to require the participant to answer this question to submit the form.</p>
@@ -19,7 +19,7 @@
       <div class="question-control">
         <p class="question-control-header">Attribute</p>
         <p>This question and participant submission are associated to the following listed attribute from the provided service endpoint.</p>
-        <p><em>{{control.get('attribute').value}}</em></p>
+        <p><em>{{control().get('attribute').value}}</em></p>
       </div>
 
       <div class="question-control">
@@ -43,17 +43,17 @@
         <tamu-gisc-select formControlName="type" [data]="inputTypes" [valueTemplate]="'type'" [displayTemplate]="'name'" [placeholder]="'Select question type'"> </tamu-gisc-select>
       </div>
 
-      @if (control.get('type').value === 'select') {
+      @if (control().get('type').value === 'select') {
       <div class="question-control">
         <p class="question-control-header">Type Question</p>
         <p>Enable this to use this question's answer to tell kinds of thing apart for leaderboard scoring: a submission within 15 meters of an earlier new find counts as already submitted only when both gave the same answer here. Mark exactly one question per form.</p>
         <tamu-gisc-checkbox formControlName="isDiscriminator" label="Use this question as the type question"></tamu-gisc-checkbox>
       </div>
-      } @if (control.get('type').value === 'select') {
+      } @if (control().get('type').value === 'select') {
       <div class="question-control">
         <p class="question-control-header">Dropdown Options</p>
         <div>
-          @switch (control.get('options').value.length > 0) { @case (true) {
+          @switch (control().get('options').value.length > 0) { @case (true) {
           <div>
             <p>The following are the options displayed for the user in the "dropdown" list. Add or remove as necessary.</p>
             <div class="floating-table">
@@ -64,7 +64,7 @@
                 </div>
               </div>
               <div class="floating-table-body" formArrayName="options">
-                @for (optControl of control.get('options')['controls']; track optControl) {
+                @for (optControl of control().get('options')['controls']; track optControl) {
                 <div class="floating-row">
                   <div>{{optControl.value.name}}</div>
                   <div>{{optControl.value.value}}</div>

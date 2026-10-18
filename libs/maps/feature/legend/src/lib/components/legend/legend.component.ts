@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, model } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
@@ -31,30 +31,23 @@ export class LegendComponent implements OnInit, OnDestroy {
    *
    * This flag will de-duplicate the legend entries based on the layer title.
    */
-  @Input()
-  public deduplicate = false;
+  public readonly deduplicate = model(false);
 
-  @Input()
-  public respectDefinitionExpression = false;
+  public readonly respectDefinitionExpression = model(false);
 
-  @Input()
-  public allowVisibilityToggle = false;
+  public readonly allowVisibilityToggle = model(false);
 
-  @Input()
-  public excludedLayerIds: string[] = [];
+  public readonly excludedLayerIds = model<string[]>([]);
 
-  @Input()
-  public allowedLayerIds: string[] = [];
+  public readonly allowedLayerIds = model<string[]>([]);
 
   /**
    * Layer ids that should always appear in the legend even when they start hidden and have never
    * been toggled on. Defaults to none, preserving the "only show ever-visible layers" behavior.
    */
-  @Input()
-  public forceShowLayerIds: string[] = [];
+  public readonly forceShowLayerIds = model<string[]>([]);
 
-  @Input()
-  public combineChildrenUnderPrimary = false;
+  public readonly combineChildrenUnderPrimary = model(false);
 
   public legend: Observable<Array<esri.ActiveLayerInfo>>;
 
@@ -63,22 +56,22 @@ export class LegendComponent implements OnInit, OnDestroy {
   private _destroy$: Subject<boolean> = new Subject();
 
   public ngOnInit() {
-    // Read route data to set input properties
+    // Route data overrides the inputs, which is why they are models.
     const routeData = this.route.snapshot.data;
     if (routeData) {
-      this.deduplicate = routeData['deduplicate'] ?? this.deduplicate;
-      this.respectDefinitionExpression = routeData['respectDefinitionExpression'] ?? this.respectDefinitionExpression;
-      this.allowVisibilityToggle = routeData['allowVisibilityToggle'] ?? this.allowVisibilityToggle;
-      this.excludedLayerIds = routeData['excludedLayerIds'] ?? this.excludedLayerIds;
-      this.allowedLayerIds = routeData['allowedLayerIds'] ?? this.allowedLayerIds;
-      this.forceShowLayerIds = routeData['forceShowLayerIds'] ?? this.forceShowLayerIds;
-      this.combineChildrenUnderPrimary = routeData['combineChildrenUnderPrimary'] ?? this.combineChildrenUnderPrimary;
+      this.deduplicate.set(routeData['deduplicate'] ?? this.deduplicate());
+      this.respectDefinitionExpression.set(routeData['respectDefinitionExpression'] ?? this.respectDefinitionExpression());
+      this.allowVisibilityToggle.set(routeData['allowVisibilityToggle'] ?? this.allowVisibilityToggle());
+      this.excludedLayerIds.set(routeData['excludedLayerIds'] ?? this.excludedLayerIds());
+      this.allowedLayerIds.set(routeData['allowedLayerIds'] ?? this.allowedLayerIds());
+      this.forceShowLayerIds.set(routeData['forceShowLayerIds'] ?? this.forceShowLayerIds());
+      this.combineChildrenUnderPrimary.set(routeData['combineChildrenUnderPrimary'] ?? this.combineChildrenUnderPrimary());
     }
 
     this.legend = this.legendService.legend({
-      excludedLayerIds: this.excludedLayerIds,
-      allowedLayerIds: this.allowedLayerIds,
-      forceShowLayerIds: this.forceShowLayerIds
+      excludedLayerIds: this.excludedLayerIds(),
+      allowedLayerIds: this.allowedLayerIds(),
+      forceShowLayerIds: this.forceShowLayerIds()
     });
 
     this.responsive = this.responsiveService.snapshot;

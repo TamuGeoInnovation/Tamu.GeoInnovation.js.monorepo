@@ -1,4 +1,4 @@
-import { Directive, HostListener, Input } from '@angular/core';
+import { Directive, HostListener, input } from '@angular/core';
 import { AccordionDirective } from './accordion.directive';
 
 @Directive({
@@ -6,15 +6,15 @@ import { AccordionDirective } from './accordion.directive';
   selector: '[giscAccordionHeader]'
 })
 export class AccordionHeaderDirective {
-  public parent: AccordionDirective;
+  /**
+   * The accordion this header toggles.
+   */
+  public readonly giscAccordionHeader = input<AccordionDirective>(undefined);
 
   @HostListener('click')
   protected _toggle() {
-    this.parent.expanded = !this.parent.expanded;
-  }
+    const parent = this.giscAccordionHeader();
 
-  @Input()
-  public set giscAccordionHeader(controller) {
-    this.parent = controller;
+    parent.expanded.set(!parent.expanded());
   }
 }

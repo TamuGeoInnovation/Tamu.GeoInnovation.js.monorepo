@@ -6,8 +6,8 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngIf="sortFn !== undefined; else noInitialSort ">
-      <ng-container *ngFor="let row of data() | keyvalue : sortFn">
+    <ng-container *ngIf="sortFn() !== undefined; else noInitialSort ">
+      <ng-container *ngFor="let row of data() | keyvalue : sortFn()">
         <ng-container *ngTemplateOutlet="rowContent;context: {row: row}"></ng-container>
       </ng-container>
     </ng-container>

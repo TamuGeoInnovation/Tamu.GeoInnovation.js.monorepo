@@ -1,15 +1,7 @@
-import {
-  AfterContentInit,
-  Component,
-  ContentChildren,
-  OnDestroy,
-  QueryList,
-  ChangeDetectionStrategy,
-  inject,
-  input
-} from '@angular/core';
-import { from, merge, Subject } from 'rxjs';
-import { mergeMap, pluck, switchMap, takeUntil } from 'rxjs/operators';
+import { Component, ChangeDetectionStrategy, inject, input, contentChildren } from '@angular/core';
+import { outputToObservable, takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { merge } from 'rxjs';
+import { pluck, switchMap } from 'rxjs/operators';
 
 import { TileLinkDirective } from '../../directives/tile-link/tile-link.directive';
 import { TileService } from '../../services/tile.service';
@@ -22,39 +14,23 @@ import { AsyncPipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AsyncPipe]
 })
-export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
+export class TileSubmenuComponent {
   private service = inject(TileService);
 
   public readonly title = input(this.service.activeSubMenu.pipe(pluck('title')));
 
-  @ContentChildren(TileLinkDirective, { descendants: true })
-  public links: QueryList<TileLinkDirective>;
+  public readonly links = contentChildren(TileLinkDirective, { descendants: true });
 
-  private _destroy$: Subject<null> = new Subject();
-
-  public ngAfterContentInit(): void {
-    merge(
-      from(this.links.toArray()),
-      this.links.changes.pipe(
-        switchMap((links) => {
-          return from(links.toArray());
-        })
-      )
-    )
+  constructor() {
+    // A click on any of the links, as they are now, closes the menu.
+    toObservable(this.links)
       .pipe(
-        mergeMap((link: TileLinkDirective) => {
-          return link.clicked;
-        }),
-        takeUntil(this._destroy$)
+        switchMap((links) => merge(...links.map((link) => outputToObservable(link.clicked)))),
+        takeUntilDestroyed()
       )
       .subscribe(() => {
         this.service.toggleMenu();
       });
-  }
-
-  public ngOnDestroy() {
-    this._destroy$.next(null);
-    this._destroy$.complete();
   }
 
   public close() {

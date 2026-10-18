@@ -24,7 +24,7 @@
 <div class="tool-set version">
   @if (undoTool()) {
   <p class="material-icons" title="Undo" [ngClass]="{ available: $safeNavigationMigration(model?.canUndo()) }" (click)="versionAction('undo')">undo</p>
-  } @if (redoTool) {
+  } @if (redoTool()) {
   <p class="material-icons" title="Redo" [ngClass]="{ available: $safeNavigationMigration(model?.canRedo()) }" (click)="versionAction('redo')">redo</p>
   }
 </div>

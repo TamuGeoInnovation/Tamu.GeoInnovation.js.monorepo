@@ -5,7 +5,7 @@
   }
 </div>
 
-@if (modeSwitch) {
+@if (modeSwitch(); as modeSwitch) {
 <div>
   <!-- If modeSwitch does not have a result, it means it has no other types of data to display other than the directions list. -->
   @if (!modeSwitch.results) {

@@ -1,4 +1,4 @@
-import { Directive, Input, HostBinding, TemplateRef, ViewContainerRef, OnInit, inject } from '@angular/core';
+import { Directive, HostBinding, TemplateRef, ViewContainerRef, OnInit, inject, model } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Directive({
@@ -9,12 +9,12 @@ export class AccordionDirective implements OnInit {
   private templateRef = inject<TemplateRef<unknown>>(TemplateRef);
   private viewContainer = inject(ViewContainerRef);
 
-  @Input()
-  public expanded = false;
+  // A model rather than an input: its header toggles it.
+  public readonly expanded = model(false);
 
   @HostBinding('class.accordion-expanded')
   private get _expanded() {
-    return this.expanded;
+    return this.expanded();
   }
 
   private _$destroy: Subject<boolean> = new Subject();

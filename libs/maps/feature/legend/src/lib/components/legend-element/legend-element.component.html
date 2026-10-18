@@ -14,7 +14,7 @@
     </div>
     <div class="label">{{ getSportsSafetyFirstLegendLabel() }}</div>
   </div>
-  } @else { @switch (element.type) {
+  } @else { @switch (element().type) {
   <!-- For SymbolTable element type -->
   @case ('symbol-table') {
   <div class="element-group">
@@ -60,7 +60,7 @@
   }
   <!-- Default printout -->
   @default {
-  <div>Unsupported legend element type: {{ element.type }}</div>
+  <div>Unsupported legend element type: {{ element().type }}</div>
   } } }
 
   <!-- Switch through the different element types. The default is a "not supported" message printout. -->

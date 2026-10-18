@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, HostListener, Output, Renderer2, inject, input } from '@angular/core';
+import { Directive, ElementRef, HostListener, Renderer2, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Directive({ selector: '[tamuGiscTileLink]' })
@@ -18,8 +18,7 @@ export class TileLinkDirective {
    */
   public readonly fragment = input<string>(undefined);
 
-  @Output()
-  public clicked: EventEmitter<HTMLElement> = new EventEmitter();
+  public readonly clicked = output<HTMLElement>();
 
   @HostListener('click', ['$event.target'])
   protected _click(target: HTMLElement) {
@@ -32,7 +31,7 @@ export class TileLinkDirective {
       this.router.navigate([this.location()], fragment ? { fragment: fragment } : undefined);
     }
 
-    this.clicked.next(target);
+    this.clicked.emit(target);
   }
 
   private testLocation(loc: string): LocationType {

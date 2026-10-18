@@ -1,5 +1,5 @@
 @if (groupVisible && !blockedByModal) {
-<div class="notification-grouped-wrapper" [ngClass]="[position, groupShowing ? 'show' : '']" (mouseover)="pauseGroup()" (mouseleave)="resumeGroup()">
+<div class="notification-grouped-wrapper" [ngClass]="[position(), groupShowing ? 'show' : '']" (mouseover)="pauseGroup()" (mouseleave)="resumeGroup()">
   <div class="status" [style.width.%]="groupTimerPercent"></div>
   <div class="close material-icons" tabindex="0" (click)="closeGroup()" title="Close">close</div>
   <!--

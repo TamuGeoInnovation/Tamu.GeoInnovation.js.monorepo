@@ -1,3 +1,6 @@
+@let rowEvent = event();
+@let rowDay = day();
+
 <div class="event-rsvp-control">
   @if (canRegister()) {
   <tamu-gisc-checkbox [label]="''" (changed)="emitToggleEvent($event)" [checked]="isRsvp$ | async"></tamu-gisc-checkbox>
@@ -6,22 +9,22 @@
 
 <div class="event-meta">
   <div class="event-time">
-    @if ((day?.date | parseDateTimeStrings : event?.startTime) && (day?.date | parseDateTimeStrings : event?.endTime)) {
-    <span>{{day.date | parseDateTimeStrings : event.startTime | date: 'h:mm a'}}</span>
-    <span id="detail-time"> - {{day.date | parseDateTimeStrings : event.endTime | date: 'h:mm a'}}</span>
+    @if ((rowDay?.date | parseDateTimeStrings : rowEvent?.startTime) && (rowDay?.date | parseDateTimeStrings : rowEvent?.endTime)) {
+    <span>{{rowDay.date | parseDateTimeStrings : rowEvent.startTime | date: 'h:mm a'}}</span>
+    <span id="detail-time"> - {{rowDay.date | parseDateTimeStrings : rowEvent.endTime | date: 'h:mm a'}}</span>
     } @else {
     <span>Time TBD</span>
     }
   </div>
 
   <div class="event-name">
-    @if (event?.name) {
-    <p class="name">{{event.name}}</p>
+    @if (rowEvent?.name) {
+    <p class="name">{{rowEvent.name}}</p>
     } @else {
     <p>Event Name TBD</p>
-    } @if (event?.location?.building) {
+    } @if (rowEvent?.location?.building) {
     <div class="event-location">
-      @if (event?.location?.place; as place) {
+      @if (rowEvent?.location?.place; as place) {
       <p>
         @if (place.name) {
         <span>{{place.name}}</span>
@@ -33,10 +36,10 @@
         <span>, {{place.state}}</span>
         }
       </p>
-      } @if (event?.location; as location) {
+      } @if (rowEvent?.location; as location) {
       <p>
-        @if (event.mode) {
-        <span class="event-mode">{{event.mode}}: </span>
+        @if (rowEvent.mode) {
+        <span class="event-mode">{{rowEvent.mode}}: </span>
         } @if (location.building) {
         <span>{{location.building}}</span>
         } @if (location.room) {

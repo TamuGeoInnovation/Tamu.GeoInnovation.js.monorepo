@@ -1,7 +1,6 @@
 import {
   Component,
   OnInit,
-  Input,
   OnDestroy,
   HostBinding,
   ChangeDetectionStrategy,
@@ -41,8 +40,7 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
   private router = inject(Router);
 
   // Notification object passed in from the parent component
-  @Input()
-  public notification: Notification;
+  public readonly notification = input<Notification>(undefined);
 
   public readonly position = input<'left' | 'center' | 'right'>(undefined);
 
@@ -106,7 +104,7 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
     // Emit a closeNotification event after the notification node is out of the view.
     // The parent component communicates with the notification service to remove it.
     setTimeout(() => {
-      this.closeNotification.emit(this.notification);
+      this.closeNotification.emit(this.notification());
     }, 500);
   }
 
@@ -123,7 +121,7 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
     // Emit an acknowledgeNotification event after the notification node is out of the view.
     // The parent component communicates with the notification service to acknowledge it.
     setTimeout(() => {
-      this.acknowledgeNotification.emit(this.notification);
+      this.acknowledgeNotification.emit(this.notification());
     }, 500);
   }
 
@@ -164,12 +162,14 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
    * Carry out notification item action, if any is registered.
    */
   public action(): void {
-    if (this.notification.action) {
-      this.actionNotification.emit(this.notification);
+    const notification = this.notification();
+
+    if (notification.action) {
+      this.actionNotification.emit(notification);
 
       this.close();
 
-      this.router.navigate([this.notification.action.value]);
+      this.router.navigate([notification.action.value]);
     }
   }
 }

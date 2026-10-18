@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 
 import { FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
 import { RouterLink } from '@angular/router';
@@ -30,7 +30,7 @@ export class MapsPageHeaderComponent {
   /**
    * Optional intro paragraph rendered beneath the title.
    */
-  @Input() public intro?: string;
+  public readonly intro = input<string>(undefined);
 
   /**
    * Whether to render the featured Campus Main Parking button. Defaults to `true`.

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, DestroyRef, Input, forwardRef, ChangeDetectionStrategy, inject, input, output, viewChild } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, forwardRef, ChangeDetectionStrategy, inject, input, model, output, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -166,9 +166,9 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
       });
   }
 
+  // A model rather than an input: the component sets it itself, from the user and the forms API.
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('value')
-  private _value: Date = new Date();
+  protected readonly _value = model<Date>(new Date(), { alias: 'value' });
 
   /**
    * The finest unit offered. `day` or coarser picks a date only.
@@ -210,11 +210,13 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
   public readonly changed = output<DateTimePickerChange<Date>>();
 
   public get value() {
-    return isValidDate(this._value) ? new Date(this._value.getTime()) : null;
+    const value = this._value();
+
+    return isValidDate(value) ? new Date(value.getTime()) : null;
   }
 
   public set value(v) {
-    this._value = isValidDate(v) ? new Date(v.getTime()) : null;
+    this._value.set(isValidDate(v) ? new Date(v.getTime()) : null);
     this._onChange(this.value);
     this._onTouched();
   }
@@ -224,7 +226,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
   }
 
   public get inputValue() {
-    return toInputValue(this._value, this.inputType);
+    return toInputValue(this._value(), this.inputType);
   }
 
   /**
@@ -232,7 +234,9 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
    * would look like a new value to the picker each time the view is checked.
    */
   public get timeValue() {
-    return isValidDate(this._value) ? this._value : null;
+    const value = this._value();
+
+    return isValidDate(value) ? value : null;
   }
 
   /** How far apart the offered times are, as Angular Material's time picker takes it. */
@@ -254,7 +258,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
   };
 
   public handleInputChange(raw: string) {
-    const picked = fromInputValue(raw, this.inputType, this._value);
+    const picked = fromInputValue(raw, this.inputType, this._value());
 
     if (picked === null) {
       return;
@@ -262,7 +266,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
 
     this.value = picked;
 
-    this.tooltipComponent().isVisible = false;
+    this.tooltipComponent().isVisible.set(false);
 
     this.changed.emit(new DateTimePickerChange(picked));
   }
@@ -272,7 +276,8 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
    * time picker knows nothing of the date this value belongs to.
    */
   public handleTimePicked(picked: Date | null) {
-    const current = isValidDate(this._value) ? this._value : null;
+    const value = this._value();
+    const current = isValidDate(value) ? value : null;
 
     if (!isValidDate(picked) || (current && picked.getHours() === current.getHours() && picked.getMinutes() === current.getMinutes())) {
       return;
@@ -292,7 +297,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
    * or a click elsewhere, a tooltip holding only the field has nothing left to offer.
    */
   public close() {
-    this.tooltipComponent().isVisible = false;
+    this.tooltipComponent().isVisible.set(false);
   }
 
   public writeValue(v) {

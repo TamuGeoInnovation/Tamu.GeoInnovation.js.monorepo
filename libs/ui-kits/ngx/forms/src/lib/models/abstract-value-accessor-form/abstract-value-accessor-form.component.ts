@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, inject, model } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 
 @Component({
@@ -9,12 +9,11 @@ import { ControlValueAccessor } from '@angular/forms';
 export class AbstractValueAccessorFormComponent<T> implements ControlValueAccessor {
   private cd = inject(ChangeDetectorRef);
 
-  @Input()
-  public disabled = false;
+  // Models rather than inputs: the component sets both itself, through the forms API.
+  public readonly disabled = model(false);
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('value')
-  private _value: T = undefined;
+  protected readonly _value = model<T>(undefined, { alias: 'value' });
 
   public get value() {
     return this.getInternalValue();
@@ -45,19 +44,19 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
   }
 
   public setDisabledState(d: boolean) {
-    this.disabled = d;
+    this.disabled.set(d);
   }
 
   // Simple wrappers for children to use to set the value of the component
   // and trigger side effects when they override the value the `value` getters/setters.
   public getInternalValue() {
-    return this._value;
+    return this._value();
   }
 
   // Simple wrappers for children to use to set the value of the component
   // and trigger side effects when they override the value the `value` getters/setters.
   public setInternalValue(v: T) {
-    this._value = v === null ? undefined : v;
+    this._value.set(v === null ? undefined : v);
 
     this.cd.markForCheck();
 

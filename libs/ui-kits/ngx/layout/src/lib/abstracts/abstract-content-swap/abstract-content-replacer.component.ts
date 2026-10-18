@@ -1,13 +1,4 @@
-import {
-  Component,
-  Input,
-  AfterContentInit,
-  TemplateRef,
-  HostBinding,
-  ChangeDetectionStrategy,
-  input,
-  contentChildren
-} from '@angular/core';
+import { Component, AfterContentInit, TemplateRef, HostBinding, ChangeDetectionStrategy, input, model, contentChildren } from '@angular/core';
 
 import { AbstractContentReplacerToggleComponent } from './abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
 
@@ -31,9 +22,10 @@ export class AbstractContentReplacerComponent implements AfterContentInit {
    * Default starting toggle index.
    *
    * Defaults to `0`;
+   *
+   * A model rather than an input: the component sets it itself when a toggle is chosen.
    */
-  @Input()
-  public toggleIndex = 0;
+  public readonly toggleIndex = model(0);
 
   /**
    * Normalized list of toggles derived from `toggleList`
@@ -60,8 +52,8 @@ export class AbstractContentReplacerComponent implements AfterContentInit {
     this.toggles = this.toggleList().map((t, i) => {
       return {
         index: i,
-        label: t.label,
-        template: t.template
+        label: t.label(),
+        template: t.template()
       };
     });
 
@@ -71,13 +63,13 @@ export class AbstractContentReplacerComponent implements AfterContentInit {
   public swapContent(tab?: Toggle | number) {
     if (tab !== undefined) {
       if (typeof tab === 'number') {
-        if (tab !== this.toggleIndex) {
-          this.toggleIndex = tab;
+        if (tab !== this.toggleIndex()) {
+          this.toggleIndex.set(tab);
         }
       } else {
         // Only render tab if the selected tab index is different than the current.
-        if (tab.index !== this.toggleIndex) {
-          this.toggleIndex = tab.index;
+        if (tab.index !== this.toggleIndex()) {
+          this.toggleIndex.set(tab.index);
         }
       }
     }

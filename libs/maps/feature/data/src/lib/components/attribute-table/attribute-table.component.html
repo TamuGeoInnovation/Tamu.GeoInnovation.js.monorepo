@@ -6,8 +6,8 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngIf="sortFn !== undefined; else noInitialSort ">
-      <tr *ngFor="let row of data() | keyvalue : sortFn">
+    <ng-container *ngIf="sortFn() !== undefined; else noInitialSort ">
+      <tr *ngFor="let row of data() | keyvalue : sortFn()">
         <td>{{row.key}}</td>
         <td>{{row.value | json}}</td>
       </tr>

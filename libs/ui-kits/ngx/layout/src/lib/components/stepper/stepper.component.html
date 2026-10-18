@@ -1,9 +1,9 @@
 <div class="stepper__steps">
   @for (step of toggleList(); track step; let i = $index) {
-  <tamu-gisc-step-toggle [template]="step.toggle.template" (click)="swapContent(i)" [ngClass]="{active: toggleIndex === i}"></tamu-gisc-step-toggle>
+  <tamu-gisc-step-toggle [template]="step.toggle().template" (click)="swapContent(i)" [ngClass]="{active: toggleIndex() === i}"></tamu-gisc-step-toggle>
   }
 </div>
 
 <div class="stepper__content">
-  <ng-container [ngTemplateOutlet]="toggles[toggleIndex].template"></ng-container>
+  <ng-container [ngTemplateOutlet]="toggles[toggleIndex()].template"></ng-container>
 </div>

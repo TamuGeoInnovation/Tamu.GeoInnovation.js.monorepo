@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, HostBinding, ChangeDetectionStrategy, input, output } from '@angular/core';
 
 import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -13,8 +13,7 @@ import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [DateTimePickerComponent]
 })
 export class SeasonsDayTileComponent {
-  @Input()
-  public day: Partial<SeasonDay> = null;
+  public readonly day = input<Partial<SeasonDay>>(null);
 
   /**
    * Determines whether the tile is interactive or not. Interactivity defines its
@@ -49,7 +48,7 @@ export class SeasonsDayTileComponent {
   public update(event: DateTimePickerChange<Date>) {
     if (this.interactive() !== false) {
       this.updated.emit({
-        guid: this.day.guid,
+        guid: this.day().guid,
         date: event.value
       });
     }
@@ -61,8 +60,8 @@ export class SeasonsDayTileComponent {
   public delete() {
     if (this.interactive() !== false) {
       this.deleted.emit({
-        guid: this.day.guid,
-        date: this.day.date
+        guid: this.day().guid,
+        date: this.day().date
       });
     }
   }
