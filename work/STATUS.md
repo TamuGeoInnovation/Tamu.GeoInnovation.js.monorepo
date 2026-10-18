@@ -3,10 +3,10 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **5:40 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
+Last written **5:45 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
-**Last batch done: 8.** Batches 5 and 8 are both finished. **Batch 9 is held by the director.** Watching the branch.
+**Last batch done: 8.** Batches 5 and 8 are finished. **Batch 10 is running.** Batch 9 is held twice over.
 
 ## Running now
 
@@ -20,7 +20,7 @@ commit timestamp, not estimated.
 | From | the worktree at `70f0e424b` (`C:/TAMU/wt-1911`) |
 | Against | production's `prod-2026-10-16` set from batch 5, 848 shots |
 | Out | `C:/TAMU/visual-baselines/development-as-production/dev-2026-10-18-3` |
-| Expected | about 850 shots, a couple of hours; it resumes if interrupted |
+| Progress at 5:44 PM | **25 of 848, 0 failed**, about 149 minutes left, so roughly 8:15 PM |
 
 Nothing else is running on this machine, and nothing is pointed at production. The comparison
 (`review.mjs`) follows when the capture finishes; it is minutes.
@@ -44,10 +44,17 @@ Report: `work/reports/2026-10-18-6.md`, which also covers batch 5.
 
 ## Queued
 
-**Batch 9 (#1849) — the final test, held by the director.** Its 5:20 PM revision says **do not start it on
-Release-482**: a legend fix (#1871) goes into this release, so the final test runs on the release that carries it,
-which the director will name here. So this machine has **not** gone on to the full tier, the `--as production`
-capture or the comparison. It is watching the branch for that release, with nothing else running.
+**Batch 9 (#1849) — the final test, still held by the director**, and held twice over:
+
+- **5:20 PM:** not on Release-482; a legend fix (#1871) goes into this release.
+- **About 6 PM:** the final build will also carry #1912 (the trip planner on dev) and #1923 (Angular 22.2.3),
+  about 1.5 hours out. **The release building now, `af33dc01e`, is not the final one, and this machine does
+  nothing with it.** The director names the final release here.
+
+So nothing of batch 9 has started — not the full tier, not its own `--as production` capture, not its comparison.
+**No Azure watcher is running, deliberately:** there is no commit to watch for yet, and a watcher keyed to "the
+next release" would fire on `af33dc01e`, which is the thing the director just said to ignore. One starts when the
+final commit is named.
 
 Azure at 5:30 PM Central:
 
