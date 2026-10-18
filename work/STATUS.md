@@ -24,6 +24,12 @@ Last batch done: 4.
 It resumes if interrupted, so a restart costs only what it had not reached. Nothing else should run
 against production while it does.
 
+## Waiting on a build
+
+**Batch 6 (#1867)** — the quick tier on the first ArcGIS 5.1 build. `c03c56144` (#1894) is on
+`development`, and `development`'s head is now `6ca6eb7e7`, but **Azure lists no release for either**:
+the newest is Release-479 at `86893756c`. Watching for one, as the batch says. Nothing started.
+
 ## Finished since the last report
 
 - **Batch 3 (#1849)** — the release tier on **Release-479, build 20261018.12, `86893756c`**: 523 passed, 0
