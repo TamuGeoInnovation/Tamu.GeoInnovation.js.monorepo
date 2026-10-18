@@ -102,6 +102,17 @@ test/smoke/aggiemap/run-local.sh production    # aggiemap.tamu.edu
 test/smoke/aggiemap/run-local.sh local         # a dev server in the aggiemap-dev container
 ```
 
+**One spec or one test**, to prove a check red before a fix and green after it, without a tier:
+
+```bash
+test/smoke/aggiemap/run-local.sh development one legend.spec.ts
+test/smoke/aggiemap/run-local.sh development one "a layer that loads hidden is listed once it is switched on"
+```
+
+A name ending `.spec.ts` runs that file. Anything else runs every test whose name contains the text,
+matched literally, so brackets, dots and parentheses in a name need no escaping. It works with every
+environment, `local` included.
+
 Anything after the environment and tier goes to `playwright test`, for example `--grep "gameday"`. It
 needs only Docker and bash (Git Bash on Windows). The first run downloads the Playwright image, about
 2 GB.
