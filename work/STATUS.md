@@ -22,9 +22,11 @@ Nothing else is running on this machine. On this commit a `/campus/dc-bush-schoo
 batch 8 says, and so do `campus-layers.spec.ts`'s three campus tests — that spec exists at this commit and is in
 `scope.ts`'s campus group.
 
-**Batch 9 is read: it starts only if batch 8 passes**, and it is the final test of this same release — full tier,
-then dev's screenshots captured as production renders them, then the comparison against batch 5's set. If batch 8
-fails, batch 9 does not start; this machine reports and waits.
+**Batch 9 is read, and read again at 5:25 PM: it is held.** The 5:20 PM revision says **do not start it on
+Release-482** — a legend fix (#1871) goes into this release, so the final test runs on the release that carries it,
+which the director will name. So after batch 8 this machine waits, and does not go on to the full tier, the
+`--as production` capture or the comparison. Batch 8 itself is unaffected and is running on Release-482 as
+directed.
 
 ## work: finished — batch 5, production's "before" set
 
