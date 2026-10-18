@@ -4,7 +4,6 @@ import {
   Component,
   ElementRef,
   OnInit,
-  ChangeDetectionStrategy,
   CUSTOM_ELEMENTS_SCHEMA,
   viewChild
 } from '@angular/core';
@@ -25,7 +24,6 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-poi-popup-component',
   templateUrl: './poi.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   // <swiper-container> is the Swiper web component, registered at run time (as the popups module did).
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CopyComponent, AsyncPipe, MarkdownParsePipe]

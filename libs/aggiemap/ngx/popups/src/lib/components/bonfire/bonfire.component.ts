@@ -4,7 +4,6 @@ import {
   Component,
   ElementRef,
   OnInit,
-  ChangeDetectionStrategy,
   CUSTOM_ELEMENTS_SCHEMA,
   viewChild
 } from '@angular/core';
@@ -24,7 +23,6 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-bonfire',
   templateUrl: './bonfire.component.html',
   styleUrls: ['./bonfire.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   // <swiper-container> is the Swiper web component, registered at run time (as the popups module did).
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [AsyncPipe, MarkdownParsePipe]
