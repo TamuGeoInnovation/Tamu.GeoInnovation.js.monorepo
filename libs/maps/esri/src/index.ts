@@ -3,6 +3,7 @@ export * from './lib/esri-runtime';
 
 export * from './lib/popup-reference';
 export * from './lib/highlights';
+export * from './lib/geographic';
 
 export * from './lib/services/module-provider/module-provider.service';
 

@@ -131,23 +131,24 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
               ] // Closing vertex, same as first
             ];
 
-            // Transform screen point coordinates to map point coordinates
-            const mapCoords: number[][] = screenCoords
-              .map((point) => {
-                return view.toMap({
-                  x: point[0],
-                  y: point[1]
-                });
-              })
-              .map((coord) => {
-                return [coord.longitude, coord.latitude];
+            // Transform screen point coordinates to map point coordinates, in the view's own spatial reference.
+            // Not longitude and latitude, which Esri leaves null in a projected reference such as dev's
+            // campus basemap (#1875).
+            const mapCoords: number[][] = screenCoords.map((point) => {
+              const coord = view.toMap({
+                x: point[0],
+                y: point[1]
               });
+
+              return [coord.x, coord.y];
+            });
 
             // Use module provider to get polygon class object
             this.mp.require(['Polygon']).then(([Polygon]: [typeof esri.Polygon]) => {
               // Create a polygon that will be used to query the feature layer to get intersecting features
               const polygon = new Polygon({
-                rings: [mapCoords]
+                rings: [mapCoords],
+                spatialReference: view.spatialReference
               });
 
               this.mapService.findLayerOrCreateFromSource(source).then((layer: esri.FeatureLayer) => {
