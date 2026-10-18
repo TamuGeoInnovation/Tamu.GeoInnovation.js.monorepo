@@ -73,7 +73,12 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
 
 ## Batch 8 (prepared 18 October 2026, about 4 PM) — after batch 7
 
-**Decided:** #1673 (OnPush on the map, UES included, PR #1908) and #1905 (UES in CI, PR #1907) are merged. A dev
+**Decided:** #1673 (OnPush on the map, UES included, PR #1908) and #1905 (UES in CI, PR #1907) are merged.
+- Batch 7's questions (the maintainer, about 4:20 PM): **1** filed as #1910, High: satellite campus maps load all of
+  College Station's 26 layers, RNS Spaces' 44,980 points among them, which is what 5.1 is slow with; a fix is being
+  made on the home machine. **2** not a probe fault: the probe lists all 26 layers on that page from a browser
+  (`snapshot().layers`); the batch 7 script read the wrong field, so the suite's layer checks stand. **3** skipped.
+- So in batch 8, a DC Bush School failure is #1910's, already known. A dev
 build and the quick tier follow, then the maintainer looks at the map by hand on dev.
 
 1. **#1673: the quick tier on dev's build with OnPush on the map**
