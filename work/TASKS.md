@@ -17,6 +17,19 @@ each round; git history keeps the old ones.
   under **Told directly**: what he said, and when. Then the home session knows it has been answered and does not
   ask again.
 
+**Watch mode (18 October): keep checking for work until told to stop.** After a batch is done and its report
+and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
+- Record in `STATUS.md` the number of the last batch done (`Last batch done: N`).
+- Wait for the branch to change with one background command that exits on its own, for example
+  `old=$(git ls-remote origin refs/heads/work-mailbox | cut -f1); until [ "$(git ls-remote origin refs/heads/work-mailbox | cut -f1)" != "$old" ]; do sleep 120; done`.
+  When it exits, pull and read this file.
+- A batch numbered higher than the last one done is new: do it, report, push, update `STATUS.md`, and watch again.
+  Anything else (your own pushes, a change to an old batch) means watch again.
+- **A heading `## Stop` in this file means stop:** finish nothing new, write `Stopped at <time>` in `STATUS.md`,
+  push it, and end. The home session adds it only when the maintainer says the day's work is done.
+- The home session watches the same branch, so a pushed report is read without the maintainer relaying it.
+  He no longer needs to say "work report ready".
+
 **Rules:**
 - **Read CLAUDE.md on `development` first.** Its rules apply here as everywhere, in particular:
   - times in US Central, computed with PowerShell;
@@ -34,7 +47,7 @@ each round; git history keeps the old ones.
   each failure explained by layer and cause, the issue comments posted, and anything that could not be done.
   Put anything that needs deciding under **Questions for the home session**, numbered, with lettered options and a
   recommendation. Don't ask the maintainer; the home session does.
-- **Say "work report ready: <file>"** when done. The maintainer relays that to the home session.
+- **Say "work report ready: <file>"** when done, then go back to watching (see Watch mode).
 
 ## Template for each task (the home session fills it in)
 
@@ -47,6 +60,9 @@ each round; git history keeps the old ones.
 ## Batch 5 (prepared 18 October 2026, afternoon) — after batch 4
 
 **Decided** (the maintainer, 18 October):
+- (Added after batch 4's report.) **Start this batch now.** It was always the plan; nothing runs against
+  production. This machine has had `AZURE_DEVOPS_PAT` since this morning: name releases and build numbers from
+  Azure, and drop the older notes saying otherwise. Batch 4's three-attempt measurement is not needed for now.
 - Production waits. Today's remaining modernization steps (ArcGIS 5.1, dead-code deletions, the #1716 fixes and
   OnPush on the map, #1673) merge first. **A dev build and quick tier follow each risky step** (5.1, then #1673);
   the home session will add each as its own batch when the build is on dev.
