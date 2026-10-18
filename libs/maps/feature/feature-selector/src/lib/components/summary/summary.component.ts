@@ -1,13 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  AfterContentInit,
-  ChangeDetectionStrategy,
-  inject,
-  input,
-  contentChildren
-} from '@angular/core';
+import { Component, OnInit, AfterContentInit, ChangeDetectionStrategy, inject, input, model, contentChildren } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { BaseChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
@@ -36,8 +27,8 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
 
   public readonly identifier = input<string>(undefined);
 
-  @Input()
-  public collection: Observable<esri.Graphic[]>;
+  // A model rather than an input: the component collects its own when `selfCollect` is set.
+  public readonly collection = model<Observable<esri.Graphic[]>>(undefined);
 
   /**
    * Query for a list of BaseChartComponent subclasses such as LineChartComponent, BarChartComponent,
@@ -57,7 +48,7 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
         identifier: this.identifier()
       });
 
-      this.collection = this.collector.collection;
+      this.collection.set(this.collector.collection);
     }
   }
 
@@ -66,7 +57,7 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
    */
   public ngAfterContentInit() {
     this.chartComponents().forEach((component) => {
-      component.source = this.collection;
+      component.source.set(this.collection());
     });
   }
 }

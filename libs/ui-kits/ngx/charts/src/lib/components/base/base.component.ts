@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input, AfterViewInit, OnInit, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, AfterViewInit, OnInit, ChangeDetectionStrategy, input, model, viewChild } from '@angular/core';
 import { Observable, iif, of } from 'rxjs';
 import { scan } from 'rxjs/operators';
 
@@ -17,9 +17,10 @@ import {
 export class BaseChartComponent implements OnInit, AfterViewInit {
   /**
    * A collection of items (esri graphics or otherwise) used in processing to generate the `ChartConfig` data sets.
+   *
+   * A model rather than an input: a selection summary sets it on the charts it contains.
    */
-  @Input()
-  public source: Observable<unknown[]>;
+  public readonly source = model<Observable<unknown[]>>(undefined);
 
   public readonly options = input<IChartConfiguration['options']>({});
 
@@ -122,8 +123,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
    * With one transformation applied, providing `['attributes.name']` as the path will resolve to "Name of object" for the Dataset item 1.
    *
    */
-  @Input()
-  public paths: Array<string> | Array<Array<string>>;
+  public readonly paths = input<Array<string> | Array<Array<string>>>(undefined);
 
   /**
    * Describes a series of transformational operations performed on the `source` collection that ultimately reduce it to a
@@ -144,20 +144,17 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
    * Each of the transformations in the transformation collection will be executed sequentially.
    * This allows creating transformation pipelines by consuming the output of one transformation into the next.
    */
-  @Input()
-  public transformations: Array<string> | Array<Array<string>>;
+  public readonly transformations = input<Array<string> | Array<Array<string>>>(undefined);
 
   /**
    * Series display labels for a dataset.
    */
-  @Input()
-  public labels: Array<string>;
+  public readonly labels = input<Array<string>>(undefined);
 
   /**
    * Chart title.
    */
-  @Input()
-  public title: string;
+  public readonly title = input<string>(undefined);
 
   /**
    * Lays out the structure of a base configuration.
@@ -181,8 +178,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
    *
    * Chart container is responsible for rendering chart.
    */
-  @ViewChild(ChartContainerComponent, { static: true })
-  public chart: ChartContainerComponent;
+  public readonly chart = viewChild(ChartContainerComponent);
 
   /**
    * `ChartContainerComponent`'s inside template sub-class will be available here.
@@ -190,7 +186,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
    * Perform simple check to make sure we can proceed with chart generation.
    */
   public ngOnInit() {
-    if (this.chart === undefined) {
+    if (this.chart() === undefined) {
       throw new Error('Subclass does not contain chart container.');
     }
   }
@@ -201,7 +197,9 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
    * Every subclass will create chart config at this point in time.
    */
   public ngAfterViewInit() {
-    if (this.source === undefined) {
+    const source = this.source();
+
+    if (source === undefined) {
       throw new Error('No chart data source provided.');
     }
 
@@ -210,7 +208,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
     //
     // Generated config is returned by the scan operator which will trigger chart container to
     // create/update chart data.
-    this.chartData = iif(() => 'subscribe' in this.source, this.source, of(this.source as unknown as unknown[])).pipe(
+    this.chartData = iif(() => 'subscribe' in source, source, of(source as unknown as unknown[])).pipe(
       scan((acc, curr) => {
         let p;
         // Asserting transformations as an `any` array, otherwise compiler does not like its original
@@ -218,11 +216,11 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
         if ('datasets' in curr) {
           p = curr;
         } else {
-          p = (<string[]>this.transformations)
+          p = (<string[]>this.transformations())
             .map((transformation, index) => {
               const transformed = {
-                value: this.evaluateTransformSet(transformation, this.paths[index], curr).value,
-                label: this.labels[index]
+                value: this.evaluateTransformSet(transformation, this.paths()[index], curr).value,
+                label: this.labels()[index]
               };
 
               return transformed;
@@ -258,7 +256,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
       }, new ChartConfiguration())
     );
 
-    this.chart.create(this.chartData);
+    this.chart().create(this.chartData);
   }
 
   /**

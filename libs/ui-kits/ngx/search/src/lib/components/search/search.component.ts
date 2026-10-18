@@ -2,13 +2,13 @@ import {
   Component,
   OnInit,
   ElementRef,
-  Input,
   OnDestroy,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   HostListener,
   inject,
   input,
+  model,
   output,
   viewChild
 } from '@angular/core';
@@ -62,8 +62,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    *
    * Default to false.
    */
-  @Input()
-  public leftActionIcon: string;
+  public readonly leftActionIcon = input<string>(undefined);
 
   /**
    * Option that enables/disabled the right side action on the search bar.
@@ -74,16 +73,16 @@ export class SearchComponent implements OnInit, OnDestroy {
    *
    * Default to false.
    */
-  @Input()
-  public rightActionIcon: string;
+  public readonly rightActionIcon = input<string>(undefined);
 
   /**
    * Option that sets a default search input value
    *
    * Defaults to empty.
+   *
+   * A model rather than an input: the component sets it itself when a result is chosen or the input cleared.
    */
-  @Input()
-  public value = '';
+  public readonly value = model('');
 
   /**
    * Option describing the index of the component in a list of like components
@@ -268,7 +267,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
 
           // If the input value has changed trigger a "dirty" event
-          if (value !== this.value) {
+          if (value !== this.value()) {
             this.dirty.emit(new SearchEvent({}));
           }
         } else {
@@ -379,7 +378,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     if (feature && !isString) {
       // Update the DOM model value
-      this.value = this.evaluateDisplayTemplate(feature as unknown as object, parentResult.displayTemplate);
+      this.value.set(this.evaluateDisplayTemplate(feature as unknown as object, parentResult.displayTemplate));
 
       // De-focus the component
       this.loseFocus();
@@ -515,7 +514,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Called when the left action icon is pressed. Will emit an event so parent component can handle interaction.
    */
   public emitLeftActionEvent(): void {
-    if (this.leftActionIcon) {
+    if (this.leftActionIcon()) {
       this.leftAction.emit();
     }
   }
@@ -524,12 +523,12 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Called when the right action icon is pressed. Will emit an event so parent component can handle interaction.
    */
   public emitRightActionEvent(): void {
-    if (this.rightActionIcon) {
+    if (this.rightActionIcon()) {
       this.rightAction.emit();
 
       // Default action clearing the input when the right action icon is 'close'
-      if (this.rightActionIcon === 'close') {
-        this.value = '';
+      if (this.rightActionIcon() === 'close') {
+        this.value.set('');
         this.input.next('');
       }
     }

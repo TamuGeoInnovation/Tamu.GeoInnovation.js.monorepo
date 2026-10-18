@@ -25,41 +25,45 @@ describe('BaseChartComponent', () => {
   ));
 
   it('should initialize with valid input', (done) => {
-    inject([BaseChartComponent], (baseChartComponent: BaseChartComponent) => {
-      const fake_sources = new BehaviorSubject<string[]>(['test']);
-      baseChartComponent.transformations = [['count']];
-      baseChartComponent.paths = [['count']];
-      baseChartComponent.labels = ['Count'];
-      baseChartComponent.baseConfig = new ChartConfiguration();
-      baseChartComponent.source = fake_sources.asObservable();
-      baseChartComponent.chart = {
-        create: (config: Observable<ChartConfiguration> | ChartConfiguration) => {
-          expect(config).toBeInstanceOf(Observable);
+    const fixture = TestBed.createComponent(BaseChartComponent);
+    const baseChartComponent = fixture.componentInstance;
+    const fake_sources = new BehaviorSubject<string[]>(['test']);
+    fixture.componentRef.setInput('transformations', [['count']]);
+    fixture.componentRef.setInput('paths', [['count']]);
+    fixture.componentRef.setInput('labels', ['Count']);
+    fixture.componentRef.setInput('source', fake_sources.asObservable());
+    baseChartComponent.baseConfig = new ChartConfiguration();
 
-          if (!(config instanceof Observable)) {
-            return;
-          }
+    // The base class has no chart container of its own, so the query is replaced with a stand-in.
+    const chart = {
+      create: (config: Observable<ChartConfiguration> | ChartConfiguration) => {
+        expect(config).toBeInstanceOf(Observable);
 
-          config.subscribe((chart_config: ChartConfiguration) => {
-            expect(chart_config).toEqual({
-              ...new ChartConfiguration(),
-              data: {
-                datasets: [
-                  {
-                    data: [],
-                    label: 'Count'
-                  }
-                ],
-                labels: []
-              }
-            });
-            done();
-          });
+        if (!(config instanceof Observable)) {
+          return;
         }
-      } as unknown as ChartContainerComponent;
 
-      baseChartComponent.ngAfterViewInit();
-    })();
+        config.subscribe((chart_config: ChartConfiguration) => {
+          expect(chart_config).toEqual({
+            ...new ChartConfiguration(),
+            data: {
+              datasets: [
+                {
+                  data: [],
+                  label: 'Count'
+                }
+              ],
+              labels: []
+            }
+          });
+          done();
+        });
+      }
+    } as unknown as ChartContainerComponent;
+
+    Object.defineProperty(baseChartComponent, 'chart', { value: () => chart });
+
+    baseChartComponent.ngAfterViewInit();
   });
 
   it('should error with invalid transformation', inject([BaseChartComponent], (baseChartComponent: BaseChartComponent) => {
