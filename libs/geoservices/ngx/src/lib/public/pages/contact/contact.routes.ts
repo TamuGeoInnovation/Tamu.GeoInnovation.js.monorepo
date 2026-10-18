@@ -9,6 +9,10 @@ export const contactRoutes: Routes = [
     path: 'bug-report',
     loadChildren: () => import('./pages/bug-report/bug-report.routes').then((m) => m.bugReportRoutes)
   },
+  // {
+  //   path: 'partnership',
+  //   loadChildren: () => import('./pages/partner/partner.routes').then((m) => m.partnerRoutes)
+  // },
   {
     path: '',
     pathMatch: 'full',
