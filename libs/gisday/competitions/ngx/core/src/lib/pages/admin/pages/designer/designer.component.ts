@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
-import { ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions/data-api';
 import { DesignFormComponent } from './components/design-form/design-form.component';
 
 @Component({
@@ -10,6 +9,4 @@ import { DesignFormComponent } from './components/design-form/design-form.compon
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DesignFormComponent]
 })
-export class DesignerComponent {
-  public formModel: ICompetitionSeasonFormQuestion[];
-}
+export class DesignerComponent {}
