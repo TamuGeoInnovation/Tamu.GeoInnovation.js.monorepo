@@ -22,7 +22,7 @@ the shared libraries behind them. A change to a shared library can affect severa
 
 ## Where things are written down
 
-Nine places, each with one job.
+Ten places, each with one job.
 
 | Where | What belongs there |
 | --- | --- |
@@ -34,6 +34,7 @@ Nine places, each with one job.
 | [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
 | The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
+| The `work-mailbox` branch | The work machine's current batch of test runs (`work/TASKS.md`) and its reports (`work/reports/`). Written by the home and work sessions; never merged. See [The work machine](#the-work-machine). |
 | The maintainer's handoff page | One person's own cross-machine notes, so he can stop on one machine and resume on another. Private, not linked from this repository, reached by pasting a pickup prompt. |
 
 **The handoff page is for one person, so it cannot be where anything else lives.** If a fact matters to
@@ -517,9 +518,11 @@ maintainer included, pushes branches to their own fork and opens pull requests f
 repository, used only to pull `development`; `fork` is the user's fork, where branches are
 pushed. If a checkout has no `fork` remote, ask which fork to use before pushing anything.
 
-The one exception is the cloud session's: `cloud-mailbox` and `cloud/<issue>-<topic>` branches live
-on `TamuGeoInnovation`, because that is where the cloud session pushes. Their pull requests still go
-through a fork, opened by the desktop session (see [The cloud session](#the-cloud-session)).
+The exceptions are the mailboxes. The cloud session's `cloud-mailbox` and `cloud/<issue>-<topic>` branches
+live on `TamuGeoInnovation`, because that is where the cloud session pushes; their pull requests still go
+through a fork, opened by the desktop session (see [The cloud session](#the-cloud-session)). The
+`work-mailbox` branch lives there too, so both of the maintainer's machines can read and write it (see
+[The work machine](#the-work-machine)).
 
 ```
 git remote add fork git@github.com:<user>/Tamu.GeoInnovation.js.monorepo.git
@@ -591,6 +594,30 @@ A good batch is work that can be done and proven without the local run or the se
 tests, deletions, investigations that end in a report, and smoke runs against a deployed environment.
 Every open PR's branch goes under the batch's "Don't touch", so the cloud does not build on code that
 is about to change.
+
+## The work machine
+
+The maintainer works on two machines. **The home machine does development; the work machine runs the tests**,
+so each has the resources its job needs: a release tier and a full check competing for one machine's CPU is
+what makes the paint check time out (#1716). Their two Claude Code sessions never talk directly. They exchange
+files on the `work-mailbox` branch of `TamuGeoInnovation`, which is never merged into anything or from anything
+(#1862).
+
+- **The home session writes the batch** into `work/TASKS.md`. Its header holds the rules, and each task names
+  the issue to report on, the exact commit or how to find it, the commands, and what follows: tag or not.
+- **The maintainer starts the work session with one line:**
+
+  ```
+  Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what work/TASKS.md says.
+  ```
+
+- **The work session** does only that batch, runs each test from a worktree at the named commit, and posts
+  status and results on the task's issue. It writes `work/reports/<yyyy-mm-dd>-<n>.md`, commits and pushes only
+  that file, and says "work report ready: <file>".
+- **The home session** pulls `work-mailbox`, reads the report, and takes its decisions to the maintainer.
+
+**The work machine never touches production**: no deploy, promotion or approval. It pushes a `dev-*` tag only
+when its task says so, and no other branches or tags. It opens no pull requests and merges nothing.
 
 ## Things that look broken but are not
 
