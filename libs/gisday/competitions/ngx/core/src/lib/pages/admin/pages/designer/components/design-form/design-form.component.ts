@@ -55,14 +55,18 @@ export class DesignFormComponent implements OnInit {
       }
 
       if (res && res.form.model) {
-        this.formModel = this.fb.group({
-          allowSubmissions: [res.allowSubmissions],
-          fields: this.fb.array(
+        // Fill the existing form rather than replacing it, so the valueChanges subscription below keeps
+        // seeing edits (#1876). Silently, because the saved model is emitted once below.
+        this.formModel.setControl(
+          'fields',
+          this.fb.array(
             res.form.model.map((q) => {
               return this.fb.group({ ...q, options: q.options.length > 0 ? this.fb.array(q.options) : this.fb.array([]) });
             })
-          )
-        });
+          ),
+          { emitEvent: false }
+        );
+        this.formModel.patchValue({ allowSubmissions: res.allowSubmissions }, { emitEvent: false });
 
         this.updated.emit(res.form.model);
       }
