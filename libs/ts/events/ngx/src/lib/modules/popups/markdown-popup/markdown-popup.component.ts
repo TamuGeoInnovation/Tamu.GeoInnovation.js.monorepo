@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -7,7 +7,6 @@ import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
   selector: 'tamu-gisc-markdown-popup',
   templateUrl: './markdown-popup.component.html',
   styleUrls: ['./markdown-popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CopyComponent]
 })
 export class MarkdownPopupComponent extends BaseEventPopupComponent implements OnInit {

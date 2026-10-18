@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AltSearchHelper, SearchSelection, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
@@ -22,7 +22,6 @@ import esri = __esri;
   selector: 'tamu-gisc-sidebar-reference',
   templateUrl: './sidebar-reference.component.html',
   styleUrls: ['./sidebar-reference.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SearchComponent, CopyComponent, NgStyle, LayerListComponent, LegendComponent, KeyValuePipe]
 })
 export class SidebarReferenceComponent implements OnInit {
