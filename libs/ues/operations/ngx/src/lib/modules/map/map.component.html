@@ -1,7 +1,7 @@
 <tamu-gisc-reveille-console-log></tamu-gisc-reveille-console-log>
 
 <div class="map-ui bottom left">
-  @if (!isMobile) {
+  @if (!isMobile()) {
   <div class="help map-ui-element" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
     <span class="material-icons">help</span>
     <div class="topics">
@@ -24,14 +24,14 @@
   }
 
   <!-- Map click coordinates, copy to click -->
-  @if (!isMobile) {
+  @if (!isMobile()) {
   <tamu-gisc-click-coordinates class="map-ui-element"></tamu-gisc-click-coordinates>
   }
 </div>
 
 <!-- Map component -->
-<tamu-gisc-esri-map [config]="config" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }"></tamu-gisc-esri-map>
-@if (!isMobile) {
+<tamu-gisc-esri-map [config]="config" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile() }"></tamu-gisc-esri-map>
+@if (!isMobile()) {
 <!-- Moves itself into the map's top-left corner, below the zoom and locate buttons. -->
 <tamu-gisc-map-compass></tamu-gisc-map-compass>
 }
@@ -40,7 +40,7 @@
 <router-outlet></router-outlet>
 
 <!-- Mobile keyboard viewfinder/feature list -->
-@if (!isMobile) {
+@if (!isMobile()) {
 <tamu-gisc-map-viewfinder [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
 }
 

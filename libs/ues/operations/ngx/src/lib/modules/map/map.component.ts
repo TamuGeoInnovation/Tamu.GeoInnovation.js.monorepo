@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import { MapServiceInstance, MapConfig, HIDDEN_DEFAULT_HIGHLIGHT } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
@@ -32,23 +31,18 @@ import esri = __esri;
     UESTamuBlockComponent
   ]
 })
-export class MapComponent implements OnInit, OnDestroy {
+export class MapComponent implements OnInit {
   private responsiveService = inject(ResponsiveService);
   private environment = inject(EnvironmentService);
 
   public map: esri.Map;
   public view: esri.MapView;
-  public isMobile: boolean;
+  // ResponsiveService emits synchronously, so this has a value before ngOnInit reads it.
+  public readonly isMobile = toSignal(this.responsiveService.isMobile);
   public config: MapConfig;
-
-  private _destroy$: Subject<boolean> = new Subject();
 
   public ngOnInit() {
     const connections = this.environment.value('Connections');
-
-    this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
-      this.isMobile = value;
-    });
 
     this.config = {
       basemap: {
@@ -87,7 +81,7 @@ export class MapComponent implements OnInit, OnDestroy {
           zoom: 16,
           ui: {
             // The attribution is the view's own since ArcGIS 5.0 (`attributionVisible`), no longer a UI component.
-            components: this.isMobile ? [] : ['zoom']
+            components: this.isMobile() ? [] : ['zoom']
           },
           popup: {
             dockOptions: {
@@ -112,11 +106,6 @@ export class MapComponent implements OnInit, OnDestroy {
     (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
   }
 
-  public ngOnDestroy() {
-    this._destroy$.next(true);
-    this._destroy$.complete();
-  }
-
   public continue(instances: MapServiceInstance) {
     instances.view.when(() => {
       //
@@ -133,7 +122,7 @@ export class MapComponent implements OnInit, OnDestroy {
       }, 300);
     });
 
-    addTrack(instances.view as esri.MapView, this.isMobile ? 'bottom-right' : 'top-left');
+    addTrack(instances.view as esri.MapView, this.isMobile() ? 'bottom-right' : 'top-left');
   }
 
   /**
