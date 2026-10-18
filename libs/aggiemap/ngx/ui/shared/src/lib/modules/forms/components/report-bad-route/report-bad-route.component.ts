@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subject } from 'rxjs';
@@ -15,7 +15,6 @@ import { FormsModule } from '@angular/forms';
   selector: 'tamu-gisc-report-bad-route',
   templateUrl: './report-bad-route.component.html',
   styleUrls: ['./report-bad-route.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule]
 })
 export class ReportBadRouteComponent implements OnInit, OnDestroy {

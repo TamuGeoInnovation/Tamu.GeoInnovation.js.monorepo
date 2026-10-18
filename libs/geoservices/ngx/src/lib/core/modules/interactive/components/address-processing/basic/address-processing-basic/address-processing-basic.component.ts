@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UntypedFormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
@@ -27,7 +27,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-address-processing-basic',
   templateUrl: './address-processing-basic.component.html',
   styleUrls: ['./address-processing-basic.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

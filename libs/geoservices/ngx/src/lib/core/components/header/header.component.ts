@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { Observable, Subject, delay, filter, map, merge, of, startWith, switchMap } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -30,7 +30,6 @@ import { TileLinkDirective } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   animations: [growAnimationBuilder(250)],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     RouterLinkActive,
     RouterLink,

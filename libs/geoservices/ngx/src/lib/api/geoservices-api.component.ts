@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterLinkActive, RouterLink, RouterOutlet } from '@angular/router';
 import { Observable, Subject, filter, takeUntil } from 'rxjs';
 
@@ -17,7 +17,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-api',
   templateUrl: './geoservices-api.component.html',
   styleUrls: ['./geoservices-api.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     DrawerComponent,
     RouterLinkActive,

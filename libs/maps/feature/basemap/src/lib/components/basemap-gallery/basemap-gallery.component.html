@@ -13,7 +13,7 @@
       <img [src]="basemap.basemap.thumbnailUrl" alt="Basemap thumbnail" />
       <!-- The title's text starts the element, with nothing before it: the smoke suite reads it as written. -->
       <p class="basemap-title">{{ basemap.basemap.title }}@if (unavailable(basemap)) {<span class="basemap-note">2D only</span>}</p>
-      @if (loadingBasemapId === basemap.basemap.id) {
+      @if (loadingBasemapId() === basemap.basemap.id) {
       <div class="spinning-loader" aria-label="Loading basemap"></div>
       }
     </div>

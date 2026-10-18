@@ -1,9 +1,9 @@
 <div class="accessible-viewfinder" #viewfinder [ngClass]="{ hidden: ($accessibleNavigation | async) !== true }"></div>
 
 <div class="accessible-viewfinder-features" [ngClass]="{ hidden: ($accessibleNavigation | async) !== true}">
-  @if (viewFinderFeatures?.length > 0) {
+  @if (viewFinderFeatures()?.length > 0) {
   <div class="feature-item-container">
-    @for (feature of viewFinderFeatures; track feature; let i = $index) {
+    @for (feature of viewFinderFeatures(); track feature; let i = $index) {
     <div class="feature-item">
       <div class="feature-index">
         <div class="wrapper">

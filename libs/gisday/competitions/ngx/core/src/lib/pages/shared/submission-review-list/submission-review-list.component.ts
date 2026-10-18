@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { Observable, take } from 'rxjs';
 
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -20,7 +20,6 @@ interface SwimlaneNgxDatatableActivateEvent {
   selector: 'tamu-gisc-submission-review-list',
   templateUrl: './submission-review-list.component.html',
   styleUrls: ['./submission-review-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgxDatatableModule, DatePipe]
 })
 export class SubmissionReviewListComponent implements OnInit {
@@ -29,11 +28,11 @@ export class SubmissionReviewListComponent implements OnInit {
   public readonly submissions$ = input<Observable<SubmissionReviewDto[]>>(undefined);
   public readonly isAdmin = input(false);
 
-  public submissions: SubmissionReviewDto[] = [];
+  public readonly submissions = signal<SubmissionReviewDto[]>([]);
 
   public ngOnInit(): void {
     this.submissions$().subscribe((submissions) => {
-      this.submissions = submissions;
+      this.submissions.set(submissions);
     });
   }
 
@@ -42,11 +41,19 @@ export class SubmissionReviewListComponent implements OnInit {
       return;
     }
 
-    this.modalService.open(SubmissionDetailModalComponent, {
-      data: {
-        submission: event.row,
-        isAdmin: this.isAdmin()
-      }
-    });
+    this.modalService
+      .open<SubmissionReviewDto>(SubmissionDetailModalComponent, {
+        data: {
+          submission: event.row,
+          isAdmin: this.isAdmin()
+        }
+      })
+      .pipe(take(1))
+      .subscribe((updated) => {
+        // The modal changes the row's status in place. A new list makes the table draw it again.
+        if (updated) {
+          this.submissions.update((rows) => [...rows]);
+        }
+      });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
@@ -23,7 +23,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-geocoding-basic',
   templateUrl: './geocoding-basic.component.html',
   styleUrls: ['./geocoding-basic.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

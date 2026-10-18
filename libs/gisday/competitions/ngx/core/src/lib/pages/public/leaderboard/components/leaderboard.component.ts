@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, take } from 'rxjs/operators';
@@ -13,7 +13,6 @@ import { NgClass, AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-leaderboard',
   templateUrl: './leaderboard.component.html',
   styleUrls: ['./leaderboard.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass, RouterLink, AsyncPipe]
 })
 export class LeaderboardComponent implements OnInit {

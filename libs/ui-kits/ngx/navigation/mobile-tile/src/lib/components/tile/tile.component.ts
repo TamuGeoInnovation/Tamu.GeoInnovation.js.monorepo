@@ -3,7 +3,6 @@ import {
   Component,
   HostListener,
   OnDestroy,
-  ChangeDetectionStrategy,
   inject,
   contentChild
 } from '@angular/core';
@@ -20,7 +19,6 @@ import { TileNavigationComponent } from '../tile-navigation/tile-navigation.comp
   selector: 'tamu-gisc-tile',
   templateUrl: './tile.component.html',
   styleUrls: ['./tile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TileNavigationComponent]
 })
 export class TileComponent implements AfterContentInit, OnDestroy {

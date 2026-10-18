@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switchMap, take, withLatestFrom } from 'rxjs';
 
@@ -21,7 +21,6 @@ interface AccommodationChoiceGroup {
   selector: 'tamu-gisc-accommodations',
   templateUrl: './accommodations.component.html',
   styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass, AsyncPipe, DatePipe]
 })
 export class AccommodationsComponent implements OnInit {

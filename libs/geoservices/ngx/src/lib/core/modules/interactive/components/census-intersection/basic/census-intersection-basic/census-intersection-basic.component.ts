@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UntypedFormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { pipe, withLatestFrom, map, switchMap } from 'rxjs';
 
@@ -25,7 +25,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-census-intersection-basic',
   templateUrl: './census-intersection-basic.component.html',
   styleUrls: ['./census-intersection-basic.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

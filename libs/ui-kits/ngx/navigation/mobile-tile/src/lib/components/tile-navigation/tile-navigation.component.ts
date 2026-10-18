@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, output, input } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, output, input } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 
@@ -13,7 +13,6 @@ import { AsyncPipe } from '@angular/common';
   styleUrls: ['./tile-navigation.component.scss'],
   providers: [TileService],
   animations: [baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TileSubmenuContainerComponent, AsyncPipe]
 })
 export class TileNavigationComponent implements OnInit, OnDestroy {

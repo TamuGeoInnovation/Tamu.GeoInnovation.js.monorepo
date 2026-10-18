@@ -1,6 +1,7 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Observable, Subscription, filter, map } from 'rxjs';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
@@ -30,7 +31,6 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   selector: 'tamu-gisc-code-maroon-alert',
   templateUrl: './code-maroon-alert.component.html',
   styleUrls: ['./code-maroon-alert.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ButtonComponent, AsyncPipe, DatePipe]
 })
 export class CodeMaroonAlertComponent implements OnInit, OnDestroy {
@@ -40,7 +40,16 @@ export class CodeMaroonAlertComponent implements OnInit, OnDestroy {
   private readonly ts = inject(TestingService);
 
   public state: Observable<CodeMaroonState>;
-  public dismissed = false;
+  public readonly dismissed = signal(false);
+
+  /** The current URL, as a signal so the view follows navigation into and out of `/code-maroon`. */
+  private readonly url = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e) => e.urlAfterRedirects)
+    ),
+    { initialValue: this.router.url }
+  );
 
   private _subscriptions = new Subscription();
   /** The live poll, held so a sample can stop it. */
@@ -89,7 +98,7 @@ export class CodeMaroonAlertComponent implements OnInit, OnDestroy {
 
   /** Only on the Code Maroon route, and only where development features are shown. */
   public get enabled(): boolean {
-    return this.ts.isTesting && this.router.url.split('?')[0].startsWith('/code-maroon');
+    return this.ts.isTesting && this.url().split('?')[0].startsWith('/code-maroon');
   }
 
   public typeFor(alert: CodeMaroonAlert): EmergencyType | undefined {
@@ -119,6 +128,6 @@ export class CodeMaroonAlertComponent implements OnInit, OnDestroy {
   }
 
   public dismiss(): void {
-    this.dismissed = true;
+    this.dismissed.set(true);
   }
 }

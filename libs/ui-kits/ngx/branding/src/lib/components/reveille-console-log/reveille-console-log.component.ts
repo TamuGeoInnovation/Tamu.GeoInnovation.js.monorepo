@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { first } from 'rxjs/operators';
@@ -57,8 +57,7 @@ export const REV_ASCII = `                                                      
 @Component({
   selector: 'tamu-gisc-reveille-console-log',
   templateUrl: './reveille-console-log.component.html',
-  styleUrls: ['./reveille-console-log.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager
+  styleUrls: ['./reveille-console-log.component.scss']
 })
 export class ReveilleConsoleLogComponent {
   private testing = inject(TestingService);

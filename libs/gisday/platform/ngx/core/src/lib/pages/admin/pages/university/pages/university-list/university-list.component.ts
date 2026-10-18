@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -14,7 +14,6 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-university-list',
   templateUrl: './university-list.component.html',
   styleUrls: ['./university-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, ExistsPipe]
 })
 export class UniversityListComponent extends BaseAdminListComponent<University> {

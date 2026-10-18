@@ -279,6 +279,7 @@ is unclear, ask.
 | "... on prod", "... on production" | The same tier with `production` in place of `development`. After a production deploy, `release` |
 | "... on both" | Both of the above, one after the other |
 | "run that one test", "prove the check fails", "run legend.spec.ts on dev" | `test/smoke/aggiemap/run-local.sh development one <spec file or part of a test's name>`: just that spec or test, on any environment. This is how a smoke check is proven red before a fix |
+| "... and stop at the first failure", "fail fast" | The same command with `-x` at the end: it stops at the first test that fails after its retries. Without it, a run continues through every test, which is the default |
 | "... locally", "... against my dev server" | `test/smoke/aggiemap/run-local.sh local`, with the dev server running in the `aggiemap-dev` container |
 | "... locally as production", "check the production gating" | `test/smoke/aggiemap/run-local.sh local-production`: the same dev server at `127.0.0.1`, which is not a dev host, so development-only features are hidden as on production |
 | "... on GitHub", "run the smoke workflow" | `gh workflow run aggiemap-smoke.yml -f environment=development` (or `production`, `both`), then `gh run watch` |

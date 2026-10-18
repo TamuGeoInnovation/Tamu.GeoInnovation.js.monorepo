@@ -1,5 +1,5 @@
-<div [@animate]="animateStatus" (mouseover)="pause()" (mouseleave)="resume()">
-  <div class="status" [style.width.%]="(timer.current / timer.limit) * 100"></div>
+<div [@animate]="animateStatus()" (mouseover)="pause()" (mouseleave)="resume()">
+  <div class="status" [style.width.%]="(timer.current() / timer.limit) * 100"></div>
   <div class="content" (click)="action()" [class.actionable]="notification().action">
     <div>
       <div class="image">
