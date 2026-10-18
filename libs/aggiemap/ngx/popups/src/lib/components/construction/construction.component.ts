@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { DatePipe } from '@angular/common';
@@ -7,7 +7,6 @@ import { DatePipe } from '@angular/common';
   selector: 'tamu-gisc-construction-popup-component',
   templateUrl: './construction.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DatePipe]
 })
 export class ConstructionPopupComponent extends BaseDirectionsComponent implements OnInit {

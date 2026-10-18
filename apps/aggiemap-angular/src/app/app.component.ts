@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2';
@@ -13,7 +13,6 @@ import { ActingAsProductionComponent, CodeMaroonAlertComponent } from '@tamu-gis
   selector: 'tamu-gisc-aggiemap-app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterOutlet, NotificationGroupedComponent, CodeMaroonAlertComponent, ActingAsProductionComponent]
 })
 export class AppComponent implements OnInit, OnDestroy {

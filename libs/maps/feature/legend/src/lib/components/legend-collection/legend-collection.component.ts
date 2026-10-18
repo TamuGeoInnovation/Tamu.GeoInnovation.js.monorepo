@@ -1,4 +1,7 @@
-import { Component, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, input } from '@angular/core';
+
+import { arcgisSignal } from '@tamu-gisc/maps/esri';
+
 import { LegendElementComponent } from '../legend-element/legend-element.component';
 
 import esri = __esri;
@@ -7,7 +10,6 @@ import esri = __esri;
   selector: 'tamu-gisc-legend-collection',
   templateUrl: './legend-collection.component.html',
   styleUrls: ['./legend-collection.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [LegendElementComponent]
 })
 export class LegendCollectionComponent {
@@ -32,6 +34,25 @@ export class LegendCollectionComponent {
 
   public expanded = true;
 
+  /**
+   * What the template shows of the group, which ArcGIS fills in and changes in place: its legend
+   * elements arrive once the layer has drawn, its children with a group layer's sublayers, and its
+   * layer's visibility follows the layer list as well as this legend (#1673).
+   */
+  private readonly arcgis = arcgisSignal(() => {
+    const group = this.group();
+    const children = this._toArray<IActiveLayerInfo>(group?.children);
+
+    return {
+      title: group?.title,
+      visible: group?.layer?.visible,
+      legendElements: this._toArray<esri.LegendElement>(group?.legendElements),
+      children,
+      // Read so that a child turned on or off changes the signal; `visibleChildGroups` lists those on.
+      childrenVisible: children.map((child) => child.layer?.visible)
+    };
+  });
+
   private readonly _sportsSafetyFirstLayerIds = new Set([
     'softball-parking-safety-first',
     'swimming-parking-safety-first',
@@ -41,8 +62,12 @@ export class LegendCollectionComponent {
     'outdoor-track-parking-safety-first'
   ]);
 
+  public get title(): string {
+    return this.arcgis().title;
+  }
+
   public get childGroups(): IActiveLayerInfo[] {
-    const children = this._toArray<IActiveLayerInfo>(this.group()?.children);
+    const children = this.arcgis().children;
 
     if (!this.combineChildrenUnderPrimary() || !this._isPhysicsFestivalGroup(this.group()?.layer?.id)) {
       return children;
@@ -65,7 +90,7 @@ export class LegendCollectionComponent {
   }
 
   public get legendElements(): esri.LegendElement[] {
-    return this._toArray<esri.LegendElement>(this.group()?.legendElements);
+    return this.arcgis().legendElements;
   }
 
   public get visibleChildGroups(): IActiveLayerInfo[] {
@@ -118,7 +143,7 @@ export class LegendCollectionComponent {
   }
 
   public get isLayerVisible(): boolean {
-    return this.group()?.layer?.visible ?? true;
+    return this.arcgis().visible ?? true;
   }
 
   public get isExpanded(): boolean {

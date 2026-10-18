@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { ParkingService } from '../../../../services/transportation/drive/parking.service';
 import { TripPlannerOptionsBaseComponent } from '../base/base.component';
@@ -11,7 +11,6 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-trip-planner-parking-options-component',
   templateUrl: './trip-planner-parking-options.component.html',
   styleUrls: ['../../containers/base/base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SelectComponent, CheckboxComponent, AsyncPipe]
 })
 export class TripPlannerParkingOptionsComponent extends TripPlannerOptionsBaseComponent {

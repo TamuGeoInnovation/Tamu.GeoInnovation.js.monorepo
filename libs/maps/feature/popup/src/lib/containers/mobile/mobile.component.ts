@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { PopupComponent } from '../base/base.component';
 
 import { PopupService } from '../../services/popup.service';
@@ -14,7 +14,6 @@ import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout';
   templateUrl: './mobile.component.html',
   styleUrls: ['./mobile.component.scss'],
   providers: [PopupService],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DragDirective, NgClass, RenderHostDirective, AsyncPipe]
 })
 export class PopupMobileComponent extends PopupComponent implements OnDestroy {

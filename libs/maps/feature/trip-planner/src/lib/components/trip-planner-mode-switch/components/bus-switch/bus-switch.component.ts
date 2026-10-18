@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, input } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
@@ -14,7 +14,6 @@ import { AccordionContentComponent } from '@tamu-gisc/ui-kits/ngx/layout';
   selector: 'tamu-gisc-gisc-bus-switch',
   templateUrl: './bus-switch.component.html',
   styleUrls: ['../../containers/base/base.component.scss', './bus-switch.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass, AccordionComponent, AccordionContentComponent]
 })
 export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {

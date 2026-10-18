@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, combineLatestWith, concatMap, map, Observable, of, reduce, shareReplay } from 'rxjs';
 
@@ -14,7 +14,6 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-dining-popup-component',
   templateUrl: './dining.component.html',
   styleUrls: ['../base/base.popup.component.scss', './dining.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     AccordionDirective,
     AccordionHeaderDirective,

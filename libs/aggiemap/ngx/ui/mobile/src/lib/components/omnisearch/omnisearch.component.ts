@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { Location, AsyncPipe } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
@@ -23,7 +23,6 @@ import esri = __esri;
   styleUrls: ['./omnisearch.component.scss'],
   animations: [offCanvasSlideInFromBottom, offCanvasSlideUpFromTop],
   providers: [AltSearchHelper],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SearchMobileComponent, BackdropComponent, AsyncPipe]
 })
 export class OmnisearchComponent implements OnInit, OnDestroy {

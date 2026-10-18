@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { switchMap, takeUntil, pluck } from 'rxjs/operators';
@@ -13,7 +13,6 @@ import { TripPlannerDirectionsMobileComponent } from '@tamu-gisc/maps/feature/tr
   selector: 'tamu-gisc-trip-planner-bottom',
   templateUrl: './trip-planner-bottom.component.html',
   styleUrls: ['./trip-planner-bottom.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TripPlannerDirectionsMobileComponent, DragDirective]
 })
 export class TripPlannerBottomComponent implements OnInit, OnDestroy {
@@ -31,7 +30,7 @@ export class TripPlannerBottomComponent implements OnInit, OnDestroy {
    */
   private _destroy$: Subject<boolean> = new Subject();
 
-  public result: TripResult;
+  public readonly result = signal<TripResult>(undefined, { equal: () => false });
 
   constructor() {
     const dragService = this.dragService;
@@ -46,7 +45,7 @@ export class TripPlannerBottomComponent implements OnInit, OnDestroy {
       takeUntil(this._destroy$)
     ).subscribe((result) => {
       if (result && !result.isError) {
-        this.result = result;
+        this.result.set(result);
       }
     });
   }

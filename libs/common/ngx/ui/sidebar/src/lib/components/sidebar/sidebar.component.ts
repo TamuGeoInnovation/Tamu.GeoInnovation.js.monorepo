@@ -1,4 +1,4 @@
-import { Component, AfterContentInit, OnDestroy, ChangeDetectionStrategy, inject, contentChildren } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy, inject, contentChildren } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { from, Subject } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
@@ -11,8 +11,7 @@ import { SidebarTabComponent } from '../tab/tab.component';
   selector: 'tamu-gisc-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  animations: [slide],
-  changeDetection: ChangeDetectionStrategy.Eager
+  animations: [slide]
 })
 export class SidebarComponent extends AbstractSlidingDrawerComponent implements AfterContentInit, OnDestroy {
   private router = inject(Router);

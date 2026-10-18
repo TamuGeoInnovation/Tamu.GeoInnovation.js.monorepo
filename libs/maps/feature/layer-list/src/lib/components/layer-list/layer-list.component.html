@@ -6,7 +6,7 @@
 </div>
 
 <div class="sidebar-component-content-container">
-  @for (item of layers | async; track item) {
+  @for (item of layers(); track item) {
   <tamu-gisc-layer-list-item [listItem]="item"></tamu-gisc-layer-list-item>
   }
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil, switchMap, pluck } from 'rxjs/operators';
@@ -14,7 +14,6 @@ import { TripPlannerModeSwitchComponent } from '../../../trip-planner-mode-switc
   selector: 'tamu-gisc-trip-planner-directions',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TripPlannerDirectionsActionsComponent, TripPlannerModeSwitchComponent]
 })
 export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
@@ -22,7 +21,8 @@ export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
   private plannerService = inject(TripPlannerService);
   private analytics = inject(Angulartics2);
 
-  public result: TripResult;
+  /** Every emission redraws, as the field it replaced did, even one that hands back the same result. */
+  public readonly result = signal<TripResult>(undefined, { equal: () => false });
 
   private _destroy$: Subject<boolean> = new Subject();
 
@@ -33,7 +33,7 @@ export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
       switchMap(() => this.plannerService.getTripResultForTravelMode()),
       takeUntil(this._destroy$)
     ).subscribe((res) => {
-      this.result = res;
+      this.result.set(res);
     });
   }
 

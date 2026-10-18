@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
@@ -10,7 +10,6 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 @Component({
   selector: 'tamu-gisc-event-ended',
   templateUrl: './ended.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink]
 })
 export class EndedComponent {

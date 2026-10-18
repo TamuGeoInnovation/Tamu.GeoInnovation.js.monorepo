@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Subject, ReplaySubject, Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -67,7 +67,6 @@ const EVENT_PASSED_GRACE_DAYS = 1;
     TripPlannerService,
     BasemapGalleryService
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ReveilleConsoleLogComponent,
     RouterLink,
@@ -100,10 +99,10 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public map: esri.Map;
   public view: esri.MapView;
-  public isMobile: boolean;
+  public readonly isMobile = signal<boolean>(undefined);
   public config: ReplaySubject<MapConfig> = new ReplaySubject(undefined);
 
-  public threeDLayers: Array<LayerSource>;
+  public readonly threeDLayers = signal<Array<LayerSource>>(undefined);
 
   public isDev: Observable<boolean>;
   public urlBasemap: string;
@@ -228,7 +227,7 @@ export class MapComponent implements OnInit, OnDestroy {
     };
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
-      this.isMobile = value;
+      this.isMobile.set(value);
 
       this.config.next({
         basemap,
@@ -249,7 +248,7 @@ export class MapComponent implements OnInit, OnDestroy {
             zoom: root?.configuration?.zoom !== undefined ? root.configuration.zoom : 16,
             ui: {
               // The attribution is the view's own since ArcGIS 5.0 (`attributionVisible`), no longer a UI component.
-              components: this.isMobile ? [] : ['zoom']
+              components: this.isMobile() ? [] : ['zoom']
             },
             popup: {
               dockOptions: {
@@ -263,7 +262,7 @@ export class MapComponent implements OnInit, OnDestroy {
         }
       });
 
-      this.threeDLayers = this.env.value('ThreeDLayers', true);
+      this.threeDLayers.set(this.env.value('ThreeDLayers', true));
     });
 
     // Set loader phrases and display a random one.
@@ -305,7 +304,7 @@ export class MapComponent implements OnInit, OnDestroy {
       }, 300);
     });
 
-    addTrack(instances.view as esri.MapView, this.isMobile ? 'bottom-right' : 'top-left');
+    addTrack(instances.view as esri.MapView, this.isMobile() ? 'bottom-right' : 'top-left');
   }
 
   /**

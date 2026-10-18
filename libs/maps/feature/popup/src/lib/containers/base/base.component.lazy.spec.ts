@@ -23,6 +23,12 @@ class SecondPopupComponent {
   public data: unknown;
 }
 
+/** Shows the feature it is given, as every real popup does. OnPush, as they now are (#1673). */
+@Component({ selector: 'tamu-gisc-test-data-popup', template: 'feature {{ data?.attributes?.name }}' })
+class DataPopupComponent {
+  public data: { attributes: { name: string } };
+}
+
 /** A lazy popup whose download finishes only when the test says so. */
 function deferred(component: Type<unknown>) {
   let finish: () => void = () => undefined;
@@ -66,6 +72,23 @@ describe('PopupComponent with lazily loaded popups', () => {
     await settle();
 
     expect(text()).toContain('first popup');
+  });
+
+  it('draws the feature it hands an OnPush popup, and the next feature in its place (#1673)', async () => {
+    const select = (name: string) =>
+      hitTest.next({
+        graphics: [{ attributes: { name } }] as unknown as HitTestSnapshot['graphics'],
+        popupComponent: DataPopupComponent
+      });
+
+    select('Academic Building');
+    await settle();
+    expect(text()).toContain('feature Academic Building');
+
+    select('Evans Library');
+    await settle();
+    expect(text()).toContain('feature Evans Library');
+    expect(text()).not.toContain('Academic Building');
   });
 
   it('renders a lazily loaded popup once it has loaded, and not before', async () => {
