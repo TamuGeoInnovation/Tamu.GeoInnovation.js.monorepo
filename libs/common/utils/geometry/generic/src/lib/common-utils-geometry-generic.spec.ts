@@ -40,27 +40,27 @@ describe('getGeolocation', () => {
 
   it('emits the coordinates in observable form', () =>
     new Promise<void>((done) => {
-    mockGeolocationSuccess();
+      mockGeolocationSuccess();
 
-    getGeolocation(true).subscribe((c) => {
-      expect(c).toEqual(coords);
-      done();
-    });
-  }));
+      getGeolocation(true).subscribe((c) => {
+        expect(c).toEqual(coords);
+        done();
+      });
+    }));
 
   it('should throw error on fail', () =>
     new Promise<void>((done) => {
-    // TODO: The tests work but the geolocation mock probably needs to be a global
-    (window.navigator as unknown as { geolocation: unknown }).geolocation = {
-      getCurrentPosition: (_, fail) => {
-        fail(new Error("I just don't feel like it"));
-      }
-    };
-    getGeolocation(false).catch((err) => {
-      expect(err).toEqual(new Error("I just don't feel like it"));
-      done();
-    });
-  }));
+      // TODO: The tests work but the geolocation mock probably needs to be a global
+      (window.navigator as unknown as { geolocation: unknown }).geolocation = {
+        getCurrentPosition: (_, fail) => {
+          fail(new Error("I just don't feel like it"));
+        }
+      };
+      getGeolocation(false).catch((err) => {
+        expect(err).toEqual(new Error("I just don't feel like it"));
+        done();
+      });
+    }));
 });
 
 describe('isCoordinatePair', () => {

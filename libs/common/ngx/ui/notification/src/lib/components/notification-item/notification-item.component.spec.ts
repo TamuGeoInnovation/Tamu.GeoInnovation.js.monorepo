@@ -29,44 +29,44 @@ describe('NotificationItemComponent', () => {
    */
   it('should count down', () =>
     new Promise<void>((done) => {
-    const fixture = TestBed.createComponent(NotificationItemComponent);
-    const notificationItemComponent = fixture.componentInstance;
-    const testNotification = new Notification({
-      id: '0',
-      title: 'test',
-      message: 'howdy',
-      action: { type: 'test', value: 'value' }
-    });
-    fixture.componentRef.setInput('notification', testNotification);
+      const fixture = TestBed.createComponent(NotificationItemComponent);
+      const notificationItemComponent = fixture.componentInstance;
+      const testNotification = new Notification({
+        id: '0',
+        title: 'test',
+        message: 'howdy',
+        action: { type: 'test', value: 'value' }
+      });
+      fixture.componentRef.setInput('notification', testNotification);
 
-    const step = notificationItemComponent.timer.step;
+      const step = notificationItemComponent.timer.step;
 
-    vi.useFakeTimers();
-    notificationItemComponent.ngOnInit();
+      vi.useFakeTimers();
+      notificationItemComponent.ngOnInit();
 
-    vi.advanceTimersByTime(step + 10);
-    expect(notificationItemComponent.timer.current()).toEqual(step);
+      vi.advanceTimersByTime(step + 10);
+      expect(notificationItemComponent.timer.current()).toEqual(step);
 
-    // Paused: further time passing must not advance the counter.
-    notificationItemComponent.pause();
-    vi.advanceTimersByTime(1000);
-    expect(notificationItemComponent.timer.current()).toEqual(step);
+      // Paused: further time passing must not advance the counter.
+      notificationItemComponent.pause();
+      vi.advanceTimersByTime(1000);
+      expect(notificationItemComponent.timer.current()).toEqual(step);
 
-    notificationItemComponent.resume();
-    vi.advanceTimersByTime(step + 10);
-    expect(notificationItemComponent.timer.current()).toEqual(step * 2);
+      notificationItemComponent.resume();
+      vi.advanceTimersByTime(step + 10);
+      expect(notificationItemComponent.timer.current()).toEqual(step * 2);
 
-    vi.advanceTimersByTime(10000);
-    expect(notificationItemComponent.animateStatus()).toBeFalsy();
+      vi.advanceTimersByTime(10000);
+      expect(notificationItemComponent.animateStatus()).toBeFalsy();
 
-    notificationItemComponent.closeNotification.subscribe((closed) => {
-      expect(closed).toEqual(testNotification);
-      done();
-    });
-    vi.advanceTimersByTime(500);
+      notificationItemComponent.closeNotification.subscribe((closed) => {
+        expect(closed).toEqual(testNotification);
+        done();
+      });
+      vi.advanceTimersByTime(500);
 
-    notificationItemComponent.animateStatus.set(true);
-    notificationItemComponent.action();
-    expect(notificationItemComponent.animateStatus()).toBeFalsy();
-  }));
+      notificationItemComponent.animateStatus.set(true);
+      notificationItemComponent.action();
+      expect(notificationItemComponent.animateStatus()).toBeFalsy();
+    }));
 });

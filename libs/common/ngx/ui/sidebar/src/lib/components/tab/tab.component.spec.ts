@@ -24,14 +24,14 @@ describe('SidebarTabComponent', () => {
 
   it('should respond to click events', () =>
     new Promise<void>((done) => {
-    const mouseEvent: MouseEvent = { altKey: 10 } as unknown as MouseEvent;
-    component.$clicked.subscribe((event) => {
-      expect(event).toEqual({
-        event: mouseEvent,
-        native: component
+      const mouseEvent: MouseEvent = { altKey: 10 } as unknown as MouseEvent;
+      component.$clicked.subscribe((event) => {
+        expect(event).toEqual({
+          event: mouseEvent,
+          native: component
+        });
+        done();
       });
-      done();
-    });
-    (component as unknown as { clicked: (MouseEvent) => unknown }).clicked(mouseEvent);
-  }));
+      (component as unknown as { clicked: (MouseEvent) => unknown }).clicked(mouseEvent);
+    }));
 });

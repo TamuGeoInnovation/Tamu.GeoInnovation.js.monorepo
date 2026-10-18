@@ -21,11 +21,19 @@ describe('shrinkImage', () => {
         bitmapOptions.push(options);
 
         if (options.resizeWidth) {
-          return Promise.resolve({ width: options.resizeWidth, height: Math.round((height * options.resizeWidth) / width), close: vi.fn() });
+          return Promise.resolve({
+            width: options.resizeWidth,
+            height: Math.round((height * options.resizeWidth) / width),
+            close: vi.fn()
+          });
         }
 
         if (options.resizeHeight) {
-          return Promise.resolve({ width: Math.round((width * options.resizeHeight) / height), height: options.resizeHeight, close: vi.fn() });
+          return Promise.resolve({
+            width: Math.round((width * options.resizeHeight) / height),
+            height: options.resizeHeight,
+            close: vi.fn()
+          });
         }
 
         return Promise.resolve({ width, height, close: vi.fn() });
@@ -42,16 +50,21 @@ describe('shrinkImage', () => {
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(function (this: HTMLCanvasElement) {
       return { drawImage: () => drawn.push({ width: this.width, height: this.height }) } as never;
     });
-    vi
-      .spyOn(HTMLCanvasElement.prototype, 'toBlob')
-      .mockImplementation((done, type) => done(new Blob([new Uint8Array(encodedBytes)], { type })));
+    vi.spyOn(HTMLCanvasElement.prototype, 'toBlob').mockImplementation((done, type) =>
+      done(new Blob([new Uint8Array(encodedBytes)], { type }))
+    );
 
     // jsdom loads no images: this one "loads" with the size given to withBitmap, or fails without one.
     (URL as unknown as { createObjectURL: unknown }).createObjectURL = vi.fn(() => 'blob:photo');
     (URL as unknown as { revokeObjectURL: unknown }).revokeObjectURL = vi.fn();
     // A function, not an arrow: the code calls `new Image()`, and Vitest constructs the mock's own implementation.
     vi.spyOn(window, 'Image').mockImplementation(function () {
-      const image = { onload: undefined, onerror: undefined, naturalWidth: 0, naturalHeight: 0 } as unknown as HTMLImageElement;
+      const image = {
+        onload: undefined,
+        onerror: undefined,
+        naturalWidth: 0,
+        naturalHeight: 0
+      } as unknown as HTMLImageElement;
 
       Object.defineProperty(image, 'src', {
         set: () =>
@@ -150,7 +163,9 @@ describe('shrinkImage', () => {
     withBitmap(4032, 3024);
     const decode = globalThis.createImageBitmap as unknown as Mock;
     const honoured = decode.getMockImplementation();
-    decode.mockImplementation((file, options) => (options.resizeWidth ? Promise.reject(new Error('unsupported')) : honoured(file, options)));
+    decode.mockImplementation((file, options) =>
+      options.resizeWidth ? Promise.reject(new Error('unsupported')) : honoured(file, options)
+    );
 
     const result = await shrinkImage(photo(4 * 1024 * 1024));
 
@@ -159,7 +174,9 @@ describe('shrinkImage', () => {
   });
 
   it('sends the original when the browser cannot read the image', async () => {
-    (globalThis as unknown as { createImageBitmap: unknown }).createImageBitmap = vi.fn(() => Promise.reject(new Error('unsupported')));
+    (globalThis as unknown as { createImageBitmap: unknown }).createImageBitmap = vi.fn(() =>
+      Promise.reject(new Error('unsupported'))
+    );
     const original = photo(4 * 1024 * 1024);
 
     await expect(shrinkImage(original)).resolves.toBe(original);

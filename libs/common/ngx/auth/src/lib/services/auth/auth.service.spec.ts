@@ -15,7 +15,10 @@ describe('AuthService', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: AS, useValue: { user$: of(null), isAuthenticated$: of(false), idTokenClaims$: of(null), loginWithRedirect } },
+        {
+          provide: AS,
+          useValue: { user$: of(null), isAuthenticated$: of(false), idTokenClaims$: of(null), loginWithRedirect }
+        },
         { provide: AuthClientConfig, useValue: { get: () => ({ domain, clientId: 'client' }) } },
         { provide: ROLES_CLAIM, useValue: 'roles' }
       ]
