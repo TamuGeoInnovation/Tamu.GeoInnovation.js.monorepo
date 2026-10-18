@@ -1,4 +1,4 @@
-import { expect, test } from './fixtures';
+import { expect, HEAVY, test } from './fixtures';
 import { APP_ROOT } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { BLANK_ABOVE, waitForPaint } from './paint';
@@ -16,7 +16,7 @@ import { readFraming } from './framing';
  */
 
 test.describe('the basemap at the deepest zoom', () => {
-  test('the main map has basemap tiles at every level it lets you zoom to', async ({ page }) => {
+  test('the main map has basemap tiles at every level it lets you zoom to', HEAVY, async ({ page }) => {
     test.setTimeout(180_000);
     await blockAnalytics(page);
 

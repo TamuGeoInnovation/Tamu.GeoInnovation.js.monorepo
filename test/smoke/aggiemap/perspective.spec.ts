@@ -1,4 +1,4 @@
-import { expect, test } from './fixtures';
+import { expect, HEAVY, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { MAP_CONTROLS } from './controls';
 import { Framing, waitForSettledFraming } from './framing';
@@ -93,7 +93,7 @@ test.describe('2D and 3D', () => {
    * Mercator with the 3D Buildings layer loaded, in the same place; choose the next one while still
    * in 3D and the same must hold; come back and the map is where it started, on the basemap chosen.
    */
-  test('3D is a globe with its 3D buildings on every campus basemap offered here', async ({ page }) => {
+  test('3D is a globe with its 3D buildings on every campus basemap offered here', HEAVY, async ({ page }) => {
     test.setTimeout(900_000);
     await blockAnalytics(page);
     await page.goto(`${MAP}/settings`);
