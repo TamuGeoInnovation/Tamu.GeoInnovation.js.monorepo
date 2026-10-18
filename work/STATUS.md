@@ -5,7 +5,7 @@ finishes. The home session reads it before writing a batch or asking the maintai
 
 Last written **2:05 PM Central, 18 October 2026**.
 
-Last batch done: 4.
+Last batch done: 6 (failed; nothing tagged). Batch 5 still running.
 
 ## Running now
 
@@ -24,17 +24,22 @@ Last batch done: 4.
 It resumes if interrupted, so a restart costs only what it had not reached. Nothing else should run
 against production while it does.
 
-## Also running: batch 6's quick tier, with the capture paused
+## work: finished — batch 6 (#1867)
 
-**work: started** — batch 6 (#1867), the quick tier on **Release-480, build 20261018.27, `98c2056be`**,
-from a worktree at that commit, started **3:16 PM Central**.
+**The quick tier on Release-480, build 20261018.27, `98c2056be` failed. Nothing tagged.**
+246 passed, **1 failed**, 1 flaky, 5 skipped of 253, 14.5 minutes, exit 1. Posted on #1867; report to
+follow.
 
-**Batch 5's capture is paused while it runs** (`docker pause vb-prod-2026-10-16`, at 350 of 848, none
-failed). Both batches use this one machine, and batch 6 asks whether the `@heavy` tests pass **on their
-first attempt** now that #1901 runs them last, two at a time — which is #1716's first proof. Running that
-measurement against a machine already driving three capture pages would risk a false negative on the very
-fix being tested. The capture resumes where it stopped, so serialising costs about ten minutes of a
-two-hour run and protects the result. It is unpaused the moment the tier ends.
+- **#1901 works.** All three `@heavy` tests passed on their **first attempt** — `basemap-zoom.spec.ts:19`,
+  `popup.spec.ts:109`, `perspective.spec.ts:96`. The first two had failed first attempt in every tier they
+  had run in. That is #1716's first proof, and it held on a build that is also an ArcGIS major step.
+- **The failure is `popup.spec.ts:79`, `/campus/dc-bush-school`**, three attempts out of three: *"the map
+  on /campus/dc-bush-school never finished drawing"*. Not contention — the contended tests passed in the
+  same run. Either ArcGIS 5.1 under software WebGL (#1867, #1897 warned of exactly this) or that campus's
+  known service problems (#1247, #1464, #1248). **This run does not establish which.**
+- `map-coordinates.spec.ts:91` was flaky once.
+
+**Batch 5's capture was paused 3:15–3:30 and is running again**, from 350 of 848.
 
 ## Waiting on a build
 
