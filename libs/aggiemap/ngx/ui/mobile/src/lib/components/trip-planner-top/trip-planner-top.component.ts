@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { fromEventPattern, Observable, pipe, Subject } from 'rxjs';
 import { switchMap, takeUntil, pluck, map } from 'rxjs/operators';
@@ -16,7 +16,6 @@ import esri = __esri;
   templateUrl: './trip-planner-top.component.html',
   styleUrls: ['./trip-planner-top.component.scss'],
   animations: [offCanvasSlideUpFromTop],
-  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TripPlannerTopComponent implements OnInit, OnDestroy {
   private router = inject(Router);
@@ -30,7 +29,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
    *
    * Determines whether the component will slide up whenever the trip directions are dragged past a certain threshold.
    */
-  public hide = false;
+  public readonly hide = signal(false);
 
   /**
    * Animation trigger override.
@@ -65,14 +64,14 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
 
       // In the event that the route is cleared and the top is hidden, bring it back down.
       if (this.result && this.result.result === undefined) {
-        this.hide = false;
+        this.hide.set(false);
         this.hideOverride = false;
       }
     });
 
     this.dragService.states.pipe(takeUntil(this._destroy$)).subscribe((states) => {
-      this.hide = states.some((state) => state.dragPercentage > 25);
-      this.hideOverride = this.hide;
+      this.hide.set(states.some((state) => state.dragPercentage > 25));
+      this.hideOverride = this.hide();
     });
 
     // Slides component in/out of view if there is a trip drawn on the map.
@@ -89,7 +88,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
         if (this.result && this.result.isFulfilled && !this.result.isError) {
           // Set the override value
           this.hideOverride = !this.hideOverride;
-          this.hide = this.hideOverride;
+          this.hide.set(this.hideOverride);
         }
       });
   }
