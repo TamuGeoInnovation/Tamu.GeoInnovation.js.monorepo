@@ -22,7 +22,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { NgClass, AsyncPipe } from '@angular/common';
 
 import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
-import { EsriMapComponent } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent, MapCompassComponent, addTrack } from '@tamu-gisc/maps/esri';
 import { PerspectiveToggleComponent } from '@tamu-gisc/maps/feature/perspective';
 import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
 
@@ -37,6 +37,7 @@ import esri = __esri;
     RouterLink,
     ClickCoordinatesComponent,
     EsriMapComponent,
+    MapCompassComponent,
     NgClass,
     PerspectiveToggleComponent,
     RouterOutlet,
@@ -164,52 +165,22 @@ export class MapComponent implements OnInit, OnDestroy {
     // A link naming an Aerial Imagery capture, `?imagery=2025-11-22`, opens on it (#1541).
     this.basemaps.applyNearmapCaptureFromUrl();
 
-    Promise.all([import('@arcgis/core/widgets/Track.js'), import('@arcgis/core/widgets/Compass.js')])
-      .then(([{ default: Track }, { default: Compass }]) => {
-        instances.view.when(() => {
-          //
-          // Loader disable
-          //
-          document.querySelector('.loader .progress-bar')?.classList.remove('anim');
+    instances.view.when(() => {
+      //
+      // Loader disable
+      //
+      document.querySelector('.loader .progress-bar')?.classList.remove('anim');
 
-          setTimeout(() => {
-            document.querySelector('.loader')?.classList.add('fade-out');
+      setTimeout(() => {
+        document.querySelector('.loader')?.classList.add('fade-out');
 
-            setTimeout(() => {
-              (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
-            }, 300);
-          }, 300);
-        });
+        setTimeout(() => {
+          (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
+        }, 300);
+      }, 300);
+    });
 
-        const track: esri.Track = new Track({
-          view: instances.view,
-          rotationEnabled: true,
-          goToLocationEnabled: false
-        });
-
-        // The Compass swaps its needle for an arrow whenever the view's spatial reference is not Web
-        // Mercator or WGS84, because true north is not straight up in a projected coordinate system. The
-        // campus basemap is a vector tile cache in EPSG:32139, so the icon changed the moment the map
-        // moved onto it, and changed again each time a Web Mercator basemap was selected.
-        //
-        // Keep the needle. At campus scale the convergence angle is negligible, and an icon that changes
-        // when you switch basemap reads as a glitch. Until ArcGIS 4.28 this was a stylesheet override of
-        // the dial's font glyph; the widget is drawn with Calcite icons since, and takes its icon (#1845).
-        const compass = new Compass({
-          view: instances.view,
-          icon: 'compass-needle'
-        });
-
-        if (this.isMobile) {
-          instances.view.ui.add(track, 'bottom-right');
-        } else {
-          instances.view.ui.add(track, 'top-left');
-          instances.view.ui.add(compass, 'top-left');
-        }
-      })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    addTrack(instances.view as esri.MapView, this.isMobile ? 'bottom-right' : 'top-left');
   }
 
   /**

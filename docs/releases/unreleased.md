@@ -141,6 +141,26 @@ log on every load.
 | ![The main map on ArcGIS 4.27](../screenshots/1844-arcgis-core/after-map.png) | ![The main map on ArcGIS 4.34](../screenshots/1845-arcgis-4.34/after-map.png) |
 | ![Football Tailgating on ArcGIS 4.27](../screenshots/1844-arcgis-core/after-tailgating.png) | ![Football Tailgating on ArcGIS 4.34](../screenshots/1845-arcgis-4.34/after-tailgating.png) |
 
+### The map buttons move to Esri's components
+
+ArcGIS 4.34 retires the widgets behind the maps' zoom, locate and compass buttons
+([#1853](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1853)). The zoom and locate buttons are now Esri's map components, `<arcgis-zoom>` and
+`<arcgis-track>`, and look as they did; the browser console loses its last ArcGIS deprecation warning,
+for the locate button. The compass is our own button, because Esri's component cannot keep the needle
+on the campus basemap; it turns with the map and points it north again when pressed, from the mouse or
+the keyboard. Focus rings and active states on the buttons are maroon instead of Esri's blue. Every map
+with zoom buttons has the new ones, including signage, GeoServices and GIS Day's competition maps. The
+legend, layer list and basemap panels are unchanged.
+
+| Before | After |
+| --- | --- |
+| ![The desktop buttons: zoom, locate, compass](../screenshots/1853-esri-components/before-desktop-controls.png) | ![The same buttons, after](../screenshots/1853-esri-components/after-desktop-controls.png) |
+| ![The map turned 30 degrees, the needle with it](../screenshots/1853-esri-components/before-desktop-compass-rotated.png) | ![The same, after](../screenshots/1853-esri-components/after-desktop-compass-rotated.png) |
+| ![Tracking the device, with a blue focus ring](../screenshots/1853-esri-components/before-desktop-track-active.png) | ![Tracking the device, with a maroon focus ring](../screenshots/1853-esri-components/after-desktop-track-active.png) |
+| ![The phone's locate button](../screenshots/1853-esri-components/before-phone-track.png) | ![The same, after](../screenshots/1853-esri-components/after-phone-track.png) |
+| ![The phone's locate button while tracking](../screenshots/1853-esri-components/before-phone-track-active.png) | ![The same, after](../screenshots/1853-esri-components/after-phone-track-active.png) |
+| | ![The compass reached with Tab, with its focus ring](../screenshots/1853-esri-components/after-desktop-compass-focus.png) |
+
 ### On game days, Football Tailgating has its own notice
 
 In the week before a home game and on the day, the main map now shows **Football Tailgating Map
@@ -571,6 +591,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: buttons the same height ([#1831](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1831)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Send Us a Message" and "Sponsor TxGIS Day At TAMU" are the same height; filled buttons elsewhere (Sessions, the competition pages) are 4 px taller than before and otherwise unchanged |
 | Maps load ArcGIS from `@arcgis/core` 4.27 ([#1844](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1844)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d), [Aerial Imagery](https://dev.aggiemap.tamu.edu/map/d?imagery=2020-10-06), 3D, directions | Nothing different: every map draws as before; the zoom, locate and compass buttons look as they did; popups, search, the basemap gallery, the imagery date slider, 3D and directions work. In the browser's network panel, nothing is requested from `js.arcgis.com/4.27/init.js` or `js.arcgis.com/4.23` |
 | Maps run ArcGIS 4.34 ([#1845](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1845)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d), [Aerial Imagery](https://dev.aggiemap.tamu.edu/map/d?imagery=2020-10-06), 3D, directions, the bus routes | Every map draws with its layers; the zoom buttons' plus and minus are thinner and the locate button shows a compass in a circle (Esri's new icons); the main map's compass still shows a needle on the campus basemap; popups, search, the layer list and legend, the basemap gallery, the imagery date slider, 3D, directions and the live buses work. In the network panel, every `js.arcgis.com` request is under `/4.34/` |
+| Map buttons on Esri's components ([#1853](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1853)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d), [the main map on a phone](https://dev.aggiemap.tamu.edu/map/m), 3D | Zoom, locate and compass in the top left on desktop, the locate button alone at the bottom right on a phone. Turn the map (right-drag): the needle turns; press the compass, or Tab to it and press Enter, and the map points north. Locate follows you and turns the map without jumping to you. Switch to 3D and back: all three buttons are still there. Focus rings are maroon. No "deprecated" warning about Track in the console |
 | Map search with an apostrophe or a percent sign ([#1790](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1790)) | [dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu), then [Football Tailgating](https://dev.aggiemap.tamu.edu/events/tailgating/map/d) | Search `Cain '51`: James J. Cain '51 Building is listed. Search `O'` or `Aggie's`: no error, results or "No results found". On Football Tailgating, search `%`: "No results found", not every tent. Ordinary searches still work: `MSC`, `O12`, `Creamery` |
 | Football Tailgating game-day notice ([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)) | [The main map](https://dev.aggiemap.tamu.edu/map/d) in a private window, in the week before a home game | Two notices, **Football Transportation Map Available** then **Football Tailgating Map Available**; clicking the second opens the Tailgating map |
 | GIS Day: sponsorship levels back at last year's prices ([#1821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1821)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [the sponsor page](https://txgisday.org/sponsors/tamu) | Point $256, Line $512, Polygon $1,024, Raster $2,048, each level's perks as before |
