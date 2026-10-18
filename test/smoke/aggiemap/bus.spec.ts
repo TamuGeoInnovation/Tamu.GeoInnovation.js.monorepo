@@ -4,6 +4,7 @@ import * as path from 'path';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { readGraphicTypes } from './framing';
 import { BUS_NOTICE, BUS_PANEL, BUS_ROUTE, MANIFEST_PATH, MapManifest } from './global-setup';
 
 /**
@@ -61,20 +62,7 @@ interface Drawn {
 
 /** What the bus routes layer has drawn right now. */
 async function drawn(page: Page): Promise<Drawn> {
-  const types = await page.evaluate(
-    async ({ name, layerId }) => {
-      const probe = (
-        window as unknown as Record<
-          string,
-          { snapshot: () => Promise<{ layers: { id: string; graphicTypes: Record<string, number> | null }[] }> }
-        >
-      )[name];
-      const layer = (await probe.snapshot()).layers.find((l) => l.id === layerId);
-
-      return layer?.graphicTypes ?? {};
-    },
-    { name: PROBE_GLOBAL, layerId: BUS_LAYER }
-  );
+  const types = await readGraphicTypes(page, BUS_LAYER);
 
   return { route: types['route'] ?? 0, waypoints: types['waypoints'] ?? 0 };
 }
