@@ -342,7 +342,8 @@ export function MainMapLayerSources(
         // points are invisible and the labels off (#909), so the layer draws nothing at any scale, but
         // from ArcGIS 5.1 a view holding more than ~30,000 features never stops updating, and at
         // 1:100,000 this one holds all ~45,000. That left the basemap panel's spinner turning and the
-        // map probe's `drawing` true for good. At 1:1200 a view holds a few hundred (#1867).
+        // map probe's `drawing` true for good. Below 1:1200 the layer view still fetches all ~45,000
+        // (5.0 did too) but finishes, if more slowly than on 5.0 (#1867).
         minScale: 1200,
         legendEnabled: false,
         labelsVisible: false
