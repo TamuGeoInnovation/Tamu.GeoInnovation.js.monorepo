@@ -71,6 +71,26 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 10 (prepared 18 October 2026, about 5:40 PM) — now, while batch 9 is held
+
+**Decided:** the maintainer wants this machine used while the final build is prepared. Release-482 (`70f0e424b`,
+tagged `dev-2026-10-18-3`) is on dev and carries nearly everything tonight's release will. The final build adds only
+small changes (a legend fix, the parking maps' filter, the trip planner on dev only, an experiments back arrow,
+Angular 22.2). So compare **now**, and anything significant is found hours before the final build.
+
+1. **#1849: preview of the final comparison, on Release-482**
+   - Run, from a worktree at `70f0e424b`:
+     1. Dev's screenshot set as production renders it: the `tools/visual-baselines` capture with
+        `--env development --as production --release dev-2026-10-18-3`.
+     2. `node tools/visual-baselines/review.mjs` against production's `prod-2026-10-16` set (batch 5).
+   - Report on: #1849, a section "Preview comparison on Release-482": how many shots differ, sorted by how much; for
+     each of the most changed, what moved (layer, symbol, basemap, text, layout) and whether this release explains it
+     (ArcGIS 4.27 to 5.1, Esri's zoom and locate buttons and our compass, campus maps without College Station's layers,
+     the legend now listing switched-on layers). Put the comparison page where the maintainer can open it, and say
+     where. List anything unexplained under **Questions for the director**.
+   - Then: nothing to tag. If batch 9 is released (the director names its release) while this runs, finish this
+     first; batch 9's own capture then only needs comparing against this set and production's.
+
 ## Batch 9 (prepared 18 October 2026, about 5:10 PM) — the final test, after batch 8 passes
 
 **Decided** (the maintainer, 18 October): production waits for this. The final dev build is compared with what
