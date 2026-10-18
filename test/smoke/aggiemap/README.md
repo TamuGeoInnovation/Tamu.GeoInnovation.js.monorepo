@@ -44,7 +44,9 @@ and answer the source's own query (#1167). A guard fails if
 unpublished, so the Directions tab and every "Directions To Here" button are development-only: hidden
 on production, shown on dev and localhost. Each environment's `directionsAvailable` in
 `environments.json` says which, and the spec checks the main map's tab and one popup of each kind that
-offers directions, both ways. `maps.spec.ts` also checks no map offers directions where they are
+offers directions, both ways. It also opens the trip planner at `/map/d/trip`, which a link still reaches
+with the tab hidden: the from and to boxes where directions are available, the maintenance message
+elsewhere and with `?as=production`. `maps.spec.ts` also checks no map offers directions where they are
 unavailable. When routing returns to production, set `directionsAvailable` to true there.
 
 `development-only.spec.ts` checks development-only work stays off production, both ways, from each

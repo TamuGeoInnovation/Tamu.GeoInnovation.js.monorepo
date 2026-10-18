@@ -18,6 +18,24 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### The trip planner is back on dev, for testing (dev only)
+
+Since March ([#683](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/683)) the trip planner showed only "The Aggie Map routing services are currently
+undergoing maintenance" on every host. On a development host it now shows the planner again - the from
+and to boxes, the routing-service list, the travel modes and the directions panel on desktop, and the
+from and to boxes and travel modes on a phone - so its components can be tested. **Production is
+unchanged**: the Directions tab stays hidden there, and its address, `/map/d/trip`, still shows the
+maintenance message; so does a development host with `?as=production`. Routing is published only on the
+development GIS server (`Routing/20220119`, which answers a route request); the production server's
+Routing folder is empty, so a local build, which uses the production server, shows the planner with an
+empty routing list and cannot route. A smoke check opens `/map/d/trip` on each environment, both ways
+([#1912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1912)).
+
+| Before (dev) | After (local build, a development host) |
+| --- | --- |
+| ![Directions on dev: the maintenance message](../screenshots/trip-planner-on-dev/before-desktop.png) | ![The trip planner: from and to boxes, the routing list, travel modes and directions](../screenshots/trip-planner-on-dev/after-local-desktop.png) |
+| ![Directions on a phone on dev: the maintenance message](../screenshots/trip-planner-on-dev/before-phone.png) | ![The phone's trip planner: from and to boxes and travel modes](../screenshots/trip-planner-on-dev/after-local-phone.png) |
+
 ### Campus maps load only their own campus
 
 The Galveston, McAllen and DC / Bush School maps also loaded every College Station layer: 26 layers on
@@ -690,6 +708,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Trip planner back on dev only ([#1912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1912)) | [Directions](https://dev.aggiemap.tamu.edu/map/d/trip), [on a phone](https://dev.aggiemap.tamu.edu/map/m/trip), [with ?as=production](https://dev.aggiemap.tamu.edu/map/d/trip?as=production) | Dev only: on dev the planner shows two empty from and to boxes, travel modes and "Please select two points"; choose two buildings: a route should be drawn from the development GIS server's routing (not yet tried through the app; if it fails, say so on the issue). With `?as=production`, and on production at [/map/d/trip](https://aggiemap.tamu.edu/map/d/trip), the maintenance message instead, and no Directions tab |
 | GIS Day: sponsorship levels match the prospectus ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` and `/sponsors` | Tiles show 1 to 4 representatives; each level's perks include lunches and a ribbon; Raster says 20-minute speaking slot; the extra-representatives note; on `/sponsors`, only "Sponsor through Texas A&M" under Interested in Becoming a Sponsor, parking passes for Line and above, and days dated 16 to 20 November |
 | The main map's legend lists layers switched on ([#1857](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1857)) | [/map/d](https://dev.aggiemap.tamu.edu/map/d) | Once the map has finished loading, switch Visitor Parking and Construction Zones on in the Layers list: each appears under Legend with its symbols within a few seconds |
 | The main map's legend drops a layer switched off ([#1871](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1871)) | [/map/d](https://dev.aggiemap.tamu.edu/map/d) | Once the map has finished loading, switch Visitor Parking on in the Layers list, then off: it leaves the Legend; switched on again, it comes back. On [/parking/visitor-parking](https://dev.aggiemap.tamu.edu/parking/visitor-parking), Visitor Kiosks switched off still shows its collapsed title in the legend, and clicking it switches the layer back on |
