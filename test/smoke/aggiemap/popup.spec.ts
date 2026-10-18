@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { waitForSettledFraming } from './framing';
 
 /**
  * Clicking a feature on a map opens its popup, and the popup shows that feature's data (#1117).
@@ -93,4 +94,51 @@ test.describe('popup', () => {
       await expect(popup, `the popup for ${feature} on ${mapPath} did not show its data`).toContainText(popupShows);
     });
   }
+
+  /**
+   * With a popup open, clicking another feature shows that feature's details, not the first's (#1672).
+   *
+   * The popup stays on the page and is handed the next feature. A popup that stops repainting when it
+   * is, which is how OnPush fails on a component whose data arrives outside its inputs (#1669), keeps
+   * showing the feature it opened on while every check of a single popup passes.
+   *
+   * A link to a building opens with its popup, zoomed to that building, so its neighbours are always in
+   * the same place on screen: Harrington to its left and Peterson below to the right, at the suite's
+   * viewport. If the link's framing changes, the first click names the building it expected.
+   */
+  test(`/map/d?bldg=0468: clicking one building after another shows each one's popup in turn`, async ({ page }) => {
+    test.setTimeout(180_000);
+
+    const mapPath = '/map/d?bldg=0468';
+    const popup = page.locator('tamu-gisc-feature-popup .popup');
+    const clicks: Array<{ clickAt: { x: number; y: number }; shows: RegExp; feature: string }> = [
+      { clickAt: { x: 0.117, y: 0.375 }, shows: /Harrington Education Center/, feature: 'Harrington' },
+      { clickAt: { x: 0.602, y: 0.819 }, shows: /Peterson Building/, feature: 'Peterson' }
+    ];
+
+    await openMap(page, mapPath);
+    await expect(popup, `${mapPath} did not open with its building's popup`).toContainText(/Sterling C\. Evans Library/);
+    // The link zooms to its building after the map has drawn; the neighbours are where they are said to be once it stops.
+    await waitForSettledFraming(page, mapPath);
+
+    const box = await page.locator('.esri-view-surface').first().boundingBox();
+
+    expect(box, `${mapPath} has no map view to click`).not.toBeNull();
+
+    let showing = /Sterling C\. Evans Library/;
+
+    for (const { clickAt, shows, feature } of clicks) {
+      await page.mouse.click(box!.x + box!.width * clickAt.x, box!.y + box!.height * clickAt.y);
+
+      await expect(popup, `clicking ${feature} on ${mapPath} did not show its popup`).toContainText(shows, {
+        timeout: 15_000
+      });
+      await expect(
+        popup,
+        `clicking ${feature} on ${mapPath} left the previous feature's details in its popup`
+      ).not.toContainText(showing);
+
+      showing = shows;
+    }
+  });
 });

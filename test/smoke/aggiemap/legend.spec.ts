@@ -35,6 +35,21 @@ const LONG_LABEL = 'Event Parking';
 /** Narrower than any symbol a service publishes, wider than a squeezed one. */
 const MIN_SYMBOL_PX = 12;
 
+/**
+ * The Layers list, the legend and the map follow a layer switched off and on, from either side (#1672).
+ *
+ * Both lists draw from Esri's own objects, which change outside Angular: a layer's `visible` is set on
+ * the layer, and the list item and the legend entry read it back. A component that stops repainting
+ * when such a field changes, which is what OnPush does to a component reading a field its inputs did
+ * not replace (#1669), still compiles, still passes its unit tests and still draws correctly on load. It
+ * shows only after a click, as a dot or a legend entry left as it was.
+ *
+ * So the layer is switched off from the Layers list and must leave the legend and the map, switched on
+ * from its legend title and must come back to all three, and then the same the other way round.
+ */
+const TOGGLE_MAP = '/parking/visitor-parking';
+const TOGGLE_LAYER = 'Visitor Kiosks';
+
 test.describe('legend', () => {
   test('a symbol follows its layer when the portal symbology arrives after the legend is drawn', async ({ page }) => {
     test.setTimeout(180_000);
@@ -90,5 +105,71 @@ test.describe('legend', () => {
     const squeezed = symbols.filter((symbol) => symbol.width < MIN_SYMBOL_PX);
 
     expect(squeezed, `legend symbols narrower than ${MIN_SYMBOL_PX} px, of ${symbols.length}`).toEqual([]);
+  });
+
+  test('a layer switched off and on, from the Layers list and from the legend, is followed by both and by the map', async ({
+    page
+  }) => {
+    test.setTimeout(180_000);
+    await blockAnalytics(page);
+    await page.goto(TOGGLE_MAP);
+
+    const exactly = new RegExp(`^\\s*${TOGGLE_LAYER}\\s*$`);
+    const listItem = page
+      .locator('tamu-gisc-layer-list-item .layer-item')
+      .filter({ has: page.locator('p', { hasText: exactly }) });
+    const entry = page
+      .locator('tamu-gisc-legend tamu-gisc-legend-collection')
+      .filter({ has: page.locator('.collection-group-title-text', { hasText: exactly }) })
+      .first();
+    const entryTitle = entry.locator('.collection-group-title');
+    const entrySymbol = entry.locator('.collection-group-content .legend-info').first();
+
+    /** The layer's visibility as the map holds it, from the map probe; null until the map is ready. */
+    const onTheMap = () =>
+      page.evaluate(async (title) => {
+        const probe = (
+          window as unknown as Record<
+            string,
+            { ready?: boolean; snapshot(): Promise<{ layers: Array<{ title: string; visible: boolean }> }> } | undefined
+          >
+        )['__tamuGiscMapProbe'];
+
+        if (probe?.ready !== true) {
+          return null;
+        }
+
+        return (await probe.snapshot()).layers.find((layer) => layer.title === title)?.visible ?? null;
+      }, TOGGLE_LAYER);
+
+    /** The map, the Layers list and the legend all show the layer on, or all show it off. */
+    const expectAllShow = async (on: boolean, after: string) => {
+      const state = `${TOGGLE_LAYER} ${on ? 'on' : 'off'}`;
+
+      await expect.poll(onTheMap, { message: `after ${after}, the map does not have ${state}`, timeout: 30_000 }).toBe(on);
+
+      if (on) {
+        await expect(listItem, `after ${after}, the Layers list does not show ${state}`).toHaveClass(/\bvisible\b/);
+        await expect(entrySymbol, `after ${after}, the legend does not show ${state}`).toBeVisible();
+      } else {
+        await expect(listItem, `after ${after}, the Layers list does not show ${state}`).not.toHaveClass(/\bvisible\b/);
+        await expect(entrySymbol, `after ${after}, the legend does not show ${state}`).toBeHidden();
+      }
+    };
+
+    await expect(entrySymbol, `the legend never listed ${TOGGLE_LAYER}`).toBeVisible({ timeout: 90_000 });
+    await expectAllShow(true, 'loading');
+
+    await listItem.locator('p').click();
+    await expectAllShow(false, 'switching it off in the Layers list');
+
+    await entryTitle.click();
+    await expectAllShow(true, 'switching it on from its legend title');
+
+    await entryTitle.click();
+    await expectAllShow(false, 'switching it off from its legend title');
+
+    await listItem.locator('p').click();
+    await expectAllShow(true, 'switching it back on in the Layers list');
   });
 });
