@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
@@ -7,10 +8,10 @@ import { ROLES_CLAIM } from '../../tokens/claims.token';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
-  let loginWithRedirect: jest.Mock;
+  let loginWithRedirect: Mock;
 
   function serviceFor(domain: string): AuthService {
-    loginWithRedirect = jest.fn();
+    loginWithRedirect = vi.fn();
 
     TestBed.configureTestingModule({
       providers: [
@@ -24,11 +25,11 @@ describe('AuthService', () => {
   }
 
   beforeEach(() => {
-    jest.spyOn(window, 'alert').mockImplementation(() => undefined);
+    vi.spyOn(window, 'alert').mockImplementation(() => undefined);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   // #1522: served locally, the domain was still its placeholder and Login sent the browser to a host

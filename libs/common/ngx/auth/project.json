@@ -6,14 +6,6 @@
   "prefix": "tamu-gisc",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/common/ngx/auth"],
-      "options": {
-        "jestConfig": "libs/common/ngx/auth/jest.config.ts",
-        "tsConfig": "libs/common/ngx/auth/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
