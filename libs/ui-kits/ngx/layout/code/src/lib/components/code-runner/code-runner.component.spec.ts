@@ -29,6 +29,6 @@ describe('CodeRunnerComponent', () => {
   it('should correctly evaluate execute', () => {
     component.execute();
     component.execute();
-    expect(component.renderable).toBeFalsy();
+    expect(component.renderable()).toBeFalsy();
   });
 });
