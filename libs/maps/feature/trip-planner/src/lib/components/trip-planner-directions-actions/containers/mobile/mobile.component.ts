@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { TripPlannerDirectionsActionsComponent } from '../base/base.component';
 
@@ -9,7 +9,6 @@ import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clip
   selector: 'tamu-gisc-trip-planner-directions-actions-mobile',
   templateUrl: './mobile.component.html',
   styleUrls: ['../base/base.component.scss', './mobile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class TripPlannerDirectionsActionsMobileComponent extends TripPlannerDirectionsActionsComponent {}
