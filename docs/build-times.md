@@ -443,6 +443,24 @@ planner change (after), neither with the lodash or event definitions changes.
 these builds are not recorded as a result**: the machine was busy, and one set's desktop first paint
 ranged from 0.39 s to 1.15 s. To be re-taken on a quiet machine with the lodash timings.
 
+### Zoneless: no zone.js in AggieMap or UES Operations
+
+Two production builds on 18 October 2026, made the same way in Docker volumes: `development` at
+`70f0e424b` (before) and the zoneless branch of [#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478) (after). Sizes are the build's own report.
+
+| | Before | After | Change |
+| --- | ---: | ---: | ---: |
+| `aggiemap-angular` initial files, raw | 851.79 kB | 812.09 kB | -39.70 kB |
+| `aggiemap-angular` initial files, estimated transfer | 211.88 kB | 199.62 kB | -12.26 kB |
+| `aggiemap-angular` `polyfills` (zone.js), raw / transfer | 35.88 kB / 11.68 kB | none | |
+| `ues-operations-angular` initial files, raw | 961.82 kB | 921.59 kB | -40.23 kB |
+| `ues-operations-angular` initial files, estimated transfer | 238.28 kB | 225.96 kB | -12.32 kB |
+
+**What it shows.** Each application's first download loses the zone.js polyfill, 35.9 kB raw and 11.7 kB
+compressed, and about 4 kB more of Angular's code for working with a zone. That is about 6% of AggieMap's
+initial transfer. No paint timings were taken: the machine was shared with other builds that evening, and
+the earlier entries show what that does to them.
+
 ## Where the other records are
 
 This file is for runs as they happen. Two existing records keep their own shape and are not folded
