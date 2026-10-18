@@ -24,6 +24,18 @@ Last batch done: 4.
 It resumes if interrupted, so a restart costs only what it had not reached. Nothing else should run
 against production while it does.
 
+## Also running: batch 6's quick tier, with the capture paused
+
+**work: started** — batch 6 (#1867), the quick tier on **Release-480, build 20261018.27, `98c2056be`**,
+from a worktree at that commit, started **3:16 PM Central**.
+
+**Batch 5's capture is paused while it runs** (`docker pause vb-prod-2026-10-16`, at 350 of 848, none
+failed). Both batches use this one machine, and batch 6 asks whether the `@heavy` tests pass **on their
+first attempt** now that #1901 runs them last, two at a time — which is #1716's first proof. Running that
+measurement against a machine already driving three capture pages would risk a false negative on the very
+fix being tested. The capture resumes where it stopped, so serialising costs about ten minutes of a
+two-hour run and protects the result. It is unpaused the moment the tier ends.
+
 ## Waiting on a build
 
 **Batch 6 (#1867)** — the quick tier on the first ArcGIS 5.1 build. `c03c56144` (#1894) is on
