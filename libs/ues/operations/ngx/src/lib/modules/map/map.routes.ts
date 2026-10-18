@@ -17,7 +17,7 @@ import { EsriModuleProviderService, EsriMapService } from '@tamu-gisc/maps/esri'
 import { LayerListCategorizedComponent, LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendComponent, LegendService } from '@tamu-gisc/maps/feature/legend';
 import { loadTripPlannerOptionsComponent, TripPlannerService, BusService } from '@tamu-gisc/maps/feature/trip-planner';
-import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
+import { loadPopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
 
 import { BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
@@ -55,7 +55,7 @@ const routes: Routes = [
             path: '',
             children: [
               { path: '', component: OmnisearchComponent },
-              { path: '', component: PopupMobileComponent, outlet: 'outlet-2' }
+              { path: '', loadComponent: loadPopupMobileComponent, outlet: 'outlet-2' }
             ]
           },
           {

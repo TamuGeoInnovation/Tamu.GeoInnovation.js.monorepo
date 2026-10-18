@@ -23,7 +23,7 @@ import {
   PieChartComponent
 } from '@tamu-gisc/ui-kits/ngx/charts';
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
-import { PopupComponent, PopupMobileComponent, RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
+import { PopupComponent, RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
 import { SignageModule } from '@tamu-gisc/signage';
 
 const routes: Routes = [{ path: '', component: MapComponent }];
@@ -50,7 +50,6 @@ const routes: Routes = [{ path: '', component: MapComponent }];
     PieChartComponent,
     MapDrawingModule,
     PopupComponent,
-    PopupMobileComponent,
     RevealSidebarOnPopupDirective,
     SignageModule
   ],

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, Type, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Subject, ReplaySubject, Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -35,15 +35,14 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { EventPassedWarningComponent, MapNoticeComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass, AsyncPipe, NgComponentOutlet } from '@angular/common';
 
 import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
 import { EsriMapComponent, MapCompassComponent, addTrack } from '@tamu-gisc/maps/esri';
 import { PerspectiveToggleComponent } from '@tamu-gisc/maps/feature/perspective';
-import { PopupComponent } from '@tamu-gisc/maps/feature/popup';
-import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
+import { PopupComponent, loadPopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
 import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
 
 import esri = __esri;
@@ -78,7 +77,7 @@ const EVENT_PASSED_GRACE_DAYS = 1;
     ClipboardCopyDirective,
     RouterOutlet,
     PopupComponent,
-    PopupMobileComponent,
+    NgComponentOutlet,
     MapViewfinderComponent,
     NearmapDateSliderComponent,
     AsyncPipe
@@ -123,6 +122,12 @@ export class MapComponent implements OnInit, OnDestroy {
    * share URL, legend, layers, and basemap gallery — leaving only the bare map.
    */
   public hideSidebar: boolean;
+
+  /**
+   * The phone's popup container on a kiosk map, loaded only when one is shown: it brings interactjs,
+   * which no other part of a map's first download needs (#1454).
+   */
+  public readonly kioskMobilePopup = signal<Type<unknown>>(undefined);
 
   /**
    * Text content for the share button (mobile)
@@ -228,6 +233,10 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
       this.isMobile.set(value);
+
+      if (value && this.hideSidebar && !this.kioskMobilePopup()) {
+        loadPopupMobileComponent().then((component) => this.kioskMobilePopup.set(component));
+      }
 
       this.config.next({
         basemap,
