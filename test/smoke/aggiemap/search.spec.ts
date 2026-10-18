@@ -44,6 +44,23 @@ const SEARCH_CASES: SearchCase[] = [
 /** Maps and a term that matches nothing there: the list must stay empty, not error. */
 const NO_MATCH_CASES = [{ mapPath: '/campus/dc-bush-school', term: 'Zzqx' }];
 
+/**
+ * A second search lists its own results, not the first's (#1672).
+ *
+ * The results list is the same component from one search to the next, handed new results each time. A
+ * list that stops repainting when they arrive, which is how OnPush fails on a component whose data
+ * comes from a subscription (#1669), keeps the first search's results on screen while every check of
+ * a single search passes. So: search, clear the box, search again, and the list must follow each step,
+ * and choosing from the second list must open the second result's details.
+ */
+const SEARCH_AGAIN_CASES = [
+  {
+    mapPath: '/map/d',
+    first: { term: 'Wehner', result: 'Wehner Building (1510)' },
+    second: { term: 'Bonfire', result: 'Bonfire Memorial (9797)', popupShows: /Bonfire Memorial/ }
+  }
+];
+
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 /** Opens a map and waits until its layers have loaded, so search queries are not racing the map. */
@@ -91,6 +108,55 @@ test.describe('search', () => {
         timeout: 15_000
       });
       await expect(popup, `the details for "${result}" on ${mapPath} did not show its data`).toContainText(popupShows);
+    });
+  }
+
+  for (const { mapPath, first, second } of SEARCH_AGAIN_CASES) {
+    test(`${mapPath}: searching "${first.term}" then "${second.term}" lists the second search's results`, async ({
+      page
+    }) => {
+      test.setTimeout(240_000);
+      await openMap(page, mapPath);
+
+      const input = page.getByPlaceholder('Find Building or Parking');
+      const results = page.locator('.search-results-container');
+      const options = results.getByRole('option');
+      const option = (result: string) => results.getByRole('option', { name: new RegExp(`^${escapeRegExp(result)}$`, 'i') });
+
+      await input.click();
+      await input.pressSequentially(first.term, { delay: 80 });
+      await expect(
+        option(first.result),
+        `searching "${first.term}" on ${mapPath} did not list "${first.result}"`
+      ).toHaveCount(1, {
+        timeout: 20_000
+      });
+
+      // Cleared with keys, as a person does: setting the value does not reach the search component.
+      await input.press('ControlOrMeta+a');
+      await input.press('Backspace');
+      await expect(options, `clearing the search box on ${mapPath} left results listed`).toHaveCount(0);
+
+      await input.pressSequentially(second.term, { delay: 80 });
+      await expect(
+        option(second.result),
+        `searching "${second.term}" on ${mapPath} did not list "${second.result}"`
+      ).toHaveCount(1, { timeout: 20_000 });
+      await expect(
+        option(first.result),
+        `searching "${second.term}" on ${mapPath} still lists "${first.result}" from the search before`
+      ).toHaveCount(0);
+
+      await option(second.result).click();
+
+      const popup = page.locator('tamu-gisc-feature-popup .popup');
+
+      await expect(popup, `choosing "${second.result}" on ${mapPath} did not open its details`).not.toHaveClass(/hidden/, {
+        timeout: 15_000
+      });
+      await expect(popup, `the details for "${second.result}" on ${mapPath} did not show its data`).toContainText(
+        second.popupShows
+      );
     });
   }
 

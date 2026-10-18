@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Params, Router, RouterLink } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
@@ -31,7 +31,6 @@ import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
   selector: 'tamu-gisc-aggiemap-all-maps',
   templateUrl: './all-maps.component.html',
   styleUrls: ['./all-maps.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     RouterLink,
     AutocompleteComponent,
