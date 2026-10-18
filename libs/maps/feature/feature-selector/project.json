@@ -6,14 +6,6 @@
   "sourceRoot": "libs/maps/feature/feature-selector/src",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/feature-selector"],
-      "options": {
-        "jestConfig": "libs/maps/feature/feature-selector/jest.config.ts",
-        "tsConfig": "libs/maps/feature/feature-selector/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
