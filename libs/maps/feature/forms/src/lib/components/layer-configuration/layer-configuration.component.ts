@@ -56,8 +56,8 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
    *
    * Read as the component model, `config`, which it initializes.
    */
-  // eslint-disable-next-line @angular-eslint/no-input-rename
   public readonly config = input<LayerConfiguration, ILayerConfiguration | UntypedFormGroup>(undefined, {
+    // eslint-disable-next-line @angular-eslint/no-input-rename
     alias: 'configOptions',
     transform: (options: ILayerConfiguration | UntypedFormGroup) => new LayerConfiguration(this.fb, options)
   });

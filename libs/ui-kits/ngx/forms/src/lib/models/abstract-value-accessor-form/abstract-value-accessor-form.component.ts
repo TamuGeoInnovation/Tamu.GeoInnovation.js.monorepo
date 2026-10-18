@@ -13,7 +13,7 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
   public readonly disabled = model(false);
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  private readonly _value = model<T>(undefined, { alias: 'value' });
+  protected readonly _value = model<T>(undefined, { alias: 'value' });
 
   public get value() {
     return this.getInternalValue();

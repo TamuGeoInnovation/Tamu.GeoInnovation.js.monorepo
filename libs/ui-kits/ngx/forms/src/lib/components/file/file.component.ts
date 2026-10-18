@@ -17,7 +17,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class FileComponent implements ControlValueAccessor {
   // A model rather than an input: the component sets it itself, from the user and the forms API.
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  private readonly _value = model<File | boolean>(null, { alias: 'value' });
+  protected readonly _value = model<File | boolean>(null, { alias: 'value' });
 
   /**
    * File formats to accept. Default is all.

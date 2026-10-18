@@ -28,7 +28,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    * A model rather than an input: the component sets it itself, from the user and the forms API.
    */
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  private readonly _value = model<string>(undefined, { alias: 'value' });
+  protected readonly _value = model<string>(undefined, { alias: 'value' });
 
   public readonly formControlName = input('default');
 

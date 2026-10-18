@@ -168,7 +168,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, AfterViewI
 
   // A model rather than an input: the component sets it itself, from the user and the forms API.
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  private readonly _value = model<Date>(new Date(), { alias: 'value' });
+  protected readonly _value = model<Date>(new Date(), { alias: 'value' });
 
   /**
    * The finest unit offered. `day` or coarser picks a date only.

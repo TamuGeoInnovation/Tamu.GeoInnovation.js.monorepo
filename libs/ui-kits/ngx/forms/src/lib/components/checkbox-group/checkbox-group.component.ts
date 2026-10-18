@@ -46,7 +46,7 @@ export class CheckboxGroupComponent implements OnInit, ControlValueAccessor {
 
   // A model rather than an input: the component sets it itself, from its checkboxes and the forms API.
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  private readonly _value = model<Array<string | number>>([], { alias: 'value' });
+  protected readonly _value = model<Array<string | number>>([], { alias: 'value' });
 
   public get value() {
     return [...this._value()];

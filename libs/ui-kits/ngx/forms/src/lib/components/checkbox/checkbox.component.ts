@@ -27,7 +27,7 @@ export class CheckboxComponent implements ControlValueAccessor {
 
   // A model rather than an input: the component sets it itself, from the user and the forms API.
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  private readonly _checked = model(false, { alias: 'checked' });
+  protected readonly _checked = model(false, { alias: 'checked' });
 
   public get checked() {
     return this._checked();
