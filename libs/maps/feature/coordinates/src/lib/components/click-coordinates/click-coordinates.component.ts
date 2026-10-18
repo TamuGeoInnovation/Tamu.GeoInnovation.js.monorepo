@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Observable, pipe, fromEventPattern } from 'rxjs';
 import { map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
@@ -13,7 +13,6 @@ import esri = __esri;
   selector: 'tamu-gisc-click-coordinates',
   templateUrl: './click-coordinates.component.html',
   styleUrls: ['./click-coordinates.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class ClickCoordinatesComponent implements OnInit {

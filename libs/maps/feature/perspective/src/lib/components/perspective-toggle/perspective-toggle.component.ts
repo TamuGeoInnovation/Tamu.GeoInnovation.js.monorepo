@@ -1,4 +1,4 @@
-import { Component, HostBinding, HostListener, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, HostBinding, HostListener, OnInit, inject, input, signal } from '@angular/core';
 import { firstValueFrom, forkJoin, map, Observable, take } from 'rxjs';
 
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -12,7 +12,6 @@ import esri = __esri;
   selector: 'tamu-gisc-perspective-toggle',
   templateUrl: './perspective-toggle.component.html',
   styleUrls: ['./perspective-toggle.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass]
 })
 export class PerspectiveToggleComponent implements OnInit {
@@ -35,7 +34,7 @@ export class PerspectiveToggleComponent implements OnInit {
     return ['esri-component', 'esri-widget--button', 'esri-widget'];
   }
 
-  public activeMode: PerspectiveType = '2D';
+  public readonly activeMode = signal<PerspectiveType>('2D');
 
   private perspectives: {
     threeD: esri.SceneView | undefined;
@@ -96,7 +95,7 @@ export class PerspectiveToggleComponent implements OnInit {
         shared.basemap = returning.basemap;
       }
     });
-    this.activeMode = nextViewType;
+    this.activeMode.set(nextViewType);
 
     this.addPerspectiveLayers();
 
@@ -174,7 +173,7 @@ export class PerspectiveToggleComponent implements OnInit {
   }
 
   private oppositeViewType(): PerspectiveType {
-    if (this.activeMode === '2D') {
+    if (this.activeMode() === '2D') {
       return '3D';
     } else {
       return '2D';
@@ -226,11 +225,11 @@ export class PerspectiveToggleComponent implements OnInit {
   private removePerspectiveLayers() {
     const threeDLayers = this.threeDLayers();
     const twoDLayers = this.twoDLayers();
-    if (this.activeMode === '3D' && threeDLayers !== undefined) {
+    if (this.activeMode() === '3D' && threeDLayers !== undefined) {
       const layerIdsToRemove = threeDLayers.map((source) => source.id);
 
       this.ms.removeLayersById(layerIdsToRemove);
-    } else if (this.activeMode === '2D' && twoDLayers !== undefined) {
+    } else if (this.activeMode() === '2D' && twoDLayers !== undefined) {
       const layerIdsToRemove = twoDLayers.map((source) => source.id);
 
       this.ms.removeLayersById(layerIdsToRemove);
@@ -240,9 +239,9 @@ export class PerspectiveToggleComponent implements OnInit {
   public addPerspectiveLayers() {
     const threeDLayers = this.threeDLayers();
     const twoDLayers = this.twoDLayers();
-    if (this.activeMode === '3D' && threeDLayers !== undefined) {
+    if (this.activeMode() === '3D' && threeDLayers !== undefined) {
       this.ms.loadLayers(threeDLayers);
-    } else if (this.activeMode === '2D' && twoDLayers !== undefined) {
+    } else if (this.activeMode() === '2D' && twoDLayers !== undefined) {
       this.ms.loadLayers(twoDLayers);
     }
   }
