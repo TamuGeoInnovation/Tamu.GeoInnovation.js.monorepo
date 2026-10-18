@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject, output, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { catchError, map, pluck, shareReplay, startWith, switchMap } from 'rxjs/operators';
+import { catchError, map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
-import { CompetitionSeason, ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions/data-api';
+import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
 import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -23,8 +23,6 @@ export class DesignFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly http = inject(HttpClient);
   private readonly fs = inject(FormService);
-
-  public readonly updated = output<Array<ICompetitionSeasonFormQuestion>>();
 
   public currentSeasonForm$: Observable<CompetitionSeason>;
   public urlFields$: Observable<Array<Field>>;
@@ -72,16 +70,8 @@ export class DesignFormComponent implements OnInit {
           })
         );
         this._syncFields();
-
-        this.updated.emit(res.form.model);
       }
     });
-
-    this.formModel()
-      .valueChanges.pipe(startWith(this.formModel().getRawValue()))
-      .subscribe((changes) => {
-        this.updated.emit(changes.fields);
-      });
   }
 
   public getSchema() {
@@ -133,8 +123,6 @@ export class DesignFormComponent implements OnInit {
     const fieldsArray = this.formModel().get('fields') as UntypedFormArray;
     fieldsArray.removeAt(index);
     this._syncFields();
-
-    this.updated.emit(this.formModel().getRawValue().fields);
   }
 
   public saveForm(): void {
