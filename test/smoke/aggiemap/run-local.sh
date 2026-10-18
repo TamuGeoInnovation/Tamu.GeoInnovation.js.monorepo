@@ -15,6 +15,10 @@
 #                                                          # last dev-* tag; clears a dev release
 #   test/smoke/aggiemap/run-local.sh development release   # every map once; clears production (default)
 #   test/smoke/aggiemap/run-local.sh development full      # everything, as the nightly GitHub run does
+#   test/smoke/aggiemap/run-local.sh development one legend.spec.ts
+#   test/smoke/aggiemap/run-local.sh development one "a layer that loads hidden is listed once it is switched on"
+#                                                          # one spec file, or every test whose name contains
+#                                                          # the text (matched literally, not as a pattern)
 #
 # quick compares this checkout with the newest dev-* tag (prod-* for production), so the checkout must
 # be at the commit that was built. AGGIEMAP_SMOKE_BASE names another base. It prints what it chose and
@@ -41,7 +45,7 @@ env_name="${1:-}"
 case "$env_name" in
   development | production | local | local-production) shift ;;
   *)
-    echo "usage: $0 development|production|local|local-production [quick|release|full] [playwright args...]" >&2
+    echo "usage: $0 development|production|local|local-production [quick|release|full|one <spec file or test name>] [playwright args...]" >&2
     exit 2
     ;;
 esac
@@ -80,6 +84,24 @@ case "${1:-}" in
   quick | release | full)
     tier=$1
     shift
+    ;;
+  one)
+    # One spec file or one test, so a single check can be proven red or green without a whole tier.
+    tier=one
+    target="${2:-}"
+    if [ -z "$target" ]; then
+      echo "usage: $0 $env_name one <spec file, e.g. legend.spec.ts, or part of a test's name> [playwright args...]" >&2
+      exit 2
+    fi
+    shift 2
+    if [ -f "test/smoke/aggiemap/${target##*/}" ] && [[ "$target" == *.spec.ts ]]; then
+      set -- "test/smoke/aggiemap/${target##*/}" "$@"
+      echo "One spec: test/smoke/aggiemap/${target##*/}"
+    else
+      # --grep is a regular expression; escape the name so brackets, dots and parentheses in it match themselves.
+      set -- --grep "$(printf '%s' "$target" | sed 's/[][\.*^$+?(){}|]/\\&/g')" "$@"
+      echo "Every test whose name contains: $target"
+    fi
     ;;
 esac
 
