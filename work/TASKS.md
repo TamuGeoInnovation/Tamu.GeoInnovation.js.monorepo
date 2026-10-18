@@ -78,7 +78,11 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
   College Station's 26 layers, RNS Spaces' 44,980 points among them, which is what 5.1 is slow with; a fix is being
   made on the home machine. **2** not a probe fault: the probe lists all 26 layers on that page from a browser
   (`snapshot().layers`); the batch 7 script read the wrong field, so the suite's layer checks stand. **3** skipped.
-- So in batch 8, a DC Bush School failure is #1910's, already known. A dev
+- So in batch 8, a DC Bush School failure is #1910's, already known.
+- (Added about 5 PM.) **#1910's fix (PR #1911) is merged at `70f0e424b`, and the maintainer is building it.** The build
+  at `dfba74033` is being released to dev first. **Run batch 8 on the release at `70f0e424b`, not on `dfba74033`**: wait
+  for it. On `70f0e424b` the DC Bush School test must pass; if it fails, it is a new failure, not a known one, and so
+  are `campus-layers.spec.ts`'s three campus tests. A dev
 build and the quick tier follow, then the maintainer looks at the map by hand on dev.
 
 1. **#1673: the quick tier on dev's build with OnPush on the map**
