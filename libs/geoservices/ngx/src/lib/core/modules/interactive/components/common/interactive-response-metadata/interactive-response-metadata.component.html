@@ -1,30 +1,30 @@
-@if (status !== undefined || guid !== undefined || timeTaken !== undefined) {
+@if (status() !== undefined || guid() !== undefined || timeTaken() !== undefined) {
 <div class="flex flex-row justify-between">
   <div class="material-icons-container">
-    @if (status !== undefined) {
+    @if (status() !== undefined) {
     <tamu-gisc-tooltip positioningStrategy="fixed" [position]="'top'">
       <tamu-gisc-tooltip-trigger triggerType="hover">
-        @switch (status) { @case ('Success') {
+        @switch (status()) { @case ('Success') {
         <div class="material-icons-outlined action">check_circle</div>
         } @default {
         <div class="material-icons action error">cancel</div>
         } }
       </tamu-gisc-tooltip-trigger>
-      <p class="tooltip-text">Status: {{status}}</p>
+      <p class="tooltip-text">Status: {{status()}}</p>
     </tamu-gisc-tooltip>
-    } @if (timeTaken !== undefined) {
+    } @if (timeTaken() !== undefined) {
     <tamu-gisc-tooltip positioningStrategy="fixed" [position]="'top'">
       <tamu-gisc-tooltip-trigger triggerType="hover">
         <div class="material-icons action">schedule</div>
       </tamu-gisc-tooltip-trigger>
-      <p class="tooltip-text">Time taken: {{timeTaken | number}}ms</p>
+      <p class="tooltip-text">Time taken: {{timeTaken() | number}}ms</p>
     </tamu-gisc-tooltip>
-    } @if (guid !== undefined) {
+    } @if (guid() !== undefined) {
     <tamu-gisc-tooltip positioningStrategy="fixed" [position]="'top'">
       <tamu-gisc-tooltip-trigger triggerType="hover">
         <div class="material-icons action">fingerprint</div>
       </tamu-gisc-tooltip-trigger>
-      <p class="tooltip-text">GUID: {{guid}}</p>
+      <p class="tooltip-text">GUID: {{guid()}}</p>
     </tamu-gisc-tooltip>
     }
   </div>

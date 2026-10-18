@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -29,8 +29,7 @@ export class DesignQuestionComponent {
   /**
    * Field attributes
    */
-  @Input()
-  public control: UntypedFormGroup;
+  public readonly control = input<UntypedFormGroup>(undefined);
 
   public readonly removed = output<void>();
 

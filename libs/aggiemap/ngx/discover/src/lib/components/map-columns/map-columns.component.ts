@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 
 import { InternalDiscoverApplication } from '../../interfaces/discover-application.interface';
 import { MapColumnGroup } from '../discover.utils';
@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink]
 })
 export class MapColumnsComponent {
-  @Input() public columns: MapColumnGroup[] = [];
+  public readonly columns = input<MapColumnGroup[]>([]);
   public readonly noMapsMessage = input('No maps available.');
   public readonly getApplicationRoute = input<(app: InternalDiscoverApplication) => string[]>(() => []);
 }

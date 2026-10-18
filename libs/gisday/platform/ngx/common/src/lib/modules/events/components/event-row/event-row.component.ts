@@ -1,7 +1,6 @@
 import {
   Component,
   HostListener,
-  Input,
   OnChanges,
   OnInit,
   SimpleChanges,
@@ -28,11 +27,9 @@ import { ParseDateTimeStringsPipe } from '../../../../pipes/parse-date-time-stri
 export class EventRowComponent implements OnChanges, OnInit {
   private readonly rt = inject(Router);
 
-  @Input()
-  public event: Partial<SimplifiedEvent>;
+  public readonly event = input<Partial<SimplifiedEvent>>(undefined);
 
-  @Input()
-  public day: Partial<SeasonDay>;
+  public readonly day = input<Partial<SeasonDay>>(undefined);
 
   public readonly rsvps = input<Array<string>>(undefined);
 
@@ -47,14 +44,14 @@ export class EventRowComponent implements OnChanges, OnInit {
   public handleRowClick($event: MouseEvent) {
     // Ignore clicks from 'input' elements
     if (($event.target as HTMLElement).tagName !== 'INPUT') {
-      this.rt.navigate(['/sessions/details', this.event.guid]);
+      this.rt.navigate(['/sessions/details', this.event().guid]);
     }
   }
 
   public ngOnInit() {
     this.isRsvp$ = this._rsvps$.asObservable().pipe(
       distinctUntilChanged(),
-      map((rsvps) => rsvps.some((rsvp) => rsvp === this.event.guid)),
+      map((rsvps) => rsvps.some((rsvp) => rsvp === this.event().guid)),
       startWith(false)
     );
   }

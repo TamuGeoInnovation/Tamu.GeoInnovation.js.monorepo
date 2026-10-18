@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
@@ -26,13 +26,13 @@ interface SwimlaneNgxDatatableActivateEvent {
 export class SubmissionReviewListComponent implements OnInit {
   private readonly modalService = inject(ModalService);
 
-  @Input() public submissions$: Observable<SubmissionReviewDto[]>;
+  public readonly submissions$ = input<Observable<SubmissionReviewDto[]>>(undefined);
   public readonly isAdmin = input(false);
 
   public submissions: SubmissionReviewDto[] = [];
 
   public ngOnInit(): void {
-    this.submissions$.subscribe((submissions) => {
+    this.submissions$().subscribe((submissions) => {
       this.submissions = submissions;
     });
   }

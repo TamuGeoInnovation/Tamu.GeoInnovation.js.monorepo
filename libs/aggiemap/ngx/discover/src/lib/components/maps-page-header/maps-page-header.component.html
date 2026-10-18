@@ -10,7 +10,7 @@
 <div class="maps-page-header-row leader-1 trailer-2">
   <div class="maps-page-header-titles">
     <h1 class="maps-page-title">{{ title() }}</h1>
-    @if (intro) {
+    @if (intro(); as intro) {
     <p class="maps-page-intro">{{ intro }}</p>
     }
   </div>

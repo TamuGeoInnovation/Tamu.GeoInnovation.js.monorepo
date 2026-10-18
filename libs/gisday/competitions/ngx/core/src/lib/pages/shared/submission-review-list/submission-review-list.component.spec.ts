@@ -22,7 +22,7 @@ describe('SubmissionReviewListComponent', () => {
 
     fixture = TestBed.createComponent(SubmissionReviewListComponent);
     component = fixture.componentInstance;
-    component.submissions$ = of([]);
+    fixture.componentRef.setInput('submissions$', of([]));
   });
 
   it('should create', () => {
