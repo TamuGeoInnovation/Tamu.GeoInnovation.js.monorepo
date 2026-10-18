@@ -6,14 +6,6 @@
   "prefix": "tamu-gisc",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/coordinates"],
-      "options": {
-        "jestConfig": "libs/maps/feature/coordinates/jest.config.ts",
-        "tsConfig": "libs/maps/feature/coordinates/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
