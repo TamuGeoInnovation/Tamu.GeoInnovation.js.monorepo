@@ -71,6 +71,23 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 8 (prepared 18 October 2026, about 4 PM) — after batch 7
+
+**Decided:** #1673 (OnPush on the map, UES included, PR #1908) and #1905 (UES in CI, PR #1907) are merged. A dev
+build and the quick tier follow, then the maintainer looks at the map by hand on dev.
+
+1. **#1673: the quick tier on dev's build with OnPush on the map**
+   - Goal: the dev build of `development` at **`dfba74033`** or later passes the quick tier.
+   - Run: when Azure lists a release at `dfba74033` or later with its dev stage succeeded (the maintainer is building it),
+     from a worktree at that release's commit: `test/smoke/aggiemap/run-local.sh development quick`. Say what it
+     chose to run.
+   - Known: `/campus/dc-bush-school` and possibly `/map/d?bldg=0468` do not finish drawing on ArcGIS 5.1 under
+     headless Chromium (batch 6, batch 7, #1867). If those are the only failures, report them as the known 5.1
+     failures, separately from anything new.
+   - Report on: #1673. Results; each failure by layer and cause; whether the `@heavy` tests passed first attempt.
+   - Then: tag with `scripts/tag-build.sh dev <full commit>` only if the tier passed outright. If the only failures
+     are the known 5.1 ones, do not tag; say so, and the director brings it to the maintainer.
+
 ## Batch 7 (prepared 18 October 2026, 3:40 PM) — next, before resuming batch 5 at full speed
 
 **Decided:** batch 6's failure needs its cause before #1673 builds on 5.1. Short runs, minutes each.
