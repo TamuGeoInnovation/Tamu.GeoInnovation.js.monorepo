@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { map, shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -13,7 +13,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-my-classes',
   templateUrl: './my-classes.component.html',
   styleUrls: ['./my-classes.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CheckboxComponent, AsyncPipe]
 })
 export class MyClassesComponent implements OnInit {

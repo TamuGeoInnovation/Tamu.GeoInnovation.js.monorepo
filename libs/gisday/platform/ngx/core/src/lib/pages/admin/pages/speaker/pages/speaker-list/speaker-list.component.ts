@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
@@ -14,7 +14,6 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-speaker-list',
   templateUrl: './speaker-list.component.html',
   styleUrls: ['./speaker-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SelectComponent, RouterLink, CheckboxComponent, AsyncPipe, DatePipe, ExistsPipe]
 })
 export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {

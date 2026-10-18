@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -19,7 +19,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-sponsor-add-edit-form',
   templateUrl: './sponsor-add-edit-form.component.html',
   styleUrls: ['./sponsor-add-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, FileComponent, ButtonComponent, AsyncPipe]
 })
 export class SponsorAddEditFormComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Location, AsyncPipe } from '@angular/common';
 
@@ -16,7 +16,6 @@ import { DeleteEmailModalComponent } from '../../modal/delete-email-modal.compon
   selector: 'tamu-gisc-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, AsyncPipe]
 })
 export class DetailComponent implements OnInit {

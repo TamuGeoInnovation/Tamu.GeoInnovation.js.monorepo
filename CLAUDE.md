@@ -279,6 +279,7 @@ is unclear, ask.
 | "... on prod", "... on production" | The same tier with `production` in place of `development`. After a production deploy, `release` |
 | "... on both" | Both of the above, one after the other |
 | "run that one test", "prove the check fails", "run legend.spec.ts on dev" | `test/smoke/aggiemap/run-local.sh development one <spec file or part of a test's name>`: just that spec or test, on any environment. This is how a smoke check is proven red before a fix |
+| "... and stop at the first failure", "fail fast" | The same command with `-x` at the end: it stops at the first test that fails after its retries. Without it, a run continues through every test, which is the default |
 | "... locally", "... against my dev server" | `test/smoke/aggiemap/run-local.sh local`, with the dev server running in the `aggiemap-dev` container |
 | "... locally as production", "check the production gating" | `test/smoke/aggiemap/run-local.sh local-production`: the same dev server at `127.0.0.1`, which is not a dev host, so development-only features are hidden as on production |
 | "... on GitHub", "run the smoke workflow" | `gh workflow run aggiemap-smoke.yml -f environment=development` (or `production`, `both`), then `gh run watch` |
@@ -613,9 +614,24 @@ files on the `work-mailbox` branch of `TamuGeoInnovation`, which is never merged
   ```
 
 - **The work session** does only that batch, runs each test from a worktree at the named commit, and posts
-  status and results on the task's issue. It writes `work/reports/<yyyy-mm-dd>-<n>.md`, commits and pushes only
-  that file, and says "work report ready: <file>".
-- **The home session** pulls `work-mailbox`, reads the report, and takes its decisions to the maintainer.
+  status and results on the task's issue. It writes `work/reports/<yyyy-mm-dd>-<n>.md` and says "work report
+  ready: <file>".
+- **The home session** pulls `work-mailbox`, reads the report, and takes its questions to the maintainer.
+
+**One asker, and each file has one writer** (#1886). On 18 October both sessions asked the maintainer the same
+questions, and the work machine ran something he had told it directly that the home session then asked about
+again. So:
+
+- **Only the home session asks the maintainer to decide anything.** The work session never does: it puts
+  questions in its report under **Questions for the home session**, with options and a recommendation. The home
+  session asks once, and the answers go back in the next batch under **Decided**.
+- **The home session writes only `work/TASKS.md`.** The work session writes only `work/STATUS.md` and its
+  reports.
+- **`work/STATUS.md` says what the work machine is doing:** what is running, from which commit, since when (US
+  Central) and for which task, pushed the moment anything starts or finishes. The home session reads it before
+  writing a batch or asking anything, and never runs or queues what it lists.
+- **What the maintainer tells the work machine directly** it does, and records at once in `STATUS.md` under
+  **Told directly**, so the home session does not ask it again.
 
 **The work machine never touches production**: no deploy, promotion or approval. It pushes a `dev-*` tag only
 when its task says so, and no other branches or tags. It opens no pull requests and merges nothing.

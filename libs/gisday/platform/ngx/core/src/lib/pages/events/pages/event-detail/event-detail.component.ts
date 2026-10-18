@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -47,7 +47,6 @@ import { SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
   selector: 'tamu-gisc-event-detail',
   templateUrl: './event-detail.component.html',
   styleUrls: ['./event-detail.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     SiteHasPipe,
     NgIf,
@@ -99,17 +98,15 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   public isPastSeason$: Observable<boolean>;
 
   public attendanceForm: UntypedFormGroup;
-  public isCheckinOpen = false;
-
   /**
    * Waiting for the browser to say where the attendee is, for a session that checks location.
    */
-  public findingLocation = false;
+  public readonly findingLocation = signal(false);
 
   /**
    * Why the last check-in did not work, shown beside the button.
    */
-  public checkInFailure: string;
+  public readonly checkInFailure = signal<string>(undefined);
 
   private _refresh$: Subject<boolean> = new Subject();
   private _destroy$: Subject<boolean> = new Subject();
@@ -310,7 +307,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   }
 
   public checkin() {
-    this.checkInFailure = undefined;
+    this.checkInFailure.set(undefined);
 
     this.event$
       .pipe(
@@ -326,7 +323,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           this._refresh$.next(true);
         },
         error: (err) => {
-          this.checkInFailure = checkInFailureMessage(err);
+          this.checkInFailure.set(checkInFailureMessage(err));
         }
       });
   }
@@ -348,11 +345,11 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       return of(undefined);
     }
 
-    this.findingLocation = true;
+    this.findingLocation.set(true);
 
     return getGeolocation(true, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }).pipe(
       map((coords) => ({ latitude: coords.latitude, longitude: coords.longitude, accuracy: coords.accuracy })),
-      finalize(() => (this.findingLocation = false))
+      finalize(() => this.findingLocation.set(false))
     );
   }
 

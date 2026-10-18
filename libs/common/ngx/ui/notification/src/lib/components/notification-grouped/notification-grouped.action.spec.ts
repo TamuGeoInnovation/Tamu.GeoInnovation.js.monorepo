@@ -157,7 +157,7 @@ describe('NotificationGroupedComponent, while a modal is open', () => {
   it('is not blocked when no modal is open', () => {
     build([make('bonfire')]);
 
-    expect(component.blockedByModal).toBe(false);
+    expect(component.blockedByModal()).toBe(false);
   });
 
   it('is blocked as soon as a modal opens', () => {
@@ -165,7 +165,7 @@ describe('NotificationGroupedComponent, while a modal is open', () => {
 
     modal.open$.next(true);
 
-    expect(component.blockedByModal).toBe(true);
+    expect(component.blockedByModal()).toBe(true);
   });
 
   it('keeps the notifications rather than discarding them', () => {
@@ -173,7 +173,7 @@ describe('NotificationGroupedComponent, while a modal is open', () => {
 
     modal.open$.next(true);
 
-    expect(component.groupedItems.map((n) => n.id)).toEqual(['bonfire', 'parking']);
+    expect(component.groupedItems().map((n) => n.id)).toEqual(['bonfire', 'parking']);
   });
 
   it('shows them again once the modal closes', () => {
@@ -182,8 +182,8 @@ describe('NotificationGroupedComponent, while a modal is open', () => {
     modal.open$.next(true);
     modal.open$.next(false);
 
-    expect(component.blockedByModal).toBe(false);
-    expect(component.groupedItems.map((n) => n.id)).toEqual(['bonfire']);
+    expect(component.blockedByModal()).toBe(false);
+    expect(component.groupedItems().map((n) => n.id)).toEqual(['bonfire']);
   });
 
   it('stops the countdown while blocked, so the stack cannot expire behind the modal', () => {
@@ -196,8 +196,8 @@ describe('NotificationGroupedComponent, while a modal is open', () => {
       // Well past the 10s auto-dismiss.
       jest.advanceTimersByTime(30000);
 
-      expect(component.groupedItems.map((n) => n.id)).toEqual(['bonfire']);
-      expect(component.groupTimerPercent).toBeLessThan(100);
+      expect(component.groupedItems().map((n) => n.id)).toEqual(['bonfire']);
+      expect(component.groupTimerPercent()).toBeLessThan(100);
     } finally {
       jest.useRealTimers();
     }
@@ -218,6 +218,6 @@ describe('NotificationGroupedComponent, while a modal is open', () => {
       .runInInjectionContext(() => new NotificationGroupedComponent());
 
     expect(() => component.ngOnInit()).not.toThrow();
-    expect(component.blockedByModal).toBe(false);
+    expect(component.blockedByModal()).toBe(false);
   });
 });

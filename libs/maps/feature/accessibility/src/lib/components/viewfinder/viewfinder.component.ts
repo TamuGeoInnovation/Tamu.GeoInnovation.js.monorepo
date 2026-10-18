@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ElementRef, ChangeDetectionStrategy, inject, input, viewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { fromEventPattern, Observable, Subject } from 'rxjs';
 import { map, mapTo, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 
@@ -13,7 +13,6 @@ import esri = __esri;
   selector: 'tamu-gisc-map-viewfinder',
   templateUrl: './viewfinder.component.html',
   styleUrls: ['./viewfinder.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass, AsyncPipe]
 })
 export class MapViewfinderComponent implements OnInit, OnDestroy {
@@ -44,7 +43,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
   /**
    * Store for selected features within the viewfinder. Used in template to render list.
    */
-  public viewFinderFeatures: IViewfinderResult[];
+  public readonly viewFinderFeatures = signal<IViewfinderResult[]>(undefined);
 
   /**
    * Determines when the view finder is visible.
@@ -131,23 +130,24 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
               ] // Closing vertex, same as first
             ];
 
-            // Transform screen point coordinates to map point coordinates
-            const mapCoords: number[][] = screenCoords
-              .map((point) => {
-                return view.toMap({
-                  x: point[0],
-                  y: point[1]
-                });
-              })
-              .map((coord) => {
-                return [coord.longitude, coord.latitude];
+            // Transform screen point coordinates to map point coordinates, in the view's own spatial reference.
+            // Not longitude and latitude, which Esri leaves null in a projected reference such as dev's
+            // campus basemap (#1875).
+            const mapCoords: number[][] = screenCoords.map((point) => {
+              const coord = view.toMap({
+                x: point[0],
+                y: point[1]
               });
+
+              return [coord.x, coord.y];
+            });
 
             // Use module provider to get polygon class object
             this.mp.require(['Polygon']).then(([Polygon]: [typeof esri.Polygon]) => {
               // Create a polygon that will be used to query the feature layer to get intersecting features
               const polygon = new Polygon({
-                rings: [mapCoords]
+                rings: [mapCoords],
+                spatialReference: view.spatialReference
               });
 
               this.mapService.findLayerOrCreateFromSource(source).then((layer: esri.FeatureLayer) => {
@@ -159,12 +159,14 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
                   })
                   .then((features) => {
                     // Limit viewfinder results by the first 5 returned.
-                    this.viewFinderFeatures = features.features.slice(0, this.listLimit()).map((f): IViewfinderResult => {
-                      return {
-                        display: new TemplateRenderer({ template: this.template(), lookup: f }).render(),
-                        graphic: f
-                      };
-                    });
+                    this.viewFinderFeatures.set(
+                      features.features.slice(0, this.listLimit()).map((f): IViewfinderResult => {
+                        return {
+                          display: new TemplateRenderer({ template: this.template(), lookup: f }).render(),
+                          graphic: f
+                        };
+                      })
+                    );
                   });
               });
             });
@@ -172,16 +174,14 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
         }
 
         // If viewfinder has features, and a number selection is made.
-        if (
-          this.viewFinderFeatures &&
-          this.viewFinderFeatures.length > 0 &&
-          ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(event.key)
-        ) {
-          if (this.viewFinderFeatures[parseInt(event.key, 10) - 1]) {
+        const found = this.viewFinderFeatures();
+
+        if (found && found.length > 0 && ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(event.key)) {
+          if (found[parseInt(event.key, 10) - 1]) {
             // Clear the results layer
 
             this.mapService.selectFeatures({
-              graphics: [this.viewFinderFeatures[parseInt(event.key, 10) - 1].graphic.clone()],
+              graphics: [found[parseInt(event.key, 10) - 1].graphic.clone()],
               shouldShowPopup: true
             });
           }

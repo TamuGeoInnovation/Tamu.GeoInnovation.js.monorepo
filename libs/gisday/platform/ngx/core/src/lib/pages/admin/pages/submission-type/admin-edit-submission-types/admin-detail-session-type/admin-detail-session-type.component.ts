@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SubmissionTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -13,7 +13,6 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-admin-detail-session-type',
   templateUrl: './admin-detail-session-type.component.html',
   styleUrls: ['./admin-detail-session-type.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent]
 })
 export class AdminDetailSessionTypeComponent extends BaseAdminDetailComponent<SubmissionType> implements OnInit {

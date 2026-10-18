@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
-import { Observable, pipe, fromEventPattern } from 'rxjs';
+import { Component, OnInit, inject } from '@angular/core';
+import { Observable, pipe, fromEventPattern, from } from 'rxjs';
 import { map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
-import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapServiceInstance, toGeographic } from '@tamu-gisc/maps/esri';
 
 import { AsyncPipe } from '@angular/common';
 import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -13,7 +13,6 @@ import esri = __esri;
   selector: 'tamu-gisc-click-coordinates',
   templateUrl: './click-coordinates.component.html',
   styleUrls: ['./click-coordinates.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ClipboardCopyDirective, AsyncPipe]
 })
 export class ClickCoordinatesComponent implements OnInit {
@@ -49,11 +48,13 @@ export class ClickCoordinatesComponent implements OnInit {
           immediateClickHandle.remove();
         };
 
+        // Projected to latitude and longitude, which a view in a projected reference does not give (#1875).
         return fromEventPattern(addHandler, removeHandler).pipe(
-          map((event: esri.ViewImmediateClickEvent) => {
+          switchMap((event: esri.ViewImmediateClickEvent) => from(toGeographic(event.mapPoint))),
+          map(({ latitude, longitude }) => {
             return {
-              latitude: event.mapPoint.latitude.toFixed(5),
-              longitude: event.mapPoint.longitude.toFixed(5)
+              latitude: latitude.toFixed(5),
+              longitude: longitude.toFixed(5)
             };
           })
         );

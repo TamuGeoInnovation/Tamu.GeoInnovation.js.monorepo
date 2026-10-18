@@ -26,6 +26,11 @@
 #
 # Anything after that is passed to `playwright test`, e.g. `--grep "gameday"`.
 #
+# A run continues through every test when one fails, by default. `-x` stops it at the first test that fails
+# for good, after its retries (a test that passes on a retry does not stop it):
+#
+#   test/smoke/aggiemap/run-local.sh development release -x
+#
 # A release run opens one route per map in framing.spec.ts (#1426); full opens all of them.
 # Needs only Docker and bash (Git Bash on Windows); Node runs inside the container. The first run
 # downloads the Playwright image, about 2 GB.

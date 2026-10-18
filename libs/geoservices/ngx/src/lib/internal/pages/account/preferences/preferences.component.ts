@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AccountPreferencesService } from '@tamu-gisc/geoservices/data-access';
@@ -8,7 +8,6 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-preferences',
   templateUrl: './preferences.component.html',
   styleUrls: ['./preferences.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, CheckboxComponent]
 })
 export class PreferencesComponent implements OnInit {

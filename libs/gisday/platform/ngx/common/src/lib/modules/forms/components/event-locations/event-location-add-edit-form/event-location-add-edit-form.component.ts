@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
@@ -17,7 +17,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-event-location-add-edit-form',
   templateUrl: './event-location-add-edit-form.component.html',
   styleUrls: ['./event-location-add-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, ButtonComponent, AsyncPipe]
 })
 export class EventLocationAddEditFormComponent implements OnInit {

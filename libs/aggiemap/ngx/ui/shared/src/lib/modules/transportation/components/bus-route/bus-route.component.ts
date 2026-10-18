@@ -3,9 +3,9 @@ import {
   OnInit,
   OnDestroy,
   AfterViewInit,
-  ChangeDetectionStrategy,
   inject,
   input,
+  signal,
   viewChild
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,7 +27,6 @@ import { BusTimetableComponent } from '../bus-timetable/bus-timetable.component'
   selector: 'tamu-gisc-bus-route',
   templateUrl: './bus-route.component.html',
   styleUrls: ['./bus-route.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass, AccordionComponent_1, BusListHeaderComponent, AccordionContentComponent, BusTimetableComponent]
 })
 export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -50,9 +49,9 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Describes whether or not any given bus route is drawn on the map.
    */
-  public isActive: boolean;
+  public readonly isActive = signal(false);
 
-  public isLoading: boolean;
+  public readonly isLoading = signal(false);
 
   private _graphics: Observable<boolean>;
 
@@ -83,10 +82,10 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
     this._graphics.subscribe((res: boolean) => {
       // Will be true or false depending on whether the bus layer contains
       // any graphics with the route shortname.
-      this.isActive = res;
+      this.isActive.set(res);
 
-      if (!this.isActive) {
-        this.isLoading = false;
+      if (!res) {
+        this.isLoading.set(false);
       }
     });
   }
@@ -123,9 +122,7 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
       this.router.navigate([route.ShortName], { relativeTo: this.rt });
     }
 
-    if (!this.isLoading) {
-      this.isLoading = true;
-    }
+    this.isLoading.set(true);
 
     if (selection === 'in-place') {
       this.busService.toggleMapRoute(route.ShortName);

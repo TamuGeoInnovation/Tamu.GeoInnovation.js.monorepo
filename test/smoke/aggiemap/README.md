@@ -113,6 +113,17 @@ A name ending `.spec.ts` runs that file. Anything else runs every test whose nam
 matched literally, so brackets, dots and parentheses in a name need no escaping. It works with every
 environment, `local` included.
 
+**Stop at the first failure, or run them all.** A run continues through every test when one fails,
+which is the default and what a release tier wants: the report lists everything that is wrong. Add `-x`
+to stop at the first test that fails for good instead, when one failure already answers the question:
+
+```bash
+test/smoke/aggiemap/run-local.sh development release -x
+```
+
+`-x` is Playwright's `--max-failures=1`. A test counts once it has failed all its retries, so a flaky test
+that passes on a retry does not stop the run. `--max-failures=<n>` stops after `n`.
+
 Anything after the environment and tier goes to `playwright test`, for example `--grep "gameday"`. It
 needs only Docker and bash (Git Bash on Windows). The first run downloads the Playwright image, about
 2 GB.

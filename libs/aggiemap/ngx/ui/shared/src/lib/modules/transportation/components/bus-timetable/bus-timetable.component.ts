@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -16,7 +16,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-bus-timetable',
   templateUrl: './bus-timetable.component.html',
   styleUrls: ['./bus-timetable.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AsyncPipe]
 })
 export class BusTimetableComponent implements OnInit {
@@ -32,7 +31,7 @@ export class BusTimetableComponent implements OnInit {
   /**
    * True once the stop list has been received (drives the loading spinner).
    */
-  public loaded: boolean;
+  public readonly loaded = signal(false);
 
   /**
    * External Transportation Services schedule page (the ArcGIS source has no timetable data).
@@ -42,7 +41,7 @@ export class BusTimetableComponent implements OnInit {
   public ngOnInit() {
     this.stops = this.busService.getRouteStops(this.route().ShortName).pipe(
       tap(() => {
-        this.loaded = true;
+        this.loaded.set(true);
       })
     );
   }

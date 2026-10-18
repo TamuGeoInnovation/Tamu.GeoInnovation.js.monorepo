@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -18,7 +18,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-organization-add-edit-form',
   templateUrl: './organization-add-edit-form.component.html',
   styleUrls: ['./organization-add-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, FileComponent, ButtonComponent, AsyncPipe]
 })
 export class OrganizationAddEditFormComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -37,7 +37,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-geocoding-advanced',
   templateUrl: './geocoding-advanced.component.html',
   styleUrls: ['./geocoding-advanced.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

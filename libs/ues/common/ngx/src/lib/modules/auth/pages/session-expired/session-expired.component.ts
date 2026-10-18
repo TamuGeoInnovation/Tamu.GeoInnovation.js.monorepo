@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { interval, Observable } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
@@ -11,7 +11,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-session-expired',
   templateUrl: './session-expired.component.html',
   styleUrls: ['./session-expired.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [UESTamuBlockComponent, AsyncPipe]
 })
 export class SessionExpiredComponent {

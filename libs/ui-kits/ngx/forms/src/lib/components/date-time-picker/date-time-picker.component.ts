@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, DestroyRef, forwardRef, ChangeDetectionStrategy, inject, input, model, output, viewChild } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, forwardRef, inject, input, model, output, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -129,7 +129,6 @@ export function fromInputValue(raw: string, type: ReturnType<typeof inputTypeFor
     // for an animation to end, and that never happens once the tooltip around it has been taken away.
     { provide: MATERIAL_ANIMATIONS, useValue: { animationsDisabled: true } }
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TooltipComponent, TooltipTriggerComponent, DatePipe, MatTimepicker, MatTimepickerInput]
 })
 export class DateTimePickerComponent implements ControlValueAccessor, AfterViewInit {
