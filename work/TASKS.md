@@ -71,6 +71,23 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 7 (prepared 18 October 2026, 3:40 PM) — next, before resuming batch 5 at full speed
+
+**Decided:** batch 6's failure needs its cause before #1673 builds on 5.1. Short runs, minutes each.
+
+1. **#1867: why `/campus/dc-bush-school` never finished drawing on Release-480 (ArcGIS 5.1)**
+   - Goal: say whether it is ArcGIS 5.1 (software WebGL, #1867/#1897) or that campus's services (#1247, #1464,
+     #1248), with evidence.
+   - Run, from the worktree at `98c2056be`, pausing the capture as you did for batch 6:
+     1. `test/smoke/aggiemap/run-local.sh development one "dc-bush-school" --retries=0` twice.
+     2. `test/smoke/aggiemap/run-local.sh production one "dc-bush-school" --retries=0` once (production is on
+        ArcGIS 4.34 and production's GIS services).
+     3. On dev, load `/campus/dc-bush-school` once in the Playwright container and record, every 10 s for
+        3 minutes, the map probe's `drawing` and which layer views are `updating`, with their feature counts
+        (as the #1867 reproduction did), and the network requests that fail or never finish.
+   - Report on: #1867. Which layer holds the view, and whether it is 5.1-specific.
+   - Then: nothing to tag. Resume batch 5.
+
 ## Batch 6 (prepared 18 October 2026, afternoon) — after batch 5
 
 **Decided:** ArcGIS 5.1 ships with this round (#1894 merged). A dev build and quick tier follow it.
