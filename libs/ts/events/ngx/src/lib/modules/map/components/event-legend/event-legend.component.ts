@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
 import { SidebarInfoPanel } from '../../../../interfaces/special-event.interface';
@@ -9,7 +9,6 @@ import { LegendComponent } from '@tamu-gisc/maps/feature/legend';
   selector: 'tamu-gisc-event-legend',
   templateUrl: './event-legend.component.html',
   styleUrls: ['./event-legend.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgStyle, LegendComponent]
 })
 export class EventLegendComponent implements OnInit {

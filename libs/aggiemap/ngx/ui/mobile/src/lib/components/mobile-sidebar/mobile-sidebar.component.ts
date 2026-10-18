@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
 import { getUrlSegmentsFromRouteSnapshot } from '@tamu-gisc/common/utils/routing';
 
@@ -8,7 +8,6 @@ import { BackdropComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
   selector: 'tamu-gisc-mobile-sidebar',
   templateUrl: './mobile-sidebar.component.html',
   styleUrls: ['./mobile-sidebar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterOutlet, BackdropComponent]
 })
 export class MobileSidebarComponent {

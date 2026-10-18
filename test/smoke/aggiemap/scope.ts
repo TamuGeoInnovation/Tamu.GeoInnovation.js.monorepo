@@ -63,7 +63,7 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
     paths: /^libs\/(maps\/feature\/popup|aggiemap\/ngx\/popups|ts\/events\/ngx\/src\/lib\/modules\/popups)\//,
     specs: ['popup.spec.ts', 'directions.spec.ts', 'search-sources.spec.ts']
   },
-  { paths: /^libs\/maps\/feature\/trip-planner\//, specs: ['directions.spec.ts'] },
+  { paths: /^libs\/maps\/feature\/trip-planner\//, specs: ['directions.spec.ts', 'map-coordinates.spec.ts'] },
   {
     paths: /^libs\/maps\/(feature\/(coordinates|accessibility)\/|esri\/src\/lib\/geographic\.ts$)/,
     specs: ['map-coordinates.spec.ts']
@@ -77,6 +77,10 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
   },
   { paths: /^libs\/aggiemap\/ngx\/core\/src\/lib\/pages\/map\//, specs: ['isolation.spec.ts', 'directions.spec.ts'] },
   { paths: /^libs\/ts\/events\/ngx\/src\/lib\/modules\/map\//, specs: ['isolation.spec.ts'] },
+  {
+    paths: /^libs\/ts\/events\/ngx\/src\/lib\/(services\/event\/|definitions\/campus\/)/,
+    specs: ['campus-layers.spec.ts', 'kiosk.spec.ts']
+  },
   { paths: /^libs\/maps\/esri\/src\/lib\/services\/map\/(selection-layer|hit-order)\.ts$/, specs: ['selection.spec.ts'] },
   {
     paths: /^libs\/(ui-kits\/ngx\/forms\/src\/lib\/components\/autocomplete|aggiemap\/ngx\/discover\/src\/lib\/components\/all-maps)\//,

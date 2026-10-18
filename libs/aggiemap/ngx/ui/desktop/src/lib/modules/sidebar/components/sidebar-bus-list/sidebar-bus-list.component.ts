@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { BusListComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
@@ -6,7 +6,6 @@ import { BusListComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
   selector: 'tamu-gisc-sidebar-bus-list',
   templateUrl: './sidebar-bus-list.component.html',
   styleUrls: ['./sidebar-bus-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [BusListComponent]
 })
 export class SidebarBusListComponent {}

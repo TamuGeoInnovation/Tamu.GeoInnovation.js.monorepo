@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { Angulartics2 } from 'angulartics2';
 import { v4 as guid } from 'uuid';
@@ -16,7 +16,6 @@ interface MenuItem {
   selector: 'tamu-gisc-main-mobile-sidebar',
   templateUrl: './main-mobile-sidebar.component.html',
   styleUrls: ['./main-mobile-sidebar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TamuBlockBrandingComponent, RouterLink]
 })
 export class MainMobileSidebarComponent {

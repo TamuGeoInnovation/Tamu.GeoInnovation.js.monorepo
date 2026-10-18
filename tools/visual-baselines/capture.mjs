@@ -8,6 +8,13 @@
  *
  *   node tools/visual-baselines/capture.mjs --env production --out /c/TAMU/visual-baselines
  *   node tools/visual-baselines/capture.mjs --env local --routes-only
+ *   node tools/visual-baselines/capture.mjs --env development --as production
+ *
+ * `--as production` opens every page with `?as=production` (#1722), so a development host uses
+ * production's GIS services and hides its development-only features, and the set can be compared with
+ * production's own without every gap in the dev GIS server showing as a difference (#1885). The control
+ * a development host shows while acting as production is hidden, since production has none. Such a set
+ * is kept apart, under `<env>-as-production/`.
  *
  * `--env` names an entry in test/smoke/aggiemap/environments.json, so the addresses and the
  * development/production gating are the same ones every other check reads. Nothing is hard-coded.
@@ -55,6 +62,25 @@ const routesOnly = flag('routes-only');
 /** Comma-separated substrings; only routes containing one are captured. For asking a narrow question. */
 const only = (arg('only', '') || '').split(',').map((part) => part.trim()).filter(Boolean);
 const concurrency = Number(arg('concurrency', '3'));
+/** `production` to capture a development host as production renders it (#1885); empty otherwise. */
+const actingAs = arg('as', '');
+
+if (actingAs !== '' && actingAs !== 'production') {
+  console.error('--as takes only "production".');
+  process.exit(2);
+}
+
+/** The address of a route, carrying `?as=production` when the set is captured as production. */
+const addressOf = (route) =>
+  baseUrl + route + (actingAs ? (route.includes('?') ? '&' : '?') + 'as=' + actingAs : '');
+
+/** Hides the "acting as production" control, which production itself does not have. */
+const HIDE_ACTING_AS = () => {
+  const style = document.createElement('style');
+
+  style.textContent = 'tamu-gisc-acting-as-production { display: none !important; }';
+  document.addEventListener('DOMContentLoaded', () => document.head.appendChild(style));
+};
 
 const environments = JSON.parse(fs.readFileSync(path.join(REPO, 'test/smoke/aggiemap/environments.json'), 'utf8'));
 const environment = environments[envName];
@@ -170,7 +196,7 @@ async function routesToCapture(page) {
 
   for (const section of sections) {
     try {
-      await page.goto(baseUrl + section, { waitUntil: 'domcontentloaded' });
+      await page.goto(addressOf(section), { waitUntil: 'domcontentloaded' });
       await page.waitForTimeout(2500);
 
       const hrefs = await page.$$eval(
@@ -262,7 +288,11 @@ async function settle(page) {
   const browser = await chromium.launch();
   const probePage = await browser.newPage({ viewport: VIEWPORTS.desktop, timezoneId: 'America/Chicago' });
 
-  await probePage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+  if (actingAs) {
+    await probePage.addInitScript(HIDE_ACTING_AS);
+  }
+
+  await probePage.goto(addressOf(''), { waitUntil: 'domcontentloaded' });
 
   const build = await buildIdentity(probePage);
   const routes = await routesToCapture(probePage);
@@ -270,7 +300,7 @@ async function settle(page) {
   await probePage.close();
 
   const release = resolveRelease(build);
-  const outDir = path.join(outRoot, envName, release);
+  const outDir = path.join(outRoot, actingAs ? envName + '-as-' + actingAs : envName, release);
   const manifestPath = path.join(outDir, 'manifest.json');
 
   // A set already here for this release must have come from the same bundle. If it did not, either
@@ -294,6 +324,7 @@ async function settle(page) {
   const manifest = {
     environment: envName,
     baseUrl: baseUrl,
+    actingAs: actingAs || null,
     release: release,
     releaseCommit: releaseCommit(release),
     build: build,
@@ -309,7 +340,7 @@ async function settle(page) {
 
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
-  console.log('environment ' + envName + ' (' + baseUrl + ')');
+  console.log('environment ' + envName + ' (' + baseUrl + ')' + (actingAs ? ', as ' + actingAs : ''));
   console.log('release      ' + release + (manifest.releaseCommit ? ' (' + manifest.releaseCommit.slice(0, 8) + ')' : ''));
   console.log('build        ' + build);
   console.log('routes       ' + routes.length + ' x ' + Object.keys(VIEWPORTS).length + ' viewports');
@@ -339,6 +370,11 @@ async function settle(page) {
   await Promise.all(
     Array.from({ length: concurrency }, async () => {
       const context = await browser.newContext({ timezoneId: 'America/Chicago' });
+
+      if (actingAs) {
+        await context.addInitScript(HIDE_ACTING_AS);
+      }
+
       const page = await context.newPage();
 
       while (queue.length) {
@@ -346,7 +382,7 @@ async function settle(page) {
 
         try {
           await page.setViewportSize(job.viewport);
-          await page.goto(baseUrl + job.route, { waitUntil: 'domcontentloaded', timeout: 60000 });
+          await page.goto(addressOf(job.route), { waitUntil: 'domcontentloaded', timeout: 60000 });
           await settle(page);
           await page.screenshot({ path: job.file });
         } catch (error) {

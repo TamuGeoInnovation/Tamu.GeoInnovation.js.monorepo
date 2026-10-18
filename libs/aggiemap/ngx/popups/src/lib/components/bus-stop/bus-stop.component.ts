@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { filter, take } from 'rxjs/operators';
 
@@ -19,7 +19,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-bus-stop-popup-component',
   templateUrl: './bus-stop.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CopyComponent, AsyncPipe]
 })
 export class BusStopPopupComponent extends BaseDirectionsComponent implements OnInit {

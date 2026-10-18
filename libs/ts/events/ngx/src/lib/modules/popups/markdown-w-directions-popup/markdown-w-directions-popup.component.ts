@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -8,7 +8,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-markdown-w-directions-popup',
   templateUrl: './markdown-w-directions-popup.component.html',
   styleUrls: ['./markdown-w-directions-popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CopyComponent, AsyncPipe]
 })
 export class MarkdownWDirectionsPopupComponent extends BaseEventPopupComponent implements OnInit {

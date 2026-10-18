@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { TripPlannerConnectionService, TripPlannerConnection } from '../../../../services/trip-planner-connection.service';
@@ -9,7 +9,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-trip-planner-connection-select',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, AsyncPipe]
 })
 export class TripPlannerConnectionsSelectComponent implements OnInit {
@@ -28,7 +27,7 @@ export class TripPlannerConnectionsSelectComponent implements OnInit {
    *
    * Used to pre-populate the network in the dropdown list.
    */
-  public currentUrlAlias: string;
+  public readonly currentUrlAlias = signal<string>(undefined);
 
   public ngOnInit() {
     // Subscribe to the routing network list. This populates the list of available networks for
@@ -36,7 +35,7 @@ export class TripPlannerConnectionsSelectComponent implements OnInit {
     this.routingAliasesServiceList = this.connectionService.allNetworks;
 
     // Store the current routing network alias from the RoutingService class instance
-    this.connectionService.currentNetwork.subscribe((connection) => (this.currentUrlAlias = connection.name));
+    this.connectionService.currentNetwork.subscribe((connection) => this.currentUrlAlias.set(connection.name));
   }
 
   /**
@@ -45,6 +44,6 @@ export class TripPlannerConnectionsSelectComponent implements OnInit {
    */
   public setRoutingNetwork = (): void => {
     // Update the current network
-    this.connectionService.network = this.currentUrlAlias;
+    this.connectionService.network = this.currentUrlAlias();
   };
 }

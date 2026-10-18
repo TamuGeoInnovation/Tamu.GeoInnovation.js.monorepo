@@ -1,4 +1,4 @@
-import { Component, ElementRef, forwardRef, ChangeDetectionStrategy, input, model, output, viewChild } from '@angular/core';
+import { Component, ElementRef, forwardRef, input, model, output, viewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { NgClass } from '@angular/common';
 
@@ -13,7 +13,6 @@ import { NgClass } from '@angular/common';
       multi: true
     }
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass]
 })
 export class CheckboxComponent implements ControlValueAccessor {

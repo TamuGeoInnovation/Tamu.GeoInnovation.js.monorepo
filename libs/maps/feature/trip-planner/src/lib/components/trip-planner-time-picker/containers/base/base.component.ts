@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, shareReplay, pluck } from 'rxjs/operators';
 
@@ -14,7 +14,6 @@ import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-trip-planner-time-picker',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass, FormsModule, DateTimePickerComponent, AsyncPipe]
 })
 export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
@@ -28,7 +27,7 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   /**
    * Date in milliseconds. If a date is set in the trip planner service, it will be converted to milliseconds.
    */
-  public requestedTime: number;
+  public readonly requestedTime = signal<number>(undefined);
   public oldTime: number;
 
   public dateTimePickerVisible = false;
@@ -40,8 +39,8 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.plannerService.TravelOptions.pipe(pluck('requested_time'), takeUntil(this.destroy$)).subscribe((date) => {
-      this.requestedTime = date ? date.getTime() : undefined;
-      this.oldTime = this.requestedTime ? this.requestedTime : undefined;
+      this.requestedTime.set(date ? date.getTime() : undefined);
+      this.oldTime = this.requestedTime() ? this.requestedTime() : undefined;
     });
   }
 
@@ -64,7 +63,7 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
       this.setRequestedTime(null);
       this.dateTimePickerVisible = false;
     } else {
-      if (this.requestedTime == null) {
+      if (this.requestedTime() == null) {
         this.dateTimePickerVisible = true;
         const date = new Date();
         this.setRequestedTime(date);

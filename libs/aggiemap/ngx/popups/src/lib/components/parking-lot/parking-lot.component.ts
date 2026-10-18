@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -8,7 +8,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-parking-lot-popup-component',
   templateUrl: './parking-lot.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CopyComponent, AsyncPipe]
 })
 export class ParkingLotPopupComponent extends BaseDirectionsComponent {

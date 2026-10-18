@@ -4,7 +4,6 @@ import {
   HostListener,
   OnDestroy,
   OnInit,
-  ChangeDetectionStrategy,
   inject,
   viewChild
 } from '@angular/core';
@@ -24,7 +23,6 @@ import { RenderHostDirective as RenderHostDirective_1 } from '@tamu-gisc/ui-kits
   selector: 'tamu-gisc-feature-popup',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass, RenderHostDirective_1, AsyncPipe]
 })
 export class PopupComponent implements OnInit, OnDestroy {
@@ -139,6 +137,10 @@ export class PopupComponent implements OnInit, OnDestroy {
           // Pass in feature data to the created component
           // Will only handle a single feature for now.
           resolvedComponent.instance.data = data;
+
+          // `data` is a field, not an input, so nothing tells this OnPush popup or the component in it
+          // that there is something new to draw (#1673).
+          resolvedComponent.changeDetectorRef.markForCheck();
         })
         .catch((error) => {
           console.warn('Popup component could not be loaded.', error);

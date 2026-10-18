@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
@@ -18,7 +18,6 @@ import { RevealSidebarOnPopupDirective } from '@tamu-gisc/maps/feature/popup';
   selector: 'tamu-gisc-movein-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     SidebarComponent,
     SidebarTabComponent,

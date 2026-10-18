@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -10,7 +10,6 @@ import { TrimPipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-buildling-popup-component',
   templateUrl: './building-popup.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CopyComponent, AsyncPipe, TitleCasePipe, TrimPipe]
 })
 export class BuildingPopupComponent extends BaseDirectionsComponent implements OnInit {

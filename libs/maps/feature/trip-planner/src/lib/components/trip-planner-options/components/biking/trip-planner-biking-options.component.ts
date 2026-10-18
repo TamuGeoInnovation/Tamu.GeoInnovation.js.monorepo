@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { TripPlannerOptionsBaseComponent } from '../base/base.component';
 
@@ -9,7 +9,6 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-trip-planner-biking-options',
   templateUrl: './trip-planner-biking-options.component.html',
   styleUrls: ['../../containers/base/base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CheckboxComponent, AsyncPipe]
 })
 export class TripPlannerBikingOptionsComponent extends TripPlannerOptionsBaseComponent {}

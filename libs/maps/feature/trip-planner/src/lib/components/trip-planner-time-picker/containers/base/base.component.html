@@ -1,9 +1,9 @@
-<select id="timeModeSelector" (change)="setTimeMode($event)" [ngClass]="requestedTime === null ? '' : 'requestedTimeVisible'">
+<select id="timeModeSelector" (change)="setTimeMode($event)" [ngClass]="requestedTime() === null ? '' : 'requestedTimeVisible'">
   <option value="now" [selected]="(timeMode | async) === 'now'">Leave now</option>
   <option value="depart" [selected]="(timeMode | async) === 'leave'">Leave at</option>
   <!-- <option value="arrive" [selected]="(timeMode | async) == 'arrive'">Arrive by</option> -->
 </select>
 
-@if ((timeMode | async) === 'leave' && requestedTime !== null) {
-<tamu-gisc-date-time-picker [value]="requestedTime" [formatString]="'short'" [showIcon]="false" [minuteStep]="5" (changed)="setRequestedTime($event)"></tamu-gisc-date-time-picker>
+@if ((timeMode | async) === 'leave' && requestedTime() !== null) {
+<tamu-gisc-date-time-picker [value]="requestedTime()" [formatString]="'short'" [showIcon]="false" [minuteStep]="5" (changed)="setRequestedTime($event)"></tamu-gisc-date-time-picker>
 }

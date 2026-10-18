@@ -103,6 +103,13 @@ test.describe('choosing the quick set for a change', () => {
     expect(set.unmapped).toEqual([]);
   });
 
+  test('checks which layers the event framework loads when it changes', () => {
+    const set = quickSetFor(['libs/ts/events/ngx/src/lib/services/event/event.service.ts'], read);
+
+    expect(set.specs).toEqual(expect.arrayContaining(['campus-layers.spec.ts', 'kiosk.spec.ts']));
+    expect(set.unmapped).toEqual([]);
+  });
+
   test('runs a changed smoke spec whole', () => {
     const set = quickSetFor(['test/smoke/aggiemap/bus.spec.ts', 'test/smoke/aggiemap/environments.json'], read);
 

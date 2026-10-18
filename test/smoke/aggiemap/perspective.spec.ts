@@ -1,5 +1,6 @@
-import { expect, test } from './fixtures';
+import { expect, HEAVY, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { MAP_CONTROLS } from './controls';
 import { Framing, waitForSettledFraming } from './framing';
 
 /**
@@ -72,8 +73,11 @@ test.describe('2D and 3D', () => {
 
     // The map's buttons come back with it. Esri's zoom and locate components destroy themselves when
     // they leave the page, as the 2D view does while 3D is shown, so back in 2D they had gone (#1853).
-    for (const control of ['arcgis-zoom', 'arcgis-track', 'tamu-gisc-map-compass']) {
-      await expect(page.locator(`.esri-ui-top-left ${control}`), `back in 2D, ${control} is missing`).toBeVisible();
+    for (const [name, control] of Object.entries(MAP_CONTROLS)) {
+      await expect(
+        page.locator('.esri-ui-top-left').locator(control),
+        `back in 2D, the ${name} button is missing`
+      ).toBeVisible();
     }
   });
 
@@ -89,7 +93,7 @@ test.describe('2D and 3D', () => {
    * Mercator with the 3D Buildings layer loaded, in the same place; choose the next one while still
    * in 3D and the same must hold; come back and the map is where it started, on the basemap chosen.
    */
-  test('3D is a globe with its 3D buildings on every campus basemap offered here', async ({ page }) => {
+  test('3D is a globe with its 3D buildings on every campus basemap offered here', HEAVY, async ({ page }) => {
     test.setTimeout(900_000);
     await blockAnalytics(page);
     await page.goto(`${MAP}/settings`);

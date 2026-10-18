@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
+import { HEAVY } from './test/smoke/aggiemap/fixtures';
 import { quickSetFor, routeGrep, ROUTE_SPECS } from './test/smoke/aggiemap/scope';
 
 /**
@@ -27,6 +28,29 @@ const quick =
     : null;
 
 const chrome = { ...devices['Desktop Chrome'] };
+
+/**
+ * Tests tagged `@heavy` run after everything else, two at a time (#1716).
+ *
+ * A few tests drive one map through many slow steps - 3D on every basemap, every zoom level, popup after
+ * popup - each against its own clock. With six workers they share the machine with five other map loads,
+ * and every step slows: a screenshot of a map still drawing took 2 to 7 seconds with eight CPUs and 8 to
+ * 30 or more with one. Three such tests failed their first attempt in the release tiers of 18 October and
+ * passed first time alone. They are not given longer clocks, which would hide a map that really had
+ * become slow: they are given the machine they were measured on.
+ *
+ * The heavy project is the others' teardown, which Playwright starts once they have finished, whether
+ * they passed or not. `--no-deps` drops that ordering, and run-local.sh's `one` passes it, so running one
+ * spec does not also run every heavy test in the suite.
+ */
+const HEAVY_GREP = new RegExp(HEAVY.tag);
+const heavy = (testMatch?: string[]) => ({
+  name: 'heavy',
+  use: chrome,
+  grep: HEAVY_GREP,
+  workers: 2,
+  ...(testMatch ? { testMatch } : {})
+});
 
 export default defineConfig({
   testDir: './test/smoke/aggiemap',
@@ -64,13 +88,21 @@ export default defineConfig({
 
   projects: quick
     ? [
-        { name: 'quick-files', use: chrome, testMatch: quick.specs.map((spec) => `**/${spec}`) },
+        {
+          name: 'quick-files',
+          use: chrome,
+          testMatch: quick.specs.map((spec) => `**/${spec}`),
+          grepInvert: HEAVY_GREP,
+          teardown: 'heavy'
+        },
         {
           name: 'quick-routes',
           use: chrome,
           testMatch: ROUTE_SPECS.filter((spec) => !quick.specs.includes(spec)).map((spec) => `**/${spec}`),
-          grep: routeGrep(quick)
-        }
+          grep: routeGrep(quick),
+          teardown: 'heavy'
+        },
+        heavy(quick.specs.map((spec) => `**/${spec}`))
       ]
-    : [{ name: 'chromium', use: chrome }]
+    : [{ name: 'chromium', use: chrome, grepInvert: HEAVY_GREP, teardown: 'heavy' }, heavy()]
 });
