@@ -6,10 +6,6 @@ This library allows developers to quickly invoke toast-style notifications promp
 
 `@tamu-gisc/common/ngx/ui/notification`
 
-### Modules
-
-- NotificationModule
-
 ### Services
 
 - NotificationService
@@ -27,7 +23,7 @@ This library allows developers to quickly invoke toast-style notifications promp
 
 ## App environment
 
-This library leverages the global `EnvironmentService`, allowing developers to define a set of commonly used or persistent notification events as presets. As a result, each application that imports the `NotificationModule` is **required** to export `NotificationEvents` with a value of an array of `NotificationProperties` from the root `environment.ts`.
+This library leverages the global `EnvironmentService`, allowing developers to define a set of commonly used or persistent notification events as presets. As a result, each application that uses `NotificationService` is **required** to export `NotificationEvents` with a value of an array of `NotificationProperties` from the root `environment.ts`.
 
 In app `environment.ts`:
 
@@ -35,39 +31,37 @@ In app `environment.ts`:
 export const NotificationEvents = []; // Can be an empty array if no presets are being registered.
 ```
 
-## App Module Configuration
+## App Configuration
 
-The contents from the aforementioned environment config need to be provided to the `EnvironmentService` in the root app module.
+The contents from the aforementioned environment config need to be provided to the `EnvironmentService` when the application is bootstrapped. `NotificationService`, `EnvironmentService` and `LocalStoreService` (which persists notification event presets) are all provided in root, so nothing else needs registering.
 
-In root `app.module.ts`:
+In the application's `main.ts`:
 
 ```js
-import { BrowserModule } from '@angular/platform-browser';
+import { importProvidersFrom } from '@angular/core';
+import { bootstrapApplication } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store'; // Used to persist notification event presets
+import { env } from '@tamu-gisc/common/ngx/environment';
+import { notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 
-import * as environment from '../environments/environment';
+import * as environment from './environments/environment';
+import { AppComponent } from './app/app.component';
 
-@NgModule({
-  imports: [BrowserModule, BrowserAnimationsModule, EnvironmentModule, LocalStoreModule, NotificationModule],
-  declarations: [AppComponent],
+bootstrapApplication(AppComponent, {
   providers: [
-    {
-      provide: env,
-      useValue: environment
-    }
-  ],
-  bootstrap: [AppComponent]
-})
-export class AppModule {}
+    // Notifications animate in and out with @angular/animations.
+    importProvidersFrom(BrowserAnimationsModule),
+    { provide: env, useValue: environment },
+    // Optional: the local storage key notification state is kept under.
+    { provide: notificationStorage, useValue: 'my-app-notifications' }
+  ]
+});
 ```
 
 ## App Component
 
-In the root `app.component.html`, provide the global notification container:
+In the root `app.component.html`, provide the global notification container, and add `NotificationContainerComponent` to the root component's `imports`:
 
 ```html
 <tamu-gisc-notification-container></tamu-gisc-notification-container>
