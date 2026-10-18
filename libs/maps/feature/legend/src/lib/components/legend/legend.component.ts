@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, model } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, model } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
@@ -16,7 +16,6 @@ import esri = __esri;
   selector: 'tamu-gisc-legend',
   templateUrl: './legend.component.html',
   styleUrls: ['./legend.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [LegendCollectionComponent, AsyncPipe]
 })
 export class LegendComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, inject, input } from '@angular/core';
 
 import { EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
 import { LayerLegendOverride } from '@tamu-gisc/common/types';
@@ -41,7 +41,6 @@ import esri = __esri;
   selector: 'tamu-gisc-legend-element',
   templateUrl: './legend-element.component.html',
   styleUrls: ['./legend-element.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgStyle, ElementInsertDirective, AsyncPipe]
 })
 export class LegendElementComponent implements OnChanges {
