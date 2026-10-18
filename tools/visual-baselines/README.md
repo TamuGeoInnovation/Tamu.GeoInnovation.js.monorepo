@@ -24,6 +24,7 @@ MSYS_NO_PATHCONV=1 docker run -d --name vb-<release> -m 8g \
 | `--routes-only` | Skip the 363 builder destinations; about 60 pages instead of 421 |
 | `--only` | Comma-separated substrings, for asking a narrow question |
 | `--concurrency` | Pages at once (default 3) |
+| `--as production` | Open every page with `?as=production` (#1722): a development host then uses production's GIS services and hides its development-only features, so its set can be compared with production's. The "acting as production" control is hidden, since production has none. Kept apart, under `<environment>-as-production/` (#1885) |
 | `--force` | Overwrite a release whose bundle no longer matches — deliberate only |
 
 A run **resumes**: a shot already on disk is skipped, so an interrupted crawl costs only what it had
