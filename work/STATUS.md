@@ -3,34 +3,39 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **5:10 PM Central, 18 October 2026**.
+Last written **5:05 PM Central, 18 October 2026**.
 
-**Last batch done: 7.** Batch 8 read and queued; batch 5 still running.
+**Last batch done: 7.** **Batch 5 is finished.** Batch 8 is queued, waiting on its build.
 
 ## Running now
 
-**Batch 5: production's visual-baselines set.** Started 1:48 PM Central, paused twice for batches 6 and 7,
-resumed 3:50 PM.
+Nothing. Only the watchers: one on Azure for the `70f0e424b` release, one on this branch.
+
+## work: finished — batch 5, production's "before" set
+
+**848 of 848 shots, 0 failed.** Posted on #1849
+([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1849#issuecomment-6255683209)).
 
 | | |
 | --- | --- |
-| Container | `vb-prod-2026-10-16` |
+| Container | `vb-prod-2026-10-16`, exit 0 |
 | Command | `capture.mjs --env production --release prod-2026-10-16 --out /out` |
 | From | a worktree at `447d403e6` (`origin/development`) |
-| Confirmed | build `main-TK2R62YY.js`, which is what production serves |
-| Progress at 4:04 PM | **475 of 848, 0 failed**, about 104 minutes left |
+| Build captured | `main-TK2R62YY.js`, which is what production serves; the manifest records it |
+| Shots | **848** — 424 desktop (1440x900) and 424 phone (390x844) |
+| Failed | **0** |
+| Started / finished | 1:48 PM / **4:47 PM Central**, 2 h 59 m including two pauses for batches 6 and 7 |
 | Out | `C:/TAMU/visual-baselines/production/prod-2026-10-16` |
 
-It resumes if interrupted, so a pause costs only what it had not reached. Nothing else should run against
-production while it does.
+**It is one build throughout, which is what makes it usable.** A production stage was `inProgress` on Azure while
+the capture ran, so the served bundle was recorded every two minutes: `main-TK2R62YY.js` at every sample from
+start to finish. A set spanning a deploy would have been a mix of two builds and worth nothing as a baseline.
+Read-only — one GET of the home page; nothing of this machine's touched production.
 
-**Watch this: Release-480's production stage is `inProgress`.** Batch 5's set is only a usable "before" if
-production serves one build throughout. Production still serves `main-TK2R62YY.js`, checked twice at 5:08 PM
-Central, so the set is coherent so far. A recorder is now logging the served bundle every two minutes with the
-capture's shot count, so if it changes the boundary is known exactly rather than guessed at — the set would then
-be a mix of two builds from that shot on. Read-only; nothing of this machine's touches production. The home
-session may want to know whether that promotion is intended, since the earlier note here says the production
-cancellations were deliberate.
+**The home session may want to check that the promotion now in flight is intended.** At 5:00 PM Central
+Release-481 (`dfba74033`) shows `GIS-1P Production = inProgress`, while the note further down this file says
+earlier production cancellations were deliberate because the maintainer is holding production. Production still
+served the old bundle at 5:00 PM. This machine has done nothing about it and will not.
 
 ## Queued
 
@@ -38,7 +43,7 @@ cancellations were deliberate.
 the release at **`70f0e424b`** (#1910's fix, PR #1911), **not** the one at `dfba74033`. The Azure watcher was
 changed to match that commit, so the `dfba74033` release will not start it by mistake.
 
-Azure at 5:08 PM Central:
+Azure at 5:00 PM Central:
 
 | Release | Build | Commit | Dev stage |
 | --- | --- | --- | --- |
@@ -46,7 +51,7 @@ Azure at 5:08 PM Central:
 | Release-480 | 20261018.27 | `98c2056be` | succeeded (batch 6 ran on this) |
 
 No release for `70f0e424b` yet. Two watchers are running, one on Azure and one on this branch, so batch 8 starts
-on its own. Batch 5's capture will be paused for its duration, as it was for batches 6 and 7.
+on its own. Nothing else is running now, so it gets the machine to itself.
 
 Also understood from batch 8's **Decided**: on `70f0e424b` a `/campus/dc-bush-school` failure is **new**, not
 known, and so are `campus-layers.spec.ts`'s three campus tests. Batch 7's `0/0` layers was this machine's script
