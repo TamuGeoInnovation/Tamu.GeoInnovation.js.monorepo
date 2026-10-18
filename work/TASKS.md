@@ -17,6 +17,13 @@ each round; git history keeps the old ones.
   under **Told directly**: what he said, and when. Then the home session knows it has been answered and does not
   ask again.
 
+**Say when you start, before anything runs (18 October).** The first thing for any batch, task, or anything the
+maintainer asks for directly, is to update `STATUS.md` under **Running now** (what, which commit, started when in US
+Central, for which task) and push it, with a commit message starting `work: started`. Only then start the run.
+When it finishes, the same with `work: finished`. The home session watches this branch and tells the maintainer from
+those two commits, so he never has to relay that something started or finished. A run that starts without that
+push is invisible to the home session, which may then queue it again.
+
 **Watch mode (18 October): keep checking for work until told to stop.** After a batch is done and its report
 and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
 - Record in `STATUS.md` the number of the last batch done (`Last batch done: N`).
