@@ -24,6 +24,16 @@ Last batch done: 6 (failed; nothing tagged). Batch 5 still running.
 It resumes if interrupted, so a restart costs only what it had not reached. Nothing else should run
 against production while it does.
 
+## work: started — batch 7 (#1867)
+
+**Why `/campus/dc-bush-school` never finished drawing on Release-480**, started **3:44 PM Central**, from
+the worktree at `98c2056be`. Batch 5's capture is **paused again** (at 375 of 848) for the same reason as
+batch 6: these are measurements, and a loaded machine would make a slow page look like a broken one.
+
+Running, in order: `one "dc-bush-school" --retries=0` twice against dev, once against production, then a
+probe run on dev recording `drawing`, updating layer views with feature counts, and failing or unfinished
+requests every 10 seconds for three minutes.
+
 ## work: finished — batch 6 (#1867)
 
 **The quick tier on Release-480, build 20261018.27, `98c2056be` failed. Nothing tagged.**
@@ -103,6 +113,10 @@ The comparison itself is parked, not dropped: both sets will be on disk, `review
 minutes, and it is his to direct from the home machine.
 
 ## Told directly
+
+- **18 October, 3:42 PM** — **a new batch in `work/TASKS.md` is this machine's instruction: start it
+  without waiting to be asked.** Keep a background watcher on the branch at all times, as `DIRECTOR.md`
+  says, so new batches start on their own. (Batch 7 started on this basis.)
 
 - **18 October, 2:40 PM** - do not start the production-vs-production baseline comparison; he will direct
   it from the home computer. Make notes and file issues from what is found, but **wait for instructions
