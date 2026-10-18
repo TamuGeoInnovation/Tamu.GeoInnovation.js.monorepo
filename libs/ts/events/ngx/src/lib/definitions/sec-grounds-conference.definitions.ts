@@ -77,7 +77,8 @@ const createRepeatedArrowLineSymbol = (
             type: 'CIMMarkerPlacementAlongLineSameSize',
             endings: 'WithMarkers',
             placementTemplate: [placement],
-            angleToLine: true
+            angleToLine: true,
+            keepUpright: false
           },
           frame: {
             xmin: -5,

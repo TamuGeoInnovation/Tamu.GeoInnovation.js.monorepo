@@ -248,7 +248,8 @@ export class MapComponent implements OnInit, OnDestroy {
             },
             zoom: root?.configuration?.zoom !== undefined ? root.configuration.zoom : 16,
             ui: {
-              components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
+              // The attribution is the view's own since ArcGIS 5.0 (`attributionVisible`), no longer a UI component.
+              components: this.isMobile ? [] : ['zoom']
             },
             popup: {
               dockOptions: {

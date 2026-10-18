@@ -203,7 +203,7 @@ const ROUTE_COLORS = {
 };
 
 /** A solid line with a direction arrow at its end, used to re-symbolize the flat route layers. */
-const arrowLineSymbol = (color: string, width = 3): esri.SimpleLineSymbolProperties => ({
+const arrowLineSymbol = (color: string, width = 3): esri.SimpleLineSymbolProperties & { type: 'simple-line' } => ({
   type: 'simple-line',
   color,
   width,

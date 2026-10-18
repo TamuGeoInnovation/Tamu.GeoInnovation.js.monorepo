@@ -69,7 +69,7 @@ export interface EventConfiguration {
     followupMessage?: string;
   };
 
-  mapCenter?: Array<number>;
+  mapCenter?: [number, number];
 
   zoom?: number;
 

@@ -64,9 +64,21 @@ export class MapCompassComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Turns the map back to north. */
+  /**
+   * Turns the map back to north, where it is.
+   *
+   * By the view's own viewpoint: ArcGIS 5.0's typings no longer list `rotation` as a `goTo` target (#1859).
+   */
   public reset(): void {
-    this.view?.goTo({ rotation: 0 }).catch(() => {
+    if (!this.view) {
+      return;
+    }
+
+    const north = this.view.viewpoint.clone();
+
+    north.rotation = 0;
+
+    this.view.goTo(north).catch(() => {
       // Rejected when interrupted, e.g. by panning while it turns; nothing to undo.
     });
   }

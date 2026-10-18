@@ -14,8 +14,11 @@ import { readFraming } from './framing';
  * empty. Every layer still reported itself loaded and drawn, which is why nothing else noticed.
  */
 
-/** The zoom-in button of Esri's zoom component, `<arcgis-zoom>` (#1853). Playwright reaches into its shadow DOM. */
-const ZOOM_IN = 'arcgis-zoom calcite-button.arcgis-zoom__zoom-in';
+/**
+ * The zoom-in button of Esri's zoom component, `<arcgis-zoom>` (#1853). Playwright reaches into its shadow DOM.
+ * Found by its icon: ArcGIS 5.0 renamed the button's class (`arcgis-zoom__zoom-in` to `zoom-in`, #1859).
+ */
+const ZOOM_IN = 'arcgis-zoom calcite-button[icon-start="plus"]';
 
 test.describe('the basemap at the deepest zoom', () => {
   test('the main map has basemap tiles at every level it lets you zoom to', async ({ page }) => {
