@@ -9,7 +9,20 @@ Last written **5:40 PM Central, 18 October 2026**.
 
 ## Running now
 
-Nothing. Only the branch watcher, waiting for the release the director names for batch 9.
+**Batch 10 (#1849): dev's screenshot set as production renders it, for the preview comparison.** Started
+**5:50 PM Central, 18 October**.
+
+| | |
+| --- | --- |
+| Container | `vb-dev-2026-10-18-3-as-prod` |
+| Command | `capture.mjs --env development --as production --release dev-2026-10-18-3 --out /out` |
+| From | the worktree at `70f0e424b` (`C:/TAMU/wt-1911`) |
+| Against | production's `prod-2026-10-16` set from batch 5, 848 shots |
+| Out | `C:/TAMU/visual-baselines/development-as-production/dev-2026-10-18-3` |
+| Expected | about 850 shots, a couple of hours; it resumes if interrupted |
+
+Nothing else is running on this machine, and nothing is pointed at production. The comparison
+(`review.mjs`) follows when the capture finishes; it is minutes.
 
 ## work: finished — batch 8, and it passed
 
