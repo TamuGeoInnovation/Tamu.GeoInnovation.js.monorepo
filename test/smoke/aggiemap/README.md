@@ -128,6 +128,14 @@ Anything after the environment and tier goes to `playwright test`, for example `
 needs only Docker and bash (Git Bash on Windows). The first run downloads the Playwright image, about
 2 GB.
 
+### One suite, two ArcGIS versions
+
+Dev and production can serve different major versions of ArcGIS: dev has 5.0 (#1859), production stays
+on 4.34 until it is promoted. The map's own buttons have different markup in each, so a spec finds the
+zoom, locate and compass controls through `controls.ts`, which matches either (#1890). A new check that
+clicks or looks for one of them uses it rather than a selector of its own, or it times out against
+whichever environment it was not written on and reads as a broken map.
+
 ### Seeing dev as production
 
 `?as=production` on any address of a development host makes it behave as production for that browser

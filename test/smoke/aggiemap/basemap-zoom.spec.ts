@@ -2,6 +2,7 @@ import { expect, HEAVY, test } from './fixtures';
 import { APP_ROOT } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { BLANK_ABOVE, waitForPaint } from './paint';
+import { isZoomInDisabled, zoomInButton } from './controls';
 import { readFraming } from './framing';
 
 /**
@@ -13,12 +14,6 @@ import { readFraming } from './framing';
  * for them - the service's tile map says they are missing - so no request fails; the canvas is simply
  * empty. Every layer still reported itself loaded and drawn, which is why nothing else noticed.
  */
-
-/**
- * The zoom-in button of Esri's zoom component, `<arcgis-zoom>` (#1853). Playwright reaches into its shadow DOM.
- * Found by its icon: ArcGIS 5.0 renamed the button's class (`arcgis-zoom__zoom-in` to `zoom-in`, #1859).
- */
-const ZOOM_IN = 'arcgis-zoom calcite-button[icon-start="plus"]';
 
 test.describe('the basemap at the deepest zoom', () => {
   test('the main map has basemap tiles at every level it lets you zoom to', HEAVY, async ({ page }) => {
@@ -32,9 +27,9 @@ test.describe('the basemap at the deepest zoom', () => {
     await waitForPaint(page);
 
     // Zoom in until the button is disabled: that is the deepest level the view allows.
-    const zoomIn = page.locator(ZOOM_IN);
+    const zoomIn = zoomInButton(page);
 
-    for (let i = 0; i < 30 && (await zoomIn.getAttribute('disabled')) === null; i++) {
+    for (let i = 0; i < 30 && !(await isZoomInDisabled(zoomIn)); i++) {
       await zoomIn.click();
       await page.waitForTimeout(1_000);
     }
