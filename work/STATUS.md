@@ -3,41 +3,34 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **9:50 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
+Last written **10:05 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
-**Last batch done: 11.** Batches 5, 8, 10 and 11 are finished. **Batch 9 is still held.** Nothing running; watching.
+**Last batch done: 12.** Batches 5, 8, 10, 11 and 12 are finished. **Batch 9 is still held.** Nothing running; watching.
 
 ## Running now
 
-**Batch 12 (#1937): a corrected copy of production's set.** Started **9:50 PM Central**.
-Copying `production/prod-2026-10-16` to `production/prod-2026-10-16-corrected`, putting the four re-taken shots
-over their counterparts in the copy, then re-running `review.mjs` against it. Copy only; nothing is moved or
-deleted, which is what the maintainer decided on batch 11's question 1.
+Nothing. The branch watcher only.
 
-## work: finished — batch 11, the two mid-load shots re-taken
+## work: finished — batch 12, a corrected copy of production's set
 
-**#1937. They were the capture, not the release.** Production has not moved (`main-TK2R62YY.js`, confirmed), so
-the re-takes belong to the same build. Posted on #1937
-([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1937#issuecomment-6257943872)).
-Report: `work/reports/2026-10-18-8.md`.
+**#1937.** Posted on #1937
+([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1937#issuecomment-6258040495)).
+Report: `work/reports/2026-10-18-9.md`. Nothing moved, nothing deleted.
 
-| Page (desktop) | Before | After |
-| --- | --- | --- |
-| `/parking/move-in/map/d`, 23 Aug, Rudder, accessible | 43.81% | **1.90%** |
-| `/parking/move-in/map/d`, 23 Aug, Clements | 35.58% | **1.94%** |
+| | |
+| --- | --- |
+| Corrected set | `C:/TAMU/visual-baselines/production/prod-2026-10-16-corrected` — 848 shots |
+| Original | `prod-2026-10-16` unchanged, mid-load shots included, confirmed after the copy |
+| New page | `C:/TAMU/visual-baselines/compare/dev-2026-10-18-3-vs-prod-2026-10-16-corrected/review.html` |
 
-Both are fully drawn, neither needed a second attempt, and those figures are the ordinary band every other move-in
-map sits in. Only the desktop shots were affected; the phone pair was already correct. The third candidate
-(5.39%) was checked and is fine, and no other mid-load shot was found.
+Each replaced shot's checksum was checked against the re-take. The copy's manifest carries a `correction` block
+naming the four shots, why, and that production served `main-TK2R62YY.js` for both captures.
 
-**One step is not done.** The batch asked for the superseded shots to be moved aside and the re-takes to land in
-`production/prod-2026-10-16`, then `review.mjs` re-run. **The move was refused twice by this session's permission
-rules** (shell `mv`, then PowerShell `Move-Item`), which treat a move out of a set directory as destructive.
-Nothing was deleted or overwritten. The re-takes were captured **beside** the set instead, as
-`production/prod-2026-10-16-retake` — four shots, two routes, both viewports — which only adds files. So
-`prod-2026-10-16` still holds the two mid-load shots and batch 10's page still shows 29.87% and 15.70% for them;
-the corrected figures are above and on #1937. The maintainer has been told, since only he can grant it.
+- 23 Aug Rudder (accessible): **29.87% to 1.63%**. 23 Aug Clements: **15.70% to 1.54%**.
+- **Nothing above 10% on the corrected page is a difference in the software.** The top is now the three dev 404s
+  at 83.12%, which cannot be re-taken, then marker re-rendering and a hover state.
+- **Batch 9's comparison will use `prod-2026-10-16-corrected` as its "before"**, as directed.
 
 ## Queued
 
