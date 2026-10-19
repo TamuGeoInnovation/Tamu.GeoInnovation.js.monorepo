@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, inject, input } from '@angular/core';
 import { Router, ActivatedRoute, Route, Routes, Event, NavigationEnd } from '@angular/router';
 import { merge, of, BehaviorSubject, Observable } from 'rxjs';
@@ -7,8 +6,7 @@ import { filter } from 'rxjs/operators';
 @Component({
   selector: 'tamu-gisc-breadcrumb',
   templateUrl: './breadcrumb.component.html',
-  styleUrls: ['./breadcrumb.component.scss'],
-  imports: [AsyncPipe]
+  styleUrls: ['./breadcrumb.component.scss']
 })
 export class BreadcrumbComponent implements OnInit {
   private router = inject(Router);
