@@ -7,8 +7,8 @@ front end's dev server (`gisday-angular`). Part of #1511.
 | --- | --- | --- |
 | `gisday-db` | SQL Server 2022 Developer, data in volume `gisday-db-data` | 14330 |
 | `gisday-redis` | Redis 7, the API's job queue | none outside Docker |
-| `gisday-api` | `node dist/apps/gisday-nest/main.js` on Node 22.23.3 | 3333 |
-| `gisday-dev` | `nx serve gisday-angular --configuration=local` on Node 22.23.3 | 4201, or 4202 with `--site` |
+| `gisday-api` | `node dist/apps/gisday-nest/main.js` on Node 24.22.0 | 3333 |
+| `gisday-dev` | `nx serve gisday-angular --configuration=local` on Node 24.22.0 | 4201, or 4202 with `--site` |
 | `gisday-site` | Only with `web --site <key>`: serves the dev server as that site ([below](#another-organizations-site)) | 4201 |
 
 All of them share the Docker network `gisday-local`, so they reach each other by container name. The

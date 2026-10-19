@@ -6,14 +6,6 @@
   "prefix": "tamu-gisc",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/popup"],
-      "options": {
-        "jestConfig": "libs/maps/feature/popup/jest.config.ts",
-        "tsConfig": "libs/maps/feature/popup/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

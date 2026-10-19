@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SidebarTabComponent } from './tab.component';
 
@@ -6,11 +6,11 @@ describe('SidebarTabComponent', () => {
   let component: SidebarTabComponent;
   let fixture: ComponentFixture<SidebarTabComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [SidebarTabComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SidebarTabComponent);
@@ -22,15 +22,16 @@ describe('SidebarTabComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should respond to click events', (done) => {
-    const mouseEvent: MouseEvent = { altKey: 10 } as unknown as MouseEvent;
-    component.$clicked.subscribe((event) => {
-      expect(event).toEqual({
-        event: mouseEvent,
-        native: component
+  it('should respond to click events', () =>
+    new Promise<void>((done) => {
+      const mouseEvent: MouseEvent = { altKey: 10 } as unknown as MouseEvent;
+      component.$clicked.subscribe((event) => {
+        expect(event).toEqual({
+          event: mouseEvent,
+          native: component
+        });
+        done();
       });
-      done();
-    });
-    (component as unknown as { clicked: (MouseEvent) => unknown }).clicked(mouseEvent);
-  });
+      (component as unknown as { clicked: (MouseEvent) => unknown }).clicked(mouseEvent);
+    }));
 });

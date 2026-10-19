@@ -1,4 +1,4 @@
-import { waitForAsync, TestBed, ComponentFixture } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 
 import { SelectComponent } from './select.component';
@@ -6,11 +6,11 @@ import { SelectComponent } from './select.component';
 describe('SelectComponent', () => {
   let component: SelectComponent<{ test: 'value' }>;
   let fixture: ComponentFixture<SelectComponent<{ test: 'value' }>>;
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [FormsModule, SelectComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent<SelectComponent<{ test: 'value' }>>(SelectComponent);
@@ -22,15 +22,16 @@ describe('SelectComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should respond to keyboard events', (done) => {
-    component.changed.subscribe((event) => {
-      expect(event).toEqual({ test: 'value' });
-      done();
-    });
+  it('should respond to keyboard events', () =>
+    new Promise<void>((done) => {
+      component.changed.subscribe((event) => {
+        expect(event).toEqual({ test: 'value' });
+        done();
+      });
 
-    component.value = { test: 'value' };
-    component.changeEvent();
-  });
+      component.value = { test: 'value' };
+      component.changeEvent();
+    }));
 
   it('getDataItemValue should handle template being undefined', () => {
     expect(component.getDataItemValue({ test: 'value' })).toEqual({ test: 'value' });

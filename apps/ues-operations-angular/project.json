@@ -18,7 +18,6 @@
           "browser": ""
         },
         "index": "apps/ues-operations-angular/src/index.html",
-        "polyfills": ["apps/ues-operations-angular/src/polyfills.ts"],
         "tsConfig": "apps/ues-operations-angular/tsconfig.app.json",
         "assets": [
           "apps/ues-operations-angular/src/favicon.ico",
@@ -39,7 +38,11 @@
           "includePaths": ["."]
         },
         "scripts": [],
-        "loader": { ".woff2": "file", ".woff": "file", ".ttf": "file" },
+        "loader": {
+          ".woff2": "file",
+          ".woff": "file",
+          ".ttf": "file"
+        },
         "extractLicenses": false,
         "sourceMap": true,
         "optimization": false,
@@ -121,14 +124,6 @@
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
         "buildTarget": "ues-operations-angular:build"
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/ues-operations-angular"],
-      "options": {
-        "jestConfig": "apps/ues-operations-angular/jest.config.ts",
-        "tsConfig": "apps/ues-operations-angular/tsconfig.spec.json"
       }
     },
     "lint": {

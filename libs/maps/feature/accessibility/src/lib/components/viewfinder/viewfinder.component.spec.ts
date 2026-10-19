@@ -16,7 +16,7 @@ describe('MapViewfinderComponent', () => {
 
   /** What the viewfinder's polygon was made from, and the query it was used in. */
   let polygon: { rings: number[][][]; spatialReference: object };
-  const queryFeatures = jest.fn(() => Promise.resolve({ features: [{ attributes: { BldgName: 'Evans Library' } }] }));
+  const queryFeatures = vi.fn(() => Promise.resolve({ features: [{ attributes: { BldgName: 'Evans Library' } }] }));
 
   class Polygon {
     constructor(properties: typeof polygon) {
@@ -31,19 +31,19 @@ describe('MapViewfinderComponent', () => {
   const view = {
     container: { offsetTop: 0 },
     spatialReference: { wkid: 32139 },
-    toMap: jest.fn(({ x, y }: { x: number; y: number }) => ({
+    toMap: vi.fn(({ x, y }: { x: number; y: number }) => ({
       x: 1082000 + x,
       y: 3111000 - y,
       longitude: null,
       latitude: null,
       spatialReference: { wkid: 32139 }
     })),
-    on: jest.fn((name: string, handler: (event: object) => void) => {
+    on: vi.fn((name: string, handler: (event: object) => void) => {
       if (name === 'key-up') {
         keyUp = handler;
       }
 
-      return { remove: jest.fn() };
+      return { remove: vi.fn() };
     })
   };
 

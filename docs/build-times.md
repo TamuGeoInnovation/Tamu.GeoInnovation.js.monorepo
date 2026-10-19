@@ -42,6 +42,7 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 18 Oct 2026 | home | `check-in-volume.sh chore/1479-vitest` (affected: lint 115 projects, test 108 of which 71 on Vitest, build 14), 7:59 PM Central | volume, fresh clone, `npm ci` 88 s | **6 min 44 s** (lint 111 s, test 123 s, build 67 s) |
 | 10 Oct 2026 | home | `check-in-volume.sh refactor/1453-inject` (affected: lint 75 projects, then test and build 71 projects and 3 dependencies), 2:01 PM Central | volume, warm install, Nx cache cold for these tasks (0 of 70 hits on the run before) | 2 min 54 s (lint 74 s, test and build 100 s) |
 | 10 Oct 2026 | home | The same check's first run, 1:56 PM Central: fresh clone and `npm ci`, then the same tasks; failed on 8 test projects and one build | volume, cold | 3 min 57 s |
 | 10 Oct 2026 | home | `nx run-many -t build -p ues-operations-angular,gisday-competitions-angular`, the two apps CI does not build, in the check's volume | volume, warm | 13 s |
@@ -116,6 +117,33 @@ project against 4 - so the controlled comparison is the `npm ci` pair below, not
 The docs-only row is worth keeping as a reminder that **exit 0 with "No tasks were run" is not a
 pass**. That run was correct, because a branch touching only `docs/*.md` affects no projects, but the
 same output appears when the graph fails to compute. Read the log, not the exit code.
+
+### Unit tests: Jest against Vitest (#1479)
+
+The test targets of AggieMap's 71 projects (`aggiemap-angular`, `ues-operations-angular` and every
+project under `libs/aggiemap`, `libs/maps`, `libs/ui-kits`, `libs/common`, `libs/ts/events` and
+`libs/ues`), each run as `nx run-many -t test -p <the 71> --skip-nx-cache --parallel=8
+--coverage=false`. `--skip-nx-cache` is for the measurement only: every task runs. Jest is the branch's
+base, `7ddbee7d1`; Vitest is `chore/1479-vitest`. Each ran in its own Docker volume with a warm
+install, the two alternating so both met the same load.
+
+| Date | Machine | What ran | Approach | Elapsed |
+| --- | --- | --- | --- | ---: |
+| 18 Oct 2026 | home | Vitest, second run, 7:57 PM Central (867 tests, 0 failed) | volume, warm; an idle nginx and two node containers beside it | **76 s** |
+| 18 Oct 2026 | home | Jest, second run, 7:56 PM Central (869 tests, 0 failed) | volume, warm; one other build running | **93 s** |
+| 18 Oct 2026 | home | Vitest, first run, 7:54 PM Central | volume, warm; a bundle build running beside it | **90 s** |
+| 18 Oct 2026 | home | Jest, first run, 7:52 PM Central | volume, warm; idle containers only | **100 s** |
+| 18 Oct 2026 | home | Vitest, the same 71 projects, 7:24 PM Central | volume, warm; eight agents sharing the machine | 166 s |
+| 18 Oct 2026 | home | Jest, the same 71 projects, 6:14 PM Central | volume, warm; eight agents sharing the machine | 294 s |
+
+Vitest took 83 s on average against Jest's 97 s: about 15 % less for the same tests. The two loaded
+runs at the bottom are not a comparison, since they ran an hour apart under different load, but they
+show the gap does not close under contention. By Vitest's own breakdown, most of a project's time is
+compiling, importing and setting up jsdom rather than testing: `ts-events-ngx`, the longest, spent 4 s
+of its 33 s in its 161 tests on the loaded run.
+
+Vitest counts two tests fewer. Jest ran `ui-kits-ngx-layout-code`'s two inside `ui-kits-ngx-layout` as
+well, since that project's directory contains it; Vitest runs them once, in their own project.
 
 ## Installs
 
@@ -462,6 +490,24 @@ two seconds, counted from the start of the page load. Other work may have been r
 **What it shows.** Both maps finish drawing five to eight times sooner, with the same spaces drawn. The
 layers settle as fast either way, because ArcGIS loads a layer's description, not its features; the
 wait was the features, fetched and processed for the whole campus and then not drawn.
+
+### Zoneless: no zone.js in AggieMap or UES Operations
+
+Two production builds on 18 October 2026, made the same way in Docker volumes: `development` at
+`70f0e424b` (before) and the zoneless branch of [#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478) (after). Sizes are the build's own report.
+
+| | Before | After | Change |
+| --- | ---: | ---: | ---: |
+| `aggiemap-angular` initial files, raw | 851.79 kB | 812.09 kB | -39.70 kB |
+| `aggiemap-angular` initial files, estimated transfer | 211.88 kB | 199.62 kB | -12.26 kB |
+| `aggiemap-angular` `polyfills` (zone.js), raw / transfer | 35.88 kB / 11.68 kB | none | |
+| `ues-operations-angular` initial files, raw | 961.82 kB | 921.59 kB | -40.23 kB |
+| `ues-operations-angular` initial files, estimated transfer | 238.28 kB | 225.96 kB | -12.32 kB |
+
+**What it shows.** Each application's first download loses the zone.js polyfill, 35.9 kB raw and 11.7 kB
+compressed, and about 4 kB more of Angular's code for working with a zone. That is about 6% of AggieMap's
+initial transfer. No paint timings were taken: the machine was shared with other builds that evening, and
+the earlier entries show what that does to them.
 
 ### interactjs, the click coordinates and the keyboard viewfinder out of the map's first download
 

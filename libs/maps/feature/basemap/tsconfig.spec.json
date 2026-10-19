@@ -3,11 +3,10 @@
   "compilerOptions": {
     "outDir": "../../../../dist/out-tsc",
     "module": "preserve",
-    "types": ["jest", "node", "../../node_modules/@arcgis/core/interfaces"],
+    "types": ["vitest/globals", "node", "../../node_modules/@arcgis/core/interfaces"],
     "target": "es2016",
     "moduleResolution": "bundler",
     "isolatedModules": true
   },
-  "files": ["src/test-setup.ts"],
-  "include": ["**/*.test.ts", "**/*.spec.ts", "**/*.d.ts", "jest.config.ts"]
+  "include": ["**/*.test.ts", "**/*.spec.ts", "**/*.d.ts"]
 }

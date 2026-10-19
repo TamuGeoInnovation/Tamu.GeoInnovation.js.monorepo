@@ -6,14 +6,6 @@
   "prefix": "tamu-gisc",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/navigation/mobile-tile"],
-      "options": {
-        "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tile/jest.config.ts",
-        "tsConfig": "libs/ui-kits/ngx/navigation/mobile-tile/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

@@ -88,7 +88,8 @@
         "command": "node -r tsconfig-paths/register node_modules/typeorm/cli-ts-node-commonjs.js migration:show -d apps/gisday-nest/src/database/data-source.ts",
         "env": {
           "TS_NODE_PROJECT": "apps/gisday-nest/tsconfig.app.json",
-          "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\",\"moduleResolution\":\"node\"}"
+          "TS_NODE_BASEURL": "../..",
+          "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\"}"
         }
       }
     },
@@ -98,7 +99,8 @@
         "command": "node -r tsconfig-paths/register node_modules/typeorm/cli-ts-node-commonjs.js migration:generate -p -d apps/gisday-nest/src/database/data-source.ts apps/gisday-nest/src/database/migrations/{args.name}",
         "env": {
           "TS_NODE_PROJECT": "apps/gisday-nest/tsconfig.app.json",
-          "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\",\"moduleResolution\":\"node\"}"
+          "TS_NODE_BASEURL": "../..",
+          "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\"}"
         }
       }
     },
@@ -108,7 +110,8 @@
         "command": "node -r tsconfig-paths/register node_modules/typeorm/cli-ts-node-commonjs.js migration:run -d apps/gisday-nest/src/database/data-source.ts",
         "env": {
           "TS_NODE_PROJECT": "apps/gisday-nest/tsconfig.app.json",
-          "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\",\"moduleResolution\":\"node\"}"
+          "TS_NODE_BASEURL": "../..",
+          "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\"}"
         }
       }
     },
@@ -118,7 +121,8 @@
         "command": "node -r tsconfig-paths/register node_modules/typeorm/cli-ts-node-commonjs.js migration:revert -d apps/gisday-nest/src/database/data-source.ts",
         "env": {
           "TS_NODE_PROJECT": "apps/gisday-nest/tsconfig.app.json",
-          "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\",\"moduleResolution\":\"node\"}"
+          "TS_NODE_BASEURL": "../..",
+          "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\"}"
         }
       }
     },

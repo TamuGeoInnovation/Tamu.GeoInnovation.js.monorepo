@@ -1,15 +1,15 @@
 import { SecurityContext } from '@angular/core';
-import { inject, TestBed, waitForAsync } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { MarkdownParsePipe } from './markdown-parse.pipe';
 
 describe('MarkdownParsePipe', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       providers: [MarkdownParsePipe]
     }).compileComponents();
-  }));
+  });
 
   /**
    * Reads the result back through DomSanitizer rather than the SafeHtml implementation detail the

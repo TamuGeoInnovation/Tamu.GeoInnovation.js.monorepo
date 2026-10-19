@@ -6,14 +6,6 @@
   "sourceRoot": "libs/common/ngx/router/src",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/common/ngx/router"],
-      "options": {
-        "jestConfig": "libs/common/ngx/router/jest.config.ts",
-        "tsConfig": "libs/common/ngx/router/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

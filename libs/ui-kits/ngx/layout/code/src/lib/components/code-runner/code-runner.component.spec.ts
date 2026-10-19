@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
@@ -10,11 +10,11 @@ describe('CodeRunnerComponent', () => {
   let component: CodeRunnerComponent;
   let fixture: ComponentFixture<CodeRunnerComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [HighlightPlusModule, ClipboardCopyDirective, CopyComponent, CodeRunnerComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CodeRunnerComponent);

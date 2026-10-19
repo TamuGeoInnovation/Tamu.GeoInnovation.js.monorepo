@@ -2,7 +2,7 @@ import { IComposedConnections } from '../connections';
 import { IComposedIDefinitions } from '../definitions';
 import { IFactoryExcludeOptions } from '../utils/definitionFactory';
 
-jest.mock('@tamu-gisc/aggiemap/ngx/popups', () => ({
+vi.mock('@tamu-gisc/aggiemap/ngx/popups', () => ({
   Popups: {
     BuildingPopupComponent: 'BuildingPopupComponent',
     ParkingLotPopupComponent: 'ParkingLotPopupComponent',

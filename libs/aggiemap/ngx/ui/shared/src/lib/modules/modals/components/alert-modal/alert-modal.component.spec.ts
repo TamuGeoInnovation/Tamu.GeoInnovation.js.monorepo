@@ -26,11 +26,11 @@ describe('AlertModalComponent', () => {
 
   beforeEach(() => {
     mockModalRef = {
-      close: jest.fn()
+      close: vi.fn()
     };
 
     mockSettingsService = {
-      updateSettings: jest.fn()
+      updateSettings: vi.fn()
     };
 
     const data: AlertModalData = {
@@ -94,8 +94,8 @@ describe('AlertModalComponent template', () => {
         AlertModalComponent
       ],
       providers: [
-        { provide: ModalRefService, useValue: { close: jest.fn() } },
-        { provide: SettingsService, useValue: { updateSettings: jest.fn() } },
+        { provide: ModalRefService, useValue: { close: vi.fn() } },
+        { provide: SettingsService, useValue: { updateSettings: vi.fn() } },
         { provide: MODAL_DATA, useValue: { title: 'Test', message: 'Message', primaryText: 'OK' } }
       ]
     }).compileComponents();

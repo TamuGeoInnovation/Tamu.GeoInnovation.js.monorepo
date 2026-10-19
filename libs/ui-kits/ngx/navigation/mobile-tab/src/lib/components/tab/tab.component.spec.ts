@@ -33,7 +33,7 @@ describe('MobileTabNavigationTabComponent', () => {
   it('navigates to its configured route when clicked', () => {
     fixture.componentRef.setInput('route', 'test-route');
 
-    const spy = jest.spyOn(component, 'navigate');
+    const spy = vi.spyOn(component, 'navigate');
 
     component.navigate();
 

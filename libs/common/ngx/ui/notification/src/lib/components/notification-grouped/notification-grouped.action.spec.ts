@@ -187,19 +187,19 @@ describe('NotificationGroupedComponent, while a modal is open', () => {
   });
 
   it('stops the countdown while blocked, so the stack cannot expire behind the modal', () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     try {
       build([make('bonfire')]);
       modal.open$.next(true);
 
       // Well past the 10s auto-dismiss.
-      jest.advanceTimersByTime(30000);
+      vi.advanceTimersByTime(30000);
 
       expect(component.groupedItems().map((n) => n.id)).toEqual(['bonfire']);
       expect(component.groupTimerPercent()).toBeLessThan(100);
     } finally {
-      jest.useRealTimers();
+      vi.useRealTimers();
     }
   });
 

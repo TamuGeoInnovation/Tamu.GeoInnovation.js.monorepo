@@ -6,14 +6,6 @@
   "sourceRoot": "libs/ui-kits/ngx/layout/src",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/layout"],
-      "options": {
-        "jestConfig": "libs/ui-kits/ngx/layout/jest.config.ts",
-        "tsConfig": "libs/ui-kits/ngx/layout/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

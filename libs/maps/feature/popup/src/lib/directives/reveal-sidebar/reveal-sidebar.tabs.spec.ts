@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { Component, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -44,8 +45,8 @@ class HostComponent {
 describe('RevealSidebarOnPopupDirective with sidebar tabs', () => {
   let fixture: ComponentFixture<HostComponent>;
   let hitTest: BehaviorSubject<HitTestSnapshot>;
-  let map: { hitTest: BehaviorSubject<HitTestSnapshot>; clearHitTest: jest.Mock; clearSelectedFeatures: jest.Mock };
-  let navigate: jest.Mock;
+  let map: { hitTest: BehaviorSubject<HitTestSnapshot>; clearHitTest: Mock; clearSelectedFeatures: Mock };
+  let navigate: Mock;
 
   const element = () => fixture.nativeElement as HTMLElement;
   const detailsShowing = () => !element().querySelector('.popup')?.classList.contains('hidden');
@@ -66,10 +67,10 @@ describe('RevealSidebarOnPopupDirective with sidebar tabs', () => {
     map = {
       hitTest,
       // As the real service does: clearing the hit test publishes an empty one, which hides the details.
-      clearHitTest: jest.fn(() => hitTest.next({ graphics: [] })),
-      clearSelectedFeatures: jest.fn()
+      clearHitTest: vi.fn(() => hitTest.next({ graphics: [] })),
+      clearSelectedFeatures: vi.fn()
     };
-    navigate = jest.fn(() => Promise.resolve(true));
+    navigate = vi.fn(() => Promise.resolve(true));
 
     TestBed.configureTestingModule({
       imports: [HostComponent],

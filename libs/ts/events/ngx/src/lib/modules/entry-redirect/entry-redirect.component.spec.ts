@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 
@@ -6,23 +7,23 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 
 describe('EntryRedirectComponent', () => {
   let component: EntryRedirectComponent;
-  let router: { navigate: jest.Mock };
+  let router: { navigate: Mock };
   let eventSettingsService: {
-    validateEventQueryParams: jest.Mock;
+    validateEventQueryParams: Mock;
     hasOptions: boolean;
-    hasFeatureSelectionQueryParams: jest.Mock;
+    hasFeatureSelectionQueryParams: Mock;
   };
   let route: ActivatedRoute;
 
   beforeEach(() => {
     router = {
-      navigate: jest.fn()
+      navigate: vi.fn()
     };
 
     eventSettingsService = {
-      validateEventQueryParams: jest.fn(),
+      validateEventQueryParams: vi.fn(),
       hasOptions: false,
-      hasFeatureSelectionQueryParams: jest.fn().mockReturnValue(false)
+      hasFeatureSelectionQueryParams: vi.fn().mockReturnValue(false)
     };
 
     route = {

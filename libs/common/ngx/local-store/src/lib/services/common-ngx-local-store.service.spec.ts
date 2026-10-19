@@ -1,15 +1,15 @@
-import { waitForAsync, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { LocalStoreService, AppStorage } from '../services/common-ngx-local-store.service';
 import { CommonModule } from '@angular/common';
 import { LOCAL_STORAGE } from 'ngx-webstorage-service';
 
 describe('LocalStoreService', () => {
-  beforeEach(waitForAsync(async () => {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CommonModule],
       providers: [{ provide: AppStorage, useExisting: LOCAL_STORAGE }]
     }).compileComponents();
-  }));
+  });
 
   it('should create', () => {
     const service: LocalStoreService = TestBed.inject(LocalStoreService);

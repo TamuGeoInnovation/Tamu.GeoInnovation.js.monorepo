@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
@@ -6,7 +7,7 @@ import { EsriModuleProviderService } from '../../services/module-provider/module
 import { MapCompassComponent } from './map-compass.component';
 
 // Calcite's icon is a browser custom element; jsdom only needs the tag.
-jest.mock('@esri/calcite-components/components/calcite-icon', () => ({}), { virtual: true });
+vi.mock('@esri/calcite-components/components/calcite-icon', () => ({}));
 
 /**
  * The compass that replaced Esri's Compass widget, keeping its needle on every basemap (#1853, #1845).
@@ -19,8 +20,8 @@ describe('MapCompassComponent', () => {
       get viewpoint() {
         return { clone: () => ({ scale: 4000, rotation: view.rotation }) };
       },
-      ui: { add: jest.fn(), remove: jest.fn() },
-      goTo: jest.fn(() => Promise.resolve())
+      ui: { add: vi.fn(), remove: vi.fn() },
+      goTo: vi.fn(() => Promise.resolve())
     };
 
     return view;
@@ -28,11 +29,11 @@ describe('MapCompassComponent', () => {
 
   let view: ReturnType<typeof makeView>;
   let rotate: (rotation: number) => void;
-  let watchHandle: { remove: jest.Mock };
+  let watchHandle: { remove: Mock };
 
   /** `reactiveUtils.watch`, calling back at once as `initial: true` asks, and when `rotate` is called. */
   const reactiveUtils = {
-    watch: jest.fn((getValue: () => number, callback: (value: number) => void) => {
+    watch: vi.fn((getValue: () => number, callback: (value: number) => void) => {
       rotate = (rotation) => {
         view.rotation = rotation;
         callback(getValue());
@@ -67,7 +68,7 @@ describe('MapCompassComponent', () => {
 
   beforeEach(() => {
     view = makeView();
-    watchHandle = { remove: jest.fn() };
+    watchHandle = { remove: vi.fn() };
   });
 
   it("moves itself into the top-left corner of the map view's UI", async () => {

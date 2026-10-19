@@ -8,13 +8,6 @@
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/common/node/fs"],
-      "options": {
-        "jestConfig": "libs/common/node/fs/jest.config.ts"
-      }
     }
   }
 }

@@ -5,7 +5,7 @@ import { eventHasPassed, nextEventDate, parseEventDate } from './common-utils-da
  *
  * The map read `'2026-10-02'` as midnight UTC - 7 PM on 1 October in College Station - and called the
  * 150th Opening Ceremony over on the evening before it. These run in College Station's time zone, where
- * that happened, whatever zone the machine running them is in: `jest.global-setup.js` sets it.
+ * that happened, whatever zone the machine running them is in: its `vitest.config.mts` sets it.
  */
 describe('event dates in College Station time', () => {
   const at = (y: number, m: number, d: number, h = 0, min = 0) => new Date(y, m - 1, d, h, min).getTime();

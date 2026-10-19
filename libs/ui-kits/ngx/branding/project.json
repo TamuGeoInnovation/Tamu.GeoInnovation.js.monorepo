@@ -6,14 +6,6 @@
   "sourceRoot": "libs/ui-kits/ngx/branding/src",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/branding"],
-      "options": {
-        "jestConfig": "libs/ui-kits/ngx/branding/jest.config.ts",
-        "tsConfig": "libs/ui-kits/ngx/branding/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

@@ -1,12 +1,12 @@
-import { waitForAsync, inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { OrderByPipe } from './order-by.pipe';
 
 describe('orderBy.pipe', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       providers: [OrderByPipe]
     }).compileComponents();
-  }));
+  });
 
   it('should return empty imput', inject([OrderByPipe], (pipe: OrderByPipe) => {
     expect(pipe.transform([], 'test')).toEqual([]);

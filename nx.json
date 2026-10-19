@@ -96,6 +96,26 @@
         }
       }
     },
+    "test": {
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "fileset": "{projectRoot}/tsconfig.spec.json",
+          "dependencies": true
+        },
+        "{workspaceRoot}/vitest.preset.mts",
+        "{workspaceRoot}/test/polyfills.ts",
+        "{workspaceRoot}/test/vitest-setup-angular.ts",
+        {
+          "externalDependencies": ["vitest"]
+        },
+        {
+          "env": "CI"
+        }
+      ],
+      "cache": true
+    },
     "@nx/eslint:lint": {
       "inputs": ["default", "^default", "{workspaceRoot}/eslint.config.mjs", "{workspaceRoot}/tools/eslint-rules/**/*"],
       "cache": true
@@ -110,10 +130,20 @@
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/jest.config.[jt]s",
+      "!{projectRoot}/vitest.config.mts",
       "!{projectRoot}/src/test-setup.[jt]s"
     ]
   },
   "parallel": 1,
   "useInferencePlugins": false,
-  "defaultBase": "development"
+  "defaultBase": "development",
+  "plugins": [
+    {
+      "plugin": "@nx/vitest",
+      "options": {
+        "testTargetName": "test",
+        "testMode": "run"
+      }
+    }
+  ]
 }

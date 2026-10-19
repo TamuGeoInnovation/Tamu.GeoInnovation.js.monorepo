@@ -41,7 +41,7 @@ describe('EventPassedWarningComponent', () => {
         EventPassedWarningComponent
       ],
       providers: [
-        { provide: ModalRefService, useValue: { close: jest.fn() } },
+        { provide: ModalRefService, useValue: { close: vi.fn() } },
         {
           provide: MODAL_DATA,
           useValue: {

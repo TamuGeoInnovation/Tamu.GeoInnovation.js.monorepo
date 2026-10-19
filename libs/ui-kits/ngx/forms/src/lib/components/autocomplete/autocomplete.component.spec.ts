@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 
@@ -59,7 +59,7 @@ describe('AutocompleteComponent', () => {
   // #1868: on All Maps, a search result could not be chosen with the mouse. Pressing it took focus out of
   // the input, the list closed on that focus change, and the click that should have chosen the result
   // landed on the page behind it.
-  it('chooses an option pressed with the mouse, after results arrive while the list is open', fakeAsync(() => {
+  it('chooses an option pressed with the mouse, after results arrive while the list is open', async () => {
     const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
 
     input.focus();
@@ -67,7 +67,7 @@ describe('AutocompleteComponent', () => {
     fixture.detectChanges();
 
     // Results arrive after the list has opened, as All Maps' debounced search does.
-    tick(100);
+    await new Promise((resolve) => setTimeout(resolve, 100));
     host.options.next([{ name: 'Kickoff at Kyle' }]);
     fixture.detectChanges();
 
@@ -78,9 +78,9 @@ describe('AutocompleteComponent', () => {
 
     expect(host.selected).toEqual({ name: 'Kickoff at Kyle' });
     expect(fixture.nativeElement.querySelector('.autocomplete-item')).toBeNull();
-  }));
+  });
 
-  it('closes the list when focus leaves for somewhere outside it', fakeAsync(() => {
+  it('closes the list when focus leaves for somewhere outside it', () => {
     const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
 
     input.focus();
@@ -94,5 +94,5 @@ describe('AutocompleteComponent', () => {
 
     expect(fixture.nativeElement.querySelector('.autocomplete-item')).toBeNull();
     expect(host.selected).toBeUndefined();
-  }));
+  });
 });

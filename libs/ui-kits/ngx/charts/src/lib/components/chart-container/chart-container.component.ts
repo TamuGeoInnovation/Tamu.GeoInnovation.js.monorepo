@@ -3,7 +3,9 @@ import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Chart } from 'chart.js';
-import * as deepMerge from 'deepmerge';
+// A default import: deepmerge is CommonJS whose export is the function itself, and a namespace import
+// is not callable under Vitest's ES module interop (#1479). esModuleInterop is on workspace-wide.
+import deepMerge from 'deepmerge';
 import 'chartjs-plugin-colorschemes';
 
 @Component({

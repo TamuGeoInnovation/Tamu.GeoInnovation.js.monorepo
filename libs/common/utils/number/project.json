@@ -5,13 +5,6 @@
   "sourceRoot": "libs/common/utils/number/src",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/common/utils/number"],
-      "options": {
-        "jestConfig": "libs/common/utils/number/jest.config.ts"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

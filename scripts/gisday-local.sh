@@ -26,7 +26,7 @@ set -euo pipefail
 export MSYS_NO_PATHCONV=1
 LOCAL_DIR="${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}"
 REPO="$(pwd -W 2>/dev/null || pwd)"
-NODE_IMAGE=node:22.23.3
+NODE_IMAGE=node:24.22.0
 SQL_IMAGE=mcr.microsoft.com/mssql/server:2022-latest
 NET=gisday-local
 DB_NAME=gisday-nest-eh

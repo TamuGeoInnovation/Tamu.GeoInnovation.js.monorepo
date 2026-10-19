@@ -6,14 +6,6 @@
   "prefix": "tamu-gisc",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/accessibility"],
-      "options": {
-        "jestConfig": "libs/maps/feature/accessibility/jest.config.ts",
-        "tsConfig": "libs/maps/feature/accessibility/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
