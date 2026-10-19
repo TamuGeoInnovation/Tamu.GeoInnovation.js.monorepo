@@ -89,6 +89,58 @@ start line is the same for every machine:
 
     Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what DIRECTOR.md says.
 
+## Nothing heavy beside a run
+
+**While a tier, a check or a capture is running on a machine, nothing else heavy runs on that machine.** Not an
+investigation, not a browser, not a second tier. A question that needs a browser or a long query loop waits for the
+run to finish, or goes to a machine that is idle.
+
+This cost two runs on 19 October. The work machine started a tier twice by accident and had to throw both away;
+then, with a tier running, it ran an eight-load browser loop and several query matrices to answer the maintainer's
+questions, and nine maps failed or went flaky inside that window - one of them three times - in a run that was
+deciding a production release. Contention does not look like contention in a report: it looks like a map that
+"loads and serves its layers" failing for two minutes.
+
+The listener running the long job owns its machine until it finishes. The director plans around that rather than
+asking for something in the middle of it.
+
+## When a listener stops, or goes wrong
+
+Agents fail. One may stop mid-batch, never pick a batch up, or do something its batch never asked for. The director
+notices and acts; a listener that has stopped cannot tell anyone it has.
+
+**What the director expects of a live listener**
+
+| Signal | Expected |
+| --- | --- |
+| It has taken the batch | a `<name>: started` push to its `STATUS.md` within **20 minutes** of the batch landing |
+| It is still working | some push - status, report, or a branch - at least every **60 minutes** while a batch is open |
+| It has finished | a `<name>: finished` push, and `Last batch done: N` |
+
+**The ladder, when one of those is missed**
+
+1. **Record it.** The director writes what was missed and when in its own `STATUS.md`. A quiet listener is not
+   assumed dead on one missed signal.
+2. **Ask once, in its `TASKS.md`:** a `## Still there?` heading asking for a one-line status push. A live listener
+   answers within its next watch cycle.
+3. **Withdraw the batch.** After a second missed cycle, the director replaces the batch body with
+   `## Withdrawn - presumed stopped at <time>`, so a listener that wakes up later stops instead of doing work that
+   has moved. **This is the step that prevents the same work being done twice**, which matters more than recovering
+   the listener.
+4. **Move the work.** The director gives it to another listener, or does it itself, and says in the new batch where
+   it came from.
+5. **Tell the maintainer** when he is next in the conversation: what stopped, what was withdrawn, and where the work
+   went. Never silently.
+
+**When a listener does something it was not asked to do** - pushes outside its own folder, pushes to another branch,
+opens a pull request, merges anything, or commits without its name prefix - the director reverts it on the mailbox
+branch, records it, and says so to the maintainer. Its work is still checked on its merits: a branch from a listener
+is built and tested by the testing machine before any pull request, whoever wrote it.
+
+**Work is given out with failure in mind.** Anything on the critical path for a release goes to a listener whose
+reliability is known, or is done by the director. A listener being tried for the first time gets work that can be
+abandoned without costing anything - unit tests, dead code, a survey - never the thing a release is waiting on.
+
 ## Stopping
 A `## Stop` heading in a listener's `TASKS.md` stops that listener: it writes `Stopped at <time>` in its
 `STATUS.md`, pushes, and ends. The director adds it when the maintainer says the day's work is done.
