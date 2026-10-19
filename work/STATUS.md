@@ -3,7 +3,8 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **8:05 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
+Last written **7:50 AM Central, 19 October 2026**. **This machine now directs** (handed over by home at 7:47 AM);
+it still does its own testing job, and this file still says what it is doing. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
 **Last batch done: 13 (its queue is done).** **Batch 9 — the final test — is running now.**
