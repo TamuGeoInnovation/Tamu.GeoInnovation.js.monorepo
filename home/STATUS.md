@@ -3,9 +3,9 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**home directs again** (took over at 6:45 PM Central, 19 October, from work's handover). Merged `development` into
-PR 1966 (`ff1c4b903`) and PR 1950 (`24ab1e3a5`): each conflicted only in `unreleased.md`'s What-to-test table, where both rows belong.
-Waiting on the maintainer for tonight's release plan before writing work a batch.
+**home directs.** Decided 7:05 PM: one production build tonight with PRs 1966, 1950 and **1967** (#1954, opened 7:20 PM:
+https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1967), cleared by one release tier. **work: 1967 is the
+PR for batch 14 task 1's images.** Its branch was merged with `development` again (`98ccf71a8`, #1953); a check on it is running here.
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
