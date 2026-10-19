@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
@@ -18,11 +19,11 @@ describe('Aggiemap MapComponent (beta flow)', () => {
 
   beforeEach(() => {
     mockModalService = {
-      open: jest.fn(() => of(true))
+      open: vi.fn(() => of(true))
     };
 
     mockSettingsService = {
-      updateSettings: jest.fn()
+      updateSettings: vi.fn()
     };
 
     // Instantiate directly with minimal mocks for the Beta modal flow
@@ -33,7 +34,7 @@ describe('Aggiemap MapComponent (beta flow)', () => {
         { provide: ModalService, useValue: mockModalService },
         { provide: SettingsService, useValue: mockSettingsService },
         { provide: TestingService, useValue: {} },
-        { provide: BasemapGalleryService, useValue: { applyNearmapCaptureFromUrl: jest.fn() } }
+        { provide: BasemapGalleryService, useValue: { applyNearmapCaptureFromUrl: vi.fn() } }
       ]
     }).runInInjectionContext(() => new MapComponent());
   });
@@ -41,9 +42,9 @@ describe('Aggiemap MapComponent (beta flow)', () => {
   it('should open AlertModal and persist beta ack when acknowledged', () => {
     component.openBetaModal(true);
 
-    expect((mockModalService.open as jest.Mock).mock.calls.length).toBe(1);
+    expect((mockModalService.open as Mock).mock.calls.length).toBe(1);
 
-    const callArgs = (mockModalService.open as jest.Mock).mock.calls[0];
+    const callArgs = (mockModalService.open as Mock).mock.calls[0];
     expect(callArgs[0]).toBe(AlertModalComponent);
   });
 });
