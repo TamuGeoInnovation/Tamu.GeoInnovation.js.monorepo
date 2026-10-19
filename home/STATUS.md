@@ -3,7 +3,9 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-(nothing)
+**home: started batch 3** at about 12:25 PM: #1954, a `?lot=` link must not select a feature the map's filter excludes
+(`fix/1954-deep-link-respects-filter`, from the latest `development`). The comparison numbers go into the notes next time
+they are opened, as the batch says.
 
 ## Finished
 - **Batch 2: the release notes updated** (`docs/releases/2026-10-19.md`, branch `docs/release-2026-10-18`, commit
