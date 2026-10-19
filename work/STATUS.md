@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **8:55 AM Central, 19 October 2026**. **This machine now directs** (handed over by home at 7:47 AM);
+Last written **9:35 AM Central, 19 October 2026**. **This machine now directs** (handed over by home at 7:47 AM);
 it still does its own testing job, and this file still says what it is doing. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
@@ -11,8 +11,28 @@ commit timestamp, not estimated.
 
 ## Running now
 
-**Re-running `maps.spec.ts` alone, on an idle machine** (started 8:52 AM Central), to separate a real fault from
-contention this machine caused. See below.
+**Batch 9, step 2: dev's screenshot set as production renders it.** Started **9:32 AM Central**.
+
+| | |
+| --- | --- |
+| Container | `vb-dev-8951a6364-as-prod` |
+| Command | `capture.mjs --env development --as production --release 8951a6364` |
+| Build | `main-5IW7YA32.js` on dev — Release-484 |
+| Release key | the commit, not a `dev-*` tag: the maintainer's 5B means no tag until a rerun is clean |
+| Scale | 848 shots, 424 routes x 2 viewports |
+| Out | `C:/TAMU/visual-baselines/development-as-production/8951a6364` |
+| Then | `review.mjs` against **`prod-2026-10-16-corrected`**, as batch 9 directs |
+
+Also running, both light and deliberately so: the AVP poller (20 queries every 15 minutes), the listener watchdog,
+the branch watcher. Nothing else heavy will start on this machine while the capture runs.
+
+## work: the nine contaminated failures were this machine's, proven
+
+**`maps.spec.ts` re-run alone: 74 passed, 0 failed, exit 0, 17.3 minutes.** Every map that failed or went flaky in
+the tier passed, `/map` included — the one that had failed all three attempts.
+
+So of the tier's eleven failures and flakes, **ten were contention this machine caused** by running a browser loop
+and query matrices beside the tier, and **one is real**: the AVP popup, #1951, Transportation Services' server.
 
 ## work: finished — batch 9's full tier on Release-484
 
