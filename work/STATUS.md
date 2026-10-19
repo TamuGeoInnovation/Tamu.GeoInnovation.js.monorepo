@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **10:05 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
+Last written **10:15 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
 **Last batch done: 12.** Batches 5, 8, 10, 11 and 12 are finished. **Batch 9 is still held.** Nothing running; watching.
@@ -34,30 +34,23 @@ naming the four shots, why, and that production served `main-TK2R62YY.js` for bo
 
 ## Queued
 
-**Batch 9 (#1849) — the final test, still held by the director**, and held twice over:
+**Batch 9 (#1849) — now an overnight rehearsal, waiting on a build.** The 9:40 PM revision: if a release at
+**`33da307ff`** or later reaches dev tonight, run the whole batch on it as a rehearsal — full tier, capture,
+comparison — **and do not tag it**, because it is not the build that ships. The final clearance runs again in the
+morning on the release carrying the layer-order fix (#1939), as its own batch. If nothing new reaches dev
+tonight, wait.
 
-- **5:20 PM:** not on Release-482; a legend fix (#1871) goes into this release.
-- **About 6 PM:** the final build will also carry #1912 (the trip planner on dev) and #1923 (Angular 22.2.3),
-  about 1.5 hours out. **The release building now, `af33dc01e`, is not the final one, and this machine does
-  nothing with it.** The director names the final release here.
+**No qualifying release yet.** Azure at 10:10 PM Central:
 
-So nothing of batch 9 has started — not the full tier, not its own `--as production` capture, not its comparison.
-**No Azure watcher is running, deliberately:** there is no commit to watch for yet, and a watcher keyed to "the
-next release" would fire on `af33dc01e`, which is the thing the director just said to ignore. One starts when the
-final commit is named.
-
-Azure at 5:30 PM Central:
-
-| Release | Build | Commit | Dev stage | Production stage |
+| Release | Build | Commit | Dev stage | Qualifies? |
 | --- | --- | --- | --- | --- |
-| Release-482 | 20261018.33 | `70f0e424b` | succeeded — **batch 8 ran on this, and it is now `dev-2026-10-18-3`** | inProgress |
-| Release-481 | 20261018.31 | `dfba74033` | succeeded — skipped deliberately, not batch 8's target | canceled |
-| Release-480 | 20261018.27 | `98c2056be` | succeeded — batch 6 ran on this | canceled |
+| Release-483 | 20261018.37 | `af33dc01e` | succeeded | **No** — 17:40, older than `33da307ff` (20:55), and the director said to do nothing with it |
+| Release-482 | 20261018.33 | `70f0e424b` | succeeded | No — batch 8 ran on this, tagged `dev-2026-10-18-3` |
 
-**A watcher nearly started batch 8 on the wrong build.** The revision naming `70f0e424b` arrived while a watcher
-keyed to "any release newer than Release-480" was live, and Release-481 (`dfba74033`) reached dev first. It was
-caught by reading the revised batch. The watcher is now keyed to the commit, and `DIRECTOR.md` may want the rule:
-a batch that names a commit is watched **by commit**, never by "newer than".
+**The watcher tests ancestry, not release number.** Release-483 is a higher number than Release-482 and an older
+commit, so a "newer than" watcher would have fired on exactly the build that was excluded — the same mistake that
+nearly started batch 8 on `dfba74033`. It now asks git whether `33da307ff` is an ancestor of each release's
+commit, and only then whether the dev stage succeeded.
 
 ## Finished
 
