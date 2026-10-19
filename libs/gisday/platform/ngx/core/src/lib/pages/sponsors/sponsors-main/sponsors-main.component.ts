@@ -5,7 +5,7 @@ import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import { AssetUrlPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import { AssetUrlPipe, activeSponsors } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-sponsors-main',
