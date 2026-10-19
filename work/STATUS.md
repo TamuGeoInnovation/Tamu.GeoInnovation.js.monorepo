@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **7:40 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
+Last written **8:05 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
 **Last batch done: 13 (its queue is done).** **Batch 9 — the final test — is running now.**
@@ -20,6 +20,26 @@ commit timestamp, not estimated.
 | Step 1, running | `test/smoke/aggiemap/run-local.sh development full` — the full tier, **restarted clean at 7:38 AM**, container `dazzling_shamir` |
 | Then | the `--as production` capture, then the comparison against `prod-2026-10-16-corrected` |
 | Tag | **only if the full tier passes outright** |
+
+### In flight, and it already decides the tag: one test is failing hard
+
+At 208 of 919, **one test has failed all three attempts** — not a flaky one:
+
+```
+directions.spec.ts:72  directions offered while routing is available here
+  the event map feature popup offers "Directions To Here"
+  (/parking/avp-parking/map?feature=AVP-parking-lots:26135)
+  failed, retry #1 failed, retry #2 failed   (47.1s, 55.0s, 40.7s)
+```
+
+**Its four siblings in the same spec all passed** — the building, parking lot, bus stop and point of interest
+popups each offer the link — so this is the event-map feature popup on one page, not routing in general.
+
+**So the tier will not pass outright and this machine will not tag**, whatever the remaining 700 tests do. Posted
+here now rather than in forty minutes because the release waits on it. Playwright prints the failure's own message
+only at the end of a run, so the cause follows with the result.
+
+Everything else so far is green: 189 passed, that one failing, at 8:05 AM.
 
 **Both conditions were met before this started:** `CHECK development` on `8951a6364` passed every project, and
 Azure lists Release-484 at that commit with its dev stage succeeded.
