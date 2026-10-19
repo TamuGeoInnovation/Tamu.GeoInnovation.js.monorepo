@@ -760,6 +760,26 @@ and the additional sponsorship opportunities are unchanged ([#1821](https://gith
 | --- | --- |
 | ![The four levels at $512, $1,024, $2,048 and $4,096, on production](../screenshots/1821-sponsor-prices/before.png) | ![The four levels at $256, $512, $1,024 and $2,048](../screenshots/1821-sponsor-prices/after.png) |
 
+### GIS Day: a sponsor can be switched off for a season and kept
+
+Sponsors carry over from one season to the next, and until a company confirms it had to be deleted,
+then added again with its logo once it did. Each sponsor now has an **Active** switch: on the admin
+Sponsors list (it saves at once) and on the sponsor form. A sponsor switched off keeps its details and
+logo in the admin pages but is not shown on the public Sponsors page or the home page. Every existing
+sponsor starts switched on ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)).
+
+**This release changes the database**: it adds `sponsors.active` (and `event_location.checkInZone`,
+from the check-in zones work, which production has not had yet). Both migrations run on production
+before the new API is deployed; each only adds a column, so the site running then keeps working.
+
+The admin image is the list on a scratch page of the local site, because the admin pages need a
+sign-in. In it, one local sponsor (Esri) is switched off; the public page beside it leaves it out.
+
+| Before | After |
+| --- | --- |
+| ![Production Sponsors page before: every sponsor shown, with no way to hide one](../screenshots/1962-sponsor-active/before-public-sponsors.png) | ![The admin Sponsors list with an Active column, Esri unticked](../screenshots/1962-sponsor-active/after-admin-sponsor-list.png) |
+| | ![The public Sponsors page without the switched-off sponsor](../screenshots/1962-sponsor-active/after-public-sponsors.png) |
+
 ---
 
 ## What to test on dev
@@ -773,6 +793,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |
 | Layers list alphabetical again ([#1939](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1939)) | [Campus Main Parking](https://dev.aggiemap.tamu.edu/parking/ts-main-parking), [Service and Loading Zone Parking](https://dev.aggiemap.tamu.edu/parking/service-loading) | Reload each a few times: the Layers list always reads Campus Stops, Construction, Parking Lots, RNS Spaces, Route Stop/Start Points, Visitor Kiosks, and Service Parking Lots, Service Parking Spaces. Other maps' lists are alphabetical too, except Fish Camp, Tailgating and Football, which keep their own order |
 | A `?lot=` link opens the lot on fourteen parking maps ([#1952](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1952)) | [Visitor Parking, lot 100j](https://dev.aggiemap.tamu.edu/parking/visitor-parking/map?lot=100j), [Motorcycle Parking, lot 100j](https://dev.aggiemap.tamu.edu/parking/motorcycle-parking/map?lot=100j) | The popup is the map's own lot, not the main map's: its share link reads `/parking/visitor-parking/...`, not `aggiemap.tamu.edu/?lot=...`. Before the fix the first opened the main map's Lot 100j. The second map already worked and must still. Also check a `?feature=` link copied from a popup still opens the same feature |
 | Tailgating tent and zone links finish drawing ([#1926](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1926)) | [Tent L1](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?tent=L1), [Zone AP-7](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-7) | The tent or zone opens highlighted and named in the side panel, as before. The difference is not on screen: the map finishes drawing within a minute (`window.__tamuGiscMapProbe.drawing` in the console turns `false`), where before the fix it stayed `true`. Nothing else on the map changes: the RNS Spaces layer that is now off drew nothing |

@@ -13,13 +13,14 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'tamu-gisc-sponsor-add-edit-form',
   templateUrl: './sponsor-add-edit-form.component.html',
   styleUrls: ['./sponsor-add-edit-form.component.scss'],
-  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, FileComponent, ButtonComponent, AsyncPipe]
+  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, SelectComponent, FileComponent, ButtonComponent, CheckboxComponent, AsyncPipe]
 })
 export class SponsorAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
@@ -67,6 +68,7 @@ export class SponsorAddEditFormComponent implements OnInit {
       contactLastName: [null],
       contactEmail: [null],
       sponsorshipLevel: [null],
+      active: [true],
       season: [null],
       file: [null]
     });
@@ -142,7 +144,7 @@ export class SponsorAddEditFormComponent implements OnInit {
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
-    const formData = formToFormData(this.form);
+    const formData = this._formData();
 
     this.sss.updateEntityFormData(rawValue.guid, formData).subscribe({
       next: () => {
@@ -165,7 +167,7 @@ export class SponsorAddEditFormComponent implements OnInit {
   }
 
   private _createEntity() {
-    const formData = formToFormData(this.form);
+    const formData = this._formData();
 
     this.sss.createEntityFormData(formData).subscribe({
       next: () => {
@@ -189,5 +191,17 @@ export class SponsorAddEditFormComponent implements OnInit {
 
   private _navigateBack() {
     this.rt.navigate(['/admin/sponsors']);
+  }
+
+  /**
+   * The form as form data, with `active` always sent. formToFormData leaves out every false value,
+   * which would make switching a sponsor off impossible (#1962).
+   */
+  private _formData() {
+    const formData = formToFormData(this.form);
+
+    formData.set('active', String(this.form.getRawValue().active !== false));
+
+    return formData;
   }
 }

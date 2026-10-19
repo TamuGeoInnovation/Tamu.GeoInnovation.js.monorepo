@@ -177,6 +177,34 @@ describe('SponsorProvider', () => {
       expect((sponsorRepo.save as jest.Mock).mock.calls[0][0].logos).toEqual([{ guid: 'a-2' }]);
     });
 
+    /**
+     * #1962. Form data sends every value as text, so "false" would otherwise be saved as a truthy
+     * string and a sponsor could never be switched off from the admin form.
+     */
+    it('switches a sponsor off and on from form data or JSON', async () => {
+      jest
+        .spyOn(sponsorRepo, 'findOne')
+        .mockResolvedValue({ guid: 'sp-1', active: true, logos: [] } as unknown as Sponsor);
+      jest.spyOn(sponsorRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+
+      await provider.updateSponsor('sp-1', { active: 'false' } as unknown as Partial<Sponsor>);
+      await provider.updateSponsor('sp-1', { active: true });
+
+      const saved = (sponsorRepo.save as jest.Mock).mock.calls.map((c) => c[0].active);
+      expect(saved).toEqual([false, true]);
+    });
+
+    it('leaves the active flag alone when an update does not mention it', async () => {
+      jest
+        .spyOn(sponsorRepo, 'findOne')
+        .mockResolvedValue({ guid: 'sp-1', active: false, logos: [] } as unknown as Sponsor);
+      jest.spyOn(sponsorRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+
+      await provider.updateSponsor('sp-1', { name: 'Esri' });
+
+      expect((sponsorRepo.save as jest.Mock).mock.calls[0][0].active).toBe(false);
+    });
+
     it('does not let the caller overwrite the guid', async () => {
       jest
         .spyOn(sponsorRepo, 'findOne')
