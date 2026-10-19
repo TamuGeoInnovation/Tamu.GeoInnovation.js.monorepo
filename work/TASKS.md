@@ -71,6 +71,19 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 12 (prepared 18 October 2026, about 9:30 PM) — now
+
+**Decided** (the maintainer, on batch 11's question 1): don't move anything. Make a corrected **copy** of production's
+set and compare against it. Batch 11's question 2 went onto #1937 as what the fix should be.
+
+1. **#1937: a corrected copy of production's set**
+   - Copy `production/prod-2026-10-16` to `production/prod-2026-10-16-corrected` (copy, never move or delete), then
+     copy the four shots from `production/prod-2026-10-16-retake` over their counterparts in the copy, and its
+     manifest with a note naming the four re-taken shots and why.
+   - Re-run `review.mjs` for batch 10's comparison against the corrected copy, and say where the new page is.
+   - **Batch 9's comparison uses `prod-2026-10-16-corrected` as its "before".**
+   - Report on: #1937, briefly. Then watch for batch 9's release, which the director will name.
+
 ## Batch 11 (prepared 18 October 2026, about 9:15 PM) — now
 
 **Decided** (the maintainer, on batch 10's questions): **1** the layer order on the parking maps is being checked on
@@ -128,7 +141,7 @@ production serves now; there should be no significant differences, and any there
      2. **Dev's screenshot set, as production renders it:** the `tools/visual-baselines` capture with
         `--env development --as production --release <the dev-* tag name step 4 will use, or the commit>` (#1885,
         merged as #1887). Not while the tier runs.
-     3. **The comparison:** `node tools/visual-baselines/review.mjs <production/prod-2026-10-16> <development-as-production/...> <diffDir> <out.html>`.
+     3. **The comparison:** `node tools/visual-baselines/review.mjs <production/prod-2026-10-16-corrected> <development-as-production/...> <diffDir> <out.html>`.
         Report how many shots differ, sorted by how much, and for each of the most changed say what moved (layer,
         symbol, basemap, text, layout) and whether it is expected from this release (ArcGIS 4.27 to 5.1, Esri's zoom
         and locate buttons and our compass, campus maps without College Station's layers, the legend fix). Put the
