@@ -88,6 +88,11 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
    - Commit them to `docs/screenshots/1954-deep-link-respects-filter/` on that branch, add the `unreleased.md` entry and the
      What-to-test row, push to the fork, and put the pinned raw URLs on the PR (home opens it now; its number will be in
      `home/STATUS.md`). Same as you did for 1966.
+   - **Where the notes go (7:35 PM), so tonight's three PRs merge without conflicts:** 1966's entry is first under
+     Summary and its row first in What to test; 1950's are now just above "A Football Tailgating tent or zone link" and
+     at the end of the table. Put #1954's **entry just above "### Campus maps load only their own campus"** and its **row
+     directly after the "Tailgating tent and zone links finish drawing" row** - not at the top. The PR is **1967**; merge
+     `origin/development` into the branch before you add them.
 2. **When the maintainer has merged all three and the build reaches dev: the release tier** (report on: #1935)
    - home will add the commit and release number here when they exist; **don't start before that line appears.**
    - `test/smoke/aggiemap/run-local.sh development release`. Nothing else heavy beside it.
