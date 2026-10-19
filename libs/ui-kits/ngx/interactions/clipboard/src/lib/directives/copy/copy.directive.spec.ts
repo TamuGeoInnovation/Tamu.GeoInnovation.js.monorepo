@@ -37,15 +37,16 @@ describe('ClipboardCopyDirective', () => {
   });
 
   // Treat error event as a success given that the error steps from a lack Clipboard API support with jsdom.
-  it('should emit copy event on click', (done) => {
-    component.copyEvent.subscribe((v) => {
-      expect(v).toBeTruthy();
+  it('should emit copy event on click', () =>
+    new Promise<void>((done) => {
+      component.copyEvent.subscribe((v) => {
+        expect(v).toBeTruthy();
 
-      done();
-    });
+        done();
+      });
 
-    const el = fixture.debugElement.query(By.css('[clipboard-copy]'));
+      const el = fixture.debugElement.query(By.css('[clipboard-copy]'));
 
-    el.nativeElement.click();
-  });
+      el.nativeElement.click();
+    }));
 });

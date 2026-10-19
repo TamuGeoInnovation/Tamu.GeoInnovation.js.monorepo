@@ -1,13 +1,13 @@
-import { waitForAsync, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { SettingsService } from './common-ngx-settings.service';
 import { CommonModule } from '@angular/common';
 
 describe('SettingsService', () => {
-  beforeEach(waitForAsync(async () => {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CommonModule]
     }).compileComponents();
-  }));
+  });
 
   it('should create', () => {
     const service: SettingsService = TestBed.inject(SettingsService);

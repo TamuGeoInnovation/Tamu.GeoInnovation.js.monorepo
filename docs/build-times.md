@@ -42,6 +42,7 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 18 Oct 2026 | home | `check-in-volume.sh chore/1479-vitest` (affected: lint 115 projects, test 108 of which 71 on Vitest, build 14), 7:59 PM Central | volume, fresh clone, `npm ci` 88 s | **6 min 44 s** (lint 111 s, test 123 s, build 67 s) |
 | 10 Oct 2026 | home | `check-in-volume.sh refactor/1453-inject` (affected: lint 75 projects, then test and build 71 projects and 3 dependencies), 2:01 PM Central | volume, warm install, Nx cache cold for these tasks (0 of 70 hits on the run before) | 2 min 54 s (lint 74 s, test and build 100 s) |
 | 10 Oct 2026 | home | The same check's first run, 1:56 PM Central: fresh clone and `npm ci`, then the same tasks; failed on 8 test projects and one build | volume, cold | 3 min 57 s |
 | 10 Oct 2026 | home | `nx run-many -t build -p ues-operations-angular,gisday-competitions-angular`, the two apps CI does not build, in the check's volume | volume, warm | 13 s |
@@ -116,6 +117,33 @@ project against 4 - so the controlled comparison is the `npm ci` pair below, not
 The docs-only row is worth keeping as a reminder that **exit 0 with "No tasks were run" is not a
 pass**. That run was correct, because a branch touching only `docs/*.md` affects no projects, but the
 same output appears when the graph fails to compute. Read the log, not the exit code.
+
+### Unit tests: Jest against Vitest (#1479)
+
+The test targets of AggieMap's 71 projects (`aggiemap-angular`, `ues-operations-angular` and every
+project under `libs/aggiemap`, `libs/maps`, `libs/ui-kits`, `libs/common`, `libs/ts/events` and
+`libs/ues`), each run as `nx run-many -t test -p <the 71> --skip-nx-cache --parallel=8
+--coverage=false`. `--skip-nx-cache` is for the measurement only: every task runs. Jest is the branch's
+base, `7ddbee7d1`; Vitest is `chore/1479-vitest`. Each ran in its own Docker volume with a warm
+install, the two alternating so both met the same load.
+
+| Date | Machine | What ran | Approach | Elapsed |
+| --- | --- | --- | --- | ---: |
+| 18 Oct 2026 | home | Vitest, second run, 7:57 PM Central (867 tests, 0 failed) | volume, warm; an idle nginx and two node containers beside it | **76 s** |
+| 18 Oct 2026 | home | Jest, second run, 7:56 PM Central (869 tests, 0 failed) | volume, warm; one other build running | **93 s** |
+| 18 Oct 2026 | home | Vitest, first run, 7:54 PM Central | volume, warm; a bundle build running beside it | **90 s** |
+| 18 Oct 2026 | home | Jest, first run, 7:52 PM Central | volume, warm; idle containers only | **100 s** |
+| 18 Oct 2026 | home | Vitest, the same 71 projects, 7:24 PM Central | volume, warm; eight agents sharing the machine | 166 s |
+| 18 Oct 2026 | home | Jest, the same 71 projects, 6:14 PM Central | volume, warm; eight agents sharing the machine | 294 s |
+
+Vitest took 83 s on average against Jest's 97 s: about 15 % less for the same tests. The two loaded
+runs at the bottom are not a comparison, since they ran an hour apart under different load, but they
+show the gap does not close under contention. By Vitest's own breakdown, most of a project's time is
+compiling, importing and setting up jsdom rather than testing: `ts-events-ngx`, the longest, spent 4 s
+of its 33 s in its 161 tests on the loaded run.
+
+Vitest counts two tests fewer. Jest ran `ui-kits-ngx-layout-code`'s two inside `ui-kits-ngx-layout` as
+well, since that project's directory contains it; Vitest runs them once, in their own project.
 
 ## Installs
 
@@ -462,6 +490,106 @@ two seconds, counted from the start of the page load. Other work may have been r
 **What it shows.** Both maps finish drawing five to eight times sooner, with the same spaces drawn. The
 layers settle as fast either way, because ArcGIS loads a layer's description, not its features; the
 wait was the features, fetched and processed for the whole campus and then not drawn.
+
+### Zoneless: no zone.js in AggieMap or UES Operations
+
+Two production builds on 18 October 2026, made the same way in Docker volumes: `development` at
+`70f0e424b` (before) and the zoneless branch of [#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478) (after). Sizes are the build's own report.
+
+| | Before | After | Change |
+| --- | ---: | ---: | ---: |
+| `aggiemap-angular` initial files, raw | 851.79 kB | 812.09 kB | -39.70 kB |
+| `aggiemap-angular` initial files, estimated transfer | 211.88 kB | 199.62 kB | -12.26 kB |
+| `aggiemap-angular` `polyfills` (zone.js), raw / transfer | 35.88 kB / 11.68 kB | none | |
+| `ues-operations-angular` initial files, raw | 961.82 kB | 921.59 kB | -40.23 kB |
+| `ues-operations-angular` initial files, estimated transfer | 238.28 kB | 225.96 kB | -12.32 kB |
+
+**What it shows.** Each application's first download loses the zone.js polyfill, 35.9 kB raw and 11.7 kB
+compressed, and about 4 kB more of Angular's code for working with a zone. That is about 6% of AggieMap's
+initial transfer. No paint timings were taken: the machine was shared with other builds that evening, and
+the earlier entries show what that does to them.
+
+### interactjs, the click coordinates and the keyboard viewfinder out of the map's first download
+
+Two production builds on 18 October 2026, home machine: `development` at `70f0e424b` (before) and the
+change (after), each served by its own nginx container with the application's own `nginx.conf`, and
+measured with `measure-load.js` on the main map (`/map/d`) and an event map
+(`/parking/break-summer/map/d`), **3 cold loads each**, before and after alternately, four times. The
+first two pairs, between 17:30 and 18:25 US Central, ran on a **heavily loaded** machine (about eight
+other sessions building, checking and running smoke suites, one container at 1,300% CPU). The last two,
+from 20:15, ran on a quiet one, apart from one container at 1,000% CPU by the end of the fourth. The
+sizes are exact; the timings compare with each other only roughly.
+
+The change, in three parts:
+
+- **interactjs** (132 kB raw) was in every map's first download, desktop included. Only the phone's
+  popup and its bus and trip planner panels use it, through the drag directive, but the directive was
+  exported from the same index as the drag service the phone layout injects. The directive now has its
+  own entry, the bus panels are loaded by their routes, and the phone's popup is rendered through a
+  small wrapper that defers it `on immediate`.
+- **The click coordinates and the keyboard viewfinder**, which show nothing until the map is clicked or
+  moved with the keyboard, are deferred `on idle`; on the main map that also takes the clipboard package
+  out.
+- **Angular's `@defer` runtime joins the first download**, 3.7 kB of estimated transfer, which the first
+  `@defer` anywhere in the application brings once.
+
+| From the builds | Before | After |
+| --- | ---: | ---: |
+| Initial JavaScript and styles, raw | 852 kB | 861 kB |
+| Initial, estimated transfer | 212 kB | 216 kB |
+| JavaScript the main map page needs before its route renders, gzipped | 298 KB | 265 KB |
+| The same for an event map, gzipped | 345 KB | 316 KB |
+
+Merged with `development` at `b089c341a`, after the deferred trip planner (#1924), the same two rows are
+327 KB against 292 KB and 374 KB against 344 KB, and the initial files 236 kB against 239 kB of
+estimated transfer: #1924 had already brought the runtime, and its time picker had brought Angular
+Material into the initial files, which is fixed separately.
+
+| Served and measured, median of 3 | Before | After | Before | After | Before, quiet | After, quiet | Before, quiet | After, quiet |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Main map, desktop: application JavaScript downloaded, gzipped | 946 KB | 909 KB | 948 KB | 914 KB | 946 KB | 914 KB | 946 KB | 912 KB |
+| Event map, desktop: the same | 947 KB | 912 KB | 941 KB | 924 KB | 951 KB | 911 KB | 953 KB | 917 KB |
+| Event map, phone: the same | 901 KB | 874 KB | 901 KB | 874 KB | 901 KB | 874 KB | 901 KB | 874 KB |
+| Main map, phone: the same | 897 KB | 890 KB | 897 KB | 893 KB | 897 KB | 893 KB | 897 KB | 893 KB |
+| Main map, phone: first contentful paint | 2.62 s | 2.91 s | 2.75 s | 2.82 s | 2.53 s | 2.85 s | 2.18 s | 2.85 s |
+| Main map, phone: largest contentful paint | 5.73 s | 5.54 s | 5.60 s | 5.04 s | 5.39 s | 5.28 s | 4.60 s | 5.12 s |
+| Event map, phone: first contentful paint | 2.66 s | 2.81 s | 2.66 s | 2.82 s | 2.52 s | 2.58 s | 2.18 s | 2.74 s |
+| Event map, phone: largest contentful paint | 6.88 s | 6.52 s | 6.62 s | 6.29 s | 6.47 s | 5.98 s | 5.46 s | 6.41 s |
+| Main map, phone: map ready | 17.0 s | 18.1 s | 16.7 s | 16.7 s | 16.3 s | 17.1 s | 15.0 s | 16.9 s |
+| Main map, desktop: largest contentful paint | 1.08 s | 1.20 s | 1.06 s | 0.84 s | 0.28 s | 0.90 s | 0.32 s | 0.29 s |
+
+"Application JavaScript" here includes `@arcgis/core`, which the build now serves itself, so it does not
+compare with the 376 KB in the sections above. The "before its route renders" rows are the files a page
+imports statically from `main` and from its map route's lazy file, from the build's `--stats-json`.
+
+**What it shows.** About 30 KB less JavaScript on a desktop, on the main map and on an event map (3 to
+4%), and 27 KB less on a phone's event map, the same in every pair. A phone on the main map downloads
+nearly the same as before, as it should: its popup, and interactjs with it, follows straight after the
+page.
+
+**The phone's first paint came later in all four pairs, by 0.1 to 0.7 s, and that is the `@defer`
+runtime, not the deferrals.** One more phone load of each, with the files' timings, shows why. The first
+paint comes from the application shell, before the map route's file is even requested, so nothing this
+change takes out of the map route can bring it sooner; what it waits for is the initial files. Those
+grew by 3.7 kB of transfer, the runtime and the chunks esbuild rearranged around it, and on Fast 4G with
+a 4x slower CPU they finished arriving 70 ms later and painted 100 to 170 ms later (2.83 s against 2.69
+s). The map route's own file then arrived sooner, 23 KB against 60 KB, finishing at 3.7 to 4.0 s against 4.2 s.
+`development` has carried the same runtime since the deferred trip planner (#1924), so against today's
+`development` this change does not move the first paint. The largest paint and map ready moved both ways
+between pairs, by more than the change could explain.
+
+**A first attempt was slower on a phone, and was changed.** Loading the phone's popup through its route
+(`loadComponent`) made the router hold the whole phone layout, search box included, until the popup's
+file had downloaded. In two alternating pairs taken that way, the phone's largest paint came later, not
+sooner: 5.38 s against 5.95 s and 5.74 s against 6.33 s on the main map, 6.64 s against 6.95 s and
+6.94 s against 7.17 s on the event map. The wrapper renders at once and defers only the popup.
+
+**Looked at and left alone.** The 3D toggle is on screen at first paint, so deferring it would make it
+appear late. The Aerial Imagery date slider, the Code Maroon alert and the notification panel come from
+libraries whose index the first download imports anyway, so a `@defer` would not split them without a
+second entry for each, for 7 to 17 kB raw apiece. The legend, layer list, basemap gallery and bus list
+are route components or sidebar tabs; the sidebar reads its tabs once, so a tab inside `@defer` would
+never be wired up.
 
 ## Where the other records are
 

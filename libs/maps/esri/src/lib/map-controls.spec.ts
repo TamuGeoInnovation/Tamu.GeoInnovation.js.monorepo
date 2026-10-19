@@ -1,15 +1,16 @@
+import type { Mock } from 'vitest';
 import { addTrack, useZoomComponent } from './map-controls';
 
 import esri = __esri;
 
 // The components are browser custom elements; jsdom only needs the tags.
-jest.mock('@arcgis/map-components/components/arcgis-zoom', () => ({}), { virtual: true });
-jest.mock('@arcgis/map-components/components/arcgis-track', () => ({}), { virtual: true });
+vi.mock('@arcgis/map-components/components/arcgis-zoom', () => ({}));
+vi.mock('@arcgis/map-components/components/arcgis-track', () => ({}));
 
 /** Esri's zoom and locate components in place of the deprecated widgets (#1853). */
 describe('map controls', () => {
   function makeView(components: string[]) {
-    return { ui: { components, add: jest.fn() } } as unknown as esri.MapView & { ui: { add: jest.Mock } };
+    return { ui: { components, add: vi.fn() } } as unknown as esri.MapView & { ui: { add: Mock } };
   }
 
   /** Lets the components' definitions "load". */

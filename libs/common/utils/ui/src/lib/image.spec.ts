@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { shrinkImage } from './image';
 
 describe('shrinkImage', () => {
@@ -15,19 +16,27 @@ describe('shrinkImage', () => {
    */
   const withBitmap = (width: number, height: number) => {
     imageSize = { width, height };
-    (globalThis as unknown as { createImageBitmap: unknown }).createImageBitmap = jest.fn(
+    (globalThis as unknown as { createImageBitmap: unknown }).createImageBitmap = vi.fn(
       (_, options: { resizeWidth?: number; resizeHeight?: number }) => {
         bitmapOptions.push(options);
 
         if (options.resizeWidth) {
-          return Promise.resolve({ width: options.resizeWidth, height: Math.round((height * options.resizeWidth) / width), close: jest.fn() });
+          return Promise.resolve({
+            width: options.resizeWidth,
+            height: Math.round((height * options.resizeWidth) / width),
+            close: vi.fn()
+          });
         }
 
         if (options.resizeHeight) {
-          return Promise.resolve({ width: Math.round((width * options.resizeHeight) / height), height: options.resizeHeight, close: jest.fn() });
+          return Promise.resolve({
+            width: Math.round((width * options.resizeHeight) / height),
+            height: options.resizeHeight,
+            close: vi.fn()
+          });
         }
 
-        return Promise.resolve({ width, height, close: jest.fn() });
+        return Promise.resolve({ width, height, close: vi.fn() });
       }
     );
   };
@@ -38,18 +47,24 @@ describe('shrinkImage', () => {
     encodedBytes = 300 * 1024;
     imageSize = undefined;
 
-    jest.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(function (this: HTMLCanvasElement) {
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(function (this: HTMLCanvasElement) {
       return { drawImage: () => drawn.push({ width: this.width, height: this.height }) } as never;
     });
-    jest
-      .spyOn(HTMLCanvasElement.prototype, 'toBlob')
-      .mockImplementation((done, type) => done(new Blob([new Uint8Array(encodedBytes)], { type })));
+    vi.spyOn(HTMLCanvasElement.prototype, 'toBlob').mockImplementation((done, type) =>
+      done(new Blob([new Uint8Array(encodedBytes)], { type }))
+    );
 
     // jsdom loads no images: this one "loads" with the size given to withBitmap, or fails without one.
-    (URL as unknown as { createObjectURL: unknown }).createObjectURL = jest.fn(() => 'blob:photo');
-    (URL as unknown as { revokeObjectURL: unknown }).revokeObjectURL = jest.fn();
-    jest.spyOn(window, 'Image').mockImplementation(() => {
-      const image = { onload: undefined, onerror: undefined, naturalWidth: 0, naturalHeight: 0 } as unknown as HTMLImageElement;
+    (URL as unknown as { createObjectURL: unknown }).createObjectURL = vi.fn(() => 'blob:photo');
+    (URL as unknown as { revokeObjectURL: unknown }).revokeObjectURL = vi.fn();
+    // A function, not an arrow: the code calls `new Image()`, and Vitest constructs the mock's own implementation.
+    vi.spyOn(window, 'Image').mockImplementation(function () {
+      const image = {
+        onload: undefined,
+        onerror: undefined,
+        naturalWidth: 0,
+        naturalHeight: 0
+      } as unknown as HTMLImageElement;
 
       Object.defineProperty(image, 'src', {
         set: () =>
@@ -68,7 +83,7 @@ describe('shrinkImage', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
     delete (globalThis as unknown as { createImageBitmap?: unknown }).createImageBitmap;
   });
 
@@ -146,9 +161,11 @@ describe('shrinkImage', () => {
 
   it('decodes at full size, then shrinks, when the browser refuses the resize options', async () => {
     withBitmap(4032, 3024);
-    const decode = globalThis.createImageBitmap as unknown as jest.Mock;
+    const decode = globalThis.createImageBitmap as unknown as Mock;
     const honoured = decode.getMockImplementation();
-    decode.mockImplementation((file, options) => (options.resizeWidth ? Promise.reject(new Error('unsupported')) : honoured(file, options)));
+    decode.mockImplementation((file, options) =>
+      options.resizeWidth ? Promise.reject(new Error('unsupported')) : honoured(file, options)
+    );
 
     const result = await shrinkImage(photo(4 * 1024 * 1024));
 
@@ -157,7 +174,9 @@ describe('shrinkImage', () => {
   });
 
   it('sends the original when the browser cannot read the image', async () => {
-    (globalThis as unknown as { createImageBitmap: unknown }).createImageBitmap = jest.fn(() => Promise.reject(new Error('unsupported')));
+    (globalThis as unknown as { createImageBitmap: unknown }).createImageBitmap = vi.fn(() =>
+      Promise.reject(new Error('unsupported'))
+    );
     const original = photo(4 * 1024 * 1024);
 
     await expect(shrinkImage(original)).resolves.toBe(original);

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, Subject, takeUntil } from 'rxjs';
 
 import { SettingsInitializationConfig, SettingsService } from '@tamu-gisc/common/ngx/settings';
@@ -13,9 +13,11 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 })
 export class BasemapOverrideComponent implements OnInit, OnDestroy {
   private readonly ss = inject(SettingsService);
-  private readonly fb = inject(UntypedFormBuilder);
+  private readonly fb = inject(FormBuilder);
 
-  public form: UntypedFormGroup;
+  public readonly form = this.fb.group({
+    url: ['', Validators.required]
+  });
 
   private settingsConfig: SettingsInitializationConfig = {
     storage: {
@@ -32,10 +34,6 @@ export class BasemapOverrideComponent implements OnInit, OnDestroy {
   private $destroy: Subject<boolean> = new Subject();
 
   public ngOnInit(): void {
-    this.form = this.fb.group({
-      url: ['', Validators.required]
-    });
-
     this.ss.init(this.settingsConfig).pipe(takeUntil(this.$destroy)).subscribe(this.next.bind(this));
   }
 
@@ -51,9 +49,8 @@ export class BasemapOverrideComponent implements OnInit, OnDestroy {
       this.form.patchValue({ url: basemap_url });
     }
 
-    this.form
-      .get('url')
-      .valueChanges.pipe(
+    this.form.controls.url.valueChanges
+      .pipe(
         takeUntil(this.$destroy),
         debounceTime(1000),
         distinctUntilChanged(),

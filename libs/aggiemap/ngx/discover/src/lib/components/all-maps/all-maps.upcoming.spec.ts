@@ -47,7 +47,8 @@ describe('AllMapsComponent upcoming events', () => {
   };
 
   const renderAt = async (now: Date) => {
-    jest.useFakeTimers({ now, doNotFake: ['nextTick', 'setImmediate', 'setTimeout', 'setInterval', 'queueMicrotask'] });
+    // Only the clock is fake: Vitest's toFake, the other way round from Jest's doNotFake.
+    vi.useFakeTimers({ now, toFake: ['Date'] });
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
@@ -88,7 +89,7 @@ describe('AllMapsComponent upcoming events', () => {
 
   afterEach(() => {
     TestBed.resetTestingModule();
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   /**

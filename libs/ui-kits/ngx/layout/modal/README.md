@@ -20,7 +20,7 @@ This library contains components and services that enable rendering components i
 This library depends on a `ViewContainerRef` instance to render the modal window and the desired components. This view container can be provided each time the modal is opened:
 
 ```js
-constructor(private readonly modal: ModalService){}
+private readonly modal = inject(ModalService);
 
 this.modal.open(FirstLaunchModalComponent, {
   viewRef: this.viewRef
@@ -36,10 +36,8 @@ To register a global view container:
 ```js
 export class AppComponent implements OnInit {
 
-  constructor(
-    private readonly viewRef: ViewContainerRef,
-    private readonly ms: ModalService
-  ) {}
+  private readonly viewRef = inject(ViewContainerRef);
+  private readonly ms = inject(ModalService);
 
   public ngOnInit(): void {
     this.ms.registerGlobalViewRef(this.viewRef);
@@ -53,7 +51,7 @@ In the component that is responsible for triggering a modal, inject the modal se
 
 ```js
 
-constructor(private readonly modal: ModalService){}
+private readonly modal = inject(ModalService);
 
 public openModal(){
   this.modal.open(GreetingsModalComponent);
@@ -65,7 +63,7 @@ public openModal(){
 You can pass in data to the provided component by including any valid object in the `open` call, through the optional `ModalOpenOptions`.
 
 ```js
-constructor(private readonly modal: ModalService){}
+private readonly modal = inject(ModalService);
 
 public openModal(){
   this.modal.open(GreetingsModalComponent, {
@@ -81,7 +79,7 @@ The passed in data can be accessed in the downstream component through the `MODA
 In `GreetingsModalComponent`:
 
 ```js
-  constructor(@Inject(MODAL_DATA) public readonly data: { message: string }){}
+  public readonly data = inject<{ message: string }>(MODAL_DATA);
 
   public ngOnInit(): void {
     console.log(JSON.stringify(this.data)); // '{"message":"Hello world!"}'
@@ -103,7 +101,7 @@ The `ModalRefService` is designed a bridge between the hosting modal component a
 In `GreetingsModalComponent`:
 
 ```js
-  constructor(private readonly modalRef: ModalRefService){}
+  private readonly modalRef = inject(ModalRefService);
 
   public closeModal(){
     this.modalRef.close();
@@ -121,7 +119,7 @@ As explained in the previous section, to send data back to the caller:
 In `GreetingsModalComponent`:
 
 ```js
-  constructor(private readonly modalRef: ModalRefService){}
+  private readonly modalRef = inject(ModalRefService);
 
   public closeModal(){
     this.modalRef.close({
@@ -133,7 +131,7 @@ In `GreetingsModalComponent`:
 In the caller component, simply make a subscription to the original `open` call and data provided in the modal close will become available:
 
 ```js
-constructor(private readonly modal: ModalService){}
+private readonly modal = inject(ModalService);
 
 public openModal(){
   this.modal.open<{greetingsAcknowledged: boolean}>(GreetingsModalComponent, {

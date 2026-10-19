@@ -6,14 +6,6 @@
   "prefix": "tamu-gisc",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/interactions/scroll-to"],
-      "options": {
-        "jestConfig": "libs/ui-kits/ngx/interactions/scroll-to/jest.config.ts",
-        "tsConfig": "libs/ui-kits/ngx/interactions/scroll-to/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

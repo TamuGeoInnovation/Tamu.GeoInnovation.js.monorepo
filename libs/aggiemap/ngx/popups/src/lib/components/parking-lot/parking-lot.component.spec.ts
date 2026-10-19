@@ -22,7 +22,7 @@ describe('ParkingLotPopupComponent', () => {
         {
           provide: Router,
           useValue: {
-            navigate: jest.fn()
+            navigate: vi.fn()
           }
         },
         {
@@ -33,27 +33,27 @@ describe('ParkingLotPopupComponent', () => {
           provide: TripPlannerService,
           useValue: {
             Stops: of([]),
-            setStops: jest.fn()
+            setStops: vi.fn()
           }
         },
         {
           provide: Angulartics2,
           useValue: {
             eventTrack: {
-              next: jest.fn()
+              next: vi.fn()
             }
           }
         },
         {
           provide: EsriMapService,
           useValue: {
-            clearHitTest: jest.fn()
+            clearHitTest: vi.fn()
           }
         },
         {
           provide: SearchService,
           useValue: {
-            getSource: jest.fn().mockReturnValue({
+            getSource: vi.fn().mockReturnValue({
               urlQueryParam: 'lot'
             })
           }

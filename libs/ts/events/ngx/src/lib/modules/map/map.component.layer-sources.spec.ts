@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -37,7 +37,10 @@ describe('MapComponent layer sources', () => {
         { provide: ActivatedRoute, useValue: {} },
         { provide: LocalStoreService, useValue: {} },
         { provide: EventSettingsService, useValue: {} },
-        { provide: ModalService, useValue: {} }
+        { provide: ModalService, useValue: {} },
+        // Zoneless, a created component is checked by itself and its ngOnInit would run against these
+        // empty stand-ins (#1478). Only the injector is under test, so nothing is rendered.
+        { provide: ComponentFixtureAutoDetect, useValue: false }
       ]
     })
       // The map itself is not under test; only which injector its providers live in.

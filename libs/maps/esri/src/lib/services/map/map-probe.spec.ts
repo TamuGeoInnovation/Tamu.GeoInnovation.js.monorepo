@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import * as projectOperator from '@arcgis/core/geometry/operators/projectOperator.js';
 
 import { MAP_PROBE_GLOBAL, registerMapProbe } from './map-probe';
@@ -5,8 +6,8 @@ import { MAP_PROBE_GLOBAL, registerMapProbe } from './map-probe';
 // Esri's project operator, which the probe loads only for a view in a projected reference. Mocked, so the
 // test neither loads @arcgis/core's ES modules nor depends on the engine's WebAssembly.
 const mockWGS84 = { wkid: 4326 };
-jest.mock('@arcgis/core/geometry/operators/projectOperator.js', () => ({ load: jest.fn(), execute: jest.fn() }));
-jest.mock('@arcgis/core/geometry/SpatialReference.js', () => ({ __esModule: true, default: { WGS84: mockWGS84 } }));
+vi.mock('@arcgis/core/geometry/operators/projectOperator.js', () => ({ load: vi.fn(), execute: vi.fn() }));
+vi.mock('@arcgis/core/geometry/SpatialReference.js', () => ({ __esModule: true, default: { WGS84: mockWGS84 } }));
 
 /**
  * The smoke suite cannot import this module -- doing so pulls the Angular dependency graph into the
@@ -40,7 +41,7 @@ describe('map probe', () => {
       ({
         map: { allLayers: { toArray: () => layersOf(count) } },
         view: { ready: true }
-      } as unknown as Parameters<typeof registerMapProbe>[0]);
+      }) as unknown as Parameters<typeof registerMapProbe>[0];
 
     afterEach(() => {
       delete (window as unknown as Record<string, unknown>)[MAP_PROBE_GLOBAL];
@@ -62,7 +63,12 @@ describe('map probe', () => {
       ];
 
       expect(probe.ready).toBe(false);
-      await expect(probe.snapshot()).resolves.toEqual({ ready: false, viewReady: false, spatialReference: null, layers: [] });
+      await expect(probe.snapshot()).resolves.toEqual({
+        ready: false,
+        viewReady: false,
+        spatialReference: null,
+        layers: []
+      });
     });
 
     it("reports a graphics layer's graphics by type, and null for other layers (#1174)", async () => {
@@ -123,7 +129,8 @@ describe('map probe', () => {
       // Stands in for Esri's own SpatialReference.equals, which treats the two numberings as equal.
       const reference = (wkid: number) => ({
         wkid,
-        equals: (other: { wkid: number }) => new Set([wkid, other.wkid]).size === 1 || [wkid, other.wkid].every((w) => w === 102100 || w === 3857)
+        equals: (other: { wkid: number }) =>
+          new Set([wkid, other.wkid]).size === 1 || [wkid, other.wkid].every((w) => w === 102100 || w === 3857)
       });
 
       registerMapProbe(
@@ -132,11 +139,32 @@ describe('map probe', () => {
             allLayers: {
               toArray: () => [
                 // The same reference, reported by its other number. Must not be called undrawable.
-                { id: 'esri-base', title: 'World Topo', type: 'vector-tile', visible: true, loaded: true, spatialReference: reference(3857) },
+                {
+                  id: 'esri-base',
+                  title: 'World Topo',
+                  type: 'vector-tile',
+                  visible: true,
+                  loaded: true,
+                  spatialReference: reference(3857)
+                },
                 // A genuinely different reference, which cannot be reprojected into the view.
-                { id: 'campus-base', title: 'Base Map', type: 'vector-tile', visible: true, loaded: true, spatialReference: reference(32139) },
+                {
+                  id: 'campus-base',
+                  title: 'Base Map',
+                  type: 'vector-tile',
+                  visible: true,
+                  loaded: true,
+                  spatialReference: reference(32139)
+                },
                 // Feature data is reprojected on request, so it is always drawable.
-                { id: 'buildings', title: 'Buildings', type: 'feature', visible: true, loaded: true, spatialReference: reference(32139) }
+                {
+                  id: 'buildings',
+                  title: 'Buildings',
+                  type: 'feature',
+                  visible: true,
+                  loaded: true,
+                  spatialReference: reference(32139)
+                }
               ]
             }
           },
@@ -146,7 +174,10 @@ describe('map probe', () => {
       );
 
       const probe = (
-        window as unknown as Record<string, { snapshot: () => Promise<{ layers: { id: string; drawable: boolean | null }[] }> }>
+        window as unknown as Record<
+          string,
+          { snapshot: () => Promise<{ layers: { id: string; drawable: boolean | null }[] }> }
+        >
       )[MAP_PROBE_GLOBAL];
       const layers = (await probe.snapshot()).layers;
 
@@ -161,7 +192,7 @@ describe('map probe', () => {
      * snapshots a one-layer map and reports a healthy map as empty.
      */
     it('is not ready until the layer count has held steady', () => {
-      const nowSpy = jest.spyOn(Date, 'now');
+      const nowSpy = vi.spyOn(Date, 'now');
 
       try {
         nowSpy.mockReturnValue(10_000);
@@ -184,7 +215,7 @@ describe('map probe', () => {
     });
 
     it('goes back to not ready when more layers are added', () => {
-      const nowSpy = jest.spyOn(Date, 'now');
+      const nowSpy = vi.spyOn(Date, 'now');
 
       try {
         // One mutable instance, as in the real thing: layers are added to the map that is already
@@ -224,7 +255,7 @@ describe('map probe', () => {
      * wipes a live map and the probe reports not-ready for the rest of the page's life.
      */
     it('does not let a different owner clear a registered map', () => {
-      const nowSpy = jest.spyOn(Date, 'now');
+      const nowSpy = vi.spyOn(Date, 'now');
 
       try {
         nowSpy.mockReturnValue(10_000);
@@ -271,12 +302,12 @@ describe('map probe', () => {
     it('projects a center in a projected reference to WGS 84, and is not ready until it can (#1380)', async () => {
       // Dev's main map is in Texas Centric (wkid 32139), where Esri leaves longitude and latitude null.
       const center = { x: 1082345.89, y: 3111767.64, longitude: null, latitude: null };
-      const project = jest.fn(() => ({ x: -96.34467, y: 30.61306 }));
+      const project = vi.fn(() => ({ x: -96.34467, y: 30.61306 }));
 
-      (projectOperator.load as jest.Mock).mockResolvedValue(undefined);
-      (projectOperator.execute as jest.Mock).mockImplementation(project);
+      (projectOperator.load as Mock).mockResolvedValue(undefined);
+      (projectOperator.execute as Mock).mockImplementation(project);
 
-      const nowSpy = jest.spyOn(Date, 'now');
+      const nowSpy = vi.spyOn(Date, 'now');
 
       try {
         nowSpy.mockReturnValue(10_000);

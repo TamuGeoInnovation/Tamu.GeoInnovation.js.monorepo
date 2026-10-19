@@ -20,15 +20,16 @@ class MockRouter {
 }
 
 describe('RouterHistoryService', () => {
-  it('should work for a single event', (done) => {
-    const mockRouter = new MockRouter();
-    const service: RouterHistoryService = build(mockRouter);
-    expect(service).toBeTruthy();
-    service.last().subscribe((event) => {
-      expect(event).toEqual(mockRouter.ne1);
-      done();
-    });
-  });
+  it('should work for a single event', () =>
+    new Promise<void>((done) => {
+      const mockRouter = new MockRouter();
+      const service: RouterHistoryService = build(mockRouter);
+      expect(service).toBeTruthy();
+      service.last().subscribe((event) => {
+        expect(event).toEqual(mockRouter.ne1);
+        done();
+      });
+    }));
 });
 
 /**
@@ -39,21 +40,22 @@ describe('RouterHistoryService', () => {
 class Wn extends NavigationEnd {}
 
 describe('RouterHistoryService in a production build', () => {
-  it('records NavigationEnd events whose class name has been minified', (done) => {
-    // last() is the previous route, so it needs two navigations.
-    const router = {
-      events: new Observable((observer) => {
-        observer.next(new Wn(0, 'http://localhost:4200/map', 'http://localhost:4200/map'));
-        observer.next(new Wn(1, 'http://localhost:4200/all-maps', 'http://localhost:4200/all-maps'));
-      })
-    };
-    const service = build(router);
+  it('records NavigationEnd events whose class name has been minified', () =>
+    new Promise<void>((done) => {
+      // last() is the previous route, so it needs two navigations.
+      const router = {
+        events: new Observable((observer) => {
+          observer.next(new Wn(0, 'http://localhost:4200/map', 'http://localhost:4200/map'));
+          observer.next(new Wn(1, 'http://localhost:4200/all-maps', 'http://localhost:4200/all-maps'));
+        })
+      };
+      const service = build(router);
 
-    service.last().subscribe((event) => {
-      expect(event.url).toBe('http://localhost:4200/map');
-      done();
-    });
-  });
+      service.last().subscribe((event) => {
+        expect(event.url).toBe('http://localhost:4200/map');
+        done();
+      });
+    }));
 
   it('still ignores router events that are not a NavigationEnd', () => {
     const router = { events: new Observable((observer) => observer.next({ id: 0, url: '/elsewhere' })) };

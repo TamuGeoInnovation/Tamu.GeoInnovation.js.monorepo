@@ -4,7 +4,6 @@ import {
   SelectComponent,
   CheckboxComponent,
   CheckboxGroupComponent,
-  DateTimePickerComponent,
   TextboxComponent,
   AutocompleteComponent,
   AutocompleteOptionTemplateDirective,
@@ -16,6 +15,7 @@ import {
   SelectListComponent,
   TurnstileChallengeComponent
 } from '@tamu-gisc/ui-kits/ngx/forms';
+import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 
@@ -26,11 +26,11 @@ describe('AlertModalComponent', () => {
 
   beforeEach(() => {
     mockModalRef = {
-      close: jest.fn()
+      close: vi.fn()
     };
 
     mockSettingsService = {
-      updateSettings: jest.fn()
+      updateSettings: vi.fn()
     };
 
     const data: AlertModalData = {
@@ -94,8 +94,8 @@ describe('AlertModalComponent template', () => {
         AlertModalComponent
       ],
       providers: [
-        { provide: ModalRefService, useValue: { close: jest.fn() } },
-        { provide: SettingsService, useValue: { updateSettings: jest.fn() } },
+        { provide: ModalRefService, useValue: { close: vi.fn() } },
+        { provide: SettingsService, useValue: { updateSettings: vi.fn() } },
         { provide: MODAL_DATA, useValue: { title: 'Test', message: 'Message', primaryText: 'OK' } }
       ]
     }).compileComponents();

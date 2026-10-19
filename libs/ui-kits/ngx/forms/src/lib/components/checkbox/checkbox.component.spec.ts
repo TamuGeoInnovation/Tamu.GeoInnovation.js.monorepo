@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CheckboxComponent } from './checkbox.component';
 
@@ -6,11 +6,11 @@ describe('CheckboxComponent', () => {
   let component: CheckboxComponent;
   let fixture: ComponentFixture<CheckboxComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [CheckboxComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckboxComponent);
@@ -22,21 +22,23 @@ describe('CheckboxComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should respond to mouse events', (done) => {
-    component.changed.subscribe((event) => {
-      expect(event).toEqual(true);
-      done();
-    });
-    component.handleMouseEvent();
-  });
+  it('should respond to mouse events', () =>
+    new Promise<void>((done) => {
+      component.changed.subscribe((event) => {
+        expect(event).toEqual(true);
+        done();
+      });
+      component.handleMouseEvent();
+    }));
 
-  it('should respond to keyboard events', (done) => {
-    component.changed.subscribe((event) => {
-      expect(event).toEqual(true);
-      done();
-    });
-    component.handleKeyboardEvent();
-  });
+  it('should respond to keyboard events', () =>
+    new Promise<void>((done) => {
+      component.changed.subscribe((event) => {
+        expect(event).toEqual(true);
+        done();
+      });
+      component.handleKeyboardEvent();
+    }));
   it('should correctly evaluate setDisabledState', () => {
     component.setDisabledState(true);
     expect(component.disabled()).toEqual(true);

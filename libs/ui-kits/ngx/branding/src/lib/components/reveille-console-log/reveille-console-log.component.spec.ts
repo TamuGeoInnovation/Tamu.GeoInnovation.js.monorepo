@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { REV_ASCII, ReveilleConsoleLogComponent } from './reveille-console-log.component';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
@@ -16,8 +16,8 @@ describe('ReveilleConsoleLogComponent', () => {
 
   let consoleResults = '';
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [ReveilleConsoleLogComponent],
       providers: [
         {
@@ -26,7 +26,7 @@ describe('ReveilleConsoleLogComponent', () => {
         }
       ]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     console.log = (message) => {

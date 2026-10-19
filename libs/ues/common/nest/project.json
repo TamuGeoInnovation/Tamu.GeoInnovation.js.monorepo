@@ -7,13 +7,6 @@
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/ues/common/nest"],
-      "options": {
-        "jestConfig": "libs/ues/common/nest/jest.config.ts"
-      }
     }
   }
 }

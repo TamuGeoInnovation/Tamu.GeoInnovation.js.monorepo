@@ -66,6 +66,37 @@ const TOGGLE_LAYER = 'Visitor Kiosks';
 const MAIN_MAP = '/map/d';
 const MAIN_MAP_LAYERS = ['Visitor Parking', 'Construction Zones'];
 
+/**
+ * The Layers list is alphabetical once its layers have their titles (#1939).
+ *
+ * A layer whose definition gives it no title takes its service's name when it loads. The list was sorted
+ * only when a layer was added or removed, and on ArcGIS 5 a layer is listed before it loads, so the list
+ * was sorted while most titles were still empty and kept that order. On 18 October dev listed
+ * "Construction, Route Stop/Start Points, Campus Stops, ..." on two loads in three, while production read
+ * them alphabetically.
+ *
+ * Whether a visit showed it depended on how soon the services answered, so the order is forced here, as
+ * above: every layer's description, which is where its name comes from, is held back until the list has
+ * been drawn without it, and the list must then sort itself.
+ */
+const ALPHABETICAL_LISTS: Record<string, string[]> = {
+  '/parking/ts-main-parking': [
+    'Campus Stops',
+    'Construction',
+    'Parking Lots',
+    'RNS Spaces',
+    'Route Stop/Start Points',
+    'Visitor Kiosks'
+  ],
+  '/parking/service-loading': ['Service Parking Lots', 'Service Parking Spaces']
+};
+
+/** A layer's description in its service, `.../FeatureServer/0?f=json`, which is not one of its queries. */
+const LAYER_DESCRIPTION = /\/(Feature|Map)Server\/\d+\/?(\?|$)/;
+
+/** Long enough for the list to be drawn first. */
+const TITLES_HELD_MS = 8_000;
+
 test.describe('legend', () => {
   test('a symbol follows its layer when the portal symbology arrives after the legend is drawn', async ({ page }) => {
     test.setTimeout(180_000);
@@ -246,4 +277,25 @@ test.describe('legend', () => {
       });
     }
   });
+
+  for (const [path, expected] of Object.entries(ALPHABETICAL_LISTS)) {
+    test(`the Layers list on ${path} is alphabetical once its layers are titled`, async ({ page }) => {
+      test.setTimeout(150_000);
+      await blockAnalytics(page);
+      await page.route(LAYER_DESCRIPTION, async (route) => {
+        await new Promise((resolve) => setTimeout(resolve, TITLES_HELD_MS));
+        await route.continue();
+      });
+      await page.goto(path);
+
+      const rows = page.locator('tamu-gisc-layer-list-item .layer-item > p');
+
+      await expect
+        .poll(async () => (await rows.allTextContents()).map((text) => text.trim()), {
+          message: `the Layers list on ${path} is not in alphabetical order`,
+          timeout: 120_000
+        })
+        .toEqual(expected);
+    });
+  }
 });

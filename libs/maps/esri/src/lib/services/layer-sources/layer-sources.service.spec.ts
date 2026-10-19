@@ -1,3 +1,4 @@
+import type { Mocked } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -6,7 +7,7 @@ import { LayerSourcesService } from './layer-sources.service';
 
 describe('LayerSourcesService', () => {
   let service: LayerSourcesService;
-  let environmentService: jest.Mocked<EnvironmentService>;
+  let environmentService: Mocked<EnvironmentService>;
 
   const mockLayerSources = [
     { id: 'layer1', type: 'feature', url: 'test-url-1' },
@@ -15,15 +16,15 @@ describe('LayerSourcesService', () => {
 
   beforeEach(() => {
     const environmentServiceMock = {
-      value: jest.fn().mockReturnValue(mockLayerSources)
-    } as unknown as jest.Mocked<EnvironmentService>;
+      value: vi.fn().mockReturnValue(mockLayerSources)
+    } as unknown as Mocked<EnvironmentService>;
 
     TestBed.configureTestingModule({
       providers: [LayerSourcesService, { provide: EnvironmentService, useValue: environmentServiceMock }]
     });
 
     service = TestBed.inject(LayerSourcesService);
-    environmentService = TestBed.inject(EnvironmentService) as jest.Mocked<EnvironmentService>;
+    environmentService = TestBed.inject(EnvironmentService) as Mocked<EnvironmentService>;
   });
 
   it('should be created', () => {

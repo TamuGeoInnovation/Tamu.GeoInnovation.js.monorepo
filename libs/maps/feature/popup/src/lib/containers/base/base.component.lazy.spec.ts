@@ -59,7 +59,7 @@ describe('PopupComponent with lazily loaded popups', () => {
       imports: [PopupComponent],
       providers: [
         { provide: EnvironmentService, useValue: { value: () => undefined } },
-        { provide: EsriMapService, useValue: { hitTest, clearHitTest: jest.fn(), clearSelectedFeatures: jest.fn() } }
+        { provide: EsriMapService, useValue: { hitTest, clearHitTest: vi.fn(), clearSelectedFeatures: vi.fn() } }
       ]
     });
 

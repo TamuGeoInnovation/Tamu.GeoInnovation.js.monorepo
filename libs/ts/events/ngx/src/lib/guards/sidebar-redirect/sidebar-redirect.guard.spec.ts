@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,16 +9,21 @@ import { SidebarRedirectGuard } from './sidebar-redirect.guard';
 describe('SidebarRedirectGuard', () => {
   let guard: SidebarRedirectGuard;
   let router: Router;
-  let eventSettingsService: { eventConfiguration: jest.Mock };
+  let eventSettingsService: { eventConfiguration: Mock };
 
   const snapshot = (queryParams: Record<string, string> = {}) =>
     ({
-      pathFromRoot: [{ url: [] }, { url: [{ path: 'events' }] }, { url: [{ path: 'my-event' }] }, { url: [{ path: 'map' }] }],
+      pathFromRoot: [
+        { url: [] },
+        { url: [{ path: 'events' }] },
+        { url: [{ path: 'my-event' }] },
+        { url: [{ path: 'map' }] }
+      ],
       queryParams
     }) as unknown as ActivatedRouteSnapshot;
 
   beforeEach(() => {
-    eventSettingsService = { eventConfiguration: jest.fn().mockReturnValue(undefined) };
+    eventSettingsService = { eventConfiguration: vi.fn().mockReturnValue(undefined) };
 
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -26,11 +32,11 @@ describe('SidebarRedirectGuard', () => {
 
     guard = TestBed.inject(SidebarRedirectGuard);
     router = TestBed.inject(Router);
-    jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be created', () => {

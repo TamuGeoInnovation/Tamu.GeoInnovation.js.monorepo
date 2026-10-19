@@ -6,14 +6,6 @@
   "sourceRoot": "libs/maps/feature/draw/src",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/draw"],
-      "options": {
-        "jestConfig": "libs/maps/feature/draw/jest.config.ts",
-        "tsConfig": "libs/maps/feature/draw/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

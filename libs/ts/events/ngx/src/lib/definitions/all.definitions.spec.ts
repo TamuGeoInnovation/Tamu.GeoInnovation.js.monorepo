@@ -1,5 +1,5 @@
 /**
- * @jest-environment-options {"url": "https://aggiemap.tamu.edu/"}
+ * @vitest-environment-options {"url": "https://aggiemap.tamu.edu/"}
  */
 import { EventDefinitions } from './all.definitions';
 import { FootballParkingConfiguration } from './football-parking.definitions';

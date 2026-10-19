@@ -2,7 +2,6 @@
   "extends": "./tsconfig.json",
   "include": ["**/*.ts"],
   "compilerOptions": {
-    "types": ["jest", "node", "../../node_modules/@arcgis/core/interfaces"]
-  },
-  "exclude": ["jest.config.ts"]
+    "types": ["vitest/globals", "node", "../../node_modules/@arcgis/core/interfaces"]
+  }
 }

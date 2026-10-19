@@ -24,7 +24,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22.23.3'
+          node-version: '24.22.0'
 
       - uses: actions/cache@v4
         id: npm-cache
@@ -39,11 +39,14 @@ jobs:
       # --coverage=false: jest.preset.js sets collectCoverage globally, but the report is neither
       # uploaded nor checked against a threshold, so instrumenting every run is pure overhead.
       # Coverage is still available locally via `npm run coverage`.
+      #
+      # No --ci: Vitest refuses options it does not know, and projects on Vitest get these flags too
+      # (#1479). Jest turns its own `ci` mode on from the CI variable GitHub sets, so it loses nothing.
       - name: Test Affected
         env:
           # Absolute, so every project writes into one place regardless of its depth.
           JEST_JUNIT_OUTPUT_DIR: ${{ github.workspace }}/test-results/junit
-        run: npx nx affected:test --configuration=production --exclude=${{ env.EXCLUDED_PROJECTS }} --base=${{ inputs.base }} --parallel=2 --ci --coverage=false
+        run: npx nx affected:test --configuration=production --exclude=${{ env.EXCLUDED_PROJECTS }} --base=${{ inputs.base }} --parallel=2 --coverage=false
 
       # Everything below runs even when the tests fail. A failing run is the one whose results are
       # worth reading, and the default `success()` condition would skip exactly those.

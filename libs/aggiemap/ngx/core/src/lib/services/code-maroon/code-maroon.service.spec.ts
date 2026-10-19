@@ -21,58 +21,63 @@ describe('CodeMaroonService', () => {
 
   afterEach(() => http.verify());
 
-  it('reads the feed from this origin, not from Code Maroon directly', (done) => {
-    // codemaroon.tamu.edu sends no Access-Control-Allow-Origin, so a cross-origin request would be
-    // blocked by the browser. nginx proxies it to this path; requesting the upstream directly here
-    // would pass in a test and fail in a browser.
-    service.read().subscribe(() => done());
+  it('reads the feed from this origin, not from Code Maroon directly', () =>
+    new Promise<void>((done) => {
+      // codemaroon.tamu.edu sends no Access-Control-Allow-Origin, so a cross-origin request would be
+      // blocked by the browser. nginx proxies it to this path; requesting the upstream directly here
+      // would pass in a test and fail in a browser.
+      service.read().subscribe(() => done());
 
-    const request = http.expectOne(CODE_MAROON_FEED);
+      const request = http.expectOne(CODE_MAROON_FEED);
 
-    expect(request.request.url).not.toContain('codemaroon.tamu.edu');
-    request.flush(EMPTY_FEED);
-  });
+      expect(request.request.url).not.toContain('codemaroon.tamu.edu');
+      request.flush(EMPTY_FEED);
+    }));
 
-  it('reports an empty feed as clear', (done) => {
-    service.read().subscribe((state) => {
-      expect(state.status).toBe('clear');
-      expect(state.alerts).toEqual([]);
-      done();
-    });
+  it('reports an empty feed as clear', () =>
+    new Promise<void>((done) => {
+      service.read().subscribe((state) => {
+        expect(state.status).toBe('clear');
+        expect(state.alerts).toEqual([]);
+        done();
+      });
 
-    http.expectOne(CODE_MAROON_FEED).flush(EMPTY_FEED);
-  });
+      http.expectOne(CODE_MAROON_FEED).flush(EMPTY_FEED);
+    }));
 
-  it('reports an alert as active', (done) => {
-    service.read().subscribe((state) => {
-      expect(state.status).toBe('active');
-      expect(state.alerts[0].title).toBe('Tornado Warning');
-      done();
-    });
+  it('reports an alert as active', () =>
+    new Promise<void>((done) => {
+      service.read().subscribe((state) => {
+        expect(state.status).toBe('active');
+        expect(state.alerts[0].title).toBe('Tornado Warning');
+        done();
+      });
 
-    http.expectOne(CODE_MAROON_FEED).flush(ACTIVE_FEED);
-  });
+      http.expectOne(CODE_MAROON_FEED).flush(ACTIVE_FEED);
+    }));
 
-  it('reports a failed request as unreachable, never as clear', (done) => {
-    // The important one. A map that looks calm because the feed failed, during an emergency, is the
-    // worst thing this could do - so the two must not collapse into one state.
-    service.read().subscribe((state) => {
-      expect(state.status).toBe('unreachable');
-      expect(state.status).not.toBe('clear');
-      done();
-    });
+  it('reports a failed request as unreachable, never as clear', () =>
+    new Promise<void>((done) => {
+      // The important one. A map that looks calm because the feed failed, during an emergency, is the
+      // worst thing this could do - so the two must not collapse into one state.
+      service.read().subscribe((state) => {
+        expect(state.status).toBe('unreachable');
+        expect(state.status).not.toBe('clear');
+        done();
+      });
 
-    http.expectOne(CODE_MAROON_FEED).error(new ProgressEvent('network error'));
-  });
+      http.expectOne(CODE_MAROON_FEED).error(new ProgressEvent('network error'));
+    }));
 
-  it('reports unparseable XML as unreachable rather than as no alerts', (done) => {
-    service.read().subscribe((state) => {
-      expect(state.status).toBe('unreachable');
-      done();
-    });
+  it('reports unparseable XML as unreachable rather than as no alerts', () =>
+    new Promise<void>((done) => {
+      service.read().subscribe((state) => {
+        expect(state.status).toBe('unreachable');
+        done();
+      });
 
-    http.expectOne(CODE_MAROON_FEED).flush('<rss><channel><item>');
-  });
+      http.expectOne(CODE_MAROON_FEED).flush('<rss><channel><item>');
+    }));
 
   describe('when this server has no proxy for the feed (#1304)', () => {
     // Dev and production are IIS, which has no rule for the feed address, so the request falls
@@ -80,81 +85,88 @@ describe('CodeMaroonService', () => {
     // is a missing proxy, not a Code Maroon failure, so the map reads the saved copy of the real feed.
     const INDEX_HTML = `<!DOCTYPE html><html lang="en"><head><title>Aggie Map</title></head><body><tamu-gisc-root></tamu-gisc-root></body></html>`;
 
-    it('reads the saved copy of the real feed, which parses and is clear', (done) => {
-      service.read().subscribe((state) => {
-        expect(state.status).toBe('clear');
-        expect(state.error).toBeUndefined();
-        expect(state.snapshot).toBe(true);
-        done();
-      });
+    it('reads the saved copy of the real feed, which parses and is clear', () =>
+      new Promise<void>((done) => {
+        service.read().subscribe((state) => {
+          expect(state.status).toBe('clear');
+          expect(state.error).toBeUndefined();
+          expect(state.snapshot).toBe(true);
+          done();
+        });
 
-      http.expectOne(CODE_MAROON_FEED).flush(INDEX_HTML, { headers: { 'Content-Type': 'text/html' } });
-    });
+        http.expectOne(CODE_MAROON_FEED).flush(INDEX_HTML, { headers: { 'Content-Type': 'text/html' } });
+      }));
 
     it('keeps the saved copy as the real feed parses it', () => {
       expect(parseCodeMaroonFeed(CODE_MAROON_SNAPSHOT)).toEqual([]);
       expect(CODE_MAROON_SNAPSHOT).toContain('<title>Code Maroon Active Alerts</title>');
     });
 
-    it('does not mark a live read as the saved copy', (done) => {
-      service.read().subscribe((state) => {
-        expect(state.snapshot).toBe(false);
-        done();
-      });
+    it('does not mark a live read as the saved copy', () =>
+      new Promise<void>((done) => {
+        service.read().subscribe((state) => {
+          expect(state.snapshot).toBe(false);
+          done();
+        });
 
-      http.expectOne(CODE_MAROON_FEED).flush(EMPTY_FEED);
-    });
+        http.expectOne(CODE_MAROON_FEED).flush(EMPTY_FEED);
+      }));
 
-    it('still reports malformed XML as unreachable, not as the saved copy', (done) => {
-      service.read().subscribe((state) => {
-        expect(state.status).toBe('unreachable');
-        expect(state.snapshot).toBe(false);
-        done();
-      });
+    it('still reports malformed XML as unreachable, not as the saved copy', () =>
+      new Promise<void>((done) => {
+        service.read().subscribe((state) => {
+          expect(state.status).toBe('unreachable');
+          expect(state.snapshot).toBe(false);
+          done();
+        });
 
-      http.expectOne(CODE_MAROON_FEED).flush('<rss><channel><item>');
-    });
+        http.expectOne(CODE_MAROON_FEED).flush('<rss><channel><item>');
+      }));
 
-    it('still reports a server error as unreachable, even when its body is HTML', (done) => {
-      service.read().subscribe((state) => {
-        expect(state.status).toBe('unreachable');
-        done();
-      });
+    it('still reports a server error as unreachable, even when its body is HTML', () =>
+      new Promise<void>((done) => {
+        service.read().subscribe((state) => {
+          expect(state.status).toBe('unreachable');
+          done();
+        });
 
-      http.expectOne(CODE_MAROON_FEED).flush(INDEX_HTML, { status: 502, statusText: 'Bad Gateway' });
-    });
+        http.expectOne(CODE_MAROON_FEED).flush(INDEX_HTML, { status: 502, statusText: 'Bad Gateway' });
+      }));
   });
 
-  it('marks sample data as a sample', (done) => {
-    // What stops a demonstration being mistaken for a real alert; the overlay reads this flag.
-    service.showSample([CODE_MAROON_SAMPLES['tornado']]);
+  it('marks sample data as a sample', () =>
+    new Promise<void>((done) => {
+      // What stops a demonstration being mistaken for a real alert; the overlay reads this flag.
+      service.showSample([CODE_MAROON_SAMPLES['tornado']]);
 
-    service.state.subscribe((state) => {
-      expect(state.sample).toBe(true);
-      expect(state.status).toBe('active');
+      service.state.subscribe((state) => {
+        expect(state.sample).toBe(true);
+        expect(state.status).toBe('active');
+        done();
+      });
+    }));
+
+  it('does not mark live data as a sample', () =>
+    new Promise<void>((done) => {
+      service.read().subscribe((state) => {
+        expect(state.sample).toBe(false);
+        done();
+      });
+
+      http.expectOne(CODE_MAROON_FEED).flush(ACTIVE_FEED);
+    }));
+
+  it('labels every fabricated sample in its own text', () =>
+    new Promise<void>((done) => {
+      // The label has to survive a screenshot leaving its context, so it is in the content and not
+      // only in the interface around it. The monthly test is exempt: that wording is genuine.
+      Object.entries(CODE_MAROON_SAMPLES)
+        .filter(([key]) => key !== 'test')
+        .forEach(([, alert]) => {
+          expect(alert.title).toContain('SAMPLE');
+          expect(alert.description).toContain('NOT A REAL EMERGENCY');
+        });
+
       done();
-    });
-  });
-
-  it('does not mark live data as a sample', (done) => {
-    service.read().subscribe((state) => {
-      expect(state.sample).toBe(false);
-      done();
-    });
-
-    http.expectOne(CODE_MAROON_FEED).flush(ACTIVE_FEED);
-  });
-
-  it('labels every fabricated sample in its own text', (done) => {
-    // The label has to survive a screenshot leaving its context, so it is in the content and not
-    // only in the interface around it. The monthly test is exempt: that wording is genuine.
-    Object.entries(CODE_MAROON_SAMPLES)
-      .filter(([key]) => key !== 'test')
-      .forEach(([, alert]) => {
-        expect(alert.title).toContain('SAMPLE');
-        expect(alert.description).toContain('NOT A REAL EMERGENCY');
-      });
-
-    done();
-  });
+    }));
 });

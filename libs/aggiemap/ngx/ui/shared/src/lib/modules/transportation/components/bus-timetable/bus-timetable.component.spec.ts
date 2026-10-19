@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -12,8 +12,8 @@ import { BusService } from '@tamu-gisc/maps/feature/trip-planner';
 import { BusTimetableComponent } from './bus-timetable.component';
 
 describe('BusTimetableComponent (isolated)', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         EsriMapComponent,
@@ -29,7 +29,7 @@ describe('BusTimetableComponent (isolated)', () => {
           // BusService injects Angulartics2, which needs RouterlessTracking. Mocked rather
           // than importing the real module, matching parking-lot.component.spec.ts.
           provide: Angulartics2,
-          useValue: { eventTrack: { next: jest.fn() } }
+          useValue: { eventTrack: { next: vi.fn() } }
         },
         {
           provide: env,
@@ -37,7 +37,7 @@ describe('BusTimetableComponent (isolated)', () => {
         }
       ]
     }).compileComponents();
-  }));
+  });
 
   it('should create', inject([BusTimetableComponent], (component: BusTimetableComponent) => {
     expect(component).toBeTruthy();
@@ -63,7 +63,7 @@ describe('BusTimeTableComponent (integrated)', () => {
         {
           // The integrated block has its own TestBed and needs the same Angulartics2 mock.
           provide: Angulartics2,
-          useValue: { eventTrack: { next: jest.fn() } }
+          useValue: { eventTrack: { next: vi.fn() } }
         },
         BusService,
         {

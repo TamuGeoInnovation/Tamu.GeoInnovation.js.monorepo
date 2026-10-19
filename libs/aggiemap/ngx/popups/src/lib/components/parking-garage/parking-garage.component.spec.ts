@@ -22,7 +22,7 @@ describe('ParkingGaragePopupComponent', () => {
         {
           provide: Router,
           useValue: {
-            navigate: jest.fn()
+            navigate: vi.fn()
           }
         },
         {
@@ -33,28 +33,28 @@ describe('ParkingGaragePopupComponent', () => {
           provide: TripPlannerService,
           useValue: {
             Stops: of([]),
-            setStops: jest.fn()
+            setStops: vi.fn()
           }
         },
         {
           provide: Angulartics2,
           useValue: {
             eventTrack: {
-              next: jest.fn()
+              next: vi.fn()
             }
           }
         },
         {
           provide: EsriMapService,
           useValue: {
-            clearHitTest: jest.fn()
+            clearHitTest: vi.fn()
           }
         },
         {
           provide: SearchService,
           useValue: {
             // Share links are built from the garage search source, not the parking lot one.
-            getSource: jest.fn((id: string) => (id === 'parking-garage' ? { urlQueryParam: 'garage' } : undefined))
+            getSource: vi.fn((id: string) => (id === 'parking-garage' ? { urlQueryParam: 'garage' } : undefined))
           }
         }
       ],

@@ -5,7 +5,6 @@ import {
   SelectComponent,
   CheckboxComponent,
   CheckboxGroupComponent,
-  DateTimePickerComponent,
   TextboxComponent,
   AutocompleteComponent,
   AutocompleteOptionTemplateDirective,
@@ -17,6 +16,7 @@ import {
   SelectListComponent,
   TurnstileChallengeComponent
 } from '@tamu-gisc/ui-kits/ngx/forms';
+import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
 
 import { EventPassedWarningComponent } from './event-passed-warning.component';
 
@@ -41,7 +41,7 @@ describe('EventPassedWarningComponent', () => {
         EventPassedWarningComponent
       ],
       providers: [
-        { provide: ModalRefService, useValue: { close: jest.fn() } },
+        { provide: ModalRefService, useValue: { close: vi.fn() } },
         {
           provide: MODAL_DATA,
           useValue: {

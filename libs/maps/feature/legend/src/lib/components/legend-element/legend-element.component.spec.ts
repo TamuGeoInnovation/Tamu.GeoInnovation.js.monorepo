@@ -14,7 +14,7 @@ describe('LegendElementComponent', () => {
 
   beforeEach(async () => {
     const spy = {
-      require: jest.fn()
+      require: vi.fn()
     };
 
     // Ensure tsgisHost is available in tests that reference TS URLs
@@ -26,7 +26,7 @@ describe('LegendElementComponent', () => {
         // LegendElementComponent pulls in LayerSourcesService, which injects
         // EnvironmentService. Mocked directly rather than importing EnvironmentModule,
         // matching the pattern already used in layer-sources.service.spec.ts.
-        { provide: EnvironmentService, useValue: { value: jest.fn().mockReturnValue([]) } }
+        { provide: EnvironmentService, useValue: { value: vi.fn().mockReturnValue([]) } }
       ]
     }).compileComponents();
   });
