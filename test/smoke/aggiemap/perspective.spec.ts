@@ -1,6 +1,6 @@
 import { expect, HEAVY, test } from './fixtures';
 import { blockAnalytics } from './analytics';
-import { MAP_CONTROLS } from './controls';
+import { inTopLeft, MAP_CONTROLS } from './controls';
 import { Framing, waitForSettledFraming } from './framing';
 
 /**
@@ -75,7 +75,7 @@ test.describe('2D and 3D', () => {
     // they leave the page, as the 2D view does while 3D is shown, so back in 2D they had gone (#1853).
     for (const [name, control] of Object.entries(MAP_CONTROLS)) {
       await expect(
-        page.locator('.esri-ui-top-left').locator(control),
+        inTopLeft(page, control),
         `back in 2D, the ${name} button is missing`
       ).toBeVisible();
     }
