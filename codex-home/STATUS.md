@@ -1,4 +1,4 @@
-﻿# codex-home: status
+# codex-home: status
 
 ## Running now
 
