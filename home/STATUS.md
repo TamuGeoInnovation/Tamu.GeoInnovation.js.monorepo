@@ -3,9 +3,7 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-(nothing)
-
-**branch ready: fix/1954-deep-link-respects-filter** (report 4)
+**Batch 4** (started 19 Oct): 1. #1960 lactation rooms on the hosted service; 2. merge `development` into `fix/1954-deep-link-respects-filter`.
 
 ## Finished
 - **Batch 3** (report `home/reports/2026-10-19-4.md`): #1954 pushed, red-first tests, check exit 0.
