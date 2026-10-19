@@ -21,7 +21,7 @@ This is an Nx monorepo containing multiple Angular front-end applications and Ne
 - **Frontend:** Angular 15.2.9 with TypeScript, SCSS, Mapbox GL, Esri ArcGIS
 - **Backend:** NestJS 9.4.3 with TypeORM, Bull job queues, various database adapters (MySQL, MSSQL, SQLite)
 - **Authentication:** Auth0, JWT, OIDC Provider, Passport.js
-- **Testing:** Jest (unit), Playwright (e2e and smoke, in `test/`)
+- **Testing:** Vitest (unit, AggieMap's projects) and Jest (unit, the rest until they move, #1479), Playwright (e2e and smoke, in `test/`)
 - **Build Tool:** Nx 16.0.0
 
 ## Build, Test, and Lint Commands
@@ -32,7 +32,7 @@ This is an Nx monorepo containing multiple Angular front-end applications and Ne
 |------|---------|-------|
 | **Serve main app locally** | `npx nx run aggiemap-angular:serve --host 0.0.0.0` | Runs on http://localhost:4200; auto-rebuilds on changes |
 | **Build specific project** | `npx nx run [project-name]:build` | Replace `[project-name]` with actual project (e.g., `aggiemap-angular`, `geoservices-nest`) |
-| **Test single project** | `npx nx run [project-name]:test` | Runs Jest tests for that project only |
+| **Test single project** | `npx nx run [project-name]:test` | Runs that project's unit tests only (Vitest or Jest) |
 | **Test with coverage** | `npx nx run [project-name]:test --coverage` | Generates coverage report |
 | **Lint single project** | `npx nx run [project-name]:lint` | ESLint check for that project |
 
@@ -106,7 +106,7 @@ When affecting multiple projects or the workspace, the project name can be omitt
 **Frontend Libraries:**
 - Use `@nx/angular` schematics for component/service generation
 - SCSS for styles (not CSS)
-- Jest for unit tests (`jest.config.ts` in lib root)
+- Unit tests on Vitest (`vitest.config.mts` in the lib root, one call to `vitest.preset.mts`), or on Jest (`jest.config.ts`) where a project has not moved yet
 - Pattern: `libs/[domain]/src/` contains source code
 
 **Backend Libraries:**
@@ -122,11 +122,11 @@ When affecting multiple projects or the workspace, the project name can be omitt
 
 ### Testing
 
-**Unit Tests (Jest):**
+**Unit Tests (Vitest, or Jest where a project has not moved yet):**
 ```bash
 npm run affected:test                    # Test changed projects
 npx nx run [project]:test --coverage     # Single project with coverage
-npx jest --watch                         # Watch mode for development
+cd <project root> && npx vitest          # Watch mode, a project on Vitest
 ```
 
 **E2E and smoke tests (Playwright):** see [test/README.md](../test/README.md).
@@ -164,7 +164,7 @@ libs/aggiemap/[feature]/
 │   │   ├── services/
 │   │   └── guards/
 │   └── index.ts          # Barrel export
-├── jest.config.ts
+├── vitest.config.mts
 └── project.json
 ```
 
