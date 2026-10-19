@@ -26,20 +26,47 @@ import { blockAnalytics } from './analytics';
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const POPUP = 'tamu-gisc-feature-popup .popup';
 
-// The transportation GIS host is the same for every environment (see getDefaultGisHosts() in connections.ts).
-const VISITOR_LOTS = { layerId: 'Visitor Parking Lots', url: `${Connections.visitorParkingUrl}/1` };
+interface LotLink {
+  /** Which map, and which group of the issue's audit it stands for. */
+  name: string;
+  path: string;
+  /** The map's layer the lot must be selected on. */
+  layerId: string;
+  /** That layer's address. The transportation GIS host is the same for every environment (getDefaultGisHosts()). */
+  url: string;
+  /** Finds the features the link may select, asked of the service: object ids change when it is republished. */
+  where: string;
+  objectIdField: string;
+}
 
-const LOT_LINKS = [
+const VISITOR_PARKING: LotLink = {
+  name: 'Visitor Parking, whose fields are named by table',
+  path: '/parking/visitor-parking/map?lot=100j',
+  layerId: 'Visitor Parking Lots',
+  url: `${Connections.visitorParkingUrl}/1`,
+  where: `GIS.TS.ParkingLots.Name = '100j'`,
+  objectIdField: 'GIS.TS.ParkingLots.OBJECTID'
+};
+
+const LOT_LINKS: LotLink[] = [
+  VISITOR_PARKING,
   {
-    name: 'Visitor Parking, whose fields are named by table',
-    path: '/parking/visitor-parking/map?lot=100j',
-    shows: /Lot 100j/
-  },
-  { name: 'Motorcycle Parking, whose fields are not', path: '/parking/motorcycle-parking/map?lot=100j', shows: /100j/ }
+    name: 'Motorcycle Parking, whose fields are not',
+    path: '/parking/motorcycle-parking/map?lot=100j',
+    layerId: 'motorcycle-parking-space',
+    url: `${Connections.motorcycleParkingUrl}/0`,
+    // A lot link on a map of spaces opens one of the lot's spaces.
+    where: `LotName = '100j'`,
+    objectIdField: 'OBJECTID'
+  }
 ];
 
-/** Opens `path` and waits for its map to finish loading, then for the popup the link opens. */
-async function openLink(page: Page, path: string, shows: RegExp): Promise<void> {
+/**
+ * Opens `path` and returns the share link of the popup it opens. For an event map's own feature the
+ * link names it as `?feature=<layerId>:<objectId>`, the popup's own record of what was selected, so
+ * it tells which feature of which layer the link opened, whatever the popup shows.
+ */
+async function openedLink(page: Page, path: string): Promise<URL> {
   await blockAnalytics(page);
   await page.goto(path);
 
@@ -55,39 +82,49 @@ async function openLink(page: Page, path: string, shows: RegExp): Promise<void> 
     .toBe(true);
 
   const popup = page.locator(POPUP);
-  await expect(popup, `${path} did not open the lot`).not.toHaveClass(/hidden/, { timeout: 30_000 });
-  await expect(popup, `${path} did not show the lot`).toContainText(shows, { timeout: 15_000 });
+  await expect(popup, `${path} opened nothing`).not.toHaveClass(/hidden/, { timeout: 30_000 });
+
+  // The copy field is a button named "Click to copy to clipboard." whose text is the link it copies.
+  const shareLink = popup.getByRole('button', { name: 'Click to copy to clipboard.' }).filter({ hasText: /^https?:/ });
+  await expect(shareLink, `${path} opened a popup with no share link`).toHaveCount(1, { timeout: 15_000 });
+
+  return new URL((await shareLink.textContent())?.trim() ?? '');
 }
 
-/** Lot 100j's object id in Visitor Parking, asked of the service: it changes when the service is republished. */
-async function visitorLot100jObjectId(request: APIRequestContext): Promise<number> {
-  const response = await request.get(`${VISITOR_LOTS.url}/query`, {
-    params: {
-      where: `GIS.TS.ParkingLots.Name = '100j'`,
-      outFields: 'GIS.TS.ParkingLots.OBJECTID',
-      returnGeometry: 'false',
-      f: 'json'
-    },
+/** The object ids of the features `link` may select, asked of its layer. */
+async function expectedObjectIds(request: APIRequestContext, link: LotLink): Promise<number[]> {
+  const response = await request.get(`${link.url}/query`, {
+    params: { where: link.where, outFields: link.objectIdField, returnGeometry: 'false', f: 'json' },
     timeout: 30_000
   });
   const features: Array<{ attributes: Record<string, number> }> = (await response.json()).features ?? [];
 
-  expect(features, 'Visitor Parking has no Lot 100j').toHaveLength(1);
+  expect(features.length, `${link.url} has no feature where ${link.where}`).toBeGreaterThan(0);
 
-  return features[0].attributes['GIS.TS.ParkingLots.OBJECTID'];
+  return features.map((feature) => feature.attributes[link.objectIdField]);
 }
 
 test.describe('lot links on the parking maps', () => {
-  for (const { name, path, shows } of LOT_LINKS) {
-    test(`${path} opens the lot (${name})`, async ({ page }) => {
-      await openLink(page, path, shows);
+  for (const link of LOT_LINKS) {
+    test(`${link.path} opens the lot on ${link.layerId} (${link.name})`, async ({ page, request }) => {
+      const objectIds = await expectedObjectIds(request, link);
+      const opened = await openedLink(page, link.path);
+
+      // On a map whose fields are named by table, the unfixed matcher found nothing on the map's own
+      // layer, and the popup that opened was the main map's lot, shared as `/?lot=Lot 100j`.
+      expect(
+        objectIds.map((objectId) => `${link.layerId}:${objectId}`),
+        `${link.path} opened a popup sharing ${decodeURIComponent(opened.href)}, not lot 100j on ${link.layerId}`
+      ).toContain(opened.searchParams.get('feature'));
     });
   }
 
-  test('a ?feature= link shared before still opens the same lot on Visitor Parking', async ({ page, request }) => {
-    const objectId = await visitorLot100jObjectId(request);
-    const feature = encodeURIComponent(`${VISITOR_LOTS.layerId}:${objectId}`);
+  test('a ?feature= link shared before opens the same lot on Visitor Parking as ?lot= does', async ({ page, request }) => {
+    const [objectId] = await expectedObjectIds(request, VISITOR_PARKING);
+    const feature = `${VISITOR_PARKING.layerId}:${objectId}`;
 
-    await openLink(page, `/parking/visitor-parking/map?feature=${feature}`, /Lot 100j/);
+    const opened = await openedLink(page, `/parking/visitor-parking/map?feature=${encodeURIComponent(feature)}`);
+
+    expect(opened.searchParams.get('feature')).toBe(feature);
   });
 });
