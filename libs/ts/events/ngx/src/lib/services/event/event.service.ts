@@ -705,15 +705,23 @@ export class EventService {
       await layer.load();
 
       const layerFields = (layer.fields || []).map((field) => field.name);
-      const matchingFields = candidateFields.filter((fieldName) => layerFields.includes(fieldName));
 
-      if (matchingFields.length === 0) {
+      // A service that joins several tables names its fields by table - `GIS.TS.ParkingLots.LotName`,
+      // not `LotName` - so a candidate matches a field's last dot-separated part, and the query below
+      // names the layer's own field. Compared whole, no field matched and a `?lot=` link opened nothing
+      // on fourteen parking maps (#1952).
+      const matches = candidateFields
+        .map((candidate, priority) => ({
+          priority,
+          fields: layerFields.filter((name) => name.split('.').pop() === candidate)
+        }))
+        .filter((match) => match.fields.length > 0);
+
+      if (matches.length === 0) {
         continue;
       }
 
-      const priority = Math.min(...matchingFields.map((fieldName) => candidateFields.indexOf(fieldName)));
-
-      candidates.push({ source, layer, fields: matchingFields, priority });
+      candidates.push({ source, layer, fields: matches.flatMap((match) => match.fields), priority: matches[0].priority });
     }
 
     candidates.sort((a, b) => a.priority - b.priority);
