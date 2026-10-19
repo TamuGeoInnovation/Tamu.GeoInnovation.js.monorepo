@@ -71,6 +71,24 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 11 (prepared 18 October 2026, about 9:15 PM) — now
+
+**Decided** (the maintainer, on batch 10's questions): **1** the layer order on the parking maps is being checked on
+the home machine now; if it is ours, it is fixed before the final build. **2** filed as #1936, High: a capture records
+an error page as a good shot. **3** filed as #1937, Medium: two production shots were taken before the map drew, and
+those two are re-taken now while production has not moved.
+
+1. **#1937: re-take the two mid-load shots in production's set**
+   - Run: production still serves `264eebb42` (`main-TK2R62YY.js`; confirm). Move the two mid-load shots (both
+     viewports where affected) out of `production/prod-2026-10-16` into a `superseded/` folder beside it, then run the
+     capture with `--env production --release prod-2026-10-16 --only <those routes>` so it re-takes only what is
+     missing. Look at each new shot: the map drawn, nothing spinning. If one is still caught mid-load, wait and
+     re-take it once more, and say so.
+   - Then re-run `review.mjs` for batch 10's comparison so the page reflects the corrected shots.
+   - Report on: #1937. Which pages, before and after, and the corrected difference for each.
+   - Do not touch dev's set: dev has moved on from Release-482, so its three 404 shots cannot be re-taken under the
+     same release; note them as known in the report.
+
 ## Batch 10 (prepared 18 October 2026, about 5:40 PM) — now, while batch 9 is held
 
 **Decided:** the maintainer wants this machine used while the final build is prepared. Release-482 (`70f0e424b`,
