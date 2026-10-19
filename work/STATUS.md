@@ -3,26 +3,42 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **7:25 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
+Last written **7:40 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
 **Last batch done: 12.** **Batch 13 is open and its queue is empty.** Batch 9 still waits. Nothing running.
 
 ## Running now
 
-**`CHECK development` again, this time as `all`.** Started **7:25 AM Central**. See the warning immediately below
-for why the first attempt does not count.
+Nothing. Two watchers: one on this branch, one on Azure for batch 9's release.
 
-| | |
+## work: checked development exit 0
+
+**`8951a6364` passes, every project.** This is the real check; the `affected` attempt before it ran nothing (see
+below), so this is the one that counts.
+
+| Target | Result |
 | --- | --- |
-| Commit | `8951a6364` (#1948), local branch `chk/development`, worktree `C:/TAMU/wt-chkdev` |
-| Running | `scripts/check-in-volume.sh chk/development all` — **every project**, not affected |
-| Node | 24.22.0 |
+| lint | **Successfully ran for 113 projects** |
+| test | **Successfully ran for 106 projects** |
+| build | **Successfully ran for 14 projects** |
 
-## DO NOT READ THE FIRST `CHECK development` AS A PASS
+`scripts/check-in-volume.sh chk/development all`, Node 24.22.0, volume `tamu-js-chk-development`. Lint, test and
+build took about six minutes between them after `npm ci`. Log:
+`C:/TAMU/wt-chkdev/check-tamu-js-chk-development-all.log`.
 
-**It exited 0 having run nothing.** `affected` compares against `origin/development`, and the branch being checked
-**is** `origin/development`, so no project was selected. The log says so three times:
+**`ui-kits-ngx-forms` ran and passed**, both `lint` and `test` — so the one assertion that failed on
+`chore/1479-vitest` at `b77b61426` is not failing in what is merged. The branch result this machine pushed at
+7:05 AM stands as it was reported, and is now superseded by this.
+
+**So batch 9's first condition is met.** It now waits only on Azure listing a release at `8951a6364` or later with
+its dev stage succeeded.
+
+## The `affected` attempt that ran nothing
+
+Kept here because the instruction that produced it is still in batch 13. **The first `CHECK development` exited 0
+having run no task at all**: `affected` compares against `origin/development`, and the branch being checked *is*
+`origin/development`, so nothing was selected.
 
 ```
 === affected lint  ...   NX   No tasks were run
@@ -30,16 +46,8 @@ for why the first attempt does not count.
 === affected build ...   NX   No tasks were run
 ```
 
-Whole run: 2 minutes, almost all of it `npm ci`. This is the failure mode CLAUDE.md warns about in another form —
-a task that never ran still looks like a pass — and `exit 0` was about to be reported as the check that clears the
-final build.
-
-**So `CHECK development` cannot be run as `affected`, today or ever**; it has to be `all`. Worth a line in the
-batch 13 instructions, which say to check `origin/development`'s head "the same way" as a branch. A branch has
-something to be affected against; `development` does not.
-
-The `all` run is going now and its result will be pushed as `work: checked development exit <code>`. It is every
-project rather than a subset, so it takes considerably longer than a branch check.
+Two minutes, almost all `npm ci`, and an `exit 0` that was about to be reported as clearing the final build.
+**`CHECK development` has to be `all`.** A branch has something to be affected against; `development` does not.
 
 ## Batch 13 — open, nothing running
 
