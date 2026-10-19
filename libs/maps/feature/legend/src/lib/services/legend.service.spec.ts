@@ -52,7 +52,7 @@ describe('LegendService', () => {
 
   const layer = (id: string, visible: boolean) => ({ id, visible, listMode: 'show' }) as unknown as __esri.Layer;
 
-  const legendFor = (layers: __esri.Layer[]) => {
+  const legendFor = (layers: __esri.Layer[], options?: Parameters<LegendService['legend']>[0]) => {
     watchers = [];
 
     const activeLayerInfos = new FakeCollection(layers.map((l) => ({ layer: l }) as __esri.ActiveLayerInfo));
@@ -93,7 +93,7 @@ describe('LegendService', () => {
 
     const shown: string[][] = [];
     const subscription = TestBed.inject(LegendService)
-      .legend()
+      .legend(options)
       .subscribe((infos) => shown.push(infos.map((info) => info.layer.id)));
 
     return { shown, subscription };
@@ -114,9 +114,31 @@ describe('LegendService', () => {
     subscription.unsubscribe();
   });
 
-  it('keeps a layer listed once it has been switched off', async () => {
+  it('takes a layer switched off out of a legend that cannot switch it back on (#1871)', async () => {
+    // The main map's legend: layers are switched on and off only in the Layers list.
+    const parking = layer('visitor-parking-layer', false);
+    const { shown, subscription } = legendFor([parking]);
+
+    await new Promise((resolve) => setTimeout(resolve));
+
+    (parking as { visible: boolean }).visible = true;
+    changed();
+    expect(shown.at(-1)).toEqual(['visitor-parking-layer']);
+
+    (parking as { visible: boolean }).visible = false;
+    changed();
+    expect(shown.at(-1)).toEqual([]);
+
+    (parking as { visible: boolean }).visible = true;
+    changed();
+    expect(shown.at(-1)).toEqual(['visitor-parking-layer']);
+    subscription.unsubscribe();
+  });
+
+  it('keeps a layer switched off listed in a legend whose titles switch layers on and off', async () => {
+    // The event maps' legend, where the collapsed title is how the layer is switched back on.
     const kiosks = layer('visitor-kiosks', true);
-    const { shown, subscription } = legendFor([kiosks]);
+    const { shown, subscription } = legendFor([kiosks], { keepSwitchedOff: true });
 
     await new Promise((resolve) => setTimeout(resolve));
     expect(shown.at(-1)).toEqual(['visitor-kiosks']);
