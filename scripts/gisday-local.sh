@@ -142,7 +142,10 @@ SQL
     # container, so its record is never cleared, and every container's Nx gets the same process id. Kept in
     # the checkout, the record would make the next start wait for itself forever (#1626); kept in the
     # container, it goes when the container does. The cost is a project graph computed on every start.
-    docker run -d --name gisday-dev -m 8g --network "$NET" -p "$port:4201" -e NX_DAEMON=false \
+    # UV_THREADPOOL_SIZE: --poll=2000 keeps Node's 4 default file-system threads busy checking the
+    # checkout over the Windows bind mount, and Vite's dependency optimizer then waits behind them for
+    # good, so the first page load never finishes (#1955). 64 threads leave it room.
+    docker run -d --name gisday-dev -m 8g --network "$NET" -p "$port:4201" -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 \
       -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data \
       -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w \
       "$NODE_IMAGE" sh -c "node node_modules/nx/dist/bin/nx.js serve gisday-angular --configuration=local --host 0.0.0.0 --port 4201 --poll=2000"
