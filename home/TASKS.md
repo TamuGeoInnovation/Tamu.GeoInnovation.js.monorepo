@@ -19,9 +19,24 @@ Take **task 1 first** — it is the one with a deadline.
      | Today | `${connections.inforUrl}/2` = `FCOR/MapInfo_20190529/MapServer/2` |
      | New | `Hosted/Lactation_Spaces_view/FeatureServer/0` |
 
-     Both are verified reachable and public from the work machine. Add the new one to `connections.ts` beside the
-     others rather than hard-coding it in the definition; `inforUrl` stays, because layers 0, 1, 3 and 4 of that
-     service are still in use.
+     Add the new one to `connections.ts` beside the others rather than hard-coding it in the definition;
+     `inforUrl` stays, because layers 0, 1, 3 and 4 of that service are still in use.
+
+   - **Added 3:30 PM, and it changes the URL you write.** The new service exists **only on the production GIS
+     host**. Checked from here:
+
+     ```
+     gis-dev.it.tamu.edu/.../FCOR/MapInfo_20190529/MapServer/2    404 Layer not found
+     gis-dev.it.tamu.edu/.../Hosted/Lactation_Spaces_view/...     404 Service not found
+     gis.tamu.edu/.../Hosted/Lactation_Spaces_view/FeatureServer/0   OK, 8 fields, 35 records
+     ```
+
+     So **`${gisHost}` would 404 on dev**, exactly as the current layer already does — today's lactation layer
+     fails to load on dev for this reason, and has for as long as the dev server has lacked that service. It works
+     on production. Pin the new URL to `https://gis.tamu.edu` and say why in a comment beside it, the way
+     `basemapUrl` is pinned for #1696, and name an issue to restore `${gisHost}` once the GIS team publish it on
+     the development server. **Do not quietly leave it on `${gisHost}`**: that ships a change nobody can check on
+     dev.
    - **Every field name changes, so the popup must be rewritten, not repointed.** `Name` becomes `bldgname`,
      `MapDisplay` becomes `availability_type` (with `availability_times` now carrying the hours), and `Notes`
      becomes `notes`. There are two new fields, `access` and `amenities`.
@@ -32,7 +47,9 @@ Take **task 1 first** — it is the one with a deadline.
      in **neither** service — today's field is `BldgNum` — so "Building Number:" has always rendered empty.
    - **The maintainer's decision on what the popup shows (his 2A):** building name and number, availability type
      and times, access, amenities, and the notes as text. Everything the service carries.
-   - **21 rooms today, 35 in the new service**, so expect 14 more on the map; say the count you see.
+   - **21 rooms today, 35 in the new service**, so expect 14 more on the map; say the count you see. On dev the
+     layer draws nothing at all today, so the before image is an error state, not a popup - the work machine has
+     captured it.
    - Reuse before building: the popup is one of the components in `libs/aggiemap/ngx/popups`, and the others show
      how multi-line detail is laid out. No purpose-built CSS.
    - Tests: one **proven red first** that fails against the old source or the old field names, so a future repoint
