@@ -3,14 +3,30 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **7:40 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
+Last written **7:35 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
-**Last batch done: 12.** **Batch 13 is open and its queue is empty.** Batch 9 still waits. Nothing running.
+**Last batch done: 13 (its queue is done).** **Batch 9 — the final test — is running now.**
 
 ## Running now
 
-Nothing. Two watchers: one on this branch, one on Azure for batch 9's release.
+**Batch 9 (#1849): the final test of the release.** Started **7:35 AM Central, 19 October**.
+
+| | |
+| --- | --- |
+| Release | **Release-484, build 20261019.5** — dev stage succeeded |
+| Commit | **`8951a6364`** (#1948 and the rest of today's work) |
+| Worktree | `C:/TAMU/wt-chkdev`, already at that exact commit from the `CHECK development` run |
+| Step 1, running | `test/smoke/aggiemap/run-local.sh development full` — the full tier |
+| Then | the `--as production` capture, then the comparison against `prod-2026-10-16-corrected` |
+| Tag | **only if the full tier passes outright** |
+
+**Both conditions were met before this started:** `CHECK development` on `8951a6364` passed every project, and
+Azure lists Release-484 at that commit with its dev stage succeeded.
+
+One thing to ignore: the Azure watcher's own message says "REHEARSAL BUILD ON DEV". That is stale wording in the
+script's header from last night, not a judgement about this release. This is the final release, and it is being
+treated as one — the tag follows if the tier passes.
 
 ## work: checked development exit 0
 
