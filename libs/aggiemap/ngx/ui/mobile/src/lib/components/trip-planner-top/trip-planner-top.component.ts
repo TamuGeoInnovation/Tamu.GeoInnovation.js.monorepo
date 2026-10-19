@@ -6,6 +6,9 @@ import { switchMap, takeUntil, pluck, map } from 'rxjs/operators';
 import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripResult, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService, UIDragState } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+import { TripPlannerModePickerMobileComponent } from '@tamu-gisc/maps/feature/trip-planner/components';
+import { AsyncPipe } from '@angular/common';
 
 import { offCanvasSlideUpFromTop } from '../../animations/elements';
 
@@ -16,6 +19,7 @@ import esri = __esri;
   templateUrl: './trip-planner-top.component.html',
   styleUrls: ['./trip-planner-top.component.scss'],
   animations: [offCanvasSlideUpFromTop],
+  imports: [AsyncPipe, TripPlannerModePickerMobileComponent]
 })
 export class TripPlannerTopComponent implements OnInit, OnDestroy {
   private router = inject(Router);
@@ -23,6 +27,13 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
   private tripPlanner = inject(TripPlannerService);
   private mapService = inject(EsriMapService);
   private dragService = inject(DragService);
+  private testing = inject(TestingService);
+
+  /**
+   * Whether the planner is offered. Routing has no production service, so only a development host offers it, for
+   * testing its components; `?as=production` turns it off there too (#1722). Elsewhere a maintenance message shows.
+   */
+  public dev = this.testing.get('isTesting');
 
   /**
    * Animation trigger.

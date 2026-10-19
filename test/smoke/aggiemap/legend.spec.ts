@@ -58,6 +58,10 @@ const TOGGLE_LAYER = 'Visitor Kiosks';
  * layers changed. That list keeps hidden layers too, so switching one on never changed it, and the main
  * map's legend stayed empty whatever was switched on. The Visitor Parking map above was unaffected
  * because its layers load visible.
+ *
+ * And it leaves the legend when it is switched off again (#1871). Keeping it collapsed is for a legend
+ * whose titles switch layers back on, as the event maps' do; the main map's legend has none, so a layer
+ * kept there stayed listed, symbols and all, though the map no longer drew it.
  */
 const MAIN_MAP = '/map/d';
 const MAIN_MAP_LAYERS = ['Visitor Parking', 'Construction Zones'];
@@ -185,7 +189,9 @@ test.describe('legend', () => {
     await expectAllShow(true, 'switching it back on in the Layers list');
   });
 
-  test('a layer that loads hidden is listed once it is switched on in the Layers list', async ({ page }) => {
+  test('a layer that loads hidden is listed once it is switched on in the Layers list, and leaves once switched off', async ({
+    page
+  }) => {
     test.setTimeout(300_000);
     await blockAnalytics(page);
     await page.goto(MAIN_MAP);
@@ -225,6 +231,17 @@ test.describe('legend', () => {
 
       await expect(listItem, `the Layers list does not show ${title} on`).toHaveClass(/\bvisible\b/);
       await expect(entrySymbol, `the legend never listed ${title} after it was switched on`).toBeVisible({
+        timeout: 60_000
+      });
+
+      await listItem.locator('p').click();
+
+      await expect(listItem, `the Layers list does not show ${title} off`).not.toHaveClass(/visible/);
+      await expect(entrySymbol, `the legend still lists ${title} after it was switched off`).toBeHidden({ timeout: 30_000 });
+
+      await listItem.locator('p').click();
+
+      await expect(entrySymbol, `the legend never listed ${title} again after it was switched back on`).toBeVisible({
         timeout: 60_000
       });
     }

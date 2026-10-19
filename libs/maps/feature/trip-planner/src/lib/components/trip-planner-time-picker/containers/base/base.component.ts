@@ -2,13 +2,13 @@ import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, shareReplay, pluck } from 'rxjs/operators';
 
-import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
+import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
 
 import { TimeModeOption, TripPlannerService } from '../../../../services/trip-planner.service';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-time-picker',

@@ -18,6 +18,38 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### A Football Tailgating tent or zone link finishes drawing
+
+A `?tent=` or `?zone=` link on Football Tailgating opened with the tent or zone highlighted, but on
+ArcGIS 5.1 the map never finished drawing: the link zooms in past 1:1200, where the main map's RNS
+Spaces layer holds all of its ~45,000 points, and from 5.1 a layer view that large never stops
+updating. The layer draws nothing (its points are invisible and its labels off), so it is now left
+off. The map looks the same; on dev it was still drawing after four minutes, and on a local
+production build of the fix it finished drawing 25 seconds after opening. The smoke check for these links had failed
+on every load on dev since ArcGIS 5.1 ([#1926](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1926)).
+
+| Before (dev) | After (local production build) |
+| --- | --- |
+| ![Tent L1 highlighted on dev, the map still drawing after 90 seconds (and after four minutes)](../screenshots/tailgating-link-drawing/before-tent-dev.png) | ![The same link on a local production build of the fix: the same view, finished drawing after 25 seconds](../screenshots/tailgating-link-drawing/after-tent-local.png) |
+
+### The trip planner is back on dev, for testing (dev only)
+
+Since March ([#683](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/683)) the trip planner showed only "The Aggie Map routing services are currently
+undergoing maintenance" on every host. On a development host it now shows the planner again - the from
+and to boxes, the routing-service list, the travel modes and the directions panel on desktop, and the
+from and to boxes and travel modes on a phone - so its components can be tested. **Production is
+unchanged**: the Directions tab stays hidden there, and its address, `/map/d/trip`, still shows the
+maintenance message; so does a development host with `?as=production`. Routing is published only on the
+development GIS server (`Routing/20220119`, which answers a route request); the production server's
+Routing folder is empty, so a local build, which uses the production server, shows the planner with an
+empty routing list and cannot route. A smoke check opens `/map/d/trip` on each environment, both ways
+([#1912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1912)).
+
+| Before (dev) | After (local build, a development host) |
+| --- | --- |
+| ![Directions on dev: the maintenance message](../screenshots/trip-planner-on-dev/before-desktop.png) | ![The trip planner: from and to boxes, the routing list, travel modes and directions](../screenshots/trip-planner-on-dev/after-local-desktop.png) |
+| ![Directions on a phone on dev: the maintenance message](../screenshots/trip-planner-on-dev/before-phone.png) | ![The phone's trip planner: from and to boxes and travel modes](../screenshots/trip-planner-on-dev/after-local-phone.png) |
+
 ### Campus maps load only their own campus
 
 The Galveston, McAllen and DC / Bush School maps also loaded every College Station layer: 26 layers on
@@ -32,6 +64,21 @@ a layer that is not its own ([#1910](https://github.com/TamuGeoInnovation/Tamu.G
 | Before | After |
 | --- | --- |
 | ![DC / Bush School on dev before the fix: 26 layers, 10 of them failing with 20 console errors, and 92 seconds until it stopped drawing](../screenshots/1910-campus-layers/before-dc-bush-school-dev.png) | ![The same map on a local production build of the fix, on ArcGIS 5.1: 4 layers, no errors, finished drawing in 8 seconds](../screenshots/1910-campus-layers/after-dc-bush-school-local.png) |
+
+### Accessible and motorcycle parking maps finish drawing in seconds
+
+The Accessible Parking and Motorcycle Parking maps each draw one kind of space, from a service that holds
+every parking space on campus: 44,980 points. Their symbology has symbols only for accessible spaces
+(H/C and Visitor H/C, 1,263 of them) or motorcycle spaces (M/C, 1,016), so every other space was
+downloaded and never drawn. On ArcGIS 5.1 in a headless browser the two maps took 104 to 177 seconds
+to finish drawing. Each map now asks for its own spaces only. The maps look the same, because the same
+spaces are drawn; on a local production build they finished drawing in 16 to 27 seconds. A smoke check
+now fails if either map holds a space its symbology does not draw ([#1897](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1897)).
+
+| Before | After |
+| --- | --- |
+| ![Accessible Parking before the fix, on a local production build: 44,980 spaces loaded, 104 seconds until it stopped drawing](../screenshots/1897-parking-spaces/before-accessible-parking.png) | ![The same map with the fix: 1,263 spaces loaded, the same symbols, 21 seconds until it stopped drawing](../screenshots/1897-parking-spaces/after-accessible-parking.png) |
+| ![Motorcycle Parking before the fix: 44,980 spaces loaded, 177 seconds until it stopped drawing](../screenshots/1897-parking-spaces/before-motorcycle-parking.png) | ![The same map with the fix: 1,016 spaces loaded, the same symbols, 21 seconds until it stopped drawing](../screenshots/1897-parking-spaces/after-motorcycle-parking.png) |
 
 ### GIS Day: the sponsorship levels match the 2026 prospectus
 
@@ -63,6 +110,19 @@ visible, such as Visitor Parking's own map, were not affected ([#1857](https://g
 | Before | After |
 | --- | --- |
 | ![The main map with Visitor Parking and Construction Zones on, and an empty legend](../screenshots/1857-empty-legend/before-main-map-legend.png) | ![The same, with both layers and their symbols in the legend](../screenshots/1857-empty-legend/after-main-map-legend.png) |
+
+### The main map's legend drops a layer switched off
+
+Once [#1857](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1857)'s fix listed a layer switched on in the main map's legend, switching it off again left it
+there, symbols and all, though the map no longer drew it. The legend keeps a layer it has seen visible
+so that it can collapse instead of disappearing, which is right on the event maps, where the collapsed
+title is how the layer is switched back on; the main map's legend has no such titles. A legend that does
+not switch layers now drops one switched off and lists it again when it is switched on. Event maps'
+legends keep it collapsed, as before ([#1871](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1871)).
+
+| Before | After |
+| --- | --- |
+| ![The main map with Visitor Parking switched off again, still listed in the legend with its symbols](../screenshots/1871-legend-hide-off/before-main-map-switched-off.png) | ![The same on a local production build of the fix: the legend no longer lists Visitor Parking](../screenshots/1871-legend-hide-off/after-main-map-switched-off.png) |
 
 ### GIS Day: one code base for more than one organization's site, starting with UCGIS
 
@@ -662,9 +722,12 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Tailgating tent and zone links finish drawing ([#1926](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1926)) | [Tent L1](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?tent=L1), [Zone AP-7](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-7) | The tent or zone opens highlighted and named in the side panel, as before. The difference is not on screen: the map finishes drawing within a minute (`window.__tamuGiscMapProbe.drawing` in the console turns `false`), where before the fix it stayed `true`. Nothing else on the map changes: the RNS Spaces layer that is now off drew nothing |
+| Trip planner back on dev only ([#1912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1912)) | [Directions](https://dev.aggiemap.tamu.edu/map/d/trip), [on a phone](https://dev.aggiemap.tamu.edu/map/m/trip), [with ?as=production](https://dev.aggiemap.tamu.edu/map/d/trip?as=production) | Dev only: on dev the planner shows two empty from and to boxes, travel modes and "Please select two points"; choose two buildings: a route should be drawn from the development GIS server's routing (not yet tried through the app; if it fails, say so on the issue). With `?as=production`, and on production at [/map/d/trip](https://aggiemap.tamu.edu/map/d/trip), the maintenance message instead, and no Directions tab |
 | AggieMap runs without zone.js ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)). Nothing should look different; what could go wrong is a part of the page that stops updating | [/map/d](https://dev.aggiemap.tamu.edu/map/d), [/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), [Visitor Parking](https://dev.aggiemap.tamu.edu/parking/visitor-parking), [Gameday Parking](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry), [Muster](https://dev.aggiemap.tamu.edu/events/muster), [/code-maroon?sample=tornado](https://dev.aggiemap.tamu.edu/code-maroon?sample=tornado), [Building Directory](https://dev.aggiemap.tamu.edu/directory), and /map on a phone | Each follows at once, without a second click or a mouse move: a layer switched in the Layers list (its dot, the map and the Legend); a search result chosen (its popup opens and closes); the sidebar tab sliding the panel away and back; the basemap gallery marking the basemap chosen; Aerial Imagery's date slider; 2D to 3D and back (the label follows); a Legend title switching its layer off and the Layers row back on; the share button's "URL Copied" toast, whose bar runs down and which closes itself; Muster's "This event has passed" box and its close; the Code Maroon sample and Dismiss; the directory filtering as you type, sorting by Name and filling in rows as you scroll. On a phone: the search box's back arrow, the menu's Layers, Legend and Basemap, and a building's popup |
 | GIS Day: sponsorship levels match the prospectus ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` and `/sponsors` | Tiles show 1 to 4 representatives; each level's perks include lunches and a ribbon; Raster says 20-minute speaking slot; the extra-representatives note; on `/sponsors`, only "Sponsor through Texas A&M" under Interested in Becoming a Sponsor, parking passes for Line and above, and days dated 16 to 20 November |
 | The main map's legend lists layers switched on ([#1857](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1857)) | [/map/d](https://dev.aggiemap.tamu.edu/map/d) | Once the map has finished loading, switch Visitor Parking and Construction Zones on in the Layers list: each appears under Legend with its symbols within a few seconds |
+| The main map's legend drops a layer switched off ([#1871](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1871)) | [/map/d](https://dev.aggiemap.tamu.edu/map/d) | Once the map has finished loading, switch Visitor Parking on in the Layers list, then off: it leaves the Legend; switched on again, it comes back. On [/parking/visitor-parking](https://dev.aggiemap.tamu.edu/parking/visitor-parking), Visitor Kiosks switched off still shows its collapsed title in the legend, and clicking it switches the layer back on |
 | GIS Day: more than one organization's site, starting with UCGIS ([#1835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1835), [#1837](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1837)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [txgisday.org](https://txgisday.org); the UCGIS site once it is deployed | txgisday.org is unchanged: the same menus, footer, logo, tab title and icon, and the About page's committee and resume bank. On the UCGIS site: UCGIS GIS Day and its logo; no Sponsor, Competitions or FAQ menu; no Classes, Check-ins or Student Competitions on the profile; no check-in on an event page; and `/faq`, `/sponsors` and `/competitions` go to the homepage |
 | GIS Day: payment page instead of the giving site ([#1829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1829)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Sponsor TxGIS Day At TAMU" opens `/sponsors/payment` in the same tab: check payable to the Texas A&M Foundation with "2026-27 GIS Day #73982" on the memo line, the remit-to address, and the ACH or wire contact. No link anywhere goes to the giving site |
 | GIS Day: choose the organizations in the Sessions filter ([#1825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1825)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, Admin, Organizations, then `/sessions` | The organization form has a fourth checkbox, Sessions Filter. Tick it on two organizations and save: the Organizations filter on `/sessions` lists exactly those two, and their header and footer settings are unchanged |
@@ -677,6 +740,7 @@ dated notes as what was tested, and this table empties.
 | All Maps: choosing a search result opens the map ([#1868](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1868)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | Type `Campus Main Parking` in Search Maps and click the result: Campus Main Parking opens. Arrow down and Enter does the same |
 | Main map in 2D: click coordinates and the viewfinder ([#1875](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1875)) | [/map/d](https://dev.aggiemap.tamu.edu/map/d) | In 2D, click the map: its latitude and longitude (about 30.61, -96.34) show bottom left, and the browser console has no `toFixed` error. Then press an arrow key: the box in the middle of the map lists the buildings under it, numbered |
 | Campus maps load only their own campus ([#1910](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1910)) | [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school), [Galveston](https://dev.aggiemap.tamu.edu/campus/galveston), [McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen) | Each map draws its campus within a few seconds, as before but faster on DC; the browser console shows no "Failed to load layer" errors for Bike Racks, Lactation Rooms and the like; clicking a building still opens its popup and search still finds it |
+| Accessible and motorcycle parking load only their own spaces ([#1897](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1897)) | [Accessible Parking](https://dev.aggiemap.tamu.edu/parking/accessible-parking), [Motorcycle Parking](https://dev.aggiemap.tamu.edu/parking/motorcycle-parking) | The same blue accessible and pink motorcycle symbols in the same places as before, drawn within about half a minute rather than minutes. On Motorcycle Parking, clicking a space still opens its popup. In the network panel, the layer's queries carry `spc_type IN ('H/C', 'Visitor H/C')` or `Spc_Type = 'M/C'` |
 | Football Tailgating game-day notice ([#1817](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1817)) | [The main map](https://dev.aggiemap.tamu.edu/map/d) in a private window, in the week before a home game | Two notices, **Football Transportation Map Available** then **Football Tailgating Map Available**; clicking the second opens the Tailgating map |
 | GIS Day: sponsorship levels back at last year's prices ([#1821](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1821)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [the sponsor page](https://txgisday.org/sponsors/tamu) | Point $256, Line $512, Polygon $1,024, Raster $2,048, each level's perks as before |
 | GIS Day: event times chosen from a list ([#1747](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1747)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, signed in as an administrator: Admin, Events, edit any event, then click its start or end time | A list of times opens at once, in five-minute steps, with the event's current time highlighted and in view. Choosing one changes the time shown and closes the picker; the event's day does not change. Typing an exact time such as 4:07 PM also works. Save and reopen the event: the time is kept. A season day's date picker is unchanged |
