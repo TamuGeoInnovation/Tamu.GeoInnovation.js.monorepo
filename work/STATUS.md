@@ -3,34 +3,36 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **10:15 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
+Last written **6:30 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
-**Last batch done: 12.** Batches 5, 8, 10, 11 and 12 are finished. **Batch 9 is still held.** Nothing running; watching.
+**Last batch done: 12.** **Batch 13 is open and its queue is empty.** Batch 9 still waits. Nothing running.
 
 ## Running now
 
-Nothing. The branch watcher only.
+Nothing. Two watchers: one on this branch, one on Azure for batch 9's release.
 
-## work: finished — batch 12, a corrected copy of production's set
+## Batch 13 — open, queue empty
 
-**#1937.** Posted on #1937
-([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1937#issuecomment-6258040495)).
-Report: `work/reports/2026-10-18-9.md`. Nothing moved, nothing deleted.
+Read at 6:30 AM Central. This machine now takes the **pre-merge full checks**. The batch's queue holds no `CHECK`
+line yet, so nothing has been run. Each one will be `scripts/check-in-volume.sh <branch>` (full affected) after
+fetching the branch from the maintainer's fork and `git fetch origin`, with
+`work: checked <branch> exit <code>` pushed here the moment each finishes, failing targets included.
 
-| | |
-| --- | --- |
-| Corrected set | `C:/TAMU/visual-baselines/production/prod-2026-10-16-corrected` — 848 shots |
-| Original | `prod-2026-10-16` unchanged, mid-load shots included, confirmed after the copy |
-| New page | `C:/TAMU/visual-baselines/compare/dev-2026-10-18-3-vs-prod-2026-10-16-corrected/review.html` |
+The machine is idle and nothing competes for it: no suite, no capture, no dev server. The Docker volume's Nx
+cache is warm from yesterday's checks.
 
-Each replaced shot's checksum was checked against the re-take. The copy's manifest carries a `correction` block
-naming the four shots, why, and that production served `main-TK2R62YY.js` for both captures.
+## The overnight rehearsal did not happen
 
-- 23 Aug Rudder (accessible): **29.87% to 1.63%**. 23 Aug Clements: **15.70% to 1.54%**.
-- **Nothing above 10% on the corrected page is a difference in the software.** The top is now the three dev 404s
-  at 83.12%, which cannot be re-taken, then marker re-rendering and a hover state.
-- **Batch 9's comparison will use `prod-2026-10-16-corrected` as its "before"**, as directed.
+**No release at `33da307ff` or later reached dev overnight**, so batch 9's rehearsal never started, exactly as its
+condition says. Azure at 6:27 AM Central is unchanged from 10:10 PM:
+
+| Release | Build | Commit | Dev stage | Qualifies for the rehearsal? |
+| --- | --- | --- | --- | --- |
+| Release-483 | 20261018.37 | `af33dc01e` (18 Oct, 17:40) | succeeded | **No** — older than `33da307ff` (20:55) |
+| Release-482 | 20261018.33 | `70f0e424b` | succeeded | No — batch 8 ran on this |
+
+The Azure watcher is still running and still tests ancestry rather than release number.
 
 ## Queued
 
