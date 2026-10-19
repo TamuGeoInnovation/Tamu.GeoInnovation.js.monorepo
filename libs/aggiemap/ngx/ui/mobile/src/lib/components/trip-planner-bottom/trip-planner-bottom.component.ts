@@ -6,7 +6,7 @@ import { switchMap, takeUntil, pluck } from 'rxjs/operators';
 import { TripPlannerService, TripResult } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
-import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable/directive';
 import { TripPlannerDirectionsMobileComponent } from '@tamu-gisc/maps/feature/trip-planner/components';
 
 @Component({

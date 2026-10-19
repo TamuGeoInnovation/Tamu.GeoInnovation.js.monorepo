@@ -4,7 +4,7 @@ import { filter, map, mergeMap, Observable, take, withLatestFrom } from 'rxjs';
 
 import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable/directive';
 
 import { AsyncPipe } from '@angular/common';
 import { BusRouteComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';

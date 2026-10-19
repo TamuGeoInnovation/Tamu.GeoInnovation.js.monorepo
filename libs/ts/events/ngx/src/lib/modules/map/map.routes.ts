@@ -16,7 +16,7 @@ import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards
 import { LayerListComponent, LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
 import { loadTripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
-import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
+import { PopupMobileDeferredComponent } from '@tamu-gisc/maps/feature/popup';
 
 import { BasemapGalleryComponent, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 
@@ -65,7 +65,7 @@ export const mapRoutes: Routes = [
             path: '',
             children: [
               { path: '', component: OmnisearchComponent },
-              { path: '', component: PopupMobileComponent, outlet: 'outlet-2' }
+              { path: '', component: PopupMobileDeferredComponent, outlet: 'outlet-2' }
             ]
           },
           {

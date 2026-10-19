@@ -110,6 +110,7 @@
       "@tamu-gisc/ui-kits/ngx/forms/date-time-picker": ["libs/ui-kits/ngx/forms/src/date-time-picker.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/clipboard": ["libs/ui-kits/ngx/interactions/clipboard/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/draggable": ["libs/ui-kits/ngx/interactions/draggable/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/interactions/draggable/directive": ["libs/ui-kits/ngx/interactions/draggable/src/directive.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/keyboard": ["libs/ui-kits/ngx/interactions/keyboard/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/scroll-to": ["libs/ui-kits/ngx/interactions/scroll-to/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout": ["libs/ui-kits/ngx/layout/src/index.ts"],
