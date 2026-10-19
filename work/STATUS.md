@@ -11,27 +11,21 @@ Clock times here are read from PowerShell or from a commit timestamp, not estima
 
 ## Running now
 
-**Batch 14 (#1935): the quick tier on Release-485.** Taken at 7:05 PM Central, **not started** — its two conditions
-are not both met yet.
+**Batch 14 (rewritten 7:10 PM), task 1: #1954's before/after images.** Started **7:12 PM Central**.
 
-| | |
-| --- | --- |
-| Release | Release-485, build 20261019.13, `0f69d3bac` |
-| `GIS-1D Development` | **inProgress** at 7:03 PM |
-| Dev serves | `main-CR5DN6UQ.js`, already different from Release-484's `main-5IW7YA32.js` |
+The 7:00 PM batch asked for a quick tier on Release-485; the maintainer's 1B replaced it, so **no quick tier runs
+on `0f69d3bac` and nothing is tagged on it**. Release-485 did reach dev — stage succeeded, serving
+`main-CR5DN6UQ.js` — so the "before" for #1954 can be taken from it.
 
-**The bundle changed before the stage finished**, so the new hash alone is not proof the deploy is done — a deploy
-can swap files and still be running. A waiter is polling for *both* the succeeded stage and a new bundle, and the
-tier starts the moment both hold. `work: started` is pushed before anything runs.
+- **Before:** dev, `/parking/motorcycle-parking/map?lot=100j`, which selects space 26692, an `H/C` space the map
+  does not draw.
+- **After:** a local production build of `fix/1954-deep-link-respects-filter` (`f02d607f0`), served with nginx and
+  `try_files`, where the same link selects 32270, an `M/C` space.
 
-Nothing heavy will run beside it, as the batch says.
+Task 2, the release tier, waits for home to name the final build's commit and release number. **It has not
+started and must not start before that line appears.**
 
-The AVP poller is still watching Transportation Services' service and will say so when it answers 20 of
-20.
-
-**`fix/1954-deep-link-respects-filter` passed its check here: exit 0**, lint 5 projects, test 5, build 2, all run.
-It is merged with `development` and has **no pull request** — this machine had already handed the director role
-back when the result landed, so it did not open one. That is a one-line decision for the director.
+Also recorded: **#1963 is High, #1957 is Medium** — both were unset in the handoff.
 
 ## Where today's release stands
 
