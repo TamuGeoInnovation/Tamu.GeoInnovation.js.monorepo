@@ -34,7 +34,7 @@ and dev's smoke tests no longer allow the layer to fail. The UES Operations map 
 
 | Before | After |
 | --- | --- |
-| To be captured. | To be captured. |
+| ![The lactation popup on production today: Building Name, an empty Building Number, Availability, and an Additional Information link](../screenshots/1960-lactation-hosted-service/before-production-popup.png) | ![The same room on a local production build of the fix: the building name with its abbreviation, Building 1530, Availability, Hours, Access, Amenities, Notes with a named contact, and two links](../screenshots/1960-lactation-hosted-service/after-local-production-popup.png) |
 
 ### The Layers list is alphabetical again
 
