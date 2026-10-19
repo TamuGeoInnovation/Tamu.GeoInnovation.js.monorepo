@@ -71,22 +71,27 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
-## Batch 14 (19 October 2026, 7:00 PM Central) — the quick tier on tonight's dev build
+## Batch 14 (19 October 2026, 7:10 PM Central, replacing the 7:00 PM version) — #1954's images now, then one release tier tonight
 
-**Decided** (the maintainer, at home): home directs again. He built `0f69d3bac` (`development`'s head) and is releasing it
-to dev: **Release-485, build 20261019.13**. He is checking it by hand on dev now. PRs 1966 (#1960) and 1950 (#1949) are
-**not** in this build; both were merged with `development` tonight and are not to be touched.
+**Decided** (the maintainer, at home, 7:05 PM):
+- **1B: tonight's production build carries PR 1966 (#1960), #1954's PR and PR 1950 (#1949, `<arcgis-map>`), cleared by one
+  release tier.** So **no quick tier on Release-485** (`0f69d3bac`, deploying to dev now): it is not the build going to
+  production. He is checking Release-485 by hand meanwhile. **No tag on `0f69d3bac`.**
+- **2A: #1954's pull request opens now**, and this machine adds its before/after images.
+- #1963 is High; #1957 is Medium.
 
-1. **The quick tier on Release-485** (report on: #1935)
-   - Start when Release-485's `GIS-1D Development` stage shows **succeeded** (`az-releases.py`), and dev serves the new
-     build (its `main-*.js` differs from Release-484's `main-5IW7YA32.js`). Push `work: started` first.
-   - `test/smoke/aggiemap/run-local.sh development quick`. Its set is "core plus what changed since the last `dev-*` tag"
-     (`dev-2026-10-18-3`); put the set it prints in the report.
-   - **Nothing else heavy on this machine while it runs** — no capture, no browser loop, no query matrix.
-   - **Tag only on a clean pass:** `scripts/tag-build.sh dev 0f69d3bac...` (full sha), `git push origin <tag>`. A failure that is
-     only #1951's AVP popup (`directions.spec.ts`, `AVP-parking-lots`) is **not** clean: don't tag; report it, with whether
-     everything else passed, under Questions for the director.
-   - Report per failure what failed and why. No production stage, no approval of anything in Azure.
+1. **#1954's before/after images** (report on: #1954)
+   - Before: dev, once Release-485 is up, `https://dev.aggiemap.tamu.edu/parking/motorcycle-parking/map?lot=100j` - it selects
+     space 26692, an `H/C` space the map does not draw. Crop to the map and popup.
+   - After: a local production build of `fork/fix/1954-deep-link-respects-filter` (head `f02d607f0`), served as you served
+     #1960's (nginx with `try_files`): the same link selects 32270, an `M/C` space.
+   - Commit them to `docs/screenshots/1954-deep-link-respects-filter/` on that branch, add the `unreleased.md` entry and the
+     What-to-test row, push to the fork, and put the pinned raw URLs on the PR (home opens it now; its number will be in
+     `home/STATUS.md`). Same as you did for 1966.
+2. **When the maintainer has merged all three and the build reaches dev: the release tier** (report on: #1935)
+   - home will add the commit and release number here when they exist; **don't start before that line appears.**
+   - `test/smoke/aggiemap/run-local.sh development release`. Nothing else heavy beside it.
+   - Tag `dev-*` on that commit only on a clean pass; #1951's AVP popup failing alone is not clean - report, don't tag.
 
 ## Batch 13 (prepared 19 October 2026, morning) — pre-merge checks for today's release, as the director asks
 
