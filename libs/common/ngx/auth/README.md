@@ -10,34 +10,33 @@ Exposed are:
 
 ## Using the Guard
 
-`import { AuthGuard } from '@tamu-gisc/common/ngx/auth';`
+`import { LegacyAuthGuard } from '@tamu-gisc/common/ngx/auth';`
 
 In Angular route definitions:
 
 ```js
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('path/to/module').then((m) => m.LazyModule),
-    canActivate: [AuthGuard]
+    loadChildren: () => import('path/to/feature').then((m) => m.featureRoutes),
+    canActivate: [LegacyAuthGuard]
   }
 ];
 ```
 
 ## Using the HTTP interceptor
 
-`import { AuthProvider } from '@tamu-gisc/common/ngx/auth';`
+`import { LegacyAuthInterceptorProvider } from '@tamu-gisc/common/ngx/auth';`
 
-In the root application module include it in the providers array:
+It is a class-based interceptor, so the HTTP client has to be told to read interceptors from DI. In the application's `main.ts`:
 
 ```js
-@NgModule({
-imports: [...],
-declarations: [...],
-providers: [AuthProvider],
-bootstrap: [...]
-})
-export class AppModule {}
+bootstrapApplication(AppComponent, {
+  providers: [
+    LegacyAuthInterceptorProvider,
+    provideHttpClient(withInterceptorsFromDi())
+  ]
+});
 ```
 
 ## Using the auth service
@@ -48,7 +47,7 @@ In a component or guard:
 
 ```js
 export class CustomComponent implements OnInit {
-  constructor(private auth: AuthService) {}
+  private readonly auth = inject(AuthService);
 
   public ngOnInit() {
     this.auth.isAuthenticated().subscribe(status => {
