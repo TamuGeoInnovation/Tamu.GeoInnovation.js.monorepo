@@ -69,23 +69,6 @@ rather than being papered over
 There are no before and after images: the difference only appears while a service is erring, which
 cannot be staged honestly. The pull request carries the `no-visible-change` label for that reason.
 
-### A lot link selects only what the map draws
-
-A `?lot=` or `?feature=` link looked a feature up by querying its layer directly, and a layer's filter governs
-what it *draws*, not what a query returns. So a link could select something the map does not show: on Motorcycle
-Parking, which draws only `M/C` spaces, `?lot=100j` selected space 26692, an `H/C` space, and marked it in an
-empty patch of map with nothing under it. Both lookups now start from the layer's own query, so the filter is
-applied however it was set - a definition expression, a builder choice, a subtype - and the same link selects
-32270, an `M/C` space the map draws
-([#1954](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1954)).
-
-**A link shared before a map's filter changed may now select nothing.** That is deliberate: a link selects only
-what the map shows.
-
-| Before (dev) | After (local production build) |
-| --- | --- |
-| ![Motorcycle Parking on dev with ?lot=100j: the selection marker sits in open ground with no drawn space under it, and the share link names motorcycle-parking-space:26692](../screenshots/1954-deep-link-respects-filter/before-dev-motorcycle-lot-100j.png) | ![The same link on a local production build of the fix: the marker sits on a drawn pink M/C space, and the share link names motorcycle-parking-space:32270](../screenshots/1954-deep-link-respects-filter/after-local-production-motorcycle-lot-100j.png) |
-
 ### A Football Tailgating tent or zone link finishes drawing
 
 A `?tent=` or `?zone=` link on Football Tailgating opened with the tent or zone highlighted, but on
@@ -117,6 +100,23 @@ empty routing list and cannot route. A smoke check opens `/map/d/trip` on each e
 | --- | --- |
 | ![Directions on dev: the maintenance message](../screenshots/trip-planner-on-dev/before-desktop.png) | ![The trip planner: from and to boxes, the routing list, travel modes and directions](../screenshots/trip-planner-on-dev/after-local-desktop.png) |
 | ![Directions on a phone on dev: the maintenance message](../screenshots/trip-planner-on-dev/before-phone.png) | ![The phone's trip planner: from and to boxes and travel modes](../screenshots/trip-planner-on-dev/after-local-phone.png) |
+
+### A lot link selects only what the map draws
+
+A `?lot=` or `?feature=` link looked a feature up by querying its layer directly, and a layer's filter governs
+what it *draws*, not what a query returns. So a link could select something the map does not show: on Motorcycle
+Parking, which draws only `M/C` spaces, `?lot=100j` selected space 26692, an `H/C` space, and marked it in an
+empty patch of map with nothing under it. Both lookups now start from the layer's own query, so the filter is
+applied however it was set - a definition expression, a builder choice, a subtype - and the same link selects
+32270, an `M/C` space the map draws
+([#1954](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1954)).
+
+**A link shared before a map's filter changed may now select nothing.** That is deliberate: a link selects only
+what the map shows.
+
+| Before (dev) | After (local production build) |
+| --- | --- |
+| ![Motorcycle Parking on dev with ?lot=100j: the selection marker sits in open ground with no drawn space under it, and the share link names motorcycle-parking-space:26692](../screenshots/1954-deep-link-respects-filter/before-dev-motorcycle-lot-100j.png) | ![The same link on a local production build of the fix: the marker sits on a drawn pink M/C space, and the share link names motorcycle-parking-space:32270](../screenshots/1954-deep-link-respects-filter/after-local-production-motorcycle-lot-100j.png) |
 
 ### Campus maps load only their own campus
 
