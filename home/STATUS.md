@@ -4,11 +4,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
 - **#1949, Esri's map components** (`feat/arcgis-map-component`, `C:\TAMU\wt-arcgismap`), an agent, since 7:20 AM.
-- **The event popup directions fix** (`fix/event-popup-directions`, `C:\TAMU\wt-evdir`), an agent, since 7:46 AM.
-  Its cause will be written here as soon as it is known.
 
-## Last batch done
-(none yet as a listener)
+## Finished
+- **The event popup directions failure** (report `home/reports/2026-10-19-1.md`): not the release. Transportation
+  Services' map server fails about half its queries, production included. No code changed. Four questions for the director.
 
 ## Told directly
 - 7:47 AM: become the listener now; carry on with `<arcgis-map>` as far as possible and report progress here.
