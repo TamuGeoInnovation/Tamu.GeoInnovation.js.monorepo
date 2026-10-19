@@ -3,11 +3,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-(nothing)
-
-**branch ready: fix/1952-qualified-field-deep-links, fix/1953-draw-event-view-and-flash** (report 3)
-
-Last batch done: 1
+**home: started batch 2** at about 10:10 AM: #1935, the release notes brought up to date with the tier numbers handed
+over (Release-484, held on #1951, no dev tag); gaps marked for the comparison and a clean rerun.
 
 ## Finished
 - **Batch 1** (report `home/reports/2026-10-19-3.md`): #1952 and #1953 pushed, checks exit 0, red-first tests.
