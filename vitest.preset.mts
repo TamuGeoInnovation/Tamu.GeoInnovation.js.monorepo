@@ -41,6 +41,9 @@ export function vitestConfig(
     test: {
       globals: true,
       environment,
+      // Jest's jsdom page address. Vitest's own is http://localhost:3000, and specs that build share
+      // links from the page address expect the one they were written against.
+      environmentOptions: { jsdom: { url: 'http://localhost/' } },
       include: ['src/**/*.spec.ts'],
       setupFiles: [
         join(workspaceRoot, 'test/polyfills.ts'),
