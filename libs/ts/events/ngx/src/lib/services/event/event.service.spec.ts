@@ -265,14 +265,17 @@ function lotLayer(id: string, objectIdField: string, fields: string[], features:
     // As ArcGIS answers for a layer with no filter.
     createQuery: () => ({ where: '1=1' }),
     queryFeatures: async (query: { objectIds?: number[]; where?: string }) => {
-      if (query.where) {
-        where.push(query.where);
+      // `1=1` is what an unfiltered layer's `createQuery()` carries, not a lookup.
+      const clause = query.where === '1=1' ? undefined : query.where;
+
+      if (clause) {
+        where.push(clause);
       }
 
       return {
         features: features
           .filter((attributes) => !query.objectIds || query.objectIds.includes(attributes[objectIdField] as number))
-          .filter((attributes) => !query.where || matchesWhere(query.where, attributes))
+          .filter((attributes) => !clause || matchesWhere(clause, attributes))
           .map((attributes) => ({ attributes: { ...attributes } }))
       };
     }
