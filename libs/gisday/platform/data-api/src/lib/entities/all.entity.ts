@@ -656,6 +656,13 @@ export class Sponsor extends GuidIdentity {
   @Column({ nullable: true })
   public sponsorshipAmount: string;
 
+  /**
+   * Whether the sponsor is shown on the public site for its season. A sponsor carried over from a
+   * past season stays here, switched off, until it confirms, so its details and logo are kept (#1962).
+   */
+  @Column({ nullable: false, default: true })
+  public active: boolean;
+
   @ManyToOne(() => Season, (season) => season.sponsors)
   public season: Season;
 

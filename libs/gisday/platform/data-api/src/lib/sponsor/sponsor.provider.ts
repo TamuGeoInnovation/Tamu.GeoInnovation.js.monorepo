@@ -140,7 +140,7 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
 
   public async createSponsor(sponsor: Partial<Sponsor>, file?: Express.Multer.File) {
     const sponsorEnt = this.sponsorRepo.create({
-      ...sponsor
+      ...withActiveFlag(sponsor)
     });
 
     if (sponsorEnt) {
@@ -173,6 +173,7 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
 
   public async updateSponsor(guid: string, incoming: Partial<Sponsor>, file?: Express.Multer.File) {
     delete incoming.guid;
+    incoming = withActiveFlag(incoming);
 
     const existing = await this.sponsorRepo.findOne({
       where: {
@@ -250,4 +251,23 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
   private async _saveImage(file) {
     return this.assetService.saveAsset(this._resourcePath, file, 'sponsor-logo');
   }
+}
+
+/**
+ * The sponsor with `active` as a boolean. Form data sends it as the text "true" or "false", JSON as a
+ * boolean; anything else is left out, so an update that does not mention it leaves it as it was (#1962).
+ */
+export function withActiveFlag<T extends Partial<Sponsor>>(sponsor: T): T {
+  const value = (sponsor as { active?: unknown })?.active;
+  const copy = { ...sponsor };
+
+  if (value === true || value === 'true') {
+    copy.active = true;
+  } else if (value === false || value === 'false') {
+    copy.active = false;
+  } else {
+    delete copy.active;
+  }
+
+  return copy;
 }
