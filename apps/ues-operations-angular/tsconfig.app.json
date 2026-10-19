@@ -8,7 +8,6 @@
     "moduleResolution": "bundler"
   },
   "files": ["src/main.ts", "src/polyfills.ts"],
-
   "angularCompilerOptions": {
     "strictTemplates": false
   }
