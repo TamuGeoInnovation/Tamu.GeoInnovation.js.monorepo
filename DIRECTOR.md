@@ -1,6 +1,6 @@
 # Who directs
 
-**Director: work** (handed over by home at 7:47 AM Central, 19 October 2026; the maintainer starts work as director when he arrives)
+**Director: home** (handed back by work at 6:35 PM Central, 19 October 2026, when the maintainer left the office)
 
 Each of the maintainer's machines runs a Claude Code session on this branch. **At any time exactly one machine
 directs; every other machine listens.** The maintainer talks to the director. Every session reads this file first,
