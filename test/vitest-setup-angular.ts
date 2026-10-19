@@ -2,23 +2,25 @@
  * The TestBed for every Angular project on Vitest (#1479), in place of a `src/test-setup.ts` per
  * project.
  *
- * Zone-based, as under Jest: jest-preset-angular's setupZoneTestEnv provided
- * provideZoneChangeDetection(), and the specs were written against it. Some use `waitForAsync` and
- * `fakeAsync`, which need zone.js. Without that provider Angular 22 schedules change detection
- * itself, as it does zoneless, and two specs then failed on views their mocks did not fully set up.
+ * Zoneless (#1478), as AggieMap and UES Operations run: they load no zone.js, so a spec sees change
+ * detection as they do. A view updates when a signal, an input, a template event or markForCheck says
+ * so, never because time passed. A component that updates zoneless also updates under the zone the
+ * other applications still load, so one setting covers the libraries they share.
  *
- * Going zoneless (#1478) is this file's change alone: `zoneless: true`, no provider and no
- * `setup-zone` import, once no spec needs the zone helpers.
+ * A project whose specs still use `waitForAsync` or `fakeAsync` asks the preset for `{ zone: true }`,
+ * which loads zone.js before this file; the TestBed is then zone-based, as jest-preset-angular's
+ * setupZoneTestEnv was.
  *
  * destroyAfterEach: false keeps the teardown these specs were written against under Jest.
  */
 import '@angular/compiler';
-import '@analogjs/vitest-angular/setup-zone';
 import { provideZoneChangeDetection } from '@angular/core';
 import { setupTestBed } from '@analogjs/vitest-angular/setup-testbed';
 
+const zone = 'Zone' in globalThis;
+
 setupTestBed({
-  zoneless: false,
-  providers: [provideZoneChangeDetection()],
+  zoneless: !zone,
+  providers: zone ? [provideZoneChangeDetection()] : [],
   teardown: { destroyAfterEach: false }
 });
