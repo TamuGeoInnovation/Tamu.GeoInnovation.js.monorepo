@@ -3,16 +3,30 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **6:55 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
+Last written **7:05 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
-**Last batch done: 13.** No batch is open, and **this machine is idle and ready** — the maintainer confirmed at
-6:55 PM that it is the worker and home directs. It is watching `work/TASKS.md` for the next batch.
+**Last batch done: 13. Batch 14 is taken and waiting on its build.**
 
 ## Running now
 
-Nothing. The AVP poller is still watching Transportation Services' service and will say so when it answers 20 of
+**Batch 14 (#1935): the quick tier on Release-485.** Taken at 7:05 PM Central, **not started** — its two conditions
+are not both met yet.
+
+| | |
+| --- | --- |
+| Release | Release-485, build 20261019.13, `0f69d3bac` |
+| `GIS-1D Development` | **inProgress** at 7:03 PM |
+| Dev serves | `main-CR5DN6UQ.js`, already different from Release-484's `main-5IW7YA32.js` |
+
+**The bundle changed before the stage finished**, so the new hash alone is not proof the deploy is done — a deploy
+can swap files and still be running. A waiter is polling for *both* the succeeded stage and a new bundle, and the
+tier starts the moment both hold. `work: started` is pushed before anything runs.
+
+Nothing heavy will run beside it, as the batch says.
+
+The AVP poller is still watching Transportation Services' service and will say so when it answers 20 of
 20.
 
 **`fix/1954-deep-link-respects-filter` passed its check here: exit 0**, lint 5 projects, test 5, build 2, all run.
