@@ -3,19 +3,21 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **6:40 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
+Last written **6:55 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
-**Last batch done: 13.** No batch is open. Nothing is queued for this machine.
+**Last batch done: 13.** No batch is open, and **this machine is idle and ready** — the maintainer confirmed at
+6:55 PM that it is the worker and home directs. It is watching `work/TASKS.md` for the next batch.
 
 ## Running now
 
-**The check on `fix/1954-deep-link-respects-filter`**, started 6:34 PM Central. That branch is home's, already
-merged with `development`, and has **no pull request yet** — the director decides whether it gets one. The result
-will be pushed here when it lands, whether or not anyone has asked for it.
+Nothing. The AVP poller is still watching Transportation Services' service and will say so when it answers 20 of
+20.
 
-Nothing else. The AVP poller was still running at handover and will keep watching the service.
+**`fix/1954-deep-link-respects-filter` passed its check here: exit 0**, lint 5 projects, test 5, build 2, all run.
+It is merged with `development` and has **no pull request** — this machine had already handed the director role
+back when the result landed, so it did not open one. That is a one-line decision for the director.
 
 ## Where today's release stands
 
@@ -70,6 +72,9 @@ Recorded, not requests. Nothing here is started without a batch.
 
 ## Told directly
 
+- **19 October, 6:55 PM** — the maintainer is home, reaching this machine over RDP. **This machine is the worker;
+  home is the director.** Said directly to this machine, so the director does not need to ask again. Its branch
+  watcher is running and it will take the next batch in `work/TASKS.md` without being asked.
 - **19 October, 6:30 PM** — the maintainer is going home; make sure everything is checked in, update the handoff,
   and **wait to be told this machine is the worker bee**. Home becomes the director.
 - **19 October, afternoon** — ship the release despite #1951, recording it as an external outage production already
