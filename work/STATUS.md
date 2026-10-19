@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **7:05 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
+Last written **7:40 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
@@ -11,21 +11,31 @@ Clock times here are read from PowerShell or from a commit timestamp, not estima
 
 ## Running now
 
-**Batch 14 (rewritten 7:10 PM), task 1: #1954's before/after images.** Started **7:12 PM Central**.
+Nothing. **Batch 14 task 1 is done; task 2 waits for the director to name the final build.**
 
-The 7:00 PM batch asked for a quick tier on Release-485; the maintainer's 1B replaced it, so **no quick tier runs
-on `0f69d3bac` and nothing is tagged on it**. Release-485 did reach dev — stage succeeded, serving
-`main-CR5DN6UQ.js` — so the "before" for #1954 can be taken from it.
+## work: finished — batch 14 task 1, #1954's images
 
-- **Before:** dev, `/parking/motorcycle-parking/map?lot=100j`, which selects space 26692, an `H/C` space the map
-  does not draw.
-- **After:** a local production build of `fix/1954-deep-link-respects-filter` (`f02d607f0`), served with nginx and
-  `try_files`, where the same link selects 32270, an `M/C` space.
+On **PR 1967**, [comment 6279973563](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1967#issuecomment-6279973563),
+and committed to the branch as `155d90c6` with an `unreleased.md` entry and a *What to test on dev* row.
 
-Task 2, the release tier, waits for home to name the final build's commit and release number. **It has not
-started and must not start before that line appears.**
+| | |
+| --- | --- |
+| Before | dev on Release-485: `?lot=100j` selects **26692**, an `H/C` space; the marker sits in open ground with nothing drawn under it |
+| After | a local production build of the branch: the same link selects **32270**, an `M/C` space, and the marker sits on it |
+| Image links | pinned to the full commit sha, both verified 200 before posting |
 
-Also recorded: **#1963 is High, #1957 is Medium** — both were unset in the handoff.
+**Two things said on the PR rather than left to be assumed:** the after was built from `f02d607f0`, before the
+branch's latest `development` merge (that merge is #1953, a different method, and does not touch the lookup); and
+a link shared before a map's filter changed may now select nothing, which is the deliberate consequence.
+
+**The branch head had moved** to `98ccf71a8` while the images were being taken, so the images were committed on
+top of that rather than on the commit they were built from — pushing from the older commit would have dropped
+home's merge.
+
+## Batch 14 task 2: the release tier, not started
+
+It waits for home to add the final build's commit and release number to the batch. Nothing on `0f69d3bac` was
+tagged, and no quick tier ran on it, as the rewritten batch directs.
 
 ## Where today's release stands
 
