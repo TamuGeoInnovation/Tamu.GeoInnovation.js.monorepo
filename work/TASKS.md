@@ -92,6 +92,7 @@ and these checks run in parallel.
 Queue:
 - ~~CHECK refactor/1478-zoneless~~ withdrawn (the maintainer, 19 October): the remaining four PRs go in as one combined branch, `chore/1479-vitest`; its CHECK comes next. If this check has already started, finish it and report.
 - CHECK chore/1479-vitest  (PR #1948, at b77b61426: Vitest + zoneless + Node 24 + the TypeScript 6.0 deprecations, combined; it runs on Node 24.22.0 as the branch's check script says)
+- CHECK development  (at `8951a6364`, #1948 merged: the final release's code. The maintainer is already building it; report at once, since a failure stops the release to dev)
 
 ## Batch 12 (prepared 18 October 2026, about 9:30 PM) — now
 
@@ -150,6 +151,10 @@ Angular 22.2). So compare **now**, and anything significant is found hours befor
 production serves now; there should be no significant differences, and any there are, he wants to see.
 
 1. **#1849: clear Release-482 (build 20261018.33, `70f0e424b`) for production**
+   - **THE FINAL RELEASE (the director, 19 October morning): the release of `8951a6364` or later** — everything for today:
+     #1944 and #1940–#1943, and #1948 (Vitest, zoneless, Node 24, the TypeScript 6.0 deprecations). Run this whole batch
+     on it as soon as Azure lists it with its dev stage succeeded and the CHECK development above has passed, and
+     **tag it** if the full tier passes outright. This replaces the rehearsal and the holds below.
    - **Overnight rehearsal (the director, about 9:40 PM, the maintainer asleep):** the build of `33da307ff` (#1930 and #1931
      merged) may reach dev tonight; the layer-order fix (#1939) will follow it in the morning. **If a release at `33da307ff`
      or later reaches dev tonight, run this whole batch on it now, as a rehearsal: the full tier, the capture and the
