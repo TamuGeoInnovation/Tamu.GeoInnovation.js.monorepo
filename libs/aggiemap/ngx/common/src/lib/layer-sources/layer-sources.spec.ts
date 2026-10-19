@@ -4,7 +4,7 @@ import { LayerSources } from './layer-sources';
 import { IComposedConnections } from '../connections';
 import { IComposedIDefinitions } from '../definitions';
 
-jest.mock('@tamu-gisc/aggiemap/ngx/popups', () => ({
+vi.mock('@tamu-gisc/aggiemap/ngx/popups', () => ({
   Popups: {
     MarkdownPopupComponent: 'MarkdownPopupComponent'
   }
