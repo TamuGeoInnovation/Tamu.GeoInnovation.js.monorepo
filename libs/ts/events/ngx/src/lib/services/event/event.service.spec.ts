@@ -69,6 +69,45 @@ function mainLayersLoadedFor(definition: AggiemapCustomMapConfiguration): string
 }
 
 /**
+ * A feature lookup that fails leaves the map's chosen view and focus flash in place (#1953).
+ *
+ * `drawEvent` selected the linked feature, then framed the chosen view, then flashed the focus feature,
+ * all in one `try`, so a lookup that threw - a service erroring, as Transportation Services' did on
+ * about half its queries in October (#1951) - skipped the other two. Neither depends on the feature.
+ */
+describe('EventService, drawing a map whose feature lookup fails', () => {
+  it('still applies the chosen view and flashes the focus feature, and reports the failure', async () => {
+    const failure = new Error('Unable to complete operation.');
+    const selectFeatureFromUrl = vi.fn().mockRejectedValue(failure);
+    const applySelectedChoiceView = vi.fn().mockResolvedValue(undefined);
+    const flashFocusFeature = vi.fn().mockResolvedValue(undefined);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const eventService = Object.assign(Object.create(EventService.prototype) as EventService, {
+      eventSettingsService: { eventLayerSources: () => BreakSummerParkingTs.sources },
+      mapService: { loadLayers: async () => undefined },
+      specialEventLayerReferences: [BreakSummerParkingTs.sources[0].id],
+      visibleOptions: [],
+      settings: {},
+      applyExclusiveLayerVisibility: async () => undefined,
+      selectFeatureFromUrl,
+      applySelectedChoiceView,
+      flashFocusFeature
+    });
+
+    await eventService.drawEvent();
+    const logged = error.mock.calls.map((call) => call.at(-1));
+    error.mockRestore();
+
+    expect(selectFeatureFromUrl).toHaveBeenCalledTimes(1);
+    expect(applySelectedChoiceView).toHaveBeenCalledTimes(1);
+    expect(flashFocusFeature).toHaveBeenCalledTimes(1);
+    // Logged once and not retried, so an outage stays visible.
+    expect(logged).toEqual([failure]);
+  });
+});
+
+/**
  * A kiosk map shows only its own layers (#1392).
  *
  * Every event map loads the main map's layers as well as its own. The dining kiosk did too, so it drew

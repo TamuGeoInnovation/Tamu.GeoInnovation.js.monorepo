@@ -54,6 +54,20 @@ the Track/Soccer/Softball/Swimming/Volleyball/Women's Basketball map.
 | Before (dev) | After |
 | --- | --- |
 | ![Visitor Parking on dev with ?lot=100j: the popup is the main map's Lot 100j, sharing a link to aggiemap.tamu.edu/?lot=...](../screenshots/1952-qualified-field-deep-links/before-visitor-parking-lot-100j-dev.png) | To be captured on dev once this is built there; the dev server's first page load did not finish in time. The behaviour is proven by the tests below. |
+### A map still opens where it should when a feature link cannot be looked up
+
+A map opened from a link naming a feature - `?lot=`, `?feature=` - did three things in one step: it
+looked the feature up, opened on the view the builder choices asked for, and flashed the feature to
+draw the eye. A failure in the first skipped the other two, so when a service erred the visitor lost
+the opening view as well as the popup. Transportation Services' AVP service was failing about half its
+queries in October ([#1951](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1951)),
+which is how this came to light. The lookup is now allowed to fail on its own: the view and the flash
+run either way, and the failure is logged, not retried - an outage stays visible to the smoke suite
+rather than being papered over
+([#1953](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1953)).
+
+There are no before and after images: the difference only appears while a service is erring, which
+cannot be staged honestly. The pull request carries the `no-visible-change` label for that reason.
 
 ### A Football Tailgating tent or zone link finishes drawing
 
