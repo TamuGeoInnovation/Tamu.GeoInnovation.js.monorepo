@@ -4,7 +4,7 @@ Since the 19 October release: no AggieMap change yet, and GIS Day changes waitin
 deploy.
 
 **The latest release notes are [19 October 2026](2026-10-19.md)**, for the build from `8951a6364`
-(build TBD, Release-TBD) being cleared on dev for production. The `prod-*` tag on `8951a6364` records
+(build 20261019.5, Release-484), on dev and held for production on [#1951](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1951). The `prod-*` tag on `8951a6364` records
 when it reaches production. The release before it is [16 October 2026](2026-10-16.md), from `264eebb42`.
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
@@ -498,7 +498,7 @@ and the additional sponsorship opportunities are unchanged ([#1821](https://gith
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** build TBD (Release-TBD, `8951a6364`), whose AggieMap rows moved into the [19 October notes](2026-10-19.md). The rows left are GIS Day's, which has no dev site.
+**Currently on dev for testing:** build 20261019.5 (Release-484, `8951a6364`), whose AggieMap rows moved into the [19 October notes](2026-10-19.md). The rows left are GIS Day's, which has no dev site.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
