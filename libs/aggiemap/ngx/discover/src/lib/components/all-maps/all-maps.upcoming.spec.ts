@@ -47,7 +47,7 @@ describe('AllMapsComponent upcoming events', () => {
   };
 
   const renderAt = async (now: Date) => {
-    jest.useFakeTimers({ now, doNotFake: ['nextTick', 'setImmediate', 'setTimeout', 'setInterval', 'queueMicrotask'] });
+    vi.useFakeTimers({ now, doNotFake: ['nextTick', 'setImmediate', 'setTimeout', 'setInterval', 'queueMicrotask'] });
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
@@ -88,7 +88,7 @@ describe('AllMapsComponent upcoming events', () => {
 
   afterEach(() => {
     TestBed.resetTestingModule();
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   /**

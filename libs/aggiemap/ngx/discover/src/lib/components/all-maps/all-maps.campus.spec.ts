@@ -60,7 +60,7 @@ describe('AllMapsComponent campus maps', () => {
       providers: [
         // A standalone AllMapsComponent brings its real children, one of which injects Angulartics2;
         // mocked rather than importing the real module, matching bus-list.component.spec.ts.
-        { provide: Angulartics2, useValue: { eventTrack: { next: jest.fn() } } },
+        { provide: Angulartics2, useValue: { eventTrack: { next: vi.fn() } } },
         { provide: DiscoveryService, useValue: discoveryStub },
         { provide: TestingService, useValue: { get: () => of(isDev) } },
         { provide: LastMapService, useValue: { url: '/map', path: '/map', queryParams: {}, fragment: undefined } }
