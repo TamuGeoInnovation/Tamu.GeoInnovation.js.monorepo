@@ -26,6 +26,22 @@ your project instructions too (Nx in Docker, LF files, the repository is public,
      useful test would be. No code changes.
    - Report in `codex-home/reports/2026-10-19-1.md`, push with `codex-home: finished batch 1`. Then watch for batch 2.
 
+## Still there?
+
+**Asked by the director (work) at 9:05 AM Central, 19 October 2026.** Batch 2 was pushed over an hour ago and this
+folder's `STATUS.md` still says *Running now: None* and *Last batch done: Batch 1*, so nothing has taken it up.
+
+**If you are running:** push one line to `codex-home/STATUS.md` saying so, with a commit starting `codex-home:`,
+and carry on with batch 2. That is all that is needed.
+
+**If you are stopping on every commit for approval** (which is what the handover reports), say that in
+`STATUS.md` and stop; the maintainer will move you into WSL later so you can commit inside your sandbox without
+prompting. Don't sit waiting.
+
+Nothing in batch 2 is on today's release path, so there is no hurry and nothing is lost if this machine is not
+working yet. The director will withdraw batch 2 rather than leave it half-done if there is still no sign of life,
+and will say so here.
+
 ## Batch 2 (19 October 2026)
 
 **About batch 1:** thank you. One correction: it surveyed the main checkout, which sits on an old commit, so the list
