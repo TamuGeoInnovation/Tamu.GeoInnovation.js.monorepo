@@ -3,6 +3,52 @@
 Written by the work session **only while another machine directs** (see `DIRECTOR.md`). The home session does each new batch here,
 as `DIRECTOR.md` says for a listener. Development work: branches, agents, pull requests.
 
+## Batch 4 (19 October 2026, 3:05 PM Central) — #1960, wanted today, then the #1954 merge
+
+**Decided** (the maintainer, this afternoon): **#1960 is High and goes out today.** He also merged **PR 1958**
+(#1952), so `development` has moved; **1959** (#1953) is open with its conflict resolved here, and **1950** is held
+until today's release ships.
+
+Take **task 1 first** — it is the one with a deadline.
+
+1. **#1960: draw lactation rooms from the new hosted service, and show what it adds**
+   - The GIS team (Eric Irwin) published a replacement and asks us to repoint:
+
+     | | |
+     | --- | --- |
+     | Today | `${connections.inforUrl}/2` = `FCOR/MapInfo_20190529/MapServer/2` |
+     | New | `Hosted/Lactation_Spaces_view/FeatureServer/0` |
+
+     Both are verified reachable and public from the work machine. Add the new one to `connections.ts` beside the
+     others rather than hard-coding it in the definition; `inforUrl` stays, because layers 0, 1, 3 and 4 of that
+     service are still in use.
+   - **Every field name changes, so the popup must be rewritten, not repointed.** `Name` becomes `bldgname`,
+     `MapDisplay` becomes `availability_type` (with `availability_times` now carrying the hours), and `Notes`
+     becomes `notes`. There are two new fields, `access` and `amenities`.
+   - **The trap:** `lactation.component.html` puts `Notes` into `<a [href]="data.attributes.Notes">` because today
+     it is a URL. In the new service `notes` is prose containing an email address, so leaving that would render a
+     broken link. It becomes text.
+   - **A standing bug to fix while you are there:** the template reads `data.attributes.Bldg_Number`, which exists
+     in **neither** service — today's field is `BldgNum` — so "Building Number:" has always rendered empty.
+   - **The maintainer's decision on what the popup shows (his 2A):** building name and number, availability type
+     and times, access, amenities, and the notes as text. Everything the service carries.
+   - **21 rooms today, 35 in the new service**, so expect 14 more on the map; say the count you see.
+   - Reuse before building: the popup is one of the components in `libs/aggiemap/ngx/popups`, and the others show
+     how multi-line detail is laid out. No purpose-built CSS.
+   - Tests: one **proven red first** that fails against the old source or the old field names, so a future repoint
+     cannot silently empty this popup again. Say what it printed when it failed.
+   - Branch `feat/1960-lactation-hosted-service`, from the latest `development` (which now has #1952).
+   - Report on: #1960. **No PR, no screenshots** — work captures the before/after and opens it.
+
+2. **#1954: merge `development` into your branch** (the maintainer's 2A)
+   - `fix/1954-deep-link-respects-filter` was branched before #1952 merged, and both change
+     `selectFeatureByFieldMatch`, so it now conflicts. You wrote the `createQuery` change and know what must
+     survive, so the merge is yours.
+   - For reference, 1959's conflict was only `docs/releases/unreleased.md`, where both entries belonged and both
+     were kept; its code merged on its own. Yours touches the same method, so expect a real code conflict: the
+     qualified-field match picks the field, your change limits the rows, and both must remain.
+   - Push, say so, and work checks and opens the PR.
+
 ## Batch 3 (19 October 2026, 12:20 PM Central) — #1954, the finding you made
 
 **Decided** (the maintainer, just now): **#1954 is Medium**, as you suggested, and it is yours to fix — you found it
