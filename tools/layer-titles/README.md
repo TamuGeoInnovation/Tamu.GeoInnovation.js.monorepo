@@ -4,7 +4,7 @@ A layer's name belongs to whoever publishes the service. A `title` in a definiti
 that, so this tool asks every service what it calls each layer and reports where the two disagree.
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -v "C:/TAMU/<checkout>:/repo" -w /repo node:22.23.3 \
+MSYS_NO_PATHCONV=1 docker run --rm -v "C:/TAMU/<checkout>:/repo" -w /repo node:24.22.0 \
   node tools/layer-titles/compare.mjs
 ```
 

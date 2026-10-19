@@ -66,7 +66,7 @@
     "auth0": "^3.7.1",
     "axios": "^1.7.7",
     "bcrypt": "^5.0.0",
-    "better-sqlite3": "^10.1.0",
+    "better-sqlite3": "^12.11.1",
     "better-sqlite3-session-store": "^0.1.0",
     "body-parser": "^1.18.3",
     "bull": "^4.16.5",
@@ -161,7 +161,7 @@
     "@types/jwt-decode": "^3.1.0",
     "@types/mapbox-gl": "^1.9.1",
     "@types/multer": "^1.4.3",
-    "@types/node": "22.20.5",
+    "@types/node": "24.19.2",
     "@types/oidc-provider": "^7.8.1",
     "@types/yargs": "^16.0.1",
     "@typescript-eslint/eslint-plugin": "8.71.1",
@@ -196,6 +196,6 @@
     "vitest": "4.1.12"
   },
   "overrides": {
-    "better-sqlite3": "^10.1.0"
+    "better-sqlite3": "^12.11.1"
   }
 }
