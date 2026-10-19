@@ -85,23 +85,20 @@ The Azure watcher is still running and still tests ancestry rather than release 
 
 ## Queued
 
-**Batch 9 (#1849) — now an overnight rehearsal, waiting on a build.** The 9:40 PM revision: if a release at
-**`33da307ff`** or later reaches dev tonight, run the whole batch on it as a rehearsal — full tier, capture,
-comparison — **and do not tag it**, because it is not the build that ships. The final clearance runs again in the
-morning on the release carrying the layer-order fix (#1939), as its own batch. If nothing new reaches dev
-tonight, wait.
+**Batch 9 (#1849) — the final release, waiting on its build.** The 19 October revision replaces the rehearsal and
+every earlier hold: it runs on **the release of `8951a6364` or later**, as soon as Azure lists it with the dev
+stage succeeded **and `CHECK development` has passed**, and **it tags** if the full tier passes outright.
 
-**No qualifying release yet.** Azure at 10:10 PM Central:
+Two conditions, and both are tracked here:
 
-| Release | Build | Commit | Dev stage | Qualifies? |
-| --- | --- | --- | --- | --- |
-| Release-483 | 20261018.37 | `af33dc01e` | succeeded | **No** — 17:40, older than `33da307ff` (20:55), and the director said to do nothing with it |
-| Release-482 | 20261018.33 | `70f0e424b` | succeeded | No — batch 8 ran on this, tagged `dev-2026-10-18-3` |
+| Condition | State at 7:20 AM Central |
+| --- | --- |
+| `CHECK development` at `8951a6364` passes | **running** — see above |
+| Azure lists a release at `8951a6364` or later, dev stage succeeded | **not yet**; the newest is Release-483 at `af33dc01e`, which is older |
 
-**The watcher tests ancestry, not release number.** Release-483 is a higher number than Release-482 and an older
-commit, so a "newer than" watcher would have fired on exactly the build that was excluded — the same mistake that
-nearly started batch 8 on `dfba74033`. It now asks git whether `33da307ff` is an ancestor of each release's
-commit, and only then whether the dev stage succeeded.
+**The Azure watcher was retargeted from `33da307ff` to `8951a6364`.** It had been set for last night's rehearsal,
+and `33da307ff` is an ancestor of `8951a6364`, so it would have fired on an intermediate build and started the
+final test on the wrong release. It still tests ancestry rather than release number.
 
 ## Finished
 
