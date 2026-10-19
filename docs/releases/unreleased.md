@@ -18,26 +18,6 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-### The maps are hosted by Esri's map components
-
-AggieMap, the event and parking maps and UES Operations now use Esri's current way of building a map,
-the map components: `<arcgis-map>` draws the map and `<arcgis-scene>` the 3D view, and the buttons sit
-in their slots, instead of our own map view with buttons placed through its `ui`, which ArcGIS 5.1
-deprecates and 6.0 removes ([#1949](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1949),
-part of [#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218)).
-Nothing is meant to look different. The buttons are in the same order and place, a pixel further
-from the corner; in 3D the pan/rotate toggle and compass are Esri's components rather than its retired
-widgets, and look the same. On a phone the locate button sits 14 pixels lower, as far from the bottom
-of the screen as from its side: the space it kept above it was for the attribution line, which the map
-hides. Signage, GeoServices and GIS Day's competition maps are hosted the same way.
-
-| Before | After |
-| --- | --- |
-| ![The desktop buttons in 2D: zoom, locate, compass](../screenshots/arcgis-map-ui/before-desktop.png) | ![The same, hosted by arcgis-map](../screenshots/arcgis-map-ui/after-desktop.png) |
-| ![The buttons in 3D: zoom, pan/rotate, compass](../screenshots/arcgis-map-ui/before-desktop-3d.png) | ![The same, hosted by arcgis-scene](../screenshots/arcgis-map-ui/after-desktop-3d.png) |
-| ![Back in 2D, the buttons back](../screenshots/arcgis-map-ui/before-desktop-2d-back.png) | ![The same, after](../screenshots/arcgis-map-ui/after-desktop-2d-back.png) |
-| ![The phone, locate at the bottom right](../screenshots/arcgis-map-ui/before-phone.png) | ![The same, the locate button 14 pixels lower](../screenshots/arcgis-map-ui/after-phone.png) |
-
 ### The Layers list is alphabetical again
 
 On ArcGIS 5 a parking map's Layers list could keep the order its layers were added in, instead of
@@ -88,6 +68,26 @@ rather than being papered over
 
 There are no before and after images: the difference only appears while a service is erring, which
 cannot be staged honestly. The pull request carries the `no-visible-change` label for that reason.
+
+### The maps are hosted by Esri's map components
+
+AggieMap, the event and parking maps and UES Operations now use Esri's current way of building a map,
+the map components: `<arcgis-map>` draws the map and `<arcgis-scene>` the 3D view, and the buttons sit
+in their slots, instead of our own map view with buttons placed through its `ui`, which ArcGIS 5.1
+deprecates and 6.0 removes ([#1949](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1949),
+part of [#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218)).
+Nothing is meant to look different. The buttons are in the same order and place, a pixel further
+from the corner; in 3D the pan/rotate toggle and compass are Esri's components rather than its retired
+widgets, and look the same. On a phone the locate button sits 14 pixels lower, as far from the bottom
+of the screen as from its side: the space it kept above it was for the attribution line, which the map
+hides. Signage, GeoServices and GIS Day's competition maps are hosted the same way.
+
+| Before | After |
+| --- | --- |
+| ![The desktop buttons in 2D: zoom, locate, compass](../screenshots/arcgis-map-ui/before-desktop.png) | ![The same, hosted by arcgis-map](../screenshots/arcgis-map-ui/after-desktop.png) |
+| ![The buttons in 3D: zoom, pan/rotate, compass](../screenshots/arcgis-map-ui/before-desktop-3d.png) | ![The same, hosted by arcgis-scene](../screenshots/arcgis-map-ui/after-desktop-3d.png) |
+| ![Back in 2D, the buttons back](../screenshots/arcgis-map-ui/before-desktop-2d-back.png) | ![The same, after](../screenshots/arcgis-map-ui/after-desktop-2d-back.png) |
+| ![The phone, locate at the bottom right](../screenshots/arcgis-map-ui/before-phone.png) | ![The same, the locate button 14 pixels lower](../screenshots/arcgis-map-ui/after-phone.png) |
 
 ### A Football Tailgating tent or zone link finishes drawing
 
