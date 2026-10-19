@@ -33,6 +33,27 @@ on ArcGIS 5 is after it is listed. It is now sorted again whenever a layer's nam
 | ![Campus Main Parking on dev: Construction, Route Stop/Start Points, Campus Stops, Visitor Kiosks, Parking Lots, RNS Spaces](../screenshots/layer-list-order/before-dev-ts-main-parking.png) | ![The same map on a local production build of the fix: Campus Stops, Construction, Parking Lots, RNS Spaces, Route Stop/Start Points, Visitor Kiosks](../screenshots/layer-list-order/after-local-ts-main-parking.png) |
 | ![Service and Loading Zone Parking on dev: Service Parking Spaces, then Service Parking Lots](../screenshots/layer-list-order/before-dev-service-loading.png) | ![The same map on a local production build of the fix: Service Parking Lots, then Service Parking Spaces](../screenshots/layer-list-order/after-local-service-loading.png) |
 
+### A `?lot=` link opens the lot on fourteen parking maps
+
+A share link of the friendly form - `?lot=100j` - resolved to nothing on fourteen of Transportation
+Services' parking maps, so their popups could only offer the generic `?feature=<layerId>:<objectId>`
+form. Those services join several tables, so a lot's name is `GIS.TS.ParkingLots.LotName` rather than
+`LotName`, and the app compared field names whole: no layer matched, and the link quietly opened
+nothing. On Visitor Parking, `?lot=100j` instead opened the **main** map's Lot 100j, whose share link
+reads `aggiemap.tamu.edu/?lot=...` - which is why it looked as though it half worked.
+
+A candidate field now matches a field whose last dot-separated part equals it. The thirteen services
+that already named their fields plainly are unaffected, and **every link shared since June still
+works**: a `?feature=` link is tried first and returns as soon as it resolves
+([#1952](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1952)).
+
+The affected maps are AVP, Contractor, Freshman Selectable, Media, Move-Out, New Student Conference,
+Night and Weekend, Retiree, Staff Selectable, Student Selectable, Summer Break, Vendor, Visitor, and
+the Track/Soccer/Softball/Swimming/Volleyball/Women's Basketball map.
+
+| Before (dev) | After |
+| --- | --- |
+| ![Visitor Parking on dev with ?lot=100j: the popup is the main map's Lot 100j, sharing a link to aggiemap.tamu.edu/?lot=...](../screenshots/1952-qualified-field-deep-links/before-visitor-parking-lot-100j-dev.png) | To be captured on dev once this is built there; the dev server's first page load did not finish in time. The behaviour is proven by the tests below. |
 ### A map still opens where it should when a feature link cannot be looked up
 
 A map opened from a link naming a feature - `?lot=`, `?feature=` - did three things in one step: it
@@ -753,6 +774,7 @@ dated notes as what was tested, and this table empties.
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | Layers list alphabetical again ([#1939](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1939)) | [Campus Main Parking](https://dev.aggiemap.tamu.edu/parking/ts-main-parking), [Service and Loading Zone Parking](https://dev.aggiemap.tamu.edu/parking/service-loading) | Reload each a few times: the Layers list always reads Campus Stops, Construction, Parking Lots, RNS Spaces, Route Stop/Start Points, Visitor Kiosks, and Service Parking Lots, Service Parking Spaces. Other maps' lists are alphabetical too, except Fish Camp, Tailgating and Football, which keep their own order |
+| A `?lot=` link opens the lot on fourteen parking maps ([#1952](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1952)) | [Visitor Parking, lot 100j](https://dev.aggiemap.tamu.edu/parking/visitor-parking/map?lot=100j), [Motorcycle Parking, lot 100j](https://dev.aggiemap.tamu.edu/parking/motorcycle-parking/map?lot=100j) | The popup is the map's own lot, not the main map's: its share link reads `/parking/visitor-parking/...`, not `aggiemap.tamu.edu/?lot=...`. Before the fix the first opened the main map's Lot 100j. The second map already worked and must still. Also check a `?feature=` link copied from a popup still opens the same feature |
 | Tailgating tent and zone links finish drawing ([#1926](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1926)) | [Tent L1](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?tent=L1), [Zone AP-7](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-7) | The tent or zone opens highlighted and named in the side panel, as before. The difference is not on screen: the map finishes drawing within a minute (`window.__tamuGiscMapProbe.drawing` in the console turns `false`), where before the fix it stayed `true`. Nothing else on the map changes: the RNS Spaces layer that is now off drew nothing |
 | Trip planner back on dev only ([#1912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1912)) | [Directions](https://dev.aggiemap.tamu.edu/map/d/trip), [on a phone](https://dev.aggiemap.tamu.edu/map/m/trip), [with ?as=production](https://dev.aggiemap.tamu.edu/map/d/trip?as=production) | Dev only: on dev the planner shows two empty from and to boxes, travel modes and "Please select two points"; choose two buildings: a route should be drawn from the development GIS server's routing (not yet tried through the app; if it fails, say so on the issue). With `?as=production`, and on production at [/map/d/trip](https://aggiemap.tamu.edu/map/d/trip), the maintenance message instead, and no Directions tab |
 | AggieMap runs without zone.js ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)). Nothing should look different; what could go wrong is a part of the page that stops updating | [/map/d](https://dev.aggiemap.tamu.edu/map/d), [/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), [Visitor Parking](https://dev.aggiemap.tamu.edu/parking/visitor-parking), [Gameday Parking](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry), [Muster](https://dev.aggiemap.tamu.edu/events/muster), [/code-maroon?sample=tornado](https://dev.aggiemap.tamu.edu/code-maroon?sample=tornado), [Building Directory](https://dev.aggiemap.tamu.edu/directory), and /map on a phone | Each follows at once, without a second click or a mouse move: a layer switched in the Layers list (its dot, the map and the Legend); a search result chosen (its popup opens and closes); the sidebar tab sliding the panel away and back; the basemap gallery marking the basemap chosen; Aerial Imagery's date slider; 2D to 3D and back (the label follows); a Legend title switching its layer off and the Layers row back on; the share button's "URL Copied" toast, whose bar runs down and which closes itself; Muster's "This event has passed" box and its close; the Code Maroon sample and Dismiss; the directory filtering as you type, sorting by Name and filling in rows as you scroll. On a phone: the search box's back arrow, the menu's Layers, Legend and Basemap, and a building's popup |
