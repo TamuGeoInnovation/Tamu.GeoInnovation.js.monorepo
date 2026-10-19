@@ -3,14 +3,27 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **7:05 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
+Last written **7:15 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
 **Last batch done: 12.** **Batch 13 is open and its queue is empty.** Batch 9 still waits. Nothing running.
 
 ## Running now
 
-Nothing. Two watchers: one on this branch, one on Azure for batch 9's release.
+**`CHECK development`** (batch 13), started **7:15 AM Central, 19 October**. A failure here stops the release, so
+the result is pushed the moment it lands.
+
+| | |
+| --- | --- |
+| Commit | **`8951a6364`** — "Vitest, zoneless AggieMap and UES, Node 24 and the TypeScript 6.0 deprecations, together (#1948)", matching the queue |
+| Branch | local `chk/development` at `origin/development`, as the batch directs |
+| Running | `scripts/check-in-volume.sh chk/development` — full affected, volume `tamu-js-chkdev` |
+| From | a worktree at that commit, `C:/TAMU/wt-chkdev` |
+| Node | **24.22.0** — `development`'s own script now says so, since #1948 is merged |
+
+**The `ui-kits-ngx-forms:test` failure this machine reported on `chore/1479-vitest` an hour ago was on the branch
+as it then stood.** #1948 has since merged, so this run is the honest question: whether that assertion is still
+failing in what ships.
 
 ## work: checked chore/1479-vitest exit 1
 
