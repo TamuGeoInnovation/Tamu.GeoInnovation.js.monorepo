@@ -282,3 +282,4 @@ Batch 3 is done (report `work/reports/2026-10-18-3.md`): Release-479 passed and 
      Say so in the report.
    - Report on: #1716. Per test and commit: attempts passed of attempts run, and each failure's message.
    - Then: nothing to tag. Put `STATUS.md` in place first (see the rules) with this run in it.
+- CHECK refactor/1478-zoneless
