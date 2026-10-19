@@ -18,7 +18,7 @@ import {
   withLatestFrom
 } from 'rxjs';
 
-import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
+import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
 
 import { Event, EventBroadcast, EventLocation, SeasonDay, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import {
@@ -32,7 +32,7 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { SeasonsDayTileComponent } from '../../seasons/seasons-day-tile/seasons-day-tile.component';
 import { NgClass, AsyncPipe } from '@angular/common';
-import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';

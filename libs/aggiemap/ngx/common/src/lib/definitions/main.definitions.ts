@@ -334,7 +334,10 @@ export function MainMapLayerSources(
       title: definitions.RNS_SPACES.name,
       url: definitions.RNS_SPACES.url,
       listMode: 'hide',
-      visible: true,
+      // Off: it draws nothing (see minScale below), and on ArcGIS 5.1 its view never stops updating
+      // below 1:1200 either. A link that zooms in to a feature, such as a Football Tailgating `?tent=`
+      // or `?zone=` link, left the map drawing for good. Switch it back on with its labels.
+      visible: false,
       layerIndex: 5,
       native: {
         ...commonLayerProps,

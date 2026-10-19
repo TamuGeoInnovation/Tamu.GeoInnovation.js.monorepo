@@ -4,8 +4,15 @@ import { Observable } from 'rxjs';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
-import { SearchSelection, SearchEvent } from '@tamu-gisc/ui-kits/ngx/search';
+import {
+  TripPlannerConnectionsSelectComponent,
+  TripPlannerDirectionsComponent,
+  TripPlannerModePickerComponent
+} from '@tamu-gisc/maps/feature/trip-planner/components';
+
+import { SearchSelection, SearchEvent, SearchComponent } from '@tamu-gisc/ui-kits/ngx/search';
 import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 import esri = __esri;
 
@@ -13,12 +20,23 @@ import esri = __esri;
   selector: 'tamu-gisc-sidebar-trip-planner',
   templateUrl: './sidebar-trip-planner.component.html',
   styleUrls: ['./sidebar-trip-planner.component.scss'],
-  imports: [RouterLink]
+  imports: [
+    RouterLink,
+    AsyncPipe,
+    SearchComponent,
+    TripPlannerConnectionsSelectComponent,
+    TripPlannerModePickerComponent,
+    TripPlannerDirectionsComponent
+  ]
 })
 export class SidebarTripPlannerComponent {
   private plannerService = inject(TripPlannerService);
   private testing = inject(TestingService);
 
+  /**
+   * Whether the planner is offered. Routing has no production service, so only a development host offers it, for
+   * testing its components; `?as=production` turns it off there too (#1722). Elsewhere a maintenance message shows.
+   */
   public dev = this.testing.get('isTesting');
 
   /**
