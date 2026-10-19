@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **7:50 AM Central, 19 October 2026**. **This machine now directs** (handed over by home at 7:47 AM);
+Last written **8:55 AM Central, 19 October 2026**. **This machine now directs** (handed over by home at 7:47 AM);
 it still does its own testing job, and this file still says what it is doing. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
@@ -11,50 +11,41 @@ commit timestamp, not estimated.
 
 ## Running now
 
-**Batch 9 (#1849): the final test of the release.** Started **7:35 AM Central, 19 October**.
+**Re-running `maps.spec.ts` alone, on an idle machine** (started 8:52 AM Central), to separate a real fault from
+contention this machine caused. See below.
+
+## work: finished — batch 9's full tier on Release-484
+
+**880 passed, 2 failed, 7 flaky, 30 skipped of 919, 1.1 hours, exit 1.** Commit `8951a6364`, Release-484.
+**Not tagged** (the maintainer's decision 5B: no tag until a rerun is clean).
+
+### The one failure that is real
+
+`directions.spec.ts:72` — the AVP feature popup, `/parking/avp-parking/map?feature=AVP-parking-lots:26135`:
+*"did not open its popup"*, three attempts. **Transportation Services' server**, confirmed on production
+independently: their `AnyValidPermitParking` service fails about half its queries, and the same deep link on
+production opened its popup on only **4 of 8 loads**. Nothing in this release causes it; production has it too.
+
+### The rest are this machine's fault, not the release's
+
+**While the tier was running, this machine ran an 8-load Playwright browser loop against production and several
+query matrices**, to answer the maintainer's questions. Every other failure falls inside that window:
 
 | | |
 | --- | --- |
-| Release | **Release-484, build 20261019.5** — dev stage succeeded |
-| Commit | **`8951a6364`** (#1948 and the rest of today's work) |
-| Worktree | `C:/TAMU/wt-chkdev`, already at that exact commit from the `CHECK development` run |
-| Step 1, running | `test/smoke/aggiemap/run-local.sh development full` — the full tier, **restarted clean at 7:38 AM**, container `dazzling_shamir` |
-| Then | the `--as production` capture, then the comparison against `prod-2026-10-16-corrected` |
-| Tag | **only if the full tier passes outright** |
+| Failures at tests | 75, 96, 129 (the AVP one, before the window) — then 688, 690, 691, 693, 695, 696, 698, 704, 729 |
+| The window | roughly tests 670-730 |
+| Their shape | all `maps.spec.ts:226` "loads and serves its layers", each **2.1-2.3 minutes**, a timeout rather than a broken layer |
+| Their spread | `/map`, `/operations/construction-map`, `/parking/baseball-parking`, `/events/womens-basketball` — nothing in common |
 
-### In flight, and it already decides the tag: one test is failing hard
+Six of them recovered on a retry and are reported as flaky; **`/map` failed all three attempts**, and all three fell
+inside the window. One `search-sources.spec.ts` test was flaky in the same stretch.
 
-At 208 of 919, **one test has failed all three attempts** — not a flaky one:
+**This machine warned in writing that two runs would contend, then ran browser work beside the tier anyway.** The
+rule it needs, and which belongs in `DIRECTOR.md`: nothing heavy runs on a machine while a tier or capture runs
+there; questions wait, or go to another machine.
 
-```
-directions.spec.ts:72  directions offered while routing is available here
-  the event map feature popup offers "Directions To Here"
-  (/parking/avp-parking/map?feature=AVP-parking-lots:26135)
-  failed, retry #1 failed, retry #2 failed   (47.1s, 55.0s, 40.7s)
-```
-
-**Its four siblings in the same spec all passed** — the building, parking lot, bus stop and point of interest
-popups each offer the link — so this is the event-map feature popup on one page, not routing in general.
-
-**So the tier will not pass outright and this machine will not tag**, whatever the remaining 700 tests do. Posted
-here now rather than in forty minutes because the release waits on it. Playwright prints the failure's own message
-only at the end of a run, so the cause follows with the result.
-
-Everything else so far is green: 189 passed, that one failing, at 8:05 AM.
-
-**Both conditions were met before this started:** `CHECK development` on `8951a6364` passed every project, and
-Azure lists Release-484 at that commit with its dev stage succeeded.
-
-One thing to ignore: the Azure watcher's own message says "REHEARSAL BUILD ON DEV". That is stale wording in the
-script's header from last night, not a judgement about this release. This is the final release, and it is being
-treated as one — the tag follows if the tier passes.
-
-**The tier was started twice by mistake and has been restarted clean.** The first launch looked as though it had
-died, so a second was started; both had in fact begun, 19 seconds apart, and two full tiers were running against
-dev sharing one results directory and one node_modules volume. Neither run's numbers would have been worth
-anything — contention is what #1716 is about, and 891 tests under a doubled load would have produced failures that
-say nothing about the release. Both were stopped, `test-results` was cleared, and **one** run started at 7:38 AM.
-Nothing was reported from the aborted pair.
+**So the tier's verdict is not yet usable.** `maps.spec.ts` is re-running alone to settle it.
 
 ## work: checked development exit 0
 
