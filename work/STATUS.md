@@ -3,36 +3,38 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **9:05 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
+Last written **9:45 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
-**Last batch done: 10.** Batches 5, 8 and 10 are finished. **Batch 9 is still held.** Nothing running; watching.
+**Last batch done: 11.** Batches 5, 8, 10 and 11 are finished. **Batch 9 is still held.** Nothing running; watching.
 
 ## Running now
 
 Nothing. The branch watcher only.
 
-## work: finished — batch 10, the preview comparison
+## work: finished — batch 11, the two mid-load shots re-taken
 
-**#1849: dev's Release-482 set against production's.** Capture 848 of 848, **0 failed**, 5:38 to 8:32 PM Central,
-174 minutes. Comparison: **848 pages, 756 changed** beyond the 0.5% threshold. Posted on #1849
-([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1849#issuecomment-6257833793)).
-Report: `work/reports/2026-10-18-7.md`. **Nothing found looks like a fault in the release.**
+**#1937. They were the capture, not the release.** Production has not moved (`main-TK2R62YY.js`, confirmed), so
+the re-takes belong to the same build. Posted on #1937
+([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1937#issuecomment-6257943872)).
+Report: `work/reports/2026-10-18-8.md`.
 
-Where the comparison page is, on this machine:
-`C:/TAMU/visual-baselines/compare/dev-2026-10-18-3-vs-prod-2026-10-16/review.html`
+| Page (desktop) | Before | After |
+| --- | --- | --- |
+| `/parking/move-in/map/d`, 23 Aug, Rudder, accessible | 43.81% | **1.90%** |
+| `/parking/move-in/map/d`, 23 Aug, Clements | 35.58% | **1.94%** |
 
-- **The count needed taking apart.** `review.mjs` writes no diff images, so "756 changed" had no location. Measured
-  separately: **23 pixel-identical**, 8 changed only outside the map, 71 with a map-body change under 0.5%, 746 at
-  0.5% or more. The five **All maps** pages are pixel-identical — a control.
-- **Explained:** the locate button and compass on every map (#1858, #1892, #1893, #1900), and dense point layers
-  re-rendering a pixel out under 5.1. **`/map` and the campus maps are unchanged in the body, 0.01% each** — the
-  result worth having, since #1911 changed what the campus maps load.
-- **Three of the five largest differences are the capture, not the build:** a transient dev 404 on three
-  consecutive move-in routes (all 200 now), two production shots caught mid-load in batch 5's set, and a hover
-  highlight on the phone event pages.
-- **One genuine difference is unexplained:** the parking maps' **Layers** panel is in a different order, not
-  alphabetical as on production, with a layer still spinning. Question 1 in the report, suggested High.
+Both are fully drawn, neither needed a second attempt, and those figures are the ordinary band every other move-in
+map sits in. Only the desktop shots were affected; the phone pair was already correct. The third candidate
+(5.39%) was checked and is fine, and no other mid-load shot was found.
+
+**One step is not done.** The batch asked for the superseded shots to be moved aside and the re-takes to land in
+`production/prod-2026-10-16`, then `review.mjs` re-run. **The move was refused twice by this session's permission
+rules** (shell `mv`, then PowerShell `Move-Item`), which treat a move out of a set directory as destructive.
+Nothing was deleted or overwritten. The re-takes were captured **beside** the set instead, as
+`production/prod-2026-10-16-retake` — four shots, two routes, both viewports — which only adds files. So
+`prod-2026-10-16` still holds the two mid-load shots and batch 10's page still shows 29.87% and 15.70% for them;
+the corrected figures are above and on #1937. The maintainer has been told, since only he can grant it.
 
 ## Queued
 
