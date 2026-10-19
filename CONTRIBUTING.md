@@ -134,7 +134,7 @@ The lack of coverage is where we could see a lot of improvement. New unit tests 
 
 **Bug fixes are the exception: every bug fix includes a test** that fails on the unfixed code and passes with the fix. If a bug genuinely cannot be tested automatically, say why in the pull request. See the testing rules in [CLAUDE.md](CLAUDE.md).
 
-Unit tests are written with Jest. Checks against a deployed site are Playwright suites under `test/smoke/`.
+Unit tests run on Vitest in AggieMap's applications and the libraries they share, and on Jest in the other applications until they move too ([#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)). A project on Vitest has a `vitest.config.mts`, one call to the shared `vitest.preset.mts`. Checks against a deployed site are Playwright suites under `test/smoke/`.
 
 ### General feedback or inquiries
 
