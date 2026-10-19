@@ -71,6 +71,23 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 14 (19 October 2026, 7:00 PM Central) — the quick tier on tonight's dev build
+
+**Decided** (the maintainer, at home): home directs again. He built `0f69d3bac` (`development`'s head) and is releasing it
+to dev: **Release-485, build 20261019.13**. He is checking it by hand on dev now. PRs 1966 (#1960) and 1950 (#1949) are
+**not** in this build; both were merged with `development` tonight and are not to be touched.
+
+1. **The quick tier on Release-485** (report on: #1935)
+   - Start when Release-485's `GIS-1D Development` stage shows **succeeded** (`az-releases.py`), and dev serves the new
+     build (its `main-*.js` differs from Release-484's `main-5IW7YA32.js`). Push `work: started` first.
+   - `test/smoke/aggiemap/run-local.sh development quick`. Its set is "core plus what changed since the last `dev-*` tag"
+     (`dev-2026-10-18-3`); put the set it prints in the report.
+   - **Nothing else heavy on this machine while it runs** — no capture, no browser loop, no query matrix.
+   - **Tag only on a clean pass:** `scripts/tag-build.sh dev 0f69d3bac...` (full sha), `git push origin <tag>`. A failure that is
+     only #1951's AVP popup (`directions.spec.ts`, `AVP-parking-lots`) is **not** clean: don't tag; report it, with whether
+     everything else passed, under Questions for the director.
+   - Report per failure what failed and why. No production stage, no approval of anything in Azure.
+
 ## Batch 13 (prepared 19 October 2026, morning) — pre-merge checks for today's release, as the director asks
 
 **Decided** (the maintainer, 19 October): everything open goes into today's release, and the long tests run once,
