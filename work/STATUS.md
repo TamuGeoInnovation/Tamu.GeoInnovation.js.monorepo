@@ -3,59 +3,43 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **7:15 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
+Last written **7:25 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
 **Last batch done: 12.** **Batch 13 is open and its queue is empty.** Batch 9 still waits. Nothing running.
 
 ## Running now
 
-**`CHECK development`** (batch 13), started **7:15 AM Central, 19 October**. A failure here stops the release, so
-the result is pushed the moment it lands.
+**`CHECK development` again, this time as `all`.** Started **7:25 AM Central**. See the warning immediately below
+for why the first attempt does not count.
 
 | | |
 | --- | --- |
-| Commit | **`8951a6364`** — "Vitest, zoneless AggieMap and UES, Node 24 and the TypeScript 6.0 deprecations, together (#1948)", matching the queue |
-| Branch | local `chk/development` at `origin/development`, as the batch directs |
-| Running | `scripts/check-in-volume.sh chk/development` — full affected, volume `tamu-js-chkdev` |
-| From | a worktree at that commit, `C:/TAMU/wt-chkdev` |
-| Node | **24.22.0** — `development`'s own script now says so, since #1948 is merged |
+| Commit | `8951a6364` (#1948), local branch `chk/development`, worktree `C:/TAMU/wt-chkdev` |
+| Running | `scripts/check-in-volume.sh chk/development all` — **every project**, not affected |
+| Node | 24.22.0 |
 
-**The `ui-kits-ngx-forms:test` failure this machine reported on `chore/1479-vitest` an hour ago was on the branch
-as it then stood.** #1948 has since merged, so this run is the honest question: whether that assertion is still
-failing in what ships.
+## DO NOT READ THE FIRST `CHECK development` AS A PASS
 
-## work: checked chore/1479-vitest exit 1
-
-**One failing task: `ui-kits-ngx-forms:test`.** Lint and build both passed.
-
-| Target | Result |
-| --- | --- |
-| lint | **Successfully ran for 113 projects** |
-| test | **failed** — 105 of 106 projects passed, `ui-kits-ngx-forms:test` failed |
-| build | **Successfully ran for 14 projects** |
-
-The failure, in full:
+**It exited 0 having run nothing.** `affected` compares against `origin/development`, and the branch being checked
+**is** `origin/development`, so no project was selected. The log says so three times:
 
 ```
-FAIL src/lib/components/date-time-picker/date-time-picker.component.spec.ts
-  > DateTimePickerComponent > component > a time of day (GIS Day event times)
-  > takes the list away with the picker
-AssertionError: expected …(288) to have a length of +0 but got 288
+=== affected lint  ...   NX   No tasks were run
+=== affected test  ...   NX   No tasks were run
+=== affected build ...   NX   No tasks were run
 ```
 
-Test Files 1 failed, 7 passed (8). Tests **1 failed, 49 passed (50)**. The run took 2m 28s.
+Whole run: 2 minutes, almost all of it `npm ci`. This is the failure mode CLAUDE.md warns about in another form —
+a task that never ran still looks like a pass — and `exit 0` was about to be reported as the check that clears the
+final build.
 
-**It is one assertion in one spec**, and the message is the shape of a teardown check: something expected to be
-emptied still holds its 288 entries — 288 being a full day at five-minute steps, so the picker's list of times.
-`33da307ff` on `development` is "fix(ui-kits-ngx-forms): Give the date-time picker its own entry", which touches
-the same component, so the two are worth looking at together.
+**So `CHECK development` cannot be run as `affected`, today or ever**; it has to be `all`. Worth a line in the
+batch 13 instructions, which say to check `origin/development`'s head "the same way" as a branch. A branch has
+something to be affected against; `development` does not.
 
-Checked from the branch's own `scripts/check-in-volume.sh`, on **Node 24.22.0** as the branch sets — not the
-`node:22.23.3` the script on `development` still pins, which would have proved nothing about this branch.
-
-Branch `chore/1479-vitest` at `b77b61426` (PR #1948). Volume `tamu-js-1479`, fresh, so it paid for its own
-`npm ci`. Log: `C:/TAMU/wt-1479/check-tamu-js-1479-affected.log`.
+The `all` run is going now and its result will be pushed as `work: checked development exit <code>`. It is every
+project rather than a subset, so it takes considerably longer than a branch check.
 
 ## Batch 13 — open, nothing running
 
