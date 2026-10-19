@@ -26,8 +26,11 @@ export class LayerListService {
 
         let handle: esri.Handle;
 
+        // A new list when a layer is added or removed, or when one is titled: a layer with no title of its
+        // own takes its service's name once it loads, after its item is listed, and the list is sorted by
+        // title (#1939).
         const add = (handler) => {
-          handle = reactiveUtils.watch(() => this._model.operationalItems.length, handler);
+          handle = reactiveUtils.watch(() => this._model.operationalItems.map((item) => item.title).join('\n'), handler);
         };
 
         const remove = (): void => {
