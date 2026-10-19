@@ -3,11 +3,12 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 4 task 1:** #1960 lactation rooms on the hosted service.
+(nothing)
 
-**branch ready: fix/1954-deep-link-respects-filter** (merged with development, head `f02d607f0`, report 5)
+**branch ready: feat/1960-lactation-hosted-service** (report 6), **fix/1954-deep-link-respects-filter** (merged, report 5)
 
 ## Finished
+- **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
 - **Batch 3** (report `home/reports/2026-10-19-4.md`): #1954 pushed, red-first tests, check exit 0.
 - **Batch 2: the release notes updated** (`docs/releases/2026-10-19.md`, branch `docs/release-2026-10-18`, commit
   `498a24076`, in `C:\TAMU\wt-notes`; not pushed, no PR, not merged). Release-484 / build 20261019.5 / `8951a6364`; the
