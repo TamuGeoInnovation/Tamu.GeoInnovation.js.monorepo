@@ -30,7 +30,13 @@ export const AccessibleParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // The service holds every parking space on campus, about 45,000, and its symbology draws only
+      // these two types; the rest were loaded and never drawn, which left the map drawing for minutes
+      // on ArcGIS 5.1 (#1897). Same spaces drawn, and only those loaded. Remove it if the service is
+      // republished with accessible spaces only. `parking-spaces.spec.ts` in the smoke suite fails if
+      // the symbology starts drawing a type this leaves out.
+      definitionExpression: `spc_type IN ('H/C', 'Visitor H/C')`
     }
   }
 ];

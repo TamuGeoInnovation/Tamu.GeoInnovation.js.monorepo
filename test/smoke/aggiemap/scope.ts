@@ -41,7 +41,7 @@ export const CORE_SPECS = [
 export const CORE_ROUTES = ['/map', '/parking/ts-main-parking', '/events/gameday-parking'];
 
 /** Specs whose tests are one per route, with the route leading the title. Selected by route. */
-export const ROUTE_SPECS = ['maps.spec.ts', 'event-dates.spec.ts', 'framing.spec.ts'];
+export const ROUTE_SPECS = ['maps.spec.ts', 'event-dates.spec.ts', 'framing.spec.ts', 'parking-spaces.spec.ts'];
 
 /**
  * Titles in the per-route specs that run whatever changed. `maps.spec.ts` holds the coverage floor,
@@ -64,6 +64,10 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
     specs: ['popup.spec.ts', 'directions.spec.ts', 'search-sources.spec.ts']
   },
   { paths: /^libs\/maps\/feature\/trip-planner\//, specs: ['directions.spec.ts', 'map-coordinates.spec.ts'] },
+  {
+    paths: /^libs\/aggiemap\/ngx\/ui\/.*\/(sidebar-trip-planner|trip-planner-top)\//,
+    specs: ['directions.spec.ts', 'map-coordinates.spec.ts']
+  },
   {
     paths: /^libs\/maps\/(feature\/(coordinates|accessibility)\/|esri\/src\/lib\/geographic\.ts$)/,
     specs: ['map-coordinates.spec.ts']

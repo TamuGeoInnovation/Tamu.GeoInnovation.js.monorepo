@@ -443,6 +443,26 @@ planner change (after), neither with the lodash or event definitions changes.
 these builds are not recorded as a result**: the machine was busy, and one set's desktop first paint
 ranged from 0.39 s to 1.15 s. To be re-taken on a quiet machine with the lodash timings.
 
+### Accessible and motorcycle parking load only their own spaces (#1897)
+
+Two production builds served from this machine on 18 October 2026, ArcGIS 5.1.27, headless Chromium at
+1280 by 720: `development` at `70f0e424b` (before) and the change (after), two loads of each map, all of
+the before loads first. "Finished drawing" is the first moment the map probe's `drawing` stayed false for
+two seconds, counted from the start of the page load. Other work may have been running on the machine.
+
+| | Before | Before, again | After | After, again |
+| --- | ---: | ---: | ---: | ---: |
+| Accessible Parking: spaces loaded | 44,980 | 44,980 | 1,263 | 1,263 |
+| Accessible Parking: layers settled (`ready`) | 4.2 s | 6.5 s | 6.2 s | 4.6 s |
+| Accessible Parking: finished drawing | 104 s | 135 s | 21 s | 16 s |
+| Motorcycle Parking: spaces loaded | 44,980 | 44,980 | 1,016 | 1,016 |
+| Motorcycle Parking: layers settled (`ready`) | 11.6 s | 4.2 s | 4.6 s | 4.3 s |
+| Motorcycle Parking: finished drawing | 177 s | 114 s | 21 s | 27 s |
+
+**What it shows.** Both maps finish drawing five to eight times sooner, with the same spaces drawn. The
+layers settle as fast either way, because ArcGIS loads a layer's description, not its features; the
+wait was the features, fetched and processed for the whole campus and then not drawn.
+
 ### interactjs, the click coordinates and the keyboard viewfinder out of the map's first download
 
 Two production builds on 18 October 2026, home machine: `development` at `70f0e424b` (before) and the
