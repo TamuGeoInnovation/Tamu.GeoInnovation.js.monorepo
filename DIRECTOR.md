@@ -16,9 +16,14 @@ director), its `STATUS.md` and its `reports/` (written only by that machine).
 | --- | --- | --- | --- |
 | home | `home/` | Development: branches, agents, pull requests | 18 October 2026 |
 | work | `work/` | Testing: smoke tiers, screenshot sets, `dev-*` tags | 18 October 2026 |
-| codex | `codex/` | OpenAI's Codex CLI, on the home machine: reviews and small, well-defined code jobs (unit tests, dead code), each as a branch for the director to turn into a PR | 19 October 2026 |
+| codex-home | `codex-home/` | OpenAI's Codex CLI, on the home machine: reviews and small, well-defined code jobs (unit tests, dead code), each as a branch for the director to turn into a PR | 19 October 2026 |
 
-`codex` is not a machine but a second agent (OpenAI's Codex CLI) on the home machine, under the same rules as every listener; it reads `CLAUDE.md` as its project instructions too.
+**Every participant is named for the agent and the machine it runs on.** A Claude Code session is named for its machine
+alone (`home`, `work`); any other agent is `<agent>-<machine>` (`codex-home`, `codex-work`). Each has its own folder of
+that name, and its commits start with that name (`codex-home: started`). Two copies of one agent on different
+machines are two participants, never one: they have separate task files, so the director never gives the same batch to
+both, and each one's status says which machine is busy. Non-Claude agents read `CLAUDE.md` as their project
+instructions too.
 
 A machine's job does not change when the director does: a batch for a development machine is development work, a
 batch for a testing machine is testing. The director, whichever machine it is, writes every listener's batches,
@@ -63,6 +68,9 @@ session can tell its own pushes from the others'.
 The maintainer pastes the start line on the new machine with its name and job added, for example:
 
     Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what DIRECTOR.md says. This machine is "lab", and its job is testing.
+
+A second agent on a machine joins the same way with its full name, for example `You are "codex-work", a listener; your
+folder is codex-work/.`
 
 The new machine creates its folder (`lab/TASKS.md` saying "No batch yet", `lab/STATUS.md`, `lab/reports/`),
 pushes them with `lab: joined`, and listens. The director adds its row to the table above when it sees that
