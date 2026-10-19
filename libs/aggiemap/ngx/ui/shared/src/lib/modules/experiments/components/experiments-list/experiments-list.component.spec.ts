@@ -12,7 +12,7 @@ describe('ExperimentsListComponent', () => {
   // The back arrow called a method the component did not have, so it did nothing (#1909).
   it('goes back to the sidebar from its back arrow, as the other sidebar pages do', () => {
     const route = {};
-    const navigate = jest.fn();
+    const navigate = vi.fn();
 
     TestBed.configureTestingModule({
       imports: [ExperimentsListComponent],

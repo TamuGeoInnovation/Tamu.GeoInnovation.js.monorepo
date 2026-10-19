@@ -66,7 +66,7 @@ describe('BusListComponent (Shallow)', () => {
           // BusService injects Angulartics2, which needs RouterlessTracking. Mocked rather
           // than importing the real module, matching parking-lot.component.spec.ts.
           provide: Angulartics2,
-          useValue: { eventTrack: { next: jest.fn() } }
+          useValue: { eventTrack: { next: vi.fn() } }
         },
         {
           provide: env,

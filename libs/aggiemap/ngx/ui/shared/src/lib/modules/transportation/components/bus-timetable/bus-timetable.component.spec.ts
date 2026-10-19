@@ -29,7 +29,7 @@ describe('BusTimetableComponent (isolated)', () => {
           // BusService injects Angulartics2, which needs RouterlessTracking. Mocked rather
           // than importing the real module, matching parking-lot.component.spec.ts.
           provide: Angulartics2,
-          useValue: { eventTrack: { next: jest.fn() } }
+          useValue: { eventTrack: { next: vi.fn() } }
         },
         {
           provide: env,
@@ -63,7 +63,7 @@ describe('BusTimeTableComponent (integrated)', () => {
         {
           // The integrated block has its own TestBed and needs the same Angulartics2 mock.
           provide: Angulartics2,
-          useValue: { eventTrack: { next: jest.fn() } }
+          useValue: { eventTrack: { next: vi.fn() } }
         },
         BusService,
         {
