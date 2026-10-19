@@ -117,7 +117,7 @@ describe('EsriMapComponent', () => {
     expect(without.nativeElement.querySelector('arcgis-map > arcgis-zoom')).toBeNull();
   });
 
-  it('draws the scene only when asked for, and shows one view at a time', async () => {
+  it('draws the scene once, only when asked for, and shows one view at a time', async () => {
     const fixture = create();
 
     await settle(fixture);
@@ -125,10 +125,15 @@ describe('EsriMapComponent', () => {
     expect(element(fixture.nativeElement, 'arcgis-scene')).toBeNull();
 
     const asked = fixture.componentInstance.sceneView({ viewingMode: 'global' });
+    // Asked again before the first has been drawn, as a quick second press of the 3D button does.
+    const askedAgain = fixture.componentInstance.sceneView({ viewingMode: 'global' });
 
     await settle(fixture);
 
     const scene = await asked;
+
+    expect(await askedAgain).toBe(scene);
+    expect(fixture.nativeElement.querySelectorAll('arcgis-scene').length).toBe(1);
     const globe = element(fixture.nativeElement, 'arcgis-scene');
     const flat = element(fixture.nativeElement, 'arcgis-map');
 

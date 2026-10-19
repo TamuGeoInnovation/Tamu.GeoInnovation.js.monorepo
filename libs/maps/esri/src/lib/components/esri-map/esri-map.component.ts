@@ -67,6 +67,9 @@ export class EsriMapComponent implements OnInit, OnDestroy, MapHost {
   private readonly flat = viewChild<ElementRef<HTMLArcgisMapElement>>('flat');
   private readonly globe = viewChild<ElementRef<HTMLArcgisSceneElement>>('globe');
 
+  /** The scene once it has been asked for; see `sceneView`. */
+  private drawingScene: Promise<esri.SceneView> | undefined;
+
   public ngOnInit() {
     const config = this.config();
 
@@ -86,25 +89,29 @@ export class EsriMapComponent implements OnInit, OnDestroy, MapHost {
   }
 
   /**
-   * The scene, drawn the first time it is asked for, with `properties` set before its view loads.
-   * The map service gives it the map when it is shown.
+   * The scene, drawn the first time it is asked for, with `properties` set before its view loads, and the
+   * same scene after, however quickly the asks come. The map service gives it the map when it is shown.
    */
-  public async sceneView(properties: esri.SceneViewProperties): Promise<esri.SceneView> {
-    if (!this.scene()) {
-      await Promise.all([
-        import('@arcgis/map-components/components/arcgis-scene'),
-        import('@arcgis/map-components/components/arcgis-navigation-toggle'),
-        import('@arcgis/map-components/components/arcgis-compass')
-      ]);
+  public sceneView(properties: esri.SceneViewProperties): Promise<esri.SceneView> {
+    this.drawingScene ??= this.drawScene(properties);
 
-      await this.draw(() => this.scene.set(true), () => this.globe(), properties);
-    }
-
-    return this.globe().nativeElement.view;
+    return this.drawingScene;
   }
 
   public show(view: esri.MapView | esri.SceneView): void {
     this.showing.set(view.type);
+  }
+
+  private async drawScene(properties: esri.SceneViewProperties): Promise<esri.SceneView> {
+    await Promise.all([
+      import('@arcgis/map-components/components/arcgis-scene'),
+      import('@arcgis/map-components/components/arcgis-navigation-toggle'),
+      import('@arcgis/map-components/components/arcgis-compass')
+    ]);
+
+    await this.draw(() => this.scene.set(true), () => this.globe(), properties);
+
+    return this.globe().nativeElement.view;
   }
 
   private async open(config: MapConfig): Promise<void> {
