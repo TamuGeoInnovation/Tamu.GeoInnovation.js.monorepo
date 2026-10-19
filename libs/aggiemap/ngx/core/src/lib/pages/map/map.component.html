@@ -29,7 +29,7 @@
   }
 
   <!-- Map click coordinates, copy to click. Empty until the map is clicked, so loaded once the page is idle (#1454). -->
-  @if (!isMobile()) { @defer (on idle) {
+  @if (!isMobile()) { @defer {
   <tamu-gisc-click-coordinates class="map-ui-element"></tamu-gisc-click-coordinates>
   } }
 </div>
@@ -58,7 +58,7 @@
 <router-outlet></router-outlet>
 
 <!-- Keyboard viewfinder/feature list. Hidden until the map is moved with the keyboard, so loaded once the page is idle (#1454). -->
-@if (!isMobile()) { @defer (on idle) {
+@if (!isMobile()) { @defer {
 <tamu-gisc-map-viewfinder [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
 } }
 
