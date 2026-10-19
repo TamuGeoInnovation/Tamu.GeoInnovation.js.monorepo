@@ -4,7 +4,6 @@ import {
   SelectComponent,
   CheckboxComponent,
   CheckboxGroupComponent,
-  DateTimePickerComponent,
   TextboxComponent,
   AutocompleteComponent,
   AutocompleteOptionTemplateDirective,
@@ -16,6 +15,7 @@ import {
   SelectListComponent,
   TurnstileChallengeComponent
 } from '@tamu-gisc/ui-kits/ngx/forms';
+import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 

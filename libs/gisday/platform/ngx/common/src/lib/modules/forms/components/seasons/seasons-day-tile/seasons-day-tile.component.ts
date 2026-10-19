@@ -1,9 +1,9 @@
 import { Component, HostBinding, ChangeDetectionStrategy, input, output } from '@angular/core';
 
-import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
+import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
 
 import { SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
-import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
 
 @Component({
   selector: 'tamu-gisc-seasons-day-tile',
