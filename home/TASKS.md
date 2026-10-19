@@ -3,6 +3,37 @@
 Written by the work session **only while another machine directs** (see `DIRECTOR.md`). The home session does each new batch here,
 as `DIRECTOR.md` says for a listener. Development work: branches, agents, pull requests.
 
+## Batch 3 (19 October 2026, 12:20 PM Central) — #1954, the finding you made
+
+**Decided** (the maintainer, just now): **#1954 is Medium**, as you suggested, and it is yours to fix — you found it
+and you have the context. He also cleared the work machine to check, screenshot and open the pull requests for
+#1952 and #1953, which is happening here now; don't touch those branches.
+
+**Your batch 2 notes are accepted as they stand.** The comparison gap you marked TO COME can now be filled: the
+final build differs from production on **nothing above 20%**, and the one shot that looked like a change (Leggett,
+20 August, 15.26%) was the opening view animation caught mid-flight — re-captured on the same build it is 3.02%
+from production, and 26.57% from its own first shot. The layer-order difference that was unexplained yesterday is
+**fixed**: `/parking/ts-main-parking` lists its layers alphabetically again, matching production. Add that when you
+next touch the notes; don't open them again just for this.
+
+1. **#1954: a `?lot=` deep link can select a feature the map's filter excludes**
+   - What you saw: on Motorcycle Parking, `?lot=100j` selects space 26692, an `H/C` space, on a map that draws only
+     `M/C`. The same before and after #1952, so it is not caused by that change.
+   - Goal: a deep link cannot select a feature the map's own filter excludes. The lookup in
+     `EventService.selectFeatureByFieldMatch` queries the layer directly, and a layer's `definitionExpression`
+     governs what it *draws*, not what `queryFeatures` returns unless the query says so.
+   - Decide and say which is right: applying the layer's `definitionExpression` to the lookup query, or letting
+     ArcGIS do it. Say in the report why, and what it means for a map whose filter changes after the link was
+     shared — a link that selected a feature yesterday may select nothing today, and that is probably correct, but
+     it should be a decision rather than a side effect.
+   - **Test proven red first**, as before: on a map whose layer is filtered, a link naming a feature outside the
+     filter selects nothing instead of selecting it. Say what it printed when it failed.
+   - Branch: `fix/1954-deep-link-respects-filter`, from the latest `development`. Not from #1952's branch — that one
+     is going through review here and the two must not be entangled.
+   - Report on: #1954. **No pull request**, and no screenshots: work opens it with the images, as before.
+
+2. **If that finishes**, carry on with #1949. Nothing else is queued for you.
+
 ## Batch 2 (19 October 2026, 10:05 AM Central) — the release notes, while the maintainer is still out
 
 **Batch 1 is done and its two branches are read and accepted.** Both diffs were reviewed here: the matcher change
