@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **9:55 AM Central, 19 October 2026**. **This machine now directs** (handed over by home at 7:47 AM);
+Last written **11:10 AM Central, 19 October 2026**. **This machine now directs** (handed over by home at 7:47 AM);
 it still does its own testing job, and this file still says what it is doing. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
@@ -23,6 +23,18 @@ commit timestamp, not estimated.
 | Then | `review.mjs` against **`prod-2026-10-16-corrected`** |
 
 Also running, all light: the AVP poller, the listener watchdog, the branch watcher.
+
+## Home has done both its batches
+
+- **Batch 1:** `fix/1952-qualified-field-deep-links` (`e8507c433`) and `fix/1953-draw-event-view-and-flash`
+  (`6185cf308`), both pushed to the fork, both red-first proven, both checked `exit 0`. Reviewed here: the matcher
+  is backwards compatible, the `.catch` is scoped to the lookup alone, and the new `lot-links.spec.ts` asks the
+  service for its object ids rather than hard-coding them, so it survives a republish.
+- **Batch 2:** the release notes updated to Release-484's tier (`498a24076`), #1935 commented. The notes branch
+  stays on home and is not pushed; home owns that file.
+
+Both pull request bodies are drafted here **from the template file**, with `Closes #1952` and `Closes #1953` and
+no other closing keyword, waiting on screenshots and checks.
 
 ## The director's queue, waiting for the capture to finish
 
