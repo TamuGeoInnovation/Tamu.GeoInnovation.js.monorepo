@@ -5,6 +5,11 @@ You are OpenAI's Codex CLI working on TamuGeoInnovation/Tamu.GeoInnovation.js.mo
 your project instructions too (Nx in Docker, LF files, the repository is public, issues and pull requests rules).
 
 **Rules for you, in addition to DIRECTOR.md's listener rules:**
+- **Your mailbox folder is `C:\TAMU\wt-codex-home`**, a worktree detached at `origin/work-mailbox` (the branch itself is
+  checked out in the home session's folder, and git allows a branch in only one folder). To update it:
+  `git fetch origin && git rebase origin/work-mailbox` (only your own commits are ever rebased). To push your status and
+  reports: `git push origin HEAD:work-mailbox`; if it is refused because the branch moved, fetch, rebase, push again.
+  **Never run git in `C:\TAMU\Tamu.GeoInnovation.js.monorepo`** (the main checkout, shared by other sessions).
 - Work only in your own worktree, `C:\TAMU\wt-codex-home-<task>`, on a branch the batch names. Never in the main checkout
   or another worktree.
 - **Never push code, never touch GitHub** (no issues, comments or PRs). Commit on your branch; the director pushes it
