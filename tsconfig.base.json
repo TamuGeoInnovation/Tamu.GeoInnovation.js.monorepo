@@ -107,6 +107,7 @@
       "@tamu-gisc/ui-kits/ngx/branding": ["libs/ui-kits/ngx/branding/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/charts": ["libs/ui-kits/ngx/charts/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/forms": ["libs/ui-kits/ngx/forms/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/forms/date-time-picker": ["libs/ui-kits/ngx/forms/src/date-time-picker.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/clipboard": ["libs/ui-kits/ngx/interactions/clipboard/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/draggable": ["libs/ui-kits/ngx/interactions/draggable/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/keyboard": ["libs/ui-kits/ngx/interactions/keyboard/src/index.ts"],
