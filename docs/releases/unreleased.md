@@ -18,6 +18,21 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### The Layers list is alphabetical again
+
+On ArcGIS 5 a parking map's Layers list could keep the order its layers were added in, instead of
+sorting them by name: Campus Main Parking read "Construction, Route Stop/Start Points, Campus Stops,
+Visitor Kiosks, Parking Lots, RNS Spaces" on two loads in three on dev, and Service and Loading Zone
+Parking listed Service Parking Spaces before Service Parking Lots on every load. The list was sorted only when a
+layer was added or removed, and a layer named by its service only gets that name once it loads, which
+on ArcGIS 5 is after it is listed. It is now sorted again whenever a layer's name arrives
+([#1939](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1939)).
+
+| Before (dev) | After (local production build) |
+| --- | --- |
+| ![Campus Main Parking on dev: Construction, Route Stop/Start Points, Campus Stops, Visitor Kiosks, Parking Lots, RNS Spaces](../screenshots/layer-list-order/before-dev-ts-main-parking.png) | ![The same map on a local production build of the fix: Campus Stops, Construction, Parking Lots, RNS Spaces, Route Stop/Start Points, Visitor Kiosks](../screenshots/layer-list-order/after-local-ts-main-parking.png) |
+| ![Service and Loading Zone Parking on dev: Service Parking Spaces, then Service Parking Lots](../screenshots/layer-list-order/before-dev-service-loading.png) | ![The same map on a local production build of the fix: Service Parking Lots, then Service Parking Spaces](../screenshots/layer-list-order/after-local-service-loading.png) |
+
 ### A Football Tailgating tent or zone link finishes drawing
 
 A `?tent=` or `?zone=` link on Football Tailgating opened with the tent or zone highlighted, but on
@@ -722,6 +737,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Layers list alphabetical again ([#1939](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1939)) | [Campus Main Parking](https://dev.aggiemap.tamu.edu/parking/ts-main-parking), [Service and Loading Zone Parking](https://dev.aggiemap.tamu.edu/parking/service-loading) | Reload each a few times: the Layers list always reads Campus Stops, Construction, Parking Lots, RNS Spaces, Route Stop/Start Points, Visitor Kiosks, and Service Parking Lots, Service Parking Spaces. Other maps' lists are alphabetical too, except Fish Camp, Tailgating and Football, which keep their own order |
 | Tailgating tent and zone links finish drawing ([#1926](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1926)) | [Tent L1](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?tent=L1), [Zone AP-7](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-7) | The tent or zone opens highlighted and named in the side panel, as before. The difference is not on screen: the map finishes drawing within a minute (`window.__tamuGiscMapProbe.drawing` in the console turns `false`), where before the fix it stayed `true`. Nothing else on the map changes: the RNS Spaces layer that is now off drew nothing |
 | Trip planner back on dev only ([#1912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1912)) | [Directions](https://dev.aggiemap.tamu.edu/map/d/trip), [on a phone](https://dev.aggiemap.tamu.edu/map/m/trip), [with ?as=production](https://dev.aggiemap.tamu.edu/map/d/trip?as=production) | Dev only: on dev the planner shows two empty from and to boxes, travel modes and "Please select two points"; choose two buildings: a route should be drawn from the development GIS server's routing (not yet tried through the app; if it fails, say so on the issue). With `?as=production`, and on production at [/map/d/trip](https://aggiemap.tamu.edu/map/d/trip), the maintenance message instead, and no Directions tab |
 | AggieMap runs without zone.js ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)). Nothing should look different; what could go wrong is a part of the page that stops updating | [/map/d](https://dev.aggiemap.tamu.edu/map/d), [/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), [Visitor Parking](https://dev.aggiemap.tamu.edu/parking/visitor-parking), [Gameday Parking](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry), [Muster](https://dev.aggiemap.tamu.edu/events/muster), [/code-maroon?sample=tornado](https://dev.aggiemap.tamu.edu/code-maroon?sample=tornado), [Building Directory](https://dev.aggiemap.tamu.edu/directory), and /map on a phone | Each follows at once, without a second click or a mouse move: a layer switched in the Layers list (its dot, the map and the Legend); a search result chosen (its popup opens and closes); the sidebar tab sliding the panel away and back; the basemap gallery marking the basemap chosen; Aerial Imagery's date slider; 2D to 3D and back (the label follows); a Legend title switching its layer off and the Layers row back on; the share button's "URL Copied" toast, whose bar runs down and which closes itself; Muster's "This event has passed" box and its close; the Code Maroon sample and Dismiss; the directory filtering as you type, sorting by Name and filling in rows as you scroll. On a phone: the search box's back arrow, the menu's Layers, Legend and Basemap, and a building's popup |

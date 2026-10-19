@@ -10,7 +10,7 @@ import {
   inject,
   input
 } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, NG_VALUE_ACCESSOR, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, NG_VALUE_ACCESSOR, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, debounceTime, map, Observable, shareReplay, startWith } from 'rxjs';
 import { TextboxComponent } from '../textbox/textbox.component';
 import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
@@ -30,7 +30,7 @@ import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
   imports: [FormsModule, ReactiveFormsModule, TextboxComponent, NgTemplateOutlet, AsyncPipe]
 })
 export class SelectListComponent<T extends Record<string, unknown>> implements OnInit, OnChanges {
-  private readonly fb = inject(UntypedFormBuilder);
+  private readonly fb = inject(FormBuilder);
   private readonly renderer = inject(Renderer2);
 
   /**
@@ -61,7 +61,7 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
    */
   public readonly rowTemplate = input<TemplateRef<T>>(undefined);
 
-  public form: UntypedFormGroup = this.fb.group({
+  public readonly form = this.fb.group({
     search: ['']
   });
 
@@ -84,7 +84,7 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   }
 
   private initializeOptions(options: Array<T>): void {
-    this.options$ = this.form.get('search').valueChanges.pipe(
+    this.options$ = this.form.controls.search.valueChanges.pipe(
       debounceTime(300),
       startWith(''),
       map((value) => {
