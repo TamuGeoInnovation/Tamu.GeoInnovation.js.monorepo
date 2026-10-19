@@ -33,6 +33,21 @@ on ArcGIS 5 is after it is listed. It is now sorted again whenever a layer's nam
 | ![Campus Main Parking on dev: Construction, Route Stop/Start Points, Campus Stops, Visitor Kiosks, Parking Lots, RNS Spaces](../screenshots/layer-list-order/before-dev-ts-main-parking.png) | ![The same map on a local production build of the fix: Campus Stops, Construction, Parking Lots, RNS Spaces, Route Stop/Start Points, Visitor Kiosks](../screenshots/layer-list-order/after-local-ts-main-parking.png) |
 | ![Service and Loading Zone Parking on dev: Service Parking Spaces, then Service Parking Lots](../screenshots/layer-list-order/before-dev-service-loading.png) | ![The same map on a local production build of the fix: Service Parking Lots, then Service Parking Spaces](../screenshots/layer-list-order/after-local-service-loading.png) |
 
+### A map still opens where it should when a feature link cannot be looked up
+
+A map opened from a link naming a feature - `?lot=`, `?feature=` - did three things in one step: it
+looked the feature up, opened on the view the builder choices asked for, and flashed the feature to
+draw the eye. A failure in the first skipped the other two, so when a service erred the visitor lost
+the opening view as well as the popup. Transportation Services' AVP service was failing about half its
+queries in October ([#1951](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1951)),
+which is how this came to light. The lookup is now allowed to fail on its own: the view and the flash
+run either way, and the failure is logged, not retried - an outage stays visible to the smoke suite
+rather than being papered over
+([#1953](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1953)).
+
+There are no before and after images: the difference only appears while a service is erring, which
+cannot be staged honestly. The pull request carries the `no-visible-change` label for that reason.
+
 ### A Football Tailgating tent or zone link finishes drawing
 
 A `?tent=` or `?zone=` link on Football Tailgating opened with the tent or zone highlighted, but on
