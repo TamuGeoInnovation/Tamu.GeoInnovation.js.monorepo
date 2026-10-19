@@ -78,7 +78,6 @@
       "@tamu-gisc/maps/feature/accessibility": ["./libs/maps/feature/accessibility/src/index.ts"],
       "@tamu-gisc/maps/feature/basemap": ["./libs/maps/feature/basemap/src/index.ts"],
       "@tamu-gisc/maps/feature/coordinates": ["./libs/maps/feature/coordinates/src/index.ts"],
-      "@tamu-gisc/maps/feature/data": ["./libs/maps/feature/data/src/index.ts"],
       "@tamu-gisc/maps/feature/draw": ["./libs/maps/feature/draw/src/index.ts"],
       "@tamu-gisc/maps/feature/feature-highlight": ["./libs/maps/feature/feature-highlight/src/index.ts"],
       "@tamu-gisc/maps/feature/feature-selector": ["./libs/maps/feature/feature-selector/src/index.ts"],
@@ -109,12 +108,12 @@
       "@tamu-gisc/ui-kits/ngx/forms/date-time-picker": ["./libs/ui-kits/ngx/forms/src/date-time-picker.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/clipboard": ["./libs/ui-kits/ngx/interactions/clipboard/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/draggable": ["./libs/ui-kits/ngx/interactions/draggable/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/interactions/draggable/directive": ["./libs/ui-kits/ngx/interactions/draggable/src/directive.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/keyboard": ["./libs/ui-kits/ngx/interactions/keyboard/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/scroll-to": ["./libs/ui-kits/ngx/interactions/scroll-to/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout": ["./libs/ui-kits/ngx/layout/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout/code": ["./libs/ui-kits/ngx/layout/code/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout/modal": ["./libs/ui-kits/ngx/layout/modal/src/index.ts"],
-      "@tamu-gisc/ui-kits/ngx/navigation/breadcrumb": ["./libs/ui-kits/ngx/navigation/breadcrumb/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/mobile-tab": ["./libs/ui-kits/ngx/navigation/mobile-tab/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/mobile-tile": ["./libs/ui-kits/ngx/navigation/mobile-tile/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/triggers": ["./libs/ui-kits/ngx/navigation/triggers/src/index.ts"],
@@ -123,7 +122,7 @@
     "strict": false,
     "noUncheckedSideEffectImports": false,
     "types": ["*"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
   },
   "exclude": ["node_modules", "tmp"]
 }

@@ -463,6 +463,88 @@ two seconds, counted from the start of the page load. Other work may have been r
 layers settle as fast either way, because ArcGIS loads a layer's description, not its features; the
 wait was the features, fetched and processed for the whole campus and then not drawn.
 
+### interactjs, the click coordinates and the keyboard viewfinder out of the map's first download
+
+Two production builds on 18 October 2026, home machine: `development` at `70f0e424b` (before) and the
+change (after), each served by its own nginx container with the application's own `nginx.conf`, and
+measured with `measure-load.js` on the main map (`/map/d`) and an event map
+(`/parking/break-summer/map/d`), **3 cold loads each**, before and after alternately, four times. The
+first two pairs, between 17:30 and 18:25 US Central, ran on a **heavily loaded** machine (about eight
+other sessions building, checking and running smoke suites, one container at 1,300% CPU). The last two,
+from 20:15, ran on a quiet one, apart from one container at 1,000% CPU by the end of the fourth. The
+sizes are exact; the timings compare with each other only roughly.
+
+The change, in three parts:
+
+- **interactjs** (132 kB raw) was in every map's first download, desktop included. Only the phone's
+  popup and its bus and trip planner panels use it, through the drag directive, but the directive was
+  exported from the same index as the drag service the phone layout injects. The directive now has its
+  own entry, the bus panels are loaded by their routes, and the phone's popup is rendered through a
+  small wrapper that defers it `on immediate`.
+- **The click coordinates and the keyboard viewfinder**, which show nothing until the map is clicked or
+  moved with the keyboard, are deferred `on idle`; on the main map that also takes the clipboard package
+  out.
+- **Angular's `@defer` runtime joins the first download**, 3.7 kB of estimated transfer, which the first
+  `@defer` anywhere in the application brings once.
+
+| From the builds | Before | After |
+| --- | ---: | ---: |
+| Initial JavaScript and styles, raw | 852 kB | 861 kB |
+| Initial, estimated transfer | 212 kB | 216 kB |
+| JavaScript the main map page needs before its route renders, gzipped | 298 KB | 265 KB |
+| The same for an event map, gzipped | 345 KB | 316 KB |
+
+Merged with `development` at `b089c341a`, after the deferred trip planner (#1924), the same two rows are
+327 KB against 292 KB and 374 KB against 344 KB, and the initial files 236 kB against 239 kB of
+estimated transfer: #1924 had already brought the runtime, and its time picker had brought Angular
+Material into the initial files, which is fixed separately.
+
+| Served and measured, median of 3 | Before | After | Before | After | Before, quiet | After, quiet | Before, quiet | After, quiet |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Main map, desktop: application JavaScript downloaded, gzipped | 946 KB | 909 KB | 948 KB | 914 KB | 946 KB | 914 KB | 946 KB | 912 KB |
+| Event map, desktop: the same | 947 KB | 912 KB | 941 KB | 924 KB | 951 KB | 911 KB | 953 KB | 917 KB |
+| Event map, phone: the same | 901 KB | 874 KB | 901 KB | 874 KB | 901 KB | 874 KB | 901 KB | 874 KB |
+| Main map, phone: the same | 897 KB | 890 KB | 897 KB | 893 KB | 897 KB | 893 KB | 897 KB | 893 KB |
+| Main map, phone: first contentful paint | 2.62 s | 2.91 s | 2.75 s | 2.82 s | 2.53 s | 2.85 s | 2.18 s | 2.85 s |
+| Main map, phone: largest contentful paint | 5.73 s | 5.54 s | 5.60 s | 5.04 s | 5.39 s | 5.28 s | 4.60 s | 5.12 s |
+| Event map, phone: first contentful paint | 2.66 s | 2.81 s | 2.66 s | 2.82 s | 2.52 s | 2.58 s | 2.18 s | 2.74 s |
+| Event map, phone: largest contentful paint | 6.88 s | 6.52 s | 6.62 s | 6.29 s | 6.47 s | 5.98 s | 5.46 s | 6.41 s |
+| Main map, phone: map ready | 17.0 s | 18.1 s | 16.7 s | 16.7 s | 16.3 s | 17.1 s | 15.0 s | 16.9 s |
+| Main map, desktop: largest contentful paint | 1.08 s | 1.20 s | 1.06 s | 0.84 s | 0.28 s | 0.90 s | 0.32 s | 0.29 s |
+
+"Application JavaScript" here includes `@arcgis/core`, which the build now serves itself, so it does not
+compare with the 376 KB in the sections above. The "before its route renders" rows are the files a page
+imports statically from `main` and from its map route's lazy file, from the build's `--stats-json`.
+
+**What it shows.** About 30 KB less JavaScript on a desktop, on the main map and on an event map (3 to
+4%), and 27 KB less on a phone's event map, the same in every pair. A phone on the main map downloads
+nearly the same as before, as it should: its popup, and interactjs with it, follows straight after the
+page.
+
+**The phone's first paint came later in all four pairs, by 0.1 to 0.7 s, and that is the `@defer`
+runtime, not the deferrals.** One more phone load of each, with the files' timings, shows why. The first
+paint comes from the application shell, before the map route's file is even requested, so nothing this
+change takes out of the map route can bring it sooner; what it waits for is the initial files. Those
+grew by 3.7 kB of transfer, the runtime and the chunks esbuild rearranged around it, and on Fast 4G with
+a 4x slower CPU they finished arriving 70 ms later and painted 100 to 170 ms later (2.83 s against 2.69
+s). The map route's own file then arrived sooner, 23 KB against 60 KB, finishing at 3.7 to 4.0 s against 4.2 s.
+`development` has carried the same runtime since the deferred trip planner (#1924), so against today's
+`development` this change does not move the first paint. The largest paint and map ready moved both ways
+between pairs, by more than the change could explain.
+
+**A first attempt was slower on a phone, and was changed.** Loading the phone's popup through its route
+(`loadComponent`) made the router hold the whole phone layout, search box included, until the popup's
+file had downloaded. In two alternating pairs taken that way, the phone's largest paint came later, not
+sooner: 5.38 s against 5.95 s and 5.74 s against 6.33 s on the main map, 6.64 s against 6.95 s and
+6.94 s against 7.17 s on the event map. The wrapper renders at once and defers only the popup.
+
+**Looked at and left alone.** The 3D toggle is on screen at first paint, so deferring it would make it
+appear late. The Aerial Imagery date slider, the Code Maroon alert and the notification panel come from
+libraries whose index the first download imports anyway, so a `@defer` would not split them without a
+second entry for each, for 7 to 17 kB raw apiece. The legend, layer list, basemap gallery and bus list
+are route components or sidebar tabs; the sidebar reads its tabs once, so a tab inside `@defer` would
+never be wired up.
+
 ## Where the other records are
 
 This file is for runs as they happen. Two existing records keep their own shape and are not folded

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable/directive';
 
 import { BusListComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
