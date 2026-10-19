@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **7:35 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
+Last written **7:40 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
 **Last batch done: 13 (its queue is done).** **Batch 9 — the final test — is running now.**
@@ -17,7 +17,7 @@ commit timestamp, not estimated.
 | Release | **Release-484, build 20261019.5** — dev stage succeeded |
 | Commit | **`8951a6364`** (#1948 and the rest of today's work) |
 | Worktree | `C:/TAMU/wt-chkdev`, already at that exact commit from the `CHECK development` run |
-| Step 1, running | `test/smoke/aggiemap/run-local.sh development full` — the full tier |
+| Step 1, running | `test/smoke/aggiemap/run-local.sh development full` — the full tier, **restarted clean at 7:38 AM**, container `dazzling_shamir` |
 | Then | the `--as production` capture, then the comparison against `prod-2026-10-16-corrected` |
 | Tag | **only if the full tier passes outright** |
 
@@ -27,6 +27,13 @@ Azure lists Release-484 at that commit with its dev stage succeeded.
 One thing to ignore: the Azure watcher's own message says "REHEARSAL BUILD ON DEV". That is stale wording in the
 script's header from last night, not a judgement about this release. This is the final release, and it is being
 treated as one — the tag follows if the tier passes.
+
+**The tier was started twice by mistake and has been restarted clean.** The first launch looked as though it had
+died, so a second was started; both had in fact begun, 19 seconds apart, and two full tiers were running against
+dev sharing one results directory and one node_modules volume. Neither run's numbers would have been worth
+anything — contention is what #1716 is about, and 891 tests under a doubled load would have produced failures that
+say nothing about the release. Both were stopped, `test-results` was cleared, and **one** run started at 7:38 AM.
+Nothing was reported from the aborted pair.
 
 ## work: checked development exit 0
 
