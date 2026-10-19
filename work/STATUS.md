@@ -3,14 +3,27 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **6:40 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
+Last written **6:50 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
 **Last batch done: 12.** **Batch 13 is open and its queue is empty.** Batch 9 still waits. Nothing running.
 
 ## Running now
 
-Nothing. Two watchers: one on this branch, one on Azure for batch 9's release.
+**`CHECK chore/1479-vitest`** (batch 13), started **6:50 AM Central, 19 October**.
+
+| | |
+| --- | --- |
+| Branch | `chore/1479-vitest` at **`b77b61426`**, matching what the queue names (PR #1948) |
+| Fetched from | the maintainer's fork, then `git fetch origin` |
+| Running | `scripts/check-in-volume.sh chore/1479-vitest` — full affected |
+| From | a worktree at the branch, `C:/TAMU/wt-1479`, **not** the main checkout |
+
+**Run from the branch's own copy of the script on purpose.** The branch moves the check to **Node 24.22.0**; the
+script in the main checkout still says `node:22.23.3`, so running that one would have checked this branch on the
+version it is replacing and proved nothing about it.
+
+The result goes here as `work: checked ... exit <code>` the moment it finishes.
 
 ## Batch 13 — open, nothing running
 
