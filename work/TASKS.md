@@ -71,6 +71,26 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 13 (prepared 19 October 2026, morning) — pre-merge checks for today's release, as the director asks
+
+**Decided** (the maintainer, 19 October): everything open goes into today's release, and the long tests run once,
+on the final build. This machine takes over the **pre-merge full checks** from the home machine, so home's code work
+and these checks run in parallel.
+
+1. **Full checks of branches the director names, one at a time**
+   - The director appends a line to this batch for each branch to check: `CHECK <branch>` (pushed to the
+     maintainer's fork). For each, in order:
+     `git fetch https://github.com/danielgoldbergtamu/Tamu.GeoInnovation.js.monorepo.git <branch>:<branch>`, then
+     `git fetch origin`, then from Git Bash `scripts/check-in-volume.sh <branch>` (full affected), and read its exit code.
+   - Push `work: checked <branch> exit <code>` to STATUS.md as soon as each finishes (with the failing targets if not
+     0). The director acts on that line at once, so push each result immediately, not at the end.
+   - `CHECK development` means: `git fetch origin` and check `origin/development`'s head the same way (make a local
+     branch `chk/development` at it first). That is the check before the final build.
+   - This batch stays open: after each check, watch for the next `CHECK` line. Batch 9 (the final test) still waits
+     for the release the director names.
+
+Queue:
+
 ## Batch 12 (prepared 18 October 2026, about 9:30 PM) — now
 
 **Decided** (the maintainer, on batch 11's question 1): don't move anything. Make a corrected **copy** of production's
