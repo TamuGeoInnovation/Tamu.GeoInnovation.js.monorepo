@@ -1,6 +1,6 @@
 @import 'libs/sass/modules/loaders';
 
-// Moved into the view's manual UI container, which spans the map, so this centres on the map itself.
+// In the map element's default slot, which spans the map, so this centres on the map itself.
 // Raised clear of the "View as production" switch a development host shows at the bottom centre.
 :host {
   position: absolute;

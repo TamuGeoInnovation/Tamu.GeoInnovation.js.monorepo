@@ -32,15 +32,22 @@
 
 <!-- Map component -->
 @if ((config | async); as c) {
-<tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile() }">
+<tamu-gisc-esri-map [config]="c" [zoom]="!isMobile()" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile() }">
+  <!-- In the map's slots, below the zoom buttons: locate, then the compass; on a phone, locate alone at the bottom right (#1949). -->
+  <arcgis-track [attr.slot]="isMobile() ? 'bottom-right' : 'top-left'" go-to-location-disabled></arcgis-track>
+  @if (!isMobile()) {
+  <tamu-gisc-map-compass slot="top-left"></tamu-gisc-map-compass>
+  }
+  @if (!hideSidebar) {
+  <!-- Aerial Imagery date slider. Shows only on that basemap, in the map's default slot. -->
+  <tamu-gisc-nearmap-date-slider></tamu-gisc-nearmap-date-slider>
+  }
   @if (!hideSidebar) {
   <div class="map-overlay-ui">
     <div class="overlay-zone top left">
       <a class="all-maps-button esri-component esri-widget" routerLink="/discover" aria-label="Open All Maps">ALL MAPS</a>
       <tamu-gisc-perspective-toggle [threeDLayers]="threeDLayers()"></tamu-gisc-perspective-toggle>
     </div>
-    <!-- Aerial Imagery date slider. Shows only on that basemap, and moves itself into the map view's UI. -->
-    <tamu-gisc-nearmap-date-slider></tamu-gisc-nearmap-date-slider>
     <div class="overlay-zone bottom right">
       @if (hasSettings) {
       <div class="esri-component esri-track esri-widget--button esri-widget" role="button" alt="URL Share" clipboard-copy [text]="shareUrl"><span class="material-icons" (click)="notifyUrlCopy()">share</span></div>
@@ -60,10 +67,7 @@
   </div>
   }
 </tamu-gisc-esri-map>
-@if (!isMobile()) {
-<!-- Moves itself into the map's top-left corner, below the zoom and locate buttons. -->
-<tamu-gisc-map-compass></tamu-gisc-map-compass>
-} }
+}
 
 <!-- Router outlet where desktop and mobile controls are rendered -->
 <router-outlet></router-outlet>

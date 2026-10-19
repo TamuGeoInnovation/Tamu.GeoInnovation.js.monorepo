@@ -58,7 +58,6 @@ export class SubmissionDetailModalComponent implements OnInit {
         basemap: 'streets-navigation-vector'
       },
       view: {
-        mode: '2d',
         properties: {
           center: [this.submission.location.longitude, this.submission.location.latitude],
           zoom: 18

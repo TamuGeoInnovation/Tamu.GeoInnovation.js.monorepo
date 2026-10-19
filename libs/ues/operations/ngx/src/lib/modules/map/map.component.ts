@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { MapServiceInstance, MapConfig, HIDDEN_DEFAULT_HIGHLIGHT } from '@tamu-gisc/maps/esri';
@@ -7,7 +7,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { ReveilleConsoleLogComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
-import { EsriMapComponent, MapCompassComponent, addTrack } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent, MapCompassComponent } from '@tamu-gisc/maps/esri';
 import { NgClass } from '@angular/common';
 import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
 import { UESTamuBlockComponent } from '@tamu-gisc/ues/common/ngx';
@@ -18,6 +18,8 @@ import esri = __esri;
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
+  // Esri's locate button, `<arcgis-track>`, sits in the map's slots (#1949).
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     ReveilleConsoleLogComponent,
     RouterLink,
@@ -65,7 +67,6 @@ export class MapComponent implements OnInit {
         }
       },
       view: {
-        mode: '2d',
         properties: {
           // container: this.mapViewEl.nativeElement,
           map: undefined, // Reference to the map object created before the scene
@@ -78,10 +79,9 @@ export class MapComponent implements OnInit {
             maxScale: 0 // maxZoom is the max you can zoom INTO the ground
           },
           zoom: 16,
-          ui: {
-            // The attribution is the view's own since ArcGIS 5.0 (`attributionVisible`), no longer a UI component.
-            components: this.isMobile() ? [] : ['zoom']
-          },
+          // Hidden, as it was by this application's stylesheet until the view moved into `<arcgis-map>`'s
+          // shadow root, where the stylesheet does not reach (#1949).
+          attributionVisible: false,
           popup: {
             dockOptions: {
               buttonEnabled: false,
@@ -120,8 +120,6 @@ export class MapComponent implements OnInit {
         }, 300);
       }, 300);
     });
-
-    addTrack(instances.view as esri.MapView, this.isMobile() ? 'bottom-right' : 'top-left');
   }
 
   /**
