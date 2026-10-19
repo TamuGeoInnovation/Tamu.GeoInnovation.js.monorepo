@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **9:35 AM Central, 19 October 2026**. **This machine now directs** (handed over by home at 7:47 AM);
+Last written **9:55 AM Central, 19 October 2026**. **This machine now directs** (handed over by home at 7:47 AM);
 it still does its own testing job, and this file still says what it is doing. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
@@ -11,20 +11,48 @@ commit timestamp, not estimated.
 
 ## Running now
 
-**Batch 9, step 2: dev's screenshot set as production renders it.** Started **9:32 AM Central**.
+**Batch 9, step 2: dev's screenshot set as production renders it.** Started **9:32 AM Central**, 100 of 848 at
+9:50, 0 failed, about 150 minutes left.
 
 | | |
 | --- | --- |
 | Container | `vb-dev-8951a6364-as-prod` |
 | Command | `capture.mjs --env development --as production --release 8951a6364` |
 | Build | `main-5IW7YA32.js` on dev — Release-484 |
-| Release key | the commit, not a `dev-*` tag: the maintainer's 5B means no tag until a rerun is clean |
-| Scale | 848 shots, 424 routes x 2 viewports |
-| Out | `C:/TAMU/visual-baselines/development-as-production/8951a6364` |
-| Then | `review.mjs` against **`prod-2026-10-16-corrected`**, as batch 9 directs |
+| Release key | the commit, not a `dev-*` tag: 5B means no tag until a rerun is clean |
+| Then | `review.mjs` against **`prod-2026-10-16-corrected`** |
 
-Also running, both light and deliberately so: the AVP poller (20 queries every 15 minutes), the listener watchdog,
-the branch watcher. Nothing else heavy will start on this machine while the capture runs.
+Also running, all light: the AVP poller, the listener watchdog, the branch watcher.
+
+## The director's queue, waiting for the capture to finish
+
+Home's two branches are ready and **nothing heavy runs beside the capture**, so these are queued rather than
+started — the rule added to `DIRECTOR.md` this morning:
+
+1. `scripts/check-in-volume.sh` on each branch, as CI does.
+2. Before/after screenshots for both (they stay on this machine until the Kubernetes visual compare exists).
+3. Release-notes entries and *What to test on dev* rows.
+4. Open both pull requests from the template.
+
+Reviewed in the meantime, which is light: both diffs read, and the matcher change is **backwards compatible** —
+`'LotName'.split('.').pop()` is `'LotName'`, so the thirteen services that already worked still match.
+
+## codex-home is withdrawn, presumed stopped
+
+Never took batch 2 (pushed about 7:50 AM), did not answer the 9:05 AM ask, 97 minutes silent at 9:40. Batch 2 is
+replaced with `## Withdrawn — presumed stopped`, so a late-waking agent stops instead of doing work that may have
+moved. **Nothing is lost:** it was chosen as abandonable work and was never on the release path, and it has not
+been given to another machine — home has more important work. The watchdog no longer watches it; the branch
+watcher catches it if it wakes.
+
+## Issues filed today
+
+| | |
+| --- | --- |
+| #1951 | **High** — Transportation Services' server, with the query matrix as evidence |
+| #1952 | **Medium** — the deep-link matcher, with the 14-service audit |
+| #1953 | **Medium** — `drawEvent` losing the view and flash |
+| #1954 | **priority not set** — a `?lot=` link can select a feature the map's filter excludes (home's finding; it suggests Medium, and the maintainer decides) |
 
 ## work: the nine contaminated failures were this machine's, proven
 
