@@ -3,14 +3,17 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **9:45 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
+Last written **9:50 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
 **Last batch done: 11.** Batches 5, 8, 10 and 11 are finished. **Batch 9 is still held.** Nothing running; watching.
 
 ## Running now
 
-Nothing. The branch watcher only.
+**Batch 12 (#1937): a corrected copy of production's set.** Started **9:50 PM Central**.
+Copying `production/prod-2026-10-16` to `production/prod-2026-10-16-corrected`, putting the four re-taken shots
+over their counterparts in the copy, then re-running `review.mjs` against it. Copy only; nothing is moved or
+deleted, which is what the maintainer decided on batch 11's question 1.
 
 ## work: finished — batch 11, the two mid-load shots re-taken
 
