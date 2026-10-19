@@ -53,6 +53,42 @@ on ArcGIS 5 is after it is listed. It is now sorted again whenever a layer's nam
 | ![Campus Main Parking on dev: Construction, Route Stop/Start Points, Campus Stops, Visitor Kiosks, Parking Lots, RNS Spaces](../screenshots/layer-list-order/before-dev-ts-main-parking.png) | ![The same map on a local production build of the fix: Campus Stops, Construction, Parking Lots, RNS Spaces, Route Stop/Start Points, Visitor Kiosks](../screenshots/layer-list-order/after-local-ts-main-parking.png) |
 | ![Service and Loading Zone Parking on dev: Service Parking Spaces, then Service Parking Lots](../screenshots/layer-list-order/before-dev-service-loading.png) | ![The same map on a local production build of the fix: Service Parking Lots, then Service Parking Spaces](../screenshots/layer-list-order/after-local-service-loading.png) |
 
+### A `?lot=` link opens the lot on fourteen parking maps
+
+A share link of the friendly form - `?lot=100j` - resolved to nothing on fourteen of Transportation
+Services' parking maps, so their popups could only offer the generic `?feature=<layerId>:<objectId>`
+form. Those services join several tables, so a lot's name is `GIS.TS.ParkingLots.LotName` rather than
+`LotName`, and the app compared field names whole: no layer matched, and the link quietly opened
+nothing. On Visitor Parking, `?lot=100j` instead opened the **main** map's Lot 100j, whose share link
+reads `aggiemap.tamu.edu/?lot=...` - which is why it looked as though it half worked.
+
+A candidate field now matches a field whose last dot-separated part equals it. The thirteen services
+that already named their fields plainly are unaffected, and **every link shared since June still
+works**: a `?feature=` link is tried first and returns as soon as it resolves
+([#1952](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1952)).
+
+The affected maps are AVP, Contractor, Freshman Selectable, Media, Move-Out, New Student Conference,
+Night and Weekend, Retiree, Staff Selectable, Student Selectable, Summer Break, Vendor, Visitor, and
+the Track/Soccer/Softball/Swimming/Volleyball/Women's Basketball map.
+
+| Before (dev) | After |
+| --- | --- |
+| ![Visitor Parking on dev with ?lot=100j: the popup is the main map's Lot 100j, sharing a link to aggiemap.tamu.edu/?lot=...](../screenshots/1952-qualified-field-deep-links/before-visitor-parking-lot-100j-dev.png) | To be captured on dev once this is built there; the dev server's first page load did not finish in time. The behaviour is proven by the tests below. |
+### A map still opens where it should when a feature link cannot be looked up
+
+A map opened from a link naming a feature - `?lot=`, `?feature=` - did three things in one step: it
+looked the feature up, opened on the view the builder choices asked for, and flashed the feature to
+draw the eye. A failure in the first skipped the other two, so when a service erred the visitor lost
+the opening view as well as the popup. Transportation Services' AVP service was failing about half its
+queries in October ([#1951](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1951)),
+which is how this came to light. The lookup is now allowed to fail on its own: the view and the flash
+run either way, and the failure is logged, not retried - an outage stays visible to the smoke suite
+rather than being papered over
+([#1953](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1953)).
+
+There are no before and after images: the difference only appears while a service is erring, which
+cannot be staged honestly. The pull request carries the `no-visible-change` label for that reason.
+
 ### A Football Tailgating tent or zone link finishes drawing
 
 A `?tent=` or `?zone=` link on Football Tailgating opened with the tent or zone highlighted, but on
@@ -744,6 +780,26 @@ and the additional sponsorship opportunities are unchanged ([#1821](https://gith
 | --- | --- |
 | ![The four levels at $512, $1,024, $2,048 and $4,096, on production](../screenshots/1821-sponsor-prices/before.png) | ![The four levels at $256, $512, $1,024 and $2,048](../screenshots/1821-sponsor-prices/after.png) |
 
+### GIS Day: a sponsor can be switched off for a season and kept
+
+Sponsors carry over from one season to the next, and until a company confirms it had to be deleted,
+then added again with its logo once it did. Each sponsor now has an **Active** switch: on the admin
+Sponsors list (it saves at once) and on the sponsor form. A sponsor switched off keeps its details and
+logo in the admin pages but is not shown on the public Sponsors page or the home page. Every existing
+sponsor starts switched on ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)).
+
+**This release changes the database**: it adds `sponsors.active` (and `event_location.checkInZone`,
+from the check-in zones work, which production has not had yet). Both migrations run on production
+before the new API is deployed; each only adds a column, so the site running then keeps working.
+
+The admin image is the list on a scratch page of the local site, because the admin pages need a
+sign-in. In it, one local sponsor (Esri) is switched off; the public page beside it leaves it out.
+
+| Before | After |
+| --- | --- |
+| ![Production Sponsors page before: every sponsor shown, with no way to hide one](../screenshots/1962-sponsor-active/before-public-sponsors.png) | ![The admin Sponsors list with an Active column, Esri unticked](../screenshots/1962-sponsor-active/after-admin-sponsor-list.png) |
+| | ![The public Sponsors page without the switched-off sponsor](../screenshots/1962-sponsor-active/after-public-sponsors.png) |
+
 ---
 
 ## What to test on dev
@@ -758,7 +814,9 @@ dated notes as what was tested, and this table empties.
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | Maps hosted by Esri's map components ([#1949](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1949)). Nothing should look different | [/map/d](https://dev.aggiemap.tamu.edu/map/d), [Gameday Parking](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry), and /map on a phone; UES Operations' map wherever it is deployed | The zoom, locate and compass buttons at the top left, each working; 2D to 3D and back twice: in 3D zoom, pan/rotate and a compass, back in 2D the three buttons again and the map where it was; the Aerial Imagery date slider centred along the bottom on that basemap; a building popup; the Layers list and Legend. On a phone, locate at the bottom right. No attribution line along the bottom |
+| GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |
 | Layers list alphabetical again ([#1939](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1939)) | [Campus Main Parking](https://dev.aggiemap.tamu.edu/parking/ts-main-parking), [Service and Loading Zone Parking](https://dev.aggiemap.tamu.edu/parking/service-loading) | Reload each a few times: the Layers list always reads Campus Stops, Construction, Parking Lots, RNS Spaces, Route Stop/Start Points, Visitor Kiosks, and Service Parking Lots, Service Parking Spaces. Other maps' lists are alphabetical too, except Fish Camp, Tailgating and Football, which keep their own order |
+| A `?lot=` link opens the lot on fourteen parking maps ([#1952](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1952)) | [Visitor Parking, lot 100j](https://dev.aggiemap.tamu.edu/parking/visitor-parking/map?lot=100j), [Motorcycle Parking, lot 100j](https://dev.aggiemap.tamu.edu/parking/motorcycle-parking/map?lot=100j) | The popup is the map's own lot, not the main map's: its share link reads `/parking/visitor-parking/...`, not `aggiemap.tamu.edu/?lot=...`. Before the fix the first opened the main map's Lot 100j. The second map already worked and must still. Also check a `?feature=` link copied from a popup still opens the same feature |
 | Tailgating tent and zone links finish drawing ([#1926](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1926)) | [Tent L1](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?tent=L1), [Zone AP-7](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-7) | The tent or zone opens highlighted and named in the side panel, as before. The difference is not on screen: the map finishes drawing within a minute (`window.__tamuGiscMapProbe.drawing` in the console turns `false`), where before the fix it stayed `true`. Nothing else on the map changes: the RNS Spaces layer that is now off drew nothing |
 | Trip planner back on dev only ([#1912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1912)) | [Directions](https://dev.aggiemap.tamu.edu/map/d/trip), [on a phone](https://dev.aggiemap.tamu.edu/map/m/trip), [with ?as=production](https://dev.aggiemap.tamu.edu/map/d/trip?as=production) | Dev only: on dev the planner shows two empty from and to boxes, travel modes and "Please select two points"; choose two buildings: a route should be drawn from the development GIS server's routing (not yet tried through the app; if it fails, say so on the issue). With `?as=production`, and on production at [/map/d/trip](https://aggiemap.tamu.edu/map/d/trip), the maintenance message instead, and no Directions tab |
 | AggieMap runs without zone.js ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)). Nothing should look different; what could go wrong is a part of the page that stops updating | [/map/d](https://dev.aggiemap.tamu.edu/map/d), [/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), [Visitor Parking](https://dev.aggiemap.tamu.edu/parking/visitor-parking), [Gameday Parking](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry), [Muster](https://dev.aggiemap.tamu.edu/events/muster), [/code-maroon?sample=tornado](https://dev.aggiemap.tamu.edu/code-maroon?sample=tornado), [Building Directory](https://dev.aggiemap.tamu.edu/directory), and /map on a phone | Each follows at once, without a second click or a mouse move: a layer switched in the Layers list (its dot, the map and the Legend); a search result chosen (its popup opens and closes); the sidebar tab sliding the panel away and back; the basemap gallery marking the basemap chosen; Aerial Imagery's date slider; 2D to 3D and back (the label follows); a Legend title switching its layer off and the Layers row back on; the share button's "URL Copied" toast, whose bar runs down and which closes itself; Muster's "This event has passed" box and its close; the Code Maroon sample and Dismiss; the directory filtering as you type, sorting by Name and filling in rows as you scroll. On a phone: the search box's back arrow, the menu's Layers, Legend and Basemap, and a building's popup |

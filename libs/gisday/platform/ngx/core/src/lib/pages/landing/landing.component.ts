@@ -21,7 +21,7 @@ import { ActiveSeasonDto, Place, SeasonDay, Sponsor } from '@tamu-gisc/gisday/pl
 import { PlaceVisibilityOptions } from '@tamu-gisc/gisday/platform/ngx/common';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { AssetUrlPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import { AssetUrlPipe, activeSponsors } from '@tamu-gisc/gisday/platform/ngx/common';
 import { GISDAY_SITE, SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 const numberDictionary = {
@@ -77,7 +77,8 @@ export class LandingComponent implements OnInit {
     this.titleService.setTitle(this.title);
 
     this.activeSeason$ = this.seasonService.getActiveSeason().pipe(shareReplay());
-    this.sponsors$ = this.sponsorService.getEntitiesForActiveSeason().pipe(shareReplay());
+    // Sponsors switched off for the season are kept in the admin pages but not shown (#1962).
+    this.sponsors$ = this.sponsorService.getEntitiesForActiveSeason().pipe(map(activeSponsors), shareReplay());
     this.organizations$ = this.placeService.getEntitiesForActiveSeason().pipe(
       mergeMap((places) => places),
       filter((place) => place?.visibilitySettings && place.visibilitySettings.includes(PlaceVisibilityOptions.OrgPage)),
