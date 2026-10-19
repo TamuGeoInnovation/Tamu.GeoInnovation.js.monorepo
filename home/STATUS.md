@@ -3,9 +3,9 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-(nothing)
-
-**branch ready: feat/1960-lactation-hosted-service** (head `de837b688`, report 6 and its addendum), **fix/1954-deep-link-respects-filter** (merged, report 5)
+**home directs again** (took over at 6:45 PM Central, 19 October, from work's handover). Merged `development` into
+PR 1966 (`ff1c4b903`) and PR 1950 (`24ab1e3a5`): each conflicted only in `unreleased.md`'s What-to-test table, where both rows belong.
+Waiting on the maintainer for tonight's release plan before writing work a batch.
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
