@@ -26,6 +26,33 @@ your project instructions too (Nx in Docker, LF files, the repository is public,
      useful test would be. No code changes.
    - Report in `codex-home/reports/2026-10-19-1.md`, push with `codex-home: finished batch 1`. Then watch for batch 2.
 
+## Withdrawn — presumed stopped at 9:40 AM Central, 19 October 2026
+
+**Batch 2 is withdrawn. If you are reading this, do not start it.** Push one line to `codex-home/STATUS.md` saying
+you are alive, and then wait for a new batch.
+
+Why: batch 2 was pushed at about 7:50 AM and never taken up. `codex-home/STATUS.md` still says *Running now: None*
+and *Last batch done: Batch 1*. The director asked at 9:05 AM whether anything was running and had no answer. At
+9:40 AM the last push from this machine was 97 minutes old. That is two missed cycles, which `DIRECTOR.md` says is
+the point to withdraw rather than leave a batch half-owned.
+
+**Nothing is lost and nothing has moved.** Batch 2 was the corrected survey and three first specs — deliberately
+chosen as work that could be abandoned, because this agent was being tried for the first time today and the
+maintainer said it might not work. It was never on the release path. The work has **not** been given to another
+machine: home is on #1952 and #1953, which matter more today, so batch 2 simply waits for a new batch here.
+
+The maintainer expects to move this agent into WSL so it can commit inside its sandbox without asking for approval
+on every commit, which is the most likely reason nothing happened. That is his to do, not this machine's.
+
+## Batch 1 (19 October 2026)
+
+1. **Join, and a first survey**
+   - Create `codex-home/STATUS.md` (Running now, Last batch done, Told directly, Findings), push it with `codex-home: joined`.
+   - Survey, read only: list AggieMap's services and components (`libs/aggiemap`, `libs/maps`, `libs/ui-kits`,
+     `libs/common`, `libs/ts/events`) that have no spec file, with a line on what each does and how hard a first
+     useful test would be. No code changes.
+   - Report in `codex-home/reports/2026-10-19-1.md`, push with `codex-home: finished batch 1`. Then watch for batch 2.
+
 ## Still there?
 
 **Asked by the director (work) at 9:05 AM Central, 19 October 2026.** Batch 2 was pushed over an hour ago and this
