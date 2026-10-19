@@ -3,44 +3,36 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **5:45 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
+Last written **9:05 PM Central, 18 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
-**Last batch done: 8.** Batches 5 and 8 are finished. **Batch 10 is running.** Batch 9 is held twice over.
+**Last batch done: 10.** Batches 5, 8 and 10 are finished. **Batch 9 is still held.** Nothing running; watching.
 
 ## Running now
 
-**Batch 10 (#1849): dev's screenshot set as production renders it, for the preview comparison.** Started
-**5:38 PM Central, 18 October**.
+Nothing. The branch watcher only.
 
-| | |
-| --- | --- |
-| Container | `vb-dev-2026-10-18-3-as-prod` |
-| Command | `capture.mjs --env development --as production --release dev-2026-10-18-3 --out /out` |
-| From | the worktree at `70f0e424b` (`C:/TAMU/wt-1911`) |
-| Against | production's `prod-2026-10-16` set from batch 5, 848 shots |
-| Out | `C:/TAMU/visual-baselines/development-as-production/dev-2026-10-18-3` |
-| Progress at 5:44 PM | **25 of 848, 0 failed**, about 149 minutes left, so roughly 8:15 PM |
+## work: finished — batch 10, the preview comparison
 
-Nothing else is running on this machine, and nothing is pointed at production. The comparison
-(`review.mjs`) follows when the capture finishes; it is minutes.
+**#1849: dev's Release-482 set against production's.** Capture 848 of 848, **0 failed**, 5:38 to 8:32 PM Central,
+174 minutes. Comparison: **848 pages, 756 changed** beyond the 0.5% threshold. Posted on #1849
+([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1849#issuecomment-6257833793)).
+Report: `work/reports/2026-10-18-7.md`. **Nothing found looks like a fault in the release.**
 
-## work: finished — batch 8, and it passed
+Where the comparison page is, on this machine:
+`C:/TAMU/visual-baselines/compare/dev-2026-10-18-3-vs-prod-2026-10-16/review.html`
 
-**#1673: the quick tier on Release-482. 277 passed, 0 failed, 1 flaky, 8 skipped of 286, 16.5 minutes, exit 0.**
-**Tagged `dev-2026-10-18-3` on `70f0e424b` and pushed to `origin`.** Posted on #1673
-([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1673#issuecomment-6255884185)).
-Report: `work/reports/2026-10-18-6.md`, which also covers batch 5.
-
-- **#1911 holds.** `/campus/dc-bush-school` passed in 32.1 s, where it had failed all three attempts in batch 6
-  and both no-retry runs in batch 7. `campus-layers.spec.ts`'s three campus tests all passed. Those were exactly
-  the tests that would have counted as new failures on this commit.
-- **The `@heavy` tests: two of three on the first attempt.** `basemap-zoom` and `perspective` passed first time;
-  `popup.spec.ts:109` (`/map/d?bldg=0468`) failed its first attempt and passed on retry #1. That is the run's only
-  flaky result, and it is the College Station main map, which #1911 does not touch. Batch 6 was three of three, so
-  this says #1901 reduced those failures rather than removing them — a question for the director, in the report.
-- **The tier chose** 23 spec files whole and 3 routes, five more specs than batch 6, because it spans ArcGIS 5.1,
-  OnPush, UES and #1911 together. 132 changed files map to no test of their own.
+- **The count needed taking apart.** `review.mjs` writes no diff images, so "756 changed" had no location. Measured
+  separately: **23 pixel-identical**, 8 changed only outside the map, 71 with a map-body change under 0.5%, 746 at
+  0.5% or more. The five **All maps** pages are pixel-identical — a control.
+- **Explained:** the locate button and compass on every map (#1858, #1892, #1893, #1900), and dense point layers
+  re-rendering a pixel out under 5.1. **`/map` and the campus maps are unchanged in the body, 0.01% each** — the
+  result worth having, since #1911 changed what the campus maps load.
+- **Three of the five largest differences are the capture, not the build:** a transient dev 404 on three
+  consecutive move-in routes (all 200 now), two production shots caught mid-load in batch 5's set, and a hover
+  highlight on the phone event pages.
+- **One genuine difference is unexplained:** the parking maps' **Layers** panel is in a different order, not
+  alphabetical as on production, with a layer still spinning. Question 1 in the report, suggested High.
 
 ## Queued
 
