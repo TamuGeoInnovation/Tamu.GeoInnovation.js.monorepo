@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The home session reads it before writing a batch or asking the maintainer anything.
 
-Last written **6:30 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
+Last written **6:40 AM Central, 19 October 2026**. Clock times here are read from PowerShell or from a
 commit timestamp, not estimated.
 
 **Last batch done: 12.** **Batch 13 is open and its queue is empty.** Batch 9 still waits. Nothing running.
@@ -12,7 +12,11 @@ commit timestamp, not estimated.
 
 Nothing. Two watchers: one on this branch, one on Azure for batch 9's release.
 
-## Batch 13 — open, queue empty
+## Batch 13 — open, nothing running
+
+**`CHECK refactor/1478-zoneless` never started.** It was added and withdrawn within the same watch, so there is
+nothing part-done and nothing to finish: no branch was fetched, no volume clone made, no check run. Waiting for
+`CHECK chore/1479-vitest`.
 
 Read at 6:30 AM Central. This machine now takes the **pre-merge full checks**. The batch's queue holds no `CHECK`
 line yet, so nothing has been run. Each one will be `scripts/check-in-volume.sh <branch>` (full affected) after
