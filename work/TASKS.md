@@ -91,6 +91,7 @@ and these checks run in parallel.
 
 Queue:
 - ~~CHECK refactor/1478-zoneless~~ withdrawn (the maintainer, 19 October): the remaining four PRs go in as one combined branch, `chore/1479-vitest`; its CHECK comes next. If this check has already started, finish it and report.
+- CHECK chore/1479-vitest  (PR #1948, at b77b61426: Vitest + zoneless + Node 24 + the TypeScript 6.0 deprecations, combined; it runs on Node 24.22.0 as the branch's check script says)
 
 ## Batch 12 (prepared 18 October 2026, about 9:30 PM) — now
 
