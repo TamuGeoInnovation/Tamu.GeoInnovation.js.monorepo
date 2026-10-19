@@ -14,7 +14,7 @@ import {
   toArray
 } from 'rxjs';
 import { Component, OnInit, inject, viewChild } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DatatableComponent, TableColumn, NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { RouterLink } from '@angular/router';
@@ -31,9 +31,11 @@ import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 })
 export class DirectoryComponent implements OnInit {
   private readonly http = inject(HttpClient);
-  private readonly fb = inject(UntypedFormBuilder);
+  private readonly fb = inject(FormBuilder);
 
-  public form: UntypedFormGroup;
+  public readonly form = this.fb.group({
+    search: this.fb.control<string | null>(null)
+  });
 
   public readonly table = viewChild(DatatableComponent);
 
@@ -63,17 +65,9 @@ export class DirectoryComponent implements OnInit {
       shareReplay(1)
     );
 
-    this.form = this.fb.group({
-      search: [null]
-    });
-
     this._rows$ = combineLatest([
       this._data$,
-      (this.form.get('search') as UntypedFormControl).valueChanges.pipe(
-        startWith(null),
-        debounceTime(300),
-        distinctUntilChanged()
-      )
+      this.form.controls.search.valueChanges.pipe(startWith(null), debounceTime(300), distinctUntilChanged())
     ]).pipe(
       tap(() => {
         this.loadingIndicator = true;

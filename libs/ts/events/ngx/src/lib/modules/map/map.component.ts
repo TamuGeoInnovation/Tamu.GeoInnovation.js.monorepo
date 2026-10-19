@@ -42,8 +42,7 @@ import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clip
 import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
 import { EsriMapComponent, MapCompassComponent, addTrack } from '@tamu-gisc/maps/esri';
 import { PerspectiveToggleComponent } from '@tamu-gisc/maps/feature/perspective';
-import { PopupComponent } from '@tamu-gisc/maps/feature/popup';
-import { PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
+import { PopupComponent, PopupMobileDeferredComponent } from '@tamu-gisc/maps/feature/popup';
 import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
 
 import esri = __esri;
@@ -78,7 +77,7 @@ const EVENT_PASSED_GRACE_DAYS = 1;
     ClipboardCopyDirective,
     RouterOutlet,
     PopupComponent,
-    PopupMobileComponent,
+    PopupMobileDeferredComponent,
     MapViewfinderComponent,
     NearmapDateSliderComponent,
     AsyncPipe

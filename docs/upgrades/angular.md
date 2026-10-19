@@ -166,7 +166,8 @@ Vite, so Angular's migrations for the `application` builder apply to them.
 - **No test failed.** All 114 test targets passed from the first run that reached them, the first step
   of the three where that was true.
 - `"ignoreDeprecations": "6.0"` was added to tsconfigs by the migrations, so TypeScript 6 warns about the
-  old module settings rather than failing. TypeScript 7 removes that escape.
+  old module settings rather than failing. TypeScript 7 removes that escape. The last three uses, and
+  the setting itself, were removed in [#1922](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1922).
 
 ## Forecast for the rest
 
