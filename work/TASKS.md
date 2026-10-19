@@ -128,6 +128,12 @@ Angular 22.2). So compare **now**, and anything significant is found hours befor
 production serves now; there should be no significant differences, and any there are, he wants to see.
 
 1. **#1849: clear Release-482 (build 20261018.33, `70f0e424b`) for production**
+   - **Overnight rehearsal (the director, about 9:40 PM, the maintainer asleep):** the build of `33da307ff` (#1930 and #1931
+     merged) may reach dev tonight; the layer-order fix (#1939) will follow it in the morning. **If a release at `33da307ff`
+     or later reaches dev tonight, run this whole batch on it now, as a rehearsal: the full tier, the capture and the
+     comparison, exactly as below, but do not tag it** (it is not the build that ships). Report it as
+     "Rehearsal on Release-<n>". The final clearance runs again on the release with #1939 in the morning, as its own
+     batch. If no new release reaches dev tonight, wait.
    - **Still held (the maintainer, about 6 PM): the final build will carry #1912 (the trip planner on dev) and #1923
      (Angular 22.2.3) as well, about 1.5 hours away. The release building now (`af33dc01e`) is not the final one:
      do nothing with it. The director names the final release here.**
