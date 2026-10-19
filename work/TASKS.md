@@ -90,7 +90,7 @@ and these checks run in parallel.
      for the release the director names.
 
 Queue:
-- CHECK refactor/1478-zoneless
+- ~~CHECK refactor/1478-zoneless~~ withdrawn (the maintainer, 19 October): the remaining four PRs go in as one combined branch, `chore/1479-vitest`; its CHECK comes next. If this check has already started, finish it and report.
 
 ## Batch 12 (prepared 18 October 2026, about 9:30 PM) — now
 
