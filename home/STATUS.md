@@ -3,11 +3,12 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**home: started batch 3** at about 12:25 PM: #1954, a `?lot=` link must not select a feature the map's filter excludes
-(`fix/1954-deep-link-respects-filter`, from the latest `development`). The comparison numbers go into the notes next time
-they are opened, as the batch says.
+(nothing)
+
+**branch ready: fix/1954-deep-link-respects-filter** (report 4)
 
 ## Finished
+- **Batch 3** (report `home/reports/2026-10-19-4.md`): #1954 pushed, red-first tests, check exit 0.
 - **Batch 2: the release notes updated** (`docs/releases/2026-10-19.md`, branch `docs/release-2026-10-18`, commit
   `498a24076`, in `C:\TAMU\wt-notes`; not pushed, no PR, not merged). Release-484 / build 20261019.5 / `8951a6364`; the
   tier as handed over, written from the idle re-run, with the contention named as a testing-machine fault; held on
