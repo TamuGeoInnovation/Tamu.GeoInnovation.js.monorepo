@@ -32,7 +32,11 @@
           }
         ],
         "scripts": [],
-        "loader": { ".woff2": "file", ".woff": "file", ".ttf": "file" },
+        "loader": {
+          ".woff2": "file",
+          ".woff": "file",
+          ".ttf": "file"
+        },
         "styles": ["apps/aggiemap-angular/src/styles.scss"],
         "stylePreprocessorOptions": {
           "includePaths": ["."]
@@ -142,14 +146,6 @@
         "development": {
           "buildTarget": "aggiemap-angular:build:development"
         }
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/aggiemap-angular"],
-      "options": {
-        "jestConfig": "apps/aggiemap-angular/jest.config.ts",
-        "tsConfig": "apps/aggiemap-angular/tsconfig.spec.json"
       }
     },
     "lint": {
