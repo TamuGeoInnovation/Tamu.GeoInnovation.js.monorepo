@@ -168,6 +168,13 @@ What does not, yet:
 
 ## Things that look broken
 
+- The site compiles and listens on 4201, but the first page stays blank, and the log stops at
+  `[vite] (client) [optimizer] bundling dependencies...` with only a `deps_temp_*` folder in
+  `.angular/cache/<version>/gisday-angular/vite/`: the dev server was started without
+  `UV_THREADPOOL_SIZE=64`. `--poll=2000`, which the bind mount needs, keeps Node's 4 default
+  file-system threads busy, and the dependency optimizer waits behind them for good. `scripts/gisday-local.sh web`
+  sets it; a dev server started by hand needs `-e UV_THREADPOOL_SIZE=64` too. Remove the container and
+  `.angular/cache`, then start it again (#1955). `bash scripts/gisday-local.test.sh` checks the script still sets it.
 - `Recursive task invocation detected`, or a start that prints `Waiting for <task> in another nx process`
   and never continues: an Nx container in this checkout was killed in the middle of a task (`docker rm -f`,
   `docker kill`, Docker itself stopping). Nx writes each running task into
