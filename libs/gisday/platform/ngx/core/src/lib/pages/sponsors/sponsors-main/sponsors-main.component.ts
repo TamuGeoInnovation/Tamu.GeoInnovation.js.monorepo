@@ -5,7 +5,7 @@ import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import { AssetUrlPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import { AssetUrlPipe, activeSponsors } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-sponsors-main',
@@ -40,6 +40,8 @@ export class SponsorsMainComponent implements OnInit {
 
         return season ? this.ss.getEntitiesForSeason(season.guid) : of([]);
       }),
+      // Sponsors switched off for the season are kept in the admin pages but not shown (#1962).
+      map(activeSponsors),
       shareReplay(1)
     );
     this.rasterSponsors$ = this._sponsors$.pipe(this.filterSponsors('raster'));

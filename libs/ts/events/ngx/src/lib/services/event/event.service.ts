@@ -197,7 +197,12 @@ export class EventService {
       if (sources.length > 0) {
         await this.mapService.loadLayers(sources);
         this.applyExclusiveLayerVisibility();
-        await this.selectFeatureFromUrl(sources);
+        // Neither the chosen view nor the flash depends on the linked feature being found, so a lookup
+        // that fails - a service erroring, as Transportation Services' did on about half its queries in
+        // October (#1951) - must not skip them (#1953). Logged and not retried, so an outage stays visible.
+        await this.selectFeatureFromUrl(sources).catch((err) =>
+          console.error('EventService: Failed to select the feature in the address', err)
+        );
         await this.applySelectedChoiceView();
         await this.flashFocusFeature();
       } else {

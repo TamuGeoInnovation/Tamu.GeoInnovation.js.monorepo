@@ -18,6 +18,7 @@
             <th>Name</th>
             <th>Season</th>
             <th>Level</th>
+            <th>Active</th>
           </tr>
         </thead>
         <tbody>
@@ -27,6 +28,8 @@
             <td>{{entity?.name}}</td>
             <td>{{entity?.season?.year}}</td>
             <td class="capitalize">{{entity?.sponsorshipLevel}}</td>
+            <!-- Switching a sponsor off keeps it here with its details and hides it from the public site (#1962). -->
+            <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" [checked]="entity?.active !== false" (changed)="setActive(entity, $event)"></tamu-gisc-checkbox></td>
           </tr>
           }
         </tbody>
