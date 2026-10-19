@@ -5,7 +5,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 ## Running now
 (nothing)
 
-**branch ready: feat/1960-lactation-hosted-service** (report 6), **fix/1954-deep-link-respects-filter** (merged, report 5)
+**branch ready: feat/1960-lactation-hosted-service** (head `de837b688`, report 6 and its addendum), **fix/1954-deep-link-respects-filter** (merged, report 5)
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
