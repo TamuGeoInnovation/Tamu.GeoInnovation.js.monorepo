@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -12,8 +12,8 @@ import { BusService } from '@tamu-gisc/maps/feature/trip-planner';
 import { BusTimetableComponent } from './bus-timetable.component';
 
 describe('BusTimetableComponent (isolated)', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         EsriMapComponent,
@@ -37,7 +37,7 @@ describe('BusTimetableComponent (isolated)', () => {
         }
       ]
     }).compileComponents();
-  }));
+  });
 
   it('should create', inject([BusTimetableComponent], (component: BusTimetableComponent) => {
     expect(component).toBeTruthy();

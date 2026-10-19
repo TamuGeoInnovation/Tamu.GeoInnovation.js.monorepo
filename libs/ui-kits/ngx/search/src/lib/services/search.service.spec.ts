@@ -1,4 +1,4 @@
-import { waitForAsync, inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { SearchProperties, SearchResult, SearchService, containsSearch, searchQueryParams } from './search.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -6,8 +6,8 @@ import { env } from '@tamu-gisc/common/ngx/environment';
 import { makeWhere } from '@tamu-gisc/common/utils/database';
 
 describe('SearchService (no SearchSources)', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       providers: [
         SearchService,
         {
@@ -17,7 +17,7 @@ describe('SearchService (no SearchSources)', () => {
       ],
       imports: [HttpClientTestingModule]
     }).compileComponents();
-  }));
+  });
 
   it('should be created', inject([SearchService], (searchService: SearchService) => {
     expect(searchService).toBeTruthy();

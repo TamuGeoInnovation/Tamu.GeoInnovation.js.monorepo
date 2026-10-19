@@ -1,19 +1,19 @@
-import { inject, TestBed, waitForAsync } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NotificationItemComponent } from './notification-item.component';
 import { Notification } from '../../helpers/notification.helper';
 
 describe('NotificationItemComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       providers: [NotificationItemComponent],
       imports: [
         RouterTestingModule.withRoutes([{ path: 'value', component: NotificationItemComponent }]),
         NotificationItemComponent
       ]
     }).compileComponents();
-  }));
+  });
 
   it('should create', inject([NotificationItemComponent], (notificationItemComponent: NotificationItemComponent) => {
     expect(notificationItemComponent).toBeTruthy();

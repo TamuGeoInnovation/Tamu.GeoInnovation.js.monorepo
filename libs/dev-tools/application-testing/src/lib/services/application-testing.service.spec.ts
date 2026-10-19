@@ -1,11 +1,11 @@
-import { waitForAsync, inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { ACTING_AS_PRODUCTION, TestingService } from './application-testing.service';
 
 describe('TestingService', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({ providers: [TestingService] }).compileComponents();
-  }));
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ providers: [TestingService] }).compileComponents();
+  });
 
   it('should be created', inject([TestingService], (testingService: TestingService) => {
     expect(testingService).toBeTruthy();

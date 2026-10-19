@@ -1,12 +1,12 @@
-import { waitForAsync, inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { SafeHtmlPipe } from './safe-html.pipe';
 
 describe('SafeHtmlPipe', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       providers: [SafeHtmlPipe]
     }).compileComponents();
-  }));
+  });
 
   it('should bypass security', inject([SafeHtmlPipe], (pipe: SafeHtmlPipe) => {
     expect(pipe.transform('Test')).toEqual({ changingThisBreaksApplicationSecurity: 'Test' });

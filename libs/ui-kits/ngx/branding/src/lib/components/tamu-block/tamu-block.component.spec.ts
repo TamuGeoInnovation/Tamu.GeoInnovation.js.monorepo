@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { TamuBlockBrandingComponent } from './tamu-block.component';
@@ -7,11 +7,11 @@ describe('TamuBlockComponent', () => {
   let component: TamuBlockBrandingComponent;
   let fixture: ComponentFixture<TamuBlockBrandingComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([]), TamuBlockBrandingComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TamuBlockBrandingComponent);

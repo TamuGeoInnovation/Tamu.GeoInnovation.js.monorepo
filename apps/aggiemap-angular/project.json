@@ -17,7 +17,6 @@
           "base": "dist/apps/aggiemap-angular",
           "browser": ""
         },
-        "polyfills": ["apps/aggiemap-angular/src/polyfills.ts"],
         "tsConfig": "apps/aggiemap-angular/tsconfig.app.json",
         "assets": [
           "apps/aggiemap-angular/src/favicon.ico",
