@@ -18,6 +18,26 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### The maps are hosted by Esri's map components
+
+AggieMap, the event and parking maps and UES Operations now use Esri's current way of building a map,
+the map components: `<arcgis-map>` draws the map and `<arcgis-scene>` the 3D view, and the buttons sit
+in their slots, instead of our own map view with buttons placed through its `ui`, which ArcGIS 5.1
+deprecates and 6.0 removes ([#1949](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1949),
+part of [#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218)).
+Nothing is meant to look different. The buttons are in the same order and place, a pixel further
+from the corner; in 3D the pan/rotate toggle and compass are Esri's components rather than its retired
+widgets, and look the same. On a phone the locate button sits 14 pixels lower, as far from the bottom
+of the screen as from its side: the space it kept above it was for the attribution line, which the map
+hides. Signage, GeoServices and GIS Day's competition maps are hosted the same way.
+
+| Before | After |
+| --- | --- |
+| ![The desktop buttons in 2D: zoom, locate, compass](../screenshots/arcgis-map-ui/before-desktop.png) | ![The same, hosted by arcgis-map](../screenshots/arcgis-map-ui/after-desktop.png) |
+| ![The buttons in 3D: zoom, pan/rotate, compass](../screenshots/arcgis-map-ui/before-desktop-3d.png) | ![The same, hosted by arcgis-scene](../screenshots/arcgis-map-ui/after-desktop-3d.png) |
+| ![Back in 2D, the buttons back](../screenshots/arcgis-map-ui/before-desktop-2d-back.png) | ![The same, after](../screenshots/arcgis-map-ui/after-desktop-2d-back.png) |
+| ![The phone, locate at the bottom right](../screenshots/arcgis-map-ui/before-phone.png) | ![The same, the locate button 14 pixels lower](../screenshots/arcgis-map-ui/after-phone.png) |
+
 ### The Layers list is alphabetical again
 
 On ArcGIS 5 a parking map's Layers list could keep the order its layers were added in, instead of
@@ -737,6 +757,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Maps hosted by Esri's map components ([#1949](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1949)). Nothing should look different | [/map/d](https://dev.aggiemap.tamu.edu/map/d), [Gameday Parking](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry), and /map on a phone; UES Operations' map wherever it is deployed | The zoom, locate and compass buttons at the top left, each working; 2D to 3D and back twice: in 3D zoom, pan/rotate and a compass, back in 2D the three buttons again and the map where it was; the Aerial Imagery date slider centred along the bottom on that basemap; a building popup; the Layers list and Legend. On a phone, locate at the bottom right. No attribution line along the bottom |
 | Layers list alphabetical again ([#1939](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1939)) | [Campus Main Parking](https://dev.aggiemap.tamu.edu/parking/ts-main-parking), [Service and Loading Zone Parking](https://dev.aggiemap.tamu.edu/parking/service-loading) | Reload each a few times: the Layers list always reads Campus Stops, Construction, Parking Lots, RNS Spaces, Route Stop/Start Points, Visitor Kiosks, and Service Parking Lots, Service Parking Spaces. Other maps' lists are alphabetical too, except Fish Camp, Tailgating and Football, which keep their own order |
 | Tailgating tent and zone links finish drawing ([#1926](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1926)) | [Tent L1](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?tent=L1), [Zone AP-7](https://dev.aggiemap.tamu.edu/events/tailgating/map/d?zone=AP-7) | The tent or zone opens highlighted and named in the side panel, as before. The difference is not on screen: the map finishes drawing within a minute (`window.__tamuGiscMapProbe.drawing` in the console turns `false`), where before the fix it stayed `true`. Nothing else on the map changes: the RNS Spaces layer that is now off drew nothing |
 | Trip planner back on dev only ([#1912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1912)) | [Directions](https://dev.aggiemap.tamu.edu/map/d/trip), [on a phone](https://dev.aggiemap.tamu.edu/map/m/trip), [with ?as=production](https://dev.aggiemap.tamu.edu/map/d/trip?as=production) | Dev only: on dev the planner shows two empty from and to boxes, travel modes and "Please select two points"; choose two buildings: a route should be drawn from the development GIS server's routing (not yet tried through the app; if it fails, say so on the issue). With `?as=production`, and on production at [/map/d/trip](https://aggiemap.tamu.edu/map/d/trip), the maintenance message instead, and no Directions tab |
