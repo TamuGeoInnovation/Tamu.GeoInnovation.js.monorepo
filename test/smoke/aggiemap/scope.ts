@@ -83,7 +83,7 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
   { paths: /^libs\/ts\/events\/ngx\/src\/lib\/modules\/map\//, specs: ['isolation.spec.ts'] },
   {
     paths: /^libs\/ts\/events\/ngx\/src\/lib\/(services\/event\/|definitions\/campus\/)/,
-    specs: ['campus-layers.spec.ts', 'kiosk.spec.ts']
+    specs: ['campus-layers.spec.ts', 'kiosk.spec.ts', 'lot-links.spec.ts']
   },
   { paths: /^libs\/maps\/esri\/src\/lib\/services\/map\/(selection-layer|hit-order)\.ts$/, specs: ['selection.spec.ts'] },
   {

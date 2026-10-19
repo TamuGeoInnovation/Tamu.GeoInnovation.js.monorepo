@@ -230,9 +230,7 @@ describe('EventService, a lot link on a map whose fields are named by table', ()
   const AVP_100J = { layer: AVP_PARKING_LAYERS.AVP_PARKING_LOTS, objectId: 26338 };
 
   it('finds the lot source the links are read from', () => {
-    expect(PARKING_LOT_SOURCE.map((source) => source.queryParams?.where?.keys)).toEqual([
-      ['LotName', 'Name', 'FAC_CODE']
-    ]);
+    expect(PARKING_LOT_SOURCE.map((source) => source.queryParams?.where?.keys)).toEqual([['LotName', 'Name', 'FAC_CODE']]);
   });
 
   it.each(['?lot=100j', '?lot=100J', '?Lot=100j', '?lot=Lot%20100j'])(
@@ -271,21 +269,30 @@ describe('EventService, a lot link on a map whose fields are named by table', ()
   });
 
   it('still opens a lot on a map whose fields are not named by table', async () => {
-    const layer = lotLayer('plain-lots', 'OBJECTID', ['OBJECTID', 'LotName', 'Spc_Type'], [
-      { OBJECTID: 7, LotName: '100j' }
-    ]);
+    const layer = lotLayer(
+      'plain-lots',
+      'OBJECTID',
+      ['OBJECTID', 'LotName', 'Spc_Type'],
+      [{ OBJECTID: 7, LotName: '100j' }]
+    );
     const source = { type: 'feature', id: 'plain-lots' } as LayerSource;
 
     expect(await selectedFromUrl('?lot=100j', [source], [layer])).toEqual({ layer: 'plain-lots', objectId: 7 });
   });
 
   it("keeps the source's field order: a layer with LotName is asked before one with only FAC_CODE", async () => {
-    const byFacCode = lotLayer('by-fac-code', 'OBJECTID', ['OBJECTID', 'GIS.TS.Spaces.FAC_CODE'], [
-      { OBJECTID: 1, 'GIS.TS.Spaces.FAC_CODE': 'Lot 100j' }
-    ]);
-    const byLotName = lotLayer('by-lot-name', 'OBJECTID', ['OBJECTID', 'GIS.TS.ParkingLots.LotName'], [
-      { OBJECTID: 2, 'GIS.TS.ParkingLots.LotName': 'Lot 100j' }
-    ]);
+    const byFacCode = lotLayer(
+      'by-fac-code',
+      'OBJECTID',
+      ['OBJECTID', 'GIS.TS.Spaces.FAC_CODE'],
+      [{ OBJECTID: 1, 'GIS.TS.Spaces.FAC_CODE': 'Lot 100j' }]
+    );
+    const byLotName = lotLayer(
+      'by-lot-name',
+      'OBJECTID',
+      ['OBJECTID', 'GIS.TS.ParkingLots.LotName'],
+      [{ OBJECTID: 2, 'GIS.TS.ParkingLots.LotName': 'Lot 100j' }]
+    );
     const sources = [
       { type: 'feature', id: 'by-fac-code' },
       { type: 'feature', id: 'by-lot-name' }
