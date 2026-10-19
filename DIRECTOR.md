@@ -16,6 +16,9 @@ director), its `STATUS.md` and its `reports/` (written only by that machine).
 | --- | --- | --- | --- |
 | home | `home/` | Development: branches, agents, pull requests | 18 October 2026 |
 | work | `work/` | Testing: smoke tiers, screenshot sets, `dev-*` tags | 18 October 2026 |
+| codex | `codex/` | OpenAI's Codex CLI, on the home machine: reviews and small, well-defined code jobs (unit tests, dead code), each as a branch for the director to turn into a PR | 19 October 2026 |
+
+`codex` is not a machine but a second agent (OpenAI's Codex CLI) on the home machine, under the same rules as every listener; it reads `CLAUDE.md` as its project instructions too.
 
 A machine's job does not change when the director does: a batch for a development machine is development work, a
 batch for a testing machine is testing. The director, whichever machine it is, writes every listener's batches,
