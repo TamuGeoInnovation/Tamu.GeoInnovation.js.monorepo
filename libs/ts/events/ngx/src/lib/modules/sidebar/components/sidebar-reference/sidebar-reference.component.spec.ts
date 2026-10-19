@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 // The definitions, their popups and the settings service import one another. Loading the service
 // first is the order the application loads them in; starting from a definition finds a popup's base
 // class still undefined.
@@ -35,8 +36,8 @@ function fakeLayer(id: string, features: Attributes[]) {
 
 /** The tailgating map, drawn with these layers, and the sidebar beside it. */
 function tailgatingMapWith(layers: Array<ReturnType<typeof fakeLayer>>) {
-  const selectFeatures = jest.fn();
-  const toast = jest.fn();
+  const selectFeatures = vi.fn();
+  const toast = vi.fn();
 
   const eventService = Object.assign(Object.create(EventService.prototype) as EventService, {
     mapService: { selectFeatures, loadLayers: async () => undefined },
@@ -48,7 +49,7 @@ function tailgatingMapWith(layers: Array<ReturnType<typeof fakeLayer>>) {
     configuration: TailgatingConfiguration,
     eventService,
     ns: { toast },
-    helper: { handleSearchResultFeatureSelection: jest.fn() }
+    helper: { handleSearchResultFeatureSelection: vi.fn() }
   });
 
   return { eventService, sidebar, selectFeatures, toast };
@@ -69,7 +70,7 @@ function picked(sourceId: string, attributes: Attributes): SearchSelection<unkno
 const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 /** The layer and object id of the feature the map selected, if any. */
-function selectedFeature(selectFeatures: jest.Mock) {
+function selectedFeature(selectFeatures: Mock) {
   const attributes = selectFeatures.mock.calls[0]?.[0]?.graphics?.[0]?.attributes;
 
   return attributes && { layer: attributes['__featureLayerId'], objectId: attributes['OBJECTID'] };
@@ -116,7 +117,9 @@ describe('SidebarReferenceComponent, picking one of the map own results', () => 
     const shown = selectFeatures.mock.calls[0][0];
 
     expect(shown.graphics[0].attributes).toMatchObject({ name: 'Tent O12', description: 'Ortega Lawn' });
-    expect(shown.popupComponent).toBe(TailgatingColdLayerSources.find((s) => s.id === TAILGATING_LAYERS.TENTS)?.popupComponent);
+    expect(shown.popupComponent).toBe(
+      TailgatingColdLayerSources.find((s) => s.id === TAILGATING_LAYERS.TENTS)?.popupComponent
+    );
   });
 
   it('says so when the picked feature is no longer on the map', async () => {
@@ -134,7 +137,7 @@ describe('SidebarReferenceComponent, picking one of the map own results', () => 
     const { eventService, sidebar, selectFeatures, toast } = tailgatingMapWith([
       fakeLayer(TAILGATING_LAYERS.TENTS, [{ OBJECTID: 11, tent_id: 'O12' }])
     ]);
-    const error = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     eventService.specialEventLayerReferences = [];
     await eventService.drawEvent();

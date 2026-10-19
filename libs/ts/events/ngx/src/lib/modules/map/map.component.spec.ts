@@ -31,34 +31,34 @@ describe('MapComponent (event-passed flow)', () => {
 
   beforeEach(() => {
     mockModalService = {
-      open: jest.fn(() => ({ subscribe: (cb: any) => cb(true) }))
+      open: vi.fn(() => ({ subscribe: (cb: any) => cb(true) }))
     };
 
     mockSettingsService = {
-      updateSettings: jest.fn(),
-      getStorageObjectKeyValue: jest.fn(() => null)
+      updateSettings: vi.fn(),
+      getStorageObjectKeyValue: vi.fn(() => null)
     };
 
     mockEventSettingsService = {
       hasSettings: false,
       hasOptions: false,
-      eventConfiguration: jest.fn(() => ({ configuration: { id: 'test-event', eventDates: ['2020-01-01'] } })),
+      eventConfiguration: vi.fn(() => ({ configuration: { id: 'test-event', eventDates: ['2020-01-01'] } })),
       queryParamsFromSettings: ''
     };
 
     componentInstance = TestBed.configureTestingModule({
       providers: [
         { provide: ResponsiveService, useValue: { isMobile: of(false) } },
-        { provide: EnvironmentService, useValue: { value: jest.fn(() => ({})) } },
+        { provide: EnvironmentService, useValue: { value: vi.fn(() => ({})) } },
         { provide: NotificationService, useValue: {} },
-        { provide: TestingService, useValue: { get: jest.fn(() => of(false)) } },
-        { provide: Router, useValue: { navigate: jest.fn() } },
+        { provide: TestingService, useValue: { get: vi.fn(() => of(false)) } },
+        { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, parent: null } },
-        { provide: LocalStoreService, useValue: { getStorageObjectKeyValue: jest.fn(() => null) } },
+        { provide: LocalStoreService, useValue: { getStorageObjectKeyValue: vi.fn(() => null) } },
         { provide: EventSettingsService, useValue: mockEventSettingsService },
         { provide: EventService, useValue: {} },
         { provide: ModalService, useValue: mockModalService },
-        { provide: BasemapGalleryService, useValue: { applyNearmapCaptureFromUrl: jest.fn() } }
+        { provide: BasemapGalleryService, useValue: { applyNearmapCaptureFromUrl: vi.fn() } }
       ]
     }).runInInjectionContext(() => new MapComponent());
   });
@@ -80,30 +80,30 @@ describe('MapComponent (opening basemap)', () => {
     const component = TestBed.configureTestingModule({
       providers: [
         { provide: ResponsiveService, useValue: { isMobile: of(false) } },
-        { provide: EnvironmentService, useValue: { value: jest.fn(() => ({})) } },
+        { provide: EnvironmentService, useValue: { value: vi.fn(() => ({})) } },
         { provide: NotificationService, useValue: {} },
-        { provide: TestingService, useValue: { isTesting: true, get: jest.fn(() => of(true)) } },
-        { provide: Router, useValue: { navigate: jest.fn() } },
+        { provide: TestingService, useValue: { isTesting: true, get: vi.fn(() => of(true)) } },
+        { provide: Router, useValue: { navigate: vi.fn() } },
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { queryParams: options.urlBasemap ? { basemap: options.urlBasemap } : {} }, parent: null }
         },
         {
           provide: LocalStoreService,
-          useValue: { getStorageObjectKeyValue: jest.fn(() => (options.saved ? { basemap: options.saved } : null)) }
+          useValue: { getStorageObjectKeyValue: vi.fn(() => (options.saved ? { basemap: options.saved } : null)) }
         },
         {
           provide: EventSettingsService,
           useValue: {
             hasSettings: false,
             hasOptions: false,
-            eventConfiguration: jest.fn(() => ({ configuration: { id: 'test-event', ...options.configuration } })),
+            eventConfiguration: vi.fn(() => ({ configuration: { id: 'test-event', ...options.configuration } })),
             queryParamsFromSettings: ''
           }
         },
         { provide: EventService, useValue: {} },
-        { provide: ModalService, useValue: { open: jest.fn() } },
-        { provide: BasemapGalleryService, useValue: { applyNearmapCaptureFromUrl: jest.fn() } }
+        { provide: ModalService, useValue: { open: vi.fn() } },
+        { provide: BasemapGalleryService, useValue: { applyNearmapCaptureFromUrl: vi.fn() } }
       ]
     }).runInInjectionContext(() => new MapComponent());
 

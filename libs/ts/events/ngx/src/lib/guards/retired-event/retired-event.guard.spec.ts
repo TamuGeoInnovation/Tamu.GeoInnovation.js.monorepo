@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, UrlSegment, UrlTree } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,10 +9,10 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 describe('RetiredEventGuard', () => {
   let guard: RetiredEventGuard;
   let router: Router;
-  let eventSettingsService: { getEventDefinitionById: jest.Mock };
+  let eventSettingsService: { getEventDefinitionById: Mock };
 
   beforeEach(() => {
-    eventSettingsService = { getEventDefinitionById: jest.fn() };
+    eventSettingsService = { getEventDefinitionById: vi.fn() };
 
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
