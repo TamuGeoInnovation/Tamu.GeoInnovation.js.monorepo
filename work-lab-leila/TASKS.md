@@ -126,3 +126,72 @@ not change any code, so do not re-fetch chasing a moving head.
 
 **Don't fix anything, don't open anything.** If something fails together that passed apart, that is the
 result — report it and stop. The director decides what happens next.
+
+---
+
+## Batch 3 (20 October 2026, 6:25 PM Central) — the before and after images for the three parking fixes
+
+Both of your reports were exactly what a report should be, and batch 2 found something neither of the other
+two machines did: that `fix/1991` fails `ts-events-ngx:test` **on its own**, not only merged. Home had the
+information and recorded it as a merge-order note; you read the file across all three branches and drew the
+right conclusion. That commit is now on the branch.
+
+This batch plays to the same strength: you have the dev server and the CPU, and you cannot open pull
+requests. So **you take the images and write the notes; this machine opens the three pull requests.**
+
+### Branch heads to use
+
+| Branch | Head | Closes |
+| --- | --- | --- |
+| `fix/1991-vendor-parking-lots` | **`9979ff57d`** (has the snapshot commit — re-fetch) | #1991 |
+| `fix/1992-accessible-parking-sports-maps` | `248ef407e` | #1992, #1993 |
+| `fix/1992-legend-multi-value-class` | `e5a66b132` | #2004 |
+
+### The images
+
+**Take every "before" from production** (`https://aggiemap.tamu.edu`), which still carries all four faults
+and will until the next production deploy. **Record the bundle hash you saw**, as you did in batch 1 — a
+"before" nobody can date is worth very little. Take every "after" from a local production build of that
+branch. Same viewport for both — 1440x900 — or the pair cannot be compared.
+
+Commit each into `docs/screenshots/<slug>/` **on its own branch**:
+
+| Branch | Slug | Shots |
+| --- | --- | --- |
+| `fix/1991` | `1991-vendor-parking-lots` | Before: a lot clicked, showing the **wrong** popup (the campus "Lot 050" one), and the legend. After: both layers drawn and listed, and a lot's **vendor-notes** popup |
+| `fix/1992` | `1992-accessible-parking-sports-maps` | Before and after on **both** maps: Women's Basketball and Indoor Track — the wheelchair markers and the legend entry, plus Indoor Track's magenta Team Bus Parking area |
+| `fix/2004` branch | `2004-legend-multi-value-class` | Softball's legend, before (the Accessible Parking Spaces entry empty) and after |
+
+The #1991 pair is the important one and the easiest to get wrong: **the lots look right on production**,
+because a hidden map-image layer has drawn them server-side since February. The fault is that they cannot be
+clicked. So a plain screenshot of each map proves nothing — the before must show the wrong popup open.
+
+### The notes and the test rows
+
+Home drafted both in its report 9; use that text. On each branch add to `docs/releases/unreleased.md`:
+
+- its entry under `## Summary`, above the GIS Day entries, with the two images linked as
+  `../screenshots/<slug>/<file>.png`;
+- its row in **What to test on dev**, at the top of that table.
+
+**`docs/testing.md`: add no row and change no number, including the Total.** That rule landed today as
+[#2002](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2002) — three pull
+requests conflicted on that one line in an afternoon, the check never reads the counts, and they are
+refreshed at release from a measured run. None of these three adds a spec anyway.
+
+### Then
+
+Push all three branches and say **"branches ready for PRs"** with each head. Name, for each one, the exact
+image files you committed and the bundle you photographed production at. This machine opens the three pull
+requests from there.
+
+**Don't open anything, don't merge anything, and don't re-run the checks** — batch 2 already proved these
+three together, and the only code change since is the snapshot commit you identified.
+
+### One thing to watch
+
+Your batch 2 build was `nx serve --configuration=production`, which is the dev server with production
+settings rather than the deployed artefact — you said so, which was right. For screenshots that distinction
+matters more than it did for the test run, because the sidebar and gating differ between a dev host and a
+production one. Serve the **built output** (`nx build` then a static server with an SPA fallback), or use
+`local-production` so `127.0.0.1` is treated as production. Say which you did.
