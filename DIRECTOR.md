@@ -7,6 +7,41 @@ directs; every other machine listens.** The maintainer talks to the director. Ev
 every time the branch changes. Which machine directs moves with the maintainer: home when he is at home, work when
 he is at work.
 
+## Read this first: are you in the table below?
+
+**If this session's machine is not a row in [The machines](#the-machines), you are new. Announce yourself
+before doing anything else, and before reading the rest of this file.** Do not look for a `TASKS.md`, do not
+conclude you have no work, and do not stop: a machine nobody can see is the same as a machine that never
+started, and that is the one failure this branch cannot detect.
+
+1. **Work out your name.** The maintainer may have given it in the line he pasted ("This machine is `lab`").
+   If he did not, **ask him for it and for your job**, and say you are new. A Claude Code session is named for
+   its machine alone (`home`, `work`, `lab`); any other agent is `<agent>-<machine>` (`codex-work`). Do not
+   invent a name and do not reuse one already in the table - two sessions sharing a folder overwrite each
+   other's status.
+2. **Create your folder and push it, on this branch, straight away:**
+
+   ```
+   <name>/TASKS.md     # "No batch yet."
+   <name>/STATUS.md    # the headings below, with Running now: None
+   <name>/reports/     # empty
+   ```
+
+   Commit as `<name>: joined` and push to `work-mailbox`. **Push before you do anything else**, even if you
+   were given work in the same breath - the push is what makes you addressable.
+3. **Say what you are** in your `STATUS.md`: your machine, the agent, whether you have Docker, whether you
+   have a `fork` remote you can push branches to, and anything you cannot do. The director picks your batches
+   on that, and will otherwise assume you are like `home`.
+4. **Then listen**: watch `<name>/TASKS.md` and this file. The director adds your row to the table when it
+   sees your commit, and writes your first batch.
+
+**You are a listener, not the director**, unless the first line of this file names you. Listeners never ask the
+maintainer anything - questions go in your report, with options and a recommendation.
+
+**If you cannot push to this branch**, say so to the maintainer immediately and stop. Everything here works by
+pushing; a session that cannot push cannot be given work, and silently failing to push looks exactly like
+having nothing to say.
+
 ## The machines
 
 Each machine has a folder at the top of this branch, named after it, holding its `TASKS.md` (written only by the
@@ -72,9 +107,21 @@ The maintainer pastes the start line on the new machine with its name and job ad
 A second agent on a machine joins the same way with its full name, for example `You are "codex-work", a listener; your
 folder is codex-work/.`
 
-The new machine creates its folder (`lab/TASKS.md` saying "No batch yet", `lab/STATUS.md`, `lab/reports/`),
-pushes them with `lab: joined`, and listens. The director adds its row to the table above when it sees that
-commit, and from then on writes its batches. A machine is a listener unless the first line of this file names it.
+The new machine then does what [Read this first](#read-this-first-are-you-in-the-table-below) says: creates its
+folder (`lab/TASKS.md` saying "No batch yet", `lab/STATUS.md`, `lab/reports/`), pushes them with `lab: joined`,
+and listens. The director adds its row to the table above when it sees that commit, and from then on writes its
+batches. A machine is a listener unless the first line of this file names it.
+
+**The name and job in the start line are a convenience, not a requirement.** A machine pasted the plain start
+line still announces itself - it asks the maintainer for its name first. That is deliberate: on 20 October a new
+machine was set up and never appeared on this branch, and the join procedure being written here, two thirds of
+the way down under a heading that reads like somebody else's business, is the most likely reason. Anything a new
+session must do belongs at the top of the file, addressed to it.
+
+**The director checks for a machine that should have arrived and has not.** There is no signal for it: a session
+that never pushes is indistinguishable from one that was never started, so nobody notices without being told a
+machine was expected. If the maintainer says he has set one up, look for its folder, and if it is not there say
+so plainly rather than assuming it is quietly working.
 
 ## Handing over
 The maintainer tells the **current director**: "hand over to work" (or any machine's name). The director:
