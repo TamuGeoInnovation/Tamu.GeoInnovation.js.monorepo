@@ -104,7 +104,7 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       id: 'lactation-rooms',
       layerId: MAIN_MAP_LAYERS.LACTATION_ROOMS,
       name: 'Lactation Rooms',
-      url: `${connections.inforUrl}/2`,
+      url: connections.lactationRoomsUrl,
       popupComponent: Popups.LactationPopupComponent
     },
     SURFACE_LOTS: {

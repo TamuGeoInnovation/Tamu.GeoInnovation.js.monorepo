@@ -1,7 +1,7 @@
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource } from '@tamu-gisc/common/types';
-import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+import { Connections as AggiemapConnections, getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
 const gisHost = getDefaultGisHost();
 const tsgisHost = getDefaultGisHosts().tsgisHost;
 
@@ -77,7 +77,7 @@ export const Definitions = {
     id: 'lactation-rooms',
     layerId: 'lactation-rooms-layer',
     name: 'Lactation Rooms',
-    url: `${Connections.inforUrl}/2`,
+    url: AggiemapConnections.lactationRoomsUrl,
     popupComponent: Popups.LactationPopupComponent
   },
   VISITOR_PARKING: {

@@ -18,6 +18,24 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### Lactation Rooms shows all 35 rooms, and how to reach each one
+
+The Lactation Rooms layer now reads the hosted service Facilities Analytics & Mapping publishes for it,
+`Hosted/Lactation_Spaces_view`, in place of layer 2 of `FCOR/MapInfo_20190529`: **35 rooms instead of
+21**. Every field has a new name, so the popup was rewritten with it. It shows the building's name and
+number, the room's availability and hours, how to reach it, what it has, and the notes, with their
+contact and links, as text. Before, the notes were put into an "Additional Information" link whose
+address was the notes themselves, and Building Number was always blank: the popup read a field neither
+service has. A room with no amenities listed no longer shows an empty row
+([#1960](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1960)).
+
+The service is on the production GIS server only, where it is public, so dev reads it from there too,
+and dev's smoke tests no longer allow the layer to fail. The UES Operations map uses the same service.
+
+| Before | After |
+| --- | --- |
+| ![The lactation popup on production today: Building Name, an empty Building Number, Availability, and an Additional Information link](../screenshots/1960-lactation-hosted-service/before-production-popup.png) | ![The same room on a local production build of the fix: the building name with its abbreviation, Building 1530, Availability, Hours, Access, Amenities, Notes with a named contact, and two links](../screenshots/1960-lactation-hosted-service/after-local-production-popup.png) |
+
 ### The Layers list is alphabetical again
 
 On ArcGIS 5 a parking map's Layers list could keep the order its layers were added in, instead of
@@ -813,6 +831,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Lactation Rooms from the new hosted service ([#1960](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1960)) | [The main map](https://dev.aggiemap.tamu.edu) | Switch on Lactation Rooms in the Layers list: 35 rooms (21 before). Click one, for example Liberal Arts and Humanities: the popup shows the building name, "Building 0275", Availability and Hours, Access, Amenities and Notes, with the notes' email and links as text and working links, no "Additional Information" link, and no row left empty |
 | GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |
 | Layers list alphabetical again ([#1939](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1939)) | [Campus Main Parking](https://dev.aggiemap.tamu.edu/parking/ts-main-parking), [Service and Loading Zone Parking](https://dev.aggiemap.tamu.edu/parking/service-loading) | Reload each a few times: the Layers list always reads Campus Stops, Construction, Parking Lots, RNS Spaces, Route Stop/Start Points, Visitor Kiosks, and Service Parking Lots, Service Parking Spaces. Other maps' lists are alphabetical too, except Fish Camp, Tailgating and Football, which keep their own order |
 | A `?lot=` link opens the lot on fourteen parking maps ([#1952](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1952)) | [Visitor Parking, lot 100j](https://dev.aggiemap.tamu.edu/parking/visitor-parking/map?lot=100j), [Motorcycle Parking, lot 100j](https://dev.aggiemap.tamu.edu/parking/motorcycle-parking/map?lot=100j) | The popup is the map's own lot, not the main map's: its share link reads `/parking/visitor-parking/...`, not `aggiemap.tamu.edu/?lot=...`. Before the fix the first opened the main map's Lot 100j. The second map already worked and must still. Also check a `?feature=` link copied from a popup still opens the same feature |
