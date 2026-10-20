@@ -80,6 +80,10 @@ yet, so this follows the standing rule only: **a `dev-*` tag needs a clean relea
 this re-run passes, without waiting to read batch 15's comparison; **3A** the Motorcycle Parking lot-link flake is #1969
 (Medium), not a blocker; **4A** `TS_Main/6` is added to #1951 (done). So push this re-run's result the moment it lands.
 
+**Changed at 12:40 AM:** the maintainer checks Release-486 by hand **in the morning** and promotes then if all is
+well, so nothing is promoted tonight. This batch still runs overnight as written (the comparison, then the re-run,
+tag on a clean pass): both results are wanted by morning. No hurry beyond that.
+
 1. **When batch 15's capture and review have finished** (not before: nothing heavy beside it), re-poll the AVP query
    once. If it answers 20 of 20 again, run `test/smoke/aggiemap/run-local.sh development release` on Release-486
    (`8463ac6af`, still on dev; check the bundle is still `main-IORMDVQQ.js`). If it does not, skip the tier and say so.
