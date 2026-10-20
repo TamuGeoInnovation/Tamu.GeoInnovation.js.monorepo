@@ -3,12 +3,16 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**#1974's second half resumed:** `chore/1974-nestjs-12` (local `279d945ba`), its full check, then push.
+**Batch 7 (URGENT): #1981.** Started 10:15 AM Central. Batch 6's rest and #1974 parked (NestJS 12 local `279d945ba`, its
+fix-up agent stopped).
 
-**Batch 6 done** (report 5): production tier 493/1/43 of 537; the one failure is #1969's race; production healthy apart from it.
-PRs 1984 and 1985 open.
-
-**branch ready:** `feat/1975-tailgating-kiosk` (`9bfb6a3e9`, report 1) - its PR is work's, with the images.
+**Cause found, fix committed** (`fix/1981-business-parking-lots`, `cd8def771`, not pushed yet): the service's renderer for
+the lots layer keys on `GIS.TS.ParkingLots.LotType`, which the service does not publish (not in its fields; asking for it as
+an output field answers `400 Failed to execute query`). The lots arrive without it, the renderer has no symbol for them and no
+default, so both layers held their lots (73 and 6, in headless Chromium on production) and drew none. **Not PR 1950.**
+Fix: one fill per layer in the service legend's own colours. Proven live on production in headless Chromium.
+Test red on production: `"Only UB+ Permit Authorized" holds features its renderer draws nothing for`, received 6.
+Now: the check, then green against a local production build, then push.
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
