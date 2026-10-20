@@ -7,8 +7,14 @@
   @include justify-content(space-around);
   @include align-items(flex-end);
   height: 1.7rem;
-  right: 1.5rem;
-  top: 1.5rem;
+  // The padding sits inside the old position, so the bars are drawn exactly where they were. An app
+  // whose text scrolls under the button sets --hamburger-trigger-backdrop to give it a background
+  // (#1980); without it the button stays transparent, as before.
+  padding: 0.6rem;
+  right: 0.9rem;
+  top: 0.9rem;
+  border-radius: 0.5rem;
+  background: var(--hamburger-trigger-backdrop, transparent);
   z-index: 9999;
 }
 

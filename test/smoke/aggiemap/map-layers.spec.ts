@@ -1,0 +1,404 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
+import { expect, test } from './fixtures';
+import { MANIFEST_PATH, MapManifest } from './global-setup';
+import { blockAnalytics } from './analytics';
+
+/**
+ * Every map lists, draws and keys the layers its definition says it has (#1986).
+ *
+ * Three checks, one test per map the environment lists, each read once the map has finished drawing
+ * (`probe.ready` and `probe.drawing === false`, docs/testing-maps.md):
+ *
+ * 1. **Listed.** Every layer the definition lists (`listMode` not `'hide'`) is in the sidebar's Layers
+ *    list. The definitions cannot be imported here (`global-setup.ts` says why), so they are read from
+ *    `declared-layers.generated.json`, which `declared-layers.spec.ts` in `ts-events-ngx` keeps equal to
+ *    them. Each is found on the map by id, then in the list by the title it has there, so a layer that
+ *    never reaches the map is caught too. The main map has no definition there, so every layer its view
+ *    holds that is not hidden from the list must be in it instead.
+ * 2. **Drawn.** Every layer that holds features in the current extent draws at least one of them: the
+ *    features are given to the layer's own renderer until one comes back with a symbol. A layer that is
+ *    on is asked through its layer view, what the map holds; one that is off, as every layer on the main
+ *    map loads, is asked through its service for the same extent, what it would draw if switched on. A layer
+ *    can load, answer every query and hold 73 lots and still draw none of them, which Business Parking
+ *    did on production (#1981): its renderer keyed on a field the service does not publish. A layer
+ *    holding nothing in the current extent is not a failure.
+ *
+ *    At least one, not every one: many parking maps load every space or lot and let the renderer pick
+ *    the ones to draw (Timed Parking drew 4 of the first 25 spaces it held, by design). How many of a
+ *    layer's features have a symbol is recorded in the annotations instead.
+ * 3. **Keyed.** Every layer that is on in the Layers list, and is not kept out of the legend by design
+ *    (`legendEnabled: false`), has a legend entry holding at least one symbol: a row counts only if it
+ *    holds an `img`, `canvas`, `svg` or an element with a background image. Freshman Selectable Parking
+ *    listed both its layers in the legend by name with no symbol under either on production (#1987).
+ *    A layer that failed to load or serves no features at all is left to `maps.spec.ts`. An entry is
+ *    found by its title, or, where the legend gives it none, by a row labelled with the layer's title.
+ *
+ * A map that never finishes drawing fails, saying so, and so does one with no layers at all: a route the
+ * application does not know still renders the shell, and must not pass as a map with nothing switched on.
+ * Maps behind a builder are skipped; `tools/builder-inventory` covers them. Read-only, so safe against
+ * production.
+ */
+
+const manifest: MapManifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
+
+/**
+ * Written by `libs/ts/events/ngx/src/lib/definitions/declared-layers.spec.ts`: by map id, the ids of the
+ * layers each map's Layers list must show.
+ */
+const declared: Record<string, { layerList: boolean; layers: string[] }> = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'declared-layers.generated.json'), 'utf8')
+);
+
+/** Layers this environment is allowed to fail to load (environments.json); not checked here. */
+const ALLOWED_LAYER_FAILURES = (process.env.AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES ?? '')
+  .split(',')
+  .map((entry) => entry.trim())
+  .filter((entry) => entry.length > 0);
+
+/** Features asked for at a time, and the most of one layer's given to its renderer. */
+const PAGE = 100;
+const MOST = 2_000;
+
+/** Layers the legend keys by design without their title, so they cannot be found by it; each with why. */
+const UNTITLED_IN_LEGEND: Record<string, string> = {
+  'Safety First':
+    "legend-collection.component.ts draws the sports parking maps' Safety First layer as its message alone, with no title"
+};
+
+/** The legend is drawn after the map; how long it has to key every layer that is on. */
+const LEGEND_MS = 45_000;
+
+interface MapLayer {
+  title: string;
+  id: string;
+  type: string;
+  /** On, and every group above it on too. */
+  on: boolean;
+  /** Not in a group: what the Layers list shows at its top level. */
+  topLevel: boolean;
+  listMode: string;
+  legendEnabled: boolean;
+  error: string | null;
+  /**
+   * Features of the layer view given to the renderer, and how many came back with a symbol; null where
+   * not asked. Stops early once a symbol is found, so `checked` is not the number held.
+   */
+  checked: number | null;
+  drawn: number | null;
+  /** Why the renderer could not be asked, where it could not. */
+  queryError: string | null;
+}
+
+/** A Layers list item's text is the layer's title, followed by ` - ` and its note where it has one. */
+function isListItemFor(item: string, layer: MapLayer): boolean {
+  return layer.title !== '' && (item === layer.title || item.startsWith(`${layer.title} - `));
+}
+
+interface LegendEntry {
+  title: string;
+  /** Where the entry has no title, its rows' labels. */
+  labels: string[];
+  rows: number;
+  symbols: number;
+}
+
+for (const mapPath of manifest.maps) {
+  test(`${mapPath} lists, draws and keys every layer it shows`, async ({ page }) => {
+    test.setTimeout(330_000);
+    await blockAnalytics(page);
+    await page.goto(mapPath, { waitUntil: 'domcontentloaded' });
+
+    // A builder-gated map never draws until a choice is made; tools/builder-inventory covers those.
+    const settled = await page
+      .waitForFunction(
+        () => {
+          const probe = (window as unknown as Record<string, { ready?: boolean; drawing?: boolean } | undefined>)[
+            '__tamuGiscMapProbe'
+          ];
+
+          return (
+            location.pathname.includes('/builder/') ||
+            (probe?.ready === true && probe.drawing === false && document.querySelector('arcgis-map') !== null)
+          );
+        },
+        null,
+        // Maintenance and Service Parking load every parking space on campus, and finished drawing after
+        // 134 and 147 seconds with five other maps loading beside them on 20 October.
+        { timeout: 240_000, polling: 1_000 }
+      )
+      .then(() => true)
+      .catch(() => false);
+
+    test.skip(page.url().includes('/builder/'), `${mapPath} is behind a builder; tools/builder-inventory covers it`);
+    if (!settled) {
+      const state = await page.evaluate(() => {
+        const probe = (window as unknown as Record<string, { ready?: boolean; drawing?: boolean } | undefined>)[
+          '__tamuGiscMapProbe'
+        ];
+
+        return `ready=${probe?.ready} drawing=${probe?.drawing} map=${document.querySelector('arcgis-map') !== null}`;
+      });
+
+      expect(
+        settled,
+        `${mapPath} never finished drawing within 240 seconds (${state}), so none of its layers was checked`
+      ).toBe(true);
+    }
+
+    const layers: MapLayer[] = await page.evaluate(
+      async ({ pageSize, most }) => {
+        // The few ArcGIS members read here, declared rather than imported: the SDK's types are not
+        // part of this suite (tsconfig.json).
+        interface Graphic {
+          attributes: Record<string, unknown>;
+        }
+        interface Renderer {
+          getSymbolAsync?(graphic: Graphic, options: object): Promise<unknown>;
+        }
+        interface Layer {
+          id: string;
+          title?: string;
+          type: string;
+          visible: boolean;
+          listMode: string;
+          legendEnabled?: boolean;
+          loadError?: { message?: string } | null;
+          renderer?: Renderer;
+          layers?: { toArray(): Layer[] };
+          queryFeatures?(query: object): Promise<{ features: Graphic[] }>;
+        }
+        interface View {
+          scale: number;
+          extent: unknown;
+          spatialReference: unknown;
+          map: { layers: { toArray(): Layer[] } };
+          whenLayerView(layer: Layer): Promise<{
+            queryFeatures(query: object): Promise<{ features: Graphic[] }>;
+          }>;
+        }
+
+        const view = (document.querySelector('arcgis-map') as unknown as { view: View }).view;
+        const out: MapLayer[] = [];
+
+        const walk = async (collection: { toArray(): Layer[] }, parentOn: boolean, topLevel: boolean): Promise<void> => {
+          for (const layer of collection.toArray()) {
+            const on = parentOn && layer.visible;
+            const renderer = layer.renderer;
+            const entry: MapLayer = {
+              title: layer.title ?? '',
+              id: layer.id,
+              type: layer.type,
+              on,
+              topLevel,
+              listMode: layer.listMode,
+              legendEnabled: layer.legendEnabled !== false,
+              error: layer.loadError ? String(layer.loadError.message ?? layer.loadError) : null,
+              checked: null,
+              drawn: null,
+              queryError: null
+            };
+
+            // On, what its layer view holds; off, what its service holds in the same extent.
+            const source = on ? null : layer.queryFeatures ? layer : undefined;
+
+            if (!entry.error && renderer?.getSymbolAsync && source !== undefined) {
+              try {
+                const holder = source ?? (await view.whenLayerView(layer));
+                const extent = source ? { geometry: view.extent } : {};
+                let checked = 0;
+                let drawn = 0;
+
+                // A page at a time, until a symbol has been found in a full page or there is nothing left.
+                for (let start = 0; start < most && !(drawn > 0 && checked >= pageSize); start += pageSize) {
+                  const { features } = await holder.queryFeatures!({
+                    ...extent,
+                    where: '1=1',
+                    outFields: ['*'],
+                    start,
+                    num: pageSize
+                  });
+
+                  for (const graphic of features) {
+                    const symbol = await renderer.getSymbolAsync(graphic, {
+                      scale: view.scale,
+                      spatialReference: view.spatialReference
+                    });
+
+                    checked++;
+                    drawn += symbol ? 1 : 0;
+                  }
+
+                  if (features.length < pageSize) {
+                    break;
+                  }
+                }
+
+                entry.checked = checked;
+                entry.drawn = drawn;
+              } catch (error) {
+                entry.queryError = String((error as Error)?.message ?? error);
+              }
+            }
+
+            out.push(entry);
+
+            if (layer.layers) {
+              await walk(layer.layers, on, false);
+            }
+          }
+        };
+
+        await walk(view.map.layers, true, true);
+
+        return out;
+      },
+      { pageSize: PAGE, most: MOST }
+    );
+
+    const featureCounts: Record<string, number | null> = await page.evaluate(async () => {
+      const probe = (
+        window as unknown as Record<
+          string,
+          { snapshot(): Promise<{ layers: Array<{ id: string; featureCount: number | null }> }> }
+        >
+      )['__tamuGiscMapProbe'];
+
+      return Object.fromEntries((await probe.snapshot()).layers.map((layer) => [layer.id, layer.featureCount]));
+    });
+
+    test.info().annotations.push({
+      type: 'layers',
+      description: layers
+        .map(
+          (l) =>
+            `${l.title || l.id} [${l.type}] on=${l.on} list=${l.listMode} count=${featureCounts[l.id] ?? 'n/a'}` +
+            (l.checked === null ? '' : ` drawn=${l.drawn}/${l.checked}`) +
+            (l.error ? ` error=${l.error}` : '') +
+            (l.queryError ? ` queryError=${l.queryError}` : '')
+        )
+        .join('\n')
+    });
+
+    const tolerated = (l: MapLayer) => ALLOWED_LAYER_FAILURES.includes(l.title) || ALLOWED_LAYER_FAILURES.includes(l.id);
+
+    expect(layers.length, `${mapPath} has no layers at all: it is not a map this suite can check`).toBeGreaterThan(0);
+
+    // 1. Listed: every layer the definition lists is in the Layers list; on a map with no definition (the
+    // main map), every top-level layer its view holds that is not hidden from the list.
+    const definition = declared[mapPath.split(/[/?#]/)[2] ?? ''];
+    const layerList = definition?.layerList ?? true;
+
+    if (layerList) {
+      const listed = (await page.locator('tamu-gisc-layer-list-item .layer-item > p').allTextContents()).map((text) =>
+        text.trim()
+      );
+      const ids = definition?.layers ?? layers.filter((l) => l.topLevel && l.listMode !== 'hide').map((l) => l.id);
+      const missing = ids
+        .filter((id) => !ALLOWED_LAYER_FAILURES.includes(id))
+        .map((id) => ({ id, layer: layers.find((l) => l.id === id) }))
+        .filter(
+          ({ layer }) => layer === undefined || (!tolerated(layer) && !listed.some((item) => isListItemFor(item, layer)))
+        )
+        .map(({ id, layer }) => (layer === undefined ? `${id}: never reached the map` : `${layer.title || id}: not listed`));
+
+      expect
+        .soft(
+          missing,
+          `${mapPath}: layers ${definition ? 'its definition lists' : 'the map holds'} that the Layers list does not`
+        )
+        .toEqual([]);
+    }
+
+    // 2. Drawn: every layer that holds features in this extent, on or off, draws at least one of them.
+    const undrawn = layers
+      .filter((l) => !tolerated(l) && (l.queryError !== null || ((l.checked ?? 0) > 0 && l.drawn === 0)))
+      .map((l) =>
+        l.queryError !== null
+          ? `${l.title || l.id}: its features could not be asked (${l.queryError})`
+          : `${l.title || l.id}: none of the ${l.checked} features it holds${l.on ? '' : ' (off; asked of its service)'} has a symbol`
+      );
+
+    expect.soft(undrawn, `${mapPath}: layers that hold features their renderer draws nothing for`).toEqual([]);
+
+    // 3. Keyed: every layer on in the Layers list has a legend entry with a symbol in it.
+    if ((await page.locator('tamu-gisc-legend').count()) > 0) {
+      const onInList = (await page.locator('tamu-gisc-layer-list-item .layer-item.visible > p').allTextContents()).map(
+        (text) => text.trim()
+      );
+      const expected = onInList.filter((item) => {
+        const layer = layers.find((l) => isListItemFor(item, l));
+
+        // A list item with no map layer behind it is a group heading or similar; nothing to key.
+        return (
+          layer !== undefined &&
+          !(layer.title in UNTITLED_IN_LEGEND) &&
+          layer.legendEnabled &&
+          layer.error === null &&
+          featureCounts[layer.id] !== 0 &&
+          !tolerated(layer)
+        );
+      });
+
+      // Each layer's entry is a top-level collection: its title, its rows' labels where it has no title,
+      // and every row under it, its child layers' included.
+      const scanLegend = async (): Promise<LegendEntry[]> =>
+        await page.evaluate(() => {
+          const holdsSymbol = (row: Element): boolean =>
+            row.querySelector('img, canvas, svg') !== null ||
+            [row, ...Array.from(row.querySelectorAll('*'))].some((el) => {
+              const image = getComputedStyle(el).backgroundImage;
+
+              return image !== '' && image !== 'none';
+            });
+          const text = (el: Element | null) => el?.textContent?.trim().replace(/\s+/g, ' ') ?? '';
+
+          return Array.from(
+            document.querySelectorAll('tamu-gisc-legend .sidebar-component-content-container > tamu-gisc-legend-collection')
+          ).map((collection) => {
+            const title = text(
+              collection.querySelector(':scope > .legend-collection > .collection-group-title .collection-group-title-text')
+            );
+            const rows = Array.from(collection.querySelectorAll('.collection-group-content .legend-info'));
+            const labels = title
+              ? []
+              : Array.from(
+                  collection.querySelectorAll('.legend-info .label, .legend-info .group-title, .element-parent-name')
+                ).map((label) => text(label).replace(/^(expand_more|chevron_right) /, ''));
+
+            return { title, labels, rows: rows.length, symbols: rows.filter(holdsSymbol).length };
+          });
+        });
+
+      const entryFor = (entries: LegendEntry[], title: string): LegendEntry | undefined =>
+        entries.find((entry) => entry.title === title) ??
+        entries.find((entry) => entry.title === '' && entry.labels.includes(title));
+
+      const unkeyed = (entries: LegendEntry[]): string[] =>
+        expected
+          .filter((title) => (entryFor(entries, title)?.symbols ?? 0) === 0)
+          .map((title) => {
+            const entry = entryFor(entries, title);
+
+            return entry ? `${title}: listed with ${entry.rows} rows and no symbol` : `${title}: not in the legend`;
+          });
+
+      let entries = await scanLegend();
+
+      for (const started = Date.now(); unkeyed(entries).length > 0 && Date.now() - started < LEGEND_MS;) {
+        await page.waitForTimeout(1_000);
+        entries = await scanLegend();
+      }
+
+      test.info().annotations.push({
+        type: 'legend',
+        description: entries
+          .map((e) => `${e.title || `(untitled: ${e.labels.join(', ')})`} rows=${e.rows} symbols=${e.symbols}`)
+          .join('\n')
+      });
+
+      expect.soft(unkeyed(entries), `${mapPath}: layers on in the Layers list with no symbol in the legend`).toEqual([]);
+    }
+  });
+}

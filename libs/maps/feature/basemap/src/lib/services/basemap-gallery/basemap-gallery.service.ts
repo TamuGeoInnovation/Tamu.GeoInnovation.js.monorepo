@@ -30,6 +30,52 @@ export const NEARMAP_IMAGERY_PARAM = 'imagery';
 /** Nearmap names each capture's WMS sublayer `area/<area>/survey/<survey>/<date>`. */
 const NEARMAP_SURVEY_NAME = /\/survey\/[^/]+\/(\d{4}-\d{2}-\d{2})$/;
 
+/**
+ * What a Nearmap WMS service offers: its latest imagery, and each capture.
+ *
+ * Nearmap groups an area's captures under one named layer, `area/<area>/all/all-combined`, which draws
+ * the newest capture of every spot. The layer is asked for that group by its one name (#1997).
+ */
+export interface NearmapService {
+  /** The group's name, which draws the latest imagery. */
+  latest: string;
+
+  /** Each capture's sublayer name and extent, as the capabilities list them. */
+  captures: Array<{ name: string; fullExtent: esri.Extent | null | undefined }>;
+}
+
+/**
+ * Reads a loaded Nearmap layer's capabilities: the group that draws its latest imagery, and the captures
+ * in it. `undefined` for a service with no captures, which is then left to draw as ArcGIS chooses.
+ */
+export function readNearmapService(layer: Pick<esri.WMSLayer, 'allSublayers'>): NearmapService | undefined {
+  const captures = layer.allSublayers.filter((sublayer) => NEARMAP_SURVEY_NAME.test(sublayer.name ?? '')).toArray();
+  const latest = (captures[0]?.parent as esri.WMSSublayer | undefined)?.name;
+
+  if (!latest) {
+    return undefined;
+  }
+
+  return { latest, captures: captures.map((sublayer) => ({ name: sublayer.name, fullExtent: sublayer.fullExtent })) };
+}
+
+/**
+ * Has a Nearmap layer draw one named layer of its service: the latest imagery or one capture.
+ *
+ * ArcGIS names every visible leaf sublayer in a GetMap. Left to itself the layer named all 19 campus
+ * captures, which took the request past `esriConfig.request.maxUrlLength` and so made it a POST, and
+ * Nearmap answers a POST with an empty document on some requests: Aerial Imagery opened blank (#1997).
+ * One name is a short GET. Replacing `sublayers` after load is how ArcGIS documents drawing a subset.
+ */
+export function drawNearmapLayer(layer: esri.WMSLayer, name: string): void {
+  if (layer.sublayers.length === 1 && layer.sublayers.getItemAt(0)?.name === name) {
+    return;
+  }
+
+  // ArcGIS turns plain sublayer properties into a WMSSublayer collection; the typings see only the getter.
+  layer.sublayers = [{ name, visible: true }] as unknown as esri.Collection<esri.WMSSublayer>;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -51,12 +97,8 @@ export class BasemapGalleryService {
   /** The ids of the basemaps the panel offers that a 3D scene cannot draw, found as each one loads. */
   private readonly notForScenes = signal<ReadonlySet<string>>(new Set());
 
-  /**
-   * Which sublayers each Nearmap layer showed when it loaded, so "Latest" can put them back.
-   *
-   * By default the layer draws Nearmap's combined mosaic, which is the newest capture of every spot.
-   */
-  private readonly nearmapDefaults = new WeakMap<esri.WMSLayer, Map<esri.WMSSublayer, boolean>>();
+  /** What each Nearmap layer's service offers, read once from its capabilities (see `nearmapService`). */
+  private readonly nearmapServices = new WeakMap<esri.WMSLayer, NearmapService>();
 
   /**
    * The layers turned off when an older capture was chosen, to turn back on at the latest again. Set
@@ -227,7 +269,7 @@ export class BasemapGalleryService {
       instance.view.spatialReference = target;
     }
 
-    await this.whenViewIdle(instance.view);
+    await this.whenBasemapDrawn(instance.view);
   }
 
   /**
@@ -372,37 +414,23 @@ export class BasemapGalleryService {
     this.nearmapLoading.set(true);
 
     try {
-      await layer.load();
+      const service = await this.nearmapService(layer);
+      const capture = date ? (await this.readNearmapCaptures(instance)).find((c) => c.date === date) : undefined;
 
-      const defaults = this.nearmapDefaults.get(layer) ?? new Map<esri.WMSSublayer, boolean>();
-
-      if (!this.nearmapDefaults.has(layer)) {
-        layer.allSublayers.forEach((sublayer) => defaults.set(sublayer, sublayer.visible));
-        this.nearmapDefaults.set(layer, defaults);
+      if (service) {
+        drawNearmapLayer(layer, capture ? capture.name : service.latest);
       }
 
-      const capture = date ? (await this.readNearmapCaptures(instance)).find((c) => c.date === date) : undefined;
-      const target = capture ? layer.allSublayers.find((sublayer) => sublayer.name === capture.name) : undefined;
-
-      if (target) {
-        // Only the chosen capture and the groups it sits in, so the service draws that one survey.
-        const keep = new Set<esri.WMSSublayer>();
-
-        for (let s: esri.WMSSublayer = target; s; s = s.parent as esri.WMSSublayer) {
-          keep.add(s);
-        }
-
-        layer.allSublayers.forEach((sublayer) => (sublayer.visible = keep.has(sublayer)));
+      if (capture) {
         this.hideLayersForCapture(instance.map);
       } else {
-        defaults.forEach((visible, sublayer) => (sublayer.visible = visible));
         this.restoreLayersHiddenForCapture();
       }
 
-      this.nearmapDate.set(target ? capture.date : undefined);
+      this.nearmapDate.set(capture?.date);
       this.setImageryParam(this.nearmapDate());
 
-      await this.whenViewIdle(instance.view);
+      await this.whenBasemapDrawn(instance.view);
     } finally {
       this.nearmapLoading.set(false);
     }
@@ -421,6 +449,14 @@ export class BasemapGalleryService {
     if (this.nearmapDate()) {
       this.nearmapDate.set(undefined);
       this.setImageryParam(undefined);
+    }
+
+    // Whichever way Aerial Imagery arrived - the panel, a saved choice, a link - it opens on the latest
+    // imagery, asked for by one name. A link's capture is drawn after this, once the basemap is showing.
+    const nearmap = this.nearmapLayer(instance);
+
+    if (nearmap) {
+      await this.showNearmapLatest(nearmap);
     }
 
     const captures = this.canChooseNearmapDate ? await this.readNearmapCaptures(instance) : [];
@@ -442,19 +478,20 @@ export class BasemapGalleryService {
   private async readNearmapCaptures(instance: MapServiceInstance): Promise<NearmapCapture[]> {
     const layer = this.nearmapLayer(instance);
 
-    if (!layer) {
+    // Read from the capabilities as they loaded: the layer itself draws only one of them once shown.
+    const service = layer && (await this.nearmapService(layer));
+
+    if (!service) {
       return [];
     }
-
-    await layer.load();
 
     const projectOperator = await this.loadProjectOperator();
 
     const center = instance.view.center;
     const byDate = new Map<string, NearmapCapture>();
 
-    layer.allSublayers.forEach((sublayer) => {
-      const date = NEARMAP_SURVEY_NAME.exec(sublayer.name ?? '')?.[1];
+    service.captures.forEach((sublayer) => {
+      const date = NEARMAP_SURVEY_NAME.exec(sublayer.name)?.[1];
       const extent = sublayer.fullExtent;
 
       if (!date || byDate.has(date)) {
@@ -538,7 +575,45 @@ export class BasemapGalleryService {
     // Remove the type property to prevent read-only property assignment error.
     delete nearmapJSON.type;
 
-    return new Basemap({ ...NearmapCSBasemap, baseLayers: [new WMSLayer({ ...nearmapJSON })] });
+    const layer = new WMSLayer({ ...nearmapJSON });
+
+    // The panel loads this layer for its thumbnail, before it is chosen, so its first image is already
+    // the latest imagery by one name. A capture chosen since then is not undone by a late load.
+    layer
+      .when(() => {
+        if (!this.nearmapDate()) {
+          return this.showNearmapLatest(layer);
+        }
+      })
+      .catch(() => undefined);
+
+    return new Basemap({ ...NearmapCSBasemap, baseLayers: [layer] });
+  }
+
+  /** What a Nearmap layer's service offers, read from its capabilities the first time it is asked. */
+  private async nearmapService(layer: esri.WMSLayer): Promise<NearmapService | undefined> {
+    await layer.load();
+
+    if (!this.nearmapServices.has(layer)) {
+      const service = readNearmapService(layer);
+
+      if (!service) {
+        return undefined;
+      }
+
+      this.nearmapServices.set(layer, service);
+    }
+
+    return this.nearmapServices.get(layer);
+  }
+
+  /** Has a Nearmap layer draw its latest imagery, by one name. */
+  private async showNearmapLatest(layer: esri.WMSLayer): Promise<void> {
+    const service = await this.nearmapService(layer).catch(() => undefined);
+
+    if (service) {
+      drawNearmapLayer(layer, service.latest);
+    }
   }
 
   /** The project operator, loaded: `setBasemap` needs it to move the view between references. */
@@ -564,16 +639,29 @@ export class BasemapGalleryService {
   }
 
   /**
-   * Resolves once the view has finished redrawing.
+   * Resolves once the basemap has finished drawing, or the whole view has, whichever is first.
    *
    * `map.basemap = ...` returns immediately; the tiles arrive afterwards. Callers showing a loading
    * state need the later moment, which is what makes the Aerial Imagery wait visible rather than
    * looking like nothing happened.
+   *
+   * The basemap's own layers, not the whole view: on a development host, changing the view's spatial
+   * reference away from the campus vector tiles can leave an unrelated feature layer updating for good
+   * under ArcGIS 5.1, and the basemap panel's spinner then never stopped (#1997).
    */
-  private async whenViewIdle(view: esri.MapView | esri.SceneView): Promise<void> {
+  private async whenBasemapDrawn(view: esri.MapView | esri.SceneView): Promise<void> {
     const [reactiveUtils] = (await this.mp.require(['reactiveUtils'])) as [esri.reactiveUtils];
+    const layers = view.map?.basemap?.baseLayers.toArray() ?? [];
 
-    await reactiveUtils.whenOnce(() => !view.updating);
+    await reactiveUtils.whenOnce(
+      () =>
+        !view.updating ||
+        layers.every((layer) => {
+          const layerView = view.allLayerViews.find((candidate) => candidate.layer === layer);
+
+          return layerView !== undefined && !layerView.updating;
+        })
+    );
   }
 }
 
