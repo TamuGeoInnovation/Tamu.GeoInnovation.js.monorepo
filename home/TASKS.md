@@ -31,6 +31,26 @@ will get `development` merged in and the total set to 482 before its PR opens.
 Written by the work session **only while another machine directs** (see `DIRECTOR.md`). The home session does each new batch here,
 as `DIRECTOR.md` says for a listener. Development work: branches, agents, pull requests.
 
+## For batch 10, measured here (20 October 2026, 11:50 AM Central)
+
+While opening PR 1990 the work machine ran the DOM legend scan on ten maps, production against a local
+production build of your branch. Three things it learned that batch 10 should not have to rediscover:
+
+- **The routes need `/map/d`**, and the real names are `/parking/visitor-parking`, `/parking/motorcycle-parking`,
+  `/parking/accessible-parking`, `/parking/ts-main-parking`, `/parking/service-loading`. A wrong route does not
+  fail: the SPA fallback serves `index.html`, the page renders, and the scan reports zero layers and zero legend
+  groups, which reads exactly like a map with nothing switched on. **A check for #1986 has to fail on a route it
+  cannot load, not record an empty result.** This caught the work machine out twice before it noticed.
+- **The main map (`/map/d`) shows nothing to a DOM scan**: its layer list is behind the menu, so `.layer-item`
+  does not exist until something opens it. Every event and parking map renders its list on load. So the
+  read-from-the-page approach covers the maps built from definitions and *not* the main map, which is the one
+  with the most layers. Worth weighing when you choose between that and the build-time manifest.
+- **`/parking/service-loading` did not settle** inside 70 seconds on one of the two runs. Whatever #1986 does
+  about a map that does not settle, it should say which, not skip quietly.
+
+The scan itself is `legend-compare.mjs` on the work machine; ask for it in your report rather than writing it
+again. Result, for the record: **0 regressions, 4 groups fixed.**
+
 ## Batch 10 (20 October 2026, 10:45 AM Central) — #1986, the per-map check the maintainer asked for
 
 **Do this after batch 9.** Batch 9 is the fix; this is the check that stops it, #1981 and #1987 all coming

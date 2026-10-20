@@ -8,11 +8,17 @@ Last written **10:18 AM Central, 20 October 2026**. **This machine is the direct
 
 ## Running now
 
-**The full affected check on `chore/1974-nestjs-11-merge`** (PR 1985's branch, merged with `development`),
-started 10:50 AM Central in `C:/TAMU/wt-1974`. A dependency change, so the whole affected set, not a narrow
-list. Nothing is pushed until it passes.
+(nothing) — PRs 1989, 1990 and 1985 are all with the maintainer.
 
 ## Finished
+- **PR [1990](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1990) is open for #1988
+  and #1987** (11:40 AM): home's branch, plus the before and after, the release notes and the *What to test on
+  dev* row taken here. Check `maps-feature-legend,aggiemap-angular` exit 0 with `npm ci` inside it. Then ten
+  maps compared, production against a local production build of the branch: **0 regressions, 4 groups fixed**,
+  posted on the PR. Both issues set to In Progress, PR Pending Approval, `bug` and `critical`.
+- **PR 1985's conflict resolved and pushed** (11:20 AM). Full affected check on the merged branch:
+  **lint 113 projects, test 106, build 14, all green, exit 0**, with `npm ci` run inside it. GitHub now reports
+  the pull request **MERGEABLE**.
 - **PR 1985's conflict resolved here, not yet pushed** (10:50 AM). `development` moved under both open pull
   requests when the maintainer merged PR 1984 (Nx 23.3) and PR 1983 (LiDAR level). On PR 1985 only
   `package.json` and `package-lock.json` conflicted: Nx 23.2.1 against 23.3.0, and `@nestjs/testing` 10.4.22
