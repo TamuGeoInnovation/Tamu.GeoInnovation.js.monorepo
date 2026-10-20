@@ -101,6 +101,13 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
      serves a `main-*.js` other than Release-485's `main-CR5DN6UQ.js`. Push `work: started` first. Name the release in the report.
    - `test/smoke/aggiemap/run-local.sh development release`. Nothing else heavy beside it.
    - Tag `dev-*` on that commit only on a clean pass; #1951's AVP popup failing alone is not clean - report, don't tag.
+3. **After the tier, the full screenshot comparison** (the maintainer's 1A, 8:20 PM; report on: #1949)
+   - Only once task 2 has finished: nothing else heavy beside the tier.
+   - `capture.mjs --env development --as production --release 8463ac6af`, then `review.mjs` against
+     **`prod-2026-10-16-corrected`**, as for `8951a6364` this morning. PR 1950 changes how every map is hosted, so the
+     question is whether any map *looks* different: say every shot above 20%, and for each whether it is the change, a
+     mid-animation capture (re-take it), or the service.
+   - Push the report when it lands, whatever the hour.
 
 ## Batch 13 (prepared 19 October 2026, morning) — pre-merge checks for today's release, as the director asks
 
