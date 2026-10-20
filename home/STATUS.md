@@ -3,11 +3,13 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 5, task 4, second half: #1974, NestJS 11 to 12**, branch `chore/1974-nestjs-12` on top of `chore/1974-nestjs-11`.
-**#1973 is blocked by #1972** (report 3).
+**Batch 6: the release tier against production.** Started about 9:30 AM Central, from `C:\TAMU\wt-prod` at `8463ac6af`.
+Production confirmed: `prod-2026-10-20` resolves to `8463ac6af`; production serves `main-AYJ2SDWT.js` (was `main-TK2R62YY.js`).
+Nothing else heavy on home while it runs: **#1974's second half is parked** (`chore/1974-nestjs-12`, local commit `279d945ba`,
+unchecked, not pushed; its check was stopped).
 
 **branch ready:** `feat/1975-tailgating-kiosk` (`9bfb6a3e9`, report 1), `chore/1972-nx-23-3` (`1ad923945`, report 2),
-`chore/1974-nestjs-11` (`db2f1f339`, report 4). Filed: #1978, #1979 (no priority).
+`chore/1974-nestjs-11` (`db2f1f339`, report 4).
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
