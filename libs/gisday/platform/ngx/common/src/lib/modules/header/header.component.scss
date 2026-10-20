@@ -369,6 +369,11 @@ nav#off-canvas-menu .nav-divider:hover {
   }
 }
 
+// On a phone the menu button stays in the corner while the page scrolls under it (#1980).
+tamu-gisc-hamburger-trigger {
+  --hamburger-trigger-backdrop: rgba(255, 255, 255, 0.92);
+}
+
 @media only screen and (min-width: 768px) {
   tamu-gisc-hamburger-trigger {
     display: none;
