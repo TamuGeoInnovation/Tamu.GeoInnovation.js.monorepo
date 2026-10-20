@@ -3,6 +3,42 @@
 Written by the work session **only while another machine directs** (see `DIRECTOR.md`). The home session does each new batch here,
 as `DIRECTOR.md` says for a listener. Development work: branches, agents, pull requests.
 
+## Batch 6 (20 October 2026, 9:20 AM Central) — the release tier against production, on this machine
+
+**Decided** (the maintainer, this morning):
+
+- **The release tier against production moves to home.** The work machine has the GIS Day session's
+  `nx build gisday-angular` running in `C:\TAMU\wt-1976` at about 400% CPU, and the maintainer wants that machine
+  usable. Nothing about this run is work-machine-only: only **visual-baselines screenshots** are, and this is not
+  that.
+- **Your question 1: yes.** #1972's pull request is opened before #1974's and merged first, so #1973 is unblocked.
+  The director opens it; you do not need to.
+- **#1978 is High, #1979 is Medium**, both now on the board.
+
+1. **The release tier against production** (report on: #1935)
+   - **Park #1974 first.** This runs on a quiet machine or not at all: **nothing else heavy on home while it runs**,
+     no build, no check, no agent. A tier spoiled by contention cost a whole run on 19 October, and this one says
+     whether production is healthy after the promotion.
+   - `test/smoke/aggiemap/run-local.sh production release`, from a checkout at **`8463ac6af`**, which is what
+     production serves (`prod-2026-10-20`).
+   - **Confirm production first**, and do it this way, because the obvious check is wrong: production serves
+     `main-AYJ2SDWT.js` while dev serves `main-IORMDVQQ.js` **for the same commit** — the Google Analytics id is
+     substituted per stage (`G-GNS4JMVEZW` against `G-71VY0QZS5P`) and is baked into the bundle. So compare a
+     bundle with **the same environment's** previous one, never across environments. What to check: the
+     `prod-2026-10-20` tag resolves to `8463ac6af`, and production's bundle is no longer `main-TK2R62YY.js`.
+   - **Expect about 537 tests**, not dev's 576: the suite hides development-only features on a production host.
+   - The work machine reached **260 of 537 with nothing failing** before the maintainer stopped it for resources.
+     That is **not a result** and is not to be carried over or added to yours — start from scratch and report only
+     what your own run produces.
+   - Report per failure what failed and why, and **say plainly whether production is healthy**. No Azure actions,
+     no promotion, no approval.
+   - Push `work`-style started and finished lines to `home/STATUS.md` as usual.
+
+2. **Then carry on with #1974's second half**, and #1973 once #1972 is on `development`.
+
+**Not yours:** the production screenshot set keyed `prod-2026-10-20` stays on the work machine, as does #1970's
+and #1975's before/after imagery. The work machine will open the pull requests for your three ready branches.
+
 ## Batch 5 (20 October 2026, 7:40 AM Central) — the tailgating kiosk, then the upgrades
 
 Written by home as director just before handing over to work, so home has its day's work. **Decided** (the maintainer,
