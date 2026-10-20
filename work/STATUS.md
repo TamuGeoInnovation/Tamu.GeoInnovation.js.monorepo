@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **9:25 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
+Last written **12:20 AM Central, 20 October 2026**. **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
@@ -22,6 +22,24 @@ Clock times here are read from PowerShell or from a commit timestamp, not estima
 | Why | PR 1950 rehosts every map, so the question is whether any map *looks* different |
 
 Nothing else heavy runs beside it. The report goes out whenever it lands.
+
+## Transportation Services' service has recovered — #1951
+
+**20 of 20 at 00:14 Central**, after failing all day. Confirmed independently straight after: **20 of 20** again on
+the AVP lot query, and **10 of 10** on `TS_Main/6`, the other service that flaked during the release tier.
+
+The day's polls, every 15 minutes from 8:50 AM: 11, 12, 12, 14, 13, 12, 14, 13, 12, 13, 13, 11, 13, 14, 12 &mdash;
+then 20.
+
+**What this changes.** The release tier's only failure was that service. A re-run now would very likely be clean,
+and a clean release tier is what the batch made the condition for tagging `8463ac6af`. The flake in
+`search-sources.spec.ts` (`TS_Main/6`) has the same explanation and should also stop.
+
+**Nothing has been started on the strength of it.** The capture for batch 15 is running and nothing heavy runs
+beside it, and a re-run is not in any batch. It is the director's to decide, with two things worth weighing: the
+service was healthy for an hour this morning too before failing again, so one clean round is not proof it will
+hold through a 37-minute tier; and the build has not changed, so a clean re-run would tag the same commit the
+first run covered.
 
 ## A miss of this machine's own, worth recording
 
