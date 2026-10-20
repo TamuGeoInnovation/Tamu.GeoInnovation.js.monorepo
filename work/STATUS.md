@@ -13,6 +13,11 @@ Last written **10:18 AM Central, 20 October 2026**. **This machine is the direct
 sequence, owed since the production deploy. A couple of hours; it resumes if interrupted.
 
 ## Finished
+- **Both urgent fixes merged** (1:45 PM): PR 1989 (`8e505e2fd`) and PR 1990 (`9ee3b97e8`). #1981, #1987 and
+  #1988 all closed by the merges. 1990 needed a fix-up after 1989 landed: `development` merged in, both
+  release-notes entries and both *What to test on dev* rows kept, and `docs/testing.md`'s total set to
+  **482** — the auto-merge would have left it at 481 with two specs added, which nothing would have caught.
+  Re-checked before pushing: `lint, test, build for 2 projects`, exit 0.
 - **PR 1985 merged by the maintainer**, which moved `development` and put both urgent pull requests into
   conflict. Same cause both times: NestJS 11's `package.json` and its new release-notes entry.
   `package.json` and `package-lock.json` merged themselves; only `unreleased.md` clashed, between each

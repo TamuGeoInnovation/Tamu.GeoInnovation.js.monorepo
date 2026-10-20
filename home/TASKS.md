@@ -31,6 +31,22 @@ will get `development` merged in and the total set to 482 before its PR opens.
 Written by the work session **only while another machine directs** (see `DIRECTOR.md`). The home session does each new batch here,
 as `DIRECTOR.md` says for a listener. Development work: branches, agents, pull requests.
 
+## Both urgent fixes are merged (20 October 2026, 1:45 PM Central) — batch 10's window is still open
+
+PR 1989 (#1981) and PR 1990 (#1987, #1988) are both on `development`; all three issues are closed.
+
+**This does not close batch 10's window, and the distinction matters.** Production is still serving
+`prod-2026-10-20` (`8463ac6af`), which predates both fixes, so **both faults are still live on
+aggiemap.tamu.edu** and #1986's check can still be proven red there. That stays true until a production
+deploy, not until the next dev build. Dev loses them as soon as the next dev build goes up.
+
+So: **prove the check against production, and say the bundle hash you saw**, the way the baseline tool records
+one — a tag is a claim, the bundle is the proof. If you prove it against dev instead and dev has already moved,
+the check will pass and prove nothing.
+
+Rebase batch 10's branch on the latest `development` before you go much further: `docs/testing.md`'s total is
+now **482** and both of those fixes added a spec, so a branch cut before today will fight you over that line.
+
 ## For batch 10, measured here (20 October 2026, 11:50 AM Central)
 
 While opening PR 1990 the work machine ran the DOM legend scan on ten maps, production against a local
