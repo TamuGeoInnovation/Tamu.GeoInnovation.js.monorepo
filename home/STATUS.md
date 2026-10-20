@@ -3,11 +3,11 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Nothing. Batch 10 is done (report 8); waiting for the next batch.** #1974's second half and #1973 wait for the director's word.
+**Batch 11: #1991 (Vendor Parking, #1981's cause again), #1992 (Accessible Parking Spaces on the sports maps), #1993 (Indoor
+Track team bus `SPORTS`).** Started 3:30 PM Central. Red first on production with `map-layers.spec.ts`, then green on a local
+production build. Branches named in the report.
 
-**branch ready:** `test/1986-every-map-draws-and-legends` (`b67d27b4c`, merged with development; proven red on production bundle `main-AYJ2SDWT.js`; report 8 and its addendum). Earlier: `fix/1988-legend-numeric-where` (PR 1990),
-`fix/1981-business-parking-lots` (PR 1989), `feat/1975-tailgating-kiosk` (`9bfb6a3e9`, report 1).
-Filed: #1991, #1992, #1993 (no priority).
+Parked: #1974's second half (NestJS 12), #1973 (Vitest 5).
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
