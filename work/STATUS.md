@@ -3,27 +3,38 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **9:00 AM Central, 20 October 2026**. **This machine directs again** (home handed back at 7:40 AM; the maintainer confirmed it). **This machine is a listener again** — it handed the director
+Last written **9:55 AM Central, 20 October 2026**. **This machine directs again** (home handed back at 7:40 AM; the maintainer confirmed it). **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
 **Last batch done: 13. Batch 14 is taken and waiting on its build.**
 
-## Running now
+## PAUSED at the maintainer's instruction
 
-**Nothing. The production release tier was stopped part-way, on the maintainer's instruction**, to give him his
-machine back while he is away from his desk.
+**The AggieMap work on this machine is stopped, 9:55 AM Central, and will not restart until he says so.** He has
+other things to do and wants the machine. **Do not prompt him to resume it.**
+
+Nothing of this session is running: no containers, no tier, no capture, no watcher. This machine is therefore
+**not watching `work-mailbox`**, so a batch pushed here will sit unread until it is told to resume.
+
+**What that means for the director role.** It is still this machine's, but dormant: **home's questions will not be
+answered while this lasts.** Home has enough queued not to be blocked — batch 6 (the production release tier),
+#1974's second half, #1973 once #1972 lands, and the two pull requests it can open itself.
+
+**One container on this machine is not this session's and was left alone:** `nostalgic_kare`, running
+`node /s/survey-1980.js` from `C:/TAMU/wt-1980`, started 8:59 AM. Another window's work on #1980. Stopping another
+session's container without being asked is interference, so it is still running.
+
+## Where the work stopped, so it can be picked up exactly
 
 | | |
 | --- | --- |
-| Reached | **260 of 537 passed, 0 failed** before it was stopped |
-| Why stopped, not paused | `docker pause` frees CPU but not memory, and the container was holding 5.5 GiB. Playwright's timeouts are wall-clock, so unpausing after a long gap would produce spurious timeout failures on the one run that says whether production is healthy |
-| To resume | **re-run from scratch**, about 37 minutes: `run-local.sh production release` from `C:/TAMU/wt-final` |
-| Partial result | **discarded.** 260 of 537 with nothing failing is encouraging but is not a verdict, and must not be reported as one |
+| **#1970** (High), batch 19 | **Before captured** — production shows "Selected Buildings" for motorcycle space 32270, which is the bug. The branch `fix/1970-selection-popup-title` (`32895a0af`) **built cleanly** (exit 0) in `C:/TAMU/wt-1970`. **Next step: serve `dist/apps/aggiemap-angular` with the nginx `try_files` config and capture the after**, then the notes entry, row, and PR |
+| **#1975**, the kiosk | Branch ready on the fork. Needs before/after images, then its PR. Not started |
+| **`prod-2026-10-20` screenshot set** | Step 8 of the release sequence, about three hours. Not started |
 
-**The load on the machine was mostly not this session's.** A `nx build gisday-angular --configuration=local` in
-`C:/TAMU/wt-1976`, from another session, was running at **408% CPU and 3.2 GiB**. The maintainer chose to leave it
-running. This machine did not touch it: pausing another session's container without being asked is interference.
+The nginx config for serving a production build is
+`<scratchpad>/deploy/spa.conf` — a plain static server 404s every deep link without `try_files`.
 
 ## Still owed, when the machine is free
 
