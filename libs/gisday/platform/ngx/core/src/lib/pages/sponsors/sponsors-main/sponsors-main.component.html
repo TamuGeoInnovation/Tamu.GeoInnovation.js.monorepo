@@ -21,6 +21,27 @@
     <p class="sub-section-heading column8">A special thanks to our industry, community, and university partners directly contributing to make TxGIS Day as <i>spatial</i> as it can be.</p>
   </div>
 
+  <!-- LiDAR is the 2026 level above Raster (#1976); shown only in a year that has one. -->
+  @if (lidarSponsors$ | async; as lidar) { @if (lidar.length > 0) {
+  <div class="container12 flex flex-column trailer-1">
+    <div class="large-partition bg-md-grey-50 flex flex-column justify-center align-center">
+      <div class="column8 clr-md-grey-900 trailer-2">
+        <h2 class="trailer-1">LIDAR</h2>
+        <div class="red-line small"></div>
+        <p>Light detection and ranging: pulses of laser light measure distances to the earth's surface, returning a dense cloud of precise three-dimensional points.</p>
+      </div>
+
+      <div class="sponsor-list">
+        <div class="icon-grid">
+          @for (s of lidar; track s) {
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + ($safeNavigationMigration(s?.logos['0']?.path) | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  } }
+
   <div class="container12 flex flex-column trailer-1">
     <div class="large-partition bg-md-grey-50 flex flex-column justify-center align-center mobile-reverse" style="background-image: url(../assets/images/graphics/graphic-raster.png); background-repeat: no-repeat; background-size: cover; background-position: bottom right">
       <div class="column8 clr-md-grey-900 trailer-2">
