@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **8:20 AM Central, 20 October 2026**. **This machine directs again** (home handed back at 7:40 AM; the maintainer confirmed it). **This machine is a listener again** — it handed the director
+Last written **9:00 AM Central, 20 October 2026**. **This machine directs again** (home handed back at 7:40 AM; the maintainer confirmed it). **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
@@ -11,13 +11,25 @@ Clock times here are read from PowerShell or from a commit timestamp, not estima
 
 ## Running now
 
-**Batch 18, task 1: the release tier against production.** Started **8:20 AM Central**.
+**Nothing. The production release tier was stopped part-way, on the maintainer's instruction**, to give him his
+machine back while he is away from his desk.
 
 | | |
 | --- | --- |
-| Production | `prod-2026-10-20` resolving to **`8463ac6af`**, Release-486 |
-| Production serves | `main-AYJ2SDWT.js` |
-| Running | `run-local.sh production release` |
+| Reached | **260 of 537 passed, 0 failed** before it was stopped |
+| Why stopped, not paused | `docker pause` frees CPU but not memory, and the container was holding 5.5 GiB. Playwright's timeouts are wall-clock, so unpausing after a long gap would produce spurious timeout failures on the one run that says whether production is healthy |
+| To resume | **re-run from scratch**, about 37 minutes: `run-local.sh production release` from `C:/TAMU/wt-final` |
+| Partial result | **discarded.** 260 of 537 with nothing failing is encouraging but is not a verdict, and must not be reported as one |
+
+**The load on the machine was mostly not this session's.** A `nx build gisday-angular --configuration=local` in
+`C:/TAMU/wt-1976`, from another session, was running at **408% CPU and 3.2 GiB**. The maintainer chose to leave it
+running. This machine did not touch it: pausing another session's container without being asked is interference.
+
+## Still owed, when the machine is free
+
+1. **The production release tier** (batch 18 task 1) — re-run from scratch.
+2. **The production screenshot set** keyed `prod-2026-10-20` (batch 18 task 2), step 8 of the release sequence.
+3. **Batch 19:** #1970's before/after images, then this machine opens its PR. #1970 is High.
 
 ## Batch 18's start condition was wrong, and is corrected here
 
