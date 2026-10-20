@@ -1,7 +1,7 @@
 # Unreleased
 
-Since the 19 October release: Aerial Imagery no longer opens blank, and GIS Day changes waiting for
-GIS Day's own deploy.
+Since the 19 October release: three AggieMap fixes, and GIS Day changes waiting for GIS Day's own
+deploy.
 
 **The latest release notes are [19 October 2026](2026-10-19.md)**, for the build from `8463ac6af`
 (build 20261019.21, Release-486), on dev and going to production. The `prod-*` tag on `8463ac6af` records
@@ -31,6 +31,43 @@ drawn ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monore
 | --- | --- |
 | ![Aerial Imagery chosen, and the map blank white](../screenshots/nearmap-blank-latest/before-blank.png) | ![Aerial Imagery chosen, and the latest imagery drawn](../screenshots/nearmap-blank-latest/after-latest.png) |
 
+### Layer symbols are back in the legend, where a layer's colours come from a number
+
+On Freshman Selectable Parking the two layers drew, were listed and were switched on, and their legend
+entries showed their names with no symbol beside them. The same was true of any map whose layer takes its
+colours from a numeric field.
+
+The legend asks the service which of a layer's symbols actually have features behind them, so it can leave
+out the ones nothing uses. It built that question with every value in quotation marks, which asks a number
+field to equal a piece of text. Some servers accept that and ours rejects it, and when the question failed
+the legend quietly dropped every row - which is why the heading stayed and everything under it went. A
+value is now quoted only when the layer itself says the field is text, so a lot code like `09400` is still
+treated as text and a `1` is not; and a row whose question fails is kept and reported rather than dropped,
+so a future failure shows up as a wrong legend rather than an empty one
+([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987),
+[#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)).
+
+| Before | After |
+| --- | --- |
+| ![Freshman Selectable Parking on production: both legend headings present with no symbol under either](../screenshots/1988-legend-numeric-where/before-production-legend-empty.png) | ![The same legend with a coloured symbol beside each layer](../screenshots/1988-legend-numeric-where/after-local-build-legend-symbols.png) |
+### Business Parking draws its lots again
+
+The Business Parking map showed its two-hour business spaces but none of the lots. Both lot layers
+loaded and held their lots - 73 surface lots and 6 garages - and drew none of them, and their two legend
+entries were empty. The service's own renderer decides a lot's colour from `GIS.TS.ParkingLots.LotType`,
+a field the service does not publish, so no lot arrived with a value the renderer has a symbol for, and
+the renderer has no fallback. Each layer already asks the service for exactly one of the renderer's two
+groups, so each now draws in the colour the service's legend gives that group: maroon for lots where a UB
+or UB+ permit is authorized, pink for the garages where only UB+ is. The symbols come out of the
+definition again once the service publishes the field ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)).
+
+A new smoke check asks each layer's own renderer for a symbol for the features that layer holds, so a
+layer that loads, answers every query and fills up while drawing nothing fails instead of passing. Every
+other check passed this map.
+
+| Before | After |
+| --- | --- |
+| ![Business Parking on production: the blue two-hour space markers only, and two empty legend entries](../screenshots/1981-business-parking-lots/before-production-no-lots.png) | ![The same map with maroon surface lots, pink garages, and a symbol beside each legend entry](../screenshots/1981-business-parking-lots/after-local-build-lots-drawn.png) |
 ### Not visible: NestJS 10 to 11
 
 The NestJS APIs (UES Operations, GIS Day, OIDC, Mailroom and Geoservices) move from NestJS 10.4.22 to 11.2.7
@@ -566,11 +603,13 @@ Sponsors page gets a LiDAR group above Raster, shown only in a year that has a L
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** build 20261019.21 (Release-486, `8463ac6af`), whose AggieMap rows moved into the [19 October notes](2026-10-19.md). The rows left are GIS Day's, which has no dev site.
+**Currently on dev for testing:** build 20261019.21 (Release-486, `8463ac6af`), whose AggieMap rows moved into the [19 October notes](2026-10-19.md). The Business Parking row below is for the build after it. The rows left are GIS Day's, which has no dev site.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | Aerial Imagery no longer opens blank ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)) | [dev.aggiemap.tamu.edu/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), then choose Aerial Imagery; repeat with a fresh page several times | The imagery draws every time without zooming or touching the slider, and the spinner beside Aerial Imagery stops once it has. The slider still steps back to older dates and forward to Latest. On a phone, ☰ → Basemap → Aerial Imagery draws too |
+| Layer symbols back in the legend ([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987), [#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)) | [dev.aggiemap.tamu.edu/parking/permit-select-freshman](https://dev.aggiemap.tamu.edu/parking/permit-select-freshman) | Both layers have a coloured symbol beside their name in the Legend, not just the name. Then check a few other parking maps - Visitor, Motorcycle, Accessible - and the main map's layers: every legend entry for a switched-on layer has a symbol, and no legend that was right before has lost a row |
+| Business Parking draws its lots ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)) | [dev.aggiemap.tamu.edu/parking/business-parking](https://dev.aggiemap.tamu.edu/parking/business-parking) | Maroon surface lots and pink garages across campus, as well as the blue two-hour space markers. In the Legend, all three entries have a symbol beside them: a blue triangle, a maroon square and a pink square. Switching either lot layer off removes those lots and its legend entry |
 | GIS Day: the LiDAR sponsorship level ([#1976](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1976)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: `/sponsors/tamu` | Five cards, LiDAR last at $4,096 with 6 representatives; choosing it shows its benefits; the other four prices unchanged. On a phone: two cards to a row, "reps", no sideways scrolling. In Admin, Sponsors, the level list offers LiDAR |
 | GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |
 | GIS Day: sponsorship levels match the prospectus ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` and `/sponsors` | Tiles show 1 to 4 representatives; each level's perks include lunches and a ribbon; Raster says 20-minute speaking slot; the extra-representatives note; on `/sponsors`, only "Sponsor through Texas A&M" under Interested in Becoming a Sponsor, parking passes for Line and above, and days dated 16 to 20 November |
