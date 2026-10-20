@@ -3,6 +3,71 @@
 Written by the work session **only while another machine directs** (see `DIRECTOR.md`). The home session does each new batch here,
 as `DIRECTOR.md` says for a listener. Development work: branches, agents, pull requests.
 
+## Batch 10 (20 October 2026, 10:45 AM Central) — #1986, the per-map check the maintainer asked for
+
+**Do this after batch 9.** Batch 9 is the fix; this is the check that stops it, #1981 and #1987 all coming
+back. The maintainer asked for it twice, in his own words:
+
+> we need to add some tests for each map that the layers that it is supposed to draw based on the definition
+> for the map are in fact listed and do in fact draw
+
+> We need to check each of the maps to make sure that the legends show for the layers that are turned on.
+> Again, not sure how this is sneaking through, but we need to update our tests so that we cannot release
+> without legends showing again.
+
+### Don't touch
+
+- **`chore/1974-nestjs-11`** — the work machine has taken over its conflict with Nx 23.3 (PR 1984 merged) and
+  is rebuilding the lock file. Do not push to it.
+- **`fix/1981-business-parking-lots`** — PR 1989, the work machine's.
+
+### What the check has to cover, for every map
+
+Three things, because the three faults we have each slipped past a different one:
+
+1. **Every layer the definition declares is listed** in the sidebar. (Nothing has broken this yet; it is the
+   cheapest of the three and it is what the maintainer asked for first.)
+2. **A layer that is switched on draws something.** #1981: both lot layers loaded, answered every query and
+   held 73 and 6 lots, and drew none, because the service's renderer had no symbol for them.
+   `drawn-symbols.spec.ts`, on #1981's branch, does this for one map — generalise it.
+3. **A layer that is switched on has a legend entry with a symbol in it.** #1987: the entries were there with
+   their names, and empty.
+
+### How to get the declared layers
+
+**Do not import the definitions into the Playwright process.** `global-setup.ts` already records why: it pulls
+the Angular dependency graph in, which fails first on the JIT compiler and then on bundler-only module
+resolution. Two ways that do work, and the first is likely better:
+
+- **A build-time step** that writes the declared layers per route to a generated JSON file, the way
+  `map-manifest.generated.json` is already produced, and the spec reads that file.
+- **Read it from the running app** through the probe or the DOM, which is what the suite does today. This
+  checks "listed and drawn and in the legend" but cannot catch a layer the definition declares that never
+  reaches the sidebar at all — point 1 above.
+
+Say which you chose and why.
+
+### Prove it red before the fixes land
+
+This is the part with a deadline. **#1987 is still live on production and #1981's fix is not deployed yet**,
+so production currently carries two real faults for this check to find. Once they ship, proving the check
+would mean reconstructing the broken state by hand. So: **run it against production and record what it says,
+before anything merges.** If the work machine has to run it, say so in your report and it will.
+
+The work machine already has a DOM-level legend scan written for exactly this
+(`.layer-item.visible`, `.collection-group-title-text`, `.collection-group-content`,
+`tamu-gisc-legend-element`, a row counting only if it holds an `img`, `canvas`, `svg` or a background image).
+Ask for it in your report rather than writing it again.
+
+### The rest
+
+One branch, `test/1986-every-map-draws-and-legends`, from the latest `development`. `Closes #1986`. A row in
+`docs/testing.md` with the count, as `drawn-symbols.spec.ts` has. **No pull request**: say "branch ready" and
+the work machine opens it.
+
+If this turns out to be more than one batch of work, do the legend half first — that is the one with a live
+fault to prove it against — and say so.
+
 ## Batch 9 (20 October 2026, 12:10 PM Central) — #1987, and you already found its cause
 
 **This machine is idle and #1987 is High and untouched.** Batch 8 was pushed at 10:40 AM and your `STATUS.md`
