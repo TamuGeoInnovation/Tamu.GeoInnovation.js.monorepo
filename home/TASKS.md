@@ -3,6 +3,66 @@
 Written by the work session **only while another machine directs** (see `DIRECTOR.md`). The home session does each new batch here,
 as `DIRECTOR.md` says for a listener. Development work: branches, agents, pull requests.
 
+## Batch 7 (20 October 2026, 10:10 AM Central) — URGENT: #1981, the Business Parking map
+
+**Stop everything else and do this first** (the maintainer, just now). **Batch 6 is paused**, including the
+production release tier: park it where it is and come back to it when #1981 is fixed and out. Park #1974 too.
+
+**[#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981), labelled `critical`:
+the Business Parking map draws its UB spaces but not its two lot layers.** It should show the spaces *and* the
+lots in maroon and pink. It is live on production now.
+
+### What the work machine already established — don't redo it
+
+**The service is healthy. This is ours.** Every definition expression in `business-parking.definitions.ts`
+returns data, asked of `TS_Events/BusinessParking/MapServer` directly:
+
+| Layer in the definition | Query | Rows |
+| --- | --- | --- |
+| UB 2 Hour Spaces, layer 0 | `Spc_Type = 'UB'` | **58** |
+| UB and UB+ Authorized, layer 1 | `UB_Lot = 1 AND LotType IN ('Street','Surface','Surface Visitor')` | **90** |
+| Only UB+ Authorized, layer 1 | `UB_Lot = 1 AND LotType IN ('Garage','Garage Visitor')` | **7** |
+
+The service has exactly two layers: `0 Marked Business Spaces`, `1 University Business Parking Lots`. Split
+apart, `UB_Lot = 1` alone returns 97 and each `LotType` list returns its 90 and 7. So the data is there and the
+filters are right.
+
+**Production's console names the two missing layers, in the legend code:**
+
+```
+Error querying layer for legend item: {label: UB Permit and UB+ Permit Authorized,
+  value: 1,Street, 1,Surface, 1,Surface Visitor, symbol: SimpleFillSymbol, preview: div}
+Error querying layer for legend item: {label: Only UB+ Permit Authorized,
+  value: 1,Garage, 1,Garage Visitor, symbol: SimpleFillSymbol, preview: div}
+```
+
+plus a `404` on some resource. Note the `value:` — the definition expression is being taken apart into a list of
+values, which is the shape of a legend or renderer lookup, not of a layer failing to load.
+
+**A hypothesis, not a conclusion:** these two layers are the only ones on this map that **share a service layer
+URL** (`/1`) and are distinguished only by their `definitionExpression`. Something that keys off the URL — the
+legend's per-layer query, or the renderer lookup — may be collapsing them or failing on the pair. Prove or discard
+it; don't assume it.
+
+**Likely suspects by date:** PR 1950 (`<arcgis-map>`, rehosts every map) and the recent legend work (#1939, the
+layer-order fix; #1857, the legend listing). Check whether an older build draws the lots before blaming any of
+them — that is the fastest way to localise it.
+
+### What to do
+
+1. **Find the cause and say what it is**, with evidence, before writing a fix.
+2. **A test proven red first**, as always. Say what it printed when it failed.
+3. Branch `fix/1981-business-parking-lots`, from the latest `development`. Report on #1981.
+4. **No pull request and no screenshots** — this map is visible, so the work machine captures the before and after
+   and opens the PR, as for #1960 and #1954. Say "branch ready" and the work machine takes it.
+5. If the cause turns out to be PR 1950 and the fix is not quick, **say so immediately** rather than working on:
+   that is a revert decision for the maintainer, and it is already on production.
+
+### After it is out
+
+A second issue follows for the gap that let this through: **every map should have a check that the layers its
+definition says it draws are listed and do in fact draw**. The work machine is filing it; it is not this batch.
+
 ## Batch 6 (20 October 2026, 9:20 AM Central) — the release tier against production, on this machine
 
 **Decided** (the maintainer, this morning):
