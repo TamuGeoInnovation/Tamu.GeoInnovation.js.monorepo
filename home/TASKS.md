@@ -67,6 +67,70 @@ production build of your branch. Three things it learned that batch 10 should no
 The scan itself is `legend-compare.mjs` on the work machine; ask for it in your report rather than writing it
 again. Result, for the record: **0 regressions, 4 groups fixed.**
 
+## Batch 12 (20 October 2026, 6:05 PM Central) — #2008: the settle limit measures the wrong thing
+
+Batch 11 was excellent work and all three branches are in flight here. This is small and closes a loop the
+new lab machine opened.
+
+### What happened
+
+`/parking/maintenance-parking` failed `map-layers.spec.ts`'s 240-second settle limit on two machines under
+six workers, and passed when run alone. A third machine joined today with 24 CPUs and 64 GB, and
+**[#2008](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2008)** was given to it
+precisely because 6 workers is not contention there. Its answer:
+
+| Run | Workers | Maintenance Parking |
+| --- | --- | --- |
+| whole spec | 6 | passed, 41.5 s |
+| whole spec, repeat | 6 | passed, 46.6 s |
+| that map alone | - | passed, 43.4 s |
+
+Against 134 s and 147 s on the loaded machines. Five other maps loading beside it made no measurable
+difference. **So the 240-second number measures how much CPU the machine has to spare, not how long the map
+takes to draw.** The maintainer has agreed the fix.
+
+### The fix
+
+Tag Maintenance Parking and Service Parking (`/parking/service-loading`) as **`@heavy`** in
+`map-layers.spec.ts`. That mechanism already exists from
+[#1716](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1716): heavy tests run
+after everything else, two at a time, so they are not settling against five other map loads. The 240-second
+limit then stays a real "this map has become slow" signal instead of being padded into a guess about the
+machine.
+
+Those two maps are the ones that load every parking space on campus - the
+[#1897](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1897) family. If you find
+others in the spec with the same shape, say so rather than tagging them on a hunch.
+
+**Do not raise the limit**, and do not scale it by worker count: both turn a measurement into a guess, and
+the point of this change is that the limit should mean something.
+
+### Proving it
+
+The honest difficulty is that this is a fix to a failure that only appears under load, so "it passes now"
+proves little on an idle machine. What *can* be shown:
+
+- the two tests are tagged and the heavy lane picks them up — the run reports them running after the rest;
+- the whole spec still passes on a local production build;
+- the run's wall-clock time, before and after, so a reviewer can see what tagging two tests costs.
+
+If you can reproduce the original failure by loading your machine deliberately, that is better evidence than
+any of the above and worth the extra few minutes. If you cannot, say so plainly in the report rather than
+implying the fix is proven.
+
+### The rest
+
+Branch `test/2008-heavy-space-maps` from the latest `development`. `Closes #2008`. **No pull request** — say
+"branch ready" and this machine opens it. `docs/testing.md`: **add no row and change no number**, including
+the Total. That rule landed today as
+[#2002](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2002): three pull requests
+conflicted on that one line in an afternoon, the check never reads the counts, and they are refreshed at
+release from a measured run.
+
+### Still parked
+
+#2007 (replace `lotFill` with `symbolFromServiceClass`, Low), #1974's second half (NestJS 12) and #1973.
+
 ## Batch 11 (20 October 2026, 3:25 PM Central) — #1991, #1992, #1993: the three your own check found
 
 Batch 10 did what it was asked to and then some: `map-layers.spec.ts` found three faults on public maps that
