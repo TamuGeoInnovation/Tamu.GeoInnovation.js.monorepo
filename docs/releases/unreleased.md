@@ -1,6 +1,6 @@
 # Unreleased
 
-Since the 19 October release: no AggieMap change yet, and GIS Day changes waiting for GIS Day's own
+Since the 19 October release: two AggieMap fixes, and GIS Day changes waiting for GIS Day's own
 deploy.
 
 **The latest release notes are [19 October 2026](2026-10-19.md)**, for the build from `8463ac6af`
@@ -35,6 +35,24 @@ so a future failure shows up as a wrong legend rather than an empty one
 | Before | After |
 | --- | --- |
 | ![Freshman Selectable Parking on production: both legend headings present with no symbol under either](../screenshots/1988-legend-numeric-where/before-production-legend-empty.png) | ![The same legend with a coloured symbol beside each layer](../screenshots/1988-legend-numeric-where/after-local-build-legend-symbols.png) |
+### Business Parking draws its lots again
+
+The Business Parking map showed its two-hour business spaces but none of the lots. Both lot layers
+loaded and held their lots - 73 surface lots and 6 garages - and drew none of them, and their two legend
+entries were empty. The service's own renderer decides a lot's colour from `GIS.TS.ParkingLots.LotType`,
+a field the service does not publish, so no lot arrived with a value the renderer has a symbol for, and
+the renderer has no fallback. Each layer already asks the service for exactly one of the renderer's two
+groups, so each now draws in the colour the service's legend gives that group: maroon for lots where a UB
+or UB+ permit is authorized, pink for the garages where only UB+ is. The symbols come out of the
+definition again once the service publishes the field ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)).
+
+A new smoke check asks each layer's own renderer for a symbol for the features that layer holds, so a
+layer that loads, answers every query and fills up while drawing nothing fails instead of passing. Every
+other check passed this map.
+
+| Before | After |
+| --- | --- |
+| ![Business Parking on production: the blue two-hour space markers only, and two empty legend entries](../screenshots/1981-business-parking-lots/before-production-no-lots.png) | ![The same map with maroon surface lots, pink garages, and a symbol beside each legend entry](../screenshots/1981-business-parking-lots/after-local-build-lots-drawn.png) |
 ### Not visible: NestJS 10 to 11
 
 The NestJS APIs (UES Operations, GIS Day, OIDC, Mailroom and Geoservices) move from NestJS 10.4.22 to 11.2.7
@@ -570,11 +588,12 @@ Sponsors page gets a LiDAR group above Raster, shown only in a year that has a L
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** build 20261019.21 (Release-486, `8463ac6af`), whose AggieMap rows moved into the [19 October notes](2026-10-19.md). The rows left are GIS Day's, which has no dev site.
+**Currently on dev for testing:** build 20261019.21 (Release-486, `8463ac6af`), whose AggieMap rows moved into the [19 October notes](2026-10-19.md). The Business Parking row below is for the build after it. The rows left are GIS Day's, which has no dev site.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | Layer symbols back in the legend ([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987), [#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)) | [dev.aggiemap.tamu.edu/parking/permit-select-freshman](https://dev.aggiemap.tamu.edu/parking/permit-select-freshman) | Both layers have a coloured symbol beside their name in the Legend, not just the name. Then check a few other parking maps - Visitor, Motorcycle, Accessible - and the main map's layers: every legend entry for a switched-on layer has a symbol, and no legend that was right before has lost a row |
+| Business Parking draws its lots ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)) | [dev.aggiemap.tamu.edu/parking/business-parking](https://dev.aggiemap.tamu.edu/parking/business-parking) | Maroon surface lots and pink garages across campus, as well as the blue two-hour space markers. In the Legend, all three entries have a symbol beside them: a blue triangle, a maroon square and a pink square. Switching either lot layer off removes those lots and its legend entry |
 | GIS Day: the LiDAR sponsorship level ([#1976](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1976)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: `/sponsors/tamu` | Five cards, LiDAR last at $4,096 with 6 representatives; choosing it shows its benefits; the other four prices unchanged. On a phone: two cards to a row, "reps", no sideways scrolling. In Admin, Sponsors, the level list offers LiDAR |
 | GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |
 | GIS Day: sponsorship levels match the prospectus ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` and `/sponsors` | Tiles show 1 to 4 representatives; each level's perks include lunches and a ribbon; Raster says 20-minute speaking slot; the extra-representatives note; on `/sponsors`, only "Sponsor through Texas A&M" under Interested in Becoming a Sponsor, parking passes for Line and above, and days dated 16 to 20 November |
