@@ -121,7 +121,10 @@ describe('DiscoveryService', () => {
     it.each(['dining', 'football-tailgating'])('lists %s only in the Kiosk Maps section', (id) => {
       expect(service.getKioskDiscoverApplications().map((app) => app.id)).toContain(id);
       expect(service.getInternalDiscoverApplications({ includeRetired: true }).map((app) => app.id)).not.toContain(id);
-      expect(service.getAllDiscoverApplications().map((app) => app.id)).not.toContain(id);
+      // Internal only: an unrelated external "Dining" experiment shares the dining kiosk's id.
+      const listed = service.getAllDiscoverApplications().filter((app) => app.source === 'internal');
+
+      expect(listed.map((app) => app.id)).not.toContain(id);
     });
   });
 });
