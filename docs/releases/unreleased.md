@@ -509,6 +509,31 @@ sign-in. In it, one local sponsor (Esri) is switched off; the public page beside
 | ![Production Sponsors page before: every sponsor shown, with no way to hide one](../screenshots/1962-sponsor-active/before-public-sponsors.png) | ![The admin Sponsors list with an Active column, Esri unticked](../screenshots/1962-sponsor-active/after-admin-sponsor-list.png) |
 | | ![The public Sponsors page without the switched-off sponsor](../screenshots/1962-sponsor-active/after-public-sponsors.png) |
 
+### GIS Day: a fifth sponsorship level, LiDAR
+
+The 2026 prospectus adds a level above Raster, and the sponsor page (`/sponsors/tamu`) now shows it
+([#1976](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1976)):
+- **The card:** LiDAR, $4,096, with 6 representatives included and its own icon, redrawn as an SVG pair
+  (plain and colour) from the prospectus's icon, like the other four.
+- **Its benefits:** everything in Raster, plus a white-glove program, recruiting, hospitality, reception
+  host recognition, premier conference recognition, conference opportunities, pre-conference and
+  post-event items, and parking.
+- **The other levels' prices** are unchanged: Point $256, Line $512, Polygon $1,024, Raster $2,048.
+
+**At phone width** the five cards wrap two to a row and say "reps" for "representatives". Before,
+four cards were squeezed into one row and their lines ran into each other. The phone width comes from
+the shared `ResponsiveService`. The rest of the site at phone width is
+[#1980](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1980).
+
+**Recording a LiDAR sponsor:** it can be chosen as a level on the admin sponsor form. The public
+Sponsors page gets a LiDAR group above Raster, shown only in a year that has a LiDAR sponsor.
+
+| Before | After |
+| --- | --- |
+| ![Four level cards, Raster chosen](../screenshots/1976-lidar-level/before-sponsor-levels.png) | ![Five level cards with LiDAR chosen and its benefits](../screenshots/1976-lidar-level/after-lidar.png) |
+| | ![Raster's benefits unchanged beside the new card](../screenshots/1976-lidar-level/after-raster.png) |
+| | ![At phone width: two cards to a row, "reps"](../screenshots/1976-lidar-level/after-phone.png) |
+
 ---
 
 ## What to test on dev
@@ -522,6 +547,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| GIS Day: the LiDAR sponsorship level ([#1976](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1976)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: `/sponsors/tamu` | Five cards, LiDAR last at $4,096 with 6 representatives; choosing it shows its benefits; the other four prices unchanged. On a phone: two cards to a row, "reps", no sideways scrolling. In Admin, Sponsors, the level list offers LiDAR |
 | GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |
 | GIS Day: sponsorship levels match the prospectus ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` and `/sponsors` | Tiles show 1 to 4 representatives; each level's perks include lunches and a ribbon; Raster says 20-minute speaking slot; the extra-representatives note; on `/sponsors`, only "Sponsor through Texas A&M" under Interested in Becoming a Sponsor, parking passes for Line and above, and days dated 16 to 20 November |
 | GIS Day: more than one organization's site, starting with UCGIS ([#1835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1835), [#1837](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1837)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [txgisday.org](https://txgisday.org); the UCGIS site once it is deployed | txgisday.org is unchanged: the same menus, footer, logo, tab title and icon, and the About page's committee and resume bank. On the UCGIS site: UCGIS GIS Day and its logo; no Sponsor, Competitions or FAQ menu; no Classes, Check-ins or Student Competitions on the profile; no check-in on an event page; and `/faq`, `/sponsors` and `/competitions` go to the homepage |

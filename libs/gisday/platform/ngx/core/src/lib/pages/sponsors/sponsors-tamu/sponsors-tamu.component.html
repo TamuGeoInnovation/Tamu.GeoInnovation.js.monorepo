@@ -14,7 +14,7 @@
           <img src="../assets/images/icons/location-color.svg" class="active" />
           <br />
           <p class="point">$256</p>
-          <p>1 representative</p>
+          <p>1 {{ isMobile() ? 'rep' : 'representative' }}</p>
           <p class="cta">View perks</p>
         </div>
         <div class="swap-content-toggle plaque active" rank="line" (click)="changeRank('line')">
@@ -24,7 +24,7 @@
           <img src="../assets/images/icons/connection-color.svg" class="active" />
           <br />
           <p class="line">$512</p>
-          <p>2 representatives</p>
+          <p>2 {{ isMobile() ? 'reps' : 'representatives' }}</p>
           <p class="cta">View perks</p>
         </div>
         <div class="swap-content-toggle plaque active" rank="polygon" (click)="changeRank('polygon')">
@@ -34,7 +34,7 @@
           <img src="../assets/images/icons/polygon-color.svg" class="active" />
           <br />
           <p class="poly">$1,024</p>
-          <p>3 representatives</p>
+          <p>3 {{ isMobile() ? 'reps' : 'representatives' }}</p>
           <p class="cta">View Perks</p>
         </div>
         <div class="swap-content-toggle plaque active" rank="raster" (click)="changeRank('raster')">
@@ -44,7 +44,17 @@
           <img src="../assets/images/icons/grid-color.svg" class="active" />
           <br />
           <p class="raster">$2,048</p>
-          <p>4 representatives</p>
+          <p>4 {{ isMobile() ? 'reps' : 'representatives' }}</p>
+          <p class="cta">View Perks</p>
+        </div>
+        <div class="swap-content-toggle plaque active" rank="lidar" (click)="changeRank('lidar')">
+          <h2>LiDAR</h2>
+          <div class="border"></div>
+          <img src="../assets/images/icons/lidar.svg" class="default" />
+          <img src="../assets/images/icons/lidar-color.svg" class="active" />
+          <br />
+          <p class="lidar">$4,096</p>
+          <p>6 {{ isMobile() ? 'reps' : 'representatives' }}</p>
           <p class="cta">View Perks</p>
         </div>
       </div>
@@ -285,6 +295,87 @@
                 <li>Recognition as Raster Sponsor on social media pages pending your company approval</li>
                 <li>Your organization's speakers featured on website (txgisday.org) pending your company approval</li>
                 <li>One dedicated email sent to registered attendees on your organization's behalf ahead of the event</li>
+              </ul>
+            </div>
+
+            <div class="category">
+              <p>Logistical Benefits</p>
+              <ul>
+                <li>Complimentary parking on campus each day</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-block lidar" rank="lidar">
+          <p>As a LiDAR sponsor, with 6 representatives included, enjoy everything in Raster, plus the following benefits:</p>
+
+          <div class="category-container">
+            <div class="category">
+              <p>White-Glove Program</p>
+              <ul>
+                <li>A dedicated TxGIS Day host builds your full-week schedule of one-on-one meetings with faculty, department leadership, research groups, student organizations, and other participating industry and agency representatives, plus lab and campus visits</li>
+                <li>Your itinerary is finalized with you before you arrive</li>
+              </ul>
+            </div>
+
+            <div class="category">
+              <p>Recruiting Opportunities</p>
+              <ul>
+                <li>A private interview room reserved for the whole week</li>
+                <li>Pre-event introductions to students by specialty, with their opt-in</li>
+                <li>Early access to the TxGIS Day R&eacute;sum&eacute; Bank</li>
+                <li>Post-event attendee list with opt-in contact emails</li>
+              </ul>
+            </div>
+
+            <div class="category">
+              <p>Hospitality</p>
+              <ul>
+                <li>Six complimentary lunch reservations for attending representatives</li>
+                <li>A private lunch or dinner with faculty and department leadership</li>
+                <li>Reserved seating at each reception</li>
+              </ul>
+            </div>
+
+            <div class="category">
+              <p>Reception Recognition</p>
+              <ul>
+                <li>Host recognition at one evening reception, with welcome remarks from your organization</li>
+              </ul>
+            </div>
+
+            <div class="category">
+              <p>Conference Recognition</p>
+              <ul>
+                <li>Premier placement of logo on the conference program cover, main-stage signage, and conference T-shirts</li>
+                <li>Premium exhibit table location at the Career &amp; Resources Fair</li>
+              </ul>
+            </div>
+
+            <div class="category">
+              <p>Conference Opportunities</p>
+              <ul>
+                <li>Keynote-level featured talk of up to one hour</li>
+                <li>A dedicated workshop or student masterclass</li>
+                <li>Reserved panelist seats on both lunch panels</li>
+                <li>Naming of one student research award</li>
+              </ul>
+            </div>
+
+            <div class="category">
+              <p>Pre-conference Recognition</p>
+              <ul>
+                <li>A feature story on the TxGIS Day website (txgisday.org) and social media pages, pending your company approval</li>
+                <li>One dedicated email sent to registered attendees on your organization's behalf ahead of the event</li>
+              </ul>
+            </div>
+
+            <div class="category">
+              <p>Post-event</p>
+              <ul>
+                <li>A written impact summary of your engagement: meetings held, students reached, and attendance</li>
+                <li>A seat in planning conversations for the next TxGIS Day</li>
               </ul>
             </div>
 

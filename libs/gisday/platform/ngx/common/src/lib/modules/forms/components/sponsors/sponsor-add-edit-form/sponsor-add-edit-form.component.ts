@@ -41,6 +41,10 @@ export class SponsorAddEditFormComponent implements OnInit {
 
   public sponsorshipLevelsDict = [
     {
+      value: 'lidar',
+      label: 'LiDAR'
+    },
+    {
       value: 'raster',
       label: 'Raster'
     },

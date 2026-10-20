@@ -22,6 +22,7 @@ export class SponsorsMainComponent implements OnInit {
   public isPastSeason$: Observable<boolean>;
 
   private _sponsors$: Observable<Array<Partial<Sponsor>>>;
+  public lidarSponsors$: Observable<Array<Partial<Sponsor>>>;
   public rasterSponsors$: Observable<Array<Partial<Sponsor>>>;
   public polygonSponsors$: Observable<Array<Partial<Sponsor>>>;
   public lineSponsors$: Observable<Array<Partial<Sponsor>>>;
@@ -44,6 +45,7 @@ export class SponsorsMainComponent implements OnInit {
       map(activeSponsors),
       shareReplay(1)
     );
+    this.lidarSponsors$ = this._sponsors$.pipe(this.filterSponsors('lidar'));
     this.rasterSponsors$ = this._sponsors$.pipe(this.filterSponsors('raster'));
     this.polygonSponsors$ = this._sponsors$.pipe(this.filterSponsors('polygon'));
     this.lineSponsors$ = this._sponsors$.pipe(this.filterSponsors('line'));
