@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **1:35 AM Central, 20 October 2026**. **This machine is a listener again** — it handed the director
+Last written **8:05 AM Central, 20 October 2026**. **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
@@ -11,10 +11,31 @@ Clock times here are read from PowerShell or from a commit timestamp, not estima
 
 ## Running now
 
-Nothing, and **nothing is expected to run until production is promoted.** Batch 17 is answers only: when `prod-*`
-is pushed, a batch will ask for the release tier against production.
+**Batch 18 is taken and waiting on the production deploy.** Nothing is running.
 
-**Last batch done: 17.** The branch watcher is running, as `DIRECTOR.md` requires of a listener.
+| | |
+| --- | --- |
+| Start when | a `prod-*` tag on origin resolves to **`8463ac6af`** *and* production serves **`main-IORMDVQQ.js`** |
+| Now | newest prod tag is `prod-2026-10-16` on `264eebb42`; production serves `main-TK2R62YY.js` |
+| Then | `run-local.sh production release`, nothing else heavy beside it |
+| After that | a production screenshot set keyed by the new `prod-*` tag, as step 8 of the release sequence |
+
+The waiter checks **both** conditions. A tag on its own records intent while the deploy may still be in flight,
+and a changed bundle on its own is not proof either — on Release-485 dev served a new hash while Azure still
+said `inProgress`.
+
+**Last batch done: 17.**
+
+## A container of this machine's was left running for ten hours
+
+A Playwright container started at **3:10 PM yesterday** — a console-error capture that timed out and was
+abandoned — **was still running at 8 AM today**, holding about 500 MB and a browser at roughly 1% CPU. It has been
+removed, and no other stray is left.
+
+**It was up during last night's release tier, the 848-shot capture and the re-run.** At about 1% CPU its effect
+was almost certainly nil, and the re-run came back clean, so no result is being withdrawn. But it is exactly the
+thing the "nothing heavy beside a run" rule exists to prevent, and this machine did not notice it for ten hours.
+What was missing is a check for strays **before** starting a long run, not only after.
 
 ## Every question this machine raised is now answered
 
