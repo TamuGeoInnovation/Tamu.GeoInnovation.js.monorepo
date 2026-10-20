@@ -153,7 +153,9 @@ async function finishesDrawing(page: Page, link: string): Promise<void> {
     .toBe(true);
 }
 
-test("the football tailgating kiosk draws its own layers, none of the main map's, and finishes drawing", async ({ page }) => {
+test("the football tailgating kiosk draws its own layers, none of the main map's, and finishes drawing", async ({
+  page
+}) => {
   const layers = await openKiosk(page, TAILGATING_KIOSK_ROUTE, TAILGATING_KIOSK_LAYER_IDS);
 
   for (const id of TAILGATING_KIOSK_LAYER_IDS) {
@@ -195,7 +197,8 @@ for (const { link, title } of TAILGATING_KIOSK_LINKS) {
               const probe = (
                 window as unknown as Record<string, { ready?: boolean; snapshot: () => Promise<{ layers: ProbeLayer[] }> }>
               )[name];
-              const layer = probe?.ready === true ? (await probe.snapshot()).layers.find((l) => l.id === selection) : undefined;
+              const layer =
+                probe?.ready === true ? (await probe.snapshot()).layers.find((l) => l.id === selection) : undefined;
 
               return Object.values(layer?.graphicTypes ?? {}).reduce((sum, count) => sum + count, 0);
             },
@@ -207,7 +210,10 @@ for (const { link, title } of TAILGATING_KIOSK_LINKS) {
 
     // The tent's own popup, so it is the linked tent that was selected and not another feature.
     if (title) {
-      await expect(page.getByText(title, { exact: true }).first(), `${link} did not open the popup for ${title}`).toBeVisible({
+      await expect(
+        page.getByText(title, { exact: true }).first(),
+        `${link} did not open the popup for ${title}`
+      ).toBeVisible({
         timeout: 30_000
       });
     }
