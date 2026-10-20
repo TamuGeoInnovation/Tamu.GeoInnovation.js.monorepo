@@ -70,9 +70,9 @@ with the number of maps and services.
 
 ### What it checks
 
-The counts are a snapshot: **541 tests, measured on dev on 13 October 2026** in the run that cleared
-the [13 October release](releases/2026-10-13.md): 513 passed and 28 skipped, none failed or flaky, in 27.1
-minutes, with the release tier and 6 workers. Production lists fewer maps than dev, so it runs fewer (421
+The counts are a snapshot: **576 tests, measured on dev on 20 October 2026** in the run that cleared
+the [19 October release](releases/2026-10-19.md): 546 passed, 1 flaky and 29 skipped, none failed, in 36.8
+minutes, with the release tier. Production lists fewer maps than dev, so it runs fewer (421
 on 8 October); the bus routes run as one test each on dev (#1473), and production does not show bus routes.
 The per-row counts below were last counted on 12 October and have grown since.
 
@@ -130,6 +130,7 @@ The suite started on 27 September 2026 and grew with nearly every bug found sinc
 | 6 October | 436 | Production services (`gis-hosts.spec.ts`), and framing scoped from 412 routes to 71 so the suite is fast enough to gate a release ([#1426](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1426)). **Measured: 436** (421 passed, 1 failed, 14 skipped) in 29 min 24 s, the run that cleared the 6 October release |
 | 7 October | 460 | The every-route bus test split into one test per route, so it spreads across workers and a failure names its route ([#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473)). The count is dev's; production, where bus routes are not offered yet, keeps 2 bus tests |
 | 11 October | 461 | A map that draws ArcGIS's default symbol fails ([#1578](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1578)). **Measured: 461** on dev, twice: 447 passed and 14 skipped in 27 min 2 s on that day's first build, then 446 passed, 1 flaky and 14 skipped in 29 min 9 s on the build that shipped |
+| 20 October | 576 | **Measured: 576** on dev with the release tier, on the build cleared for the [19 October release](releases/2026-10-19.md): 546 passed, 1 flaky and 29 skipped in 36.8 minutes |
 
 Numbers marked ~ are estimates: today's count for each spec, added up by the date the spec first
 appeared. Bold numbers are real runs. The early estimates are approximate, because the per-map checks
