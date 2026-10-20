@@ -34,6 +34,13 @@ other check passed this map.
 | Before | After |
 | --- | --- |
 | ![Business Parking on production: the blue two-hour space markers only, and two empty legend entries](../screenshots/1981-business-parking-lots/before-production-no-lots.png) | ![The same map with maroon surface lots, pink garages, and a symbol beside each legend entry](../screenshots/1981-business-parking-lots/after-local-build-lots-drawn.png) |
+### Not visible: NestJS 10 to 11
+
+The NestJS APIs (UES Operations, GIS Day, OIDC, Mailroom and Geoservices) move from NestJS 10.4.22 to 11.2.7
+([#1974](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1974), the first of its two steps), and with it from Express 4 to 5 and Passport 0.4 to 0.7.
+AggieMap and the event maps are Angular apps and do not change. One side effect for UES Operations:
+signing out used to fail with a server error, because the id token was read after Passport had cleared
+the user; it now reaches the identity provider's sign-out page.
 
 ### GIS Day: the sponsorship levels match the 2026 prospectus
 
@@ -597,6 +604,7 @@ dated notes as what was tested, and this table empties.
 | GIS Day: an admin's added check-in is the attendee's ([#1767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1767)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, signed in as an administrator whose account has `create:checkins`: Admin, Check-ins, Add, with another person's account id and an event they have not checked in to | Admin, Check-ins lists the new check-in under that person, not the admin. Adding the same person to the same event again is refused as already checked in. An attendee checking in from a session's page still checks in themselves |
 | GIS Day: location-based check-in ([#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)), and the migration has not run anywhere but a local copy. Locally, after `scripts/gisday-local.sh migrate run`: as an administrator, Admin, Venues, give a venue corners; then, during an in-person session there, the session's page | The line "Check-in for this session uses your location" names the venue. Inside the zone, Check In works. Outside it (DevTools, Sensors, set a location elsewhere), the reason shows under the button and nothing is saved; there is no check-in anyway. While waiting, "Finding your location…". Block location access: the page asks for it. A hybrid session, or a venue with no corners, never asks. On the venue form, corners out of order (sides crossing) are refused. As an administrator, Admin, Check-ins, Add checks in another account to that in-person session with no location, from anywhere |
 | GIS Day: My VGI Submissions lists your own ([#1791](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1791)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, signed in with an account that has made a competition submission: Account, My VGI Submissions | Your own submissions are listed, with their date and status. Another account sees only its own. An account with none sees an empty list, not an error |
+| NestJS 11 ([#1974](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1974)) | Nothing on AggieMap: the NestJS APIs deploy separately, so check each where it runs | UES Operations: sign in, sign out (reaches the identity provider's sign-out page, not an error), sign in again and land back on the page you started from. GIS Day and the other APIs answer as before |
 
 ---
 
