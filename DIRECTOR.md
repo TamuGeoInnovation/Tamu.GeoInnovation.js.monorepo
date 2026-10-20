@@ -1,6 +1,6 @@
 # Who directs
 
-**Director: home** (handed back by work at 6:35 PM Central, 19 October 2026, when the maintainer left the office)
+**Director: work** (handed over by home at 7:40 AM Central, 20 October 2026, when the maintainer left for the office)
 
 Each of the maintainer's machines runs a Claude Code session on this branch. **At any time exactly one machine
 directs; every other machine listens.** The maintainer talks to the director. Every session reads this file first,
@@ -147,39 +147,41 @@ A `## Stop` heading in a listener's `TASKS.md` stops that listener: it writes `S
 
 ## Handover
 
-Written by **home** at 7:47 AM Central, 19 October 2026, handing the director role to **work**.
+Written by **home** at 7:40 AM Central, 20 October 2026, handing the director role to **work**.
 
-### Today's release (the priority)
-- **Release-484** (build 20261019.5, `8951a6364`) is on dev: everything for today's release (wave 1 #1940-#1944, #1948 =
-  Vitest + zoneless + Node 24 + TypeScript 6.0 deprecations, plus yesterday's work back to `prod-2026-10-16`).
-- **work's batch 9** (the final test) is running on it: the full tier, then the `--as production` capture, then the
-  comparison against `prod-2026-10-16-corrected`.
-- **One test fails hard, so no tag:** `directions.spec.ts:72`, the event map feature popup offering "Directions To Here"
-  on `/parking/avp-parking/map?feature=AVP-parking-lots:26135` (its four siblings pass).
-- **home is fixing it** (branch `fix/event-popup-directions`, an agent; cause first, then a fix with a red-first test).
-  It needs an issue (Bug, AggieMap) and a priority from the maintainer; home will report the cause and the branch in
-  `home/STATUS.md`. Then: the director pushes the branch and opens the PR, the maintainer merges, builds, releases to
-  dev, and work re-runs the full tier (~45 min) and only the comparison.
-- **Release notes:** drafted on home, worktree `C:\TAMU\wt-notes`, branch `docs/release-2026-10-18` (file
-  `docs/releases/2026-10-19.md`, issue #1935, Medium). Not pushed. TBDs: release/build, `dev-*` tag, full tier and
-  comparison results, who checked each row. The final commit will change with the directions fix.
-- **Check by hand** from the list on #1849 (comment 6258036088).
-- Production stays on `264eebb42` (ArcGIS 4.27) until the notes merge and the maintainer promotes.
+### Production
+- **Release-486 is on production**: build 20261019.21, `8463ac6af`, tagged `dev-2026-10-20` and `prod-2026-10-20`.
+  Notes merged (PR 1968). It cleared a clean release tier on dev (546/0/1/29 of 576), a screenshot comparison with no
+  shot above 10%, and the maintainer's hand checks this morning (all passed).
+- **PR 1971** (the hand-check record and the `docs/testing.md` counts, which missed 1968 by minutes): open, docs only;
+  the maintainer merges it when green.
 
-### In flight on home (a listener from now)
-- **#1949 (High): AggieMap on Esri's map components** (`<arcgis-map>`/`<arcgis-scene>` in place of `view.ui`); branch
-  `feat/arcgis-map-component`, worktree `C:\TAMU\wt-arcgismap`; plan in `C:\TAMU\logsrcgismap-plan.md`. Next round.
-- **The directions fix** above.
-- **codex-home** (OpenAI Codex on home): batch 2 (corrected survey + three first specs, branch `codex-home/tests-1`) is
-  paused: it asks for approval on every commit. Decided: move it into WSL so it runs without prompts inside its sandbox;
-  the maintainer does that later.
+### In flight
+- **work, batch 18:** the release tier on production, then a production screenshot set keyed `prod-2026-10-20`.
+  Report the tier first: it says whether production is healthy.
+- **work, batch 19 (after 18):** #1970's before/after images on `fork/fix/1970-selection-popup-title` (`32895a0af`,
+  check exit 0, red-first unit and smoke tests), with its notes entry and row. **Then the director opens its PR**;
+  the drafted body is `C:\TAMU\wt-1970\.pr-body.md` on home, and the fix is summarised on #1970. #1970 is **High**.
+- **home, batch 5:** #1975 (the tailgating kiosk, running now), then #1972, #1973 and #1974, one at a time. Home reports
+  branches ready; work screenshots and opens the PRs.
+
+### Issues filed since yesterday, all with priority set
+| Issue | What | Priority |
+| --- | --- | --- |
+| 1969 | `lot-links` race: a lot link can open the main map's lot first (seen twice) | Medium |
+| 1970 | "Selected Buildings" panel for features opened by link or search; fix ready | High |
+| 1972 | Nx 23.3 | Low |
+| 1973 | Vitest 5 | Medium |
+| 1974 | NestJS 12, GIS Day's servers included (the maintainer's 4A) | Medium |
+| 1975 | Tailgating kiosk | Medium |
+
+#1951 is **closed** (the maintainer's 1B: the server recovered at 00:14). `lot-links.spec.ts` still leaves AVP out because
+of it; putting it back is a small follow-up, not filed.
 
 ### Open questions for the maintainer
-1. Priority for the directions fix's issue (Bug, AggieMap): recommend **Urgent** (it blocks today's release).
-2. When the directions fix is in, re-run the whole comparison or only the tier: recommend **the tier, and the comparison
-   only for the event and parking maps** (the rest of the set did not change).
+None now. The kiosk's judgement calls will come in home's report.
 
-### Rules learned today (all in this file and CLAUDE.md)
-- One asker; listeners never ask, offer, or take decisions; a new batch is the listener's instruction; listeners keep a
-  branch watcher running; started/finished pushes; plain PR numbers (no links) in tables for the maintainer; every reply
-  to him ends with all open questions, numbered from 1.
+### Rules learned
+- Don't push to a branch once its PR may have merged: 1968 merged minutes before its last commit, which became 1971.
+- Give a listener new work as a new batch number, never as a task added to a batch it has already taken: work missed
+  batch 14's task 3 that way.

@@ -3,6 +3,22 @@
 Written by the work session **only while another machine directs** (see `DIRECTOR.md`). The home session does each new batch here,
 as `DIRECTOR.md` says for a listener. Development work: branches, agents, pull requests.
 
+## Batch 5 (20 October 2026, 7:40 AM Central) — the tailgating kiosk, then the upgrades
+
+Written by home as director just before handing over to work, so home has its day's work. **Decided** (the maintainer,
+this morning): #1975 is Medium; #1972 Low, #1973 Medium, #1974 Medium; **#1974 goes ahead although GIS Day is out of
+scope**, because its servers share the packages: full check of every project, GIS Day's included (his 4A).
+
+1. **#1975: a kiosk map for Football Tailgating** - already running here (an agent, worktree `C:\TAMU\wt-1975`, branch
+   `feat/1975-tailgating-kiosk`). Report the branch, the kiosk's path, and its judgement calls (layers, opening view,
+   game-day notice) as Questions for the director. No PR, no screenshots: work takes them and opens it.
+2. **#1972: Nx 23.2 to 23.3.** Branch `chore/1972-nx-23-3` from the latest `development`. This PR also adds #1972, #1973,
+   #1974 and #1918 to the modernization path table in `docs/releases/unreleased.md`, and brings its stale ArcGIS row up to
+   date (5.1.27 on production since `prod-2026-10-20`; `<arcgis-map>` with #1949). Full check, clean `npm ci`. Branch ready, no PR.
+3. **#1973: Vitest 4 to 5.** Same rules; same test count per project before and after; time the suite before and after.
+4. **#1974: NestJS 10 to 11, then 11 to 12**, one branch each, full check of every project each time.
+   Only 2 after 1 is pushed, and so on: one upgrade at a time, so their lock files don't collide.
+
 ## Batch 4 (19 October 2026, 3:05 PM Central) — #1960, wanted today, then the #1954 merge
 
 **Decided** (the maintainer, this afternoon): **#1960 is High and goes out today.** He also merged **PR 1958**
