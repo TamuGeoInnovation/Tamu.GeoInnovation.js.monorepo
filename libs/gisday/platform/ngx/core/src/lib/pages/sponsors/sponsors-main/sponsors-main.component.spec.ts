@@ -15,7 +15,8 @@ describe('SponsorsMainComponent', () => {
   const sponsors = [
     { guid: 's-1', name: 'Landpoint', sponsorshipLevel: 'line', active: true },
     { guid: 's-2', name: 'Last year only', sponsorshipLevel: 'line', active: false },
-    { guid: 's-3', name: 'Surge Energy America', sponsorshipLevel: 'point', active: true }
+    { guid: 's-3', name: 'Surge Energy America', sponsorshipLevel: 'point', active: true },
+    { guid: 's-4', name: 'A LiDAR sponsor', sponsorshipLevel: 'lidar', active: true }
   ] as Array<Partial<Sponsor>>;
 
   function open(isPast: boolean) {
@@ -44,6 +45,16 @@ describe('SponsorsMainComponent', () => {
 
     await expect(firstValueFrom(component.lineSponsors$)).resolves.toEqual([sponsors[0]]);
     await expect(firstValueFrom(component.pointSponsors$)).resolves.toEqual([sponsors[2]]);
+  });
+
+  /**
+   * #1976. LiDAR is the 2026 level above Raster; a sponsor recorded at it must have a group of its own.
+   */
+  it('groups LiDAR sponsors on their own', async () => {
+    const component = open(false);
+
+    await expect(firstValueFrom(component.lidarSponsors$)).resolves.toEqual([sponsors[3]]);
+    await expect(firstValueFrom(component.rasterSponsors$)).resolves.toEqual([]);
   });
 
   it('does the same for a past year', async () => {
