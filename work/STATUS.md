@@ -8,9 +8,18 @@ Last written **10:18 AM Central, 20 October 2026**. **This machine is the direct
 
 ## Running now
 
-(nothing) — PRs 1989, 1990 and 1985 are all with the maintainer.
+**The `prod-2026-10-20` baseline set**, container `vb-prod-2026-10-20`, started 12:55 PM Central. Production,
+848 shots (424 routes x 2 viewports), bundle `main-AYJ2SDWT.js`, commit `8463ac6a`. Step 8 of the release
+sequence, owed since the production deploy. A couple of hours; it resumes if interrupted.
 
 ## Finished
+- **PR 1985 merged by the maintainer**, which moved `development` and put both urgent pull requests into
+  conflict. Same cause both times: NestJS 11's `package.json` and its new release-notes entry.
+  `package.json` and `package-lock.json` merged themselves; only `unreleased.md` clashed, between each
+  fix's entry and the NestJS one, and both were kept. **1989 and 1990 are MERGEABLE again**, each re-checked
+  here: `lint, test, build for 2 projects`, exit 0.
+  **Still outstanding:** both set `docs/testing.md`'s total to 481. That is right for whichever merges first;
+  the second needs `development` merged and the total set to **482**.
 - **PR [1990](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1990) is open for #1988
   and #1987** (11:40 AM): home's branch, plus the before and after, the release notes and the *What to test on
   dev* row taken here. Check `maps-feature-legend,aggiemap-angular` exit 0 with `npm ci` inside it. Then ten
