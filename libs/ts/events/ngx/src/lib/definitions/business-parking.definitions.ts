@@ -7,6 +7,7 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 import { EventPopups } from '../modules/popups/popups';
+import { lotFill } from './common.definitions';
 
 export enum BUSINESS_PARKING_LAYERS {
   UB_2_HOUR_SPACES = 'University Business Spaces 2 Hour Time Limit',
@@ -15,27 +16,13 @@ export enum BUSINESS_PARKING_LAYERS {
 }
 const eventUrl = Connections.businessParkingUrl;
 
-type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
-type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
-
-/**
- * One fill for every lot a layer draws, in the colour the service's own legend gives it.
- *
- * Overridden deliberately (#1981). The service's renderer keys on `GIS.TS.Lot_Use.UB_Lot` and
- * `GIS.TS.ParkingLots.LotType`, but the service does not publish `LotType` (it is not in the layer's
- * field list, and asking for it as an output field fails), so no lot reaches the browser with a value
- * the renderer has a symbol for, and the renderer has no default: the layers loaded, held their lots,
- * and drew none of them. Each layer's definition expression already selects one of the renderer's two
- * groups, so a single symbol per layer draws exactly what the service's renderer meant to. Remove these
- * once the service publishes `LotType`.
- */
-function lotFill(label: string, color: [number, number, number, number]): FeatureRenderer {
-  return {
-    type: 'simple',
-    label,
-    symbol: { type: 'simple-fill', style: 'solid', color, outline: null }
-  } as FeatureRenderer;
-}
+// Why the two lot layers set their own renderer (#1981): the service's renderer keys on
+// `GIS.TS.Lot_Use.UB_Lot` and `GIS.TS.ParkingLots.LotType`, but the service does not publish `LotType`
+// (it is not in the layer's field list, and asking for it as an output field fails), so no lot reaches
+// the browser with a value the renderer has a symbol for, and the renderer has no default: the layers
+// loaded, held their lots, and drew none of them. Each layer's definition expression already selects one
+// of the renderer's two groups, so one fill per layer, in that group's colour, draws exactly what the
+// service's renderer meant to. Remove them once the service publishes `LotType`.
 
 export const BusinessParkingDefinitions = {
   UB_2_HOUR_SPACES: {
@@ -100,6 +87,7 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface', 'Surface Visitor')`,
+      // Overridden: the service's renderer keys on LotType, which it does not publish (#1981, above).
       renderer: lotFill(BusinessParkingDefinitions.UB_AND_UB_PLUS.name, [90, 0, 0, 255])
     }
   },
@@ -124,6 +112,7 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage', 'Garage Visitor')`,
+      // Overridden: the service's renderer keys on LotType, which it does not publish (#1981, above).
       renderer: lotFill(BusinessParkingDefinitions.UB_PLUS_ONLY.name, [232, 190, 255, 255])
     }
   }
