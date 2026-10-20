@@ -67,6 +67,64 @@ production build of your branch. Three things it learned that batch 10 should no
 The scan itself is `legend-compare.mjs` on the work machine; ask for it in your report rather than writing it
 again. Result, for the record: **0 regressions, 4 groups fixed.**
 
+## Batch 11 (20 October 2026, 3:25 PM Central) — #1991, #1992, #1993: the three your own check found
+
+Batch 10 did what it was asked to and then some: `map-layers.spec.ts` found three faults on public maps that
+nobody knew about. The maintainer has set **all three to High** and put them on the board as Todo. They are
+yours. PR [2000](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2000) is open for
+#1986 itself, so the check is in flight while you fix what it caught.
+
+### Decided (the maintainer's answers to report 8)
+
+1. #1991 **High**, #1992 **High**, #1993 **High**. (You suggested Medium for #1993; he said High.)
+2. Open #1986's PR now and leave production red on the three — **done**, that is PR 2000. Do **not** add them
+   to `environments.json` as allowed failures. The point of the check is that they are visible.
+3. "Drawn" stays **at least one feature**, with the share as an annotation. Your recommendation, taken.
+4. The settle limit stays **240 s**, with a map that does not settle failing and saying so. Taken.
+5. The quick tier stays as it is. Taken.
+6. `drawn-symbols.spec.ts` is **deleted** — done here, on #1986's branch, with `docs/testing.md`'s total at
+   **551**. Don't re-add it.
+
+### The work
+
+Three issues, and they are not three separate investigations — **#1991 is #1981 again**:
+
+- **[#1991](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1991)** — Vendor
+  Parking draws 0 of 10 lots, `LotType` undefined on every feature. That is exactly #1981's cause: the
+  service's renderer keys on `GIS.TS.ParkingLots.LotType`, which the service does not publish. #1981's fix
+  (`8e505e2fd`, `lotFill` in `business-parking.definitions.ts`) is the pattern — **reuse it, don't copy it**.
+  If the same shape is now wanted on two maps, it belongs somewhere both can import, not pasted twice. Keep
+  the comment explaining why the override exists, as `docs/map-layers.md` requires.
+- **[#1992](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1992)** — Accessible
+  Parking Spaces on Women's Basketball, Indoor Track and Softball: the renderer asks for
+  `Disabled,Volleyball` and the data says `Accessible,Basketball`. Three maps, one layer, so one fix should
+  clear all three. Worth checking whether any *other* map uses this layer before deciding where the fix goes.
+- **[#1993](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1993)** — Indoor
+  Track's Team Bus Parking has no symbol for lot type `SPORTS`. Smallest of the three.
+
+**Whether any of these is really ours to fix is a fair question** — #1991 and #1992 both look like the
+service being wrong rather than us. Say so in the report if that is what you find: the maintainer is already
+sending Transportation Services a note about #1981's field, and these would go in it. But the maps should
+draw correctly in the meantime either way, which is what #1981 did.
+
+### How to prove each one
+
+`map-layers.spec.ts` already fails on all three, on production, naming the maps. So: **run it red first on
+production and quote what it said**, then green on a local production build of your branch. No new spec is
+needed unless you find something it does not cover — if you do, that is the more interesting finding, say so.
+
+### The rest
+
+One branch per issue if they are genuinely separate, or one branch for #1991 and one for #1992+#1993 if the
+sports maps share a fix — your call, say which and why. From the latest `development`; `docs/testing.md` is
+at 551 once PR 2000 merges, so rebase rather than guess. **No pull requests**: say "branch ready" and name the
+before/after each one needs, and this machine takes the images and opens them.
+
+### Still parked
+
+#1974's second half (NestJS 12) and #1973. NestJS 11 merged as PR 1985, so NestJS 12 no longer stacks on an
+unmerged branch — but it waits until these three are done.
+
 ## Batch 10 (20 October 2026, 10:45 AM Central) — #1986, the per-map check the maintainer asked for
 
 **Do this after batch 9.** Batch 9 is the fix; this is the check that stops it, #1981 and #1987 all coming
