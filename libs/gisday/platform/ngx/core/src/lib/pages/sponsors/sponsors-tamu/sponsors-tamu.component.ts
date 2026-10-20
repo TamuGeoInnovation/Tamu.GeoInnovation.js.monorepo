@@ -1,5 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+
+import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 
 @Component({
   selector: 'tamu-gisc-sponsors-tamu',
@@ -9,6 +12,11 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink]
 })
 export class SponsorsTamuComponent implements OnInit {
+  /**
+   * On a phone the level cards say "reps" for "representatives", so five fit two to a row (#1976).
+   */
+  public readonly isMobile = toSignal(inject(ResponsiveService).isMobile, { initialValue: false });
+
   public ngOnInit(): void {
     this.changeRank('point');
   }

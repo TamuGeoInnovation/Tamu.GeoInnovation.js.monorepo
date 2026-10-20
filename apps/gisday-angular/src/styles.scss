@@ -2427,7 +2427,8 @@ nav#section-nav a:hover {
   @include justify-content(center);
   @include flex-direction(column);
   @include align-items(center);
-  min-width: 23%;
+  // Five levels on one row since LiDAR (#1976); 23% fitted four.
+  min-width: 19%;
   border-right: 1px solid #e0e0e0;
 
   &:last-child {
@@ -2494,6 +2495,29 @@ nav#section-nav a:hover {
 
   &:hover {
     cursor: pointer;
+  }
+}
+
+// With five levels (#1976) one row no longer fits a phone: two to a row, each half the width. The rest of the
+// page at phone width is #1980.
+@media only screen and (max-width: 767px) {
+  #swappable-content-container {
+    @include flex-wrap(wrap);
+    row-gap: 1.5rem;
+  }
+
+  .swap-content-toggle {
+    flex: 0 0 50%;
+    min-width: 0;
+    border-right: none;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      padding: 1rem 0.5rem 0;
+    }
   }
 }
 
