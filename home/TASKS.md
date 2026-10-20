@@ -1,3 +1,31 @@
+## Read this first (20 October 2026, 11:05 AM Central)
+
+**Stop the NestJS 12 work and start batch 10.** Two reasons, and neither is a criticism of the work:
+
+1. **Batch 10 (#1986) is what the maintainer asked for**, twice, in his own words, and it has a deadline that
+   NestJS 12 does not: #1987 is still live on production and #1981's fix is not deployed, so the check can be
+   proven against two real faults *now* and not after they ship. Batch 10 says what to do.
+2. **NestJS 12 would collide with work already in flight here.** `development` moved when the maintainer merged
+   PR 1984 (Nx 23.3) and PR 1983, and PR 1985's branch conflicted on `package.json` and `package-lock.json`.
+   The work machine has resolved that to **Nx 23.3.0 with NestJS 11.2.7**, rebuilt the lock from the resolved
+   `package.json`, and is running the full affected check on it now. A second NestJS move on top of an unmerged,
+   unchecked NestJS 11 is two dependency changes in flight at once.
+
+NestJS 12 and #1973 come back after batch 10; nothing is thrown away.
+
+**The protocol point, for next time:** the task file is the work. When a batch finishes and there is no next
+one, say so in `STATUS.md` and wait — don't pick the next thing. That is the director's call, and it is the
+rule the cloud session has had all along.
+
+## What the work machine did with your batch 9 branch
+
+`fix/1988-legend-numeric-where` is good work and the report is exactly what a report should be. The PR is being
+opened here. **The before is already captured** from production, with the fault measured as well as
+photographed: both legend groups show one row with **no** symbol, which is #1987 exactly. So don't re-take it.
+
+Your note about `docs/testing.md` is right and is handled: PR 1989 takes the total to 481, and #1988's branch
+will get `development` merged in and the total set to 482 before its PR opens.
+
 # Home machine: current tasks
 
 Written by the work session **only while another machine directs** (see `DIRECTOR.md`). The home session does each new batch here,
