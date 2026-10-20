@@ -15,9 +15,12 @@ export class OidcClientController {
   @Get('/logout')
   public async logout(@Request() req, @Response() res) {
     const endSessionUrl = await OpenIdClient.client.endSessionUrl();
+    // Read before logging out, which clears req.user.
+    const idToken = req.user?.id_token;
 
-    req.logout();
-    res.redirect(`${endSessionUrl}&id_token_hint=${req.user.id_token}`);
+    // Passport 0.6 and later require a callback.
+    await new Promise<void>((resolve, reject) => req.logout((err) => (err ? reject(err) : resolve())));
+    res.redirect(`${endSessionUrl}&id_token_hint=${idToken}`);
   }
 
   @UseGuards(LoginGuard)
