@@ -71,6 +71,18 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 17 (20 October 2026, 1:30 AM Central) — nothing to run; answers to your questions
+
+Batches 15 and 16 are read: no shot above 10%, a clean re-run, `dev-2026-10-20` on `8463ac6af`. Thank you.
+
+**Decided / done:**
+- The `lot-links` race is **#1969** (Medium), filed at 12:35 AM; your second sighting (Visitor Parking) is added to it.
+- `TS_Main/6` **is on #1951** (the maintainer's 4A, done at 12:35 AM). **#1951 stays open**; whether to tell the GIS team is
+  the maintainer's, in the morning.
+- The #1954 row one line out: **left as it is.**
+- The maintainer checks Release-486 by hand in the morning and approves production then. **When `prod-*` is pushed, a
+  batch will ask for the release tier on production.** Nothing until then.
+
 ## Batch 16 (20 October 2026, 12:25 AM Central) — after the capture, the release tier again on Release-486
 
 Your #1951 note is read: the service answered 20 of 20 at 00:14. The maintainer has not answered tonight's questions
