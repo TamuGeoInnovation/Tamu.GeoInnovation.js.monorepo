@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:27 PM Central, 20 October 2026**. A listener; job: testing.
+Last written **5:37 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -22,13 +22,13 @@ Last written **5:27 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Batch 1, #2008: is Maintenance Parking slow, or is the suite?** Started 5:27 PM Central. Three runs of
-`map-layers.spec.ts` against production (`https://aggiemap.tamu.edu`, bundle `main-AYJ2SDWT.js`), one after
-another, retries off: the whole spec at the default workers, then at `--workers=6`, then Maintenance Parking
-alone. From a detached worktree at `9102a6fa` (`development`). Nothing else running on the machine: the
-AggieMap dev server is stopped for the batch.
+None.
 
 ## Finished
+
+- **Batch 1, #2008** (5:27 to 5:37 PM): Maintenance Parking passed on production every time, in 41.5 and
+  46.6 s with six workers and 43.4 s alone; the limit tracks machine load, not the map. Report
+  `work-lab-leila/reports/2026-10-20-1.md`.
 
 - **Joined** (5:19 PM).
 
@@ -42,4 +42,4 @@ AggieMap dev server is stopped for the batch.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: none
+Last batch done: 1
