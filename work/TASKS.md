@@ -71,6 +71,18 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 19 (20 October 2026) — #1970's before/after images, after batch 18
+
+**Start only when batch 18 (production tier, then the production screenshot set) is finished.**
+
+1. **#1970's images** (report on: #1970). Branch `fork/fix/1970-selection-popup-title`, head `32895a0af`.
+   - Before: production (now `prod-2026-10-20`), `https://aggiemap.tamu.edu/parking/motorcycle-parking/map/d?lot=100j`: the side
+     panel is headed "Selected Buildings" with only the copy-link field.
+   - After: a local production build of the branch (nginx, `try_files`): the same link's panel is headed by the motorcycle
+     space layer's title, with its popup. Also one building search on `/map/d` (e.g. "Wehner") still showing the building popup.
+   - Commit to `docs/screenshots/1970-selection-popup-title/` on the branch, with the `unreleased.md` entry and a What-to-test row,
+     push to the fork, and say so in `work/STATUS.md`. **home opens the PR** once they are pushed.
+
 ## Batch 18 (20 October 2026, morning) — the release tier on production
 
 **Decided:** the maintainer checked Release-486 by hand on dev this morning (all passed; #1970 filed, High, not a
