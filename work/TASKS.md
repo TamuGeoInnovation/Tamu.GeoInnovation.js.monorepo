@@ -71,6 +71,19 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 15 (19 October 2026, 9:20 PM Central) — the screenshot comparison on Release-486, now
+
+Batch 14's report is read. **Batch 14 had a task 3** (added at 8:20 PM, after you took the batch): the maintainer's 1A,
+the full screenshot comparison after the tier. It has not run, so it is this batch. Your three questions go to the
+maintainer now; the answers come in the next batch.
+
+1. **The full screenshot comparison** (report on: #1949)
+   - `capture.mjs --env development --as production --release 8463ac6af`, then `review.mjs` against
+     **`prod-2026-10-16-corrected`**, as for `8951a6364` this morning. Nothing else heavy beside it.
+   - PR 1950 changes how every map is hosted, so the question is whether any map *looks* different: list every shot
+     above 20%, and for each say whether it is the change, a mid-animation capture (re-take it), or the service.
+   - Push the report when it lands, whatever the hour.
+
 ## Batch 14 (19 October 2026, 7:10 PM Central, replacing the 7:00 PM version) — #1954's images now, then one release tier tonight
 
 **Decided** (the maintainer, at home, 7:05 PM):
