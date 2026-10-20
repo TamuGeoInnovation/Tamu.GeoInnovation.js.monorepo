@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **8:30 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
+Last written **9:15 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
@@ -11,21 +11,29 @@ Clock times here are read from PowerShell or from a commit timestamp, not estima
 
 ## Running now
 
-**Batch 14 task 2: the release tier on the final build.** Started **8:30 PM Central**.
+Nothing. **Batch 14 is done, both tasks.** Report: `work/reports/2026-10-19-1.md`.
+
+## work: finished — the release tier on Release-486. NOT TAGGED.
+
+**544 passed, 1 failed, 2 flaky, 29 skipped of 576**, 37.2 minutes, exit 1. Commit `8463ac6af`, dev serving
+`main-IORMDVQQ.js`. Posted on #1935
+([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1935#issuecomment-6281784854)).
+
+**No `dev-*` tag was pushed**, as the batch directs: the condition was a clean pass, and the AVP popup failing
+alone is explicitly not clean.
+
+**The first run covering PR 1950's `<arcgis-map>` rehost with 1966 and 1967. Nothing failed that is attributable
+to any of the three.**
 
 | | |
 | --- | --- |
-| Release | **Release-486, build 20261019.21** |
-| Commit | **`8463ac6af`** — `development` with PRs 1950, 1966 and 1967 |
-| Dev serves | `main-IORMDVQQ.js` (Release-485 served `main-CR5DN6UQ.js`) |
-| Running | `run-local.sh development release`, from a worktree at that commit |
-| Expect | about 30 minutes, roughly 550 tests |
+| Failed | `directions.spec.ts:72`, the AVP popup, all three attempts — **#1951**, their server |
+| Flaky | `search-sources.spec.ts:512` — **`TS_Main/6` answered `400 Unable to complete operation.`**, a *different* service failing the same way |
+| Flaky | `lot-links.spec.ts:109` — Motorcycle Parking's `?lot=100j` opened **the main map's** lot on its first attempt, the symptom #1952 fixed, on a map in the working group |
 
-Both start conditions were checked: the dev stage says succeeded **and** the bundle changed. The nginx server used
-for #1954's after image was removed first, so nothing heavy runs beside the tier.
-
-**The tag waits on the result.** Only a clean pass gets `dev-*` on `8463ac6af`; the AVP popup (#1951) failing on
-its own is not clean, and is reported rather than tagged around.
+Three questions for the director are in the report, with options: whether the `lot-links` flake blocks the
+release (recommend no, file it Medium), whether `TS_Main/6` joins #1951 (recommend yes), and the tag (recommend
+leaving it untagged and letting the maintainer judge promotion).
 
 ## Batch 14 task 1's placement amendment arrived after the merge
 
