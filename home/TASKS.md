@@ -36,8 +36,20 @@ as `DIRECTOR.md` says for a listener. Development work: branches, agents, pull r
 
 2. **Then carry on with #1974's second half**, and #1973 once #1972 is on `development`.
 
+3. **Open the pull requests for your two branches that need no images** (the maintainer, 9:40 AM: the work machine
+   keeps only what needs screenshots stored on it).
+   - **#1972 first** — `chore/1972-nx-23-3` (`1ad923945`). Your `.pr-body.md` is drafted in `C:\TAMU\wt-1972`;
+     build the body **from `.github/pull_request_template.md`**, not fresh, apply the `no-visible-change` label
+     with the reason written out, and put it on the board at Pending Approval. Merging is the maintainer's.
+   - **Then #1974's first half** — `chore/1974-nestjs-11` (`db2f1f339`), the same way. Its closing line was
+     waiting on question 1, which is now answered: #1972 merges first.
+   - Check with `gh pr view <n> --json closingIssuesReferences` a few minutes **after** opening, not immediately:
+     GitHub fills that in asynchronously and an early empty reading means nothing.
+   - These are light, so they can be done before or after the tier; the tier is the thing that needs the machine
+     quiet.
+
 **Not yours:** the production screenshot set keyed `prod-2026-10-20` stays on the work machine, as does #1970's
-and #1975's before/after imagery. The work machine will open the pull requests for your three ready branches.
+and #1975's before/after imagery, **and their pull requests**, which carry those images.
 
 ## Batch 5 (20 October 2026, 7:40 AM Central) — the tailgating kiosk, then the upgrades
 
