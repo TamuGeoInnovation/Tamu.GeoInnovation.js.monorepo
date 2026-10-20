@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **8:05 AM Central, 20 October 2026**. **This machine is a listener again** — it handed the director
+Last written **8:20 AM Central, 20 October 2026**. **This machine directs again** (home handed back at 7:40 AM; the maintainer confirmed it). **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
@@ -11,20 +11,28 @@ Clock times here are read from PowerShell or from a commit timestamp, not estima
 
 ## Running now
 
-**Batch 18 is taken and waiting on the production deploy.** Nothing is running.
+**Batch 18, task 1: the release tier against production.** Started **8:20 AM Central**.
 
 | | |
 | --- | --- |
-| Start when | a `prod-*` tag on origin resolves to **`8463ac6af`** *and* production serves **`main-IORMDVQQ.js`** |
-| Now | newest prod tag is `prod-2026-10-16` on `264eebb42`; production serves `main-TK2R62YY.js` |
-| Then | `run-local.sh production release`, nothing else heavy beside it |
-| After that | a production screenshot set keyed by the new `prod-*` tag, as step 8 of the release sequence |
+| Production | `prod-2026-10-20` resolving to **`8463ac6af`**, Release-486 |
+| Production serves | `main-AYJ2SDWT.js` |
+| Running | `run-local.sh production release` |
 
-The waiter checks **both** conditions. A tag on its own records intent while the deploy may still be in flight,
-and a changed bundle on its own is not proof either — on Release-485 dev served a new hash while Azure still
-said `inProgress`.
+## Batch 18's start condition was wrong, and is corrected here
 
-**Last batch done: 17.**
+The batch said to check that **production serves `main-IORMDVQQ.js`, the same bundle as dev**. It never will. The
+Google Analytics id is substituted per stage — `G-71VY0QZS5P` on dev, `G-GNS4JMVEZW` on production — and that is
+baked into the bundle, so **the same commit produces a different hash on each environment**. Waiting for the
+bundles to match would have waited forever; the waiter sat on it for twenty minutes before this was spotted.
+
+**The check that does work**, and was used instead:
+
+1. a `prod-*` tag on origin resolving to the commit — `prod-2026-10-20` → `8463ac6af`; and
+2. production's bundle **changed from the previous production bundle** — `main-TK2R62YY.js` → `main-AYJ2SDWT.js`.
+
+Both held, so the deploy is real and the tier started. Worth carrying into the release sequence: a bundle hash can
+be compared with the same environment's previous one, never across environments.
 
 ## A container of this machine's was left running for ten hours
 
