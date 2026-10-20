@@ -64,3 +64,65 @@ director will file it and open the pull request. Don't open either yourself.
   Redirect to a file, capture the exit code, then filter.
 - **A tag is a claim; the bundle hash is the proof.** When you report a run against production, say which
   bundle it served, read from the page — not which tag you expected.
+
+---
+
+## Batch 2 (20 October 2026, 5:50 PM Central) — the three parking fixes, checked **together**
+
+**Do this after batch 1, not beside it.** Batch 1 is a timing measurement; a build running next to it would
+make its numbers meaningless. Finish #2008, push the report, then start this.
+
+Three branches are about to become three pull requests. Each one has been checked on its own and each is
+green. `CLAUDE.md` asks for one more thing before a batch of pull requests is merged, and **nobody has done
+it for these**:
+
+> Before a batch is merged, check all of its PRs merged together: two PRs can each pass CI and still fail
+> together.
+
+That is this batch. It matters more than usual here, because these three are not independent: two of them
+change **shared libraries** (`maps-esri`, `maps-feature-legend`) and one moves a helper into
+`common.definitions.ts`, which other maps import. Separately green, together broken is exactly the shape
+this produces.
+
+### The branches, on the fork, already merged with the latest `development`
+
+| Branch | Head | Closes |
+| --- | --- | --- |
+| `fix/1991-vendor-parking-lots` | `155f074a1` | #1991 |
+| `fix/1992-accessible-parking-sports-maps` | `248ef407e` | #1992, #1993 |
+| `fix/1992-legend-multi-value-class` | `e5a66b132` | #2004 |
+
+Use those exact commits. Documentation and screenshot commits may be added on top while you work — they do
+not change any code, so do not re-fetch chasing a moving head.
+
+### What to do
+
+1. **Merge all three onto the latest `origin/development`**, in a worktree of its own, in the order above.
+   Report any conflict and what it was in, even if it is trivial to resolve — a conflict between two fixes is
+   itself a finding, and the director needs to know before deciding merge order.
+2. **Push that combined branch to the fork** as `check/2026-10-20-three-parking-fixes`. This is deliberate:
+   your `STATUS.md` says SSH pushes depend on the maintainer's `ssh-agent` staying alive, and it is better to
+   discover that on a throwaway branch than on work somebody is waiting for. **If the push fails, say so in
+   your report with the exact error and carry on** — the rest of the batch does not need it.
+3. **Run the full affected check** on the combined branch:
+   `scripts/check-in-volume.sh check/2026-10-20-three-parking-fixes`. Not a narrow project list: two shared
+   libraries change, so the point is everything they affect. Report the exit code and the per-target counts
+   (`Successfully ran target lint for N projects`), not just "passed".
+4. **Build it for production and run `map-layers.spec.ts` against that build**, the way home did for each
+   branch alone. The four maps the three fixes touch — `/parking/vendor-parking`,
+   `/events/womens-basketball`, `/parking/indoor-track-parking`, `/parking/softball-parking` — must all pass,
+   **and so must the other 60-odd**. A fix to a shared legend library that fixes four maps and quietly breaks
+   a fifth is the thing this batch exists to catch.
+   Expect `/parking/maintenance-parking` to be the one known failure, which is batch 1's subject.
+
+### What a good report says
+
+- The exit code and counts for the check, and whether anything conflicted when merging the three.
+- `map-layers.spec.ts` on the combined build: passed, failed, skipped, and **every failure named with its
+  map**, compared against home's result for the same spec on its own combined build: **57 passed, 12 skipped,
+  1 failed** (Maintenance Parking).
+- Whether the push worked.
+- Anything that passed alone for home and fails here, which is the whole point.
+
+**Don't fix anything, don't open anything.** If something fails together that passed apart, that is the
+result — report it and stop. The director decides what happens next.
