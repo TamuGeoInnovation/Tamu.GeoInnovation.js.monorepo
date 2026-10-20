@@ -1,6 +1,6 @@
 # Unreleased
 
-Since the 19 October release: one AggieMap fix, and GIS Day changes waiting for GIS Day's own
+Since the 19 October release: two AggieMap fixes, and GIS Day changes waiting for GIS Day's own
 deploy.
 
 **The latest release notes are [19 October 2026](2026-10-19.md)**, for the build from `8463ac6af`
@@ -16,6 +16,25 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
+### Layer symbols are back in the legend, where a layer's colours come from a number
+
+On Freshman Selectable Parking the two layers drew, were listed and were switched on, and their legend
+entries showed their names with no symbol beside them. The same was true of any map whose layer takes its
+colours from a numeric field.
+
+The legend asks the service which of a layer's symbols actually have features behind them, so it can leave
+out the ones nothing uses. It built that question with every value in quotation marks, which asks a number
+field to equal a piece of text. Some servers accept that and ours rejects it, and when the question failed
+the legend quietly dropped every row - which is why the heading stayed and everything under it went. A
+value is now quoted only when the layer itself says the field is text, so a lot code like `09400` is still
+treated as text and a `1` is not; and a row whose question fails is kept and reported rather than dropped,
+so a future failure shows up as a wrong legend rather than an empty one
+([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987),
+[#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)).
+
+| Before | After |
+| --- | --- |
+| ![Freshman Selectable Parking on production: both legend headings present with no symbol under either](../screenshots/1988-legend-numeric-where/before-production-legend-empty.png) | ![The same legend with a coloured symbol beside each layer](../screenshots/1988-legend-numeric-where/after-local-build-legend-symbols.png) |
 ### Business Parking draws its lots again
 
 The Business Parking map showed its two-hour business spaces but none of the lots. Both lot layers
@@ -573,6 +592,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Layer symbols back in the legend ([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987), [#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)) | [dev.aggiemap.tamu.edu/parking/permit-select-freshman](https://dev.aggiemap.tamu.edu/parking/permit-select-freshman) | Both layers have a coloured symbol beside their name in the Legend, not just the name. Then check a few other parking maps - Visitor, Motorcycle, Accessible - and the main map's layers: every legend entry for a switched-on layer has a symbol, and no legend that was right before has lost a row |
 | Business Parking draws its lots ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)) | [dev.aggiemap.tamu.edu/parking/business-parking](https://dev.aggiemap.tamu.edu/parking/business-parking) | Maroon surface lots and pink garages across campus, as well as the blue two-hour space markers. In the Legend, all three entries have a symbol beside them: a blue triangle, a maroon square and a pink square. Switching either lot layer off removes those lots and its legend entry |
 | GIS Day: the LiDAR sponsorship level ([#1976](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1976)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: `/sponsors/tamu` | Five cards, LiDAR last at $4,096 with 6 representatives; choosing it shows its benefits; the other four prices unchanged. On a phone: two cards to a row, "reps", no sideways scrolling. In Admin, Sponsors, the level list offers LiDAR |
 | GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |

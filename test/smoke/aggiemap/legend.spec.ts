@@ -299,3 +299,40 @@ test.describe('legend', () => {
     });
   }
 });
+
+/**
+ * A legend shows the symbols of a layer drawn with a two-field unique-value renderer (#1987, #1988).
+ *
+ * Freshman Selectable Parking's two layers draw red and blue by two integer fields, so their legend
+ * rows are `1,1` and `0,1`. The legend asks the layer whether each row has features, and quoted both
+ * values as strings, which the server rejected; every row was dropped, and the legend showed the two
+ * layers' names with no symbols, so nothing said what red and blue mean.
+ */
+test('Freshman Selectable Parking: each layer in the legend shows its symbols', async ({ page }) => {
+  test.setTimeout(150_000);
+
+  await blockAnalytics(page);
+  await page.goto('/parking/permit-select-freshman/map/d');
+
+  const entries = page.locator('tamu-gisc-legend tamu-gisc-legend-collection');
+
+  await expect(entries.first(), 'the legend listed no layers').toBeVisible({ timeout: 120_000 });
+  await page.waitForFunction(
+    () => (window as unknown as { __tamuGiscMapProbe?: { drawing: boolean } }).__tamuGiscMapProbe?.drawing === false,
+    undefined,
+    {
+      timeout: 120_000
+    }
+  );
+
+  for (const entry of await entries.all()) {
+    const title = (await entry.locator('.collection-group-title-text').textContent())?.trim();
+
+    await expect(
+      entry.locator('.legend-info .image-container').first(),
+      `"${title}" is in the legend with no symbol`
+    ).toBeVisible({
+      timeout: 30_000
+    });
+  }
+});
