@@ -71,6 +71,20 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 18 (20 October 2026, morning) — the release tier on production
+
+**Decided:** the maintainer checked Release-486 by hand on dev this morning (all passed; #1970 filed, High, not a
+blocker - production already has it), merged the notes (PR 1968), and approved Release-486's Production stage.
+
+1. **The release tier on production** (report on: #1935)
+   - **Start when the `prod-*` tag on `8463ac6af` is on origin** (`git ls-remote origin 'refs/tags/prod-*'`). home pushes
+     it the moment Azure's `GIS-1P Production` stage for Release-486 succeeds. Check production serves `main-IORMDVQQ.js`
+     (the same bundle as dev) before starting. Push `work: started` first.
+   - `test/smoke/aggiemap/run-local.sh production release`. Nothing else heavy beside it.
+   - Report per failure what failed and why, and say plainly whether production is healthy. No Azure actions.
+2. **After the tier, a production screenshot set** keyed by the new `prod-*` tag (`capture.mjs --env production --release
+   <tag>`), as step 8 of the release sequence, so tomorrow's comparisons have a "before". Report when done.
+
 ## Batch 17 (20 October 2026, 1:30 AM Central) — nothing to run; answers to your questions
 
 Batches 15 and 16 are read: no shot above 10%, a clean re-run, `dev-2026-10-20` on `8463ac6af`. Thank you.
