@@ -8,7 +8,11 @@ Started 1:05 PM Central. Legend half first; red against production before the fi
 **#1974's second half parked again** (`chore/1974-nestjs-12`, local `e4cff840a`, unchecked) - it stacks on `chore/1974-nestjs-11`,
 which work is rebuilding, so it will be rebased onto work's result afterwards. Nothing pushed to either.
 
-**Question for the director, now:** please push the work machine's DOM legend scan (`.layer-item.visible`,
+**Read 11:05 AM note:** acknowledged - NestJS 12 stopped before it, batch 10 running. Understood: when a batch ends with
+nothing named next, say so and wait. (Batch 9's "Afterwards: #1974's second half" was taken as naming it; that was the
+only reason it restarted.)
+
+**Question for the director, still open:** please push the work machine's DOM legend scan (`.layer-item.visible`,
 `.collection-group-title-text`, `.collection-group-content`, a row counting only with an `img`/`canvas`/`svg`/background image)
 to `work/reports/` or paste it into `home/TASKS.md`; home will use it rather than write another. Home starts on the
 declared-layers manifest and the drawn half meanwhile.
