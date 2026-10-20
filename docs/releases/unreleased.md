@@ -1,6 +1,6 @@
 # Unreleased
 
-Since the 19 October release: two AggieMap fixes, and GIS Day changes waiting for GIS Day's own
+Since the 19 October release: three AggieMap fixes, and GIS Day changes waiting for GIS Day's own
 deploy.
 
 **The latest release notes are [19 October 2026](2026-10-19.md)**, for the build from `8463ac6af`
@@ -15,6 +15,21 @@ result adds its own entry below, in that pull request**, with its before/after s
 ---
 
 ## Summary
+
+### Aerial Imagery no longer opens as a blank map
+
+Choosing Aerial Imagery left the map white on about one load in three, on production as well as dev;
+moving the date slider, or zooming, often brought the imagery back. Nearmap's latest imagery of campus
+is one layer made of 19 captures, and the map asked for all 19 by name. That made the request too long
+to send as an ordinary GET, so it went as a POST, which Nearmap sometimes answers with an empty document
+instead of a picture. The map now asks for the combined layer by its one name, a short GET, and gets an
+image every time; a chosen date is still one capture. On development hosts the panel's spinner beside
+Aerial Imagery could also keep spinning after the imagery had drawn; it now stops when the basemap has
+drawn ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)).
+
+| Before | After |
+| --- | --- |
+| ![Aerial Imagery chosen, and the map blank white](../screenshots/nearmap-blank-latest/before-blank.png) | ![Aerial Imagery chosen, and the latest imagery drawn](../screenshots/nearmap-blank-latest/after-latest.png) |
 
 ### Layer symbols are back in the legend, where a layer's colours come from a number
 
@@ -620,6 +635,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Aerial Imagery no longer opens blank ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)) | [dev.aggiemap.tamu.edu/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), then choose Aerial Imagery; repeat with a fresh page several times | The imagery draws every time without zooming or touching the slider, and the spinner beside Aerial Imagery stops once it has. The slider still steps back to older dates and forward to Latest. On a phone, ☰ → Basemap → Aerial Imagery draws too |
 | Layer symbols back in the legend ([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987), [#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)) | [dev.aggiemap.tamu.edu/parking/permit-select-freshman](https://dev.aggiemap.tamu.edu/parking/permit-select-freshman) | Both layers have a coloured symbol beside their name in the Legend, not just the name. Then check a few other parking maps - Visitor, Motorcycle, Accessible - and the main map's layers: every legend entry for a switched-on layer has a symbol, and no legend that was right before has lost a row |
 | Business Parking draws its lots ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)) | [dev.aggiemap.tamu.edu/parking/business-parking](https://dev.aggiemap.tamu.edu/parking/business-parking) | Maroon surface lots and pink garages across campus, as well as the blue two-hour space markers. In the Legend, all three entries have a symbol beside them: a blue triangle, a maroon square and a pink square. Switching either lot layer off removes those lots and its legend entry |
 | GIS Day at phone width ([#1980](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1980)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone: `/sponsors/tamu`, `/competitions/presentation`, `/faq`, `/competitions/signage` | No page scrolls sideways; a sponsor level's benefits are one column; the Presentation page's links sit above its text; the menu button has a white backdrop as the page scrolls under it; the signage graphics wrap. On a desktop, nothing changes |
