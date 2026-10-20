@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **8:25 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
+Last written **8:30 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
@@ -11,16 +11,21 @@ Clock times here are read from PowerShell or from a commit timestamp, not estima
 
 ## Running now
 
-**Waiting for the final build to reach dev**, to start batch 14 task 2.
+**Batch 14 task 2: the release tier on the final build.** Started **8:30 PM Central**.
 
 | | |
 | --- | --- |
-| Final build | commit **`8463ac6af`** — `development`'s head, with PRs 1950, 1966 and 1967 merged |
-| Start when | a release from that commit shows `GIS-1D Development` succeeded **and** dev serves a bundle other than Release-485's `main-CR5DN6UQ.js` |
-| Then | `run-local.sh development release`, nothing else heavy beside it |
-| Tag | only on a clean pass; #1951's AVP popup failing alone is **not** clean |
+| Release | **Release-486, build 20261019.21** |
+| Commit | **`8463ac6af`** — `development` with PRs 1950, 1966 and 1967 |
+| Dev serves | `main-IORMDVQQ.js` (Release-485 served `main-CR5DN6UQ.js`) |
+| Running | `run-local.sh development release`, from a worktree at that commit |
+| Expect | about 30 minutes, roughly 550 tests |
 
-A waiter is polling both conditions. `work: started` goes out before the tier runs.
+Both start conditions were checked: the dev stage says succeeded **and** the bundle changed. The nginx server used
+for #1954's after image was removed first, so nothing heavy runs beside the tier.
+
+**The tag waits on the result.** Only a clean pass gets `dev-*` on `8463ac6af`; the AVP popup (#1951) failing on
+its own is not clean, and is reported rather than tagged around.
 
 ## Batch 14 task 1's placement amendment arrived after the merge
 
