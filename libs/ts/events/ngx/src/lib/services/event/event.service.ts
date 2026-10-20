@@ -565,11 +565,7 @@ export class EventService {
    * @returns `true` if the feature was found and selected.
    */
   private async selectFeatureByObjectId(source: LayerSource, layer: esri.FeatureLayer, objectId: number): Promise<boolean> {
-    const result = await layer.queryFeatures({
-      objectIds: [objectId],
-      outFields: ['*'],
-      returnGeometry: true
-    });
+    const result = await this.queryDrawnFeatures(layer, { objectIds: [objectId] });
 
     const feature = result.features[0];
 
@@ -580,6 +576,32 @@ export class EventService {
     this.showFeature(feature, source, objectId);
 
     return true;
+  }
+
+  /**
+   * Queries `layer` for the features matching `properties` among those the map draws, with every
+   * field and their geometry, for a link to select one of them.
+   *
+   * A link must not select a feature the map does not show (#1954). ArcGIS applies a layer's
+   * `definitionExpression` to what it draws and to the query `layer.createQuery()` returns, but sends
+   * a query object passed to `queryFeatures` as it is, so `?lot=100j` on Motorcycle Parking, which
+   * draws only `M/C` spaces, selected an `H/C` one. Starting from `createQuery()` lets ArcGIS supply
+   * the filter, whether a definition, a builder choice or a subtype set it.
+   */
+  private queryDrawnFeatures(
+    layer: esri.FeatureLayer,
+    { where, ...properties }: esri.QueryProperties
+  ): Promise<esri.FeatureSet> {
+    const query = layer.createQuery();
+
+    Object.assign(query, properties, { outFields: ['*'], returnGeometry: true });
+
+    if (where) {
+      // A layer with no filter answers `1=1`, which needs no joining.
+      query.where = query.where && query.where !== '1=1' ? `(${query.where}) AND (${where})` : where;
+    }
+
+    return layer.queryFeatures(query);
   }
 
   /** Selects a queried feature of `source`'s layer and shows it with its popup, as a click on it does. */
@@ -734,11 +756,7 @@ export class EventService {
     for (const { source, layer, fields } of candidates) {
       const where = fields.map((field) => `UPPER(${field}) = '${escapedValue}'`).join(' OR ');
 
-      const result = await layer.queryFeatures({
-        where,
-        outFields: ['*'],
-        returnGeometry: true
-      });
+      const result = await this.queryDrawnFeatures(layer, { where });
 
       const feature = result.features[0];
 

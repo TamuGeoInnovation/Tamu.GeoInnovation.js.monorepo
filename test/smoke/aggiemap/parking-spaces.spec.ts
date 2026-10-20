@@ -126,3 +126,35 @@ test.describe('parking-space maps', () => {
     });
   }
 });
+
+/**
+ * A link selects only a space the map draws (#1954).
+ *
+ * `?lot=100j` on Motorcycle Parking selected space 26692, an `H/C` space, on a map whose layer holds
+ * only `M/C` spaces: the lookup query left out the layer's filter. Lot 100J has motorcycle spaces too,
+ * so the link must select one of them. The selected space is read from the popup's share link, which
+ * names it as `feature=<layer>:<object id>`, and the service is asked what type of space that is.
+ */
+test('/parking/motorcycle-parking/map?lot=100j selects a motorcycle space', async ({ page, request }) => {
+  const map = MAPS.find((m) => m.layerId === 'motorcycle-parking-space') as (typeof MAPS)[number];
+  const link = page.locator('tamu-gisc-copy-field .copy-text');
+
+  await blockAnalytics(page);
+  await page.goto(`${map.route}/map?lot=100j`, { waitUntil: 'domcontentloaded' });
+  await expect(link, 'the link selected nothing').toHaveText(/[?&]feature=/, { timeout: 90_000 });
+
+  const [layerId, objectId] = (new URL((await link.textContent()) ?? '').searchParams.get('feature') ?? '').split(':');
+
+  expect(layerId, 'the link selected a feature of another layer').toBe(map.layerId);
+
+  const response = await request.get(`${map.url}/query`, {
+    params: { objectIds: `${objectId}`, outFields: 'LotName,Spc_Type', returnGeometry: 'false', f: 'json' }
+  });
+  const space = ((await response.json()) as { features?: { attributes: Record<string, string> }[] }).features?.[0]
+    ?.attributes;
+
+  test.info().annotations.push({ type: 'selected', description: `space ${objectId}: ${JSON.stringify(space)}` });
+
+  expect(space?.LotName?.toUpperCase(), `space ${objectId} is not in lot 100J`).toBe('100J');
+  expect(space?.Spc_Type, `space ${objectId} is not one the map draws`).toBe('M/C');
+});
