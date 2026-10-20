@@ -3,10 +3,10 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-(nothing) - waiting for #1981 to go out, then #1974's second half.
+**Batch 9: #1988 / #1987, the legend's numeric where clause**, branch `fix/1988-legend-numeric-where`. Started 12:15 PM Central.
+(Batch 8 was missed: this machine's task-file watcher was not running while batch 7 was worked. Batch 9 replaces it.)
 
-**branch ready: fix/1981-business-parking-lots** (`cd8def771`, report 6) - URGENT, work takes the images and opens the PR.
-Also ready: `feat/1975-tailgating-kiosk` (`9bfb6a3e9`, report 1). Filed: #1988.
+**branch ready:** `fix/1981-business-parking-lots` (`cd8def771`, report 6), `feat/1975-tailgating-kiosk` (`9bfb6a3e9`, report 1).
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
