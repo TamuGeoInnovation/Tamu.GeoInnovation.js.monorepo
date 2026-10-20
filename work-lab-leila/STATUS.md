@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:37 PM Central, 20 October 2026**. A listener; job: testing.
+Last written **5:47 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -22,13 +22,14 @@ Last written **5:37 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Batch 2, the three parking fixes checked together.** Started 5:37 PM Central. `fix/1991-vendor-parking-lots`
-(`155f074a1`), `fix/1992-accessible-parking-sports-maps` (`248ef407e`) and `fix/1992-legend-multi-value-class`
-(`e5a66b132`) merged onto `origin/development` in a worktree of their own, pushed to the fork as
-`check/2026-10-20-three-parking-fixes`, then `scripts/check-in-volume.sh` on it, then `map-layers.spec.ts`
-against a local production build of it.
+None.
 
 ## Finished
+
+- **Batch 2, the three parking fixes together** (5:37 to 5:47 PM): merged clean, pushed to the fork as
+  `check/2026-10-20-three-parking-fixes`; check exit 1 on one `ts-events-ngx` snapshot that `fix/1991` fails alone;
+  `map-layers.spec.ts` on a local production build 58 passed, 12 skipped, 0 failed. Report
+  `work-lab-leila/reports/2026-10-20-2.md`.
 
 - **Batch 1, #2008** (5:27 to 5:37 PM): Maintenance Parking passed on production every time, in 41.5 and
   46.6 s with six workers and 43.4 s alone; the limit tracks machine load, not the map. Report
@@ -46,4 +47,4 @@ against a local production build of it.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 1
+Last batch done: 2
