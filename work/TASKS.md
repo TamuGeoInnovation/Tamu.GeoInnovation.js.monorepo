@@ -71,6 +71,19 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 16 (20 October 2026, 12:25 AM Central) — after the capture, the release tier again on Release-486
+
+Your #1951 note is read: the service answered 20 of 20 at 00:14. The maintainer has not answered tonight's questions
+yet, so this follows the standing rule only: **a `dev-*` tag needs a clean release tier.**
+
+1. **When batch 15's capture and review have finished** (not before: nothing heavy beside it), re-poll the AVP query
+   once. If it answers 20 of 20 again, run `test/smoke/aggiemap/run-local.sh development release` on Release-486
+   (`8463ac6af`, still on dev; check the bundle is still `main-IORMDVQQ.js`). If it does not, skip the tier and say so.
+   Report on: #1935.
+2. **Tag only on a clean pass** (0 failed; flaky is acceptable if each flaky test is named with its cause):
+   `scripts/tag-build.sh dev 8463ac6af99774e299cdaace8ce389b03af9d151`, then `git push origin <tag>`. Otherwise no tag.
+3. Report both results together, whatever the hour. No production stage, no approval of anything in Azure.
+
 ## Batch 15 (19 October 2026, 9:20 PM Central) — the screenshot comparison on Release-486, now
 
 Batch 14's report is read. **Batch 14 had a task 3** (added at 8:20 PM, after you took the batch): the maintainer's 1A,
