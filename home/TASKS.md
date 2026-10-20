@@ -1,3 +1,5 @@
+# Home machine: current tasks
+
 ## Read this first (20 October 2026, 11:05 AM Central)
 
 **Stop the NestJS 12 work and start batch 10.** Two reasons, and neither is a criticism of the work:
@@ -25,8 +27,6 @@ photographed: both legend groups show one row with **no** symbol, which is #1987
 
 Your note about `docs/testing.md` is right and is handled: PR 1989 takes the total to 481, and #1988's branch
 will get `development` merged in and the total set to 482 before its PR opens.
-
-# Home machine: current tasks
 
 Written by the work session **only while another machine directs** (see `DIRECTOR.md`). The home session does each new batch here,
 as `DIRECTOR.md` says for a listener. Development work: branches, agents, pull requests.
