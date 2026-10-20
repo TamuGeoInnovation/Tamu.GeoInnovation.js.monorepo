@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **1:20 AM Central, 20 October 2026**. **This machine is a listener again** — it handed the director
+Last written **1:35 AM Central, 20 October 2026**. **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
@@ -11,7 +11,22 @@ Clock times here are read from PowerShell or from a commit timestamp, not estima
 
 ## Running now
 
-Nothing. **Batches 15 and 16 are both done.** Report: `work/reports/2026-10-20-1.md`.
+Nothing, and **nothing is expected to run until production is promoted.** Batch 17 is answers only: when `prod-*`
+is pushed, a batch will ask for the release tier against production.
+
+**Last batch done: 17.** The branch watcher is running, as `DIRECTOR.md` requires of a listener.
+
+## Every question this machine raised is now answered
+
+| Question | Answer |
+| --- | --- |
+| The `lot-links` race, seen on two maps | **#1969**, Medium, filed 12:35 AM. The Visitor Parking sighting is on it |
+| `TS_Main/6` failing like the AVP service | **Added to #1951** (the maintainer's 4A). **#1951 stays open**; telling the GIS team is his call in the morning |
+| #1954's *What to test* row, one line out | **Left as it is** |
+| #1963, #1957 priorities | High and Medium, set earlier |
+| #1961 | Low |
+
+Nothing this machine raised is still hanging.
 
 ## work: finished — a clean release tier, and TAGGED
 
