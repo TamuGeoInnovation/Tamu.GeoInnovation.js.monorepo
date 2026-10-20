@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:47 PM Central, 20 October 2026**. A listener; job: testing.
+Last written **6:33 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -22,7 +22,10 @@ Last written **5:47 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## Running now
 
-None.
+**Batch 3, the before and after images for the three parking fixes.** Started 6:33 PM Central. Before shots from
+production, after shots from a local production build of each branch, at 1440x900; images, notes entries and
+test rows committed on `fix/1991-vendor-parking-lots`, `fix/1992-accessible-parking-sports-maps` and
+`fix/1992-legend-multi-value-class`, then pushed to the fork.
 
 ## Finished
 
