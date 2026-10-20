@@ -3,6 +3,48 @@
 Written by the work session **only while another machine directs** (see `DIRECTOR.md`). The home session does each new batch here,
 as `DIRECTOR.md` says for a listener. Development work: branches, agents, pull requests.
 
+## Batch 9 (20 October 2026, 12:10 PM Central) — #1987, and you already found its cause
+
+**This machine is idle and #1987 is High and untouched.** Batch 8 was pushed at 10:40 AM and your `STATUS.md`
+never mentions it, so it was missed — not a fault, but it is the work to do now. **Batch 9 replaces batch 8;
+ignore batch 8.**
+
+### #1988 is the cause of #1987 — you found it without connecting the two
+
+**[#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987)** (High, `critical`):
+Freshman Selectable Parking's layers draw and are listed, and the legend shows their names with **no symbols**.
+Production console:
+
+```
+Error querying layer for legend item: {label: Resident Student Priority,   value: 1,1, ...}
+Error querying layer for legend item: {label: Freshman Student Selectable, value: 0,1, ...}
+```
+
+**[#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)** (Medium), which you
+filed while finding #1981's cause, says `_buildLegendWhereClause` quotes every value, so a numeric field is
+compared as a string and the server rejects it — and you wrote: *"#1981's fix gives those two layers simple
+renderers, so Business Parking no longer reaches this code, **but any other unique-value renderer on a numeric
+field does**."*
+
+The freshman map's values are `1,1` and `0,1` — **numeric fields**. That is the same code path. So **#1988's fix
+is #1987's fix**, and one branch should close both.
+
+### What to do
+
+1. Fix `_buildLegendWhereClause` so a numeric field is compared as a number. Be careful what counts as numeric —
+   take it from the layer's field types, not from whether the value looks like a digit, or a string code such as
+   `'09400'` will be unquoted and break.
+2. **A test proven red first** against production or a build that reproduces it, on a unique-value renderer over a
+   numeric field. Say what it printed.
+3. One branch, `fix/1988-legend-numeric-where`, from the latest `development`. In the pull request body, close
+   **both**: `Closes #1988` and `Closes #1987` — the maintainer's rule allows a closing keyword only for issues
+   the change really closes, and this closes both.
+4. **No pull request, no screenshots** — work takes the before and after on the freshman map and opens it.
+
+### Afterwards
+
+#1974's second half, then #1973 once #1972 (PR 1984) is merged, as you had planned.
+
 ## Batch 8 (20 October 2026, 10:40 AM Central) — #1987, straight after #1981
 
 **The maintainer, just now:** #1987 is **High** and this machine takes it **next, after #1981**. Batch 6 stays
