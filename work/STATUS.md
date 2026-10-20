@@ -13,6 +13,13 @@ Last written **10:18 AM Central, 20 October 2026**. **This machine is the direct
 sequence, owed since the production deploy. A couple of hours; it resumes if interrupted.
 
 ## Finished
+- **PR [2000](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2000) is open for
+  #1986** (3:20 PM): home's `map-layers.spec.ts`, 70 tests, one per map. `drawn-symbols.spec.ts` deleted here
+  per the maintainer (it was the narrow form of the same check), `docs/testing.md` total 552 to **551**, no
+  other reference to it anywhere. Affected check: lint 5, test 5, build 2, exit 0. `no-visible-change` applied
+  deliberately; #1986 In Progress, PR Pending Approval.
+- **#1991, #1992, #1993 set to High** by the maintainer and added to the board as Todo; handed to home as
+  batch 11. Production stays red on those three on purpose — not listed as allowed failures.
 - **Both urgent fixes merged** (1:45 PM): PR 1989 (`8e505e2fd`) and PR 1990 (`9ee3b97e8`). #1981, #1987 and
   #1988 all closed by the merges. 1990 needed a fix-up after 1989 landed: `development` merged in, both
   release-notes entries and both *What to test on dev* rows kept, and `docs/testing.md`'s total set to
