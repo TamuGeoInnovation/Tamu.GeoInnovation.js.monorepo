@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **9:15 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
+Last written **9:25 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
@@ -11,7 +11,26 @@ Clock times here are read from PowerShell or from a commit timestamp, not estima
 
 ## Running now
 
-Nothing. **Batch 14 is done, both tasks.** Report: `work/reports/2026-10-19-1.md`.
+**Batch 15 (#1949): the full screenshot comparison on Release-486.** Started **9:25 PM Central**.
+
+| | |
+| --- | --- |
+| Container | `vb-dev-8463ac6af-as-prod` |
+| Command | `capture.mjs --env development --as production --release 8463ac6af` |
+| Then | `review.mjs` against **`prod-2026-10-16-corrected`** |
+| Scale | 848 shots, 424 routes x 2 viewports; about three hours |
+| Why | PR 1950 rehosts every map, so the question is whether any map *looks* different |
+
+Nothing else heavy runs beside it. The report goes out whenever it lands.
+
+## A miss of this machine's own, worth recording
+
+**Batch 14's task 3 — this comparison — was added at 8:20 PM and this machine did not do it.** It read the batch
+again after the 8:15 PM amendment but only looked at the tail of the section, so the new task above it was never
+seen, and the batch was reported finished with two tasks of three.
+
+Reading a changed batch means reading **the whole batch**, not the part that changed. The director caught it; it
+should not have needed catching.
 
 ## work: finished — the release tier on Release-486. NOT TAGGED.
 
