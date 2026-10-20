@@ -112,6 +112,18 @@ describe('DiscoveryService', () => {
     expect(campus).toBeDefined();
     expect(campus?.thumbnail).toBe(`./assets/images/campus/${id}.jpg`);
   });
+
+  /**
+   * Kiosk maps are embedding targets, not maps to offer a visitor: they are listed only in the
+   * development-only Kiosk Maps section, and never in search or All Maps (#1392, #1975).
+   */
+  describe('kiosk maps', () => {
+    it.each(['dining', 'football-tailgating'])('lists %s only in the Kiosk Maps section', (id) => {
+      expect(service.getKioskDiscoverApplications().map((app) => app.id)).toContain(id);
+      expect(service.getInternalDiscoverApplications({ includeRetired: true }).map((app) => app.id)).not.toContain(id);
+      expect(service.getAllDiscoverApplications().map((app) => app.id)).not.toContain(id);
+    });
+  });
 });
 
 function createDiscoverApplication(overrides: Partial<InternalDiscoverApplication> = {}): InternalDiscoverApplication {

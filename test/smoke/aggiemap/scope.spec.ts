@@ -110,6 +110,19 @@ test.describe('choosing the quick set for a change', () => {
     expect(set.unmapped).toEqual([]);
   });
 
+  test('checks the kiosk maps when a kiosk, or the tailgating map its kiosk reuses, changes', () => {
+    // The real definitions files, read from disk.
+    for (const file of ['dining', 'tailgating', 'tailgating-kiosk']) {
+      const set = quickSetFor([`${DEFINITIONS}${file}.definitions.ts`]);
+
+      expect(set.specs).toContain('kiosk.spec.ts');
+    }
+
+    expect(quickSetFor([`${DEFINITIONS}tailgating-kiosk.definitions.ts`]).routes).toContain(
+      '/kiosk/football-tailgating'
+    );
+  });
+
   test('runs a changed smoke spec whole', () => {
     const set = quickSetFor(['test/smoke/aggiemap/bus.spec.ts', 'test/smoke/aggiemap/environments.json'], read);
 
