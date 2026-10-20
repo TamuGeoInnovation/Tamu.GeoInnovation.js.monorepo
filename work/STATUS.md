@@ -8,9 +8,22 @@ Last written **10:18 AM Central, 20 October 2026**. **This machine is the direct
 
 ## Running now
 
-(nothing) — PR 1989 is open and waiting on the maintainer.
+**The full affected check on `chore/1974-nestjs-11-merge`** (PR 1985's branch, merged with `development`),
+started 10:50 AM Central in `C:/TAMU/wt-1974`. A dependency change, so the whole affected set, not a narrow
+list. Nothing is pushed until it passes.
 
 ## Finished
+- **PR 1985's conflict resolved here, not yet pushed** (10:50 AM). `development` moved under both open pull
+  requests when the maintainer merged PR 1984 (Nx 23.3) and PR 1983 (LiDAR level). On PR 1985 only
+  `package.json` and `package-lock.json` conflicted: Nx 23.2.1 against 23.3.0, and `@nestjs/testing` 10.4.22
+  against 11.2.7. Resolved to **Nx 23.3.0 and NestJS 11.2.7**, then the lock rebuilt from the resolved
+  `package.json` with `npm install --package-lock-only --ignore-scripts` rather than hand-merged. **Home must
+  not push to `chore/1974-nestjs-11`**; it is told so in batch 10.
+- **PR 1989 merged with `development` and is green again** (10:40 AM). The conflict was one row in
+  *What to test on dev*, against #1976's LiDAR row; both rows kept. Re-checked:
+  `lint, test, build for 2 projects`, exit 0, and `npm ci` ran inside it. GitHub now reports **MERGEABLE**,
+  with *Has a linked issue*, *Set Base Reference*, *Has before/after images* and *Lists every smoke spec* all
+  green; Azure and Lint still running.
 
 - **#1981 — PR [1989](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1989) is open**,
   10:15 AM. Home's branch `fix/1981-business-parking-lots`, plus the before and after and the release notes taken
