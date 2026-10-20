@@ -534,6 +534,34 @@ Sponsors page gets a LiDAR group above Raster, shown only in a year that has a L
 | | ![Raster's benefits unchanged beside the new card](../screenshots/1976-lidar-level/after-raster.png) |
 | | ![At phone width: two cards to a row, "reps"](../screenshots/1976-lidar-level/after-phone.png) |
 
+### GIS Day: four pages fixed at phone width
+
+Every public txgisday.org page was checked at 360 and 390 px wide ([#1980](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1980)). Four things were broken, and
+are fixed:
+
+- **The sponsor page's benefits** were squeezed into two narrow columns; they are now one column.
+- **The Presentation competition page** kept its section links beside the text, leaving the text half
+  the screen. It now stacks them, as the Posters page already did, with the shared `wrap` class.
+- **The menu button** floated over the page text as it scrolled. It now has a white backdrop. That is a
+  new option on the shared button in `libs/ui-kits`, which GIS Day turns on and geoservices does not, so
+  geoservices looks as it did.
+- **The 2019 Signage competition page** ran its six point graphics off the screen; they now wrap.
+
+A new end-to-end check, `test/e2e/gisday/phone-width.spec.ts`, loads every public route and these
+pages at 360 px. It failed on all four problems before the fixes, and on the level cards #1976 fixed.
+The admin and signed-in pages still need checking (listed on the issue).
+
+**The screenshots** of every page are kept the way AggieMap's are: `tools/visual-baselines` takes
+GIS Day sets now (`--app gisday`), outside the repository. Its README and the GIS Day release steps
+say how.
+
+| Before (production, 390 px) | After |
+| --- | --- |
+| ![Benefits in two narrow columns](../screenshots/1980-phone-width/before-sponsor-benefits.png) | ![Benefits in one column](../screenshots/1980-phone-width/after-sponsor-benefits.png) |
+| ![Presentation text squeezed beside its links](../screenshots/1980-phone-width/before-presentation.png) | ![Links above the text](../screenshots/1980-phone-width/after-presentation.png) |
+| ![Menu button over a FAQ question](../screenshots/1980-phone-width/before-menu-button.png) | ![Menu button on a white backdrop](../screenshots/1980-phone-width/after-menu-button.png) |
+| ![Signage graphics running off the screen](../screenshots/1980-phone-width/before-signage.png) | ![Signage graphics wrapped](../screenshots/1980-phone-width/after-signage.png) |
+
 ---
 
 ## What to test on dev
@@ -547,6 +575,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| GIS Day at phone width ([#1980](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1980)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone: `/sponsors/tamu`, `/competitions/presentation`, `/faq`, `/competitions/signage` | No page scrolls sideways; a sponsor level's benefits are one column; the Presentation page's links sit above its text; the menu button has a white backdrop as the page scrolls under it; the signage graphics wrap. On a desktop, nothing changes |
 | GIS Day: the LiDAR sponsorship level ([#1976](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1976)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: `/sponsors/tamu` | Five cards, LiDAR last at $4,096 with 6 representatives; choosing it shows its benefits; the other four prices unchanged. On a phone: two cards to a row, "reps", no sideways scrolling. In Admin, Sponsors, the level list offers LiDAR |
 | GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |
 | GIS Day: sponsorship levels match the prospectus ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` and `/sponsors` | Tiles show 1 to 4 representatives; each level's perks include lunches and a ribbon; Raster says 20-minute speaking slot; the extra-representatives note; on `/sponsors`, only "Sponsor through Texas A&M" under Interested in Becoming a Sponsor, parking passes for Line and above, and days dated 16 to 20 November |
