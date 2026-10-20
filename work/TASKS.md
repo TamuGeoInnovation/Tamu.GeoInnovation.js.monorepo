@@ -76,7 +76,7 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
 Your #1951 note is read: the service answered 20 of 20 at 00:14. The maintainer has not answered tonight's questions
 yet, so this follows the standing rule only: **a `dev-*` tag needs a clean release tier.**
 
-**Decided** (the maintainer, 12:45 AM): **1A** Release-486 goes to production tonight once the notes (PR 1968) merge and
+**Decided** (the maintainer, 12:35 AM): **1A** Release-486 goes to production tonight once the notes (PR 1968) merge and
 this re-run passes, without waiting to read batch 15's comparison; **3A** the Motorcycle Parking lot-link flake is #1969
 (Medium), not a blocker; **4A** `TS_Main/6` is added to #1951 (done). So push this re-run's result the moment it lands.
 
