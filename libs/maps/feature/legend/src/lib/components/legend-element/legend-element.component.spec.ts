@@ -158,4 +158,74 @@ describe('LegendElementComponent', () => {
     expect(wrapper(rows[0]).classList).toContain('swatch');
     expect(wrapper(rows[1]).classList).not.toContain('swatch');
   });
+  /**
+   * A legend row is kept only if the layer has features for it, which is asked with a where clause
+   * built from the row's value (#1987, #1988). Freshman Selectable Parking's rows are `1,1` and `0,1`,
+   * two integer fields; quoted as strings, the server rejected the query and every row was dropped, so
+   * the legend showed its layers' names with no symbols.
+   */
+  describe('which rows a unique-value legend keeps', () => {
+    /** A layer like the server: it rejects a numeric field compared with a quoted value. */
+    function layerWith(fields: Array<{ name: string; type: string }>) {
+      const asked: string[] = [];
+      const numeric = fields.filter((f) => /integer|double|single|long|oid/.test(f.type)).map((f) => f.name);
+
+      return {
+        asked,
+        layer: {
+          definitionExpression: 'Active = 1',
+          fields,
+          queryFeatureCount: async ({ where }: { where: string }) => {
+            asked.push(where);
+
+            if (numeric.some((name) => where.includes(`${name} = '`))) {
+              throw new Error('Unable to complete operation.');
+            }
+
+            return 3;
+          }
+        } as unknown as __esri.FeatureLayer
+      };
+    }
+
+    function rowFor(layer: __esri.FeatureLayer, renderer: Partial<__esri.UniqueValueRenderer>, value: unknown) {
+      const filter = (
+        component as unknown as {
+          _filterLegendInfosWithQuery(l: __esri.FeatureLayer, r: unknown, i: unknown): import('rxjs').Observable<unknown>;
+        }
+      )._filterLegendInfosWithQuery(layer, renderer, { label: 'Row', value });
+
+      return import('rxjs').then(({ firstValueFrom }) => firstValueFrom(filter));
+    }
+
+    it('compares integer fields as numbers, so a two-field row like those of Freshman Parking is kept', async () => {
+      const { layer, asked } = layerWith([
+        { name: 'Resident', type: 'small-integer' },
+        { name: 'Selectable', type: 'integer' }
+      ]);
+
+      const row = await rowFor(layer, { field: 'Resident', field2: 'Selectable', fieldDelimiter: ',' }, '1,1');
+
+      expect(asked).toEqual(['(Active = 1) AND (Resident = 1 AND Selectable = 1)']);
+      expect(row).toEqual({ label: 'Row', value: '1,1' });
+    });
+
+    it('keeps quoting a string field, even when its value looks like a number', async () => {
+      const { layer, asked } = layerWith([{ name: 'FacCode', type: 'string' }]);
+
+      await rowFor(layer, { field: 'FacCode' }, '09400');
+
+      expect(asked).toEqual(["(Active = 1) AND (FacCode = '09400')"]);
+    });
+
+    it('keeps a row whose query fails, rather than leaving the legend without it', async () => {
+      const { layer } = layerWith([{ name: 'Kind', type: 'string' }]);
+
+      (layer as unknown as { queryFeatureCount: () => Promise<number> }).queryFeatureCount = async () => {
+        throw new Error('Unable to complete operation.');
+      };
+
+      expect(await rowFor(layer, { field: 'Kind' }, 'Garage')).toEqual({ label: 'Row', value: 'Garage' });
+    });
+  });
 });
