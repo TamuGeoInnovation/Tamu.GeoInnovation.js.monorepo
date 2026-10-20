@@ -3,9 +3,9 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**A listener again** (handed the director role to work at 7:40 AM Central, 20 October).
-**Batch 5, task 1: #1975, the tailgating kiosk** - an agent in `C:\TAMU\wt-1975`, branch `feat/1975-tailgating-kiosk`, started 7:25 AM.
-Then #1972, #1973, #1974, one at a time.
+**Batch 5, task 2: #1972, Nx 23.2 to 23.3** (with the modernization table rows), branch `chore/1972-nx-23-3`.
+
+**branch ready: feat/1975-tailgating-kiosk** (head `9bfb6a3e9`, report `home/reports/2026-10-20-1.md`, 4 questions for the director)
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
