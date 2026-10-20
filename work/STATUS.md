@@ -3,27 +3,45 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **9:55 AM Central, 20 October 2026**. **This machine directs again** (home handed back at 7:40 AM; the maintainer confirmed it). **This machine is a listener again** — it handed the director
+Last written **10:25 AM Central, 20 October 2026**. **This machine directs again** (home handed back at 7:40 AM; the maintainer confirmed it). **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
 **Last batch done: 13. Batch 14 is taken and waiting on its build.**
 
-## PAUSED at the maintainer's instruction
+## Still paused for its own work, but directing
 
-**The AggieMap work on this machine is stopped, 9:55 AM Central, and will not restart until he says so.** He has
-other things to do and wants the machine. **Do not prompt him to resume it.**
+**This machine's AggieMap work is still stopped** at the maintainer's instruction and will not restart until he
+says so. **Do not prompt him to resume it.** Nothing of this session is running.
 
-Nothing of this session is running: no containers, no tier, no capture, no watcher. This machine is therefore
-**not watching `work-mailbox`**, so a batch pushed here will sit unread until it is told to resume.
+It did act as director at 10:10 AM, because he brought urgent work: **#1981**.
 
-**What that means for the director role.** It is still this machine's, but dormant: **home's questions will not be
-answered while this lasts.** Home has enough queued not to be blocked — batch 6 (the production release tier),
-#1974's second half, #1973 once #1972 lands, and the two pull requests it can open itself.
+### #1981 is home's, now, and home's other work is paused
 
-**One container on this machine is not this session's and was left alone:** `nostalgic_kare`, running
-`node /s/survey-1980.js` from `C:/TAMU/wt-1980`, started 8:59 AM. Another window's work on #1980. Stopping another
-session's container without being asked is interference, so it is still running.
+`critical`: the Business Parking map draws its UB spaces but not its two lot layers. It is live on production.
+Home has it as **batch 7**, with **batch 6 (the production release tier) and #1974 both parked** until it is out.
+
+**The work machine diagnosed it before handing it over, so home does not repeat that:**
+
+- **The service is healthy.** Every definition expression returns data — 58 UB spaces, 90 surface lots, 7 garage
+  lots; `UB_Lot = 1` alone returns 97. The filters and the data are both right, so the fault is ours.
+- **Production's console names the two missing layers in the legend code**, with the definition expression taken
+  apart into a `value:` list — a legend or renderer lookup, not a layer failing to load.
+- **A hypothesis, marked as one:** these two are the only layers on the map sharing a service layer URL (`/1`),
+  differing only by `definitionExpression`.
+- Home is told to check an older build before blaming PR 1950 or the recent legend work, and to **say immediately**
+  if PR 1950 is the cause, because that is a revert decision and it is already on production.
+
+### The gap that let it through is #1986, High
+
+`maps.spec.ts` asserts a map has **at least one** layer and that the layers it **has** are healthy. It never asks
+which layers it **should** have, so two missing layers were invisible to every assertion. The file already said so
+beside its layer annotation: "the raw material for a stricter per-layer expectation later".
+
+#1986 is that expectation, written around the hard part — `loadOnInit: false`, `visible: false`, campus and kiosk
+maps that deliberately drop layers, builder-gated maps, dev-only layers, legitimately empty ones — with every
+exception carrying a reason and an issue number. **It must be proven red against `development` before #1981's fix**,
+naming the two missing lot layers.
 
 ## Where the work stopped, so it can be picked up exactly
 
