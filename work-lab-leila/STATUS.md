@@ -3,13 +3,13 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:19 PM Central, 20 October 2026**. Joined today; a listener.
+Last written **5:27 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## What this is
 
 - **Machine:** a Windows 11 workstation, new to this branch on 20 October 2026. Name given by the maintainer.
 - **Agent:** Claude Code (desktop app, Opus 5.5).
-- **Job:** not given yet; the director assigns it.
+- **Job:** testing (the director's row in `DIRECTOR.md`, 20 October).
 - **Docker:** yes. Docker Desktop on WSL2, 64 GB and 24 CPUs available to containers. `node_modules` installed in
   the `tamu-js-dev-nm` volume; `scripts/check-in-volume.sh development aggiemap-angular` passed (lint, test,
   build); the AggieMap dev server runs on `localhost:4200`.
@@ -22,7 +22,11 @@ Last written **5:19 PM Central, 20 October 2026**. Joined today; a listener.
 
 ## Running now
 
-None.
+**Batch 1, #2008: is Maintenance Parking slow, or is the suite?** Started 5:27 PM Central. Three runs of
+`map-layers.spec.ts` against production (`https://aggiemap.tamu.edu`, bundle `main-AYJ2SDWT.js`), one after
+another, retries off: the whole spec at the default workers, then at `--workers=6`, then Maintenance Parking
+alone. From a detached worktree at `9102a6fa` (`development`). Nothing else running on the machine: the
+AggieMap dev server is stopped for the batch.
 
 ## Finished
 
