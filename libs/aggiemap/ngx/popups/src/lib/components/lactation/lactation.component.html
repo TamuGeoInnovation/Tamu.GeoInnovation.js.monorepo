@@ -1,9 +1,23 @@
 <div class="popup-section">
   <div class="feature-style-1" tabindex="0">Lactation Room</div>
-  <div class="feature-style-2" tabindex="0">Building Name: {{ data.attributes.Name }}</div>
-  <div class="feature-style-2" tabindex="0">Building Number: {{ data.attributes.Bldg_Number }}</div>
-  <div class="feature-style-2" tabindex="0">Availability: {{ data.attributes.MapDisplay }}</div>
-  <div class="feature-style-2" tabindex="0">
-    <a [href]="data.attributes.Notes" target="_blank">Additional Information</a>
-  </div>
+  <div class="feature-style-2" tabindex="0">{{ data.attributes.bldgname }}</div>
+  @if (data.attributes.bldgnum) {
+  <div class="feature-style-2" tabindex="0">Building {{ data.attributes.bldgnum }}</div>
+  }
+</div>
+
+<!-- `access`, `amenities` and `notes` are written with <br> and links in the service, so they are
+     rendered as HTML (sanitized by Angular), the way the markdown popups render theirs (#1960). -->
+<div class="popup-section">
+  @if (data.attributes.availability_type) {
+  <div class="feature-style-2" tabindex="0"><strong>Availability</strong>: {{ data.attributes.availability_type }}</div>
+  } @if (data.attributes.availability_times) {
+  <div class="feature-style-2" tabindex="0"><strong>Hours</strong>: {{ data.attributes.availability_times }}</div>
+  } @if (data.attributes.access) {
+  <div class="feature-style-2" tabindex="0"><strong>Access</strong>: <span [innerHTML]="data.attributes.access"></span></div>
+  } @if (data.attributes.amenities) {
+  <div class="feature-style-2" tabindex="0"><strong>Amenities</strong>: <span [innerHTML]="data.attributes.amenities"></span></div>
+  } @if (data.attributes.notes) {
+  <div class="feature-style-2" tabindex="0"><strong>Notes</strong>: <span [innerHTML]="data.attributes.notes"></span></div>
+  }
 </div>

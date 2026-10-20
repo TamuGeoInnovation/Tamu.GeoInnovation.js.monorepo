@@ -26,6 +26,8 @@ function fakeLayer(id: string, features: Attributes[]) {
     objectIdField: 'OBJECTID',
     fields: ['OBJECTID', 'tent_id', 'name', 'zone_ID'].map((name) => ({ name })),
     load: async () => undefined,
+    // An unfiltered layer's query, as ArcGIS's `createQuery()` gives it.
+    createQuery: () => ({ where: '1=1' }),
     queryFeatures: async (query: { objectIds?: number[] }) => ({
       features: features
         .filter((attributes) => !query.objectIds || query.objectIds.includes(attributes['OBJECTID'] as number))

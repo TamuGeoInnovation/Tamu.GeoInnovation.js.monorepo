@@ -3,8 +3,8 @@
 Since the 19 October release: no AggieMap change yet, and GIS Day changes waiting for GIS Day's own
 deploy.
 
-**The latest release notes are [19 October 2026](2026-10-19.md)**, for the build from `8951a6364`
-(build 20261019.5, Release-484), on dev and held for production on [#1951](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1951). The `prod-*` tag on `8951a6364` records
+**The latest release notes are [19 October 2026](2026-10-19.md)**, for the build from `8463ac6af`
+(build 20261019.21, Release-486), on dev and going to production. The `prod-*` tag on `8463ac6af` records
 when it reaches production. The release before it is [16 October 2026](2026-10-16.md), from `264eebb42`.
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
@@ -489,6 +489,26 @@ and the additional sponsorship opportunities are unchanged ([#1821](https://gith
 | --- | --- |
 | ![The four levels at $512, $1,024, $2,048 and $4,096, on production](../screenshots/1821-sponsor-prices/before.png) | ![The four levels at $256, $512, $1,024 and $2,048](../screenshots/1821-sponsor-prices/after.png) |
 
+### GIS Day: a sponsor can be switched off for a season and kept
+
+Sponsors carry over from one season to the next, and until a company confirms it had to be deleted,
+then added again with its logo once it did. Each sponsor now has an **Active** switch: on the admin
+Sponsors list (it saves at once) and on the sponsor form. A sponsor switched off keeps its details and
+logo in the admin pages but is not shown on the public Sponsors page or the home page. Every existing
+sponsor starts switched on ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)).
+
+**This release changes the database**: it adds `sponsors.active` (and `event_location.checkInZone`,
+from the check-in zones work, which production has not had yet). Both migrations run on production
+before the new API is deployed; each only adds a column, so the site running then keeps working.
+
+The admin image is the list on a scratch page of the local site, because the admin pages need a
+sign-in. In it, one local sponsor (Esri) is switched off; the public page beside it leaves it out.
+
+| Before | After |
+| --- | --- |
+| ![Production Sponsors page before: every sponsor shown, with no way to hide one](../screenshots/1962-sponsor-active/before-public-sponsors.png) | ![The admin Sponsors list with an Active column, Esri unticked](../screenshots/1962-sponsor-active/after-admin-sponsor-list.png) |
+| | ![The public Sponsors page without the switched-off sponsor](../screenshots/1962-sponsor-active/after-public-sponsors.png) |
+
 ---
 
 ## What to test on dev
@@ -498,10 +518,11 @@ and the additional sponsorship opportunities are unchanged ([#1821](https://gith
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** build 20261019.5 (Release-484, `8951a6364`), whose AggieMap rows moved into the [19 October notes](2026-10-19.md). The rows left are GIS Day's, which has no dev site.
+**Currently on dev for testing:** build 20261019.21 (Release-486, `8463ac6af`), whose AggieMap rows moved into the [19 October notes](2026-10-19.md). The rows left are GIS Day's, which has no dev site.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |
 | GIS Day: sponsorship levels match the prospectus ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` and `/sponsors` | Tiles show 1 to 4 representatives; each level's perks include lunches and a ribbon; Raster says 20-minute speaking slot; the extra-representatives note; on `/sponsors`, only "Sponsor through Texas A&M" under Interested in Becoming a Sponsor, parking passes for Line and above, and days dated 16 to 20 November |
 | GIS Day: more than one organization's site, starting with UCGIS ([#1835](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1835), [#1837](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1837)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, [txgisday.org](https://txgisday.org); the UCGIS site once it is deployed | txgisday.org is unchanged: the same menus, footer, logo, tab title and icon, and the About page's committee and resume bank. On the UCGIS site: UCGIS GIS Day and its logo; no Sponsor, Competitions or FAQ menu; no Classes, Check-ins or Student Competitions on the profile; no check-in on an event page; and `/faq`, `/sponsors` and `/competitions` go to the homepage |
 | GIS Day: payment page instead of the giving site ([#1829](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1829)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` | "Sponsor TxGIS Day At TAMU" opens `/sponsors/payment` in the same tab: check payable to the Texas A&M Foundation with "2026-27 GIS Day #73982" on the memo line, the remit-to address, and the ACH or wire contact. No link anywhere goes to the giving site |

@@ -14,6 +14,12 @@ function createConnections(gisHost: string): IComposedConnections {
     basemapUrl: `https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer`,
     inforUrl: `https://${gisHost}/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer`,
     accessibleUrl: `https://${gisHost}/arcgis/rest/services/FCOR/ADA_120717/MapServer/0`,
+    // Lactation rooms, a hosted service from Facilities Analytics & Mapping that replaced layer 2 of
+    // `inforUrl` (#1960). It is published on the production GIS server only, where it is public; the
+    // development server answers "Service not found". So it is named on gis.tamu.edu outright, as
+    // `basemapUrl` is, and development reads production's rooms. Restore `${gisHost}` once #1963
+    // publishes it on the development server.
+    lactationRoomsUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/Lactation_Spaces_view/FeatureServer/0',
     constructionUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0`,
     departmentUrl: `https://${gisHost}/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1`,
     tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/TS_Main/MapServer`,
@@ -146,6 +152,7 @@ export interface IComposedConnections {
   basemapUrl: string;
   inforUrl: string;
   accessibleUrl: string;
+  lactationRoomsUrl: string;
   constructionUrl: string;
   departmentUrl: string;
   tsMainUrl: string;

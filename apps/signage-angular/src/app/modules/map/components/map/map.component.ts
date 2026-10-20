@@ -39,7 +39,6 @@ export class MapComponent {
       }
     },
     view: {
-      mode: '2d',
       properties: {
         // container: this.mapViewEl.nativeElement,
         map: undefined, // Reference to the map object created before the scene

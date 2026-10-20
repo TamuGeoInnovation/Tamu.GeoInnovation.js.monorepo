@@ -197,7 +197,12 @@ export class EventService {
       if (sources.length > 0) {
         await this.mapService.loadLayers(sources);
         this.applyExclusiveLayerVisibility();
-        await this.selectFeatureFromUrl(sources);
+        // Neither the chosen view nor the flash depends on the linked feature being found, so a lookup
+        // that fails - a service erroring, as Transportation Services' did on about half its queries in
+        // October (#1951) - must not skip them (#1953). Logged and not retried, so an outage stays visible.
+        await this.selectFeatureFromUrl(sources).catch((err) =>
+          console.error('EventService: Failed to select the feature in the address', err)
+        );
         await this.applySelectedChoiceView();
         await this.flashFocusFeature();
       } else {
@@ -560,11 +565,7 @@ export class EventService {
    * @returns `true` if the feature was found and selected.
    */
   private async selectFeatureByObjectId(source: LayerSource, layer: esri.FeatureLayer, objectId: number): Promise<boolean> {
-    const result = await layer.queryFeatures({
-      objectIds: [objectId],
-      outFields: ['*'],
-      returnGeometry: true
-    });
+    const result = await this.queryDrawnFeatures(layer, { objectIds: [objectId] });
 
     const feature = result.features[0];
 
@@ -575,6 +576,32 @@ export class EventService {
     this.showFeature(feature, source, objectId);
 
     return true;
+  }
+
+  /**
+   * Queries `layer` for the features matching `properties` among those the map draws, with every
+   * field and their geometry, for a link to select one of them.
+   *
+   * A link must not select a feature the map does not show (#1954). ArcGIS applies a layer's
+   * `definitionExpression` to what it draws and to the query `layer.createQuery()` returns, but sends
+   * a query object passed to `queryFeatures` as it is, so `?lot=100j` on Motorcycle Parking, which
+   * draws only `M/C` spaces, selected an `H/C` one. Starting from `createQuery()` lets ArcGIS supply
+   * the filter, whether a definition, a builder choice or a subtype set it.
+   */
+  private queryDrawnFeatures(
+    layer: esri.FeatureLayer,
+    { where, ...properties }: esri.QueryProperties
+  ): Promise<esri.FeatureSet> {
+    const query = layer.createQuery();
+
+    Object.assign(query, properties, { outFields: ['*'], returnGeometry: true });
+
+    if (where) {
+      // A layer with no filter answers `1=1`, which needs no joining.
+      query.where = query.where && query.where !== '1=1' ? `(${query.where}) AND (${where})` : where;
+    }
+
+    return layer.queryFeatures(query);
   }
 
   /** Selects a queried feature of `source`'s layer and shows it with its popup, as a click on it does. */
@@ -705,15 +732,23 @@ export class EventService {
       await layer.load();
 
       const layerFields = (layer.fields || []).map((field) => field.name);
-      const matchingFields = candidateFields.filter((fieldName) => layerFields.includes(fieldName));
 
-      if (matchingFields.length === 0) {
+      // A service that joins several tables names its fields by table - `GIS.TS.ParkingLots.LotName`,
+      // not `LotName` - so a candidate matches a field's last dot-separated part, and the query below
+      // names the layer's own field. Compared whole, no field matched and a `?lot=` link opened nothing
+      // on fourteen parking maps (#1952).
+      const matches = candidateFields
+        .map((candidate, priority) => ({
+          priority,
+          fields: layerFields.filter((name) => name.split('.').pop() === candidate)
+        }))
+        .filter((match) => match.fields.length > 0);
+
+      if (matches.length === 0) {
         continue;
       }
 
-      const priority = Math.min(...matchingFields.map((fieldName) => candidateFields.indexOf(fieldName)));
-
-      candidates.push({ source, layer, fields: matchingFields, priority });
+      candidates.push({ source, layer, fields: matches.flatMap((match) => match.fields), priority: matches[0].priority });
     }
 
     candidates.sort((a, b) => a.priority - b.priority);
@@ -721,11 +756,7 @@ export class EventService {
     for (const { source, layer, fields } of candidates) {
       const where = fields.map((field) => `UPPER(${field}) = '${escapedValue}'`).join(' OR ');
 
-      const result = await layer.queryFeatures({
-        where,
-        outFields: ['*'],
-        returnGeometry: true
-      });
+      const result = await this.queryDrawnFeatures(layer, { where });
 
       const feature = result.features[0];
 

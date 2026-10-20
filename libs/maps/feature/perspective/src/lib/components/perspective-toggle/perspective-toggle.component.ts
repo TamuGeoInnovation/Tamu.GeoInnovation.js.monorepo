@@ -1,8 +1,8 @@
 import { Component, HostBinding, HostListener, OnInit, inject, input, signal } from '@angular/core';
-import { firstValueFrom, forkJoin, map, Observable, take } from 'rxjs';
+import { firstValueFrom, map, take } from 'rxjs';
 
 import { LayerSource } from '@tamu-gisc/common/types';
-import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 import { NgClass } from '@angular/common';
 
@@ -41,8 +41,6 @@ export class PerspectiveToggleComponent implements OnInit {
     twoD: esri.MapView | undefined;
   } = { threeD: undefined, twoD: undefined };
 
-  private mapInstance: Observable<esri.Map>;
-
   /** The scale the 2D view was at when the map last went to 3D, and what the scene called it once tilted. */
   private flat: { scale: number; sceneScale: number | undefined } | undefined;
 
@@ -66,7 +64,7 @@ export class PerspectiveToggleComponent implements OnInit {
     // Going back to 2D, the basemap 2D was on, or the one chosen while in 3D, goes back first, and
     // says which reference the 2D view has to be in to show it.
     const returning = nextViewType === '2D' ? await this.basemaps.basemapForFlat() : undefined;
-    const view = await firstValueFrom(this.makeView(nextViewType));
+    const view = await this.makeView(nextViewType);
 
     if (returning?.reference && view.type === '2d' && !view.spatialReference?.equals(returning.reference)) {
       view.spatialReference = returning.reference;
@@ -162,14 +160,9 @@ export class PerspectiveToggleComponent implements OnInit {
         map((instance) => instance.view)
       )
       .subscribe((view) => {
-        if (view.type === '2d') {
-          this.perspectives.twoD = view;
-        } else if (view.type === '3d') {
-          this.perspectives.threeD = view;
-        }
+        // A map always opens in 2D.
+        this.perspectives.twoD = view as esri.MapView;
       });
-
-    this.mapInstance = this.ms.store.pipe(map((instances) => instances?.map));
   }
 
   private oppositeViewType(): PerspectiveType {
@@ -180,46 +173,20 @@ export class PerspectiveToggleComponent implements OnInit {
     }
   }
 
-  private makeView(type: PerspectiveType): Observable<esri.SceneView | esri.MapView> {
-    if (type === '3D') {
-      return forkJoin([this.mp.require(['SceneView']), this.ms.store.pipe(take(1))]).pipe(
-        map(([[SceneView], instance]: [[typeof esri.SceneView], MapServiceInstance]) => {
-          if (this.perspectives.threeD === undefined) {
-            // A globe in Web Mercator, said outright: left to work it out from the map, a scene on
-            // the campus vector basemap came up in that basemap's state plane reference (#1735). No
-            // viewpoint here; `setView` gives it the place.
-            const view = new SceneView({
-              map: instance.map,
-              spatialReference: SCENE_REFERENCE,
-              viewingMode: 'global',
-              container: undefined
-            });
-
-            this.perspectives.threeD = view;
-
-            return view;
-          } else {
-            return this.perspectives.threeD;
-          }
-        })
-      );
-    } else {
-      return forkJoin([this.mp.require(['MapView']), this.ms.store.pipe(take(1))]).pipe(
-        map(([[MapView], instance]: [[typeof esri.MapView], MapServiceInstance]) => {
-          if (this.perspectives.twoD === undefined) {
-            this.perspectives.twoD = new MapView({
-              map: instance.map,
-              viewpoint: instance.view.viewpoint.clone(),
-              container: undefined
-            });
-
-            return this.perspectives.twoD;
-          } else {
-            return this.perspectives.twoD;
-          }
-        })
-      );
+  /**
+   * The view for `type`. The 2D view is the map's own `<arcgis-map>`'s; the scene is the `<arcgis-scene>`
+   * beside it, drawn the first time 3D is asked for and kept (#1949). A globe in Web Mercator, said
+   * outright: left to work it out from the map, a scene on the campus vector basemap came up in that
+   * basemap's state plane reference (#1735). No viewpoint here; `setView` gives it the place.
+   */
+  private async makeView(type: PerspectiveType): Promise<esri.SceneView | esri.MapView> {
+    if (type === '2D') {
+      return this.perspectives.twoD;
     }
+
+    this.perspectives.threeD ??= await this.ms.sceneView({ spatialReference: SCENE_REFERENCE, viewingMode: 'global' });
+
+    return this.perspectives.threeD;
   }
 
   private removePerspectiveLayers() {

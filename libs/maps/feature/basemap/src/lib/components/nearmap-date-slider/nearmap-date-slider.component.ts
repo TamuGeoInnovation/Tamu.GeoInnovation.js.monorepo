@@ -1,7 +1,6 @@
 import {
   Component,
   ChangeDetectionStrategy,
-  ElementRef,
   OnDestroy,
   OnInit,
   computed,
@@ -11,25 +10,22 @@ import {
   untracked
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Subject, debounceTime, take, takeUntil } from 'rxjs';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { RangeComponent, RangeTick } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { BasemapGalleryService } from '../../services/basemap-gallery/basemap-gallery.service';
 import { SLIDER_LENGTH, dayOf, spreadPositions } from './nearmap-timeline';
 
-import esri = __esri;
-
 /**
  * A timeline along the bottom of the map for stepping the Aerial Imagery basemap through Nearmap's
  * captures, oldest on the left and the latest on the right, with a tick per capture (#1541).
  *
- * Shows only while Aerial Imagery is the basemap and its date can be chosen. Place it once inside a
- * map's template; it moves itself into the map view's own UI, so it centres on the map rather than on
- * the window and stays clear of the side panel.
+ * Shows only while Aerial Imagery is the basemap and its date can be chosen. Place it once inside
+ * `<tamu-gisc-esri-map>`, with no `slot`: it goes in the map element's default slot, so it centres on
+ * the map rather than on the window and stays clear of the side panel (#1949).
  */
 @Component({
   selector: 'tamu-gisc-nearmap-date-slider',
@@ -40,8 +36,6 @@ import esri = __esri;
 })
 export class NearmapDateSliderComponent implements OnInit, OnDestroy {
   private readonly bs = inject(BasemapGalleryService);
-  private readonly ms = inject(EsriMapService);
-  private readonly el = inject(ElementRef);
   private readonly anl = inject(Angulartics2);
 
   /** The captures oldest first, the order the slider runs in. */
@@ -114,7 +108,6 @@ export class NearmapDateSliderComponent implements OnInit, OnDestroy {
 
   public readonly position = new FormControl<number>(0);
 
-  private view: esri.MapView | esri.SceneView;
   private readonly _destroy$ = new Subject<void>();
 
   constructor() {
@@ -139,11 +132,6 @@ export class NearmapDateSliderComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.ms.store.pipe(take(1), takeUntil(this._destroy$)).subscribe((instance) => {
-      this.view = instance.view;
-      this.view.ui.add(this.el.nativeElement, 'manual');
-    });
-
     this.position.valueChanges.pipe(takeUntil(this._destroy$)).subscribe((at) => this.at.set(at));
 
     // Dragging passes over several captures; only the one it comes to rest near is requested, and the
@@ -191,7 +179,5 @@ export class NearmapDateSliderComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this._destroy$.next();
     this._destroy$.complete();
-
-    this.view?.ui.remove(this.el.nativeElement);
   }
 }

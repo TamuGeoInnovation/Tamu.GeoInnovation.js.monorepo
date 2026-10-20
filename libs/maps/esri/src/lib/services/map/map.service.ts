@@ -21,7 +21,6 @@ import { registerMapProbe } from './map-probe';
 import { orderHitsForPopup, SELECTION_LAYER_ID } from './hit-order';
 import { keepSelectionLayerOnTop } from './selection-layer';
 import { PopupComponentReference } from '../../popup-reference';
-import { useZoomComponent } from '../../map-controls';
 import {
   declaresOwnRenderer,
   PortalItemData,
@@ -57,7 +56,8 @@ export class EsriMapService {
 
   private _hitTest: BehaviorSubject<HitTestSnapshot> = new BehaviorSubject({ graphics: [] });
 
-  private _mapContainer: HTMLDivElement;
+  /** The component holding the map's `<arcgis-map>`, and its `<arcgis-scene>` once there is one. */
+  private _host: MapHost;
 
   private _viewClickHandle: IHandle;
 
@@ -90,69 +90,36 @@ export class EsriMapService {
     this._store.subscribe((instance) => registerMapProbe(instance, this));
   }
 
-  public loadMap(mapProperties: MapProperties, viewProperties: ViewProperties) {
-    // If properties specifies 2d mode, load 2d map view.
-    if (viewProperties.mode === '2d') {
-      this.moduleProvider
-        .require(['Map', 'MapView', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap'])
-        .then(
-          ([Map, MapView, TileLayer, VectorTileLayer, WMSLayer, Basemap]: [
-            typeof esri.Map,
-            typeof esri.MapView,
-            typeof esri.TileLayer,
-            typeof esri.VectorTileLayer,
-            typeof esri.WMSLayer,
-            typeof esri.Basemap
-          ]) => {
-            this.next(mapProperties, viewProperties, Map, MapView, { TileLayer, VectorTileLayer, WMSLayer }, Basemap);
-          }
-        );
-    } else if (viewProperties.mode === '3d') {
-      // If properties specifies 3d mode, load 3d scene view.
-      this.moduleProvider
-        .require(['Map', 'SceneView', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap'])
-        .then(
-          ([Map, MapView, TileLayer, VectorTileLayer, WMSLayer, Basemap]: [
-            typeof esri.Map,
-            typeof esri.SceneView,
-            typeof esri.TileLayer,
-            typeof esri.VectorTileLayer,
-            typeof esri.WMSLayer,
-            typeof esri.Basemap
-          ]) => {
-            this.next(mapProperties, viewProperties, Map, MapView, { TileLayer, VectorTileLayer, WMSLayer }, Basemap);
-          }
-        );
-    }
-  }
-
   /**
-   * Bootstrapping function that continues the map creation after the 2d vs 3d determination is made.
+   * Makes the map a page's `<arcgis-map>` shows, from the page's basemap description (#1949).
    *
-   * @param {MapProperties} Properties
-   * @param {MapViewProperties} ViewProperties
-   * @param {typeof esri.Map} Map
-   * @param {typeof esri.MapView} MapView MapView or SceneView depending on mode
-   * @param {BaseLayerConstructors} layers The classes a basemap's base layers are made from
-   * @param {typeof esri.Basemap} Basemap
+   * The view is the element's own, made by `EsriMapComponent` with this map, and handed back with `useView`.
    */
-  private async next(
-    Properties: MapProperties,
-    ViewProps: ViewProperties,
-    Map: typeof esri.Map,
-    MapView: typeof esri.MapView | typeof esri.SceneView,
-    layers: BaseLayerConstructors,
-    Basemap: typeof esri.Basemap
-  ): Promise<void> {
-    const basemap = this.makeBasemap(Properties, layers, Basemap);
+  public async makeMap(mapProperties: MapProperties): Promise<esri.Map> {
+    const [Map, TileLayer, VectorTileLayer, WMSLayer, Basemap]: [
+      typeof esri.Map,
+      typeof esri.TileLayer,
+      typeof esri.VectorTileLayer,
+      typeof esri.WMSLayer,
+      typeof esri.Basemap
+    ] = await this.moduleProvider.require(['Map', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap']);
+
+    const basemap = this.makeBasemap(mapProperties, { TileLayer, VectorTileLayer, WMSLayer }, Basemap);
+
     this._modules.map = new Map(basemap);
     keepSelectionLayerOnTop(this._modules.map);
 
-    this._mapContainer = ViewProps.properties.container as HTMLDivElement;
+    return this._modules.map;
+  }
 
-    const props = this.makeMapView(ViewProps.properties, this._modules.map);
-    this._modules.view = new MapView(props as esri.MapViewProperties & esri.SceneViewProperties);
-    useZoomComponent(this._modules.view);
+  /**
+   * Takes the view a page's `<arcgis-map>` made for the map from `makeMap`, and loads the map's layers
+   * into it. `host` is the component holding the element, which also draws the 3D scene when one is asked
+   * for (`sceneView`) and shows whichever view `setView` makes current.
+   */
+  public async useView(view: esri.MapView, host: MapHost): Promise<void> {
+    this._host = host;
+    this._modules.view = view;
 
     // Set the value of the async subject
     this._store.next({
@@ -181,20 +148,11 @@ export class EsriMapService {
   }
 
   /**
-   * Generates map a map view object utilizing view properties and the map instance.
-   *
-   * Internal use only.
+   * The map's 3D scene, an `<arcgis-scene>` beside its `<arcgis-map>`, made the first time it is asked for
+   * with `properties`. Shown, with the map, by `setView`.
    */
-  private makeMapView(viewProperties: esri.MapViewProperties | esri.SceneViewProperties, map: esri.Map) {
-    // Make a shallow clone of the passed in view properties
-    const vProps = Object.assign({}, viewProperties);
-
-    // If the supplied view properties does not have a map object, set it.
-    if (!vProps.map) {
-      vProps.map = map;
-    }
-
-    return vProps;
+  public sceneView(properties: esri.SceneViewProperties): Promise<esri.SceneView> {
+    return this._host.sceneView(properties);
   }
 
   /**
@@ -212,40 +170,22 @@ export class EsriMapService {
   public setView(view: esri.SceneView | esri.MapView, place?: esri.ViewpointProperties, between?: (map: esri.Map) => void) {
     this.destroyViewClickEventHandler();
 
-    // Carry the current camera/extent across the swap. A reused view otherwise re-attaches with
-    // a stale viewpoint, and disconnecting/reconnecting the map below resets the camera to a
-    // default extent - either way the campus-only basemap (minScale 100000) and the buildings
-    // render nothing and the canvas looks blank.
+    // Carry the current camera/extent across the swap. Disconnecting and reconnecting the map below
+    // otherwise resets the camera to a default extent, where the campus-only basemap (minScale 100000)
+    // and the buildings render nothing and the canvas looks blank.
     const viewpoint = place ?? this._modules.view?.viewpoint?.clone();
 
-    // Detach the outgoing view from BOTH the DOM and the shared map.
-    //
-    // Disconnecting the map is essential: a view that is only detached from the DOM stays
-    // subscribed to the shared map's layers, so the now-inactive 2D MapView keeps trying to
-    // build layer views. When the 3D-only SceneLayer (3D Buildings) is added after the swap,
-    // that dead 2D view chokes resolving it ("Cannot read properties of null (objectIdField)"),
-    // throwing an uncaught rejection into Angular and blanking the canvas. Detaching the map
-    // leaves only the active view processing layers.
+    // Detach the outgoing view from the shared map. A view that keeps the map stays subscribed to its
+    // layers, so the hidden 2D MapView kept trying to build layer views, and when the 3D-only SceneLayer
+    // (3D Buildings) was added after the swap, choked resolving it ("Cannot read properties of null
+    // (objectIdField)"), throwing an uncaught rejection into Angular and blanking the canvas. Detaching the
+    // map leaves only the shown view processing layers.
     if (this._modules.view) {
-      this._modules.view.container = null;
       (this._modules.view as { map: esri.Map | null }).map = null;
     }
 
-    // Reusing a single container element across MapView/SceneView swaps leaves the ArcGIS
-    // view surface in a broken state - the canvas renders blank on the second 2D -> 3D toggle.
-    // Give every view its own pristine child element and discard the previous one so each
-    // attach starts from a clean DOM node.
-    while (this._mapContainer.firstChild) {
-      this._mapContainer.removeChild(this._mapContainer.firstChild);
-    }
-
-    const viewContainer = document.createElement('div');
-    viewContainer.style.height = '100%';
-    viewContainer.style.width = '100%';
-    this._mapContainer.appendChild(viewContainer);
-
     // Reconnect the incoming view to the shared map (it may have been disconnected on a previous
-    // swap), restore the camera, and attach it to its fresh container.
+    // swap), restore the camera, and show it in place of the outgoing one.
     this._modules.view = view;
     if (this._modules.map) {
       between?.(this._modules.map);
@@ -254,9 +194,7 @@ export class EsriMapService {
     if (viewpoint) {
       this._modules.view.viewpoint = viewpoint as esri.Viewpoint;
     }
-    this._modules.view.container = viewContainer;
-    // A view made elsewhere, such as the perspective toggle's 3D scene, gets the same zoom buttons.
-    useZoomComponent(this._modules.view);
+    this._host.show(view);
 
     this._store.next({ ...this._store.getValue(), view: this._modules.view });
 
@@ -1341,32 +1279,19 @@ export interface HitTestSnapshot {
   popupComponent?: PopupComponentReference;
 }
 
-export interface MapViewProperties {
+export interface ViewProperties {
   /**
-   * Describes the mapping mode as a map view (2d)
-   *
-   */
-  mode: '2d';
-
-  /**
-   * Native ArcGIS JS MapView Properties
+   * The view's properties, set on the page's `<arcgis-map>` before its view loads (#1949). Each is one
+   * the element takes; it makes its own container and is given the map.
    */
   properties: esri.MapViewProperties;
 }
 
-export interface SceneViewProperties {
-  /**
-   * Describes the mapping mode as a scene view (3d).
-   */
-  mode: '3d';
-
-  /**
-   * Native ArcGIS JS SceneView Properties
-   */
-  properties: esri.SceneViewProperties;
+/** The component that holds a map's elements; see `EsriMapService.useView`. */
+export interface MapHost {
+  sceneView(properties: esri.SceneViewProperties): Promise<esri.SceneView>;
+  show(view: esri.MapView | esri.SceneView): void;
 }
-
-export type ViewProperties = MapViewProperties | SceneViewProperties;
 
 export interface IResolveUnloadedLayersProperties {
   layers: Array<IPortalLayer>;

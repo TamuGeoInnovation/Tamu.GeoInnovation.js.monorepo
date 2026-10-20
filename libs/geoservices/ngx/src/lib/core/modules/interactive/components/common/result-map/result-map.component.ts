@@ -41,7 +41,6 @@ export class ResultMapComponent implements OnInit {
         basemap: 'streets-navigation-vector'
       },
       view: {
-        mode: '2d',
         properties: {
           center,
           zoom: 12

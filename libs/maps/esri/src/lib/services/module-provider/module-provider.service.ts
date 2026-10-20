@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 /**
- * Loads ArcGIS modules by short name (`'MapView'`, `'FeatureLayer'`), so callers do not name module paths.
+ * Loads ArcGIS modules by short name (`'Map'`, `'FeatureLayer'`), so callers do not name module paths.
  *
  * Each name maps to a dynamic `import()` of `@arcgis/core` (#1844), so the build splits every module into
  * its own lazy chunk and a page downloads only what it asks for, as it did when `esri-loader` fetched the
@@ -74,8 +74,6 @@ const dictionary = {
   // Turns a renderer's JSON - including the CIM symbols a portal item publishes - into a renderer
   // instance. See portal-symbology.ts (#1497).
   rendererJsonUtils: () => import('@arcgis/core/renderers/support/jsonUtils.js'),
-  MapView: () => import('@arcgis/core/views/MapView.js'),
-  SceneView: () => import('@arcgis/core/views/SceneView.js'),
   TileLayer: () => import('@arcgis/core/layers/TileLayer.js'),
   VectorTileLayer: () => import('@arcgis/core/layers/VectorTileLayer.js'),
   // Required before the view's spatial reference can change, which happens when a basemap in a

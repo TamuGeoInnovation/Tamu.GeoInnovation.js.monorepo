@@ -27,7 +27,6 @@ export class MapComponent implements OnInit {
       basemap: 'streets-navigation-vector'
     },
     view: {
-      mode: '2d',
       properties: {
         map: undefined, // Reference to the map object created before the scene
         center: [-96.344672, 30.61306],

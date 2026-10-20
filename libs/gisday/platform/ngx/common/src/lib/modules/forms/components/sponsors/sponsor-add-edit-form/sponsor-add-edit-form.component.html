@@ -34,6 +34,10 @@
       </div>
 
       <div class="form-collection row leader-1">
+        <tamu-gisc-checkbox formControlName="active" label="Active this season (shown on the Sponsors page)"></tamu-gisc-checkbox>
+      </div>
+
+      <div class="form-collection row leader-1">
         <tamu-gisc-select formControlName="sponsorshipLevel" [data]="sponsorshipLevelsDict" [valueTemplate]="'value'" [displayTemplate]="'label'" [placeholder]="'Select sponsorship level'"></tamu-gisc-select>
       </div>
 

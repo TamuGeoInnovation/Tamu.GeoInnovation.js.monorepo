@@ -30,11 +30,13 @@
 </div>
 
 <!-- Map component -->
-<tamu-gisc-esri-map [config]="config" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile() }"></tamu-gisc-esri-map>
-@if (!isMobile()) {
-<!-- Moves itself into the map's top-left corner, below the zoom and locate buttons. -->
-<tamu-gisc-map-compass></tamu-gisc-map-compass>
-}
+<tamu-gisc-esri-map [config]="config" [zoom]="!isMobile()" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile() }">
+  <!-- In the map's slots, below the zoom buttons: locate, then the compass; on a phone, locate alone at the bottom right (#1949). -->
+  <arcgis-track [attr.slot]="isMobile() ? 'bottom-right' : 'top-left'" go-to-location-disabled></arcgis-track>
+  @if (!isMobile()) {
+  <tamu-gisc-map-compass slot="top-left"></tamu-gisc-map-compass>
+  }
+</tamu-gisc-esri-map>
 
 <!-- Router outlet where desktop and mobile controls are rendered -->
 <router-outlet></router-outlet>

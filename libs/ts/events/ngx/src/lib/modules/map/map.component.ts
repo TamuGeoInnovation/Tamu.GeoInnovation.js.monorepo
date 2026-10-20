@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Subject, ReplaySubject, Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -40,7 +40,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 import { ClickCoordinatesComponent } from '@tamu-gisc/maps/feature/coordinates';
-import { EsriMapComponent, MapCompassComponent, addTrack } from '@tamu-gisc/maps/esri';
+import { EsriMapComponent, MapCompassComponent } from '@tamu-gisc/maps/esri';
 import { PerspectiveToggleComponent } from '@tamu-gisc/maps/feature/perspective';
 import { PopupComponent, PopupMobileDeferredComponent } from '@tamu-gisc/maps/feature/popup';
 import { MapViewfinderComponent } from '@tamu-gisc/maps/feature/accessibility';
@@ -54,6 +54,8 @@ const EVENT_PASSED_GRACE_DAYS = 1;
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
+  // Esri's locate button, `<arcgis-track>`, sits in the map's slots (#1949).
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   // `LayerSourcesService` holds this map's `defaultLayerOverrides`. Provided here, so they live and die
   // with this map; from the application's shared instance they reached every map opened after it in
   // the same tab, the main map included (#1397).
@@ -231,7 +233,6 @@ export class MapComponent implements OnInit, OnDestroy {
       this.config.next({
         basemap,
         view: {
-          mode: '2d',
           properties: {
             // container: this.mapViewEl.nativeElement,
             map: undefined, // Reference to the map object created before the scene
@@ -245,10 +246,9 @@ export class MapComponent implements OnInit, OnDestroy {
               maxScale: AGGIEMAP_BASEMAP_MAX_SCALE // the deepest level the basemap has tiles for (#1577)
             },
             zoom: root?.configuration?.zoom !== undefined ? root.configuration.zoom : 16,
-            ui: {
-              // The attribution is the view's own since ArcGIS 5.0 (`attributionVisible`), no longer a UI component.
-              components: this.isMobile() ? [] : ['zoom']
-            },
+            // Hidden, as it was by this application's stylesheet until the view moved into `<arcgis-map>`'s
+            // shadow root, where the stylesheet does not reach (#1949).
+            attributionVisible: false,
             popup: {
               dockOptions: {
                 buttonEnabled: false,
@@ -302,8 +302,6 @@ export class MapComponent implements OnInit, OnDestroy {
         }, 300);
       }, 300);
     });
-
-    addTrack(instances.view as esri.MapView, this.isMobile() ? 'bottom-right' : 'top-left');
   }
 
   /**

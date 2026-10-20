@@ -18,6 +18,15 @@ export const MAP_CONTROLS = {
 } as const;
 
 /**
+ * One of `MAP_CONTROLS` in the map's top-left corner, on either markup (#1949): the 2D view's UI corner,
+ * `.esri-ui-top-left`, until the map moved into `<arcgis-map>`; the element's `top-left` slot since. Only
+ * `<arcgis-map>`'s own, not the 3D `<arcgis-scene>` hidden beside it once 3D has been shown.
+ */
+export function inTopLeft(page: Page, control: string): Locator {
+  return page.locator(`.esri-ui-top-left :is(${control}), arcgis-map > :is(${control})[slot="top-left"]`);
+}
+
+/**
  * The zoom-in button, found by its plus icon on either version. In 5.0 it is a `calcite-button` inside
  * `<arcgis-zoom>`'s shadow DOM, which Playwright reaches into; in 4.x it is a `div` in the `.esri-zoom` widget.
  */
