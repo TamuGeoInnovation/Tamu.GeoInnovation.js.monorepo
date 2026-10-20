@@ -87,9 +87,16 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     layerIndex: 24,
+    // Overridden (#1992): the service's renderer, copied from Soccer and Softball's, gives its wheelchair
+    // symbol only to `Disabled,Soccer` and `Disabled,Softball`, so none of the `Disabled,TrackIndoor`
+    // spaces was drawn and the legend entry was empty. Every space the expression below selects is drawn
+    // with the service's own symbol. Remove once the service's renderer names `TrackIndoor`.
+    symbolFromServiceClass: 'Accessible Parking',
     native: {
       outFields: ['*'],
-      definitionExpression: `event = 'TrackIndoor'`
+      // The view holds every event's points, of every kind; only the accessible spaces belong here, and
+      // with one symbol for all of them nothing else may be selected.
+      definitionExpression: `event = 'TrackIndoor' AND type IN ('Accessible', 'Disabled')`
     }
   } as unknown as LayerSource,
   {
@@ -159,6 +166,11 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     layerIndex: 21,
+    // Overridden (#1993): the service's renderer has symbols for `Team Drop Off` and `Team Bus Parking`,
+    // but the layer's one area is type `SPORTS`, so it was not drawn. The layer is the team bus parking,
+    // so it is drawn with the service's `Team Bus Parking` symbol. A drop-off area added later would be
+    // drawn the same way. Remove once the service's renderer and data agree.
+    symbolFromServiceClass: 'Team Bus Parking',
     native: {
       outFields: ['*']
     }

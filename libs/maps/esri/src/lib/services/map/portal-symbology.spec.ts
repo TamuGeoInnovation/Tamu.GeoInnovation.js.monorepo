@@ -4,6 +4,7 @@ import {
   publishesDefaultSymbology,
   recordSymbologySource,
   rendererForLayer,
+  serviceClassRenderer,
   symbologySourceOf
 } from './portal-symbology';
 
@@ -113,5 +114,59 @@ describe('default symbology', () => {
     recordSymbologySource(layer, 'portal');
 
     expect(symbologySourceOf(layer)).toBe('portal');
+  });
+});
+
+/**
+ * Drawing every feature with one of the service's own symbols, when its renderer's values have gone
+ * stale (#1992).
+ */
+describe('one class of a service renderer', () => {
+  const wheelchair = { type: 'CIMSymbolReference', symbol: { type: 'CIMPointSymbol', tag: 'wheelchair' } };
+
+  // Women's Basketball's Accessible Parking Spaces, as its portal item published it on 20 October 2026:
+  // one class, whose values say `Disabled` where the spaces now say `Accessible`.
+  const accessible = {
+    type: 'uniqueValue',
+    field1: 'type',
+    field2: 'event',
+    fieldDelimiter: ',',
+    uniqueValueInfos: [
+      { value: 'Disabled,Volleyball', label: 'Accessible Parking', symbol: wheelchair },
+      { value: 'Disabled,Basketball', label: 'Accessible Parking', symbol: wheelchair }
+    ]
+  };
+
+  it("draws every feature with the named class's symbol and label, testing no field", () => {
+    expect(serviceClassRenderer(accessible, 'Accessible Parking')).toEqual({
+      type: 'simple',
+      label: 'Accessible Parking',
+      symbol: wheelchair
+    });
+  });
+
+  it('takes the class asked for, not the first', () => {
+    // Indoor Track's Team Bus Parking: its one area is type `SPORTS`, which neither class names.
+    const teamBus = {
+      type: 'uniqueValue',
+      field1: 'type',
+      uniqueValueInfos: [
+        { value: 'Team Drop Off', label: 'Team Drop Off', symbol: { tag: 'blue' } },
+        { value: 'Team Bus Parking', label: 'Team Bus Parking', symbol: { tag: 'magenta' } }
+      ]
+    };
+
+    expect(serviceClassRenderer(teamBus, 'Team Bus Parking')).toEqual({
+      type: 'simple',
+      label: 'Team Bus Parking',
+      symbol: { tag: 'magenta' }
+    });
+  });
+
+  it('answers null when the service no longer has that class, so the layer keeps what it publishes', () => {
+    expect(serviceClassRenderer(accessible, 'Reserved Parking')).toBeNull();
+    expect(serviceClassRenderer({ type: 'simple', symbol: wheelchair }, 'Accessible Parking')).toBeNull();
+    expect(serviceClassRenderer(null, 'Accessible Parking')).toBeNull();
+    expect(serviceClassRenderer(undefined, 'Accessible Parking')).toBeNull();
   });
 });
