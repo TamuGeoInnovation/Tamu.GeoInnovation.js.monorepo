@@ -89,4 +89,62 @@ test.describe('basemap gallery', () => {
 
     expect(drawing, `coming back to ${openedOn} did not bring back the basemap the map opened with`).toBe(openedWith);
   });
+
+  /**
+   * Aerial Imagery asks Nearmap for its latest imagery as one short GET, and is answered with an image
+   * (#1997).
+   *
+   * Left to ArcGIS, the layer named every capture in the area, 19 on campus. That took the request past
+   * ArcGIS's 2,000-character limit, so it was sent as a POST, and Nearmap answers a POST with an empty
+   * XML document on some requests: the map stayed white, 1 load in 3 on production. Whether the map
+   * drew depended on that answer, so the request itself is what is checked, not the picture: each image
+   * Nearmap is asked for while the latest imagery opens must be a GET for one layer, answered with an image.
+   */
+  test('Aerial Imagery asks for its latest imagery as one GET, and gets an image', async ({ page }) => {
+    test.setTimeout(240_000);
+    await blockAnalytics(page);
+
+    const requests: Array<{ method: string; layers: number; answer: Promise<string> }> = [];
+
+    page.on('request', (request) => {
+      const query = request.method() === 'POST' ? (request.postData() ?? '') : new URL(request.url()).search;
+      const params = new URLSearchParams(query);
+
+      if (!request.url().includes('api.nearmap.com') || !/^getmap$/i.test(params.get('request') ?? params.get('REQUEST') ?? '')) {
+        return;
+      }
+
+      const layers = (params.get('layers') ?? params.get('LAYERS') ?? '').split(',').filter(Boolean).length;
+      const answer = request
+        .response()
+        .then((response) => response?.headers()['content-type'] ?? 'no answer')
+        .catch(() => 'no answer');
+
+      requests.push({ method: request.method(), layers, answer });
+    });
+
+    await page.goto(MAP);
+
+    await expect
+      .poll(() => basemapLayers(page), { message: `${MAP} never finished loading`, timeout: 90_000, intervals: [1_000] })
+      .not.toBeNull();
+
+    await page.locator('.basemap', { has: page.locator('.basemap-title', { hasText: 'Aerial Imagery' }) }).first().click();
+
+    await expect
+      .poll(() => requests.length, { message: 'choosing Aerial Imagery asked Nearmap for no image', timeout: 60_000 })
+      .toBeGreaterThan(0);
+
+    for (const { method, layers, answer } of requests) {
+      expect(`${method} for ${layers} layer(s)`, 'Nearmap must be asked for one layer, by GET').toBe('GET for 1 layer(s)');
+      expect(await answer, 'Nearmap must answer with an image').toMatch(/^image\//);
+    }
+
+    // The panel's spinner waits for the basemap to draw. It used to wait for the whole map, and on a
+    // development host a feature layer could stay updating after the switch, so it never stopped (#1997).
+    await expect(
+      page.locator('.basemap', { has: page.locator('.basemap-title', { hasText: 'Aerial Imagery' }) }).locator('.spinning-loader'),
+      'the Aerial Imagery spinner should stop once the imagery has drawn'
+    ).toHaveCount(0, { timeout: 60_000 });
+  });
 });

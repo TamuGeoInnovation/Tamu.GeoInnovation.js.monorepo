@@ -1,0 +1,578 @@
+{
+  "150th-kickoff": {
+    "layerList": true,
+    "layers": [
+      "150th-kickoff-event-locations",
+      "150th-kickoff-shuttle-route",
+      "150th-kickoff-parking"
+    ]
+  },
+  "4h-roundup-2026": {
+    "layerList": true,
+    "layers": [
+      "four-h-roundup-locations",
+      "four-h-roundup-parking"
+    ]
+  },
+  "accessible-parking": {
+    "layerList": true,
+    "layers": [
+      "Accessible Parking Space"
+    ]
+  },
+  "aggie-family-parade": {
+    "layerList": true,
+    "layers": [
+      "aggie-family-parade-pois",
+      "aggie-family-parade-route"
+    ]
+  },
+  "aggieland-saturday": {
+    "layerList": true,
+    "layers": [
+      "aggieland-saturday-parking",
+      "aggieland-saturday-bus-stops",
+      "aggieland-saturday-bus-routes",
+      "aggieland-saturday-special-pois"
+    ]
+  },
+  "april-ring-day": {
+    "layerList": true,
+    "layers": [
+      "ring-day-areas",
+      "ring-day-routes",
+      "ring-day-pois"
+    ]
+  },
+  "argentina-vs-honduras-2026": {
+    "layerList": true,
+    "layers": [
+      "argentina-vs-honduras-event-shuttles-group",
+      "argentina-vs-honduras-event-parking-group"
+    ]
+  },
+  "avp-parking": {
+    "layerList": true,
+    "layers": [
+      "AVP-parking-lots"
+    ]
+  },
+  "baseball-parking": {
+    "layerList": true,
+    "layers": []
+  },
+  "beef-cattle-vendor": {
+    "layerList": true,
+    "layers": [
+      "beef-cattle-zones",
+      "beef-cattle-no-parking-zones",
+      "beef-cattle-routes",
+      "beef-cattle-alert"
+    ]
+  },
+  "big-event": {
+    "layerList": true,
+    "layers": [
+      "big-event-traffic",
+      "big-event-road-closures",
+      "big-event-parking-lots"
+    ]
+  },
+  "break-summer": {
+    "layerList": true,
+    "layers": [
+      "Break-Summer Parking Lots"
+    ]
+  },
+  "business-parking": {
+    "layerList": true,
+    "layers": [
+      "University Business Spaces 2 Hour Time Limit",
+      "UB Permit and UB+ Permit Authorized",
+      "Only UB+ Permit Authorized"
+    ]
+  },
+  "construction-map": {
+    "layerList": true,
+    "layers": [
+      "planned-construction-area",
+      "current-construction-area"
+    ]
+  },
+  "contractor-parking": {
+    "layerList": true,
+    "layers": [
+      "Contractor Permit and Contractor+ Permit Authorized",
+      "Only Contractor+ Permit Authorized"
+    ]
+  },
+  "cross-country-parking": {
+    "layerList": true,
+    "layers": [
+      "cross-country-parking-area",
+      "cross-country-parking-lots"
+    ]
+  },
+  "dc-bush-school": {
+    "layerList": false,
+    "layers": []
+  },
+  "dining": {
+    "layerList": false,
+    "layers": []
+  },
+  "ev-chargers": {
+    "layerList": true,
+    "layers": [
+      "ev-chargers"
+    ]
+  },
+  "family-weekend-2026": {
+    "layerList": true,
+    "layers": []
+  },
+  "fire-school": {
+    "layerList": true,
+    "layers": [
+      "fire-school-preferred-route",
+      "fire-school-road-closures",
+      "fire-school-parking-lots"
+    ]
+  },
+  "fish-camp": {
+    "layerList": true,
+    "layers": [
+      "fish-camp-arrival-group",
+      "fish-camp-departure-group"
+    ]
+  },
+  "galveston": {
+    "layerList": false,
+    "layers": []
+  },
+  "gameday-parking": {
+    "layerList": true,
+    "layers": [
+      "football-pay-avp-gameday-parking",
+      "football-pay-avp-exit-routes",
+      "football-pay-avp-street-grass-areas",
+      "football-pay-avp-parking-lots",
+      "football-parkmobile-gameday-parking",
+      "football-parkmobile-entry-routes",
+      "football-parkmobile-exit-routes",
+      "football-parkmobile-street-grass-areas",
+      "football-parkmobile-parking-lots",
+      "football-12th-man-gameday-parking",
+      "football-12th-man-entry-routes",
+      "football-12th-man-exit-routes",
+      "football-12th-man-street-grass-areas",
+      "football-12th-man-parking-lots",
+      "football-presale-gameday-parking",
+      "football-presale-entry-routes",
+      "football-presale-exit-routes",
+      "football-presale-street-grass-areas",
+      "football-presale-parking-lots",
+      "football-rideshare-locations",
+      "football-shuttle-stops",
+      "football-shuttle-routes",
+      "football-rv-gameday-parking",
+      "football-rv-rns-spaces",
+      "football-rv-stripes",
+      "football-rv-street-grass-areas",
+      "football-rv-parking-lots",
+      "football-micromobility-parking",
+      "football-micromobility-entry-routes",
+      "football-micromobility-exit-routes",
+      "football-bike-dismount-zones",
+      "football-bike-veo-geofence",
+      "football-pedestrian-exit-routes"
+    ]
+  },
+  "games-of-texas": {
+    "layerList": true,
+    "layers": [
+      "games-of-texas-parking",
+      "games-of-texas-road-closures",
+      "games-of-texas-routes",
+      "games-of-texas-points-of-interest"
+    ]
+  },
+  "gis-day": {
+    "layerList": true,
+    "layers": [
+      "gis-day-msc-rudder",
+      "gis-day-garages",
+      "gis-day-csg"
+    ]
+  },
+  "graduation-fall": {
+    "layerList": true,
+    "layers": [
+      "graduation-accessible-parking",
+      "graduation-traffic-flow",
+      "graduation-road-closed"
+    ]
+  },
+  "graduation-spring": {
+    "layerList": true,
+    "layers": [
+      "graduation-accessible-parking",
+      "graduation-traffic-flow",
+      "graduation-road-closed"
+    ]
+  },
+  "graduation-summer": {
+    "layerList": true,
+    "layers": []
+  },
+  "hs-graduation-2026": {
+    "layerList": true,
+    "layers": [
+      "hs-graduation-arrival-group",
+      "hs-graduation-departure-group"
+    ]
+  },
+  "indoor-track-parking": {
+    "layerList": true,
+    "layers": [
+      "indoor-track-parking-visitor-kiosk",
+      "indoor-track-parking-accessible-parking",
+      "indoor-track-parking-lots",
+      "indoor-track-parking-building",
+      "indoor-track-parking-safety-first",
+      "indoor-track-parking-team-bus"
+    ]
+  },
+  "kickoff-at-kyle": {
+    "layerList": true,
+    "layers": [
+      "kickoff-at-kyle-parking"
+    ]
+  },
+  "live-at-the-station": {
+    "layerList": true,
+    "layers": [
+      "live-at-the-station-parking"
+    ]
+  },
+  "maintenance-parking": {
+    "layerList": true,
+    "layers": [
+      "maintenance-parking-spaces",
+      "maintenance-parking-lots"
+    ]
+  },
+  "maroon-white-game-2026": {
+    "layerList": true,
+    "layers": [
+      "maroon-white-game-event-parking-lots",
+      "maroon-white-game-accessible-prepaid-parking"
+    ]
+  },
+  "mcallen": {
+    "layerList": false,
+    "layers": []
+  },
+  "media-parking": {
+    "layerList": true,
+    "layers": [
+      "media-parking-lots"
+    ]
+  },
+  "mens-basketball": {
+    "layerList": true,
+    "layers": [
+      "mens-basketball-gates",
+      "mens-basketball-symbols",
+      "mens-basketball-parking-lots"
+    ]
+  },
+  "motorcycle-parking": {
+    "layerList": true,
+    "layers": [
+      "motorcycle-parking-space"
+    ]
+  },
+  "motorist-assistance": {
+    "layerList": true,
+    "layers": [
+      "Service Area"
+    ]
+  },
+  "move-in": {
+    "layerList": true,
+    "layers": [
+      "Residence Hall",
+      "Move-In Points of Interest",
+      "Move-In Streets",
+      "Move-In Lots"
+    ]
+  },
+  "move-out": {
+    "layerList": true,
+    "layers": [
+      "No Parking Areas",
+      "Move-Out Allowed Street Parking",
+      "Move-Out Lots"
+    ]
+  },
+  "ms150": {
+    "layerList": true,
+    "layers": [
+      "ms150-avp-parking",
+      "ms150-parking-lots",
+      "ms150-route"
+    ]
+  },
+  "muster": {
+    "layerList": true,
+    "layers": [
+      "muster-traffic-flow",
+      "muster-accessible-parking",
+      "muster-parking"
+    ]
+  },
+  "night-weekend": {
+    "layerList": true,
+    "layers": [
+      "Night Privileges 5:00pm - 6:00am"
+    ]
+  },
+  "november-ring-day": {
+    "layerList": true,
+    "layers": [
+      "ring-day-areas",
+      "ring-day-routes",
+      "ring-day-pois"
+    ]
+  },
+  "nsc-parking": {
+    "layerList": true,
+    "layers": [
+      "NSC Parking Lots"
+    ]
+  },
+  "outdoor-track-parking": {
+    "layerList": true,
+    "layers": [
+      "outdoor-track-parking-visitor-kiosk",
+      "outdoor-track-parking-accessible-parking",
+      "outdoor-track-parking-lots",
+      "outdoor-track-parking-safety-first"
+    ]
+  },
+  "permit-select-freshman": {
+    "layerList": true,
+    "layers": [
+      "Resident Student Priority",
+      "Freshman Student Selectable"
+    ]
+  },
+  "permit-select-staff": {
+    "layerList": true,
+    "layers": [
+      "Staff Selectable Parking Lots"
+    ]
+  },
+  "permit-select-student": {
+    "layerList": true,
+    "layers": [
+      "Student Selectable Parking Lots"
+    ]
+  },
+  "phys-eng-fest": {
+    "layerList": true,
+    "layers": [
+      "phys-eng-festival-general-parking-group",
+      "phys-eng-festival-eastbound-university-group",
+      "phys-eng-festival-westbound-university-group"
+    ]
+  },
+  "retiree-parking": {
+    "layerList": true,
+    "layers": [
+      "Retiree Parking Lots"
+    ]
+  },
+  "ring-day": {
+    "layerList": true,
+    "layers": [
+      "ring-day-areas",
+      "ring-day-routes",
+      "ring-day-pois"
+    ]
+  },
+  "savannah-bananas-parking": {
+    "layerList": true,
+    "layers": [
+      "savannah-bananas-parking-group",
+      "savannah-bananas-shuttle-group"
+    ]
+  },
+  "sec-grounds-conference": {
+    "layerList": true,
+    "layers": []
+  },
+  "service-loading": {
+    "layerList": true,
+    "layers": [
+      "service-parking-spaces",
+      "service-parking-lots"
+    ]
+  },
+  "soccer-parking": {
+    "layerList": true,
+    "layers": [
+      "soccer-parking-visitor-kiosk",
+      "soccer-parking-accessible-parking",
+      "soccer-parking-lots",
+      "soccer-parking-safety-first"
+    ]
+  },
+  "softball-parking": {
+    "layerList": true,
+    "layers": [
+      "softball-parking-visitor-kiosk",
+      "softball-parking-accessible-parking",
+      "softball-parking-lots",
+      "softball-parking-safety-first"
+    ]
+  },
+  "softball-regionals-2025": {
+    "layerList": true,
+    "layers": [
+      "softball-routes",
+      "softball-locations"
+    ]
+  },
+  "spirit-of-150-week": {
+    "layerList": true,
+    "layers": [
+      "spirit-of-150-week-cake-ice-cream"
+    ]
+  },
+  "spring-move-out": {
+    "layerList": true,
+    "layers": [
+      "No Parking Areas",
+      "Move-Out Allowed Street Parking",
+      "Move-Out Lots"
+    ]
+  },
+  "summer-i-move-out": {
+    "layerList": true,
+    "layers": [
+      "No Parking Areas",
+      "Move-Out Allowed Street Parking",
+      "Move-Out Lots"
+    ]
+  },
+  "summer-ii-move-out": {
+    "layerList": true,
+    "layers": [
+      "No Parking Areas",
+      "Move-Out Allowed Street Parking",
+      "Move-Out Lots"
+    ]
+  },
+  "sustainable-transportation": {
+    "layerList": true,
+    "layers": [
+      "sustainable-transportation-ev-chargers",
+      "sustainable-transportation-bike-racks",
+      "sustainable-transportation-bike-fix-stations",
+      "sustainable-transportation-bike-lanes",
+      "sustainable-transportation-city-bike-lanes-routes",
+      "sustainable-transportation-bike-dismount-zones"
+    ]
+  },
+  "swimming-parking": {
+    "layerList": true,
+    "layers": [
+      "swimming-parking-visitor-kiosk",
+      "swimming-parking-accessible-parking",
+      "swimming-parking-lots",
+      "swimming-parking-safety-first"
+    ]
+  },
+  "t-camp": {
+    "layerList": true,
+    "layers": [
+      "t-camp-closures",
+      "t-camp-parking",
+      "t-camp-entry-route",
+      "t-camp-campus-locations"
+    ]
+  },
+  "tailgating": {
+    "layerList": true,
+    "layers": [
+      "tailgating-west-campus",
+      "tailgating-aggie-park",
+      "tailgating-construction",
+      "tailgating-simpson-tents",
+      "tailgating-tents",
+      "tailgating-zone-numbers"
+    ]
+  },
+  "tennis-parking": {
+    "layerList": true,
+    "layers": [
+      "tennis-parking-lots"
+    ]
+  },
+  "timed-parking": {
+    "layerList": true,
+    "layers": [
+      "Timed Parking Space"
+    ]
+  },
+  "troubadour-festival-2025": {
+    "layerList": true,
+    "layers": [
+      "troubadour-parking"
+    ]
+  },
+  "ts-main-parking": {
+    "layerList": true,
+    "layers": [
+      "Route Stop/Start Points",
+      "Campus Stops",
+      "Construction",
+      "Visitor Kiosks",
+      "Parking Lots",
+      "RNS Spaces"
+    ]
+  },
+  "vendor-parking": {
+    "layerList": true,
+    "layers": [
+      "vendor-parking-lots"
+    ]
+  },
+  "visitor-parking": {
+    "layerList": true,
+    "layers": [
+      "Visitor Kiosks",
+      "Visitor Parking Lots"
+    ]
+  },
+  "volleyball-parking": {
+    "layerList": true,
+    "layers": [
+      "volleyball-parking-visitor-kiosk",
+      "volleyball-parking-accessible-parking",
+      "volleyball-parking-lots",
+      "volleyball-parking-safety-first"
+    ]
+  },
+  "womens-basketball": {
+    "layerList": true,
+    "layers": [
+      "womens-basketball-visitor-kiosk",
+      "womens-basketball-accessible-parking",
+      "womens-basketball-parking-lots",
+      "womens-basketball-safety-first"
+    ]
+  }
+}
