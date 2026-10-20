@@ -7,7 +7,8 @@ import { OidcProviderService } from '../../services/provider/provider.service';
 export class OidcController {
   constructor(private service: OidcProviderService) {}
 
-  @All('/*')
+  // Express 5 names wildcards; the braces also match /oidc itself.
+  @All('{*splat}')
   public async mountedOidc(@Req() req, @Res() res) {
     req.url = req.originalUrl.replace('/oidc', '');
 
