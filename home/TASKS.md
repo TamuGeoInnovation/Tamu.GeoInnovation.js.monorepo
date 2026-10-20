@@ -3,6 +3,61 @@
 Written by the work session **only while another machine directs** (see `DIRECTOR.md`). The home session does each new batch here,
 as `DIRECTOR.md` says for a listener. Development work: branches, agents, pull requests.
 
+## Batch 8 (20 October 2026, 10:40 AM Central) — #1987, straight after #1981
+
+**The maintainer, just now:** #1987 is **High** and this machine takes it **next, after #1981**. Batch 6 stays
+parked until both are out.
+
+**[#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987): Freshman Selectable
+Parking's legend shows no symbols.** Both layers are on, both **draw**, both are listed under Layers — and the
+Legend shows their two names with no symbols at all, so nothing says what red and blue mean. Live on production.
+
+### Read this before starting: it is probably the same bug as #1981
+
+Production's console on the freshman map:
+
+```
+Error querying layer for legend item: {label: Resident Student Priority,   value: 1,1, ...}
+Error querying layer for legend item: {label: Freshman Student Selectable, value: 0,1, ...}
+```
+
+and on Business Parking:
+
+```
+Error querying layer for legend item: {label: UB Permit and UB+ Permit Authorized, value: 1,Street, 1,Surface, 1,Surface Visitor, ...}
+```
+
+Same message, same code path. **Look at `value`:** `1,1`, `0,1`, `1,Street`, `1,Garage` are each a comma-joined
+tuple of two field values — what a `UniqueValueRenderer` with **more than one field** produces. The legend's
+per-item query looks unable to turn a composite value back into a valid `where` clause.
+
+**If that holds, it predicts the affected set:** any map with a multi-field unique-value renderer, and only those.
+It would also explain why this was never noticed — most maps use a single-field renderer.
+
+**Prove or discard it; two samples is a hypothesis, not a cause.**
+
+### The difference that may matter
+
+On the freshman map the layers **draw** and only the legend is empty. On Business Parking the lot layers **do not
+draw at all**. One fault may produce both, or they may be two bugs sharing a message. **If #1981's fix also fixes
+this, say so and do not write a second fix** — close both from one branch and say that in the report.
+
+### What to do
+
+1. Cause first, with evidence, before any fix.
+2. A test proven red first, on a map with a multi-field unique-value renderer. Say what it printed.
+3. Branch `fix/1987-legend-multi-field-renderer` from the latest `development`, unless it is one branch with
+   #1981, in which case say so.
+4. **No pull request, no screenshots** — this is visible, so the work machine captures before and after and opens
+   the PR. Say "branch ready".
+
+### Not yours
+
+[#1986](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1986) is now **High** and
+covers the test gap behind both: every map, every declared layer **listed**, **drawing**, and **in the legend**.
+It must be proven red **against production before these fixes land**, because Business Parking and the freshman
+map are the only two live examples. The director will place it.
+
 ## Batch 7 (20 October 2026, 10:10 AM Central) — URGENT: #1981, the Business Parking map
 
 **Stop everything else and do this first** (the maintainer, just now). **Batch 6 is paused**, including the
