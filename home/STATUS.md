@@ -3,9 +3,11 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 5, task 4: #1974, NestJS 10 to 11**, branch `chore/1974-nestjs-11`. **#1973 is blocked by #1972** (report 3).
+**Batch 5, task 4, second half: #1974, NestJS 11 to 12**, branch `chore/1974-nestjs-12` on top of `chore/1974-nestjs-11`.
+**#1973 is blocked by #1972** (report 3).
 
-**branch ready:** `feat/1975-tailgating-kiosk` (`9bfb6a3e9`, report 1, 4 questions), `chore/1972-nx-23-3` (`1ad923945`, report 2)
+**branch ready:** `feat/1975-tailgating-kiosk` (`9bfb6a3e9`, report 1), `chore/1972-nx-23-3` (`1ad923945`, report 2),
+`chore/1974-nestjs-11` (`db2f1f339`, report 4). Filed: #1978, #1979 (no priority).
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
