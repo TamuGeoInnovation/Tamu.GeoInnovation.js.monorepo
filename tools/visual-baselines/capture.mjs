@@ -37,6 +37,15 @@
  *
  * Baselines live outside the repository by default (`<repo>/../visual-baselines`). A full set runs to
  * hundreds of megabytes per release, which is not what git is for.
+ *
+ * `--app gisday` captures the GIS Day site the same way (#1980): every public page reachable from its
+ * home page, as full pages, at the same two viewports, under `<out>/gisday-<env>/<release>/`. Its
+ * environments are in test/e2e/gisday/environments.json. GIS Day has no release tags yet (#1525), so
+ * pass the image tag production runs as `--release` (for example `sha-0f69d3b`); without it a set is
+ * named for the bundle it served.
+ *
+ *   node tools/visual-baselines/capture.mjs --app gisday --env production --release sha-0f69d3b
+ *   node tools/visual-baselines/capture.mjs --app gisday --env local
  */
 
 import { chromium } from 'playwright';
@@ -53,6 +62,15 @@ const arg = (name, fallback) => {
 const flag = (name) => process.argv.includes('--' + name);
 
 const REPO = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', '..');
+/** `aggiemap` (the default) or `gisday` (#1980). */
+const app = arg('app', 'aggiemap');
+
+if (app !== 'aggiemap' && app !== 'gisday') {
+  console.error('--app takes "aggiemap" or "gisday".');
+  process.exit(2);
+}
+
+const gisday = app === 'gisday';
 const envName = arg('env', 'production');
 const outRoot = arg('out', process.env.AGGIEMAP_BASELINES || path.join(REPO, '..', 'visual-baselines'));
 /** The release this environment is serving; defaults to the newest tag for its prefix. */
@@ -82,7 +100,8 @@ const HIDE_ACTING_AS = () => {
   document.addEventListener('DOMContentLoaded', () => document.head.appendChild(style));
 };
 
-const environments = JSON.parse(fs.readFileSync(path.join(REPO, 'test/smoke/aggiemap/environments.json'), 'utf8'));
+const environmentsFile = gisday ? 'test/e2e/gisday/environments.json' : 'test/smoke/aggiemap/environments.json';
+const environments = JSON.parse(fs.readFileSync(path.join(REPO, environmentsFile), 'utf8'));
 const environment = environments[envName];
 
 if (!environment) {
@@ -140,7 +159,8 @@ function resolveRelease(fallbackBundle) {
     return releaseArg;
   }
 
-  const prefix = { production: 'prod-', development: 'dev-' }[envName];
+  // GIS Day has no release tags until it has a dev site (#1525); its sets are named for --release.
+  const prefix = gisday ? undefined : { production: 'prod-', development: 'dev-' }[envName];
 
   if (!prefix) {
     // local and local-production are never tagged; name the set for the bundle it served.
@@ -190,7 +210,58 @@ const centralNow = () =>
     .format(new Date())
     .replace(',', '') + ' US Central';
 
+/**
+ * GIS Day's pages: the public routes the end-to-end suite lists, plus every page reachable from them,
+ * with one detail page of each kind (one session, one presenter) rather than all of them. Admin and
+ * signed-in pages need a sign-in and are not reached.
+ */
+async function gisdayRoutesToCapture(page) {
+  const listed = fs.readFileSync(path.join(REPO, 'test/e2e/gisday/routes.ts'), 'utf8');
+  const seeds = [...listed.matchAll(/path: '(\/[^']*)', name/g)].map((m) => m[1]);
+  const skip = /^\/(admin|account|login|logout|callback|signup|assets|forbidden)(\/|$)/i;
+  const kindOf = (route) => route.replace(/[0-9a-f]{8}-[0-9a-f-]{27}$/i, ':guid');
+  const routes = new Set();
+  const queue = seeds.slice();
+
+  while (queue.length > 0 && routes.size < 150) {
+    const route = queue.shift();
+
+    if (routes.has(route)) {
+      continue;
+    }
+
+    routes.add(route);
+
+    try {
+      await page.goto(addressOf(route), { waitUntil: 'domcontentloaded' });
+      await page.waitForTimeout(3000);
+
+      const hrefs = await page.$$eval('a[href^="/"]', (anchors) => anchors.map((a) => a.getAttribute('href')));
+
+      for (const href of hrefs) {
+        const next = href.split(/[?#]/)[0].replace(/\/$/, '') || '/';
+        // A detail page (one ending in an id) is captured once per kind, not once per session.
+        const sameKind = kindOf(next) !== next && [...routes, ...queue].some((known) => kindOf(known) === kindOf(next));
+
+        if (!skip.test(next) && !/\.[a-z0-9]{2,4}$/i.test(next) && !routes.has(next) && !queue.includes(next) && !sameKind) {
+          queue.push(next);
+        }
+      }
+    } catch {
+      // A page that does not load is still captured, so its failure shows in the set.
+    }
+  }
+
+  const all = [...routes].sort();
+
+  return only.length > 0 ? all.filter((route) => only.some((part) => route.includes(part))) : all;
+}
+
 async function routesToCapture(page) {
+  if (gisday) {
+    return gisdayRoutesToCapture(page);
+  }
+
   const routes = new Set(['/map', '/all-maps']);
   const sections = ['/all-maps/campus-events', '/all-maps/parking', '/all-maps/operations', '/all-maps/campus'];
 
@@ -250,6 +321,19 @@ async function routesToCapture(page) {
 async function settle(page) {
   await page.waitForTimeout(1500);
 
+  if (gisday) {
+    // No map and no notices: the page is ready once the app has drawn and its data has arrived.
+    try {
+      await page.waitForFunction(() => (document.querySelector('tamu-gisc-root')?.children.length ?? 0) > 0, { timeout: 30000 });
+    } catch {
+      // Captured anyway, as for AggieMap.
+    }
+
+    await page.waitForTimeout(4000);
+
+    return;
+  }
+
   try {
     await page.waitForFunction(
       () => {
@@ -300,7 +384,8 @@ async function settle(page) {
   await probePage.close();
 
   const release = resolveRelease(build);
-  const outDir = path.join(outRoot, actingAs ? envName + '-as-' + actingAs : envName, release);
+  const setName = (gisday ? 'gisday-' : '') + (actingAs ? envName + '-as-' + actingAs : envName);
+  const outDir = path.join(outRoot, setName, release);
   const manifestPath = path.join(outDir, 'manifest.json');
 
   // A set already here for this release must have come from the same bundle. If it did not, either
@@ -322,6 +407,7 @@ async function settle(page) {
   fs.mkdirSync(path.join(outDir, 'phone'), { recursive: true });
 
   const manifest = {
+    app: app,
     environment: envName,
     baseUrl: baseUrl,
     actingAs: actingAs || null,
@@ -384,7 +470,8 @@ async function settle(page) {
           await page.setViewportSize(job.viewport);
           await page.goto(addressOf(job.route), { waitUntil: 'domcontentloaded', timeout: 60000 });
           await settle(page);
-          await page.screenshot({ path: job.file });
+          // A GIS Day page scrolls, so the whole page is the picture; a map is one screen.
+          await page.screenshot({ path: job.file, fullPage: gisday });
         } catch (error) {
           failed += 1;
           console.log('  ! ' + job.viewportName + ' ' + job.route + ': ' + String(error).split('\n')[0].slice(0, 90));

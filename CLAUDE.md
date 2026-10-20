@@ -257,7 +257,7 @@ Both need the map probe (`window.__tamuGiscMapProbe`) in the deployed build. If 
 empty, the environment is running something older.
 
 - **[`tools/visual-baselines`](tools/visual-baselines/README.md)** photographs every map in an
-  environment, keyed by release tag, so a change that moves the symbology of every map at once can be
+  environment (and, with `--app gisday`, every public GIS Day page), keyed by release tag, so a change that moves the symbology of every map at once can be
   reviewed instead of guessed at. **A set is captured after a release reaches an environment**, as
   step 8 of [the release sequence](docs/releases/README.md#8-capture-the-baseline-images) — a "before"
   only exists if somebody took it while it was still true. Baselines live outside the repository, are
