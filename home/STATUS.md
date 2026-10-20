@@ -3,9 +3,9 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**home directs.** Decided 7:05 PM: one production build tonight with PRs 1966, 1950 and **1967** (#1954, opened 7:20 PM:
-https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1967), cleared by one release tier. **work: 1967 is the
-PR for batch 14 task 1's images.** Its branch was merged with `development` again (`98ccf71a8`, #1953); a check on it is running here.
+**A listener again** (handed the director role to work at 7:40 AM Central, 20 October).
+**Batch 5, task 1: #1975, the tailgating kiosk** - an agent in `C:\TAMU\wt-1975`, branch `feat/1975-tailgating-kiosk`, started 7:25 AM.
+Then #1972, #1973, #1974, one at a time.
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
