@@ -3,9 +3,9 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 5, task 2: #1972, Nx 23.2 to 23.3** (with the modernization table rows), branch `chore/1972-nx-23-3`.
+**Batch 5, task 3: #1973, Vitest 4 to 5**, branch `chore/1973-vitest-5`.
 
-**branch ready: feat/1975-tailgating-kiosk** (head `9bfb6a3e9`, report `home/reports/2026-10-20-1.md`, 4 questions for the director)
+**branch ready:** `feat/1975-tailgating-kiosk` (`9bfb6a3e9`, report 1, 4 questions), `chore/1972-nx-23-3` (`1ad923945`, report 2)
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
