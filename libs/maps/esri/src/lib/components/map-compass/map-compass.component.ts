@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
-  ElementRef,
   OnDestroy,
   OnInit,
   inject,
@@ -26,8 +25,8 @@ import esri = __esri;
  *
  * Drawn as the widget was: a round button in Esri's widget style, with Calcite's needle.
  *
- * Place it once in a map's template, after the map; it moves itself into the map view's top-left
- * corner, below the zoom and locate buttons.
+ * Place it in the map's top-left slot, after the locate button: `<tamu-gisc-map-compass slot="top-left">`
+ * inside `<tamu-gisc-esri-map>` (#1949). It follows the map's 2D view.
  */
 @Component({
   selector: 'tamu-gisc-map-compass',
@@ -39,7 +38,6 @@ import esri = __esri;
 export class MapCompassComponent implements OnInit, OnDestroy {
   private readonly ms = inject(EsriMapService);
   private readonly mp = inject(EsriModuleProviderService);
-  private readonly el = inject(ElementRef);
 
   /** The view's rotation in degrees, which the needle turns by. */
   public readonly rotation = signal(0);
@@ -52,7 +50,6 @@ export class MapCompassComponent implements OnInit, OnDestroy {
 
     this.ms.store.pipe(take(1)).subscribe(async (instance) => {
       this.view = instance.view as esri.MapView;
-      this.view.ui.add(this.el.nativeElement, 'top-left');
 
       const [reactiveUtils] = (await this.mp.require(['reactiveUtils'])) as [esri.reactiveUtils];
 
@@ -85,6 +82,5 @@ export class MapCompassComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.watch?.remove();
-    this.view?.ui.remove(this.el.nativeElement);
   }
 }

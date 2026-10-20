@@ -4,11 +4,12 @@
 
 // Esri's map components (zoom, locate) are drawn with Calcite and read its variables, which reach into
 // their shadow DOM. Only the brand colour, for focus rings and active states, and our type (#1853).
-// Set on the view's UI layer because that is where Calcite's `calcite-mode-light` sets its own; on
-// anything above it they would be overridden. The hover and press shades are the brand darkened, as
-// Calcite's own are; the font is `$open-sans-fStack`, written out because not every map stylesheet
-// imports the variables.
-:host ::ng-deep .esri-ui {
+// Set on the controls in the map's slots themselves (#1949): a slotted element inherits from its slot
+// inside `<arcgis-map>`'s shadow root, where Calcite's `calcite-mode-light` sets its own, so set on the
+// map element they would be overridden. The hover and press shades are the brand darkened, as Calcite's
+// own are; the font is `$open-sans-fStack`, written out because not every map stylesheet imports the
+// variables.
+:host ::ng-deep :is(arcgis-map, arcgis-scene) > * {
   --calcite-color-brand: #500000;
   --calcite-color-brand-hover: #3c0000;
   --calcite-color-brand-press: #2a0000;

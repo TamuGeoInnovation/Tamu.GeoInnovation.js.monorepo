@@ -17,6 +17,5 @@ export * from './lib/services/map/portal-symbology';
 export * from './lib/services/layer-sources/layer-sources.service';
 export * from './lib/components/esri-map/esri-map.component';
 
-// The map's zoom, locate and compass buttons (#1853).
-export * from './lib/map-controls';
+// Our compass, placed in a map's slot beside Esri's zoom and locate (#1853, #1949).
 export * from './lib/components/map-compass/map-compass.component';

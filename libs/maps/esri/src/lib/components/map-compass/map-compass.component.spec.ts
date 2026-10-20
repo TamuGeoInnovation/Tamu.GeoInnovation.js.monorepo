@@ -13,14 +13,13 @@ vi.mock('@esri/calcite-components/components/calcite-icon', () => ({}));
  * The compass that replaced Esri's Compass widget, keeping its needle on every basemap (#1853, #1845).
  */
 describe('MapCompassComponent', () => {
-  /** Stands in for a MapView: its rotation, its viewpoint, its UI corners and `goTo`. */
+  /** Stands in for a MapView: its rotation, its viewpoint and `goTo`. */
   function makeView() {
     const view = {
       rotation: 0,
       get viewpoint() {
         return { clone: () => ({ scale: 4000, rotation: view.rotation }) };
       },
-      ui: { add: vi.fn(), remove: vi.fn() },
       goTo: vi.fn(() => Promise.resolve())
     };
 
@@ -69,12 +68,6 @@ describe('MapCompassComponent', () => {
   beforeEach(() => {
     view = makeView();
     watchHandle = { remove: vi.fn() };
-  });
-
-  it("moves itself into the top-left corner of the map view's UI", async () => {
-    const fixture = await create();
-
-    expect(view.ui.add).toHaveBeenCalledWith(fixture.nativeElement, 'top-left');
   });
 
   it('shows the needle, whatever the basemap', async () => {
@@ -135,13 +128,11 @@ describe('MapCompassComponent', () => {
     expect(needle(fixture.nativeElement).getAttribute('aria-hidden')).toBe('true');
   });
 
-  it('leaves the map and stops watching it when destroyed', async () => {
+  it('stops watching the map when destroyed', async () => {
     const fixture = await create();
-    const host = fixture.nativeElement;
 
     fixture.destroy();
 
     expect(watchHandle.remove).toHaveBeenCalled();
-    expect(view.ui.remove).toHaveBeenCalledWith(host);
   });
 });

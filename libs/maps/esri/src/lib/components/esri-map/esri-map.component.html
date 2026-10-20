@@ -1,3 +1,16 @@
-<div #container></div>
+@if (map(); as m) {
+<arcgis-map #flat [map]="m" [class.inactive]="showing() !== '2d'">
+  @if (zoom()) {
+  <arcgis-zoom slot="top-left"></arcgis-zoom>
+  }
+  <ng-content></ng-content>
+</arcgis-map>
+@if (scene()) {
+<arcgis-scene #globe [class.inactive]="showing() !== '3d'">
+  <arcgis-zoom slot="top-left"></arcgis-zoom>
+  <arcgis-navigation-toggle slot="top-left"></arcgis-navigation-toggle>
+  <arcgis-compass slot="top-left"></arcgis-compass>
+</arcgis-scene>
+} }
 
 <ng-content select=".map-overlay-ui"></ng-content>

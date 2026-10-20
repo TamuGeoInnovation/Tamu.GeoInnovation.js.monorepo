@@ -8,10 +8,17 @@
 @import 'https://js.arcgis.com/5.1.27/@arcgis/core/assets/esri/themes/light/main.css';
 
 :host {
-  & > div {
+  & > arcgis-map,
+  & > arcgis-scene {
+    display: block;
     height: 100%;
     width: 100%;
     min-height: 1px;
+  }
+
+  // The element not showing stays on the page with its view, out of sight (#1949).
+  & > .inactive {
+    display: none;
   }
 }
 
