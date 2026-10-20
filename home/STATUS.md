@@ -5,7 +5,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 ## Running now
 **Nothing. Batch 10 is done (report 8); waiting for the next batch.** #1974's second half and #1973 wait for the director's word.
 
-**branch ready:** `test/1986-every-map-draws-and-legends` (`1ff9690cb`, report 8). Earlier: `fix/1988-legend-numeric-where` (PR 1990),
+**branch ready:** `test/1986-every-map-draws-and-legends` (`b67d27b4c`, merged with development; proven red on production bundle `main-AYJ2SDWT.js`; report 8 and its addendum). Earlier: `fix/1988-legend-numeric-where` (PR 1990),
 `fix/1981-business-parking-lots` (PR 1989), `feat/1975-tailgating-kiosk` (`9bfb6a3e9`, report 1).
 Filed: #1991, #1992, #1993 (no priority).
 
