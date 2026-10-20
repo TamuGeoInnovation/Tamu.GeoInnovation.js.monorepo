@@ -618,6 +618,14 @@ files on the `work-mailbox` branch of `TamuGeoInnovation`, which is never merged
   Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what work/TASKS.md says.
   ```
 
+- **A machine that is new to the branch announces itself before anything else.** `DIRECTOR.md` opens with
+  how: work out your name, create `<name>/TASKS.md`, `<name>/STATUS.md` and `<name>/reports/`, push them as
+  `<name>: joined`, and only then listen. **Push first, even if you were given work in the same breath** -
+  the push is what makes you addressable, and until it lands nobody can give you a batch or tell that you
+  started. A session that finds no folder of its own has not been forgotten and must not stop; it is new, and
+  announcing itself is its first job. On 20 October a machine was set up and never appeared on the branch,
+  which is indistinguishable from never having been started ([#2005](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2005)).
+
 - **The work session** does only that batch, runs each test from a worktree at the named commit, and posts
   status and results on the task's issue. It writes `work/reports/<yyyy-mm-dd>-<n>.md` and says "work report
   ready: <file>".
