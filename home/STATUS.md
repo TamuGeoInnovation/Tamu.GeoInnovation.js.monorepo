@@ -3,7 +3,7 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 5, task 3: #1973, Vitest 4 to 5**, branch `chore/1973-vitest-5`.
+**Batch 5, task 4: #1974, NestJS 10 to 11**, branch `chore/1974-nestjs-11`. **#1973 is blocked by #1972** (report 3).
 
 **branch ready:** `feat/1975-tailgating-kiosk` (`9bfb6a3e9`, report 1, 4 questions), `chore/1972-nx-23-3` (`1ad923945`, report 2)
 
