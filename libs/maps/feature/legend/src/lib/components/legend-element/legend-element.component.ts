@@ -391,7 +391,7 @@ export class LegendElementComponent implements OnChanges {
     // Test each legend info by performing a query to see if it would return any features
     try {
       // Construct the where clause for this specific legend value
-      const legendWhereClause = this._buildLegendWhereClause(renderer, operableFields, info);
+      const legendWhereClause = this._buildLegendWhereClause(layer, renderer, operableFields, info);
 
       // Combine the legend where clause with the layer's definition expression
       const combinedWhere = layer.definitionExpression
@@ -413,8 +413,10 @@ export class LegendElementComponent implements OnChanges {
           }
         }),
         catchError((error) => {
-          console.error('Error querying layer for legend item:', info, error);
-          return of(null);
+          // A row the server cannot answer for is kept, as a row that throws below is: dropping it left
+          // Freshman Selectable Parking's legend with names and no symbols (#1987).
+          console.warn('Could not ask the layer about a legend item, including it in the legend:', info, error);
+          return of(info);
         })
       );
     } catch (error) {
@@ -427,7 +429,12 @@ export class LegendElementComponent implements OnChanges {
   /**
    * Builds a where clause for a specific legend value based on the renderer configuration
    */
-  private _buildLegendWhereClause(renderer: esri.UniqueValueRenderer, operableFields: string[], info: unknown): string {
+  private _buildLegendWhereClause(
+    layer: esri.FeatureLayer,
+    renderer: esri.UniqueValueRenderer,
+    operableFields: string[],
+    info: unknown
+  ): string {
     const infoValue = (info as { value: string }).value;
 
     if (!infoValue) {
@@ -456,7 +463,7 @@ export class LegendElementComponent implements OnChanges {
         // Handle different value types and proper SQL escaping
         if (value === null || value === undefined || value === 'null') {
           whereParts.push(`${field} IS NULL`);
-        } else if (typeof value === 'string') {
+        } else if (typeof value === 'string' && !isNumericField(layer, field)) {
           // Escape single quotes and wrap in quotes for string values
           const escapedValue = value.replace(/'/g, "''");
           whereParts.push(`${field} = '${escapedValue}'`);
@@ -534,4 +541,25 @@ type LegendInfo =
 /** The label a legend row shows. Since ArcGIS 4.32 the typings no longer declare it on every kind of row (#1845). */
 function legendInfoLabel(info: LegendInfo): unknown {
   return (info as { label?: unknown }).label;
+}
+
+/**
+ * Whether the layer declares `field` with a numeric type. A multi-field unique value arrives as one
+ * string (`'1,1'`), so its parts are strings whatever the field; quoting a numeric field's part makes
+ * the server compare it as text, which some reject (#1988). The type is taken from the layer, not from
+ * how the value looks, so a string code such as `'09400'` stays quoted. A field the layer does not
+ * list is treated as a string, as before.
+ */
+function isNumericField(layer: esri.FeatureLayer, field: string): boolean {
+  const type = layer.fields?.find((f) => f.name === field)?.type;
+
+  return (
+    type === 'small-integer' ||
+    type === 'integer' ||
+    type === 'big-integer' ||
+    type === 'single' ||
+    type === 'double' ||
+    type === 'long' ||
+    type === 'oid'
+  );
 }
