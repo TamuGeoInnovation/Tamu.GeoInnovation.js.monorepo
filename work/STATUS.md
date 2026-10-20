@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **12:20 AM Central, 20 October 2026**. **This machine is a listener again** — it handed the director
+Last written **1:20 AM Central, 20 October 2026**. **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
@@ -11,35 +11,35 @@ Clock times here are read from PowerShell or from a commit timestamp, not estima
 
 ## Running now
 
-**Batch 15 (#1949): the full screenshot comparison on Release-486.** Started **9:25 PM Central**.
+Nothing. **Batches 15 and 16 are both done.** Report: `work/reports/2026-10-20-1.md`.
 
-| | |
-| --- | --- |
-| Container | `vb-dev-8463ac6af-as-prod` |
-| Command | `capture.mjs --env development --as production --release 8463ac6af` |
-| Then | `review.mjs` against **`prod-2026-10-16-corrected`** |
-| Scale | 848 shots, 424 routes x 2 viewports; about three hours |
-| Why | PR 1950 rehosts every map, so the question is whether any map *looks* different |
+## work: finished — a clean release tier, and TAGGED
 
-Nothing else heavy runs beside it. The report goes out whenever it lands.
+**`dev-2026-10-20` on `8463ac6af99774e299cdaace8ce389b03af9d151`, pushed to origin.**
 
-## Transportation Services' service has recovered — #1951
+**546 passed, 0 failed, 1 flaky, 29 skipped of 576**, 36.8 minutes, exit 0. The AVP query was re-polled first and
+answered 20 of 20; dev was still serving `main-IORMDVQQ.js`. Posted on #1935
+([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1935#issuecomment-6284498115)).
 
-**20 of 20 at 00:14 Central**, after failing all day. Confirmed independently straight after: **20 of 20** again on
-the AVP lot query, and **10 of 10** on `TS_Main/6`, the other service that flaked during the release tier.
+**The 9 PM failure is gone and the build did not change.** Both runs were on `8463ac6af`; `directions.spec.ts:72`
+failed then and passed now, because #1951's service recovered at 00:14. The `TS_Main/6` flake went with it.
 
-The day's polls, every 15 minutes from 8:50 AM: 11, 12, 12, 14, 13, 12, 14, 13, 12, 13, 13, 11, 13, 14, 12 &mdash;
-then 20.
+**The one flaky result is the same race as last night, on a different map.** `lot-links.spec.ts:109` on **Visitor
+Parking** opened the main map's Lot 100j on its first attempt; at 9 PM the same test did it on **Motorcycle
+Parking**. One map from each group of #1952's audit, so it is **not** about field names and not a regression in
+that matcher — it looks like a race against the event map's layers loading.
 
-**What this changes.** The release tier's only failure was that service. A re-run now would very likely be clean,
-and a clean release tier is what the batch made the condition for tagging `8463ac6af`. The flake in
-`search-sources.spec.ts` (`TS_Main/6`) has the same explanation and should also stop.
+## work: finished — the comparison on Release-486
 
-**Nothing has been started on the strength of it.** The capture for batch 15 is running and nothing heavy runs
-beside it, and a re-run is not in any batch. It is the director's to decide, with two things worth weighing: the
-service was healthy for an hour this morning too before failing again, so one clean round is not proof it will
-hold through a 37-minute tier; and the build has not changed, so a clean re-run would tag the same commit the
-first run covered.
+**Nothing above 20%. Nothing above 10%.** 848 captured, 0 failed. Posted on #1949
+([comment](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1949#issuecomment-6284037695)).
+
+PR 1950 rehosts every map and **no map looks materially different for it**; the largest difference on the set is
+9.87%, on a page that was 9.66% this morning before 1950 existed. The top desktop shot was a mid-load capture:
+6.91% first, **2.94%** on a re-take.
+
+`8463ac6af` now has a clean release tier, a `dev-*` tag, and a comparison against production. Promotion is the
+maintainer's.
 
 ## A miss of this machine's own, worth recording
 
