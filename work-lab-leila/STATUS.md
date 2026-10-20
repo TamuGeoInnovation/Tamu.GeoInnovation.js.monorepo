@@ -22,7 +22,11 @@ Last written **5:37 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## Running now
 
-None.
+**Batch 2, the three parking fixes checked together.** Started 5:37 PM Central. `fix/1991-vendor-parking-lots`
+(`155f074a1`), `fix/1992-accessible-parking-sports-maps` (`248ef407e`) and `fix/1992-legend-multi-value-class`
+(`e5a66b132`) merged onto `origin/development` in a worktree of their own, pushed to the fork as
+`check/2026-10-20-three-parking-fixes`, then `scripts/check-in-volume.sh` on it, then `map-layers.spec.ts`
+against a local production build of it.
 
 ## Finished
 
