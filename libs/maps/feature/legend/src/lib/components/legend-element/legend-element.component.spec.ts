@@ -218,6 +218,40 @@ describe('LegendElementComponent', () => {
       expect(asked).toEqual(["(Active = 1) AND (FacCode = '09400')"]);
     });
 
+    it('asks about every value of a class with several, not only its first (#1992)', async () => {
+      // Softball's Accessible Parking Spaces: one class for `Disabled,Soccer` and `Disabled,Softball`,
+      // which ArcGIS lists as one row whose value is both, joined with ', '. Asked about the first alone,
+      // the softball spaces counted 0 and the row was dropped, so the legend entry was empty.
+      const { layer, asked } = layerWith([
+        { name: 'type', type: 'string' },
+        { name: 'event', type: 'string' }
+      ]);
+      const renderer = {
+        field: 'type',
+        field2: 'event',
+        fieldDelimiter: ',',
+        uniqueValueGroups: [
+          {
+            classes: [
+              {
+                label: 'Accessible Parking',
+                values: [
+                  { value: 'Disabled', value2: 'Soccer' },
+                  { value: 'Disabled', value2: 'Softball' }
+                ]
+              }
+            ]
+          }
+        ]
+      } as unknown as Partial<__esri.UniqueValueRenderer>;
+
+      await rowFor(layer, renderer, 'Disabled,Soccer, Disabled,Softball');
+
+      expect(asked).toEqual([
+        "(Active = 1) AND ((type = 'Disabled' AND event = 'Soccer') OR (type = 'Disabled' AND event = 'Softball'))"
+      ]);
+    });
+
     it('keeps a row whose query fails, rather than leaving the legend without it', async () => {
       const { layer } = layerWith([{ name: 'Kind', type: 'string' }]);
 
