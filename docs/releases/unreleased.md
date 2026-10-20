@@ -1,7 +1,7 @@
 # Unreleased
 
-Since the 19 October release: no AggieMap change yet, and GIS Day changes waiting for GIS Day's own
-deploy.
+Since the 19 October release: Aerial Imagery no longer opens blank, and GIS Day changes waiting for
+GIS Day's own deploy.
 
 **The latest release notes are [19 October 2026](2026-10-19.md)**, for the build from `8463ac6af`
 (build 20261019.21, Release-486), on dev and going to production. The `prod-*` tag on `8463ac6af` records
@@ -15,6 +15,21 @@ result adds its own entry below, in that pull request**, with its before/after s
 ---
 
 ## Summary
+
+### Aerial Imagery no longer opens as a blank map
+
+Choosing Aerial Imagery left the map white on about one load in three, on production as well as dev;
+moving the date slider, or zooming, often brought the imagery back. Nearmap's latest imagery of campus
+is one layer made of 19 captures, and the map asked for all 19 by name. That made the request too long
+to send as an ordinary GET, so it went as a POST, which Nearmap sometimes answers with an empty document
+instead of a picture. The map now asks for the combined layer by its one name, a short GET, and gets an
+image every time; a chosen date is still one capture. On development hosts the panel's spinner beside
+Aerial Imagery could also keep spinning after the imagery had drawn; it now stops when the basemap has
+drawn ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)).
+
+| Before | After |
+| --- | --- |
+| ![Aerial Imagery chosen, and the map blank white](../screenshots/nearmap-blank-latest/before-blank.png) | ![Aerial Imagery chosen, and the latest imagery drawn](../screenshots/nearmap-blank-latest/after-latest.png) |
 
 ### Not visible: NestJS 10 to 11
 
@@ -555,6 +570,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Aerial Imagery no longer opens blank ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)) | [dev.aggiemap.tamu.edu/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), then choose Aerial Imagery; repeat with a fresh page several times | The imagery draws every time without zooming or touching the slider, and the spinner beside Aerial Imagery stops once it has. The slider still steps back to older dates and forward to Latest. On a phone, ☰ → Basemap → Aerial Imagery draws too |
 | GIS Day: the LiDAR sponsorship level ([#1976](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1976)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: `/sponsors/tamu` | Five cards, LiDAR last at $4,096 with 6 representatives; choosing it shows its benefits; the other four prices unchanged. On a phone: two cards to a row, "reps", no sideways scrolling. In Admin, Sponsors, the level list offers LiDAR |
 | GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |
 | GIS Day: sponsorship levels match the prospectus ([#1833](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1833)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). Locally, `/sponsors/tamu` and `/sponsors` | Tiles show 1 to 4 representatives; each level's perks include lunches and a ribbon; Raster says 20-minute speaking slot; the extra-representatives note; on `/sponsors`, only "Sponsor through Texas A&M" under Interested in Becoming a Sponsor, parking passes for Line and above, and days dated 16 to 20 November |
