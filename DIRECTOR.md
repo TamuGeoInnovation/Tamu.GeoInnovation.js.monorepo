@@ -52,6 +52,7 @@ director), its `STATUS.md` and its `reports/` (written only by that machine).
 | home | `home/` | Development: branches, agents, pull requests | 18 October 2026 |
 | work | `work/` | Testing: smoke tiers, screenshot sets, `dev-*` tags | 18 October 2026 |
 | codex-home | `codex-home/` | OpenAI's Codex CLI, on the home machine: reviews and small, well-defined code jobs (unit tests, dead code), each as a branch for the director to turn into a PR | 19 October 2026 |
+| work-lab-leila | `work-lab-leila/` | Testing, on the lab workstation: smoke tiers, screenshot sets and anything that wants the machine to itself. 64 GB and 24 CPUs, the largest here. **No `gh` CLI**, so it opens no pull requests, posts no comments and sets no fields: it pushes branches and reports, and the director does the GitHub half | 20 October 2026 |
 
 **Every participant is named for the agent and the machine it runs on.** A Claude Code session is named for its machine
 alone (`home`, `work`); any other agent is `<agent>-<machine>` (`codex-home`, `codex-work`). Each has its own folder of
@@ -59,6 +60,11 @@ that name, and its commits start with that name (`codex-home: started`). Two cop
 machines are two participants, never one: they have separate task files, so the director never gives the same batch to
 both, and each one's status says which machine is busy. Non-Claude agents read `CLAUDE.md` as their project
 instructions too.
+
+**A machine says what it cannot do, and the director believes it.** `work-lab-leila` has no `gh` CLI, so a
+batch that ends in "open the pull request" is a batch it cannot finish; its branches come back to the director
+like the cloud session's. Read the **What this is** section of a listener's `STATUS.md` before writing its
+first batch, and do not assume a new machine is like `home`.
 
 A machine's job does not change when the director does: a batch for a development machine is development work, a
 batch for a testing machine is testing. The director, whichever machine it is, writes every listener's batches,
