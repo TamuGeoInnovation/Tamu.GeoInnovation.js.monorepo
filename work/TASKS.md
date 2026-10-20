@@ -95,7 +95,7 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
      `origin/development` into the branch before you add them.
 2. **When the maintainer has merged all three and the build reaches dev: the release tier** (report on: #1935)
    - home will add the commit and release number here when they exist; **don't start before that line appears.**
-   - **The final build (8:40 PM): commit `8463ac6af99774e299cdaace8ce389b03af9d151`** (`development` with PRs 1950, 1966
+   - **The final build (8:15 PM): commit `8463ac6af99774e299cdaace8ce389b03af9d151`** (`development` with PRs 1950, 1966
      and 1967 merged). The maintainer's Azure build is running and he will release it to dev. **Start when a release
      whose build is from `8463ac6af` shows `GIS-1D Development` succeeded** (`az-releases.py`; probably Release-486), and dev
      serves a `main-*.js` other than Release-485's `main-CR5DN6UQ.js`. Push `work: started` first. Name the release in the report.
