@@ -266,6 +266,11 @@ empty, the environment is running something older.
 [`docs/testing.md`](docs/testing.md) describes all of the testing for readers outside the team, with
 dated counts; a check fails if a smoke spec is missing from it.
 
+**Add your spec's row to that page and leave its numbers alone, the Total included.** The check reads
+only the spec file names, never the counts, and the counts are a measurement refreshed at each release
+from a watched run - not a tally kept by hand. On 20 October three pull requests each conflicted on that
+one Total line and nothing else, while the file carried three different totals at once (#2002).
+
 ### What "run the tests" means
 
 Map the request to one of these. Only the environment named decides which; if none is named and it

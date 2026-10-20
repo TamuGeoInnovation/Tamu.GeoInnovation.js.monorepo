@@ -255,3 +255,13 @@ proved on one map before anything is migrated.
   added without being described here.
 - **The counts and their date are refreshed at each release**, from that release's suite run against
   dev, as a step in the [release checklist](releases/README.md#cutting-a-release).
+- **A pull request adds its row and leaves every number alone**, the Total included. The counts are a
+  measurement taken at release, not a running tally, and the check above does not read them - it only
+  asks that each spec file is named here.
+
+  Hand-incrementing the Total is what three pull requests in one afternoon on 20 October each
+  conflicted on, because every one of them edited the same line and nothing else collided. It was not
+  buying accuracy either: that day the headline said 576 tests measured on dev, this table's Total said
+  552, and the per-row counts added up to 619, all in one file. A number that is wrong three ways and
+  costs a conflict per pull request is worse than one refreshed deliberately, with a date on it, from a
+  run somebody actually watched (#2002).
