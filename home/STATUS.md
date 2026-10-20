@@ -3,15 +3,10 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 6: the release tier against production.** Started about 9:30 AM Central, from `C:\TAMU\wt-prod` at `8463ac6af`.
-Production confirmed: `prod-2026-10-20` resolves to `8463ac6af`; production serves `main-AYJ2SDWT.js` (was `main-TK2R62YY.js`).
-Nothing else heavy on home while it runs: **#1974's second half is parked** (`chore/1974-nestjs-12`, local commit `279d945ba`,
-unchecked, not pushed; its check was stopped).
+**#1974's second half resumed:** `chore/1974-nestjs-12` (local `279d945ba`), its full check, then push.
 
-**Batch 6 task 3 done:** opened **PR 1984** (#1972, Nx 23.3; `dependencies`, `no-visible-change` with its reason in a comment)
-and **PR 1985** (NestJS 10 to 11; `dependencies`, `bug`; `Closes #1978` - the sign-out fix and its test are in it - and "Part of
-#1974", so #1974 stays open for 12). Both ready for review, assignee set, both projects (Pending Approval / In Progress). Merge
-1984 first: 1985 and #1973 then need `development` merged in for the lock file.
+**Batch 6 done** (report 5): production tier 493/1/43 of 537; the one failure is #1969's race; production healthy apart from it.
+PRs 1984 and 1985 open.
 
 **branch ready:** `feat/1975-tailgating-kiosk` (`9bfb6a3e9`, report 1) - its PR is work's, with the images.
 
