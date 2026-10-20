@@ -3,18 +3,44 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **10:25 AM Central, 20 October 2026**. **This machine directs again** (home handed back at 7:40 AM; the maintainer confirmed it). **This machine is a listener again** — it handed the director
+Last written **10:55 AM Central, 20 October 2026**. **This machine directs again** (home handed back at 7:40 AM; the maintainer confirmed it). **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
 **Last batch done: 13. Batch 14 is taken and waiting on its build.**
 
-## Still paused for its own work, but directing
+## Unpaused: #1986's legend check, proven against production now
 
-**This machine's AggieMap work is still stopped** at the maintainer's instruction and will not restart until he
-says so. **Do not prompt him to resume it.** Nothing of this session is running.
+The maintainer lifted the pause at 10:45 AM for this one reason: **#1981 and #1987 are both live on production,
+and that is the only chance to prove #1986's check against two real faults.** Once home fixes them, showing the
+check would catch them means reconstructing the broken state.
 
-It did act as director at 10:10 AM, because he brought urgent work: **#1981**.
+**Running now: a scan of every production map** — for each layer switched on, is there a legend group for it, and
+does that group contain a row with a drawn symbol? It reads the running app, not the definitions: importing those
+pulls the Angular graph into the Playwright process, which `global-setup.ts` already documents as unworkable.
+
+What it keys off, from the live DOM:
+
+```
+.layer-item.visible                 a layer switched on, text is its title
+tamu-gisc-legend-collection         the legend
+  .collection-group-title-text      one group per layer
+  .collection-group-content
+    tamu-gisc-legend-element        a row; must contain an img, canvas, svg or background image
+```
+
+**A weakness already visible in the first results**, to be fixed before this becomes a committed spec: a map with
+**no** switched-on layers passes trivially — the campus maps report `on=0` and are called ok. The real check needs
+the declared-layer half as well, and that needs the probe to report what the app *meant* to create, not only what
+it did. That is the design note for #1986.
+
+### The order of work here
+
+1. The scan, now — the red proof and the list of affected maps.
+2. **When home says a branch is ready for #1981 or #1987:** before/after images and the pull requests, which is
+   what the maintainer is waiting on so he can merge and build.
+3. **Then** the work paused this morning: #1970's after image and PR, #1975's images and PR, and the
+   `prod-2026-10-20` screenshot set.
 
 ### #1981 is home's, now, and home's other work is paused
 
