@@ -366,6 +366,10 @@ local stack first ([`docs/gisday-local.md`](../gisday-local.md)). The smoke suit
    pages are the two that nothing automated checks.
 6. **Record it.** A pull request on the cluster configuration repository updates the pinned tag, with
    the tag it replaced as the rollback target, so the manifests match what is running.
+7. **Capture the baseline images** of the release now live, so a later change has a "before":
+   `node tools/visual-baselines/capture.mjs --app gisday --env production --release sha-<tag>`, as
+   [`tools/visual-baselines`](../../tools/visual-baselines/README.md#gis-day) explains. The images stay
+   on the machine that took them.
 
 **Not settled yet.** `scripts/tag-build.sh prod` refuses a commit with no `dev-*` tag, which GIS Day
 cannot have until it has a dev site, so the 12 October release carries no `prod-*` tag. Its entries
