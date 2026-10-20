@@ -3,7 +3,7 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. The director reads it before writing a batch or asking the maintainer anything.
 
-Last written **7:40 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
+Last written **8:25 PM Central, 19 October 2026**. **This machine is a listener again** — it handed the director
 role back to home at 6:35 PM, when the maintainer left the office, and is waiting to be told it is the worker bee.
 Clock times here are read from PowerShell or from a commit timestamp, not estimated.
 
@@ -11,7 +11,31 @@ Clock times here are read from PowerShell or from a commit timestamp, not estima
 
 ## Running now
 
-Nothing. **Batch 14 task 1 is done; task 2 waits for the director to name the final build.**
+**Waiting for the final build to reach dev**, to start batch 14 task 2.
+
+| | |
+| --- | --- |
+| Final build | commit **`8463ac6af`** — `development`'s head, with PRs 1950, 1966 and 1967 merged |
+| Start when | a release from that commit shows `GIS-1D Development` succeeded **and** dev serves a bundle other than Release-485's `main-CR5DN6UQ.js` |
+| Then | `run-local.sh development release`, nothing else heavy beside it |
+| Tag | only on a clean pass; #1951's AVP popup failing alone is **not** clean |
+
+A waiter is polling both conditions. `work: started` goes out before the tier runs.
+
+## Batch 14 task 1's placement amendment arrived after the merge
+
+Home asked at 8:15 PM for #1954's notes entry to sit just above "Campus maps load only their own campus" and its
+row **directly after** the Tailgating row. **PR 1967 was already merged by then** — `development`'s head is the
+final build commit — so the branch no longer exists to amend.
+
+What actually landed on `development`:
+
+- **The entry is where home wants it**, immediately above "Campus maps load only their own campus".
+- **The row is one line out**: it sits immediately *before* the Tailgating row rather than after it.
+
+**Not fixed, deliberately.** Correcting one row's order would need a new pull request on top of the final build,
+which would not be in tonight's release and would put a cosmetic change between the tested commit and production.
+It is the director's call whether that is worth a follow-up tomorrow.
 
 ## work: finished — batch 14 task 1, #1954's images
 
