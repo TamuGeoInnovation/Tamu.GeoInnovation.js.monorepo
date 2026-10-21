@@ -1,6 +1,6 @@
 <div class="sidebar-component-name">
   @if (isMobile | async) {
-  <span class="material-icons" (click)="backAction()">arrow_back</span>
+  <span class="material-icons" aria-label="Back" tabindex="0" role="button" (click)="backAction()" (keydown.enter)="backAction()" (keydown.space)="backAction(); $event.preventDefault()">arrow_back</span>
   }
   <p>Basemap</p>
 </div>
@@ -9,7 +9,7 @@
   @if (gallery(); as gallery) {
   <div class="flex flex-column">
     @for (basemap of gallery.items; track basemap) {
-    <div class="basemap flex flex-row align-center" [ngClass]="{active: gallery.activeId === basemap.basemap.id, unavailable: unavailable(basemap)}" [attr.aria-disabled]="unavailable(basemap) ? 'true' : null" [attr.title]="unavailable(basemap) ? 'Not available in 3D. Switch to 2D to use this basemap.' : null" (click)="selectBasemap(basemap)">
+    <div class="basemap flex flex-row align-center" [ngClass]="{active: gallery.activeId === basemap.basemap.id, unavailable: unavailable(basemap)}" [attr.aria-disabled]="unavailable(basemap) ? 'true' : null" [attr.title]="unavailable(basemap) ? 'Not available in 3D. Switch to 2D to use this basemap.' : null" [attr.aria-pressed]="gallery.activeId === basemap.basemap.id" tabindex="0" role="button" (click)="selectBasemap(basemap)" (keydown.enter)="selectBasemap(basemap)" (keydown.space)="selectBasemap(basemap); $event.preventDefault()">
       <img [src]="basemap.basemap.thumbnailUrl" alt="Basemap thumbnail" />
       <!-- The title's text starts the element, with nothing before it: the smoke suite reads it as written. -->
       <p class="basemap-title">{{ basemap.basemap.title }}@if (unavailable(basemap)) {<span class="basemap-note">2D only</span>}</p>

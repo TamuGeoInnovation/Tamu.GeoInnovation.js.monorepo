@@ -20,7 +20,8 @@ const HERE = path.dirname(url.fileURLToPath(import.meta.url));
 export const DEFINITIONS_DIR = path.join(HERE, '..', '..', 'libs', 'ts', 'events', 'ngx', 'src', 'lib', 'definitions');
 
 const EVENT_DATES = /eventDates:\s*\[([\s\S]*?)\]/;
-const SCHEDULE_URL = /scheduleUrl:\s*(?:'([^']*)'|([A-Za-z][\w.]*))/;
+const SCHEDULE_URL = /scheduleUrl:\s*(?:('[^']*'|\[[^\]]*\])|([A-Za-z][\w.]*))/;
+const QUOTED = /'([^']*)'/g;
 const RETIRED = /\bstatus:\s*'retired'/;
 const ISO_DATE = /'(\d{4})-(\d{1,2})-(\d{1,2})'/g;
 
@@ -28,7 +29,8 @@ const ISO_DATE = /'(\d{4})-(\d{1,2})-(\d{1,2})'/g;
  * @typedef {object} MapDates
  * @property {string} id            the definition file's base name, e.g. `womens-basketball`
  * @property {string[]} dates       `eventDates`, as written
- * @property {string|null} schedule the literal `scheduleUrl`, or null when it is not a literal
+ * @property {string[]} schedules the literal `scheduleUrl`, or each of them when it is a list (tennis has the
+ *   men's and the women's page, #2050); empty when it is not a literal
  * @property {string|null} scheduleExpression  what was written instead, when not a literal
  * @property {boolean} retired
  */
@@ -55,10 +57,10 @@ export function readDefinitions() {
       return {
         id: file.replace('.definitions.ts', ''),
         dates,
-        schedule: schedule && schedule[1] ? schedule[1] : null,
+        schedules: schedule && schedule[1] ? [...schedule[1].matchAll(QUOTED)].map(([, address]) => address) : [],
         scheduleExpression: schedule && !schedule[1] ? schedule[2] : null,
         retired: RETIRED.test(source)
       };
     })
-    .filter((map) => map.dates.length > 0 || map.schedule || map.scheduleExpression);
+    .filter((map) => map.dates.length > 0 || map.schedules.length > 0 || map.scheduleExpression);
 }

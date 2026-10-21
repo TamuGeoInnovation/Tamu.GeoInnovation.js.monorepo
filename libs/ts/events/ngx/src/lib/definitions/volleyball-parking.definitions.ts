@@ -138,7 +138,7 @@ export const VolleyballParkingConfiguration: EventConfiguration = {
     '2026-11-13',
     '2026-11-15'
   ],
-  scheduleUrl: 'https://12thman.com/sports/womens-volleyball/schedule',
+  scheduleUrl: 'https://12thman.com/sports/volleyball/schedule',
   zoom: 16,
   mapCenter: [-96.34454, 30.60338]
 };

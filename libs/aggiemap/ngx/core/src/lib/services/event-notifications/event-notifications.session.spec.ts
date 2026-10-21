@@ -10,6 +10,10 @@ import {
   NO_NOTIFICATIONS
 } from './event-notifications.service';
 
+// Mid-year, so every date these tests use falls in one season, which a notice's id carries (#2051).
+beforeEach(() => vi.useFakeTimers({ now: new Date('2026-06-15T17:00:00Z'), toFake: ['Date'] }));
+afterEach(() => vi.useRealTimers());
+
 /**
  * College Station's notices show on map pages only, and once per browser session (#1307).
  *
@@ -74,7 +78,7 @@ describe('EventNotificationsService on map pages, once per session', () => {
     const service = load();
 
     service.checkAndTriggerEventNotifications(COLLEGE_STATION);
-    expect(notifications.showing()).toEqual(['ring-day-toast', 'kickoff-toast']);
+    expect(notifications.showing()).toEqual(['ring-day-toast-2026', 'kickoff-toast-2026']);
 
     service.checkAndTriggerEventNotifications(NO_NOTIFICATIONS);
 
@@ -99,7 +103,7 @@ describe('EventNotificationsService on map pages, once per session', () => {
     service.checkAndTriggerEventNotifications(NO_NOTIFICATIONS);
     service.checkAndTriggerEventNotifications(COLLEGE_STATION);
 
-    expect(notifications.toasted).toEqual(['ring-day-toast', 'kickoff-toast']);
+    expect(notifications.toasted).toEqual(['ring-day-toast-2026', 'kickoff-toast-2026']);
     expect(notifications.showing()).toEqual([]);
   });
 
@@ -119,7 +123,7 @@ describe('EventNotificationsService on map pages, once per session', () => {
 
     load().checkAndTriggerEventNotifications(COLLEGE_STATION);
 
-    expect(notifications.toasted).toEqual(['ring-day-toast', 'kickoff-toast']);
+    expect(notifications.toasted).toEqual(['ring-day-toast-2026', 'kickoff-toast-2026']);
   });
 
   it('does not count a notice as seen until it has been shown', () => {
@@ -128,6 +132,6 @@ describe('EventNotificationsService on map pages, once per session', () => {
 
     load().checkAndTriggerEventNotifications(COLLEGE_STATION);
 
-    expect(notifications.toasted).toEqual(['ring-day-toast', 'kickoff-toast']);
+    expect(notifications.toasted).toEqual(['ring-day-toast-2026', 'kickoff-toast-2026']);
   });
 });

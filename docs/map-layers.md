@@ -191,6 +191,26 @@ same pull request, or the check starts failing for a correct change — see [#15
 
 ---
 
+## Drawing order
+
+### How
+
+On an event or parking map, **the order of the `references` enum is the drawing order, top first.**
+`EventService` adds a map's layers in the reverse of that order, each above the ones before it. The
+order of the sources array does not decide it, and the layer list's order is separate (above).
+
+Do not use `layerIndex` to order a map's own layers against each other. It is a position in the map's
+whole layer list, counted when the layer is added, and that list holds whatever else has loaded by then:
+on Indoor Track Parking it held about a dozen, so indices of 20 to 25 were each simply added on top, in
+load order, and Team Bus Parking ended up under the building it was meant to cover ([#2059][2059]).
+
+### When it is right
+
+**When one layer would hide another.** An area drawn over its own building's footprint, as Indoor Track's
+team bus parking is, has to be above it or it cannot be seen at all. Say so beside the enum.
+
+---
+
 ## If you do override something
 
 You are recording a defect, so write it down as one. In the definition, next to the override:
@@ -215,3 +235,4 @@ rediscover the reason — or, more likely, leave it alone because they cannot te
 [1501]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1501
 [1508]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1508
 [1802]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1802
+[2059]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2059

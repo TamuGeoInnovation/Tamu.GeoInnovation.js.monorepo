@@ -1,7 +1,7 @@
 @if (groupVisible() && !blockedByModal()) {
-<div class="notification-grouped-wrapper" [ngClass]="[position(), groupShowing() ? 'show' : '']" (mouseover)="pauseGroup()" (mouseleave)="resumeGroup()">
+<div class="notification-grouped-wrapper" [ngClass]="[position(), groupShowing() ? 'show' : '']" (mouseenter)="pauseGroup()" (mouseleave)="resumeGroup()" (focusin)="pauseGroup()" (focusout)="resumeGroup()">
   <div class="status" [style.width.%]="groupTimerPercent()"></div>
-  <div class="close material-icons" tabindex="0" (click)="closeGroup()" title="Close">close</div>
+  <div class="close material-icons" title="Close" aria-label="Close" tabindex="0" role="button" (click)="closeGroup()" (keydown.enter)="closeGroup()" (keydown.space)="closeGroup(); $event.preventDefault()">close</div>
   <!--
     One notification at a time (#1327). Stacking every active notification made the panel as tall as
     the number of them - four of them covered most of the map.
@@ -15,7 +15,7 @@
     -->
   <div class="grouped-stack">
     @for (item of groupedItems(); track item; let i = $index) {
-    <div class="grouped-item" [class.grouped-item--hidden]="i !== groupIndex()" [attr.aria-hidden]="i !== groupIndex() ? 'true' : null" (click)="actionGroupItem(item)" [class.actionable]="item.action" [class.grouped-item--high]="item.priority === 'high'">
+    <div class="grouped-item" [class.grouped-item--hidden]="i !== groupIndex()" [attr.aria-hidden]="i !== groupIndex() ? 'true' : null" [attr.tabindex]="item.action && i === groupIndex() ? 0 : null" [attr.role]="item.action ? 'button' : null" (click)="actionGroupItem(item)" (keydown.enter)="actionGroupItem(item)" (keydown.space)="actionGroupItem(item); $event.preventDefault()" [class.actionable]="item.action" [class.grouped-item--high]="item.priority === 'high'">
       @if (item.imgUrl) {
       <div class="grouped-image">
         <img [src]="item.imgUrl" [title]="item.imgAltText" [alt]="item.imgAltText" />

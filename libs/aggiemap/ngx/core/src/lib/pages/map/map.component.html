@@ -11,7 +11,7 @@
       <p><a routerLink="/directory" tabindex="0">Building Directory</a></p>
       <p>
         @if (isDev | async) {
-        <a tabindex="0" (click)="openBetaModal(true)">Beta Branch</a>
+        <a tabindex="0" role="button" (click)="openBetaModal(true)" (keydown.enter)="openBetaModal(true)" (keydown.space)="openBetaModal(true); $event.preventDefault()">Beta Branch</a>
         }
       </p>
       <p class="topics-separator" aria-hidden="true"></p>

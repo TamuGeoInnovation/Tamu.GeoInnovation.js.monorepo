@@ -22,6 +22,7 @@ import { AggiemapCustomMapConfiguration } from '../../interfaces/special-event.i
 import { EventDefinitions } from '../../definitions/all.definitions';
 import { BreakSummerParkingTs } from '../../definitions/break-summer.definitions';
 import { AVP_PARKING_LAYERS, AVPParkingColdLayerSources } from '../../definitions/avp-parking.definitions';
+import { INDOOR_TRACK_PARKING_LAYERS, IndoorTrackParkingTs } from '../../definitions/indoor-track-parking.definitions';
 import { EventService } from './event.service';
 
 /** The main map's layers, as the environment provides them to every map. */
@@ -179,6 +180,61 @@ describe('EventService', () => {
 });
 
 /**
+ * Indoor Track Parking draws Team Bus Parking above the Indoor Track Building (#2059).
+ *
+ * The team bus area is the building's own footprint. `drawEvent` hands the map service a map's layers in
+ * the reverse of its `references` order, and the map service adds each in turn, so each is drawn above
+ * the ones before it. The definition's `layerIndex` values meant to put the area above the building, but
+ * a `layerIndex` is a position in the map's layer list and the list held about a dozen layers when these
+ * were added, so every one was simply added on top: the area went first and the building covered it.
+ */
+describe('EventService, the order Indoor Track Parking draws its layers in', () => {
+  it('adds Team Bus Parking after the building, and at no fixed position, so it is drawn above it', async () => {
+    const loaded: LayerSource[] = [];
+
+    TestBed.resetTestingModule().configureTestingModule({
+      providers: [
+        { provide: EnvironmentService, useValue: {} },
+        { provide: EsriModuleProviderService, useValue: {} },
+        { provide: LayerSourcesService, useValue: {} },
+        {
+          provide: EsriMapService,
+          useValue: { store: NEVER, loadLayers: async (sources: LayerSource[]) => void loaded.push(...sources) }
+        },
+        {
+          provide: EventSettingsService,
+          useValue: {
+            eventConfiguration: () => IndoorTrackParkingTs,
+            eventOptions: () => IndoorTrackParkingTs.options,
+            settings: () => ({}),
+            getVisibleOptions: () => [],
+            eventLayerReferences: () => IndoorTrackParkingTs.references,
+            eventLayerSources: () => IndoorTrackParkingTs.sources
+          }
+        },
+        EventService
+      ]
+    });
+
+    await Object.assign(TestBed.inject(EventService), {
+      applyExclusiveLayerVisibility: () => undefined,
+      selectFeatureFromUrl: async () => undefined,
+      applySelectedChoiceView: async () => undefined,
+      flashFocusFeature: async () => undefined
+    }).drawEvent();
+
+    const ids = loaded.map((source) => source.id);
+
+    expect(ids).toContain(INDOOR_TRACK_PARKING_LAYERS.BUILDING);
+    expect(ids.indexOf(INDOOR_TRACK_PARKING_LAYERS.TEAM_BUS_PARKING)).toBeGreaterThan(
+      ids.indexOf(INDOOR_TRACK_PARKING_LAYERS.BUILDING)
+    );
+    // A fixed position would put a layer wherever the map's list happened to have room on that load.
+    expect(loaded.filter((source) => source.layerIndex !== undefined).map((source) => source.id)).toEqual([]);
+  });
+});
+
+/**
  * A link selects only a feature the map draws (#1954).
  *
  * Motorcycle Parking draws one layer filtered to motorcycle spaces with a `definitionExpression`, and
@@ -210,26 +266,33 @@ describe('EventService: selecting a feature from a link', () => {
     });
   }
 
-  /** Opens `search` on a map holding `layer`, and returns the object ids of the features selected. */
-  async function selectedBy(search: string, layer: FeatureLayer): Promise<number[]> {
-    const selectFeatures = vi.fn();
+  /** The map service's own lookup of a link, against the application's search sources (#1969). */
+  let selectFeaturesFromUrl = vi.fn();
 
-    const settings = {
+  /** An event map's settings, with the `lot` source as the application configures it: `?lot=` matched on `LotName`. */
+  const linkSettings = () =>
+    ({
       eventConfiguration: () => undefined,
       eventOptions: () => [],
       settings: () => ({}),
       getVisibleOptions: () => [],
       eventLayerReferences: () => ({}),
-      // The `lot` source as the application configures it: `?lot=` matched on `LotName`.
       configuredSearchSources: () => [{ urlQueryParam: 'lot', queryParams: { where: { keys: ['LotName'] } } }]
-    } as unknown as EventSettingsService;
+    }) as unknown as EventSettingsService;
+
+  /** Opens `search` on a map holding `layer`, and returns the object ids of the features selected. */
+  async function selectedBy(search: string, layer: FeatureLayer): Promise<number[]> {
+    const selectFeatures = vi.fn();
+    selectFeaturesFromUrl = vi.fn();
+
+    const settings = linkSettings();
 
     TestBed.resetTestingModule().configureTestingModule({
       providers: [
         { provide: EnvironmentService, useValue: {} },
         { provide: EsriModuleProviderService, useValue: {} },
         { provide: LayerSourcesService, useValue: {} },
-        { provide: EsriMapService, useValue: { store: NEVER, selectFeatures } },
+        { provide: EsriMapService, useValue: { store: NEVER, selectFeatures, selectFeaturesFromUrl } },
         { provide: EventSettingsService, useValue: settings },
         EventService
       ]
@@ -251,6 +314,52 @@ describe('EventService: selecting a feature from a link', () => {
   }
 
   afterEach(() => window.history.replaceState(null, '', '/'));
+
+  /**
+   * A `?lot=` link on an event map has one answer, and the map's own layers give it first (#1969).
+   *
+   * The map service selected the link's feature itself as soon as the map loaded, from the application's
+   * search sources - College Station's lots - while this service looked for it among the map's own layers.
+   * Both selected, and whichever answered last won: the main map's Lot 100j opened first on nearly every
+   * load, and stayed whenever the map's own service was slow.
+   */
+  describe('on an event map, where the main map has the same lot (#1969)', () => {
+    it("takes the link from the map service, so the map service does not select the main map's lot itself", () => {
+      const mapService = { store: NEVER, selectFeatures: vi.fn(), selectsFeaturesFromUrlOnLoad: true };
+
+      TestBed.resetTestingModule().configureTestingModule({
+        providers: [
+          { provide: EnvironmentService, useValue: {} },
+          { provide: EsriModuleProviderService, useValue: {} },
+          { provide: LayerSourcesService, useValue: {} },
+          { provide: EsriMapService, useValue: mapService },
+          { provide: EventSettingsService, useValue: linkSettings() },
+          EventService
+        ]
+      });
+      TestBed.inject(EventService);
+
+      expect(mapService.selectsFeaturesFromUrlOnLoad).toBe(false);
+    });
+
+    it("does not fall back to the application's lot when one of the map's own layers has it", async () => {
+      expect(await selectedBy('?lot=100j', filteredLayer([[32270, '100j', 'M/C']]))).toEqual([32270]);
+      expect(selectFeaturesFromUrl).not.toHaveBeenCalled();
+    });
+
+    it("falls back to the application's lot when none of the map's own layers has it", async () => {
+      expect(await selectedBy('?lot=100j', filteredLayer([[26692, '100j', 'H/C']]))).toEqual([]);
+      expect(selectFeaturesFromUrl).toHaveBeenCalledTimes(1);
+    });
+
+    it("falls back to the application's lot when the map's own layer cannot be asked", async () => {
+      const layer = filteredLayer([[32270, '100j', 'M/C']]);
+      vi.spyOn(layer, 'queryFeatures').mockRejectedValue(new Error('the service did not answer'));
+
+      expect(await selectedBy('?lot=100j', layer)).toEqual([]);
+      expect(selectFeaturesFromUrl).toHaveBeenCalledTimes(1);
+    });
+  });
 
   it("selects nothing for a ?lot= link whose only match is outside the map's filter", async () => {
     expect(await selectedBy('?lot=100j', filteredLayer([[26692, '100j', 'H/C']]))).toEqual([]);

@@ -8,6 +8,7 @@ import { NgClass } from '@angular/common';
   selector: 'tamu-gisc-radio-group',
   templateUrl: './radio-group.component.html',
   styleUrls: ['./radio-group.component.scss'],
+  host: { role: 'radiogroup' },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

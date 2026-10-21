@@ -1,7 +1,7 @@
 <div [@offCanvasSlideUpFromTop]="hide()">
   <div id="top">
     <div class="action">
-      <i class="material-icons" (click)="returnBaseRoute()">arrow_back</i>
+      <i class="material-icons" aria-label="Back" tabindex="0" role="button" (click)="returnBaseRoute()" (keydown.enter)="returnBaseRoute()" (keydown.space)="returnBaseRoute(); $event.preventDefault()">arrow_back</i>
     </div>
     <div class="points">
       <!-- Routing has no production service, so the planner is offered on development hosts only, for testing its components. -->

@@ -56,8 +56,29 @@ export const TennisParkingConfiguration: EventConfiguration = {
   applicationName: 'Tennis Parking',
   shortApplicationName: 'Tennis Parking',
   introductionText: 'Parking and transportation information for Texas A&M tennis events.',
-  eventDates: ['2027-01-23', '2027-01-24'],
-  scheduleUrl: 'https://12thman.com/sports/mens-tennis/schedule',
+  eventDates: [
+    '2027-01-17',
+    '2027-01-18',
+    '2027-01-23',
+    '2027-01-24',
+    '2027-01-29',
+    '2027-02-21',
+    '2027-02-24',
+    '2027-02-28',
+    '2027-03-05',
+    '2027-03-07',
+    '2027-03-11',
+    '2027-03-18',
+    '2027-03-20',
+    '2027-03-25',
+    '2027-03-27',
+    '2027-04-04',
+    '2027-04-11',
+    '2027-04-16',
+    '2027-04-18'
+  ],
+  // The map is for both teams' home matches, published on two pages (#2050).
+  scheduleUrl: ['https://12thman.com/sports/mens-tennis/schedule', 'https://12thman.com/sports/womens-tennis/schedule'],
   zoom: 16,
   mapCenter: [-96.34454, 30.60338]
 };

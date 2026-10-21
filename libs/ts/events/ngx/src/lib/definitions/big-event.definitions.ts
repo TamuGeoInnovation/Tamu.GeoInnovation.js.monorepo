@@ -113,7 +113,7 @@ export const BigEventConfiguration: EventConfiguration = {
   eventDates: ['2026-03-21'],
   scheduleUrl: 'https://bigevent.tamu.edu/',
   toast: {
-    id: 'big-event-notification-2026',
+    id: 'big-event-notification',
     title: 'Big Event Transportation Map Available',
     message:
       'Heading to Big Event? Click me to open the Big Event Transportation Map for parking, road closure, and traffic flow information.',

@@ -8,7 +8,7 @@
 </div>
 } @else {
 <p>{{fileName}}</p>
-<p class="inline-link" (click)="reset()">{{clearMessage()}}</p>
+<p class="inline-link" tabindex="0" role="button" (click)="reset()" (keydown.enter)="reset()" (keydown.space)="reset(); $event.preventDefault()">{{clearMessage()}}</p>
 }
 
 <input type="file" [accept]="accept()" (change)="handleFileChange($event)" />

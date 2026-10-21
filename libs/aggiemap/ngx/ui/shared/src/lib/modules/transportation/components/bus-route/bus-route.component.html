@@ -1,7 +1,7 @@
 <div [ngClass]="{ loaded: isActive(), loading: isLoading() }">
   <tamu-gisc-accordion>
     <tamu-gisc-bus-list-header>
-      <div class="route-overview" (click)="toggleRoute()">
+      <div class="route-overview" [attr.aria-expanded]="isActive()" tabindex="0" role="button" (click)="toggleRoute()" (keydown.enter)="toggleRoute()" (keydown.space)="toggleRoute(); $event.preventDefault()">
         <div class="route-number" [style.backgroundColor]="route().Color">{{ route().ShortName }}</div>
         <div class="route-name"><span class="selected-status" [style.backgroundColor]="route().Color"> </span><span class="route-label">{{ route().Name }}</span></div>
       </div>

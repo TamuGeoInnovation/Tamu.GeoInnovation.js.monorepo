@@ -50,7 +50,8 @@
     </div>
     <div class="overlay-zone bottom right">
       @if (hasSettings) {
-      <div class="esri-component esri-track esri-widget--button esri-widget" role="button" alt="URL Share" clipboard-copy [text]="shareUrl"><span class="material-icons" (click)="notifyUrlCopy()">share</span></div>
+      <!-- The copy directive copies on a click of this element, so the keys click it rather than call the handler. -->
+      <div class="esri-component esri-track esri-widget--button esri-widget" role="button" tabindex="0" aria-label="Copy a link to this map" clipboard-copy [text]="shareUrl" (click)="notifyUrlCopy()" (keydown.enter)="$any($event.target).click()" (keydown.space)="$any($event.target).click(); $event.preventDefault()"><span class="material-icons" aria-hidden="true">share</span></div>
       } @if (hasOptions) {
       <div routerLink="../builder/review" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Map Settings">settings</span></div>
       }

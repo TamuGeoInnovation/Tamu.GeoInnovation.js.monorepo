@@ -13,6 +13,10 @@ import {
   NO_NOTIFICATIONS
 } from './event-notifications.service';
 
+// Mid-year, so every date these tests use falls in one season, which a notice's id carries (#2051).
+beforeEach(() => vi.useFakeTimers({ now: new Date('2026-06-15T17:00:00Z'), toFake: ['Date'] }));
+afterEach(() => vi.useRealTimers());
+
 /**
  * College Station's notifications stay on College Station's maps (#1265).
  *
@@ -122,7 +126,7 @@ describe('EventNotificationsService campus scoping', () => {
 
     service.checkAndTriggerEventNotifications(COLLEGE_STATION);
 
-    expect(notifications.toasted).toEqual(['ring-day-toast', 'kickoff-toast']);
+    expect(notifications.toasted).toEqual(['ring-day-toast-2026', 'kickoff-toast-2026']);
   });
 
   it.each(['galveston', 'mcallen', 'dc-bush-school'])('raises nothing on the %s campus map', (campus) => {
@@ -149,7 +153,7 @@ describe('EventNotificationsService campus scoping', () => {
     service.checkAndTriggerEventNotifications(COLLEGE_STATION);
     service.checkAndTriggerEventNotifications(COLLEGE_STATION);
 
-    expect(notifications.toasted).toEqual(['ring-day-toast', 'kickoff-toast']);
+    expect(notifications.toasted).toEqual(['ring-day-toast-2026', 'kickoff-toast-2026']);
   });
 
   it('still raises nothing after a visit to a campus map and back', () => {
@@ -160,7 +164,7 @@ describe('EventNotificationsService campus scoping', () => {
     service.checkAndTriggerEventNotifications('galveston');
     service.checkAndTriggerEventNotifications(COLLEGE_STATION);
 
-    expect(notifications.toasted).toEqual(['ring-day-toast', 'kickoff-toast']);
+    expect(notifications.toasted).toEqual(['ring-day-toast-2026', 'kickoff-toast-2026']);
   });
 
   it('defaults to College Station when no campus is given', () => {
@@ -170,7 +174,7 @@ describe('EventNotificationsService campus scoping', () => {
 
     service.checkAndTriggerEventNotifications();
 
-    expect(notifications.toasted).toEqual(['ring-day-toast', 'kickoff-toast']);
+    expect(notifications.toasted).toEqual(['ring-day-toast-2026', 'kickoff-toast-2026']);
   });
 });
 

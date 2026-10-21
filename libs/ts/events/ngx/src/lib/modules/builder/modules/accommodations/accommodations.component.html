@@ -1,11 +1,11 @@
 <div class="container12">
   @if (accommodation$ | async; as accommodation) {
   <p class="center-text component-instructions">{{accommodation.description}}</p>
-  @if (config?.scheduleUrl) {
+  @if (config?.scheduleUrl) { @for (url of [config!.scheduleUrl].flat(); track url) {
   <p class="center-text component-instructions event-details">
-    <a [href]="config!.scheduleUrl" target="_blank" rel="noopener noreferrer">Click here for {{ config?.name }} details</a>
+    <a [href]="url" target="_blank" rel="noopener noreferrer">Click here for {{ config?.name }} details</a>
   </p>
-  } @if (accommodation.uiType === 'date-card-grid') {
+  } } @if (accommodation.uiType === 'date-card-grid') {
   <div class="date-card-container">
     @for (option of accommodation.choices; track option) {
     <div class="date-card" (click)="saveOption(accommodation.value, option.value)" (keyup.space)="saveOption(accommodation.value, option.value)" (keyup.enter)="saveOption(accommodation.value, option.value)" tabindex="0">

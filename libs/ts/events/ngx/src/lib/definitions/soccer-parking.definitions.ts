@@ -134,7 +134,7 @@ export const SoccerParkingConfiguration: EventConfiguration = {
     '2026-10-18',
     '2026-11-01'
   ],
-  scheduleUrl: 'https://12thman.com/sports/womens-soccer/schedule',
+  scheduleUrl: 'https://12thman.com/sports/soccer/schedule',
   zoom: 16,
   mapCenter: [-96.34454, 30.60338]
 };
