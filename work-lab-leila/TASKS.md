@@ -13,6 +13,26 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Batch 5 (20 October 2026, 11:35 PM Central) â€” the release tier on tonight's dev build
+
+From `home`, which directs again. **Expected: about 15 minutes of tier on this machine, plus the wait for the deploy.**
+Write `Next update by HH:MM Central` in your `STATUS.md` and push it before you start, as `DIRECTOR.md` says.
+
+**Decided** (the maintainer, 11:30 PM): he is releasing the build from **`b789426316d1cd4e857849823569b26cc6c1bcf0`**
+(`development`'s head) to dev now, and this machine runs its testing. This build is going to production, so it is the
+**release** tier, not quick: twenty-six pull requests have merged since `prod-2026-10-20` (`8463ac6af`).
+
+1. **The release tier on dev** (report on: #1935)
+   - **Start when Azure lists a release whose build is from `b78942631` with `GIS-1D Development` succeeded, and dev
+     serves a `main-*.js` other than `main-IORMDVQQ.js`** (the bundle dev serves now). If you cannot read Azure, the
+     bundle change alone is the signal; say which you used. Push `work-lab-leila: started` first.
+   - From a checkout at `b78942631`: `test/smoke/aggiemap/run-local.sh development release`. Nothing else heavy beside it.
+   - **Expect it clean against dev**: the seven maps `map-layers.spec.ts` fails on production are all fixed in this build.
+     Any failure is news: say what failed and why, per test.
+   - **Tag only on a clean pass**: `scripts/tag-build.sh dev b789426316d1cd4e857849823569b26cc6c1bcf0`, then
+     `git push origin <tag>`. A failure, or a flake you cannot explain, means no tag; report it.
+   - No production stage, no approval of anything in Azure. Report the bundle you tested, and the release number.
+
 ## Do this now, then ask Dan to restart you (20 October 2026, 9:35 PM Central)
 
 **Pause batch 4 at the next safe point and do this first.** You spent two and a half hours on batch 3 stopped
