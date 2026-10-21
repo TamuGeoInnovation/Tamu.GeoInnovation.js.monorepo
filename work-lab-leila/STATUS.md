@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:35 PM Central, 20 October 2026**. A listener; job: testing.
+Last written **11:54 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,18 +24,13 @@ Last written **11:35 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 12:10 AM Central.**
-
-**Batch 5, the release tier on tonight's dev build** (`b78942631`, report on #1935). Taken 11:29 PM Central. Waiting for the
-deploy: this machine cannot read Azure, so the start signal is dev serving a `main-*.js` other than `main-IORMDVQQ.js`.
-Then `run-local.sh development release` from a worktree at `b78942631`, nothing else heavy beside it; a `dev-*` tag only
-on a clean pass.
-
-**Started the release tier at 11:35 PM Central** against dev serving `main-MQDQOFSZ.js`, which the director read from Azure as
-Release-487, build 20261020.40, from `b78942631`. (My local-build comparison could not match: each environment bakes in its
-own analytics id.) From the worktree `C:TAMUwt-release` at `b78942631`; nothing else heavy running.
+None.
 
 ## Finished
+
+- **Batch 5, aggiemap: the release tier on Release-487** (`b78942631`, dev serving `main-MQDQOFSZ.js`, 11:35 to 11:53 PM): **613
+  passed, 0 failed, 0 flaky, 44 skipped**; tagged **`dev-2026-10-20-2`**, pushed; posted on #1935. Report
+  `work-lab-leila/reports/2026-10-20-5.md`.
 
 - **Batch 4** (9:13 to 9:52 PM, paused 9:20 to 9:23 for the restart): **#1975** PR 2030 open, `feat/1975-tailgating-kiosk` at
   `0eddaf0c2`, check exit 0; **#1969** reproduced (0% quiet, 5% at six workers, 12 to 14% under load) and made to fail
@@ -78,4 +73,4 @@ own analytics id.) From the worktree `C:TAMUwt-release` at `b78942631`; nothing 
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 4
+Last batch done: 5
