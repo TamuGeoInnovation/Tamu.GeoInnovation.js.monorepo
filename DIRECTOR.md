@@ -1,8 +1,9 @@
 # Who directs
 
-**Directors: AggieMap - none until the maintainer speaks to a machine; GIS Day - `home` (GIS Day chat).** The AggieMap
-director (`home`, AggieMap chat) handed over at 7:40 AM Central, 21 October 2026, as the maintainer left for school, and
-became a listener. **Whichever machine he speaks to next about AggieMap directs it**: it reads **Handover** below, changes
+**Directors: AggieMap - none until the maintainer speaks to a machine; GIS Day - none until the maintainer speaks to a
+machine.** The AggieMap director (`home`, AggieMap chat) handed over at 7:40 AM Central, 21 October 2026, and the GIS Day
+director (`home`, GIS Day chat) at 7:45 AM, as the maintainer left for school; both became listeners. GIS Day's state is
+in **Handover (gisday)** at the end of this file. **Whichever machine he speaks to next about an application directs it**: it reads **Handover** below, changes
 this line to its own name, and pushes. When the maintainer is at work, each application's director moves to `work`
 separately, by the handover below.
 
@@ -314,3 +315,43 @@ every athletics schedule, women's tennis included), 2056 (`tools/` tests in CI).
    (#2059, PR 2060; 15 more definitions on #2061).
 4. **A green check can mean nothing ran** - read the log for "No tasks were run"; for `test/smoke/aggiemap/` the real check is
    `tsc -p test/smoke/aggiemap --noEmit`.
+
+## Handover (gisday)
+
+Written by `home` (GIS Day chat) at 7:45 AM Central, 21 October 2026. The GIS Day handoff page has the same, at more length,
+for the maintainer.
+
+### Waiting on the maintainer
+
+| | |
+| --- | --- |
+| [PR 2062](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2062) | #1998, the admin pages at phone width. Opened ready, MERGEABLE, CI running at 7:20 AM (5 passed, 4 pending). Full affected check exit 0 locally; before/after images from a signed-in capture on home |
+
+No GIS Day question is open. Decided overnight: #2057 (`web --static`, Medium), #2058 (the seven a11y lint rules for
+geoservices, mailroom, oidc and signage, Low), and #1474's GIS Day half done in one pull request after #1998.
+
+### What the next GIS Day director does, in order
+
+1. Watch PR 2062 to green; it needs nothing else.
+2. **#1474, GIS Day's half:** switch the seven template accessibility rules back on in `apps/gisday-angular`,
+   `apps/gisday-competitions-angular` and `libs/gisday/*` (the `off` lines in each `eslint.config.mjs`), fix what they find,
+   with before/after images for anything visible, one pull request carrying `Closes #1474` (PR 2046 did AggieMap's half,
+   "Part of #1474").
+3. Then #2057, which makes the static build below a supported `scripts/gisday-local.sh web --static`.
+
+### Machines
+
+- **home** runs both GIS Day sites locally, from a **static build** served by nginx, because the Vite dev server hangs at
+  `[optimizer] bundling dependencies...` on Node 24 (three times on 20 October; AggieMap's does the same): `gisday-site` on
+  4201 is UCGIS (sign-in works), `gisday-dev` on 4202 is txgisday.org, `gisday-api` and `gisday-db` behind them. The nginx
+  config is only in the GIS Day chat's scratch folder until #2057. `C:\TAMU\gisday-local` now has `auth0-dev.local.env`
+  and a fresh `gisday-api.local.env` from the sample; the old one, holding a production secret, is
+  `gisday-api.local.env.pre-1623`, for the maintainer to delete.
+- **work** has not pushed since 11:15 PM on 20 October; its GIS Day batch 20 was withdrawn and done on home.
+
+### Things not to relearn
+
+- The signed-in capture runs from home now: `capture.mjs --app gisday --env local --signed-in <auth0-dev.local.env>` with
+  `AGGIEMAP_SMOKE_BASE_URL=http://localhost:4201`, the Playwright container on `--network container:gisday-dev`, and nginx
+  listening on 4201 inside it, because the dev tenant's application returns only to `localhost:4201`. About 23 minutes for
+  70 shots.
