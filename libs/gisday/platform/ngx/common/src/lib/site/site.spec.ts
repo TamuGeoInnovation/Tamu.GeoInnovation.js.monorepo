@@ -20,19 +20,48 @@ describe('gisdaySite', () => {
     }
   });
 
-  it('leaves nothing out on txgisday.org', () => {
-    expect(gisdaySite('txgisday').off).toEqual([]);
+  it("leaves out only Texas A&M's own content on txgisday.org, keeping the required links", () => {
+    expect(gisdaySite('txgisday').off).toEqual(['tamu']);
+  });
+
+  /**
+   * #2012. gisday.tamu.edu is served by txgisday.org's deployment, so its key says txgisday; the address
+   * is what makes it Texas A&M's site.
+   */
+  it("is Texas A&M's site at its addresses, whatever the deployment's key", () => {
+    for (const host of ['gisday.tamu.edu', 'tamu.txgisday.org', 'GISDAY.TAMU.EDU']) {
+      for (const key of [undefined, 'txgisday', '___ANGULAR_SITE___']) {
+        const site = gisdaySite(key, host);
+
+        expect(site.name).toBe('Texas A&M GIS Day');
+        expect(site.brand).toBe('tamu');
+      }
+    }
+  });
+
+  it("goes by the key at any other address, so a local copy can show any site", () => {
+    expect(gisdaySite('txgisday', 'txgisday.org').name).toBe('TxGIS Day');
+    expect(gisdaySite('tamu', 'localhost').name).toBe('Texas A&M GIS Day');
+    expect(gisdaySite('ucgis', 'gisday.ucgis.org').name).toBe('UCGIS GIS Day');
+    expect(gisdaySite(undefined, 'localhost').name).toBe('TxGIS Day');
+  });
+
+  it("has every feature on Texas A&M's site, and the required links but not its content on the others", () => {
+    expect(gisdaySite('tamu').off).toEqual([]);
+    expect(gisdaySite('txgisday').off).not.toContain('tamuLinks');
+    expect(gisdaySite('ucgis').off).toEqual(expect.arrayContaining(['tamu', 'tamuLinks']));
   });
 });
 
 describe('SiteHasPipe', () => {
-  it('has every feature on txgisday.org', () => {
+  it("has every feature but Texas A&M's own content on txgisday.org", () => {
     setUp();
     const pipe = TestBed.runInInjectionContext(() => new SiteHasPipe());
 
-    for (const feature of ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu'] as const) {
+    for (const feature of ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamuLinks'] as const) {
       expect(pipe.transform(feature)).toBe(true);
     }
+    expect(pipe.transform('tamu')).toBe(false);
   });
 
   it('does not have a feature the site leaves out', () => {

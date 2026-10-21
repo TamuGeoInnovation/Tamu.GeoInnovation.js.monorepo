@@ -62,7 +62,15 @@
 <header>
   <nav id="main-menu">
     <div [ngClass]="{hidden: (logoVisible$ | async) === false}" id="site-logo">
-      <a class="logo-container" [routerLink]="['/']">
+      <a class="logo-container no-decoration" [routerLink]="['/']">
+        @if (site.brand === 'tamu') {
+        <!-- Texas A&M's site carries the university's lockup, as AggieMap does (#2012). -->
+        <h1 class="site-logo">
+          <tamu-gisc-lockup>
+            <div class="entity">GIS Day @if ((activeSeason$ | async)?.year; as year) {<span>{{year}}</span>}</div>
+          </tamu-gisc-lockup>
+        </h1>
+        } @else {
         <h1 class="site-logo">
           <span class="site-logo-image-container">
             <img [src]="site.logo" height="50px" width="50px" />
@@ -71,6 +79,7 @@
           <span>{{year}}</span>
           }
         </h1>
+        }
       </a>
     </div>
 

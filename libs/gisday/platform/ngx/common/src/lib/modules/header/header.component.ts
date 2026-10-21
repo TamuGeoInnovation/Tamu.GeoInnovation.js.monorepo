@@ -21,6 +21,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { HasRolesPipe } from '@tamu-gisc/common/ngx/auth';
 import { SeasonLinkPipe } from '../../pipes/season-link/season-link.pipe';
 import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
+import { LockupComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 
 @Component({
   selector: 'tamu-gisc-app-header',
@@ -28,6 +29,7 @@ import { GISDAY_SITE, SiteHasPipe } from '../../site/site';
   styleUrls: ['./header.component.scss'],
   imports: [
     SiteHasPipe,
+    LockupComponent,
     HamburgerTriggerComponent,
     TileNavigationComponent,
     TileComponent,

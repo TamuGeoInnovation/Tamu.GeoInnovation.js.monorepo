@@ -16,6 +16,14 @@ $gisday-black: #333333;
 $gisday-font-primary: #424242;
 $gisday-blue: #003366;
 $gisday-blue-secondary: lighten($gisday-blue, 15%);
+
+// The site's main colour and its lighter partner, for links and accents. They are GIS Day's blues, and a site
+// in a university's brand replaces them in styles.scss: Texas A&M's site is maroon (#2012). Use these, not the
+// blues, for anything that should follow the brand. They are CSS custom properties, set on :root in styles.scss,
+// so colour functions such as lighten() still need the blues. No fallback: every component stylesheet repeats
+// it, and the header's is at its 10 kB budget.
+$gisday-primary: var(--gisday-primary);
+$gisday-primary-light: var(--gisday-primary-light);
 $gisday-blue-support: #333640;
 $gisday-blue-support-lightened: lighten($gisday-blue-support, 40%);
 
