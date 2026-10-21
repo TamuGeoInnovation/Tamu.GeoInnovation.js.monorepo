@@ -59,6 +59,7 @@ import { EvChargersTs } from './ev-chargers.definitions';
 import { TsMainParkingTs } from './main-parking.definitions';
 import { SecGroundsConferenceTs } from './sec-grounds-conference.definitions';
 import { DiningKioskTs } from './dining.definitions';
+import { TailgatingKioskTs } from './tailgating-kiosk.definitions';
 import { ArgentinaVsHondurasTs } from './argentina-vs-honduras.definitions';
 import { ConstructionMapTs } from './construction-map.definitions';
 import { FishCampTs } from './fish-camp.definitions';
@@ -148,6 +149,7 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   McAllenTs,
   DCBushSchoolTs,
   DiningKioskTs,
+  TailgatingKioskTs,
   KickoffAtKyleTs,
   LiveAtTheStationTs
 ];

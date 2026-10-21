@@ -20,22 +20,29 @@ export enum DINING_KIOSK_LAYERS {
   DINING_LOCATIONS = 'dining-locations-layer'
 }
 
+/**
+ * The buildings every kiosk map draws, as the main map draws them by default. A kiosk loads none of the
+ * main map's layers, so each kiosk adds this one itself: the Dining kiosk and the Football Tailgating
+ * kiosk (#1975) both do.
+ */
+export const KioskBuildingsLayerSource: LayerSource = {
+  type: 'feature',
+  id: DINING_KIOSK_LAYERS.BUILDINGS,
+  title: 'Buildings',
+  url: `${Connections.basemapUrl}/1`,
+  popupComponent: Popups.BuildingPopupComponent,
+  listMode: 'hide',
+  visible: true,
+  essential: true,
+  layerIndex: 1,
+  native: {
+    ...commonLayerProps,
+    legendEnabled: false
+  }
+};
+
 export const DiningKioskLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: DINING_KIOSK_LAYERS.BUILDINGS,
-    title: 'Buildings',
-    url: `${Connections.basemapUrl}/1`,
-    popupComponent: Popups.BuildingPopupComponent,
-    listMode: 'hide',
-    visible: true,
-    essential: true,
-    layerIndex: 1,
-    native: {
-      ...commonLayerProps,
-      legendEnabled: false
-    }
-  },
+  KioskBuildingsLayerSource,
   {
     type: 'geojson',
     id: DINING_KIOSK_LAYERS.DINING_LOCATIONS,

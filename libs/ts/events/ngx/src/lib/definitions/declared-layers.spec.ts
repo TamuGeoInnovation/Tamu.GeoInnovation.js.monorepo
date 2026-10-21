@@ -22,15 +22,27 @@ import { AggiemapCustomMapConfiguration } from '../interfaces/special-event.inte
  * `SidebarReferenceComponent` leaves out of the list) or relist depends on a choice, so it is left out
  * rather than guessed at. A map whose sidebar has no Layers list (`hideLayerToggle`, `hideSidebar`)
  * lists nothing.
+ *
+ * A map with a version published only on the development GIS server (`developmentSources`, #2001) also
+ * lists that version's layers, as `developmentLayers`: what it shows where that server is read.
  */
 interface DeclaredMap {
   /** Whether the map has a Layers list at all. */
   layerList: boolean;
   /** The ids of the layers the Layers list must show, in definition order. */
   layers: string[];
+  /** The same, where the development GIS server is read, for a map with a development version. */
+  developmentLayers?: string[];
 }
 
 function declared(definition: AggiemapCustomMapConfiguration): DeclaredMap {
+  const layers = listed(definition, definition.sources ?? []);
+  const development = definition.developmentSources;
+
+  return development ? { ...layers, developmentLayers: listed(definition, development).layers } : layers;
+}
+
+function listed(definition: AggiemapCustomMapConfiguration, sources: LayerSource[]): DeclaredMap {
   const configuration = definition.configuration;
   const layerList = !(configuration?.hideLayerToggle || configuration?.hideSidebar);
   const drawn = new Set(Object.values(definition.references ?? {}));
@@ -48,7 +60,7 @@ function declared(definition: AggiemapCustomMapConfiguration): DeclaredMap {
     )
   );
 
-  const layers = (definition.sources ?? [])
+  const layers = sources
     .filter((source: LayerSource) => drawn.has(source.id) && !conditional.has(source.id))
     .filter((source) => source.listMode !== 'hide')
     .map((source) => source.id);

@@ -88,6 +88,10 @@ function createConnections(gisHost: string): IComposedConnections {
     visitorParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/VisitorParking/MapServer`,
     volleyballParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/VolleyballParking_view/FeatureServer`,
     womensBasketballUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/WomensBasketballParking_view/FeatureServer`,
+    // The Women's Basketball map's new version, published so far only on the development GIS server: the
+    // production server has the service, stopped. Drawn only where the development server is read
+    // (`developmentSources`, #2001); `womensBasketballUrl` above serves production until it is published.
+    womensBasketballParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/WomensBasketballParking/MapServer`,
     fourHRoundupUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer`,
     gisDayUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
     argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
@@ -123,17 +127,23 @@ export function getDefaultGisHost(): string {
 }
 
 /**
+ * Whether this page reads the development GIS server: its hostname contains `dev`, and it was not asked
+ * to behave as production (#1722). Localhost reads production's.
+ */
+export function readsDevelopmentGisServer(
+  address: { hostname: string; search: string } | undefined = globalThis.location
+): boolean {
+  return address?.hostname.includes('dev') === true && !actingAsProduction(address);
+}
+
+/**
  * New: return both gisHost and tsgisHost for callers that need both base URLs.
  * Default values follow hostname-based dev detection:
  * - gisHost: 'gis-dev.it.tamu.edu' / 'gis.it.tamu.edu'
  * - tsgisHost: 'arc.ts-dev.tamu.edu' / 'arc.ts.tamu.edu'
  */
 export function getDefaultGisHosts() {
-  const hostname = globalThis.location?.hostname;
-  // A dev host asked to behave as production draws from production's GIS server too (#1722).
-  const isDev = hostname?.includes('dev') && !actingAsProduction();
-
-  const gisHost = isDev ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
+  const gisHost = readsDevelopmentGisServer() ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
   // TEMP: force tsgisHost to production host until dev host is available
   // const tsgisHost = isDev ? 'arc.ts-dev.tamu.edu' : 'arc.ts.tamu.edu';
   const tsgisHost = 'arc.ts.tamu.edu';
@@ -217,6 +227,7 @@ export interface IComposedConnections {
   visitorParkingUrl: string;
   volleyballParkingUrl: string;
   womensBasketballUrl: string;
+  womensBasketballParkingUrl: string;
   fourHRoundupUrl: string;
   gisDayUrl: string;
   argentinaVsHondurasUrl: string;
