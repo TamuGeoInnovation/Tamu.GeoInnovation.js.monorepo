@@ -441,6 +441,24 @@ export class LegendElementComponent implements OnChanges {
       return '1=1'; // Return all if no value
     }
 
+    // A class with several values is one row whose value is all of them, joined as ArcGIS joins them
+    // (#1992); a row asked about its first value alone was dropped when only another had features.
+    const values = classValues(renderer, operableFields.length, infoValue) ?? [infoValue];
+    const clauses = values.map((value) => this._buildValueWhereClause(layer, renderer, operableFields, value));
+
+    return clauses.length === 1 ? clauses[0] : clauses.map((clause) => `(${clause})`).join(' OR ');
+  }
+
+  /**
+   * The where clause for one renderer value: one string or number, or several fields' values joined by
+   * the renderer's field delimiter.
+   */
+  private _buildValueWhereClause(
+    layer: esri.FeatureLayer,
+    renderer: esri.UniqueValueRenderer,
+    operableFields: string[],
+    infoValue: unknown
+  ): string {
     // Split the value by the field delimiter to get individual field values
     //
     // infoValues can be a concatenation of several fields, in which case they need to be split into value parts.
@@ -562,4 +580,30 @@ function isNumericField(layer: esri.FeatureLayer, field: string): boolean {
     type === 'long' ||
     type === 'oid'
   );
+}
+
+/**
+ * The values of the unique-value class a legend row stands for, or null when the row is not one of a
+ * group's classes with several values.
+ *
+ * ArcGIS lists a class of `uniqueValueGroups` as one row, whose value is each of its values (its fields
+ * joined by the field delimiter) joined with `', '`. That is rebuilt here for each class to find the
+ * row's own, rather than splitting the row's value, which a value holding `', '` would break.
+ */
+function classValues(renderer: esri.UniqueValueRenderer, fieldCount: number, rowValue: unknown): string[] | null {
+  for (const group of renderer.uniqueValueGroups ?? []) {
+    for (const uniqueClass of group.classes ?? []) {
+      const values = (uniqueClass.values ?? []).map((value) =>
+        [value.value, value.value2, value.value3]
+          .slice(0, Math.max(fieldCount, 1))
+          .join(fieldCount > 1 ? renderer.fieldDelimiter || '' : '')
+      );
+
+      if (values.length > 1 && values.join(', ') === rowValue) {
+        return values;
+      }
+    }
+  }
+
+  return null;
 }

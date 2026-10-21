@@ -551,7 +551,8 @@
   "vendor-parking": {
     "layerList": true,
     "layers": [
-      "vendor-parking-lots"
+      "vendor-parking-lots",
+      "vendor-parking-vendor-plus-only-lots"
     ]
   },
   "visitor-parking": {

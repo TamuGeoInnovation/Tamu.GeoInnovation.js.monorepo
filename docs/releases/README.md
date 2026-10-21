@@ -8,7 +8,12 @@ A **dated** file lands on `development` when the release reaches production, not
 file named for a date reads as a record of something that shipped. It is *written* before, though -
 see [Cutting a release](#cutting-a-release).
 
-Work in progress lives in [`unreleased.md`](unreleased.md), which collects what has merged since
+Work in progress lives in [`unreleased/`](unreleased/README.md) — **one file per change**, collated
+into `unreleased.md` at release. That file still holds everything written before the directory existed
+and is not migrated. The directory exists because entries added at the same line of one file conflict
+on every parallel pull request ([#2037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2037)).
+
+[`unreleased.md`](unreleased.md) collects what has merged since
 the last production release. It is not assembled from memory at the end — one release was
 reconstructed afterwards and four changes were nearly missed, including a data-correctness fix that
 mattered more than the features around it.
@@ -234,6 +239,11 @@ for a go-ahead just stalls the release on someone who is waiting for you.
 
 Open one pull request that:
 
+0. **Collates the entries** written during the cycle: `node scripts/collate-release-notes.mjs --check`,
+   then `--write`. Each change wrote its own file in [`unreleased/`](unreleased/README.md) rather than
+   editing `unreleased.md`, so that two pull requests could not conflict ([#2037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2037)). The
+   write adds them to `## Summary` and their rows to *What to test on dev*; **delete the entry files in
+   this same pull request** once it has.
 1. **Renames** `unreleased.md` to `YYYY-MM-DD.md` for the day it will ship. If the deploy slips, rename
    before merging.
 2. **Records the dev run from step 2** - the numbers that cleared it.
