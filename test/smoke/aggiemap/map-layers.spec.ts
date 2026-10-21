@@ -1,9 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { expect, test } from './fixtures';
+import { expect, HEAVY, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
+import { environmentIsDevelopment } from './gis-hosts';
 
 /**
  * Every map lists, draws and keys the layers its definition says it has (#1986).
@@ -35,6 +36,10 @@ import { blockAnalytics } from './analytics';
  *    A layer that failed to load or serves no features at all is left to `maps.spec.ts`. An entry is
  *    found by its title, or, where the legend gives it none, by a row labelled with the layer's title.
  *
+ * A map with a version published only on the development GIS server is checked against that version where
+ * the server is read, and there its Layers list must show nothing else: a layer the new version drops is
+ * one the map owner removed, and must be seen to be gone (#2001).
+ *
  * A map that never finishes drawing fails, saying so, and so does one with no layers at all: a route the
  * application does not know still renders the shell, and must not pass as a map with nothing switched on.
  * Maps behind a builder are skipped; `tools/builder-inventory` covers them. Read-only, so safe against
@@ -47,9 +52,12 @@ const manifest: MapManifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'))
  * Written by `libs/ts/events/ngx/src/lib/definitions/declared-layers.spec.ts`: by map id, the ids of the
  * layers each map's Layers list must show.
  */
-const declared: Record<string, { layerList: boolean; layers: string[] }> = JSON.parse(
+const declared: Record<string, { layerList: boolean; layers: string[]; developmentLayers?: string[] }> = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'declared-layers.generated.json'), 'utf8')
 );
+
+/** Whether this environment reads the development GIS server, and so draws a map's development version. */
+const DEVELOPMENT_GIS = environmentIsDevelopment(manifest.baseUrl);
 
 /** Layers this environment is allowed to fail to load (environments.json); not checked here. */
 const ALLOWED_LAYER_FAILURES = (process.env.AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES ?? '')
@@ -104,8 +112,17 @@ interface LegendEntry {
   symbols: number;
 }
 
+/**
+ * The maps that load every parking space on campus (#1897's family) and so take longest to settle. They run in
+ * the heavy lane, after everything else and two at a time (#1716), so the settle limit below measures the map
+ * rather than how much CPU five other map loads leave it: on a 24-CPU machine Maintenance Parking settled in
+ * 41-47 s with six workers, against 134-147 s on the loaded machines that failed it (#2008). The limit is not
+ * raised or scaled by worker count, so a map that does get slow still fails.
+ */
+const HEAVY_MAPS = new Set(['/parking/maintenance-parking', '/parking/service-loading']);
+
 for (const mapPath of manifest.maps) {
-  test(`${mapPath} lists, draws and keys every layer it shows`, async ({ page }) => {
+  test(`${mapPath} lists, draws and keys every layer it shows`, HEAVY_MAPS.has(mapPath) ? HEAVY : {}, async ({ page }) => {
     test.setTimeout(330_000);
     await blockAnalytics(page);
     await page.goto(mapPath, { waitUntil: 'domcontentloaded' });
@@ -294,7 +311,9 @@ for (const mapPath of manifest.maps) {
       const listed = (await page.locator('tamu-gisc-layer-list-item .layer-item > p').allTextContents()).map((text) =>
         text.trim()
       );
-      const ids = definition?.layers ?? layers.filter((l) => l.topLevel && l.listMode !== 'hide').map((l) => l.id);
+      const development = DEVELOPMENT_GIS ? definition?.developmentLayers : undefined;
+      const ids =
+        development ?? definition?.layers ?? layers.filter((l) => l.topLevel && l.listMode !== 'hide').map((l) => l.id);
       const missing = ids
         .filter((id) => !ALLOWED_LAYER_FAILURES.includes(id))
         .map((id) => ({ id, layer: layers.find((l) => l.id === id) }))
@@ -309,6 +328,17 @@ for (const mapPath of manifest.maps) {
           `${mapPath}: layers ${definition ? 'its definition lists' : 'the map holds'} that the Layers list does not`
         )
         .toEqual([]);
+
+      if (development) {
+        const kept = layers.filter((l) => development.includes(l.id));
+
+        expect
+          .soft(
+            listed.filter((item) => !kept.some((layer) => isListItemFor(item, layer))),
+            `${mapPath}: layers in the Layers list that its development version does not have`
+          )
+          .toEqual([]);
+      }
     }
 
     // 2. Drawn: every layer that holds features in this extent, on or off, draws at least one of them.

@@ -132,6 +132,52 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
   }
 ];
 
+/**
+ * The map's new version, published so far only on the development GIS server (#2001): Accessible Parking
+ * Spaces and Women's Basketball Event Parking Lots, and nothing else. Transportation Services dropped the
+ * hourly visitor parking kiosks and the Safety First crosswalks from it. Titles, symbols and order are the
+ * service's own.
+ *
+ * Drawn wherever the development GIS server is read; production draws the sources above until the service
+ * is published there. Then these replace them, and `womensBasketballUrl` and the entry in
+ * `DEVELOPMENT_ONLY_SERVICES` go.
+ */
+const parkingUrl = Connections.womensBasketballParkingUrl;
+
+export const WomensBasketball_DevelopmentLayerSources: LayerSource[] = [
+  {
+    type: 'feature',
+    id: WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING,
+    url: `${parkingUrl}/0`,
+    popupComponent: EventPopups.MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.name',
+      description: 'attributes.description'
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+
+  {
+    type: 'feature',
+    id: WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,
+    url: `${parkingUrl}/1`,
+    popupComponent: EventPopups.MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.name',
+      description: 'attributes.description'
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  }
+];
+
 export const WomensBasketball_Configuration: EventConfiguration = {
   id: 'womens-basketball',
   name: "Women's Basketball",
@@ -164,6 +210,7 @@ export const WomensBasketball_Ts: AggiemapCustomMapConfiguration = {
   configuration: WomensBasketball_Configuration,
   options: WomensBasketball_Options,
   sources: WomensBasketball_ColdLayerSources,
+  developmentSources: WomensBasketball_DevelopmentLayerSources,
   references: WOMENS_BASKETBALL_LAYERS,
   discover: {
     id: WomensBasketball_Configuration.id,

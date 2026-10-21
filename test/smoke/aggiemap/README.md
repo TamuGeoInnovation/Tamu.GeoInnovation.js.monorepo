@@ -56,7 +56,10 @@ listed in `DEVELOPMENT_ONLY_SERVICES` must be requested on dev and never on prod
 service lists the pages that use it (the main map, Visitor Parking with Aggieland saved as the
 basemap, the Tailgating map), every one of those pages is loaded and every request recorded. On dev a
 page must request the services that list it; a service one map alone uses is not required of the
-others (#1460). On production no page may request any of them. A service with no production counterpart goes on that list. It comes off only when it is
+others (#1460). On production no page may request any of them. A service published only on the
+development GIS server (`developmentGisServer`, the Women's Basketball map's new version, #2001) is
+required only where that server is read: dev, but not `local`, since localhost reads production's GIS
+server. A service with no production counterpart goes on that list. It comes off only when it is
 published for production, together with the code's gate.
 
 `bus.spec.ts` checks every bus route the bus panel lists draws its line and one stop marker for each

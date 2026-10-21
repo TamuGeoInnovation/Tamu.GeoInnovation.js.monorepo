@@ -21,10 +21,15 @@ import { blockAnalytics } from './analytics';
  * Visitor Parking stands for the first group rather than AVP Parking, the map the issue was found on,
  * because AVP's service fails about half its queries (#1951) and a link that cannot load says nothing
  * about how it was matched.
+ *
+ * The popup a link opens is also headed as its own layer heads it, never by the selection layer the
+ * feature is drawn on (#1970). That layer is titled "Selected Buildings", and every popup that heads
+ * itself with its layer's title said "Selected Buildings" for whatever a link had opened.
  */
 
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const POPUP = 'tamu-gisc-feature-popup .popup';
+const SELECTION_LAYER_ID = 'selection-layer';
 
 interface LotLink {
   /** Which map, and which group of the issue's audit it stands for. */
@@ -37,6 +42,8 @@ interface LotLink {
   /** Finds the features the link may select, asked of the service: object ids change when it is republished. */
   where: string;
   objectIdField: string;
+  /** Whether the popup is headed by the layer's title, as one whose features have no name of their own is. */
+  headedByLayerTitle?: boolean;
 }
 
 const VISITOR_PARKING: LotLink = {
@@ -57,16 +64,26 @@ const LOT_LINKS: LotLink[] = [
     url: `${Connections.motorcycleParkingUrl}/0`,
     // A lot link on a map of spaces opens one of the lot's spaces.
     where: `LotName = '100j'`,
-    objectIdField: 'OBJECTID'
+    objectIdField: 'OBJECTID',
+    headedByLayerTitle: true
   }
 ];
 
+interface OpenedPopup {
+  /** The popup's share link. */
+  link: URL;
+  /** The popup's heading. */
+  heading: string;
+  /** The map's layer titles, by layer id. */
+  titles: Record<string, string>;
+}
+
 /**
- * Opens `path` and returns the share link of the popup it opens. For an event map's own feature the
+ * Opens `path` and returns the popup it opens: its share link, its heading and the map's layer titles. For an event map's own feature the
  * link names it as `?feature=<layerId>:<objectId>`, the popup's own record of what was selected, so
  * it tells which feature of which layer the link opened, whatever the popup shows.
  */
-async function openedLink(page: Page, path: string): Promise<URL> {
+async function openedPopup(page: Page, path: string): Promise<OpenedPopup> {
   await blockAnalytics(page);
   await page.goto(path);
 
@@ -88,7 +105,16 @@ async function openedLink(page: Page, path: string): Promise<URL> {
   const shareLink = popup.getByRole('button', { name: 'Click to copy to clipboard.' }).filter({ hasText: /^https?:/ });
   await expect(shareLink, `${path} opened a popup with no share link`).toHaveCount(1, { timeout: 15_000 });
 
-  return new URL((await shareLink.textContent())?.trim() ?? '');
+  const heading = ((await popup.locator('.feature-style-1').first().textContent()) ?? '').trim();
+  const titles = await page.evaluate(async (name) => {
+    const probe = (
+      window as unknown as Record<string, { snapshot: () => Promise<{ layers: Array<{ id: string; title: string }> }> }>
+    )[name];
+
+    return Object.fromEntries((await probe.snapshot()).layers.map((layer) => [layer.id, layer.title]));
+  }, PROBE_GLOBAL);
+
+  return { link: new URL((await shareLink.textContent())?.trim() ?? ''), heading, titles };
 }
 
 /** The object ids of the features `link` may select, asked of its layer. */
@@ -108,7 +134,7 @@ test.describe('lot links on the parking maps', () => {
   for (const link of LOT_LINKS) {
     test(`${link.path} opens the lot on ${link.layerId} (${link.name})`, async ({ page, request }) => {
       const objectIds = await expectedObjectIds(request, link);
-      const opened = await openedLink(page, link.path);
+      const { link: opened, heading, titles } = await openedPopup(page, link.path);
 
       // On a map whose fields are named by table, the unfixed matcher found nothing on the map's own
       // layer, and the popup that opened was the main map's lot, shared as `/?lot=Lot 100j`.
@@ -116,6 +142,15 @@ test.describe('lot links on the parking maps', () => {
         objectIds.map((objectId) => `${link.layerId}:${objectId}`),
         `${link.path} opened a popup sharing ${decodeURIComponent(opened.href)}, not lot 100j on ${link.layerId}`
       ).toContain(opened.searchParams.get('feature'));
+
+      // Before #1970 the heading was the selection layer's title, "Selected Buildings".
+      expect(heading, `${link.path} opened a popup headed by the selection layer, not by ${link.layerId}`).not.toBe(
+        titles[SELECTION_LAYER_ID]
+      );
+
+      if (link.headedByLayerTitle) {
+        expect(heading, `${link.path} opened a popup not headed by ${link.layerId}'s title`).toBe(titles[link.layerId]);
+      }
     });
   }
 
@@ -123,7 +158,7 @@ test.describe('lot links on the parking maps', () => {
     const [objectId] = await expectedObjectIds(request, VISITOR_PARKING);
     const feature = `${VISITOR_PARKING.layerId}:${objectId}`;
 
-    const opened = await openedLink(page, `/parking/visitor-parking/map?feature=${encodeURIComponent(feature)}`);
+    const { link: opened } = await openedPopup(page, `/parking/visitor-parking/map?feature=${encodeURIComponent(feature)}`);
 
     expect(opened.searchParams.get('feature')).toBe(feature);
   });

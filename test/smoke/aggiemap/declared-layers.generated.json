@@ -146,6 +146,10 @@
       "fish-camp-departure-group"
     ]
   },
+  "football-tailgating": {
+    "layerList": false,
+    "layers": []
+  },
   "galveston": {
     "layerList": false,
     "layers": []
@@ -573,6 +577,10 @@
       "womens-basketball-accessible-parking",
       "womens-basketball-parking-lots",
       "womens-basketball-safety-first"
+    ],
+    "developmentLayers": [
+      "womens-basketball-accessible-parking",
+      "womens-basketball-parking-lots"
     ]
   }
 }

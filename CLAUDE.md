@@ -183,8 +183,17 @@ bind-mounts the source, so edits on Windows reach it, but its `node_modules` liv
 
 ```bash
 MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.0 npm ci --no-audit --no-fund
-MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:24.22.0 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.0 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
+
+**`UV_THREADPOOL_SIZE` and `NX_WORKSPACE_DATA_DIRECTORY` are not optional here.** `--poll=2000` keeps Node's
+four default file-system threads busy polling the bind mount, and Vite's dependency optimizer waits behind
+them for good: the server answers on 4200, the log stops at `[optimizer] bundling dependencies...`, and the
+page stays blank, with no error anywhere (#1955). And Nx's task records belong inside the container, because
+`docker rm -f` kills Nx mid-task and a record left in the checkout's `.nx/workspace-data` makes the next start
+print `Waiting for aggiemap-angular:serve in another nx process` and never continue (#1626). Both were already
+documented for the GIS Day dev server and missing from this one, which is the command most likely to be copied
+(#2009).
 
 One volume serves whichever checkout is mounted, so it must match that checkout's lock. Check before
 trusting it: `node_modules/@angular/core/package.json` must show the version the checkout uses. On 4

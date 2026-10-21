@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { environmentIsDevelopment } from './gis-hosts';
 import {
   DEVELOPMENT_ONLY_CONTROLS,
   DEVELOPMENT_ONLY_SECTIONS,
@@ -19,6 +20,8 @@ import {
  */
 
 const VISIBLE = developmentSectionsVisible();
+/** Whether this environment reads the development GIS server, which localhost does not (#2001). */
+const DEVELOPMENT_GIS = environmentIsDevelopment(process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu');
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 /** Whether the map on the page reports it has loaded. */
@@ -89,14 +92,16 @@ test.describe(`development-only services ${VISIBLE ? 'are used here' : 'are neve
       // that must request none of them.
       await page.goto(path);
 
-      for (const [service, { reason, pages: usedOn }] of Object.entries(DEVELOPMENT_ONLY_SERVICES)) {
+      for (const [service, { reason, pages: usedOn, developmentGisServer }] of Object.entries(
+        DEVELOPMENT_ONLY_SERVICES
+      )) {
         if (VISIBLE && !usedOn.includes(path)) {
           continue;
         }
 
         const hits = () => requested.filter((url) => url.includes(service));
 
-        if (VISIBLE) {
+        if (VISIBLE && (!developmentGisServer || DEVELOPMENT_GIS)) {
           // Waits for the request rather than for the map: whether the map then draws is another test's
           // question, and this one only needs to see that the service is reachable from here.
           await expect
