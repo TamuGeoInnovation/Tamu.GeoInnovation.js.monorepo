@@ -118,6 +118,32 @@ The docs-only row is worth keeping as a reminder that **exit 0 with "No tasks we
 pass**. That run was correct, because a branch touching only `docs/*.md` affects no projects, but the
 same output appears when the graph fails to compute. Read the log, not the exit code.
 
+### Unit tests: Vitest 4 against Vitest 5 (#1973)
+
+The test targets of every project on Vitest (the 69 with a `vitest.config.mts`), each run as
+`nx run-many -t test -p <the 69> --skip-nx-cache --parallel=8 --coverage=false`. Vitest 4 is
+`development` at `b78942631` (Vitest 4.1.12, Nx 23.3.0); Vitest 5 is `chore/1973-vitest-5` (Vitest
+5.0.5, `@analogjs/*` 2.9.1). Both ran with the source in one Docker volume and `node_modules` in
+another, from a clean `npm ci`.
+
+| Date | Machine | What ran | Approach | Elapsed |
+| --- | --- | --- | --- | ---: |
+| 21 Oct 2026 | home | Vitest 5, second run, 12:27 AM Central (922 tests; 1 failed, the known flake #1898) | volume, warm; idle GIS Day containers and another agent's Playwright container beside it | 88 s |
+| 21 Oct 2026 | home | Vitest 5, first run, 12:26 AM Central (922 tests, 0 failed) | volume, warm; the same | **99 s** |
+| 21 Oct 2026 | home | Vitest 4, second run, 12:20 AM Central (922 tests, 0 failed) | volume, warm; idle GIS Day containers | **102 s** |
+| 21 Oct 2026 | home | Vitest 4, first run, 12:18 AM Central (922 tests, 0 failed) | volume, warm; the same | **83 s** |
+| 20 Oct 2026 | home | Vitest 4, the same command, 11:53 PM Central, with the source bind-mounted from Windows | bind mount, `node_modules` in a volume; another agent's build beside it | 837 s; 2 projects failed on timeouts |
+
+Vitest 5 took 94 s on average against Vitest 4's 93 s: no measurable difference, and the upgrade was
+not made for speed. Every one of the 69 projects ran the same number of tests on both (922 in all).
+The one failure is `ui-kits-ngx-forms`'s date-time picker teardown under load, already open as #1898
+and seen on Vitest 4 on 19 October; it passed ten runs in a row on its own.
+
+The bind-mounted row is why the others are in a volume. The two specs that read the workspace's files,
+`maps-feature-basemap`'s basemap definitions and `aggiemap-angular`'s notification events, took over
+a minute across the Windows-to-Linux boundary and hit Vitest's 5 s test and 10 s hook timeouts; in a
+volume they take 0.3 s and 2.6 s.
+
 ### Unit tests: Jest against Vitest (#1479)
 
 The test targets of AggieMap's 71 projects (`aggiemap-angular`, `ues-operations-angular` and every
