@@ -3,6 +3,7 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
+**Next update by 8:46 PM Central** (#2001's branch, or a progress line).
 **Batch 13** (started 8:25 PM Central):
 1. **#2001** (Women's Basketball, team-filed, due before 2 November): an agent in `C:\TAMU\wt-2001`, branch
    `fix/2001-womens-basketball-parking`. Home opens its PR when it lands.
