@@ -385,16 +385,33 @@ layer is the right one, has the fields the app uses, and answers the app's own q
 
 ## Release notes
 
-**A pull request with a user-visible result adds its own entry to `docs/releases/unreleased.md`, in
-the same pull request**, with its before/after screenshots linked from `docs/screenshots/<slug>/`
-(`../screenshots/<slug>/<file>.png` from the notes). Never write the notes afterwards in a separate
-pull request: on 28 September that left the notes without images when the pull request merged, and
-meant going back for them after the release reached production (#1132).
+**A pull request with a user-visible result adds **one file** to
+[`docs/releases/unreleased/`](docs/releases/unreleased/README.md), in the same pull request**, named
+`<issue>-<slug>.md`. It holds that change's entry, with before/after screenshots linked from
+`docs/screenshots/<slug>/` (`../screenshots/<slug>/<file>.png`, relative to `docs/releases/`, because
+that is where the collated file lands), and its row for *What to test on dev* in the front matter.
+Never write the notes afterwards in a separate pull request: on 28 September that left the notes
+without images when the pull request merged, and meant going back for them after the release reached
+production (#1132).
 
-**It also adds a row to the *What to test on dev* table in `unreleased.md`**: a dev link and what to
-look for. The team works from that table before a release goes to production, so a visible change
-without a row is one nobody is asked to check. If it cannot be checked on dev, say so in the row and
-why. At release the rows move into the dated notes (#1360).
+**One file each, rather than editing `unreleased.md`, because two pull requests adding at the same
+line conflict every time.** On 20 October six in one day each had to be resolved by hand, always in
+the same two places, always "keep both" — and a release-notes conflict resolved at speed is how an
+entry silently disappears, in the one document nobody runs. A new file cannot conflict with another
+new file ([#2037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2037)).
+
+**The *What to test on dev* row is not optional**: a dev link and what to look for. The team works
+from that table before a release goes to production, so a visible change without a row is one nobody
+is asked to check. If it cannot be checked on dev, say so in the row and why. At release the rows
+move into the dated notes (#1360).
+
+**`node scripts/collate-release-notes.mjs --check`** validates every entry — the front matter, the
+file name against its `issue`, and that each image path resolves. Run it before a release; a broken
+image in the notes is otherwise found by a reader, after the release. `--write` gathers the entries
+into `unreleased.md` as part of cutting a release.
+
+`docs/releases/unreleased.md` still holds everything written before this, and is left alone: the
+collation adds to it rather than replacing it.
 
 **The release notes merge before production, not after.** They describe what a release contains and
 what cleared it; they do not assert that it is deployed. The `prod-*` tag records that, which is a
