@@ -71,6 +71,30 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 21 (aggiemap: #2019, the athletics maps' 2026-27 dates; 20 October 2026, 11:58 PM Central)
+
+**After batch 20** (the GIS Day chat's). **Expected: about 45 minutes.** Questions go in the report for `home (aggiemap)`.
+
+**Release notes now:** a pull request adds its own file `docs/releases/unreleased/<issue>-<slug>.md` (see that directory's README on
+`development`, #2038) and does **not** edit `unreleased.md`. `docs/testing.md`: change no count (#2002). Read every check's log for
+"No tasks were run". **You open the pull request yourself**, ready for review, body from the template, every field you can set;
+if `gh` lacks `project` scope, say so in your report and `home (aggiemap)` adds the board fields.
+
+**[#2019](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2019), High.** Athletics maps whose
+`eventDates` are all past show "This event has passed". `tools/event-dates/check.mjs` (#2035) reads each sport's 2026-27 home
+schedule from 12thman.com and reports differences against the definitions; it does not edit them.
+
+1. Branch `fix/2019-athletics-event-dates` from the latest `origin/development`.
+2. Run the tool and keep its report (commit it under `tools/event-dates/` only if its README says reports are kept; otherwise quote it).
+3. Update **every athletics map's** `eventDates` to its 2026-27 **home** dates from that report - Women's Basketball's 18 are listed
+   on #2019's handover note (Nov 2, 5, 7, 16, 18, 21; Dec 6, 15, 17, 22, 31; Jan 10, 21, 28, 31; Feb 7, 22, 25) - and fix
+   `'2026-01-1'` in `womens-basketball.definitions.ts`. Correct the four men's basketball games the tool says are on the wrong day.
+   **Not** the twelve campus events (#2039) and **not** the three 150th maps (kept as they are, the maintainer's decision).
+4. Proof: the tool reports no differences afterwards; `event-dates.spec.ts` (smoke) passes on a local build; unit tests pass.
+   Scoped check `ts-events-ngx,aggiemap-angular`.
+5. Images: one map before (dev: "This event has passed") and after (local build: no such dialog). Notes file
+   `docs/releases/unreleased/2019-athletics-event-dates.md` with a What-to-test row. Pull request `Closes #2019`, label `bug`.
+
 ## Batch 20 (gisday: #1998's before/after images, 20 October 2026, 11:55 PM Central)
 
 **Director: home (gisday).** Questions go under **Questions for the director (gisday)**. Expected: about 20 minutes,

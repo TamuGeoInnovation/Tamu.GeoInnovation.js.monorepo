@@ -13,6 +13,33 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Batch 6 (aggiemap: #1969, the lot-link race - fix it; 20 October 2026, 11:58 PM Central)
+
+**After batch 5** (the release tier and its tag). **Expected: about 60-90 minutes.** The maintainer is asleep; questions go in the
+report for `home (aggiemap)`, and nothing waits on him.
+
+**Release notes now:** a pull request adds its own file `docs/releases/unreleased/<issue>-<slug>.md` (see that directory's README on
+`development`, #2038) and does **not** edit `unreleased.md`. `docs/testing.md`: change no count (#2002). Read every check's log for
+"No tasks were run". **You open the pull request yourself**, ready for review, body from the template, every field you can set;
+if `gh` lacks `project` scope, say so in your report and `home (aggiemap)` adds the board fields.
+
+**[#1969](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1969), now High.** Your batch-4 finding is on
+the issue: on an event map a `?lot=` link opens the **main map's** lot popup first on nearly every load, and the event map's own
+answer replaces it only if it arrives before the map reports `ready`; delay the event map's own service 4 s with `page.route` and it
+fails 4 of 4.
+
+1. Branch `fix/1969-lot-link-race` from the latest `origin/development`.
+2. **Red first:** a smoke test in `lot-links.spec.ts` (or beside it) that delays the event map's own service with `page.route` and
+   expects the event map's own lot; run it against dev (`run-local.sh development one ... --retries=0`) and quote the failure. A unit
+   test in `ts-events-ngx` for the lookup order as well, red first.
+3. **Fix** in `EventService` (`libs/ts/events/ngx/src/lib/services/event/event.service.ts`, `selectFeatureByFieldMatch` and the
+   search-source fallback): a `?lot=` link on an event map waits for the map's own layers and asks them first, and falls back to the
+   main map's lot source only if none of them answers. Keep #1952's qualified-field match and #1954's `queryDrawnFeatures` filter.
+4. **Green** on a local production build (served as `aggiemap-dev`, `local-production`): the delayed-service test, the whole
+   `lot-links.spec.ts`, and `selection.spec.ts`. Then the scoped check `ts-events-ngx,aggiemap-angular`.
+5. Images: before (dev, delayed service: the main map's lot) and after; the notes file `docs/releases/unreleased/1969-lot-link-race.md`
+   with its What-to-test row. Pull request `Closes #1969`, labels `bug`.
+
 ## Start batch 5 now (20 October 2026, 11:36 PM Central): `main-MQDQOFSZ.js` IS `b78942631`
 
 **Azure, read by home: Release-487, build 20261020.40, from `b78942631`, `GIS-1D Development` succeeded.** So the
