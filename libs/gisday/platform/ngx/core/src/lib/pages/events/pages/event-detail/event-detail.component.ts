@@ -29,7 +29,7 @@ import {
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { GISDayRoles, parseDateStrings, sortSpeakersByAffiliation } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GISDayRoles, sortSpeakersByAffiliation } from '@tamu-gisc/gisday/platform/ngx/common';
 import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -40,7 +40,7 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import { getGeolocation, isLatLonPolygon } from '@tamu-gisc/common/utils/geometry';
-import { CHECK_IN_ZONE_EVENT_MODE } from '@tamu-gisc/gisday/common';
+import { CHECK_IN_ZONE_EVENT_MODE, checkInWindow } from '@tamu-gisc/gisday/common';
 import { SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
@@ -213,21 +213,16 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         });
       });
 
-    // Event live status is determined by taking the event season day `date` and the event start and end times.
-    // Event should be live when now time is between the start and end (+ 15 minutes) times of the event day.
-    // This is to account for the 15 minute buffer period after the event end time that is given to allow for
-    // late checkins.
+    // Check-in is open from the session's start until 15 minutes after its end: the same rule the API
+    // applies (#1795), from libs/gisday/common. A time that cannot be read (#1772) means the session is
+    // never live, rather than an error.
     const parsedDates = this.event$.pipe(
       map((event) => {
-        const start = parseDateStrings(event?.day?.date, event?.startTime);
-        const end = parseDateStrings(event?.day?.date, event?.endTime);
-
-        // A time that cannot be read (#1772) means the session is never live, rather than an error.
-        end?.setMinutes(end.getMinutes() + 15);
+        const window = checkInWindow(event?.day?.date, event?.startTime, event?.endTime);
 
         return {
-          start,
-          end
+          start: window?.opens ?? null,
+          end: window?.closes ?? null
         };
       }),
       shareReplay()

@@ -4,7 +4,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { isLatLon, isLatLonPolygon, isWithinPolygon, LatLon } from '@tamu-gisc/common/utils/geometry';
-import { CHECK_IN_MAX_ACCURACY, CHECK_IN_ZONE_EVENT_MODE, checkInZoneMessage } from '@tamu-gisc/gisday/common';
+import {
+  CHECK_IN_MAX_ACCURACY,
+  CHECK_IN_ZONE_EVENT_MODE,
+  checkInWindow,
+  checkInZoneMessage
+} from '@tamu-gisc/gisday/common';
 
 import { CheckIn, Event } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
@@ -43,6 +48,11 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
    */
   public insertUserCheckin(eventGuid: string, accountGuid: string, position?: LatLon & { accuracy?: number }) {
     return this.insert(eventGuid, accountGuid, (event) => {
+      // Only while the session page shows the button, the same rule (#1795), so nobody checks in early
+      // or late by calling the API directly. Checked before the location, so an early attendee is told
+      // when rather than where.
+      assertCheckInOpen(event);
+
       const zone = event.location?.checkInZone;
 
       if (event.mode !== CHECK_IN_ZONE_EVENT_MODE || !isLatLonPolygon(zone)) {
@@ -83,7 +93,7 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
       where: {
         guid: eventGuid
       },
-      relations: ['location']
+      relations: ['location', 'day']
     });
 
     if (!event) {
@@ -122,4 +132,30 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
  */
 function reach(accuracy: unknown): number {
   return typeof accuracy === 'number' && accuracy > 0 ? Math.min(accuracy, CHECK_IN_MAX_ACCURACY) : 0;
+}
+
+/**
+ * Refuses a check-in outside the session's check-in window (#1795).
+ */
+function assertCheckInOpen(event: Event, now: Date = new Date()) {
+  const window = checkInWindow(event.day?.date, event.startTime, event.endTime);
+
+  if (!window) {
+    throw new ForbiddenException('Check-in is not open for this session: its time is not set.');
+  }
+
+  if (now < window.opens) {
+    throw new ForbiddenException(`Check-in for this session opens when it starts, at ${centralTime(window.opens)}.`);
+  }
+
+  if (now > window.closes) {
+    throw new ForbiddenException('Check-in for this session has closed.');
+  }
+}
+
+/**
+ * A time of day in Central time, such as `4:00 PM`.
+ */
+function centralTime(at: Date): string {
+  return new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' }).format(at);
 }
