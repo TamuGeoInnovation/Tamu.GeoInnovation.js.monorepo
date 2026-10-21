@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:27 AM Central, 21 October 2026**. A listener; job: testing.
+Last written **9:30 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -28,6 +28,8 @@ Last written **9:27 AM Central, 21 October 2026**. A listener; job: testing.
 
 **Holding batch 8** (9:27 AM), as the 9:25 AM note says, until the director names the commit to test (`67e95b4b1` or `61161ce1b`). Idle,
 nothing running; watching this branch.
+Seen at 9:30 AM: `home`'s STATUS says Release-488 (`67e95b4b1`, `main-YX345P5S.js`) is on dev. Still holding: the 9:25 AM note asks for
+the **director** to name the commit in `work-lab-leila/TASKS.md`, and starts within minutes of it.
 
 ## Finished
 
