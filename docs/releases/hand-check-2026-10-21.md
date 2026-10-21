@@ -13,6 +13,12 @@ are the one who finds it.
 
 **Roughly 30–40 minutes.**
 
+> **A wrong address does not show an error.** This app renders the main map for any address it does not
+> recognise, so a mistyped link looks like a working page with nothing on it. If a map looks like the
+> ordinary campus map rather than the one you expected, check the address before reporting the map as
+> broken.
+
+
 ## How to record what you find
 
 Put a ✅ or a ✗ in the last column, and for anything that is not ✅ **write what you actually saw** — not
@@ -44,6 +50,8 @@ Until this build, these maps thought their season had finished and said so. **Wo
 | 1.4 | [Soccer](https://dev.aggiemap.tamu.edu/parking/soccer-parking) | The same | |
 | 1.5 | [Volleyball](https://dev.aggiemap.tamu.edu/parking/volleyball-parking) | The same | |
 | 1.6 | [Tennis](https://dev.aggiemap.tamu.edu/parking/tennis-parking) | The same | |
+| 1.6a | [Football, Game Day Parking](https://dev.aggiemap.tamu.edu/events/gameday-parking) | The same. **Note the address**: this map is `/events/gameday-parking`, not `/parking/football-parking` | |
+| 1.6b | [Swimming](https://dev.aggiemap.tamu.edu/parking/swimming-parking) | The same | |
 | 1.7 | [Softball](https://dev.aggiemap.tamu.edu/parking/softball-parking) | The same | |
 
 > Some campus-event maps **do** still show "This event has passed" — Muster, Big Event, MS150 and others.
@@ -58,7 +66,7 @@ map's lot instead, for a moment or for good.
 | --- | --- | --- | --- |
 | 2.1 | [Visitor Parking, lot 100j](https://dev.aggiemap.tamu.edu/parking/visitor-parking/map?lot=100j) | A lot is highlighted and a panel opens for it. The panel is headed **Visitor Parking**, not "Selected Buildings". Reload the page two or three times — it should be the same every time | |
 | 2.2 | [Motorcycle Parking, lot 100j](https://dev.aggiemap.tamu.edu/parking/motorcycle-parking/map?lot=100j) | The same, headed **Motorcycle Parking Space** | |
-| 2.3 | [The main map](https://dev.aggiemap.tamu.edu/map/d), then search `Wehner` and pick the building | A building still opens the normal building panel. This one should be *unchanged* | |
+| 2.3 | [The main map](https://dev.aggiemap.tamu.edu/map/d). **Type `Wehner` in the search box, then click the Wehner Building result** — the link alone opens the map with nothing selected, which is correct | The normal **building** panel opens, headed by the building name. This case should be *unchanged*: if it says "Selected Buildings" or shows parking fields, that is a regression | |
 
 ## 3. Indoor Track's team bus area
 
