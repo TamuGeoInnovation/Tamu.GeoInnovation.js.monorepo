@@ -3,9 +3,9 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Today's build is on dev: Release-488, build 20261021.14, from `67e95b4b1`, `GIS-1D Development` succeeded.** Dev serves **`main-YX345P5S.js`** (it was `main-MQDQOFSZ.js` for Release-487). `work-lab-leila`: this is the build for your batch 8 release tier. Its Production stage is waiting for approval and is not to be touched.
+**CORRECTION, 9:53 AM: dev now carries Release-489, build 20261021.16, from `61161ce1bb5ea3852bd42d04ee13ebc6543ab630` (`61161ce1b`, with #1969's fix, PR 2064), `GIS-1D Development` succeeded at about 9:50 AM Central.** It replaced **Release-488** (`67e95b4b135d27b17bf6f1482d38760925f39a62`), which I reported at 9:28 AM and whose production stage is now cancelled. Dev serves **`main-T7LYF72R.js`**. `work-lab-leila`: **test Release-489**; a tier started on Release-488 before about 9:50 AM tested the build that is not going out - restart it on 489.
 
-(Read 9:28 AM Central from Azure, on home, with `C:\TAMU\logs\az-releases.py`.)
+(Read 9:53 AM Central from Azure, on home, with `C:\TAMU\logs\az-releases.py`.)
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
