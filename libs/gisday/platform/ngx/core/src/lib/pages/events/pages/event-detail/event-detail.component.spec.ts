@@ -42,7 +42,15 @@ describe('EventDetailComponent check-in', () => {
     fixture = undefined;
   });
 
-  function open(mode = 'in-person', insert = () => of({ guid: 'c-new' })) {
+  function open(
+    mode = 'in-person',
+    insert = () => of({ guid: 'c-new' }),
+    schedule: { day: { guid: string; date: Date }; startTime: string; endTime: string } = {
+      day: { guid: 'd-1', date: new Date() },
+      startTime: '00:00:00',
+      endTime: '23:59:59'
+    }
+  ) {
     let checkedIn = false;
 
     const insertUserCheckin = jest.fn<ReturnType<typeof insert>, [string, unknown?]>(() => {
@@ -52,14 +60,12 @@ describe('EventDetailComponent check-in', () => {
       return result;
     });
 
-    // Live all day today, so the button shows.
+    // Live all day today (Central time) unless a schedule is given, so the button shows.
     const event = {
       guid: 'e-1',
       name: 'Opening session',
       mode,
-      day: { guid: 'd-1', date: new Date() },
-      startTime: '00:00:00',
-      endTime: '23:59:59',
+      ...schedule,
       speakers: [],
       location: { building: 'TAMU Rudder Plaza', checkInZone: zone }
     };
@@ -196,5 +202,37 @@ describe('EventDetailComponent check-in', () => {
     expect(insertUserCheckin.mock.calls[0][0]).toBe('e-1');
     expect(insertUserCheckin.mock.calls[0][1]).toBeUndefined();
     expect(text()).toContain('Your attendance has been registered');
+  });
+
+  /**
+   * #1795: the page shows the Check In button in the window the API accepts check-ins in, from one
+   * rule in libs/gisday/common: from the start until 15 minutes after the end, the day in Central time.
+   */
+  describe('when the button shows', () => {
+    // As the API tests: 18 November 2026, 4:00 to 5:00 PM Central, as the admin form stores them.
+    const session = {
+      day: { guid: 'd-1', date: new Date('2026-11-18T06:00:00Z') },
+      startTime: '16:00:00 GMT-0600 (Central Standard Time)',
+      endTime: '17:00:00 GMT-0600 (Central Standard Time)'
+    };
+
+    const hasButton = (text: () => string) => text().includes('Check-in to register your attendance');
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it.each([
+      ['a minute before the start', '2026-11-18T21:59:00Z', false],
+      ['at the start', '2026-11-18T22:00:00Z', true],
+      ['15 minutes after the end', '2026-11-18T23:15:00Z', true],
+      ['16 minutes after the end', '2026-11-18T23:16:00Z', false]
+    ])('%s: %s', (_, now, shown) => {
+      jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+
+      const { text } = open('hybrid', undefined, session);
+
+      expect(hasButton(text)).toBe(shown);
+    });
   });
 });

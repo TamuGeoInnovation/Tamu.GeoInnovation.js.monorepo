@@ -9,6 +9,12 @@ import { checkInZoneMessage } from '@tamu-gisc/gisday/common';
 import { CheckIn, Event } from '../entities/all.entity';
 import { CheckInProvider } from './check-in.provider';
 
+/**
+ * A session whose check-in is open now: all of today in Central time (#1795). Times without an offset
+ * are Central time.
+ */
+const openNow = { day: { date: new Date() }, startTime: '00:00:00', endTime: '23:59:59' };
+
 describe('CheckInProvider', () => {
   let provider: CheckInProvider;
   let checkInRepo: Repository<CheckIn>;
@@ -68,7 +74,7 @@ describe('CheckInProvider', () => {
 
   describe('.insertUserCheckin()', () => {
     it('creates the check-in against the resolved event', async () => {
-      const event = { guid: 'e-1' } as Event;
+      const event = { guid: 'e-1', ...openNow } as unknown as Event;
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
       jest.spyOn(eventRepo, 'findOne').mockResolvedValue(event);
       const save = jest.fn().mockResolvedValue({ guid: 'c-new' });
@@ -90,7 +96,7 @@ describe('CheckInProvider', () => {
 
     it('looks for the duplicate scoped to both the event and the attendee', async () => {
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
-      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1' } as Event);
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', ...openNow } as unknown as Event);
       jest.spyOn(checkInRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
 
       await provider.insertUserCheckin('e-1', 'acct-1');
@@ -151,7 +157,7 @@ describe('CheckInProvider', () => {
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
       jest
         .spyOn(eventRepo, 'findOne')
-        .mockResolvedValue({ guid: 'e-1', mode, location: { building: venue, checkInZone } } as Event);
+        .mockResolvedValue({ guid: 'e-1', mode, ...openNow, location: { building: venue, checkInZone } } as unknown as Event);
       save = jest.fn().mockResolvedValue({ guid: 'c-new' });
       jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
@@ -161,7 +167,7 @@ describe('CheckInProvider', () => {
 
       await provider.insertUserCheckin('e-1', 'acct-1', middleOfMsc);
 
-      expect(eventRepo.findOne).toHaveBeenCalledWith({ where: { guid: 'e-1' }, relations: ['location'] });
+      expect(eventRepo.findOne).toHaveBeenCalledWith({ where: { guid: 'e-1' }, relations: ['location', 'day'] });
     });
 
     it('checks in an attendee inside the zone, and saves nothing about where they were', async () => {
@@ -280,6 +286,112 @@ describe('CheckInProvider', () => {
 
       await expect(provider.insertAttendeeCheckin('e-1', 'acct-1')).rejects.toThrow(UnprocessableEntityException);
       expect(save).not.toHaveBeenCalled();
+    });
+  });
+
+  /**
+   * #1795: an attendee checks in only from a session's start until 15 minutes after its end, the
+   * window the session page shows the button in. Organizers adding a check-in are exempt.
+   */
+  describe('.insertUserCheckin() and when check-in is open', () => {
+    // Wednesday 18 November 2026, 4:00 to 5:00 PM Central, stored as the admin form stores them. The
+    // day as the API reads it from the database: midnight Central, in UTC.
+    const session = {
+      guid: 'e-1',
+      mode: 'hybrid',
+      day: { date: new Date('2026-11-18T06:00:00Z') },
+      startTime: '16:00:00 GMT-0600 (Central Standard Time)',
+      endTime: '17:00:00 GMT-0600 (Central Standard Time)'
+    };
+
+    let save: jest.Mock;
+
+    const withSession = (overrides: Record<string, unknown> = {}) => {
+      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ ...session, ...overrides } as unknown as Event);
+      save = jest.fn().mockResolvedValue({ guid: 'c-new' });
+      jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
+    };
+
+    const at = (iso: string) => jest.useFakeTimers({ now: new Date(iso), doNotFake: ['nextTick', 'setImmediate'] });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('refuses an attendee a minute early, and says when it opens', async () => {
+      withSession();
+      at('2026-11-18T21:59:00Z'); // 3:59 PM Central
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
+        new ForbiddenException('Check-in for this session opens when it starts, at 4:00 PM.')
+      );
+      expect(save).not.toHaveBeenCalled();
+    });
+
+    it('refuses an attendee the day before', async () => {
+      withSession();
+      at('2026-11-17T22:30:00Z');
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(ForbiddenException);
+    });
+
+    it('checks in an attendee from the moment the session starts', async () => {
+      withSession();
+      at('2026-11-18T22:00:00Z'); // 4:00 PM Central
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
+    });
+
+    it('checks in an attendee up to 15 minutes after the session ends', async () => {
+      withSession();
+      at('2026-11-18T23:15:00Z'); // 5:15 PM Central
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
+    });
+
+    it('refuses an attendee after that, and says check-in has closed', async () => {
+      withSession();
+      at('2026-11-18T23:16:00Z');
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
+        new ForbiddenException('Check-in for this session has closed.')
+      );
+      expect(save).not.toHaveBeenCalled();
+    });
+
+    it('refuses an attendee to a session whose time is not set or cannot be read, as the page shows no button', async () => {
+      at('2026-11-18T22:30:00Z');
+
+      withSession({ day: null });
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/its time is not set/);
+
+      withSession({ startTime: 'Invalid Date' });
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/its time is not set/);
+    });
+
+    it('tells an early attendee when, before asking where they are', async () => {
+      at('2026-11-18T21:00:00Z');
+      withSession({
+        mode: 'in-person',
+        location: {
+          building: 'TAMU Rudder Plaza',
+          checkInZone: [
+            { latitude: 30.613149134544702, longitude: -96.34032883332456 },
+            { latitude: 30.61341806004229, longitude: -96.34058900760697 },
+            { latitude: 30.613209152317065, longitude: -96.34093233037139 }
+          ]
+        }
+      });
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens when it starts/);
+    });
+
+    it('lets an organizer add a check-in at any time', async () => {
+      withSession();
+      at('2026-11-17T12:00:00Z');
+
+      await expect(provider.insertAttendeeCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
     });
   });
 
