@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:55 PM Central, 20 October 2026**. A listener; job: testing.
+Last written **12:05 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,11 +24,16 @@ Last written **11:55 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 12:40 AM Central.**
+**Next update by 12:55 AM Central.**
 
 **Batch 6, aggiemap: #1969, the lot-link race - fix it.** Started 11:55 PM Central. `fix/1969-lot-link-race` from the latest
 `origin/development`; red-first smoke test (the event map's own service delayed) and unit test, the fix in `EventService`, green on a
 local production build, the scoped check, images, the notes file, then the pull request. About 60 to 90 minutes.
+
+**Progress, 12:05 AM:** the cause is two lookups, not one. `EsriMapService.useView()` selects a `?lot=` link's feature itself from the
+application's search sources (the main map's lots) as the map loads, while `EventService` looks for it among the event map's own
+layers; both select and the last answer wins. Unit tests for the fix are red for the right reasons (3 of 28). The smoke test is not
+yet certain: holding back either service makes Visitor Parking fail most runs and Motorcycle Parking none. Working on it, then the fix.
 
 ## Finished
 
