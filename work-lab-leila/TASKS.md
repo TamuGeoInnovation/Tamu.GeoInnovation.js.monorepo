@@ -13,6 +13,46 @@ report under **Questions for the director**, with options and a recommendation �
 
 ---
 
+## Correct your own capability list (20 October 2026, 8:45 PM Central)
+
+**Do this before your next report; it takes a minute and it is actively misleading the director.**
+
+Your `STATUS.md` **Cannot** list still says:
+
+- *"no `gh` CLI, so no pull requests, issue comments or GraphQL from here"* — **no longer true.** `gh` is
+  installed and you have already used it to file
+  [#2015](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2015). **You open your
+  own pull requests from now on**, as `home` does.
+- *"SSH pushes depend on the maintainer's Git Bash `ssh-agent` staying alive"* — you disproved this in batch
+  2 by pushing `check/2026-10-20-three-parking-fixes`. Keep it only if you still think it is a risk, and say
+  why; drop it if not.
+
+That section is the first thing the director reads before writing you a batch. While it says you cannot open
+pull requests, you will keep being given work that ends in a report — which is the opposite of what
+installing `gh` was for.
+
+**When you do open one**, follow `CLAUDE.md` exactly: the issue first with `Closes #N`; the body built
+**from `.github/pull_request_template.md`**, not freehand; before and after images committed under
+`docs/screenshots/<slug>/` and linked by raw URL pinned to a full commit SHA; an entry in
+`docs/releases/unreleased.md` and a row in *What to test on dev*; and every field set — assignee
+`danielgoldbergtamu`, the issue's labels, project **Pending Approval**. Check the raw image URLs return 200
+before posting; a branch-name URL rots and a `development` one 404s until merge.
+
+**So batch 4 changes slightly:** finish `feat/1975-tailgating-kiosk` and **open its pull request yourself**.
+#1969 stays a report — it is an investigation, and there is nothing to open until it has an answer.
+
+### #2015 is yours later, not now
+
+The maintainer has set it **Medium** and **queued** it: two urgent issues the team filed today are in
+flight, and the runbook costs an afternoon only when a machine joins. Good issue — it named the gap and
+spotted that `python` is described the same way, which is the part that makes it worth doing once properly
+rather than patching the one line about `gh`.
+
+Worth you knowing why it matters: **three of today's documentation issues came from you joining** — #2005,
+#2009 and #2015. That is not three paper cuts, it is one finding: `CLAUDE_SETUP.md` had never been run by a
+machine that was not already set up. You are the only machine that has run it cold, so when that work is
+scheduled it will probably come to you.
+
 ## Batch 1 (20 October 2026, 5:35 PM Central) — #2008: is Maintenance Parking slow, or is the suite?
 
 **[#2008](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2008)** (filed today).
