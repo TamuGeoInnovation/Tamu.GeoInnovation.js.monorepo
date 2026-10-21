@@ -91,6 +91,18 @@ other check passed this map.
 | Before | After |
 | --- | --- |
 | ![Business Parking on production: the blue two-hour space markers only, and two empty legend entries](../screenshots/1981-business-parking-lots/before-production-no-lots.png) | ![The same map with maroon surface lots, pink garages, and a symbol beside each legend entry](../screenshots/1981-business-parking-lots/after-local-build-lots-drawn.png) |
+
+### Vendor Parking's lots open their vendor notes again
+
+The lots were drawn by a background image that could not be clicked, because the service's symbology depends on a
+field it does not publish (as Business Parking's [#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)). They are now two clickable layers in the
+service's colours: maroon where Vendor and Vendor+ permits are authorized, lavender for the garages where only
+Vendor+ is ([#1991](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1991)).
+
+| Before | After |
+| --- | --- |
+| ![Vendor Parking on production: Lot 050 clicked, and the campus "Lot 050" popup open instead of its vendor notes](../screenshots/1991-vendor-parking-lots/before-production-wrong-popup.png) | ![The same lot clicked on a local build: its vendor notes, "an authorized lot for Vendor and Vendor+ permits"](../screenshots/1991-vendor-parking-lots/after-local-build-vendor-popup.png) |
+| ![The legend on production: one Vendor Parking Lots entry](../screenshots/1991-vendor-parking-lots/before-production-legend.png) | ![Both lot layers drawn, listed in Layers, and each with its own legend entry](../screenshots/1991-vendor-parking-lots/after-local-build-both-layers.png) |
 ### Women's Basketball: the new two-layer map, on dev until Transportation Services publish it
 
 Transportation Services rebuilt the Women's Basketball parking map for the season that starts on 2
@@ -718,6 +730,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Vendor Parking's lots open their vendor notes ([#1991](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1991)) | [dev.aggiemap.tamu.edu/parking/vendor-parking](https://dev.aggiemap.tamu.edu/parking/vendor-parking) | Maroon lots and lavender garages; clicking a lot opens its vendor notes, not the campus lot popup; both layers listed |
 | Softball's accessible parking legend row ([#2004](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2004)) | [dev.aggiemap.tamu.edu/parking/softball-parking](https://dev.aggiemap.tamu.edu/parking/softball-parking) | The Accessible Parking Spaces legend entry has its wheelchair row |
 | Accessible parking on the sports maps ([#1992](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1992), [#1993](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1993)) | [dev.aggiemap.tamu.edu/events/womens-basketball](https://dev.aggiemap.tamu.edu/events/womens-basketball) | Wheelchair markers and an Accessible Parking legend row |
 | Accessible parking and team bus parking on Indoor Track ([#1992](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1992), [#1993](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1993)) | [dev.aggiemap.tamu.edu/parking/indoor-track-parking](https://dev.aggiemap.tamu.edu/parking/indoor-track-parking) | The same, and the magenta Team Bus Parking area over the Indoor Track building, visible as the map opens. It is the building's own footprint, so it was drawn underneath the building layer until that order was swapped - if it is not visible, check whether Indoor Track Building is drawing over it again rather than whether it is missing |
