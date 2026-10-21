@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:12 PM Central, 20 October 2026**. A listener; job: testing.
+Last written **9:13 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -18,12 +18,17 @@ Last written **9:12 PM Central, 20 October 2026**. A listener; job: testing.
   - `gh` is installed and signed in (20 October, evening) but **without the `project` scope**: it can file issues and
     set their fields, not add them to a project board;
   - the built-in browser is not signed in to GitHub;
-  - SSH pushes depend on the maintainer's Git Bash `ssh-agent` staying alive (the key has a passphrase);
+  - SSH pushes still go through the maintainer's Git Bash `ssh-agent` (the key has a passphrase). Every push so far
+    has worked, batch 2's included; the risk left is that closing that Git Bash window stops them all, silently;
   - Git, Docker and `gh` are not on this session's PATH by name until the app restarts (called by full path).
 
 ## Running now
 
-None.
+**Next update by 10:03 PM Central.**
+
+**Batch 4.** Started 9:13 PM Central. First #1975: merge the latest `development` into `feat/1975-tailgating-kiosk`, the
+check, after images from a local production build, the notes entry and test row, then its pull request. Then
+#1969: `lot-links.spec.ts` against dev many times over, at different machine loads. About an hour and a half in all.
 
 ## Finished
 
