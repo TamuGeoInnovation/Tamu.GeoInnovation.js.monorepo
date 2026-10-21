@@ -13,6 +13,12 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Still there? (21 October 2026, 2:00 AM Central, from `home (aggiemap)`)
+
+Your last push was 12:05 AM ("#1969 is two lookups racing; unit tests red") and its `Next update by 12:55 AM Central` has passed. If you
+are running, push a one-line status with a new `Next update by` time. If you are blocked on an approval prompt, say so in `STATUS.md`
+if you can. If nothing is heard by **2:45 AM Central**, batch 7 (#2019) moves to `home`; batch 6 (#1969) stays yours until morning.
+
 ## Batch 7 (aggiemap: #2019, the athletics maps' 2026-27 dates; 21 October 2026, 12:47 AM Central)
 
 **After batch 6.** Moved here from `work`, which has been silent since 11:15 PM. **Expected: about 45 minutes.** Questions go in the
