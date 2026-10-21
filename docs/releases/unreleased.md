@@ -1,175 +1,21 @@
 # Unreleased
 
-Since the 19 October release: five AggieMap fixes, a cancelled event removed, Women's Basketball's new
-map on dev, and GIS Day changes waiting for GIS Day's own deploy.
+Since `61161ce1b`, the build going to production as the 21 October release: GIS Day changes waiting
+for GIS Day's own deploy. Every AggieMap entry up to `61161ce1b` moved into the 21 October notes.
 
-**The latest release notes are [19 October 2026](2026-10-19.md)**, for the build from `8463ac6af`
-(build 20261019.21, Release-486), on dev and going to production. The `prod-*` tag on `8463ac6af` records
-when it reaches production. The release before it is [16 October 2026](2026-10-16.md), from `264eebb42`.
+**The latest release notes are [21 October 2026](2026-10-21.md)**, for the build from `61161ce1b`
+(build 20261021.16, Release-489), on dev and going to production. The `prod-*` tag on `61161ce1b` records
+when it reaches production. The release before it is [19 October 2026](2026-10-19.md), from `8463ac6af`.
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
-result adds its own entry below, in that pull request**, with its before/after screenshots linked from
-`docs/screenshots/<slug>/` - and a row in *What to test on dev*. Nobody writes these later. See
+result adds its own file to [`unreleased/`](unreleased/README.md), in that pull request**, with its
+before/after screenshots linked from `docs/screenshots/<slug>/` and its row for *What to test on dev*;
+the files are collated here at release ([#2037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2037)). Nobody writes these later. See
 [README.md](README.md#cutting-a-release).
 
 ---
 
 ## Summary
-
-### Aerial Imagery no longer opens as a blank map
-
-Choosing Aerial Imagery left the map white on about one load in three, on production as well as dev;
-moving the date slider, or zooming, often brought the imagery back. Nearmap's latest imagery of campus
-is one layer made of 19 captures, and the map asked for all 19 by name. That made the request too long
-to send as an ordinary GET, so it went as a POST, which Nearmap sometimes answers with an empty document
-instead of a picture. The map now asks for the combined layer by its one name, a short GET, and gets an
-image every time; a chosen date is still one capture. On development hosts the panel's spinner beside
-Aerial Imagery could also keep spinning after the imagery had drawn; it now stops when the basemap has
-drawn ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)).
-
-| Before | After |
-| --- | --- |
-| ![Aerial Imagery chosen, and the map blank white](../screenshots/nearmap-blank-latest/before-blank.png) | ![Aerial Imagery chosen, and the latest imagery drawn](../screenshots/nearmap-blank-latest/after-latest.png) |
-
-### Accessible parking spaces show again on the Women's Basketball and Indoor Track maps, and Indoor Track's team bus parking is drawn
-
-Their symbology named older values than the spaces now hold, so nothing matched. Each layer now draws with the
-service's own symbol ([#1992](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1992), [#1993](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1993)).
-
-| Before | After |
-| --- | --- |
-| ![Women's Basketball on production: no wheelchair markers on the map](../screenshots/1992-accessible-parking-sports-maps/before-production-womens-basketball-map.png) | ![The same map on a local build, with the wheelchair markers drawn](../screenshots/1992-accessible-parking-sports-maps/after-local-build-womens-basketball-map.png) |
-| ![Its legend on production: Accessible Parking Spaces with nothing under it](../screenshots/1992-accessible-parking-sports-maps/before-production-womens-basketball-legend.png) | ![The legend with the wheelchair symbol under Accessible Parking Spaces](../screenshots/1992-accessible-parking-sports-maps/after-local-build-womens-basketball-legend.png) |
-| ![Indoor Track on production: no wheelchair markers](../screenshots/1992-accessible-parking-sports-maps/before-production-indoor-track-map.png) | ![Indoor Track on a local build, with the wheelchair markers drawn](../screenshots/1992-accessible-parking-sports-maps/after-local-build-indoor-track-map.png) |
-| ![Indoor Track's legend on production: Accessible Parking Spaces empty](../screenshots/1992-accessible-parking-sports-maps/before-production-indoor-track-legend.png) | ![Indoor Track's legend with the wheelchair symbol, and Team Bus Parking in magenta](../screenshots/1992-accessible-parking-sports-maps/after-local-build-indoor-track-legend.png) |
-| ![Indoor Track on production with Indoor Track Building switched off: nothing drawn where the team buses park](../screenshots/1992-accessible-parking-sports-maps/before-production-indoor-track-team-bus-building-off.png) | ![The same on a local build: the magenta Team Bus Parking area](../screenshots/1992-accessible-parking-sports-maps/after-local-build-indoor-track-team-bus-building-off.png) |
-
-### Layer symbols are back in the legend, where a layer's colours come from a number
-
-On Freshman Selectable Parking the two layers drew, were listed and were switched on, and their legend
-entries showed their names with no symbol beside them. The same was true of any map whose layer takes its
-colours from a numeric field.
-
-The legend asks the service which of a layer's symbols actually have features behind them, so it can leave
-out the ones nothing uses. It built that question with every value in quotation marks, which asks a number
-field to equal a piece of text. Some servers accept that and ours rejects it, and when the question failed
-the legend quietly dropped every row - which is why the heading stayed and everything under it went. A
-value is now quoted only when the layer itself says the field is text, so a lot code like `09400` is still
-treated as text and a `1` is not; and a row whose question fails is kept and reported rather than dropped,
-so a future failure shows up as a wrong legend rather than an empty one
-([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987),
-[#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)).
-
-| Before | After |
-| --- | --- |
-| ![Freshman Selectable Parking on production: both legend headings present with no symbol under either](../screenshots/1988-legend-numeric-where/before-production-legend-empty.png) | ![The same legend with a coloured symbol beside each layer](../screenshots/1988-legend-numeric-where/after-local-build-legend-symbols.png) |
-
-### Softball's legend shows its accessible parking symbol again
-
-The legend checked only the first value of a symbol shared by several, so a map whose spaces matched another value
-lost the row ([#2004](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2004)).
-
-| Before | After |
-| --- | --- |
-| ![Softball's legend on production: Accessible Parking Spaces with nothing under it](../screenshots/2004-legend-multi-value-class/before-production-softball-legend.png) | ![The legend on a local build, with the wheelchair symbol under Accessible Parking Spaces](../screenshots/2004-legend-multi-value-class/after-local-build-softball-legend.png) |
-
-### Business Parking draws its lots again
-
-The Business Parking map showed its two-hour business spaces but none of the lots. Both lot layers
-loaded and held their lots - 73 surface lots and 6 garages - and drew none of them, and their two legend
-entries were empty. The service's own renderer decides a lot's colour from `GIS.TS.ParkingLots.LotType`,
-a field the service does not publish, so no lot arrived with a value the renderer has a symbol for, and
-the renderer has no fallback. Each layer already asks the service for exactly one of the renderer's two
-groups, so each now draws in the colour the service's legend gives that group: maroon for lots where a UB
-or UB+ permit is authorized, pink for the garages where only UB+ is. The symbols come out of the
-definition again once the service publishes the field ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)).
-
-A new smoke check asks each layer's own renderer for a symbol for the features that layer holds, so a
-layer that loads, answers every query and fills up while drawing nothing fails instead of passing. Every
-other check passed this map.
-
-| Before | After |
-| --- | --- |
-| ![Business Parking on production: the blue two-hour space markers only, and two empty legend entries](../screenshots/1981-business-parking-lots/before-production-no-lots.png) | ![The same map with maroon surface lots, pink garages, and a symbol beside each legend entry](../screenshots/1981-business-parking-lots/after-local-build-lots-drawn.png) |
-
-### Vendor Parking's lots open their vendor notes again
-
-The lots were drawn by a background image that could not be clicked, because the service's symbology depends on a
-field it does not publish (as Business Parking's [#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)). They are now two clickable layers in the
-service's colours: maroon where Vendor and Vendor+ permits are authorized, lavender for the garages where only
-Vendor+ is ([#1991](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1991)).
-
-| Before | After |
-| --- | --- |
-| ![Vendor Parking on production: Lot 050 clicked, and the campus "Lot 050" popup open instead of its vendor notes](../screenshots/1991-vendor-parking-lots/before-production-wrong-popup.png) | ![The same lot clicked on a local build: its vendor notes, "an authorized lot for Vendor and Vendor+ permits"](../screenshots/1991-vendor-parking-lots/after-local-build-vendor-popup.png) |
-| ![The legend on production: one Vendor Parking Lots entry](../screenshots/1991-vendor-parking-lots/before-production-legend.png) | ![Both lot layers drawn, listed in Layers, and each with its own legend entry](../screenshots/1991-vendor-parking-lots/after-local-build-both-layers.png) |
-### Women's Basketball: the new two-layer map, on dev until Transportation Services publish it
-
-Transportation Services rebuilt the Women's Basketball parking map for the season that starts on 2
-November. It now has two layers, Accessible Parking Spaces and Women's Basketball Event Parking Lots: the
-eight lots around Reed Arena, in blue for event parking and orange for the two reserved lots, 102 and 104,
-with the two accessible-parking markers. The hourly visitor parking kiosks and the Safety First crosswalks
-are gone. The names, colours and markers are the service's own.
-
-The new version is published only on the development GIS server so far, so only dev draws it. Production
-goes on drawing the published four-layer map, unchanged, until Transportation Services publish the new one
-there. Then a follow-up change makes it the only version, on production too. A smoke check fails if
-production ever asks for the new service before then
-([#2001](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2001)).
-
-| Before, production and dev | After, on dev |
-| --- | --- |
-| ![Women's Basketball with visitor kiosks, crosswalks and every event lot in maroon, and four legend entries](../screenshots/2001-womens-basketball-parking/before-dev.png) | ![The same map with eight lots in blue and orange, two accessible markers, and two legend entries](../screenshots/2001-womens-basketball-parking/after-local-build-dev.png) |
-| | ![A lot's popup: 100c, Event Parking, with the link to the Women's Basketball parking page](../screenshots/2001-womens-basketball-parking/after-local-build-dev-popup.png) |
-
-Production after this change, unchanged until the new version is published there:
-[after-local-build-production.png](../screenshots/2001-womens-basketball-parking/after-local-build-production.png).
-### A feature opened from a link or a search shows its own title, not "Selected Buildings"
-
-A feature opened by a shared link (`?lot=`, `?feature=`) or chosen from search is highlighted on the map's
-selection layer, which is titled "Selected Buildings" and uses the building popup. The side panel took its
-heading, and its popup, from that layer rather than from the feature's own, so a motorcycle space or a
-parking lot opened from a link said "Selected Buildings", and clicking the highlight opened a building
-popup. The panel now heads and fills the popup from the layer the feature came from, exactly as clicking
-that feature on the map does; a building chosen from search is unchanged
-([#1970](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1970)).
-
-| Before | After |
-| --- | --- |
-| ![Motorcycle Parking on production opened at lot 100j: the side panel headed Selected Buildings](../screenshots/1970-selection-popup-title/before-production-motorcycle-lot-100j.png) | ![The same link on a production build of the fix: the panel headed Motorcycle Parking Space](../screenshots/1970-selection-popup-title/after-local-production-motorcycle-lot-100j.png) |
-
-
-### A Football Tailgating kiosk map
-
-`/kiosk/football-tailgating/map` shows the Football Tailgating map with no sidebar, for a fixed screen
-or for embedding: tailgating zones and their numbers, the tents, the construction that affects tailgating, and the
-buildings. A tent or zone link (`?tent=L1`, `?zone=AP-7`) opens with it selected. Like the Dining kiosk, it is
-listed only in the development-only Kiosk Maps section of All Maps ([#1975](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1975)).
-
-| The Football Tailgating map, as production serves it | The kiosk | The kiosk with `?tent=L1` |
-| --- | --- | --- |
-| ![The Football Tailgating map on production, with its sidebar of layers and legend](../screenshots/1975-tailgating-kiosk/before-production-tailgating-map.png) | ![The kiosk on a local build: the same zones, numbers, tents and construction, with no sidebar](../screenshots/1975-tailgating-kiosk/after-local-build-kiosk.png) | ![The kiosk opened with ?tent=L1: zoomed to Tent L1, highlighted, with its popup](../screenshots/1975-tailgating-kiosk/after-local-build-kiosk-tent-l1.png) |
-
-### Not visible: NestJS 10 to 11
-
-The NestJS APIs (UES Operations, GIS Day, OIDC, Mailroom and Geoservices) move from NestJS 10.4.22 to 11.2.7
-([#1974](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1974), the first of its two steps), and with it from Express 4 to 5 and Passport 0.4 to 0.7.
-AggieMap and the event maps are Angular apps and do not change. One side effect for UES Operations:
-signing out used to fail with a server error, because the id token was read after Passport had cleared
-the user; it now reaches the identity provider's sign-out page.
-
-### Live at the Station is removed: the concert is cancelled
-
-The Live at the Station map is retired. It is no longer listed on All Maps or Campus Events, search does
-not offer it, and - the part that mattered most - its notice will not appear. The concert was cancelled
-before it happened, so unlike every other retired map its date was still in the future: from 31 October a
-notice inviting people to it would have opened on every visit to AggieMap. A link already shared still
-resolves, so nobody following an old link gets an error
-([#1995](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1995)).
-
-| Before | After |
-| --- | --- |
-| ![Campus Events on production, Live at the Station listed under Fall](../screenshots/1995-live-at-the-station-cancelled/before-production-listed.png) | ![The same page without it, every other event unchanged](../screenshots/1995-live-at-the-station-cancelled/after-local-build-not-listed.png) |
 
 ### GIS Day: the sponsorship levels match the 2026 prospectus
 
@@ -726,21 +572,10 @@ say how.
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** build 20261019.21 (Release-486, `8463ac6af`), whose AggieMap rows moved into the [19 October notes](2026-10-19.md). The Business Parking row below is for the build after it. The rows left are GIS Day's, which has no dev site.
+**Currently on dev for testing:** build 20261020.40 (Release-487, `b78942631`), whose AggieMap rows moved into the [21 October notes](2026-10-21.md). The rows left are GIS Day's, which has no dev site.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
-| Vendor Parking's lots open their vendor notes ([#1991](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1991)) | [dev.aggiemap.tamu.edu/parking/vendor-parking](https://dev.aggiemap.tamu.edu/parking/vendor-parking) | Maroon lots and lavender garages; clicking a lot opens its vendor notes, not the campus lot popup; both layers listed |
-| Softball's accessible parking legend row ([#2004](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2004)) | [dev.aggiemap.tamu.edu/parking/softball-parking](https://dev.aggiemap.tamu.edu/parking/softball-parking) | The Accessible Parking Spaces legend entry has its wheelchair row |
-| Accessible parking on the sports maps ([#1992](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1992), [#1993](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1993)) | [dev.aggiemap.tamu.edu/events/womens-basketball](https://dev.aggiemap.tamu.edu/events/womens-basketball) | Wheelchair markers and an Accessible Parking legend row |
-| Accessible parking and team bus parking on Indoor Track ([#1992](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1992), [#1993](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1993)) | [dev.aggiemap.tamu.edu/parking/indoor-track-parking](https://dev.aggiemap.tamu.edu/parking/indoor-track-parking) | The same, and the magenta Team Bus Parking area over the Indoor Track building, visible as the map opens. It is the building's own footprint, so it was drawn underneath the building layer until that order was swapped - if it is not visible, check whether Indoor Track Building is drawing over it again rather than whether it is missing |
-| Live at the Station removed, the concert is cancelled ([#1995](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1995)) | [dev.aggiemap.tamu.edu/all-maps/campus-events](https://dev.aggiemap.tamu.edu/all-maps/campus-events) | No Live at the Station under Fall, and every other event still there. Search for "live at the station" offers nothing. The old link `/events/live-at-the-station` still opens the map rather than erroring. No notice about it appears on any page |
-| A Football Tailgating kiosk map ([#1975](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1975)) | [dev.aggiemap.tamu.edu/kiosk/football-tailgating/map](https://dev.aggiemap.tamu.edu/kiosk/football-tailgating/map), then the same with `?tent=L1` | No sidebar, and no All Maps or 2D buttons (zoom, locate and compass remain); it opens where the tailgating map opens, with zones, numbers, tents and buildings and nothing else; a tent or zone opens its popup; `?tent=L1` zooms to Tent L1 highlighted with its popup; All Maps lists it only under Kiosk Maps |
-| Aerial Imagery no longer opens blank ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)) | [dev.aggiemap.tamu.edu/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), then choose Aerial Imagery; repeat with a fresh page several times | The imagery draws every time without zooming or touching the slider, and the spinner beside Aerial Imagery stops once it has. The slider still steps back to older dates and forward to Latest. On a phone, ☰ → Basemap → Aerial Imagery draws too |
-| Layer symbols back in the legend ([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987), [#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)) | [dev.aggiemap.tamu.edu/parking/permit-select-freshman](https://dev.aggiemap.tamu.edu/parking/permit-select-freshman) | Both layers have a coloured symbol beside their name in the Legend, not just the name. Then check a few other parking maps - Visitor, Motorcycle, Accessible - and the main map's layers: every legend entry for a switched-on layer has a symbol, and no legend that was right before has lost a row |
-| Business Parking draws its lots ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)) | [dev.aggiemap.tamu.edu/parking/business-parking](https://dev.aggiemap.tamu.edu/parking/business-parking) | Maroon surface lots and pink garages across campus, as well as the blue two-hour space markers. In the Legend, all three entries have a symbol beside them: a blue triangle, a maroon square and a pink square. Switching either lot layer off removes those lots and its legend entry |
-| Women's Basketball's new two-layer map ([#2001](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2001)) | [dev.aggiemap.tamu.edu/events/womens-basketball](https://dev.aggiemap.tamu.edu/events/womens-basketball) | Two layers in the Layers list and the Legend, Accessible Parking Spaces and Women's Basketball Event Parking Lots, and nothing else: no visitor parking kiosks and no crosswalks. Lots 100a, 100b, 100c, 100e, 100f and 100g in blue (Event Parking), 102 and 104 in orange (Reserved), each labelled, and an accessible-parking marker in 102 and in 100g. Clicking a lot or a marker opens its popup with the link to Transportation's page. With `?as=production` added, the old four-layer map, as production shows it until Transportation Services publish the new one |
-| A linked feature is headed by its own layer ([#1970](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1970)) | [Motorcycle Parking, lot 100j](https://dev.aggiemap.tamu.edu/parking/motorcycle-parking/map?lot=100j), then [the main map](https://dev.aggiemap.tamu.edu/map/d) searching `Wehner` | The side panel is headed Motorcycle Parking Space, not Selected Buildings; clicking the highlighted space opens the space's popup, not a building's. A building chosen from search still shows the building popup |
 | GIS Day at phone width ([#1980](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1980)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone: `/sponsors/tamu`, `/competitions/presentation`, `/faq`, `/competitions/signage` | No page scrolls sideways; a sponsor level's benefits are one column; the Presentation page's links sit above its text; the menu button has a white backdrop as the page scrolls under it; the signage graphics wrap. On a desktop, nothing changes |
 | GIS Day: the LiDAR sponsorship level ([#1976](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1976)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: `/sponsors/tamu` | Five cards, LiDAR last at $4,096 with 6 representatives; choosing it shows its benefits; the other four prices unchanged. On a phone: two cards to a row, "reps", no sideways scrolling. In Admin, Sponsors, the level list offers LiDAR |
 | GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |
@@ -772,7 +607,6 @@ dated notes as what was tested, and this table empties.
 | GIS Day: an admin's added check-in is the attendee's ([#1767](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1767)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, signed in as an administrator whose account has `create:checkins`: Admin, Check-ins, Add, with another person's account id and an event they have not checked in to | Admin, Check-ins lists the new check-in under that person, not the admin. Adding the same person to the same event again is refused as already checked in. An attendee checking in from a session's page still checks in themselves |
 | GIS Day: location-based check-in ([#1766](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1766)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)), and the migration has not run anywhere but a local copy. Locally, after `scripts/gisday-local.sh migrate run`: as an administrator, Admin, Venues, give a venue corners; then, during an in-person session there, the session's page | The line "Check-in for this session uses your location" names the venue. Inside the zone, Check In works. Outside it (DevTools, Sensors, set a location elsewhere), the reason shows under the button and nothing is saved; there is no check-in anyway. While waiting, "Finding your location…". Block location access: the page asks for it. A hybrid session, or a venue with no corners, never asks. On the venue form, corners out of order (sides crossing) are refused. As an administrator, Admin, Check-ins, Add checks in another account to that in-person session with no location, from anywhere |
 | GIS Day: My VGI Submissions lists your own ([#1791](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1791)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, signed in with an account that has made a competition submission: Account, My VGI Submissions | Your own submissions are listed, with their date and status. Another account sees only its own. An account with none sees an empty list, not an error |
-| NestJS 11 ([#1974](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1974)) | Nothing on AggieMap: the NestJS APIs deploy separately, so check each where it runs | UES Operations: sign in, sign out (reaches the identity provider's sign-out page, not an error), sign in again and land back on the page you started from. GIS Day and the other APIs answer as before |
 
 ---
 
@@ -869,15 +703,16 @@ map's definition only when its map opens ([#1646](https://github.com/TamuGeoInno
 | 8 | Node 20.18 to 22.23.3 ([#1376](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1376)) | done: [#1401](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1401) |
 | 9 | Angular 18 to 19 ([#1378](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1378)) | done: [#1406](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1406). Steps 2 to 9b are all in the 5 October release |
 | 9b | esbuild-based `application` builder ([#1403](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1403)) | done: [#1408](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1408), in the 5 October release |
-| 10 | Angular 19 to 22, one major per pull request | done and merged: 20 ([#1451](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1451)), 21 ([#1465](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1465), dev-tagged `dev-2026-10-06`), 22 ([#1471](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1471)), about 1 to 1.5 hours each ([`docs/upgrades/angular.md`](../upgrades/angular.md)). **Angular 22 is not yet tested on dev**: its dev build was deploying on the morning of 6 October; the full suite, then the dev tag, come next |
+| 10 | Angular 19 to 22, one major per pull request | done and merged: 20 ([#1451](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1451)), 21 ([#1465](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1465), dev-tagged `dev-2026-10-06`), 22 ([#1471](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1471)), about 1 to 1.5 hours each ([`docs/upgrades/angular.md`](../upgrades/angular.md)). Angular 22 is on production, at 22.2.3 since the 19 October release ([#1925](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1925)) |
 | 10b | Faster smoke suite ([#1426](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1426)) | merged ([#1477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1477)): a release check runs one framing route per map, 6 workers, the ArcGIS library cached; 22 min 44 s on a workstation against about 1 h 50 min. Further cuts: [#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473) (bus test), [#1427](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1427) (maps) |
 | 11 | `esri-loader` to `@arcgis/core` | done: `@arcgis/core` at 4.27 ([#1844](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1844)), stepped to 4.34 one release per commit ([#1845](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1845)), 5.0.19 ([#1859](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1859)) and 5.1.27 ([#1867](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1867)), with RNS Spaces at its service's own scale to get round 5.1's many-points updating; then the maps hosted in Esri's `<arcgis-map>` and `<arcgis-scene>` components in place of `view.ui` ([#1949](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1949), [#1950](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1950)). All on production since `prod-2026-10-20`, at `@arcgis/core` and `@arcgis/map-components` 5.1.27 |
-| 12 | Nx 23.2.1 to 23.3.0 ([#1972](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1972)) | in progress: no migrations; nx, every `@nx/*` plugin and the lock only |
+| 12 | Nx 23.2.1 to 23.3.0 ([#1972](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1972)) | done: [#1984](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1984), in the 21 October release. No migrations; nx, every `@nx/*` plugin and the lock only |
 | 13 | Vitest 4 to 5 ([#1973](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1973)) | to do |
-| 14 | NestJS 10 to 12, one major per pull request ([#1974](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1974)) | to do; includes GIS Day's servers, by the maintainer's decision |
+| 14 | NestJS 10 to 11 ([#1974](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1974)) | done: [#1985](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1985), in the 21 October release, with Express 5, Passport 0.7 and the UES Operations sign-out fix ([#1978](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1978)). Includes GIS Day's servers, by the maintainer's decision; each API gets it with its own deploy |
+| 14b | NestJS 11 to 12 ([#1974](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1974)) | to do |
 | 15 | TypeScript 7, the native compiler ([#1918](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1918)) | waits on Angular supporting it |
 | — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | VeoRide retired ([#1404](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1404)); the old Ring Day app is removed ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)); CPA is retired ([#1458](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1458); restore it from the tag `cpa-last` if it is ever needed); the unused projects are listed in the cloud's Batch B report on `cloud-mailbox`, and the Cypress `*-e2e` projects are deleted, with Cypress itself ([#1545](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1545), part of [#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457)) |
-| — | After Angular 22 | standalone ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)) and no NgModules ([#1569](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1569)): done, in the 12 October release. `inject()` ([#1453](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1453)): done, same release. Next, in order: `@defer` and a smaller first load ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454), started 11 October), signals and OnPush ([#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455)), zoneless ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)), Vitest ([#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)), accessibility rules back on ([#1474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1474)) |
+| — | After Angular 22 | standalone ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)) and no NgModules ([#1569](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1569)): done, in the 12 October release. `inject()` ([#1453](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1453)): done, same release. `@defer` and a smaller first load ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454)): done, in the 12 October release. Signals and OnPush ([#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455)): mostly done, every decorator input, output and query left is a signal ([#1865](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1865)), in the 19 October release; OnPush as in the table above. Zoneless ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)) and Vitest ([#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)): done for AggieMap and UES Operations ([#1948](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1948)), in the 19 October release; the other apps remain. Next: accessibility rules back on ([#1474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1474)) |
 
 **A local `nx affected` on a `package.json` change fails on projects that already fail on
 `development`.** Every project counts as affected. Measured on 2 October: `cpa-angular` (since
