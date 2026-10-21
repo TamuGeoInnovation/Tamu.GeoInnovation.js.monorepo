@@ -302,7 +302,7 @@ every athletics schedule, women's tennis included), 2056 (`tools/` tests in CI).
 
 ### Open issues still needing the maintainer
 
-- **#2063** (garage styling on the vector basemap): Priority.
+- **#2063** (garage styling on the vector basemap): set to Low by the maintainer, 7:45 AM. Nothing else is owed.
 - **#1474** stays open for the GIS Day half (21 projects still have the rules off); the GIS Day chat has been told.
 
 ### Things not to relearn

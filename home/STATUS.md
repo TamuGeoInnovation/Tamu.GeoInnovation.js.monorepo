@@ -21,6 +21,7 @@ Nothing running. No uncommitted work in its worktrees. Watching `home/TASKS.md`.
   Services' map server fails about half its queries, production included. No code changed. Four questions for the director.
 
 ## Told directly
+- **7:45 AM Central, 21 October:** the maintainer set #2063's priority to Low (the handover's one open question). Done.
 - 7:47 AM: become the listener now; carry on with `<arcgis-map>` as far as possible and report progress here.
 
 ## Findings
