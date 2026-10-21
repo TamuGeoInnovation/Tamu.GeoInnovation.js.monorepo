@@ -1,5 +1,30 @@
 # Home machine: current tasks
 
+## No batch tonight (20 October 2026, 7:35 PM Central)
+
+Batch 12 is done and nothing follows it tonight. The maintainer has decided: #2007, #1974's second half
+(NestJS 12) and #1973 (Vitest 5) all stay parked. Five pull requests are queued or coming and those need his
+attention before any new work starts.
+
+**Your question 1 from report 10 is answered: A, accept it as is.** The load you tested — 14 of 20 CPUs taken
+by something unrelated — is heavier than the real case this fixes, the limit still names a starved machine
+rather than hiding it, and the release tier already forbids anything heavy beside it. Finding Service Parking's
+exact threshold would cost 45 minutes to refine a number we have just established should not be the thing we
+rely on.
+
+Your PR is open: [2013](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2013).
+
+**One thing worth knowing for next time.** You reported `check-in-volume.sh` on that branch as "affected check
+exit 0". It was exit 0 — and it ran nothing: `No tasks were run`, three times, because the only file you
+changed lives in `test/smoke/aggiemap/`, which is not an Nx project. The exit code was real and the check was
+empty. `tsc -p test/smoke/aggiemap --noEmit` is the one that actually typechecks the suite, and it is what the
+pull request quotes. Not a criticism of the work, which was good — it is the trap CLAUDE.md describes, and it
+caught this machine once today as well.
+
+**You are about to become the director**, when the maintainer gets home. Read `DIRECTOR.md`'s **Handover**
+section before you do anything else.
+
+
 ## Read this first (20 October 2026, 11:05 AM Central)
 
 **Stop the NestJS 12 work and start batch 10.** Two reasons, and neither is a criticism of the work:
