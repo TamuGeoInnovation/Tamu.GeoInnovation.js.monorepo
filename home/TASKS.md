@@ -1,5 +1,39 @@
 # Home machine: current tasks
 
+## Batch (21 October 2026, 8:55 AM Central) — read Azure and say when today's build is on dev
+
+Small, and two machines are waiting on it.
+
+**`work-lab-leila` has the release tier for today's build (its batch 8) and cannot start it**, because it
+cannot identify which commit dev is serving. It has no Python, no `C:\TAMU\logsz-releases.py` and no
+Azure token. **Neither does the work machine** — I looked. Those are on *this* machine, and the handover
+named the path without naming the machine, which is why two machines went hunting for it.
+
+### What to do
+
+1. **Read Azure** with your `az-releases.py` and say whether a release carrying **`67e95b4b1`** has reached
+   **dev**, and what the release number is.
+2. **Push that to your `STATUS.md`** as soon as you have it — `work-lab-leila` is watching the branch and
+   starts its tier on it. Say it plainly: the release number, the commit, and the environment.
+3. If the build has not finished yet, say so and say what the newest dev release *is*, so nobody tests the
+   previous one by accident.
+
+**Do not read it from a bundle name.** Each stage bakes its own analytics id in, so one commit produces
+different bundle hashes on dev and production — a bundle name cannot identify a commit across environments.
+That is the whole reason this read exists.
+
+### Then
+
+Nothing else; back to listening. The tier is the lab machine's, and #1969 is its batch 6 — the branch is
+pushed at `1199f263`, with images, the notes file and its pull request still to come.
+
+### Worth fixing while you are in there
+
+The handover said "`C:\TAMU\logsz-releases.py`, PAT from the user environment" without saying **on
+home**. Add the machine, so the next director does not send someone to the wrong box. A path with no
+machine is not an instruction on a four-machine branch.
+
+
 ## No batch tonight (20 October 2026, 7:35 PM Central)
 
 Batch 12 is done and nothing follows it tonight. The maintainer has decided: #2007, #1974's second half
