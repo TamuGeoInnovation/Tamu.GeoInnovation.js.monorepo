@@ -1,4 +1,5 @@
+<!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -- Not a control: it hears the clicks of the two buttons inside, which the keys below click. -->
 <div class="copy-element" clipboard-copy [text]="text()" (copying)="copying.set($event)" (click)="copyCoordsClick()">
-  <div class="copy-text" tabindex="0" aria-label="Click to copy to clipboard." role="button">{{ text() }}</div>
-  <div class="copy-button" tabindex="0" role="button" aria-label="Click to copy to clipboard." copy-label="Copied!" [class.copying]="copying() | async">Copy</div>
+  <div class="copy-text" tabindex="0" aria-label="Click to copy to clipboard." role="button" (keydown.enter)="$any($event.target).click()" (keydown.space)="$any($event.target).click(); $event.preventDefault()">{{ text() }}</div>
+  <div class="copy-button" tabindex="0" role="button" aria-label="Click to copy to clipboard." copy-label="Copied!" (keydown.enter)="$any($event.target).click()" (keydown.space)="$any($event.target).click(); $event.preventDefault()" [class.copying]="copying() | async">Copy</div>
 </div>

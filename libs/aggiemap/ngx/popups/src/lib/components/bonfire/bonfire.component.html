@@ -11,7 +11,7 @@
     @for (media of medias; track media) {
     <swiper-slide [attr.data-src]="media">
       <a [href]="media" target="_blank">
-        <img [src]="media" />
+        <img [src]="media" alt="Photo {{ $index + 1 }} of {{ medias.length }}, opens full size in a new tab" />
       </a>
     </swiper-slide>
     }
@@ -23,6 +23,6 @@
   <div [innerHTML]="$safeNavigationMigration(data?.attributes?.Description)  | markdownParse" class="trailer-2"></div>
 
   @if (directionsAvailable | async) {
-  <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
+  <div class="button" tabindex="0" role="button" (click)="startDirections()" (keydown.enter)="startDirections()" (keydown.space)="startDirections(); $event.preventDefault()">Directions To Here</div>
   }
 </div>

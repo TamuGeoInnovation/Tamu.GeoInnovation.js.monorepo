@@ -14,7 +14,7 @@
   <tamu-gisc-trip-planner-mode-toggle [activeModes]="[5, 6]" [iconName]="'directions_bus'" [name]="'Bus'" [label]="'Routing Mode: Bus'"></tamu-gisc-trip-planner-mode-toggle>
 
   @if ((isAccessibleMode | async) === true) {
-  <div class="filled" id="direction-accessible-mode" title="ADA Accessible Requirement" alt="Option: ADA Accessible Requirement" type="domElement" [ngClass]="{ active: (accessible | async) === true }" (click)="toggleAccessibleTravel()" tabindex="0">
+  <div class="filled" id="direction-accessible-mode" title="ADA Accessible Requirement" alt="Option: ADA Accessible Requirement" type="domElement" [ngClass]="{ active: (accessible | async) === true }" role="button" aria-label="ADA Accessible Requirement" [attr.aria-pressed]="(accessible | async) === true" (click)="toggleAccessibleTravel()" (keydown.enter)="toggleAccessibleTravel()" (keydown.space)="toggleAccessibleTravel(); $event.preventDefault()" tabindex="0">
     <i class="material-icons">accessible</i>
   </div>
   } @else {

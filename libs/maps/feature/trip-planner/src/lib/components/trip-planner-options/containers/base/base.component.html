@@ -1,6 +1,6 @@
 <div>
   <div class="sidebar-component-name">
-    <p><span class="material-icons" id="options-return" (click)="returnOptions()" alt="Return to trip planner" title="Return to trip planner" tabindex="0" role="button">arrow_back</span> General</p>
+    <p><span class="material-icons" id="options-return" (click)="returnOptions()" (keydown.enter)="returnOptions()" (keydown.space)="returnOptions(); $event.preventDefault()" alt="Return to trip planner" title="Return to trip planner" tabindex="0" role="button">arrow_back</span> General</p>
   </div>
 
   <div class="sidebar-component-content-container">

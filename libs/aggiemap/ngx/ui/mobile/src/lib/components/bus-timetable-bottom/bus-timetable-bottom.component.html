@@ -2,7 +2,7 @@
   <div class="handle"></div>
 
   <div id="list-results">
-    <p class="list-title"><span class="material-icons" (click)="routeReturn()">arrow_back</span> AggieSpirit Bus Route</p>
+    <p class="list-title"><span class="material-icons" aria-label="Back" tabindex="0" role="button" (click)="routeReturn()" (keydown.enter)="routeReturn()" (keydown.space)="routeReturn(); $event.preventDefault()">arrow_back</span> AggieSpirit Bus Route</p>
 
     @if ((busRoute | async); as rt) {
     <tamu-gisc-bus-route [route]="rt" [eagerLoad]="true"></tamu-gisc-bus-route>

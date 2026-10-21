@@ -129,7 +129,7 @@
     @if (upcomingApplications.length > 0) {
     <div class="events-list">
       @for (app of upcomingApplications; track app) {
-      <div class="event-card" (click)="onApplicationSelect(app)">
+      <div class="event-card" tabindex="0" role="link" (click)="onApplicationSelect(app)" (keydown.enter)="onApplicationSelect(app)">
         <h3 class="event-title">{{ app.name }}</h3>
         <!-- The next date rather than the whole range: this list answers "when is the next one" (#1443). -->
         <div class="event-dates"><strong>Next:</strong> {{ getNextEventDate(app.configuration.eventDates) }}</div>
@@ -237,7 +237,7 @@
     <div class="info-block trailer-1">This section is visible only in development mode. The applications listed here are experimental and are provided as-is, with no assurances regarding stability or functionality.</div>
     <div class="applications-list">
       @for (app of externalApplications; track app) {
-      <div class="application-card" (click)="onApplicationSelect(app)">
+      <div class="application-card" tabindex="0" role="link" (click)="onApplicationSelect(app)" (keydown.enter)="onApplicationSelect(app)">
         <div class="application-card-header">
           <h3 class="application-title">{{ app.name }}</h3>
         </div>

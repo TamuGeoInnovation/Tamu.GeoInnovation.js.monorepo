@@ -139,6 +139,8 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
    * Triggered on hover leave
    */
   public resume(): void {
+    // Hover and keyboard focus both pause, so both resume; clear first so two resumes leave one timer.
+    this.pause();
     this.countdown();
   }
 

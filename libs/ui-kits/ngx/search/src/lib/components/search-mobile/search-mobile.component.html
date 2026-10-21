@@ -1,7 +1,8 @@
 <div [ngClass]="{ active: focused() }">
-  <div class="input-action-container" (keydown)="keyControl($event, 'focus', '.focusable')" (focus)="setFocus()">
+  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- Not a tab stop itself: its keydown handles the keys of the input inside it. -->
+  <div class="input-action-container" (keydown)="keyControl($event, 'focus', '.focusable')">
     @if (leftActionIcon()) {
-    <i class="action-icons material-icons left" (click)="emitLeftActionEvent()">{{ leftActionIcon() }}</i>
+    <i class="action-icons material-icons left" tabindex="0" role="button" (click)="emitLeftActionEvent()" (keydown.enter)="emitLeftActionEvent()" (keydown.space)="emitLeftActionEvent(); $event.preventDefault()">{{ leftActionIcon() }}</i>
     } @if (rightActionIcon() && value() && (searchStatus | async) === false) {
     <i class="action-icons material-icons right" (mousedown)="setFocus(); emitRightActionEvent()">{{ rightActionIcon() }}</i>
     } @if (searchStatus | async) {
@@ -18,11 +19,12 @@
 
   <!-- Show search results container only if search results has at least one item OR  canGeolocate is enabled since it will act as the minimum. -->
   @if (searchResultsActive) {
+  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- Not a tab stop itself: its keydown handles the keys of the options inside it, which take focus. -->
   <div class="search-results-container" role="listbox" (keydown)="keyControl($event, 'focus', '.focusable')">
     @if (searchActionsActive) {
     <div class="search-actions">
       @if (canGeolocate()) {
-      <div class="my-location" (mousedown)="geolocate()" (keydown.space)="geolocate()" (keydown.enter)="geolocate()" (focus)="setFocus()" class="focusable" tabindex="-1" role="option">
+      <div class="my-location" (mousedown)="geolocate()" (keydown.space)="geolocate()" (keydown.enter)="geolocate()" (focus)="setFocus()" class="focusable" tabindex="-1" role="option" aria-selected="false">
         <i class="material-icons">gps_fixed</i>
         <p>Current Location</p>
       </div>
@@ -38,7 +40,7 @@
           <div>
             @for (feature of result.features; track feature) {
             <div class="result-item">
-              <p (mousedown)="setSelected(feature, result)" (keydown.space)="setSelected(feature, result)" (keydown.enter)="setSelected(feature, result)" (keydown.esc)="loseFocus()" (focus)="setFocus()" class="focusable" tabindex="-1" role="option">{{ evaluateDisplayTemplate(feature, result.displayTemplate) | titlecase }}</p>
+              <p (mousedown)="setSelected(feature, result)" (keydown.space)="setSelected(feature, result)" (keydown.enter)="setSelected(feature, result)" (keydown.esc)="loseFocus()" (focus)="setFocus()" class="focusable" tabindex="-1" role="option" aria-selected="false">{{ evaluateDisplayTemplate(feature, result.displayTemplate) | titlecase }}</p>
             </div>
             }
           </div>
