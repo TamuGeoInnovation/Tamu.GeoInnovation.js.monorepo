@@ -478,6 +478,14 @@ footer .logo-container {
     -webkit-text-stroke-color: $gisday-primary-light;
   }
 
+  // Texas A&M's lockup (#2012): the logo at the size the site's own logo has, with the university's name small
+  // above "GIS Day". Here rather than in the header's stylesheet, which is at its 10 kB budget.
+  tamu-gisc-lockup {
+    --lockup-logo-height: 50px;
+    font-size: 0.9rem;
+    line-height: 1.15;
+  }
+
   // In Texas A&M's lockup the university's name is plain text, not outlined like the year (#2012).
   .tamu-name {
     color: inherit;
