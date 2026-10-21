@@ -157,6 +157,38 @@ deciding a production release. Contention does not look like contention in a rep
 The listener running the long job owns its machine until it finishes. The director plans around that rather than
 asking for something in the middle of it.
 
+## Saying when you will next be heard from
+
+**A machine that is stuck cannot tell anyone it is stuck.** Blocked on a permission prompt, waiting on a
+dialog, crashed, or simply never started — from outside, every one of those looks the same as working
+quietly on a long build: no commits. On 20 October the lab machine sat on approval popups and nothing
+elsewhere could tell.
+
+Polling does not solve this, and it was tried. A branch watcher that flagged a folder going quiet raised
+**three false alarms in two days and caught nothing real**: a push from the director, a listener idle by
+design, and a listener that had already finished. Each time somebody had to go and look anyway, which is
+what the watcher was supposed to avoid.
+
+So the deadline is set by the machine **before** it can get stuck:
+
+- **Every batch says roughly how long it should take.** The director writes it. A guess is fine; being
+  wrong by half is fine. Having no number is not, because then nothing can be late.
+- **A listener writes `Next update by HH:MM Central` in its `STATUS.md` when it starts**, and pushes that
+  before it begins the work. It moves the line on when it pushes progress, and removes it when the batch is
+  reported.
+- **A missed deadline is a fact, not a judgement.** Either the line is there and still in the future, or it
+  has passed. Nobody has to infer anything from silence.
+- **The director checks the deadlines** before asking the maintainer anything or writing a new batch, which
+  it is already reading `STATUS.md` for. A passed deadline is chased the way
+  [When a listener stops, or goes wrong](#when-a-listener-stops-or-goes-wrong) says: record it, ask once,
+  withdraw the batch, move the work, tell the maintainer.
+- **Running late is not a failure, and saying so costs nothing.** A listener that needs longer pushes a new
+  deadline and a line saying why. That is a normal thing to do and the director would far rather have it
+  than a missed one.
+
+This makes "is anything stuck?" a line to read rather than a judgement to make. It does not raise an alarm
+by itself; nothing here does, and a machine that cannot speak cannot be made to.
+
 ## When a listener stops, or goes wrong
 
 Agents fail. One may stop mid-batch, never pick a batch up, or do something its batch never asked for. The director
