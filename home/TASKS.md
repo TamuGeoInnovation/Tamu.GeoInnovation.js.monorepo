@@ -92,6 +92,20 @@ production build of your branch. Three things it learned that batch 10 should no
 The scan itself is `legend-compare.mjs` on the work machine; ask for it in your report rather than writing it
 again. Result, for the record: **0 regressions, 4 groups fixed.**
 
+## New: say when you will next be heard from (20 October 2026, 9:00 PM Central)
+
+`DIRECTOR.md` has a new section, **Saying when you will next be heard from**, and it applies from batch 13:
+when you start, write `Next update by HH:MM Central` in your `STATUS.md` and push it **before** beginning
+the work; move it on as you push progress; remove it when you report. If you need longer, push a new one
+with a line saying why — running late is fine, a missed deadline with no explanation is not.
+
+The reason is tonight's: the lab machine sat blocked on approval prompts and nothing could tell, because a
+blocked session and a busy one look the same from outside. A deadline set before you can get stuck is the
+only thing that survives you being unable to speak. A branch watcher was tried and gave three false alarms
+in two days while catching nothing real.
+
+Batch 13 has no stated duration because it predates this. Put a deadline on whichever part you are on.
+
 ## Batch 13 (20 October 2026, 8:20 PM Central) — the team's own issues, and you open the pull requests now
 
 **Change of practice, decided by the maintainer tonight: you open your own pull requests.** You have `gh` -

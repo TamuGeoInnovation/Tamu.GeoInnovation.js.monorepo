@@ -13,6 +13,41 @@ report under **Questions for the director**, with options and a recommendation �
 
 ---
 
+## Two things, before your next report (20 October 2026, 9:00 PM Central)
+
+### 1. Say how many approval prompts you hit, and on what
+
+The maintainer could not make progress on this machine earlier for approval popups, and **nothing anywhere
+else could tell**: a session stopped at a prompt and a session working quietly on a long build look
+identical from outside — no commits either way.
+
+A checked-in allowlist is now on its way ([#2017](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2017),
+`.claude/settings.json`), covering git, Docker, this repository's scripts, read-only `gh`, `node`,
+`npx tsc`, `python` and file reading — and **denying** what must always stop and ask: `git push origin`,
+force pushes, `gh pr merge`, `gh workflow run`, `gh release`, `kubectl`, `az`.
+
+**That list was written from what the batches appear to run, not from evidence.** You are the only machine
+that knows what actually prompted. In your next status or report, say roughly how many prompts you hit and
+**which commands** — even approximately. A pattern that is missing will be added; one that should never have
+been auto-approved will be taken out. Please do not work around a prompt by rephrasing a command to slip
+past the rules: say what tripped it.
+
+### 2. Say when you will next be heard from
+
+New rule in `DIRECTOR.md`, [Saying when you will next be heard from](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/CLAUDE.md), and it applies from your next batch:
+
+- when you start, write **`Next update by HH:MM Central`** in your `STATUS.md` and **push it before you
+  begin the work**;
+- move it on when you push progress, remove it when you report;
+- if you need longer, push a new one with a line saying why. **Running late is not a failure and saying so
+  costs nothing** — a missed deadline with no explanation is the only thing that reads badly.
+
+The point is that a stuck machine cannot report being stuck, so the deadline has to be set before you can
+get stuck. A branch watcher was tried for this and was no good: three false alarms in two days and nothing
+real caught, because from outside, stuck and busy are the same thing.
+
+**Your batch 3 has no deadline because it predates the rule.** Add one now for whatever is left of it.
+
 ## Correct your own capability list (20 October 2026, 8:45 PM Central)
 
 **Do this before your next report; it takes a minute and it is actively misleading the director.**
