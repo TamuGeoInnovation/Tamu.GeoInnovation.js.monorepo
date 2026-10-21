@@ -50,6 +50,16 @@ so a future failure shows up as a wrong legend rather than an empty one
 | Before | After |
 | --- | --- |
 | ![Freshman Selectable Parking on production: both legend headings present with no symbol under either](../screenshots/1988-legend-numeric-where/before-production-legend-empty.png) | ![The same legend with a coloured symbol beside each layer](../screenshots/1988-legend-numeric-where/after-local-build-legend-symbols.png) |
+
+### Softball's legend shows its accessible parking symbol again
+
+The legend checked only the first value of a symbol shared by several, so a map whose spaces matched another value
+lost the row ([#2004](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2004)).
+
+| Before | After |
+| --- | --- |
+| ![Softball's legend on production: Accessible Parking Spaces with nothing under it](../screenshots/2004-legend-multi-value-class/before-production-softball-legend.png) | ![The legend on a local build, with the wheelchair symbol under Accessible Parking Spaces](../screenshots/2004-legend-multi-value-class/after-local-build-softball-legend.png) |
+
 ### Business Parking draws its lots again
 
 The Business Parking map showed its two-hour business spaces but none of the lots. Both lot layers
@@ -635,6 +645,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Softball's accessible parking legend row ([#2004](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2004)) | [dev.aggiemap.tamu.edu/parking/softball-parking](https://dev.aggiemap.tamu.edu/parking/softball-parking) | The Accessible Parking Spaces legend entry has its wheelchair row |
 | Aerial Imagery no longer opens blank ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)) | [dev.aggiemap.tamu.edu/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), then choose Aerial Imagery; repeat with a fresh page several times | The imagery draws every time without zooming or touching the slider, and the spinner beside Aerial Imagery stops once it has. The slider still steps back to older dates and forward to Latest. On a phone, ☰ → Basemap → Aerial Imagery draws too |
 | Layer symbols back in the legend ([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987), [#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)) | [dev.aggiemap.tamu.edu/parking/permit-select-freshman](https://dev.aggiemap.tamu.edu/parking/permit-select-freshman) | Both layers have a coloured symbol beside their name in the Legend, not just the name. Then check a few other parking maps - Visitor, Motorcycle, Accessible - and the main map's layers: every legend entry for a switched-on layer has a symbol, and no legend that was right before has lost a row |
 | Business Parking draws its lots ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)) | [dev.aggiemap.tamu.edu/parking/business-parking](https://dev.aggiemap.tamu.edu/parking/business-parking) | Maroon surface lots and pink garages across campus, as well as the blue two-hour space markers. In the Legend, all three entries have a symbol beside them: a blue triangle, a maroon square and a pink square. Switching either lot layer off removes those lots and its legend entry |
