@@ -92,6 +92,62 @@ production build of your branch. Three things it learned that batch 10 should no
 The scan itself is `legend-compare.mjs` on the work machine; ask for it in your report rather than writing it
 again. Result, for the record: **0 regressions, 4 groups fixed.**
 
+## Batch 13 (20 October 2026, 8:20 PM Central) — the team's own issues, and you open the pull requests now
+
+**Change of practice, decided by the maintainer tonight: you open your own pull requests.** You have `gh` -
+you have been filing issues with it all day - and routing every branch through the director has been adding a
+wait for no benefit. Open them as [CLAUDE.md](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/CLAUDE.md)
+says: issue first, body built **from the template file**, every field set, before/after images committed and
+linked by raw URL pinned to a commit, an entry in `unreleased.md` and a row in *What to test on dev*.
+`work-lab-leila` still cannot - it has no `gh` - so its branches keep coming back to the director.
+
+**And the ordering rule behind this batch:** the team's own issues outrank anything we invent. Two urgent
+issues filed by the team today sat untouched for hours while machines did tooling work. That is the habit
+being corrected, not the tooling.
+
+### 1. #2001 — Women's Basketball parking updated (urgent, team-filed 3:36 PM)
+
+**[#2001](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2001).** The map has
+been updated on dev and women's basketball starts **2 November**, so this has a real deadline. It should now
+have exactly two layers:
+
+- Accessible Parking Spaces
+- Women's Basketball Event Parking Spaces
+
+Read the issue and its screenshot before changing anything; the maintainer's words and the picture are the
+specification, not this summary.
+
+**It overlaps work already merged.** `fix/1992-accessible-parking-sports-maps` changed Women's Basketball's
+Accessible Parking Spaces layer to take its symbol from the portal item - that branch is open as a pull
+request and may be merged by the time you start. Check `development` first and build on whatever is there;
+do not revert or duplicate it.
+
+`map-layers.spec.ts` covers this map, so a layer list that disagrees with the definition now fails. Run it
+red-first on dev if the dev map already shows the new state, and say what it printed.
+
+### 2. #1970 — the wrong popup on a deep-linked feature (High)
+
+**[#1970](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1970).** A feature
+opened by `?lot=`, `?feature=` or a search result is drawn in the main map's `selection-layer`, a graphics
+layer titled **Selected Buildings** whose popup is the buildings popup - so the panel says "Selected
+Buildings" and shows the wrong fields. A branch exists from earlier today, `fix/1970-selection-popup-title`
+(`32895a0af`), which was paused before the images were taken. Check what is on it, merge the latest
+`development`, finish it and open the pull request.
+
+### Then stop
+
+Nothing else tonight unless the maintainer or the director says so. #2007, NestJS 12 and #1973 stay parked.
+
+### Still true, and worth not relearning
+
+- **A green check can mean nothing ran.** `check-in-volume.sh` on a branch that only touches
+  `test/smoke/aggiemap/` returns exit 0 with `No tasks were run`, because that is not an Nx project. It
+  caught this machine on batch 12 and the work machine twice today. Read the log. For the suite,
+  `tsc -p test/smoke/aggiemap --noEmit` is the real check.
+- **`docs/testing.md`: add no row and change no number** unless you add a spec ([#2002](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2002)).
+- **Production still carries every fault fixed today** - nothing has deployed since `prod-2026-10-20`. That
+  is why red-first against production still works for anything fixed today but not yet released.
+
 ## Batch 12 (20 October 2026, 6:05 PM Central) — #2008: the settle limit measures the wrong thing
 
 Batch 11 was excellent work and all three branches are in flight here. This is small and closes a loop the
