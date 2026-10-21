@@ -135,7 +135,10 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 22,
+    // Below Team Bus Parking (#1993). The team bus area is this building's own footprint, so with the
+    // building above it the area is drawn and then completely covered - which is how it looked when the
+    // symbology was first fixed, and would have had a tester report it still missing.
+    layerIndex: 21,
     native: {
       outFields: ['*']
     }
@@ -165,7 +168,8 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 21,
+    // Above Indoor Track Building, whose footprint this area is (#1993).
+    layerIndex: 22,
     // Overridden (#1993): the service's renderer has symbols for `Team Drop Off` and `Team Bus Parking`,
     // but the layer's one area is type `SPORTS`, so it was not drawn. The layer is the team bus parking,
     // so it is drawn with the service's `Team Bus Parking` symbol. A drop-off area added later would be
