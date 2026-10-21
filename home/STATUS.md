@@ -3,8 +3,9 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**A listener again** (handed the AggieMap director role over at 7:40 AM Central, 21 October, as the maintainer left for school).
-Nothing running. No uncommitted work in its worktrees. Watching `home/TASKS.md`.
+**Azure, 8:50 AM: no release carries `67e95b4b1` yet.** The newest dev release is still **Release-487** (build 20261020.40, `b78942631`) - the build being replaced; **do not test it**. Home is watching Azure and will push the release number here the moment a release from `67e95b4b1` reaches dev.
+
+(Read 8:50 AM Central from Azure, on home, with `C:\TAMU\logs\az-releases.py`.)
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.

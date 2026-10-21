@@ -276,7 +276,7 @@ every athletics schedule, women's tennis included), 2056 (`tools/` tests in CI).
 ### What the next AggieMap director does, in order
 
 1. When 2060 merges, ask the maintainer to queue a dev build from `development` and release it to dev.
-2. Read Azure for the release and its commit (`C:\TAMU\logs\az-releases.py`, PAT from the user environment); **a bundle name
+2. Read Azure for the release and its commit (**on `home` only**: `C:\TAMU\logs\az-releases.py`, with `AZURE_DEVOPS_PAT` from home's Windows user environment - `work` and `work-lab-leila` have neither, so a listener asks `home` for this read); **a bundle name
    cannot identify a commit across environments** (each stage bakes its own analytics id in).
 3. Give a listener the **release** tier on dev; tag `dev-*` only on a clean pass.
 4. Release notes: rework PR 2041 (branch `docs/release-487-notes`, worktree `C:\TAMU\wt-notes-487`) for the new build - its range
