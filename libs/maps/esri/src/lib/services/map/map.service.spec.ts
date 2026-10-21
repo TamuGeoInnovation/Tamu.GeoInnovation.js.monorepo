@@ -176,3 +176,57 @@ describe('EsriMapService layers asked for twice at once', () => {
     expect(layers[0].graphics.toArray()).toEqual([feature]);
   });
 });
+
+/**
+ * A map selects the feature a link names as it loads, unless its host resolves links itself (#1969).
+ *
+ * An event map's `EventService` asks the map's own layers first. When the map service also selected the
+ * link from the application's search sources, both selected, and a `?lot=` link on Visitor Parking opened
+ * the main map's Lot 100j whenever that answer came last.
+ */
+describe('EsriMapService selecting a linked feature as the map loads', () => {
+  let service: EsriMapService;
+  let selectFeaturesFromUrl: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: EsriModuleProviderService, useValue: {} },
+        { provide: Router, useValue: {} },
+        { provide: ActivatedRoute, useValue: {} },
+        { provide: SearchService, useValue: {} },
+        { provide: EnvironmentService, useValue: { value: () => [] } },
+        { provide: LayerSourcesService, useValue: {} },
+        { provide: HttpClient, useValue: {} },
+        EsriMapService
+      ]
+    });
+
+    service = TestBed.inject(EsriMapService);
+    selectFeaturesFromUrl = vi.fn();
+
+    const stubbed = service as unknown as Record<string, unknown>;
+    stubbed['filterLayerSources'] = () => [];
+    stubbed['loadLayers'] = () => Promise.resolve();
+    stubbed['registerViewClickEventHandler'] = () => undefined;
+    stubbed['selectFeaturesFromUrl'] = selectFeaturesFromUrl;
+  });
+
+  afterEach(() => TestBed.resetTestingModule());
+
+  const useView = () => service.useView({} as never, { sceneView: vi.fn(), show: vi.fn() } as never);
+
+  it('selects it on a map whose host does not resolve links, as the main map', async () => {
+    await useView();
+
+    expect(selectFeaturesFromUrl).toHaveBeenCalledTimes(1);
+  });
+
+  it('leaves it to a host that resolves links itself, as an event map', async () => {
+    service.selectsFeaturesFromUrlOnLoad = false;
+
+    await useView();
+
+    expect(selectFeaturesFromUrl).not.toHaveBeenCalled();
+  });
+});

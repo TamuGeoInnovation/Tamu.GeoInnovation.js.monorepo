@@ -266,26 +266,33 @@ describe('EventService: selecting a feature from a link', () => {
     });
   }
 
-  /** Opens `search` on a map holding `layer`, and returns the object ids of the features selected. */
-  async function selectedBy(search: string, layer: FeatureLayer): Promise<number[]> {
-    const selectFeatures = vi.fn();
+  /** The map service's own lookup of a link, against the application's search sources (#1969). */
+  let selectFeaturesFromUrl = vi.fn();
 
-    const settings = {
+  /** An event map's settings, with the `lot` source as the application configures it: `?lot=` matched on `LotName`. */
+  const linkSettings = () =>
+    ({
       eventConfiguration: () => undefined,
       eventOptions: () => [],
       settings: () => ({}),
       getVisibleOptions: () => [],
       eventLayerReferences: () => ({}),
-      // The `lot` source as the application configures it: `?lot=` matched on `LotName`.
       configuredSearchSources: () => [{ urlQueryParam: 'lot', queryParams: { where: { keys: ['LotName'] } } }]
-    } as unknown as EventSettingsService;
+    }) as unknown as EventSettingsService;
+
+  /** Opens `search` on a map holding `layer`, and returns the object ids of the features selected. */
+  async function selectedBy(search: string, layer: FeatureLayer): Promise<number[]> {
+    const selectFeatures = vi.fn();
+    selectFeaturesFromUrl = vi.fn();
+
+    const settings = linkSettings();
 
     TestBed.resetTestingModule().configureTestingModule({
       providers: [
         { provide: EnvironmentService, useValue: {} },
         { provide: EsriModuleProviderService, useValue: {} },
         { provide: LayerSourcesService, useValue: {} },
-        { provide: EsriMapService, useValue: { store: NEVER, selectFeatures } },
+        { provide: EsriMapService, useValue: { store: NEVER, selectFeatures, selectFeaturesFromUrl } },
         { provide: EventSettingsService, useValue: settings },
         EventService
       ]
@@ -307,6 +314,52 @@ describe('EventService: selecting a feature from a link', () => {
   }
 
   afterEach(() => window.history.replaceState(null, '', '/'));
+
+  /**
+   * A `?lot=` link on an event map has one answer, and the map's own layers give it first (#1969).
+   *
+   * The map service selected the link's feature itself as soon as the map loaded, from the application's
+   * search sources - College Station's lots - while this service looked for it among the map's own layers.
+   * Both selected, and whichever answered last won: the main map's Lot 100j opened first on nearly every
+   * load, and stayed whenever the map's own service was slow.
+   */
+  describe('on an event map, where the main map has the same lot (#1969)', () => {
+    it("takes the link from the map service, so the map service does not select the main map's lot itself", () => {
+      const mapService = { store: NEVER, selectFeatures: vi.fn(), selectsFeaturesFromUrlOnLoad: true };
+
+      TestBed.resetTestingModule().configureTestingModule({
+        providers: [
+          { provide: EnvironmentService, useValue: {} },
+          { provide: EsriModuleProviderService, useValue: {} },
+          { provide: LayerSourcesService, useValue: {} },
+          { provide: EsriMapService, useValue: mapService },
+          { provide: EventSettingsService, useValue: linkSettings() },
+          EventService
+        ]
+      });
+      TestBed.inject(EventService);
+
+      expect(mapService.selectsFeaturesFromUrlOnLoad).toBe(false);
+    });
+
+    it("does not fall back to the application's lot when one of the map's own layers has it", async () => {
+      expect(await selectedBy('?lot=100j', filteredLayer([[32270, '100j', 'M/C']]))).toEqual([32270]);
+      expect(selectFeaturesFromUrl).not.toHaveBeenCalled();
+    });
+
+    it("falls back to the application's lot when none of the map's own layers has it", async () => {
+      expect(await selectedBy('?lot=100j', filteredLayer([[26692, '100j', 'H/C']]))).toEqual([]);
+      expect(selectFeaturesFromUrl).toHaveBeenCalledTimes(1);
+    });
+
+    it("falls back to the application's lot when the map's own layer cannot be asked", async () => {
+      const layer = filteredLayer([[32270, '100j', 'M/C']]);
+      vi.spyOn(layer, 'queryFeatures').mockRejectedValue(new Error('the service did not answer'));
+
+      expect(await selectedBy('?lot=100j', layer)).toEqual([]);
+      expect(selectFeaturesFromUrl).toHaveBeenCalledTimes(1);
+    });
+  });
 
   it("selects nothing for a ?lot= link whose only match is outside the map's filter", async () => {
     expect(await selectedBy('?lot=100j', filteredLayer([[26692, '100j', 'H/C']]))).toEqual([]);

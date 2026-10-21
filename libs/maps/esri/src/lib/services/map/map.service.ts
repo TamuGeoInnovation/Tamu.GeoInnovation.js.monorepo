@@ -92,6 +92,17 @@ export class EsriMapService {
   }
 
   /**
+   * Whether `useView` selects the feature a link names (`?lot=`, `?bldg=`) itself, from the application's
+   * search sources, once the map's layers are added.
+   *
+   * An event map turns it off: its `EventService` asks the map's own layers first and calls
+   * `selectFeaturesFromUrl` only when none of them has the feature. Left on there, both selected and the
+   * last answer won, so a `?lot=` link on Visitor Parking opened the main map's Lot 100j whenever the map's
+   * own service was slow (#1969).
+   */
+  public selectsFeaturesFromUrlOnLoad = true;
+
+  /**
    * Makes the map a page's `<arcgis-map>` shows, from the page's basemap description (#1949).
    *
    * The view is the element's own, made by `EsriMapComponent` with this map, and handed back with `useView`.
@@ -133,8 +144,10 @@ export class EsriMapService {
     // Filter list of layers that need to be added on map load
     await this.loadLayers(layerSources);
 
-    // Load feature list from url (e.g. howdy links)
-    this.selectFeaturesFromUrl();
+    // Load feature list from url (e.g. howdy links), unless the map's host resolves links itself.
+    if (this.selectsFeaturesFromUrlOnLoad) {
+      this.selectFeaturesFromUrl();
+    }
 
     this.registerViewClickEventHandler();
   }
