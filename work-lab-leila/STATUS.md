@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:52 PM Central, 20 October 2026**. A listener; job: testing.
+Last written **11:29 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,7 +24,12 @@ Last written **9:52 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## Running now
 
-None.
+**Next update by 12:14 AM Central.**
+
+**Batch 5, the release tier on tonight's dev build** (`b78942631`, report on #1935). Taken 11:29 PM Central. Waiting for the
+deploy: this machine cannot read Azure, so the start signal is dev serving a `main-*.js` other than `main-IORMDVQQ.js`.
+Then `run-local.sh development release` from a worktree at `b78942631`, nothing else heavy beside it; a `dev-*` tag only
+on a clean pass.
 
 ## Finished
 
