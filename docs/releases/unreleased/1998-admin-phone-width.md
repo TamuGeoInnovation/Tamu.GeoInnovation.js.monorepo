@@ -19,3 +19,10 @@ signed-in capture at 390 px found four problems, now fixed with the site's share
 
 No signed-in page is wider than the screen any more
 ([#1998](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1998)).
+
+| Before | After |
+| --- | --- |
+| ![Speakers at 390 px: the admin menu above the list and a table 592 px wide](../screenshots/1998-admin-phone-width/before-speakers.png) | ![Speakers at 390 px: an Admin menu button, and the table scrolls inside the page](../screenshots/1998-admin-phone-width/after-speakers.png) |
+| ![Users at 390 px: the page is 470 px wide](../screenshots/1998-admin-phone-width/before-users.png) | ![Users at 390 px: the page fits](../screenshots/1998-admin-phone-width/after-users.png) |
+| ![Add event at 390 px: the day tiles run off the page, 585 px wide](../screenshots/1998-admin-phone-width/before-add-event.png) | ![Add event at 390 px: the day tiles wrap](../screenshots/1998-admin-phone-width/after-add-event.png) |
+| ![Seasons at 390 px: the admin menu above the cards](../screenshots/1998-admin-phone-width/before-seasons.png) | ![Seasons at 390 px: each card's days on their own line](../screenshots/1998-admin-phone-width/after-seasons.png) |
