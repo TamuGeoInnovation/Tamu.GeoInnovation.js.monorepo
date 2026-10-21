@@ -183,8 +183,10 @@ test.describe('lot links on the parking maps', () => {
       const mainMapLots = `${Connections.basemapUrl}/${MAIN_MAP_LOTS_LAYER}/query`;
 
       await page.route(
-        // The search for the link's lot, not the queries that draw the campus lots.
-        (url) => url.href.startsWith(mainMapLots) && /100J/i.test(decodeURIComponent(url.search)),
+        // The search for the link's lot, not the queries that draw the campus lots. The search source asks
+        // `.../MapServer/9//query`, so repeated slashes are folded before comparing.
+        (url) =>
+          url.href.replace(/([^:])\/{2,}/g, '$1/').startsWith(mainMapLots) && /100J/i.test(decodeURIComponent(url.search)),
         async (route) => {
           await new Promise((resolve) => setTimeout(resolve, LATE_SERVICE_MS));
           await route.continue().catch(() => undefined);
