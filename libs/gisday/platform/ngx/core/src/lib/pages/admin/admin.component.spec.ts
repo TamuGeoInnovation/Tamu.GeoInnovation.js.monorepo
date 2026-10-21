@@ -14,7 +14,9 @@ class EmptyPageComponent {}
 
 /**
  * #1998. On a phone the admin menu sat above every admin page, so the page itself started about a
- * screen down. It now opens from one button, and closes again when a page is chosen.
+ * screen down. It now opens from one button, and closes again when a page is chosen. The menu is left
+ * out of the page when closed, not given [hidden], which the grid's column styles override: the first
+ * version passed a [hidden] check while the menu still showed on a phone.
  */
 describe('AdminComponent', () => {
   function open(isMobile: boolean) {
@@ -33,26 +35,26 @@ describe('AdminComponent', () => {
     return fixture;
   }
 
-  const menu = (root: HTMLElement) => root.querySelector('ul.sidebar') as HTMLElement;
+  const menu = (root: HTMLElement) => root.querySelector('ul.sidebar') as HTMLElement | null;
   const toggle = (root: HTMLElement) => root.querySelector('.admin-menu-toggle') as HTMLButtonElement | null;
 
   it('shows the menu and no button on a wider screen', () => {
     const root = open(false).nativeElement as HTMLElement;
 
     expect(toggle(root)).toBeNull();
-    expect(menu(root).hidden).toBe(false);
+    expect(menu(root)).not.toBeNull();
   });
 
   it('hides the menu behind a button on a phone, and the button opens it', () => {
     const fixture = open(true);
     const root = fixture.nativeElement as HTMLElement;
 
-    expect(menu(root).hidden).toBe(true);
+    expect(menu(root)).toBeNull();
 
     toggle(root)?.click();
     fixture.detectChanges();
 
-    expect(menu(root).hidden).toBe(false);
+    expect(menu(root)).not.toBeNull();
     expect(toggle(root)?.getAttribute('aria-expanded')).toBe('true');
   });
 
@@ -65,6 +67,6 @@ describe('AdminComponent', () => {
     await TestBed.inject(Router).navigateByUrl('/admin/seasons');
     fixture.detectChanges();
 
-    expect(menu(root).hidden).toBe(true);
+    expect(menu(root)).toBeNull();
   });
 });

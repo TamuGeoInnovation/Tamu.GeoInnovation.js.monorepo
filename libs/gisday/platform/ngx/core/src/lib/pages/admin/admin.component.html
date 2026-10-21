@@ -7,7 +7,9 @@
     </button>
     }
 
-    <ul class="column3 sidebar" [hidden]="isMobile() && !menuOpen()">
+    <!-- Left out of the page, not hidden: the grid styles for this column would override [hidden]. -->
+    @if (!isMobile() || menuOpen()) {
+    <ul class="column3 sidebar">
       <li>
         <a [routerLink]="['./broadcasts']" queryParamsHandling="merge" routerLinkActive="active"><span class="material-icons">podcasts</span>Broadcasts</a>
       </li>
@@ -85,6 +87,7 @@
       </li>
       }
     </ul>
+    }
 
     <div class="column9 content">
       <router-outlet></router-outlet>
