@@ -4,9 +4,10 @@
   </pre>
 
   <div class="action-bar" [ngClass]="{'result-available': renderable()}">
-    <p class="action-bar__action--copy" clipboard-copy [text]="code()"><span class="material-icons">file_copy</span>Copy</p>
+    <!-- The copy directive copies on a click of this element, so the keys click it. -->
+    <p class="action-bar__action--copy" tabindex="0" role="button" clipboard-copy [text]="code()" (keydown.enter)="$any($event.target).click()" (keydown.space)="$any($event.target).click(); $event.preventDefault()"><span class="material-icons" aria-hidden="true">file_copy</span>Copy</p>
     @if (result() !== undefined) {
-    <p class="action-bar__action--run" (click)="execute()"><span class="material-icons">play_circle_outline</span>Run</p>
+    <p class="action-bar__action--run" tabindex="0" role="button" (click)="execute()" (keydown.enter)="execute()" (keydown.space)="execute(); $event.preventDefault()"><span class="material-icons" aria-hidden="true">play_circle_outline</span>Run</p>
     }
   </div>
 </div>

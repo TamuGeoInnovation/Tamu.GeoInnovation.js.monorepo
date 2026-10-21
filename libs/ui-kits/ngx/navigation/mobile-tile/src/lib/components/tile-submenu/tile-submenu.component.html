@@ -1,5 +1,5 @@
 <div class="submenu__header">
-  <div class="material-icons" (click)="close()">arrow_back</div>
+  <div class="material-icons" aria-label="Back" tabindex="0" role="button" (click)="close()" (keydown.enter)="close()" (keydown.space)="close(); $event.preventDefault()">arrow_back</div>
   <div class="header__name">{{title() | async}}</div>
 </div>
 

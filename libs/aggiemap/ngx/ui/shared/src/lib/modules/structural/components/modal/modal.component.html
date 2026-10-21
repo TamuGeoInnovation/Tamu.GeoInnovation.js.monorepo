@@ -1,10 +1,10 @@
 <div class="container-12">
   @if (isMobile) {
-  <div class="close mobile" (click)="close()">
+  <div class="close mobile" aria-label="Close" tabindex="0" role="button" (click)="close()" (keydown.enter)="close()" (keydown.space)="close(); $event.preventDefault()">
     <i class="material-icons" title="Close">arrow_back</i>
   </div>
   } @if (!isMobile) {
-  <div class="close desktop" (click)="close()"><i class="material-icons" title="Close">close</i></div>
+  <div class="close desktop" aria-label="Close" tabindex="0" role="button" (click)="close()" (keydown.enter)="close()" (keydown.space)="close(); $event.preventDefault()"><i class="material-icons" title="Close">close</i></div>
   }
 
   <router-outlet></router-outlet>

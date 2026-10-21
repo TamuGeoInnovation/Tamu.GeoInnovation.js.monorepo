@@ -1,5 +1,5 @@
 <div class="popup" [ngClass]="{ hidden: (show | async) === false }">
-  <div class="close material-icons" title="Close" (click)="close()">close</div>
+  <div class="close material-icons" title="Close" aria-label="Close" tabindex="0" role="button" (click)="close()" (keydown.enter)="close()" (keydown.space)="close(); $event.preventDefault()">close</div>
 
   <ng-template render-host></ng-template>
 </div>

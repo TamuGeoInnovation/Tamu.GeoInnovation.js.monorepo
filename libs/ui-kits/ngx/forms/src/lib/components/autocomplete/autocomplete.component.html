@@ -2,14 +2,17 @@
   <tamu-gisc-textbox [formControl]="control()" class="tamu-autocomplete-input" type="text" [placeholder]="placeholder()" [floatLabel]="true" [autofocus]="autofocus()" aria-autocomplete="list" aria-haspopup="listbox" [attr.aria-expanded]="!!control().value" aria-controls="autocomplete-results" (keydown)="onInputKeydown($event)"></tamu-gisc-textbox>
 
   @if (showResults) {
+  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- Not a tab stop itself: its keydown handles the keys of the options inside it, which take focus. -->
   <div id="autocomplete-results" class="autocomplete-results" role="listbox" keyboardNavigation=".autocomplete-item" (keydown)="onResultsKeydown($event)">
     @if ((getOptions() | async); as opts;) { @if (opts.length === 0) {
-    <div class="no-results" role="option" aria-disabled="true">No results found.</div>
+    <div class="no-results" role="option" aria-disabled="true" aria-selected="false">No results found.</div>
     } @for (opt of opts; track opt) {
     <!--
     Focusable, so pressing an option moves focus to it rather than out of the component. Otherwise the
     list closes on that focus change, before the click that chooses the option arrives (#1868).
+    Enter and Space reach it through the keyboardNavigation directive on the listbox, which clicks the active option.
     -->
+    <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events -- keyboardNavigation on the listbox turns Enter and Space into this click. -->
     <div class="autocomplete-item" tabindex="-1" (click)="onSelect(opt)" role="option" [attr.aria-selected]="false">
       @if (optionTemplate(); as template) {
       <ng-container *ngTemplateOutlet="template; context: { $implicit: opt }"></ng-container>

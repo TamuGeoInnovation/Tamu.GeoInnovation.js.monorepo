@@ -1,6 +1,6 @@
 @for (option of options(); track option) {
-<div class="radio-option" (click)="evaluateSetValue(option)" [ngClass]="{disabled: disabled()}">
-  <div class="radio-toggle">
+<div class="radio-option" role="radio" [attr.aria-checked]="renderTemplate(option, valuePath()) === value" [attr.aria-disabled]="disabled()" tabindex="0" (click)="evaluateSetValue(option)" (keydown.enter)="evaluateSetValue(option)" (keydown.space)="evaluateSetValue(option); $event.preventDefault()" [ngClass]="{disabled: disabled()}">
+  <div class="radio-toggle" aria-hidden="true">
     @switch (renderTemplate(option, valuePath()) === value) { @case (true) {
     <div class="material-icons active">radio_button_checked</div>
     } @default {

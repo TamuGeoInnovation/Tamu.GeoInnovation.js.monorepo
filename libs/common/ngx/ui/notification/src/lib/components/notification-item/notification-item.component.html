@@ -1,6 +1,6 @@
-<div [@animate]="animateStatus()" (mouseover)="pause()" (mouseleave)="resume()">
+<div [@animate]="animateStatus()" (mouseenter)="pause()" (mouseleave)="resume()" (focusin)="pause()" (focusout)="resume()">
   <div class="status" [style.width.%]="(timer.current() / timer.limit) * 100"></div>
-  <div class="content" (click)="action()" [class.actionable]="notification().action">
+  <div class="content" [attr.tabindex]="notification().action ? 0 : null" [attr.role]="notification().action ? 'button' : null" (click)="action()" (keydown.enter)="action()" (keydown.space)="action(); $event.preventDefault()" [class.actionable]="notification().action">
     <div>
       <div class="image">
         <img [src]="notification().imgUrl" [title]="notification().imgAltText" [alt]="notification().imgAltText" />
@@ -16,5 +16,5 @@
       }
     </div>
   </div>
-  <div class="close material-icons" tabindex="0" (click)="close()" title="Close">close</div>
+  <div class="close material-icons" title="Close" aria-label="Close" tabindex="0" role="button" (click)="close()" (keydown.enter)="close()" (keydown.space)="close(); $event.preventDefault()">close</div>
 </div>
