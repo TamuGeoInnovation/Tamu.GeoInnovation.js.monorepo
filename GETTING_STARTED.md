@@ -435,7 +435,8 @@ MSYS_NO_PATHCONV=1 docker run --rm -m 8g \
 
 ```bash
 MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 \
-  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.0 \
+  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w \
+  -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.0 \
   sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
@@ -449,6 +450,8 @@ docker logs -f aggiemap-dev
 **Notes:**
 
 - **`--poll=2000` is required on Windows.** File-change events don't cross the Windows-to-Linux bind mount. Without polling, the server compiles once and then never rebuilds, even though it looks like it's working.
+- **`UV_THREADPOOL_SIZE=64` is required with `--poll=2000`.** Without it, polling ties up Node's file-system threads, the log stops at `[optimizer] bundling dependencies...`, and the page stays blank (#1955).
+- **`NX_WORKSPACE_DATA_DIRECTORY` keeps Nx's task records inside the container.** Without it, a stopped server can leave a record in `.nx/workspace-data` that makes the next start hang at `Waiting for aggiemap-angular:serve in another nx process` (#1626).
 - Use `node node_modules/nx/dist/bin/nx.js`, not `nx` or `npx nx`. `node_modules/.bin` may not be populated.
 - `localhost:4200` shows dev-only features. `http://127.0.0.1:4200` hides them, so you can check the production code path without deploying.
 - Both hostnames read map layers from the **production** GIS server (`gis.it.tamu.edu`). Only hostnames containing `dev` use `gis-dev.it.tamu.edu`. See `libs/aggiemap/ngx/common/src/lib/connections.ts`.
