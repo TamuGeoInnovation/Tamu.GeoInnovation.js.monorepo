@@ -11,7 +11,7 @@ Azure: no Python, no script, no token. Those are on this machine, which is why t
 
 ### What to do
 
-1. **Poll Azure** with `C:\TAMU\logsz-releases.py` until a release reaches **dev**, then report, in
+1. **Poll Azure** with `C:\TAMU\logs\az-releases.py` until a release reaches **dev**, then report, in
    your `STATUS.md` and plainly:
    - the **release number**,
    - the **commit** it carries, in full,
