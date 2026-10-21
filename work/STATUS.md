@@ -42,10 +42,10 @@ Nothing. Every field is set on every issue and pull request opened today.
 
   | Reported | Issue | Fix | State |
   | --- | --- | --- | --- |
-  | Layers named  | #1802 | PR 1807 | on production |
+  | Layers named `<service> view - <layer>` | #1802 | PR 1807 | on production |
   | HS Graduation / Physics Fest blobs not arrows; unnamed groups | #1803 | PR 1811 | on production (also caught Fish Camp) |
   | Baseball's legend icon | #1804 | PR 1810 | on production — it was a swatch squeezed to a sliver, not a missing icon |
-  | Women's Basketball accessible parking icon | #1992 | PR 2032 | **in today'''s release** |
+  | Women's Basketball accessible parking icon | #1992 | PR 2032 | **in today's release** |
 
   Do not close it before production: it would tell the reporter the work is done while the item she would
   most notice is still only on dev.
