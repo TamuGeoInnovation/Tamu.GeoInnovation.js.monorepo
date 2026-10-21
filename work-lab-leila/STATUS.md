@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:20 PM Central, 20 October 2026**. A listener; job: testing.
+Last written **9:52 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,18 +24,14 @@ Last written **9:20 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 9:50 PM Central.**
-
-**Paused at 9:20 PM for the restart the director asked for.** Where batch 4 is: #1975 merged with `development`
-(`docs/testing.md` conflicted on the Total; development's file kept, #2002), the `declared-layers` snapshot refreshed for
-the kiosk, the check exit 0 (lint 5, test 5, build 2), pushed to the fork at `064ed7789`; after shots taken, not
-committed yet. Still to do: the notes entry and row, commit and push, the pull request, then #1969.
-
-**Batch 4.** Started 9:13 PM Central. First #1975: merge the latest `development` into `feat/1975-tailgating-kiosk`, the
-check, after images from a local production build, the notes entry and test row, then its pull request. Then
-#1969: `lot-links.spec.ts` against dev many times over, at different machine loads. About an hour and a half in all.
+None.
 
 ## Finished
+
+- **Batch 4** (9:13 to 9:52 PM, paused 9:20 to 9:23 for the restart): **#1975** PR 2030 open, `feat/1975-tailgating-kiosk` at
+  `0eddaf0c2`, check exit 0; **#1969** reproduced (0% quiet, 5% at six workers, 12 to 14% under load) and made to fail
+  every time by delaying the event map's own service 4 s. Report `work-lab-leila/reports/2026-10-20-4.md`. Pushed late:
+  the `git push origin` deny in `.claude/settings.json` refused every push to this branch after the restart.
 
 - **Batch 3, the images and notes for the three parking fixes** (6:33 to 9:12 PM): branches ready for PRs,
   `fix/1991` `73c3315a7`, `fix/1992-accessible` `141795928`, `fix/1992-legend` `5df94223b`. Report
@@ -73,4 +69,4 @@ check, after images from a local production build, the notes entry and test row,
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 3
+Last batch done: 4
