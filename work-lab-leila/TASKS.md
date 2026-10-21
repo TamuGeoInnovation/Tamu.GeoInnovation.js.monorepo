@@ -13,6 +13,29 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Batch 7 (aggiemap: #2019, the athletics maps' 2026-27 dates; 21 October 2026, 12:47 AM Central)
+
+**After batch 6.** Moved here from `work`, which has been silent since 11:15 PM. **Expected: about 45 minutes.** Questions go in the
+report for `home (aggiemap)`; nothing waits on the maintainer.
+
+**Release notes:** add `docs/releases/unreleased/2019-athletics-event-dates.md` (that directory's README); do not edit `unreleased.md`.
+`docs/testing.md`: no counts. Read every check's log. **You open the pull request**, ready for review; `home (aggiemap)` adds the board
+fields if your `gh` lacks `project` scope.
+
+**[#2019](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2019), High.** Athletics maps whose `eventDates`
+are all past show "This event has passed". `tools/event-dates/check.mjs` (#2035) reads each sport's 2026-27 home schedule from
+12thman.com and reports differences; it does not edit definitions.
+
+1. Branch `fix/2019-athletics-event-dates` from the latest `origin/development`.
+2. Run the tool; quote its report.
+3. Update **every athletics map's** `eventDates` to its 2026-27 **home** dates from that report. Women's Basketball's 18: Nov 2, 5, 7,
+   16, 18, 21; Dec 6, 15, 17, 22, 31; Jan 10, 21, 28, 31; Feb 7, 22, 25 - and fix `'2026-01-1'` in `womens-basketball.definitions.ts`.
+   Correct the four men's basketball games the tool says are on the wrong day. **Not** the twelve campus events (#2039) and **not**
+   the three 150th maps (kept as they are, the maintainer's decision).
+4. Proof: the tool reports no differences afterwards; `event-dates.spec.ts` passes on a local production build (served as
+   `aggiemap-dev`, `local-production`); unit tests pass. Scoped check `ts-events-ngx,aggiemap-angular`.
+5. Images: one map before (dev: "This event has passed") and after (local build). Pull request `Closes #2019`, label `bug`.
+
 ## Batch 6 (aggiemap: #1969, the lot-link race - fix it; 20 October 2026, 11:58 PM Central)
 
 **After batch 5** (the release tier and its tag). **Expected: about 60-90 minutes.** The maintainer is asleep; questions go in the
