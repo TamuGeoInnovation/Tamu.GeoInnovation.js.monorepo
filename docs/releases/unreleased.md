@@ -1,7 +1,7 @@
 # Unreleased
 
-Since the 19 October release: three AggieMap fixes, and GIS Day changes waiting for GIS Day's own
-deploy.
+Since the 19 October release: three AggieMap fixes, Women's Basketball's new map on dev, and GIS Day
+changes waiting for GIS Day's own deploy.
 
 **The latest release notes are [19 October 2026](2026-10-19.md)**, for the build from `8463ac6af`
 (build 20261019.21, Release-486), on dev and going to production. The `prod-*` tag on `8463ac6af` records
@@ -68,6 +68,28 @@ other check passed this map.
 | Before | After |
 | --- | --- |
 | ![Business Parking on production: the blue two-hour space markers only, and two empty legend entries](../screenshots/1981-business-parking-lots/before-production-no-lots.png) | ![The same map with maroon surface lots, pink garages, and a symbol beside each legend entry](../screenshots/1981-business-parking-lots/after-local-build-lots-drawn.png) |
+### Women's Basketball: the new two-layer map, on dev until Transportation Services publish it
+
+Transportation Services rebuilt the Women's Basketball parking map for the season that starts on 2
+November. It now has two layers, Accessible Parking Spaces and Women's Basketball Event Parking Lots: the
+eight lots around Reed Arena, in blue for event parking and orange for the two reserved lots, 102 and 104,
+with the two accessible-parking markers. The hourly visitor parking kiosks and the Safety First crosswalks
+are gone. The names, colours and markers are the service's own.
+
+The new version is published only on the development GIS server so far, so only dev draws it. Production
+goes on drawing the published four-layer map, unchanged, until Transportation Services publish the new one
+there. Then a follow-up change makes it the only version, on production too. A smoke check fails if
+production ever asks for the new service before then
+([#2001](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2001)).
+
+| Before, production and dev | After, on dev |
+| --- | --- |
+| ![Women's Basketball with visitor kiosks, crosswalks and every event lot in maroon, and four legend entries](../screenshots/2001-womens-basketball-parking/before-dev.png) | ![The same map with eight lots in blue and orange, two accessible markers, and two legend entries](../screenshots/2001-womens-basketball-parking/after-local-build-dev.png) |
+| | ![A lot's popup: 100c, Event Parking, with the link to the Women's Basketball parking page](../screenshots/2001-womens-basketball-parking/after-local-build-dev-popup.png) |
+
+Production after this change, unchanged until the new version is published there:
+[after-local-build-production.png](../screenshots/2001-womens-basketball-parking/after-local-build-production.png).
+
 ### Not visible: NestJS 10 to 11
 
 The NestJS APIs (UES Operations, GIS Day, OIDC, Mailroom and Geoservices) move from NestJS 10.4.22 to 11.2.7
@@ -638,6 +660,7 @@ dated notes as what was tested, and this table empties.
 | Aerial Imagery no longer opens blank ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)) | [dev.aggiemap.tamu.edu/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), then choose Aerial Imagery; repeat with a fresh page several times | The imagery draws every time without zooming or touching the slider, and the spinner beside Aerial Imagery stops once it has. The slider still steps back to older dates and forward to Latest. On a phone, ☰ → Basemap → Aerial Imagery draws too |
 | Layer symbols back in the legend ([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987), [#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)) | [dev.aggiemap.tamu.edu/parking/permit-select-freshman](https://dev.aggiemap.tamu.edu/parking/permit-select-freshman) | Both layers have a coloured symbol beside their name in the Legend, not just the name. Then check a few other parking maps - Visitor, Motorcycle, Accessible - and the main map's layers: every legend entry for a switched-on layer has a symbol, and no legend that was right before has lost a row |
 | Business Parking draws its lots ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)) | [dev.aggiemap.tamu.edu/parking/business-parking](https://dev.aggiemap.tamu.edu/parking/business-parking) | Maroon surface lots and pink garages across campus, as well as the blue two-hour space markers. In the Legend, all three entries have a symbol beside them: a blue triangle, a maroon square and a pink square. Switching either lot layer off removes those lots and its legend entry |
+| Women's Basketball's new two-layer map ([#2001](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2001)) | [dev.aggiemap.tamu.edu/events/womens-basketball](https://dev.aggiemap.tamu.edu/events/womens-basketball) | Two layers in the Layers list and the Legend, Accessible Parking Spaces and Women's Basketball Event Parking Lots, and nothing else: no visitor parking kiosks and no crosswalks. Lots 100a, 100b, 100c, 100e, 100f and 100g in blue (Event Parking), 102 and 104 in orange (Reserved), each labelled, and an accessible-parking marker in 102 and in 100g. Clicking a lot or a marker opens its popup with the link to Transportation's page. With `?as=production` added, the old four-layer map, as production shows it until Transportation Services publish the new one |
 | GIS Day at phone width ([#1980](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1980)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone: `/sponsors/tamu`, `/competitions/presentation`, `/faq`, `/competitions/signage` | No page scrolls sideways; a sponsor level's benefits are one column; the Presentation page's links sit above its text; the menu button has a white backdrop as the page scrolls under it; the signage graphics wrap. On a desktop, nothing changes |
 | GIS Day: the LiDAR sponsorship level ([#1976](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1976)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: `/sponsors/tamu` | Five cards, LiDAR last at $4,096 with 6 representatives; choosing it shows its benefits; the other four prices unchanged. On a phone: two cards to a row, "reps", no sideways scrolling. In Admin, Sponsors, the level list offers LiDAR |
 | GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |

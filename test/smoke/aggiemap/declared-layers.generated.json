@@ -573,6 +573,10 @@
       "womens-basketball-accessible-parking",
       "womens-basketball-parking-lots",
       "womens-basketball-safety-first"
+    ],
+    "developmentLayers": [
+      "womens-basketball-accessible-parking",
+      "womens-basketball-parking-lots"
     ]
   }
 }

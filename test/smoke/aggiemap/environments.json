@@ -52,7 +52,8 @@
     "allowedLayerFailures": [],
     "allowedServiceFailures": {
       "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
-      "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"
+      "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service",
+      "womensBasketballParkingUrl": "#2001: the Women's Basketball map's new version is stopped on the production GIS server until Transportation Services publish it; production draws womensBasketballUrl until then"
     },
     "allowedSearchSourceFailures": {
       "parking-garage": "#1163: choosing a garage opens an empty details panel",
@@ -73,7 +74,8 @@
     ],
     "allowedServiceFailures": {
       "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
-      "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"
+      "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service",
+      "womensBasketballParkingUrl": "#2001: the Women's Basketball map's new version is stopped on the production GIS server until Transportation Services publish it; production draws womensBasketballUrl until then"
     },
     "allowedSearchSourceFailures": {
       "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
@@ -101,7 +103,8 @@
     "allowedLayerFailures": [],
     "allowedServiceFailures": {
       "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
-      "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"
+      "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service",
+      "womensBasketballParkingUrl": "#2001: the Women's Basketball map's new version is stopped on the production GIS server until Transportation Services publish it; production draws womensBasketballUrl until then"
     },
     "allowedSearchSourceFailures": {
       "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
