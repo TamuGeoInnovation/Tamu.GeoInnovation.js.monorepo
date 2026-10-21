@@ -1,5 +1,35 @@
 # Home machine: current tasks
 
+## Batch (21 October 2026, 9:30 AM Central) — watch Azure and name the commit that reaches dev
+
+The maintainer is deploying the latest dev build to the dev environment now. **Two builds were in play
+this morning** — `67e95b4b1`, and `61161ce1b` which adds #1969's lot-link fix (PR 2064) — so nobody
+should assume which one lands.
+
+`work-lab-leila` has the release tier queued and is **held** until the commit is named. It cannot read
+Azure: no Python, no script, no token. Those are on this machine, which is why this is yours.
+
+### What to do
+
+1. **Poll Azure** with `C:\TAMU\logsz-releases.py` until a release reaches **dev**, then report, in
+   your `STATUS.md` and plainly:
+   - the **release number**,
+   - the **commit** it carries, in full,
+   - the **environment**, and the time in US Central.
+2. **Push that the moment you have it.** The lab machine is watching the branch and starts a
+   thirty-minute tier on it; every minute it waits is a minute off a release that carries dates for a
+   season starting 2 November.
+3. **If the commit is neither of the two above, say so and stop.** That would mean something was built
+   that nobody here expects, and a tier against it clears nothing.
+
+**Never identify the build by bundle name.** Each stage bakes its own analytics id in, so one commit
+produces different bundle hashes on dev and production. Azure is the only thing that answers "which
+commit".
+
+### Then
+
+Back to listening. The tier is the lab machine's; the release notes are the work machine's.
+
 ## Batch (21 October 2026, 8:55 AM Central) — read Azure and say when today's build is on dev
 
 Small, and two machines are waiting on it.
