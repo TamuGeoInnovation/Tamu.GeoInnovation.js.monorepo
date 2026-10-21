@@ -3,7 +3,9 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 12: #2008, tag Maintenance and Service Parking `@heavy` in `map-layers.spec.ts`**, branch `test/2008-heavy-space-maps`.
+**Nothing. Batch 12 is done (report 10); waiting for the next batch.** #2007, #1974's second half and #1973 stay parked.
+
+**branch ready:** `test/2008-heavy-space-maps` (`df689634e`, closes #2008, report 10).
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
