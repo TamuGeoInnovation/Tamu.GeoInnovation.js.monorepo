@@ -31,6 +31,19 @@ drawn ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monore
 | --- | --- |
 | ![Aerial Imagery chosen, and the map blank white](../screenshots/nearmap-blank-latest/before-blank.png) | ![Aerial Imagery chosen, and the latest imagery drawn](../screenshots/nearmap-blank-latest/after-latest.png) |
 
+### Accessible parking spaces show again on the Women's Basketball and Indoor Track maps, and Indoor Track's team bus parking is drawn
+
+Their symbology named older values than the spaces now hold, so nothing matched. Each layer now draws with the
+service's own symbol ([#1992](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1992), [#1993](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1993)).
+
+| Before | After |
+| --- | --- |
+| ![Women's Basketball on production: no wheelchair markers on the map](../screenshots/1992-accessible-parking-sports-maps/before-production-womens-basketball-map.png) | ![The same map on a local build, with the wheelchair markers drawn](../screenshots/1992-accessible-parking-sports-maps/after-local-build-womens-basketball-map.png) |
+| ![Its legend on production: Accessible Parking Spaces with nothing under it](../screenshots/1992-accessible-parking-sports-maps/before-production-womens-basketball-legend.png) | ![The legend with the wheelchair symbol under Accessible Parking Spaces](../screenshots/1992-accessible-parking-sports-maps/after-local-build-womens-basketball-legend.png) |
+| ![Indoor Track on production: no wheelchair markers](../screenshots/1992-accessible-parking-sports-maps/before-production-indoor-track-map.png) | ![Indoor Track on a local build, with the wheelchair markers drawn](../screenshots/1992-accessible-parking-sports-maps/after-local-build-indoor-track-map.png) |
+| ![Indoor Track's legend on production: Accessible Parking Spaces empty](../screenshots/1992-accessible-parking-sports-maps/before-production-indoor-track-legend.png) | ![Indoor Track's legend with the wheelchair symbol, and Team Bus Parking in magenta](../screenshots/1992-accessible-parking-sports-maps/after-local-build-indoor-track-legend.png) |
+| ![Indoor Track on production with Indoor Track Building switched off: nothing drawn where the team buses park](../screenshots/1992-accessible-parking-sports-maps/before-production-indoor-track-team-bus-building-off.png) | ![The same on a local build: the magenta Team Bus Parking area](../screenshots/1992-accessible-parking-sports-maps/after-local-build-indoor-track-team-bus-building-off.png) |
+
 ### Layer symbols are back in the legend, where a layer's colours come from a number
 
 On Freshman Selectable Parking the two layers drew, were listed and were switched on, and their legend
@@ -635,6 +648,8 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Accessible parking on the sports maps ([#1992](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1992), [#1993](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1993)) | [dev.aggiemap.tamu.edu/events/womens-basketball](https://dev.aggiemap.tamu.edu/events/womens-basketball) | Wheelchair markers and an Accessible Parking legend row |
+| Accessible parking and team bus parking on Indoor Track ([#1992](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1992), [#1993](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1993)) | [dev.aggiemap.tamu.edu/parking/indoor-track-parking](https://dev.aggiemap.tamu.edu/parking/indoor-track-parking) | The same, and the magenta Team Bus Parking area |
 | Aerial Imagery no longer opens blank ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)) | [dev.aggiemap.tamu.edu/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), then choose Aerial Imagery; repeat with a fresh page several times | The imagery draws every time without zooming or touching the slider, and the spinner beside Aerial Imagery stops once it has. The slider still steps back to older dates and forward to Latest. On a phone, ☰ → Basemap → Aerial Imagery draws too |
 | Layer symbols back in the legend ([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987), [#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)) | [dev.aggiemap.tamu.edu/parking/permit-select-freshman](https://dev.aggiemap.tamu.edu/parking/permit-select-freshman) | Both layers have a coloured symbol beside their name in the Legend, not just the name. Then check a few other parking maps - Visitor, Motorcycle, Accessible - and the main map's layers: every legend entry for a switched-on layer has a symbol, and no legend that was right before has lost a row |
 | Business Parking draws its lots ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)) | [dev.aggiemap.tamu.edu/parking/business-parking](https://dev.aggiemap.tamu.edu/parking/business-parking) | Maroon surface lots and pink garages across campus, as well as the blue two-hour space markers. In the Legend, all three entries have a symbol beside them: a blue triangle, a maroon square and a pink square. Switching either lot layer off removes those lots and its legend entry |
