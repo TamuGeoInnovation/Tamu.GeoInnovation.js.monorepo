@@ -450,6 +450,17 @@ export type LayerSource = LayerSourceType & {
    * its legend icons.
    */
   legend?: LayerLegendOverride;
+
+  /**
+   * Draws every feature the layer selects with the symbol its service gives the class with this label,
+   * in place of the service's renderer, which is otherwise used as published.
+   *
+   * An override (docs/map-layers.md), for a service whose renderer's values have gone stale against its
+   * data, so that it draws nothing the layer holds (#1992). It keeps the owner's symbol and drops only
+   * the stale test; the layer's definition expression decides what is drawn. Say beside it which values
+   * are stale. A class the service no longer has leaves the layer as the service draws it.
+   */
+  symbolFromServiceClass?: string;
 };
 
 /**

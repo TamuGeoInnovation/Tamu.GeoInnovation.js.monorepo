@@ -26,7 +26,8 @@ import {
   PortalItemData,
   portalItemDataUrl,
   recordSymbologySource,
-  rendererForLayer
+  rendererForLayer,
+  serviceClassRenderer
 } from './portal-symbology';
 import { BaseLayerConstructors, makeBaseLayer } from './basemap-layers';
 
@@ -336,6 +337,11 @@ export class EsriMapService {
       delete props.legend;
     }
 
+    // Read by applyPortalItemSymbology once the layer loads; not a property ArcGIS knows.
+    if ('symbolFromServiceClass' in props) {
+      delete props.symbolFromServiceClass;
+    }
+
     // Delete any additional properties to avoid polluting layer instances
     if ('loadOnInit' in props) {
       delete props.loadOnInit;
@@ -606,6 +612,9 @@ export class EsriMapService {
    * A map that set its own renderer keeps it: Construction deliberately replaces the service's
    * per-owner colours with one orange hatch. This only fills in where nothing was chosen.
    *
+   * A layer source naming `symbolFromServiceClass` draws every feature with that class's symbol, from the
+   * portal item or, without one, the service: for a renderer whose values have gone stale (#1992).
+   *
    * Everything here fails quietly on purpose. A portal that cannot be reached, an item that is not
    * shared, a layer the item does not describe - none of those are reasons to stop a map drawing. The
    * layer keeps the service's symbology, which is what it had before this existed.
@@ -622,11 +631,13 @@ export class EsriMapService {
         const itemId = (layer as unknown as { sourceJSON?: { serviceItemId?: string } }).sourceJSON?.serviceItemId;
         const url = itemId ? portalItemDataUrl(layer.url ?? '', itemId) : null;
 
-        if (!url || itemId === undefined) {
-          return;
-        }
+        const portal = url && itemId ? rendererForLayer(await this.portalItemData(itemId, url), layer.layerId) : null;
 
-        const renderer = rendererForLayer(await this.portalItemData(itemId, url), layer.layerId);
+        // A class named by the definition draws every feature, because the renderer's values are stale.
+        const serviceClass = (source as LayerSource).symbolFromServiceClass;
+        const renderer = serviceClass
+          ? serviceClassRenderer(portal ?? layer.renderer?.toJSON(), serviceClass) ?? portal
+          : portal;
 
         if (!renderer) {
           return;
@@ -635,7 +646,7 @@ export class EsriMapService {
         const [rendererJsonUtils] = await this.moduleProvider.require(['rendererJsonUtils']);
 
         layer.renderer = rendererJsonUtils.fromJSON(renderer);
-        recordSymbologySource(layer, 'portal');
+        recordSymbologySource(layer, portal ? 'portal' : 'service');
       })
       .catch(() => {
         // See above: a layer that draws its service's symbology is the previous behaviour, not a fault.
