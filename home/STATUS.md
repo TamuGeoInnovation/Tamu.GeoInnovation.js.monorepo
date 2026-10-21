@@ -3,14 +3,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Next update by 8:46 PM Central** (#2001's branch, or a progress line).
-**Batch 13** (started 8:25 PM Central):
-1. **#2001** (Women's Basketball, team-filed, due before 2 November): an agent in `C:\TAMU\wt-2001`, branch
-   `fix/2001-womens-basketball-parking`. Home opens its PR when it lands.
-2. **#1970: PR 2016 open** (ready, `bug`, Aggiemap Pending Approval; #1970 In Progress). Branch merged with `development` - its old
-   commit had deleted `2026-10-19.md` and rewritten `unreleased.md` from a stale state, now restored. Check exit 0 (lint, test, build
-   actually ran); red on production `main-AYJ2SDWT.js` ("Selected Buildings"); green on a production build; before/after images and
-   the notes entry with a What-to-test row are in.
+**Nothing. Batch 13 is done (report 11): PR 2020 (#2001) and PR 2016 (#1970) are open.** Stopping, as the batch says.
+Filed: #2019 (no priority). (Correction: batch 13 started about 7:45 PM Central, not 8:25 PM as written earlier.)
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
