@@ -3,8 +3,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Nothing. Batch 13 is done (report 11): PR 2020 (#2001) and PR 2016 (#1970) are open.** Stopping, as the batch says.
-Filed: #2019 (no priority). (Correction: batch 13 started about 7:45 PM Central, not 8:25 PM as written earlier.)
+**A listener again** (handed the AggieMap director role over at 7:40 AM Central, 21 October, as the maintainer left for school).
+Nothing running. No uncommitted work in its worktrees. Watching `home/TASKS.md`.
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
