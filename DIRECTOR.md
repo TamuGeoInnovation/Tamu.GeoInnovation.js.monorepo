@@ -1,6 +1,6 @@
 # Who directs
 
-**Director: home** (handed over by work at 10:25 PM Central, 20 October 2026. **home directs from when the maintainer speaks to it**; until then the only thing running is `work-lab-leila`'s batch 4.)
+**Director: home** (handed over by work at 11:05 PM Central, 20 October 2026, as the maintainer left the office for home. **home directs from when he speaks to it.**)
 
 Each of the maintainer's machines runs a Claude Code session on this branch. **At any time exactly one machine
 directs; every other machine listens.** The maintainer talks to the director. Every session reads this file first,
@@ -232,84 +232,86 @@ A `## Stop` heading in a listener's `TASKS.md` stops that listener: it writes `S
 
 ## Handover
 
-Written by `work` at 10:25 PM Central, 20 October 2026.
+Written by `work` at 11:05 PM Central, 20 October 2026, replacing the 10:25 PM one.
 
 ### Waiting on the maintainer
 
 | | |
 | --- | --- |
 | [PR 2031](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2031) | #1991, Vendor Parking's lots. MERGEABLE, CI running |
-| [PR 2033](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2033) | #2004, the multi-value legend class. MERGEABLE, CI running |
+| [PR 2036](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2036) | #2035, the event-dates tool. MERGEABLE, **all checks green** |
 
-Both were green locally before they were opened, and all three parking fixes were also checked **merged
-together** by `work-lab-leila`: full affected check exit 0, and `map-layers.spec.ts` on a combined
-production build at 58 passed, 12 skipped, 0 failed. CI does not check pull requests in combination, so
-that is the stronger evidence of the two.
+**Five issues have no Priority** and he answers those, never us: **#2019, #2015, #2007, #2034, #2035.**
 
-**Every pull request tonight conflicted on the same two places in `unreleased.md`** - the `## Summary`
-entries and the top of *What to test on dev*. Five resolutions, all mechanical, all "keep both". Merging
-`development` in and keeping both sides is the whole job, about five minutes. It is not a sign anything
-is wrong.
+### The urgent one: release notes conflict on every pull request
+
+**He called this a serious holdup and asked for it fixed tonight.** Six resolutions today, all on the same
+two insertion points in `docs/releases/unreleased.md` — the top of `## Summary` and the top of *What to
+test on dev*. Every change adds at the same line of a 1,008-line file, so git cannot merge two of them.
+With one machine it was rare; with three it is every time, and it gets worse as machines are added.
+
+**He chose: one file per change.** Each pull request adds `docs/releases/unreleased/<issue>-<slug>.md`
+holding its entry and its test row. A new file cannot conflict with another new file, so the problem goes
+by construction rather than being managed. At release a script collates them in order into the dated notes
+and empties the directory — the changeset pattern, which exists because this problem is universal.
+
+Also decided: **this machine does it**, as one focused change; and **the existing `unreleased.md` is left
+alone** — new entries go in the new directory and the next release collates both. Migrating 55 entries is
+churn for no benefit.
+
+**Started, not finished:** branch `chore/notes-one-file-per-change` off `development`, with the directory
+created and nothing else. No issue filed yet. It needs the collation script, a README for the directory,
+and the rule in `CLAUDE.md` and `docs/releases/README.md` changed to point at it.
+
+Worth knowing: this is the **second** file today whose hand-maintenance caused conflicts, after
+`docs/testing.md`'s Total (#2002). Same shape, same direction of fix — stop having many writers edit one
+line.
+
+### `work-lab-leila` found the cause of #1969, and how to make it fail every time
+
+Its report `work-lab-leila/reports/2026-10-20-4.md` is worth reading in full. In short:
+
+- **It reproduces with load, not worker count**: 0% on one worker, 5% at six on a quiet machine, 12.5% at
+  six on a saturated one, 13.8% at twenty-four. Both affected maps at the same rate.
+- **The mechanism**: the main map's lot popup opens **first on nearly every load** and is then quietly
+  replaced when the event map's own layer answers. The map reports `ready` without waiting for that answer,
+  so when the event service is slow the spec — and a person — sees the main map's lot. The issue's
+  hypothesis was right and understated: this is not an occasional fall-through, it is the normal path, and
+  the right answer arriving quickly is what usually hides it.
+- **A deterministic red-first test**: delay the event map's own service by 4 seconds with Playwright's
+  `page.route` and it fails 4 of 4; with no delay, 0 of 4.
+
+Nothing was fixed or committed — that was the batch. **The issue has not been updated with any of this**,
+and it should be, because the finding is worth more than the issue currently says.
 
 ### What each machine is doing
 
-- **`work-lab-leila`** - batch 4, second half: #1969, the intermittent `?lot=` race, run many times at
-  different machine loads. It opened [PR 2030](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2030) itself for #1975 and every check on it
-  passed, which is the first pull request it has opened. **It has `gh` now but no `project` scope**, so it
-  can file issues and set fields and cannot add anything to a project board - the director does that part.
-- **`home`** - idle since batch 13. It opened PRs 2016 and 2020, both merged.
-- **`work`** - becomes a listener. Nothing in flight.
-- **`codex-home`** - idle since 19 October.
+- **`work-lab-leila`** — idle, batch 4 done. It opened [PR 2030](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2030) itself (merged) and now
+  has `gh`, **but no `project` scope**, so it cannot add anything to a project board; the director does
+  that part. It has been asked to correct its `STATUS.md` *Cannot* list and may not have yet.
+- **`home`** — idle since batch 13.
+- **`work`** — becomes a listener on handover. The notes change above is its unfinished work.
+- **`codex-home`** — idle since 19 October.
 
-### Open issues that need a Priority
+### Still unfiled, both agreed with the maintainer
 
-**#2019** (Bug), **#2015** (Task) and **#2007** (Task) are filed with no Priority. #2034 was set to Medium
-tonight. The maintainer answers these; do not guess them.
+1. **#2019 renamed** to cover all eighteen stale-date maps rather than reading as one map.
+2. **One issue for the twelve campus events** whose dates are stale and are not on the athletics site —
+   Muster, Big Event, MS150, Aggieland Saturday, Fish Camp, T-Camp, 4-H Roundup, Fire School, Games of
+   Texas, Beef Cattle, HS Graduation, Physics & Engineering Festival. Plus a decision on the three 150th
+   maps, whose anniversary is over and which are probably retire candidates.
 
-### The one finding that is bigger than it looks
-
-**Eighteen live maps have every `eventDates` entry in the past**, and each shows visitors a "This event has
-passed" dialog. #2019 was filed as one map - Women's Basketball - and the maintainer agreed to rename it to
-cover all eighteen; **that rename has not been done yet.**
-
-They split three ways and only the first is mechanical:
-
-1. **Sports** - Baseball (35 dates, ended May), Women's Basketball, and worth checking Men's Basketball,
-   Soccer, Volleyball, Tennis, Football, Maroon & White. The 2026-27 home dates are published at
-   `12thman.com/sports/<sport>/schedule`, **server-rendered, no API needed** - one fetch per sport gets
-   them. The maintainer has asked for **a script in this repository** that scrapes every sport we have a
-   map for and reports differences against the definitions, to be run on a schedule. It should *report*,
-   not rewrite definitions. Women's Basketball's 18 home dates have already been read: Nov 2, 5, 7, 16, 18,
-   21; Dec 6, 15, 17, 22, 31; Jan 10, 21, 28, 31; Feb 7, 22, 25.
-2. **Twelve campus events** - Muster, Big Event, MS150, Aggieland Saturday, Fish Camp, T-Camp, 4-H Roundup,
-   Fire School, Games of Texas, Beef Cattle, HS Graduation, Physics & Engineering Festival. Different
-   sources; the team's to supply. The maintainer agreed to **one issue listing all of them**, which is also
-   not filed yet.
-3. **Three 150th maps** - Kickoff, Opening Ceremony, Spirit of 150 Week. The anniversary is over, so this is
-   a retire decision rather than a date problem. `layer-sources.spec.ts` already asserts every 150th event
-   has passed.
-
-Also noted while finding this: `womens-basketball.definitions.ts` has `'2026-01-1'`, a date missing a digit,
-which has been parsing by luck.
+The tool in PR 2036 covers the fourteen athletics maps and found, among others, that **four men's
+basketball home games are recorded on the wrong day**.
 
 ### Three things not to relearn
 
-1. **A pull request showing one lonely `ACTION_REQUIRED` check and nothing else has a stale base.** Three
-   pull requests got no GitHub Actions runs at all tonight - not failed, never created - through `opened`,
-   `reopened`, `synchronize` and `labeled`, and through being closed and reopened as new pull requests. What
-   fixed it was merging the current `development` in. Try that **first**, not last.
-2. **A green check can mean nothing ran.** `check-in-volume.sh` returns exit 0 with `No tasks were run` for a
-   branch touching only `test/smoke/aggiemap/`, which is not an Nx project. For the suite the real check is
-   `tsc -p test/smoke/aggiemap --noEmit`. Read the log, not the exit code.
-3. **A deny rule written from a guess can break the protocol.** `.claude/settings.json` shipped denying
-   `git push origin`, which is how every machine writes to this mailbox; `deny` beats `allow`, so it could
-   not be patched around. Fixed in #2028. Two things no settings file reaches: a rule matches the command
-   **as written**, so a session calling a tool by full path matches nothing; and the auto-mode classifier's
-   refusals need the maintainer.
-
-### Merged today
-
-#1981, #1987, #1988, #1986, #1992, #1993, #1995, #2002, #2008, #2009, #1970, #2001, #1975, #1978, #2017,
-#2028, plus the GIS Day and upgrade work the maintainer merged himself. Four bugs found by a check that did
-not exist this morning, and three more found by the machine that joined this afternoon.
+1. **A pull request showing one lonely `ACTION_REQUIRED` check and nothing else has a stale base.** Merge
+   current `development` in first; that is what fixed three pull requests tonight after four event types
+   and a full recreate had not.
+2. **A green check can mean nothing ran.** `check-in-volume.sh` returns exit 0 with `No tasks were run` for
+   a branch touching only `test/smoke/aggiemap/`. For the suite, `tsc -p test/smoke/aggiemap --noEmit`.
+3. **A deny rule written from a guess can break the protocol** — `.claude/settings.json` shipped denying
+   the push every machine uses to write here (#2028, fixed). The lab machine's batch-4 report was written
+   on time and could not be pushed because of it.
 

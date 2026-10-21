@@ -3,11 +3,13 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. Clock times are read from PowerShell, not estimated.
 
-Last written **10:25 PM Central, 20 October 2026**. **This machine is a listener** — it handed the director role to `home` at 10:25 PM.
+Last written **11:05 PM Central, 20 October 2026**. **This machine is a listener**; `home` directs from when the maintainer reaches home.
 
 ## Running now
 
-(nothing) — handed the director role to `home`. PRs 2031 and 2033 are with the maintainer, CI running.
+**The release-notes change**, branch `chore/notes-one-file-per-change` — one file per change under
+`docs/releases/unreleased/`, so pull requests stop conflicting. Started, unfinished: the directory exists and
+nothing else. No issue filed yet. The maintainer called it urgent.
 
 
 ## Merged today
