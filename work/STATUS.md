@@ -33,6 +33,26 @@ Nothing. Every field is set on every issue and pull request opened today.
 - **Transportation Services note**: drafted and given to the maintainer, covering both unpublished-`LotType`
   services and the three stale portal renderers. Not sent; his to send.
 
+## Owed as soon as production is up
+
+- **Close [#1778](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1778)**
+  ("AggieMap Misc Issues", from the team, 15 October) with a comment mapping each of its five items to
+  the fix that resolved it. The maintainer agreed to close it, **after** production, because four are
+  already live and the fifth is in the release going out today:
+
+  | Reported | Issue | Fix | State |
+  | --- | --- | --- | --- |
+  | Layers named  | #1802 | PR 1807 | on production |
+  | HS Graduation / Physics Fest blobs not arrows; unnamed groups | #1803 | PR 1811 | on production (also caught Fish Camp) |
+  | Baseball's legend icon | #1804 | PR 1810 | on production — it was a swatch squeezed to a sliver, not a missing icon |
+  | Women's Basketball accessible parking icon | #1992 | PR 2032 | **in today'''s release** |
+
+  Do not close it before production: it would tell the reporter the work is done while the item she would
+  most notice is still only on dev.
+
+- **Tag production** `scripts/tag-build.sh prod 61161ce1bb5ea3852bd42d04ee13ebc6543ab630`, push to origin.
+- **The production release tier**, once the deploy is up — `work-lab-leila` is idle and fastest.
+
 ## Findings
 
 - **The lab machine is five to ten times faster than this one for test work.** Batches 1 and 2 took ten minutes
