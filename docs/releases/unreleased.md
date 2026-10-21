@@ -1,7 +1,7 @@
 # Unreleased
 
-Since the 19 October release: three AggieMap fixes, and GIS Day changes waiting for GIS Day's own
-deploy.
+Since the 19 October release: five AggieMap fixes, a cancelled event removed, Women's Basketball's new
+map on dev, and GIS Day changes waiting for GIS Day's own deploy.
 
 **The latest release notes are [19 October 2026](2026-10-19.md)**, for the build from `8463ac6af`
 (build 20261019.21, Release-486), on dev and going to production. The `prod-*` tag on `8463ac6af` records
@@ -78,6 +78,53 @@ other check passed this map.
 | Before | After |
 | --- | --- |
 | ![Business Parking on production: the blue two-hour space markers only, and two empty legend entries](../screenshots/1981-business-parking-lots/before-production-no-lots.png) | ![The same map with maroon surface lots, pink garages, and a symbol beside each legend entry](../screenshots/1981-business-parking-lots/after-local-build-lots-drawn.png) |
+### Women's Basketball: the new two-layer map, on dev until Transportation Services publish it
+
+Transportation Services rebuilt the Women's Basketball parking map for the season that starts on 2
+November. It now has two layers, Accessible Parking Spaces and Women's Basketball Event Parking Lots: the
+eight lots around Reed Arena, in blue for event parking and orange for the two reserved lots, 102 and 104,
+with the two accessible-parking markers. The hourly visitor parking kiosks and the Safety First crosswalks
+are gone. The names, colours and markers are the service's own.
+
+The new version is published only on the development GIS server so far, so only dev draws it. Production
+goes on drawing the published four-layer map, unchanged, until Transportation Services publish the new one
+there. Then a follow-up change makes it the only version, on production too. A smoke check fails if
+production ever asks for the new service before then
+([#2001](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2001)).
+
+| Before, production and dev | After, on dev |
+| --- | --- |
+| ![Women's Basketball with visitor kiosks, crosswalks and every event lot in maroon, and four legend entries](../screenshots/2001-womens-basketball-parking/before-dev.png) | ![The same map with eight lots in blue and orange, two accessible markers, and two legend entries](../screenshots/2001-womens-basketball-parking/after-local-build-dev.png) |
+| | ![A lot's popup: 100c, Event Parking, with the link to the Women's Basketball parking page](../screenshots/2001-womens-basketball-parking/after-local-build-dev-popup.png) |
+
+Production after this change, unchanged until the new version is published there:
+[after-local-build-production.png](../screenshots/2001-womens-basketball-parking/after-local-build-production.png).
+### A feature opened from a link or a search shows its own title, not "Selected Buildings"
+
+A feature opened by a shared link (`?lot=`, `?feature=`) or chosen from search is highlighted on the map's
+selection layer, which is titled "Selected Buildings" and uses the building popup. The side panel took its
+heading, and its popup, from that layer rather than from the feature's own, so a motorcycle space or a
+parking lot opened from a link said "Selected Buildings", and clicking the highlight opened a building
+popup. The panel now heads and fills the popup from the layer the feature came from, exactly as clicking
+that feature on the map does; a building chosen from search is unchanged
+([#1970](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1970)).
+
+| Before | After |
+| --- | --- |
+| ![Motorcycle Parking on production opened at lot 100j: the side panel headed Selected Buildings](../screenshots/1970-selection-popup-title/before-production-motorcycle-lot-100j.png) | ![The same link on a production build of the fix: the panel headed Motorcycle Parking Space](../screenshots/1970-selection-popup-title/after-local-production-motorcycle-lot-100j.png) |
+
+
+### A Football Tailgating kiosk map
+
+`/kiosk/football-tailgating/map` shows the Football Tailgating map with no sidebar, for a fixed screen
+or for embedding: tailgating zones and their numbers, the tents, the construction that affects tailgating, and the
+buildings. A tent or zone link (`?tent=L1`, `?zone=AP-7`) opens with it selected. Like the Dining kiosk, it is
+listed only in the development-only Kiosk Maps section of All Maps ([#1975](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1975)).
+
+| The Football Tailgating map, as production serves it | The kiosk | The kiosk with `?tent=L1` |
+| --- | --- | --- |
+| ![The Football Tailgating map on production, with its sidebar of layers and legend](../screenshots/1975-tailgating-kiosk/before-production-tailgating-map.png) | ![The kiosk on a local build: the same zones, numbers, tents and construction, with no sidebar](../screenshots/1975-tailgating-kiosk/after-local-build-kiosk.png) | ![The kiosk opened with ?tent=L1: zoomed to Tent L1, highlighted, with its popup](../screenshots/1975-tailgating-kiosk/after-local-build-kiosk-tent-l1.png) |
+
 ### Not visible: NestJS 10 to 11
 
 The NestJS APIs (UES Operations, GIS Day, OIDC, Mailroom and Geoservices) move from NestJS 10.4.22 to 11.2.7
@@ -85,6 +132,19 @@ The NestJS APIs (UES Operations, GIS Day, OIDC, Mailroom and Geoservices) move f
 AggieMap and the event maps are Angular apps and do not change. One side effect for UES Operations:
 signing out used to fail with a server error, because the id token was read after Passport had cleared
 the user; it now reaches the identity provider's sign-out page.
+
+### Live at the Station is removed: the concert is cancelled
+
+The Live at the Station map is retired. It is no longer listed on All Maps or Campus Events, search does
+not offer it, and - the part that mattered most - its notice will not appear. The concert was cancelled
+before it happened, so unlike every other retired map its date was still in the future: from 31 October a
+notice inviting people to it would have opened on every visit to AggieMap. A link already shared still
+resolves, so nobody following an old link gets an error
+([#1995](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1995)).
+
+| Before | After |
+| --- | --- |
+| ![Campus Events on production, Live at the Station listed under Fall](../screenshots/1995-live-at-the-station-cancelled/before-production-listed.png) | ![The same page without it, every other event unchanged](../screenshots/1995-live-at-the-station-cancelled/after-local-build-not-listed.png) |
 
 ### GIS Day: the sponsorship levels match the 2026 prospectus
 
@@ -646,9 +706,13 @@ dated notes as what was tested, and this table empties.
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | Softball's accessible parking legend row ([#2004](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2004)) | [dev.aggiemap.tamu.edu/parking/softball-parking](https://dev.aggiemap.tamu.edu/parking/softball-parking) | The Accessible Parking Spaces legend entry has its wheelchair row |
+| Live at the Station removed, the concert is cancelled ([#1995](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1995)) | [dev.aggiemap.tamu.edu/all-maps/campus-events](https://dev.aggiemap.tamu.edu/all-maps/campus-events) | No Live at the Station under Fall, and every other event still there. Search for "live at the station" offers nothing. The old link `/events/live-at-the-station` still opens the map rather than erroring. No notice about it appears on any page |
+| A Football Tailgating kiosk map ([#1975](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1975)) | [dev.aggiemap.tamu.edu/kiosk/football-tailgating/map](https://dev.aggiemap.tamu.edu/kiosk/football-tailgating/map), then the same with `?tent=L1` | No sidebar, and no All Maps or 2D buttons (zoom, locate and compass remain); it opens where the tailgating map opens, with zones, numbers, tents and buildings and nothing else; a tent or zone opens its popup; `?tent=L1` zooms to Tent L1 highlighted with its popup; All Maps lists it only under Kiosk Maps |
 | Aerial Imagery no longer opens blank ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)) | [dev.aggiemap.tamu.edu/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), then choose Aerial Imagery; repeat with a fresh page several times | The imagery draws every time without zooming or touching the slider, and the spinner beside Aerial Imagery stops once it has. The slider still steps back to older dates and forward to Latest. On a phone, ☰ → Basemap → Aerial Imagery draws too |
 | Layer symbols back in the legend ([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987), [#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)) | [dev.aggiemap.tamu.edu/parking/permit-select-freshman](https://dev.aggiemap.tamu.edu/parking/permit-select-freshman) | Both layers have a coloured symbol beside their name in the Legend, not just the name. Then check a few other parking maps - Visitor, Motorcycle, Accessible - and the main map's layers: every legend entry for a switched-on layer has a symbol, and no legend that was right before has lost a row |
 | Business Parking draws its lots ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)) | [dev.aggiemap.tamu.edu/parking/business-parking](https://dev.aggiemap.tamu.edu/parking/business-parking) | Maroon surface lots and pink garages across campus, as well as the blue two-hour space markers. In the Legend, all three entries have a symbol beside them: a blue triangle, a maroon square and a pink square. Switching either lot layer off removes those lots and its legend entry |
+| Women's Basketball's new two-layer map ([#2001](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2001)) | [dev.aggiemap.tamu.edu/events/womens-basketball](https://dev.aggiemap.tamu.edu/events/womens-basketball) | Two layers in the Layers list and the Legend, Accessible Parking Spaces and Women's Basketball Event Parking Lots, and nothing else: no visitor parking kiosks and no crosswalks. Lots 100a, 100b, 100c, 100e, 100f and 100g in blue (Event Parking), 102 and 104 in orange (Reserved), each labelled, and an accessible-parking marker in 102 and in 100g. Clicking a lot or a marker opens its popup with the link to Transportation's page. With `?as=production` added, the old four-layer map, as production shows it until Transportation Services publish the new one |
+| A linked feature is headed by its own layer ([#1970](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1970)) | [Motorcycle Parking, lot 100j](https://dev.aggiemap.tamu.edu/parking/motorcycle-parking/map?lot=100j), then [the main map](https://dev.aggiemap.tamu.edu/map/d) searching `Wehner` | The side panel is headed Motorcycle Parking Space, not Selected Buildings; clicking the highlighted space opens the space's popup, not a building's. A building chosen from search still shows the building popup |
 | GIS Day at phone width ([#1980](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1980)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release, on a phone: `/sponsors/tamu`, `/competitions/presentation`, `/faq`, `/competitions/signage` | No page scrolls sideways; a sponsor level's benefits are one column; the Presentation page's links sit above its text; the menu button has a white backdrop as the page scrolls under it; the signage graphics wrap. On a desktop, nothing changes |
 | GIS Day: the LiDAR sponsorship level ([#1976](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1976)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release: `/sponsors/tamu` | Five cards, LiDAR last at $4,096 with 6 representatives; choosing it shows its benefits; the other four prices unchanged. On a phone: two cards to a row, "reps", no sideways scrolling. In Admin, Sponsors, the level list offers LiDAR |
 | GIS Day: switch a sponsor off for a season ([#1962](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1962)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). On production after release (and after the migrations): Admin, Sponsors | Every sponsor shows Active ticked. Untick one: a notice says it is hidden, and it disappears from the public Sponsors page and the home page but stays in the list with its details. Tick it again and it comes back. The sponsor form's Active checkbox does the same |

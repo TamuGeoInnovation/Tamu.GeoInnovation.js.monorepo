@@ -19,6 +19,8 @@
 # Settings never live in the repository. GISDAY_LOCAL_DIR (default C:/TAMU/gisday-local) holds:
 #   local-db.env            SA_PASSWORD and GISDAY_APP_PASSWORD; `db` writes it on first use
 #   gisday-api.local.env    gisday-nest's settings, started from apps/gisday-nest/local.env.sample
+#   auth0-dev.local.env     optional: the development Auth0 tenant's credentials and test admin, written
+#                           by scripts/gisday-auth0-dev.ps1 (#1623); passed after the file above
 #   *.bak                   only for someone restoring a backup of production
 # Run from Git Bash at the root of a checkout.
 set -euo pipefail
@@ -121,8 +123,12 @@ SQL
     docker inspect gisday-redis >/dev/null 2>&1 || docker run -d --name gisday-redis --network "$NET" redis:7-alpine
     docker run --rm -m 8g -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false \
       "$NODE_IMAGE" node node_modules/nx/dist/bin/nx.js build gisday-nest
+    # Later --env-file values win, so the dev tenant's management credentials (#1623) override the
+    # sample's blanks when that file exists.
+    dev_tenant=()
+    [ -f "$LOCAL_DIR/auth0-dev.local.env" ] && dev_tenant=(--env-file "$LOCAL_DIR/auth0-dev.local.env")
     docker run -d --name gisday-api -m 2g --network "$NET" -p 3333:3333 \
-      --env-file "$LOCAL_DIR/gisday-api.local.env" \
+      --env-file "$LOCAL_DIR/gisday-api.local.env" "${dev_tenant[@]}" \
       -e TYPEORM_PASSWORD="$(sed -n 's/^GISDAY_APP_PASSWORD=//p' "$LOCAL_DIR/local-db.env")" \
       -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w \
       "$NODE_IMAGE" node dist/apps/gisday-nest/main.js

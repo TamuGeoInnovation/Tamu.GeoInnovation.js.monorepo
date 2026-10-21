@@ -194,7 +194,7 @@ only compiles what the specs import, and `nx lint` does not typecheck at all.
 ## Phase 5 - Run the app
 
 ```
-MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v "<path>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:24.22.0 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v "<path>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.0 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 **Expect:** compiled in roughly three to four minutes, then the app answers on port 4200.
@@ -203,6 +203,15 @@ MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v 
 Windows-to-Linux bind mount. Without it the server compiles once at startup and then never
 rebuilds, while still looking healthy. Changes appear to do nothing because they were never
 compiled.
+
+**`UV_THREADPOOL_SIZE=64` is required with `--poll=2000`.** Polling keeps Node's four default
+file-system threads busy, and Vite's dependency optimizer waits behind them for good: the log
+stops at `[optimizer] bundling dependencies...` and the page stays blank (#1955).
+
+**`NX_WORKSPACE_DATA_DIRECTORY` keeps Nx's task records in the container.** `docker rm -f`
+kills Nx mid-task, and a record left in the checkout's `.nx/workspace-data` makes the next
+start print `Waiting for aggiemap-angular:serve in another nx process` and never continue
+(#1626).
 
 Two hostnames, deliberately different:
 
@@ -234,9 +243,13 @@ what to expect after each.
 
 One file, in a folder outside the repository (`GISDAY_LOCAL_DIR`, default `C:/TAMU/gisday-local`):
 `gisday-api.local.env`, a copy of `apps/gisday-nest/local.env.sample`. The sample holds no secrets and
-works as it stands; nobody is given production Auth0 credentials for local use
-([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623)), so the API
-runs without them ([#1759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1759)).
+works as it stands: without Auth0 management credentials the API runs with profiles turned off
+([#1759](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1759)). Sign-in uses
+the development Auth0 tenant, `txgisday-dev`
+([#1623](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1623)). Its credentials
+and a test admin come in a second file, `auth0-dev.local.env`, written by `scripts/gisday-auth0-dev.ps1` or
+given to you by the maintainer ([`docs/gisday-local.md`](docs/gisday-local.md#signing-in)). With it,
+profiles, registration and the admin Users page work too.
 
 ```
 mkdir -p "${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}"
@@ -263,10 +276,11 @@ From Git Bash in the repository root, one at a time:
 | `scripts/gisday-local.sh web` | `gisday-dev started`. The first compile takes several minutes; follow it with `docker logs -f gisday-dev`. Then <http://localhost:4201> shows the site with the restored data |
 | `scripts/gisday-local.sh status` | four containers, all `Up`: `gisday-db`, `gisday-redis`, `gisday-api`, `gisday-dev` |
 
-Then ask the user to sign in at <http://localhost:4201> with their own GIS Day account; you cannot do
-that for them. **Expect:** they return to the site signed in. The port cannot be changed, because
-sign-in only returns to `localhost:4201`. The accounts are the real ones, so nobody edits users from
-a local copy.
+Then sign in at <http://localhost:4201> with an account in the development tenant: the test admin in
+`auth0-dev.local.env`, or one the maintainer made. **Expect:** back on the site signed in, with Admin
+in the Account menu for the test admin. The port cannot be changed, because sign-in only returns to
+`localhost:4201`. The accounts are test accounts, never production's. Auth0 asks a `localhost` app for
+permission ("Authorize App") on most sign-ins; that is expected.
 
 `scripts/gisday-local.sh stop` removes the containers and keeps the database, so `restore` is needed
 only once. To change the schema, follow [`docs/gisday-migrations.md`](docs/gisday-migrations.md).

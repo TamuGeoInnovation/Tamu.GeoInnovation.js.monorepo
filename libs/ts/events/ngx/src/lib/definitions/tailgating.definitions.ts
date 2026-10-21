@@ -177,9 +177,9 @@ export const TailgatingColdLayerSources: LayerSource[] = [
  * case-insensitively, on the `zone_ID` and `tent_id` fields set in ArcGIS Pro, so a link survives a
  * republish that renumbers object ids. A zone without a `zone_ID` keeps the generic `feature=` link.
  * Not searched themselves (`searchActive: false`): an exact match, for links. `TailgatingSearchSources`
- * below are what the sidebar search uses.
+ * below are what the sidebar search uses. The tailgating kiosk reuses them, so its links work the same.
  */
-const TailgatingLinkSources: SearchSource[] = [
+export const TailgatingLinkSources: SearchSource[] = [
   {
     source: 'tailgating-zone',
     name: 'Tailgating Zones',

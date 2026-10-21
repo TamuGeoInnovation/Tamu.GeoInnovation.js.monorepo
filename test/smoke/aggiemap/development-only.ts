@@ -69,8 +69,16 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
  *
  * `pages` lists only the pages that really request the service. A service one map alone uses is
  * required of that map, not of every page (#1460: the Tailgating zones were required of the main map).
+ *
+ * `developmentGisServer` marks a service published only on the development GIS server, which a page
+ * draws wherever it reads that server (`readsDevelopmentGisServer()` in connections.ts): a dev host,
+ * but not localhost, which reads production's. It is required only where that server is read, and
+ * forbidden everywhere else (#2001).
  */
-export const DEVELOPMENT_ONLY_SERVICES: Record<string, { reason: string; pages: string[] }> = {
+export const DEVELOPMENT_ONLY_SERVICES: Record<
+  string,
+  { reason: string; pages: string[]; developmentGisServer?: true }
+> = {
   // The main map draws it by default; an event map draws it for a visitor who has saved Aggieland as
   // their basemap, which the spec sets up on Visitor Parking.
   'Hosted/VTBase/VectorTileServer': {
@@ -84,6 +92,13 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<string, { reason: string; pages: 
   '/code-maroon/feed.xml': {
     reason: '#1289: the Code Maroon proof of concept',
     pages: ['/map', '/parking/visitor-parking', '/events/tailgating']
+  },
+  // The Women's Basketball map's new version: its service is stopped on the production GIS server until
+  // Transportation Services publish it there. Production draws the old version until then.
+  'TS/WomensBasketballParking/MapServer': {
+    reason: "#2001: the Women's Basketball map's new version, not yet published on the production GIS server",
+    pages: ['/events/womens-basketball'],
+    developmentGisServer: true
   }
 };
 
