@@ -28,4 +28,16 @@ describe('Event maps on production', () => {
     expect(tailgating).toBe(football + 1);
     expect(TailgatingConfiguration.toast?.action).toEqual({ type: 'internal', value: '/events/tailgating' });
   });
+
+  it('write every event date as YYYY-MM-DD (#2019)', () => {
+    // Women's Basketball carried '2026-01-1' for a season. It parsed by luck; a date that does not
+    // parse makes a map's "has this event passed?" answer wrong without any error.
+    const malformed = EventDefinitions.flatMap((definition) =>
+      definition.configuration.eventDates
+        .filter((date) => typeof date === 'string' && !/^\d{4}-\d{2}-\d{2}$/.test(date))
+        .map((date) => `${definition.configuration.id}: ${date}`)
+    );
+
+    expect(malformed).toEqual([]);
+  });
 });
