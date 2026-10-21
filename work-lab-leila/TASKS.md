@@ -195,3 +195,56 @@ settings rather than the deployed artefact — you said so, which was right. For
 matters more than it did for the test run, because the sidebar and gating differ between a dev host and a
 production one. Serve the **built output** (`nx build` then a static server with an SPA fallback), or use
 `local-production` so `127.0.0.1` is treated as production. Say which you did.
+
+---
+
+## Batch 4 (20 October 2026, 8:25 PM Central) — #1975's kiosk map, and #1969's intermittent race
+
+**After batch 3.** Two jobs, both chosen because they end in something you can produce: a branch and a
+report. **You still cannot open pull requests** - no `gh` - so both come back to the director, who opens
+them. `home` opens its own from now on; you do not.
+
+### 1. #1975 — the Football Tailgating kiosk map
+
+**[#1975](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1975).** A branch has
+been sitting ready since this morning and never got its images: `feat/1975-tailgating-kiosk` (`9bfb6a3e9` on
+the fork), written by `home`. It needs finishing, not writing:
+
+1. Fetch it, merge the latest `development` (it is a day behind and several things have merged), resolve
+   anything that conflicts and **say what conflicted** - a conflict between this and the day's parking work
+   would be worth knowing about.
+2. Run the check. Say which projects and the per-target counts, not just the exit code.
+3. **Images.** It is a new map, so "before" is not a picture of the same page - there is nothing there yet.
+   Take the after shots that show what it adds: the kiosk as it opens, and whatever the issue says it must
+   show. If a meaningful before exists (for example the ordinary Football Tailgating map beside it), take
+   that too and say what the pair is showing. Commit to `docs/screenshots/1975-tailgating-kiosk/`.
+4. The `unreleased.md` entry and the *What to test on dev* row, as you did in batch 3.
+5. **`docs/testing.md`: add a row only if you add a spec**, and change no number either way ([#2002](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2002)).
+
+The kiosk maps have a spec already (`kiosk.spec.ts`, from #1392): a kiosk opened by direct link draws its
+locations, has no sidebar, and holds none of the main map's layers. If this map should be covered by it and
+is not, that is worth saying - and it is the kind of gap that let #1981 and #1987 reach production.
+
+### 2. #1969 — a `?lot=` link opening the wrong map's feature, intermittently
+
+**[#1969](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1969).** Seen twice,
+on two different maps, on two different runs, always passing on retry: `?lot=100j` on Visitor Parking opened
+the **main map's** Lot 100j on the first attempt, and the same symptom appeared on Motorcycle Parking. The
+hypothesis in the issue is a race - before the event map's layers have loaded, the lookup falls through to
+the main map's parking-lot search source and matches there first.
+
+**This is yours because it is intermittent and you have 24 CPUs.** On the testing machine it appears once in
+a while and cannot be studied. Here you can run `lot-links.spec.ts` many times over, and vary the thing the
+hypothesis names - how loaded the machine is, and therefore how long the event map's layers take.
+
+What is wanted is **an answer, not a fix**: does it reproduce, how often, and does load change the rate? If
+you can make it happen reliably, say exactly how - that is what lets someone write a red-first test. If it
+will not reproduce at all on 24 CPUs, that is also an answer and it points at the same cause.
+
+**Do not fix it in this batch.** The fix depends on what you find, and a fix without a reproduction cannot
+be shown to work.
+
+### When you are done
+
+Say **"branch ready: feat/1975-tailgating-kiosk"** with its head, and report #1969 separately. Name the
+production bundle for anything you ran against production.
