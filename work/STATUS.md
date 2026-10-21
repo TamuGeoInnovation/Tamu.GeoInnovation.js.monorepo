@@ -3,12 +3,12 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. Clock times are read from PowerShell, not estimated.
 
-Last written **6:40 PM Central, 20 October 2026**. **This machine is the director.**
+Last written **10:25 PM Central, 20 October 2026**. **This machine is a listener** — it handed the director role to `home` at 10:25 PM.
 
 ## Running now
 
-(nothing) — waiting on `work-lab-leila`'s batch 3 (the images and notes for the three parking fixes) to open
-the three pull requests, and on `home`'s batch 12 (#2008).
+(nothing) — handed the director role to `home`. PRs 2031 and 2033 are with the maintainer, CI running.
+
 
 ## Merged today
 

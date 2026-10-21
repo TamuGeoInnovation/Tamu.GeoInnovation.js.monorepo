@@ -1,6 +1,6 @@
 # Who directs
 
-**Director: home** (handed over by work at 7:40 PM Central, 20 October 2026, when the maintainer left the office. **home directs from when he reaches home and speaks to it**; until then nothing is running that needs direction.)
+**Director: home** (handed over by work at 10:25 PM Central, 20 October 2026. **home directs from when the maintainer speaks to it**; until then the only thing running is `work-lab-leila`'s batch 4.)
 
 Each of the maintainer's machines runs a Claude Code session on this branch. **At any time exactly one machine
 directs; every other machine listens.** The maintainer talks to the director. Every session reads this file first,
@@ -232,82 +232,84 @@ A `## Stop` heading in a listener's `TASKS.md` stops that listener: it writes `S
 
 ## Handover
 
-Written by `work` at 7:40 PM Central, 20 October 2026. Three machines are live; `codex-home` has been idle
-since 19 October.
+Written by `work` at 10:25 PM Central, 20 October 2026.
 
-### What is waiting on the maintainer
+### Waiting on the maintainer
 
-**Five pull requests, and three of them are not open yet.** He merges one at a time and tells the director
-after each.
+| | |
+| --- | --- |
+| [PR 2031](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2031) | #1991, Vendor Parking's lots. MERGEABLE, CI running |
+| [PR 2033](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2033) | #2004, the multi-value legend class. MERGEABLE, CI running |
 
-| PR | For | State |
-| --- | --- | --- |
-| [2013](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2013) | #2008, the heavy lane | Open, Pending Approval |
-| not yet open | #1991, Vendor Parking's lots | Waiting on `work-lab-leila`'s images |
-| not yet open | #1992 and #1993, accessible spaces on two sports maps | The same |
-| not yet open | #2004, the multi-value legend class | The same |
+Both were green locally before they were opened, and all three parking fixes were also checked **merged
+together** by `work-lab-leila`: full affected check exit 0, and `map-layers.spec.ts` on a combined
+production build at 58 passed, 12 skipped, 0 failed. CI does not check pull requests in combination, so
+that is the stronger evidence of the two.
 
-**The three parking pull requests are `work`'s to open and it needs no instruction to do it.** Their bodies
-are already written and sitting in its scratchpad; the moment `work-lab-leila` says "branches ready for PRs"
-it fills in the raw image URLs and opens all three. If `work`'s session has been closed by then, the new
-director should tell it to.
-
-**They will conflict with each other**, and that is expected, not a fault: each adds an entry to
-`docs/releases/unreleased.md` under `## Summary` and a row at the top of *What to test on dev* — three
-branches editing the same two insertion points. The maintainer has agreed to merge one at a time; the
-director merges `development` into the next one, keeps **both** entries and **both** rows, and pushes. That
-is about five minutes each and it was done four times today.
+**Every pull request tonight conflicted on the same two places in `unreleased.md`** - the `## Summary`
+entries and the top of *What to test on dev*. Five resolutions, all mechanical, all "keep both". Merging
+`development` in and keeping both sides is the whole job, about five minutes. It is not a sign anything
+is wrong.
 
 ### What each machine is doing
 
-- **`work-lab-leila`** — **batch 3, running since 6:33 PM**: the before and after images and the release
-  notes for the three parking fixes, committed on each branch and pushed to the fork. Its first two batches
-  took ten minutes each; this one is longer because it builds three branches. **It has no `gh` CLI**, so it
-  opens nothing and comments nowhere: its branches come back to the director, like the cloud session's. Read
-  the **What this is** section of its `STATUS.md` before writing it a batch.
-- **`home`** — idle since batch 12. Its PR is 2013. The maintainer has parked #2007, NestJS 12 and #1973 and
-  wants nothing new started tonight.
-- **`work`** — becomes a listener now. It owes the three parking pull requests and nothing else.
-- **`codex-home`** — idle since 19 October, batch 2 withdrawn as presumed stopped. Nobody has restarted it.
+- **`work-lab-leila`** - batch 4, second half: #1969, the intermittent `?lot=` race, run many times at
+  different machine loads. It opened [PR 2030](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2030) itself for #1975 and every check on it
+  passed, which is the first pull request it has opened. **It has `gh` now but no `project` scope**, so it
+  can file issues and set fields and cannot add anything to a project board - the director does that part.
+- **`home`** - idle since batch 13. It opened PRs 2016 and 2020, both merged.
+- **`work`** - becomes a listener. Nothing in flight.
+- **`codex-home`** - idle since 19 October.
 
-### Branch heads, all merged with `development` and pushed to the fork
+### Open issues that need a Priority
 
-| Branch | Head | Closes |
-| --- | --- | --- |
-| `fix/1991-vendor-parking-lots` | `9979ff57d` | #1991 |
-| `fix/1992-accessible-parking-sports-maps` | `248ef407e` | #1992, #1993 |
-| `fix/1992-legend-multi-value-class` | `e5a66b132` | #2004 |
-| `test/2008-heavy-space-maps` | `9c7a5541e` | #2008 (PR 2013) |
+**#2019** (Bug), **#2015** (Task) and **#2007** (Task) are filed with no Priority. #2034 was set to Medium
+tonight. The maintainer answers these; do not guess them.
 
-`work-lab-leila` is adding image and notes commits on the first three, so their heads will move. The code on
-them will not.
+### The one finding that is bigger than it looks
 
-### Open questions for the maintainer
+**Eighteen live maps have every `eventDates` entry in the past**, and each shows visitors a "This event has
+passed" dialog. #2019 was filed as one map - Women's Basketball - and the maintainer agreed to rename it to
+cover all eighteen; **that rename has not been done yet.**
 
-**None.** Every decision put to him today was answered, and every field is set on every issue and pull
-request opened today. The new director starts with nothing owed.
+They split three ways and only the first is mechanical:
+
+1. **Sports** - Baseball (35 dates, ended May), Women's Basketball, and worth checking Men's Basketball,
+   Soccer, Volleyball, Tennis, Football, Maroon & White. The 2026-27 home dates are published at
+   `12thman.com/sports/<sport>/schedule`, **server-rendered, no API needed** - one fetch per sport gets
+   them. The maintainer has asked for **a script in this repository** that scrapes every sport we have a
+   map for and reports differences against the definitions, to be run on a schedule. It should *report*,
+   not rewrite definitions. Women's Basketball's 18 home dates have already been read: Nov 2, 5, 7, 16, 18,
+   21; Dec 6, 15, 17, 22, 31; Jan 10, 21, 28, 31; Feb 7, 22, 25.
+2. **Twelve campus events** - Muster, Big Event, MS150, Aggieland Saturday, Fish Camp, T-Camp, 4-H Roundup,
+   Fire School, Games of Texas, Beef Cattle, HS Graduation, Physics & Engineering Festival. Different
+   sources; the team's to supply. The maintainer agreed to **one issue listing all of them**, which is also
+   not filed yet.
+3. **Three 150th maps** - Kickoff, Opening Ceremony, Spirit of 150 Week. The anniversary is over, so this is
+   a retire decision rather than a date problem. `layer-sources.spec.ts` already asserts every 150th event
+   has passed.
+
+Also noted while finding this: `womens-basketball.definitions.ts` has `'2026-01-1'`, a date missing a digit,
+which has been parsing by luck.
+
+### Three things not to relearn
+
+1. **A pull request showing one lonely `ACTION_REQUIRED` check and nothing else has a stale base.** Three
+   pull requests got no GitHub Actions runs at all tonight - not failed, never created - through `opened`,
+   `reopened`, `synchronize` and `labeled`, and through being closed and reopened as new pull requests. What
+   fixed it was merging the current `development` in. Try that **first**, not last.
+2. **A green check can mean nothing ran.** `check-in-volume.sh` returns exit 0 with `No tasks were run` for a
+   branch touching only `test/smoke/aggiemap/`, which is not an Nx project. For the suite the real check is
+   `tsc -p test/smoke/aggiemap --noEmit`. Read the log, not the exit code.
+3. **A deny rule written from a guess can break the protocol.** `.claude/settings.json` shipped denying
+   `git push origin`, which is how every machine writes to this mailbox; `deny` beats `allow`, so it could
+   not be patched around. Fixed in #2028. Two things no settings file reaches: a rule matches the command
+   **as written**, so a session calling a tool by full path matches nothing; and the auto-mode classifier's
+   refusals need the maintainer.
 
 ### Merged today
 
-#1981, #1987, #1988, #1986's `map-layers.spec.ts`, #2002's `testing.md` rule, #2009's dev-server settings,
-and PRs 1983, 1984, 1985, 1994 and 1999 merged by the maintainer. `prod-2026-10-20` baselines are complete,
-424 desktop and 424 phone, on the `work` machine only — baselines are per machine.
-
-### Four things the next director should not have to rediscover
-
-1. **`work-lab-leila` is five to ten times faster than `work` for test work** — 24 CPUs and 64 GB against
-   `work`'s contention; `map-layers.spec.ts` in 3.8 minutes there against 10-11 here. Whether the release
-   tiers, the baseline captures and the combined pre-merge checks simply move there is a real decision and
-   today was only its first afternoon. It cannot touch GitHub, so the director still does that half.
-2. **A green check can mean nothing ran.** `check-in-volume.sh` on `test/2008-heavy-space-maps` returned
-   exit 0 with `No tasks were run` three times, because the only changed file is in `test/smoke/aggiemap/`,
-   which is not an Nx project. It caught `work` this morning on `development` too. For a smoke-suite-only
-   change the real check is `tsc -p test/smoke/aggiemap --noEmit`. Read the log, not just the exit code.
-3. **`docs/testing.md`'s counts are not touched by pull requests** — that landed today as #2002 after three
-   pull requests conflicted on the Total line in one afternoon. The check reads spec file names only; the
-   counts are refreshed at release from a measured run.
-4. **Production still carries every fault fixed today**, because nothing has been deployed since
-   `prod-2026-10-20` (`8463ac6af`). #1981, #1987, #1988, #1991, #1992, #1993 and #2004 are all still live
-   there. That is why `map-layers.spec.ts` fails seven maps against production and why those failures are
-   *not* listed as allowed: they are meant to be visible until a deploy clears them.
+#1981, #1987, #1988, #1986, #1992, #1993, #1995, #2002, #2008, #2009, #1970, #2001, #1975, #1978, #2017,
+#2028, plus the GIS Day and upgrade work the maintainer merged himself. Four bugs found by a check that did
+not exist this morning, and three more found by the machine that joined this afternoon.
 
