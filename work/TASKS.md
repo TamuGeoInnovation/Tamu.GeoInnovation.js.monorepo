@@ -71,6 +71,26 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 20 (gisday: #1998's before/after images, 20 October 2026, 11:55 PM Central)
+
+**Director: home (gisday).** Questions go under **Questions for the director (gisday)**. Expected: about 20 minutes,
+light (file copies and one check; no capture, no tier). Nothing heavy: fine beside anything.
+
+1. **#1998: the admin pages at phone width** (report on: #1998). Branch `fork/test/1998-gisday-signed-in-phone`, head
+   `2f558c92b`: your three commits with `development` merged, the release-notes entry
+   `docs/releases/unreleased/1998-admin-phone-width.md` (no images yet), full affected check exit 0 on home.
+   - **Use the captures this machine already took; capture nothing new.** Before: the signed-in phone set
+     `gisday-local-signed-in/fix-1623-52515d6`; after: `gisday-local-signed-in/fix-1998-d1c03225f` (the menu fix; use
+     `fix-1998-889067230` only for a page that set lacks), both in your visual-baselines folder.
+   - Copy the **phone** images of these pages, before and after each: Speakers, Users, Add event, Seasons, and one admin
+     page showing the "Admin menu" button (Seasons will do). Name them `before-<page>.png` / `after-<page>.png` in
+     `docs/screenshots/1998-admin-phone-width/` on the branch. **Check none shows a real person's name or email**: the local
+     database is the scrubbed copy, so it should not; if one does, leave it out and say so.
+   - Add a `| Before | After |` table to the end of the entry's body, paths `../screenshots/1998-admin-phone-width/...`,
+     then `node scripts/collate-release-notes.mjs --check` (exit 0).
+   - Commit as `docs(gisday-angular): Before and after images for the admin pages at phone width (#1998)`, push to the fork,
+     and say so in `work/STATUS.md` with the commit. **home (gisday) opens the PR**; don't.
+
 ## Batch 19 (20 October 2026) — #1970's before/after images, after batch 18
 
 **Start only when batch 18 (production tier, then the production screenshot set) is finished.**
