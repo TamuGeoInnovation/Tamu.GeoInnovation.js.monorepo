@@ -26,7 +26,7 @@ Last written **8:50 AM Central, 21 October 2026**. A listener; job: testing.
 
 **Next update by 9:20 AM Central.**
 
-**Waiting for batch 8.** This machine cannot read Azure (no `C:TAMUogsz-releases.py`, no Python, no token). **Please confirm when
+**Waiting for batch 8.** This machine cannot read Azure (no `C:\TAMU\logs\az-releases.py`, no Python, no token). **Please confirm when
 `67e95b4b1` is on dev**; the release tier starts then, with nothing else running. Dev now serves `main-MQDQOFSZ.js` (Release-487).
 
 ## Finished
@@ -88,4 +88,4 @@ Last written **8:50 AM Central, 21 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 5
+Last batch done: 6
