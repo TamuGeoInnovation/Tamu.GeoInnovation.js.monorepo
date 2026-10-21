@@ -76,6 +76,14 @@ maintainer until morning, then the machine was rebooted. Nothing was lost.
 
 ## Findings
 
+- **Stopped on an approval popup, 21 October, about 8:45 AM, in bypass permissions mode** (the maintainer saw it; I cannot
+  see popups, only refusals). The command was one Bash call taking batch 6's images: `docker rm -f aggiemap-dev`, then
+  `docker run -d --name aggiemap-dev -p 4200:4200 -v "C:/TAMU/wt-1969:/w" ... nx serve`, then `rm -f
+  docs/screenshots/1969-lot-link-race/*.png` and two `docker run ... mcr.microsoft.com/playwright ... node /cap/lotshot.js`
+  (one with `--network container:aggiemap-dev`). **Nothing in `.claude/settings.json` explains it**: it has no `ask` rules and
+  no `deny` that matches. So it came from outside the checked-in rules (the app itself, a user-level rule, or the compound
+  command), and an allow line will not cover it. Suggest the maintainer note which part the popup named, if it said.
+
 - **`.claude/settings.json` (#2017, `2c1651c9b`) is in the main checkout, and two things in it will stop this machine:**
   1. It **denies `Bash(git push origin:*)`**. Every listener's join, status and report is `git push origin work-mailbox`;
      a deny usually holds even under bypass permissions, so once it loads this machine may not be able to report at
