@@ -183,8 +183,17 @@ bind-mounts the source, so edits on Windows reach it, but its `node_modules` liv
 
 ```bash
 MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.0 npm ci --no-audit --no-fund
-MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:24.22.0 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.0 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
+
+**`UV_THREADPOOL_SIZE` and `NX_WORKSPACE_DATA_DIRECTORY` are not optional here.** `--poll=2000` keeps Node's
+four default file-system threads busy polling the bind mount, and Vite's dependency optimizer waits behind
+them for good: the server answers on 4200, the log stops at `[optimizer] bundling dependencies...`, and the
+page stays blank, with no error anywhere (#1955). And Nx's task records belong inside the container, because
+`docker rm -f` kills Nx mid-task and a record left in the checkout's `.nx/workspace-data` makes the next start
+print `Waiting for aggiemap-angular:serve in another nx process` and never continue (#1626). Both were already
+documented for the GIS Day dev server and missing from this one, which is the command most likely to be copied
+(#2009).
 
 One volume serves whichever checkout is mounted, so it must match that checkout's lock. Check before
 trusting it: `node_modules/@angular/core/package.json` must show the version the checkout uses. On 4
@@ -257,7 +266,7 @@ Both need the map probe (`window.__tamuGiscMapProbe`) in the deployed build. If 
 empty, the environment is running something older.
 
 - **[`tools/visual-baselines`](tools/visual-baselines/README.md)** photographs every map in an
-  environment, keyed by release tag, so a change that moves the symbology of every map at once can be
+  environment (and, with `--app gisday`, every public GIS Day page), keyed by release tag, so a change that moves the symbology of every map at once can be
   reviewed instead of guessed at. **A set is captured after a release reaches an environment**, as
   step 8 of [the release sequence](docs/releases/README.md#8-capture-the-baseline-images) — a "before"
   only exists if somebody took it while it was still true. Baselines live outside the repository, are
@@ -265,6 +274,11 @@ empty, the environment is running something older.
 
 [`docs/testing.md`](docs/testing.md) describes all of the testing for readers outside the team, with
 dated counts; a check fails if a smoke spec is missing from it.
+
+**Add your spec's row to that page and leave its numbers alone, the Total included.** The check reads
+only the spec file names, never the counts, and the counts are a measurement refreshed at each release
+from a watched run - not a tally kept by hand. On 20 October three pull requests each conflicted on that
+one Total line and nothing else, while the file carried three different totals at once (#2002).
 
 ### What "run the tests" means
 
@@ -612,6 +626,14 @@ files on the `work-mailbox` branch of `TamuGeoInnovation`, which is never merged
   ```
   Pull TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, check out the work-mailbox branch, and do what work/TASKS.md says.
   ```
+
+- **A machine that is new to the branch announces itself before anything else.** `DIRECTOR.md` opens with
+  how: work out your name, create `<name>/TASKS.md`, `<name>/STATUS.md` and `<name>/reports/`, push them as
+  `<name>: joined`, and only then listen. **Push first, even if you were given work in the same breath** -
+  the push is what makes you addressable, and until it lands nobody can give you a batch or tell that you
+  started. A session that finds no folder of its own has not been forgotten and must not stop; it is new, and
+  announcing itself is its first job. On 20 October a machine was set up and never appeared on the branch,
+  which is indistinguishable from never having been started ([#2005](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2005)).
 
 - **The work session** does only that batch, runs each test from a worktree at the named commit, and posts
   status and results on the task's issue. It writes `work/reports/<yyyy-mm-dd>-<n>.md` and says "work report

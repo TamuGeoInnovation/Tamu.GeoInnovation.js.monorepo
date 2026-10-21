@@ -8,7 +8,10 @@ import { OidcClientController } from './oidc-client.controller';
 @Module({
   imports: [
     PassportModule.register({
-      session: true
+      session: true,
+      // Passport 0.6 and later start a new session on login, which would drop the return URL that
+      // LoginGuard stores in it before the redirect to the identity provider.
+      keepSessionInfo: true
     })
   ],
   providers: [AuthStrategy, SessionSerializer],

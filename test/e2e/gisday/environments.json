@@ -1,0 +1,10 @@
+{
+  "production": {
+    "baseUrl": "https://txgisday.org",
+    "note": "txgisday.org. GIS Day has no dev site yet (#1525)."
+  },
+  "local": {
+    "baseUrl": "http://localhost:4201",
+    "note": "scripts/gisday-local.sh web; sign-in is registered for this port only."
+  }
+}

@@ -87,11 +87,15 @@ export const LiveAtTheStationTs: AggiemapCustomMapConfiguration = {
     name: LiveAtTheStationConfiguration.name,
     description: 'Transportation and logistics information for Live at the Station.',
     source: 'internal',
-    // Unlike most one-off event maps, this is left visible: `getUpcomingApplications()` reads
+    // Unlike most one-off event maps, this was left visible: `getUpcomingApplications()` reads
     // `getVisibleInternalDiscoverApplications()`, so a hidden map never reaches the Upcoming Events
     // list on All Maps. #993 asks for this event to be listed there.
     visible: true,
     type: 'event',
+    // The event was cancelled before it happened (#1995), so this retires while its date is still in
+    // the future - unlike every other retired map here, which retired after its event was over.
+    // Retiring rather than deleting keeps the definition readable if the concert is rescheduled.
+    status: 'retired',
     // Listed on Campus Events and on the 150th Anniversary page. Both, not either:
     // these are campus events that also belong to the anniversary set.
     mapTypes: ['campus', '150'],

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- LiDAR sponsorship level icon, redrawn from the 2026 prospectus (#1976). -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 305 300">
+  <g fill="#5B3636" stroke="#5B3636">
+    <rect x="110" y="18" width="88" height="46" rx="12" fill="none" stroke-width="12"/>
+    <ellipse cx="154" cy="41" rx="13" ry="10" stroke="none"/>
+    <rect x="147" y="64" width="12" height="12" stroke="none"/>
+    <line x1="153" y1="74" x2="65" y2="190" stroke-width="6" stroke-linecap="round"/>
+    <line x1="153" y1="74" x2="108" y2="190" stroke-width="6" stroke-linecap="round"/>
+    <line x1="153" y1="74" x2="152" y2="190" stroke-width="6" stroke-linecap="round"/>
+    <line x1="153" y1="74" x2="196" y2="190" stroke-width="6" stroke-linecap="round"/>
+    <line x1="153" y1="74" x2="240" y2="190" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="22" cy="196" r="7" stroke="none"/>
+    <circle cx="22" cy="225" r="8" stroke="none"/>
+    <circle cx="22" cy="257" r="9.5" stroke="none"/>
+    <circle cx="65" cy="196" r="6.5" stroke="none"/>
+    <circle cx="65" cy="225" r="8" stroke="none"/>
+    <circle cx="65" cy="257" r="9.5" stroke="none"/>
+    <circle cx="108" cy="196" r="6.5" stroke="none"/>
+    <circle cx="108" cy="225" r="8" stroke="none"/>
+    <circle cx="108" cy="257" r="9.5" stroke="none"/>
+    <circle cx="152" cy="196" r="6.5" stroke="none"/>
+    <circle cx="152" cy="225" r="8" stroke="none"/>
+    <circle cx="152" cy="257" r="9.5" stroke="none"/>
+    <circle cx="196" cy="196" r="6.5" stroke="none"/>
+    <circle cx="196" cy="225" r="8" stroke="none"/>
+    <circle cx="196" cy="257" r="9.5" stroke="none"/>
+    <circle cx="240" cy="196" r="6.5" stroke="none"/>
+    <circle cx="240" cy="225" r="8" stroke="none"/>
+    <circle cx="240" cy="257" r="9.5" stroke="none"/>
+    <circle cx="283" cy="196" r="7" stroke="none"/>
+    <circle cx="283" cy="225" r="8" stroke="none"/>
+    <circle cx="283" cy="257" r="9.5" stroke="none"/>
+  </g>
+</svg>

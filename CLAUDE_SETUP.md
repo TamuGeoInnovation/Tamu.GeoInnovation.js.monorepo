@@ -194,7 +194,7 @@ only compiles what the specs import, and `nx lint` does not typecheck at all.
 ## Phase 5 - Run the app
 
 ```
-MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v "<path>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:24.22.0 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v "<path>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.0 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 **Expect:** compiled in roughly three to four minutes, then the app answers on port 4200.
@@ -203,6 +203,15 @@ MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v 
 Windows-to-Linux bind mount. Without it the server compiles once at startup and then never
 rebuilds, while still looking healthy. Changes appear to do nothing because they were never
 compiled.
+
+**`UV_THREADPOOL_SIZE=64` is required with `--poll=2000`.** Polling keeps Node's four default
+file-system threads busy, and Vite's dependency optimizer waits behind them for good: the log
+stops at `[optimizer] bundling dependencies...` and the page stays blank (#1955).
+
+**`NX_WORKSPACE_DATA_DIRECTORY` keeps Nx's task records in the container.** `docker rm -f`
+kills Nx mid-task, and a record left in the checkout's `.nx/workspace-data` makes the next
+start print `Waiting for aggiemap-angular:serve in another nx process` and never continue
+(#1626).
 
 Two hostnames, deliberately different:
 

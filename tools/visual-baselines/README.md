@@ -57,6 +57,24 @@ A set is hundreds of megabytes, and there is one per release per environment. Th
 for, and committing them would make every clone pay for them forever. The consequence is that
 baselines are **per machine**: a set captured at work is not available at home.
 
+## GIS Day
+
+`--app gisday` takes the same pictures of the GIS Day site ([#1980][1980]): every public page reachable
+from its home page, one detail page of each kind (a session, a presenter), at the same two viewports.
+Each shot is the **whole page**, because GIS Day's pages scroll and a map does not. Its environments
+are in `test/e2e/gisday/environments.json`: `production` (txgisday.org) and `local` (port 4201).
+
+```bash
+MSYS_NO_PATHCONV=1 docker run --rm -m 8g   -v "C:/TAMU/Tamu.GeoInnovation.js.monorepo:/repo" -v tamu-js-smoke-nm:/repo/node_modules   -v "C:/TAMU/visual-baselines:/out"   -w /repo mcr.microsoft.com/playwright:v1.63.0-noble   node tools/visual-baselines/capture.mjs --app gisday --env production --release sha-0f69d3b --out /out
+```
+
+- **Where sets go:** under `gisday-<environment>/<release>/`, beside AggieMap's.
+- **The release name:** GIS Day has no release tags until it has a dev site ([#1525][1525]), so pass
+  the image tag production runs as `--release`.
+- **The local site:** add `--network container:gisday-dev` to reach it. It builds without content
+  hashes, so its manifest records `unknown-build`.
+- **Not captured:** admin and signed-in pages, which need a sign-in.
+
 ## Comparing two sets
 
 ```bash
@@ -82,3 +100,5 @@ out. Neither run meant anything and both had to be thrown away.
 [1306]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1306
 [1497]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1497
 [1508]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1508
+[1525]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525
+[1980]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1980

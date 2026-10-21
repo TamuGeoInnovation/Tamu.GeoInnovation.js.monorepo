@@ -41,7 +41,13 @@ export const CORE_SPECS = [
 export const CORE_ROUTES = ['/map', '/parking/ts-main-parking', '/events/gameday-parking'];
 
 /** Specs whose tests are one per route, with the route leading the title. Selected by route. */
-export const ROUTE_SPECS = ['maps.spec.ts', 'event-dates.spec.ts', 'framing.spec.ts', 'parking-spaces.spec.ts'];
+export const ROUTE_SPECS = [
+  'maps.spec.ts',
+  'event-dates.spec.ts',
+  'framing.spec.ts',
+  'parking-spaces.spec.ts',
+  'map-layers.spec.ts'
+];
 
 /**
  * Titles in the per-route specs that run whatever changed. `maps.spec.ts` holds the coverage floor,

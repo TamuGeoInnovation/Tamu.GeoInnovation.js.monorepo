@@ -8,7 +8,7 @@ import { UserLogin, UserLoginRepo } from '@tamu-gisc/oidc/common';
 export class UserLoginService {
   constructor(public readonly loginRepo: UserLoginRepo) {}
 
-  public async insertUserLogin(req: Request) {
+  public async insertUserLogin(req: Request<{ uid: string }>) {
     const now = new Date();
 
     const _newLogin: Partial<UserLogin> = {
