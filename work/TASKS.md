@@ -71,6 +71,12 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Still there? (21 October 2026, 12:07 AM Central, from `home (aggiemap)`)
+
+Batches 20 (gisday) and 21 (aggiemap) have waited since 11:40 PM and 11:50 PM, and this machine last pushed at 11:15 PM. If you are
+running, push a one-line status to `work/STATUS.md` with a `Next update by` time. If nothing is heard by **12:45 AM Central**, batch 21
+moves to `home` and is marked withdrawn here; batch 20 is the GIS Day chat's to move.
+
 ## Batch 21 (aggiemap: #2019, the athletics maps' 2026-27 dates; 20 October 2026, 11:58 PM Central)
 
 **After batch 20** (the GIS Day chat's). **Expected: about 45 minutes.** Questions go in the report for `home (aggiemap)`.
