@@ -3,11 +3,11 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. Clock times are read from PowerShell, not estimated.
 
-Last written **11:40 PM Central, 20 October 2026**. **This machine is a listener**; `home` directs.
+Last written **8:05 AM Central, 21 October 2026**. **This machine directs AggieMap** (taken when the maintainer returned to the office).
 
 ## Running now
 
-(nothing) — everything is committed and pushed; no worktree has uncommitted work.
+(nothing yet) — just taken the AggieMap director role; reading the overnight handover.
 
 
 ## Merged today
