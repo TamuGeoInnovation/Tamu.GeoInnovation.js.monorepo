@@ -30,6 +30,10 @@ on GitHub before it is merged. Changes merged to `development` run them again.
   pull request, so a mistake in a check fails before it can quietly check the wrong thing. Until
   October 2026 nothing compiled them
   ([#1470](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1470)).
+- **The tools' own tests.** The scripts under `tools/`, which check the maps from outside the
+  applications, carry their own small tests. They run on pull requests that change those scripts, or
+  the map definitions they read
+  ([#2055](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2055)).
 - **Unit tests.** Small, fast tests that live next to the code they check. There are about 175 unit
   test files across the applications and shared libraries, holding roughly 900 individual tests
   (counted from the source on 4 October 2026). Results are published on the pull request itself, so a
