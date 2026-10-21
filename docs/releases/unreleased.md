@@ -1,10 +1,10 @@
 # Unreleased
 
-Since `b78942631`, the build going to production as the 21 October release: GIS Day changes waiting
-for GIS Day's own deploy. Every AggieMap entry up to `b78942631` moved into the 21 October notes.
+Since `61161ce1b`, the build going to production as the 21 October release: GIS Day changes waiting
+for GIS Day's own deploy. Every AggieMap entry up to `61161ce1b` moved into the 21 October notes.
 
-**The latest release notes are [21 October 2026](2026-10-21.md)**, for the build from `b78942631`
-(build 20261020.40, Release-487), on dev and going to production. The `prod-*` tag on `b78942631` records
+**The latest release notes are [21 October 2026](2026-10-21.md)**, for the build from `61161ce1b`
+(build 20261021.16, Release-489), on dev and going to production. The `prod-*` tag on `61161ce1b` records
 when it reaches production. The release before it is [19 October 2026](2026-10-19.md), from `8463ac6af`.
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
