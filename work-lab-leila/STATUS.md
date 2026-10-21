@@ -35,7 +35,7 @@ maintainer until morning, then the machine was rebooted. Nothing was lost.
   back the main map's lot search, fails **6 of 6** on dev and passes **10 of 10** on the fix; `lot-links.spec.ts` 5 of 5 and
   `selection.spec.ts` 6 of 6 green; the scoped check `ts-events-ngx,maps-esri,aggiemap-angular` exit 0. Still to do: images, the notes
   file, the pull request.
-- **Batch 8 cannot identify the build here.** `C:TAMUogsz-releases.py` does not exist on this machine, Python is not
+- **Batch 8 cannot identify the build here.** `C:\TAMU\logs\az-releases.py` does not exist on this machine, Python is not
   installed, and there is no Azure token in the user environment: they are on the work machine. **Please read Azure and say when
   `67e95b4b1` is on dev**, as `home` did for Release-487 last night. Until then I finish batch 6's light work (images, notes, pull
   request), and nothing heavy runs.
