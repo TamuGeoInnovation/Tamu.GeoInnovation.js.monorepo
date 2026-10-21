@@ -69,6 +69,23 @@ export function rendererForLayer(data: PortalItemData | null | undefined, layerI
 }
 
 /**
+ * A renderer that draws every feature with the symbol and label of one class of a service's renderer,
+ * found by its label, or null when the renderer has no such class.
+ *
+ * For a layer whose service renderer has gone stale against its data (#1992): its values name features
+ * the layer no longer holds, so nothing it holds is drawn, while its symbol is still the owner's. The
+ * layer's definition expression decides which features it draws; this keeps the owner's symbol and
+ * drops only the stale test. `renderer` is renderer JSON, from a portal item or a service.
+ */
+export function serviceClassRenderer(renderer: unknown, label: string): object | null {
+  const infos = (renderer as { uniqueValueInfos?: Array<{ label?: string; symbol?: unknown }> } | null | undefined)
+    ?.uniqueValueInfos;
+  const info = (infos ?? []).find((candidate) => candidate.label === label && candidate.symbol);
+
+  return info ? { type: 'simple', label, symbol: info.symbol } : null;
+}
+
+/**
  * Whether a layer source has already decided how it draws.
  *
  * A map that sets its own renderer means it: the Construction layer deliberately replaces the

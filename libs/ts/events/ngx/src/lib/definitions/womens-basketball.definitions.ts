@@ -74,6 +74,11 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
+    // Overridden (#1992): the service's renderer gives its wheelchair symbol only to `Disabled,Volleyball`
+    // and `Disabled,Basketball`, but the basketball spaces now say `Accessible,Basketball`, so it drew none
+    // of them and the legend entry was empty. Every space the expression below selects is drawn with the
+    // service's own symbol. Remove once the service's renderer names `Accessible`.
+    symbolFromServiceClass: 'Accessible Parking',
     native: {
       outFields: ['*'],
       // The symbol table in the view is campus-wide and unfiltered; basketball accessible spaces
