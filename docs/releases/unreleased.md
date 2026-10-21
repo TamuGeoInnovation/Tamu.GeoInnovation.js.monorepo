@@ -68,6 +68,19 @@ other check passed this map.
 | Before | After |
 | --- | --- |
 | ![Business Parking on production: the blue two-hour space markers only, and two empty legend entries](../screenshots/1981-business-parking-lots/before-production-no-lots.png) | ![The same map with maroon surface lots, pink garages, and a symbol beside each legend entry](../screenshots/1981-business-parking-lots/after-local-build-lots-drawn.png) |
+
+### Vendor Parking's lots open their vendor notes again
+
+The lots were drawn by a background image that could not be clicked, because the service's symbology depends on a
+field it does not publish (as Business Parking's [#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)). They are now two clickable layers in the
+service's colours: maroon where Vendor and Vendor+ permits are authorized, lavender for the garages where only
+Vendor+ is ([#1991](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1991)).
+
+| Before | After |
+| --- | --- |
+| ![Vendor Parking on production: Lot 050 clicked, and the campus "Lot 050" popup open instead of its vendor notes](../screenshots/1991-vendor-parking-lots/before-production-wrong-popup.png) | ![The same lot clicked on a local build: its vendor notes, "an authorized lot for Vendor and Vendor+ permits"](../screenshots/1991-vendor-parking-lots/after-local-build-vendor-popup.png) |
+| ![The legend on production: one Vendor Parking Lots entry](../screenshots/1991-vendor-parking-lots/before-production-legend.png) | ![Both lot layers drawn, listed in Layers, and each with its own legend entry](../screenshots/1991-vendor-parking-lots/after-local-build-both-layers.png) |
+
 ### Not visible: NestJS 10 to 11
 
 The NestJS APIs (UES Operations, GIS Day, OIDC, Mailroom and Geoservices) move from NestJS 10.4.22 to 11.2.7
@@ -635,6 +648,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Vendor Parking's lots open their vendor notes ([#1991](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1991)) | [dev.aggiemap.tamu.edu/parking/vendor-parking](https://dev.aggiemap.tamu.edu/parking/vendor-parking) | Maroon lots and lavender garages; clicking a lot opens its vendor notes, not the campus lot popup; both layers listed |
 | Aerial Imagery no longer opens blank ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)) | [dev.aggiemap.tamu.edu/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), then choose Aerial Imagery; repeat with a fresh page several times | The imagery draws every time without zooming or touching the slider, and the spinner beside Aerial Imagery stops once it has. The slider still steps back to older dates and forward to Latest. On a phone, ☰ → Basemap → Aerial Imagery draws too |
 | Layer symbols back in the legend ([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987), [#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)) | [dev.aggiemap.tamu.edu/parking/permit-select-freshman](https://dev.aggiemap.tamu.edu/parking/permit-select-freshman) | Both layers have a coloured symbol beside their name in the Legend, not just the name. Then check a few other parking maps - Visitor, Motorcycle, Accessible - and the main map's layers: every legend entry for a switched-on layer has a symbol, and no legend that was right before has lost a row |
 | Business Parking draws its lots ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)) | [dev.aggiemap.tamu.edu/parking/business-parking](https://dev.aggiemap.tamu.edu/parking/business-parking) | Maroon surface lots and pink garages across campus, as well as the blue two-hour space markers. In the Legend, all three entries have a symbol beside them: a blue triangle, a maroon square and a pink square. Switching either lot layer off removes those lots and its legend entry |
