@@ -91,6 +91,11 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
     paths: /^libs\/ts\/events\/ngx\/src\/lib\/(services\/event\/|definitions\/campus\/)/,
     specs: ['campus-layers.spec.ts', 'kiosk.spec.ts', 'lot-links.spec.ts']
   },
+  // The kiosk maps, and the Football Tailgating map whose layers and links its kiosk reuses (#1975).
+  {
+    paths: /^libs\/ts\/events\/ngx\/src\/lib\/definitions\/(dining|tailgating|tailgating-kiosk)\.definitions\.ts$/,
+    specs: ['kiosk.spec.ts']
+  },
   { paths: /^libs\/maps\/esri\/src\/lib\/services\/map\/(selection-layer|hit-order)\.ts$/, specs: ['selection.spec.ts'] },
   {
     paths: /^libs\/(ui-kits\/ngx\/forms\/src\/lib\/components\/autocomplete|aggiemap\/ngx\/discover\/src\/lib\/components\/all-maps)\//,

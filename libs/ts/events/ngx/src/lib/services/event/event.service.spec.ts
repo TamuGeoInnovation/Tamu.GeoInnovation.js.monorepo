@@ -21,7 +21,6 @@ import { EsriMapService, EsriModuleProviderService, LayerSourcesService } from '
 import { AggiemapCustomMapConfiguration } from '../../interfaces/special-event.interface';
 import { EventDefinitions } from '../../definitions/all.definitions';
 import { BreakSummerParkingTs } from '../../definitions/break-summer.definitions';
-import { DiningKioskTs } from '../../definitions/dining.definitions';
 import { AVP_PARKING_LAYERS, AVPParkingColdLayerSources } from '../../definitions/avp-parking.definitions';
 import { EventService } from './event.service';
 
@@ -120,9 +119,20 @@ describe('EventService, drawing a map whose feature lookup fails', () => {
  * one layer per id reaches the map, and on most loads the one drawn was hidden.
  */
 describe('EventService', () => {
-  it("builds a kiosk map with none of the main map's layers", () => {
-    expect(mainLayersLoadedFor(DiningKioskTs)).toEqual([]);
+  const kiosks = EventDefinitions.filter((definition) => definition.discover?.type === 'kiosk');
+
+  it('finds the kiosk maps to check', () => {
+    expect(kiosks.map((definition) => definition.configuration?.id)).toEqual(
+      expect.arrayContaining(['dining', 'football-tailgating'])
+    );
   });
+
+  it.each(kiosks.map((definition) => [definition.configuration?.id, definition] as const))(
+    "builds the %s kiosk map with none of the main map's layers",
+    (_id, definition) => {
+      expect(mainLayersLoadedFor(definition)).toEqual([]);
+    }
+  );
 
   /**
    * A satellite campus map shows only its own campus (#1910).
