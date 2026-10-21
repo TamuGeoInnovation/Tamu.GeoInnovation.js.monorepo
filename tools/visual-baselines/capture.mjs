@@ -46,6 +46,16 @@
  *
  *   node tools/visual-baselines/capture.mjs --app gisday --env production --release sha-0f69d3b
  *   node tools/visual-baselines/capture.mjs --app gisday --env local
+ *
+ * `--signed-in <file>` (GIS Day, local only) signs in first, as the test admin the development Auth0
+ * tenant gives the local site (#1623, #1998), and captures the pages behind the sign-in instead: each
+ * admin section's list, its add form and the first entry's edit form, the account pages, and a session
+ * as a signed-in visitor sees it. The file is auth0-dev.local.env (TEST_ADMIN_EMAIL, TEST_ADMIN_PASSWORD),
+ * written by scripts/gisday-auth0-dev.ps1 outside the repository; nothing from it is printed. Such a set
+ * is kept apart, under `gisday-<env>-signed-in/`. Auth0 asks a localhost app for permission on most
+ * sign-ins, so the "Authorize App" screen is accepted for the test account each time.
+ *
+ *   node tools/visual-baselines/capture.mjs --app gisday --env local --signed-in /auth/auth0-dev.local.env
  */
 
 import { chromium } from 'playwright';
@@ -71,6 +81,13 @@ if (app !== 'aggiemap' && app !== 'gisday') {
 }
 
 const gisday = app === 'gisday';
+/** GIS Day, local only: the auth0-dev.local.env to sign in with, for the pages behind the sign-in (#1998). */
+const signedInFile = arg('signed-in', '');
+
+if (signedInFile && (!gisday || !['local', 'local-production'].includes(arg('env', 'production')))) {
+  console.error('--signed-in is for --app gisday on a local environment only: it signs in to the development tenant.');
+  process.exit(2);
+}
 const envName = arg('env', 'production');
 const outRoot = arg('out', process.env.AGGIEMAP_BASELINES || path.join(REPO, '..', 'visual-baselines'));
 /** The release this environment is serving; defaults to the newest tag for its prefix. */
@@ -257,7 +274,112 @@ async function gisdayRoutesToCapture(page) {
   return only.length > 0 ? all.filter((route) => only.some((part) => route.includes(part))) : all;
 }
 
+/** The test admin's sign-in, read from the file and never printed. */
+function signInDetails() {
+  const values = {};
+
+  for (const line of fs.readFileSync(signedInFile, 'utf8').split(/\r?\n/)) {
+    const match = line.match(/^([A-Z0-9_]+)=(.*)$/);
+
+    if (match) {
+      values[match[1]] = match[2];
+    }
+  }
+
+  if (!values.TEST_ADMIN_EMAIL || !values.TEST_ADMIN_PASSWORD) {
+    console.error(signedInFile + ' has no TEST_ADMIN_EMAIL and TEST_ADMIN_PASSWORD; run scripts/gisday-auth0-dev.ps1.');
+    process.exit(2);
+  }
+
+  return { email: values.TEST_ADMIN_EMAIL, password: values.TEST_ADMIN_PASSWORD };
+}
+
+/**
+ * Gets a page back to the site whenever it lands on the development tenant: signs in on the login form,
+ * and accepts the "Authorize App" screen, which Auth0 shows a localhost app on most sign-ins.
+ */
+async function throughSignIn(page) {
+  const { email, password } = signInDetails();
+
+  for (let step = 0; step < 8; step++) {
+    await page.waitForLoadState('domcontentloaded');
+    // The site starts loading, then sends the browser to Auth0 a moment later to renew the sign-in, so
+    // "back on the site" only counts once the page has stayed there for a few seconds.
+    await page.waitForTimeout(4000);
+
+    if (new URL(page.url()).origin === baseUrl) {
+      return;
+    }
+
+    if (await page.locator('input[name="password"]').count()) {
+      await page.fill('input[name="username"], input[name="email"]', email);
+      await page.fill('input[name="password"]', password);
+      await page.click('button[type="submit"][name="action"], button[type="submit"]');
+    } else if (await page.getByRole('button', { name: 'Accept' }).count()) {
+      await page.getByRole('button', { name: 'Accept' }).click();
+    }
+
+    await page.waitForTimeout(2500);
+  }
+
+  throw new Error('Could not get back to the site from ' + new URL(page.url()).origin);
+}
+
+/** Signs in from the home page's Login link. */
+async function signIn(page) {
+  await page.goto(addressOf('/'), { waitUntil: 'domcontentloaded' });
+  await page.getByText('Login/Signup').first().click();
+  await page.waitForTimeout(2000);
+  await throughSignIn(page);
+  await page.waitForTimeout(2000);
+}
+
+/** The pages behind the sign-in: every admin section's list, add and edit forms, and the account pages. */
+async function signedInRoutesToCapture(page) {
+  const sections = fs
+    .readFileSync(path.join(REPO, 'libs/gisday/platform/ngx/core/src/lib/pages/admin/admin.routes.ts'), 'utf8')
+    .match(/path: '([a-z-]+)'/g)
+    .map((m) => m.slice(7, -1));
+  const routes = ['/account', '/account/details', '/account/classes', '/account/checkins', '/account/submissions'];
+
+  for (const section of [...new Set(sections)]) {
+    routes.push('/admin/' + section);
+
+    try {
+      await page.goto(addressOf('/admin/' + section), { waitUntil: 'domcontentloaded' });
+      await throughSignIn(page);
+      await page.waitForTimeout(3000);
+
+      const links = await page.$$eval('a[href]', (anchors) => anchors.map((a) => a.getAttribute('href')));
+      const add = links.find((href) => href && href.startsWith('/admin/' + section + '/add'));
+      const edit = links.find((href) => href && href.startsWith('/admin/' + section + '/edit/'));
+
+      if (add) routes.push(add);
+      if (edit) routes.push(edit);
+    } catch {
+      // A section that does not load is still captured as its list page.
+    }
+  }
+
+  // A session as a signed-in visitor sees it: registration and the feedback form.
+  await page.goto(addressOf('/sessions'), { waitUntil: 'domcontentloaded' });
+  await throughSignIn(page);
+  await page.waitForTimeout(3000);
+
+  const session = (await page.$$eval('a[href]', (anchors) => anchors.map((a) => a.getAttribute('href')))).find((href) => href && href.startsWith('/sessions/details/'));
+
+  if (session) routes.push(session);
+
+  const all = [...new Set(routes)].sort();
+
+  return only.length > 0 ? all.filter((route) => only.some((part) => route.includes(part))) : all;
+}
+
 async function routesToCapture(page) {
+  if (gisday && signedInFile) {
+    return signedInRoutesToCapture(page);
+  }
+
   if (gisday) {
     return gisdayRoutesToCapture(page);
   }
@@ -370,7 +492,16 @@ async function settle(page) {
 (async () => {
   const started = Date.now();
   const browser = await chromium.launch();
-  const probePage = await browser.newPage({ viewport: VIEWPORTS.desktop, timezoneId: 'America/Chicago' });
+  // Signed in, every page shares one browser context, so the sign-in carries from page to page.
+  const signedInContext = signedInFile ? await browser.newContext({ timezoneId: 'America/Chicago' }) : null;
+  const probePage = signedInContext
+    ? await signedInContext.newPage()
+    : await browser.newPage({ viewport: VIEWPORTS.desktop, timezoneId: 'America/Chicago' });
+
+  if (signedInContext) {
+    await probePage.setViewportSize(VIEWPORTS.desktop);
+    await signIn(probePage);
+  }
 
   if (actingAs) {
     await probePage.addInitScript(HIDE_ACTING_AS);
@@ -384,7 +515,7 @@ async function settle(page) {
   await probePage.close();
 
   const release = resolveRelease(build);
-  const setName = (gisday ? 'gisday-' : '') + (actingAs ? envName + '-as-' + actingAs : envName);
+  const setName = (gisday ? 'gisday-' : '') + (actingAs ? envName + '-as-' + actingAs : envName) + (signedInFile ? '-signed-in' : '');
   const outDir = path.join(outRoot, setName, release);
   const manifestPath = path.join(outDir, 'manifest.json');
 
@@ -454,8 +585,8 @@ async function settle(page) {
   const queue = todo.slice();
 
   await Promise.all(
-    Array.from({ length: concurrency }, async () => {
-      const context = await browser.newContext({ timezoneId: 'America/Chicago' });
+    Array.from({ length: signedInContext ? 1 : concurrency }, async () => {
+      const context = signedInContext || (await browser.newContext({ timezoneId: 'America/Chicago' }));
 
       if (actingAs) {
         await context.addInitScript(HIDE_ACTING_AS);
@@ -469,6 +600,11 @@ async function settle(page) {
         try {
           await page.setViewportSize(job.viewport);
           await page.goto(addressOf(job.route), { waitUntil: 'domcontentloaded', timeout: 60000 });
+
+          if (signedInContext) {
+            await throughSignIn(page);
+          }
+
           await settle(page);
           // A GIS Day page scrolls, so the whole page is the picture; a map is one screen.
           await page.screenshot({ path: job.file, fullPage: gisday });
@@ -487,7 +623,9 @@ async function settle(page) {
         }
       }
 
-      await context.close();
+      if (!signedInContext) {
+        await context.close();
+      }
     })
   );
 
