@@ -3,9 +3,11 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Nothing. Batch 12 is done (report 10); waiting for the next batch.** #2007, #1974's second half and #1973 stay parked.
+**Nothing. No batch tonight (read the 7:35 PM note).** Waiting to take over as director when the maintainer gets home.
 
-**branch ready:** `test/2008-heavy-space-maps` (`df689634e`, closes #2008, report 10).
+**Noted:** the #2008 "affected check exit 0" ran nothing (`No tasks were run`; `test/smoke/aggiemap` is not an Nx project). Re-checked
+the way that counts: `tsc -p test/smoke/aggiemap --noEmit` on the branch's `map-layers.spec.ts`: **exit 0**. From now on home reads
+every check log for "No tasks were run" before reporting a pass.
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
