@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:52 AM Central, 21 October 2026**. A listener; job: testing.
+Last written **9:55 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,11 +24,13 @@ Last written **9:52 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 10:32 AM Central.**
+**Next update by 10:35 AM Central.**
 
-**Batch 8, aggiemap: the release tier on Release-488.** Started 9:52 AM Central, on `home`'s Azure read (9:29 AM): Release-488 from
-`67e95b4b1` on dev, serving `main-YX345P5S.js`, checked again at 9:52 AM. `run-local.sh development release` from a worktree at
-`67e95b4b1`, nothing else running. Tag only on a clean pass.
+**Batch 8, aggiemap: the release tier on Release-489** (`61161ce1b`, dev serving `main-T7LYF72R.js`, checked at 9:55 AM). Restarted
+9:55 AM Central, as the director named it at 9:58 AM. `run-local.sh development release` from a worktree at `61161ce1b`, nothing else
+running. Tag only on a clean pass.
+
+**The run begun on Release-488 at 9:52 AM is abandoned**: stopped after 48 tests, its numbers discarded, because 488 is not going out.
 
 ## Finished
 
