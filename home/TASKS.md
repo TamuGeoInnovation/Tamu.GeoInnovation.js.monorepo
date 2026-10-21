@@ -5,7 +5,7 @@
 Small, and two machines are waiting on it.
 
 **`work-lab-leila` has the release tier for today's build (its batch 8) and cannot start it**, because it
-cannot identify which commit dev is serving. It has no Python, no `C:\TAMU\logsz-releases.py` and no
+cannot identify which commit dev is serving. It has no Python, no `C:\TAMU\logs\az-releases.py` and no
 Azure token. **Neither does the work machine** — I looked. Those are on *this* machine, and the handover
 named the path without naming the machine, which is why two machines went hunting for it.
 
@@ -29,7 +29,7 @@ pushed at `1199f263`, with images, the notes file and its pull request still to 
 
 ### Worth fixing while you are in there
 
-The handover said "`C:\TAMU\logsz-releases.py`, PAT from the user environment" without saying **on
+The handover said "`C:\TAMU\logs\az-releases.py`, PAT from the user environment" without saying **on
 home**. Add the machine, so the next director does not send someone to the wrong box. A path with no
 machine is not an instruction on a four-machine branch.
 
