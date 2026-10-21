@@ -71,7 +71,7 @@ export const GISDAY_SITES = {
     banner: 'assets/images/2022-TIN-sq-1080px.png',
     owner: 'GeoInnovation Service Center',
     favicon: 'favicon.ico',
-    off: ['tamu']
+    off: []
   },
   // gisday.tamu.edu, Texas A&M's own GIS Day, in the university's brand (#2012). It is served by txgisday.org's
   // deployment and shares its database; the address alone decides which site a visitor sees.
