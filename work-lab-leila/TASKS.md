@@ -177,6 +177,36 @@ back:**
 
 ---
 
+## The commit is named: Release-489, `61161ce1b` (21 October 2026, 9:58 AM Central)
+
+**Stop the tier you started on Release-488 and restart it on Release-489.** This is the director naming
+the commit, which the hold said to wait for.
+
+| | |
+| --- | --- |
+| **Release** | **489**, build 20261021.16 |
+| **Commit** | `61161ce1bb5ea3852bd42d04ee13ebc6543ab630` |
+| **Bundle dev serves** | `main-T7LYF72R.js` |
+
+**Release-488 (`67e95b4b1`, `main-YX345P5S.js`) is not going out** — its production stage is cancelled.
+It does not contain **#1969's lot-link fix** (PR 2064), which is user-visible on fourteen parking maps, and
+that is exactly why the rebuild happened. A tier on 488 clears a build nobody will ship.
+
+Nothing went wrong on your side: home reported 488 at 9:28 and corrected it at 9:53, and you started in
+between. Discard the 488 run — do not report its numbers as if they cleared anything — and say in your
+report that it was started and abandoned, with why. A run that is quietly dropped is how a wrong number
+ends up in release notes later.
+
+Everything else in batch 8 stands:
+
+- `test/smoke/aggiemap/run-local.sh development release`, nothing heavy beside it;
+- report passed / failed / flaky / skipped, the elapsed time, **every failure named with its map and
+  message**, and both the bundle dev served and the commit;
+- last night's tier on the previous build was 613 / 0 / 0 / 44 — a different shape is worth saying loudly;
+- `#1898` is a known flake;
+- **tag only on a clean pass**: `scripts/tag-build.sh dev 61161ce1bb5ea3852bd42d04ee13ebc6543ab630`, then
+  `git push origin <tag>`. Anything failed means no tag — report and stop.
+
 ## Hold batch 8 until the director names the commit (21 October 2026, 9:25 AM Central)
 
 **Do not start the tier on whatever dev happens to be serving.** Two builds are in play this morning:
