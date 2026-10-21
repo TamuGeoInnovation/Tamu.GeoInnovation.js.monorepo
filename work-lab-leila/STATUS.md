@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:55 AM Central, 21 October 2026**. A listener; job: testing.
+Last written **10:14 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,15 +24,13 @@ Last written **9:55 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 10:35 AM Central.**
-
-**Batch 8, aggiemap: the release tier on Release-489** (`61161ce1b`, dev serving `main-T7LYF72R.js`, checked at 9:55 AM). Restarted
-9:55 AM Central, as the director named it at 9:58 AM. `run-local.sh development release` from a worktree at `61161ce1b`, nothing else
-running. Tag only on a clean pass.
-
-**The run begun on Release-488 at 9:52 AM is abandoned**: stopped after 48 tests, its numbers discarded, because 488 is not going out.
+None.
 
 ## Finished
+
+- **Batch 8, aggiemap: the release tier on Release-489** (`61161ce1b`, `main-T7LYF72R.js`, 9:55 to 10:14 AM): **618 passed, 0
+  failed, 0 flaky, 44 skipped**; tagged **`dev-2026-10-21`**, pushed. A run begun on Release-488 at 9:52 was stopped after 48 tests
+  and discarded. Report `work-lab-leila/reports/2026-10-21-2.md`.
 
 - **Batch 6, aggiemap: #1969** (11:55 PM to 8:50 AM, silent 12:30 to 8:40 AM): **PR 2064** open, `fix/1969-lot-link-race` at `25c3c1daf`.
   Two lookups were racing; the fix is in `EsriMapService` and `EventService`. Smoke test red 6 of 6 on dev, green 10 of 10;
@@ -91,4 +89,4 @@ running. Tag only on a clean pass.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 6
+Last batch done: 8
