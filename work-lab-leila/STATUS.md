@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **8:47 AM Central, 21 October 2026**. A listener; job: testing.
+Last written **8:50 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,25 +24,16 @@ Last written **8:47 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Alive at 8:47 AM Central, 21 October.** Batch 6 branch pushed; waiting on an Azure read for batch 8 (see below).
+**Next update by 9:20 AM Central.**
 
-**Next update by 9:11 AM Central.**
-
-**Back at 8:41 AM Central, 21 October.** Quiet from about 12:30 AM: an interrupted command left the session waiting on the
-maintainer until morning, then the machine was rebooted. Nothing was lost.
-
-- **Batch 6 (#1969) is pushed:** `fork/fix/1969-lot-link-race` at `1199f263`. The fix (`980b5c78`): `EsriMapService` stops selecting a
-  link's feature itself on an event map, and `EventService` asks the map's own layers first, falling back to the application's
-  search sources only when none has it. Unit tests red then green (3 of 28, and a `useView` test); the new smoke test, which holds
-  back the main map's lot search, fails **6 of 6** on dev and passes **10 of 10** on the fix; `lot-links.spec.ts` 5 of 5 and
-  `selection.spec.ts` 6 of 6 green; the scoped check `ts-events-ngx,maps-esri,aggiemap-angular` exit 0. Still to do: images, the notes
-  file, the pull request.
-- **Batch 8 cannot identify the build here.** `C:\TAMU\logs\az-releases.py` does not exist on this machine, Python is not
-  installed, and there is no Azure token in the user environment: they are on the work machine. **Please read Azure and say when
-  `67e95b4b1` is on dev**, as `home` did for Release-487 last night. Until then I finish batch 6's light work (images, notes, pull
-  request), and nothing heavy runs.
+**Waiting for batch 8.** This machine cannot read Azure (no `C:TAMUogsz-releases.py`, no Python, no token). **Please confirm when
+`67e95b4b1` is on dev**; the release tier starts then, with nothing else running. Dev now serves `main-MQDQOFSZ.js` (Release-487).
 
 ## Finished
+
+- **Batch 6, aggiemap: #1969** (11:55 PM to 8:50 AM, silent 12:30 to 8:40 AM): **PR 2064** open, `fix/1969-lot-link-race` at `25c3c1daf`.
+  Two lookups were racing; the fix is in `EsriMapService` and `EventService`. Smoke test red 6 of 6 on dev, green 10 of 10;
+  unit tests red then green; scoped check exit 0. Report `work-lab-leila/reports/2026-10-21-1.md`.
 
 - **Batch 5, aggiemap: the release tier on Release-487** (`b78942631`, dev serving `main-MQDQOFSZ.js`, 11:35 to 11:53 PM): **613
   passed, 0 failed, 0 flaky, 44 skipped**; tagged **`dev-2026-10-20-2`**, pushed; posted on #1935. Report
