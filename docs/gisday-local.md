@@ -25,11 +25,15 @@ with the AggieMap dev server (see CLAUDE.md), so that volume must match the chec
   holds no secrets and works as it stands. The database settings must point at `gisday-db`, never
   production or the shared dev server, and every `MAILROOM_` value stays blank so no email is sent.
   Leave `TYPEORM_PASSWORD` blank; the script passes the one it wrote.
-  `AUTH0_MANAGEMENT_DISABLED=true` lets the API start without Auth0 management credentials, which
-  nobody is given for local use (#1623, #1759).
+  `AUTH0_MANAGEMENT_DISABLED=true` lets the API start without Auth0 management credentials (#1759).
+- `auth0-dev.local.env` (optional): the development Auth0 tenant's management credentials and a test
+  admin account, written by `scripts/gisday-auth0-dev.ps1` (see [Signing in](#signing-in)). When it
+  exists, the `api` step passes it after `gisday-api.local.env`, so its values win and the API has its
+  management credentials.
 
-Nothing needs to come from anyone: the settings are a copy of the sample, and `restore` uses the
-scrubbed copy of the database in the repository.
+Nothing needs to come from anyone to see the site: the settings are a copy of the sample, and
+`restore` uses the scrubbed copy of the database in the repository. Signing in needs an account in the
+development tenant.
 
 ```bash
 mkdir -p "${GISDAY_LOCAL_DIR:-C:/TAMU/gisday-local}"
@@ -145,19 +149,15 @@ serve configuration adds `apps/gisday-angular/proxy.local.json`, which sends tho
 - Pages load with the restored data (checked 11 October on the office machine: the page, the API
   directly at <http://localhost:3333/api/seasons/active>, and the same call through the dev server's
   proxy at <http://localhost:4201/___ANGULAR_API_URL___/seasons/active> all answer 200).
-- Sign-in, with your own GIS Day account. The `local` serve configuration swaps in
-  `apps/gisday-angular/src/environments/environment.local.ts`, which holds the settings of the
-  "GIS Day (local development)" Auth0 application. That application accepts only sign-ins that return
-  to `http://localhost:4201`, so the port cannot be changed. It is the same Auth0 tenant as production,
-  so the accounts are real.
+- Sign-in, with an account in the development Auth0 tenant (see [Signing in](#signing-in)).
 
 What does not, yet:
 
 - **Real people, logos and photographs.** The scrubbed copy has made-up speakers and one placeholder
   image for every upload; the real files are on the production site, not in the database.
 - **Email**, deliberately: every `MAILROOM_` value is blank.
-- **Anything that needs a user's Auth0 profile.** The local API has no management credentials (#1759)
-  until a development tenant with test users exists (#1623), so:
+- **Anything that needs a user's Auth0 profile, without `auth0-dev.local.env`.** The API then has no
+  management credentials (#1759), so:
   - The admin Users page, and reading or saving a signed-in user's own profile (Account > My
     details), answer `503 Service Unavailable`. A refused save writes nothing.
   - Because the profile cannot be read, a signed-in user cannot register for or check in to an
@@ -165,6 +165,34 @@ What does not, yet:
   - Nothing else fails: a class's attendance lists each student with `N/A` for name, email and UIN
     (attendance counts are still right), and the competition leaderboard and submission review show
     the last four characters of each user's id instead of an email.
+
+## Signing in
+
+The local site signs in against **`txgisday-dev`**, a development Auth0 tenant kept apart from
+production's (#1623). Its accounts are test accounts, and nothing in it can reach production users.
+`environment.local.ts` holds its public settings and `apps/gisday-nest/local.env.sample` the API's.
+
+`scripts/gisday-auth0-dev.ps1` builds the tenant and can rebuild it at any time:
+
+- the API `gisday.dev.api`, with every permission the GIS Day API checks;
+- the six roles the site knows, with GIS Day Admin holding every permission;
+- the application "GIS Day (local development)", which returns only to `http://localhost:4201`, so
+  the port cannot change;
+- a post-login action that puts a user's roles in the `geoservices.prod/roles` claim the site reads;
+- a test admin, `claude-test-admin@txgisday-dev.test`, with a new password each run.
+
+It runs on Windows, in PowerShell, by someone with a dashboard account in the tenant. It asks for the
+Client ID and secret of the tenant's "GIS Day dev setup" machine-to-machine application (the secret
+in a hidden prompt), and talks only to `txgisday-dev.us.auth0.com`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\gisday-auth0-dev.ps1
+```
+
+It writes `auth0-dev.local.env` in `GISDAY_LOCAL_DIR`, outside the repository, with the API's
+development credentials and the test admin's password. Restart the API with `scripts/gisday-local.sh
+api` to use them. A developer who cannot run the script is given that file: it holds development-tenant
+credentials only, never a production secret.
 
 ## Things that look broken
 
