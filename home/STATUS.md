@@ -3,11 +3,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Nothing. No batch tonight (read the 7:35 PM note).** Waiting to take over as director when the maintainer gets home.
-
-**Noted:** the #2008 "affected check exit 0" ran nothing (`No tasks were run`; `test/smoke/aggiemap` is not an Nx project). Re-checked
-the way that counts: `tsc -p test/smoke/aggiemap --noEmit` on the branch's `map-layers.spec.ts`: **exit 0**. From now on home reads
-every check log for "No tasks were run" before reporting a pass.
+**Batch 13** (started 8:25 PM Central): 1. #2001, Women's Basketball parking (team-filed, due before 2 November); 2. #1970, finish
+`fix/1970-selection-popup-title` and open its PR. Home opens its own PRs from now on. Director from when the maintainer is home.
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
