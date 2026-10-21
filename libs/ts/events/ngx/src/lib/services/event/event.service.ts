@@ -66,6 +66,10 @@ export class EventService {
   private _exclusiveVisibilityHandles: Array<esri.Handle> = [];
 
   constructor() {
+    // A link on this map is resolved here, against the map's own layers first, so the map service must not
+    // also select it from the application's search sources as the map loads (#1969).
+    this.mapService.selectsFeaturesFromUrlOnLoad = false;
+
     // Patch default layer overrides
     const eventConfiguration = this.eventSettingsService.eventConfiguration()?.configuration || undefined;
 
@@ -524,7 +528,17 @@ export class EventService {
     // (e.g. `?lot=43`, `?bldg=AGLS`). The parameter keys and the attribute fields to match
     // against are read entirely from the search source configuration, so this works for any
     // layer or data type without code changes.
-    await this.selectFeatureByConfiguredParam(sources, params);
+    const selected = await this.selectFeatureByConfiguredParam(sources, params).catch((err) => {
+      console.error(`EventService.selectFeatureFromUrl: The map's own layers could not be asked for the link`, err);
+      return false;
+    });
+
+    // Only when none of the map's own layers has it does the link go to the application's search sources,
+    // as on the main map - College Station's buildings and lots. Asked first, or alongside, their answer
+    // replaced the map's own whenever it came last (#1969).
+    if (!selected) {
+      this.mapService.selectFeaturesFromUrl();
+    }
   }
 
   private async selectGenericFeatureFromUrl(sources: LayerSource[], selectedFeature: string): Promise<void> {
@@ -671,12 +685,12 @@ export class EventService {
    * `SearchSource` configuration (`urlQueryParam`/`urlQueryParamAliases` and the where-clause
    * `keys`), so no layer- or data-type-specific values are hard-coded here.
    */
-  private async selectFeatureByConfiguredParam(sources: LayerSource[], params: URLSearchParams): Promise<void> {
+  private async selectFeatureByConfiguredParam(sources: LayerSource[], params: URLSearchParams): Promise<boolean> {
     // The map's own search sources come first; see `EventSettingsService.configuredSearchSources`.
     const searchSources = this.eventSettingsService.configuredSearchSources();
 
     if (searchSources.length === 0) {
-      return;
+      return false;
     }
 
     for (const searchSource of searchSources) {
@@ -698,9 +712,11 @@ export class EventService {
       const selected = await this.selectFeatureByFieldMatch(sources, rawValue.trim(), matchFields);
 
       if (selected) {
-        return;
+        return true;
       }
     }
+
+    return false;
   }
 
   /**

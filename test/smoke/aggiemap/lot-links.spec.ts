@@ -31,6 +31,12 @@ const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const POPUP = 'tamu-gisc-feature-popup .popup';
 const SELECTION_LAYER_ID = 'selection-layer';
 
+/** How long the main map's lot search is held back to show #1969. */
+const LATE_SERVICE_MS = 6_000;
+
+/** The main map's parking lots in the campus basemap service, which its `lot` search source asks (`search-sources.ts`). */
+const MAIN_MAP_LOTS_LAYER = 9;
+
 interface LotLink {
   /** Which map, and which group of the issue's audit it stands for. */
   name: string;
@@ -151,6 +157,52 @@ test.describe('lot links on the parking maps', () => {
       if (link.headedByLayerTitle) {
         expect(heading, `${link.path} opened a popup not headed by ${link.layerId}'s title`).toBe(titles[link.layerId]);
       }
+    });
+  }
+
+  /**
+   * A `?lot=` link opens the map's own lot even when the map's own service answers late (#1969).
+   *
+   * The main map has a Lot 100j too. The map service selected it from the application's search sources as
+   * soon as the map loaded, while the event map looked for the lot among its own layers; both selected, and
+   * whichever answered last won. The main map's lot opened first on nearly every load and was replaced only
+   * if the map's own answer came before the map reported ready: 0 in 80 runs on a quiet machine, about 1 in
+   * 8 under load. Holding the map's own service back makes the order certain instead of rare.
+   *
+   * The race is made certain by holding back the main map's answer instead: its lot search is delayed, so it
+   * lands after the map's own lot and, unfixed, replaces it. Fixed, the main map's lots are asked only when
+   * none of the map's own layers has the lot, so there is nothing left to land late.
+   */
+  for (const link of LOT_LINKS) {
+    test(`${link.path} keeps the lot on ${link.layerId} when the main map's lot search answers last`, async ({
+      page,
+      request
+    }) => {
+      test.setTimeout(150_000);
+      const objectIds = await expectedObjectIds(request, link);
+      const mainMapLots = `${Connections.basemapUrl}/${MAIN_MAP_LOTS_LAYER}/query`;
+
+      await page.route(
+        // The search for the link's lot, not the queries that draw the campus lots.
+        (url) => url.href.startsWith(mainMapLots) && /100J/i.test(decodeURIComponent(url.search)),
+        async (route) => {
+          await new Promise((resolve) => setTimeout(resolve, LATE_SERVICE_MS));
+          await route.continue().catch(() => undefined);
+        }
+      );
+
+      await openedPopup(page, link.path);
+      // Past the held-back answer, so a late selection has landed if there is one.
+      await page.waitForTimeout(LATE_SERVICE_MS + 3_000);
+
+      const shared = new URL(
+        ((await page.locator(POPUP).getByRole('button', { name: 'Click to copy to clipboard.' }).filter({ hasText: /^https?:/ }).textContent()) ?? '').trim()
+      );
+
+      expect(
+        objectIds.map((objectId) => `${link.layerId}:${objectId}`),
+        `${link.path} ended on a popup sharing ${decodeURIComponent(shared.href)}, not lot 100j on ${link.layerId}`
+      ).toContain(shared.searchParams.get('feature'));
     });
   }
 
