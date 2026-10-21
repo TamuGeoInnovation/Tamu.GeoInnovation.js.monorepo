@@ -6,7 +6,7 @@
       <div class="container12">
         @if ('tamu' | siteHas) {
         <p class="sub-section-heading">
-          GIS Day, the annual worldwide salute to geospatial technology and its power to transform and enhance lives, is going to be extra "spatial" this year in Texas, where the TxGIS Day celebration, one of the world's largest, is expanding to encompass {{dayCountText$ | async}}@if (dateRange$ | async; as dates) {
+          GIS Day, the annual worldwide salute to geospatial technology and its power to transform and enhance lives, is going to be extra "spatial" this year in Texas, where the {{ site.name }} celebration, one of the world's largest, is expanding to encompass {{dayCountText$ | async}}@if (dateRange$ | async; as dates) {
           <span>, {{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</span>
           }.
         </p>
@@ -26,7 +26,7 @@
     <div class="container12 flex flex-column align-center">
       <h2 class="trailer-1">Organizing Committee</h2>
       <div class="column9">
-        <p>TxGIS Day {{(activeSeason$ | async)?.year }} would not have been possible without the hard work and dedication of a group of individuals sharing a deep passion and love for everything-GIS. We'd like to extend a very special thanks to everyone who has been involved in the planning and the making of TxGIS Day.</p>
+        <p>{{ site.name }} {{(activeSeason$ | async)?.year }} would not have been possible without the hard work and dedication of a group of individuals sharing a deep passion and love for everything-GIS. We'd like to extend a very special thanks to everyone who has been involved in the planning and the making of {{ site.name }}.</p>
       </div>
 
       <div class="column12" id="bubble-portrait-container">
@@ -72,7 +72,7 @@
     <div class="container12 flex flex-column align-center leader-5" id="student-volunteer">
       <h2 class="trailer-1">Student Opportunities</h2>
       <div class="column9">
-        <p>Students eager to get the most out of TxGIS Day can do so through several types of rewarding opportunities.</p>
+        <p>Students eager to get the most out of {{ site.name }} can do so through several types of rewarding opportunities.</p>
       </div>
 
       <div id="swappable-content-container" class="column12 flex flex-row justify-center content-block ends">

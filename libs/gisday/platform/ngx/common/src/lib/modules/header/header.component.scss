@@ -349,7 +349,7 @@ nav#off-canvas-menu .nav-divider:hover {
   }
 
   .aux {
-    color: $gisday-blue-secondary;
+    color: $gisday-primary-light;
 
     ul > a {
       // padding-bottom: 0.5rem !important;
@@ -382,4 +382,12 @@ tamu-gisc-hamburger-trigger {
   .desktop-menu {
     @include flexbox();
   }
+}
+
+// Texas A&M's lockup (#2012): the logo at the size the site's own logo has, with the university's name small
+// above "GIS Day".
+tamu-gisc-lockup {
+  --lockup-logo-height: 50px;
+  font-size: 0.9rem;
+  line-height: 1.15;
 }

@@ -8,8 +8,23 @@
 @import 'libs/sass/dom_flexbox';
 
 :root {
-  --link-color: #{$gisday-blue-secondary};
+  --gisday-primary: #{$gisday-blue};
+  --gisday-primary-light: #{$gisday-blue-secondary};
+  --link-color: var(--gisday-primary-light);
   --support-link-color: rgba(85, 138, 216, 1);
+  // Buttons, which are a brighter blue than links.
+  --gisday-action: rgba(85, 138, 216, 1);
+  --gisday-action-hover: #{darken(rgba(85, 138, 216, 1), 10%)};
+
+  // Texas A&M's site, at gisday.tamu.edu, wears the university's maroon, as AggieMap does (#2012). main.ts adds
+  // the class from the site's brand.
+  &.brand-tamu {
+    --gisday-primary: #{$aggie-maroon};
+    --gisday-primary-light: #{$aggie-maroon};
+    --gisday-action: #{$aggie-maroon};
+    // AggieMap's darker maroon.
+    --gisday-action-hover: #3d0000;
+  }
 }
 
 .success {
@@ -200,7 +215,7 @@ ol {
 }
 
 a {
-  color: $gisday-blue-secondary;
+  color: $gisday-primary-light;
   position: relative;
   text-decoration: none;
   padding-bottom: 0.75rem;
@@ -259,11 +274,11 @@ a {
   border: 1.5pt solid transparent;
   overflow: hidden;
   color: #fafafa;
-  background: rgba(85, 138, 216, 1);
+  background: var(--gisday-action);
 
   &:hover {
     text-decoration: none;
-    background: darken(rgba(85, 138, 216, 1), 10%);
+    background: var(--gisday-action-hover);
   }
 
   &.relaxed {
@@ -283,14 +298,14 @@ a {
   }
 
   &.secondary {
-    border: 1.5pt solid rgba(85, 138, 216, 1);
+    border: 1.5pt solid var(--gisday-action);
     background: none;
-    color: rgba(85, 138, 216, 1);
+    color: var(--gisday-action);
 
     &:hover {
       color: #fafafa;
-      background: darken(rgba(85, 138, 216, 1), 10%);
-      border-color: darken(rgba(85, 138, 216, 1), 10%);
+      background: var(--gisday-action-hover);
+      border-color: var(--gisday-action-hover);
     }
   }
 
@@ -322,7 +337,13 @@ a {
 // adopting the shared box model would be a redesign, not a fix.
 $button-foreground: #fafafa;
 @import 'libs/sass/components/button';
-@include button-anchors($secondary: rgba(85, 138, 216, 1), $tertiary: $gisday-gray-primary);
+@include button-anchors($secondary: var(--gisday-action), $tertiary: $gisday-gray-primary);
+
+// The anchors' colour above outranks `.button.secondary:hover`, so a hovered outlined link kept its text colour
+// on a background of nearly the same colour: faint in blue, and gone in Texas A&M's maroon (#2012).
+a.button.secondary:hover {
+  color: #fafafa;
+}
 
 nav a {
   //CAUTION: Heavy use overflow: hidden; !important declarations in this selector. Nav anchors will have their own style and cannot negate [nav a].
@@ -451,10 +472,17 @@ footer .logo-container {
   color: $gisday-blue-support;
 
   span {
-    color: $gisday-blue-secondary;
+    color: $gisday-primary-light;
     -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
     -webkit-text-stroke-width: 0.04em;
-    -webkit-text-stroke-color: $gisday-blue-secondary;
+    -webkit-text-stroke-color: $gisday-primary-light;
+  }
+
+  // In Texas A&M's lockup the university's name is plain text, not outlined like the year (#2012).
+  .tamu-name {
+    color: inherit;
+    -webkit-text-fill-color: currentColor;
+    -webkit-text-stroke-width: 0;
   }
 
   &.greyscale {
@@ -1574,7 +1602,7 @@ tr:hover td > span.delete {
       @include align-items(center);
       margin: 0 0.75rem;
       opacity: 0.75;
-      color: $gisday-blue-secondary;
+      color: $gisday-primary-light;
       cursor: pointer;
       @include transition(opacity 0.3s);
 
@@ -2023,7 +2051,7 @@ article .row {
     position: absolute;
     height: 100%;
     width: 100%;
-    background: $gisday-blue-secondary;
+    background: $gisday-primary-light;
     border-bottom-left-radius: 10px;
     z-index: -1;
     right: 0;
@@ -2465,7 +2493,7 @@ nav#section-nav a:hover {
   .cta {
     font-size: 0.9rem;
     text-align: center !important;
-    color: $gisday-blue-secondary;
+    color: $gisday-primary-light;
     font-weight: 600;
     margin-top: 1rem;
 

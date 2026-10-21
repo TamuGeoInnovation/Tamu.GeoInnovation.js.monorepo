@@ -3,7 +3,7 @@
 
 #landing {
   width: 100%;
-  background: linear-gradient(rgba($gisday-blue-secondary, 0.08), $gisday-gray-primary);
+  background: linear-gradient(color-mix(in srgb, $gisday-primary-light 8%, transparent), $gisday-gray-primary);
 
   .logo-container {
     font-size: 7rem;
