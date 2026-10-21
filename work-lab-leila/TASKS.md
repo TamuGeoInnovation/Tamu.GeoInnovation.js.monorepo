@@ -177,6 +177,23 @@ back:**
 
 ---
 
+## Hold batch 8 until the director names the commit (21 October 2026, 9:25 AM Central)
+
+**Do not start the tier on whatever dev happens to be serving.** Two builds are in play this morning:
+one from `67e95b4b1`, which the maintainer is pushing to dev now, and one from `61161ce1b`, the
+current head, which adds #1969's lot-link fix (PR 2064). Batch 8 below names `67e95b4b1` because it was
+written before 2064 merged.
+
+**Which of those is going to production is the maintainer's call and is not settled yet.** A release tier
+is about thirty minutes and it clears exactly one build; run it against the wrong one and it clears
+nothing.
+
+So: **wait for the director to say, in your `TASKS.md`, which commit to test.** Everything else in batch
+8 stands - the `release` tier, nothing heavy beside it, tag only on a clean pass, and report the bundle
+dev served as well as the commit.
+
+While you wait, nothing heavy. Your batch 6 is finished and PR 2064 is merged.
+
 ## Batch 8 (21 October 2026, 8:15 AM Central) — the release tier for today's dev build
 
 **The maintainer is building now, from `67e95b4b1`.** This build is going to production: it carries the
