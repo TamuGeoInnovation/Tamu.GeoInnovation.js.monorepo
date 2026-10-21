@@ -38,7 +38,10 @@ const SEARCH_CASES: SearchCase[] = [
   // Name, abbreviation and number each find the building (bldgname, bldgabbr, number).
   { mapPath: '/campus/dc-bush-school', term: 'Bush', result: 'Bush School - DC (F002)', popupShows: /Bush School - DC/ },
   { mapPath: '/campus/dc-bush-school', term: 'TAMUDC', result: 'Bush School - DC (F002)', popupShows: /1620 L St NW/ },
-  { mapPath: '/campus/dc-bush-school', term: 'F002', result: 'Bush School - DC (F002)', popupShows: /Bush School - DC/ }
+  { mapPath: '/campus/dc-bush-school', term: 'F002', result: 'Bush School - DC (F002)', popupShows: /Bush School - DC/ },
+  // The main map draws a chosen building on its selection layer, whose popup is the buildings popup. A
+  // result shown as its own layer shows it must leave a building's popup as it was (#1970).
+  { mapPath: '/map/d', term: 'Wehner', result: 'Wehner Building (1510)', popupShows: /Wehner/ }
 ];
 
 /** Maps and a term that matches nothing there: the list must stay empty, not error. */
