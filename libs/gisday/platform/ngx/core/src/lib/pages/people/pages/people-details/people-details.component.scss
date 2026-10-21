@@ -23,12 +23,12 @@
 
   .event-item {
     padding: 1rem;
-    border-left: 3pt solid $gisday-blue;
-    background: rgba($gisday-blue, 0.02);
+    border-left: 3pt solid $gisday-primary;
+    background: color-mix(in srgb, $gisday-primary 2%, transparent);
     transition: all 0.2s ease;
 
     &:hover {
-      background: rgba($gisday-blue, 0.05);
+      background: color-mix(in srgb, $gisday-primary 5%, transparent);
       border-left-width: 4px;
     }
   }
@@ -44,12 +44,12 @@
     margin: 0;
 
     a {
-      color: $gisday-blue;
+      color: $gisday-primary;
       text-decoration: none;
       font-weight: 600;
 
       &:hover {
-        color: $gisday-blue-secondary;
+        color: $gisday-primary-light;
         text-decoration: underline;
       }
     }

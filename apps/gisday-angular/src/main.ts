@@ -36,11 +36,18 @@ const routeOptions: ExtraOptions = {
   anchorScrolling: 'enabled'
 };
 
-const site = gisdaySite(environment.site);
+// The address can choose the site as well as the key: gisday.tamu.edu is Texas A&M's site although its
+// deployment is txgisday.org's (#2012).
+const site = gisdaySite(environment.site, window.location.hostname);
 
 // index.html carries txgisday.org's title and icon, which the other sites replace here.
 document.title = site.name;
 document.querySelector<HTMLLinkElement>('link[rel="icon"]')?.setAttribute('href', site.favicon);
+
+// A site in a university's brand swaps GIS Day's colours for the university's, in styles.scss.
+if (site.brand) {
+  document.documentElement.classList.add(`brand-${site.brand}`);
+}
 
 if (environment.environment.production) {
   enableProdMode();

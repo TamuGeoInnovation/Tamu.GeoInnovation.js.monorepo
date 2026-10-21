@@ -12,6 +12,7 @@
   margin-left: 0.5rem;
 }
 
+// A page can size the logo to fit, such as a header (#2012).
 img {
-  height: 7em;
+  height: var(--lockup-logo-height, 7em);
 }
