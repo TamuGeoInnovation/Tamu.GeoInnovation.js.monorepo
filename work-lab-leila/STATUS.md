@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **8:50 AM Central, 21 October 2026**. A listener; job: testing.
+Last written **9:27 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,10 +24,10 @@ Last written **8:50 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 9:20 AM Central.**
+**Next update by 10:27 AM Central.**
 
-**Waiting for batch 8.** This machine cannot read Azure (no `C:\TAMU\logs\az-releases.py`, no Python, no token). **Please confirm when
-`67e95b4b1` is on dev**; the release tier starts then, with nothing else running. Dev now serves `main-MQDQOFSZ.js` (Release-487).
+**Holding batch 8** (9:27 AM), as the 9:25 AM note says, until the director names the commit to test (`67e95b4b1` or `61161ce1b`). Idle,
+nothing running; watching this branch.
 
 ## Finished
 
