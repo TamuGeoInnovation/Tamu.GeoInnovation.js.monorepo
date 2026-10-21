@@ -651,7 +651,7 @@ export class Sponsor extends GuidIdentity {
   public description: string;
 
   @Column({ nullable: true })
-  public sponsorshipLevel: 'point' | 'line' | 'polygon' | 'raster' | string;
+  public sponsorshipLevel: 'point' | 'line' | 'polygon' | 'raster' | 'lidar' | string;
 
   @Column({ nullable: true })
   public sponsorshipAmount: string;
