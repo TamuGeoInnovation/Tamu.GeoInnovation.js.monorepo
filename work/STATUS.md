@@ -3,13 +3,11 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. Clock times are read from PowerShell, not estimated.
 
-Last written **11:05 PM Central, 20 October 2026**. **This machine is a listener**; `home` directs from when the maintainer reaches home.
+Last written **11:40 PM Central, 20 October 2026**. **This machine is a listener**; `home` directs.
 
 ## Running now
 
-**The release-notes change**, branch `chore/notes-one-file-per-change` — one file per change under
-`docs/releases/unreleased/`, so pull requests stop conflicting. Started, unfinished: the directory exists and
-nothing else. No issue filed yet. The maintainer called it urgent.
+(nothing) — everything is committed and pushed; no worktree has uncommitted work.
 
 
 ## Merged today
@@ -51,4 +49,22 @@ Nothing. Every field is set on every issue and pull request opened today.
 ## Told directly
 
 - 7:40 AM: this machine directs; home is the worker.
-- Through the day: the maintainer answered every decision put to him; nothing is outstanding.
+- 10:25 PM and 11:05 PM: hand the director role to home.
+- **11:35 PM: the maintainer is running a dev build from `b78942631` and wants a worker to start the
+  testing when he gets home.** He left before it finished, so **nobody has tagged it and nobody has been
+  given the batch.** What that needs, for whoever picks it up:
+  - **The `release` tier, not `quick`.** Twenty-six pull requests have merged since production
+    (`prod-2026-10-20`, `8463ac6af`), ten of them user-visible AggieMap fixes. `quick` covers the core
+    plus what changed since the last `dev-*` tag and is for clearing a dev build; this build is going to
+    production, which is what `release` is for.
+  - **`work-lab-leila` should run it.** It is five to ten times faster at test work than this machine —
+    ten minutes a batch against hours, `map-layers.spec.ts` in 3.8 minutes against 10–11. A release tier
+    here is about thirty-seven minutes.
+  - **Tag only if it passes**: `scripts/tag-build.sh dev <full sha>`, then push the tag to `origin`.
+  - **The release notes are a real piece of work this time.** `unreleased.md` holds **56 entries**, and
+    the collation script landed tonight (#2037): the release pull request runs
+    `node scripts/collate-release-notes.mjs --check` then `--write`, and deletes the entry files. The
+    directory is empty so far, so this release collates nothing and is the first test of the path.
+  - **`map-layers.spec.ts` will fail on production** until this build is deployed — seven maps, all known
+    (#1991 is fixed on dev but not production, and #1992/#1993/#2004 are now merged). Against **dev** it
+    should be clean.
