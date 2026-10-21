@@ -30,6 +30,13 @@ export const EVENT_SERIES_ICONS: Record<string, { imgUrl: string; imgAltText: st
 
 interface EventNotificationEntry {
   configuration?: EventToastConfig | null;
+  /**
+   * The map's Discover entry. Only `status` is read here, to skip a retired event (#1995).
+   *
+   * The definitions handed to this service are whole map configurations, so this has always been
+   * present at runtime; it was simply not declared.
+   */
+  discover?: { status?: string } | null;
 }
 
 /**
@@ -201,6 +208,14 @@ export class EventNotificationsService {
 
       // Skip if no configuration or no toast config
       if (!config || !config.toast || !config.eventDates) {
+        return;
+      }
+
+      // A retired event raises nothing, whatever its dates say (#1995). Retiring normally happens
+      // after an event is over, so the date window below would have hidden it anyway - but an event
+      // cancelled before it happens keeps a future date, and without this its notice would start
+      // appearing a week beforehand for something that is not going to take place.
+      if (eventDefinition.discover?.status === 'retired') {
         return;
       }
 
