@@ -76,6 +76,19 @@ AggieMap and the event maps are Angular apps and do not change. One side effect 
 signing out used to fail with a server error, because the id token was read after Passport had cleared
 the user; it now reaches the identity provider's sign-out page.
 
+### Live at the Station is removed: the concert is cancelled
+
+The Live at the Station map is retired. It is no longer listed on All Maps or Campus Events, search does
+not offer it, and - the part that mattered most - its notice will not appear. The concert was cancelled
+before it happened, so unlike every other retired map its date was still in the future: from 31 October a
+notice inviting people to it would have opened on every visit to AggieMap. A link already shared still
+resolves, so nobody following an old link gets an error
+([#1995](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1995)).
+
+| Before | After |
+| --- | --- |
+| ![Campus Events on production, Live at the Station listed under Fall](../screenshots/1995-live-at-the-station-cancelled/before-production-listed.png) | ![The same page without it, every other event unchanged](../screenshots/1995-live-at-the-station-cancelled/after-local-build-not-listed.png) |
+
 ### GIS Day: the sponsorship levels match the 2026 prospectus
 
 The sponsor page now says what the 2026 prospectus says. Each level's tile shows how many
@@ -635,6 +648,7 @@ dated notes as what was tested, and this table empties.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Live at the Station removed, the concert is cancelled ([#1995](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1995)) | [dev.aggiemap.tamu.edu/all-maps/campus-events](https://dev.aggiemap.tamu.edu/all-maps/campus-events) | No Live at the Station under Fall, and every other event still there. Search for "live at the station" offers nothing. The old link `/events/live-at-the-station` still opens the map rather than erroring. No notice about it appears on any page |
 | Aerial Imagery no longer opens blank ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)) | [dev.aggiemap.tamu.edu/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), then choose Aerial Imagery; repeat with a fresh page several times | The imagery draws every time without zooming or touching the slider, and the spinner beside Aerial Imagery stops once it has. The slider still steps back to older dates and forward to Latest. On a phone, ☰ → Basemap → Aerial Imagery draws too |
 | Layer symbols back in the legend ([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987), [#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)) | [dev.aggiemap.tamu.edu/parking/permit-select-freshman](https://dev.aggiemap.tamu.edu/parking/permit-select-freshman) | Both layers have a coloured symbol beside their name in the Legend, not just the name. Then check a few other parking maps - Visitor, Motorcycle, Accessible - and the main map's layers: every legend entry for a switched-on layer has a symbol, and no legend that was right before has lost a row |
 | Business Parking draws its lots ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)) | [dev.aggiemap.tamu.edu/parking/business-parking](https://dev.aggiemap.tamu.edu/parking/business-parking) | Maroon surface lots and pink garages across campus, as well as the blue two-hour space markers. In the Legend, all three entries have a symbol beside them: a blue triangle, a maroon square and a pink square. Switching either lot layer off removes those lots and its legend entry |
