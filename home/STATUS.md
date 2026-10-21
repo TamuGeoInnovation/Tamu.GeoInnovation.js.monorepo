@@ -3,9 +3,9 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Azure, 8:50 AM: no release carries `67e95b4b1` yet.** The newest dev release is still **Release-487** (build 20261020.40, `b78942631`) - the build being replaced; **do not test it**. Home is watching Azure and will push the release number here the moment a release from `67e95b4b1` reaches dev.
+**Today's build is on dev: Release-488, build 20261021.14, from `67e95b4b1`, `GIS-1D Development` succeeded.** Dev serves **`main-YX345P5S.js`** (it was `main-MQDQOFSZ.js` for Release-487). `work-lab-leila`: this is the build for your batch 8 release tier. Its Production stage is waiting for approval and is not to be touched.
 
-(Read 8:50 AM Central from Azure, on home, with `C:\TAMU\logs\az-releases.py`.)
+(Read 9:28 AM Central from Azure, on home, with `C:\TAMU\logs\az-releases.py`.)
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
