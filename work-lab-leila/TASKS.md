@@ -157,6 +157,85 @@ real caught, because from outside, stuck and busy are the same thing.
 
 **Your batch 3 has no deadline because it predates the rule.** Add one now for whatever is left of it.
 
+## Read this first (21 October 2026, 8:15 AM Central) — you have been silent for thirteen hours
+
+Your last push was **12:05 AM**, part way through batch 6 (#1969), and your own **12:55 AM deadline passed
+unanswered**. That is the rule working as intended: the director checked, asked once, and at 2:45 AM
+**withdrew your batch 7 (#2019)** and had it done on home instead, so nothing waited on a machine nobody
+could see. **Batch 6 is still yours** — the red unit tests and the "two lookups racing" finding exist only
+on your machine, and no branch was pushed.
+
+The maintainer is coming to look at your screen. The likely cause is an approval prompt. **When you come
+back:**
+
+1. **Push whatever batch 6 already has** before anything else — the unit tests, a branch, your status. Work
+   that exists only on one machine is work nobody else can pick up, which is exactly why batch 7 had to be
+   redone from scratch.
+2. **Then do batch 8 below, before finishing #1969.** It is on the release path and the season it carries
+   starts on 2 November; #1969 is High but nothing waits on it.
+3. **Push a fresh `Next update by HH:MM Central` as soon as you start**, and move it on as you go.
+
+---
+
+## Batch 8 (21 October 2026, 8:15 AM Central) — the release tier for today's dev build
+
+**The maintainer is building now, from `67e95b4b1`.** This build is going to production: it carries the
+2026-27 athletics dates (**women's basketball starts 2 November**), Vitest 5, NestJS 12, the accessibility
+rules, the notices fix, Team Bus Parking (#2059) and GIS Day's phone-width admin pages.
+
+### Wait for the build, and find its commit properly
+
+**Do not start until the build is on dev**, and **do not identify it by bundle name**. Each stage bakes its
+own analytics id in, so the same commit produces different bundle hashes on dev and production — a bundle
+name cannot tell you which commit an environment is serving. Read Azure instead:
+
+```
+python C:\TAMU\logsz-releases.py
+```
+
+(The PAT is in the user environment.) Confirm it reports the release and that its commit is `67e95b4b1`. If
+it is a different commit, **say so and stop** — the maintainer may have built something else, and a tier
+against the wrong build clears nothing.
+
+### Then run the release tier
+
+```
+test/smoke/aggiemap/run-local.sh development release
+```
+
+**`release`, not `quick`.** `quick` covers the core plus what changed since the last `dev-*` tag and is for
+clearing an ordinary dev build; this one is going to production, which is what `release` is for. About
+thirty minutes on your machine; roughly thirty-seven on the work machine.
+
+**Nothing else heavy runs on your machine while it does.** That rule exists because a browser loop beside a
+tier once failed nine maps in a run that was deciding a production release.
+
+### What to report
+
+- **Passed, failed, flaky, skipped, and the elapsed time.** Name every failure with its map and its message
+  — not just a count.
+- **The bundle dev served**, read from the page, *and* the commit Azure reported. Both, because they answer
+  different questions.
+- Last night's tier on the previous build was **613 passed, 0 failed, 0 flaky, 44 skipped**. A failure that
+  is not in that shape is worth saying loudly.
+- `#1898` is a known flake; if it appears, say so rather than letting it read as new.
+
+### The tag
+
+**Tag only on a clean pass**, and only if the commit is the one above:
+
+```
+scripts/tag-build.sh dev 67e95b4b1<full sha>
+git push origin <tag>
+```
+
+A `dev-*` tag is a claim that this build was tested. If anything failed, do not tag — report and stop, and
+the director decides.
+
+### Afterwards
+
+Back to batch 6, #1969.
+
 ## Correct your own capability list (20 October 2026, 8:45 PM Central)
 
 **Do this before your next report; it takes a minute and it is actively misleading the director.**
