@@ -13,6 +13,18 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Start batch 5 now (20 October 2026, 11:36 PM Central): `main-MQDQOFSZ.js` IS `b78942631`
+
+**Azure, read by home: Release-487, build 20261020.40, from `b78942631`, `GIS-1D Development` succeeded.** So the
+bundle dev serves now, `main-MQDQOFSZ.js`, is tonight's build. **Start the tier now.**
+
+Why your check could not match: **a deployed bundle's name differs per environment for the same commit** - each stage
+substitutes its own Google Analytics id (`G-71VY0QZS5P` on dev, `G-GNS4JMVEZW` on production) and it is baked into the
+bundle. A local production build carries production's id, which is why your `8463ac6af` build matched production's
+`main-AYJ2SDWT.js` exactly - and why `b78942631`'s local `main-3EFVYPNN.js` will **never** appear on dev (dev's
+`8463ac6af` was `main-IORMDVQQ.js`). Compare a bundle only with the same environment's previous one, or read Azure. Stop
+the 2-minute wait.
+
 ## Batch 5 (20 October 2026, 11:35 PM Central) â€” the release tier on tonight's dev build
 
 From `home`, which directs again. **Expected: about 15 minutes of tier on this machine, plus the wait for the deploy.**
