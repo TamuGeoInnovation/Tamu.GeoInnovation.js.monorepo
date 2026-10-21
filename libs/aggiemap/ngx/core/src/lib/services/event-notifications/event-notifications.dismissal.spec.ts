@@ -4,6 +4,10 @@ import { NotificationProperties, NotificationService } from '@tamu-gisc/common/n
 
 import { EVENT_NOTIFICATION_DEFINITIONS, EventNotificationsService } from './event-notifications.service';
 
+// Mid-year, so every date these tests use falls in one season, which a notice's id carries (#2051).
+beforeEach(() => vi.useFakeTimers({ now: new Date('2026-06-15T17:00:00Z'), toFake: ['Date'] }));
+afterEach(() => vi.useRealTimers());
+
 /**
  * Event toasts and dismissal across routes (#1246).
  *
@@ -74,7 +78,7 @@ describe('EventNotificationsService', () => {
 
     service.checkAndTriggerEventNotifications();
 
-    expect(notifications.toasted).toEqual(['ring-day-toast']);
+    expect(notifications.toasted).toEqual(['ring-day-toast-2026']);
   });
 
   it('raises a toast for an event within the next seven days', () => {
@@ -82,7 +86,7 @@ describe('EventNotificationsService', () => {
 
     service.checkAndTriggerEventNotifications();
 
-    expect(notifications.toasted).toEqual(['kickoff-toast']);
+    expect(notifications.toasted).toEqual(['kickoff-toast-2026']);
   });
 
   it('leaves an event further out than seven days alone', () => {
@@ -97,8 +101,8 @@ describe('EventNotificationsService', () => {
     // The shell raises these on every route. Without the check, walking from the main map to an event
     // map put the whole stack back a moment after the user cleared it - the fault in #1246.
     const service = build([definition('ring-day', 0), definition('kickoff', 1)]);
-    notifications.dismiss('ring-day-toast');
-    notifications.dismiss('kickoff-toast');
+    notifications.dismiss('ring-day-toast-2026');
+    notifications.dismiss('kickoff-toast-2026');
 
     service.checkAndTriggerEventNotifications();
 
@@ -109,18 +113,18 @@ describe('EventNotificationsService', () => {
     // Someone who opens an event map by link, having never been to the main map, should be told about
     // the events that are on.
     const service = build([definition('ring-day', 0), definition('kickoff', 1)]);
-    notifications.dismiss('ring-day-toast');
+    notifications.dismiss('ring-day-toast-2026');
 
     service.checkAndTriggerEventNotifications();
 
-    expect(notifications.toasted).toEqual(['kickoff-toast']);
+    expect(notifications.toasted).toEqual(['kickoff-toast-2026']);
   });
 
   it('matches the dismissal against the generated id when the toast declares none', () => {
     // `triggerEventToast` falls back to `event-<id>-toast`. The dismissal has to be checked against
     // the id actually used, not the one the definition did not supply.
     const service = build([definition('ring-day', 0, { id: undefined })]);
-    notifications.dismiss('event-ring-day-toast');
+    notifications.dismiss('event-ring-day-toast-2026');
 
     service.checkAndTriggerEventNotifications();
 

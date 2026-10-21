@@ -173,7 +173,7 @@ export const BaseballParkingConfiguration: EventConfiguration = {
     '2026-05-16'
   ],
   toast: {
-    id: 'baseball-parking-notification-2026',
+    id: 'baseball-parking-notification',
     title: 'Baseball Parking Map Available',
     message:
       'Heading to Olsen Field? Click me to open the Baseball Parking Map for parking, shuttle, and road closure information.',

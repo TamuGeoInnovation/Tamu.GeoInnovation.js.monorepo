@@ -294,7 +294,7 @@ export const PhysicsAndEngineeringFestivalConfiguration: EventConfiguration = {
   introductionText: 'Get the best parking information for the Physics and Engineering Festival.',
   eventDates: ['2026-03-28'],
   toast: {
-    id: 'phys-eng-fest-notification-2026',
+    id: 'phys-eng-fest-notification',
     title: 'Physics and Engineering Festival Map Available',
     message:
       'Visiting the Physics and Engineering Festival? Click me to open the transportation map for parking, bus drop-off, and pedestrian route information.',
