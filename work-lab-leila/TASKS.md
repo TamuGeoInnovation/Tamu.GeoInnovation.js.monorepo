@@ -190,7 +190,7 @@ own analytics id in, so the same commit produces different bundle hashes on dev 
 name cannot tell you which commit an environment is serving. Read Azure instead:
 
 ```
-python C:\TAMU\logsz-releases.py
+python C:\TAMU\logs\az-releases.py
 ```
 
 (The PAT is in the user environment.) Confirm it reports the release and that its commit is `67e95b4b1`. If
@@ -225,7 +225,7 @@ tier once failed nine maps in a run that was deciding a production release.
 **Tag only on a clean pass**, and only if the commit is the one above:
 
 ```
-scripts/tag-build.sh dev 67e95b4b1<full sha>
+scripts/tag-build.sh dev 67e95b4b135d27b17bf6f1482d38760925f39a62
 git push origin <tag>
 ```
 
