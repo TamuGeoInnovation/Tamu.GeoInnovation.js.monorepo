@@ -53,8 +53,11 @@ export interface EventConfiguration {
   /**
    * Optional external URL linking to the event's official schedule page.
    * When provided, the event date display in the builder is rendered as a clickable link.
+   *
+   * A list when the event's dates are published on more than one page, as tennis's are on the men's
+   * and the women's schedules. `tools/event-dates` reads every page listed (#2050).
    */
-  scheduleUrl?: string;
+  scheduleUrl?: string | string[];
 
   /**
    * Overrides the text of the warning shown once the latest `eventDates` entry has passed. Any field

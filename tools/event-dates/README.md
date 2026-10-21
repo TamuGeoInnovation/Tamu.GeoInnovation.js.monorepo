@@ -8,8 +8,12 @@ node tools/event-dates/check.mjs --all      # and the maps whose dates come from
 node tools/event-dates/check.mjs --json     # the same as JSON, for a scheduled run
 ```
 
-Exit code 1 if anything is stale or disagrees, 0 otherwise, so it can run unattended and only speak up
-when there is something to do.
+```bash
+node --test tools/event-dates/*.test.mjs   # its own tests
+```
+
+Exit code 1 if anything is stale, disagrees, or has a schedule page that cannot be read, 0 otherwise, so
+it can run unattended and only speak up when there is something to do.
 
 ## Why this exists
 
@@ -39,6 +43,15 @@ resolution — `test/smoke/aggiemap/global-setup.ts` hits the same wall and read
 consequence: a definition that *computes* its dates or its schedule URL is invisible. `tailgating` is
 exactly that (`scheduleUrl: FootballParkingConfiguration.scheduleUrl`) and is reported as unreadable
 rather than skipped quietly.
+
+**A map can list more than one schedule page.** `scheduleUrl` may be a list, and the map is compared
+with the home dates of every page in it. Tennis is the case: the men's and the women's teams publish
+separate schedules, and with the men's page alone every women's home match was missing ([#2050][2050]).
+
+**A page that cannot be read fails the run.** Soccer, Volleyball and Cross Country pointed at
+`womens-soccer`, `womens-volleyball` and `mens-cross-country`, which answer 404; the pages are now
+`soccer`, `volleyball` and `cross-country`. Until #2050 such a row was shown only with `--all`, so the
+default report simply did not mention three sports.
 
 ## Two things that will catch you out
 
@@ -86,3 +99,4 @@ Before a season starts, and whenever a map is reported as saying an event has pa
 seconds and makes one request per sport.
 
 [2019]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2019
+[2050]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2050
