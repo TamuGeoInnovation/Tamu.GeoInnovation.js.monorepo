@@ -1,3 +1,14 @@
+// An admin table wider than the screen (speakers' emails, users' ids) scrolls inside the content column
+// instead of making the whole page scroll sideways on a phone (#1998).
+.content {
+  overflow-x: auto;
+}
+
+.admin-menu-toggle {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
 ::ng-deep {
   tamu-gisc-map {
     display: block;

@@ -9,7 +9,8 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-collection row">
+      <!-- The day tiles wrap onto more rows on a phone (#1998). -->
+      <div class="form-collection row flex wrap">
         @for (day of activeSeasonDays$ | async; track day; let last = $last) {
         <tamu-gisc-seasons-day-tile [interactive]="false" [day]="day" (click)="setEventDate(day)" [ngClass]="{selected: (selectedEventDate$ | async) === day.guid}"></tamu-gisc-seasons-day-tile>
         }

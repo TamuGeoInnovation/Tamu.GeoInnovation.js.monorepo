@@ -1,6 +1,13 @@
 <section class="internal">
   <div class="container12">
-    <ul class="column3 sidebar">
+    <!-- On a phone the menu would sit above every admin page; it opens from this button instead (#1998). -->
+    @if (isMobile()) {
+    <button type="button" class="button secondary admin-menu-toggle" (click)="menuOpen.set(!menuOpen())" [attr.aria-expanded]="menuOpen()">
+      <span class="material-icons">{{ menuOpen() ? 'close' : 'menu' }}</span> Admin menu
+    </button>
+    }
+
+    <ul class="column3 sidebar" [hidden]="isMobile() && !menuOpen()">
       <li>
         <a [routerLink]="['./broadcasts']" queryParamsHandling="merge" routerLinkActive="active"><span class="material-icons">podcasts</span>Broadcasts</a>
       </li>
