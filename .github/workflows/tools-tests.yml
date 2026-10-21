@@ -1,0 +1,36 @@
+name: Tools Tests
+
+# The scripts under tools/ carry their own `node --test` suites (*.test.mjs). They are not Nx
+# projects, so nothing else runs them, and a suite nobody runs only catches a problem when someone
+# remembers to. See #2055.
+#
+# The event-dates tests read the athletics map definitions as text, so a change there runs them too.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'tools/**'
+      - 'libs/ts/events/ngx/src/lib/definitions/**'
+      - '.github/workflows/tools-tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  node-test:
+    name: node --test tools/
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.0'
+
+      # Quoted, so Node expands the glob (bash would need globstar for **). The suites use only
+      # Node's own modules, so there is no install, and none of them reaches the network.
+      - name: Run the tools tests
+        run: node --test 'tools/**/*.test.mjs'
