@@ -84,7 +84,7 @@ export const CrossCountryParkingConfiguration: EventConfiguration = {
   shortApplicationName: 'Cross Country Parking',
   introductionText: 'Parking and transportation information for Texas A&M cross country events.',
   eventDates: [],
-  scheduleUrl: 'https://12thman.com/sports/mens-cross-country/schedule',
+  scheduleUrl: 'https://12thman.com/sports/cross-country/schedule',
   zoom: 16,
   mapCenter: [-96.36925, 30.61689]
 };

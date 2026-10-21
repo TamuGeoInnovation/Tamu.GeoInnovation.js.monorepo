@@ -13,8 +13,10 @@
  *   node tools/event-dates/check.mjs --all      and the maps whose dates come from elsewhere
  *   node tools/event-dates/check.mjs --json     the same as JSON, for a scheduled run
  *
- * Exit code: 1 if any map is stale (every date in the past) or disagrees with its published schedule,
- * 0 otherwise. So it can be run on a schedule and only speak up when something needs doing.
+ * Exit code: 1 if any map is stale (every date in the past), disagrees with its published schedule, or
+ * has a schedule page that cannot be read, 0 otherwise. So it can be run on a schedule and only speak
+ * up when something needs doing. A page that cannot be read is a failure, not a quiet gap: Soccer,
+ * Volleyball and Cross Country pointed at pages that had moved, and were left out of the report (#2050).
  */
 
 import { readDefinitions } from './definitions.mjs';
@@ -42,8 +44,9 @@ const maps = readDefinitions();
  */
 const sharedSchedules = new Map();
 for (const map of maps) {
-  if (!map.schedule) continue;
-  sharedSchedules.set(map.schedule, [...(sharedSchedules.get(map.schedule) ?? []), map.id]);
+  for (const page of map.schedules) {
+    sharedSchedules.set(page, [...(sharedSchedules.get(page) ?? []), map.id]);
+  }
 }
 
 const rows = [];
@@ -62,29 +65,34 @@ for (const map of maps) {
     last,
     stale,
     malformed,
-    schedule: map.schedule,
+    schedules: map.schedules,
     scheduleExpression: map.scheduleExpression,
     sharedWith: [],
     published: null,
     missing: [],
     extra: [],
+    unreadable: false,
     note: null
   };
 
   if (map.scheduleExpression) {
     row.note = `scheduleUrl is ${map.scheduleExpression}, not a literal — cannot be read from the source`;
-  } else if (map.schedule && SCRAPEABLE.test(map.schedule)) {
-    row.sharedWith = (sharedSchedules.get(map.schedule) ?? []).filter((id) => id !== map.id);
+  } else if (map.schedules.length && map.schedules.every((page) => SCRAPEABLE.test(page))) {
+    row.sharedWith = [...new Set(map.schedules.flatMap((page) => sharedSchedules.get(page)))].filter((id) => id !== map.id);
 
     try {
-      const schedule = await fetchSchedule(map.schedule);
-      row.published = schedule.home;
-      row.missing = schedule.home.filter((d) => !dates.includes(d));
-      row.extra = dates.filter((d) => !schedule.home.includes(d));
+      // A map with more than one page - tennis has the men's and the women's - holds the home dates
+      // of all of them.
+      const pages = await Promise.all(map.schedules.map((page) => fetchSchedule(page)));
+      const home = [...new Set(pages.flatMap((page) => page.home))].sort();
+      row.published = home;
+      row.missing = home.filter((d) => !dates.includes(d));
+      row.extra = dates.filter((d) => !home.includes(d));
     } catch (error) {
+      row.unreadable = true;
       row.note = error.message;
     }
-  } else if (map.schedule) {
+  } else if (map.schedules.length) {
     row.note = 'schedule is a human page, not the athletics site';
   }
 
@@ -92,7 +100,7 @@ for (const map of maps) {
 }
 
 const checked = rows.filter((r) => r.published);
-const relevant = includeAll ? rows : rows.filter((r) => r.published || r.scheduleExpression);
+const relevant = includeAll ? rows : rows.filter((r) => r.published || r.unreadable || r.scheduleExpression);
 
 if (asJson) {
   console.log(JSON.stringify({ today, rows: relevant }, null, 1));
@@ -117,7 +125,7 @@ if (asJson) {
   }
 
   for (const r of relevant.filter((x) => x.missing.length || x.extra.length)) {
-    console.log(`\n${r.id}  (${r.schedule})`);
+    console.log(`\n${r.id}  (${r.schedules.join(', ')})`);
     if (r.sharedWith.length) {
       console.log(`  shares this page with ${r.sharedWith.join(', ')}: these are the page's dates, not this map's`);
     }
@@ -136,5 +144,7 @@ if (asJson) {
   if (stale.length && !includeAll) console.log('Run with --all to see every map, including those whose dates come from elsewhere.');
 }
 
-const bad = rows.filter((r) => r.stale || ((r.missing.length || r.extra.length) && r.sharedWith.length === 0));
+const bad = rows.filter(
+  (r) => r.stale || r.unreadable || ((r.missing.length || r.extra.length) && r.sharedWith.length === 0)
+);
 process.exit(bad.length ? 1 : 0);
