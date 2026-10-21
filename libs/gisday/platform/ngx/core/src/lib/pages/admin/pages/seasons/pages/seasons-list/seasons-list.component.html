@@ -10,7 +10,7 @@
 
     <div class="form-section-body" id="season-list">
       @if (($entities | async); as seasons) { @for (season of seasons; track season) {
-      <div class="season-row flex flex-row justify-around align-center" [routerLink]="['edit', season.guid]">
+      <div class="season-row flex flex-row wrap justify-around align-center" [routerLink]="['edit', season.guid]">
         <div class="season-year">
           <p class="value">{{season?.year}}</p>
           <p class="description">Year</p>
