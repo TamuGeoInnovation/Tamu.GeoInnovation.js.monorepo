@@ -325,14 +325,14 @@ for the maintainer.
 
 | | |
 | --- | --- |
-| [PR 2062](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2062) | #1998, the admin pages at phone width. Opened ready, MERGEABLE, CI running at 7:20 AM (5 passed, 4 pending). Full affected check exit 0 locally; before/after images from a signed-in capture on home |
+| [PR 2062](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2062) | #1998, the admin pages at phone width. Opened ready, MERGEABLE, **CI green at 7:50 AM** (15 passed, 1 skipped): ready for the maintainer to merge. Full affected check exit 0 locally; before/after images from a signed-in capture on home |
 
 No GIS Day question is open. Decided overnight: #2057 (`web --static`, Medium), #2058 (the seven a11y lint rules for
 geoservices, mailroom, oidc and signage, Low), and #1474's GIS Day half done in one pull request after #1998.
 
 ### What the next GIS Day director does, in order
 
-1. Watch PR 2062 to green; it needs nothing else.
+1. PR 2062 is green; once it merges, remove `C:\TAMU\wt-1998` on home.
 2. **#1474, GIS Day's half:** switch the seven template accessibility rules back on in `apps/gisday-angular`,
    `apps/gisday-competitions-angular` and `libs/gisday/*` (the `off` lines in each `eslint.config.mjs`), fix what they find,
    with before/after images for anything visible, one pull request carrying `Closes #1474` (PR 2046 did AggieMap's half,
