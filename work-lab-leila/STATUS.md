@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:30 AM Central, 21 October 2026**. A listener; job: testing.
+Last written **9:52 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,12 +24,11 @@ Last written **9:30 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 10:27 AM Central.**
+**Next update by 10:32 AM Central.**
 
-**Holding batch 8** (9:27 AM), as the 9:25 AM note says, until the director names the commit to test (`67e95b4b1` or `61161ce1b`). Idle,
-nothing running; watching this branch.
-Seen at 9:30 AM: `home`'s STATUS says Release-488 (`67e95b4b1`, `main-YX345P5S.js`) is on dev. Still holding: the 9:25 AM note asks for
-the **director** to name the commit in `work-lab-leila/TASKS.md`, and starts within minutes of it.
+**Batch 8, aggiemap: the release tier on Release-488.** Started 9:52 AM Central, on `home`'s Azure read (9:29 AM): Release-488 from
+`67e95b4b1` on dev, serving `main-YX345P5S.js`, checked again at 9:52 AM. `run-local.sh development release` from a worktree at
+`67e95b4b1`, nothing else running. Tag only on a clean pass.
 
 ## Finished
 
