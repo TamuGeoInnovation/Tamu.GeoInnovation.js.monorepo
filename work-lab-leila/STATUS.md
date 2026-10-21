@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:33 PM Central, 20 October 2026**. A listener; job: testing.
+Last written **11:35 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,17 +24,16 @@ Last written **11:33 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 12:18 AM Central.**
+**Next update by 12:10 AM Central.**
 
 **Batch 5, the release tier on tonight's dev build** (`b78942631`, report on #1935). Taken 11:29 PM Central. Waiting for the
 deploy: this machine cannot read Azure, so the start signal is dev serving a `main-*.js` other than `main-IORMDVQQ.js`.
 Then `run-local.sh development release` from a worktree at `b78942631`, nothing else heavy beside it; a `dev-*` tag only
 on a clean pass.
 
-**11:33 PM: dev already serves a new bundle, `main-MQDQOFSZ.js`, but it is not `b78942631`.** A local production build of
-`b78942631` is `main-3EFVYPNN.js`; the same build of `8463ac6af` gives `main-AYJ2SDWT.js`, exactly what production serves,
-so local names match Azure's, and the lock file is the same at both. The tier waits for dev to serve `main-3EFVYPNN.js`
-(checked every 2 minutes), not just any change: started on `main-MQDQOFSZ.js` it would test the wrong build.
+**Started the release tier at 11:35 PM Central** against dev serving `main-MQDQOFSZ.js`, which the director read from Azure as
+Release-487, build 20261020.40, from `b78942631`. (My local-build comparison could not match: each environment bakes in its
+own analytics id.) From the worktree `C:TAMUwt-release` at `b78942631`; nothing else heavy running.
 
 ## Finished
 
