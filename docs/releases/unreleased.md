@@ -82,6 +82,18 @@ that feature on the map does; a building chosen from search is unchanged
 | --- | --- |
 | ![Motorcycle Parking on production opened at lot 100j: the side panel headed Selected Buildings](../screenshots/1970-selection-popup-title/before-production-motorcycle-lot-100j.png) | ![The same link on a production build of the fix: the panel headed Motorcycle Parking Space](../screenshots/1970-selection-popup-title/after-local-production-motorcycle-lot-100j.png) |
 
+
+### A Football Tailgating kiosk map
+
+`/kiosk/football-tailgating/map` shows the Football Tailgating map with no sidebar, for a fixed screen
+or for embedding: tailgating zones and their numbers, the tents, the construction that affects tailgating, and the
+buildings. A tent or zone link (`?tent=L1`, `?zone=AP-7`) opens with it selected. Like the Dining kiosk, it is
+listed only in the development-only Kiosk Maps section of All Maps ([#1975](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1975)).
+
+| The Football Tailgating map, as production serves it | The kiosk | The kiosk with `?tent=L1` |
+| --- | --- | --- |
+| ![The Football Tailgating map on production, with its sidebar of layers and legend](../screenshots/1975-tailgating-kiosk/before-production-tailgating-map.png) | ![The kiosk on a local build: the same zones, numbers, tents and construction, with no sidebar](../screenshots/1975-tailgating-kiosk/after-local-build-kiosk.png) | ![The kiosk opened with ?tent=L1: zoomed to Tent L1, highlighted, with its popup](../screenshots/1975-tailgating-kiosk/after-local-build-kiosk-tent-l1.png) |
+
 ### Not visible: NestJS 10 to 11
 
 The NestJS APIs (UES Operations, GIS Day, OIDC, Mailroom and Geoservices) move from NestJS 10.4.22 to 11.2.7
@@ -663,6 +675,7 @@ dated notes as what was tested, and this table empties.
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | Live at the Station removed, the concert is cancelled ([#1995](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1995)) | [dev.aggiemap.tamu.edu/all-maps/campus-events](https://dev.aggiemap.tamu.edu/all-maps/campus-events) | No Live at the Station under Fall, and every other event still there. Search for "live at the station" offers nothing. The old link `/events/live-at-the-station` still opens the map rather than erroring. No notice about it appears on any page |
+| A Football Tailgating kiosk map ([#1975](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1975)) | [dev.aggiemap.tamu.edu/kiosk/football-tailgating/map](https://dev.aggiemap.tamu.edu/kiosk/football-tailgating/map), then the same with `?tent=L1` | No sidebar, and no All Maps or 2D buttons (zoom, locate and compass remain); it opens where the tailgating map opens, with zones, numbers, tents and buildings and nothing else; a tent or zone opens its popup; `?tent=L1` zooms to Tent L1 highlighted with its popup; All Maps lists it only under Kiosk Maps |
 | Aerial Imagery no longer opens blank ([#1997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1997)) | [dev.aggiemap.tamu.edu/map/d/settings](https://dev.aggiemap.tamu.edu/map/d/settings), then choose Aerial Imagery; repeat with a fresh page several times | The imagery draws every time without zooming or touching the slider, and the spinner beside Aerial Imagery stops once it has. The slider still steps back to older dates and forward to Latest. On a phone, ☰ → Basemap → Aerial Imagery draws too |
 | Layer symbols back in the legend ([#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987), [#1988](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1988)) | [dev.aggiemap.tamu.edu/parking/permit-select-freshman](https://dev.aggiemap.tamu.edu/parking/permit-select-freshman) | Both layers have a coloured symbol beside their name in the Legend, not just the name. Then check a few other parking maps - Visitor, Motorcycle, Accessible - and the main map's layers: every legend entry for a switched-on layer has a symbol, and no legend that was right before has lost a row |
 | Business Parking draws its lots ([#1981](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1981)) | [dev.aggiemap.tamu.edu/parking/business-parking](https://dev.aggiemap.tamu.edu/parking/business-parking) | Maroon surface lots and pink garages across campus, as well as the blue two-hour space markers. In the Legend, all three entries have a symbol beside them: a blue triangle, a maroon square and a pink square. Switching either lot layer off removes those lots and its legend entry |
