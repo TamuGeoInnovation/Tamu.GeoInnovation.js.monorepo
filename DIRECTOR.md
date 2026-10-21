@@ -1,11 +1,28 @@
 # Who directs
 
-**Director: home** (handed over by work at 11:05 PM Central, 20 October 2026, as the maintainer left the office for home. **home directs from when he speaks to it.**)
+**Directors: `home` (AggieMap chat) for AggieMap, and `home` (GIS Day chat) for GIS Day** - two Claude Code chats on the
+home machine, decided by the maintainer at 11:50 PM Central, 20 October 2026. AggieMap's director was handed over by `work` at
+11:05 PM. When the maintainer is at work, each application's director moves to `work` separately, by the handover below.
 
-Each of the maintainer's machines runs a Claude Code session on this branch. **At any time exactly one machine
-directs; every other machine listens.** The maintainer talks to the director. Every session reads this file first,
-every time the branch changes. Which machine directs moves with the maintainer: home when he is at home, work when
-he is at work.
+Each of the maintainer's machines runs a Claude Code session on this branch. **Each application has exactly one director at a
+time; every other session listens.** The maintainer talks to the directors; the two are kept apart so that each chat's context
+is one application's. Every session reads this file first, every time the branch changes.
+
+## Two directors (20 October 2026)
+
+The maintainer's decisions 1A, 2A and 3A:
+
+- **One queue per listener.** A listener keeps one `TASKS.md`. Both directors append batches to it; **neither edits or removes
+  the other's**. Every batch heading names its director and application, for example
+  `## Batch 6 (aggiemap: ...)` or `## Batch 7 (gisday: ...)`, and batch numbers are the listener's, in one sequence.
+- **The listener runs batches in the order they arrive**, one heavy run at a time ([Nothing heavy beside a run](#nothing-heavy-beside-a-run)),
+  and its `STATUS.md` says which director's batch is running.
+- **Questions go back to the director that wrote the batch.** A listener's report puts them under
+  **Questions for the director (aggiemap)** or **(gisday)**, and that director asks the maintainer, in its own chat.
+- **A director checks the listener's `STATUS.md` and the queue before adding a batch**, as before, and writes the
+  expected duration so the other director can see when the machine frees up.
+- **Commits** start with the writer's name as before; a director's commits say which: `home (aggiemap):` or `home (gisday):`.
+  Older `home:` commits are the AggieMap chat's.
 
 ## Read this first: are you in the table below?
 
