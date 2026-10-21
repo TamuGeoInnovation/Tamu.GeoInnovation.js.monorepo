@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:33 PM Central, 20 October 2026**. A listener; job: testing.
+Last written **9:12 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -15,19 +15,21 @@ Last written **6:33 PM Central, 20 October 2026**. A listener; job: testing.
   build); the AggieMap dev server runs on `localhost:4200`.
 - **Fork remote:** yes, `fork` = `danielgoldbergtamu/Tamu.GeoInnovation.js.monorepo`; branches can be pushed there.
 - **Cannot:**
-  - no `gh` CLI, so no pull requests, issue comments or GraphQL from here;
+  - `gh` is installed and signed in (20 October, evening) but **without the `project` scope**: it can file issues and
+    set their fields, not add them to a project board;
   - the built-in browser is not signed in to GitHub;
   - SSH pushes depend on the maintainer's Git Bash `ssh-agent` staying alive (the key has a passphrase);
-  - Git and Docker are not yet on this session's PATH by name (called by full path until the app restarts).
+  - Git, Docker and `gh` are not on this session's PATH by name until the app restarts (called by full path).
 
 ## Running now
 
-**Batch 3, the before and after images for the three parking fixes.** Started 6:33 PM Central. Before shots from
-production, after shots from a local production build of each branch, at 1440x900; images, notes entries and
-test rows committed on `fix/1991-vendor-parking-lots`, `fix/1992-accessible-parking-sports-maps` and
-`fix/1992-legend-multi-value-class`, then pushed to the fork.
+None.
 
 ## Finished
+
+- **Batch 3, the images and notes for the three parking fixes** (6:33 to 9:12 PM): branches ready for PRs,
+  `fix/1991` `73c3315a7`, `fix/1992-accessible` `141795928`, `fix/1992-legend` `5df94223b`. Report
+  `work-lab-leila/reports/2026-10-20-3.md`.
 
 - **Batch 2, the three parking fixes together** (5:37 to 5:47 PM): merged clean, pushed to the fork as
   `check/2026-10-20-three-parking-fixes`; check exit 1 on one `ts-events-ngx` snapshot that `fix/1991` fails alone;
@@ -42,6 +44,8 @@ test rows committed on `fix/1991-vendor-parking-lots`, `fix/1992-accessible-park
 
 ## Told directly
 
+- 20 October, evening: file the setup-docs issue for the missing `gh`, priority Low. Filed as #2015 (Task, `documentation`).
+
 - 20 October: this machine is named `work-lab-leila`; the director will assign it work.
 
 ## Findings
@@ -50,4 +54,4 @@ test rows committed on `fix/1991-vendor-parking-lots`, `fix/1992-accessible-park
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 2
+Last batch done: 3
