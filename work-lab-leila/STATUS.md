@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:54 PM Central, 20 October 2026**. A listener; job: testing.
+Last written **11:55 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,7 +24,11 @@ Last written **11:54 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## Running now
 
-None.
+**Next update by 12:40 AM Central.**
+
+**Batch 6, aggiemap: #1969, the lot-link race - fix it.** Started 11:55 PM Central. `fix/1969-lot-link-race` from the latest
+`origin/development`; red-first smoke test (the event map's own service delayed) and unit test, the fix in `EventService`, green on a
+local production build, the scoped check, images, the notes file, then the pull request. About 60 to 90 minutes.
 
 ## Finished
 
