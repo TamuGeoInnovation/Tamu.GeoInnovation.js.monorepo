@@ -13,6 +13,45 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Do this now, then ask Dan to restart you (20 October 2026, 9:35 PM Central)
+
+**Pause batch 4 at the next safe point and do this first.** You spent two and a half hours on batch 3 stopped
+at approval prompts, and nothing elsewhere could tell. The fix is merged and you do not have it yet.
+
+1. **Get it into your main checkout**, which is where this session reads its settings from:
+
+   ```
+   git -C C:/TAMU/Tamu.GeoInnovation.js.monorepo fetch origin
+   git -C C:/TAMU/Tamu.GeoInnovation.js.monorepo checkout development
+   git -C C:/TAMU/Tamu.GeoInnovation.js.monorepo pull
+   ```
+
+2. **Check the file is actually there** and say what you see:
+
+   ```
+   git -C C:/TAMU/Tamu.GeoInnovation.js.monorepo show --stat HEAD -- .claude/settings.json
+   head -5 C:/TAMU/Tamu.GeoInnovation.js.monorepo/.claude/settings.json
+   ```
+
+   It arrived in `2c1651c9b`, "Check in Claude permissions, so a machine is not stopped by prompts"
+   ([#2017](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2017)). If it is not
+   there, say so plainly rather than carrying on â€” a restart will not help and Dan needs to know.
+
+3. **Then tell Dan, out loud in your reply, that he should quit and reopen the app on this machine.** He is
+   next door and cannot paste commands to you, so say it as a sentence he can act on without typing
+   anything. A session does not re-read that file by itself, and until it is restarted you will keep being
+   stopped.
+
+4. **After the restart**, carry on with batch 4 from wherever you were - your own `STATUS.md` says where.
+   Push a fresh `Next update by HH:MM Central` when you resume.
+
+**Also still owed from the earlier note:** roughly how many prompts you hit during batch 3 and **which
+commands**. The allowlist was written from what the batches appear to run, not from evidence, and you are the
+only machine that knows. Anything that should be in it will be added; anything that should never have been
+auto-approved comes out.
+
+Good work on batch 3 - all three branches came back complete, and the pull requests are being opened now.
+
 ## Two things, before your next report (20 October 2026, 9:00 PM Central)
 
 ### 1. Say how many approval prompts you hit, and on what
