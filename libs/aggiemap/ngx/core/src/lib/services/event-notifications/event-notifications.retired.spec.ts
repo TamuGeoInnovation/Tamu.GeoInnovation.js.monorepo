@@ -4,6 +4,10 @@ import { NotificationProperties, NotificationService } from '@tamu-gisc/common/n
 
 import { EVENT_NOTIFICATION_DEFINITIONS, EventNotificationsService } from './event-notifications.service';
 
+// Mid-year, so every date these tests use falls in one season, which a notice's id carries (#2051).
+beforeEach(() => vi.useFakeTimers({ now: new Date('2026-06-15T17:00:00Z'), toFake: ['Date'] }));
+afterEach(() => vi.useRealTimers());
+
 /**
  * A retired event raises no notice, whatever its dates say (#1995).
  *
@@ -90,7 +94,7 @@ describe('EventNotificationsService, retired events', () => {
 
     service.checkAndTriggerEventNotifications();
 
-    expect(notifications.toasted).toEqual(['kickoff-toast']);
+    expect(notifications.toasted).toEqual(['kickoff-toast-2026']);
   });
 
   it('leaves an event with no Discover entry alone', () => {
@@ -99,6 +103,6 @@ describe('EventNotificationsService, retired events', () => {
 
     service.checkAndTriggerEventNotifications();
 
-    expect(notifications.toasted).toEqual(['ring-day-toast']);
+    expect(notifications.toasted).toEqual(['ring-day-toast-2026']);
   });
 });

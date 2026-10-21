@@ -9,6 +9,10 @@ import {
   NO_NOTIFICATIONS
 } from './event-notifications.service';
 
+// Mid-year, so every date these tests use falls in one season, which a notice's id carries (#2051).
+beforeEach(() => vi.useFakeTimers({ now: new Date('2026-06-15T17:00:00Z'), toFake: ['Date'] }));
+afterEach(() => vi.useRealTimers());
+
 /**
  * The application gives the service a function that loads the event definitions, so they are not part
  * of the first download (#1454). Notices then arrive a moment after the page, which must not lose
@@ -70,7 +74,7 @@ describe('EventNotificationsService with definitions that load later', () => {
     finish([definition('ring-day')]);
     await settle();
 
-    expect(toasted).toEqual(['ring-day-toast']);
+    expect(toasted).toEqual(['ring-day-toast-2026']);
   });
 
   it('loads the definitions once, however many pages are visited while they load', async () => {
@@ -84,7 +88,7 @@ describe('EventNotificationsService with definitions that load later', () => {
     await settle();
 
     expect(loads).toBe(1);
-    expect(toasted).toEqual(['ring-day-toast']);
+    expect(toasted).toEqual(['ring-day-toast-2026']);
   });
 
   it('raises nothing if the visitor has left for a page without notices by the time they load', async () => {
@@ -108,6 +112,6 @@ describe('EventNotificationsService with definitions that load later', () => {
     await settle();
 
     expect(loads).toBe(1);
-    expect(toasted).toEqual(['kickoff-toast']);
+    expect(toasted).toEqual(['kickoff-toast-2026']);
   });
 });

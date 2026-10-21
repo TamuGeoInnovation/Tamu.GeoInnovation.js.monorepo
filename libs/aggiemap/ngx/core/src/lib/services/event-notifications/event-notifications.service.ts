@@ -241,7 +241,7 @@ export class EventNotificationsService {
       });
 
       if (isOngoing || isUpcoming) {
-        this.triggerEventToast(config.toast, config.id, config.series);
+        this.triggerEventToast(config.toast, config.id, new Date(Math.min(...eventDates)).getUTCFullYear(), config.series);
       }
     });
   }
@@ -251,8 +251,9 @@ export class EventNotificationsService {
    *
    * @param toastConfig The notification properties for the toast
    * @param eventId The event ID to ensure unique notification IDs
+   * @param season The year of the event's earliest date, which the notice's id carries (#2051)
    */
-  private triggerEventToast(toastConfig: NotificationProperties, eventId: string, series?: string): void {
+  private triggerEventToast(toastConfig: NotificationProperties, eventId: string, season: number, series?: string): void {
     // Create a copy of the toast config to avoid modifying the original
     const notificationProps = { ...toastConfig };
 
@@ -262,10 +263,11 @@ export class EventNotificationsService {
       notificationProps.imgAltText = notificationProps.imgAltText || EVENT_SERIES_ICONS[series].imgAltText;
     }
 
-    // Add a unique ID if not provided to prevent duplicate notifications
-    if (!notificationProps.id) {
-      notificationProps.id = `event-${eventId}-toast`;
-    }
+    // The id carries the season, the year of the event's earliest date. "Don't show again" is
+    // remembered by id, so a notice acknowledged last season is shown again once the map is given the
+    // new season's dates, with nothing to edit. Baseball's id had "-2026" typed into it for the same
+    // purpose, which only worked while somebody remembered to change it every year (#2051).
+    notificationProps.id = `${notificationProps.id || `event-${eventId}-toast`}-${season}`;
 
     // Already dismissed during this page load, so leave it dismissed. This runs on every navigation,
     // and without the check, walking from the main map to an event map would raise the whole stack
