@@ -9,6 +9,30 @@ describe('PopupService', () => {
   let service: PopupService;
 
   class TestPopupComponent {}
+  class BuildingPopupComponent {}
+  class SpacePopupComponent {}
+
+  // A feature opened by a link or a search is drawn on the selection layer, whose title and popup are the
+  // main map's buildings (#1970). Its parent is the map.
+  const selectionLayer = {
+    id: 'selection-layer',
+    title: 'Selected Buildings',
+    popupComponent: BuildingPopupComponent,
+    parent: { findLayerById: (id: string) => mapLayers.find((layer) => layer.id === id) }
+  };
+  const spacesLayer = {
+    id: 'motorcycle-parking-space',
+    title: 'Motorcycle Parking Space',
+    popupComponent: SpacePopupComponent,
+    popupData: { lotName: { field: 'LotName', collapsed: true } }
+  };
+  const mapLayers = [selectionLayer, spacesLayer];
+
+  /** A motorcycle space selected by `?lot=100j`, as the event service stamps it and the map service draws it. */
+  const selectedSpace = () => ({
+    attributes: { OBJECTID: 32270, LotName: '100j', __featureLayerId: spacesLayer.id, __featureObjectId: 32270 },
+    layer: selectionLayer
+  });
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -130,5 +154,50 @@ describe('PopupService', () => {
 
     expect(result?.data.attributes.startDate).toBe('August 10, 2025');
     expect(result?.data.attributes.description).toBe('Start Date: August 10, 2025');
+  });
+
+  describe('a feature on the selection layer (#1970)', () => {
+    it('is shown as its own layer shows it when the selection names the popup', () => {
+      const snapshot = { graphics: [selectedSpace()], popupComponent: SpacePopupComponent } as unknown as HitTestSnapshot;
+
+      const result = service.getComponent(snapshot);
+
+      expect(result?.component).toBe(SpacePopupComponent);
+      expect(result?.data?.layer?.title).toBe('Motorcycle Parking Space');
+      expect(result?.data?.attributes.OBJECTID).toBe(32270);
+    });
+
+    it("opens its own layer's popup, with that layer's data, when the highlight is clicked", () => {
+      const snapshot = { graphics: [selectedSpace()] } as unknown as HitTestSnapshot;
+
+      const result = service.getComponent(snapshot);
+
+      expect(result?.component).toBe(SpacePopupComponent);
+      expect(result?.data?.layer?.title).toBe('Motorcycle Parking Space');
+      expect(result?.data?.attributes.lotName).toBe('100j');
+    });
+
+    it('leaves the drawn highlight on the selection layer', () => {
+      const graphic = selectedSpace();
+
+      service.getComponent({ graphics: [graphic] } as unknown as HitTestSnapshot);
+
+      expect(graphic.layer).toBe(selectionLayer);
+    });
+
+    it('is still a building when it names no layer of its own, as a building search result does', () => {
+      const building = { attributes: { Number: '1510', BldgName: 'Wehner' }, layer: selectionLayer };
+
+      const clicked = service.getComponent({ graphics: [building] } as unknown as HitTestSnapshot);
+      const searched = service.getComponent({
+        graphics: [building],
+        popupComponent: BuildingPopupComponent
+      } as unknown as HitTestSnapshot);
+
+      expect(clicked?.component).toBe(BuildingPopupComponent);
+      expect(clicked?.data).toBe(building);
+      expect(searched?.component).toBe(BuildingPopupComponent);
+      expect(searched?.data).toBeUndefined();
+    });
   });
 });
