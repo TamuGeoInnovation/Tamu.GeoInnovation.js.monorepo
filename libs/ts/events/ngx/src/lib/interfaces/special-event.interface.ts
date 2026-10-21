@@ -593,6 +593,18 @@ export interface IMapConfigurationBase {
   sources: Array<LayerSource> | null;
 
   /**
+   * A new version of the map that its owner has so far published only on the development GIS server,
+   * drawn in place of `sources` wherever that server is read (`readsDevelopmentGisServer()`: a dev host,
+   * not localhost) (#2001).
+   *
+   * Nothing without a production service is visible on production, so production keeps drawing
+   * `sources` until the owner publishes the new version there. Then these become `sources` and this is
+   * removed. Their services are listed in `DEVELOPMENT_ONLY_SERVICES` (test/smoke/aggiemap), so the
+   * smoke suite fails if production ever requests one.
+   */
+  developmentSources?: Array<LayerSource>;
+
+  /**
    * If the map should be discoverable in the Discover application, this property should be set to an object that conforms to the DiscoverMetadata interface.
    */
   discover?: DiscoverMetadata | null;

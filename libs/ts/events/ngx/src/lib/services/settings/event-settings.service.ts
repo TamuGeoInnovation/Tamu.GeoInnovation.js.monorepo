@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
+import { readsDevelopmentGisServer } from '@tamu-gisc/aggiemap/ngx/common';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -130,7 +131,13 @@ export class EventSettingsService implements EventSettingsQuery {
     const config = this.getEventDefinitionById(this._settingsSecondaryKey);
 
     if (config && config.references !== null) {
-      const references = config.references;
+      // A development version draws only the layers it has (#2001).
+      const development = this.developmentSources(config);
+      const references = development
+        ? Object.fromEntries(
+            Object.entries(config.references).filter(([, id]) => development.some((source) => source.id === id))
+          )
+        : config.references;
 
       if (asObservable) {
         return of(references);
@@ -149,7 +156,7 @@ export class EventSettingsService implements EventSettingsQuery {
     const config = this.getEventDefinitionById(this._settingsSecondaryKey);
 
     if (config && config.sources !== null) {
-      const sources = config.sources;
+      const sources = this.developmentSources(config) ?? config.sources;
 
       if (asObservable) {
         return of(sources);
@@ -159,6 +166,14 @@ export class EventSettingsService implements EventSettingsQuery {
     } else {
       throw new Error(`Event layer sources for event ID '${this._settingsSecondaryKey}' not found.`);
     }
+  }
+
+  /**
+   * The map's version published only on the development GIS server, where that server is read; otherwise
+   * undefined, and the map draws its published `sources` (#2001).
+   */
+  private developmentSources(config: AggiemapCustomMapConfiguration): Array<LayerSource> | undefined {
+    return readsDevelopmentGisServer() ? config.developmentSources : undefined;
   }
 
   /**
