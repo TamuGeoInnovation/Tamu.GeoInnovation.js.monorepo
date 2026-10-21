@@ -21,7 +21,10 @@
       "Bash(git stash:*)",
       "Bash(git remote:*)",
       "Bash(git push fork:*)",
-
+      "Bash(git push -q origin work-mailbox:*)",
+      "Bash(git push -q origin HEAD:work-mailbox:*)",
+      "Bash(git push origin HEAD:work-mailbox:*)",
+      "Bash(git push origin work-mailbox:*)",
       "Bash(docker ps:*)",
       "Bash(docker logs:*)",
       "Bash(docker volume ls:*)",
@@ -29,13 +32,11 @@
       "Bash(docker unpause:*)",
       "Bash(docker rm:*)",
       "Bash(docker run:*)",
-
       "Bash(scripts/check-in-volume.sh:*)",
       "Bash(scripts/tag-build.sh:*)",
       "Bash(scripts/run-times-report.sh:*)",
       "Bash(test/smoke/aggiemap/run-local.sh:*)",
       "Bash(bash scripts/:*)",
-
       "Bash(gh issue view:*)",
       "Bash(gh issue list:*)",
       "Bash(gh pr view:*)",
@@ -47,7 +48,6 @@
       "Bash(gh project view:*)",
       "Bash(gh repo view:*)",
       "Bash(gh api graphql -f query=query:*)",
-
       "Bash(node:*)",
       "Bash(npx tsc:*)",
       "Bash(python:*)",
@@ -64,14 +64,17 @@
       "Bash(find:*)"
     ],
     "deny": [
-      "Bash(git push origin:*)",
       "Bash(git push --force:*)",
       "Bash(gh pr merge:*)",
       "Bash(gh release:*)",
       "Bash(gh workflow run:*)",
       "Bash(kubectl:*)",
       "Bash(az:*)",
-      "Bash(rm -rf /:*)"
+      "Bash(rm -rf /:*)",
+      "Bash(git push origin development:*)",
+      "Bash(git push origin master:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push --delete:*)"
     ]
   }
 }
