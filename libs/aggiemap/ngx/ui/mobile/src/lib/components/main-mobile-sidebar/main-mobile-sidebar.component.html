@@ -6,11 +6,11 @@
   } @if (item.type !== 'separator') {
   <div class="list-item">
     @if (item.path !== '') {
-    <p [routerLink]="item.path" (click)="reportNavigation(item.name)">
+    <a [routerLink]="item.path" (click)="reportNavigation(item.name)">
       {{ item.name }} @if (item.type === 'outlet') {
       <span class="material-icons">keyboard_arrow_right</span>
       }
-    </p>
+    </a>
     } @if (item.url) {
     <a [href]="item.url" [target]="item.type === 'link-internal' ? '_self' : '_blank'" (click)="reportNavigation(item.name)"
       >{{ item.name }} @if (item.type === 'outlet') {

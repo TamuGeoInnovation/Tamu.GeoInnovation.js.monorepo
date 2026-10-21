@@ -14,7 +14,7 @@
           } @if (option.option !== null) {
           <p>{{ option.option.label }}</p>
           }
-          <a (click)="goToAccommodationSelection(option.key)" (keyup.space)="goToAccommodationSelection(option.key)" (keyup.enter)="goToAccommodationSelection(option.key)">Change</a>
+          <a tabindex="0" role="button" (click)="goToAccommodationSelection(option.key)" (keyup.space)="goToAccommodationSelection(option.key)" (keyup.enter)="goToAccommodationSelection(option.key)">Change</a>
         </div>
       </div>
       } @if (settingsValid) {

@@ -15,7 +15,7 @@
     </div>
     @if (busStopsList.length > 0) {
     <div class="stops-accordion">
-      <p class="title" (click)="timeTableExpanded = !timeTableExpanded" [ngClass]="{ expanded: timeTableExpanded }"><i class="material-icons">keyboard_arrow_right</i> {{ stopCount }} Stops</p>
+      <p class="title" [attr.aria-expanded]="timeTableExpanded" tabindex="0" role="button" (click)="timeTableExpanded = !timeTableExpanded" (keydown.enter)="timeTableExpanded = !timeTableExpanded" (keydown.space)="timeTableExpanded = !timeTableExpanded; $event.preventDefault()" [ngClass]="{ expanded: timeTableExpanded }"><i class="material-icons">keyboard_arrow_right</i> {{ stopCount }} Stops</p>
       <!-- // TODO: Verify accordion works here -->
       @if (busStopsList.length > 1) {
       <tamu-gisc-accordion [expanded]="timeTableExpanded">

@@ -14,18 +14,18 @@
     <div id="box" class="feedback-form">
       <form method="POST" action="../include/incoming.asp">
         <div class="input-item">
-          <input type="text" name="sender_name" autofocus required />
-          <label for="Name">Name</label>
+          <input type="text" id="feedback-name" name="sender_name" required />
+          <label for="feedback-name">Name</label>
         </div>
 
         <div class="input-item">
-          <input type="email" name="senderinfo" required />
-          <label for="from">Email address</label>
+          <input type="email" id="feedback-email" name="senderinfo" required />
+          <label for="feedback-email">Email address</label>
         </div>
 
         <div class="input-item last">
-          <textarea name="comments"></textarea>
-          <label for="feedback">Feedback/Comment</label>
+          <textarea id="feedback-comment" name="comments"></textarea>
+          <label for="feedback-comment">Feedback/Comment</label>
         </div>
 
         <input type="submit" value="Submit Comment" />

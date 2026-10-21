@@ -72,4 +72,31 @@ describe('NotificationItemComponent', () => {
       notificationItemComponent.action();
       expect(notificationItemComponent.animateStatus()).toBeFalsy();
     }));
+
+  /**
+   * Hover and keyboard focus both pause and resume the countdown (#1474), so a notification can be
+   * resumed twice in a row: the pointer leaves, then focus leaves. A second resume must not start a
+   * second interval, or the countdown runs at double speed and the first interval can never be cleared.
+   */
+  it('should keep one countdown when resumed twice', () => {
+    const fixture = TestBed.createComponent(NotificationItemComponent);
+    const notificationItemComponent = fixture.componentInstance;
+    fixture.componentRef.setInput('notification', new Notification({ id: '0', title: 'test', message: 'howdy' }));
+
+    const step = notificationItemComponent.timer.step;
+
+    vi.useFakeTimers();
+    notificationItemComponent.ngOnInit();
+    notificationItemComponent.pause();
+
+    notificationItemComponent.resume();
+    notificationItemComponent.resume();
+    vi.advanceTimersByTime(step + 10);
+    expect(notificationItemComponent.timer.current()).toEqual(step);
+
+    notificationItemComponent.pause();
+    vi.advanceTimersByTime(1000);
+    expect(notificationItemComponent.timer.current()).toEqual(step);
+    vi.useRealTimers();
+  });
 });

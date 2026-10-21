@@ -17,6 +17,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
   selector: 'tamu-gisc-slide-toggle',
   templateUrl: './slide-toggle.component.html',
   styleUrls: ['./slide-toggle.component.scss'],
+  host: { role: 'radiogroup' },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

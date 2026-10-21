@@ -110,7 +110,7 @@ When affecting multiple projects or the workspace, the project name can be omitt
 - Pattern: `libs/[domain]/src/` contains source code
 
 **Backend Libraries:**
-- Use `@nx/nest` schematics for module/controller/service generation
+- Write modules, controllers and services by hand, following the existing ones (`@nx/nest` was removed in #1974: no Nx release supports NestJS 12)
 - TypeORM for database access
 - Bull for background jobs
 - Env vars via `dotenv` or environment files
