@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { expect, test } from './fixtures';
+import { expect, HEAVY, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
 
@@ -104,8 +104,17 @@ interface LegendEntry {
   symbols: number;
 }
 
+/**
+ * The maps that load every parking space on campus (#1897's family) and so take longest to settle. They run in
+ * the heavy lane, after everything else and two at a time (#1716), so the settle limit below measures the map
+ * rather than how much CPU five other map loads leave it: on a 24-CPU machine Maintenance Parking settled in
+ * 41-47 s with six workers, against 134-147 s on the loaded machines that failed it (#2008). The limit is not
+ * raised or scaled by worker count, so a map that does get slow still fails.
+ */
+const HEAVY_MAPS = new Set(['/parking/maintenance-parking', '/parking/service-loading']);
+
 for (const mapPath of manifest.maps) {
-  test(`${mapPath} lists, draws and keys every layer it shows`, async ({ page }) => {
+  test(`${mapPath} lists, draws and keys every layer it shows`, HEAVY_MAPS.has(mapPath) ? HEAVY : {}, async ({ page }) => {
     test.setTimeout(330_000);
     await blockAnalytics(page);
     await page.goto(mapPath, { waitUntil: 'domcontentloaded' });
