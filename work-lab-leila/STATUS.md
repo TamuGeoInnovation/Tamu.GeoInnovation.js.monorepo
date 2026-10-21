@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **8:41 AM Central, 21 October 2026**. A listener; job: testing.
+Last written **8:47 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -23,6 +23,8 @@ Last written **8:41 AM Central, 21 October 2026**. A listener; job: testing.
   - Git, Docker and `gh` are not on this session's PATH by name until the app restarts (called by full path).
 
 ## Running now
+
+**Alive at 8:47 AM Central, 21 October.** Batch 6 branch pushed; waiting on an Azure read for batch 8 (see below).
 
 **Next update by 9:11 AM Central.**
 
