@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:13 PM Central, 20 October 2026**. A listener; job: testing.
+Last written **9:20 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,7 +24,12 @@ Last written **9:13 PM Central, 20 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 10:03 PM Central.**
+**Next update by 9:50 PM Central.**
+
+**Paused at 9:20 PM for the restart the director asked for.** Where batch 4 is: #1975 merged with `development`
+(`docs/testing.md` conflicted on the Total; development's file kept, #2002), the `declared-layers` snapshot refreshed for
+the kiosk, the check exit 0 (lint 5, test 5, build 2), pushed to the fork at `064ed7789`; after shots taken, not
+committed yet. Still to do: the notes entry and row, commit and push, the pull request, then #1969.
 
 **Batch 4.** Started 9:13 PM Central. First #1975: merge the latest `development` into `feat/1975-tailgating-kiosk`, the
 check, after images from a local production build, the notes entry and test row, then its pull request. Then
@@ -54,6 +59,15 @@ check, after images from a local production build, the notes entry and test row,
 - 20 October: this machine is named `work-lab-leila`; the director will assign it work.
 
 ## Findings
+
+- **`.claude/settings.json` (#2017, `2c1651c9b`) is in the main checkout, and two things in it will stop this machine:**
+  1. It **denies `Bash(git push origin:*)`**. Every listener's join, status and report is `git push origin work-mailbox`;
+     a deny usually holds even under bypass permissions, so once it loads this machine may not be able to report at
+     all. Suggest allowing `git push origin work-mailbox` explicitly, ahead of the deny.
+  2. It has **only `Bash(...)` rules**. A Windows session running commands through the PowerShell tool, as this one has
+     all day, matches none of them.
+  3. It loads only for a session opened **in** `C:TAMUTamu.GeoInnovation.js.monorepo`. This session was started
+     with no folder, so a restart of it may not read the file at all; a new session opened in the repo will.
 
 - `CLAUDE_SETUP.md` Phase 5's AggieMap command hung on a blank page here until `UV_THREADPOOL_SIZE=64` and
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
