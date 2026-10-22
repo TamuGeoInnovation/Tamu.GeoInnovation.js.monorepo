@@ -157,6 +157,57 @@ real caught, because from outside, stuck and busy are the same thing.
 
 **Your batch 3 has no deadline because it predates the rule.** Add one now for whatever is left of it.
 
+## Batch 9 (22 October 2026, 8:05 AM Central) - the release tier against production
+
+Release-490 is live on production, from `36b962a04e55ae379d0d771bfa7e0ee2e831b98d` (`36b962a04`). It
+carries everything from Release-489 - the 2026-27 athletics dates, #1969's lot links, Vendor and
+Business Parking, the legend symbols, accessible parking on three sports maps, Team Bus Parking, the
+retired Live at the Station map, the Football Tailgating kiosk - plus three GIS Day changes.
+
+### Why this run matters more than the usual production tier
+
+**`36b962a04` has never had a release tier.** The tier that cleared this release ran on `61161ce1b`,
+the commit before the three GIS Day changes, and is what `dev-2026-10-21` tags. The delta was checked
+by reading it rather than by running it: three GIS Day pull requests, whose only shared-code change was
+an added barrel export and a CSS variable with an unchanged default, neither reachable from AggieMap.
+All three passed Build / Affected and both Azure production builds.
+
+So **this run is the first test of the commit that is actually serving users**, and
+`scripts/tag-build.sh prod` is being held until it passes. Do not tag anything yourself.
+
+### What to run
+
+```
+test/smoke/aggiemap/run-local.sh production release
+```
+
+**`production`, not `development`**, and `release`, not `quick`. Nothing else heavy on the machine.
+
+### What to expect, so a real failure is not lost in the known ones
+
+[#2075](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2075) has been open
+since 21 October because production's scheduled run was failing on maps this release fixes. **Those
+failures should now be gone**, and the issue closes itself when a GitHub run passes. If any of them is
+still failing, that is a finding and not noise: it would mean a fix did not reach production.
+
+**One that will still fail, and should:**
+[#2080](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2080) - Accessible
+Building Entrances. The service fails about half its queries and caps the rest at 1,000 of 1,524
+features. That is the published service, not this release, and it is the GIS team's. Name it in the
+report rather than letting it read as new.
+
+### What to report
+
+- Passed, failed, flaky, skipped, the elapsed time, and **every failure named with its map and
+  message**.
+- The bundle production served, read from the page, and the commit from the handover above.
+- Compare with the dev tier on `61161ce1b`: **618 passed, 0 failed, 0 flaky, 44 skipped**. Production
+  lists fewer maps than dev, so the totals will not match - say what the shape is, not just the number.
+- `#1898` is a known flake.
+
+**Do not tag.** A clean pass means the director tags `prod-2026-10-22`; anything else means it does
+not, and we find out why first.
+
 ## Read this first (21 October 2026, 8:15 AM Central) — you have been silent for thirteen hours
 
 Your last push was **12:05 AM**, part way through batch 6 (#1969), and your own **12:55 AM deadline passed
