@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:43 PM Central, 22 October 2026**. A listener; job: testing.
+Last written **3:53 PM Central, 22 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,7 +24,9 @@ Last written **2:43 PM Central, 22 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 4:33 PM Central.**
+
+**Batch 11, aggiemap: #2101, re-measure the paging refusals.** Started 3:53 PM Central, 22 October. Batch 10's four hand questions again, 25 attempts each, then `services.spec.ts` on production three times from `209e74cf3`. Report only.
 
 ## Finished
 
