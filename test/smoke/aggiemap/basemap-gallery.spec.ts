@@ -147,4 +147,29 @@ test.describe('basemap gallery', () => {
       'the Aerial Imagery spinner should stop once the imagery has drawn'
     ).toHaveCount(0, { timeout: 60_000 });
   });
+  /**
+   * The Aerial Imagery date slider is offered on every environment (#2089).
+   *
+   * It was development-only from the day it was built, while one question was open (#1541): whether an
+   * older capture is billed differently from the current one. That is settled, so it is now everywhere,
+   * and `DEVELOPMENT_ONLY_CONTROLS` no longer carries it.
+   *
+   * Opened by `?imagery=<date>` rather than through the basemap gallery, because that is how somebody
+   * meets it without looking for it: a link shared from another map. A date with no capture snaps to
+   * the nearest, so this does not depend on Nearmap's exact list staying the same.
+   *
+   * Not waiting for the map to finish painting: the slider is drawn as soon as the captures are read
+   * from the WMS capabilities, which is well before the imagery has drawn.
+   */
+  test('the Aerial Imagery date slider is offered, on any environment', async ({ page }) => {
+    test.setTimeout(180_000);
+    await blockAnalytics(page);
+
+    await page.goto('/map/d?imagery=2020-10-06');
+
+    await expect(
+      page.locator('.nearmap-date-slider'),
+      'the Aerial Imagery date slider should be offered here: it went to production in #2089'
+    ).toBeVisible({ timeout: 90_000 });
+  });
 });

@@ -368,11 +368,15 @@ export class BasemapGalleryService {
   /**
    * Whether a visitor may choose the Aerial Imagery capture date.
    *
-   * Development only (#1541): older captures may be billed differently from the current one, and that
-   * is to be known before the control reaches production.
+   * Everywhere, since 22 October 2026 (#2089). It was development-only while one question was open
+   * (#1541): whether an older capture is billed differently from the current one. The maintainer
+   * settled that, so the control is no longer gated.
+   *
+   * Kept as a property rather than inlined as `true`: it is read in three places, and a reason to gate
+   * it again - a billing change, a Nearmap contract change - would otherwise have to find all of them.
    */
   public get canChooseNearmapDate(): boolean {
-    return this.ts.isTesting;
+    return true;
   }
 
   /**
