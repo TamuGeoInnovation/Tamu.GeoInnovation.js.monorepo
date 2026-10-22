@@ -13,7 +13,7 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
-## Batch 11 (aggiemap: #2101, re-measure the paging refusals; 22 October 2026, 4:05 PM Central, from `work (aggiemap)`)
+## Batch 11 (aggiemap: #2101, re-measure the paging refusals; 22 October 2026, 3:52 PM Central, from `work (aggiemap)`)
 
 **Expected: about 30 minutes.** Straight after batch 10, same branch.
 
@@ -48,6 +48,13 @@ team is asked to chase. Measure it again now the reboots are done.
 
 2. **Run `services.spec.ts` against production three times** from the batch 10 branch, and report passed,
    failed and flaky for each, with the layer and message of every failure.
+
+**One more data point, from `work`, and it does not settle anything.** `services.spec.ts` on production
+finished at **3:51 PM Central**, about a minute before the maintainer said the reboots were finished: 161
+passed, **1 flaky - `TS_Events/MotorcycleParking/MapServer/0` again**, `Pagination request requires either
+orderBy field or the layer/table needs to have OID Field to facilitate the request.`, then paged on the
+retry. Same layer as yours. That run overlapped the end of the maintenance, so it is evidence of neither
+case; yours, run afterwards, is the one that counts.
 
 3. **Say plainly which of these it is**, and do not soften it either way:
    - **No refusals at all** across the hand measurement and three runs: the batch 10 flakes were the
