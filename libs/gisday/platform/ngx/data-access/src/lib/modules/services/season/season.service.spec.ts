@@ -61,6 +61,42 @@ describe('SeasonService', () => {
     http.verify();
   });
 
+  /**
+   * Regression coverage (#2076). On a new site with no season, `/seasons/active` answers 404. That ended
+   * `activeSeason$` with an error, so everything built on it never had a value: the Sessions filters
+   * spun for ever and the day list stayed blank. No active season is an answer, `null`, that a page can
+   * show a message for.
+   */
+  describe('.activeSeason$ on a site with no season', () => {
+    const noSeason = () =>
+      http.expectOne('api/seasons/active').flush('No active season.', { status: 404, statusText: 'Not Found' });
+
+    it('is null, not an error', async () => {
+      const result = firstValueFrom(service.activeSeason$);
+
+      noSeason();
+
+      await expect(result).resolves.toBeNull();
+    });
+
+    it('gives a page opened with no year a null season', async () => {
+      const page = routeTree({}, {})[1];
+      const result = firstValueFrom(service.seasonForRoute(page));
+
+      noSeason();
+
+      await expect(result).resolves.toEqual({ year: null, season: null, isPast: false });
+    });
+
+    it('still fails on any other error, which is not "no season"', async () => {
+      const result = firstValueFrom(service.activeSeason$);
+
+      http.expectOne('api/seasons/active').flush('Down.', { status: 500, statusText: 'Server Error' });
+
+      await expect(result).rejects.toBeTruthy();
+    });
+  });
+
   describe('.isPastSeasonDay()', () => {
     const withDays = { ...active, days: [{ guid: 'day-2026-1' }, { guid: 'day-2026-2' }] };
 

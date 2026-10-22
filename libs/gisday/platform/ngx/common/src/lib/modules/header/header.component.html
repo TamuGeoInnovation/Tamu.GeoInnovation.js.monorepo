@@ -85,7 +85,7 @@
 
     <div class="desktop-menu">
       <div class="aux">
-        @if ((places$ | async); as places) {
+        @if ((places$ | async); as places) { @if (places.length > 0) {
         <ul class="dropdown">
           <p>Organizations <span class="material-icons">arrow_drop_down</span></p>
           <ul>
@@ -110,7 +110,7 @@
             }
           </ul>
         </ul>
-        } @if ('sponsors' | siteHas) {
+        } } @if ('sponsors' | siteHas) {
         <ul class="dropdown">
           <a [routerLink]="['/sponsors']" id="linkSponsors">Sponsor <span class="material-icons">arrow_drop_down</span></a>
 
