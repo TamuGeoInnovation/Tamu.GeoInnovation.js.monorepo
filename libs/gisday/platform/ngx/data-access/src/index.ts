@@ -1,5 +1,6 @@
 // Services
 export * from './lib/modules/services/_base/base.service';
+export * from './lib/modules/services/_base/no-season';
 export * from './lib/modules/services/checkin/checkin.service';
 export * from './lib/modules/services/class/class.service';
 export * from './lib/modules/services/contact/contact.service';

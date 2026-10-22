@@ -1,9 +1,12 @@
 import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 import { DeepPartial } from 'typeorm';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
+import { noSeasonAs } from './no-season';
 
 export abstract class BaseService<T> {
   private readonly environmentService = inject(EnvironmentService);
@@ -15,8 +18,12 @@ export abstract class BaseService<T> {
     this.resource = this.environmentService.value('api_url') + `/${route}`;
   }
 
-  public getEntitiesForActiveSeason() {
-    return this.httpClient.get<Array<Partial<T>>>(`${this.resource}/season/active`);
+  /**
+   * The active season's records, or none on a site with no season yet: the API answers 404 then, and a
+   * page waiting on that answer would wait for ever (#2076). Any other error still fails.
+   */
+  public getEntitiesForActiveSeason(): Observable<Array<Partial<T>>> {
+    return this.httpClient.get<Array<Partial<T>>>(`${this.resource}/season/active`).pipe(noSeasonAs([]));
   }
 
   public getEntitiesForSeason(guid: string) {
