@@ -112,7 +112,9 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
         }
       }, []),
       startWith([]),
-      shareReplay()
+      // Only the latest selection: replaying every past one gave a new reader the first, empty selection,
+      // so acting on "the selected events" read none (#2092).
+      shareReplay(1)
     );
   }
 

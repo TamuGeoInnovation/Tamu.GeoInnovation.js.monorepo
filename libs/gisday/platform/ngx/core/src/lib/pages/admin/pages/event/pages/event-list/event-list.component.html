@@ -23,6 +23,7 @@
             <th>Location</th>
             <th class="nowrap">Start Time</th>
             <th class="nowrap">End Time</th>
+            <th title="On the public schedule">Active</th>
           </tr>
         </thead>
         <tbody>
@@ -33,6 +34,8 @@
             <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
             <td>{{$safeNavigationMigration(entity?.day?.date) | parseDateTimeStrings: $safeNavigationMigration(entity?.startTime) | date: 'h:mm a'}}</td>
             <td>{{$safeNavigationMigration(entity?.day?.date) | parseDateTimeStrings: $safeNavigationMigration(entity?.endTime) | date: 'h:mm a'}}</td>
+            <!-- On the public schedule or not, switched here without opening the event (#2092). -->
+            <td class="event-active" (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" [ariaLabel]="'Show ' + entity?.name + ' on the public schedule'" [checked]="entity?.active !== false" (changed)="setActive([entity.guid], $event)"></tamu-gisc-checkbox></td>
           </tr>
           }
         </tbody>
@@ -46,6 +49,8 @@
           <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
         </div>
         <div class="selected-actions">
+          <p class="selected-action" (click)="setSelectedActive(true)">Show on schedule <span class="material-icons action">visibility</span></p>
+          <p class="selected-action" (click)="setSelectedActive(false)">Hide from schedule <span class="material-icons action">visibility_off</span></p>
           <p class="selected-action" (click)="promptCopyModal()">Copy <span class="material-icons action">content_copy</span></p>
           <p class="selected-action caution" (click)="promptDeleteModal()">Delete <span class="material-icons action">delete_forever</span></p>
         </div>
