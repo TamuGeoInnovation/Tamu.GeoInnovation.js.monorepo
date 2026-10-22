@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **8:30 AM Central, 22 October 2026**. A listener; job: testing.
+Last written **8:49 AM Central, 22 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,13 +24,13 @@ Last written **8:30 AM Central, 22 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 9:10 AM Central.**
-
-**Batch 9, aggiemap: the release tier against production.** Started 8:30 AM Central, 22 October. Production serves
-`main-YTDVM4VX.js` (Release-490, `36b962a04`); `run-local.sh production release` from a worktree at `36b962a04`, nothing else running.
-No tag from this machine.
+None.
 
 ## Finished
+
+- **Batch 9, aggiemap: the release tier against production** (Release-490, `36b962a04`, `main-YTDVM4VX.js`, 8:30 to 8:47 AM,
+  22 October): **545 passed, 2 failed, 14 flaky, 56 skipped**. Every failure is Accessible Building Entrances (#2080), nothing else;
+  #2075's maps all pass. No tag. Report `work-lab-leila/reports/2026-10-22-1.md`.
 
 - **Batch 8, aggiemap: the release tier on Release-489** (`61161ce1b`, `main-T7LYF72R.js`, 9:55 to 10:14 AM): **618 passed, 0
   failed, 0 flaky, 44 skipped**; tagged **`dev-2026-10-21`**, pushed. A run begun on Release-488 at 9:52 was stopped after 48 tests
@@ -93,4 +93,4 @@ No tag from this machine.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 8
+Last batch done: 9
