@@ -1,10 +1,10 @@
 @if (signedOnEntityHasCompletedInfo$ | async) {
 <div class="info-block success">
-  <p><strong>Your TxGIS Day profile is complete!</strong> You can now register for <a routerLink="/sessions">sessions</a>.</p>
+  <p><strong>Your {{ site.name }} profile is complete!</strong> You can now register for <a routerLink="/sessions">sessions</a>.</p>
 </div>
 } @if ((signedOnEntityHasCompletedInfo$ | async) === false) {
 <div class="info-block warning">
-  <p><strong>Your TxGIS Day profile is incomplete!</strong> You must complete your profile before being able to register for <a routerLink="/sessions">sessions</a>.</p>
+  <p><strong>Your {{ site.name }} profile is incomplete!</strong> You must complete your profile before being able to register for <a routerLink="/sessions">sessions</a>.</p>
 </div>
 }
 
@@ -36,7 +36,7 @@
       </div>
 
       <div class="form-section-body">
-        <p class="trailer-1">Please indicate the type that best describes your participation in TxGIS Day and fill out the resulting form. We rely on the information provided to gain insights on the event's audience and to help us tailor future TxGIS Day events.</p>
+        <p class="trailer-1">Please indicate the type that best describes your participation in {{ site.name }} and fill out the resulting form. We rely on the information provided to gain insights on the event's audience and to help us tailor future {{ site.name }} events.</p>
 
         <div class="participant-type-buttons">
           <div class="participant-type" (click)="setAttendeeType('student')" [ngClass]="{selected: (selectedParticipantType$ | async) === 'student'}">Student <span class="material-icons">check_circle</span></div>

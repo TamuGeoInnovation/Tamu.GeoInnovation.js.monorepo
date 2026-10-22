@@ -19,6 +19,7 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 
 const infoCompletionValidator: ValidatorFn = (control: UntypedFormGroup): { [key: string]: boolean } | null => {
   const type = control.get('app_metadata.gisday.attendeeType');
@@ -72,6 +73,9 @@ const infoCompletionValidator: ValidatorFn = (control: UntypedFormGroup): { [key
   ]
 })
 export class MyDetailsComponent implements OnInit {
+  /** Its name and contact address, as each GIS Day site has its own (#2077). */
+  public readonly site = inject(GISDAY_SITE);
+
   private fb = inject(UntypedFormBuilder);
   private ns = inject(NotificationService);
   private readonly as = inject(AuthService);
