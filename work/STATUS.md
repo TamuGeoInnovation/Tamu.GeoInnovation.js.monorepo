@@ -7,14 +7,19 @@ Last written **8:15 AM Central, 22 October 2026**. **This machine directs AggieM
 
 ## Running now
 
-(nothing here) — `work-lab-leila` has batch 9, the release tier against production.
+Nothing. **The machine is free** — the maintainer asked for it back at about 12:55 PM Central, 22 October.
 
+**Batch 10 is with `work-lab-leila`:** #2101, the service-completeness check. Expected about 90 minutes.
 
 ## Merged today
 
 `8e505e2fd` #1981, `9ee3b97e8` #1987 and #1988, `aff56e810` #1986's `map-layers.spec.ts`, `cbacc6aa7` #2002's
 `testing.md` rule, `418553c8c` #2009's dev-server settings. Plus PRs 1983, 1984, 1985, 1994 and 1999 merged by
 the maintainer.
+
+**22 October afternoon:** `fb57f5567` #2089 (the Aerial Imagery date slider on production), `7342c64e3` #2098
+(a forced `prod-*` tag now takes a reason and says `(FORCED)`; the 21 October notes corrected to name
+`36b962a04`), `c2248563a` #2100 (`featureCountError`, so a failed count stops reading as "not applicable").
 
 ## Waiting on the maintainer
 
@@ -87,3 +92,18 @@ name.
   - **`map-layers.spec.ts` will fail on production** until this build is deployed — seven maps, all known
     (#1991 is fixed on dev but not production, and #1992/#1993/#2004 are now merged). Against **dev** it
     should be clean.
+
+## Findings, 22 October
+
+- **#2080 is withdrawn, not fixed by anyone.** It was filed while `FCOR/ADA_120717` was failing about half its
+  queries - the fault behind every failure in lab batch 9. It recovered the same afternoon: 20 of 20 queries
+  succeed, paging past 1,000 returns the remaining 524, and the production map holds all 1,524 features. Its
+  row is off #1745 with that said. **The suite did catch the outage**, through `queryError`; an earlier claim
+  here and in #2080 that nothing noticed was wrong and is corrected on the issue.
+- **#1860 Ring Day is fixed and closed.** `Hosted/Ring_Day_view` republished: `start_date` 5 and 6 November,
+  `end_date` 6 November.
+- **#2101: comparing a layer view's feature count with its service's does not work.** Measured on production:
+  healthy layers read 97%, 99%, 37% and 10%. Written up in lab batch 10 so nobody re-derives it.
+- **The dev server on this machine serves the shell but never boots the app** - empty body, no console errors,
+  no failed requests, with `UV_THREADPOOL_SIZE` and `NX_WORKSPACE_DATA_DIRECTORY` set as CLAUDE.md requires.
+  Not chased, not filed. It blocks local smoke runs here.

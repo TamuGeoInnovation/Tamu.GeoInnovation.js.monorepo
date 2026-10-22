@@ -13,6 +13,90 @@ report under **Questions for the director**, with options and a recommendation �
 
 ---
 
+## Batch 10 (aggiemap: #2101, a layer that answers short; 22 October 2026, 12:55 PM Central, from `work (aggiemap)`)
+
+**Expected: about 90 minutes.** Nothing else is queued for you. This is a code job that must be proven against
+live services, which is why it is yours rather than a development machine's: it ends in a branch and a report,
+and `work (aggiemap)` does the GitHub half.
+
+### What this is
+
+[#2101](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2101). A layer that
+**refuses** a query already fails the suite — that is the `queryError` check, and it is what went red 22 times
+in your batch 9. A layer that **answers short** does not: if a service hands back 1,000 of the 1,524 features
+it holds, with no error, the map draws a third fewer markers and everything passes.
+
+**Read the issue before you start, and ignore the "What to build" section in it.** It proposes comparing the
+layer view's feature count with the service's, in the view's extent. **That was tried on `work` and it does not
+work** — measured against production:
+
+```
+/map                       Buildings            370/381    97%
+                           Surface Lots         179/181    99%
+/parking/sustainable-...   City Bike Lanes       68/667    10%
+                           Campus Bike Lanes   1170/3139   37%
+```
+
+Those layers are all healthy. A layer view's in-extent count is simply not the service's in-extent count: line
+layers are clipped and tiled, and the view holds what it needs at the current level of detail. No tolerance
+survives that — one loose enough to pass a healthy layer at 10% can never catch a third of markers missing.
+Don't spend time re-deriving this; it is written up for you here so you don't.
+
+### What to build instead
+
+**Ask whether the service can deliver everything it claims.** Service-side, deterministic, no layer view, no
+extent, no timing — the same answer every run.
+
+For each ArcGIS layer endpoint the maps use:
+
+1. `returnCountOnly` for the layer's own total, and `maxRecordCount` from its metadata.
+2. **If the total is at or below `maxRecordCount`, there is nothing to prove.** Pass.
+3. **If the total exceeds it**, request the records past that boundary — `resultOffset=<maxRecordCount>` with
+   `resultRecordCount` — and require them to come back. A refusal (`Pagination is not supported.`) or an empty
+   answer means **no client can fetch the whole layer**, so the map cannot draw it in full. Fail.
+
+On 22 October that would have failed outright: 1,524 features, `maxRecordCount` 1,000, and the service
+answering `Pagination is not supported.` It answers correctly now — `resultOffset=1000` returns the remaining
+524 — so **expect this to pass today**. That is fine. Proving it green on a healthy service and red on a
+contrived one is the proof we want; see below.
+
+### Where it goes
+
+`test/smoke/aggiemap/services.spec.ts` is the natural home: it already walks every service in `connections.ts`,
+asks each one directly with no browser, and has the `allowedServiceFailures` machinery. Follow what is there
+rather than inventing a shape — in particular `problemWith()`, which already distinguishes an ArcGIS error
+object from an HTTP status.
+
+**Note the layer-endpoint problem and solve it honestly.** Most entries in `connections.ts` are service roots;
+the layer index is appended in the definitions (`${connections.tsMainUrl}/6`). So a URL ending in `/<n>` is a
+layer and can be asked directly, and a MapServer root is not. Either ask the root for its layers and check each,
+or check only the layer endpoints and **say in your report which layers are therefore not covered**. Do not
+quietly check five of them and report it as covering the maps.
+
+### How to prove it
+
+- **Red first, against something that really refuses.** You cannot make the live service fail, so build the
+  refusal case as a unit-style test of the helper with a stubbed response, or point it at a layer that genuinely
+  refuses paging if you find one. Say in the report exactly how you made it fail; "it would fail if..." is not a
+  proof.
+- **Green on production**, run as the suite runs it, and **report every layer's numbers** — total,
+  `maxRecordCount`, and whether paging past it worked. Those numbers are the useful output even if nothing
+  fails, because they say which layers are near the boundary.
+- `tsc -p test/smoke/aggiemap --noEmit` must exit 0. There is no Nx project for the smoke suite, so
+  `check-in-volume.sh` will report `No tasks were run` — that is expected and is not a pass.
+- **Watch the runtime.** This adds requests to a spec that runs in every tier. Say how much longer it made the
+  services spec; if it is more than a couple of minutes, say so and recommend what to do about it.
+
+### Then
+
+- Branch `task/2101-service-completeness` from the latest `development` (it already carries `featureCountError`
+  from #2100 — build on that, don't revert it). Push to your fork. **No pull request** — you have no `gh`.
+- Report as `work-lab-leila/reports/2026-10-22-2.md`, with the per-layer numbers, how you proved it red, the
+  runtime cost, and anything you could not cover.
+- **`heldInExtent` / `serviceInExtent` do not exist and must not be added.** They were written on `work` and
+  discarded; the probe is not changing in this batch.
+
+
 ## Still there? (21 October 2026, 2:00 AM Central, from `home (aggiemap)`)
 
 Your last push was 12:05 AM ("#1969 is two lookups racing; unit tests red") and its `Next update by 12:55 AM Central` has passed. If you
