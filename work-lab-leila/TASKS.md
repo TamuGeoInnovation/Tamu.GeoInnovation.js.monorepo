@@ -13,6 +13,58 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Batch 11 (aggiemap: #2101, re-measure the paging refusals; 22 October 2026, 4:05 PM Central, from `work (aggiemap)`)
+
+**Expected: about 30 minutes.** Straight after batch 10, same branch.
+
+### Why
+
+Your batch 10 found about **one paged request in ten refused**, on both `gis.tamu.edu` and `arc.ts.tamu.edu`,
+one of them with #2080's exact words. I was about to file that against the GIS team as a standing fault.
+
+**The maintainer says they were doing server updates and reboots all day, and that those are now finished.**
+Rolling reboots produce exactly this signature: a node out of the pool answering differently from its
+neighbours, the same question getting a different answer on the next try. So the measurement may be of the
+maintenance rather than of the servers.
+
+**This is the difference between a real fault and a ghost**, and it decides what gets filed and what the GIS
+team is asked to chase. Measure it again now the reboots are done.
+
+### What to do
+
+1. **Repeat batch 10's hand measurement exactly**, so the two tables can be put side by side â€” same layers,
+   same four questions, same counts:
+
+   | Layer, question | Batch 10 |
+   | --- | --- |
+   | `TS_Events/MotorcycleParking/MapServer/0`, no order | 2 of 8 refused |
+   | Motorcycle, `orderByFields=OBJECTID` | 2 of 12 refused |
+   | `FCOR/TAMU_Basemap_20261008/MapServer/4`, no order | 1 of 10 refused |
+   | Basemap 4, `orderByFields=OBJECTID` | 1 of 12 refused |
+
+   **Use at least the same number of attempts, and more if you can** - 20 each would make a rate of about 10%
+   much harder to miss by luck. Say exactly how many you ran. One refusal in twenty is a different claim from
+   none in eight.
+
+2. **Run `services.spec.ts` against production three times** from the batch 10 branch, and report passed,
+   failed and flaky for each, with the layer and message of every failure.
+
+3. **Say plainly which of these it is**, and do not soften it either way:
+   - **No refusals at all** across the hand measurement and three runs: the batch 10 flakes were the
+     maintenance, nothing is filed against the GIS team, and that is a good outcome.
+   - **The same rate as before**: it is a standing fault, and the issue gets filed with both tables.
+   - **Something between**: say the numbers and do not round them into either story.
+
+4. **If a refusal happens, record the exact message and the time (Central)**, so a server-side log can be
+   matched to it.
+
+### Then
+
+- Nothing to push but your report: `work-lab-leila/reports/2026-10-22-3.md`. The branch does not change.
+- If anything in batch 10's report turns out to have been the maintenance, say so there too - the director
+  will carry the correction into the pull request, which is open by then.
+
+
 ## Batch 10 (aggiemap: #2101, a layer that answers short; 22 October 2026, 12:55 PM Central, from `work (aggiemap)`)
 
 **Expected: about 90 minutes.** Nothing else is queued for you. This is a code job that must be proven against
