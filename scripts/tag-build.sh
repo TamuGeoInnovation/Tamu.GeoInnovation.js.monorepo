@@ -19,10 +19,16 @@
 #
 # `prod` refuses a commit that was never tagged for dev. That is the check worth having: it is the
 # difference between "we shipped what we tested" being true and being assumed.
+#
+# Overriding it is allowed and sometimes right - on 22 October 2026 the commit that shipped carried
+# three GIS Day changes on top of the tested one, and promoting it was correct. But `--force` used to
+# leave a tag indistinguishable from one that passed its check, so the question this script exists to
+# answer read as "yes" for a release where the answer was "no" (#2098). So `--force` takes a reason
+# and writes it into the tag: a forced promotion says so, and says why, from the tag alone.
 set -euo pipefail
 
 usage() {
-  echo "usage: $0 dev|prod [<sha>] [--date YYYY-MM-DD] [--force]" >&2
+  echo "usage: $0 dev|prod [<sha>] [--date YYYY-MM-DD] [--force <reason>]" >&2
   exit 2
 }
 
@@ -35,15 +41,35 @@ esac
 sha=""
 date_override=""
 force=false
+force_reason=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --date) date_override="${2:-}"; shift 2 ;;
-    --force) force=true; shift ;;
+    # The reason is --force's argument rather than a flag of its own, so it cannot be left off. Taken
+    # only when there is an argument and it is not another flag: `--force` last, or `--force --date`,
+    # must reach the refusal below rather than swallowing the next option or dying on `shift 2`.
+    --force)
+      force=true
+      if [ $# -ge 2 ] && [ "${2#-}" = "$2" ]; then
+        force_reason="$2"
+        shift 2
+      else
+        shift
+      fi
+      ;;
     -*) usage ;;
     *) sha="$1"; shift ;;
   esac
 done
+
+# A reason given later is a reason invented later: the only person who knows why a promotion was
+# forced is the one forcing it, at the moment they do.
+if [ "$force" = true ] && [ -z "${force_reason// /}" ]; then
+  echo "error: --force needs a reason, which is written into the tag." >&2
+  echo "       e.g. $0 prod <sha> --force 'only GIS Day commits differ from the build that passed'" >&2
+  exit 2
+fi
 
 cd "$(git rev-parse --show-toplevel)"
 
@@ -112,13 +138,22 @@ fi
 if [ "$env_name" = "prod" ] && [ "$force" != true ]; then
   if ! git tag --points-at "$sha" | grep -q '^dev-'; then
     echo "error: $short carries no dev-* tag, so nothing records it having been tested on dev." >&2
-    echo "       Tag the dev build first, or pass --force with a reason if this is deliberate." >&2
+    echo "       Tag the dev build first, or pass --force '<reason>' if this is deliberate." >&2
     exit 1
   fi
 fi
 
-git tag -a "$tag" "$sha" -m "$(printf '%s build, %s\n\n%s\n%s' \
-  "$([ "$env_name" = prod ] && echo Production || echo Development)" "$day" "$short" "$subject")"
+# A forced tag says so in its first line, so it is legible as forced in `git tag -n` and in any log
+# that shows only the subject - not only to someone who reads the whole message.
+message=$(printf '%s build, %s%s\n\n%s\n%s' \
+  "$([ "$env_name" = prod ] && echo Production || echo Development)" "$day" \
+  "$([ "$force" = true ] && echo ' (FORCED)' || true)" "$short" "$subject")
+
+if [ "$force" = true ]; then
+  message=$(printf '%s\n\nForced past the dev-tag check. Reason given: %s' "$message" "$force_reason")
+fi
+
+git tag -a "$tag" "$sha" -m "$message"
 
 echo "created $tag -> $short  $subject"
 echo

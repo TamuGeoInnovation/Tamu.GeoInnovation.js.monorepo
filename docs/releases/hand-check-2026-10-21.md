@@ -135,5 +135,8 @@ at a map for an unrelated reason.
 
 ---
 
-**Release:** Azure Release-489, build 20261021.16, commit `61161ce1b`, tagged `dev-2026-10-21`.
+**Release:** Azure Release-489, build 20261021.16. Cleared on dev from `61161ce1b`, tagged
+`dev-2026-10-21`; promoted to production from `36b962a04`, tagged `prod-2026-10-22`. The two differ
+by three GIS Day commits and these notes, and by no AggieMap code - see the
+[release notes](2026-10-21.md).
 **Checked by:** ______________________ **Date:** ______________

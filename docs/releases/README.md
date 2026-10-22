@@ -276,8 +276,21 @@ git push origin prod-2026-09-29
 ```
 
 **This refuses a commit carrying no `dev-*` tag.** That refusal is the point: it is what makes "we
-shipped what we tested" a fact rather than an assumption. `--force` overrides it and should be rare
-enough to explain.
+shipped what we tested" a fact rather than an assumption.
+
+**`--force` takes a reason, and writes it into the tag.** Overriding is sometimes right - on 22
+October the commit promoted carried three GIS Day changes on top of the tested one, and shipping it
+was correct. But a forced tag used to read exactly like one that passed, so the release record said
+production carried a commit it did not, and nothing contradicted it
+([#2098](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2098)):
+
+```bash
+bash scripts/tag-build.sh prod <sha> --force 'only GIS Day commits differ from the build that passed'
+```
+
+The tag's first line then says `(FORCED)` and its message carries the reason, so `git tag -n` shows
+it. Say in the release notes what differed and why it was right to ship, as
+[21 October](2026-10-21.md) does.
 
 Both tags land on the same commit, which reads correctly: verified on dev on this date, shipped on
 that one.
