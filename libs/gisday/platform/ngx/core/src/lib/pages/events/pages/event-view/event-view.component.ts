@@ -20,6 +20,7 @@ import { PlaceVisibilityOptions, SeasonDayCardComponent, SeasonLinkPipe } from '
 import { NgClass, AsyncPipe } from '@angular/common';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-event-view',
@@ -38,6 +39,9 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   ]
 })
 export class EventViewComponent implements OnInit, OnDestroy {
+  /** Its name and contact address, as each GIS Day site has its own (#2077). */
+  public readonly site = inject(GISDAY_SITE);
+
   private readonly eventService = inject(EventService);
   private readonly tagService = inject(TagService);
   private readonly ss = inject(SeasonService);

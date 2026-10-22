@@ -10,7 +10,7 @@
 
     <div class="form-section-body">
       <div class="trailer-1">
-        <p>Venues are physical areas located within or in the surrounding area of an event hosted by a TxGIS Day <a [routerLink]="['/admin/places']" routerLinkActive="router-link-active">organization</a>. Examples include campus buildings, arenas, auditoriums, restaurants, and bars.</p>
+        <p>Venues are physical areas located within or in the surrounding area of an event hosted by a {{ site.name }} <a [routerLink]="['/admin/places']" routerLinkActive="router-link-active">organization</a>. Examples include campus buildings, arenas, auditoriums, restaurants, and bars.</p>
       </div>
 
       @if (entitiesForActiveSeasonOrForSeasonGuid$ | async; as entities) { @if (entities?.length > 0) {

@@ -52,6 +52,12 @@ export interface GisdaySite {
   off: Array<GisdayFeature>;
 
   /**
+   * The address people write to about the event, such as a would-be presenter. A site with none sends them
+   * to its Contact page instead (#2077).
+   */
+  contact?: string;
+
+  /**
    * The addresses that show this site whatever the deployment's key, such as `gisday.tamu.edu`. A site
    * with none is reached only by its key.
    */
@@ -71,7 +77,8 @@ export const GISDAY_SITES = {
     banner: 'assets/images/2022-TIN-sq-1080px.png',
     owner: 'GeoInnovation Service Center',
     favicon: 'favicon.ico',
-    off: []
+    off: [],
+    contact: 'gis@tamu.edu'
   },
   // gisday.tamu.edu, Texas A&M's own GIS Day, in the university's brand (#2012). It is served by txgisday.org's
   // deployment and shares its database; the address alone decides which site a visitor sees.
@@ -82,6 +89,7 @@ export const GISDAY_SITES = {
     owner: 'GeoInnovation Service Center',
     favicon: 'assets/images/logo/TAM-LogoBox.svg',
     off: [],
+    contact: 'gis@tamu.edu',
     hosts: ['gisday.tamu.edu', 'tamu.txgisday.org'],
     brand: 'tamu'
   },
