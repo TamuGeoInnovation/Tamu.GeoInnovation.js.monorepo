@@ -89,6 +89,9 @@ const RULES: Record<SiteCopyKind, KindRule> = {
   assets: { entity: Asset, links: ['places', 'organization', 'speaker'], label: (r) => `${r.path}` }
 };
 
+/** How many logos and photos an import fetches from the source at once. */
+const FILE_FETCHES_AT_ONCE = 4;
+
 /** The kind each link points at, so an import can check the record it names exists. */
 const LINK_KINDS: Record<string, SiteCopyKind> = {
   season: 'seasons',
@@ -347,34 +350,45 @@ export class SiteCopyService {
     return missing;
   }
 
-  /** Fetches each missing file from the source site and writes it where this site serves its uploads. */
+  /**
+   * Fetches each missing file from the source site and writes it where this site serves its uploads, a few
+   * at a time: one by one, UCGIS's first import of 71 took long enough to look stuck (#2090).
+   */
   private async copyFiles(source: string, paths: Array<string>) {
     const result = { written: 0, failed: [] as Array<string> };
-
-    for (const path of paths) {
-      const target = this.uploadPath(path);
-
-      try {
-        if (!target) {
-          throw new Error('outside the uploads folder');
-        }
-
-        const response = await fetch(`${source}/assets/uploads/${path.split('/').map(encodeURIComponent).join('/')}`);
-
-        if (!response.ok) {
-          throw new Error(`${response.status}`);
-        }
-
-        await mkdir(dirname(target), { recursive: true });
-        await writeFile(target, Buffer.from(await response.arrayBuffer()));
-        result.written++;
-      } catch (error) {
-        Logger.warn(`Could not copy ${path} from ${source}: ${error}`, 'SiteCopyService');
-        result.failed.push(path || '(no path)');
+    const queue = [...paths];
+    const worker = async () => {
+      for (let path = queue.shift(); path !== undefined; path = queue.shift()) {
+        await this.copyFile(source, path, result);
       }
-    }
+    };
+
+    await Promise.all(Array.from({ length: Math.min(FILE_FETCHES_AT_ONCE, queue.length) }, worker));
 
     return result;
+  }
+
+  private async copyFile(source: string, path: string, result: { written: number; failed: Array<string> }) {
+    const target = this.uploadPath(path);
+
+    try {
+      if (!target) {
+        throw new Error('outside the uploads folder');
+      }
+
+      const response = await fetch(`${source}/assets/uploads/${path.split('/').map(encodeURIComponent).join('/')}`);
+
+      if (!response.ok) {
+        throw new Error(`${response.status}`);
+      }
+
+      await mkdir(dirname(target), { recursive: true });
+      await writeFile(target, Buffer.from(await response.arrayBuffer()));
+      result.written++;
+    } catch (error) {
+      Logger.warn(`Could not copy ${path} from ${source}: ${error}`, 'SiteCopyService');
+      result.failed.push(path || '(no path)');
+    }
   }
 
   /** Where a path is written on this site, or null for one that climbs out of the uploads folder. */

@@ -6,6 +6,7 @@ import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/co
 import { EntityRelationsLUT, Event } from '../entities/all.entity';
 import { EventProvider } from './event.provider';
 import { EventAttendanceDto } from './dto/event-attendance.dto';
+import { EventActiveDto } from './dto/event-active.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 
 @Controller('events')
@@ -71,6 +72,17 @@ export class EventController {
   @Post()
   public async insertEvent(@Body() body: DeepPartial<Event>) {
     return this.provider.insertEvent(body);
+  }
+
+  /**
+   * Puts events on the public schedule, or takes them off it, from the admin Events list (#2092). Declared
+   * before `:guid` so that "active" is not taken for an event's guid.
+   */
+  @Permissions(['update:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Patch('active')
+  public async setActive(@Body() body: EventActiveDto) {
+    return this.provider.setActive(body?.guids, body?.active);
   }
 
   @Permissions(['update:events'])

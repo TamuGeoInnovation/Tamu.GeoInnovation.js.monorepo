@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   Injectable,
   InternalServerErrorException,
@@ -240,6 +241,20 @@ export class EventProvider extends BaseProvider<Event> {
     }
 
     return event;
+  }
+
+  /**
+   * Puts events on the public schedule, or takes them off it, changing `active` and nothing else (#2092).
+   * `updateEvent` cannot do this: it treats omitted speakers and tags as empty, so it would remove them.
+   */
+  public async setActive(guids: Array<string>, active: boolean) {
+    if (!Array.isArray(guids) || guids.length === 0 || typeof active !== 'boolean') {
+      throw new BadRequestException('Give the events to change, and true or false.');
+    }
+
+    const result = await this.eventRepo.update({ guid: In(guids) }, { active });
+
+    return { updated: result.affected ?? 0 };
   }
 
   public async updateAttendance(eventGuid: string, counts: EventAttendanceDto) {
