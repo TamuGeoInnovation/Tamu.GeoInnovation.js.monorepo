@@ -27,8 +27,24 @@ export interface MapLayerProbe {
    * Feature count for layers that can be queried, or `null` for layer types that have no such
    * concept (tile and image layers). `null` means "not applicable", never "zero" -- tests must not
    * conflate the two.
+   *
+   * It does not mean "the count failed" either. Read it with `featureCountError`.
    */
   featureCount: number | null;
+
+  /**
+   * Why the count could not be taken, or `null` when there was nothing to report.
+   *
+   * `featureCount` used to say `null` both for a layer that has no such concept and for one whose
+   * count query threw, so the two were indistinguishable to every caller -- including the smoke
+   * suite, which annotated both as "n/a" and passed. On 22 October 2026 the accessible entrances
+   * service failed about half the queries the map made; the map drew a third short, every count came
+   * back `null`, and nothing went red (#2080).
+   *
+   * So a failed count is now reported as itself. A layer that cannot be counted is a layer that may
+   * be drawing short, which is a different thing from a tile layer having no features to count.
+   */
+  featureCountError: string | null;
 
   /**
    * For a graphics layer, how many graphics it holds, by each graphic's `attributes.type` (`untyped`
@@ -367,6 +383,7 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
     loaded: layer.loaded === true,
     error: readLoadError(layer),
     featureCount: null,
+    featureCountError: null,
     graphicTypes: countGraphicTypes(layer),
     spatialReference: readSpatialReference(layer),
     drawable: isDrawable(layer),
@@ -379,7 +396,9 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
     return base;
   }
 
-  return { ...base, featureCount: await countFeatures(layer) };
+  const counted = await countFeatures(layer);
+
+  return { ...base, featureCount: counted.count, featureCountError: counted.error };
 }
 
 /** See `MapProbe.renderers`. */
@@ -486,18 +505,18 @@ function readLoadError(layer: esri.Layer): string | null {
  * depend on viewport size and the camera position at the moment the snapshot was taken, which is
  * exactly the kind of incidental variation that makes a scheduled suite flaky.
  */
-async function countFeatures(layer: esri.Layer): Promise<number | null> {
+async function countFeatures(layer: esri.Layer): Promise<{ count: number | null; error: string | null }> {
   const queryable = layer as unknown as { queryFeatureCount?: () => Promise<number> };
 
   if (typeof queryable.queryFeatureCount !== 'function') {
-    return null;
+    return { count: null, error: null };
   }
 
   try {
-    return await queryable.queryFeatureCount();
-  } catch {
-    // Swallowed rather than surfaced as `error`, which is reserved for load failures. A count that
-    // cannot be taken is reported as unknown, and the layer is still judged on `loaded`/`error`.
-    return null;
+    return { count: await queryable.queryFeatureCount(), error: null };
+  } catch (error) {
+    // Still not reported as `error`, which stays reserved for load failures: the layer did load. But
+    // it is reported, rather than becoming an indistinguishable `null` -- see `featureCountError`.
+    return { count: null, error: String((error as Error)?.message ?? error) };
   }
 }
