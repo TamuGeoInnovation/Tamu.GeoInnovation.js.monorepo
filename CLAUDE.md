@@ -429,6 +429,12 @@ environments, so the same commit carries both tags. `prod` refuses a commit with
 which is what makes "we shipped what we tested" a fact rather than an assumption. Tags go to
 `origin`. See #1145.
 
+**Overriding that refusal needs a reason, which goes into the tag:** `--force '<why>'`. The tag then
+says `(FORCED)` in its first line and carries the reason. A forced tag used to be indistinguishable
+from one that passed, so on 22 October the release record said production carried `61161ce1b` when the
+tag was on `36b962a04`, and nothing in the repository contradicted it. `bash scripts/tag-build.test.sh`
+covers this. See #2098.
+
 **Link every issue and pull request, with full URLs, and end each release file with a table of all
 of them.** GitHub only auto-links `#1122` inside issue and pull request comments — in a file under
 `docs/releases/` it is inert text, so a bare number leads nowhere for the reader these notes exist

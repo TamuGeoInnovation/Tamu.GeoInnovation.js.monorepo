@@ -1,11 +1,13 @@
 # Unreleased
 
-Since `61161ce1b`, the build going to production as the 21 October release: GIS Day changes waiting
-for GIS Day's own deploy. Every AggieMap entry up to `61161ce1b` moved into the 21 October notes.
+Since `36b962a04`, which production was promoted from on 22 October.
 
-**The latest release notes are [21 October 2026](2026-10-21.md)**, for the build from `61161ce1b`
-(build 20261021.16, Release-489), on dev and going to production. The `prod-*` tag on `61161ce1b` records
-when it reaches production. The release before it is [19 October 2026](2026-10-19.md), from `8463ac6af`.
+**The latest release notes are [21 October 2026](2026-10-21.md)**, for build 20261021.16 (Release-489).
+That build was cleared on dev from `61161ce1b` and promoted to production from `36b962a04`, four
+commits later; `prod-2026-10-22` records what reached production, and the notes explain why the two
+differ and why no AggieMap code did
+([#2098](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2098)). The release
+before it is [19 October 2026](2026-10-19.md), from `8463ac6af`.
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
 result adds its own file to [`unreleased/`](unreleased/README.md), in that pull request**, with its
