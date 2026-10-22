@@ -22,6 +22,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
   Services' map server fails about half its queries, production included. No code changed. Four questions for the director.
 
 ## Told directly
+- 22 October, 6:55 AM (to the GIS Day chat): **the work computer's GIS Day chat directs GIS Day**; this home GIS Day chat stays a listener and acts only on home batches headed "(gisday: ...)". Home's local GIS Day stack (UCGIS on 4201, txgisday.org on 4202) stays running.
 - **7:45 AM Central, 21 October:** the maintainer set #2063's priority to Low (the handover's one open question). Done.
 - 7:47 AM: become the listener now; carry on with `<arcgis-map>` as far as possible and report progress here.
 
