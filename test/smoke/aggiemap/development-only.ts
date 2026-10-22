@@ -41,14 +41,6 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
   reason: string;
 }> = [
   {
-    name: 'the Aerial Imagery date slider',
-    selector: '.nearmap-date-slider',
-    // One of Nearmap's captures of campus. A date with no capture would snap to the nearest, so this
-    // does not depend on the exact list staying the same.
-    page: '/map/d?imagery=2020-10-06',
-    reason: '#1541: an older capture may be billed differently from the current one, to be known first'
-  },
-  {
     name: 'the dated raster campus basemaps in the gallery',
     // One of them is enough: they are offered together or not at all.
     selector: '.basemap-title:text-is("Aggieland raster, October 2026")',
