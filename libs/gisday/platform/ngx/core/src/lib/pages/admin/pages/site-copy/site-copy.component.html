@@ -9,8 +9,15 @@
 
       <div class="flex flex-row wrap align-center leader-1">
         <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" (changed)="exportSeason.set($event)"></tamu-gisc-select>
-        <button class="button" type="button" [disabled]="!exportSeason() || busy()" (click)="download()">Export</button>
+        <tamu-gisc-button class="export" fit="snug" [value]="busy() === 'export' ? 'Exporting…' : 'Export'" [disabled]="!exportSeason() || busy() !== null" (go)="download()"></tamu-gisc-button>
       </div>
+
+      @if (busy() === 'export') {
+      <div class="info-block context flex flex-row align-center leader-1">
+        <div class="loader small"></div>
+        <p>{{ working() }}</p>
+      </div>
+      }
     </div>
   </div>
 
@@ -24,8 +31,11 @@
 
       <tamu-gisc-file accept="application/json,.json" (fileSelected)="choose($event)">Choose a file</tamu-gisc-file>
 
-      @if (busy()) {
-      <div class="loader small"></div>
+      @if (busy() === 'read') {
+      <div class="info-block context flex flex-row align-center leader-1">
+        <div class="loader small"></div>
+        <p>{{ working() }}</p>
+      </div>
       } @if (error(); as message) {
       <div class="info-block warning"><p>{{ message }}</p></div>
       } @if (plan(); as plan) {
@@ -73,7 +83,13 @@
           <p>Imported. {{ plan.files.written }} logos and photos copied.@if (plan.files.failed.length > 0) { {{ plan.files.failed.length }} could not be fetched: {{ plan.files.failed.join(', ') }}.}</p>
         </div>
         } @else if (plan.blockers.length === 0 && changes(plan) > 0) {
-        <button class="button leader-1" type="button" [disabled]="busy()" (click)="apply()">Apply</button>
+        <tamu-gisc-button class="apply leader-1" fit="snug" [value]="busy() === 'apply' ? 'Applying…' : 'Apply'" [disabled]="busy() !== null" (go)="apply()"></tamu-gisc-button>
+        @if (busy() === 'apply') {
+        <div class="info-block context flex flex-row align-center leader-1">
+          <div class="loader small"></div>
+          <p>{{ working() }}</p>
+        </div>
+        }
         } @else if (plan.blockers.length === 0) {
         <p>This site already has everything in the file.</p>
         }
