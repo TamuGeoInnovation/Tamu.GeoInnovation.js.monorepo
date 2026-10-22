@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:18 PM Central, 22 October 2026**. A listener; job: testing.
+Last written **2:43 PM Central, 22 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,7 +24,7 @@ Last written **2:18 PM Central, 22 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 3:03 PM Central.**
+**Next update by 3:45 PM Central.** Running long: the check is green on production, but paging past the cap is refused intermittently on two more layers (the same half-the-time pattern as #2080), and I am pinning down why before reporting.
 
 **Batch 10, aggiemap: #2101, the service-completeness check.** Started 2:18 PM Central, 22 October. `task/2101-service-completeness` from
 the latest `development`; a check in `services.spec.ts` that a layer holding more than its `maxRecordCount` really delivers the rest;
