@@ -38,3 +38,25 @@ test('the speaker cards on Presenters are all the same size', async ({ page }) =
 
   expect([...new Set(sizes)], `${sizes.length} cards, in these sizes`).toHaveLength(1);
 });
+
+/**
+ * A name keeps the bottoms of g, j, p and y (#2103). The name is cut off at its line box so a long one can
+ * end in an ellipsis, and with a line height of 1 that cut through every descender.
+ */
+test('speaker names leave room below the line for g, j, p and y', async ({ page }) => {
+  await page.route('**/seasons/active', (route) => route.fulfill({ json: SEASON }));
+  await page.route('**/speakers/participating', (route) =>
+    route.fulfill({ json: [{ guid: 'g1', firstName: 'Xiaojing', lastName: 'Tang', organization: { name: 'Geography' } }] })
+  );
+  await page.goto('/presenters', { waitUntil: 'domcontentloaded' });
+
+  const name = page.locator('tamu-gisc-speaker-card .name');
+  await expect(name).toHaveText('Xiaojing Tang', { timeout: 15_000 });
+
+  const ratio = await name.evaluate((el) => {
+    const style = getComputedStyle(el);
+    return parseFloat(style.lineHeight) / parseFloat(style.fontSize);
+  });
+
+  expect(ratio, 'line height as a multiple of the font size').toBeGreaterThanOrEqual(1.2);
+});

@@ -1430,7 +1430,7 @@ img.jumbo {
     background: transparent;
     padding: 1rem 0.75rem;
     border-top: 1px solid #bdbdbd;
-    height: 7rem;
+    height: 7.25rem;
     box-sizing: border-box;
     overflow: hidden;
   }
@@ -1445,7 +1445,8 @@ img.jumbo {
 
   .name {
     font-size: 1.5rem;
-    line-height: 1;
+    // Room below the line for g, j, p and y: the name is cut off at its line box, for the ellipsis (#2103).
+    line-height: 1.25;
     font-family: inherit;
     margin-bottom: 0.3rem;
     font-family: $title-font;
