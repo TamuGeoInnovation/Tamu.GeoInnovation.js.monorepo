@@ -3,9 +3,9 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch taken (production watch). Next update by 7:45 AM Central.** Azure at 7:03 AM Thursday: **Release-490**, build 20261022.1, from `36b962a04e55ae379d0d771bfa7e0ee2e831b98d` (`36b962a04`); `GIS-1D Development` succeeded, **`GIS-1P Production` in progress** (not yet succeeded). Polling every minute; the release number, commit and time go here the moment production succeeds.
+**Production succeeded: Release-490, build 20261022.1, from `36b962a04e55ae379d0d771bfa7e0ee2e831b98d`, `GIS-1P Production` succeeded between 7:03 and 7:06 AM Central, Thursday 22 October 2026** (in progress at 7:03, succeeded at the 7:06 read). That is the commit the batch expected. Production serves **`main-YTDVM4VX.js`** (it was `main-AYJ2SDWT.js` for `prod-2026-10-20`). The `prod-*` tag goes on `36b962a04`.
 
-(Read 7:03 AM Central from Azure, on home, with `C:\TAMU\logs\az-releases.py`.)
+(Read 7:06 AM Central from Azure, on home, with `C:\TAMU\logs\az-releases.py`.)
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
