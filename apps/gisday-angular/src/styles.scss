@@ -1424,10 +1424,15 @@ img.jumbo {
     }
   }
 
+  // One height for every card (#2093): room for the name on one line and the affiliation on two. Longer
+  // text ends in an ellipsis, and the card shows it in full on hover.
   .image-description {
     background: transparent;
     padding: 1rem 0.75rem;
     border-top: 1px solid #bdbdbd;
+    height: 7rem;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   .class-banner {
@@ -1444,11 +1449,19 @@ img.jumbo {
     font-family: inherit;
     margin-bottom: 0.3rem;
     font-family: $title-font;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .title {
     font-size: 0.95rem;
     color: #616161;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
   }
 
   .class {

@@ -6,7 +6,7 @@
   </div>
 
   <div class="image-description">
-    <div class="name">{{speaker().firstName}} {{speaker().lastName}}</div>
-    <div class="title">{{speaker()?.organization?.name}}</div>
+    <div class="name" [title]="speaker().firstName + ' ' + speaker().lastName">{{speaker().firstName}} {{speaker().lastName}}</div>
+    <div class="title" [title]="speaker()?.organization?.name ?? ''">{{speaker()?.organization?.name}}</div>
   </div>
 </div>
