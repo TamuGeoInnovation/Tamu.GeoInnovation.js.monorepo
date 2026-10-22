@@ -63,6 +63,9 @@
             <p>{{org.name}}</p>
             }
           </div>
+          } @empty {
+          <!-- A new site has none yet (#2076). -->
+          <p>There are no participating organizations yet.</p>
           }
         </div>
       </div>

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
+import { noSeasonAs } from '../_base/no-season';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,9 @@ export class SpeakerService extends BaseService<Speaker> {
     return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}`);
   }
 
+  /** This season's presenters, or none on a site with no season yet (#2076). */
   public getParticipatingPresenters() {
-    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/participating`);
+    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/participating`).pipe(noSeasonAs([]));
   }
 
   public getParticipatingPresentersForSeason(seasonGuid: string) {

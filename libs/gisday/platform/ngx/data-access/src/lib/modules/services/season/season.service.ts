@@ -20,6 +20,7 @@ import {
 import { ActiveSeasonDto, Season } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
+import { noSeasonAs } from '../_base/no-season';
 
 /**
  * The route parameter a past year's pages carry, as in `seasons/:seasonYear/sessions` (#1758).
@@ -63,7 +64,8 @@ export class SeasonService extends BaseService<Season> {
     switchMap(() => this.getEntities()),
     shareReplay(1)
   );
-  public activeSeason$: Observable<ActiveSeasonDto> = this._signal$.pipe(
+  /** The active season, or null on a site that has none yet, such as a new one (#2076). */
+  public activeSeason$: Observable<ActiveSeasonDto | null> = this._signal$.pipe(
     startWith(null),
     switchMap(() => this.getActiveSeason()),
     shareReplay(1)
@@ -115,8 +117,13 @@ export class SeasonService extends BaseService<Season> {
     super('seasons');
   }
 
-  public getActiveSeason() {
-    return this.http1.get<ActiveSeasonDto>(this.resource + '/active');
+  /**
+   * The active season, or null when the site has none: the API answers 404 then, which is an answer
+   * rather than a failure. Treating it as a failure ended `activeSeason$`, so a new site's pages waited
+   * for ever (#2076). Any other error still fails.
+   */
+  public getActiveSeason(): Observable<ActiveSeasonDto | null> {
+    return this.http1.get<ActiveSeasonDto | null>(this.resource + '/active').pipe(noSeasonAs(null));
   }
 
   public getSeasonByYear(year: number) {

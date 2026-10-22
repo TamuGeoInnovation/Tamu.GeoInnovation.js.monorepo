@@ -13,6 +13,7 @@ import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { GISDAY_SITE, SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-initial-survey',
@@ -29,10 +30,14 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
     CheckboxComponent,
     SelectComponent,
     ButtonComponent,
-    AsyncPipe
+    AsyncPipe,
+    SiteHasPipe
   ]
 })
 export class InitialSurveyComponent implements OnInit, OnDestroy {
+  /** Its name and contact address, as each GIS Day site has its own (#2077). */
+  public readonly site = inject(GISDAY_SITE);
+
   private fb = inject(UntypedFormBuilder);
   private readonly initialSurveyService = inject(InitialSurveyService);
 

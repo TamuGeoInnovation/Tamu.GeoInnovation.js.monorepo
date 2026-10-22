@@ -2,7 +2,7 @@
   <div class="small-partition">
     <div class="container12">
       <h1 class="trailer-1">Presenters</h1>
-      <p class="sub-section-heading">Meet the wonderful and talented people that make TxGIS Day possible</p>
+      <p class="sub-section-heading">Meet the wonderful and talented people that make {{ site.name }} possible</p>
     </div>
   </div>
 
@@ -10,8 +10,12 @@
 
   <div class="small-partition">
     <div class="container12">
-      <p class="sub-section-heading">Want to share your knowledge and expertise with our TxGIS Day Attendees?</p>
-      <p>Email <a href="mailto:gis@tamu.edu?subject=Presentation%20Inquiry">gis&#64;tamu.edu</a> to find out how to become a TxGIS Day Presenter.</p>
+      <p class="sub-section-heading">Want to share your knowledge and expertise with our {{ site.name }} Attendees?</p>
+      @if (site.contact) {
+      <p>Email <a [href]="'mailto:' + site.contact + '?subject=Presentation%20Inquiry'">{{ site.contact }}</a> to find out how to become a {{ site.name }} Presenter.</p>
+      } @else {
+      <p><a routerLink="/contact">Contact us</a> to find out how to become a {{ site.name }} Presenter.</p>
+      }
     </div>
   </div>
 </section>

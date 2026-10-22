@@ -29,11 +29,18 @@
       <div id="default-content">
         @if ((userInfo$ | async) && (userProfileComplete$ | async) === false && (isPastSeason$ | async) === false) {
         <div class="info-block warning">
-          <p>You must complete your TxGIS Day <a routerLink="/account/details">profile</a> before registering for events.</p>
+          <p>You must complete your {{ site.name }} <a routerLink="/account/details">profile</a> before registering for events.</p>
         </div>
         } @for (day of season?.days; track day; let i = $index) {
         <tamu-gisc-season-day-card [seasonDay]="day" [index]="i" [tags]="activeTagFilters$ | async" [organizations]="activeOrgFilters$ | async" [rsvps]="rsvps$ | async" [canRegister]="(isPastSeason$ | async) === false" (register)="registerEvent($event)" (unregister)="unregisterEvent($event)"></tamu-gisc-season-day-card>
+        } @empty {
+        <p>No sessions have been announced yet. Please check back later!</p>
         }
+      </div>
+      } @else {
+      <!-- A new site has no season yet (#2076). -->
+      <div id="default-content">
+        <p>No sessions have been announced yet. Please check back later!</p>
       </div>
       }
 

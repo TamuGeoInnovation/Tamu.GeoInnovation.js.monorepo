@@ -9,6 +9,7 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
+import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-event-location-list',
@@ -17,5 +18,8 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
   imports: [SelectComponent, RouterLink, RouterLinkActive, CheckboxComponent, AsyncPipe, ExistsPipe]
 })
 export class EventLocationListComponent extends BaseAdminListComponent<EventLocation> {
+  /** Its name and contact address, as each GIS Day site has its own (#2077). */
+  public readonly site = inject(GISDAY_SITE);
+
   protected readonly entityService = inject(LocationService);
 }

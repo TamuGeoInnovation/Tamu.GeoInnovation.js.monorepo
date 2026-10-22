@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { iif, merge, Observable, of, Subject } from 'rxjs';
+import { merge, Observable, of, Subject } from 'rxjs';
 import { map, scan, shareReplay, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
 import { GuidIdentity, Season } from '@tamu-gisc/gisday/platform/data-api';
@@ -80,14 +80,12 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
       shareReplay()
     );
 
+    // A conditional, not iif: iif builds both branches at once, so with no season (a new site) it read
+    // season.guid on null and the list was blank (#2076).
     this.entitiesForActiveSeasonOrForSeasonGuid$ = this.selectedSeason$.pipe(
-      switchMap((season) => {
-        return iif(
-          () => season === null,
-          this.entityService.getEntitiesForActiveSeason(),
-          this.entityService.getEntitiesForSeason(season.guid)
-        );
-      }),
+      switchMap((season) =>
+        season ? this.entityService.getEntitiesForSeason(season.guid) : this.entityService.getEntitiesForActiveSeason()
+      ),
       shareReplay()
     );
 
