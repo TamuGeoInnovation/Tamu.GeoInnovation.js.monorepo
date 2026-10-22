@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:53 PM Central, 22 October 2026**. A listener; job: testing.
+Last written **4:13 PM Central, 22 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,11 +24,11 @@ Last written **3:53 PM Central, 22 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 4:33 PM Central.**
-
-**Batch 11, aggiemap: #2101, re-measure the paging refusals.** Started 3:53 PM Central, 22 October. Batch 10's four hand questions again, 25 attempts each, then `services.spec.ts` on production three times from `209e74cf3`. Report only.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 11, aggiemap: #2101, the paging refusals measured again** (3:53 to 4:13 PM, 22 October, after the reboots): **a standing fault.** `arc.ts.tamu.edu` refuses two paged requests in every eight on a fixed cycle (Motorcycle 6 of 25 both ways; Business Parking too), the same as batch 10; `gis.tamu.edu` basemap 4 refused 3 of 50. Spec on production three times: 162/0/0, 161/0/1, 161/0/1, both flakes on `arc.ts`. Report `work-lab-leila/reports/2026-10-22-3.md`.
 
 - **Batch 10, aggiemap: #2101, the service-completeness check** (2:18 to 2:43 PM, 22 October): `task/2101-service-completeness` at `209e74cf3` on the fork, no pull request. Production: 266 layers on 69 services, 31 over their cap, all paged; spec 41.6 s to 1.3-2.7 min. Red by stub tests and a live mutation (exit 1, 16 failed). **Paging past the cap is refused about one time in ten on `gis.tamu.edu` and `arc.ts.tamu.edu`.** Report `work-lab-leila/reports/2026-10-22-2.md`.
 
@@ -97,4 +97,4 @@ Last written **3:53 PM Central, 22 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 10
+Last batch done: 11
