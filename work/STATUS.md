@@ -3,11 +3,11 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. Clock times are read from PowerShell, not estimated.
 
-Last written **8:05 AM Central, 21 October 2026**. **This machine directs AggieMap** (taken when the maintainer returned to the office).
+Last written **8:15 AM Central, 22 October 2026**. **This machine directs AggieMap.**
 
 ## Running now
 
-(nothing yet) — just taken the AggieMap director role; reading the overnight handover.
+(nothing here) — `work-lab-leila` has batch 9, the release tier against production.
 
 
 ## Merged today
@@ -33,25 +33,24 @@ Nothing. Every field is set on every issue and pull request opened today.
 - **Transportation Services note**: drafted and given to the maintainer, covering both unpublished-`LotType`
   services and the three stale portal renderers. Not sent; his to send.
 
-## Owed as soon as production is up
+## The production tag is deliberately not set
 
-- **Close [#1778](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1778)**
-  ("AggieMap Misc Issues", from the team, 15 October) with a comment mapping each of its five items to
-  the fix that resolved it. The maintainer agreed to close it, **after** production, because four are
-  already live and the fifth is in the release going out today:
+**Production carries `36b962a04`, which has no `dev-*` tag, so `scripts/tag-build.sh prod` refuses it —
+correctly.** `dev-2026-10-21` is on `61161ce1b`, the commit before the three GIS Day changes, and that is
+what the release tier cleared. The delta was checked by reading it, not by running it: three GIS Day pull
+requests whose only shared-code change was an added barrel export and a CSS variable with an unchanged
+default, neither reachable from AggieMap, all passing Build / Affected and both Azure production builds.
 
-  | Reported | Issue | Fix | State |
-  | --- | --- | --- | --- |
-  | Layers named `<service> view - <layer>` | #1802 | PR 1807 | on production |
-  | HS Graduation / Physics Fest blobs not arrows; unnamed groups | #1803 | PR 1811 | on production (also caught Fish Camp) |
-  | Baseball's legend icon | #1804 | PR 1810 | on production — it was a swatch squeezed to a sliver, not a missing icon |
-  | Women's Basketball accessible parking icon | #1992 | PR 2032 | **in today's release** |
+So the honest position is: **we shipped `36b962a04`; we tier-tested `61161ce1b`.** The maintainer chose to
+resolve it by evidence rather than by paperwork — run the production tier against what is actually serving
+users, and tag `prod-2026-10-22` only if it passes. No retrospective `dev-*` tag, and no forcing the guard.
 
-  Do not close it before production: it would tell the reporter the work is done while the item she would
-  most notice is still only on dev.
+**Done:** #1778 closed with its five-item mapping, all five live as of Release-490.
 
-- **Tag production** `scripts/tag-build.sh prod 61161ce1bb5ea3852bd42d04ee13ebc6543ab630`, push to origin.
-- **The production release tier**, once the deploy is up — `work-lab-leila` is idle and fastest.
+**Still to do, in order:** the production tier (batch 9, `work-lab-leila`) → `prod-2026-10-22` on a clean
+pass → amend the 21 October notes to record that production carries `36b962a04`, not the `61161ce1b` they
+name.
+
 
 ## Findings
 
