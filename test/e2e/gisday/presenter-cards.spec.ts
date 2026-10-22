@@ -7,10 +7,13 @@ import { expect, test } from '@playwright/test';
  * such as "Texas A&M Department of Geography", made that card taller than its neighbours and the rows
  * looked ragged: production's 58 cards came in three heights.
  *
- * The suite runs without an API, so the page is given its presenters here, chosen for the lengths that
- * made the sizes differ: a short name and affiliation, a long name, an affiliation long enough to wrap
- * twice, and none at all.
+ * The suite runs without an API, so the page is given its season and presenters here. Without the season
+ * the page never asks for presenters: with no API, the season request gets the site's own HTML back, which
+ * is an error rather than "no season". The presenters are chosen for the lengths that made the sizes
+ * differ: a short name and affiliation, a long name, an affiliation long enough to wrap twice, and none.
  */
+const SEASON = { guid: 'season-2026', year: 2026, active: true, days: [], firstEventTime: null };
+
 const PRESENTERS = [
   { guid: 'p1', firstName: 'Ana', lastName: 'Diaz', organization: { name: 'UP42' } },
   { guid: 'p2', firstName: 'Maximiliano Alejandro', lastName: 'Fitzgerald-Hollingsworth', organization: { name: 'ConocoPhillips' } },
@@ -19,6 +22,7 @@ const PRESENTERS = [
 ];
 
 test('the speaker cards on Presenters are all the same size', async ({ page }) => {
+  await page.route('**/seasons/active', (route) => route.fulfill({ json: SEASON }));
   await page.route('**/speakers/participating', (route) => route.fulfill({ json: PRESENTERS }));
   await page.goto('/presenters', { waitUntil: 'domcontentloaded' });
 
