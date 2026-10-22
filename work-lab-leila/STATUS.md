@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:14 AM Central, 21 October 2026**. A listener; job: testing.
+Last written **8:30 AM Central, 22 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,7 +24,11 @@ Last written **10:14 AM Central, 21 October 2026**. A listener; job: testing.
 
 ## Running now
 
-None.
+**Next update by 9:10 AM Central.**
+
+**Batch 9, aggiemap: the release tier against production.** Started 8:30 AM Central, 22 October. Production serves
+`main-YTDVM4VX.js` (Release-490, `36b962a04`); `run-local.sh production release` from a worktree at `36b962a04`, nothing else running.
+No tag from this machine.
 
 ## Finished
 
