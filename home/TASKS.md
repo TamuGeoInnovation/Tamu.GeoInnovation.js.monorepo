@@ -1,5 +1,33 @@
 # Home machine: current tasks
 
+## Batch (22 October 2026, 12:05 PM Central) - watch Azure for the production deploy
+
+The maintainer approved the production release and it is rolling out now. **This machine is the only one
+with Azure access**: `az-releases.py` and the token are here, and neither `work` nor `work-lab-leila` has
+them.
+
+### What to do
+
+1. **Poll Azure** until the release reaches **production**, then report in your `STATUS.md`:
+   - the **release number**,
+   - the **commit** it carries, in full,
+   - the time it succeeded, in US Central.
+2. **Push it as soon as you have it.** Three things wait on that commit: the `prod-*` tag, the production
+   release tier, and closing
+   [#1778](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1778) for the team.
+3. **Say the commit even if it is not the one anyone expects.** The build was expected to carry
+   `36b962a04` - the three GIS Day changes on top of the tested `61161ce1b` - but what matters is what
+   Azure says actually shipped, not what was meant to. The `prod-*` tag goes on what shipped, which is
+   what makes "we shipped what we tested" a fact rather than an assumption.
+
+**Never read the build from a bundle name.** Each stage bakes its own analytics id in, so one commit gives
+different bundle hashes on dev and production. Azure is the only thing that answers "which commit", which
+is why this is yours and not the testing machines'.
+
+### Then
+
+Back to listening.
+
 ## Batch (21 October 2026, 9:30 AM Central) — watch Azure and name the commit that reaches dev
 
 The maintainer is deploying the latest dev build to the dev environment now. **Two builds were in play
