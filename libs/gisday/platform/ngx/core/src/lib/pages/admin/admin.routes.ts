@@ -101,6 +101,11 @@ export const adminRoutes: Routes = [
         loadChildren: () => import('./pages/users/users.routes').then((m) => m.usersRoutes)
       },
       {
+        // Copying a season to another GIS Day site (#2078).
+        path: 'copy',
+        loadComponent: () => import('./pages/site-copy/site-copy.component').then((m) => m.SiteCopyComponent)
+      },
+      {
         path: '',
         redirectTo: 'seasons',
         pathMatch: 'full'

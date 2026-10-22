@@ -13,6 +13,8 @@ export * from './lib/speaker-role/speaker-role.module';
 export * from './lib/sponsor/sponsor.module';
 export * from './lib/submission-type/submission-type.module';
 export * from './lib/tag/tag.module';
+export * from './lib/site-copy/site-copy.module';
+export * from './lib/site-copy/site-copy.format';
 export * from './lib/university/university.module';
 export * from './lib/user-class/user-class.module';
 export * from './lib/user-rsvp/user-rsvp.module';

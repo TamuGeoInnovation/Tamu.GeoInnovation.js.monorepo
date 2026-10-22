@@ -1,0 +1,84 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Copy to another site</div>
+    </div>
+
+    <div class="form-section-body">
+      <p>Export a season here, then import the file on another GIS Day site. It carries the season, its days and events, and their speakers, organizations, universities, venues, broadcasts, tags, logos and photos. People's contact details, accounts, registrations and check-ins never leave this site.</p>
+
+      <div class="flex flex-row wrap align-center leader-1">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" (changed)="exportSeason.set($event)"></tamu-gisc-select>
+        <button class="button" type="button" [disabled]="!exportSeason() || busy()" (click)="download()">Export</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Import from another site</div>
+    </div>
+
+    <div class="form-section-body">
+      <p>Choose a file exported from another GIS Day site. Nothing is written until you apply it, and nothing here is ever deleted: records this site has are updated, and the rest are added.</p>
+
+      <tamu-gisc-file accept="application/json,.json" (fileSelected)="choose($event)">Choose a file</tamu-gisc-file>
+
+      @if (busy()) {
+      <div class="loader small"></div>
+      } @if (error(); as message) {
+      <div class="info-block warning"><p>{{ message }}</p></div>
+      } @if (plan(); as plan) {
+      <div class="leader-1">
+        @if (file(); as file) {
+        <p><strong>{{ file.year }}</strong>, from {{ file.source }}, exported {{ central(file.exportedAt) }}.</p>
+        } @for (blocker of plan.blockers; track blocker) {
+        <div class="info-block warning"><p>{{ blocker }}</p></div>
+        } @if (plan.warnings.length > 0) {
+        <div class="info-block notice">
+          <p>{{ plan.warnings.length }} links will be left out, because the record they name is neither in the file nor on this site:</p>
+          <ul>
+            @for (warning of plan.warnings; track $index) {
+            <li>{{ warning }}</li>
+            }
+          </ul>
+        </div>
+        }
+
+        <table class="floating-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>{{ plan.applied ? 'Added' : 'To add' }}</th>
+              <th>{{ plan.applied ? 'Updated' : 'To update' }}</th>
+              <th>Already the same</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (kind of plan.kinds; track kind.kind) {
+            <tr>
+              <td>{{ kindNames[kind.kind] }}</td>
+              <td [title]="kind.added.join(', ')">{{ kind.added.length }}</td>
+              <td [title]="kind.updated.join(', ')">{{ kind.updated.length }}</td>
+              <td>{{ kind.unchanged }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+
+        @if (!plan.applied && plan.files.missing > 0) {
+        <p>{{ plan.files.missing }} logos and photos are not on this site yet, and will be fetched from {{ file()?.source }}.</p>
+        } @if (plan.applied) {
+        <div class="info-block context">
+          <p>Imported. {{ plan.files.written }} logos and photos copied.@if (plan.files.failed.length > 0) { {{ plan.files.failed.length }} could not be fetched: {{ plan.files.failed.join(', ') }}.}</p>
+        </div>
+        } @else if (plan.blockers.length === 0 && changes(plan) > 0) {
+        <button class="button leader-1" type="button" [disabled]="busy()" (click)="apply()">Apply</button>
+        } @else if (plan.blockers.length === 0) {
+        <p>This site already has everything in the file.</p>
+        }
+      </div>
+      }
+    </div>
+  </div>
+</div>
