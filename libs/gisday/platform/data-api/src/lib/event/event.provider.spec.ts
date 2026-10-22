@@ -1,8 +1,8 @@
-import { NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import {
   Event,
@@ -43,6 +43,7 @@ describe('EventProvider', () => {
     create: jest.fn(),
     save: jest.fn(),
     count: jest.fn(),
+    update: jest.fn(),
     createQueryBuilder: jest.fn()
   });
 
@@ -201,6 +202,27 @@ describe('EventProvider', () => {
 
       // An empty list is a deliberate "remove them all", distinct from omitting the field.
       expect((eventRepo.create as jest.Mock).mock.calls[0][0].tags).toEqual([]);
+    });
+  });
+
+  /**
+   * #2092. The admin Events list switches events on and off the public schedule without opening each one.
+   * It must change `active` and nothing else: the general update treats omitted speakers and tags as
+   * empty, so sending `{ active: false }` through it would have removed them.
+   */
+  describe('.setActive()', () => {
+    it('changes only active, for every event given', async () => {
+      jest.spyOn(eventRepo, 'update').mockResolvedValue({ affected: 2, raw: [], generatedMaps: [] });
+
+      await expect(provider.setActive(['e-1', 'e-2'], false)).resolves.toEqual({ updated: 2 });
+      expect(eventRepo.update).toHaveBeenCalledWith({ guid: In(['e-1', 'e-2']) }, { active: false });
+      expect(eventRepo.save).not.toHaveBeenCalled();
+    });
+
+    it('refuses a request with no events or no true or false', async () => {
+      await expect(provider.setActive([], true)).rejects.toThrow(BadRequestException);
+      await expect(provider.setActive(['e-1'], undefined as unknown as boolean)).rejects.toThrow(BadRequestException);
+      expect(eventRepo.update).not.toHaveBeenCalled();
     });
   });
 

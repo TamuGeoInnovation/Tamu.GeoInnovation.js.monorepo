@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Event, EventAttendanceDto } from '@tamu-gisc/gisday/platform/data-api';
+import { Event, EventActiveDto, EventAttendanceDto } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
 
@@ -31,6 +31,11 @@ export class EventService extends BaseService<Event> {
 
   public getEventAttendance(guid: string) {
     return this.http1.get<EventAttendanceDto>(`${this.resource}/${guid}/attendance`);
+  }
+
+  /** Puts events on the public schedule, or takes them off it, changing nothing else (#2092). */
+  public setActive(guids: Array<string>, active: boolean) {
+    return this.http1.patch<{ updated: number }>(`${this.resource}/active`, { guids, active } as EventActiveDto);
   }
 
   public updateEventAttendance(guid: string, counts: EventAttendanceDto) {

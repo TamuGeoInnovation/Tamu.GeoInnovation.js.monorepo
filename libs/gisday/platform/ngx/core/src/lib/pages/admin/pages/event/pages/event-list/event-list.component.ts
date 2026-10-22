@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, firstValueFrom, map } from 'rxjs';
 import { RouterLink } from '@angular/router';
 
 import { EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -11,6 +11,7 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { EventDayGroup, ParseDateTimeStringsPipe, groupEventsByDay } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-event-list',
@@ -20,6 +21,7 @@ import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 })
 export class EventListComponent extends BaseAdminListComponent<Event> implements OnInit {
   protected readonly entityService = inject(EventService);
+  private readonly notifications = inject(NotificationService);
 
   /**
    * The season's events as one table per day, under its date (#1775).
@@ -37,6 +39,31 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
    */
   public allSelected(selected: Array<string> | null, events: Array<Partial<Event>>): boolean {
     return events.length > 0 && events.every((event) => (selected ?? []).includes(event.guid));
+  }
+
+  /**
+   * Puts events on the public schedule, or takes them off it, from this list, without opening each (#2092).
+   * The public schedule leaves inactive events out.
+   */
+  public async setActive(guids: Array<string>, active: boolean) {
+    const { updated } = await firstValueFrom(this.entityService.setActive(guids, active));
+
+    this.notifications.toast({
+      id: 'event-active',
+      title: active ? 'Shown on the schedule' : 'Hidden from the schedule',
+      message: `${updated} ${updated === 1 ? 'event' : 'events'} ${active ? 'now on' : 'taken off'} the public schedule.`
+    });
+
+    this.$signal.next(null);
+  }
+
+  /** The same, for every selected event. */
+  public async setSelectedActive(active: boolean) {
+    const selected = await firstValueFrom(this.selectedRows$);
+
+    if (selected?.length) {
+      await this.setActive(selected, active);
+    }
   }
 
   public override promptCopyModal() {
