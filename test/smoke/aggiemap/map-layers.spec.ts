@@ -274,23 +274,38 @@ for (const mapPath of manifest.maps) {
       { pageSize: PAGE, most: MOST }
     );
 
-    const featureCounts: Record<string, number | null> = await page.evaluate(async () => {
+    const counted: Record<string, { count: number | null; error: string | null }> = await page.evaluate(async () => {
       const probe = (
         window as unknown as Record<
           string,
-          { snapshot(): Promise<{ layers: Array<{ id: string; featureCount: number | null }> }> }
+          {
+            snapshot(): Promise<{
+              layers: Array<{ id: string; featureCount: number | null; featureCountError: string | null }>;
+            }>;
+          }
         >
       )['__tamuGiscMapProbe'];
 
-      return Object.fromEntries((await probe.snapshot()).layers.map((layer) => [layer.id, layer.featureCount]));
+      return Object.fromEntries(
+        (await probe.snapshot()).layers.map((layer) => [
+          layer.id,
+          { count: layer.featureCount, error: layer.featureCountError ?? null }
+        ])
+      );
     });
+
+    const featureCounts: Record<string, number | null> = Object.fromEntries(
+      Object.entries(counted).map(([id, c]) => [id, c.count])
+    );
 
     test.info().annotations.push({
       type: 'layers',
       description: layers
         .map(
           (l) =>
-            `${l.title || l.id} [${l.type}] on=${l.on} list=${l.listMode} count=${featureCounts[l.id] ?? 'n/a'}` +
+            `${l.title || l.id} [${l.type}] on=${l.on} list=${l.listMode} count=${
+              counted[l.id]?.error != null ? `FAILED (${counted[l.id]?.error})` : (featureCounts[l.id] ?? 'n/a')
+            }` +
             (l.checked === null ? '' : ` drawn=${l.drawn}/${l.checked}`) +
             (l.error ? ` error=${l.error}` : '') +
             (l.queryError ? ` queryError=${l.queryError}` : '')
@@ -351,6 +366,22 @@ for (const mapPath of manifest.maps) {
       );
 
     expect.soft(undrawn, `${mapPath}: layers that hold features their renderer draws nothing for`).toEqual([]);
+
+    // 2b. Counted: a layer whose count query failed may be drawing short, and must not pass as "n/a".
+    //
+    // This is the check that was missing on 22 October 2026, when the accessible entrances service
+    // failed about half the queries the map made (#2080). The map drew a third of its markers short,
+    // every count came back null, the annotation said "n/a", and the suite passed. The maintainer
+    // found it by looking at the map, which is the thing this suite exists to do instead.
+    //
+    // Soft, like the checks around it, so one failing layer still reports the rest of the map.
+    const uncounted = layers
+      .filter((l) => !tolerated(l) && counted[l.id]?.error != null)
+      .map((l) => `${l.title || l.id}: its features could not be counted (${counted[l.id]?.error})`);
+
+    expect
+      .soft(uncounted, `${mapPath}: layers whose feature count failed, so they may be drawing short`)
+      .toEqual([]);
 
     // 3. Keyed: every layer on in the Layers list has a legend entry with a symbol in it.
     if ((await page.locator('tamu-gisc-legend').count()) > 0) {

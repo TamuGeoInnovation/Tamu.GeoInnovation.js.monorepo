@@ -71,6 +71,67 @@ describe('map probe', () => {
       });
     });
 
+    /**
+     * A layer whose count query fails is not the same as a layer that has no count (#2080).
+     *
+     * Both used to be reported as `featureCount: null`, so nothing downstream could tell them apart.
+     * On 22 October 2026 the accessible entrances service failed about half the queries the map made:
+     * the map drew a third of its markers short, every count came back `null`, and the smoke suite
+     * annotated it as "n/a" and passed. The maintainer found it by looking at the map.
+     */
+    it('reports a failed feature count as itself, not as "no count" (#2080)', async () => {
+      registerMapProbe(
+        {
+          map: {
+            allLayers: {
+              toArray: () => [
+                {
+                  id: 'accessible-entrances-layer',
+                  title: 'Accessible Building Entrances',
+                  type: 'feature',
+                  visible: true,
+                  loaded: true,
+                  queryFeatureCount: () => Promise.reject(new Error('Failed to execute query.'))
+                },
+                {
+                  id: 'buildings',
+                  title: 'Buildings',
+                  type: 'feature',
+                  visible: true,
+                  loaded: true,
+                  queryFeatureCount: () => Promise.resolve(1003)
+                },
+                // A tile layer has no features to count. This is the case that must stay `null` on
+                // both fields, or the suite would start failing every healthy basemap.
+                { id: 'base-map', title: 'Base Map', type: 'tile', visible: true, loaded: true }
+              ]
+            }
+          },
+          view: { ready: true }
+        } as unknown as Parameters<typeof registerMapProbe>[0],
+        owner
+      );
+
+      const probe = (
+        window as unknown as Record<
+          string,
+          { snapshot: () => Promise<{ layers: { id: string; featureCount: number | null; featureCountError: string | null }[] }> }
+        >
+      )[MAP_PROBE_GLOBAL];
+      const layers = (await probe.snapshot()).layers;
+      const of = (id: string) => layers.find((layer) => layer.id === id);
+
+      expect(of('accessible-entrances-layer')).toMatchObject({
+        featureCount: null,
+        featureCountError: 'Failed to execute query.'
+      });
+
+      expect(of('buildings')).toMatchObject({ featureCount: 1003, featureCountError: null });
+
+      // Not applicable, and it must not look like a failure.
+      expect(of('base-map')).toMatchObject({ featureCount: null, featureCountError: null });
+    });
+
     it("reports a graphics layer's graphics by type, and null for other layers (#1174)", async () => {
       registerMapProbe(
         {
