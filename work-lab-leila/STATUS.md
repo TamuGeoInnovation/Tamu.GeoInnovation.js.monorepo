@@ -24,13 +24,11 @@ Last written **2:43 PM Central, 22 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 3:45 PM Central.** Running long: the check is green on production, but paging past the cap is refused intermittently on two more layers (the same half-the-time pattern as #2080), and I am pinning down why before reporting.
-
-**Batch 10, aggiemap: #2101, the service-completeness check.** Started 2:18 PM Central, 22 October. `task/2101-service-completeness` from
-the latest `development`; a check in `services.spec.ts` that a layer holding more than its `maxRecordCount` really delivers the rest;
-red first, green on production with every layer's numbers. About 90 minutes. No pull request.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 10, aggiemap: #2101, the service-completeness check** (2:18 to 2:43 PM, 22 October): `task/2101-service-completeness` at `209e74cf3` on the fork, no pull request. Production: 266 layers on 69 services, 31 over their cap, all paged; spec 41.6 s to 1.3-2.7 min. Red by stub tests and a live mutation (exit 1, 16 failed). **Paging past the cap is refused about one time in ten on `gis.tamu.edu` and `arc.ts.tamu.edu`.** Report `work-lab-leila/reports/2026-10-22-2.md`.
 
 - **Batch 9, aggiemap: the release tier against production** (Release-490, `36b962a04`, `main-YTDVM4VX.js`, 8:30 to 8:47 AM,
   22 October): **545 passed, 2 failed, 14 flaky, 56 skipped**. Every failure is Accessible Building Entrances (#2080), nothing else;
@@ -97,4 +95,4 @@ red first, green on production with every layer's numbers. About 90 minutes. No 
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 9
+Last batch done: 10
