@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { SiteCopyFile, SiteCopyKind, SiteCopyPlan } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, SiteCopyService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { FileComponent, SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ButtonComponent, FileComponent, SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 /** How each kind of record reads in the plan. */
 const KIND_NAMES: Record<SiteCopyKind, string> = {
@@ -30,7 +30,7 @@ const KIND_NAMES: Record<SiteCopyKind, string> = {
 @Component({
   selector: 'tamu-gisc-site-copy',
   templateUrl: './site-copy.component.html',
-  imports: [AsyncPipe, SelectComponent, FileComponent]
+  imports: [AsyncPipe, SelectComponent, FileComponent, ButtonComponent]
 })
 export class SiteCopyComponent {
   private readonly copy = inject(SiteCopyService);
@@ -39,7 +39,13 @@ export class SiteCopyComponent {
   public readonly kindNames = KIND_NAMES;
 
   public readonly exportSeason = signal<string | null>(null);
-  public readonly busy = signal(false);
+
+  /**
+   * What is running, if anything, and what to tell the person while it does. A long import gave no sign it
+   * had started, inviting a second click (#2090).
+   */
+  public readonly busy = signal<'export' | 'read' | 'apply' | null>(null);
+  public readonly working = signal<string | null>(null);
   public readonly error = signal<string | null>(null);
 
   /** The file chosen to import, and what importing it would do or did. */
@@ -53,7 +59,7 @@ export class SiteCopyComponent {
       return;
     }
 
-    await this.run(async () => {
+    await this.run('export', 'Gathering the season and what its events bring…', async () => {
       const file = await firstValueFrom(this.copy.export(season));
       const url = URL.createObjectURL(new Blob([JSON.stringify(file, null, 2)], { type: 'application/json' }));
       const link = document.createElement('a');
@@ -70,7 +76,7 @@ export class SiteCopyComponent {
     this.plan.set(null);
     this.file.set(null);
 
-    await this.run(async () => {
+    await this.run('read', 'Reading the file and comparing it with this site…', async () => {
       const file = JSON.parse(await chosen.text()) as SiteCopyFile;
 
       this.file.set(file);
@@ -85,7 +91,15 @@ export class SiteCopyComponent {
       return;
     }
 
-    await this.run(async () => this.plan.set(await firstValueFrom(this.copy.import(file, true))));
+    const plan = this.plan();
+    const records = plan ? plan.kinds.reduce((sum, kind) => sum + kind.added.length + kind.updated.length, 0) : 0;
+    const files = plan?.files.missing ?? 0;
+    const message =
+      `Writing ${records} records` +
+      (files > 0 ? `, then copying ${files} logos and photos from ${file.source}` : '') +
+      '. This can take a minute or two; leave this page open.';
+
+    await this.run('apply', message, async () => this.plan.set(await firstValueFrom(this.copy.import(file, true))));
   }
 
   /** A time as the team reads it, in US Central. */
@@ -104,8 +118,9 @@ export class SiteCopyComponent {
     return plan.kinds.reduce((sum, kind) => sum + kind.added.length + kind.updated.length, 0) + plan.files.missing;
   }
 
-  private async run(work: () => Promise<void>) {
-    this.busy.set(true);
+  private async run(action: 'export' | 'read' | 'apply', message: string, work: () => Promise<void>) {
+    this.busy.set(action);
+    this.working.set(message);
     this.error.set(null);
 
     try {
@@ -113,7 +128,8 @@ export class SiteCopyComponent {
     } catch (e) {
       this.error.set(e?.error?.message ?? e?.message ?? 'Something went wrong.');
     } finally {
-      this.busy.set(false);
+      this.busy.set(null);
+      this.working.set(null);
     }
   }
 }
