@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 46.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 49.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,57 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 46 (security: ESLint 10 branch - the other four `"force": true` lint targets removed; 23 October 2026, 2:10 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 20 minutes.** Your batch 45 questions: 1 **(a)**, remove them in this branch; 2 keep `eslint`
+**exact**.
+
+1. In `C:/TAMU/wt-eslint10` (`chore/1218-eslint-10`, `d8883d63c`): remove the `"force": true` option (and an `"options"` block left
+   empty by it) from the lint target of `gisday-nest` (`apps/gisday-nest/project.json:132`), `gisday-platform-ngx-common`,
+   `gisday-platform-ngx-core` and `gisday-platform-ngx-data-access`. Then `git grep -n '"force": true' -- '*project.json'` must print
+   nothing; report it.
+2. Proof through Nx, each project's own config: `nx run-many -t lint --projects=gisday-nest,gisday-platform-ngx-common,gisday-platform-ngx-core,gisday-platform-ngx-data-access --skip-nx-cache`
+   (exit code, errors per project). If any has errors, fix each if it is one line, as batch 45 did, and say what; else stop and report.
+3. A second commit (`chore(workspace): Let lint fail on the four GIS Day projects that forced it to pass`, a body naming them and
+   #208 as where the flag came from, `Part of #1218`, the Co-Authored-By line). `scripts/check-in-volume.sh chore/1218-eslint-10`. Push.
+
+## Batch 47 (security: #2168 on Nx 23 - lint targets to inferred tasks; a code job and a branch; 23 October 2026, 2:10 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 46.** **Expected: about 60 minutes.** Your batch 44 question 1: **(c)**, convert on Nx 23 first, so each
+conversion is its own separately green branch (the maintainer's "each with its own full check"), and the Nx 24 bump after is small.
+Question 2: **yes**, check the lint inputs in this branch.
+
+1. `git worktree add C:/TAMU/wt-2168-lint23 -b chore/2168-lint-inferred origin/development` (`development`, still Nx 23.3.0).
+2. In Docker (`node:24.22.1`, own volume): `npm ci`, then `node node_modules/nx/dist/bin/nx.js g @nx/eslint:convert-to-inferred
+   --no-interactive`. Report what it changed (counts: `project.json` files, `nx.json`).
+3. **Same lint, before and after:** for three projects (an Angular library, `gisday-nest`, a plain TS library), show the `lint` target
+   from `nx show project <p> --json` on `development` and on this branch: command, options, and **`inputs`** (your batch 44 question 2:
+   whatever the inferred target hashes must include each project's `eslint.config.mjs` and the root one, or a config change would not
+   re-lint). If an input is missing, add it in `nx.json`'s plugin options or `targetDefaults` and show the result.
+   **`force`**: after batch 46's branch merges there will be none; on `development` there are five. Say whether the inferred target keeps
+   `force` (it should **not** - a lint that cannot fail checks nothing).
+4. The CI lint exclusions (`lint.yml`, read by `scripts/check-in-volume.sh`) must still mean the same projects: show that the script's
+   list is unchanged in meaning.
+5. Proof: `scripts/check-in-volume.sh chore/2168-lint-inferred` (full `affected`): lint must run for **every** project it ran for on
+   `development` (104) and pass. Report the count.
+6. Commit (`chore(workspace): Move lint to Nx's inferred targets, ahead of Nx 24`, a body, `Part of #2168`, the Co-Authored-By line).
+   Push if step 5 passed.
+
+## Batch 48 (security: #2168 on Nx 23 - Jest targets to inferred tasks; a code job and a branch; 23 October 2026, 2:10 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 47.** **Expected: about 60 minutes.** As batch 47, for Jest.
+
+1. `git worktree add C:/TAMU/wt-2168-jest23 -b chore/2168-jest-inferred origin/development` (independent of batch 47's branch).
+2. `npm ci`, then `nx g @nx/jest:convert-to-inferred --no-interactive`. Report what changed.
+3. **Same tests, before and after:** for three Jest projects (`geoservices-data-access`, an Angular library, a Nest library), the `test`
+   target's command, options and `inputs` on `development` and on this branch, **and the number of tests run** by each (it must be the
+   same). `test.yml` runs with `--coverage=false`; the inferred target must accept that flag. The CI test exclusions (`test.yml`) must
+   still mean the same projects.
+4. Proof: `scripts/check-in-volume.sh chore/2168-jest-inferred` (full `affected`): test must run for every project it ran for on
+   `development` (100) and pass. Report the count.
+5. Commit (`chore(workspace): Move Jest to Nx's inferred targets, ahead of Nx 24`, a body, `Part of #2168`, the Co-Authored-By line).
+   Push if step 4 passed.
 
 ## Batch 44 (security: batch 42 again, with batch 41's lock method for the Nx set - the Nx 24 premise test; 23 October 2026, 2:00 PM Central, from `work (security)`)
 
