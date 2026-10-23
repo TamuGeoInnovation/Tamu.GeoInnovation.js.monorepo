@@ -46,7 +46,7 @@ npm run affected:test        # Test only affected projects
 npm run affected:lint        # Lint only affected projects
 npm run format:check         # Check code formatting
 npm run format:write         # Auto-format all code with Prettier
-npm run coverage             # Generate coverage report (all projects)
+npm run coverage             # Run every project's tests with coverage, through Nx (nx run-many -t test --coverage)
 ```
 
 ### Viewing Dependencies

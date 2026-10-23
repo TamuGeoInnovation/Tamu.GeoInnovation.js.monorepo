@@ -91,7 +91,7 @@ stay that way — it runs against production on a schedule.
 
 `test.yml` skips a fixed list of projects; the list is
 `EXCLUDED_PROJECTS` at the top of the workflow. It runs with `--coverage=false`;
-coverage is available locally via `npm run coverage`.
+coverage is available locally: `npm run coverage` runs every project's tests with coverage, through Nx (`nx run-many -t test --coverage`).
 
 `test-report.yml` is a separate `workflow_run` workflow because a PR from a fork gets a read-only
 token, so a reporting step inside the test job could not create a check on the PRs it is for. The
