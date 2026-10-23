@@ -1,0 +1,6 @@
+{
+  "name": "gisday-nest",
+  "dependencies": {
+    "mssql": "^12.7.11"
+  }
+}

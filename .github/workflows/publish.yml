@@ -77,8 +77,17 @@ jobs:
             type=sha
 
       - name: Copy required image build files
+        # An API's build writes its own package.json (generatePackageJson), so it gets the root files beside it as
+        # root-package.json and root-package-lock.json: its image installs the root lock's versions, then prunes to its own
+        # package.json (#2117). An app without its own package.json (the front ends) gets the root files as before.
         run: |
-          cp package.json package-lock.json apps/${{ matrix.image }}
+          app=apps/${{ matrix.image }}
+          if [ -f "$app/package.json" ]; then
+            cp package.json "$app/root-package.json"
+            cp package-lock.json "$app/root-package-lock.json"
+          else
+            cp package.json package-lock.json "$app"
+          fi
 
       # The gate (#2118). The image is built locally and scanned before anything is pushed, because
       # a critical that reaches the registry can be deployed, and pulling a tag back is not
