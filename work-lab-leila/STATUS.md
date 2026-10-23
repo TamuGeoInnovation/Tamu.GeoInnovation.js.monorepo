@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:53 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **1:54 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **1:53 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Nothing running.** Batches 41 to 43 are done (42 stopped at step 2). Watching the branch.
+**Next update by 2:34 PM Central.**
+
+**Batch 44, security: the Nx 24 premise test with the lock-entry method** (a test, nothing pushed), started 1:54 PM Central, in `C:/TAMU/wt-nx24-probe`. Then 45 (ESLint 10).
 
 ## Finished
 
