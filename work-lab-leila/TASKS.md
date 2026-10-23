@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 27.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 28.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,32 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 27 (security: #1218, what is out of date - a read-only inventory; 23 October 2026, 11:35 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.**
+**Expected: about 20 minutes.** Read-only: it ends in a report. Nothing in the repository changes. From Git Bash, in order.
+
+The maintainer's goal (#1218, his comment of 23 October): every dependency at the latest it can be, once the security queue is
+clear. This batch measures how far away that is, so the work can be planned in steps.
+
+1. `git fetch origin development`; `git worktree add C:/TAMU/wt-outdated origin/development --detach`. Report the commit.
+2. `MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-outdated:/w" -v tamu-js-outdated-nm:/w/node_modules -w /w node:24.22.1 sh -c "npm ci --no-audit --no-fund --ignore-scripts > /w/ci.log 2>&1; echo ci=\$?; npm outdated --json > /w/outdated.json; echo outdated=\$?"`
+   (`npm outdated` exits 1 whenever something is out of date; that is expected.) Report both numbers and the size of `outdated.json`.
+3. From `outdated.json`, which lists each package's `current`, `wanted` (the newest its `package.json` range allows) and `latest`:
+   a. **Totals:** how many packages; how many have `wanted` newer than `current` (an in-range update); how many have `latest`
+      on a **newer major** than `current`.
+   b. **A table of every package whose `latest` is a newer major**, sorted by name, with columns: package, current, wanted, latest,
+      and **family**: put it in the first of these that matches its name: `@angular/*` or `angular*` → Angular; `@nx/*`, `nx` →
+      Nx; `@nestjs/*` → NestJS; `@arcgis/*`, `esri*` → ArcGIS; `typeorm`, `mssql`, `pg` → database; `jest*`, `vitest*`, `@vitest/*`,
+      `@testing-library/*`, `playwright`, `@playwright/*` → testing; `eslint*`, `@eslint/*`, `typescript-eslint`, `@typescript-eslint/*`,
+      `prettier` → lint; `typescript` → TypeScript; `rxjs`, `zone.js`, `tslib` → runtime; anything else → other.
+   c. **Per family:** the count, and the oldest `current` major against the `latest` major (for example "Angular: 22 → 23").
+   d. **The ten furthest behind** by number of majors (latest major minus current major), with their family.
+4. Node itself: report `node -v` in the image (`node:24.22.1`), and the `engines` field of the root `package.json` if there is one.
+5. Do not judge or plan; report the numbers and tables exactly. Clean up: `git worktree remove C:/TAMU/wt-outdated --force`. Leave the volume.
+
+Nothing else: no pushes, no pull request, no comments, no changes. Report in `work-lab-leila/reports/` and say "work-lab-leila: finished batch 27".
 
 ## Batch 26 (security: #2122, the first eleven unused dependencies removed, and uuid listed; 23 October 2026, 11:35 AM Central, from `work (security)`)
 
