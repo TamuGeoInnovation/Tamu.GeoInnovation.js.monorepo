@@ -2,8 +2,9 @@
 
 > **Next free batch number: 23.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
-> queue a batch.** On 23 October two directors both used 19; the lab ran one and skipped a different batch
-> entirely.
+> queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
+> once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
+> things, and no reader of this file could tell which.
 
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
@@ -23,8 +24,12 @@ report under **Questions for the director**, with options and a recommendation â
 
 **Renumbered from 19, and already run - do not run it again.** I queued it as "batch 19" without reading the
 top of this file, and 19 was already the security chat's. The lab ran mine at **10:01-10:04** as
-"batch 19 (aggiemap)" and then skipped the security chat's **batch 21**, which has since been marked start
-now. The collision was mine; the skip was its consequence.
+"batch 19 (aggiemap)".
+
+**Correction (10:40 AM):** an earlier version of this note said the collision made the lab skip the security
+chat's batch 21. **It did not.** Batch 21 ran at 9:51 and passed (`reports/2026-10-23-9.md`); it is being run
+again only because its head moved. The duplicate number was real, the skip was not, and I should not have
+written a consequence I had not checked.
 
 Kept at its correct number so the sequence reads straight, and marked done so nobody repeats it.
 
