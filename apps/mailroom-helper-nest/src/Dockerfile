@@ -7,6 +7,8 @@ WORKDIR /app
 # The lock Nx generates is not used: it gets nested copies wrong. The root's overrides are put back into the app's
 # package.json, because Nx drops "form-data": "$form-data", and without it prune fetches old form-data copies the root
 # lock does not have. Everything else in the build output is copied as before.
+# An API given a TypeORM database later needs its driver in its own apps/<app>/package.json, as gisday-nest and
+# mailroom-nest list mssql: TypeORM loads it by name, so the generated package.json cannot include it.
 COPY . /tmp/build/
 RUN cp /tmp/build/root-package.json package.json \
   && cp /tmp/build/root-package-lock.json package-lock.json \
