@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:17 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **4:19 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,13 +30,13 @@ Last written **4:17 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 5:00 PM Central.**
+**Nothing running.** Batches 50 and 58 are committed locally and wait for the push hold to lift. Batch 57 waits for PR 2186. Watching the branch.
 
-**Batch 58, security: PR 2184 resolved against PR 2182 ahead of time**, started 4:10 PM Central, in `C:/TAMU/wt-2184r` (`security/check-2184`): the merge is committed locally at `654d75176` (35 files resolved as JSON: 34 `project.json` and `nx.json`; lint 104 / test 103 / 110 projects); its full check is running. **Not pushed: the 3:55 PM hold.**
-
-**Pushes held since 3:55 PM:** no code branch has been pushed. The mailbox still is, because that is how the lab reports, and `work-mailbox` starts no workflow (GitHub lists no run on it).
+**Pushes held since 3:55 PM:** no code branch has been pushed. The mailbox still is, because that is how the lab reports, and `work-mailbox` starts no workflow (GitHub lists no run on it). **Ready to push when the hold lifts:** `chore/2168-webpack-inferred` at `dd87888d3` (batch 50, also waiting on its `webpack-cli` question) and `security/check-2184` at `654d75176` (batch 58).
 
 ## Finished
+
+- **Batch 58, security: PR 2184 resolved against PR 2182 ahead of time - committed locally, NOT pushed** (4:10 to 4:18 PM, 23 October): 35 files (34 `project.json` and `nx.json`) resolved as JSON, each proved to differ from either side only by the other side's change (the four API `build` targets come from development via the lint branch). No old executor left; lint 104 / test 103 / 110 projects; full check exit 0 (lint 104 / test 100 / build 14, clean `npm ci`). **`security/check-2184` at `654d75176`, local.** Report `work-lab-leila/reports/2026-10-23-46.md`.
 
 - **Batch 52, aggiemap: #2143's athletics maps on dev - NOT yet shown to work** (3:57 to 4:16 PM, 23 October): dev serves #2176 (by content). **8 of 11 maps have a listed layer that draws nothing on dev, because the new dev views have a different schema** (no per-sport columns, no `event`/`type` on the accessible layer, shifted sublayers). Accessible Parking Spaces fails on indoor track, outdoor track, soccer, softball, swimming and volleyball; cross country's lots; all of baseball's event layers. Healthy: tennis, both basketballs, and every event lot but cross country's and baseball's. `map-layers.spec.ts`: dev 1/8 pass, production 8/8. Quick tier: 434 tests, 388 passed, 8 failed (those 7, plus `development-only.ts`'s now out-of-date `TS/WomensBasketballParking/MapServer` entry), 1 flaky. Safety First and Purchase Hourly are gone on dev; Indoor Track has no Team Bus Parking, as expected. Recommends the GIS team add the old columns to the dev views. Report `work-lab-leila/reports/2026-10-23-45.md`.
 
@@ -210,4 +210,4 @@ Last written **4:17 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 52 (50 committed locally, not pushed; 42 and 39 stopped; 40 superseded)
+Last batch done: 58 (50 and 58 committed locally, held; 57 waits on PR 2186; 42 and 39 stopped; 40 superseded)
