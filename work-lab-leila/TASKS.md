@@ -77,6 +77,36 @@ install the front ends' dependencies. Each came from measuring something the bat
 so plainly. Keep doing that.
 
 
+## Batch 19 (security: the full pre-push check for 2129, swiper 14 on the new lock; 23 October 2026, 9:25 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (`js.monorepo - Security - CSA 305 Desktop`; questions go under **Questions for the
+director (security)**). **Start now.** **Expected: about 25 minutes**, a full `affected` check.
+
+PR 2129 (#2114, swiper 14) changes `package-lock.json`. It has had `development` merged in, which brings PRs 2123, 2125 and
+2128, and its lock was regenerated with no change. This check proves the result before the PR branch is updated.
+
+Do exactly these steps, in order, from Git Bash. Do not change anything, and do not improvise.
+
+1. `git fetch fork security/check-2129`
+2. `git rev-parse fork/security/check-2129` must print **`1568148d8576abc5e7da32f54bd714e3b8847714`**. If it prints
+   anything else, stop and report what it printed.
+3. `git worktree add C:/TAMU/wt-check-2129 fork/security/check-2129 --detach`
+4. In `C:/TAMU/wt-check-2129`: `git switch -c security/check-2129`
+5. In the same folder: `scripts/check-in-volume.sh security/check-2129 > ../check-2129.out 2>&1; echo "exit=$?"`
+   This is the full `affected` check, which also runs a clean `npm ci` because the lock changed. Do not add a project list.
+6. Report:
+   - the exit code;
+   - the last 10 lines of `../check-2129.out`;
+   - from the log file the script names, each line containing `Successfully ran target` or `failed`;
+   - for any failed test, its name and message.
+7. **If exactly one test fails and it is in `ui-kits-ngx-forms` (the date-time-picker, known flaky under load, #1898):**
+   run `scripts/check-in-volume.sh security/check-2129 ui-kits-ngx-forms` once more and report its exit code too.
+   Any other failure: do not retry, just report it.
+8. Then `git worktree remove C:/TAMU/wt-check-2129 --force`. Leave the Docker volume.
+
+Nothing else: no pushes, no pull request, no comments, no fixes. Report in `work-lab-leila/reports/` as usual and say
+"work-lab-leila: finished batch 19".
+
 ## Batch 18 (security: the pre-push check for #2136, the nginx-base pin; 23 October 2026, 9:05 AM Central, from `work (security)`)
 
 **Director: work, its security chat** (`js.monorepo - Security - CSA 305 Desktop`; questions go under **Questions for the
