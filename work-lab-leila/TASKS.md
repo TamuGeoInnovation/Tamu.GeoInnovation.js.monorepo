@@ -63,6 +63,10 @@ them. Each branch from the latest `origin/development`, its own worktree, one co
    APIs' unit tests and the full affected check. Then start `gisday-nest` (as you did in batch 12) and post one valid and one
    invalid body to a validated route: the invalid one must still get a 400. Report the breaking changes found and what each
    needed.
+   **Also, decided by the maintainer (7:05 AM):** set `forbidUnknownValues: true` and `whitelist: true` on every API's global
+   `ValidationPipe` (`apps/*-nest/src/main.ts`), and check with the same two requests plus a body carrying an undeclared
+   field (it must be dropped, not stored). If `whitelist` breaks a route that relies on undeclared fields, say which and leave
+   `whitelist` off there with a comment, rather than working round it.
 3. **`fix/2111-swiper-14`: `swiper` 11.2.10 to 14.3.0** (critical; AggieMap's bonfire and POI popups, and UES). Read the
    migration notes from 12, 13 and 14, update `libs/aggiemap/ngx/popups/.../bonfire` and `.../poi` (and any UES use), run the
    affected check, then on the AggieMap dev server photograph one bonfire popup and one POI popup with a carousel, **before
