@@ -9,16 +9,27 @@ the director's file to correct.
 
 ## Running now
 
-**Batch 24 (workspace: #2118, the daily vulnerability scan and the publish gate).** **Taken at 7:40 AM
-Central, 23 October**, inside the 7:45 deadline in the "Still there?" note - please leave it here rather than
-moving it to the lab. Started now; expected about 90 minutes, so next update by **9:15 AM Central**.
+Nothing. **Last batch done: 24.** Watching the branch.
 
-Batch 23 finished at 7:35 and its report was pushed at about 7:39, which is why batch 24 was not taken
-sooner: it was queued at 6:56 while the Trivy scans were running, and this machine was not idle at any point.
+## Batch 24 finished, 8:55 AM Central, 23 October
 
-Branch `ci/2118-security-scan` from the latest `origin/development`, pushed to the fork; no pull request.
+`work/reports/2026-10-23-3.md`. **Branch `ci/2118-security-scan` at `1d5359faa`** on the fork, from
+`origin/development` at `35581d017`. No pull request - home opens it. 7 files, +2,833 lines, LF checked.
 
-Last batch done: 23.
+Daily scan at 06:42 College Station plus `workflow_dispatch`; the publish gate blocks a **critical** not
+in `.github/security/accepted-advisories.json`, before the push rather than after.
+
+**Proven, not asserted:** the first run is quiet - 576 findings, 576 accepted, 0 new, exit 0, run through
+the real checker over today's real scan output. Removing one entry makes it exit 1 naming that finding.
+The comparison's test was proven red by mutation: matching on the advisory id alone turns it red with
+"the same CVE on another package was treated as accepted".
+
+`actionlint` 1.7.7: `security-scan.yml` clean; `publish.yml` has 4 shellcheck infos that are
+**pre-existing** (my diff is purely additive), left alone.
+
+**Neither workflow has run, and cannot be**: a schedule cannot fire from a branch and the gate only runs
+on a publish. The comparison is proven; the YAML around it is not. **The first real publish is the first
+test of the gate** - worth knowing before it merges. Three questions in the report.
 
 ## Batch 23 finished, 7:35 AM Central, 23 October
 
