@@ -618,6 +618,18 @@ Nothing below has merged, so it is not part of a release yet. This section exist
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
 file would say the work had stopped.
 
+### Security and vulnerability work has one owner, 23 October
+
+One Claude Code session, on one of the maintainer's machines, does all of the security and vulnerability
+work here: dependency audits and security updates ([#2112](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112)),
+the daily package and image scan ([#2118](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2118)),
+the security parts of the standing sweep ([#1146](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1146)),
+Dependabot, CodeQL and secret-scanning alerts, and anything else whose main purpose is security. Any
+other session, on any machine, that finds a security problem files the issue as usual and leaves the
+fix to that session. One that needs to change `package.json` or `package-lock.json` for its own work
+says so first, so two sessions are never editing the lock file at once. Ask the maintainer which
+session it is.
+
 ### The smoke suite, 13 October
 
 | What | State |

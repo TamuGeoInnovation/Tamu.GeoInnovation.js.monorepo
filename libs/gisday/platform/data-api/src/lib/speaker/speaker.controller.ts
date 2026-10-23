@@ -3,6 +3,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { DeepPartial } from 'typeorm';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { Speaker } from '../entities/all.entity';
 import { SpeakerProvider } from './speaker.provider';
@@ -73,7 +74,7 @@ export class SpeakerController {
   @Permissions(['create:speakers'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { limits: { ...DEFAULT_UPLOAD_LIMITS } }))
   public async speakerAndInfo(@Body() body, @UploadedFile() file) {
     const _speaker: DeepPartial<Speaker> = body;
     return this.provider.insertWithInfo(_speaker, file);
@@ -82,7 +83,7 @@ export class SpeakerController {
   @Permissions(['update:speakers'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { limits: { ...DEFAULT_UPLOAD_LIMITS } }))
   public async updateSpeakerInfo(@Param('guid') guid: string, @Body() body: DeepPartial<Speaker>, @UploadedFile() file) {
     return this.provider.updateWithInfo(guid, body, file);
   }
