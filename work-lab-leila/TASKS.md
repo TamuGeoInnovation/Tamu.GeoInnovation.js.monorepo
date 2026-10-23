@@ -13,6 +13,58 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Batch 16 (workspace: #2118, the daily vulnerability scan and the publish gate; queued 23 October 2026, 7:15 AM Central, from `home`)
+
+**Start after batch 15.** **Director: home.** **Expected: about 90 minutes.** A branch only, pushed to the fork; home opens
+the pull request. Branch `ci/2118-security-scan` from the latest `origin/development`; commits end `Closes #2118`.
+
+[#2118](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2118) (High), as decided by the maintainer:
+
+1. **`.github/workflows/security-scan.yml`**, `schedule` once a day (an offset minute, as `aggiemap-smoke.yml` does) and
+   `workflow_dispatch`:
+   - `npm audit --omit=dev --json` on the lock, critical and high;
+   - Trivy, **pinned** to a release (`aquasec/trivy-action` at a version tag, or the `aquasec/trivy` image at a tag), on the
+     images we deploy: the four APIs and the four front ends at their newest `sha-` tag on `development`, plus
+     `nginx-base:latest`; critical and high, OS and language packages;
+   - **`.github/security/accepted-advisories.json`**: every advisory accepted for now, each with `id`, `package`, `reason` and
+     the `issue` that tracks it. Seed it with today's open ones and their issues (#2112 to #2117, #2119), so the first run is
+     quiet;
+   - a finding **not** in the file opens or updates **one issue labelled `security-health`**, the way `aggiemap-smoke.yml`
+     opens and closes its health issues (read it and reuse its pattern rather than writing a new one), and a clean run closes
+     it. Create the label if it does not exist only from the workflow, not by hand.
+2. **A publish gate** in `publish.yml`: Trivy on each image it builds, after the build and **before** the push; fail on a
+   **critical** not in the accepted file.
+3. **Tests**: a test, in the style of `scripts/*.test.sh` or `tools-tests.yml`, of the comparison step: a planted finding
+   not in the file is reported, one in the file is not.
+4. `actionlint` (pinned, from its image) on both workflows; `tools-tests` passes.
+
+Report in `work-lab-leila/reports/2026-10-23-5.md`; one line on #2118 with the branch and head.
+
+## Batch 15 (workspace: #2119, prove a new nginx-base locally; queued 23 October 2026, 7:15 AM Central, from `home`)
+
+**Start after batch 14.** **Director: home.** **Expected: about 45 minutes.** Heavy (four front-end builds). **Push nothing
+to the nginx-base repository**: every push to any of its branches publishes `:latest`, which every front end's next build
+takes. Test locally only.
+
+[#2119](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119) (High): the front ends' base, `ghcr.io/tamugeoinnovation/nginx-base:latest`, is `FROM nginx:1.23.2-alpine`
+(Alpine 3.16.3, 4 critical and 27 high OS findings). The candidate is `nginx:1.30.6-alpine` (Alpine 3.24.3, current stable).
+
+1. Clone `TamuGeoInnovation/nginx-base` (public) into a scratch folder, change only its `FROM` to `nginx:1.30.6-alpine`, and
+   `docker build` it locally as `nginx-base:candidate`.
+2. **Trivy** it (pinned release), critical and high: expect none; list any.
+3. For **each front end** with a Dockerfile (`aggiemap-angular`, `gisday-angular`, `geoservices-angular`, `mailroom-angular`):
+   a production build from `origin/development`, then `docker build` its image with the Dockerfile's `FROM` pointed at
+   `nginx-base:candidate` (a local edit, not committed). Run it with the `ANGULAR_*` settings its deployment uses (the
+   names are in the app's `environments/common.config.ts`; dummy values are fine), and check: the container starts; the
+   **token substitution ran** (no `___ANGULAR_` placeholder left in `index.html` or the main bundle); `/` and one deep
+   link answer 200 with the app's `index.html`; and `nginx -t` passes on the app's `nginx.conf`.
+4. Compare with the **current** base: the same checks on one front end built on `nginx-base:latest`, so any difference is
+   the base's.
+5. The one-line diff for nginx-base's Dockerfile, and a second for its workflow so `:latest` is published only from `master`
+   (`latest=${{ github.ref_name == 'master' }}` or the `enable=` form), **as text in your report**, not pushed.
+
+Report in `work-lab-leila/reports/2026-10-23-4.md`; one line on #2119.
+
 ## Batch 14 (workspace: #2111, the fixes, as three branches; 23 October 2026, 6:55 AM Central, from `home`)
 
 **Director: home.** Questions under **Questions for the director (home)**. **Expected: about 2 hours in all**, one task at
