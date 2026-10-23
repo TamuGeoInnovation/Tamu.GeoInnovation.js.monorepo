@@ -131,6 +131,10 @@ written for the terminal CLI). Spend for the day shows in TAMUS AI Chat's own us
   and never queues what a listener is already running.
 - Applies the same rule to itself: work a listener is better placed for goes into that listener's batch, never
   done by the director on the side.
+- **Keeps every listener at least two batches ahead** (the maintainer, 23 October 2026, after finding the lab idle twice while a
+  director waited on his answers). When a batch needs a decision, the director writes it on its own recommendation and the listener builds
+  it as a branch; nothing merges without the maintainer, so a different answer only sets that branch aside. The maintainer should never
+  have to notice an idle listener.
 - **Sends work to an idle listener whenever one can do it** (the maintainer's rule, 23 October 2026). Before running
   anything heavy itself - a build, a check, a capture, a test run, a real run of a script - it reads every listener's
   `STATUS.md` and, if one is idle and has what the work needs (its **What this is**), writes the work into that

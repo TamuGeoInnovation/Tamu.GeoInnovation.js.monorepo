@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 34.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 37.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,78 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 34 (security: #2117 part 1 - npm out of the API images; a code job and a branch; 23 October 2026, 12:55 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 40 minutes.** Your batch 31 report's question 2, decided by the maintainer: **yes**.
+
+The last accepted image findings (`brace-expansion`, `http-cache-semantics`, `undici`) are in the npm that ships inside
+`node:24.22.1-alpine`, and the APIs only run `node main.js`. So remove npm from the **final stage** of the four API Dockerfiles
+(`gisday-nest`, `geoservices-nest`, `mailroom-nest`, `mailroom-helper-nest`). **Leave #2117's package work out of this branch**: it is batch 35.
+
+1. From `origin/development` (`80687f29d` or later): `git worktree add C:/TAMU/wt-2117-npm -b chore/2117-no-npm-in-api-images origin/development`.
+2. In each of the four `apps/<app>/src/Dockerfile`, in the `node:24.22.1-alpine` stage, after `WORKDIR /app`:
+   `RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack`
+   with a one-line comment above it: `# The APIs run node only; npm in the base image carried every remaining finding in these images (#2117).`
+   If `corepack` is not in the image, drop it from the line rather than leave a no-op.
+3. Build each API for production (as in batch 31, with `--skip-nx-cache`), copy the root package files in as publish.yml does today
+   (`cp package.json package-lock.json dist/apps/<app>/`), then `docker build -t local/nonpm-<app> dist/apps/<app>` for all four.
+4. For each image: `docker run --rm --entrypoint sh local/nonpm-<app> -c "node -v; ls /usr/local/bin; ls /usr/local/lib/node_modules 2>/dev/null"`
+   (expected: node v24.22.1, no npm or npx), then start it with no settings for up to 20 seconds as in batch 31, step 4: it must fail on
+   configuration or a connection, **not** on a missing module. For `gisday-nest`, also the real start against a throwaway SQL Server, as in
+   batch 12: `GET /api/seasons/active` 200, an unauthenticated write 401. Remove the throwaway database afterwards.
+5. Trivy (`aquasec/trivy:0.76.1`, `--scanners vuln --severity CRITICAL,HIGH --quiet`) on each `local/nonpm-<app>` and on
+   `ghcr.io/tamugeoinnovation/<app>:stable`: totals side by side, and whether the three packages are gone.
+6. Commit (`chore(workspace): Remove npm from the API images' runtime stage`, a body saying what and why, `Part of #2117`, the
+   `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` line), run `scripts/check-in-volume.sh chore/2117-no-npm-in-api-images`, and
+   report its `Successfully ran target` / `failed` lines **and whether it ran any task** (a Dockerfile-only change may run none: say so; then
+   steps 4 and 5 are the proof).
+7. Push to the fork if steps 4 and 5 passed for all four. Report the head commit. Clean up images and containers.
+
+## Batch 35 (security: #2117 part 2 - each API image installs only its own packages, at the root lock's versions; a code job; 23 October 2026, 12:55 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 34.** **Expected: about 60 minutes.** Your batch 31 report's question 1, decided by the maintainer:
+**(c)**: keep the root lock's exact versions, and prune to what each API uses. **Do not report anything to Nx** (decided: no).
+
+Start from your batch 31 work (`C:/TAMU/wt-2117`, local commit `7c25ba6a0`): rebase it on `origin/development`, or redo it on a fresh
+branch `chore/2117-api-own-deps` from `origin/development`, whichever is cleaner. Keep `generatePackageJson: true` (so the build writes
+each API's own `package.json`), but **do not use the lock Nx generates** (it is wrong for three of four apps).
+
+**The goal:** each API image ends with `node_modules` holding only what its generated `package.json` needs, **at the versions in the root
+`package-lock.json`**, installed reproducibly (no floating versions). How you get there is yours to work out; one approach to try first:
+- have the build keep the root files beside the app as `root-package.json` and `root-package-lock.json` (publish.yml's copy step, renamed);
+- in the image's builder stage: `npm ci --omit=dev` from the root pair, then make the generated `package.json` the image's
+  `package.json` and run `npm prune --omit=dev`, and check what remains.
+If that does not prune correctly, say why and try one other approach at most (for example `npm install --omit=dev` with the root lock copied
+in as `package-lock.json`, which npm reuses for versions). Report what you tried and what happened, in order.
+
+**Proof, as in batch 31 and batch 34:** all four build and start (failing only on configuration), `gisday-nest` against a throwaway SQL
+Server (200 and 401), each image's `node_modules` count and size against `:stable`, and **for each package left, its version matches the
+root lock** (a short script comparing `node_modules/*/package.json` versions with the root lock's `node_modules/<name>` entries; report any
+mismatch). Then commit (`Closes #2117`), run `scripts/check-in-volume.sh`, and push only if everything passed. If batch 34 merged first,
+build on it.
+
+## Batch 36 (security: #2168, Nx 23 to 24 - a code job and a branch; 23 October 2026, 12:55 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 35**, or **before it** if batch 35 is waiting on anything. **Expected: about 90 minutes.**
+
+[#2168](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2168): the first step of #1218. Eleven packages are on
+Nx 23.3.0 against 24.0.0 (your batch 27 inventory).
+
+1. `git worktree add C:/TAMU/wt-2168 -b chore/2168-nx-24 origin/development` (`80687f29d` or later). In Docker with its own volume
+   (`node:24.22.1`): `npm ci`, then `node node_modules/nx/dist/bin/nx.js migrate 24` (report the exact version it resolves to),
+   `npm install` (this updates the lock, which is expected here), and `node node_modules/nx/dist/bin/nx.js migrate --run-migrations` if
+   `migrations.json` was written. Report every migration it ran, and commit the result **with `migrations.json` removed**.
+2. Read Nx 24's breaking changes (its release notes and migration guide) for `@nx/webpack` options, `@nx/jest` helpers, `@nx/angular`, the
+   daemon, and `NX_WORKSPACE_DATA_DIRECTORY`. List anything that touches this repository, with the file it touches.
+3. **Proof:** `scripts/check-in-volume.sh chore/2168-nx-24` (full `affected`; a lock change means a clean `npm ci`), every
+   `Successfully ran target` / `failed` line, and each failure's first error. Then the AggieMap dev server: start it from this worktree as
+   CLAUDE.md's "Keep a dev server's install current" says (on a port other than 4200 if 4200 is busy, with its own `node_modules` volume),
+   load it, and report that the map page answers and the first compile finished without errors.
+4. **Fix what breaks** if it is the upgrade's doing and the fix is small (a renamed option, a moved import). Report each fix. If a fix is
+   not small, stop and report it as a question instead.
+5. Commit (`chore(workspace): Upgrade Nx from 23 to 24`, a body listing the migrations and fixes, `Closes #2168`, the Co-Authored-By
+   line). Push to the fork only if step 3 passed.
 
 ## Batch 33 (security: #2155 again, after the gisday-nest fix - the full check; 23 October 2026, 12:15 PM Central, from `work (security)`)
 
