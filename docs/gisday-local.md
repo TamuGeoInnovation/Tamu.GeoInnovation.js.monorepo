@@ -8,7 +8,7 @@ front end's dev server (`gisday-angular`). Part of #1511.
 | `gisday-db` | SQL Server 2022 Developer, data in volume `gisday-db-data` | 14330 |
 | `gisday-redis` | Redis 7, the API's job queue | none outside Docker |
 | `gisday-api` | `node dist/apps/gisday-nest/main.js` on Node 24.22.1 | 3333 |
-| `gisday-dev` | `nx serve gisday-angular --configuration=local` on Node 24.22.1 | 4201, or 4202 with `--site` |
+| `gisday-dev` | `nx serve gisday-angular --configuration=local` on Node 24.22.1, or nginx with `web --static` ([below](#a-build-instead-of-the-dev-server)) | 4201, or 4202 with `--site` |
 | `gisday-site` | Only with `web --site <key>`: serves the dev server as that site ([below](#another-organizations-site)) | 4201 |
 
 All of them share the Docker network `gisday-local`, so they reach each other by container name. The
@@ -72,6 +72,22 @@ dev server. `gisday-site` replaces the site placeholder in the scripts the dev s
 deployed container does when it starts. Sign-in works only on 4201, the one address the local Auth0
 application accepts. The API is still the one `api` started, which serves every feature, and the data
 is the local database's.
+
+### A build instead of the dev server
+
+When the dev server will not finish its first page load ([below](#things-that-look-broken)), build the
+front end once and serve the build instead (#2057):
+
+```bash
+scripts/gisday-local.sh web --static                # or: web --static --site ucgis
+```
+
+It builds `gisday-angular --configuration local` into `dist/apps/gisday-angular`, then serves that
+folder from `nginx:alpine` as `gisday-dev`, on the same ports as the dev server, with `--site` working
+as above. `scripts/gisday-local-static.conf` sends `/___ANGULAR_API_URL___/...` to `gisday-api`, as
+`proxy.local.json` does for the dev server, so start `api` first: nginx will not start if it cannot
+find `gisday-api`. **Nothing recompiles.** After an edit, run `web --static` again; it rebuilds and
+replaces `gisday-dev` (and `gisday-site`).
 
 `migrate` shows, generates, runs and reverts schema migrations on the local database;
 [gisday-migrations.md](gisday-migrations.md) has the process for changing the schema.
@@ -203,6 +219,8 @@ credentials only, never a production secret.
   file-system threads busy, and the dependency optimizer waits behind them for good. `scripts/gisday-local.sh web`
   sets it; a dev server started by hand needs `-e UV_THREADPOOL_SIZE=64` too. Remove the container and
   `.angular/cache`, then start it again (#1955). `bash scripts/gisday-local.test.sh` checks the script still sets it.
+  If it still stalls there, as it has on Node 24 with the thread pool set, use
+  [`web --static`](#a-build-instead-of-the-dev-server), which serves a build and needs no dev server (#2057).
 - `Recursive task invocation detected`, or a start that prints `Waiting for <task> in another nx process`
   and never continues: an Nx container in this checkout was killed in the middle of a task (`docker rm -f`,
   `docker kill`, Docker itself stopping). Nx writes each running task into
