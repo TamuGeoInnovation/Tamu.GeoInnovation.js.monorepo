@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 64.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 66.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -25,6 +25,49 @@ report under **Questions for the director**, with options and a recommendation �
 > **HOLD LIFTED, 4:35 PM Central, from `work (security)` (the maintainer: CI is clear).** Push now, to the fork only: **`security/check-2184`** (batch 58) and **`chore/2168-webpack-inferred`** (batch 50, with `webpack-cli` accepted: your batch 50 question 1, answer (a)). Neither has a pull request, so neither starts a CI build. Then take batch 57 (PRs 2182 and 2186 have merged, so it can run). Report the two heads.
 
 > **6:45 PM Central, from `work (security)`: batch 62 (Nx 24 as a branch) is waiting and has not started. Start it now.** Then batch 63.
+
+## Batch 64 (security: #2212 - an Azure Pipelines Linux agent in a container on this machine, built and proven, NOT registered; a code job and a branch; 23 October 2026, 7:00 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 90 minutes.** The maintainer's decision (#2212): the Monorepo pipeline gets self-hosted Linux build
+capacity, **starting on this machine**, as an agent in a container. Azure today runs one PR build at a time on three hosted agents, 15–25
+minutes each; your `check-in-volume.sh` runs the same work here in 3–5 minutes. **You build and prove the image; you do not register it** (that
+needs a token only the maintainer creates, later). **Never put a token, password or key in any file, commit, report or command line.**
+
+**Guard rails, all required** (this repository is public; every PR comes from a fork, and its code runs on the agent):
+- the agent runs **in a container**, never on the host: **no bind mount of any host folder, no Docker socket, no host network, no `--privileged`**,
+  no SSH keys, no `gh` login, nothing from `C:\Users`;
+- the container runs the agent with **`--once`** (one job, then exit) and is started fresh for each job by a supervisor loop, so nothing a job
+  leaves behind reaches the next;
+- its memory and CPU are capped (`--memory 24g --cpus 16`) so it cannot starve the lab's own work.
+
+1. A branch `ci/2212-lab-build-agent` from `origin/development`, and a folder **`tools/build-agent/`** with:
+   - `Dockerfile`: from `ubuntu:24.04`; `git`, `curl`, `jq`, `ca-certificates`, Node **24.22.1** (the same as the repository's images), and
+     the **Azure Pipelines Linux agent** (latest v4, the documented "Run a self-hosted agent in Docker" layout: download at build time, a
+     non-root user). No secrets in the image.
+   - `start.sh`: Microsoft's documented start script, adapted: reads `AZP_URL`, `AZP_TOKEN` (from the environment only), `AZP_POOL`
+     (default `Linux-Build`), `AZP_AGENT_NAME`; configures with `--unattended --replace`; **runs with `--once`**; unsets `AZP_TOKEN` from the
+     environment before the job runs (`AZP_TOKEN_FILE` approach as Microsoft's sample does), and deregisters on exit.
+   - `run-agent.ps1`: the **supervisor** the maintainer starts on the lab: asks for the token with a hidden `Read-Host -AsSecureString`
+     (never on the command line), then loops: `docker run --rm` the image with the caps above and the token passed via an env var only to
+     that container, wait for it to exit, start the next. A clean stop on Ctrl+C.
+   - `README.md`: what it is, the guard rails and why, how to build the image, how the maintainer starts it, how to stop it, and how to see it
+     in Azure DevOps.
+2. **Prove the image runs this pipeline's work, without Azure:** `docker build`, then inside a container of it (same caps, no mounts): `git
+   clone https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo.git`, check out `development`, `npm ci`, and run what the
+   pipeline's Lint and Build stages run (read `azure-pipelines.yml` and `templates/`; for a full run use `nx run-many -t lint,build` for the
+   projects the pipeline builds, excluding `EXCLUDED_PROJECTS`). Report the time for each stage and the exit codes. Then check `start.sh` without a
+   token: it must refuse with a clear message and no traceback.
+3. Confirm the guard rails from inside a running container: no `/var/run/docker.sock`, no host paths mounted (`mount | grep -v overlay`),
+   running as the non-root user, memory limit visible in `/sys/fs/cgroup/memory.max`.
+4. `scripts/check-in-volume.sh ci/2212-lab-build-agent` (expect few or no tasks: these files belong to no project; say so). Commit (`ci(workspace):
+   A containerised Linux build agent for the lab`, a body, `Part of #2212`, the Co-Authored-By line). Push to the fork. **No PR.**
+
+## Batch 65 (security: refresh the Nx 24 branch once the webpack conversion's PR has merged; 23 October 2026, 7:00 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start only once `git log origin/development --oneline -10` shows "Move the API builds to Nx's inferred webpack targets".** Until then
+skip it. Your batch 63 question 1: **yes**. In `chore/2168-nx-24`: `git merge origin/development`, resolve `nx.json` with the same three-way script,
+check `package-lock.json` keeps Nx 24's entries and `webpack-cli` (key by key against your batch 62 result), `scripts/check-in-volume.sh
+chore/2168-nx-24`, and push. **No PR.**
 
 ## Batch 63 (security: the webpack conversion brought up to date after PR 2184 merged, and re-checked; pushed to the fork, no PR; 23 October 2026, 6:45 PM Central, from `work (security)`)
 
