@@ -24,7 +24,9 @@ Last written **8:43 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 9:13 AM Central.**
+
+**Batch 18, security: the pre-push check for #2136, the nginx-base pin** (director: work, its security chat). Started 8:43 AM Central, 23 October. `scripts/check-in-volume.sh fix/2136-pin-nginx-base` for the four front ends. Nothing pushed.
 
 ## Finished
 
