@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterc
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { OrganizationService } from './organization.service';
 import { Organization } from '../entities/all.entity';
@@ -45,7 +46,7 @@ export class OrganizationController {
   @Permissions(['create:organizations'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { limits: { ...DEFAULT_UPLOAD_LIMITS } }))
   public create(@Body() creteOrgDto?: Partial<Organization>, @UploadedFile() file?: Express.Multer.File) {
     return this.orgService.createOrganization(creteOrgDto, file);
   }
@@ -53,7 +54,7 @@ export class OrganizationController {
   @Permissions(['update:organizations'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { limits: { ...DEFAULT_UPLOAD_LIMITS } }))
   public update(
     @Param('guid') guid: string,
     @Body() updateOrgDto: Partial<Organization>,
