@@ -1,4 +1,4 @@
-FROM ghcr.io/tamugeoinnovation/nginx-base:latest
+FROM ghcr.io/tamugeoinnovation/nginx-base:sha-1a94632
 
 COPY . /usr/share/nginx/html
 COPY .nginx/nginx.conf /etc/nginx/conf.d/default.conf
