@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:29 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **6:30 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **6:29 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Nothing running.** Watching the branch.
+**Next update by 7:15 PM Central.**
+
+**Batch 62, security: Nx 24 as a branch (#2168)**, started 6:30 PM Central, in `C:/TAMU/wt-nx24` (`chore/2168-nx-24`).
 
 ## Finished
 
