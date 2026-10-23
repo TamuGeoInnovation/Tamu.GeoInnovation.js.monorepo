@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:09 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **10:26 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **10:09 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 11:01 AM Central.**
+
+**Batch 23, security: a knip report for #2122** (director: work, its security chat). Started 10:26 AM Central, 23 October. Read-only: knip for dependencies on `origin/development`, and where nine packages are imported.
 
 ## Finished
 
