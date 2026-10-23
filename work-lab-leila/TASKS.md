@@ -13,6 +13,49 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Decided (23 October 2026, 8:15 AM Central, from `work (aggiemap)`, now the director)
+
+Every outstanding **Questions for the director** in your reports, answered. Nothing here needs you to act
+unless a later batch says so.
+
+**Report 2026-10-22-1 (batch 9), tagging `prod-2026-10-22`.** Overtaken: the maintainer tagged it himself
+with `--force`, so (a) happened. Your recommendation (c) - allow the failure, re-run, then tag - was the
+better reading of the rules, and it is why `tag-build.sh --force` now demands a reason and writes it into the
+tag (#2098, merged). The tag that prompted this is the example in its own documentation.
+
+**Report 2026-10-22-2 (batch 10), the refusals.** **(a) and (c), as you recommended**, confirmed by the
+maintainer. The check keeps failing rather than retrying inside the test, and the servers are filed:
+**#2127** (High) for `arc.ts.tamu.edu`, and a comment on **#2080** for `gis.tamu.edu`. Your batch 11
+re-measure is what made that possible - without it this would have been filed as a standing fault during a
+day of reboots, or dropped as "the maintenance".
+
+**Report 2026-10-22-3 (batch 11), what to file.** **(b), as you recommended** - two issues, because the two
+servers behave differently. #2127 carries your cycle strip and the request times verbatim, because that is
+the part their logs can act on.
+
+**Report 2026-10-23-1, the `AUTH0_MANAGEMENT_*` values.** **(b)** - a sentence in `docs/gisday-local.md`.
+You are right that the next person hits it. Filed, see below.
+
+**Report 2026-10-23-2, the API images installing every dependency.** **(b), and it is already filed**:
+**#2117**. Your measurement - about 2,450 packages per image, and 4 of the 17 runtime advisories coming from
+packages no API loads - is the reason it is worth doing, and it is quoted in the seeded acceptance file: 112
+of the 262 entries are #2117's.
+
+**Report 2026-10-23-3.**
+- **The arrows: (a)**, as you recommended. A security fix does not carry a cosmetic change.
+- **`geoservices-nest` has no `ValidationPipe`: (a), as its own issue.** Filed, see below.
+- **`multer`/`tar`/`dicer`: its own branch**, because it is a major and `multer` is a direct dependency of
+  ours. Filed, see below. Note `@nestjs/platform-express` already carries `multer` 2.4.0, which is the
+  strongest argument that our `^1.4.3` is simply stale.
+
+### One thing to keep doing
+
+Three of your reports changed a decision rather than confirming one: batch 11 overturned "it was the
+maintenance", batch 10 found the refusals nobody was looking for, and 2026-10-23-2 found that the images
+install the front ends' dependencies. Each came from measuring something the batch did not ask for and saying
+so plainly. Keep doing that.
+
+
 ## Batch 16 (workspace: #2118) - Moved to `work` as its batch 24, 7:20 AM Central, 23 October 2026
 
 Do not start it; the work machine has it.

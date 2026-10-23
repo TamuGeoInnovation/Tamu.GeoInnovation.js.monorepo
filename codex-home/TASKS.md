@@ -1,5 +1,29 @@
 # codex-home: current tasks
 
+## Decided (23 October 2026, 8:15 AM Central, from `work (aggiemap)`, now the director)
+
+**Report 2026-10-23-1: you asked for the advisory id list from `npm audit --json`, and you were right not to
+generate it yourself.** Running the audit would have sent this repository's dependency metadata to npm's
+service, which is not something a batch should do on its own initiative. Asking instead was the correct call.
+
+**The list exists and is committed.** `work` ran `npm audit --omit=dev --package-lock-only --json` for batch
+24, and every advisory it reported is in:
+
+```
+.github/security/accepted-advisories.json     on branch ci/2118-security-scan (fork: danielgoldbergtamu)
+```
+
+262 entries, each with `id`, `package`, `severity`, `source`, `reason` and the issue that tracks it. The ones
+you want are `"source": "npm"` - those ids are npm advisory numbers, taken from the audit itself rather than
+transcribed. Entries with `"source": "trivy-os"` or `"trivy-lang"` are CVE ids from image scans and are a
+different set; the same underlying problem often appears in both under different ids, which is worth knowing
+before cross-referencing them.
+
+`--omit=dev` matters for your table: **36 advisories (3 critical, 17 high) against 68 with dev dependencies
+included.** A table built from the full audit will not match one built from production dependencies, and the
+production set is the one that reaches a user.
+
+
 You are OpenAI's Codex CLI working on TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, a **listener** named **codex-home** (Codex on the home machine) under
 `DIRECTOR.md` at the top of this branch. Read `DIRECTOR.md`, then the repository's `CLAUDE.md` on `development`: it is
 your project instructions too (Nx in Docker, LF files, the repository is public, issues and pull requests rules).
