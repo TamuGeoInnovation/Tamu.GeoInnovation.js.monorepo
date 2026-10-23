@@ -2,7 +2,7 @@ variables:
   # ues-operations-angular is built so dev's artifact carries it (#1905); the AggieMap release copies only
   # dist/apps/aggiemap-angular, so it is not deployed. ues-operations-nest needs configuration kept outside
   # the repository (src/environments/secrets, oidc-client-config) and cannot build here.
-  EXCLUDED_PROJECTS: 'geoservices-angular,geoservices-nest,gisday-angular,gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-nest,gisday-nest,mailroom-angular,mailroom-helper-nest,mailroom-nest,oidc-admin-angular,oidc-admin-nest,oidc-provider-nest,signage-angular,ues-operations-nest,aggiemap-ngx-core'
+  EXCLUDED_PROJECTS: 'geoservices-angular,geoservices-nest,gisday-angular,gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-nest,gisday-nest,mailroom-angular,mailroom-helper-nest,mailroom-nest,signage-angular,ues-operations-nest,aggiemap-ngx-core'
   IS_DEVELOPMENT: $[eq(variables['Build.SourceBranchName'], 'development')]
   IS_MASTER: $[eq(variables['Build.SourceBranchName'], 'master')]
   # Branches whose builds are deployed. Their artifacts must be complete, so they build

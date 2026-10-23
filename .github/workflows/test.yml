@@ -8,7 +8,7 @@ on:
         type: string
 
 env:
-  EXCLUDED_PROJECTS: 'gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-nest,oidc-admin-angular,oidc-admin-nest,oidc-provider-nest,signage-angular'
+  EXCLUDED_PROJECTS: 'gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-nest,signage-angular'
 
 jobs:
   test:
