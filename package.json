@@ -149,7 +149,6 @@
     "caniuse-lite": "^1.0.30001154",
     "eslint": "10.13.0",
     "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-node": "^11.1.0",
     "jest": "30.5.2",
     "jest-environment-jsdom": "30.5.2",
     "jest-junit": "^17.0.0",
