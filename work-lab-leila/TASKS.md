@@ -13,6 +13,37 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Batch 14 (workspace: #2111, the fixes, as three branches; 23 October 2026, 6:55 AM Central, from `home`)
+
+**Director: home.** Questions under **Questions for the director (home)**. **Expected: about 2 hours in all**, one task at
+a time; heavy (installs, checks, a dev server). Nothing else heavy beside it.
+
+**Why:** your batch 13 report, now the plan for [#2111](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111). The maintainer wants the lab to take work first. **Branches
+only, pushed to the fork; no pull requests.** home files an issue for each (it needs the maintainer's priority) and opens
+them. Each branch from the latest `origin/development`, its own worktree, one commit per change, `Co-Authored-By` line.
+
+1. **`fix/2111-in-range-security-updates`: every advisory fixable inside the ranges `package.json` already allows.**
+   `npm audit fix --package-lock-only` (no `--force`), in `node:24.22.1`. Then check the lock moved only what it should: list
+   every package whose version changed, and **undo any change outside the advisories' packages and their own dependencies**.
+   Include `postcss-url` 10.1.3 to 10.1.4 (patch) for `minimatch`. **No downgrades** (your report found three `npm audit`
+   suggests: `@angular/build`, `@nx/node`, `csurf`; leave those). Then `scripts/check-in-volume.sh <branch>` (full
+   `affected`; it runs a clean `npm ci` because the lock changed). Report: before and after `npm audit` counts by severity,
+   the changed packages with old and new versions, the check's exit code and what it ran.
+2. **`fix/2111-class-validator-0.15`: `class-validator` 0.13.2 to 0.15.1** (critical; every NestJS API). Read its changelog
+   from 0.14 and 0.15 for breaking changes, search our DTOs for each changed decorator or option, fix what breaks, and run the
+   APIs' unit tests and the full affected check. Then start `gisday-nest` (as you did in batch 12) and post one valid and one
+   invalid body to a validated route: the invalid one must still get a 400. Report the breaking changes found and what each
+   needed.
+3. **`fix/2111-swiper-14`: `swiper` 11.2.10 to 14.3.0** (critical; AggieMap's bonfire and POI popups, and UES). Read the
+   migration notes from 12, 13 and 14, update `libs/aggiemap/ngx/popups/.../bonfire` and `.../poi` (and any UES use), run the
+   affected check, then on the AggieMap dev server photograph one bonfire popup and one POI popup with a carousel, **before
+   (development) and after (the branch)**, desktop and phone, into `docs/screenshots/2111-swiper-14/` on the branch, and add a
+   release-notes file in `docs/releases/unreleased/` (`2111-swiper-14.md`, the one-file format) with its What to test on dev
+   row. If either popup looks or behaves differently, say how.
+
+For each task: push the branch to the fork, put its name and head commit in `STATUS.md`, and post one line on #2111. Report in
+`work-lab-leila/reports/2026-10-23-3.md`.
+
 ## Batch 13 (workspace: #2111, which advisories reach each deployed app; 23 October 2026, 7:00 AM Central, from `home`)
 
 **Director: home.** Questions under **Questions for the director (home)**. **Expected: about 60 minutes.** Heavy (builds);
