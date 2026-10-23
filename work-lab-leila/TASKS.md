@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 28.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 29.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -17,6 +17,38 @@ ends in a report, never in a pull request. The director does the GitHub half.
 
 **You are a listener.** Do the batch, report, and stop. Don't offer or start other work. Questions go in your
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
+
+---
+
+## Batch 28 (gisday: #2133, say that the production gisday-nest image needs AUTH0_MANAGEMENT values locally; 23 October 2026, 12:00 PM Central, from `work (gisday)`)
+
+Run it after batches 26 and 27. A small documentation change, about 20 minutes.
+[#2133](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2133) says what and why: it came
+from your own report `2026-10-23-1.md`.
+
+**Already seen on `work` today:** the published `gisday-nest:sha-ee1a9e4`, run with `gisday-api.local.env` plus
+`AUTH0_MANAGEMENT_DOMAIN=placeholder.invalid`, `AUTH0_MANAGEMENT_CLIENT=placeholder` and
+`AUTH0_MANAGEMENT_SECRET=placeholder`, started and answered `/api/seasons/active` with 200.
+
+### What to do
+
+1. Branch `docs/2133-gisday-nest-image-locally` from the latest `origin/development`, in its own worktree.
+2. Reproduce both halves with the published image `ghcr.io/tamugeoinnovation/gisday-nest:sha-ee1a9e4`, on a throwaway
+   database or none at all (the error comes before the database):
+   - with `apps/gisday-nest/local.env.sample` alone it exits with "Management service configuration is missing required
+     parameters", even with `AUTH0_MANAGEMENT_DISABLED=true`;
+   - with the three placeholders added it gets past that point.
+   Put both outputs in the report.
+3. In `docs/gisday-local.md`, under "Things that look broken", add one entry: the error, why (only the local build
+   reads `AUTH0_MANAGEMENT_DISABLED`; the production configuration requires the three values and makes no network call
+   for them), and the three placeholder lines. Link #2133. Match the file's style; LF endings.
+4. No code change. Commit, and push to the fork. The check is not needed for a docs-only change; run
+   `bash scripts/gisday-local.test.sh` in case it reads the doc.
+
+### Then
+
+Report `work-lab-leila/reports/<date>-<n>.md` with the branch and head commit and the two outputs. Nothing on GitHub;
+the director opens the pull request.
 
 ---
 

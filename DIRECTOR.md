@@ -100,7 +100,7 @@ place of his own Claude account. He wants it spent first. Decided on 23 October:
 
   | Machine | On the TAMU key since |
   | --- | --- |
-  | work-lab-leila | not yet (after batch 18) |
+  | work-lab-leila | tried 23 October (on the CLI): the $20 was used up by 9:28 AM Central; back on the maintainer's account |
 
 **The key never goes in this branch, an issue, a report or a chat.** It lives only in that machine's own
 `%USERPROFILE%\.claude\settings.json`, typed in by the maintainer at a hidden prompt.
