@@ -68,6 +68,13 @@ export interface GisdaySite {
    * maroon, with the university's lockup in the header, as AggieMap has (#2012).
    */
   brand?: 'tamu';
+
+  /**
+   * The organizations whose sessions this site lists, by the name of their place, such as "Texas A&M University
+   * GIS Day(s)". An event belongs to an organization through its location's place. A site with none lists every
+   * organization's sessions (#2142).
+   */
+  sessionsFrom?: Array<string>;
 }
 
 export const GISDAY_SITES = {
@@ -91,7 +98,10 @@ export const GISDAY_SITES = {
     off: [],
     contact: 'gis@tamu.edu',
     hosts: ['gisday.tamu.edu', 'tamu.txgisday.org'],
-    brand: 'tamu'
+    brand: 'tamu',
+    // It shares txgisday.org's database, where every organization's sessions can be entered, so it lists only
+    // Texas A&M's (#2142).
+    sessionsFrom: ['Texas A&M University GIS Day(s)']
   },
   // gisday.ucgis.org, for UCGIS member universities (#1837). Its images are UCGIS's own, from its websites; the
   // banner's white surround was made transparent so it sits on the homepage's background.
@@ -122,4 +132,20 @@ export function gisdaySite(key?: string, host?: string): GisdaySite {
 
 export function siteHas(site: GisdaySite, feature: GisdayFeature): boolean {
   return !site.off.includes(feature);
+}
+
+/**
+ * The guids of the places, among those given, whose sessions the site lists, or null when it lists every
+ * organization's (#2142). Names are matched ignoring case and surrounding spaces.
+ */
+export function siteSessionPlaces(site: GisdaySite, places: Array<{ guid?: string; name?: string }>): Array<string> | null {
+  if (!site.sessionsFrom) {
+    return null;
+  }
+
+  const names = site.sessionsFrom.map((name) => name.trim().toLowerCase());
+
+  return (places ?? [])
+    .filter((place) => place?.guid && place.name && names.includes(place.name.trim().toLowerCase()))
+    .map((place) => place.guid as string);
 }

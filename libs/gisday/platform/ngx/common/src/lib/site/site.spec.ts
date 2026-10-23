@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, UrlTree } from '@angular/router';
 
-import { GisdaySite, gisdaySite } from '@tamu-gisc/gisday/common';
+import { GisdaySite, gisdaySite, siteSessionPlaces } from '@tamu-gisc/gisday/common';
 
 import { GISDAY_SITE, SiteHasPipe, siteFeatureGuard } from './site';
 
@@ -54,6 +54,32 @@ describe('gisdaySite', () => {
     expect(gisdaySite('tamu').off).toEqual([]);
     expect(gisdaySite('txgisday').off).toEqual([]);
     expect(gisdaySite('ucgis').off).toEqual(expect.arrayContaining(['tamu', 'tamuLinks']));
+  });
+});
+
+describe('siteSessionPlaces', () => {
+  const places = [
+    { guid: 'tamu-place', name: 'Texas A&M University GIS Day(s)' },
+    { guid: 'txst-place', name: 'Texas State University GIS Day' },
+    { guid: 'atx-place', name: 'ATX GIS Day' }
+  ];
+
+  /** #2142. gisday.tamu.edu shares txgisday.org's database, which can hold every organization's sessions. */
+  it("is only Texas A&M's place on Texas A&M's site", () => {
+    expect(siteSessionPlaces(gisdaySite('tamu'), places)).toEqual(['tamu-place']);
+  });
+
+  it('matches the name ignoring case and surrounding spaces', () => {
+    expect(siteSessionPlaces(gisdaySite('tamu'), [{ guid: 'p', name: '  texas a&m university gis day(s) ' }])).toEqual(['p']);
+  });
+
+  it('is every place, as null, on txgisday.org and UCGIS', () => {
+    expect(siteSessionPlaces(gisdaySite('txgisday'), places)).toBeNull();
+    expect(siteSessionPlaces(gisdaySite('ucgis'), places)).toBeNull();
+  });
+
+  it("is none, not every place, when a season has no place by Texas A&M's name", () => {
+    expect(siteSessionPlaces(gisdaySite('tamu'), places.slice(1))).toEqual([]);
   });
 });
 
