@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 29.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 30.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,25 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 29 (security: #2158, the retired IdP removed - the full check; 23 October 2026, 12:00 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 27.**
+**Expected: about 10 minutes.** From Git Bash, in order. Change nothing.
+
+Removes three apps (`oidc-provider-nest`, `oidc-admin-nest`, `oidc-admin-angular`), the libraries `libs/oidc/provider`, `libs/oidc/admin`
+and `libs/oidc/ngx`, and ten packages; the lock loses 72 entries and changes no version. It sits on top of PR 2156.
+
+1. `git fetch fork security/check-2158`. `git rev-parse fork/security/check-2158` must print **`3250d965e3cb1140f8547487427090088135afef`**. If not, stop and report it.
+2. `git worktree add C:/TAMU/wt-check-2158 fork/security/check-2158 --detach`; `cd C:/TAMU/wt-check-2158`; `git switch -c security/check-2158`.
+3. `scripts/check-in-volume.sh security/check-2158 > ../check-2158.out 2>&1; echo "exit=$?"` (full `affected`, clean `npm ci`).
+4. Report the exit code, every log line with `Successfully ran target` or `failed`, and each failure's project, target and first error.
+   **Quote in full** any error naming `@tamu-gisc/oidc/provider`, `@tamu-gisc/oidc/admin`, `@tamu-gisc/oidc/ngx`, or one of the removed packages
+   (`oidc-provider`, `node-jose`, `angular-auth-oidc-client`, `body-parser`, `cookie-parser`, `express-rate-limit`, `helmet`, `yargs`).
+   If the only failure is a test timing out, rerun just that project once.
+5. `cd C:/TAMU`; `git worktree remove C:/TAMU/wt-check-2158 --force`; `git branch -D security/check-2158`.
+
+Nothing else: no pushes, no pull request, no comments. Report in `work-lab-leila/reports/` and say "work-lab-leila: finished batch 29".
 
 ## Batch 28 (gisday: #2133, say that the production gisday-nest image needs AUTH0_MANAGEMENT values locally; 23 October 2026, 12:00 PM Central, from `work (gisday)`)
 
