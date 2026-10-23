@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:09 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **2:12 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,9 +32,11 @@ Last written **2:09 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 2:49 PM Central.**
 
-**Batch 46, security: the other four `"force": true` lint targets removed**, started 2:09 PM Central, in `C:/TAMU/wt-eslint10`. Then 47 and 48 (lint and Jest to inferred targets on Nx 23).
+**Batch 47, security: lint to inferred targets on Nx 23** (a code job and a branch), started 2:11 PM Central, in `C:/TAMU/wt-2168-lint23` (`chore/2168-lint-inferred`, from `development`). Then 48 (Jest).
 
 ## Finished
+
+- **Batch 46, security: the other four `"force": true` lint targets removed - pushed** (2:09 to 2:11 PM, 23 October): `gisday-nest` and the three `gisday-platform-ngx-*`; no `project.json` sets `force` now. Linted through Nx: 0 errors in all four. Full check exit 0 (lint 104 / test 100 / build 14, no cache hits). **`chore/1218-eslint-10` at `0db6432bc`.** Report `work-lab-leila/reports/2026-10-23-35.md`.
 
 - **Batch 45, security: ESLint 10 and its five fixes - pushed** (2:00 to 2:05 PM, 23 October): `eslint` 10.13.0 (kept exact) and `@eslint/js` ^10.0.1, no ERESOLVE, lock change ESLint's own tree only. Four `preserve-caught-error` fixes (`{ cause }`) and one `no-useless-assignment`. **`gisday-platform-data-api`'s lint had `"force": true`**, so errors never failed it; removed (four more GIS Day projects carry it, left for the director). Lint 104 projects, 0 errors; full check exit 0 (lint 104 / test 100 / build 14, no cache hits). **`chore/1218-eslint-10` at `d8883d63c`** on the fork, on batch 41's branch. Report `work-lab-leila/reports/2026-10-23-34.md`.
 
@@ -186,4 +188,4 @@ Last written **2:09 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 45 (42 and 39 stopped; 40 superseded)
+Last batch done: 46 (42 and 39 stopped; 40 superseded)
