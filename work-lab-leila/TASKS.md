@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 51.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 52.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,21 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 51 (security: #1218 - remove eslint-plugin-node, registered but unused; a small code job and a branch; 23 October 2026, 2:40 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 50**, or **before it** if batch 50 is waiting on anything, or between 49 and 50 if that is quicker.
+**Expected: about 20 minutes.** Your batch 43 survey noted `eslint-plugin-node` is unmaintained since 2020. The root `eslint.config.mjs`
+imports it and registers it as `node` (line 2, line 6), but **no rule anywhere uses a `node/` rule** (`git grep` finds none). So remove it.
+
+1. `git worktree add C:/TAMU/wt-no-eslint-node -b chore/1218-drop-eslint-plugin-node fork/chore/1218-eslint-10` (on PR 2180's branch).
+2. Confirm first: `git grep -n -E "node/[a-z-]+" -- '*.mjs' '*.js' '*.json' '*.ts' ':!package-lock.json' ':!node_modules'` for rule names, and
+   any `// eslint-disable` comment naming a `node/` rule. If any is found, stop and report it.
+3. Remove the import and the `{ plugins: { node: ... } }` entry from `eslint.config.mjs`, and `eslint-plugin-node` from `package.json`.
+   `npm install --package-lock-only --ignore-scripts`; report the lock diff (expected: the plugin and what only it used).
+4. Proof: `nx run-many -t lint --skip-nx-cache` on all projects: exit 0, the same error count (0) and warning count as on the ESLint 10
+   branch. Then `scripts/check-in-volume.sh chore/1218-drop-eslint-plugin-node`. Commit (`chore(workspace): Remove eslint-plugin-node,
+   registered but never used`, a body, `Part of #1218`, the Co-Authored-By line). Push if both passed.
 
 ## Batch 50 (security: #2168 on Nx 23 - the webpack builds to inferred targets, compared build for build; a code job and a branch; 23 October 2026, 2:30 PM Central, from `work (security)`)
 
