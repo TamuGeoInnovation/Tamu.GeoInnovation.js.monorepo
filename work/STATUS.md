@@ -9,10 +9,26 @@ the director's file to correct.
 
 ## Running now
 
-**Batch 23 (workspace: #2111, Trivy on the production images).** Started **7:04 AM Central, 23 October**.
-No `kubectl`, no pushes, no deploys; scanning only. Expected about 45 minutes; next update by **7:50 AM Central**.
+Nothing. **Last batch done: 23.** Watching the branch.
 
-Last batch done: 22.
+## Batch 23 finished, 7:35 AM Central, 23 October
+
+`work/reports/2026-10-23-2.md`. Trivy 0.76.1, scanning only; nothing changed.
+
+**The Angular front ends carry 4 critical and 27 high OS findings each, and rebuilding will not fix them.**
+Both were built this week and both are **Alpine 3.16.3**, because `nginx-base:latest` is Alpine 3.16.3 and
+**was built on 11 November 2024**. Scanned on its own, the base has exactly the same 4 and 27. The base is
+the finding.
+
+**`geoservices-nest` in production runs `:latest` from 15 March 2026** - Alpine 3.21.2, 2 critical and 23
+high, all in libcrypto3/libssl3/musl/zlib. **The same service built today as `sha-35581d0` is Alpine 3.24.3
+with zero.** A deployment, not a rebuild, removes all 25. The maintainer runs rollouts; this machine does not.
+
+Every other image is clean at OS level. Two of the batch's table entries were not what production runs, so
+eight images were scanned rather than six; both sets are in the report.
+
+Three questions for the director, the third being that this is the **third `:latest` problem in two days**.
+A summary comment is on #2111.
 
 ## Batch 22 finished, 6:35 AM Central, 23 October
 
