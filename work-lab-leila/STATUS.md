@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:55 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **6:02 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **5:55 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 6:40 PM Central.**
+**Next update by 6:45 PM Central.**
 
-**Batch 60, security: body-parser 2.4.0 (GHSA-27r3-jxmh-p828)**, started 5:55 PM Central, in `C:/TAMU/wt-bodyparser`. Then 61 (Nx 24 probe), then 59 (gisday, #2205).
+**Batch 61, security: Nx 24 on top of the three conversions** (a probe, nothing pushed), started 6:02 PM Central. Then 59 (gisday, #2205).
 
 ## Finished
+
+- **Batch 60, security: body-parser 2.4.0 (GHSA-27r3-jxmh-p828) - pushed** (5:56 to 6:02 PM, 23 October): only `node_modules/express/node_modules/body-parser` re-resolved, 2.3.0 → 2.4.0, nothing else moved; production audit 8 (1 high) → 7 moderate, body-parser gone. Images: `gisday-nest` parses JSON and gzip JSON bodies (401 unauthenticated), a gzip body with trailing bytes gets a clean 400 and the API stays up. Full check exit 0. **`fix/body-parser-2-4` at `7d15285f5`.** Report `work-lab-leila/reports/2026-10-23-48.md`.
 
 - **Batch 57, security: the Actions majors' first runs after PR 2186** (5:37 to 5:46 PM, 23 October; read-only): 2186's own run was cancelled by the merges after it; **`64833daaf`'s run is the first that includes it: success.** **Publish works**: all eight `build-and-push` jobs passed every step (download-artifact 8, metadata-action 6, build-push-action 7, the gate). `gisday-nest` and `aggiemap-angular` have `sha-64833da` and `stable` with the right `revision`, `created` and `version` labels. **Test Report works on v3, as on v2** (1545 passed, written to the job summary; neither version posts a check here). security-scan and aggiemap-smoke have **not run since the merge**. Batches 50 and 58 **pushed** when the hold lifted (`dd87888d3`, `654d75176`). Report `work-lab-leila/reports/2026-10-23-47.md`.
 
@@ -212,4 +214,4 @@ Last written **5:55 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 58 (57 done too; 42 and 39 stopped; 40 superseded)
+Last batch done: 60 (42 and 39 stopped; 40 superseded)
