@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 37.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 38.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,37 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 37 (security: #2138, Dependabot version updates - a code job and a branch; 23 October 2026, 1:00 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 36.**
+**Expected: about 30 minutes.** No `package.json` or lock change.
+
+[#2138](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2138): once dependencies are at their latest (#1218),
+something has to say when a newer version comes out. Today nothing does: there is no Dependabot or Renovate configuration.
+
+1. `git worktree add C:/TAMU/wt-2138 -b ci/2138-dependabot origin/development`.
+2. Write `.github/dependabot.yml` (version 2), weekly, **Monday 06:00 America/Chicago**, every PR targeting **`development`** (the trunk; never
+   `master`), labelled `dependencies`, with commit-message prefix `chore(deps)`:
+   - **npm** at `/`, `open-pull-requests-limit: 5`, **grouped** so a week brings a few PRs: one group per family, by name pattern -
+     `angular` (`@angular/*`, `@angular-eslint/*`, `angular-eslint`), `nx` (`nx`, `@nx/*`), `nestjs` (`@nestjs/*`), `arcgis` (`@arcgis/*`,
+     `@esri/*`), `testing` (`jest*`, `@jest/*`, `vitest*`, `@vitest/*`, `@playwright/*`, `@testing-library/*`), `lint` (`eslint*`,
+     `@eslint/*`, `typescript-eslint`, `@typescript-eslint/*`, `prettier`), and `everything-else` (`*`) for the rest, **minor and patch only**
+     for `everything-else` so each major is its own PR. Majors for the named families stay grouped (they move together).
+   - **docker** for each Dockerfile directory: `/apps/aggiemap-angular/src`, `/apps/gisday-angular/src`, `/apps/geoservices-angular/src`,
+     `/apps/mailroom-angular/src` (their `FROM` is the pinned `nginx-base:sha-...`; Dependabot will not find newer `sha-` tags, which is fine:
+     it is listed so a future move to version tags is covered), and the four API `src` folders (`node:24.22.1`), grouped into one PR.
+   - **github-actions** at `/`, grouped into one PR.
+   - Leave `security-updates` at GitHub's default (on); this file is for version updates.
+3. **Validate it:** the file must parse as YAML, and every `directory` must exist on `development` (list each with `ls`). If a schema
+   validator is available offline (for example `npx -y @bugron/validate-dependabot-yaml` or the JSON schema from SchemaStore with `ajv`),
+   run it and report the result; if none works offline, say so.
+4. Add one short paragraph to `CLAUDE.md`, under "Commit, then run this before every push" or near the dependency-change rule, saying:
+   Dependabot opens weekly grouped PRs into `development`; each is handled like any dependency change (its own issue, the full check with a
+   clean `npm ci`, the lock rule), and a major-version PR is a decision for the maintainer, not merged on a green check alone.
+5. Commit (`ci(workspace): Weekly grouped Dependabot version updates for npm, Docker and Actions`, a body, `Closes #2138`, the
+   Co-Authored-By line). `scripts/check-in-volume.sh ci/2138-dependabot` (expect `No tasks were run`; say so - step 3 is the proof).
+   Push to the fork.
 
 ## Batch 34 (security: #2117 part 1 - npm out of the API images; a code job and a branch; 23 October 2026, 12:55 PM Central, from `work (security)`)
 
