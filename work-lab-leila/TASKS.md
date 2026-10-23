@@ -20,13 +20,15 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+> **2:45 PM Central, from `work (security)`:** PRs 2174, 2175, 2178 and 2180 merged (squashed). **Batch 49** (typeorm 1) was started on `chore/1218-eslint-10`: before you push it, `git merge origin/development` into it and resolve, keeping development's side for anything ESLint 10 or #2117 changed, then re-run the check. Batches 50 and 51 now start from `development`.
+
 ## Batch 51 (security: #1218 - remove eslint-plugin-node, registered but unused; a small code job and a branch; 23 October 2026, 2:40 PM Central, from `work (security)`)
 
 **Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 50**, or **before it** if batch 50 is waiting on anything, or between 49 and 50 if that is quicker.
 **Expected: about 20 minutes.** Your batch 43 survey noted `eslint-plugin-node` is unmaintained since 2020. The root `eslint.config.mjs`
 imports it and registers it as `node` (line 2, line 6), but **no rule anywhere uses a `node/` rule** (`git grep` finds none). So remove it.
 
-1. `git worktree add C:/TAMU/wt-no-eslint-node -b chore/1218-drop-eslint-plugin-node fork/chore/1218-eslint-10` (on PR 2180's branch).
+1. `git worktree add C:/TAMU/wt-no-eslint-node -b chore/1218-drop-eslint-plugin-node origin/development` (**updated 2:45 PM: PR 2180 (ESLint 10) has merged, so start from `development`**).
 2. Confirm first: `git grep -n -E "node/[a-z-]+" -- '*.mjs' '*.js' '*.json' '*.ts' ':!package-lock.json' ':!node_modules'` for rule names, and
    any `// eslint-disable` comment naming a `node/` rule. If any is found, stop and report it.
 3. Remove the import and the `{ plugins: { node: ... } }` entry from `eslint.config.mjs`, and `eslint-plugin-node` from `package.json`.
@@ -41,7 +43,7 @@ imports it and registers it as `node` (line 2, line 6), but **no rule anywhere u
 #2168's plan, on Nx 23. Your batch 47 question 1 is handled (PR 2182 merges after PR 2180); question 2 (`gisday-bridge-nest`) is noted
 for the next workflow edit - fold it into this branch if you touch `build.yml` or `test.yml`, otherwise leave it.
 
-1. `git worktree add C:/TAMU/wt-2168-webpack23 -b chore/2168-webpack-inferred fork/chore/2117-api-own-deps` (on PR 2175's branch,
+1. `git worktree add C:/TAMU/wt-2168-webpack23 -b chore/2168-webpack-inferred origin/development` (**updated 2:45 PM: PR 2175 has merged, so start from `development`**, which has it;
    because both change how the APIs build: #2117 sets `generatePackageJson` in `project.json`, and on inferred targets that moves into
    each `webpack.config.js`).
 2. **Before:** build the six `@nx/webpack:webpack` projects for production with `--skip-nx-cache` (the four APIs, `ues-operations-nest` if
