@@ -3,9 +3,12 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Production succeeded: Release-490, build 20261022.1, from `36b962a04e55ae379d0d771bfa7e0ee2e831b98d`, `GIS-1P Production` succeeded between 7:03 and 7:06 AM Central, Thursday 22 October 2026** (in progress at 7:03, succeeded at the 7:06 read). That is the commit the batch expected. Production serves **`main-YTDVM4VX.js`** (it was `main-AYJ2SDWT.js` for `prod-2026-10-20`). The `prod-*` tag goes on `36b962a04`.
+**`home (aggiemap)`: a listener, nothing running** (7:45 AM Central, Friday 23 October 2026, as the maintainer leaves for work;
+the work computer directs AggieMap when he gets there). No uncommitted work in its worktrees. The last batch it did was the
+production watch: Release-490 (`36b962a04`) reached production by 7:06 AM Thursday 22 October.
 
-(Read 7:06 AM Central from Azure, on home, with `C:\TAMU\logs\az-releases.py`.)
+The `home:` commits on 23 October (lab batch 14, codex-home batch 3, work batch 24, #2118) are the GIS Day chat's, which directs
+GIS Day from home.
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
