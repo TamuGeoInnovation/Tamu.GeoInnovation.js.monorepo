@@ -77,6 +77,32 @@ install the front ends' dependencies. Each came from measuring something the bat
 so plainly. Keep doing that.
 
 
+## Batch 20 (security: the pre-push check and a scan for #2119, the front ends on the new nginx-base; 23 October 2026, 9:45 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.**
+**Expected: about 15 minutes.**
+
+The four front ends' Dockerfiles move from `nginx-base:sha-1a94632` to **`nginx-base:sha-09b7e41`**, the build of
+TamuGeoInnovation/nginx-base#1 (nginx 1.30.6, Alpine 3.24.3), plus a release-notes file. Do exactly these steps, in order,
+from Git Bash. Change nothing.
+
+1. `git fetch fork fix/2119-nginx-base-1.30`
+2. `git rev-parse fork/fix/2119-nginx-base-1.30` must print **`762ad6a745eb1aa9f3aed5ace53417952ea893dd`**. If not, stop and report it.
+3. `git worktree add C:/TAMU/wt-check-2119 fork/fix/2119-nginx-base-1.30 --detach`, then in that folder `git switch -c fix/2119-nginx-base-1.30`
+4. In that folder: `scripts/check-in-volume.sh fix/2119-nginx-base-1.30 aggiemap-angular,geoservices-angular,gisday-angular,mailroom-angular > ../check-2119.out 2>&1; echo "exit=$?"`
+   Report the exit code and every log line containing `Successfully ran target` or `failed`.
+5. Scan the new base, the same way as batch 15:
+   `docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.76.1 image --scanners vuln --severity CRITICAL,HIGH ghcr.io/tamugeoinnovation/nginx-base:sha-09b7e41`
+   Report the totals line(s) and any finding listed.
+6. Build **one** front end on it, as in batch 15: from the step-4 production build of `gisday-angular` (`dist/apps/gisday-angular` in the
+   volume's clone, or build it again in the worktree if needed), `docker build` an image with its own Dockerfile
+   (no edits, it already says `sha-09b7e41`), run it with a dummy value for every `___NAME___`, and report: starts or not,
+   placeholders left, `/` and `/some/deep/link?x=1` status codes, and the `Server` header.
+7. `git worktree remove C:/TAMU/wt-check-2119 --force`, then `git branch -D fix/2119-nginx-base-1.30` and `git branch -D security/check-2129`
+   (both local only). Remove the image you built in step 6.
+
+Nothing else: no pushes, no pull request, no comments. Report in `work-lab-leila/reports/` and say "work-lab-leila: finished batch 20".
+
 ## Batch 19 (security: the full pre-push check for 2129, swiper 14 on the new lock; 23 October 2026, 9:25 AM Central, from `work (security)`)
 
 **Director: work, its security chat** (`js.monorepo - Security - CSA 305 Desktop`; questions go under **Questions for the
