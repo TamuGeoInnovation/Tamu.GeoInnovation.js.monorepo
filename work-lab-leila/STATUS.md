@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **8:16 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **8:25 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,11 +24,11 @@ Last written **8:16 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 9:01 AM Central.**
-
-**Batch 15, workspace: #2119, a new nginx-base proved locally** (director: home). Started 8:16 AM Central, 23 October. `nginx-base` rebuilt on `nginx:1.30.6-alpine` as a local image only, Trivy 0.76.1, and the four front ends built and run on it. Nothing is pushed to the nginx-base repository.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 15, workspace: #2119, a new nginx-base proved locally** (8:16 to 8:25 AM, 23 October; director: home): `nginx:1.30.6-alpine` has no critical or high findings (current base: 4 critical, 27 high). All four front ends build and run on it unchanged, with substitution, `/` and a deep link, and `nginx -t` all passing. The two diffs are given as text in the report; nothing pushed. Report `work-lab-leila/reports/2026-10-23-4.md`.
 
 - **Batch 14, workspace: #2111, the fixes as three branches** (6:51 to 7:49 AM, 23 October; director: home). On the fork, each with `check-in-volume.sh` exit 0 (lint 113, test 106, build 14): **`fix/2111-in-range-security-updates` `952c74962`** (lock only, 41 packages; audit 68 → 64, critical 6 → 5, high 28 → 19); **`fix/2111-class-validator-0.15` `248cf85dc`** (the upgrade needed no code change; plus #2113: `forbidUnknownValues` and `whitelist` on gisday-nest's and competitions' pipes, `POST /classes` left unvalidated; undeclared fields dropped and not stored); **`fix/2111-swiper-14` `c0ef4fb81`** (no code change; before and after images and the release-notes file; only the arrows move a few pixels). No pull requests. Report `work-lab-leila/reports/2026-10-23-3.md`.
 
@@ -105,4 +105,4 @@ Last written **8:16 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 14
+Last batch done: 15
