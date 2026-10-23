@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 32.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 33.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,39 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 32 (security: #2154, npm test and npm run coverage work again - a small code job and a branch; 23 October 2026, 12:25 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 31.**
+**Expected: about 30 minutes.** A code job: write it, prove it, push a branch; the director opens the pull request. Git Bash.
+
+[#2154](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2154): the root `jest.config.ts` is
+`module.exports = { projects: [...getJestProjects()] }`, and Nx 23's `@nx/jest` no longer has `getJestProjects` (only
+`getJestProjectsAsync`). So `npm test` (`"test": "jest"`) and `npm run coverage` (`"coverage": "jest --coverage --coverageReporters=cobertura"`)
+both fail at once. CI is not affected: it runs `nx affected -t test`, which uses each project's own config. Many projects are on Vitest now
+(#1479), and a root Jest config can only ever reach the Jest ones.
+
+1. `git fetch origin development`; `git worktree add C:/TAMU/wt-2154 -b fix/2154-root-test-scripts origin/development`; `cd C:/TAMU/wt-2154`.
+2. **The change** (decided by the director, so do this rather than choose):
+   - Delete the root `jest.config.ts`.
+   - In the root `package.json`: `"test": "nx run-many -t test"` and `"coverage": "nx run-many -t test --coverage"`. Leave everything else alone,
+     and do **not** touch `package-lock.json`.
+   - Correct the three documents that tell people to run `npm run coverage`, so they say what it now does: `.github/workflows/test.yml`
+     line 41 (a comment), `test/README.md` line 94, and `.github/copilot-instructions.md` line 49. One sentence each, LF.
+   - `git grep -n "jest.config.ts" -- '*.json' '*.js' '*.ts' '*.mjs' ':!node_modules'`: if anything still points at the **root** file (the
+     path with no folder in front), fix it the same way and say what. Each project's own `jest.config.ts` stays.
+3. **Prove it**, in Docker with a volume of its own (`node:24.22.1`, `npm ci --ignore-scripts` first):
+   - `npx jest --listTests` at the root must now fail as "no config" or similar, **not** with `getJestProjects is not a function`. Report what it says.
+   - `npm test -- --projects=common-utils-string,ui-kits-ngx-forms` (or two other small projects, one Jest and one Vitest if you can tell them
+     apart; say which) must run and pass. Report its last lines.
+   - `npm run coverage -- --projects=common-utils-string` must run and report coverage. Report its last lines.
+4. Commit: `fix(workspace): Run npm test and npm run coverage through Nx, now that the root Jest config cannot load`, a body saying why,
+   `Closes #2154`, and the `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` line. Then
+   `scripts/check-in-volume.sh fix/2154-root-test-scripts > ../check-2154.out 2>&1; echo "exit=$?"`, and report the `Successfully ran target`
+   or `failed` lines.
+5. Only if step 4 is exit 0: `git push -u fork fix/2154-root-test-scripts`, and report the head commit.
+
+No pull request and no comments. Report in `work-lab-leila/reports/` with the full diff, and say "work-lab-leila: finished batch 32".
 
 ## Batch 31 (security: #2117, each API image installs only its own packages - the code, the proof, a branch; 23 October 2026, 12:20 PM Central, from `work (security)`)
 
