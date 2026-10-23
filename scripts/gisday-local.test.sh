@@ -85,6 +85,25 @@ done
 
 check "the nginx settings sit beside the script" '[ -f "$repo/scripts/gisday-local-static.conf" ]'
 
+# Every docker call for `restore`, with a settings folder of its own: `restore` only needs local-db.env to exist.
+restore_calls() {
+  local dir
+  dir="$(mktemp -d "$bin/local.XXXX")"
+  : >"$dir/local-db.env"
+  : >"$log"
+  (cd "$repo" && PATH="$bin:$PATH" DOCKER_LOG="$log" GISDAY_LOCAL_DIR="$dir" bash scripts/gisday-local.sh restore >/dev/null 2>&1)
+  cat "$log"
+}
+
+# The seed predates the newest migrations, so a restore that stopped there left an API that answered 500 on the
+# sponsors and on a season day's events until someone ran `migrate run` (#2196).
+restored="$(restore_calls)"
+check "restore restores the database" 'grep -q -- "RESTORE DATABASE" <<<"$restored"'
+check "restore then runs the migrations on that database, as migrate run does" \
+  'grep -- "nx.js run" <<<"$restored" | grep -q -- "-e TYPEORM_DATABASE=gisday-nest-eh .*gisday-nest:migration-run"'
+check "restore runs the migrations after the restore, not before" \
+  '[ "$(grep -n -- "RESTORE DATABASE" <<<"$restored" | cut -d: -f1)" -lt "$(grep -n -- "gisday-nest:migration-run" <<<"$restored" | cut -d: -f1)" ] 2>/dev/null'
+
 if [ "$failures" -gt 0 ]; then
   echo "$failures failed"
   exit 1
