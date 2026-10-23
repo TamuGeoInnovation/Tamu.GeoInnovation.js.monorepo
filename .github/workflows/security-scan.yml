@@ -113,6 +113,11 @@ jobs:
       # nothing to catch, which is why this one has tests at all.
       - name: Compare with the accepted advisories
         id: compare
+        # `shell: bash` is what turns on pipefail (GitHub runs it as `bash -eo pipefail`; the default is
+        # `bash -e`). Without it this step took `tee`'s exit code, always 0, so a new finding was
+        # printed and then "Clear" ran instead of "Report new findings": on 23 October the first
+        # run said "new: 1" and passed (#2118).
+        shell: bash
         run: |
           mapfile -t args < trivy-args.txt
           node tools/security-findings/check.mjs \
