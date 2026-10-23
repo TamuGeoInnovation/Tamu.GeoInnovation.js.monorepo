@@ -56,6 +56,37 @@ install the front ends' dependencies. Each came from measuring something the bat
 so plainly. Keep doing that.
 
 
+## Batch 17 (gisday: checks after the `sha-8ee8c6e` release; 23 October 2026, 9:05 AM Central, from `work (gisday)`)
+
+**Director: work, its GIS Day chat** (see `DIRECTOR.md`; questions go under **Questions for the director (gisday)**).
+**Expected: about 60 minutes**, most of it the photo sets. Read-only against production: no sign-in, no admin pages, nothing
+written anywhere but your machine and this branch.
+
+GIS Day's site and API went to production on both sites as **`sha-8ee8c6e`** on 22 to 23 October (txgisday.org,
+gisday.tamu.edu and tamu.txgisday.org in one deployment; gisday.ucgis.org in another). It carries
+[#2092](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2092) (show or hide sessions from the admin
+Events list), [#2090](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2090) (the Copy page's
+"Applying..." state) and [#2103](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2103) (speaker names
+keep their g, j, p and y). Work from a worktree at `origin/development` (`8ee8c6e` or later; GIS Day has not changed since).
+
+1. **The GIS Day browser tests against production.** `E2E_BASE_URL=https://txgisday.org npx playwright test test/e2e/gisday`
+   in the Playwright container, as `playwright.config.ts` runs them. **Leave out `ucgis-site.spec.ts`**: it rewrites the
+   dev server's scripts to make a local build act as UCGIS, which means nothing against a deployed site. Per spec: passed,
+   failed, and each failure's message. `presenter-cards.spec.ts` answers the presenters request itself, so it tests the
+   deployed stylesheet, which is the point.
+2. **The speaker cards on all four addresses**, against real data: run `presenter-cards.spec.ts` with `E2E_BASE_URL` set to
+   each of `https://txgisday.org`, `https://gisday.tamu.edu`, `https://tamu.txgisday.org` and `https://gisday.ucgis.org`. It
+   must pass on all four. Then, with real data, load each address's `/presenters` and confirm every card is one size (list the
+   sizes found; UCGIS's site has presenters since its 22 October pre-load).
+3. **The production photo sets for `sha-8ee8c6e`**, with `tools/visual-baselines` (its README): `--app gisday --env production
+   --release sha-8ee8c6e` for txgisday.org, then the same with `AGGIEMAP_SMOKE_BASE_URL=https://gisday.tamu.edu` and
+   `--release sha-8ee8c6e-gisday.tamu.edu`, and with `https://gisday.ucgis.org` and `--release sha-8ee8c6e-gisday.ucgis.org`.
+   Kept on your machine under `visual-baselines`; report the shot counts and any page that failed.
+4. **The APIs answer:** `/api/seasons/active` on all four addresses, status and the season's year.
+
+Report in `work-lab-leila/reports/2026-10-23-5.md` and say "work-lab-leila: finished batch 17". **Nothing to post on GitHub**:
+the director comments on the issues from your report.
+
 ## Batch 16 (workspace: #2118) - Moved to `work` as its batch 24, 7:20 AM Central, 23 October 2026
 
 Do not start it; the work machine has it.
