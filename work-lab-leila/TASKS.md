@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 31.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 32.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,73 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 31 (security: #2117, each API image installs only its own packages - the code, the proof, a branch; 23 October 2026, 12:20 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 30.**
+**Expected: about 60 minutes.** **This is a code job:** you write the change, prove it, and push a branch; the director opens the
+pull request from your report. Work from Git Bash.
+
+### Why
+
+[#2117](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117): every API image installs the production dependencies
+of the **whole repository** (about 2,300 packages, the front ends' included). `build.yml` and `publish.yml` copy the root `package.json`
+and `package-lock.json` into each `dist/apps/<app>`, and each Dockerfile runs `npm ci`. Today's scan accepts four findings that exist
+only because of that (`brace-expansion`, `http-cache-semantics`, `undici`, in the API images). Also, the Dockerfiles say `--omit-dev`, which is
+not an npm flag (`--omit=dev` is); it works only because `NODE_ENV=production` is set.
+
+### What I found, so you do not have to
+
+- The four deployed APIs: `gisday-nest`, `geoservices-nest`, `mailroom-nest`, `mailroom-helper-nest`. Leave `ues-operations-nest` alone (CI cannot
+  build it). Each builds with `@nx/webpack:webpack` and a `webpack.config.js` that uses `withNx()`, so the executor's options apply. Each
+  `project.json` already has `"generatePackageJson": false` in both its `production` and `development` configurations.
+- CI builds with `--configuration=production` (`build.yml` line 61/64), then `build.yml` line 85 copies the root package files into `dist/`, and
+  `publish.yml`'s step "Copy required image build files" runs `cp package.json package-lock.json apps/${{ matrix.image }}` for **every**
+  image, front ends included.
+- The Dockerfiles (`apps/<app>/src/Dockerfile`, all four identical) do `COPY ../../../package-lock.json ../../../package.json ./`. In the
+  build context (`dist/apps/<app>`) that resolves to the context root.
+- **The known risk of `generatePackageJson`:** it lists what the code imports. A package loaded at run time by name is missed. The likely
+  ones here: TypeORM's driver (`mssql`), and Nest's `@nestjs/platform-express`. If one is missed, the image fails with
+  `Cannot find module` or Nest's "package is missing" message.
+
+### Steps
+
+1. `git fetch origin development`; `git worktree add C:/TAMU/wt-2117 -b chore/2117-api-own-deps origin/development`; `cd C:/TAMU/wt-2117`. Report the commit.
+2. **The change:**
+   a. In the four `apps/<app>/project.json`: `"generatePackageJson": true` in both `production` and `development`.
+   b. In the four Dockerfiles: `COPY package.json package-lock.json ./`, and `RUN npm ci --omit=dev`.
+   c. In `.github/workflows/publish.yml`, step "Copy required image build files": copy the root files only into an app that has none of its own.
+      For example `[ -f apps/${{ matrix.image }}/package.json ] || cp package.json package-lock.json apps/${{ matrix.image }}`, with a comment
+      saying why (#2117). Leave `build.yml` alone.
+   Keep files LF.
+3. **Build each API for production** in Docker, from the worktree, with its own volume:
+   `MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-2117:/w" -v tamu-js-2117-nm:/w/node_modules -w /w node:24.22.1 sh -c "npm ci --no-audit --no-fund --ignore-scripts >/dev/null 2>&1; for a in gisday-nest geoservices-nest mailroom-nest mailroom-helper-nest; do node node_modules/nx/dist/bin/nx.js build \$a --configuration=production --skip-nx-cache > /w/build-\$a.log 2>&1; echo \$a=\$?; done"`
+   For each: the exit code, whether `dist/apps/<app>/package.json` **and** `package-lock.json` exist, and the `dependencies` list in that
+   `package.json` (names only).
+4. **Build and start each image, with no settings:** for each app, `docker build -t local/2117-<app> dist/apps/<app>`, then
+   `docker run --rm --name t2117 local/2117-<app>` for up to 20 seconds (`timeout 20`), keeping the log. **With no database or settings the app
+   is expected to fail**, but on configuration or a connection, **not** on a missing package. Report each image's size, the number of packages it
+   installed (`docker run --rm --entrypoint sh local/2117-<app> -c "ls node_modules | wc -l"`), and the first 15 log lines.
+5. **If any image fails on a missing package:** add that package to the app's own dependencies, in a new `apps/<app>/package.json`
+   containing only `{ "name": "<app>", "dependencies": { "<package>": "<the root package.json's version range>" } }`. Nx merges a project's own
+   `package.json` into the generated one. Rebuild that app (steps 3 and 4) until it starts and fails only on configuration. Report each package
+   you added and why.
+6. **One real start:** run `gisday-nest`'s image against a throwaway SQL Server, as you did in batch 12 (on 23 October, at 6:03 AM), and
+   report `GET /api/seasons/active` (expected 200) and that an unauthenticated write gets 401. Remove the throwaway database afterwards.
+7. **The point of it:** Trivy on each new image, against the deployed `:stable` one:
+   `MSYS_NO_PATHCONV=1 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.76.1 image --scanners vuln --severity CRITICAL,HIGH --quiet <image>`
+   for `local/2117-<app>` and `ghcr.io/tamugeoinnovation/<app>:stable`. Report the totals for both, side by side, and whether
+   `brace-expansion`, `http-cache-semantics` and `undici` are gone.
+8. **The pre-push check:** commit (message `chore(workspace): Install only each API's own packages in its image`, a body saying what and why,
+   `Closes #2117`, and the `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` line). Then
+   `scripts/check-in-volume.sh chore/2117-api-own-deps > ../check-2117.out 2>&1; echo "exit=$?"` and report its lines with
+   `Successfully ran target` or `failed`.
+9. **Only if** step 8 is exit 0 and every image in step 4 fails only on configuration: `git push -u fork chore/2117-api-own-deps`, and report the
+   head commit. Otherwise do not push, and say what is left.
+10. Clean up the images, containers and throwaway database. Leave the worktree for the director.
+
+Do not open a pull request or comment on GitHub. Report in `work-lab-leila/reports/`, with the diff stat and the full diff of the four
+`project.json`, one Dockerfile and `publish.yml`, and say "work-lab-leila: finished batch 31".
 
 ## Batch 30 (security: #2155, libs/oidc/common retired and Mailer moved - the full check; 23 October 2026, 12:10 PM Central, from `work (security)`)
 
