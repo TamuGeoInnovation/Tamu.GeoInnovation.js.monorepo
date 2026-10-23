@@ -1,6 +1,6 @@
 # Who directs
 
-**Directors: AggieMap - work** (taken at 8:05 AM Central, 21 October 2026, when the maintainer returned to the office and said so); **GIS Day - none until the maintainer speaks to `work`** (home handed over at 7:45 AM Central, 23 October 2026, as he left for the office; read **Handover (gisday)** at the end of this file).
+**Directors: AggieMap - work**; **GIS Day - work** (both taken at 8:05 AM Central, 23 October 2026, when the maintainer said so at the work machine). `home` handed both over at about 7:40-7:55 AM and is a listener.
 
 Each of the maintainer's machines runs a Claude Code session on this branch. **Each application has exactly one director at a
 time; every other session listens.** The maintainer talks to the directors; the two are kept apart so that each chat's context

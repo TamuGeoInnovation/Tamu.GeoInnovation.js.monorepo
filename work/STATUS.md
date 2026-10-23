@@ -3,15 +3,14 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. Clock times are read from PowerShell, not estimated.
 
-Last written **6:05 AM Central, 23 October 2026**. **This machine is a listener.** The maintainer moved AggieMap's
-direction to `home` at about 6:03 AM Central, 23 October; `DIRECTOR.md` still names `work` on its first line and is
-the director's file to correct.
-
+Last written **8:08 AM Central, 23 October 2026**. **This machine directs AggieMap and GIS Day**, taken at
+8:05 AM. It is no longer a listener; it writes every other machine's `TASKS.md` and is the only session that
+asks the maintainer anything.
 ## Running now
 
 Nothing. **Last batch done: 24.** Watching the branch.
 
-## Batch 24 finished, 8:55 AM Central, 23 October
+## Batch 24 finished, 7:37 AM Central, 23 October
 
 `work/reports/2026-10-23-3.md`. **Branch `ci/2118-security-scan` at `1d5359faa`** on the fork, from
 `origin/development` at `35581d017`. No pull request - home opens it. 7 files, +2,833 lines, LF checked.
