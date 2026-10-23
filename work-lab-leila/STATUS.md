@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:37 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **5:46 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **5:37 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 6:15 PM Central.**
+**Next update by 6:30 PM Central.**
 
-**Batch 57, security: the Actions majors' first runs after PR 2186** (read-only), started 5:37 PM Central. PR 2186 merged as `4f33142aa`, but that run was cancelled by the merges after it; the first run that includes it and can finish is `64833daaf`'s (run 40034625178), in progress. Batches 50 and 58 are **pushed** (hold lifted): `chore/2168-webpack-inferred` at `dd87888d3`, `security/check-2184` at `654d75176`.
+**Watching for one thing (batch 57's step 2):** the first `Test Report` run that finds test results, to see `dorny/test-reporter` 3 post its check. A watcher runs until 6:25 PM Central. Nothing else is running.
 
 ## Finished
+
+- **Batch 57, security: the Actions majors' first runs after PR 2186** (5:37 to 5:46 PM, 23 October; read-only): 2186's own run was cancelled by the merges after it; **`64833daaf`'s run is the first that includes it: success.** **Publish works**: all eight `build-and-push` jobs passed every step (download-artifact 8, metadata-action 6, build-push-action 7, the gate). `gisday-nest` and `aggiemap-angular` have `sha-64833da` and `stable` with the right `revision`, `created` and `version` labels. **Test Report runs on v3 but has had no results to post yet** (no tests ran in any source run). security-scan and aggiemap-smoke have **not run since the merge**. Batches 50 and 58 **pushed** when the hold lifted (`dd87888d3`, `654d75176`). Report `work-lab-leila/reports/2026-10-23-47.md`.
 
 - **Batch 58, security: PR 2184 resolved against PR 2182 ahead of time - committed locally, NOT pushed** (4:10 to 4:18 PM, 23 October): 35 files (34 `project.json` and `nx.json`) resolved as JSON, each proved to differ from either side only by the other side's change (the four API `build` targets come from development via the lint branch). No old executor left; lint 104 / test 103 / 110 projects; full check exit 0 (lint 104 / test 100 / build 14, clean `npm ci`). **`security/check-2184` at `654d75176`, local.** Report `work-lab-leila/reports/2026-10-23-46.md`.
 
@@ -210,4 +212,4 @@ Last written **5:37 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 58 (50 and 58 committed locally, held; 57 waits on PR 2186; 42 and 39 stopped; 40 superseded)
+Last batch done: 57 (its Test Report check still watched; 42 and 39 stopped; 40 superseded)
