@@ -17,6 +17,32 @@ your project instructions too (Nx in Docker, LF files, the repository is public,
 - Commit messages end with `Co-Authored-By: OpenAI Codex <noreply@openai.com>`.
 - Never ask the maintainer anything; questions go in your report under **Questions for the director**.
 
+## Batch 3 (workspace: #2120, give every upload route explicit limits; 23 October 2026, 7:05 AM Central, from `home`)
+
+**Director: home.** Questions under **Questions for the director (home)**. **Expected: about 60 minutes.** A code change, as a
+**local branch only**: do not push it anywhere and open nothing. You run on the home machine, so home reads your branch
+straight from your clone. Tell home the clone's path and the branch's head commit in `STATUS.md`.
+
+[#2120](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2120) (High). The multer and dicer denial-of-service advisories are much easier to hit where an upload route sets no
+limits. Only `libs/gisday/competitions/data-api/src/lib/submission/submission.controller.ts` sets them (2 files, 15 MiB).
+These set none:
+
+- `FileInterceptor('file')` in `libs/gisday/platform/data-api/src/lib/{organization,place,speaker,sponsor}/*.controller.ts`;
+- `AnyFilesInterceptor()` in `libs/mailroom/data-api/src/lib/email/email.controller.ts` and `.../helper/helper.controller.ts`.
+
+1. Branch `fix/2120-upload-limits` from the latest `origin/development`.
+2. Add **one shared set of default limits** where the next caller will find it (CLAUDE.md, "Reuse before building": a
+   constant exported from a shared Nest library, for example under `libs/common/nest/`), covering `fileSize`, `files`,
+   `fields`, `fieldNameSize`, `fieldSize` and `parts`. Use it at every interceptor above. A logo or photo upload needs one file
+   of a few MB; mailroom's attachments need several. Choose numbers from what each route accepts, and say why in a comment.
+3. A unit test that an upload over the limit is refused with a 4xx (413 or 400) rather than accepted, for one GIS Day route and
+   one mailroom route, in the style of the existing `*.spec.ts` beside them.
+4. **Do not run Docker or Nx** unless your instructions allow it; if you cannot run the tests, say so, and home runs them.
+5. Commit, ending the message with `Closes #2120` and the `Co-Authored-By` line your instructions give.
+
+Report in `codex-home/reports/2026-10-23-2.md`: the files changed, the limits chosen per route and why, whether the tests ran.
+Push only your report and `STATUS.md` to `work-mailbox`, with the `codex-home:` prefix.
+
 ## Batch 2 (workspace: #2111, are the vulnerable code paths actually used; 23 October 2026, 7:00 AM Central, from `home`)
 
 **Director: home.** Questions under **Questions for the director (home)**. **Expected: about 60 minutes.** Read-only:
