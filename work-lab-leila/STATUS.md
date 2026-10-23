@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:54 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **2:00 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **1:54 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 2:34 PM Central.**
+**Next update by 2:40 PM Central.**
 
-**Batch 44, security: the Nx 24 premise test with the lock-entry method** (a test, nothing pushed), started 1:54 PM Central, in `C:/TAMU/wt-nx24-probe`. Then 45 (ESLint 10).
+**Batch 45, security: ESLint 10 and its five fixes** (a code job and a branch), started 2:00 PM Central, in `C:/TAMU/wt-eslint10` (`chore/1218-eslint-10`, on batch 41's branch).
 
 ## Finished
+
+- **Batch 44, security: Nx 24 premise test, with the lock method** (1:54 to 1:59 PM, 23 October): Nx 24.0.0 **installs** this way (lock change: Nx\x27s own set plus same-version moves). **Unconverted `@nx/jest:jest` and `@nx/webpack:webpack` targets do not run on Nx 24** (`Cannot find executor`), and neither does lint until its migration runs; after the two `@nx/eslint` migrations, lint works. So a lint-only branch cannot pass the full check. Recommends converting Jest and webpack on Nx 23 first. Report `work-lab-leila/reports/2026-10-23-33.md`.
 
 - **Batch 43, security: #1218 survey of TypeScript 7, ESLint 10, typeorm 1 (read-only)** (1:42 to 1:51 PM, 23 October): **TypeScript 7 is blocked** (Angular 22, next included, and typescript-eslint 8 require `<6.1`); **ESLint 10 installs**, with 5 lint errors from 2 new recommended rules (small); **typeorm 1 installs only with `mssql` 12 and `ts-node` 10.9.2**, then 69 type errors (63 are `relations` string arrays) plus a runtime risk from the null/undefined-`where` change (medium). Recommended order: ESLint, typeorm, TypeScript. Report `work-lab-leila/reports/2026-10-23-32.md`.
 
@@ -182,4 +184,4 @@ Last written **1:54 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 43 (42 stopped at step 2; 39 stopped; 40 superseded)
+Last batch done: 44 (42 and 39 stopped; 40 superseded)
