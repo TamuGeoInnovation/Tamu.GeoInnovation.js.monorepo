@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:28 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **10:52 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **10:28 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Waiting for the security director on batch 23** (stopped at step 3, 10:29 AM Central): knip read its own output file, `knip.json`, as a configuration and exited without a report. The worktree `C:/TAMU/wt-knip` and the volume `tamu-js-knip-nm` are kept for a rerun. Otherwise idle, watching the branch.
+**Next update by 11:22 AM Central.**
+
+**Batch 23 resumed at step 3** (10:52 AM Central), with the output renamed as the director fixed it. Then batch 24 (#2115, nodemailer 10).
 
 ## Finished
 
