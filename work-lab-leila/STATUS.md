@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:50 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **1:06 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **12:50 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 1:50 PM Central.**
+**Next update by 2:06 PM Central.**
 
-**Batch 35, security: #2117 part 2, each API image its own packages at the root lock's versions** (director: work, its security chat). Started 12:50 PM Central. Batch 36 (Nx 24) follows.
+**Batch 36, security: #2168, Nx 23 to 24** (director: work, its security chat). Started 1:06 PM Central.
 
 ## Finished
+
+- **Batch 35, security: #2117 part 2, each API image its own packages at the root lock\x27s versions** (12:50 to 1:06 PM, 23 October; director: work, security chat): **`chore/2117-api-own-deps` `360e453da`** pushed. Install from the root pair, put the root\x27s overrides back (Nx drops `form-data`\x27s), prune; `mssql` added for `gisday-nest` and `mailroom-nest` (TypeORM loads it by name). Every package left matches the root lock; 205 to 329 packages and 355 to 483 MB against 497 and about 1.35 GB; `gisday-nest` 200 and 401 against a real database; the check ran 4 projects. **Conflicts with batch 34 in the four Dockerfiles.** Report `work-lab-leila/reports/2026-10-23-25.md`.
 
 - **Batch 34, security: #2117 part 1, npm out of the API images** (12:39 to 12:50 PM, 23 October; director: work, security chat): **`chore/2117-no-npm-in-api-images` `2d53d4f4e`** pushed. All four new images **0 critical, 0 high** (each `:stable` 4 high, all in the base image's npm); all start, none on a missing module; `gisday-nest` 200 and 401 against a real database; the check ran lint, test and build for 4 projects. Report `work-lab-leila/reports/2026-10-23-24.md`.
 
@@ -166,4 +168,4 @@ Last written **12:50 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 34
+Last batch done: 35
