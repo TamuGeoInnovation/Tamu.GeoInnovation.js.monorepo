@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:51 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **9:54 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **9:51 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 10:11 AM Central.**
-
-**Batch 21, security: the full pre-push check for #2112's second round** (director: work, its security chat). Started 9:51 AM Central, 23 October. Full `affected` check of `security/check-2112b`.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 21, security: the full pre-push check for #2112's second round** (9:51 to 9:54 AM, 23 October; director: work, security chat): `fork/security/check-2112b` at `753027755` as required; `check-in-volume.sh` **exit=0**: clean `npm ci`, lint 113, test 106, build 14, nothing from the cache, no failures. Worktree and branch removed. Report `work-lab-leila/reports/2026-10-23-9.md`.
 
 - **Batch 20, security: the pre-push check and a scan for #2119** (9:40 to 9:48 AM, 23 October; director: work, security chat): `fix/2119-nginx-base-1.30` at `762ad6a74` as required. Check **exit=0** (4 projects and 3 dependencies, 0 of 15 from the cache). Trivy on `nginx-base:sha-09b7e41`: **0** critical or high. `gisday-angular`, built for production, runs on it: no placeholders left, `/` and a deep link 200, `Server: nginx/1.30.6`. Cleaned up. Report `work-lab-leila/reports/2026-10-23-8.md`.
 
@@ -134,4 +134,4 @@ Last written **9:51 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 20
+Last batch done: 21
