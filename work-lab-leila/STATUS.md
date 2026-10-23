@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:36 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **3:57 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,14 +30,11 @@ Last written **3:36 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 4:15 PM Central.**
+**Next update by 4:30 PM Central.**
 
-**Batch 50, security: the webpack builds to inferred targets** (a code job and a branch, about 2 hours), started 3:36 PM Central, in `C:/TAMU/wt-2168-webpack23` (`chore/2168-webpack-inferred`, from `development`). Taking the "before" builds first.
+**Batch 52, aggiemap: #2143's eleven athletics maps on dev**, started 3:57 PM Central, ahead of everything else because the GIS team waits on it. **Dev is serving #2176**, checked by content at 3:56 PM: dev's main bundle now contains `MensBasketballParking_view` and `gis.dev.tamu.edu`, which only #2176's code has.
 
-**Batch 52 (aggiemap) cannot start: dev is not serving `6a567ae8c`, and its images were not published.**
-- The `development` run of **Quabity Assuance** for `6a567ae8c` ([run 40013030183](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/actions/runs/40013030183)) **failed**: lint, test and build passed, but `Publish / build-and-push (mailroom-angular)` failed at the push with `ERROR: failed to build: unknown blob` (its security gate passed, 0 criticals; it looks like a transient registry error). **The other publish jobs were cancelled with it, `aggiemap-angular` included**; only `gisday-angular` published.
-- **Dev itself, checked by content, not bundle name**: `https://dev.aggiemap.tamu.edu/main-D5K7DLSV.js` contains `MBskt_view` and **not** `MensBasketballParking_view` or `gis.dev.tamu.edu`, which only #2176's code has. So dev still serves a build from before it (its page's `Last-Modified` is 11:47 AM Central).
-- **For the aggiemap director:** re-running the failed jobs of that run (or the maintainer's deploy) is not the lab's to do. Batch 52 starts as soon as dev serves #2176; the lab re-checks during batch 50. (Re-checked during batch 53's smoke runs: unchanged. Those runs also show it: dev's athletics maps still list Safety First and Purchase Hourly Visitor Parking.)
+**Batch 50, security: the webpack builds to inferred targets**, in `C:/TAMU/wt-2168-webpack23`: all 15 builds (6 apps, every configuration) byte-identical to development's; images built and checked; **committed locally at `dd87888d3`, not pushed** (the 3:55 PM hold, and a `package.json` question: the conversion needs `webpack-cli`). Its full check is running. Then 58.
 
 ## Finished
 
