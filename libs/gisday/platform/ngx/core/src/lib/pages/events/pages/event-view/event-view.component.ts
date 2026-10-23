@@ -21,6 +21,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { CheckboxGroupComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { GISDAY_SITE } from '@tamu-gisc/gisday/platform/ngx/common';
+import { siteSessionPlaces } from '@tamu-gisc/gisday/common';
 
 @Component({
   selector: 'tamu-gisc-event-view',
@@ -61,6 +62,8 @@ export class EventViewComponent implements OnInit, OnDestroy {
   public events$: Observable<Array<Partial<Event>>>;
   public tags$: Observable<Array<Partial<Tag>>>;
   public organizations$: Observable<Array<Partial<Place>>>;
+  /** The places whose sessions this site lists, as `only`, null for every place (#2142). */
+  public sessionPlaces$: Observable<{ only: Array<string> | null }>;
   public userInfo$: Observable<Partial<GisDayAppMetadata>>;
   public isAuthed$: Observable<boolean>;
   public userProfileComplete$: Observable<boolean>;
@@ -115,9 +118,23 @@ export class EventViewComponent implements OnInit, OnDestroy {
       switchMap((season) => (season ? this.tagService.getEntitiesForSeason(season.guid) : of([]))),
       shareReplay(1)
     );
-    this.organizations$ = this.activeSeason$.pipe(
+    const places$ = this.activeSeason$.pipe(
       switchMap((season) => (season ? this.os.getEntitiesForSeason(season.guid) : of([]))),
-      map((places) => places.filter((place) => place?.visibilitySettings?.includes(PlaceVisibilityOptions.SessionsFilter))),
+      shareReplay(1)
+    );
+    this.sessionPlaces$ = places$.pipe(
+      map((places) => ({ only: siteSessionPlaces(this.site, places) })),
+      shareReplay(1)
+    );
+    // A site that lists only some places' sessions offers only those places as filters.
+    this.organizations$ = this.sessionPlaces$.pipe(
+      withLatestFrom(places$),
+      map(([{ only }, places]) =>
+        places.filter(
+          (place) =>
+            place?.visibilitySettings?.includes(PlaceVisibilityOptions.SessionsFilter) && (only === null || only.includes(place.guid))
+        )
+      ),
       shareReplay(1)
     );
 

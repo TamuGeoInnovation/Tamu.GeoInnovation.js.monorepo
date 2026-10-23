@@ -63,6 +63,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { execFileSync } from 'child_process';
 
+import { commitFields, releaseCommit, releaseLine } from './release-commit.mjs';
+
 const arg = (name, fallback) => {
   const i = process.argv.indexOf('--' + name);
 
@@ -201,15 +203,6 @@ function resolveRelease(fallbackBundle) {
   console.error('Could not work out the release for "' + envName + '".');
   console.error('Pass --release <tag>, for example --release ' + prefix + '2026-10-06.');
   process.exit(2);
-}
-
-/** The commit a release tag names, when git can be reached. Recorded, never required. */
-function releaseCommit(release) {
-  try {
-    return execFileSync('git', ['rev-parse', release + '^{commit}'], { cwd: REPO, encoding: 'utf8' }).trim();
-  } catch {
-    return null;
-  }
 }
 
 /** US Central, named, as everything reported here is (CLAUDE.md). */
@@ -537,13 +530,14 @@ async function settle(page) {
   fs.mkdirSync(path.join(outDir, 'desktop'), { recursive: true });
   fs.mkdirSync(path.join(outDir, 'phone'), { recursive: true });
 
+  const found = releaseCommit(REPO, release);
   const manifest = {
     app: app,
     environment: envName,
     baseUrl: baseUrl,
     actingAs: actingAs || null,
     release: release,
-    releaseCommit: releaseCommit(release),
+    ...commitFields(found),
     build: build,
     capturedAt: centralNow(),
     viewports: VIEWPORTS,
@@ -558,7 +552,7 @@ async function settle(page) {
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
   console.log('environment ' + envName + ' (' + baseUrl + ')' + (actingAs ? ', as ' + actingAs : ''));
-  console.log('release      ' + release + (manifest.releaseCommit ? ' (' + manifest.releaseCommit.slice(0, 8) + ')' : ''));
+  console.log(releaseLine(release, found));
   console.log('build        ' + build);
   console.log('routes       ' + routes.length + ' x ' + Object.keys(VIEWPORTS).length + ' viewports');
   console.log('out          ' + outDir);
