@@ -1,6 +1,6 @@
 # Who directs
 
-**Directors: AggieMap - work** (taken at 8:05 AM Central, 21 October 2026, when the maintainer returned to the office and said so); **GIS Day - home** (GIS Day chat; taken at 6:10 AM Central, 23 October 2026, when the maintainer said so; the work computer's GIS Day handover is `work/reports/2026-10-23-gisday-handover.md`).
+**Directors: AggieMap - work** (taken at 8:05 AM Central, 21 October 2026, when the maintainer returned to the office and said so); **GIS Day - none until the maintainer speaks to `work`** (home handed over at 7:45 AM Central, 23 October 2026, as he left for the office; read **Handover (gisday)** at the end of this file).
 
 Each of the maintainer's machines runs a Claude Code session on this branch. **Each application has exactly one director at a
 time; every other session listens.** The maintainer talks to the directors; the two are kept apart so that each chat's context
@@ -313,40 +313,61 @@ every athletics schedule, women's tennis included), 2056 (`tools/` tests in CI).
 
 ## Handover (gisday)
 
-Written by `home` (GIS Day chat) at 7:45 AM Central, 21 October 2026. The GIS Day handoff page has the same, at more length,
-for the maintainer.
+Written by `home` (GIS Day chat) at 7:45 AM Central, 23 October 2026, as the maintainer left for the office. **The next GIS
+Day director is `work`**, from when the maintainer speaks to it there. `home` becomes a listener (development work:
+branches, the local GIS Day stack, Azure reads). This morning's work was workspace-wide security, not only GIS Day; the
+GIS Day chat directed it because it was the one directing.
 
-### Waiting on the maintainer
+### Waiting on the maintainer: merges
 
-| | |
-| --- | --- |
-| [PR 2062](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2062) | #1998, the admin pages at phone width. Opened ready, MERGEABLE, **CI green at 7:50 AM** (15 passed, 1 skipped): ready for the maintainer to merge. Full affected check exit 0 locally; before/after images from a signed-in capture on home |
+Merge in this order; each pair shares files, so the second needs `development` merged in and a recheck after the first.
 
-No GIS Day question is open. Decided overnight: #2057 (`web --static`, Medium), #2058 (the seven a11y lint rules for
-geoservices, mailroom, oidc and signage, Low), and #1474's GIS Day half done in one pull request after #1998.
+| PR | Issue | What | CI at 7:39 AM |
+| --- | --- | --- | --- |
+| [2123](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2123) | #2116 | patched `form-data` everywhere (override), `coveralls` and `request` removed | **green** |
+| [2125](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2125) | #2112 | in-range updates, `multer` 2, `postcss-url` 10.1.4, `bcrypt` 6 (drops `tar`); after 2123 (both lock files) | running |
+| [2124](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2124) | #2121 | mailroom builds each message from an allowlist | **green** |
+| [2126](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2126) | #2120 | upload limits on every route; after 2124 (same mailroom controllers) | running |
 
-### What the next GIS Day director does, in order
+### The security work, all of it ([#2111](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111) tracks it)
 
-1. PR 2062 is green; once it merges, remove `C:\TAMU\wt-1998` on home.
-2. **#1474, GIS Day's half:** switch the seven template accessibility rules back on in `apps/gisday-angular`,
-   `apps/gisday-competitions-angular` and `libs/gisday/*` (the `off` lines in each `eslint.config.mjs`), fix what they find,
-   with before/after images for anything visible, one pull request carrying `Closes #1474` (PR 2046 did AggieMap's half,
-   "Part of #1474").
-3. Then #2057, which makes the static build below a supported `scripts/gisday-local.sh web --static`.
+| Issue | Priority | State |
+| --- | --- | --- |
+| #2107 Node 24.22.1 (Brotli RCE) | Urgent | **Done**: deployed (both GIS Day APIs and `gsvcs-nest` on `sha-35581d0`, confirmed), kubernetes-config #68 merged, closed |
+| #2116, #2112, #2121, #2120 | High/Medium | PRs above |
+| #2113 class-validator 0.15 + `forbidUnknownValues`/`whitelist` | High | `work-lab-leila` batch 14 task 2 |
+| #2114 swiper 14, with screenshots | High | `work-lab-leila` batch 14 task 3 |
+| #2119 `nginx-base` on Alpine 3.24 / nginx 1.30.6, front ends pinned | High | `work-lab-leila` batch 15 (local test; **nothing pushed to nginx-base: every push there publishes `:latest`**) |
+| #2118 daily scan + `security-health` issue + publish gate | High | `work` batch 24, next update by 9:15 AM |
+| #2115 nodemailer 10 | Medium | after #2124 merges |
+| #2117 each API image installs only its own packages | Medium | after #2112 to #2114 |
+| #2122 remove unused packages with knip | Medium | after #2112 to #2114 |
+| #2109 where mailroom runs (not on the cluster) | High | the maintainer |
+| #2110 ingress log retention and headers | Medium | cluster work |
+
+**After the merges:** new images for the four APIs and the front ends, deployed with commands given to the maintainer one at
+a time (he runs every cluster command). The API images on `sha-35581d0` are already clean at OS level; the front ends wait
+for #2119.
+
+### Branches pushed but with no PR yet
+
+- `feat/2057-gisday-local-static` (`5d4585d`, #2057, `web --static`): tests pass; needs one real run on a machine with the
+  GIS Day stack before its PR.
+- `fix/1474-gisday-template-a11y` (`85df2be`, #1474, GIS Day's half of the accessibility rules): committed by a home agent
+  whose full check was still running at 7:45 AM; read its result before opening the PR, and capture before/after images for
+  any change that alters a page.
 
 ### Machines
 
-- **home** runs both GIS Day sites locally, from a **static build** served by nginx, because the Vite dev server hangs at
-  `[optimizer] bundling dependencies...` on Node 24 (three times on 20 October; AggieMap's does the same): `gisday-site` on
-  4201 is UCGIS (sign-in works), `gisday-dev` on 4202 is txgisday.org, `gisday-api` and `gisday-db` behind them. The nginx
-  config is only in the GIS Day chat's scratch folder until #2057. `C:\TAMU\gisday-local` now has `auth0-dev.local.env`
-  and a fresh `gisday-api.local.env` from the sample; the old one, holding a production secret, is
-  `gisday-api.local.env.pre-1623`, for the maintainer to delete.
-- **work** has not pushed since 11:15 PM on 20 October; its GIS Day batch 20 was withdrawn and done on home.
+- **work-lab-leila**: batch 14 (task 2 of 3), then batch 15. The maintainer wants the lab given work first.
+- **work**: batch 24 (#2118). It was silent 6:49 to 7:28 AM, then took the batch inside its "Still there?" deadline.
+- **codex-home**: idle; batch 3 (#2120) done. It runs on home and needs the maintainer to approve its prompts.
+- **home**: a listener from 7:45 AM. Its local GIS Day stack is running (UCGIS on 4201, txgisday.org on 4202, static build).
 
 ### Things not to relearn
 
-- The signed-in capture runs from home now: `capture.mjs --app gisday --env local --signed-in <auth0-dev.local.env>` with
-  `AGGIEMAP_SMOKE_BASE_URL=http://localhost:4201`, the Playwright container on `--network container:gisday-dev`, and nginx
-  listening on 4201 inside it, because the dev tenant's application returns only to `localhost:4201`. About 23 minutes for
-  70 shots.
+- `npm audit fix` alone left `multer`, `tar` and `postcss-url` vulnerable: a direct `multer ^1` in the root, `tar` held by
+  `bcrypt` 5's `node-pre-gyp`, and an exact `postcss-url` pin. Check the audit after, not the command's exit code.
+- A regression test that imports a new symbol "fails" on the unfixed code by not compiling. Add the symbol alone to prove it
+  red for the right reason (#2120 did: 201 and 500 instead of 413).
+- Agent worktrees under `.claude/worktrees` fail on Windows ("Filename too long"); make them at `C:\TAMU\wt-<n>`.
