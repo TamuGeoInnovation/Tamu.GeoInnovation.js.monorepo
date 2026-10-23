@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:40 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **1:53 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **1:40 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 2:20 PM Central.**
-
-**Batch 42, security: does Nx 24 run Jest and webpack unconverted?** (a test, nothing pushed), started 1:40 PM Central, in `C:/TAMU/wt-nx24-probe` from batch 41's branch. Then 43.
+**Nothing running.** Batches 41 to 43 are done (42 stopped at step 2). Watching the branch.
 
 ## Finished
+
+- **Batch 43, security: #1218 survey of TypeScript 7, ESLint 10, typeorm 1 (read-only)** (1:42 to 1:51 PM, 23 October): **TypeScript 7 is blocked** (Angular 22, next included, and typescript-eslint 8 require `<6.1`); **ESLint 10 installs**, with 5 lint errors from 2 new recommended rules (small); **typeorm 1 installs only with `mssql` 12 and `ts-node` 10.9.2**, then 69 type errors (63 are `relations` string arrays) plus a runtime risk from the null/undefined-`where` change (medium). Recommended order: ESLint, typeorm, TypeScript. Report `work-lab-leila/reports/2026-10-23-32.md`.
+
+- **Batch 42, security: Nx 24 probe - stopped at step 2** (1:40 to 1:42 PM): `nx migrate 24.0.0` ran, then `npm install` hit `ERESOLVE` (the lock\x27s `@nx/*` 23.3.0 set vs `@nx/angular@24.0.0`\x27s peer `@nx/webpack@24.0.0`), the same as batch 39. Nothing committed; worktree removed. Suggests a re-run with batch 41\x27s lock-entry method. Report `work-lab-leila/reports/2026-10-23-31.md`.
 
 - **Batch 41, security: angular-eslint 22.6.0 by re-resolving only its own lock entries - pushed** (1:36 to 1:40 PM, 23 October; director: work, security chat): deleted the nine `angular-eslint`/`@angular-eslint/*` lock keys and re-resolved them, with no ERESOLVE; the lock diff is only those eight packages to 22.6.0 plus their nested `ignore` 7.0.8 → 7.0.12. Full check exit 0, lint 104 / test 100 / build 14, no cache hits. **`chore/2168-angular-eslint-22-6` at `6457deb77`** on the fork. Report `work-lab-leila/reports/2026-10-23-30.md`.
 
@@ -178,4 +180,4 @@ Last written **1:40 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 41 (39 stopped at step 2; 40 superseded)
+Last batch done: 43 (42 stopped at step 2; 39 stopped; 40 superseded)
