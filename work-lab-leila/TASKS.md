@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 40.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 41.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,34 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 40 (security: #2168 step 1 - Nx 24, the lint targets only; a code job and a branch; 23 October 2026, 1:35 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 39**, and only if batch 39 pushed its branch (angular-eslint 22.6.0). If 39 stopped, stop here too
+and say so. **Expected: about 90 minutes.**
+
+**The maintainer's decision on #2168 (23 October):** Nx 24 in three branches, each with its own full check: **lint**, then Jest, then the
+webpack builds (the last after #2117). This batch is **lint only**. His comment on #2168 has the order.
+
+1. `git worktree add C:/TAMU/wt-2168-lint -b chore/2168-nx-24-lint fork/chore/2168-angular-eslint-22-6` (on batch 39's branch).
+2. In Docker (`node:24.22.1`, own volume): `npm ci`, `node node_modules/nx/dist/bin/nx.js migrate 24.0.0`, then `npm install`. If it
+   still fails on peers, report the full conflict and stop (no `--legacy-peer-deps`, no `--force`).
+3. Run **only the migrations that concern lint** from `migrations.json` (those for `@nx/eslint`, `@nx/eslint-plugin` and the workspace-wide
+   ones they depend on: list which you ran and which you left, with each one's description). Edit `migrations.json` down to that set,
+   then `nx migrate --run-migrations`. If a lint migration writes an AI prompt in `tools/ai-migrations/`, do what it asks **by hand** for
+   the lint targets only, and say what you did.
+   - **Every `@nx/eslint:lint` target must become an inferred `lint` task** that runs the same ESLint on the same files. Pick three projects
+     (one Angular library, one Nest app, one plain TS library) and show, before and after, the command Nx runs for `lint`
+     (`nx show project <p> --json`, the `lint` target's `command`/`options`).
+   - The CI lint exclusions (`lint.yml`, read by `scripts/check-in-volume.sh`) must still mean the same projects.
+4. **Jest and webpack must still work on Nx 24 without being converted.** If they cannot (an executor removed, so the target errors), stop
+   and report exactly which targets and what error: that changes the plan, and is a question for the maintainer.
+5. Proof: `scripts/check-in-volume.sh chore/2168-nx-24-lint` (full `affected`, clean `npm ci`): every `Successfully ran target` / `failed`
+   line, each failure's first error. **Lint must run for every project it ran for before (113 minus the removed oidc projects: compare with
+   `development`'s count) and pass.** Also the AggieMap dev server from this worktree (own `node_modules` volume, a port other than 4200 if
+   busy): first compile without errors, map page answers.
+6. Commit with `migrations.json` and `tools/ai-migrations/` removed (`chore(workspace): Upgrade Nx to 24, and move lint to inferred
+   tasks`, a body listing the migrations run and any hand changes, `Part of #2168`, the Co-Authored-By line). Push only if step 5 passed.
 
 ## Batch 38 (security: #2117 part 2 rebased onto development after PR 2173, and re-proved; 23 October 2026, 1:25 PM Central, from `work (security)`)
 
