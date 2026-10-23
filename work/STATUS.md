@@ -13,7 +13,7 @@ Nothing. **Last batch done: 24.** Watching the branch.
 ## Batch 24 finished, 7:37 AM Central, 23 October
 
 `work/reports/2026-10-23-3.md`. **Branch `ci/2118-security-scan` at `1d5359faa`** on the fork, from
-`origin/development` at `35581d017`. No pull request - home opens it. 7 files, +2,833 lines, LF checked.
+`origin/development` at `35581d017`. **Now [PR 2130](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2130), and it belongs to the security chat** - do not open another. 7 files, +2,833 lines, LF checked.
 
 Daily scan at 06:42 College Station plus `workflow_dispatch`; the publish gate blocks a **critical** not
 in `.github/security/accepted-advisories.json`, before the push rather than after.
@@ -64,6 +64,31 @@ value for all 3,049 requests, so nothing can be attributed to an address.
 `geoservices-nest` is deployed as `gsvcs-nest` in `gsvcs`, on `:latest`, unrestarted since 27 August.
 
 Three questions for the director are in the report. A short, address-free summary is on #2107.
+
+## Security work moved out of this chat, 23 October
+
+From about 8:20 AM Central, **all security and vulnerability work in this repository is directed by a separate
+chat on this machine**, `js.monorepo - Security - CSA 305 Desktop`: dependency audits and security updates
+(#2112), vulnerability scanning of packages and images (#2118), the security parts of the standing sweep
+(#1146), Dependabot/CodeQL/secret-scanning alerts, committed credentials, and any issue whose main purpose is
+security.
+
+**For every machine on this branch:**
+
+- **Do not start or continue security work**, and do not queue it in a batch. If you find a vulnerability while
+  doing something else, **file the issue** with every field as `CLAUDE.md` requires and say in your report that
+  it is **for the security chat**. Do not fix it.
+- **`package.json` and `package-lock.json` are shared ground.** Say in your report before changing either, so
+  two chats do not edit the lock at once. A version bump whose reason is a security fix is the security chat's.
+- **Leave `C:\TAMU\wt-2118` and the Docker volume `trivy-cache` alone** on the work machine; the security chat
+  is using them.
+
+Handed over with it: #2118 (PR 2130), #2111, #2107, and three issues this chat had decided to file but did not
+- the missing forensic trail, `geoservices-nest` having no `ValidationPipe`, and `multer` 1.4.4 being a direct
+  dependency that pulls `busboy` 0.2.5 and `dicer`.
+
+**Still directed from this chat:** AggieMap generally, #2127 (the `arc.ts.tamu.edu` paging refusals - a service
+availability fault, not security), the #1745 GIS-team list, and the listeners' batches.
 
 ## Handed over to `home`, 23 October
 
