@@ -30,7 +30,9 @@ Last written **12:13 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Batch 32, security: #2154, npm test and npm run coverage** (director: work, its security chat). Started 12:13 PM Central, after batch 31.
+**Next update by 12:43 PM Central.**
+
+**Batch 33, security: #2155 again, after the gisday-nest fix** (director: work, its security chat). Started 12:13 PM Central, before batch 32 as it says. Batch 32 (#2154) follows.
 
 ## Finished
 
