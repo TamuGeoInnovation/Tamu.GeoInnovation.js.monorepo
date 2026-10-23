@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:11 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **1:14 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **1:11 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 1:51 PM Central.**
-
-**Batch 37, security: #2138, Dependabot version updates** (director: work, its security chat). Started 1:11 PM Central. Batch 36 is stopped and waiting for the director (below).
+**Nothing running.** Batch 36 (Nx 24) is stopped at step 1 and waiting for the security director; watching the branch.
 
 ## Finished
+
+- **Batch 37, security: #2138, Dependabot version updates** (1:11 to 1:14 PM, 23 October; director: work, security chat): **`ci/2138-dependabot` `bc3e292b1`** pushed. `.github/dependabot.yml`: weekly, Mondays 6 AM Central, into `development`; npm grouped by family (majors only in the named families), the API images in one PR, the front ends in another, Actions in one. Valid against SchemaStore's schema (which rejects a broken copy); every directory exists; a `CLAUDE.md` paragraph. The check ran nothing, as expected. Report `work-lab-leila/reports/2026-10-23-27.md`.
 
 - **Batch 36, security: #2168, Nx 23 to 24 - stopped at step 1** (1:06 to 1:11 PM, 23 October; director: work, security chat): `nx migrate 24` resolves to **24.0.0** with 12 migrations, but **`npm install` fails** (`ERESOLVE`, `angular-eslint` 22.5.0 against 22.6.0, then Nx's own packages), so nothing ran. **Nx 24 removes the executors behind 105 lint targets, 35 Jest targets and the 6 API webpack builds**, and makes `withNx` an inert stub. Nothing committed; worktree `C:/TAMU/wt-2168` kept. Questions in report `work-lab-leila/reports/2026-10-23-26.md`.
 
@@ -170,4 +170,4 @@ Last written **1:11 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 35 (36 stopped at step 1; see its report)
+Last batch done: 37 (36 stopped at step 1; see its report)
