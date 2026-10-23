@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 41.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 43.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -20,7 +20,47 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Batch 41 (security: angular-eslint 22.6.0 by re-resolving only its eight lock entries; a code job and a branch; 23 October 2026, 1:40 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 30 minutes.** Your batch 39 question 1: **(a)**.
+
+1. In `C:/TAMU/wt-ae2206` (`chore/2168-angular-eslint-22-6`, with your uncommitted `package.json` edit): `git fetch origin`; if
+   `origin/development` has moved past `6eac6d637`, rebase onto it first (stash the edit, rebase, re-apply).
+2. Delete from `package-lock.json` only the entries for `angular-eslint` and every `@angular-eslint/*` package, at whatever paths they
+   occur (top level and nested), with a short script. Report the keys removed. Then, in Docker (`node:24.22.1`, own volume),
+   `npm install --package-lock-only --ignore-scripts`. If ERESOLVE again, report it in full and stop.
+3. **Prove nothing else moved:** compare the new lock with `development`'s, key by key: list every key added, removed, or whose
+   `version` changed. **Expected:** only the eight `angular-eslint` packages (to 22.6.0) and anything that only they depend on. Report
+   any other change; if there is one you cannot explain, stop before committing.
+4. `scripts/check-in-volume.sh chore/2168-angular-eslint-22-6` (full `affected`, clean `npm ci`): the `Successfully ran target` /
+   `failed` lines and each failure's first error. Lint matters most here.
+5. Commit (`chore(workspace): Move angular-eslint to 22.6.0, the first step towards Nx 24`, a body with step 3's diff summary,
+   `Part of #2168`, the Co-Authored-By line) and push to the fork only if steps 3 and 4 passed.
+
+## Batch 42 (security: Nx 24 - does Jest and webpack still run unconverted? A test, not a branch; 23 October 2026, 1:40 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 41, only if 41 pushed.** **Expected: about 30 minutes.** Your batch 39 question 2: **(c)**, prove the premise
+first. The maintainer chose "three branches, each with its own full check: lint, then Jest, then webpack". That only works if Nx 24 still
+runs Jest and webpack targets that have not been converted yet. This batch finds out; **commit and push nothing.**
+
+1. `git worktree add C:/TAMU/wt-nx24-probe fork/chore/2168-angular-eslint-22-6 --detach` (batch 41's branch).
+2. In Docker (`node:24.22.1`, own volume): `npm ci`, `node node_modules/nx/dist/bin/nx.js migrate 24.0.0`, `npm install`. If it fails,
+   report it in full and stop. **Do not run the migrations.**
+3. With Nx 24 installed and **no migration run**, run and report exit code and the first error (or the last lines on success) of:
+   - `nx run common-utils-string:test` (Vitest) and `nx run geoservices-data-access:test` (Jest, `@nx/jest:jest`);
+   - `nx run ui-kits-ngx-forms:lint` (`@nx/eslint:lint`);
+   - `nx run gisday-nest:build --configuration=production` (`@nx/webpack:webpack`, with `withNx()` in its `webpack.config.js`);
+   - `nx run aggiemap-angular:build --configuration=production` (Angular).
+4. Then run **only the lint migrations** (as batch 40 described: `@nx/eslint`, `@nx/eslint-plugin`, and workspace-wide ones they depend
+   on), and repeat step 3. Report which migrations you ran.
+5. **The answer the director needs, in one line each:** on Nx 24, do unconverted `@nx/jest:jest` targets run? Do unconverted
+   `@nx/webpack:webpack` builds run, and if they do, is the output the same as on Nx 23 (compare `dist/apps/gisday-nest/main.js` size and
+   the file list with a build from `development`)? Can a lint-only branch pass the full check?
+6. Clean up: remove the worktree. Leave the volume.
+
 ## Batch 40 (security: #2168 step 1 - Nx 24, the lint targets only; a code job and a branch; 23 October 2026, 1:35 PM Central, from `work (security)`)
+
+**SUPERSEDED at 1:40 PM Central by batches 41 and 42. Do not run it.** Its step 4 rested on a premise batch 42 now tests.
 
 **Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 39**, and only if batch 39 pushed its branch (angular-eslint 22.6.0). If 39 stopped, stop here too
 and say so. **Expected: about 90 minutes.**
