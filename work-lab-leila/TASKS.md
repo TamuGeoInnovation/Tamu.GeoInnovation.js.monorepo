@@ -26,6 +26,22 @@ report under **Questions for the director**, with options and a recommendation �
 
 > **6:45 PM Central, from `work (security)`: batch 62 (Nx 24 as a branch) is waiting and has not started. Start it now.** Then batch 63.
 
+> **Addition to batch 64, 7:15 PM Central, from `work (security)` (the maintainer wants the same on the home machine, and on any machine after).**
+> Make `tools/build-agent/README.md` a **machine-independent procedure, "Adding a machine as a build agent"**, in this order, with the agent named
+> after its machine (`AZP_AGENT_NAME` = `<machine>-1`, for example `lab-1`, `home-1`). The token is always the maintainer's, typed into a hidden prompt:
+> 1. **The maintainer, once per organization:** an Azure DevOps token (User settings → Personal access tokens; scopes **Agent Pools: Read & manage**
+>    and **Build: Read & execute**; short expiry). It is never written to a file.
+> 2. **The maintainer, once per organization:** the `Linux-Build` pool, and the Monorepo pipeline's fork settings (secrets **off** for forks; a team
+>    member's comment required for non-team members). Include the PowerShell for this, which reads the token with `Read-Host -AsSecureString`:
+>    `GET`/`POST {org}/_apis/distributedtask/pools` (`name: Linux-Build`, `autoProvision: true`), then `GET` the definition 19, set the
+>    `pullRequest` trigger's `forks.allowSecrets = false`, `isCommentRequiredForPullRequest = true`, `requireCommentsForNonTeamMembersOnly = true`,
+>    and `PUT` it back. It must be safe to run twice (it skips the pool if it already exists).
+> 3. **Per machine (needs Docker):** fetch the branch, `docker build` the image.
+> 4. **Per machine:** the maintainer starts `run-agent.ps1` (hidden token prompt; one fresh container per job; Ctrl+C stops it).
+> 5. **The maintainer, once per organization:** Project settings → Agent pools → `Linux-Build` → Security → Pipeline permissions → add **Monorepo**.
+> 6. **Check:** the agent shows **Online** in the pool, and a PR build's job log names the agent.
+> And a section **"Stopping or removing an agent"**: Ctrl+C, then remove it from the pool if the machine is leaving.
+
 ## Batch 64 (security: #2212 - an Azure Pipelines Linux agent in a container on this machine, built and proven, NOT registered; a code job and a branch; 23 October 2026, 7:00 PM Central, from `work (security)`)
 
 **Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 90 minutes.** The maintainer's decision (#2212): the Monorepo pipeline gets self-hosted Linux build

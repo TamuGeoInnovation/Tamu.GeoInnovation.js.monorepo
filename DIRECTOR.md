@@ -131,6 +131,11 @@ written for the terminal CLI). Spend for the day shows in TAMUS AI Chat's own us
   and never queues what a listener is already running.
 - Applies the same rule to itself: work a listener is better placed for goes into that listener's batch, never
   done by the director on the side.
+- **Any listener with Docker can host an Azure Pipelines build agent** (the maintainer, 23 October 2026, #2212). The procedure is
+  `tools/build-agent/README.md` in the monorepo (on `development` once its PR merges): a Linux agent in a fresh container per job,
+  no host folders, no Docker socket, capped memory and CPU, agent named `<machine>-1` in pool `Linux-Build`. **The maintainer
+  always does the token steps himself**, at a hidden prompt; no session ever handles the token. A director may give a listener the
+  non-token steps (building the image) as a batch.
 - **Keeps CI within its three build machines** (the maintainer, 23 October 2026). Azure has three build agents, so at most three
   builds run usefully at once. Twelve at once (a Dependabot burst plus several directors pushing together) stalled every one of them.
   Before pushing a branch with an open pull request, a director counts the queued and running Azure builds and keeps the total at
