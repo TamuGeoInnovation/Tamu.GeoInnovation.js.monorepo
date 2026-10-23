@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:41 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **2:45 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **2:41 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 3:15 PM Central.**
+**Next update by 3:10 PM Central.**
 
-**Batch 49, security: typeorm 1 and mssql 12** (a code job and a branch, about 2 hours), started 2:21 PM Central, in `C:/TAMU/wt-typeorm1` (`chore/1218-typeorm-1`, on `chore/1218-eslint-10`). Steps 2 to 4 done (code converted, 0 new type errors, 18 GIS Day reads and mailroom identical to development against a throwaway SQL Server). Per the 2:45 PM note: `origin/development` merged in (only the lock conflicted), the apps' `mssql` moved to ^12.7.11; the full check is running again, since 2:41 PM. Then 50 and 51.
+**Batch 51, security: remove eslint-plugin-node** (a small code job and a branch), started 2:45 PM Central, in `C:/TAMU/wt-no-eslint-node`, between 49 and 50 as it allows. **Batch 52 (aggiemap) is waiting for its build:** at 2:44 PM the `development` CI run for `6a567ae8c` was still queued, so that build cannot be on dev yet. Then 50.
 
 ## Finished
+
+- **Batch 49, security: typeorm 1 and mssql 12 - pushed** (2:21 to 2:43 PM, 23 October): 78 literal `relations` arrays and one computed one to the object form, the one `select`, `getRepository` injected. **`EntityRelationsLUT` held two more arrays that neither `tsc` nor grep could see**, which made `speakers/season/active` 500 until converted. 0 new type errors; against a throwaway SQL Server, 18 GIS Day reads and mailroom's are byte-identical to development's build, writes 401. Merged `origin/development` per the note (only the lock conflicted; the apps' `mssql` now ^12.7.11). Full check exit 0 (lint 104 / test 100 / build 14). **`chore/1218-typeorm-1` at `7be822162`.** The seed `.bak` is two migrations behind (question). Report `work-lab-leila/reports/2026-10-23-38.md`.
 
 - **Batch 48, security: Jest to inferred targets on Nx 23 - pushed** (2:17 to 2:21 PM, 23 October): `convert-to-inferred` moved 34 projects to `@nx/jest/plugin`; same 103 test projects and same test counts (1, 4, 51 on the three sampled). Replaced the generator's `externalDependencies: ["vitest"]` on the Jest default with jest, ts-jest, jest-preset-angular and jest-junit. `--coverage=false` works. Full check exit 0, lint 104 / **test 100** (as on development) / build 14. **`chore/2168-jest-inferred` at `de8f87eda`.** Report `work-lab-leila/reports/2026-10-23-37.md`.
 
@@ -192,4 +194,4 @@ Last written **2:41 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 48 (42 and 39 stopped; 40 superseded)
+Last batch done: 49 (42 and 39 stopped; 40 superseded)
