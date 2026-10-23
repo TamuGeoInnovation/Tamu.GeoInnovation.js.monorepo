@@ -20,6 +20,7 @@ on:
 permissions:
   contents: read
   issues: write
+  packages: read
 
 concurrency:
   group: security-scan
@@ -55,20 +56,19 @@ jobs:
       - name: npm audit
         run: npm audit --omit=dev --package-lock-only --json > npm-audit.json || true
 
-      # The images to scan: each app's newest `sha-` tag on development, plus the shared nginx base,
-      # which is a build input rather than a deployed image and is where the front ends' findings
-      # actually live (#2119).
+      # The images to scan: each app's `:stable`, the newest image built from development that passed
+      # the publish gate, plus the shared nginx base, which is a build input rather than a deployed
+      # image and is where the front ends' operating-system findings live (#2119). Not `:sha-<HEAD>`:
+      # a run cancelled by the next merge, a failed publish, or one still going at 06:42 leaves HEAD
+      # with no images, and the scan would then check nothing and pass (#2118).
       - name: Work out which image tags to scan
         id: images
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          sha=$(git rev-parse --short=7 HEAD)
           {
             echo "list<<EOF"
             for app in gisday-nest geoservices-nest mailroom-nest mailroom-helper-nest \
-                       gisday-angular aggiemap-angular; do
-              echo "ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${app}:sha-${sha}"
+                       gisday-angular aggiemap-angular geoservices-angular mailroom-angular; do
+              echo "ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${app}:stable"
             done
             echo "ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/nginx-base:latest"
             echo "EOF"
@@ -78,9 +78,9 @@ jobs:
         run: echo '${{ github.token }}' | docker login ghcr.io -u '${{ github.actor }}' --password-stdin
 
       # Each image scanned into its own file, named for the image, so a finding can be traced back
-      # to where it lives. A tag that does not exist is skipped with a line saying so rather than
-      # failing the run: not every app is rebuilt on every commit, so the newest `sha-` tag for one
-      # app may legitimately not exist for another.
+      # to where it lives. Every listed image must exist: `:stable` always does for an app that has
+      # ever been published, so a missing one means something is wrong, and skipping it would make
+      # the run look clean while checking less than it says.
       - name: Trivy
         id: trivy
         run: |
@@ -90,7 +90,8 @@ jobs:
             [ -n "$image" ] || continue
             name=$(echo "$image" | sed 's|.*/||; s|[:/]|_|g')
             if ! docker manifest inspect "$image" >/dev/null 2>&1; then
-              echo "skipping $image: not in the registry"
+              echo "::error::$image is not in the registry, so it cannot be scanned"
+              missing=1
               continue
             fi
             docker run --rm -v "$PWD/scan:/out" \
@@ -101,6 +102,10 @@ jobs:
           done <<< '${{ steps.images.outputs.list }}'
           printf '%s\n' "${args[@]}" > trivy-args.txt
           echo "scanned $(( ${#args[@]} / 2 )) image(s)"
+          [ -z "${missing:-}" ]
+        # A missing image fails the run, but only at the end ("Fail on a missing image"), so the images
+        # that were scanned are still compared and reported.
+        continue-on-error: true
 
       # The comparison lives in tools/, not here, so it can be tested without pushing a branch and
       # waiting for a schedule - see tools/security-findings/findings.test.mjs, run by
@@ -108,6 +113,11 @@ jobs:
       # nothing to catch, which is why this one has tests at all.
       - name: Compare with the accepted advisories
         id: compare
+        # `shell: bash` is what turns on pipefail (GitHub runs it as `bash -eo pipefail`; the default is
+        # `bash -e`). Without it this step took `tee`'s exit code, always 0, so a new finding was
+        # printed and then "Clear" ran instead of "Report new findings": on 23 October the first
+        # run said "new: 1" and passed (#2118).
+        shell: bash
         run: |
           mapfile -t args < trivy-args.txt
           node tools/security-findings/check.mjs \
@@ -181,7 +191,7 @@ jobs:
       # Closes the issue once everything is either fixed or accepted, so the open issues describe the
       # present rather than accumulating as a history of handled alarms.
       - name: Clear
-        if: steps.compare.outcome == 'success'
+        if: steps.compare.outcome == 'success' && steps.trivy.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -192,3 +202,11 @@ jobs:
           if [ -n "$existing" ]; then
             gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "Nothing outside the accepted advisories. [Run]($run_url)"
           fi
+
+      # Last, so a missing image does not stop the others being compared and reported. A scan that
+      # checked fewer images than it lists has not shown that they are clean.
+      - name: Fail on a missing image
+        if: steps.trivy.outcome == 'failure'
+        run: |
+          echo "::error::at least one image could not be scanned; see the Trivy step"
+          exit 1
