@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:57 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **4:06 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,19 @@ Last written **3:57 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 4:30 PM Central.**
+**Next update by 4:45 PM Central.**
 
-**Batch 52, aggiemap: #2143's eleven athletics maps on dev**, started 3:57 PM Central, ahead of everything else because the GIS team waits on it. **Dev is serving #2176**, checked by content at 3:56 PM: dev's main bundle now contains `MensBasketballParking_view` and `gis.dev.tamu.edu`, which only #2176's code has.
+**Batch 52, aggiemap: #2143's eleven athletics maps on dev**, started 3:57 PM Central, ahead of everything else because the GIS team waits on it. **Dev is serving #2176**, checked by content at 3:56 PM: dev's main bundle now contains `MensBasketballParking_view` and `gis.dev.tamu.edu`, which only #2176's code has. The quick tier is running (since 4:06 PM); full report to follow.
 
-**Batch 50, security: the webpack builds to inferred targets**, in `C:/TAMU/wt-2168-webpack23`: all 15 builds (6 apps, every configuration) byte-identical to development's; images built and checked; **committed locally at `dd87888d3`, not pushed** (the 3:55 PM hold, and a `package.json` question: the conversion needs `webpack-cli`). Its full check is running. Then 58.
+**For the aggiemap director now, because the GIS team is waiting: dev is not yet shown to work. 8 of the 11 maps have a layer that draws nothing on dev**, from each layer's own count query through the map probe, and from `map-layers.spec.ts`: **dev fails 7 of 8, production passes 8 of 8**. The new dev views have a different schema from production's: the per-sport columns are gone and the sublayer order is shifted. So definitions written for production's fields fail:
+- **Accessible Parking Spaces, on indoor track, outdoor track, soccer, softball, swimming and volleyball**: `Field name 'event' does not exist`. The definition filters `event = '<sport>' AND type IN ('Accessible','Disabled')`, and dev's Accessible Parking Spaces layer has neither field.
+- **Cross country's Event Parking Lots**: `Field name 'trackxc' does not exist`.
+- **Baseball, both modes: every event layer**, i.e. Gate/Road Closure, Event Parking Lots, Accessible Parking Lots and both Baseball Symbols layers: `Field name 'baseball'` / `'event' does not exist`. Only the Accessible Shuttle draws.
+- **Working on dev:** tennis, men's basketball, women's basketball (its accessible layer draws 2), and the event lots of the six maps above, which draw.
+- **Safety First and Purchase Hourly Visitor Parking are gone** from every dev map that had them, and production still lists them. **Indoor Track** has its building and lots, and no Team Bus Parking.
+- So either the GIS team adds `event` and `type` (and the per-sport columns) to the dev views, or the definitions change to the new fields. Dev's per-layer field lists, against production's, are in `C:\TAMU\b15\ath-fields.jsonl`.
+
+**Batch 50, security: the webpack builds to inferred targets**, in `C:/TAMU/wt-2168-webpack23`: all 15 builds (6 apps, every configuration) byte-identical to development's; images built and checked; full check exit 0; **committed locally at `dd87888d3`, not pushed** (the 3:55 PM hold, and a `package.json` question: the conversion needs `webpack-cli`). Then 58.
 
 ## Finished
 
