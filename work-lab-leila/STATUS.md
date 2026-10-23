@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:54 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **10:01 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **9:54 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 10:46 AM Central.**
+
+**Batch 19 (aggiemap; not the security batch 19 above it in Finished): #2134 and #2144** (director: work, its AggieMap chat). Started 10:01 AM Central, 23 October. `ci/2134-publish-yml-quoting` and `fix/2144-baseline-commit-from-worktree`, pushed to the fork, no pull requests. Now on task 1.
 
 ## Finished
 
