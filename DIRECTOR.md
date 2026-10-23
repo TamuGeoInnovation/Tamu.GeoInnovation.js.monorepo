@@ -85,6 +85,44 @@ A machine's job does not change when the director does: a batch for a developmen
 batch for a testing machine is testing. The director, whichever machine it is, writes every listener's batches,
 and does its own job itself.
 
+### The TAMU AI key (listeners only, from 23 October 2026)
+
+The maintainer has a Texas A&M System allowance of **$20 a day** through TAMUS AI Chat, which Claude Code can use in
+place of his own Claude account. He wants it spent first. Decided on 23 October:
+
+- **Listeners only**, starting with `work-lab-leila` for one day to see how far $20 goes. Directors stay on his
+  account: they decide and develop, and the key gives only `protected.Claude Sonnet 4.6`.
+- **There is no automatic fallback.** When the day's allowance is used up, the gateway refuses requests and the
+  session cannot continue. **A listener that starts getting refusals writes "TAMU AI allowance used up at <time,
+  US Central>" at the top of its `STATUS.md`, with the batch and step it reached, and stops.** The director sees it
+  and asks the maintainer to switch that machine back. Nothing is lost: the batch resumes from the step named.
+- **Which machine is on it** is recorded here, so nobody has to guess why a listener is running Sonnet:
+
+  | Machine | On the TAMU key since |
+  | --- | --- |
+  | work-lab-leila | not yet (after batch 18) |
+
+**The key never goes in this branch, an issue, a report or a chat.** It lives only in that machine's own
+`%USERPROFILE%\.claude\settings.json`, typed in by the maintainer at a hidden prompt.
+
+**Turning it on** (the maintainer, on the listener, in Windows PowerShell, then restart the Claude app). It backs up
+the settings file, then adds six values under `env`: TAMUS AI Chat's address, the key, and the model for every alias,
+because Claude Code also makes small background calls to a Haiku model, which the gateway does not offer:
+
+```powershell
+cd "$env:USERPROFILE\.claude"; & { $f = "$env:USERPROFILE\.claude\settings.json"; if (Test-Path $f) { Copy-Item $f "$f.before-tamu-ai" -Force; $s = Get-Content -Raw $f | ConvertFrom-Json } else { $s = New-Object PSObject }; $k = Read-Host 'TAMU AI key (hidden)' -AsSecureString; $p = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($k)); $m = 'protected.Claude Sonnet 4.6'; if (-not $s.env) { $s | Add-Member -NotePropertyName env -NotePropertyValue (New-Object PSObject) }; $v = [ordered]@{ ANTHROPIC_BASE_URL = 'https://chat-api.tamu.ai/api'; ANTHROPIC_AUTH_TOKEN = $p; ANTHROPIC_MODEL = $m; ANTHROPIC_DEFAULT_OPUS_MODEL = $m; ANTHROPIC_DEFAULT_SONNET_MODEL = $m; ANTHROPIC_DEFAULT_HAIKU_MODEL = $m }; foreach ($n in $v.Keys) { $s.env | Add-Member -NotePropertyName $n -NotePropertyValue $v[$n] -Force }; [IO.File]::WriteAllText($f, ($s | ConvertTo-Json -Depth 20), (New-Object Text.UTF8Encoding $false)); 'TAMU AI key on: ' + (($v.Keys | Where-Object { $_ -ne 'ANTHROPIC_AUTH_TOKEN' }) -join ', ') }
+```
+
+**Turning it off** (the same way, then restart the app). It removes those six values and leaves everything else:
+
+```powershell
+cd "$env:USERPROFILE\.claude"; & { $f = "$env:USERPROFILE\.claude\settings.json"; $s = Get-Content -Raw $f | ConvertFrom-Json; foreach ($n in 'ANTHROPIC_BASE_URL','ANTHROPIC_AUTH_TOKEN','ANTHROPIC_MODEL','ANTHROPIC_DEFAULT_OPUS_MODEL','ANTHROPIC_DEFAULT_SONNET_MODEL','ANTHROPIC_DEFAULT_HAIKU_MODEL') { if ($s.env) { $s.env.PSObject.Properties.Remove($n) } }; [IO.File]::WriteAllText($f, ($s | ConvertTo-Json -Depth 20), (New-Object Text.UTF8Encoding $false)); 'TAMU AI key off' }
+```
+
+After turning it on, the listener's first reply shows the model it is running; anything but Sonnet 4.6 means the
+desktop app did not pick the settings up, which is the first thing to check on a new machine (the TAMU instructions are
+written for the terminal CLI). Spend for the day shows in TAMUS AI Chat's own usage page.
+
 ## The director
 - Is the only session that asks the maintainer anything, and the only one that takes instructions from him.
 - Writes each listener's `<folder>/TASKS.md`, with each batch and a **Decided** list of his answers.
