@@ -1,6 +1,6 @@
 # Who directs
 
-**Directors: GIS Day - work, its GIS Day chat; AggieMap and workspace-wide work (including the security work, #2107 to #2122) - work, its AggieMap chat** (split at about 8:40 AM Central, 23 October 2026, by the maintainer, 1A). Both chats run on the work machine; each writes only its own application's batches and asks him only about its own, so a listener's batch heading (`gisday:`, `aggiemap:`, `workspace:`) says which chat wrote it and where its questions go.
+**Directors: GIS Day - work, its GIS Day chat; AggieMap - work, its AggieMap chat; security and vulnerability work (#2112, #2118, #1146's security parts, Dependabot, CodeQL and secret-scanning alerts, committed secrets) - work, the chat titled "js.monorepo - Security - CSA 305 Desktop"** (maintainer, 23 October 2026). All three run on the work machine; each writes only its own batches and asks him only about its own, so a listener's batch heading (`gisday:`, `aggiemap:`, `security:`) says which chat wrote it and where its questions go. `package.json` and `package-lock.json` are shared: a chat says so before changing either, and security bumps are the security chat's.
 
 Each of the maintainer's machines runs a Claude Code session on this branch. **Each application has exactly one director at a
 time; every other session listens.** The maintainer talks to the directors; the two are kept apart so that each chat's context
