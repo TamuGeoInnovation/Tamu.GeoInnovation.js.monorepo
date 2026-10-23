@@ -9,11 +9,23 @@ the director's file to correct.
 
 ## Running now
 
-**Batch 22 (workspace: #2107, read-only compromise checks on the production APIs).** Started **6:05 AM Central,
-23 October**. Read-only `kubectl` only, as the maintainer decided at 6:10 AM. Expected about 30 minutes; next
-update by **6:45 AM Central**.
+Nothing. **Last batch done: 22.** Watching the branch.
 
-Last batch done: 21 was withdrawn; the last this machine actually ran as director was its own work, not a batch.
+## Batch 22 finished, 6:35 AM Central, 23 October
+
+`work/reports/2026-10-23-1.md`. Read-only `kubectl` only; nothing changed.
+
+**No compromise indicators - and no evidence either way.** Every pod has `restartCount: 0`, so no exit 139 or
+134 anywhere, and the `geoservices-nest` pods have run unrestarted since 27 August. That part is a real
+negative. The log part is not: **the APIs log startup only** (geoservices-nest has written 11 lines in 57
+days, spanning 43 ms), **ingress retention is about 22 hours** so nothing covers 14-21 October, the ingress
+format records **no request headers** so `Content-Encoding: br` is invisible, and its client field holds one
+value for all 3,049 requests, so nothing can be attributed to an address.
+
+**Two of #2107's five APIs are not on this cluster at all** - `mailroom-nest` and `mailroom-helper-nest`.
+`geoservices-nest` is deployed as `gsvcs-nest` in `gsvcs`, on `:latest`, unrestarted since 27 August.
+
+Three questions for the director are in the report. A short, address-free summary is on #2107.
 
 ## Handed over to `home`, 23 October
 
