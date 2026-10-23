@@ -175,7 +175,10 @@ alone.
 
 1. **Its issue first.** Dependabot's body has no `Closes #N`, so the linked-issue check fails until it has one. File
    an issue for it (Task, `dependencies`, Priority **Low** unless it is a major), set the fields as for any issue, and
-   put `Closes #<issue>` at the top of the pull request's body.
+   **start the issue's body with `Tracks PR #<number>`**: the check accepts that for a Dependabot pull request, and it
+   survives Dependabot's rebases, which rewrite the pull request's body. Also put `Closes #<issue>` at the top of the
+   pull request's body, so the issue closes on merge; if a rebase has removed it by then, close the issue by hand
+   after the merge.
 2. **Checked by a listener** (the lab), like any dependency change: the full check with a clean `npm ci`, the lock diff
    against `development` (only the named packages and their own dependencies may move), and for an image or tool bump,
    the thing actually run (an image started, the smoke suite on the new Playwright). The result goes on the pull request.

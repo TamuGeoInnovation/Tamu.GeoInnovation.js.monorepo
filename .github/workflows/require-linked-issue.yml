@@ -16,6 +16,7 @@ on:
 permissions:
   contents: read
   pull-requests: read
+  issues: read
 
 jobs:
   linked-issue:
@@ -28,6 +29,10 @@ jobs:
         env:
           BODY: ${{ github.event.pull_request.body }}
           TITLE: ${{ github.event.pull_request.title }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
         shell: bash
         run: |
           # GitHub's own closing keywords. Matched case-insensitively, and `#123` may also be a full
@@ -37,6 +42,19 @@ jobs:
           if printf '%s\n%s' "$TITLE" "$BODY" | grep -qiE "$pattern"; then
             echo "Found a linked issue."
             exit 0
+          fi
+
+          # Dependabot rewrites its pull request's body every time it rebases, which deletes any
+          # `Closes #N` added to it. So for Dependabot only, the link may live on the issue instead:
+          # an open issue whose body says `Tracks PR #<this number>` (#2138). Every other author still
+          # needs the closing keyword in the pull request itself.
+          if [ "$AUTHOR" = "dependabot[bot]" ]; then
+            tracking=$(gh issue list --repo "$REPO" --state open --label dependencies --limit 200 \
+              --json number,body --jq ".[] | select(.body | test(\"Tracks PR #${NUMBER}([^0-9]|$)\")) | .number" | head -1)
+            if [ -n "$tracking" ]; then
+              echo "Found issue #$tracking, which tracks this Dependabot pull request."
+              exit 0
+            fi
           fi
 
           # Deliberately a hard failure with instructions rather than a warning. A warning here would
