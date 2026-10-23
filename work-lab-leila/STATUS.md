@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:39 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **12:50 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **12:39 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 1:24 PM Central.**
+**Next update by 1:50 PM Central.**
 
-**Batch 34, security: #2117 part 1, npm out of the API images** (director: work, its security chat). Started 12:39 PM Central, 23 October. Then batch 35 (#2117 part 2) and batch 36 (Nx 24).
+**Batch 35, security: #2117 part 2, each API image its own packages at the root lock's versions** (director: work, its security chat). Started 12:50 PM Central. Batch 36 (Nx 24) follows.
 
 ## Finished
+
+- **Batch 34, security: #2117 part 1, npm out of the API images** (12:39 to 12:50 PM, 23 October; director: work, security chat): **`chore/2117-no-npm-in-api-images` `2d53d4f4e`** pushed. All four new images **0 critical, 0 high** (each `:stable` 4 high, all in the base image's npm); all start, none on a missing module; `gisday-nest` 200 and 401 against a real database; the check ran lint, test and build for 4 projects. Report `work-lab-leila/reports/2026-10-23-24.md`.
 
 - **Batch 32, security: #2154, npm test and npm run coverage** (12:18 to 12:24 PM, 23 October; director: work, security chat): **`fix/2154-root-test-scripts` `93e031a2a`** pushed. The root `jest.config.ts` is deleted; `test` and `coverage` now run `nx run-many -t test`. Proven on a Jest and a Vitest project, and coverage reports. **The pre-push check ran nothing** (`No tasks were run`), so its exit 0 is not a pass; said plainly in the report. Report `work-lab-leila/reports/2026-10-23-23.md`.
 
@@ -164,4 +166,4 @@ Last written **12:39 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 33, and 32 (31 not pushed; see its report)
+Last batch done: 34
