@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:06 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **2:09 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **2:06 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Nothing running.** Batches 44 and 45 are done. Watching the branch.
+**Next update by 2:49 PM Central.**
+
+**Batch 46, security: the other four `"force": true` lint targets removed**, started 2:09 PM Central, in `C:/TAMU/wt-eslint10`. Then 47 and 48 (lint and Jest to inferred targets on Nx 23).
 
 ## Finished
 
