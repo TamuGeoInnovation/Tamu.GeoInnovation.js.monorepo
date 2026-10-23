@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:06 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **4:17 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,21 +30,17 @@ Last written **4:06 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 4:45 PM Central.**
+**Next update by 5:00 PM Central.**
 
-**Batch 52, aggiemap: #2143's eleven athletics maps on dev**, started 3:57 PM Central, ahead of everything else because the GIS team waits on it. **Dev is serving #2176**, checked by content at 3:56 PM: dev's main bundle now contains `MensBasketballParking_view` and `gis.dev.tamu.edu`, which only #2176's code has. The quick tier is running (since 4:06 PM); full report to follow.
+**Batch 58, security: PR 2184 resolved against PR 2182 ahead of time**, started 4:18 PM Central, in `C:/TAMU/wt-2184r` (`security/check-2184`): the merge is committed locally at `654d75176` (35 files resolved as JSON: 34 `project.json` and `nx.json`; lint 104 / test 103 / 110 projects); its full check is running. **Not pushed: the 3:55 PM hold.**
 
-**For the aggiemap director now, because the GIS team is waiting: dev is not yet shown to work. 8 of the 11 maps have a layer that draws nothing on dev**, from each layer's own count query through the map probe, and from `map-layers.spec.ts`: **dev fails 7 of 8, production passes 8 of 8**. The new dev views have a different schema from production's: the per-sport columns are gone and the sublayer order is shifted. So definitions written for production's fields fail:
-- **Accessible Parking Spaces, on indoor track, outdoor track, soccer, softball, swimming and volleyball**: `Field name 'event' does not exist`. The definition filters `event = '<sport>' AND type IN ('Accessible','Disabled')`, and dev's Accessible Parking Spaces layer has neither field.
-- **Cross country's Event Parking Lots**: `Field name 'trackxc' does not exist`.
-- **Baseball, both modes: every event layer**, i.e. Gate/Road Closure, Event Parking Lots, Accessible Parking Lots and both Baseball Symbols layers: `Field name 'baseball'` / `'event' does not exist`. Only the Accessible Shuttle draws.
-- **Working on dev:** tennis, men's basketball, women's basketball (its accessible layer draws 2), and the event lots of the six maps above, which draw.
-- **Safety First and Purchase Hourly Visitor Parking are gone** from every dev map that had them, and production still lists them. **Indoor Track** has its building and lots, and no Team Bus Parking.
-- So either the GIS team adds `event` and `type` (and the per-sport columns) to the dev views, or the definitions change to the new fields. Dev's per-layer field lists, against production's, are in `C:\TAMU\b15\ath-fields.jsonl`.
-
-**Batch 50, security: the webpack builds to inferred targets**, in `C:/TAMU/wt-2168-webpack23`: all 15 builds (6 apps, every configuration) byte-identical to development's; images built and checked; full check exit 0; **committed locally at `dd87888d3`, not pushed** (the 3:55 PM hold, and a `package.json` question: the conversion needs `webpack-cli`). Then 58.
+**Pushes held since 3:55 PM:** no code branch has been pushed. The mailbox still is, because that is how the lab reports, and `work-mailbox` starts no workflow (GitHub lists no run on it).
 
 ## Finished
+
+- **Batch 52, aggiemap: #2143's athletics maps on dev - NOT yet shown to work** (3:57 to 4:24 PM, 23 October): dev serves #2176 (by content). **8 of 11 maps have a listed layer that draws nothing on dev, because the new dev views have a different schema** (no per-sport columns, no `event`/`type` on the accessible layer, shifted sublayers). Accessible Parking Spaces fails on indoor track, outdoor track, soccer, softball, swimming and volleyball; cross country's lots; all of baseball's event layers. Healthy: tennis, both basketballs, and every event lot but cross country's and baseball's. `map-layers.spec.ts`: dev 1/8 pass, production 8/8. Quick tier: 434 tests, 388 passed, 8 failed (those 7, plus `development-only.ts`'s now out-of-date `TS/WomensBasketballParking/MapServer` entry), 1 flaky. Safety First and Purchase Hourly are gone on dev; Indoor Track has no Team Bus Parking, as expected. Recommends the GIS team add the old columns to the dev views. Report `work-lab-leila/reports/2026-10-23-45.md`.
+
+- **Batch 50, security: the API builds to inferred webpack targets - byte-identical; committed locally, NOT pushed** (3:36 to 3:58 PM): Nx's Nest converter refuses these apps, so done by hand around `NxAppWebpackPlugin`. **All 15 builds byte-identical to development's** (6 apps, every configuration, `main.js`, source map and generated `package.json` included), after fixing three Nx plugin bugs that changed the output (one dropped `tslib` from the generated package.json; one shipped `environment.ts` in production builds). Images: version check clean, start as before, `gisday-nest` 200/401 on SQL Server. Full check exit 0. **`chore/2168-webpack-inferred` at `dd87888d3`, local**; needs `webpack-cli` in `package.json` (question). Report `work-lab-leila/reports/2026-10-23-44.md`.
 
 - **Batch 54, gisday: the local restore runs the migrations (#2196) - pushed** (3:30 to 3:35 PM, 23 October; director: work, gisday chat): `restore` now calls `migration "$DB_NAME" run`, as `migrate run` does. Red: a fresh restore + api gave 500 on sponsors and a season day's events, two migrations pending. Three new checks in `gisday-local.test.sh`, red on the old script, `all passed` after. Green: fresh restore runs both migrations; both routes 200; nothing pending. Doc change kept to the `restore` paragraph (PR 2197 still open). **`fix/2196-gisday-restore-migrates` at `a31cdf68a`.** Report `work-lab-leila/reports/2026-10-23-43.md`.
 
@@ -214,4 +210,4 @@ Last written **4:06 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 54 (52 waits for its build; 42 and 39 stopped; 40 superseded)
+Last batch done: 52 (50 committed locally, not pushed; 42 and 39 stopped; 40 superseded)
