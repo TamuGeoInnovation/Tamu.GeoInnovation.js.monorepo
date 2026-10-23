@@ -245,6 +245,11 @@
       "indoor-track-parking-building",
       "indoor-track-parking-safety-first",
       "indoor-track-parking-team-bus"
+    ],
+    "developmentLayers": [
+      "indoor-track-parking-accessible-parking",
+      "indoor-track-parking-lots",
+      "indoor-track-parking-building"
     ]
   },
   "kickoff-at-kyle": {
@@ -363,6 +368,10 @@
       "outdoor-track-parking-accessible-parking",
       "outdoor-track-parking-lots",
       "outdoor-track-parking-safety-first"
+    ],
+    "developmentLayers": [
+      "outdoor-track-parking-accessible-parking",
+      "outdoor-track-parking-lots"
     ]
   },
   "permit-select-freshman": {
@@ -431,6 +440,10 @@
       "soccer-parking-accessible-parking",
       "soccer-parking-lots",
       "soccer-parking-safety-first"
+    ],
+    "developmentLayers": [
+      "soccer-parking-accessible-parking",
+      "soccer-parking-lots"
     ]
   },
   "softball-parking": {
@@ -440,6 +453,10 @@
       "softball-parking-accessible-parking",
       "softball-parking-lots",
       "softball-parking-safety-first"
+    ],
+    "developmentLayers": [
+      "softball-parking-accessible-parking",
+      "softball-parking-lots"
     ]
   },
   "softball-regionals-2025": {
@@ -497,6 +514,10 @@
       "swimming-parking-accessible-parking",
       "swimming-parking-lots",
       "swimming-parking-safety-first"
+    ],
+    "developmentLayers": [
+      "swimming-parking-accessible-parking",
+      "swimming-parking-lots"
     ]
   },
   "t-camp": {
@@ -522,6 +543,9 @@
   "tennis-parking": {
     "layerList": true,
     "layers": [
+      "tennis-parking-lots"
+    ],
+    "developmentLayers": [
       "tennis-parking-lots"
     ]
   },
@@ -569,6 +593,10 @@
       "volleyball-parking-accessible-parking",
       "volleyball-parking-lots",
       "volleyball-parking-safety-first"
+    ],
+    "developmentLayers": [
+      "volleyball-parking-accessible-parking",
+      "volleyball-parking-lots"
     ]
   },
   "womens-basketball": {

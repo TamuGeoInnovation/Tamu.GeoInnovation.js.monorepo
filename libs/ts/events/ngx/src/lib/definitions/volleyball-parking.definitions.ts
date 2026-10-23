@@ -116,6 +116,35 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
   } as unknown as LayerSource
 ];
 
+/**
+ * Volleyball on the development GIS server (#2143).
+ *
+ * The GIS team republished this map as a hosted view with **two** layers, having removed the visitor
+ * kiosk and the crosswalk ("Safety First") layers and renamed the accessible one. Production still
+ * serves the four-layer version until they publish there, so this stands beside the sources above
+ * rather than replacing them; `event-settings.service.ts` chooses between them.
+ *
+ * **Derived from the production sources rather than written out again**, so the two cannot drift: the
+ * popups, definition expressions and draw order are the same objects, and only the layer index moves.
+ * `eventUrl` already resolves to the development host, because `athleticsHost` in `connections.ts` does.
+ *
+ * The view's own indexes: Accessible Parking Spaces is 0 here and 1 on production, the lots 1 here and 2.
+ */
+const volleyballParkingDevelopmentIndex: Record<string, number> = {
+  [VolleyballParkingDefinitions.ACCESSIBLE_PARKING.id]: 0,
+  [VolleyballParkingDefinitions.PARKING.id]: 1
+};
+
+export const VolleyballParking_DevelopmentLayerSources: LayerSource[] = VolleyballParkingColdLayerSources.filter(
+  (source) => (source as { id: string }).id in volleyballParkingDevelopmentIndex
+).map(
+  (source) =>
+    ({
+      ...source,
+      url: `${eventUrl}/${volleyballParkingDevelopmentIndex[(source as { id: string }).id]}`
+    }) as unknown as LayerSource
+);
+
 export const VolleyballParkingConfiguration: EventConfiguration = {
   id: 'volleyball-parking',
   name: 'Volleyball',
@@ -157,6 +186,7 @@ export const VolleyballParkingTs: AggiemapCustomMapConfiguration = {
   configuration: VolleyballParkingConfiguration,
   options: VolleyballParkingOptions,
   sources: VolleyballParkingColdLayerSources,
+  developmentSources: VolleyballParking_DevelopmentLayerSources,
   references: VolleyballParkingLayerReferences,
   discover: {
     id: VolleyballParkingConfiguration.id,

@@ -116,6 +116,61 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
   } as unknown as LayerSource
 ];
 
+/**
+ * Soccer on the development GIS server (#2143).
+ *
+ * The GIS team republished this map as a hosted view with **two** layers - Accessible Parking Spaces
+ * and the event lots - having removed the visitor kiosk and the crosswalk ("Safety First") layers.
+ * Production still serves the four-layer version, so this stands beside `SoccerParkingColdLayerSources`
+ * rather than replacing it; `event-settings.service.ts` chooses between them.
+ *
+ * `eventUrl` already resolves to the development host, because `athleticsHost` in `connections.ts` does
+ * - so only the layer indexes are restated here. They are the view's own and bear no relation to
+ * production's: Accessible Parking Spaces is 0 here and 1 there.
+ *
+ * Everything other than the url and the index is deliberately identical to the production source above
+ * - the same ids, popups, definition expressions and draw order - so that what a visitor sees on
+ * development differs only by the two layers the GIS team removed.
+ */
+export const SoccerParking_DevelopmentLayerSources: LayerSource[] = [
+  {
+    type: 'feature',
+    id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
+    title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
+    url: `${eventUrl}/0`,
+    popupComponent: EventPopups.MarkdownPopupComponent,
+    visible: true,
+    listMode: 'show',
+    layerIndex: 11,
+    native: {
+      outFields: ['*'],
+      definitionExpression: `event = 'Soccer'`
+    }
+  } as unknown as LayerSource,
+  {
+    type: 'feature',
+    id: SoccerParkingDefinitions.PARKING.id,
+    url: `${eventUrl}/1`,
+    popupComponent: EventPopups.MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'lotname',
+        collapsed: true
+      },
+      description: {
+        field: 'soccern',
+        collapsed: true
+      }
+    },
+    visible: true,
+    listMode: 'show',
+    layerIndex: 10,
+    native: {
+      outFields: ['*']
+    }
+  } as unknown as LayerSource
+];
+
 export const SoccerParkingConfiguration: EventConfiguration = {
   id: 'soccer-parking',
   name: 'Soccer',
@@ -153,6 +208,7 @@ export const SoccerParkingTs: AggiemapCustomMapConfiguration = {
   configuration: SoccerParkingConfiguration,
   options: SoccerParkingOptions,
   sources: SoccerParkingColdLayerSources,
+  developmentSources: SoccerParking_DevelopmentLayerSources,
   references: SoccerParkingLayerReferences,
   discover: {
     id: SoccerParkingConfiguration.id,

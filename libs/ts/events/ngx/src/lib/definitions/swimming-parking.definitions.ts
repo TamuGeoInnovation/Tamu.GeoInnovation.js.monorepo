@@ -116,6 +116,35 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
   } as unknown as LayerSource
 ];
 
+/**
+ * Swimming on the development GIS server (#2143).
+ *
+ * The GIS team republished this map as a hosted view with **two** layers, having removed the visitor
+ * kiosk and the crosswalk ("Safety First") layers and renamed the accessible one. Production still
+ * serves the four-layer version until they publish there, so this stands beside the sources above
+ * rather than replacing them; `event-settings.service.ts` chooses between them.
+ *
+ * **Derived from the production sources rather than written out again**, so the two cannot drift: the
+ * popups, definition expressions and draw order are the same objects, and only the layer index moves.
+ * `eventUrl` already resolves to the development host, because `athleticsHost` in `connections.ts` does.
+ *
+ * The view's own indexes: Accessible Parking Spaces is 0 here and 1 on production, the lots 1 here and 2.
+ */
+const swimmingParkingDevelopmentIndex: Record<string, number> = {
+  [SwimmingParkingDefinitions.ACCESSIBLE_PARKING.id]: 0,
+  [SwimmingParkingDefinitions.PARKING.id]: 1
+};
+
+export const SwimmingParking_DevelopmentLayerSources: LayerSource[] = SwimmingParkingColdLayerSources.filter(
+  (source) => (source as { id: string }).id in swimmingParkingDevelopmentIndex
+).map(
+  (source) =>
+    ({
+      ...source,
+      url: `${eventUrl}/${swimmingParkingDevelopmentIndex[(source as { id: string }).id]}`
+    }) as unknown as LayerSource
+);
+
 export const SwimmingParkingConfiguration: EventConfiguration = {
   id: 'swimming-parking',
   name: 'Swimming',
@@ -135,6 +164,7 @@ export const SwimmingParkingTs: AggiemapCustomMapConfiguration = {
   configuration: SwimmingParkingConfiguration,
   options: SwimmingParkingOptions,
   sources: SwimmingParkingColdLayerSources,
+  developmentSources: SwimmingParking_DevelopmentLayerSources,
   references: SWIMMING_PARKING_LAYERS,
   discover: {
     id: SwimmingParkingConfiguration.id,
