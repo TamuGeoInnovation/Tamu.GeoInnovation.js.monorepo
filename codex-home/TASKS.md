@@ -1,5 +1,18 @@
 # codex-home: current tasks
 
+## Batches 5 and 6 - WITHDRAWN at 10:06 AM Central, 23 October 2026, before either was started
+
+**Do neither.** Both were queued here while this machine was not running: its last push was **07:05**, and
+`home` - the machine Codex CLI runs on - **cannot be started today**. I placed work on a machine that was
+never going to pick it up, and did not connect the two facts even after learning `home` was unavailable at
+about 10:00.
+
+- **Batch 5 (#2134)**, quoting four variables in `publish.yml` - moved to `work-lab-leila`.
+- **Batch 6 (#2144)**, the baseline capture losing its commit in a worktree - moved to `work-lab-leila`.
+
+Nothing is owed from this machine. Both issues stay open and carry their own detail; the batches below are
+left for the record.
+
 ## Batch 6 (workspace: #2144, a capture from a worktree silently records no commit; 23 October 2026, 9:05 AM Central, from `work (aggiemap)`)
 
 **After batch 5.** A small code job with unit tests, which is your remit. **A branch for me to turn into a
