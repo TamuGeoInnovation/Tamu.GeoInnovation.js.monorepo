@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 26.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 27.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,25 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 26 (security: #2122, the first eleven unused dependencies removed, and uuid listed; 23 October 2026, 11:35 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.**
+**Expected: about 10 minutes**, a full `affected` check. From Git Bash, in order. Change nothing.
+
+`package.json` loses 11 dependencies nothing references and gains `uuid` (^8.3.2, the version already installed); the lock loses
+37 entries and changes no version. It sits on top of PR 2153 (nodemailer 10).
+
+1. `git fetch fork security/check-2122`. `git rev-parse fork/security/check-2122` must print **`cc819f1c565914f37c658f4496ecb8b6b6a6203b`**. If not, stop and report it.
+2. `git worktree add C:/TAMU/wt-check-2122 fork/security/check-2122 --detach`; `cd C:/TAMU/wt-check-2122`; `git switch -c security/check-2122`.
+3. `scripts/check-in-volume.sh security/check-2122 > ../check-2122.out 2>&1; echo "exit=$?"` (full `affected`, clean `npm ci`).
+4. Report the exit code, every log line with `Successfully ran target` or `failed`, and each failure's project, target and first error.
+   A failure naming one of the removed packages (`@angular/pwa`, `@nestjs/mapped-types`, `@nestjs/serve-static`, `csurf`, `date-and-time`,
+   `document-register-element`, `font-awesome`, `md5`, `mime-types`, `mysql`, `qrcode`) is the important kind: quote it in full.
+   If the only failure is a test timing out, rerun just that project once with `scripts/check-in-volume.sh security/check-2122 <project>`.
+5. `cd C:/TAMU`; `git worktree remove C:/TAMU/wt-check-2122 --force`; `git branch -D security/check-2122`.
+
+Nothing else: no pushes, no pull request, no comments. Report in `work-lab-leila/reports/` and say "work-lab-leila: finished batch 26".
 
 ## Batch 25 (security: #2115 again, after the type fix, and batch 23 resumed with a knip config; 23 October 2026, 11:05 AM Central, from `work (security)`)
 
