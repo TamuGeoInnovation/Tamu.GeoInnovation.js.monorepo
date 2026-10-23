@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:15 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **6:29 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **6:15 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 7:00 PM Central.**
-
-**Batch 59, gisday: deleting a sponsor that has a logo (#2205)**, started 6:15 PM Central, in `C:/TAMU/wt-2205`.
+**Nothing running.** Watching the branch.
 
 ## Finished
+
+- **Batch 59, gisday: deleting a sponsor that has a logo (#2205) - pushed** (6:16 to 6:29 PM, 23 October): the logo rows were deleted with whole rows as criteria, which typeorm 0.3 turns into a WHERE on every column; on SQL Server that matched nothing, so the sponsor hit the foreign key. Reproduced and fixed against a throwaway SQL Server (sponsor, asset row and file all gone after). **Places, organizations and speakers had the same fault**; all four now delete through AssetsService by guid, files after commit, and await their transaction. The double DELETE is the browser's CORS preflight (OPTIONS, 204); the form sends one (a test says so). Full check exit 0. **`fix/2205-gisday-delete-sponsor-with-logo` at `433a090f5`.** Report `work-lab-leila/reports/2026-10-23-50.md`.
 
 - **Batch 61, security: Nx 24 on top of the three conversions - one small change** (6:02 to 6:15 PM, 23 October; a probe, nothing pushed): jest + webpack branches merged (nx.json three-way, four plugins), Nx 24 by batch 44's lock method, all 12 migrations: only three change anything (`affected.legacy`, two old generator defaults, `readyWhen` on eight Angular serve targets). **On Nx 24: lint 104 / test 100 / build 14, all pass; `gisday-nest` production `main.js` and `package.json` byte-identical to batch 50's** (the generated lock differs only in nesting). Report `work-lab-leila/reports/2026-10-23-49.md`.
 
@@ -216,4 +216,4 @@ Last written **6:15 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 61 (42 and 39 stopped; 40 superseded)
+Last batch done: 61 and 59 (42 and 39 stopped; 40 superseded)
