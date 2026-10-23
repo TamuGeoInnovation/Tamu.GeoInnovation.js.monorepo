@@ -1,6 +1,19 @@
 # codex-home: current tasks
 
-## Batch 4 (workspace: #2120, push your branch - one line; 23 October 2026, 8:35 AM Central, from `work (aggiemap)`)
+## Batch 4 - WITHDRAWN at 8:40 AM Central, 23 October 2026, before it was started
+
+**Do not do this batch.** It asked you to push `fix/2120-upload-limits`. **#2120 was already finished by
+somebody else**: PR 2126 merged at 8:07 AM Central - half an hour before the batch was written - and closed
+the issue. Your branch is superseded, and pushing it now would only create a second branch for work that is
+already on `development`.
+
+Nothing is owed from you. Leave `C:\TAMU\wt-codex-home-2120` as it is; the security chat will say if it
+wants anything from it.
+
+My fault, not yours: I wrote the batch from a request without first checking whether the issue was still
+open. The original text follows, struck through in effect, so the history reads straight.
+
+### The withdrawn batch, for the record
 
 **One task, nothing else. A minute.**
 
