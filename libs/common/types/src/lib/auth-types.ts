@@ -1,12 +1,4 @@
 /**
- * A flat object of primitive values. Moved here from `libs/oidc/common` (#2155), which front ends reached only for this
- * type and so compiled its server code.
- */
-export interface ValidObject {
-  [key: string]: boolean | string | number;
-}
-
-/**
  * Options for the legacy session sign-in (`LegacyAuthService` in `@tamu-gisc/common/ngx/auth`). Moved here from
  * `libs/oidc/client` (#2155), so a front end can name it without compiling that server-side library.
  */

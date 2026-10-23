@@ -15,9 +15,17 @@ import {
 } from 'typeorm';
 import { v4 as guid } from 'uuid';
 
-import { ValidObject } from '@tamu-gisc/common/types';
 
 // TODO:
+
+
+/**
+ * A flat object of primitive values, as a GeoJSON feature's `properties`. Lives here, beside its only users (this file and
+ * the GeoJSON interceptor), since it moved out of `libs/oidc/common` (#2155).
+ */
+export interface ValidObject {
+  [key: string]: boolean | string | number;
+}
 
 @Entity()
 export class OldCompetitionEntity extends BaseEntity {
