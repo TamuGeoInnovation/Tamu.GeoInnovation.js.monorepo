@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:22 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **1:32 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **1:22 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 2:07 PM Central.**
+**Next update by 2:12 PM Central.**
 
-**Batch 38, security: #2117 part 2 rebased onto PR 2173 and proved again** (director: work, its security chat). Started 1:22 PM Central. Batch 39 (angular-eslint 22.6.0) follows.
+**Batch 39, security: angular-eslint 22.6.0 on its own (Nx 24's first blocker)** (director: work, its security chat). Started 1:32 PM Central.
 
 ## Finished
+
+- **Batch 38, security: #2117 part 2 rebased onto PR 2173** (1:22 to 1:32 PM, 23 October; director: work, security chat): **`chore/2117-api-own-deps` `e46ac6e0c`** force-with-lease pushed. One conflict per Dockerfile, the last line; the builder stage and 2173\x27s npm removal both kept. Every package at the root lock\x27s version; npm gone; `gisday-nest` 200 and 401; Trivy 0 critical, 0 high on all four (as is `:stable` `6eac6d637` now); 205 to 312 packages and 355 to 478 MB against 493 and about 1.35 GB; the check ran 4 projects. Report `work-lab-leila/reports/2026-10-23-28.md`.
 
 - **Batch 37, security: #2138, Dependabot version updates** (1:11 to 1:14 PM, 23 October; director: work, security chat): **`ci/2138-dependabot` `bc3e292b1`** pushed. `.github/dependabot.yml`: weekly, Mondays 6 AM Central, into `development`; npm grouped by family (majors only in the named families), the API images in one PR, the front ends in another, Actions in one. Valid against SchemaStore's schema (which rejects a broken copy); every directory exists; a `CLAUDE.md` paragraph. The check ran nothing, as expected. Report `work-lab-leila/reports/2026-10-23-27.md`.
 
@@ -172,4 +174,4 @@ Last written **1:22 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 37 (36 stopped at step 1; see its report)
+Last batch done: 38
