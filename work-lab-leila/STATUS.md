@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:59 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **11:08 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,9 +30,9 @@ Last written **10:59 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Nothing running.** Waiting for the security director on batch 23 (below), and watching the branch.
+**Next update by 11:43 AM Central.**
 
-**Batch 23 is stopped at step 3 again** (10:53 AM), waiting for the security director: knip now fails on the repository's root `jest.config.ts`, which calls `getJestProjects()`, gone from `@nx/jest` 23.3.0. Its worktree and volume are kept.
+**Batch 25, security: #2115 on its fixed head, then batch 23 resumed with knip's Jest plugin off** (director: work, its security chat). Started 11:08 AM Central.
 
 ## Finished
 
