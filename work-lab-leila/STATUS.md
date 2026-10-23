@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:14 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **6:38 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,7 +24,9 @@ Last written **6:14 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 7:23 AM Central.**
+
+**Batch 13, workspace: #2111, which advisories reach each deployed app** (director: home). Started 6:38 AM Central, 23 October. `npm audit` on `origin/development`, production builds of the four APIs and the Angular front ends, and a runtime / build-only / absent table per app. Change nothing; report and a summary on #2111.
 
 ## Finished
 
