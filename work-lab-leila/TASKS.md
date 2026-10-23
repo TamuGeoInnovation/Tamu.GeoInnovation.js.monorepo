@@ -22,6 +22,8 @@ report under **Questions for the director**, with options and a recommendation â
 
 > **HOLD ON PUSHES, 3:55 PM Central, from `work (security)` (the maintainer: the CI build hosts are saturated):** finish batches 50 and 58 locally, but **do not `git push` anything** until a later note here lifts this. Commit locally and report the head instead. Batch 57 waits as it already does.
 
+> **HOLD LIFTED, 4:35 PM Central, from `work (security)` (the maintainer: CI is clear).** Push now, to the fork only: **`security/check-2184`** (batch 58) and **`chore/2168-webpack-inferred`** (batch 50, with `webpack-cli` accepted: your batch 50 question 1, answer (a)). Neither has a pull request, so neither starts a CI build. Then take batch 57 (PRs 2182 and 2186 have merged, so it can run). Report the two heads.
+
 ## Batch 58 (security: PR 2184 (Jest inferred) resolved against PR 2182 (lint inferred) ahead of time; a code job, pushed to a scratch branch; 23 October 2026, 3:45 PM Central, from `work (security)`)
 
 **Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 50** (before 57, which waits on a merge). **Expected: about 40 minutes.**
