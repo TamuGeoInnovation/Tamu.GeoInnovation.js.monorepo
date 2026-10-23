@@ -67,7 +67,7 @@ director), its `STATUS.md` and its `reports/` (written only by that machine).
 | home | `home/` | Development: branches, agents, pull requests | 18 October 2026 |
 | work | `work/` | Testing: smoke tiers, screenshot sets, `dev-*` tags | 18 October 2026 |
 | codex-home | `codex-home/` | OpenAI's Codex CLI, on the home machine: reviews and small, well-defined code jobs (unit tests, dead code), each as a branch for the director to turn into a PR | 19 October 2026 |
-| work-lab-leila | `work-lab-leila/` | Testing, on the lab workstation: smoke tiers, screenshot sets and anything that wants the machine to itself. 64 GB and 24 CPUs, the largest here. **No `gh` CLI**, so it opens no pull requests, posts no comments and sets no fields: it pushes branches and reports, and the director does the GitHub half | 20 October 2026 |
+| work-lab-leila | `work-lab-leila/` | **Any kind of batch** (the maintainer, 23 October 2026, correcting a director who read this row as testing-only): smoke tiers, screenshot sets, code, docs, investigations - whatever is waiting when it is idle. It is the largest machine, so give it what wants a machine to itself. **Its tasks are prioritised for vulnerability work at the moment.** 64 GB and 24 CPUs, the largest here. **No `gh` CLI**, so it opens no pull requests, posts no comments and sets no fields: it pushes branches and reports, and the director does the GitHub half | 20 October 2026 |
 
 **Every participant is named for the agent and the machine it runs on.** A Claude Code session is named for its machine
 alone (`home`, `work`); any other agent is `<agent>-<machine>` (`codex-home`, `codex-work`). Each has its own folder of
