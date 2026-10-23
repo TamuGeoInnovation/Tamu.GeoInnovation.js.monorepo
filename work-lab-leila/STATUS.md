@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:25 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **11:44 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **11:25 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 12:14 PM Central.**
+
+**Batch 27, security: #1218, what is out of date** (director: work, its security chat). Started 11:44 AM Central, 23 October. Read-only: `npm outdated` on `origin/development`, summarised.
 
 ## Finished
 
