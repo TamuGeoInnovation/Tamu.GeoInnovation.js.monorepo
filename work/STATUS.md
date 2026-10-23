@@ -3,13 +3,32 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. Clock times are read from PowerShell, not estimated.
 
-Last written **8:15 AM Central, 22 October 2026**. **This machine directs AggieMap.**
+Last written **6:05 AM Central, 23 October 2026**. **This machine is a listener.** The maintainer moved AggieMap's
+direction to `home` at about 6:03 AM Central, 23 October; `DIRECTOR.md` still names `work` on its first line and is
+the director's file to correct.
 
 ## Running now
 
-Nothing. **The machine is free** — the maintainer asked for it back at about 12:55 PM Central, 22 October.
+**Batch 22 (workspace: #2107, read-only compromise checks on the production APIs).** Started **6:05 AM Central,
+23 October**. Read-only `kubectl` only, as the maintainer decided at 6:10 AM. Expected about 30 minutes; next
+update by **6:45 AM Central**.
 
-**Batch 10 is with `work-lab-leila`:** #2101, the service-completeness check. Expected about 90 minutes.
+Last batch done: 21 was withdrawn; the last this machine actually ran as director was its own work, not a batch.
+
+## Handed over to `home`, 23 October
+
+What was in flight when direction moved, so nothing is lost:
+
+- **[PR 2106](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2106)** is open and
+  unmerged: #2101's service-completeness check, from `work-lab-leila`'s batch 10 branch with `development`
+  merged in. Checked here: `tsc` exit 0, and `services.spec.ts` on production 161 passed, 1 flaky.
+- **`work-lab-leila` reported batch 11 at 4:13 PM yesterday** (`reports/2026-10-22-3.md`), the re-measure of the
+  paging refusals after the server reboots. **Nobody has read it.** It decides whether an issue is filed against
+  the GIS team for intermittent paging refusals on `gis.tamu.edu` and `arc.ts.tamu.edu`, which the maintainer had
+  already agreed to file as **High** and to add to #1745 - that agreement was given *before* he said the reboots
+  might explain it, so it should not be acted on without reading the re-measure first.
+- **PR 2106's body says the rate "is being measured again"**; if batch 11 settles it, that paragraph wants
+  updating before the PR merges.
 
 ## Merged today
 
