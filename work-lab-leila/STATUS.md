@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:13 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **12:18 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **12:13 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 12:43 PM Central.**
-
-**Batch 33, security: #2155 again, after the gisday-nest fix** (director: work, its security chat). Started 12:13 PM Central, before batch 32 as it says. Batch 32 (#2154) follows.
+**Batch 32, security: #2154, npm test and npm run coverage** (director: work, its security chat). Started 12:18 PM Central.
 
 ## Finished
+
+- **Batch 33, security: #2155 again, after the gisday-nest fix** (12:13 to 12:18 PM, 23 October; director: work, security chat): `248d79ab5` as required; `check-in-volume.sh` **exit=0** (lint 104, test 100, build 14; `gisday-nest` builds now). `gisday-angular`'s production build has no mail code (`build=0`, grep empty). Report `work-lab-leila/reports/2026-10-23-22.md`.
 
 - **Batch 31, security: #2117, each API image its own packages - not pushed** (12:05 to 12:13 PM, 23 October; director: work, security chat): change committed locally as `7c25ba6a0` in `C:/TAMU/wt-2117` (left for the director). All four APIs build with their own `package.json` and lock, and the check is exit 0; **but 3 of 4 images fail `npm ci`**, because Nx's generated lock gets nested copies wrong. `geoservices-nest` builds and starts: 192 packages against 623. **The three accepted findings are in the base image's own npm**, not the APIs'. Report `work-lab-leila/reports/2026-10-23-21.md`.
 
@@ -160,4 +160,4 @@ Last written **12:13 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 31 (not pushed; see its report)
+Last batch done: 33 (31 not pushed; see its report)
