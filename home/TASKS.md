@@ -1,5 +1,46 @@
 # Home machine: current tasks
 
+## Decided (23 October 2026)
+
+- From 23 October, all security and vulnerability work in this repository belongs to the security chat on the work
+  machine ('js.monorepo - Security - CSA 305 Desktop'). That covers #2111 and everything under it, #2112 to #2120,
+  #2135, Dependabot, CodeQL and secret-scanning alerts, and base-image updates. Don't put any of it in a batch for any
+  machine. If you find something, file the issue with every field, write 'for the security chat' in your report, and
+  leave it unfixed.
+- Directors send work to an idle listener whenever one can do it, the lab first: see "The director" in `DIRECTOR.md`.
+
+## Batch (gisday: #1474 keyboard focus photos) - 23 October 2026, 9:05 AM Central
+
+From the GIS Day director (work). Sent here because `work` is saturated by the security chat's check and the lab is
+on batch 17. About 40 minutes.
+
+Branch `fix/1474-gisday-template-a11y` on the fork, at `9948dd977` (your `85df2be00` plus the release-notes entry
+`docs/releases/unreleased/1474-gisday-accessibility.md`). Before its pull request it needs the before/after photos you
+named in your handover.
+
+### What to do
+
+1. Run the local GIS Day stack (`scripts/gisday-local.sh`, `docs/gisday-local.md`), once from `origin/development`
+   (before) and once from the branch at `9948dd977` (after). `web --static` is not merged yet; use the dev server, or
+   build `--configuration local` and serve it as you did before. **Never a `--configuration=production` build before
+   the photos**: it overwrites the local dist and sign-in fails.
+2. With the keyboard only (Tab, then Enter or Space), photograph at 1280 wide, before and after:
+   - the header's **Login**, focused;
+   - a **FAQ** question, focused, then opened with Enter;
+   - signed in as the test admin, **Admin, then Events**: a row's action buttons, focused;
+   - a season's **day tile** (add or remove), focused.
+   "Before" is whatever Tab reaches instead. Say so in the report, with what `document.activeElement` was.
+3. Save each as it is taken to `docs/screenshots/1474-gisday-accessibility/before-<what>.png` and
+   `after-<what>.png` on the branch. Add them as a before/after table to the release-notes entry (paths
+   `../screenshots/1474-gisday-accessibility/<file>.png`), and change its "Nothing looks different" to say that only
+   the focus outline shows. Run `node scripts/collate-release-notes.mjs --check`.
+4. Commit on the branch, check the line endings are LF, and push to the fork.
+
+### Then
+
+Report `home/reports/2026-10-23-1.md`: the new head commit, each file, what Tab reached before. Say "work report
+ready". Do not open the pull request; the director does. Nothing on GitHub.
+
 ## Batch (22 October 2026, 12:05 PM Central) - watch Azure for the production deploy
 
 The maintainer approved the production release and it is rolling out now. **This machine is the only one

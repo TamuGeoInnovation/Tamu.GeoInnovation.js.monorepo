@@ -93,6 +93,15 @@ and does its own job itself.
   and never queues what a listener is already running.
 - Applies the same rule to itself: work a listener is better placed for goes into that listener's batch, never
   done by the director on the side.
+- **Sends work to an idle listener whenever one can do it** (the maintainer's rule, 23 October 2026). Before running
+  anything heavy itself - a build, a check, a capture, a test run, a real run of a script - it reads every listener's
+  `STATUS.md` and, if one is idle and has what the work needs (its **What this is**), writes the work into that
+  listener's batch instead. Try the lab first, because it is the largest; then `home`; `codex-home` takes small code
+  jobs and reviews only. The director keeps only what needs it: asking the maintainer, the GitHub half (pull requests,
+  fields, comments), and what only its machine can do (a sign-in, a credential, the `kubernetes-config` checkout).
+  A director's machine that is running another chat's work counts as busy. Every reply to the maintainer says which
+  machine got what, and why anything stayed on the director's. This applies to every director, the security chat
+  included.
 
 ## Every listener
 - **A new batch in its `TASKS.md` is its instruction.** It starts it at once, without asking or waiting for the
