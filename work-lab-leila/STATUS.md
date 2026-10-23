@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:45 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **6:51 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,7 +24,9 @@ Last written **6:45 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 7:36 AM Central.**
+
+**Batch 14, workspace: #2111, the fixes as three branches** (director: home). Started 6:51 AM Central, 23 October. One at a time: `fix/2111-in-range-security-updates`, `fix/2111-class-validator-0.15`, `fix/2111-swiper-14`. Branches to the fork only. Now on task 1.
 
 ## Finished
 
