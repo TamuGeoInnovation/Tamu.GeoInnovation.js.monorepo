@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 58.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 59.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,27 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 58 (security: PR 2184 (Jest inferred) resolved against PR 2182 (lint inferred) ahead of time; a code job, pushed to a scratch branch; 23 October 2026, 3:45 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 50** (before 57, which waits on a merge). **Expected: about 40 minutes.**
+
+PR 2182 (lint → inferred, your batch 47, now with `development` merged in at `cc86e5475`) merges first. PR 2184 (Jest → inferred, your batch 48
+plus the director's `test/polyfills.ts` input, at `c45a37e24`) then conflicts with it in **34 `project.json` files and `nx.json`**: 2182 removes
+each project's `lint` target, 2184 its `test` target, next to each other. Resolve it now so 2184 is ready when 2182 merges.
+
+1. `git fetch fork chore/2168-lint-inferred chore/2168-jest-inferred`; `git worktree add C:/TAMU/wt-2184r -b security/check-2184 fork/chore/2168-jest-inferred`.
+2. `git merge fork/chore/2168-lint-inferred` (which already contains `development`). Resolve every conflict **keeping both removals**: in each
+   `project.json`, neither the old `lint` target nor the old `test` target survives, and everything else in the file (other targets,
+   `generatePackageJson`, tags) is kept. In `nx.json`: keep **both** plugin entries (`@nx/eslint/plugin` with its `include` and `exclude`, and
+   `@nx/jest/plugin`), both `test` `targetDefaults` entries (the Vitest one and the Jest-filtered one with `test/polyfills.ts`), and the lint
+   default's removal. Use a script that checks each hunk's two sides are only those targets, as the director did for 2182's five files, and stop on
+   any hunk that is anything else.
+3. Check the result: `git grep -n '"@nx/eslint:lint"\|"@nx/jest:jest"' -- '*project.json' nx.json` prints nothing; `nx show projects --with-target lint`
+   gives 104, `--with-target test` gives 103, `nx show projects` gives 110 (as on each branch alone).
+4. `scripts/check-in-volume.sh security/check-2184` (full `affected`): lint 104, test 100, build 14 expected.
+5. Commit the merge and `git push fork security/check-2184`. **Do not push to `chore/2168-jest-inferred`**: the director moves it there once 2182 has
+   merged. Report the head and the count of files resolved.
 
 ## Batch 57 (security: watch the first runs of the Actions majors after PR 2186 merges - read-only; 23 October 2026, 3:35 PM Central, from `work (security)`)
 
