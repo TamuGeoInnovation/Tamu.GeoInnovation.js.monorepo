@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:00 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **2:06 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **2:00 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 2:40 PM Central.**
-
-**Batch 45, security: ESLint 10 and its five fixes** (a code job and a branch), started 2:00 PM Central, in `C:/TAMU/wt-eslint10` (`chore/1218-eslint-10`, on batch 41's branch).
+**Nothing running.** Batches 44 and 45 are done. Watching the branch.
 
 ## Finished
+
+- **Batch 45, security: ESLint 10 and its five fixes - pushed** (2:00 to 2:05 PM, 23 October): `eslint` 10.13.0 (kept exact) and `@eslint/js` ^10.0.1, no ERESOLVE, lock change ESLint's own tree only. Four `preserve-caught-error` fixes (`{ cause }`) and one `no-useless-assignment`. **`gisday-platform-data-api`'s lint had `"force": true`**, so errors never failed it; removed (four more GIS Day projects carry it, left for the director). Lint 104 projects, 0 errors; full check exit 0 (lint 104 / test 100 / build 14, no cache hits). **`chore/1218-eslint-10` at `d8883d63c`** on the fork, on batch 41's branch. Report `work-lab-leila/reports/2026-10-23-34.md`.
 
 - **Batch 44, security: Nx 24 premise test, with the lock method** (1:54 to 1:59 PM, 23 October): Nx 24.0.0 **installs** this way (lock change: Nx's own set plus same-version moves). **Unconverted `@nx/jest:jest` and `@nx/webpack:webpack` targets do not run on Nx 24** (`Cannot find executor`), and neither does lint until its migration runs; after the two `@nx/eslint` migrations, lint works. So a lint-only branch cannot pass the full check. Recommends converting Jest and webpack on Nx 23 first. Report `work-lab-leila/reports/2026-10-23-33.md`.
 
@@ -184,4 +184,4 @@ Last written **2:00 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 44 (42 and 39 stopped; 40 superseded)
+Last batch done: 45 (42 and 39 stopped; 40 superseded)
