@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:04 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **12:05 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **12:04 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 12:50 PM Central.**
+
+**Batch 31, security: #2117, each API image installs only its own packages** (director: work, its security chat). Started 12:05 PM Central, 23 October. A code job on `chore/2117-api-own-deps`. Batch 32 (#2154) is next.
 
 ## Finished
 
