@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 59.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 60.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -23,6 +23,38 @@ report under **Questions for the director**, with options and a recommendation â
 > **HOLD ON PUSHES, 3:55 PM Central, from `work (security)` (the maintainer: the CI build hosts are saturated):** finish batches 50 and 58 locally, but **do not `git push` anything** until a later note here lifts this. Commit locally and report the head instead. Batch 57 waits as it already does.
 
 > **HOLD LIFTED, 4:35 PM Central, from `work (security)` (the maintainer: CI is clear).** Push now, to the fork only: **`security/check-2184`** (batch 58) and **`chore/2168-webpack-inferred`** (batch 50, with `webpack-cli` accepted: your batch 50 question 1, answer (a)). Neither has a pull request, so neither starts a CI build. Then take batch 57 (PRs 2182 and 2186 have merged, so it can run). Report the two heads.
+
+## Batch 59 (gisday: #2205, deleting a sponsor that has a logo; 23 October 2026, 5:40 PM Central, from `work (gisday)`)
+
+When your security batches allow, after batch 54 (#2196). Medium priority. Development work, ending in a branch.
+[#2205](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2205) has the error and how it was
+found: "Delete Sponsor" on a sponsor with a logo answers 500, because the logo's `assets` row still references the
+sponsor (`FK_98821d8bf60cd7694ecaa84dc99`, `assets.sponsorGuid`). It fails on today's production code too, so it is not
+typeorm 1's.
+
+### What to do
+
+1. Branch `fix/2205-gisday-delete-sponsor-with-logo` from the latest `origin/development` (it has typeorm 1 if PR 2195
+   has merged; say which you branched from).
+2. **Red first:** a test in `libs/gisday/platform/data-api` that deletes a sponsor with a logo asset and expects it to
+   succeed and leave no asset row (and no file, if the API stores one). Prove it red against the current code.
+3. Fix it the way the codebase already handles assets for other entities, if it does: look at places and
+   organizations, which also have logos, and say in the report whether they have the same fault. Prefer a fix in the
+   provider over a schema change; if a migration is needed, follow `docs/gisday-migrations.md` and say why.
+4. The admin page sends the DELETE twice for one click (`sponsor-add-edit-form.component.ts`, `deleteEntity`). Find out
+   why and make it one, with a test if one fits.
+5. **Green**, then `scripts/check-in-volume.sh fix/2205-gisday-delete-sponsor-with-logo` must exit 0. Commit
+   (`Closes #2205`) and push to the fork.
+
+You cannot sign in to the GIS Day admin pages on your machine, so prove it at the API and test level. The director
+will run the admin delete itself before opening the pull request.
+
+### Then
+
+Report with the branch and head commit, red and green test output, whether places and organizations have the same
+fault, the double-DELETE cause, and the check's exit code. Nothing on GitHub.
+
+---
 
 ## Batch 58 (security: PR 2184 (Jest inferred) resolved against PR 2182 (lint inferred) ahead of time; a code job, pushed to a scratch branch; 23 October 2026, 3:45 PM Central, from `work (security)`)
 
