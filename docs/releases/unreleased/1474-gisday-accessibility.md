@@ -12,5 +12,15 @@ or Space: Login and Logout in the header, the FAQ's questions, the Sessions filt
 Delete, Show and Hide, and others. They now can, and each says what it is to a screen reader. Photos that carry
 meaning have descriptions; purely decorative images are marked as such. The checks that catch these problems,
 turned off during the Angular 22 upgrade, are back on for every GIS Day project, so new ones fail the build.
-Nothing looks different
+Nothing else looks different: the only change on screen is the focus outline, where Tab can now land
 ([#1474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1474)).
+
+Before, Tab jumped past each of these to the next link; after, it stops on them:
+
+| | Before | After |
+| --- | --- | --- |
+| Header: Login/Signup | ![Tab skips Login and lands on Sessions](../screenshots/1474-gisday-accessibility/before-header-login.png) | ![Login/Signup has focus](../screenshots/1474-gisday-accessibility/after-header-login.png) |
+| FAQ: a question | ![Tab skips the questions](../screenshots/1474-gisday-accessibility/before-faq-question.png) | ![The first question has focus](../screenshots/1474-gisday-accessibility/after-faq-question.png) |
+| FAQ: Enter opens it | | ![The question opened with Enter](../screenshots/1474-gisday-accessibility/after-faq-opened.png) |
+| Admin, Events: the selected-rows actions | ![Tab skips Show on schedule](../screenshots/1474-gisday-accessibility/before-admin-events-actions.png) | ![Show on schedule has focus](../screenshots/1474-gisday-accessibility/after-admin-events-actions.png) |
+| Admin, a season: add a day | ![Tab skips the add-day tile](../screenshots/1474-gisday-accessibility/before-season-day-tile.png) | ![The add-day tile has focus](../screenshots/1474-gisday-accessibility/after-season-day-tile.png) |
