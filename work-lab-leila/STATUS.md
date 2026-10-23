@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:55 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **11:56 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,12 +30,11 @@ Last written **11:55 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 12:27 PM Central.**
-
-**Batch 29, security: #2158, the retired IdP removed** (director: work, its security chat). Started 11:52 AM Central: its full check runs in the background.
-
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 29, security: #2158, the retired IdP removed** (11:52 to 11:56 AM, 23 October; director: work, security chat): `3250d965e` as required; `check-in-volume.sh` **exit=0**: clean `npm ci` of **2,237** packages (72 fewer than #2122's branch), lint 105, test 101, build 14, nothing failed, nothing names the removed libraries or packages. Report `work-lab-leila/reports/2026-10-23-19.md`.
 
 - **Batch 28, gisday: #2133, the production gisday-nest image locally** (11:52 to 11:55 AM, 23 October; director: work, GIS Day chat): **`docs/2133-gisday-nest-image-locally` `fdcf6ad9a`** on the fork, one entry in `docs/gisday-local.md`. Both halves reproduced with `sha-ee1a9e4`; the sample alone stops even earlier, on a blank `TYPEORM_PASSWORD`, which the entry also says. Report `work-lab-leila/reports/2026-10-23-18.md`.
 
@@ -155,4 +154,4 @@ Last written **11:55 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 27
+Last batch done: 29 (and 28)
