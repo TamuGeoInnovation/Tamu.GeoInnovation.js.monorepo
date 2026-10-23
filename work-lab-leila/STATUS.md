@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:44 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **11:46 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **11:44 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 12:14 PM Central.**
-
-**Batch 27, security: #1218, what is out of date** (director: work, its security chat). Started 11:44 AM Central, 23 October. Read-only: `npm outdated` on `origin/development`, summarised.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 27, security: #1218, what is out of date** (11:44 to 11:46 AM, 23 October; director: work, security chat): `origin/development` `ac476bd73`. `npm outdated`: **89** packages, **15** in-range updates, **49** a major behind (Nx 11 at 23 → 24, TypeScript 6 → 7, ESLint 9 → 10, and 31 others). Furthest: `marked` 9 majors, `angular-auth-oidc-client`, `dotenv` and `ngx-highlightjs` 8. Angular, NestJS, ArcGIS, Jest and Vitest are on their latest major. Node v24.22.1, no `engines`. Report `work-lab-leila/reports/2026-10-23-17.md`.
 
 - **Batch 26, security: #2122, eleven unused dependencies removed** (11:21 to 11:25 AM, 23 October; director: work, security chat): `cc819f1c5` as required; `check-in-volume.sh` **exit=0**: clean `npm ci` of **2,309** packages (37 fewer), lint 113, test 106, build 14, no failures, no missing-module errors. Report `work-lab-leila/reports/2026-10-23-16.md`.
 
@@ -150,4 +150,4 @@ Last written **11:44 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 26
+Last batch done: 27
