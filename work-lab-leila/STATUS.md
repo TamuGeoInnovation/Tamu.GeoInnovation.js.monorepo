@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:48 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **2:51 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,16 +30,18 @@ Last written **2:48 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 3:10 PM Central.**
+**Next update by 3:30 PM Central.**
 
-**Batch 51, security: remove eslint-plugin-node** (a small code job and a branch), started 2:45 PM Central, in `C:/TAMU/wt-no-eslint-node`, between 49 and 50 as it allows. Its full check is running. Then 50.
+**Batch 50, security: the webpack builds to inferred targets** (a code job and a branch, about 2 hours), started 2:51 PM Central, in `C:/TAMU/wt-2168-webpack23` (`chore/2168-webpack-inferred`, from `development`). Taking the "before" builds first.
 
 **Batch 52 (aggiemap) cannot start: dev is not serving `6a567ae8c`, and its images were not published.**
 - The `development` run of **Quabity Assuance** for `6a567ae8c` ([run 40013030183](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/actions/runs/40013030183)) **failed**: lint, test and build passed, but `Publish / build-and-push (mailroom-angular)` failed at the push with `ERROR: failed to build: unknown blob` (its security gate passed, 0 criticals; it looks like a transient registry error). **The other publish jobs were cancelled with it, `aggiemap-angular` included**; only `gisday-angular` published.
 - **Dev itself, checked by content, not bundle name**: `https://dev.aggiemap.tamu.edu/main-D5K7DLSV.js` contains `MBskt_view` and **not** `MensBasketballParking_view` or `gis.dev.tamu.edu`, which only #2176's code has. So dev still serves a build from before it (its page's `Last-Modified` is 11:47 AM Central).
-- **For the aggiemap director:** re-running the failed jobs of that run (or the maintainer's deploy) is not the lab's to do. Batch 52 starts as soon as dev serves #2176; the lab will re-check after batch 51.
+- **For the aggiemap director:** re-running the failed jobs of that run (or the maintainer's deploy) is not the lab's to do. Batch 52 starts as soon as dev serves #2176; the lab re-checks during batch 50.
 
 ## Finished
+
+- **Batch 51, security: eslint-plugin-node removed - pushed** (2:45 to 2:50 PM, 23 October): no `node/` rule or disable comment anywhere; removed from `eslint.config.mjs` and `package.json`, lock drops it and five packages only it used. Lint 104 projects, 0 errors / 123 warnings (as before); full check exit 0 with a clean `npm ci`. **`chore/1218-drop-eslint-plugin-node` at `9ffa7283b`.** Report `work-lab-leila/reports/2026-10-23-39.md`.
 
 - **Batch 49, security: typeorm 1 and mssql 12 - pushed** (2:21 to 2:43 PM, 23 October): 78 literal `relations` arrays and one computed one to the object form, the one `select`, `getRepository` injected. **`EntityRelationsLUT` held two more arrays that neither `tsc` nor grep could see**, which made `speakers/season/active` 500 until converted. 0 new type errors; against a throwaway SQL Server, 18 GIS Day reads and mailroom's are byte-identical to development's build, writes 401. Merged `origin/development` per the note (only the lock conflicted; the apps' `mssql` now ^12.7.11). Full check exit 0 (lint 104 / test 100 / build 14). **`chore/1218-typeorm-1` at `7be822162`.** The seed `.bak` is two migrations behind (question). Report `work-lab-leila/reports/2026-10-23-38.md`.
 
@@ -199,4 +201,4 @@ Last written **2:48 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 49 (42 and 39 stopped; 40 superseded)
+Last batch done: 51 (52 waits for its build; 42 and 39 stopped; 40 superseded)
