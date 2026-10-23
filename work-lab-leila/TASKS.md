@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 53.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 54.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,28 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 53 (security: check Dependabot's PRs 2187 and 2188 - a test, nothing pushed; 23 October 2026, 2:55 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start next**, before batch 50 if 49 is still running when you read this (these are short and two PRs wait on them).
+**Expected: about 40 minutes.** **The maintainer's decision (23 October):** every Dependabot PR is checked by the lab like any dependency
+change before he merges it; the director posts the result on the PR. **Push nothing**: these branches belong to Dependabot.
+
+For each of **2187** (testing group: `@playwright/test` 1.63.0 → 1.64.1, `jest-preset-angular` 17.0.2 → 17.0.3) and **2188** (lint group:
+`typescript-eslint` and `@typescript-eslint/*` 8.71.1 → 8.72.0, `prettier` 3.9.9 → 3.9.10), separately:
+
+1. `git fetch origin pull/<n>/head:dependabot-<n>` and `git worktree add C:/TAMU/wt-dep-<n> dependabot-<n>`. Report the head commit.
+2. **The lock:** compare its `package-lock.json` with `origin/development`'s key by key (as batch 41): every version change. Expect only the
+   named packages and their own dependencies. Report anything else.
+3. `scripts/check-in-volume.sh dependabot-<n>` (full `affected`, clean `npm ci`): the `Successfully ran target` / `failed` lines, each
+   failure's first error.
+4. **2187 only:** the smoke suite derives its Playwright image from `package.json`, so run the quick tier against dev with the new version:
+   `test/smoke/aggiemap/run-local.sh development quick` from the worktree. Report the image tag it used (`v1.64.1-noble` expected), and the
+   pass/fail counts against your most recent quick run on 1.63.0. Also list every file that still hard-codes `v1.63.0` (`git grep -n
+   "playwright:v1.63.0"`): the director fixes those separately.
+5. Remove both worktrees and the local branches.
+
+Report per PR: **mergeable as it is, or not, and why.** Report in `work-lab-leila/reports/` and say "work-lab-leila: finished batch 53".
 
 ## Batch 52 (aggiemap: #2143 on dev - the athletics maps against their new services; 23 October 2026, from `work (aggiemap)`)
 
