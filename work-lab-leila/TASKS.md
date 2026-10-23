@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 30.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 31.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,28 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 30 (security: #2155, libs/oidc/common retired and Mailer moved - the full check; 23 October 2026, 12:10 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.**
+**Expected: about 10 minutes.** From Git Bash, in order. Change nothing.
+
+Deletes `libs/oidc/common`, moves mailroom's `Mailer` to `@tamu-gisc/mailroom/data-api` and two types to `@tamu-gisc/common/types`, and
+removes `otplib`, `@nestjs/axios` and `bcrypt`. It sits on top of #2158 (your batch 29).
+
+1. `git fetch fork security/check-2155`. `git rev-parse fork/security/check-2155` must print **`200529d3acd1dd91787500360f89bd1cb5f92d46`**. If not, stop and report it.
+2. `git worktree add C:/TAMU/wt-check-2155 fork/security/check-2155 --detach`; `cd C:/TAMU/wt-check-2155`; `git switch -c security/check-2155`.
+3. `scripts/check-in-volume.sh security/check-2155 > ../check-2155.out 2>&1; echo "exit=$?"` (full `affected`, clean `npm ci`).
+4. Report the exit code, every log line with `Successfully ran target` or `failed`, and each failure's project, target and first error.
+   **Quote in full** any error naming `@tamu-gisc/oidc/common`, `Mailer`, `ValidObject`, `AuthOptions`, `otplib`, `@nestjs/axios` or `bcrypt`.
+   If the only failure is a test timing out, rerun just that project once.
+5. **One extra check, for what this is for:** in the same worktree, with the check's volume or a fresh `npm ci`, build `gisday-angular` for production and
+   report whether any file under `libs/oidc` or `libs/mailroom/data-api` appears in its build. Use:
+   `MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-check-2155:/w" -v tamu-js-2155-nm:/w/node_modules -w /w node:24.22.1 sh -c "npm ci --no-audit --no-fund --ignore-scripts >/dev/null 2>&1; node node_modules/nx/dist/bin/nx.js build gisday-angular --configuration production --skip-nx-cache > /w/gd-build.log 2>&1; echo build=\$?; grep -rl -E 'nodemailer|oidc-common|mailer.util' dist/apps/gisday-angular | head"`
+   Report `build=` and the grep output (expected: none).
+6. `cd C:/TAMU`; `git worktree remove C:/TAMU/wt-check-2155 --force`; `git branch -D security/check-2155`.
+
+Nothing else: no pushes, no pull request, no comments. Report in `work-lab-leila/reports/` and say "work-lab-leila: finished batch 30".
 
 ## Batch 29 (security: #2158, the retired IdP removed - the full check; 23 October 2026, 12:00 PM Central, from `work (security)`)
 
