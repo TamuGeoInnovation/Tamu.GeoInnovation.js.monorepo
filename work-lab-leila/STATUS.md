@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:04 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **10:06 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **10:04 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 10:26 AM Central.**
+
+**Batch 21 again, on its new head `b94d3985e`** (director: work, its security chat; updated 10:20 AM). Started 10:06 AM Central, 23 October. The first run, at 9:51 on the old head `753027755`, passed (report `2026-10-23-9.md`); the batch now names a new head, so it is run again from the start.
 
 ## Finished
 
