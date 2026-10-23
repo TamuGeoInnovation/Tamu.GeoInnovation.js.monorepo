@@ -155,6 +155,16 @@ lock file`, a peer of the upgraded `ng2-dragula`. Sync the lock with
 proves it: whenever the committed `package.json` or `package-lock.json` changes, it runs `npm ci` from
 those files alone, as CI does. See #1347.
 
+**Regenerating a conflicted lock undoes lock-only updates, and every check still passes.** When
+`package-lock.json` conflicts in a merge, `npm install --package-lock-only` rebuilds it from `package.json`
+and keeps whatever versions are already locked. Anything a branch updated only in the lock (`npm update`,
+`npm audit fix`) goes back to the other side's version. On 23 October that undid half of PR 2125: `axios`,
+`jws`, `koa`, `node-forge` and the critical `websocket-driver` all went back to the morning's versions, and
+the full check and CI both passed, because nothing was broken, only not updated (#2112). So after
+regenerating a lock, run the branch's lock-only update again (for example `npm audit fix --package-lock-only`)
+and compare the versions it was meant to change, or `npm audit --package-lock-only`, against the branch's
+own last commit before pushing.
+
 **Files are LF, and `.gitattributes` will not fix a mistake for you.** It sets `* -text`, which
 turns git's end-of-line normalization off for every file: git stores the bytes it is given, and
 `core.autocrlf` has no effect however a machine is configured. Endings are per-file and permanent
