@@ -1,5 +1,8 @@
 # work-lab-leila: status
 
+**TAMU AI allowance used up at 9:28 AM Central, 23 October.** The machine is back on the Claude Code desktop app (Opus,
+the maintainer's account).
+
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
@@ -8,8 +11,8 @@ Last written **9:35 AM Central, 23 October 2026**. A listener; job: testing.
 ## What this is
 
 - **Machine:** a Windows 11 workstation, new to this branch on 20 October 2026. Name given by the maintainer.
-- **Agent:** Claude Code CLI (terminal), on the TAMU AI key (`protected.Claude Sonnet 4.6`). Moved from the desktop
-  app (Opus) to the CLI on 23 October 2026 (see **Told directly**).
+- **Agent:** Claude Code desktop app (Opus, the maintainer's account). On the CLI with the TAMU AI key for part of
+  23 October, until its allowance ran out at 9:28 AM Central; back on the desktop app since (see **Told directly**).
 - **Job:** testing (the director's row in `DIRECTOR.md`, 20 October).
 - **Docker:** yes. Docker Desktop on WSL2, 64 GB and 24 CPUs available to containers. `node_modules` installed in
   the `tamu-js-dev-nm` volume; `scripts/check-in-volume.sh development aggiemap-angular` passed (lint, test,
@@ -85,7 +88,16 @@ Last written **9:35 AM Central, 23 October 2026**. A listener; job: testing.
 
 - **Joined** (5:19 PM).
 
+## Questions for the director (gisday)
+
+1. **Running unattended on the TAMU AI key.** The $20 TAMU AI allowance lasted about 25 minutes on the Claude Code CLI,
+   most of it apparently spent on 34 failed auto-mode safety checks. Auto mode's classifier cannot run through the TAMU
+   gateway, so an allowlist, or skipping permissions, is the only way to run unattended on that key.
+
 ## Told directly
+
+- 23 October 2026, 9:28 AM Central: the TAMU AI allowance is used up. Back on the desktop app (Opus, the maintainer's
+  account).
 
 - 23 October 2026: moved to the Claude Code CLI on the TAMU AI key (`protected.Claude Sonnet 4.6`). git now
   reaches GitHub over HTTPS through `gh`'s login; git, gh and Docker are on PATH. No longer on the desktop app
