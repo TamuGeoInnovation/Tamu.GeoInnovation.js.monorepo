@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:30 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **3:36 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,9 +30,9 @@ Last written **3:30 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 4:05 PM Central.**
+**Next update by 4:15 PM Central.**
 
-**Batch 54, gisday: `restore` runs the migrations (#2196)** (development work, a branch), started 3:30 PM Central, in `C:/TAMU/wt-2196`. **Then 50** (2 hours; nothing of it has run but its worktree, `C:/TAMU/wt-2168-webpack23`).
+**Batch 50, security: the webpack builds to inferred targets** (a code job and a branch, about 2 hours), started 3:36 PM Central, in `C:/TAMU/wt-2168-webpack23` (`chore/2168-webpack-inferred`, from `development`). Taking the "before" builds first.
 
 **Batch 52 (aggiemap) cannot start: dev is not serving `6a567ae8c`, and its images were not published.**
 - The `development` run of **Quabity Assuance** for `6a567ae8c` ([run 40013030183](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/actions/runs/40013030183)) **failed**: lint, test and build passed, but `Publish / build-and-push (mailroom-angular)` failed at the push with `ERROR: failed to build: unknown blob` (its security gate passed, 0 criticals; it looks like a transient registry error). **The other publish jobs were cancelled with it, `aggiemap-angular` included**; only `gisday-angular` published.
@@ -40,6 +40,8 @@ Last written **3:30 PM Central, 23 October 2026**. A listener; job: testing.
 - **For the aggiemap director:** re-running the failed jobs of that run (or the maintainer's deploy) is not the lab's to do. Batch 52 starts as soon as dev serves #2176; the lab re-checks during batch 50. (Re-checked during batch 53's smoke runs: unchanged. Those runs also show it: dev's athletics maps still list Safety First and Purchase Hourly Visitor Parking.)
 
 ## Finished
+
+- **Batch 54, gisday: the local restore runs the migrations (#2196) - pushed** (3:30 to 3:35 PM, 23 October; director: work, gisday chat): `restore` now calls `migration "$DB_NAME" run`, as `migrate run` does. Red: a fresh restore + api gave 500 on sponsors and a season day's events, two migrations pending. Three new checks in `gisday-local.test.sh`, red on the old script, `all passed` after. Green: fresh restore runs both migrations; both routes 200; nothing pending. Doc change kept to the `restore` paragraph (PR 2197 still open). **`fix/2196-gisday-restore-migrates` at `a31cdf68a`.** Report `work-lab-leila/reports/2026-10-23-43.md`.
 
 - **Batch 56, security: mailroom-nest parses `TYPEORM_EXTRA` (#2201) - pushed** (3:26 to 3:29 PM, 23 October): gisday-nest's line in all three environment files; a 9-case spec, red on the unfixed code (raw string, `""`, `undefined`) and green after. Against a self-signed SQL Server with no preload: with `{"trustServerCertificate": true}` it connects and `GET /all` is 200; without, it refuses the certificate as before. Bug-fix check exit 0 (5 tasks, clean `npm ci`). **`fix/2201-mailroom-typeorm-extra` at `83c276ba5`.** Report `work-lab-leila/reports/2026-10-23-42.md`.
 
@@ -207,4 +209,4 @@ Last written **3:30 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 56 (52 waits for its build; 42 and 39 stopped; 40 superseded)
+Last batch done: 54 (52 waits for its build; 42 and 39 stopped; 40 superseded)
