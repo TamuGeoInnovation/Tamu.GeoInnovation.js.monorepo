@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 23.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 24.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,36 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 23 (security: a knip report for #2122, which dependencies nothing uses; 23 October 2026, 10:25 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.**
+**Expected: about 25 minutes.** Read-only: it ends in a report, and nothing in the repository changes.
+
+[#2122](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2122) removes the packages we install
+but do not use. Four of the seven remaining high advisories (`oidc-provider`, `@koa/cors`, `node-forge`, `node-jose`) are in
+packages that only the oidc apps use, and CI does not build those apps. This report is what the maintainer decides from.
+Do exactly these steps, in order, from Git Bash.
+
+1. `git fetch origin development`, then `git worktree add C:/TAMU/wt-knip origin/development --detach`. Report the commit.
+2. Install, into a volume of its own:
+   `MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-knip:/w" -v tamu-js-knip-nm:/w/node_modules -w /w node:24.22.1 npm ci --no-audit --no-fund --ignore-scripts`
+   Report the exit code and the "added N packages" line.
+3. Run knip for dependencies only:
+   `MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-knip:/w" -v tamu-js-knip-nm:/w/node_modules -w /w node:24.22.1 sh -c "npx -y knip@5 --version; npx -y knip@5 --include dependencies,devDependencies,unlisted,binaries --no-exit-code --reporter json > /w/knip.json 2> /w/knip.err"`
+   Report the knip version it printed, and the size of `knip.json` and `knip.err`. If `knip.json` is empty, report the
+   first 40 lines of `knip.err` and stop there. Do not try other options.
+4. From `knip.json`, list in the report, as tables: **unused dependencies**, **unused devDependencies**, **unlisted** (imported but
+   not in `package.json`), and **unused binaries**. Give each name and the file knip names. Do not judge them; just list them.
+5. For each of these packages: `oidc-provider`, `koa`, `@koa/cors`, `node-jose`, `node-forge`, `jsonwebtoken`, `passport-jwt`,
+   `coveralls`, `request`, run in the worktree
+   `git grep -l -E "(from|require\()\s*['\"]<package>(/|['\"])" -- apps libs tools`
+   (with `<package>` replaced by the name) and report, for each one, the projects the files belong to (the folder under
+   `apps/` or `libs/`). "None" is an answer.
+6. Clean up: `git worktree remove C:/TAMU/wt-knip --force`. Leave the volume.
+
+Nothing else: no pushes, no pull request, no comments, no changes. Report in `work-lab-leila/reports/` and say
+"work-lab-leila: finished batch 23".
 
 ## Batch 22 (aggiemap: #2134 and #2144, two small code jobs; 23 October 2026, from `work (aggiemap)`) - ALREADY DONE
 
