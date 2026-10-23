@@ -13,6 +13,107 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Batch 19 (aggiemap: #2134 and #2144, two small code jobs; 23 October 2026, 10:10 AM Central, from `work (aggiemap)`)
+
+**After the vulnerability work, whenever you are idle.** Both were queued for `codex-home`, which runs on the
+`home` machine and cannot be started today. Neither has been begun. **Two separate branches, no pull
+requests** - I do the GitHub half.
+
+**You may be on the TAMU AI key for this**, so every step below is written as an exact command. If the
+allowance runs out, write `TAMU AI allowance used up at <time, US Central>` at the top of your `STATUS.md`
+with the task and step you reached, and stop. Nothing is lost; it resumes from that step.
+
+---
+
+### Task 1 - #2134, quote four shell variables in `publish.yml`
+
+```
+cd C:\TAMU\Tamu.GeoInnovation.js.monorepo
+git fetch origin
+git worktree add -b ci/2134-publish-yml-quoting C:\TAMU\wt-2134 origin/development
+```
+
+**Red first.** Run actionlint before changing anything and keep the output:
+
+```
+MSYS_NO_PATHCONV=1 docker run --rm -v "C:/TAMU/wt-2134:/repo" -w /repo rhysd/actionlint:1.7.7 .github/workflows/publish.yml
+```
+
+Expect **4 SC2086 findings** in the `list-publishable` job, around lines 25, 28, 37 and 38.
+
+**The change**, in `C:\TAMU\wt-2134\.github\workflows\publish.yml` only:
+
+- `echo "exists=true" >> $GITHUB_OUTPUT` becomes `echo "exists=true" >> "$GITHUB_OUTPUT"` (both places)
+- `echo $JASON` becomes `echo "$JASON"`
+- `echo "matrix=$JASON" >> $GITHUB_OUTPUT` becomes `echo "matrix=$JASON" >> "$GITHUB_OUTPUT"`
+
+**Leave the variable named `JASON`.** It is a misspelling of `JSON`; renaming it is not this change.
+
+**Green after:** the same actionlint command, expecting **exit 0 and no findings**. Keep both outputs.
+
+```
+cd C:\TAMU\wt-2134
+git add -A
+git commit -m "ci(workspace): Quote the shell variables actionlint flags in publish.yml" -m "Closes #2134"
+git push -u fork ci/2134-publish-yml-quoting
+```
+
+**Do not run `check-in-volume.sh`** - a workflow file is not an Nx project, so it reports `No tasks were run`,
+which is not a pass.
+
+**If `publish.yml` has changed under you** and those four lines are already quoted, stop and say so: the
+security chat's publish-gate work (#2135) edits this file, and if it has taken these lines the issue is
+overtaken rather than done.
+
+---
+
+### Task 2 - #2144, a baseline capture from a worktree silently records no commit
+
+Read [#2144](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2144) first; it has
+the mechanism. In short, `tools/visual-baselines/capture.mjs:207` returns `null` when `git rev-parse` fails,
+which is what happens in a worktree, and nothing says so.
+
+```
+cd C:\TAMU\Tamu.GeoInnovation.js.monorepo
+git worktree add -b fix/2144-baseline-commit-from-worktree C:\TAMU\wt-2144 origin/development
+```
+
+**Two changes, and the second is the point:**
+
+1. **Find the commit wherever the capture runs.** When `.git` is a file rather than a directory, read its
+   `gitdir:` line and use that.
+2. **Stop it being silent.** When the commit still cannot be found, the run must say so plainly where it
+   prints `release ...`, and the manifest must record *why* rather than only `null`.
+
+**Do not make a missing commit fatal** - a set without a commit is better than no set. **Do not touch the
+capture, comparison or output layout.** **Do not take any screenshots for this**: a full set is taken on the
+work machine only, because every set lives there.
+
+**Tests**, as `tools/*.test.mjs`, run by `node --test`, no network and no Docker:
+
+- `.git` as a **file** with a `gitdir:` line pointing at a real gitdir - the commit is found;
+- `.git` as a **directory** - still works, so the main checkout does not regress;
+- the gitdir unreachable - **the loud message is produced** and the manifest says why.
+
+**Prove the third red first**, against the unchanged code, and keep that output. A test for "it tells you"
+that was never seen to fail is not evidence that it tells you.
+
+```
+MSYS_NO_PATHCONV=1 docker run --rm -m 4g -v "C:/TAMU/wt-2144:/w" -w /w node:24.22.1 node --test "tools/**/*.test.mjs"
+cd C:\TAMU\wt-2144
+git add -A
+git commit -m "fix(visual-baselines): Find the release commit from a worktree, and say when it cannot" -m "Closes #2144"
+git push -u fork fix/2144-baseline-commit-from-worktree
+```
+
+---
+
+### Report
+
+`work-lab-leila/reports/<date>-<n>.md`: for task 1 the actionlint output before and after; for task 2 the
+failing test output, the passing output, and what the run prints when the commit cannot be found.
+
+
 ## Security work is not ours (23 October 2026, 8:35 AM Central, from `work (aggiemap)`)
 
 At the maintainer's decision, **all security and vulnerability work in this repository is directed by a

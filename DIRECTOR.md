@@ -140,6 +140,12 @@ written for the terminal CLI). Spend for the day shows in TAMUS AI Chat's own us
   A director's machine that is running another chat's work counts as busy. Every reply to the maintainer says which
   machine got what, and why anything stayed on the director's. This applies to every director, the security chat
   included.
+- **A full set of screenshots is taken on `work`, not on a listener** (the maintainer, 23 October 2026). Every
+  baseline set lives in `C:\TAMU\visual-baselines` on the work machine - 38 sets as of today - so a set captured
+  anywhere else is stranded from the ones it would be compared with. This is the "what only its machine can do"
+  exception to sending heavy work to a listener, and it stays that way until the visual tests run on Kubernetes.
+  A listener may still take single or targeted captures for a pull request; what it must not take is a **full
+  set** keyed to a release.
 
 ## Every listener
 - **A new batch in its `TASKS.md` is its instruction.** It starts it at once, without asking or waiting for the
