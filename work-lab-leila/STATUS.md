@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:38 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **6:45 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,11 +24,11 @@ Last written **6:38 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 7:23 AM Central.**
-
-**Batch 13, workspace: #2111, which advisories reach each deployed app** (director: home). Started 6:38 AM Central, 23 October. `npm audit` on `origin/development`, production builds of the four APIs and the Angular front ends, and a runtime / build-only / absent table per app. Change nothing; report and a summary on #2111.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 13, workspace: #2111, which advisories reach each deployed app** (6:38 to 6:45 AM, 23 October; director: home): 68 packages, 37 with advisories of their own (141 advisories). Of the 24 critical or high: 7 build-only, 17 in all four API images (13 loaded by API code, 4 unused), and only `swiper` (aggiemap, ues-operations) and `axios` (geoservices) in a front-end bundle. Summary on #2111. Report `work-lab-leila/reports/2026-10-23-2.md`.
 
 - **Batch 12, workspace: #2107, the four API images on Node 24.22.1** (6:03 to 6:14 AM, 23 October; director: home): all four `docker build` exit 0, `node -v` `v24.22.1`, the constant `-17` (`undefined` on 24.22.0). `gisday-nest` on a throwaway database: `/api/seasons/active` 200, and malformed Brotli gets a **400 "Decompression failed" with the process still up**. Posted on #2107; everything made has been removed. Report `work-lab-leila/reports/2026-10-23-1.md`.
 
@@ -101,4 +101,4 @@ Last written **6:38 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 12
+Last batch done: 13
