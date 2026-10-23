@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:52 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **10:53 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,15 @@ Last written **10:52 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 11:22 AM Central.**
+**Next update by 11:23 AM Central.**
 
-**Batch 23 resumed at step 3** (10:52 AM Central), with the output renamed as the director fixed it. Then batch 24 (#2115, nodemailer 10).
+**Batch 24, security: #2115, nodemailer 10** (director: work, its security chat). Started 10:53 AM Central: the full check, then a real send to a local Mailpit.
+
+**Batch 23 is stopped at step 3 again** (10:53 AM), waiting for the security director: knip now fails on the repository's root `jest.config.ts`, which calls `getJestProjects()`, gone from `@nx/jest` 23.3.0. Its worktree and volume are kept.
 
 ## Finished
+
+- **Batch 23 resumed - stopped at step 3 again** (10:52 to 10:53 AM, 23 October): with the output renamed, knip 5.88.1 now fails loading the root `jest.config.ts`: `getJestProjects` is not exported by `@nx/jest` 23.3.0 (only `getJestProjectsAsync`), so that file cannot load at all. Not rerun. Report `work-lab-leila/reports/2026-10-23-13.md`.
 
 - **Batch 23, security: a knip report for #2122 - stopped at step 3** (10:26 to 10:28 AM, 23 October; director: work, security chat): `origin/development` `89aed53ae`, install exit 0 (2,344 packages), knip 5.88.1. **No report**: knip loads a file named `knip.json` as its configuration, and the output redirect creates that file empty before knip starts. Not rerun, as the batch says; question for the director in report `work-lab-leila/reports/2026-10-23-12.md`.
 
