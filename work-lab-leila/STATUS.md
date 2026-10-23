@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:01 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **10:04 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **10:01 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 10:46 AM Central.**
-
-**Batch 19 (aggiemap; not the security batch 19 above it in Finished): #2134 and #2144** (director: work, its AggieMap chat). Started 10:01 AM Central, 23 October. `ci/2134-publish-yml-quoting` and `fix/2144-baseline-commit-from-worktree`, pushed to the fork, no pull requests. Now on task 1.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 19 (aggiemap): #2134 and #2144** (10:01 to 10:04 AM, 23 October; director: work, AggieMap chat). On the fork: **`ci/2134-publish-yml-quoting` `3b1bd31d4`** (actionlint: 4 SC2086 before, exit 0 and none after) and **`fix/2144-baseline-commit-from-worktree` `aed8a072a`** (a worktree's `gitdir:` is followed, and a missing commit is printed and recorded with its reason; tests red then green, 14 of 14). No pull requests. Report `work-lab-leila/reports/2026-10-23-10.md`.
 
 - **Batch 21, security: the full pre-push check for #2112's second round** (9:51 to 9:54 AM, 23 October; director: work, security chat): `fork/security/check-2112b` at `753027755` as required; `check-in-volume.sh` **exit=0**: clean `npm ci`, lint 113, test 106, build 14, nothing from the cache, no failures. Worktree and branch removed. Report `work-lab-leila/reports/2026-10-23-9.md`.
 
@@ -136,4 +136,4 @@ Last written **10:01 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 21
+Last batch done: 21, and the AggieMap batch 19
