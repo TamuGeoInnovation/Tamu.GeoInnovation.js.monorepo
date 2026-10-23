@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:19 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **5:37 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,9 +30,9 @@ Last written **4:19 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Nothing running.** Batches 50 and 58 are committed locally and wait for the push hold to lift. Batch 57 waits for PR 2186. Watching the branch.
+**Next update by 6:15 PM Central.**
 
-**Pushes held since 3:55 PM:** no code branch has been pushed. The mailbox still is, because that is how the lab reports, and `work-mailbox` starts no workflow (GitHub lists no run on it). **Ready to push when the hold lifts:** `chore/2168-webpack-inferred` at `dd87888d3` (batch 50, also waiting on its `webpack-cli` question) and `security/check-2184` at `654d75176` (batch 58).
+**Batch 57, security: the Actions majors' first runs after PR 2186** (read-only), started 5:37 PM Central. PR 2186 merged as `4f33142aa`, but that run was cancelled by the merges after it; the first run that includes it and can finish is `64833daaf`'s (run 40034625178), in progress. Batches 50 and 58 are **pushed** (hold lifted): `chore/2168-webpack-inferred` at `dd87888d3`, `security/check-2184` at `654d75176`.
 
 ## Finished
 
