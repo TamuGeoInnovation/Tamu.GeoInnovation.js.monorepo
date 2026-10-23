@@ -9,7 +9,10 @@ the director's file to correct.
 
 ## Running now
 
-Nothing. **Last batch done: 22.** Watching the branch.
+**Batch 23 (workspace: #2111, Trivy on the production images).** Started **7:04 AM Central, 23 October**.
+No `kubectl`, no pushes, no deploys; scanning only. Expected about 45 minutes; next update by **7:50 AM Central**.
+
+Last batch done: 22.
 
 ## Batch 22 finished, 6:35 AM Central, 23 October
 
