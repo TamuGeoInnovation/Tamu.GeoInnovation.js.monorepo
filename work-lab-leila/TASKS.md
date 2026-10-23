@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 57.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 58.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,21 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 57 (security: watch the first runs of the Actions majors after PR 2186 merges - read-only; 23 October 2026, 3:35 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start only once PR 2186 has merged** (`git log origin/development --oneline -5` shows "Bump the actions group"); until then, skip it
+and take the next runnable batch. **Expected: about 20 minutes once its runs finish.** Your batch 55 question 1: **(a)**. **Read-only.**
+
+With `gh`, on the `development` commit PR 2186 merged as:
+1. **Publish** (`main.yml`'s `Publish` jobs): every `build-and-push` job's result; for two images, the tags pushed (`sha-<7>`, `stable`) and
+   the OCI labels on the published image (`docker buildx imagetools inspect --raw` or `docker image inspect` after a pull: `created`, `version`,
+   `revision` present and right); and the security gate's "Block a critical" step result for each image.
+2. **Test Report**: the first `Test Report` run after the merge: its conclusion, and that it posted its check (dorny/test-reporter 3).
+3. **`security-scan.yml`**: its next run. If none has run since the merge, say so; the director will ask the maintainer to start one. Its
+   `upload-artifact` 7 step must upload `npm-audit.json`, `scan/` and `findings.md`.
+4. `aggiemap-smoke.yml`'s next scheduled run likewise, if one has happened.
+Report each as **works** or **broke, with the error**.
 
 ## Batch 55 (security: review Dependabot's GitHub Actions majors, PR 2186 / #2200 - read-only; 23 October 2026, 3:10 PM Central, from `work (security)`)
 
