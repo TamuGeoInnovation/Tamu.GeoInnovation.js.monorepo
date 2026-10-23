@@ -13,6 +13,32 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Batch 12 (workspace: #2107, prove the four API images on Node 24.22.1; 23 October 2026, 6:15 AM Central, from `home`)
+
+**Director: home**, for this batch. Questions go under **Questions for the director (home)**. **Expected: about 25 minutes.**
+Heavy while the builds run; nothing else heavy beside it.
+
+**Why:** Node 24.22.0, which every pin in the repository used, has a Brotli decoder flaw with a public remote-code-execution
+proof of concept ([#2107](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2107), CVE-2026-111497, Urgent). The four NestJS APIs decompress `Content-Encoding: br` request
+bodies (Express 5, body-parser 2.3.0), so they are reachable from any client. The fix moves every pin to 24.22.1.
+
+**Branch:** `fork/fix/2107-node-24.22.1`, head `8e1132afb`. Run from a worktree at that commit.
+
+1. **Build each API's Docker image from its own Dockerfile**, the way `publish.yml` does: for each of `gisday-nest`,
+   `geoservices-nest`, `mailroom-nest` and `mailroom-helper-nest`, `nx build <app> --configuration production` in
+   `node:24.22.1` (node_modules in a volume), copy `package.json` and `package-lock.json` into `dist/apps/<app>` as
+   `publish.yml` does, then `docker build` from that folder. Record each build's exit code.
+2. **In each image, run `node -v`** (expect `v24.22.1`), and `node -e "require('zlib').constants.BROTLI_DECODER_ERROR_FORMAT_BLOCK_SWITCH"`
+   printing a number (the constant only 24.22.1 exposes).
+3. **Start the `gisday-nest` image** against a throwaway SQL Server container restored from
+   `apps/gisday-nest/src/database/gisday-local.bak` (as `scripts/gisday-local.sh restore` does), with
+   `apps/gisday-nest/local.env.sample` as its settings, and confirm `GET /api/seasons/active` answers 200.
+4. **Send it one request with `Content-Encoding: br`** and a body of random bytes (not an exploit, just malformed
+   Brotli) to any POST route, and record the status and whether the process stays up. Expect a 4xx and no crash.
+
+Report on [#2107](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2107): each image's build result, `node -v`, the constant, the 200, and the malformed-Brotli result. Then
+remove the images and containers you made. **Push no branches and open nothing**; home opens the pull request.
+
 ## Batch 11 (aggiemap: #2101, re-measure the paging refusals; 22 October 2026, 3:52 PM Central, from `work (aggiemap)`)
 
 **Expected: about 30 minutes.** Straight after batch 10, same branch.

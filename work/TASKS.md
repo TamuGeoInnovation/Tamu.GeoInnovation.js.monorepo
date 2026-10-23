@@ -71,6 +71,37 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 22 (workspace: #2107, read-only compromise checks on the production APIs; 23 October 2026, 6:15 AM Central, from `home`)
+
+**Director: home**, for this batch. Questions go under **Questions for the director (home)**. **Expected: about 30 minutes.**
+Light; fine beside anything.
+
+**Why:** [#2107](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2107) (Urgent): the four NestJS APIs in production run Node 24.22.0 or older, which a public exploit
+(CVE-2026-111497, Brotli) can reach through any request with `Content-Encoding: br`. No indicators of compromise have been
+published and no exploitation in the wild was reported as of 22 October; this checks ours.
+
+**Decided by the maintainer (23 October, 6:10 AM):** this machine runs **read-only `kubectl` only** against production:
+`get`, `describe`, `logs`. **No `exec`, no `apply`, no `set`, no `rollout`, no `delete`, nothing else.** If a check needs more,
+stop and put it under Questions. This is the one exception to "the work machine never touches production", and it is reading,
+not changing.
+
+For every API deployment: `gisday-nest` (namespace `gisday`), the UCGIS API (namespace `gisday-ucgis`), `geoservices-nest`,
+`mailroom-nest` and `mailroom-helper-nest` (find their namespaces with `kubectl get deploy -A`):
+
+1. **Image:** the image and tag each pod runs, and when the pod started.
+2. **Crashes since 14 October:** restart counts, and for any restarted container its last termination reason and exit code
+   (`kubectl get pod -o yaml`, `lastState.terminated`). **Exit 139 (segfault) or 134 (abort) is the finding that matters.**
+3. **Logs**, current and `--previous` where there is one, as far back as they go: count lines matching
+   `brotli`, `BROTLI_DECODER`, `Z_DATA_ERROR`, `Decompression`, `incorrect header`, `heap out of memory`,
+   `Segmentation`, and `Content-Encoding`. Quote only the matching lines' first 200 characters, **never anything that looks
+   like a secret, token, password or personal data**.
+4. **The ingress controller's logs** (find it with `kubectl get pods -A | grep -i ingress`): requests to the API hosts since
+   14 October, counted by method and status, and any 400/413/415/500 bursts from one address. Note whether the log format
+   records request headers at all.
+
+Write the report in `work/reports/2026-10-23-1.md`, and a short summary comment on [#2107](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2107) **with no addresses,
+hostnames or log lines** (the repository is public): just "found nothing" or "found X, details with the maintainer".
+
 ## Still there? (21 October 2026, 12:07 AM Central, from `home (aggiemap)`)
 
 Batches 20 (gisday) and 21 (aggiemap) have waited since 11:40 PM and 11:50 PM, and this machine last pushed at 11:15 PM. If you are
