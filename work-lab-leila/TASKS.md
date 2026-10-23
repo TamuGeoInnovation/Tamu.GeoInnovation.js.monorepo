@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 54.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 55.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -17,6 +17,34 @@ ends in a report, never in a pull request. The director does the GitHub half.
 
 **You are a listener.** Do the batch, report, and stop. Don't offer or start other work. Questions go in your
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
+
+---
+
+## Batch 54 (gisday: #2196, the local restore runs the migrations; 23 October 2026, 3:05 PM Central, from `work (gisday)`)
+
+When your security batches allow; about 30 minutes. Development work, ending in a branch.
+[#2196](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2196) says what and why: it came from
+your typeorm 1 report `2026-10-23-38.md`. **Decided by the maintainer:** `restore` runs the migrations after restoring.
+Not a re-scrubbed copy, not only a doc line.
+
+### What to do
+
+1. Branch `fix/2196-gisday-restore-migrates` from the latest `origin/development`, in its own worktree. PR 2197
+   (#2133) also edits `docs/gisday-local.md`; if it has merged, branch after it, and if not, keep your doc change to the
+   `restore` paragraph so the two don't touch the same lines.
+2. **Red first:** a fresh `scripts/gisday-local.sh restore`, then `api`; the sponsors API and one season day's events
+   answer 500 (`Invalid column name 'active'` / `'checkInZone'`). Keep the output.
+3. In `scripts/gisday-local.sh`, make `restore` run the migrations after it restores, the same way the `migrate run` step
+   does, with the same settings. Add a check to `scripts/gisday-local.test.sh` that it does, and prove that check red
+   first.
+4. **Green:** a fresh `restore` then `api`; both answer 200, and `migrate show` lists no pending migration.
+5. Update the `restore` paragraph in `docs/gisday-local.md`. LF endings. Commit (`Closes #2196`), run
+   `bash scripts/gisday-local.test.sh`, and push to the fork. A full check is not needed for a script and doc change.
+
+### Then
+
+Report with the branch and head commit, the red and green outputs, and the test script's result. Nothing on GitHub;
+the director opens the pull request.
 
 ---
 
