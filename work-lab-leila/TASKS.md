@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 33.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 34.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,24 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 33 (security: #2155 again, after the gisday-nest fix - the full check; 23 October 2026, 12:15 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 31, before 32.**
+**Expected: about 10 minutes.** From Git Bash, in order. Change nothing.
+
+Batch 30 found `gisday-nest` failing on `TS2503: Cannot find namespace '__esri'` because `ValidObject` came from `@tamu-gisc/common/types`.
+It now lives in GIS Day's entities file. The branch also has `development` merged in (PR 2156, squashed).
+
+1. `git fetch fork security/check-2155`. `git rev-parse fork/security/check-2155` must print **`248d79ab52f3d081c27fec5980349d9a74ac47c0`**. If not, stop and report it.
+2. `git worktree add C:/TAMU/wt-check-2155b fork/security/check-2155 --detach`; `cd C:/TAMU/wt-check-2155b`; `git switch -c security/check-2155b`.
+3. `scripts/check-in-volume.sh security/check-2155b > ../check-2155b.out 2>&1; echo "exit=$?"`. Report the exit code, the `Successfully ran target`
+   or `failed` lines, and each failure's first error. If the only failure is a test timing out, rerun just that project once.
+4. Repeat batch 30's step 5 (the `gisday-angular` production build and the `nodemailer|oidc-common|mailer.util` grep) in this worktree,
+   with volume `tamu-js-2155-nm`. Report `build=` and the grep output.
+5. `cd C:/TAMU`; `git worktree remove C:/TAMU/wt-check-2155b --force`; `git branch -D security/check-2155b`.
+
+No pushes, no pull request, no comments. Report in `work-lab-leila/reports/` and say "work-lab-leila: finished batch 33".
 
 ## Batch 32 (security: #2154, npm test and npm run coverage work again - a small code job and a branch; 23 October 2026, 12:25 PM Central, from `work (security)`)
 
