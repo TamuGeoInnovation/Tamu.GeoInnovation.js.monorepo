@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:26 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **10:28 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **10:26 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 11:01 AM Central.**
-
-**Batch 23, security: a knip report for #2122** (director: work, its security chat). Started 10:26 AM Central, 23 October. Read-only: knip for dependencies on `origin/development`, and where nine packages are imported.
+**Waiting for the security director on batch 23** (stopped at step 3, ): knip read its own output file, `knip.json`, as a configuration and exited without a report. The worktree `C:/TAMU/wt-knip` and the volume `tamu-js-knip-nm` are kept for a rerun. Otherwise idle, watching the branch.
 
 ## Finished
+
+- **Batch 23, security: a knip report for #2122 - stopped at step 3** (10:26 to 10:28 AM, 23 October; director: work, security chat): `origin/development` `89aed53ae`, install exit 0 (2,344 packages), knip 5.88.1. **No report**: knip loads a file named `knip.json` as its configuration, and the output redirect creates that file empty before knip starts. Not rerun, as the batch says; question for the director in report `work-lab-leila/reports/2026-10-23-12.md`.
 
 - **Batch 21 again, on its new head** (10:06 to 10:09 AM, 23 October; director: work, security chat): `fork/security/check-2112b` at `b94d3985e` as required; `check-in-volume.sh` **exit=0**: lint 113, test 106, build 14, nothing from the cache, no failures. No `npm ci`, because the lock is byte-identical to the 9:51 run's. Report `work-lab-leila/reports/2026-10-23-11.md`.
 
