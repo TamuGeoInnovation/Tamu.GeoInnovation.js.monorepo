@@ -46,6 +46,6 @@ export class EmailController {
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() body: IMailroomEmailOutbound
   ) {
-    return Mailer.sendEmailWithAttachments(body, files);
+    return Mailer.sendEmail(body, files);
   }
 }
