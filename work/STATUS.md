@@ -9,7 +9,16 @@ the director's file to correct.
 
 ## Running now
 
-Nothing. **Last batch done: 23.** Watching the branch.
+**Batch 24 (workspace: #2118, the daily vulnerability scan and the publish gate).** **Taken at 7:40 AM
+Central, 23 October**, inside the 7:45 deadline in the "Still there?" note - please leave it here rather than
+moving it to the lab. Started now; expected about 90 minutes, so next update by **9:15 AM Central**.
+
+Batch 23 finished at 7:35 and its report was pushed at about 7:39, which is why batch 24 was not taken
+sooner: it was queued at 6:56 while the Trivy scans were running, and this machine was not idle at any point.
+
+Branch `ci/2118-security-scan` from the latest `origin/development`, pushed to the fork; no pull request.
+
+Last batch done: 23.
 
 ## Batch 23 finished, 7:35 AM Central, 23 October
 
