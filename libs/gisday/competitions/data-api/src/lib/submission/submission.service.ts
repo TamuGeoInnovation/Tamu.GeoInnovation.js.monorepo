@@ -41,7 +41,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       where: {
         guid: guid
       },
-      relations: ['validationStatus']
+      relations: { validationStatus: true }
     });
   }
 
@@ -97,7 +97,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       where: {
         guid: dto.guid
       },
-      relations: ['validationStatus']
+      relations: { validationStatus: true }
     });
 
     if (submission) {
@@ -142,7 +142,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     // Get competition season with form
     const compSeason = await this.compSeasonRepo.findOne({
       where: { season: { guid: season.guid } },
-      relations: ['form']
+      relations: { form: true }
     });
 
     if (!compSeason) {
@@ -155,7 +155,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         userGuid: dto.userGuid,
         season: { guid: compSeason.guid }
       },
-      relations: ['location', 'validationStatus', 'blobs']
+      relations: { location: true, validationStatus: true, blobs: true }
     });
 
     return this.mapSubmissionsToReviewDto(submissions, compSeason);
@@ -178,7 +178,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     // Get competition season with form
     const compSeason = await this.compSeasonRepo.findOne({
       where: { season: { guid: season.guid } },
-      relations: ['form']
+      relations: { form: true }
     });
 
     if (!compSeason) {
@@ -191,7 +191,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       where: {
         season: { guid: compSeason.guid }
       },
-      relations: ['location', 'validationStatus', 'blobs'],
+      relations: { location: true, validationStatus: true, blobs: true },
       select: {
         guid: true,
         created: true,
@@ -221,7 +221,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
   public async getSubmissionImages(submissionGuid: string): Promise<SubmissionMediaDto[]> {
     const submission = await this.submissionRepo.findOne({
       where: { guid: submissionGuid },
-      relations: ['blobs']
+      relations: { blobs: true }
     });
 
     if (!submission) {
