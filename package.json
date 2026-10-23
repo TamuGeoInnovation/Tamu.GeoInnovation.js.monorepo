@@ -170,7 +170,6 @@
     "@vitest/coverage-v8": "5.0.5",
     "angular-eslint": "^22.0.0",
     "caniuse-lite": "^1.0.30001154",
-    "coveralls": "^3.0.6",
     "eslint": "9.9.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-node": "^11.1.0",
@@ -196,6 +195,7 @@
     "vitest": "5.0.5"
   },
   "overrides": {
-    "better-sqlite3": "^12.11.1"
+    "better-sqlite3": "^12.11.1",
+    "form-data": "$form-data"
   }
 }
