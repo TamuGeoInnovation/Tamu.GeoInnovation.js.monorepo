@@ -1,0 +1,194 @@
+name: Security Scan
+
+# Runs daily against the lock file and the images we deploy, so a new advisory is noticed within a
+# day rather than when somebody next runs `npm audit` by hand. Deliberately cannot gate a pull
+# request: a new advisory means the world changed, not that a commit is bad. The gate that does
+# block a commit is in `publish.yml`, and only on a critical.
+#
+# Everything it finds is compared with `.github/security/accepted-advisories.json`, which lists what
+# we have already seen and the issue tracking each one, so a run is quiet until something is new.
+# That file is what stops this becoming a daily red check nobody reads. See #2118.
+on:
+  schedule:
+    # 06:42 College Station. Cron is UTC with no daylight saving, so the local time shifts by an
+    # hour twice a year, which does not matter for a daily scan. The offset minute avoids :00, the
+    # most contended slot on GitHub's schedulers - the same reasoning as aggiemap-smoke.yml.
+    - cron: '42 11 * * *'
+  workflow_dispatch:
+
+# Needed to open, update and close the health issue below.
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: security-scan
+  cancel-in-progress: false
+
+env:
+  # One place, so the scan and the publish gate cannot drift to different Trivy versions and
+  # disagree about what is in an image. Pinned: `latest` would make a scan's result depend on the
+  # day it ran, and a gate that changes under you is worse than no gate.
+  TRIVY_VERSION: '0.76.1'
+  ACCEPTED: .github/security/accepted-advisories.json
+  HEALTH_LABEL: security-health
+
+jobs:
+  scan:
+    name: Audit and scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.1'
+
+      # --omit=dev, because a build-time advisory is not something an attacker can reach in
+      # production. They still matter, and `npm audit` without the flag still reports them to
+      # anyone who runs it; what they must not do is hold a daily production health check red.
+      # || true: npm audit exits non-zero whenever it finds anything, which is not the question
+      # being asked here - the comparison step decides.
+      - name: npm audit
+        run: npm audit --omit=dev --package-lock-only --json > npm-audit.json || true
+
+      # The images to scan: each app's newest `sha-` tag on development, plus the shared nginx base,
+      # which is a build input rather than a deployed image and is where the front ends' findings
+      # actually live (#2119).
+      - name: Work out which image tags to scan
+        id: images
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(git rev-parse --short=7 HEAD)
+          {
+            echo "list<<EOF"
+            for app in gisday-nest geoservices-nest mailroom-nest mailroom-helper-nest \
+                       gisday-angular aggiemap-angular; do
+              echo "ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${app}:sha-${sha}"
+            done
+            echo "ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/nginx-base:latest"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Log in to the registry
+        run: echo '${{ github.token }}' | docker login ghcr.io -u '${{ github.actor }}' --password-stdin
+
+      # Each image scanned into its own file, named for the image, so a finding can be traced back
+      # to where it lives. A tag that does not exist is skipped with a line saying so rather than
+      # failing the run: not every app is rebuilt on every commit, so the newest `sha-` tag for one
+      # app may legitimately not exist for another.
+      - name: Trivy
+        id: trivy
+        run: |
+          mkdir -p scan
+          args=()
+          while read -r image; do
+            [ -n "$image" ] || continue
+            name=$(echo "$image" | sed 's|.*/||; s|[:/]|_|g')
+            if ! docker manifest inspect "$image" >/dev/null 2>&1; then
+              echo "skipping $image: not in the registry"
+              continue
+            fi
+            docker run --rm -v "$PWD/scan:/out" \
+              -e TRIVY_USERNAME='${{ github.actor }}' -e TRIVY_PASSWORD='${{ github.token }}' \
+              "aquasec/trivy:${TRIVY_VERSION}" image --scanners vuln --severity CRITICAL,HIGH \
+              --format json --output "/out/${name}.json" --quiet "$image"
+            args+=("--trivy" "scan/${name}.json=${image}")
+          done <<< '${{ steps.images.outputs.list }}'
+          printf '%s\n' "${args[@]}" > trivy-args.txt
+          echo "scanned $(( ${#args[@]} / 2 )) image(s)"
+
+      # The comparison lives in tools/, not here, so it can be tested without pushing a branch and
+      # waiting for a schedule - see tools/security-findings/findings.test.mjs, run by
+      # tools-tests.yml. A gate that silently passes everything looks exactly like a gate with
+      # nothing to catch, which is why this one has tests at all.
+      - name: Compare with the accepted advisories
+        id: compare
+        run: |
+          mapfile -t args < trivy-args.txt
+          node tools/security-findings/check.mjs \
+            --accepted "$ACCEPTED" \
+            --npm npm-audit.json \
+            "${args[@]}" \
+            --summary findings.md | tee findings.txt
+        continue-on-error: true
+
+      - name: Keep the scan output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-scan-${{ github.run_id }}
+          path: |
+            npm-audit.json
+            scan/
+            findings.md
+          retention-days: 30
+
+      # An input this cannot read is not "nothing new": exit 2 means the accepted file is malformed
+      # or a scan file is missing, and that must fail loudly rather than pass quietly.
+      - name: Fail on a broken input
+        if: steps.compare.outcome == 'failure' && steps.compare.conclusion != 'success'
+        run: |
+          if grep -q '^security-findings:' findings.txt 2>/dev/null; then
+            echo "the scan could not run: see the log above"
+            exit 1
+          fi
+
+      # One issue, kept updated, rather than a new one each day - the same pattern as
+      # aggiemap-smoke.yml, for the same reason: an advisory that appears on a Friday and is handled
+      # the next Wednesday would otherwise produce five identical issues, which is how a label stops
+      # being read.
+      - name: Report new findings
+        if: steps.compare.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          body=$(cat findings.md)
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --label "$HEALTH_LABEL" --state open --limit 1 --json number --jq '.[0].number // empty')
+
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "$body
+
+          [Run]($run_url)"
+          else
+            # `gh issue create` fails outright on a label that does not exist, which would break this
+            # handler on the very first real finding. Created here so the workflow needs no manual
+            # setup; harmless once it exists.
+            gh label create --repo "$GITHUB_REPOSITORY" "$HEALTH_LABEL" \
+              --description 'The daily security scan found something not yet accepted' \
+              --color 'B60205' 2>/dev/null || true
+
+            gh issue create --repo "$GITHUB_REPOSITORY" \
+              --title 'Security scan: findings not yet accepted' \
+              --label "$HEALTH_LABEL" \
+              --body "$body
+
+          Each finding needs either a fix or an entry in \`.github/security/accepted-advisories.json\`
+          with the issue that tracks it. An entry with no issue is rejected by the scan.
+
+          This issue is updated on each run that finds something and closed automatically when a run is clean.
+
+          [Run]($run_url)"
+          fi
+          exit 1
+
+      # Closes the issue once everything is either fixed or accepted, so the open issues describe the
+      # present rather than accumulating as a history of handled alarms.
+      - name: Clear
+        if: steps.compare.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --label "$HEALTH_LABEL" --state open --limit 1 --json number --jq '.[0].number // empty')
+
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "Nothing outside the accepted advisories. [Run]($run_url)"
+          fi
