@@ -304,9 +304,11 @@ export class PlaceService extends BaseProvider<Place> {
 
   public override async deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
     const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
+    let logos: Array<Asset> = [];
 
     try {
-      return this.pRepo.manager.transaction(async (manager) => {
+      // Awaited, so a failed delete lands in the catch below; the logos go by guid and their files after commit (#2205).
+      const result = await this.pRepo.manager.transaction(async (manager) => {
         const places = await manager.find(Place, {
           where: {
             guid: In(guids)
@@ -314,11 +316,9 @@ export class PlaceService extends BaseProvider<Place> {
           relations: ['logos']
         });
 
-        const logos = places.map((place) => place.logos).flat();
+        logos = places.map((place) => place.logos).flat();
 
-        if (logos.length > 0) {
-          await manager.delete(Asset, logos);
-        }
+        await this.assetService.deleteAssets(manager, logos);
 
         const eventLocationsForPlace = await manager.find(EventLocation, {
           where: {
@@ -334,6 +334,10 @@ export class PlaceService extends BaseProvider<Place> {
 
         return manager.delete(Place, guids);
       });
+
+      await this.assetService.deleteAssetFiles(logos);
+
+      return result;
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
