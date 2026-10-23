@@ -14,7 +14,10 @@ async function bootstrap() {
   const globalPrefix = environment.prefix;
   const port = process.env.port ? process.env.port : environment.port;
   app.enableCors();
-  app.useGlobalPipes(new ValidationPipe({ disableErrorMessages: environment.production }));
+  // As gisday-nest: drop undeclared fields, and reject a body whose class declares no rules (#2113).
+  app.useGlobalPipes(
+    new ValidationPipe({ disableErrorMessages: environment.production, forbidUnknownValues: true, whitelist: true })
+  );
   app.setGlobalPrefix(globalPrefix);
   await app.listen(port, () => {
     Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix);

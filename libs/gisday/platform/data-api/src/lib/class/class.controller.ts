@@ -58,7 +58,10 @@ export class ClassController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Permissions(['create:classes'])
   @Post()
-  public async insertClass(@Body() body: Class) {
+  // Not validated, on purpose: Class is the entity and declares no class-validator rules, so the global pipe's
+  // forbidUnknownValues would refuse every body and whitelist would strip every field (#2113). DeepPartial reaches
+  // the pipe as Object, which it passes through, as the PATCH below has always done.
+  public async insertClass(@Body() body: DeepPartial<Class>) {
     return this.provider.createClass(body);
   }
 

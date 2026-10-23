@@ -1,6 +1,6 @@
 import { HttpException, Injectable, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { DeepPartial, In, Repository } from 'typeorm';
 import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 
 import { Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest/auth';
@@ -41,7 +41,7 @@ export class ClassProvider extends BaseProvider<Class> {
     return this.getClassesForSeason(season.guid);
   }
 
-  public async createClass(dto: Class) {
+  public async createClass(dto: DeepPartial<Class>) {
     const existing = await this.classRepo.findOne({
       where: {
         code: dto.code,

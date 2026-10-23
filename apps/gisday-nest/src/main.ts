@@ -53,7 +53,10 @@ async function bootstrap() {
   const globalPrefix = environment.globalPrefix;
   app.setGlobalPrefix(globalPrefix);
   app.use(json({ limit: '50mb' }));
-  app.useGlobalPipes(new ValidationPipe());
+  // whitelist drops any field a DTO does not declare, and forbidUnknownValues rejects a body whose class declares
+  // no rules at all (#2113). Nest turns the second off unless told; class-validator has defaulted it on since 0.14.
+  // A body typed as an interface, Partial<> or DeepPartial<> reaches the pipe as Object and is not validated.
+  app.useGlobalPipes(new ValidationPipe({ forbidUnknownValues: true, whitelist: true }));
 
   const port = environment.port;
   await app.listen(port, () => {
