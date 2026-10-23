@@ -146,9 +146,6 @@
           "buildTarget": "aggiemap-angular:build:development"
         }
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

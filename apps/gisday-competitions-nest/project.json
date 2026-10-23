@@ -47,9 +47,6 @@
         "host": "0.0.0.0"
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/gisday-competitions-nest"],

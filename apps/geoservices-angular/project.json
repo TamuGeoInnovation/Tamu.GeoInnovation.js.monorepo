@@ -38,7 +38,11 @@
           "includePaths": ["."]
         },
         "scripts": [],
-        "loader": { ".woff2": "file", ".woff": "file", ".ttf": "file" },
+        "loader": {
+          ".woff2": "file",
+          ".woff": "file",
+          ".ttf": "file"
+        },
         "extractLicenses": false,
         "sourceMap": true,
         "optimization": false,
@@ -130,9 +134,6 @@
         "jestConfig": "apps/geoservices-angular/jest.config.ts",
         "tsConfig": "apps/geoservices-angular/tsconfig.spec.json"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

@@ -4,9 +4,6 @@
   "projectType": "library",
   "sourceRoot": "libs/common/utils/date/src",
   "tags": [],
-  "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    }
-  }
+  "// targets": "to see all targets run: nx show project common-utils-date --web",
+  "targets": {}
 }

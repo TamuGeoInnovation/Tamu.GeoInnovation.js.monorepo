@@ -13,9 +13,6 @@
         "jestConfig": "libs/gisday/platform/ngx/core/jest.config.ts",
         "tsConfig": "libs/gisday/platform/ngx/core/tsconfig.spec.json"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

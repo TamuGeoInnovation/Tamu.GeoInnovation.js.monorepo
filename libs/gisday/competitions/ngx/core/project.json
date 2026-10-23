@@ -13,9 +13,6 @@
         "jestConfig": "libs/gisday/competitions/ngx/core/jest.config.ts",
         "tsConfig": "libs/gisday/competitions/ngx/core/tsconfig.spec.json"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

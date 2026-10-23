@@ -13,9 +13,6 @@
         "jestConfig": "libs/signage/jest.config.ts",
         "tsConfig": "libs/signage/tsconfig.spec.json"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }
