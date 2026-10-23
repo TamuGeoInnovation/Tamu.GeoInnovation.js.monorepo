@@ -49,7 +49,7 @@
           <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
         </div>
         <div class="selected-actions">
-          <p class="selected-action caution" (click)="promptDeleteModal('Submission')">Delete <span class="material-icons action">delete_forever</span></p>
+          <p class="selected-action caution" (click)="promptDeleteModal('Submission')" tabindex="0" role="button" (keydown.enter)="promptDeleteModal('Submission')" (keydown.space)="promptDeleteModal('Submission'); $event.preventDefault()">Delete <span class="material-icons action">delete_forever</span></p>
         </div>
       </div>
       } }

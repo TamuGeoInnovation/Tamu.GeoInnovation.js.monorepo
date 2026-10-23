@@ -1,6 +1,6 @@
 @if (day() !== null) {
 <div class="date-tile">
-  <div class="edit-bubble" (click)="delete()">
+  <div class="edit-bubble" aria-label="Remove event day" (click)="delete()" tabindex="0" role="button" (keydown.enter)="delete()" (keydown.space)="delete(); $event.preventDefault()">
     <span class="material-icons">close</span>
   </div>
   <div class="date">
@@ -8,7 +8,7 @@
   </div>
 </div>
 } @else {
-<div class="date-tile" title="Add event day" (click)="add()">
+<div class="date-tile" title="Add event day" aria-label="Add event day" (click)="add()" tabindex="0" role="button" (keydown.enter)="add()" (keydown.space)="add(); $event.preventDefault()">
   <span class="material-icons">add</span>
 </div>
 }

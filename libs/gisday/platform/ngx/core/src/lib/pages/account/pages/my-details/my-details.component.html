@@ -38,10 +38,10 @@
       <div class="form-section-body">
         <p class="trailer-1">Please indicate the type that best describes your participation in {{ site.name }} and fill out the resulting form. We rely on the information provided to gain insights on the event's audience and to help us tailor future {{ site.name }} events.</p>
 
-        <div class="participant-type-buttons">
-          <div class="participant-type" (click)="setAttendeeType('student')" [ngClass]="{selected: (selectedParticipantType$ | async) === 'student'}">Student <span class="material-icons">check_circle</span></div>
-          <div class="participant-type" (click)="setAttendeeType('industry')" [ngClass]="{selected: (selectedParticipantType$ | async) === 'industry'}">Industry <span class="material-icons">check_circle</span></div>
-          <div class="participant-type" (click)="setAttendeeType('academia')" [ngClass]="{selected: (selectedParticipantType$ | async) === 'academia'}">Staff/Faculty <span class="material-icons">check_circle</span></div>
+        <div class="participant-type-buttons" role="radiogroup" aria-label="Participant type">
+          <div class="participant-type" role="radio" tabindex="0" [attr.aria-checked]="(selectedParticipantType$ | async) === 'student'" (click)="setAttendeeType('student')" (keydown.enter)="setAttendeeType('student')" (keydown.space)="setAttendeeType('student'); $event.preventDefault()" [ngClass]="{selected: (selectedParticipantType$ | async) === 'student'}">Student <span class="material-icons" aria-hidden="true">check_circle</span></div>
+          <div class="participant-type" role="radio" tabindex="0" [attr.aria-checked]="(selectedParticipantType$ | async) === 'industry'" (click)="setAttendeeType('industry')" (keydown.enter)="setAttendeeType('industry')" (keydown.space)="setAttendeeType('industry'); $event.preventDefault()" [ngClass]="{selected: (selectedParticipantType$ | async) === 'industry'}">Industry <span class="material-icons" aria-hidden="true">check_circle</span></div>
+          <div class="participant-type" role="radio" tabindex="0" [attr.aria-checked]="(selectedParticipantType$ | async) === 'academia'" (click)="setAttendeeType('academia')" (keydown.enter)="setAttendeeType('academia')" (keydown.space)="setAttendeeType('academia'); $event.preventDefault()" [ngClass]="{selected: (selectedParticipantType$ | async) === 'academia'}">Staff/Faculty <span class="material-icons" aria-hidden="true">check_circle</span></div>
         </div>
       </div>
     </div>

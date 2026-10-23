@@ -40,7 +40,7 @@
   @if ((loggedIn$ | async) === false) {
   <tamu-gisc-tile>
     <tamu-gisc-tile-icon><div class="material-icons">login</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title (click)="login()">Login</tamu-gisc-tile-title>
+    <tamu-gisc-tile-title tabindex="0" role="button" (click)="login()" (keydown.enter)="login()" (keydown.space)="login(); $event.preventDefault()">Login</tamu-gisc-tile-title>
   </tamu-gisc-tile>
   } @else { @if ((loggedIn$ | async) === true) {
   <tamu-gisc-tile>
@@ -53,7 +53,7 @@
       } @if ('checkIns' | siteHas) {
       <p tamuGiscTileLink location="/account/checkins">Checkins</p>
       }
-      <p (click)="logout()">Logout</p>
+      <p (click)="logout()" tabindex="0" role="button" (keydown.enter)="logout()" (keydown.space)="logout(); $event.preventDefault()">Logout</p>
     </tamu-gisc-tile-submenu>
   </tamu-gisc-tile>
   } }
@@ -73,7 +73,7 @@
         } @else {
         <h1 class="site-logo">
           <span class="site-logo-image-container">
-            <img [src]="site.logo" height="50px" width="50px" />
+            <img [src]="site.logo" height="50px" width="50px" alt="" />
           </span>
           {{ site.name }} @if ((activeSeason$ | async)?.year; as year) {
           <span>{{year}}</span>
@@ -131,12 +131,12 @@
             }
             <!-- <li><a [routerLink]="['/account/checkins']">Checkins</a></li> -->
             <!-- <li><a [routerLink]="['/account/submissions']">My Submissions</a></li> -->
-            <li><a (click)="logout()">Logout</a></li>
+            <li><a (click)="logout()" tabindex="0" role="button" (keydown.enter)="logout()" (keydown.space)="logout(); $event.preventDefault()">Logout</a></li>
           </ul>
         </ul>
         } @else {
         <ul id="liLogin">
-          <a (click)="login()" id="linkLogin">Login/Signup</a>
+          <a (click)="login()" tabindex="0" role="button" (keydown.enter)="login()" (keydown.space)="login(); $event.preventDefault()" id="linkLogin">Login/Signup</a>
         </ul>
         }
       </div>

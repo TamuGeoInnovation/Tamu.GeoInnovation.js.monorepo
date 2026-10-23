@@ -45,7 +45,7 @@
     <div class="form-section-body">
       <div class="form-collection row">
         <div>
-          <img [src]="logoUrl$ | async" />
+          <img [src]="logoUrl$ | async" alt="Logo preview" />
           <tamu-gisc-file formControlName="file" accept="image/*">
             <p class="placeholder">Select Logo Image</p>
           </tamu-gisc-file>
@@ -75,7 +75,7 @@
     <div class="form-section-toolbar">
       <div class="form-section-title">Links</div>
       <div class="form-section-actions">
-        <a (click)="addOrgLink()">Add link <span class="material-icons action">add</span></a>
+        <a (click)="addOrgLink()" tabindex="0" role="button" (keydown.enter)="addOrgLink()" (keydown.space)="addOrgLink(); $event.preventDefault()">Add link <span class="material-icons action">add</span></a>
       </div>
     </div>
 

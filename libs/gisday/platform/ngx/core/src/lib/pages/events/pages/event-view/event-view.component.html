@@ -45,7 +45,7 @@
       }
 
       <div id="filters-container">
-        <div id="filter-toggle" class="info-block" [ngClass]="{'notice': (activeFilterCount$ | async) > 0}" (click)="toggleFilters()">
+        <div id="filter-toggle" class="info-block" [ngClass]="{'notice': (activeFilterCount$ | async) > 0}" (click)="toggleFilters()" tabindex="0" role="button" [attr.aria-expanded]="filtersVisible$ | async" (keydown.enter)="toggleFilters()" (keydown.space)="toggleFilters(); $event.preventDefault()">
           <span class="material-icons">filter_list</span>Filters @if ((activeFilterCount$ | async) > 0) {
           <strong>({{activeFilterCount$ | async}} active)</strong>
           }

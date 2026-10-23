@@ -61,7 +61,7 @@
   <p class="info-block context">Finding your location...</p>
   } }
   <p class="rules-text">By submitting, you agree that you have read and understand the competition <a href="https://txgisday.org/competitions/vgi/" target="_blank" rel="noopener noreferrer">rules and guidelines.</a></p>
-  <div class="button" role="button" (click)="submitResponse()" [class.disabled]="(formValid | async) !== true || (submissionStatus | async) === 1 || formModel().allowSubmissions === false">
+  <div class="button" role="button" tabindex="0" (click)="submitResponse()" (keydown.enter)="submitResponse()" (keydown.space)="submitResponse(); $event.preventDefault()" [class.disabled]="(formValid | async) !== true || (submissionStatus | async) === 1 || formModel().allowSubmissions === false">
     @if ((submissionStatus | async) !== -1) {
     <div class="progress" [style.width.%]="(submissionProgress | async) * 100"></div>
     }

@@ -94,7 +94,7 @@
         <tamu-gisc-accordion-content>
           <p>Are you seeing a location forbidden message when you try to submit a response? This can happen because either the location access was declined or because of system settings. Location <strong>is required</strong> to participate because we are interested in collecting geographic data on the submissions. Below are a few pointers to grant this application location access.</p>
           <p><strong>Trigger location access prompt:</strong> If you never saw the application request location access, this is a good first step. Press the button below to initiate geolocation which should prompt your device to ask you to allow this site access to location while the application is being used.</p>
-          <div class="button leader-2 trailer-2" (click)="initiateLocationRequest()" [class.disabled]="locationRequested | async">{{(locationRequested | async) ? 'Location Requested' : 'Request Location'}}</div>
+          <div class="button leader-2 trailer-2" (click)="initiateLocationRequest()" tabindex="0" role="button" (keydown.enter)="initiateLocationRequest()" (keydown.space)="initiateLocationRequest(); $event.preventDefault()" [class.disabled]="locationRequested | async">{{(locationRequested | async) ? 'Location Requested' : 'Request Location'}}</div>
           <p>If the above resulted in an error, continue onto the following steps.</p>
           <p class="leader-2"><strong>Enable System Location Services:</strong> Check that your device location services are enabled in system settings and enabled for Safari sites:</p>
           <p><strong>1.</strong> In your <strong>Settings</strong> app, tap on the <strong>Privacy</strong> link:</p>

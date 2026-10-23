@@ -7,30 +7,30 @@
     <div class="form-section-body">
       <div class="form-collection column">
         <div class="info-row">
-          <label>Created:</label>
+          <strong>Created:</strong>
           <span>{{ submission.created | date: 'short' }}</span>
         </div>
         @if (submission.resolvedIdentity) {
         <div class="info-row">
-          <label>User:</label>
+          <strong>User:</strong>
           <span>{{ submission.resolvedIdentity }}</span>
         </div>
         }
         <div class="info-row">
-          <label>Question:</label>
+          <strong>Question:</strong>
           <span>{{ submission.questionValue }}</span>
         </div>
         <div class="info-row">
-          <label>Status:</label>
+          <strong>Status:</strong>
           <span [class]="'status-badge status-' + submission.validationStatus"> {{ submission.validationStatus }} </span>
         </div>
         <div class="info-row">
-          <label>Location:</label>
+          <strong>Location:</strong>
           <span>{{ submission.location.latitude }}, {{ submission.location.longitude }}</span>
         </div>
         @if (submission.sha256Hashes && submission.sha256Hashes.length > 0) {
         <div class="info-row">
-          <label>SHA256 Hash{{ submission.sha256Hashes.length > 1 ? 'es' : '' }}:</label>
+          <strong>SHA256 Hash{{ submission.sha256Hashes.length > 1 ? 'es' : '' }}:</strong>
           <div class="sha256-list">
             @for (hash of submission.sha256Hashes; track hash) {
             <span class="sha256-hash">{{ hash }}</span>
