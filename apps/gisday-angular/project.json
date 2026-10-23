@@ -149,14 +149,6 @@
       "options": {
         "buildTarget": "gisday-angular:build"
       }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/gisday-angular"],
-      "options": {
-        "jestConfig": "apps/gisday-angular/jest.config.ts",
-        "tsConfig": "apps/gisday-angular/tsconfig.spec.json"
-      }
     }
   }
 }

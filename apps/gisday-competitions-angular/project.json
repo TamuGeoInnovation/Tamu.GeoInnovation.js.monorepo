@@ -116,14 +116,6 @@
           "buildTarget": "gisday-competitions-angular:build:development"
         }
       }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/gisday-competitions-angular"],
-      "options": {
-        "jestConfig": "apps/gisday-competitions-angular/jest.config.ts",
-        "tsConfig": "apps/gisday-competitions-angular/tsconfig.spec.json"
-      }
     }
   }
 }

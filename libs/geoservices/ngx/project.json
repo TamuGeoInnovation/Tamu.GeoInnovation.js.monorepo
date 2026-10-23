@@ -5,14 +5,5 @@
   "sourceRoot": "libs/geoservices/ngx/src",
   "prefix": "tamu-gisc",
   "tags": [],
-  "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/geoservices/ngx"],
-      "options": {
-        "jestConfig": "libs/geoservices/ngx/jest.config.ts",
-        "tsConfig": "libs/geoservices/ngx/tsconfig.spec.json"
-      }
-    }
-  }
+  "targets": {}
 }

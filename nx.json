@@ -83,39 +83,51 @@
       "inputs": ["production", "^production"],
       "cache": true
     },
-    "@nx/jest:jest": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
-      "cache": true,
-      "options": {
-        "passWithNoTests": true
+    "test": [
+      {
+        "inputs": [
+          "default",
+          "^production",
+          {
+            "fileset": "{projectRoot}/tsconfig.spec.json",
+            "dependencies": true
+          },
+          "{workspaceRoot}/vitest.preset.mts",
+          "{workspaceRoot}/test/polyfills.ts",
+          "{workspaceRoot}/test/vitest-setup-angular.ts",
+          {
+            "externalDependencies": ["vitest"]
+          },
+          {
+            "env": "CI"
+          }
+        ],
+        "cache": true
       },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
+      {
+        "filter": {
+          "plugin": "@nx/jest/plugin"
+        },
+        "inputs": [
+          "default",
+          "^production",
+          "{workspaceRoot}/jest.preset.js",
+          "{workspaceRoot}/test/polyfills.ts",
+          {
+            "externalDependencies": ["jest", "ts-jest", "jest-preset-angular", "jest-junit"]
+          }
+        ],
+        "configurations": {
+          "ci": {
+            "ci": true,
+            "coverage": true
+          }
+        },
+        "options": {
+          "passWithNoTests": true
         }
       }
-    },
-    "test": {
-      "inputs": [
-        "default",
-        "^production",
-        {
-          "fileset": "{projectRoot}/tsconfig.spec.json",
-          "dependencies": true
-        },
-        "{workspaceRoot}/vitest.preset.mts",
-        "{workspaceRoot}/test/polyfills.ts",
-        "{workspaceRoot}/test/vitest-setup-angular.ts",
-        {
-          "externalDependencies": ["vitest"]
-        },
-        {
-          "env": "CI"
-        }
-      ],
-      "cache": true
-    }
+    ]
   },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
@@ -253,6 +265,12 @@
         "libs/ui-kits/ngx/search/**/*"
       ],
       "exclude": ["apps/gisday-competitions-nest/src/**/*", "apps/ues-operations-nest/src/**/*"]
+    },
+    {
+      "plugin": "@nx/jest/plugin",
+      "options": {
+        "targetName": "test"
+      }
     }
   ]
 }

@@ -43,13 +43,6 @@
         "buildTarget": "geoservices-nest:build",
         "host": "0.0.0.0"
       }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/geoservices-nest"],
-      "options": {
-        "jestConfig": "apps/geoservices-nest/jest.config.ts"
-      }
     }
   }
 }
