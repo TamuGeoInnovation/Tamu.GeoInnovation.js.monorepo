@@ -17,6 +17,7 @@ import {
   UseInterceptors
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 import { DeepPartial } from 'typeorm';
 import { Duplex } from 'stream';
 import { validate as isUuid } from 'uuid';
@@ -146,9 +147,10 @@ export class SubmissionController {
    */
   @UseGuards(JwtGuard)
   @Post('')
-  // Up to two photographs of at most 15 MB each; the app shrinks them first (#1786). A larger one
-  // answers 413.
-  @UseInterceptors(AnyFilesInterceptor({ limits: { fileSize: MAX_PHOTO_BYTES, files: 2 } }))
+  // Keep the existing two-photo, 15 MiB contract (#1786) and cap multipart metadata too.
+  @UseInterceptors(
+    AnyFilesInterceptor({ limits: { ...DEFAULT_UPLOAD_LIMITS, fileSize: MAX_PHOTO_BYTES, files: 2, parts: 52 } })
+  )
   public async insert(@Req() req, @Body() body, @UploadedFiles() files?: Array<Express.Multer.File>) {
     const season = await this.formService.getSeason(body.season);
 

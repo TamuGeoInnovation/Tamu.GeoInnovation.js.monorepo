@@ -2,6 +2,7 @@ import { Body, Controller, HttpException, HttpStatus, Post, Res, UploadedFiles, 
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
+import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import FormData from 'form-data';
 import got from 'got';
@@ -11,7 +12,8 @@ export class HelperController {
   constructor(private readonly env: EnvironmentService) {}
 
   @Post('')
-  @UseInterceptors(AnyFilesInterceptor())
+  // Forwarded messages may have several attachments; each is capped at 5 MiB (50 MiB total).
+  @UseInterceptors(AnyFilesInterceptor({ limits: { ...DEFAULT_UPLOAD_LIMITS, files: 10, parts: 60 } }))
   public async forwardMail(
     @Body() body: { [key: string]: string | Blob },
     @UploadedFiles() files: Array<Express.Multer.File>,

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterc
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { Sponsor } from '../entities/all.entity';
 import { SponsorProvider } from './sponsor.provider';
@@ -50,7 +51,7 @@ export class SponsorController {
   @Permissions(['create:sponsors'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { limits: { ...DEFAULT_UPLOAD_LIMITS } }))
   public create(@Body() creteOrgDto?: Partial<Sponsor>, @UploadedFile() file?: Express.Multer.File) {
     return this.provider.createSponsor(creteOrgDto, file);
   }
@@ -58,7 +59,7 @@ export class SponsorController {
   @Permissions(['update:sponsors'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { limits: { ...DEFAULT_UPLOAD_LIMITS } }))
   public update(
     @Param('guid') guid: string,
     @Body() updateOrgDto: Partial<Sponsor>,
