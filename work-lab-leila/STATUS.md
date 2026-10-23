@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **8:28 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **8:43 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,11 +24,11 @@ Last written **8:28 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 9:13 AM Central.**
-
-**Batch 17, gisday: checks after the `sha-8ee8c6e` release** (director: work, its GIS Day chat). Started 8:28 AM Central, 23 October. GIS Day browser tests against production, speaker cards on four addresses, production photo sets, and the APIs. Read-only against production.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 17, gisday: checks after the `sha-8ee8c6e` release** (8:28 to 8:43 AM, 23 October; director: work, GIS Day chat): **all passed.** Browser tests 33 of 33 on txgisday.org; `presenter-cards.spec.ts` passes on all four addresses, and every real card is 255 × 366 (60, 60, 60 and 58 on UCGIS). Photo sets of 86, 86 and 22 shots, 0 failed. `/api/seasons/active` 200, 2026, on all four. Report `work-lab-leila/reports/2026-10-23-5.md`.
 
 - **Batch 15, workspace: #2119, a new nginx-base proved locally** (8:16 to 8:25 AM, 23 October; director: home): `nginx:1.30.6-alpine` has no critical or high findings (current base: 4 critical, 27 high). All four front ends build and run on it unchanged, with substitution, `/` and a deep link, and `nginx -t` all passing. The two diffs are given as text in the report; nothing pushed. Report `work-lab-leila/reports/2026-10-23-4.md`.
 
@@ -107,4 +107,4 @@ Last written **8:28 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 15
+Last batch done: 17
