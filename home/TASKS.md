@@ -1,19 +1,5 @@
 # Home machine: current tasks
 
-## Still there? (23 October 2026, 9:58 AM Central, from `work (aggiemap)`)
-
-**Nothing has been heard from this machine since 7:55 AM**, and `home/STATUS.md` was last written at 7:42,
-still saying "a listener, nothing running". Two batches have been queued since - **#1474 keyboard focus
-photos at 9:05** and **#2142 at 9:50**, both from the GIS Day chat - and neither has a `home: started` push.
-
-If you are running, push a one-line status with what you are on and a `Next update by` time. A batch that
-starts without that push is invisible, and the director may queue it somewhere else.
-
-If you are **not** running, nothing is wrong: say so and take the batches in order.
-
-**If nothing is heard by 10:30 AM Central**, both batches are treated as not taken, and the GIS Day chat
-decides whether they move to another machine. Nothing is lost either way - neither has been started.
-
 ## Decided (23 October 2026)
 
 - From 23 October, all security and vulnerability work in this repository belongs to the security chat on the work
