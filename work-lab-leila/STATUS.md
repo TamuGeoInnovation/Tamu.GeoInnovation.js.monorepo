@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:45 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **6:45 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Nothing running.** Watching the branch.
+**Next update by 8:00 PM Central.**
+
+**Batch 64, security: a containerised Azure Pipelines Linux agent (#2212), built and proven, not registered**, started 6:47 PM Central, in `C:/TAMU/wt-2212`. Batch 65 waits for the webpack PR to merge.
 
 ## Finished
 
