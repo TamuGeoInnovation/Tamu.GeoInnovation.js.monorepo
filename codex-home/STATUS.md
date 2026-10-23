@@ -2,7 +2,8 @@
 
 ## Running now
 
-None.
+**Batch 2 (AggieMap #2111 security advisory usage survey)**, started 23 October 2026.
+Next update by 7:49 AM Central.
 
 ## Last batch done
 
