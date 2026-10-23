@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:40 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **6:45 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **6:40 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 7:20 PM Central.**
-
-**Batch 63, security: the webpack branch brought up to date after PR 2184**, started 6:40 PM Central.
+**Nothing running.** Watching the branch.
 
 ## Finished
+
+- **Batch 63, security: the webpack branch brought up to date after PR 2184 - pushed** (6:40 to 6:44 PM, 23 October): `development` merged in; only `nx.json` conflicted (resolved three-way, all four plugins, byte-identical to batch 62's); the lock differs from development only by `webpack-cli` 7.2.3 and its five dependencies. Full check exit 0 (lint 104 / test 100 / build 14); `gisday-nest`'s 203 output files byte-identical to batch 50's. **`chore/2168-webpack-inferred` at `f0e6f3a4e`.** Report `work-lab-leila/reports/2026-10-23-52.md`.
 
 - **Batch 62, security: Nx 24 as a branch (#2168) - pushed** (6:30 to 6:40 PM, 23 October): from development (PR 2184 had merged) plus the webpack branch; Nx 24 by the lock method; all 12 migrations, three changing anything (`affected.legacy` kept, `readyWhen` on eight Angular serves, two SCAM defaults gone); `migrations.json` and the AI prompts not committed. Full check exit 0 (lint 104 / test 100 / build 14); `gisday-nest` `main.js` and `package.json` identical to batch 50's; the AggieMap dev server compiles in 15 s and the map is ready in the browser. **`chore/2168-nx-24` at `3995a9b7e`.** Report `work-lab-leila/reports/2026-10-23-51.md`.
 
@@ -220,4 +220,4 @@ Last written **6:40 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 62 (42 and 39 stopped; 40 superseded)
+Last batch done: 63 (42 and 39 stopped; 40 superseded)
