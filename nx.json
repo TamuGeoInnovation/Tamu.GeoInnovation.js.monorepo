@@ -112,6 +112,7 @@
           "default",
           "^production",
           "{workspaceRoot}/jest.preset.js",
+          "{workspaceRoot}/test/polyfills.ts",
           {
             "externalDependencies": ["jest", "ts-jest", "jest-preset-angular", "jest-junit"]
           }
