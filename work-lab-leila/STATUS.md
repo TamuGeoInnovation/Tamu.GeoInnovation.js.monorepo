@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:03 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **6:14 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,11 +24,11 @@ Last written **6:03 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 6:38 AM Central.**
-
-**Batch 12, workspace: #2107, the four API images on Node 24.22.1** (director: home). Started 6:03 AM Central, 23 October. Builds `gisday-nest`, `geoservices-nest`, `mailroom-nest`, `mailroom-helper-nest` from `8e1132afb`; checks `node -v` and the zlib constant; starts gisday-nest on a throwaway SQL Server and sends one malformed-Brotli request. Report on #2107.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 12, workspace: #2107, the four API images on Node 24.22.1** (6:03 to 6:14 AM, 23 October; director: home): all four `docker build` exit 0, `node -v` `v24.22.1`, the constant `-17` (`undefined` on 24.22.0). `gisday-nest` on a throwaway database: `/api/seasons/active` 200, and malformed Brotli gets a **400 "Decompression failed" with the process still up**. Posted on #2107; everything made has been removed. Report `work-lab-leila/reports/2026-10-23-1.md`.
 
 - **Batch 11, aggiemap: #2101, the paging refusals measured again** (3:53 to 4:13 PM, 22 October, after the reboots): **a standing fault.** `arc.ts.tamu.edu` refuses two paged requests in every eight on a fixed cycle (Motorcycle 6 of 25 both ways; Business Parking too), the same as batch 10; `gis.tamu.edu` basemap 4 refused 3 of 50. Spec on production three times: 162/0/0, 161/0/1, 161/0/1, both flakes on `arc.ts`. Report `work-lab-leila/reports/2026-10-22-3.md`.
 
@@ -99,4 +99,4 @@ Last written **6:03 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 11
+Last batch done: 12
