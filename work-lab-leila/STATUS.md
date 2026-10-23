@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:30 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **6:40 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **6:30 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 7:15 PM Central.**
+**Next update by 7:20 PM Central.**
 
-**Batch 62, security: Nx 24 as a branch (#2168)**, started 6:30 PM Central, in `C:/TAMU/wt-nx24` (`chore/2168-nx-24`).
+**Batch 63, security: the webpack branch brought up to date after PR 2184**, started 6:40 PM Central.
 
 ## Finished
+
+- **Batch 62, security: Nx 24 as a branch (#2168) - pushed** (6:30 to 6:40 PM, 23 October): from development (PR 2184 had merged) plus the webpack branch; Nx 24 by the lock method; all 12 migrations, three changing anything (`affected.legacy` kept, `readyWhen` on eight Angular serves, two SCAM defaults gone); `migrations.json` and the AI prompts not committed. Full check exit 0 (lint 104 / test 100 / build 14); `gisday-nest` `main.js` and `package.json` identical to batch 50's; the AggieMap dev server compiles in 15 s and the map is ready in the browser. **`chore/2168-nx-24` at `3995a9b7e`.** Report `work-lab-leila/reports/2026-10-23-51.md`.
 
 - **Batch 59, gisday: deleting a sponsor that has a logo (#2205) - pushed** (6:16 to 6:29 PM, 23 October): the logo rows were deleted with whole rows as criteria, which typeorm 0.3 turns into a WHERE on every column; on SQL Server that matched nothing, so the sponsor hit the foreign key. Reproduced and fixed against a throwaway SQL Server (sponsor, asset row and file all gone after). **Places, organizations and speakers had the same fault**; all four now delete through AssetsService by guid, files after commit, and await their transaction. The double DELETE is the browser's CORS preflight (OPTIONS, 204); the form sends one (a test says so). Full check exit 0. **`fix/2205-gisday-delete-sponsor-with-logo` at `433a090f5`.** Report `work-lab-leila/reports/2026-10-23-50.md`.
 
@@ -218,4 +220,4 @@ Last written **6:30 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 61 and 59 (42 and 39 stopped; 40 superseded)
+Last batch done: 62 (42 and 39 stopped; 40 superseded)
