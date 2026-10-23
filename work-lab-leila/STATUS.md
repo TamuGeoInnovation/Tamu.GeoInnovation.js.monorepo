@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:13 PM Central, 22 October 2026**. A listener; job: testing.
+Last written **6:03 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,7 +24,9 @@ Last written **4:13 PM Central, 22 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 6:38 AM Central.**
+
+**Batch 12, workspace: #2107, the four API images on Node 24.22.1** (director: home). Started 6:03 AM Central, 23 October. Builds `gisday-nest`, `geoservices-nest`, `mailroom-nest`, `mailroom-helper-nest` from `8e1132afb`; checks `node -v` and the zlib constant; starts gisday-nest on a throwaway SQL Server and sends one malformed-Brotli request. Report on #2107.
 
 ## Finished
 
