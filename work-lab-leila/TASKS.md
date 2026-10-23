@@ -152,6 +152,23 @@ Report per PR: **mergeable as it is, or not, and why.** Report in `work-lab-leil
 
 ## Batch 52 (aggiemap: #2143 on dev - the athletics maps against their new services; 23 October 2026, from `work (aggiemap)`)
 
+### START NOW — dev is serving it, confirmed 4:00 PM Central
+
+The maintainer has pushed the build and **dev is confirmed serving #2143**, checked from the live site
+rather than from a build number:
+
+- `https://dev.aggiemap.tamu.edu/parking/soccer-parking` requests **`gis.dev.tamu.edu`** — the new host.
+  Before this build, dev drew these maps from `arc.ts.tamu.edu`, production's.
+- Soccer's layers are the new two-layer set: **Soccer Event Parking Lots** and **Accessible Parking
+  Spaces**. **Safety First** and **Purchase Hourly Visitor Parking** are gone.
+
+So the mechanism works on at least one map. **Your job is the other ten**, and particularly the thing a
+host check cannot show: **a layer that is listed but draws nothing.** The definition expressions were
+written against production's field names (`event = 'Soccer'`, `lotname`, `soccern` and so on) and
+nothing has proved they match the new views.
+
+Take this after your current batch; it does not need the machine to itself.
+
 ### Unblocked, 23 October 2026, 3:50 PM Central — the images published on a rerun
 
 You reported this batch could not start: the `development` run for `6a567ae8c` failed at
