@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:02 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **6:15 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **6:02 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 6:45 PM Central.**
+**Next update by 7:00 PM Central.**
 
-**Batch 61, security: Nx 24 on top of the three conversions** (a probe, nothing pushed), started 6:02 PM Central. Then 59 (gisday, #2205).
+**Batch 59, gisday: deleting a sponsor that has a logo (#2205)**, started 6:15 PM Central, in `C:/TAMU/wt-2205`.
 
 ## Finished
+
+- **Batch 61, security: Nx 24 on top of the three conversions - one small change** (6:02 to 6:15 PM, 23 October; a probe, nothing pushed): jest + webpack branches merged (nx.json three-way, four plugins), Nx 24 by batch 44's lock method, all 12 migrations: only three change anything (`affected.legacy`, two old generator defaults, `readyWhen` on eight Angular serve targets). **On Nx 24: lint 104 / test 100 / build 14, all pass; `gisday-nest` production `main.js` and `package.json` byte-identical to batch 50's** (the generated lock differs only in nesting). Report `work-lab-leila/reports/2026-10-23-49.md`.
 
 - **Batch 60, security: body-parser 2.4.0 (GHSA-27r3-jxmh-p828) - pushed** (5:56 to 6:02 PM, 23 October): only `node_modules/express/node_modules/body-parser` re-resolved, 2.3.0 → 2.4.0, nothing else moved; production audit 8 (1 high) → 7 moderate, body-parser gone. Images: `gisday-nest` parses JSON and gzip JSON bodies (401 unauthenticated), a gzip body with trailing bytes gets a clean 400 and the API stays up. Full check exit 0. **`fix/body-parser-2-4` at `7d15285f5`.** Report `work-lab-leila/reports/2026-10-23-48.md`.
 
@@ -214,4 +216,4 @@ Last written **6:02 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 60 (42 and 39 stopped; 40 superseded)
+Last batch done: 61 (42 and 39 stopped; 40 superseded)
