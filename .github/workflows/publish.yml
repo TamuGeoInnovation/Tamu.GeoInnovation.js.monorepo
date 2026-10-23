@@ -22,10 +22,10 @@ jobs:
         run: |
           if [ -d "./apps" ]; then
             echo "✅ Apps directory found - proceeding with image build matrix generation"
-            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "⚠️  Apps directory not found - skipping image builds"
-            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
       - name: 'Set matrix'
         id: set-matrix
@@ -34,8 +34,8 @@ jobs:
         run: |
           cd ./apps
           JASON=$(find . -name "Dockerfile" -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
-          echo $JASON
-          echo "matrix=$JASON" >> $GITHUB_OUTPUT
+          echo "$JASON"
+          echo "matrix=$JASON" >> "$GITHUB_OUTPUT"
   build-and-push:
     needs: list-publishable
     runs-on: ubuntu-24.04
