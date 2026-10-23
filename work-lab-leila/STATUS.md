@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:53 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **10:59 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,13 +30,13 @@ Last written **10:53 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 11:23 AM Central.**
-
-**Batch 24, security: #2115, nodemailer 10** (director: work, its security chat). Started 10:53 AM Central: the full check, then a real send to a local Mailpit.
+**Nothing running.** Waiting for the security director on batch 23 (below), and watching the branch.
 
 **Batch 23 is stopped at step 3 again** (10:53 AM), waiting for the security director: knip now fails on the repository's root `jest.config.ts`, which calls `getJestProjects()`, gone from `@nx/jest` 23.3.0. Its worktree and volume are kept.
 
 ## Finished
+
+- **Batch 24, security: #2115, nodemailer 10** (10:53 to 10:59 AM, 23 October; director: work, security chat): head `42826d479` as required. **Check exit=1**: lint 113 passed; **4 builds fail on the same two nodemailer 10 type errors in `libs/oidc/common/.../mailer.util.ts`** (mailroom-nest, mailroom-helper-nest, gisday-nest, gisday-angular); 1 test timed out (`gisday-platform-data-api`, an upload-limit test). **The real send passed**: plain message accepted, `/etc/passwd` attachment refused, exactly one message in Mailpit. Cleaned up. Report `work-lab-leila/reports/2026-10-23-14.md`.
 
 - **Batch 23 resumed - stopped at step 3 again** (10:52 to 10:53 AM, 23 October): with the output renamed, knip 5.88.1 now fails loading the root `jest.config.ts`: `getJestProjects` is not exported by `@nx/jest` 23.3.0 (only `getJestProjectsAsync`), so that file cannot load at all. Not rerun. Report `work-lab-leila/reports/2026-10-23-13.md`.
 
