@@ -61,7 +61,7 @@ export async function writeFileToDisk(
 
     return `${endFileName}`;
   } catch (error) {
-    throw new Error(`Error writing file to disk. ${error.message}`);
+    throw new Error(`Error writing file to disk. ${error.message}`, { cause: error });
   }
 }
 
