@@ -38,7 +38,7 @@ jobs:
 
       # --coverage=false: jest.preset.js sets collectCoverage globally, but the report is neither
       # uploaded nor checked against a threshold, so instrumenting every run is pure overhead.
-      # Coverage is still available locally via `npm run coverage`.
+      # Coverage is still available locally: `npm run coverage` runs every project's tests with coverage, through Nx.
       #
       # No --ci: Vitest refuses options it does not know, and projects on Vitest get these flags too
       # (#1479). Jest turns its own `ci` mode on from the CI variable GitHub sets, so it loses nothing.
