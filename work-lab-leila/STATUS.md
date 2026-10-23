@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:36 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **1:40 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **1:36 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 2:16 PM Central.**
+**Next update by 2:20 PM Central.**
 
-**Batch 41, security: angular-eslint 22.6.0 by re-resolving its own lock entries**, started 1:36 PM Central, in `C:/TAMU/wt-ae2206` (`chore/2168-angular-eslint-22-6`). Then 42 (if 41 pushes) and 43. Batch 40 is superseded.
+**Batch 42, security: does Nx 24 run Jest and webpack unconverted?** (a test, nothing pushed), started 1:40 PM Central, in `C:/TAMU/wt-nx24-probe` from batch 41's branch. Then 43.
 
 ## Finished
+
+- **Batch 41, security: angular-eslint 22.6.0 by re-resolving only its own lock entries - pushed** (1:36 to 1:40 PM, 23 October; director: work, security chat): deleted the nine `angular-eslint`/`@angular-eslint/*` lock keys and re-resolved them, with no ERESOLVE; the lock diff is only those eight packages to 22.6.0 plus their nested `ignore` 7.0.8 → 7.0.12. Full check exit 0, lint 104 / test 100 / build 14, no cache hits. **`chore/2168-angular-eslint-22-6` at `6457deb77`** on the fork. Report `work-lab-leila/reports/2026-10-23-30.md`.
 
 - **Batch 39, security: angular-eslint 22.6.0 on its own - stopped at step 2** (1:32 to 1:34 PM, 23 October; director: work, security chat): the lock-only install hits **the same `ERESOLVE`** as batch 36 with Nx untouched, so the conflict is in the `angular-eslint` set itself (the lock\x27s 22.5.0 `schematics` pins `eslint-plugin-template@22.5.0`). Lock unchanged; nothing committed. **Batch 40 not started**, as it says; its step 4 (Jest and webpack working unconverted on Nx 24) looks impossible, since Nx 24 removes those executors. Report `work-lab-leila/reports/2026-10-23-29.md`.
 
@@ -176,4 +178,4 @@ Last written **1:36 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 38 (39 stopped at step 2, 40 not started; see report 2026-10-23-29)
+Last batch done: 41 (39 stopped at step 2; 40 superseded)
