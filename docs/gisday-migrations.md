@@ -51,7 +51,7 @@ repository, for a login that may change tables, and run from a machine that can 
 
 ```bash
 MSYS_NO_PATHCONV=1 docker run --rm -m 4g --env-file <settings file> -e NX_DAEMON=false \
-  -v "<checkout>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.0 \
+  -v "<checkout>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.1 \
   node node_modules/nx/dist/bin/nx.js run gisday-nest:migration-show
 ```
 

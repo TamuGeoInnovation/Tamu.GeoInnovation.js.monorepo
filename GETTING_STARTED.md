@@ -184,14 +184,14 @@ The repository defines the Node.js version used by CI and the devcontainer. Pref
 
 Canonical locations to check for the version:
 
-- CI (exact version): `.github/workflows/build.yml` — look for `node-version` (e.g. `24.22.0`).
+- CI (exact version): `.github/workflows/build.yml` — look for `node-version` (e.g. `24.22.1`).
 - Devcontainer (image major): `.devcontainer/devcontainer.json` — image like `mcr.microsoft.com/devcontainers/typescript-node:24` (Node 24).
 
 Install and use the exact CI version with nvm (example uses the value currently in `build.yml`).
 
 ```powershell
-nvm install 24.22.0
-nvm use 24.22.0
+nvm install 24.22.1
+nvm use 24.22.1
 ```
 
 Check:
@@ -286,8 +286,8 @@ nvm --version
 As above for macOS/Linux: prefer the exact CI Node.js patch version from `.github/workflows/build.yml`. Example (current CI value):
 
 ```bash
-nvm install 24.22.0
-nvm use 24.22.0
+nvm install 24.22.1
+nvm use 24.22.1
 ```
 
 Check:
@@ -404,7 +404,7 @@ git@github.com:TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo.git
 
 # Path 5: Windows with Docker Only (No Local Node.js)
 
-Runs every Node command in a throwaway `node:24.22.0` container against your checkout, so nothing but Docker Desktop and Git is needed on the host. Use this if you don't want a devcontainer or a local Node install. It is also the setup Claude Code uses; see [Working with Claude Code](#working-with-claude-code).
+Runs every Node command in a throwaway `node:24.22.1` container against your checkout, so nothing but Docker Desktop and Git is needed on the host. Use this if you don't want a devcontainer or a local Node install. It is also the setup Claude Code uses; see [Working with Claude Code](#working-with-claude-code).
 
 ## Prerequisites
 
@@ -419,14 +419,14 @@ Run the commands from **Git Bash**. `MSYS_NO_PATHCONV=1` stops Git Bash from rew
 
 ```bash
 MSYS_NO_PATHCONV=1 docker run --rm -m 8g \
-  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.0 \
+  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.1 \
   sh -c "npm ci --no-audit --no-fund"
 ```
 
 **What to Expect:** `added ~2200 packages`, then the repo's `postinstall` (`ngcc`) runs for a few minutes.
 **Notes:**
 
-- The first run also downloads the `node:24.22.0` image, which is several hundred MB.
+- The first run also downloads the `node:24.22.1` image, which is several hundred MB.
 - A full-tunnel VPN can slow these downloads badly. Disconnect it if you can.
 - `node_modules` goes in a Docker volume, `tamu-js-dev-nm`, not in your checkout: reading it across the Windows-to-Linux bind mount is several times slower. Run this again whenever `package-lock.json` changes.
 - To lint, test and build a committed branch, run `scripts/check-in-volume.sh <branch>`; see CLAUDE.md.
@@ -436,7 +436,7 @@ MSYS_NO_PATHCONV=1 docker run --rm -m 8g \
 ```bash
 MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 \
   -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w \
-  -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.0 \
+  -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.1 \
   sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 

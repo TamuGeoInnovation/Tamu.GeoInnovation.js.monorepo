@@ -56,7 +56,7 @@ Notes:
 
 - **Node.js on the host is not required and not used.** Every Node command runs inside
   Docker against the checkout. If the machine has Node installed, ignore it - its version is
-  irrelevant, and the commands below pin Node 24.22.0.
+  irrelevant, and the commands below pin Node 24.22.1.
 - On Windows, `python3` may open the Microsoft Store alias. Use `python`.
 - If `gh` was installed after this session started, it may not be on `PATH` yet. Ask the
   user to restart the session, or call the executable by its full path.
@@ -149,17 +149,17 @@ substituting the real path in `-v`.
 Git Bash:
 
 ```
-MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:\path\to\repo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.0 npm ci --no-audit --no-fund
+MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:\path\to\repo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.1 npm ci --no-audit --no-fund
 ```
 
 PowerShell, where `MSYS_NO_PATHCONV` is unnecessary:
 
 ```
-docker run --rm -m 16g -v "${PWD}:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.0 npm ci --no-audit --no-fund
+docker run --rm -m 16g -v "${PWD}:/w" -v tamu-js-dev-nm:/w/node_modules -w /w node:24.22.1 npm ci --no-audit --no-fund
 ```
 
 **Expect:** roughly 2,200 packages. Budget real time - the first run also pulls the
-`node:24.22.0` image, and on a slow link this phase has taken close to an hour.
+`node:24.22.1` image, and on a slow link this phase has taken close to an hour.
 
 - A full-tunnel VPN slows this badly. Suggest disconnecting it for this step.
 - Tell the user when this starts. It is long enough that silence looks like a hang.
@@ -194,7 +194,7 @@ only compiles what the specs import, and `nx lint` does not typecheck at all.
 ## Phase 5 - Run the app
 
 ```
-MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v "<path>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.0 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v "<path>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data node:24.22.1 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 **Expect:** compiled in roughly three to four minutes, then the app answers on port 4200.

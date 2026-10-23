@@ -180,7 +180,7 @@ jobs:
         if: steps.probe.outputs.present == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: '24.22.0'
+          node-version: '24.22.1'
 
       - uses: actions/cache@v4
         if: steps.probe.outputs.present == 'true'
