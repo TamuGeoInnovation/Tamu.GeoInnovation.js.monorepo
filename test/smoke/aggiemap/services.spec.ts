@@ -126,6 +126,180 @@ test.describe(`GIS services (${GIS_HOST})`, () => {
 });
 
 /**
+ * Every layer can hand over every feature it holds (#2101).
+ *
+ * A layer that refuses a query fails `map-layers.spec.ts`. A layer that answers short does not: a service
+ * caps each answer at its `maxRecordCount`, so a layer holding more than that is drawn in full only if a
+ * client can page past the cap. On 22 October Accessible Building Entrances held 1,524 features, capped at
+ * 1,000, and answered `Pagination is not supported.` - so no client could have had the other 524, and with
+ * no error from the first page nothing would have said so.
+ *
+ * So this asks the service, not a map: its total, its cap, and - only where the total is over the cap - the
+ * first record past it. The same answer on every run, with no layer view, extent or timing involved.
+ * Comparing a layer view's count with the service's was tried and does not work: a view holds what the
+ * current level of detail needs, and line layers are clipped and tiled.
+ */
+
+/** What a layer says it holds, and what it answered when asked past its cap. */
+interface LayerHoldings {
+  total: number;
+  maxRecordCount: number;
+  /** The answer to the first record past the cap, or `null` where the total is within it and nothing was asked. */
+  pastCap: { error?: { message?: string }; features?: unknown[] } | null;
+}
+
+/** Why a layer cannot hand over everything it holds, or null if it can. */
+function completenessProblem({ total, maxRecordCount, pastCap }: LayerHoldings): string | null {
+  if (total <= maxRecordCount) {
+    return null;
+  }
+
+  if (!pastCap) {
+    return `holds ${total} features, more than its maxRecordCount of ${maxRecordCount}, and was not asked past it`;
+  }
+
+  if (pastCap.error) {
+    return `holds ${total} features, more than its maxRecordCount of ${maxRecordCount}, and refused the records past it: ${pastCap.error.message ?? 'error'}`;
+  }
+
+  if (!pastCap.features?.length) {
+    return `holds ${total} features, more than its maxRecordCount of ${maxRecordCount}, and answered nothing past record ${maxRecordCount}`;
+  }
+
+  return null;
+}
+
+/** The layer endpoints a connection stands for: itself when it names a layer, otherwise each feature layer of its service. */
+async function layersOf(request: import('@playwright/test').APIRequestContext, url: string): Promise<string[]> {
+  if (/\/(MapServer|FeatureServer)\/\d+$/.test(url)) {
+    return [url];
+  }
+
+  if (!/\/(MapServer|FeatureServer)$/.test(url)) {
+    return [];
+  }
+
+  const root = await (await request.get(`${url}?f=json`, { timeout: 30_000 })).json();
+
+  return ((root.layers ?? []) as Array<{ id: number; type?: string; subLayerIds?: number[] | null }>)
+    .filter((layer) => !layer.subLayerIds?.length && (layer.type ?? 'Feature Layer') === 'Feature Layer')
+    .map((layer) => `${url}/${layer.id}`);
+}
+
+/** Asks `layer` for its total, its cap and, where the total is over the cap, the first record past it. */
+async function holdingsOf(request: import('@playwright/test').APIRequestContext, layer: string): Promise<LayerHoldings | string> {
+  const metadata = await (await request.get(`${layer}?f=json`, { timeout: 30_000 })).json();
+
+  if (metadata.error) {
+    return `${metadata.error.code ?? 'error'} ${metadata.error.message ?? ''}`.trim();
+  }
+
+  // Tables and raster layers answer no feature query; there is nothing to page.
+  if (metadata.type !== 'Feature Layer') {
+    return `not a feature layer (${metadata.type ?? 'no type'})`;
+  }
+
+  const count = await (
+    await request.get(`${layer}/query`, { params: { where: '1=1', returnCountOnly: 'true', f: 'json' }, timeout: 30_000 })
+  ).json();
+
+  if (count.error || typeof count.count !== 'number') {
+    return `its features could not be counted: ${count.error?.message ?? 'no count'}`;
+  }
+
+  const total = count.count as number;
+  const maxRecordCount = (metadata.maxRecordCount as number | undefined) ?? 1000;
+
+  if (total <= maxRecordCount) {
+    return { total, maxRecordCount, pastCap: null };
+  }
+
+  // Order by the layer's object id when it names one, so the page is stable. Several name none (the basemap's road
+  // centerlines, and Accessible Building Entrances, whose only OID field is its attachments'), and a guessed
+  // OBJECTID there is refused as "Invalid or missing input parameters." - a fault of the question, not the layer.
+  // Those are asked with the server's own default fields and order.
+  const objectIdField = metadata.objectIdField as string | undefined;
+  const pastCap = await (
+    await request.get(`${layer}/query`, {
+      params: {
+        where: '1=1',
+        ...(objectIdField ? { outFields: objectIdField, orderByFields: objectIdField } : {}),
+        returnGeometry: 'false',
+        resultOffset: String(maxRecordCount),
+        resultRecordCount: '1',
+        f: 'json'
+      },
+      timeout: 30_000
+    })
+  ).json();
+
+  return { total, maxRecordCount, pastCap };
+}
+
+test.describe(`GIS layers hand over every feature they hold (${GIS_HOST})`, () => {
+  test('a layer over its cap that refuses the records past it is a problem', () => {
+    expect(
+      completenessProblem({ total: 1524, maxRecordCount: 1000, pastCap: { error: { message: 'Pagination is not supported.' } } })
+    ).toBe('holds 1524 features, more than its maxRecordCount of 1000, and refused the records past it: Pagination is not supported.');
+  });
+
+  test('a layer over its cap that answers nothing past it is a problem', () => {
+    expect(completenessProblem({ total: 1524, maxRecordCount: 1000, pastCap: { features: [] } })).toBe(
+      'holds 1524 features, more than its maxRecordCount of 1000, and answered nothing past record 1000'
+    );
+  });
+
+  test('a layer within its cap, or one that pages past it, is not', () => {
+    expect(completenessProblem({ total: 381, maxRecordCount: 1000, pastCap: null })).toBeNull();
+    expect(completenessProblem({ total: 1524, maxRecordCount: 1000, pastCap: { features: [{}] } })).toBeNull();
+  });
+
+  for (const [name, url] of services) {
+    test(`${name} hands over every feature it holds`, async ({ request }) => {
+      const retiredIn = RETIRED.get(name);
+
+      test.skip(retiredIn !== undefined, `used only by retired maps: ${retiredIn?.join(', ')}`);
+      // A service already known not to answer cannot be asked what it holds; the test above records it.
+      test.skip(ALLOWED[name] !== undefined, `a known failure: ${ALLOWED[name]}`);
+
+      const layers = await layersOf(request, url);
+
+      test.skip(layers.length === 0, `${url} is not a feature service`);
+
+      const problems: string[] = [];
+
+      // Asked together: one at a time, the basemap's 66 layers took about 50 seconds.
+      const allHoldings = await Promise.all(layers.map((layer) => holdingsOf(request, layer)));
+
+      for (const [i, layer] of layers.entries()) {
+        const holdings = allHoldings[i];
+
+        if (typeof holdings === 'string') {
+          test.info().annotations.push({ type: 'not checked', description: `${layer}: ${holdings}` });
+          console.log(`NOT CHECKED ${name} ${layer}: ${holdings}`);
+          continue;
+        }
+
+        const problem = completenessProblem(holdings);
+        const paged = holdings.pastCap === null ? 'within its cap' : problem ? 'paging past the cap failed' : 'paged past the cap';
+
+        // The numbers are the useful output even when nothing fails: they show which layers are near their cap.
+        const line = `${layer}: ${holdings.total} of maxRecordCount ${holdings.maxRecordCount}, ${paged}`;
+
+        test.info().annotations.push({ type: 'holdings', description: line });
+        console.log(`HOLDINGS ${name} ${line}`);
+
+        if (problem) {
+          problems.push(`${layer} ${problem}`);
+        }
+      }
+
+      expect(problems, `${name}: layers that cannot hand over every feature they hold`).toEqual([]);
+    });
+  }
+});
+
+/**
  * The campus basemap's own services (#1695).
  *
  * Everything above is read from `connections.ts`. The basemap gallery's services are not in that

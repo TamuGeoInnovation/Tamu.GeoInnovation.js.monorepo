@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, UploadedFiles, UseFilters, UseInterceptors } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import 'multer';
 
@@ -41,11 +42,15 @@ export class EmailController {
 
   @Post('form')
   @UseFilters(MailroomExceptionFilter)
-  @UseInterceptors(AnyFilesInterceptor(), LogToDatabaseInterceptor)
+  // Allow several attachments, while limiting each to 5 MiB (50 MiB total) and bounding form fields.
+  @UseInterceptors(
+    AnyFilesInterceptor({ limits: { ...DEFAULT_UPLOAD_LIMITS, files: 10, parts: 60 } }),
+    LogToDatabaseInterceptor
+  )
   public async sendEmailFromFormWithAttachments(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() body: IMailroomEmailOutbound
   ) {
-    return Mailer.sendEmailWithAttachments(body, files);
+    return Mailer.sendEmail(body, files);
   }
 }

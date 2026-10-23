@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseGua
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 
 import { Place } from '../entities/all.entity';
 import { PlaceService } from './place.service';
@@ -43,7 +44,7 @@ export class PlaceController {
   @Permissions(['create:places'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { limits: { ...DEFAULT_UPLOAD_LIMITS } }))
   public async insertEntity(@Body() body: Partial<Place>, @UploadedFile() file?: Express.Multer.File) {
     return this.ps.createPlace(body, file);
   }
@@ -51,7 +52,7 @@ export class PlaceController {
   @Permissions(['update:places'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { limits: { ...DEFAULT_UPLOAD_LIMITS } }))
   public async updateEntity(
     @Param('guid') guid: string,
     @Body() body: Partial<Place>,
