@@ -5,7 +5,8 @@
     "publish gate fails on a critical not in it. An entry without an issue is rejected outright: an",
     "acceptance nobody is tracking is how a finding becomes permanent.",
     "Remove an entry when its issue is fixed - the scan prints the ones nothing finds any more.",
-    "Seeded 23 October 2026 from npm audit --omit=dev and Trivy 0.76.1 (#2118). Reseeded the same day from the scan's own run 39984219123, on sha-ee1a9e4: the 232 entries it no longer found were removed, the 30 it did were kept (the three tied to the closed #2112 now point at #2122), and its one new finding, node-jose, was added."
+    "Seeded 23 October 2026 from npm audit --omit=dev and Trivy 0.76.1 (#2118). Reseeded the same day from the scan's own run 39984219123, on sha-ee1a9e4: the 232 entries it no longer found were removed, the 30 it did were kept (the three tied to the closed #2112 now point at #2122), and its one new finding, node-jose, was added.",
+    "23 October 2026: the nodemailer entries were removed when nodemailer 10 merged (#2115, PR 2153)."
   ],
   "accepted": [
     {
@@ -23,134 +24,6 @@
       "source": "npm",
       "reason": "Used only by the oidc apps, which CI does not build; whether they stay is #2122",
       "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2122"
-    },
-    {
-      "id": "1109804",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1115470",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1116270",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1120795",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1120796",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1123478",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1158513",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1193741",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1193770",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1193778",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1193779",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1239931",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1240033",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1240114",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1241195",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1242826",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
     },
     {
       "id": "transitive",
@@ -195,46 +68,6 @@
     {
       "id": "CVE-2026-85393",
       "package": "node-forge",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "CVE-2025-14874",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "CVE-2026-82659",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "CVE-2026-82662",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "GHSA-2x7j-588g-ccc2",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "GHSA-v53p-9fqp-m79j",
-      "package": "nodemailer",
       "severity": "HIGH",
       "source": "trivy-lang",
       "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
