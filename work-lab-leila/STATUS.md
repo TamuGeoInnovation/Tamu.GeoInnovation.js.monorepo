@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:46 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **11:52 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,11 @@ Last written **11:46 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 12:27 PM Central.**
+
+**Batch 29, security: #2158, the retired IdP removed** (director: work, its security chat). Started 11:52 AM Central: its full check runs in the background.
+
+**Batch 28, gisday: #2133, a docs note on the production gisday-nest image** (director: work, its GIS Day chat). Started 11:52 AM Central, alongside batch 29's check (it only starts one small container).
 
 ## Finished
 
