@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 60.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 62.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -23,6 +23,40 @@ report under **Questions for the director**, with options and a recommendation â
 > **HOLD ON PUSHES, 3:55 PM Central, from `work (security)` (the maintainer: the CI build hosts are saturated):** finish batches 50 and 58 locally, but **do not `git push` anything** until a later note here lifts this. Commit locally and report the head instead. Batch 57 waits as it already does.
 
 > **HOLD LIFTED, 4:35 PM Central, from `work (security)` (the maintainer: CI is clear).** Push now, to the fork only: **`security/check-2184`** (batch 58) and **`chore/2168-webpack-inferred`** (batch 50, with `webpack-cli` accepted: your batch 50 question 1, answer (a)). Neither has a pull request, so neither starts a CI build. Then take batch 57 (PRs 2182 and 2186 have merged, so it can run). Report the two heads.
+
+## Batch 60 (security: body-parser 2.4.0 for today's denial-of-service advisory - a lock-only fix and a branch; 23 October 2026, 5:55 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 30 minutes.** Push to the fork only; **no pull request starts from it** (the director opens it).
+
+A new advisory today, **GHSA-27r3-jxmh-p828** (npm 1243074): `body-parser` `>=2.0.0 <2.4.0`, denial of service via trailing bytes after a compressed
+request body. `development`'s lock has `node_modules/express/node_modules/body-parser` **2.3.0** (production: `express` 5, used by every Nest API),
+and `express` asks for `^2.3.0`, so **2.4.0 is in range**. (The top-level `body-parser` 1.20.8 is dev-only, under `webpack-dev-server`'s
+`express` 4, and not in this advisory's range.)
+
+1. `git worktree add C:/TAMU/wt-bodyparser -b fix/body-parser-2-4 origin/development`.
+2. In Docker (`node:24.22.1`): `npm update body-parser --package-lock-only --ignore-scripts` (or, if that does not reach the nested copy,
+   batch 41's method for the key `node_modules/express/node_modules/body-parser` only). **No `package.json` change.**
+3. **The lock diff** against `development`, key by key: expect only that `body-parser` to 2.4.x and anything only it depends on. Then
+   `npm audit --package-lock-only --omit=dev`: report the totals; `body-parser` must be gone.
+4. Build `gisday-nest` and `geoservices-nest` for production and start each image (as batch 38): no missing module; `gisday-nest` against a
+   throwaway SQL Server answers `GET /api/seasons/active` 200 and accepts a JSON `POST` that it then refuses 401 (unauthenticated), so a
+   request body is still parsed; and a gzip-compressed JSON body (`Content-Encoding: gzip`) to the same route still gets 401, not 400/500.
+5. `scripts/check-in-volume.sh fix/body-parser-2-4` (full `affected`, clean `npm ci`). Commit (`fix(workspace): Move body-parser to 2.4.0 for
+   its denial-of-service advisory`, a body naming the advisory, the Co-Authored-By line; the director adds the issue number). Push to the fork.
+
+## Batch 61 (security: Nx 24 on top of the three conversions - a probe, nothing pushed; 23 October 2026, 5:55 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 60.** **Expected: about 45 minutes.** **Commit nothing, push nothing.** The three #2168 conversions exist as branches
+(lint merged as PR 2182; Jest is PR 2184, `fork/chore/2168-jest-inferred` at `450f025c0`; webpack is your `fork/chore/2168-webpack-inferred`).
+This measures what is left for Nx 24 itself once all three are in.
+
+1. A scratch worktree from `fork/chore/2168-jest-inferred`, then `git merge fork/chore/2168-webpack-inferred` (resolve `nx.json` keeping every
+   plugin entry and default, as you described in batch 50's question 3).
+2. `npm ci`, then `nx migrate 24.0.0`, then batch 44's lock method for `nx` and `@nx/*`, `npm install`, then **all** of `migrations.json`
+   (`nx migrate --run-migrations`). Report each migration and what it changed, and any AI prompt it wrote.
+3. `nx run-many -t lint,test,build` (or `scripts/check-in-volume.sh` on a local branch): counts and every failure's first error. And one
+   production build of `gisday-nest` compared with batch 50's output (byte-identical, or what differs).
+4. Report: what the Nx 24 branch will need beyond `migrate`, and whether it can go as one small change.
 
 ## Batch 59 (gisday: #2205, deleting a sponsor that has a logo; 23 October 2026, 5:40 PM Central, from `work (gisday)`)
 
