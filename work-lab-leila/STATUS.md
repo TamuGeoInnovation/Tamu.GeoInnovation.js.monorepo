@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:21 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **11:25 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **11:21 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 11:41 AM Central.**
-
-**Batch 26, security: #2122, the first eleven unused dependencies removed** (director: work, its security chat). Started 11:21 AM Central, 23 October. Full `affected` check of `security/check-2122`.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 26, security: #2122, eleven unused dependencies removed** (11:21 to 11:25 AM, 23 October; director: work, security chat): `cc819f1c5` as required; `check-in-volume.sh` **exit=0**: clean `npm ci` of **2,309** packages (37 fewer), lint 113, test 106, build 14, no failures, no missing-module errors. Report `work-lab-leila/reports/2026-10-23-16.md`.
 
 - **Batch 25, security: #2115 on its fixed head, and batch 23's knip report** (11:08 to 11:13 AM, 23 October; director: work, security chat). **#2115 `6116951f5` check exit=0** (lint 113, test 106, build 14; the organization upload test passed this time). **knip ran with Jest off**: 27 unused dependencies, 32 unused devDependencies, 20 unlisted imports, 0 binaries; of the nine packages, only `oidc-provider`, `node-jose` (both `libs/oidc/provider`) and `passport-jwt` are imported. The root `jest.config.ts` breaks `npm test` and `npm run coverage`. Report `work-lab-leila/reports/2026-10-23-15.md`.
 
@@ -148,4 +148,4 @@ Last written **11:21 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 25 (and 23, finished within it)
+Last batch done: 26
