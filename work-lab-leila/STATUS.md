@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:17 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **9:35 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -27,7 +27,9 @@ Last written **9:17 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 10:10 AM Central.**
+
+**Batch 19, security: the full pre-push check for 2129** (director: work, its security chat). Started 9:35 AM Central, 23 October, **late**: batch 19 was written at 9:25 AM, but this session's mailbox watcher stopped when the desktop app restarted, and nothing here saw it until the maintainer asked. Full `affected` check of `security/check-2129`.
 
 ## Finished
 
