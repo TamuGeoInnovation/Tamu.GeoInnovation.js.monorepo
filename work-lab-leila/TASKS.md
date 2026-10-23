@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 24.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 25.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -20,7 +20,54 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
-## Batch 23 (security: a knip report for #2122, which dependencies nothing uses; 23 October 2026, 10:25 AM Central, from `work (security)`)
+## Batch 24 (security: #2115, nodemailer 6 to 10: the full check, and a real send; 23 October 2026, 10:50 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 23.**
+**Expected: about 20 minutes.** Do exactly these steps, in order, from Git Bash. Change nothing in the repository.
+
+1. `git fetch fork security/check-2115`. Then `git rev-parse fork/security/check-2115` must print
+   **`42826d479dc3cf3a0093318b1a37265c3c8b7bc7`**. If not, stop and report it.
+2. `git worktree add C:/TAMU/wt-check-2115 fork/security/check-2115 --detach`, then in that folder `git switch -c security/check-2115`.
+3. In that folder: `scripts/check-in-volume.sh security/check-2115 > ../check-2115.out 2>&1; echo "exit=$?"`. This is the full
+   `affected` check. `package.json` changed, so expect nearly every project, and a clean `npm ci`. Report the exit code
+   and every log line containing `Successfully ran target` or `failed`; for each failure, the project, the target and
+   the first error. **nodemailer 10 ships its own types for the first time**, so a type error in
+   `libs/oidc/common/src/lib/utils/email/mailer.util.ts` or `libs/mailroom/common` is possible. Report it exactly; do not fix it.
+4. **A real send, with nodemailer 10, to a local mail catcher.** Start Mailpit:
+   `docker run -d --name mailpit-2115 -p 18025:8025 -p 11025:1025 axllent/mailpit:v1.27`
+5. Install the new nodemailer into a scratch folder and send two messages:
+   `mkdir -p C:/TAMU/scratch-2115 && cd C:/TAMU/scratch-2115`
+   `MSYS_NO_PATHCONV=1 docker run --rm -v "C:/TAMU/scratch-2115:/s" -w /s node:24.22.1 npm install --no-audit --no-fund nodemailer@10.2.1`
+   Then write this file as `C:/TAMU/scratch-2115/send.js`, exactly:
+
+   ```js
+   const nodemailer = require('nodemailer');
+   // The same safety options mailroom passes to every transport (libs/mailroom/common, SAFE_TRANSPORT_OPTIONS).
+   const t = nodemailer.createTransport({ host: process.env.SMTP_HOST, port: 11025, secure: false, ignoreTLS: true,
+     disableFileAccess: true, disableUrlAccess: true });
+   (async () => {
+     const ok = await t.sendMail({ from: 'test@example.com', to: 'someone@example.com', subject: 'nodemailer 10 test', text: 'hello' });
+     console.log('PLAIN', ok.messageId, ok.accepted);
+     try {
+       await t.sendMail({ from: 'test@example.com', to: 'someone@example.com', subject: 'must not send',
+         attachments: [{ filename: 'passwd', path: '/etc/passwd' }] });
+       console.log('FILE ATTACHMENT SENT - THE BLOCK DID NOT WORK');
+     } catch (e) { console.log('FILE ATTACHMENT REFUSED', e.code, e.message); }
+   })();
+   ```
+
+   Run it: `MSYS_NO_PATHCONV=1 docker run --rm --add-host=host.docker.internal:host-gateway -e SMTP_HOST=host.docker.internal -v "C:/TAMU/scratch-2115:/s" -w /s node:24.22.1 node send.js`
+6. Ask Mailpit what arrived: `curl -s http://localhost:18025/api/v1/messages`. Report the whole output of step 5, and from
+   step 6 the `total` and each message's `Subject`. **Expected:** `PLAIN` with one accepted address; `FILE ATTACHMENT REFUSED`;
+   exactly **one** message in Mailpit, "nodemailer 10 test".
+7. Clean up: `docker rm -f mailpit-2115`, delete `C:/TAMU/scratch-2115`, `git worktree remove C:/TAMU/wt-check-2115 --force`,
+   `git branch -D security/check-2115`.
+
+Nothing else: no pushes, no pull request, no comments. Report in `work-lab-leila/reports/` and say "work-lab-leila: finished batch 24".
+
+## Batch 23 (security: a knip report for #2122, which dependencies nothing uses; 23 October 2026, 10:25 AM Central; step 3 fixed 10:50 AM, from `work (security)`)
+
+**Resume at step 3**, in the worktree and volume you kept. Steps 1 and 2 stand.
 
 **Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.**
 **Expected: about 25 minutes.** Read-only: it ends in a report, and nothing in the repository changes.
@@ -35,10 +82,12 @@ Do exactly these steps, in order, from Git Bash.
    `MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-knip:/w" -v tamu-js-knip-nm:/w/node_modules -w /w node:24.22.1 npm ci --no-audit --no-fund --ignore-scripts`
    Report the exit code and the "added N packages" line.
 3. Run knip for dependencies only:
-   `MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-knip:/w" -v tamu-js-knip-nm:/w/node_modules -w /w node:24.22.1 sh -c "npx -y knip@5 --version; npx -y knip@5 --include dependencies,devDependencies,unlisted,binaries --no-exit-code --reporter json > /w/knip.json 2> /w/knip.err"`
-   Report the knip version it printed, and the size of `knip.json` and `knip.err`. If `knip.json` is empty, report the
+   `MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-knip:/w" -v tamu-js-knip-nm:/w/node_modules -w /w node:24.22.1 sh -c "npx -y knip@5 --version; npx -y knip@5 --include dependencies,devDependencies,unlisted,binaries --no-exit-code --reporter json > /w/knip-report.out 2> /w/knip.err"`
+   **First delete `C:/TAMU/wt-knip/knip.json`** if it exists: knip reads a file of that name as its configuration, which is
+   what stopped the first run (the director's mistake). Report the knip version it printed, and the size of `knip-report.out` and `knip.err`.
+   The report is JSON, named `.out` so knip cannot mistake it for configuration. If it is empty, report the
    first 40 lines of `knip.err` and stop there. Do not try other options.
-4. From `knip.json`, list in the report, as tables: **unused dependencies**, **unused devDependencies**, **unlisted** (imported but
+4. From `knip-report.out`, list in the report, as tables: **unused dependencies**, **unused devDependencies**, **unlisted** (imported but
    not in `package.json`), and **unused binaries**. Give each name and the file knip names. Do not judge them; just list them.
 5. For each of these packages: `oidc-provider`, `koa`, `@koa/cors`, `node-jose`, `node-forge`, `jsonwebtoken`, `passport-jwt`,
    `coveralls`, `request`, run in the worktree
