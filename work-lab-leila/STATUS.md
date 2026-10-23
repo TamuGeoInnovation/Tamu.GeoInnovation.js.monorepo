@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:51 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **3:23 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,16 +30,18 @@ Last written **2:51 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 3:30 PM Central.**
+**Next update by 4:05 PM Central.**
 
-**Batch 53, security: Dependabot PRs 2187 and 2188** (a test, nothing pushed), started 2:51 PM Central, ahead of 50 as it asks. Batch 50's worktree is made (`C:/TAMU/wt-2168-webpack23`) and nothing else of it has run; it follows 53.
+**Batch 50, security: the webpack builds to inferred targets** (a code job and a branch, about 2 hours), started 3:23 PM Central, in `C:/TAMU/wt-2168-webpack23` (`chore/2168-webpack-inferred`, from `development`). Taking the "before" builds first.
 
 **Batch 52 (aggiemap) cannot start: dev is not serving `6a567ae8c`, and its images were not published.**
 - The `development` run of **Quabity Assuance** for `6a567ae8c` ([run 40013030183](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/actions/runs/40013030183)) **failed**: lint, test and build passed, but `Publish / build-and-push (mailroom-angular)` failed at the push with `ERROR: failed to build: unknown blob` (its security gate passed, 0 criticals; it looks like a transient registry error). **The other publish jobs were cancelled with it, `aggiemap-angular` included**; only `gisday-angular` published.
 - **Dev itself, checked by content, not bundle name**: `https://dev.aggiemap.tamu.edu/main-D5K7DLSV.js` contains `MBskt_view` and **not** `MensBasketballParking_view` or `gis.dev.tamu.edu`, which only #2176's code has. So dev still serves a build from before it (its page's `Last-Modified` is 11:47 AM Central).
-- **For the aggiemap director:** re-running the failed jobs of that run (or the maintainer's deploy) is not the lab's to do. Batch 52 starts as soon as dev serves #2176; the lab re-checks during batch 50.
+- **For the aggiemap director:** re-running the failed jobs of that run (or the maintainer's deploy) is not the lab's to do. Batch 52 starts as soon as dev serves #2176; the lab re-checks during batch 50. (Re-checked during batch 53's smoke runs: unchanged. Those runs also show it: dev's athletics maps still list Safety First and Purchase Hourly Visitor Parking.)
 
 ## Finished
+
+- **Batch 53, security: Dependabot PRs 2187 and 2188 - both mergeable as they are** (2:51 to 3:22 PM, 23 October; nothing pushed): each lock moves only its named packages and their own dependencies (2188 has a harmless un-hoisted `scope-manager`); full checks pass, lint 104 / test 100 / build 14. **2187's Playwright 1.64.1 (`v1.64.1-noble`) gives the same quick-tier result as 1.63.0 on the same code**: 434 tests, 391 passed, the same 6 failures (dev lacking #2176, not Playwright). Six README lines still say `v1.63.0`. Report `work-lab-leila/reports/2026-10-23-40.md`. work-lab-leila: finished batch 53.
 
 - **Batch 51, security: eslint-plugin-node removed - pushed** (2:45 to 2:50 PM, 23 October): no `node/` rule or disable comment anywhere; removed from `eslint.config.mjs` and `package.json`, lock drops it and five packages only it used. Lint 104 projects, 0 errors / 123 warnings (as before); full check exit 0 with a clean `npm ci`. **`chore/1218-drop-eslint-plugin-node` at `9ffa7283b`.** Report `work-lab-leila/reports/2026-10-23-39.md`.
 
@@ -201,4 +203,4 @@ Last written **2:51 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 51 (52 waits for its build; 42 and 39 stopped; 40 superseded)
+Last batch done: 53 (52 waits for its build; 42 and 39 stopped; 40 superseded)
