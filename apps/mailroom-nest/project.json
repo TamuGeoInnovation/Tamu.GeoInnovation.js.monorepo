@@ -64,13 +64,6 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/mailroom-nest"],
-      "options": {
-        "jestConfig": "apps/mailroom-nest/jest.config.ts"
-      }
     }
   }
 }

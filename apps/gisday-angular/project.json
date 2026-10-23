@@ -39,7 +39,11 @@
           "includePaths": ["."]
         },
         "scripts": [],
-        "loader": { ".woff2": "file", ".woff": "file", ".ttf": "file" },
+        "loader": {
+          ".woff2": "file",
+          ".woff": "file",
+          ".ttf": "file"
+        },
         "extractLicenses": false,
         "sourceMap": true,
         "optimization": false,
@@ -144,14 +148,6 @@
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
         "buildTarget": "gisday-angular:build"
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/gisday-angular"],
-      "options": {
-        "jestConfig": "apps/gisday-angular/jest.config.ts",
-        "tsConfig": "apps/gisday-angular/tsconfig.spec.json"
       }
     },
     "lint": {

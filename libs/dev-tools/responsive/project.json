@@ -6,14 +6,6 @@
   "sourceRoot": "libs/dev-tools/responsive/src",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/dev-tools/responsive"],
-      "options": {
-        "jestConfig": "libs/dev-tools/responsive/jest.config.ts",
-        "tsConfig": "libs/dev-tools/responsive/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

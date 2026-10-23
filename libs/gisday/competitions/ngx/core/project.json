@@ -6,14 +6,6 @@
   "prefix": "tamu-gisc",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/gisday/competitions/ngx/core"],
-      "options": {
-        "jestConfig": "libs/gisday/competitions/ngx/core/jest.config.ts",
-        "tsConfig": "libs/gisday/competitions/ngx/core/tsconfig.spec.json"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

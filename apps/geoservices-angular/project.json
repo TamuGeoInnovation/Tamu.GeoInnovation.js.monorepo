@@ -38,7 +38,11 @@
           "includePaths": ["."]
         },
         "scripts": [],
-        "loader": { ".woff2": "file", ".woff": "file", ".ttf": "file" },
+        "loader": {
+          ".woff2": "file",
+          ".woff": "file",
+          ".ttf": "file"
+        },
         "extractLicenses": false,
         "sourceMap": true,
         "optimization": false,
@@ -121,14 +125,6 @@
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
         "buildTarget": "geoservices-angular:build"
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/geoservices-angular"],
-      "options": {
-        "jestConfig": "apps/geoservices-angular/jest.config.ts",
-        "tsConfig": "apps/geoservices-angular/tsconfig.spec.json"
       }
     },
     "lint": {

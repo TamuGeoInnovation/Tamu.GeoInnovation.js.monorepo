@@ -83,39 +83,50 @@
       "inputs": ["production", "^production"],
       "cache": true
     },
-    "@nx/jest:jest": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
-      "cache": true,
-      "options": {
-        "passWithNoTests": true
+    "test": [
+      {
+        "inputs": [
+          "default",
+          "^production",
+          {
+            "fileset": "{projectRoot}/tsconfig.spec.json",
+            "dependencies": true
+          },
+          "{workspaceRoot}/vitest.preset.mts",
+          "{workspaceRoot}/test/polyfills.ts",
+          "{workspaceRoot}/test/vitest-setup-angular.ts",
+          {
+            "externalDependencies": ["vitest"]
+          },
+          {
+            "env": "CI"
+          }
+        ],
+        "cache": true
       },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
+      {
+        "filter": {
+          "plugin": "@nx/jest/plugin"
+        },
+        "inputs": [
+          "default",
+          "^production",
+          "{workspaceRoot}/jest.preset.js",
+          {
+            "externalDependencies": ["jest", "ts-jest", "jest-preset-angular", "jest-junit"]
+          }
+        ],
+        "configurations": {
+          "ci": {
+            "ci": true,
+            "coverage": true
+          }
+        },
+        "options": {
+          "passWithNoTests": true
         }
       }
-    },
-    "test": {
-      "inputs": [
-        "default",
-        "^production",
-        {
-          "fileset": "{projectRoot}/tsconfig.spec.json",
-          "dependencies": true
-        },
-        "{workspaceRoot}/vitest.preset.mts",
-        "{workspaceRoot}/test/polyfills.ts",
-        "{workspaceRoot}/test/vitest-setup-angular.ts",
-        {
-          "externalDependencies": ["vitest"]
-        },
-        {
-          "env": "CI"
-        }
-      ],
-      "cache": true
-    },
+    ],
     "@nx/eslint:lint": {
       "inputs": ["default", "^default", "{workspaceRoot}/eslint.config.mjs", "{workspaceRoot}/tools/eslint-rules/**/*"],
       "cache": true
@@ -143,6 +154,12 @@
       "options": {
         "testTargetName": "test",
         "testMode": "run"
+      }
+    },
+    {
+      "plugin": "@nx/jest/plugin",
+      "options": {
+        "targetName": "test"
       }
     }
   ]

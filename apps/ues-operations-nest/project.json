@@ -68,13 +68,6 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/ues-operations-nest"],
-      "options": {
-        "jestConfig": "apps/ues-operations-nest/jest.config.ts"
-      }
     }
   }
 }

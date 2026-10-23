@@ -49,13 +49,6 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/gisday-competitions-nest"],
-      "options": {
-        "jestConfig": "apps/gisday-competitions-nest/jest.config.ts"
-      }
     }
   }
 }

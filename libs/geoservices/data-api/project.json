@@ -8,13 +8,6 @@
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/geoservices/data-api"],
-      "options": {
-        "jestConfig": "libs/geoservices/data-api/jest.config.ts"
-      }
     }
   }
 }
