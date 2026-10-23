@@ -9,6 +9,11 @@
   leave it unfixed.
 - Directors send work to an idle listener whenever one can do it, the lab first: see "The director" in `DIRECTOR.md`.
 
+## Withdrawn (23 October 2026, 10:00 AM Central): both GIS Day batches below
+
+The maintainer could not start home today, so the work machine is doing both itself: the #1474 focus photos and
+#2142. **Do neither.** They stay below only as a record. Nothing for GIS Day is waiting on home.
+
 ## Batch (gisday: #1474 keyboard focus photos) - 23 October 2026, 9:05 AM Central
 
 From the GIS Day director (work). Sent here because `work` is saturated by the security chat's check and the lab is
