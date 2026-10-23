@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:22 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **2:23 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **2:22 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 2:57 PM Central.**
+**Next update by 3:01 PM Central.**
 
-**Batch 48, security: Jest to inferred targets on Nx 23** (a code job and a branch), started 2:17 PM Central, in `C:/TAMU/wt-2168-jest23` (`chore/2168-jest-inferred`, from `development`). Its full check is running.
+**Batch 49, security: typeorm 1 and mssql 12** (a code job and a branch, about 2 hours), started 2:21 PM Central, in `C:/TAMU/wt-typeorm1` (`chore/1218-typeorm-1`, on `chore/1218-eslint-10`).
 
 ## Finished
+
+- **Batch 48, security: Jest to inferred targets on Nx 23 - pushed** (2:17 to 2:21 PM, 23 October): `convert-to-inferred` moved 34 projects to `@nx/jest/plugin`; same 103 test projects and same test counts (1, 4, 51 on the three sampled). Replaced the generator's `externalDependencies: ["vitest"]` on the Jest default with jest, ts-jest, jest-preset-angular and jest-junit. `--coverage=false` works. Full check exit 0, lint 104 / **test 100** (as on development) / build 14. **`chore/2168-jest-inferred` at `de8f87eda`.** Report `work-lab-leila/reports/2026-10-23-37.md`.
 
 - **Batch 47, security: lint to inferred targets on Nx 23 - pushed** (2:11 to 2:17 PM, 23 October): `convert-to-inferred` moved 104 projects' lint to `@nx/eslint/plugin`. Inputs cover everything the old default did, plus each project's own config and the eslint version; `force` is not kept. Added an `exclude` for two deploy `package.json` folders the plugin otherwise made into duplicate lint projects. Full check exit 0, **lint 104** (as on development) / test 100 / build 14. **`chore/2168-lint-inferred` at `fed475487`.** Conflicts with `chore/1218-eslint-10` on the five `force` files; merge that one first. Report `work-lab-leila/reports/2026-10-23-36.md`.
 
@@ -190,4 +192,4 @@ Last written **2:22 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 47 (42 and 39 stopped; 40 superseded)
+Last batch done: 48 (42 and 39 stopped; 40 superseded)
