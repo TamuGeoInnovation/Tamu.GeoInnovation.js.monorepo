@@ -46,9 +46,6 @@
         "buildTarget": "gisday-competitions-nest:build",
         "host": "0.0.0.0"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

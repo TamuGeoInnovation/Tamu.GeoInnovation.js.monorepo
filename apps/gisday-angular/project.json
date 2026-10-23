@@ -149,9 +149,6 @@
       "options": {
         "buildTarget": "gisday-angular:build"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

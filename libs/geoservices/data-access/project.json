@@ -8,9 +8,6 @@
   "targets": {
     "test": {
       "outputs": ["{workspaceRoot}/coverage/libs/geoservices/data-access"]
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

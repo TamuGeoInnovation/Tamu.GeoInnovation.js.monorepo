@@ -4,9 +4,5 @@
   "sourceRoot": "libs/mailroom/common/src",
   "projectType": "library",
   "tags": [],
-  "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    }
-  }
+  "targets": {}
 }

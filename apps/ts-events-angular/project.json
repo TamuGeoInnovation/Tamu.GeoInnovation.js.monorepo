@@ -91,9 +91,6 @@
       "options": {
         "buildTarget": "ts-events-angular:build"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

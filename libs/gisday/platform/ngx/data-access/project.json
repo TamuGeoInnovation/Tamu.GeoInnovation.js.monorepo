@@ -5,12 +5,5 @@
   "sourceRoot": "libs/gisday/platform/ngx/data-access/src",
   "prefix": "tamu-gisc",
   "tags": [],
-  "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "force": true
-      }
-    }
-  }
+  "targets": {}
 }

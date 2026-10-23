@@ -4,9 +4,5 @@
   "sourceRoot": "libs/gisday/competitions/data-api/src",
   "projectType": "library",
   "tags": [],
-  "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    }
-  }
+  "targets": {}
 }

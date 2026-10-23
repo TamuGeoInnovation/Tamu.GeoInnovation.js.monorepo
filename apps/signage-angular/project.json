@@ -121,9 +121,6 @@
       "options": {
         "buildTarget": "signage-angular:build"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

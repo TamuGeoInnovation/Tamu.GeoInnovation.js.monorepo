@@ -94,9 +94,6 @@
       "options": {
         "buildTarget": "mailroom-angular:build"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

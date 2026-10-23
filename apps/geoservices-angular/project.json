@@ -126,9 +126,6 @@
       "options": {
         "buildTarget": "geoservices-angular:build"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

@@ -65,9 +65,6 @@
           "buildTarget": "ues-operations-nest:build:development"
         }
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

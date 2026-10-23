@@ -125,9 +125,6 @@
       "options": {
         "buildTarget": "ues-operations-angular:build"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

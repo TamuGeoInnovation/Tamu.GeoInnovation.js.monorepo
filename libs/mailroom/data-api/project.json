@@ -4,10 +4,5 @@
   "sourceRoot": "libs/mailroom/data-api/src",
   "projectType": "library",
   "tags": [],
-  "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    }
-  }
+  "targets": {}
 }

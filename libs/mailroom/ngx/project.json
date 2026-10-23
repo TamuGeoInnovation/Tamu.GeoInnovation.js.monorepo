@@ -5,9 +5,5 @@
   "sourceRoot": "libs/mailroom/ngx/src",
   "prefix": "tamu-gisc",
   "tags": [],
-  "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    }
-  }
+  "targets": {}
 }

@@ -1,0 +1,6 @@
+{
+  "name": "mailroom-nest",
+  "dependencies": {
+    "mssql": "^11.0.1"
+  }
+}

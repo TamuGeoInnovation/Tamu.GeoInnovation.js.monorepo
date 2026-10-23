@@ -39,7 +39,7 @@
               "with": "apps/mailroom-nest/src/environments/environment.prod.ts"
             }
           ],
-          "generatePackageJson": false
+          "generatePackageJson": true
         },
         "development": {
           "optimization": true,
@@ -51,7 +51,7 @@
               "with": "apps/mailroom-nest/src/environments/environment.dev.ts"
             }
           ],
-          "generatePackageJson": false
+          "generatePackageJson": true
         }
       }
     },
@@ -61,9 +61,6 @@
         "buildTarget": "mailroom-nest:build",
         "host": "0.0.0.0"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

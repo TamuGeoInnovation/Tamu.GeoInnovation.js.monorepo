@@ -27,6 +27,7 @@
           "optimization": true,
           "extractLicenses": true,
           "inspect": false,
+          "generatePackageJson": true,
           "fileReplacements": [
             {
               "replace": "apps/geoservices-nest/src/environments/environment.ts",
@@ -42,10 +43,6 @@
         "buildTarget": "geoservices-nest:build",
         "host": "0.0.0.0"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
     }
   }
 }

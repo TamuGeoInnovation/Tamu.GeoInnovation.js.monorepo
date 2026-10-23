@@ -116,9 +116,6 @@
           "buildTarget": "gisday-competitions-angular:build:development"
         }
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

@@ -5,9 +5,6 @@
   "sourceRoot": "libs/common/utils/device/guards/src",
   "prefix": "tamu-gisc",
   "tags": [],
-  "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    }
-  }
+  "// targets": "to see all targets run: nx show project common-utils-device-guards --web",
+  "targets": {}
 }

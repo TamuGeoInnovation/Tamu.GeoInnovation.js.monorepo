@@ -5,9 +5,5 @@
   "projectType": "library",
   "sourceRoot": "libs/dev-tools/responsive/src",
   "tags": [],
-  "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    }
-  }
+  "targets": {}
 }

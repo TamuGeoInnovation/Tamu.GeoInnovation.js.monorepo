@@ -1237,7 +1237,7 @@ export class TripPlannerService implements OnDestroy {
         );
       }
     } catch (err) {
-      throw new Error(err);
+      throw new Error(err, { cause: err });
     }
   }
 

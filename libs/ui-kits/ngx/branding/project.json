@@ -5,9 +5,6 @@
   "projectType": "library",
   "sourceRoot": "libs/ui-kits/ngx/branding/src",
   "tags": [],
-  "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    }
-  }
+  "// targets": "to see all targets run: nx show project ui-kits-ngx-branding --web",
+  "targets": {}
 }
