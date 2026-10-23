@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:14 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **1:22 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **1:14 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Nothing running.** Batch 36 (Nx 24) is stopped at step 1 and waiting for the security director; watching the branch.
+**Next update by 2:07 PM Central.**
+
+**Batch 38, security: #2117 part 2 rebased onto PR 2173 and proved again** (director: work, its security chat). Started 1:22 PM Central. Batch 39 (angular-eslint 22.6.0) follows.
 
 ## Finished
 
