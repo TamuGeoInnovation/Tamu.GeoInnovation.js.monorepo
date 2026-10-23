@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 49.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 50.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,32 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 49 (security: #1218 - typeorm 1 with mssql 12; a code job and a branch; 23 October 2026, 2:20 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 48.** **Expected: about 2 hours.** Your batch 43 survey sized it: 69 type errors, 65 of them the `relations`
+change, in 21 files, and `mssql` 11 → 12 as typeorm 1's peer.
+
+1. `git worktree add C:/TAMU/wt-typeorm1 -b chore/1218-typeorm-1 fork/chore/1218-eslint-10` (on PR 2180's branch, so the lock changes
+   stay in one line).
+2. `package.json`: `typeorm` → `^1.1.2`, `mssql` → `^12.7.11`, `ts-node` → `10.9.2` (exact, as it is now), and the `mssql` entry in
+   `apps/gisday-nest/package.json` and `apps/mailroom-nest/package.json` **if PR 2175 has merged into `development` by then** (if not,
+   say so; they'd be updated when 2175 and this meet). `npm install --package-lock-only --ignore-scripts`; batch 41's method if ERESOLVE.
+   **Report the lock diff**: expect typeorm's and mssql's trees only.
+3. **The code**, as typeorm 1's release notes say, nothing more:
+   - every `relations: ['a', 'b.c']` → the object form (`relations: { a: true, b: { c: true } }`): 65 sites in 21 files (`git grep`
+     first and report the count you find);
+   - `getRepository` from `'typeorm'` in `libs/gisday/competitions/data-api/src/lib/season/season.service.ts` → the injected repository or
+     `DataSource.getRepository`, following how the same library's other services already do it;
+   - the three `unknown`-index errors in that same file: type them properly, not with `any`.
+   Then `npx tsc --noEmit -p` each affected app's `tsconfig.app.json`: 0 new errors (`gisday-competitions-nest`'s existing
+   `Cannot find module './ormconfig'` is not this change's).
+4. **Against a real database** (throwaway SQL Server, as in batch 12): `gisday-nest` starts, `GET /api/seasons/active` 200, an
+   unauthenticated write 401, and **two reads that use relations** return the same JSON as `development`'s image against the same
+   database (pick two GET routes whose services you changed, e.g. a season with its days, an organization with its people; diff the
+   responses). `mailroom-nest` starts against its own throwaway database and `GET` on its email list answers. Report each.
+5. `scripts/check-in-volume.sh chore/1218-typeorm-1` (full `affected`, clean `npm ci`). Commit (`chore(workspace): Upgrade typeorm to 1
+   and mssql to 12`, a body listing what changed and why, `Part of #1218`, the Co-Authored-By line). Push if steps 3 to 5 passed.
 
 ## Batch 46 (security: ESLint 10 branch - the other four `"force": true` lint targets removed; 23 October 2026, 2:10 PM Central, from `work (security)`)
 
