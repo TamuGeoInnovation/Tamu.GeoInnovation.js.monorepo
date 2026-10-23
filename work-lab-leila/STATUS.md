@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:58 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **12:04 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **11:58 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 12:23 PM Central.**
-
-**Batch 30, security: #2155, libs/oidc/common retired and Mailer moved** (director: work, its security chat). Started 11:58 AM Central, 23 October. Full check, then whether `gisday-angular`'s production build still holds any mail code.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 30, security: #2155, libs/oidc/common retired** (11:58 to 12:04 PM, 23 October; director: work, security chat): `200529d3a` as required. **Check exit=1**: lint 104 and test 100 pass; **`gisday-nest:build` fails on one error**, `libs/common/types/src/lib/common-types.ts:1` `TS2503: Cannot find namespace '__esri'` (the moved types bring that file into an API without the ArcGIS types). **`gisday-angular`'s production build has no mail code left** (`build=0`, grep empty). Report `work-lab-leila/reports/2026-10-23-20.md`.
 
 - **Batch 29, security: #2158, the retired IdP removed** (11:52 to 11:56 AM, 23 October; director: work, security chat): `3250d965e` as required; `check-in-volume.sh` **exit=0**: clean `npm ci` of **2,237** packages (72 fewer than #2122's branch), lint 105, test 101, build 14, nothing failed, nothing names the removed libraries or packages. Report `work-lab-leila/reports/2026-10-23-19.md`.
 
@@ -156,4 +156,4 @@ Last written **11:58 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 29 (and 28)
+Last batch done: 30
