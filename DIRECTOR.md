@@ -324,10 +324,10 @@ Merge in this order; each pair shares files, so the second needs `development` m
 
 | PR | Issue | What | CI at 7:39 AM |
 | --- | --- | --- | --- |
-| [2123](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2123) | #2116 | patched `form-data` everywhere (override), `coveralls` and `request` removed | **green** |
-| [2125](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2125) | #2112 | in-range updates, `multer` 2, `postcss-url` 10.1.4, `bcrypt` 6 (drops `tar`); after 2123 (both lock files) | running |
-| [2124](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2124) | #2121 | mailroom builds each message from an allowlist | **green** |
-| [2126](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2126) | #2120 | upload limits on every route; after 2124 (same mailroom controllers) | running |
+| [2123](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2123) | #2116 | patched `form-data` everywhere (override), `coveralls` and `request` removed | **merged** ~7:50 AM |
+| [2125](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2125) | #2112 | in-range updates, `multer` 2, `postcss-url` 10.1.4, `bcrypt` 6 (drops `tar`); after 2123 (both lock files) | `development` merged in (lock regenerated), full check running on home |
+| [2124](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2124) | #2121 | mailroom builds each message from an allowlist | **merged** ~7:50 AM |
+| [2126](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2126) | #2120 | upload limits on every route; after 2124 (same mailroom controllers) | `development` merged in (spec combined, 17 tests pass), full check running on home |
 
 ### The security work, all of it ([#2111](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111) tracks it)
 
@@ -353,9 +353,9 @@ for #2119.
 
 - `feat/2057-gisday-local-static` (`5d4585d`, #2057, `web --static`): tests pass; needs one real run on a machine with the
   GIS Day stack before its PR.
-- `fix/1474-gisday-template-a11y` (`85df2be`, #1474, GIS Day's half of the accessibility rules): committed by a home agent
-  whose full check was still running at 7:45 AM; read its result before opening the PR, and capture before/after images for
-  any change that alters a page.
+- `fix/1474-gisday-template-a11y` (`85df2be`, #1474, GIS Day's half of the accessibility rules): full check **exit 0**, 214 errors fixed in 8
+  projects, no suppressions. Before the PR, capture the keyboard focus rings it adds (FAQ, admin action bars, season day tiles,
+  header Login). Found: five GIS Day projects set `"force": true` on lint, so their lint errors never fail CI; worth an issue.
 
 ### Machines
 
