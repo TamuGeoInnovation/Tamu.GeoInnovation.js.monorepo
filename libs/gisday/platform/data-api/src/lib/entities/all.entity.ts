@@ -15,7 +15,7 @@ import {
 } from 'typeorm';
 import { v4 as guid } from 'uuid';
 
-import { ValidObject } from '@tamu-gisc/oidc/common';
+import { ValidObject } from '@tamu-gisc/common/types';
 
 // TODO:
 

@@ -89,7 +89,6 @@
       "@tamu-gisc/maps/feature/trip-planner/components": ["./libs/maps/feature/trip-planner/src/components.ts"],
       "@tamu-gisc/maps/mapbox": ["./libs/maps/mapbox/src/index.ts"],
       "@tamu-gisc/oidc/client": ["./libs/oidc/client/src/index.ts"],
-      "@tamu-gisc/oidc/common": ["./libs/oidc/common/src/index.ts"],
       "@tamu-gisc/signage": ["./libs/signage/src/index.ts"],
       "@tamu-gisc/ts/events/ngx": ["./libs/ts/events/ngx/src/index.ts"],
       "@tamu-gisc/ues/common/nest": ["./libs/ues/common/nest/src/index.ts"],

@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { AuthOptions } from '@tamu-gisc/oidc/client';
+import { AuthOptions } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 /**

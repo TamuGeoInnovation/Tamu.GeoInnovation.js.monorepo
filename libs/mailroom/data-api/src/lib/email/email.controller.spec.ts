@@ -1,4 +1,4 @@
-import { Mailer } from '@tamu-gisc/oidc/common';
+import { Mailer } from '../mailer/mailer.util';
 
 import { EmailController } from './email.controller';
 

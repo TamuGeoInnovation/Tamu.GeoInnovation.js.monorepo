@@ -1,21 +1,7 @@
 import { ClientMetadata } from 'openid-client';
 
-export interface AuthOptions {
-  /**
-   * Authentication API url
-   */
-  url: string;
-
-  /**
-   * Attaches a return url parameter to the redirect URL that will be used by the TAMU GISC IDP as a return URL.
-   */
-  attach_href?: boolean;
-}
-
-/**
- * Authentication API url. For additional authentication options, use `AuthOptions` instead
- */
-export type AuthUrl = string;
+// AuthOptions and AuthUrl live in @tamu-gisc/common/types (#2155); re-exported for this library's own callers.
+export type { AuthOptions, AuthUrl } from '@tamu-gisc/common/types';
 
 export interface ClientConfiguration {
   metadata: ClientMetadata;

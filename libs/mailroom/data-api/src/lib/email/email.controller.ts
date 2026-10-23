@@ -5,7 +5,7 @@ import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 import 'multer';
 
 import { IMailroomEmailOutbound, LogToDatabaseInterceptor, MailroomExceptionFilter } from '@tamu-gisc/mailroom/common';
-import { Mailer } from '@tamu-gisc/oidc/common';
+import { Mailer } from '../mailer/mailer.util';
 
 import { EmailService } from './email.service';
 

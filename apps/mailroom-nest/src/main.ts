@@ -9,7 +9,7 @@ import { NestFactory } from '@nestjs/core';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { Mailer } from '@tamu-gisc/oidc/common';
+import { Mailer } from '@tamu-gisc/mailroom/data-api';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';

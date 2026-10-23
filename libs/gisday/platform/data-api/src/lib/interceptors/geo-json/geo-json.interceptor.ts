@@ -2,7 +2,7 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 
 import { map } from 'rxjs/operators';
 
-import { ValidObject } from '@tamu-gisc/oidc/common';
+import { ValidObject } from '@tamu-gisc/common/types';
 
 import { OldCompetitionEntity } from '../../entities/all.entity';
 
