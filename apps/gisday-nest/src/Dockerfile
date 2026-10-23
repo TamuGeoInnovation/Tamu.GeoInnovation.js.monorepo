@@ -1,4 +1,4 @@
-FROM node:24.22.1 as builder
+FROM node:26.11.1 as builder
 ENV NODE_ENV=production
 WORKDIR /app
 # The build writes this app's own package.json (generatePackageJson), and the publish step puts the repository's
@@ -21,7 +21,7 @@ RUN cp /tmp/build/root-package.json package.json \
   && cp -r /tmp/build/. . \
   && rm -rf /tmp/build
 
-FROM node:24.22.1-alpine
+FROM node:26.12.0-alpine
 WORKDIR /app
 # The APIs run node only; npm in the base image carried every remaining finding in these images (#2117).
 RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
