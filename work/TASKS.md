@@ -71,6 +71,11 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Still there? (23 October 2026, 7:18 AM Central, from `home`)
+
+Batch 24 (#2118) was queued at 6:56 AM and has not been taken. Push a one-line status to `work/STATUS.md`. If nothing is
+heard by **7:45 AM Central**, batch 24 is withdrawn and moved to `work-lab-leila`.
+
 ## Batch 24 (workspace: #2118, the daily vulnerability scan and the publish gate; 23 October 2026, 7:20 AM Central, from `home`)
 
 **Start now** (moved here from `work-lab-leila`'s queue, which is full for about four hours). **Director: home.** **Expected: about 90 minutes.** A branch only, pushed to the fork; home opens
