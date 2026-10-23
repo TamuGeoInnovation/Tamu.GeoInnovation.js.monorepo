@@ -13,32 +13,9 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
-## Batch 16 (workspace: #2118, the daily vulnerability scan and the publish gate; queued 23 October 2026, 7:15 AM Central, from `home`)
+## Batch 16 (workspace: #2118) - Moved to `work` as its batch 24, 7:20 AM Central, 23 October 2026
 
-**Start after batch 15.** **Director: home.** **Expected: about 90 minutes.** A branch only, pushed to the fork; home opens
-the pull request. Branch `ci/2118-security-scan` from the latest `origin/development`; commits end `Closes #2118`.
-
-[#2118](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2118) (High), as decided by the maintainer:
-
-1. **`.github/workflows/security-scan.yml`**, `schedule` once a day (an offset minute, as `aggiemap-smoke.yml` does) and
-   `workflow_dispatch`:
-   - `npm audit --omit=dev --json` on the lock, critical and high;
-   - Trivy, **pinned** to a release (`aquasec/trivy-action` at a version tag, or the `aquasec/trivy` image at a tag), on the
-     images we deploy: the four APIs and the four front ends at their newest `sha-` tag on `development`, plus
-     `nginx-base:latest`; critical and high, OS and language packages;
-   - **`.github/security/accepted-advisories.json`**: every advisory accepted for now, each with `id`, `package`, `reason` and
-     the `issue` that tracks it. Seed it with today's open ones and their issues (#2112 to #2117, #2119), so the first run is
-     quiet;
-   - a finding **not** in the file opens or updates **one issue labelled `security-health`**, the way `aggiemap-smoke.yml`
-     opens and closes its health issues (read it and reuse its pattern rather than writing a new one), and a clean run closes
-     it. Create the label if it does not exist only from the workflow, not by hand.
-2. **A publish gate** in `publish.yml`: Trivy on each image it builds, after the build and **before** the push; fail on a
-   **critical** not in the accepted file.
-3. **Tests**: a test, in the style of `scripts/*.test.sh` or `tools-tests.yml`, of the comparison step: a planted finding
-   not in the file is reported, one in the file is not.
-4. `actionlint` (pinned, from its image) on both workflows; `tools-tests` passes.
-
-Report in `work-lab-leila/reports/2026-10-23-5.md`; one line on #2118 with the branch and head.
+Do not start it; the work machine has it.
 
 ## Batch 15 (workspace: #2119, prove a new nginx-base locally; queued 23 October 2026, 7:15 AM Central, from `home`)
 
