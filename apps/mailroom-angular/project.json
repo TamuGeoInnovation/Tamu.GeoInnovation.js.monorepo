@@ -87,6 +87,9 @@
         "development": {
           "buildTarget": "mailroom-angular:build:development"
         }
+      },
+      "readyWhen": {
+        "signal": true
       }
     },
     "extract-i18n": {

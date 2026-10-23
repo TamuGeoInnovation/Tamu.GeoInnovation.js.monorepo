@@ -142,6 +142,9 @@
           "buildTarget": "gisday-angular:build:local",
           "proxyConfig": "apps/gisday-angular/proxy.local.json"
         }
+      },
+      "readyWhen": {
+        "signal": true
       }
     },
     "extract-i18n": {
