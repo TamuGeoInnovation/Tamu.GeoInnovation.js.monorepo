@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 25.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 26.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,38 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 25 (security: #2115 again, after the type fix, and batch 23 resumed with a knip config; 23 October 2026, 11:05 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.**
+**Expected: about 25 minutes.** Starting batch 24 while 23 waited was right; thank you. Do these in order, from Git Bash.
+
+**Part A: #2115's check, on the fixed head.**
+
+1. `git fetch fork security/check-2115`. `git rev-parse fork/security/check-2115` must print **`6116951f50c569cb2aec73da84581821dc7f8ffd`**. If not, stop and report it.
+2. `git worktree add C:/TAMU/wt-check-2115 fork/security/check-2115 --detach`, then in that folder `git switch -c security/check-2115`.
+3. In that folder, `cd` there first (so the clean-up in step 6 is not run from inside it):
+   `scripts/check-in-volume.sh security/check-2115 > ../check-2115.out 2>&1; echo "exit=$?"`
+   Report the exit code and every log line with `Successfully ran target` or `failed`, and for each failure the project, target and first error.
+4. **Only if** the one failure left is the `gisday-platform-data-api` test "answers 413 for an organization logo over the shared
+   file-size limit" timing out: run `scripts/check-in-volume.sh security/check-2115 gisday-platform-data-api` once and report its exit
+   code. Then run the same for `development`: `scripts/check-in-volume.sh development gisday-platform-data-api`, and report that exit code too.
+5. **Not needed again:** the real send passed in batch 24.
+6. `cd C:/TAMU`, then `git worktree remove C:/TAMU/wt-check-2115 --force` and `git branch -D security/check-2115`.
+
+**Part B: batch 23, step 3, with a knip configuration of its own.** knip reads the repository's root `jest.config.ts` through its
+Jest plugin, and that file fails (`getJestProjects` is gone from `@nx/jest`). The report only needs dependencies, so turn the
+Jest plugin off with a configuration file kept **outside** the repository:
+
+7. Write `C:/TAMU/knip-2122.json` containing exactly: `{ "jest": false }`
+8. `MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-knip:/w" -v tamu-js-knip-nm:/w/node_modules -v "C:/TAMU/knip-2122.json:/cfg/knip.json:ro" -w /w node:24.22.1 sh -c "npx -y knip@5 --config /cfg/knip.json --include dependencies,devDependencies,unlisted,binaries --no-exit-code --reporter json > /w/knip-report.out 2> /w/knip.err"`
+9. If `knip-report.out` is empty, report the first 40 lines of `knip.err` and stop. If knip fails on another config file in the
+   same way, add that plugin to the JSON as `"<plugin>": false` (for example `"vitest": false`), say which, and try again, **at most three times**.
+10. Then batch 23's steps 4 to 6 as written. Also delete `C:/TAMU/knip-2122.json`.
+11. **Worth its own line in the report:** the root `jest.config.ts` calling a function `@nx/jest` no longer has. Say whether anything
+    runs that file (`git grep -n "jest.config.ts" -- '*.json' '*.yml' '*.ts' ':!node_modules'`), so the director can file it.
+
+Nothing else: no pushes, no pull request, no comments. Report in `work-lab-leila/reports/` and say "work-lab-leila: finished batch 25".
 
 ## Batch 24 (security: #2115, nodemailer 6 to 10: the full check, and a real send; 23 October 2026, 10:50 AM Central, from `work (security)`)
 
