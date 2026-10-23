@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:26 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **3:30 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,7 +32,7 @@ Last written **3:26 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 4:05 PM Central.**
 
-**Batch 56, security: mailroom-nest parses `TYPEORM_EXTRA` (#2201)** (a small code job and a branch), started 3:26 PM Central, in `C:/TAMU/wt-2201`. **Order from here: 56, 54 (gisday, "when your security batches allow"), then 50** (2 hours; nothing of it has run but its worktree, `C:/TAMU/wt-2168-webpack23`). Say if 50 should go earlier.
+**Batch 54, gisday: `restore` runs the migrations (#2196)** (development work, a branch), started 3:30 PM Central, in `C:/TAMU/wt-2196`. **Then 50** (2 hours; nothing of it has run but its worktree, `C:/TAMU/wt-2168-webpack23`).
 
 **Batch 52 (aggiemap) cannot start: dev is not serving `6a567ae8c`, and its images were not published.**
 - The `development` run of **Quabity Assuance** for `6a567ae8c` ([run 40013030183](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/actions/runs/40013030183)) **failed**: lint, test and build passed, but `Publish / build-and-push (mailroom-angular)` failed at the push with `ERROR: failed to build: unknown blob` (its security gate passed, 0 criticals; it looks like a transient registry error). **The other publish jobs were cancelled with it, `aggiemap-angular` included**; only `gisday-angular` published.
@@ -40,6 +40,8 @@ Last written **3:26 PM Central, 23 October 2026**. A listener; job: testing.
 - **For the aggiemap director:** re-running the failed jobs of that run (or the maintainer's deploy) is not the lab's to do. Batch 52 starts as soon as dev serves #2176; the lab re-checks during batch 50. (Re-checked during batch 53's smoke runs: unchanged. Those runs also show it: dev's athletics maps still list Safety First and Purchase Hourly Visitor Parking.)
 
 ## Finished
+
+- **Batch 56, security: mailroom-nest parses `TYPEORM_EXTRA` (#2201) - pushed** (3:26 to 3:29 PM, 23 October): gisday-nest's line in all three environment files; a 9-case spec, red on the unfixed code (raw string, `""`, `undefined`) and green after. Against a self-signed SQL Server with no preload: with `{"trustServerCertificate": true}` it connects and `GET /all` is 200; without, it refuses the certificate as before. Bug-fix check exit 0 (5 tasks, clean `npm ci`). **`fix/2201-mailroom-typeorm-extra` at `83c276ba5`.** Report `work-lab-leila/reports/2026-10-23-42.md`.
 
 - **Batch 55, security: PR 2186's eight Actions majors reviewed - mergeable, with one named follow-up** (3:23 to 3:26 PM, 23 October; read-only): no breaking change touches how our workflows use them (every input we pass and the `json`/`labels` outputs `publish.yml` reads still exist; all need Node 24, which the hosted runners have). **But the PR's CI cannot run four of them**: download-artifact, metadata-action and build-push-action (Publish skips on PRs), and test-reporter (`workflow_run` uses development's file). So watch the merge's `development` run and the first Test Report, and dispatch `security-scan.yml` once. The PR's checks that ran all passed; Azure's `Monorepo` was still pending. Report `work-lab-leila/reports/2026-10-23-41.md`.
 
@@ -205,4 +207,4 @@ Last written **3:26 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 55 (52 waits for its build; 42 and 39 stopped; 40 superseded)
+Last batch done: 56 (52 waits for its build; 42 and 39 stopped; 40 superseded)
