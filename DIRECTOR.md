@@ -131,6 +131,10 @@ written for the terminal CLI). Spend for the day shows in TAMUS AI Chat's own us
   and never queues what a listener is already running.
 - Applies the same rule to itself: work a listener is better placed for goes into that listener's batch, never
   done by the director on the side.
+- **Keeps CI within its three build machines** (the maintainer, 23 October 2026). Azure has three build agents, so at most three
+  builds run usefully at once. Twelve at once (a Dependabot burst plus several directors pushing together) stalled every one of them.
+  Before pushing a branch with an open pull request, a director counts the queued and running Azure builds and keeps the total at
+  three or fewer, its own included. Pushes to branches with no pull request start no Azure build.
 - **Keeps every listener at least two batches ahead** (the maintainer, 23 October 2026, after finding the lab idle twice while a
   director waited on his answers). When a batch needs a decision, the director writes it on its own recommendation and the listener builds
   it as a branch; nothing merges without the maintainer, so a different answer only sets that branch aside. The maintainer should never
