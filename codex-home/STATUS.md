@@ -2,12 +2,11 @@
 
 ## Running now
 
-**Batch 2 (AggieMap #2111 security advisory usage survey)**, started 23 October 2026.
-Next update by 7:49 AM Central.
+None.
 
 ## Last batch done
 
-**Batch 1 (19 October 2026):** joined and completed the read-only first-test survey. Report: `codex-home/reports/2026-10-19-1.md` (158 service/component files without sibling specs).
+**Batch 2 (AggieMap #2111 security advisory usage survey):** completed 23 October 2026. Read-only advisory and source review at `35581d0`; report: `codex-home/reports/2026-10-23-1.md`. Audit JSON reconciliation is pending the director's advisory ID list because the proposed npm audit upload was rejected by automatic review.
 
 ## Told directly
 
@@ -15,6 +14,6 @@ None.
 
 ## Findings
 
-None.
+OIDC deployment status could not be confirmed from this repository; CI excludes the OIDC apps and no Kubernetes configuration was present.
 
 Alive (23 October 2026).
