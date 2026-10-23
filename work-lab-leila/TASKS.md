@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 50.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 51.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,31 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 50 (security: #2168 on Nx 23 - the webpack builds to inferred targets, compared build for build; a code job and a branch; 23 October 2026, 2:30 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 49** (or before it, if 49 is waiting on anything). **Expected: about 2 hours.** The third conversion of
+#2168's plan, on Nx 23. Your batch 47 question 1 is handled (PR 2182 merges after PR 2180); question 2 (`gisday-bridge-nest`) is noted
+for the next workflow edit - fold it into this branch if you touch `build.yml` or `test.yml`, otherwise leave it.
+
+1. `git worktree add C:/TAMU/wt-2168-webpack23 -b chore/2168-webpack-inferred fork/chore/2117-api-own-deps` (on PR 2175's branch,
+   because both change how the APIs build: #2117 sets `generatePackageJson` in `project.json`, and on inferred targets that moves into
+   each `webpack.config.js`).
+2. **Before:** build the six `@nx/webpack:webpack` projects for production with `--skip-nx-cache` (the four APIs, `ues-operations-nest` if
+   it builds here, and the sixth from your batch 44 count), and keep each `dist/apps/<app>` as the baseline: file list with sizes, and
+   `main.js`'s size and SHA-256.
+3. `nx g @nx/webpack:convert-to-inferred --no-interactive`. Report what it changed. Read the AI migration prompt Nx 24 wrote for webpack
+   (your batch 36/44 `tools/ai-migrations/`) for what `withNx`/`composePlugins` did that an inferred target needs written out, and make
+   each `webpack.config.js` do it explicitly (`NxAppWebpackPlugin` or the equivalent Nx 23 documents), **including
+   `generatePackageJson: true`** and the existing `devtoolModuleFilenameTemplate` and output path.
+4. **After:** the same six builds. **Compare with the baseline**: file lists (added/removed), sizes, and for `main.js` whether it is
+   byte-identical; if not, diff the two (`diff <(npx prettier main.js) ...` or a JSON summary of webpack's module list) and explain every
+   difference. **The generated `package.json` of each API must list the same dependencies as before** (the image's prune depends on it).
+5. **The images** (as batch 38): build all four API images from the new output, each starts and fails only on settings, `gisday-nest`
+   against a throwaway SQL Server (200 and 401), and the version check (every package at the root lock's version).
+6. `scripts/check-in-volume.sh chore/2168-webpack-inferred` (full `affected`). Commit (`chore(workspace): Move the API builds to Nx's
+   inferred webpack targets, ahead of Nx 24`, a body with step 4's comparison summary, `Part of #2168`, the Co-Authored-By line). Push if
+   steps 4 to 6 passed. If step 4 shows a difference you cannot explain, do not push: report it as a question.
 
 ## Batch 49 (security: #1218 - typeorm 1 with mssql 12; a code job and a branch; 23 October 2026, 2:20 PM Central, from `work (security)`)
 
