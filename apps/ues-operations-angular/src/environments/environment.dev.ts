@@ -2,7 +2,7 @@ export const environment = {
   production: true
 };
 
-import { AuthOptions } from '@tamu-gisc/oidc/client';
+import { AuthOptions } from '@tamu-gisc/common/types';
 
 export * from './definitions';
 export * from './notification-events';

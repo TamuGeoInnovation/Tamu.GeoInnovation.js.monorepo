@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { AuthOptions } from '@tamu-gisc/oidc/client';
+import { AuthOptions } from '@tamu-gisc/common/types';
 
 @Injectable({
   providedIn: 'root'
