@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **7:49 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **8:16 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,7 +24,9 @@ Last written **7:49 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 9:01 AM Central.**
+
+**Batch 15, workspace: #2119, a new nginx-base proved locally** (director: home). Started 8:16 AM Central, 23 October. `nginx-base` rebuilt on `nginx:1.30.6-alpine` as a local image only, Trivy 0.76.1, and the four front ends built and run on it. Nothing is pushed to the nginx-base repository.
 
 ## Finished
 
