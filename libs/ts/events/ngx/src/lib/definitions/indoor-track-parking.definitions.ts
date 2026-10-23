@@ -175,6 +175,37 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
   }
 ];
 
+/**
+ * Indoor Track on the development GIS server (#2143).
+ *
+ * Three layers: Accessible Parking Spaces, the Indoor Track Building and the event lots. The visitor
+ * kiosk and the crosswalk ("Safety First") layers were removed, as on every other athletics map.
+ *
+ * **Team Bus Parking is deliberately absent.** It was added to the production map in #2059, and it is
+ * not in the development view - the GIS team confirmed on 23 October 2026 that the development layers
+ * are as they intend. Do not "restore" it here: adding a layer this service does not publish gives a
+ * map that fails to draw rather than one that draws more.
+ *
+ * Derived from the production sources so the popups, definition expressions and draw order cannot
+ * drift from them; only the layer indexes move.
+ */
+const indoorTrackParkingDevelopmentIndex: Record<string, number> = {
+  [IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.id]: 0,
+  [IndoorTrackParkingDefinitions.BUILDING.id]: 1,
+  [IndoorTrackParkingDefinitions.PARKING.id]: 2
+};
+
+export const IndoorTrackParking_DevelopmentLayerSources: LayerSource[] =
+  IndoorTrackParkingColdLayerSources.filter(
+    (source) => (source as { id: string }).id in indoorTrackParkingDevelopmentIndex
+  ).map(
+    (source) =>
+      ({
+        ...source,
+        url: `${eventUrl}/${indoorTrackParkingDevelopmentIndex[(source as { id: string }).id]}`
+      }) as unknown as LayerSource
+  );
+
 export const IndoorTrackParkingConfiguration: EventConfiguration = {
   id: 'indoor-track-parking',
   name: 'Indoor Track',
@@ -194,6 +225,7 @@ export const IndoorTrackParkingTs: AggiemapCustomMapConfiguration = {
   configuration: IndoorTrackParkingConfiguration,
   options: IndoorTrackParkingOptions,
   sources: IndoorTrackParkingColdLayerSources,
+  developmentSources: IndoorTrackParking_DevelopmentLayerSources,
   references: INDOOR_TRACK_PARKING_LAYERS,
   discover: {
     id: IndoorTrackParkingConfiguration.id,

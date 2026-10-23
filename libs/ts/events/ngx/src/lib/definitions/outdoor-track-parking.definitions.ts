@@ -118,6 +118,35 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
   } as unknown as LayerSource
 ];
 
+/**
+ * Outdoor Track on the development GIS server (#2143).
+ *
+ * The GIS team republished this map as a hosted view with **two** layers, having removed the visitor
+ * kiosk and the crosswalk ("Safety First") layers and renamed the accessible one. Production still
+ * serves the four-layer version until they publish there, so this stands beside the sources above
+ * rather than replacing them; `event-settings.service.ts` chooses between them.
+ *
+ * **Derived from the production sources rather than written out again**, so the two cannot drift: the
+ * popups, definition expressions and draw order are the same objects, and only the layer index moves.
+ * `eventUrl` already resolves to the development host, because `athleticsHost` in `connections.ts` does.
+ *
+ * The view's own indexes: Accessible Parking Spaces is 0 here and 1 on production, the lots 1 here and 2.
+ */
+const outdoorTrackParkingDevelopmentIndex: Record<string, number> = {
+  [OutdoorTrackParkingDefinitions.ACCESSIBLE_PARKING.id]: 0,
+  [OutdoorTrackParkingDefinitions.PARKING.id]: 1
+};
+
+export const OutdoorTrackParking_DevelopmentLayerSources: LayerSource[] = OutdoorTrackParkingColdLayerSources.filter(
+  (source) => (source as { id: string }).id in outdoorTrackParkingDevelopmentIndex
+).map(
+  (source) =>
+    ({
+      ...source,
+      url: `${eventUrl}/${outdoorTrackParkingDevelopmentIndex[(source as { id: string }).id]}`
+    }) as unknown as LayerSource
+);
+
 export const OutdoorTrackParkingConfiguration: EventConfiguration = {
   id: 'outdoor-track-parking',
   name: 'Outdoor Track',
@@ -137,6 +166,7 @@ export const OutdoorTrackParkingTs: AggiemapCustomMapConfiguration = {
   configuration: OutdoorTrackParkingConfiguration,
   options: OutdoorTrackParkingOptions,
   sources: OutdoorTrackParkingColdLayerSources,
+  developmentSources: OutdoorTrackParking_DevelopmentLayerSources,
   references: OUTDOOR_TRACK_PARKING_LAYERS,
   discover: {
     id: OutdoorTrackParkingConfiguration.id,

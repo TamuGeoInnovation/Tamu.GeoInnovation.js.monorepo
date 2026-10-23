@@ -1,19 +1,34 @@
 import { Connections, readsDevelopmentGisServer } from './connections';
 
 /**
- * Where the Men's Basketball map reads its layers from (#1749).
+ * Where the Men's Basketball map reads its layers from (#1749, then #2143).
  *
  * Transportation moved the map to the production GIS server so it can be maintained in their editor
- * map. The old service on the transportation host stops being updated, so a map still pointing at it
- * would show last season's lots and closures with nothing to say they were stale.
+ * map. The old service on the transportation host stopped being updated, and a map still pointing at it
+ * showed last season's lots and closures with nothing to say they were stale. So this was pinned to one
+ * address on every environment.
+ *
+ * **That pin was lifted deliberately in #2143**, not by accident: the GIS team now publish and maintain
+ * a development copy of every service, so the development view is kept current rather than abandoned,
+ * and the staleness #1749 removed does not come back with it. The two tests below are what that costs -
+ * each environment must read its own, and neither may quietly become the other.
+ *
+ * The paths differ as well as the hosts, which is why both are written out: production is `MBskt_view`,
+ * development is `MensBasketballParking_view`.
  */
 describe('Connections', () => {
   it("reads Men's Basketball from the production GIS server's MBskt_view", () => {
     expect(Connections.mensBasketballUrl).toBe('https://gis.tamu.edu/arcgis/rest/services/Hosted/MBskt_view/FeatureServer');
   });
 
-  it("reads Men's Basketball from the same address whatever GIS host a build uses", () => {
-    expect(Connections('gis-dev.it.tamu.edu').mensBasketballUrl).toBe(Connections.mensBasketballUrl);
+  it("reads Men's Basketball from the development view on a development build (#2143)", () => {
+    expect(Connections('gis-dev.it.tamu.edu').mensBasketballUrl).toBe(
+      'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/MensBasketballParking_view/FeatureServer'
+    );
+  });
+
+  it('keeps the two apart, so neither environment silently reads the other', () => {
+    expect(Connections('gis-dev.it.tamu.edu').mensBasketballUrl).not.toBe(Connections.mensBasketballUrl);
   });
 });
 
