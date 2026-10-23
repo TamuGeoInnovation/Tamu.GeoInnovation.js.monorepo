@@ -152,6 +152,29 @@ Report per PR: **mergeable as it is, or not, and why.** Report in `work-lab-leil
 
 ## Batch 52 (aggiemap: #2143 on dev - the athletics maps against their new services; 23 October 2026, from `work (aggiemap)`)
 
+### Unblocked, 23 October 2026, 3:50 PM Central — the images published on a rerun
+
+You reported this batch could not start: the `development` run for `6a567ae8c` failed at
+`Publish / build-and-push (mailroom-angular)` with `ERROR: failed to build: unknown blob`, taking the
+other publish jobs with it, `aggiemap-angular` included.
+
+**The maintainer reran the failed jobs and they all succeeded** -
+[run 40013030183](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/actions/runs/40013030183)
+is now `success` at 20:02 UTC, with `aggiemap-angular` among the nine that published. It was the
+transient registry error it looked like.
+
+**He is pushing that build to dev now.** Start this batch when dev is serving `6a567ae8c`, and not
+before - confirm the commit rather than assuming, and **never from a bundle name**: each stage bakes
+its own analytics id in, so the same commit gives different hashes on dev and production.
+
+**Why the timing matters today:** the GIS team are waiting on this. They publish these eleven services
+to production once dev is shown to work, and **basketball starts next week**. So this is the check that
+releases their work, not a routine tier.
+
+If dev is still not serving it an hour from now, say so in your status rather than waiting silently -
+the deploy may have stalled, and that is worth knowing early.
+
+
 **After batch 49.** **Do not start until the build carrying `6a567ae8c` is on dev** - PR 2176 merged at
 about 2:38 PM Central and the maintainer started a build straight after. **Expected: about 40 minutes.**
 
