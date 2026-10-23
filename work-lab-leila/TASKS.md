@@ -77,6 +77,23 @@ install the front ends' dependencies. Each came from measuring something the bat
 so plainly. Keep doing that.
 
 
+## Batch 18 (security: the pre-push check for #2136, the nginx-base pin; 23 October 2026, 9:05 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (`js.monorepo - Security - CSA 305 Desktop`; questions go under **Questions for the
+director (security)**). **Start after batch 17.** **Expected: about 15 minutes**, four front-end builds.
+
+[#2136](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2136) pins the four Angular front ends'
+Dockerfiles from `nginx-base:latest` to `nginx-base:sha-1a94632`. Both tags have the same digest today
+(`sha256:7639ecc9...`), so nothing should change. This is the step before the new base for #2119 can merge.
+
+1. `git fetch fork fix/2136-pin-nginx-base`. The head must be **`f0ce79757`**. If it is anything else, stop and say so.
+2. From Git Bash, in a worktree at that head:
+   `scripts/check-in-volume.sh fix/2136-pin-nginx-base aggiemap-angular,geoservices-angular,gisday-angular,mailroom-angular`.
+   Report its exit code and the log's last lines, per target: lint, test, build.
+3. Nothing else: no image builds, no pushes, no pull request, no comments. The director opens the pull request from your report.
+
+Report in `work-lab-leila/reports/` as usual and say "work-lab-leila: finished batch 18".
+
 ## Batch 17 (gisday: checks after the `sha-8ee8c6e` release; 23 October 2026, 9:05 AM Central, from `work (gisday)`)
 
 **Director: work, its GIS Day chat** (see `DIRECTOR.md`; questions go under **Questions for the director (gisday)**).
