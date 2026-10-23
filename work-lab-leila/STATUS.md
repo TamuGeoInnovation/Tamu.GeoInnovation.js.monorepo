@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:53 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **5:55 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **5:53 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Nothing running.** Watching the branch.
+**Next update by 6:40 PM Central.**
+
+**Batch 60, security: body-parser 2.4.0 (GHSA-27r3-jxmh-p828)**, started 5:55 PM Central, in `C:/TAMU/wt-bodyparser`. Then 61 (Nx 24 probe), then 59 (gisday, #2205).
 
 ## Finished
 
