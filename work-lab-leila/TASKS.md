@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 38.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 40.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,40 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 38 (security: #2117 part 2 rebased onto development after PR 2173, and re-proved; 23 October 2026, 1:25 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 40 minutes.** Your batch 35 report's question 1: **(a)**. PR 2173 (batch 34's npm removal, #2172)
+merged as `6eac6d637`, so rebase onto it and resolve.
+
+1. In `C:/TAMU/wt-2117` (`chore/2117-api-own-deps`, `360e453da`): `git fetch origin`; `git rebase origin/development`. In each of the four
+   Dockerfiles keep **both**: this branch's builder-stage changes and 2173's runtime-stage lines (the comment and the `RUN rm -rf .../npm ...`
+   after `WORKDIR /app`). Report each conflict and how you resolved it.
+2. Re-prove, as batch 35 did: production builds, `docker build` all four, each starts and fails only on settings, `gisday-nest` against a
+   throwaway SQL Server (200 and 401), **the version check (every package at the root lock's version, at the same path)**, and
+   **Trivy** on each new image: expected **0 critical, 0 high** (npm gone and the packages trimmed). Report sizes and counts against
+   `:stable`, which is now `6eac6d637`'s build once that publish finishes; say which `:stable` you compared with.
+3. Your question 2 (`mssql` is absent from `geoservices-nest` and `mailroom-helper-nest`): add **one sentence** to the comment you wrote in
+   `publish.yml` or the Dockerfile (wherever the root-lock-and-prune approach is explained), saying that an API given a TypeORM database
+   later needs its driver listed in its own `apps/<app>/package.json`, as `gisday-nest` and `mailroom-nest` do now. No other change.
+4. `scripts/check-in-volume.sh chore/2117-api-own-deps`, then `git push --force-with-lease fork chore/2117-api-own-deps` if all passed.
+   Report the new head.
+
+## Batch 39 (security: Nx 24's first blocker - angular-eslint 22.6.0 on its own; a code job and a branch; 23 October 2026, 1:25 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 38.** **Expected: about 30 minutes.** Your batch 36 report's question 1, option **(c)**: move `angular-eslint`
+to 22.6.0 on its own first. **Nothing about Nx itself in this branch.** Keep `C:/TAMU/wt-2168` as it is (question 3: keep).
+
+1. `git worktree add C:/TAMU/wt-ae2206 -b chore/2168-angular-eslint-22-6 origin/development`.
+2. In `package.json`: `angular-eslint` stays a **range**, `^22.6.0` (it is `^22.0.0` today; `nx migrate` had pinned it exactly, which
+   is not wanted), and the three `@angular-eslint/*` at `22.6.0` the same way they are written today (keep each one's existing style:
+   exact stays exact, a range stays a range). In Docker (`node:24.22.1`, own volume): `npm install --package-lock-only --ignore-scripts`.
+   If that fails with ERESOLVE, report the full conflict and stop; do **not** use `--legacy-peer-deps` or `--force`.
+3. If the lock resolved: report which lock entries changed (count, and every package whose version changed), then
+   `scripts/check-in-volume.sh chore/2168-angular-eslint-22-6` (full `affected`, clean `npm ci`): the `Successfully ran target` /
+   `failed` lines, each failure's first error. Lint is the target that matters here.
+4. Commit (`chore(workspace): Move angular-eslint to 22.6.0, the first step towards Nx 24`, a body, `Part of #2168`, the Co-Authored-By
+   line) and push to the fork only if step 3 passed.
 
 ## Batch 37 (security: #2138, Dependabot version updates - a code job and a branch; 23 October 2026, 1:00 PM Central, from `work (security)`)
 
