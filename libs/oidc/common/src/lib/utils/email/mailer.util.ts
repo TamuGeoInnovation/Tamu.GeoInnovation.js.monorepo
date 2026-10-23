@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 
-import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
+import { IMailroomEmailOutbound, SAFE_TRANSPORT_OPTIONS, toMailOptions } from '@tamu-gisc/mailroom/common';
 
 import { User, UserPasswordReset } from '../../entities/all.entity';
 
@@ -20,6 +20,7 @@ export class Mailer {
       case 'ethereal':
         // use ethereal email and print out links to console (debugging / dev)
         Mailer.transporter = nodemailer.createTransport({
+          ...SAFE_TRANSPORT_OPTIONS,
           host: 'smtp.ethereal.email',
           port: 587,
           secure: false,
@@ -31,6 +32,7 @@ export class Mailer {
         break;
       case 'tamu-relay':
         Mailer.transporter = nodemailer.createTransport({
+          ...SAFE_TRANSPORT_OPTIONS,
           host: dev ? 'relay.tamu.edu' : 'smtp-relay.tamu.edu',
           port: 25,
           secure: false,
@@ -40,6 +42,7 @@ export class Mailer {
       case 'gmail':
         // use gmail instead
         Mailer.transporter = nodemailer.createTransport({
+          ...SAFE_TRANSPORT_OPTIONS,
           host: 'smtp.gmail.com',
           port: 465,
           secure: true,
@@ -60,49 +63,17 @@ export class Mailer {
     console.log('Mailer service initialized. Using host', Mailer.transporter.options.host);
   }
 
-  public static sendEmail(email: IMailroomEmailOutbound, toConsole?: boolean) {
-    if (toConsole) {
-      return Mailer.transporter.sendMail(email).then((response) => Mailer.emailToConsole(response));
-    } else {
-      return Mailer.transporter.sendMail(email).then((response) => Mailer.emailToResponse(response, email));
-    }
-  }
+  /**
+   * Sends a caller's message. Only the allowlisted fields of `email` reach nodemailer, and
+   * attachments only as the content of uploaded `files` (#2121).
+   */
+  public static sendEmail(email: IMailroomEmailOutbound, files: Array<Express.Multer.File> = []) {
+    const mailOptions = toMailOptions(email, files);
 
-  public static sendEmailWithAttachments(
-    email: IMailroomEmailOutbound,
-    attachments: Array<Express.Multer.File>,
-    toConsole?: boolean
-  ) {
-    // Map attachments to the format used by NodeMailer
-    const embeddedImages = attachments.map((file) => {
-      return {
-        filename: file.originalname,
-        content: file.buffer
-      };
-    });
+    // The Multer files are passed down so they can be written to the database.
+    const logged = files.length > 0 ? { ...mailOptions, attachments: files } : mailOptions;
 
-    const mailOptions = {
-      ...email,
-      attachments: embeddedImages
-    };
-
-    if (toConsole) {
-      Mailer.transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-          console.error(err.message);
-        } else {
-          console.log(info);
-        }
-      });
-    } else {
-      // We want the Multer type passed down so we can write it to the db
-      const emailWithMulter = {
-        ...email,
-        attachments
-      };
-
-      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response, emailWithMulter));
-    }
+    return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response, logged));
   }
 
   public static sendTokenByEmail(recipient: User, token: string) {

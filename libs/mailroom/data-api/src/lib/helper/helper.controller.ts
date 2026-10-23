@@ -3,6 +3,7 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
 import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
+import { MAIL_CONTENT_FIELDS } from '@tamu-gisc/mailroom/common';
 
 import FormData from 'form-data';
 import got from 'got';
@@ -21,16 +22,11 @@ export class HelperController {
   ) {
     const form = new FormData();
 
-    const ignoreKeys = ['replyTo', 'to', 'from'];
-
-    // Repackage body as form data
-    Object.keys(body)
-      .filter((key) => {
-        return !ignoreKeys.includes(key);
-      })
-      .forEach((key) => {
-        form.append(key, body[key]);
-      });
+    // Forward only the message content. The addresses are fixed below, and anything else (raw,
+    // envelope, headers, ...) is dropped rather than passed to mailroom (#2121).
+    MAIL_CONTENT_FIELDS.filter((key) => typeof body[key] === 'string').forEach((key) => {
+      form.append(key, body[key]);
+    });
 
     // Since this module is used either as a standalone microservice or imported into another,
     // some variables are fixed and known.
