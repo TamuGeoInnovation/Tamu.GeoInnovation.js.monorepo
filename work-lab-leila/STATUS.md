@@ -24,7 +24,9 @@ Last written **7:34 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 8:19 AM Central.**
+
+**Batch 14 task 2, reopened: `forbidUnknownValues` and `whitelist` on every API's `ValidationPipe`** (#2113, the maintainer's 7:05 AM decision, which I read only after finishing at 7:33). Started 7:34 AM Central. A further commit on `fix/2111-class-validator-0.15`.
 
 ## Finished
 
