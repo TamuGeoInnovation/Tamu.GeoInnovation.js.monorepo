@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:39 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **9:40 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **9:39 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 10:05 AM Central.**
+
+**Batch 20, security: the pre-push check and a scan for #2119** (director: work, its security chat). Started 9:40 AM Central, 23 October. The four front ends on `nginx-base:sha-09b7e41`: scoped check, Trivy, and gisday-angular built and run on it.
 
 ## Finished
 
