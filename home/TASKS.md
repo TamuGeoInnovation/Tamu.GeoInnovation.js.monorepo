@@ -41,6 +41,41 @@ named in your handover.
 Report `home/reports/2026-10-23-1.md`: the new head commit, each file, what Tab reached before. Say "work report
 ready". Do not open the pull request; the director does. Nothing on GitHub.
 
+## Batch (gisday: #2142 the Texas A&M site shows only Texas A&M's events) - 23 October 2026, 9:50 AM Central
+
+From the GIS Day director (work). **Start it after the #1474 batch above is pushed.** High priority: GIS Day is 17 to
+20 November. Development, so it is yours.
+
+[#2142](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2142) says what and why; read it
+first. **Decided by the maintainer:** an event belongs to Texas A&M's GIS Day by its place (event → location → place).
+No new field on events. txgisday.org keeps listing everything.
+
+### What to do
+
+1. Branch `feat/2142-gisday-tamu-events` from the latest `origin/development`, in its own worktree.
+2. Work out how a place is marked as Texas A&M's, choosing between a list in the `tamu` site's definition
+   (`libs/gisday/common/src/lib/sites.ts`) and a field on the place. Prefer the one that needs no schema change.
+   Say in the report which, and why.
+3. **Take the "before" photo first**, of the local Sessions page served as the `tamu` site
+   (`scripts/gisday-local.sh web --site tamu`), into `docs/screenshots/2142-gisday-tamu-events/before-sessions.png`.
+4. Write the tests first and prove them red against the unchanged code. On the `tamu` site, an event at another
+   school's place is not listed and one at a Texas A&M place is; on txgisday.org, both are listed. Then make them
+   green. Cover every place events are listed: Sessions, the home page's schedule, and any other.
+5. Count the events in the local database with no location or place. Those are the ones the `tamu` site would stop
+   showing.
+6. Take the "after" photo; add the release-notes entry `docs/releases/unreleased/2142-gisday-tamu-events.md` with
+   both photos and a What to test row. Run `node scripts/collate-release-notes.mjs --check`.
+7. Commit, then `scripts/check-in-volume.sh feat/2142-gisday-tamu-events`. It must exit 0, including the
+   `gisday-angular` production build, which checks the bundle budgets. Take that build only after the photos,
+   because it overwrites the local dist. Push to the fork.
+
+### Then
+
+Report `home/reports/2026-10-23-2.md`: the branch and head commit, the choice from step 2, red then green test
+output, the check's exit code and time, the event count from step 5. Put any questions under **Questions for the
+home session**, addressed to the GIS Day director, with options and a recommendation. Do not open the pull request;
+the director does. Nothing on GitHub.
+
 ## Batch (22 October 2026, 12:05 PM Central) - watch Azure for the production deploy
 
 The maintainer approved the production release and it is rolling out now. **This machine is the only one
