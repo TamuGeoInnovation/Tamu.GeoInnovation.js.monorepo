@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:48 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **9:51 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **9:48 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 10:11 AM Central.**
+
+**Batch 21, security: the full pre-push check for #2112's second round** (director: work, its security chat). Started 9:51 AM Central, 23 October. Full `affected` check of `security/check-2112b`.
 
 ## Finished
 
