@@ -46,21 +46,23 @@ export class Mailer {
           host: 'smtp.gmail.com',
           port: 465,
           secure: true,
+          // The OAuth2 fields sit directly on `auth`. They used to be nested under a `config` key,
+          // which nodemailer never read, so nodemailer 10's own types refuse it (#2115). Still
+          // empty: this transport is a placeholder that nothing configures.
           auth: {
             type: 'OAuth2',
-            config: {
-              user: '',
-              accessToken: '',
-              clientId: '',
-              clientSecret: '',
-              refreshToken: ''
-            }
+            user: '',
+            accessToken: '',
+            clientId: '',
+            clientSecret: '',
+            refreshToken: ''
           }
         });
         break;
     }
 
-    console.log('Mailer service initialized. Using host', Mailer.transporter.options.host);
+    // `options` is typed for every transport kind, and only SMTP ones have a host; all three here are SMTP.
+    console.log('Mailer service initialized. Using host', (Mailer.transporter.options as { host?: string }).host);
   }
 
   /**
