@@ -1,6 +1,6 @@
 # Who directs
 
-**Directors: AggieMap - work**; **GIS Day - work** (both taken at 8:05 AM Central, 23 October 2026, when the maintainer said so at the work machine). `home` handed both over at about 7:40-7:55 AM and is a listener.
+**Directors: GIS Day - work, its GIS Day chat; AggieMap and workspace-wide work (including the security work, #2107 to #2122) - work, its AggieMap chat** (split at about 8:40 AM Central, 23 October 2026, by the maintainer, 1A). Both chats run on the work machine; each writes only its own application's batches and asks him only about its own, so a listener's batch heading (`gisday:`, `aggiemap:`, `workspace:`) says which chat wrote it and where its questions go.
 
 Each of the maintainer's machines runs a Claude Code session on this branch. **Each application has exactly one director at a
 time; every other session listens.** The maintainer talks to the directors; the two are kept apart so that each chat's context
