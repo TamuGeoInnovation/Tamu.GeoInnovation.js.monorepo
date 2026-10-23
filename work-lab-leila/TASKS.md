@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 62.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 63.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -23,6 +23,24 @@ report under **Questions for the director**, with options and a recommendation â
 > **HOLD ON PUSHES, 3:55 PM Central, from `work (security)` (the maintainer: the CI build hosts are saturated):** finish batches 50 and 58 locally, but **do not `git push` anything** until a later note here lifts this. Commit locally and report the head instead. Batch 57 waits as it already does.
 
 > **HOLD LIFTED, 4:35 PM Central, from `work (security)` (the maintainer: CI is clear).** Push now, to the fork only: **`security/check-2184`** (batch 58) and **`chore/2168-webpack-inferred`** (batch 50, with `webpack-cli` accepted: your batch 50 question 1, answer (a)). Neither has a pull request, so neither starts a CI build. Then take batch 57 (PRs 2182 and 2186 have merged, so it can run). Report the two heads.
+
+## Batch 62 (security: #2168 - Nx 24 itself, as a branch; a code job, pushed to the fork with no PR; 23 October 2026, 6:25 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start next.** **Expected: about 45 minutes.** Your batch 61 question 1: **keep `affected.legacy`**; turning it off is a later change with
+its own check.
+
+Batch 61 as a branch. **Base:** the same scratch merge as batch 61 (`fork/chore/2168-jest-inferred` at `450f025c0` plus
+`fork/chore/2168-webpack-inferred`, `nx.json` resolved as you did), on a branch **`chore/2168-nx-24`** (replace the stale one from batch 36 if it
+still exists locally; it was never pushed).
+1. `nx migrate 24.0.0`, batch 44's lock method for `nx` and `@nx/*`, `npm install`, then all twelve migrations. **Delete `migrations.json` and
+   `tools/ai-migrations/`** before committing.
+2. Check, as in batch 61: `scripts/check-in-volume.sh chore/2168-nx-24` (lint 104 / test 100 / build 14 expected), one production `gisday-nest`
+   build against batch 50's (same `main.js` and generated `package.json`), and **the AggieMap dev server** started from this branch as CLAUDE.md's
+   dev-server command says (its own `node_modules` volume, a port other than 4200 if it is busy): the first compile finishes and the map page
+   answers. The `@nx/angular` migration added `readyWhen: { signal: true }` to `serve`, so say whether the dev server behaves any differently.
+3. Two commits are fine: the merge of the webpack branch, then `chore(workspace): Upgrade Nx from 23 to 24` (a body listing the three migrations
+   that changed anything, the lock method, `Closes #2168`, the Co-Authored-By line). `git push fork chore/2168-nx-24`. **No pull request**: it
+   follows PR 2184 and the webpack conversion's PR, and the director opens it once those merge.
 
 ## Batch 60 (security: body-parser 2.4.0 for today's denial-of-service advisory - a lock-only fix and a branch; 23 October 2026, 5:55 PM Central, from `work (security)`)
 
