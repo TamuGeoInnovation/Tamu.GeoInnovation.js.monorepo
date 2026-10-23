@@ -310,7 +310,7 @@ export class EventSettingsService implements EventSettingsQuery {
         value: settings
       });
     } catch (err) {
-      throw new Error((err as Error)['message']);
+      throw new Error((err as Error)['message'], { cause: err });
     }
   }
 

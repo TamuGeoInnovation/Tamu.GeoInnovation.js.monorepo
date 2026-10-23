@@ -55,7 +55,7 @@ export class AssetsService {
       savedFile = await writeFileToDisk(path, file, { ...defaultOptions, ...inputOptions });
     } catch (err) {
       Logger.error(err.message, 'AssetsService');
-      throw new Error('Could not save asset.');
+      throw new Error('Could not save asset.', { cause: err });
     }
 
     const asset = this.ar.create({
