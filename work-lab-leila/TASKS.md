@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 52.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 53.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,67 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 52 (aggiemap: #2143 on dev - the athletics maps against their new services; 23 October 2026, from `work (aggiemap)`)
+
+**After batch 49.** **Do not start until the build carrying `6a567ae8c` is on dev** - PR 2176 merged at
+about 2:38 PM Central and the maintainer started a build straight after. **Expected: about 40 minutes.**
+
+### Why this one matters
+
+The GIS team republished eleven athletics maps as hosted views on the development GIS server, and
+[#2143](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2143) points dev at
+them. **Until this build, dev drew production's services for these maps** - `tsgisHost` is pinned to the
+production host - so this is the first time anything has read the new views.
+
+**They publish to production once dev is shown to work, and basketball starts next week.** This batch is
+that showing.
+
+### 1. Confirm you are testing the right build
+
+Check dev is serving `6a567ae8c` or newer before anything else. **Do not identify it by bundle name** -
+each stage bakes its own analytics id in, so the same commit gives different hashes per environment. If
+you cannot establish the commit, say so and stop rather than reporting on an unknown build.
+
+### 2. The eleven maps, by eye
+
+For each, on `https://dev.aggiemap.tamu.edu/parking/<id>`:
+
+`baseball-parking`, `cross-country-parking`, `indoor-track-parking`, `mens-basketball`,
+`outdoor-track-parking`, `soccer-parking`, `softball-parking`, `swimming-parking`, `tennis-parking`,
+`volleyball-parking`, `womens-basketball`
+
+Report per map:
+
+- **Does it draw?** A blank canvas for 20-40 seconds is Esri still working, not a fault.
+- **The Layers list.** **Safety First** and **Purchase Hourly Visitor Parking** should be **gone** from
+  the seven that had them. Accessible Parking Spaces and the event lots should remain.
+- **Indoor Track has no Team Bus Parking on dev.** That is correct and confirmed with the GIS team - do
+  not report it as a fault, but do say whether the rest of that map is intact.
+- **Anything empty.** A layer in the list that draws nothing is the failure mode that matters here: the
+  definition expressions were written against production's fields, and nothing has proved they match the
+  new views.
+
+**Compare each against the same map on production**, which is unchanged, so a difference is either the
+GIS team's restyling or a fault.
+
+### 3. The quick tier
+
+`test/smoke/aggiemap/run-local.sh development quick`. Say what it will run before it starts, as the
+suite prints its set.
+
+### 4. Screenshots - not yours
+
+**Do not capture a set.** Every baseline lives on the work machine and a set taken elsewhere is stranded
+from the ones it would be compared with. The "after" images for #2143 are taken on `work`; say in your
+report that the maps are ready for them.
+
+### Then
+
+Report as `work-lab-leila/reports/<date>-<n>.md`, per map, with anything empty or missing named outright.
+**If a map is broken, that is the most useful thing you can find today** - it is better found now than
+after the GIS team publish to production.
+
 
 > **2:45 PM Central, from `work (security)`:** PRs 2174, 2175, 2178 and 2180 merged (squashed). **Batch 49** (typeorm 1) was started on `chore/1218-eslint-10`: before you push it, `git merge origin/development` into it and resolve, keeping development's side for anything ESLint 10 or #2117 changed, then re-run the check. Batches 50 and 51 now start from `development`.
 
