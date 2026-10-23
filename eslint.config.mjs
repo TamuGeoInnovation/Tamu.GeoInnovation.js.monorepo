@@ -1,9 +1,7 @@
 import nx from '@nx/eslint-plugin';
-import eslintPluginNode from 'eslint-plugin-node';
 
 export default [
   ...nx.configs['flat/base'],
-  { plugins: { node: eslintPluginNode } },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {

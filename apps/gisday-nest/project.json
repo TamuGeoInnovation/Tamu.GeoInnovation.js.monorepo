@@ -81,16 +81,6 @@
           "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\"}"
         }
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/gisday-nest"],
-      "options": {
-        "jestConfig": "apps/gisday-nest/jest.config.ts"
-      }
     }
   }
 }

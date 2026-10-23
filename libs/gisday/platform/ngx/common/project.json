@@ -5,17 +5,5 @@
   "sourceRoot": "libs/gisday/platform/ngx/common/src",
   "prefix": "tamu-gisc",
   "tags": [],
-  "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/gisday/platform/ngx/common"],
-      "options": {
-        "jestConfig": "libs/gisday/platform/ngx/common/jest.config.ts",
-        "tsConfig": "libs/gisday/platform/ngx/common/tsconfig.spec.json"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    }
-  }
+  "targets": {}
 }

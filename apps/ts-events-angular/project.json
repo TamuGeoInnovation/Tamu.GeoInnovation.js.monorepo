@@ -33,7 +33,11 @@
           "includePaths": ["."]
         },
         "scripts": [],
-        "loader": { ".woff2": "file", ".woff": "file", ".ttf": "file" },
+        "loader": {
+          ".woff2": "file",
+          ".woff": "file",
+          ".ttf": "file"
+        },
         "browser": "apps/ts-events-angular/src/main.ts"
       },
       "configurations": {
@@ -86,17 +90,6 @@
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
         "buildTarget": "ts-events-angular:build"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/ts-events-angular"],
-      "options": {
-        "jestConfig": "apps/ts-events-angular/jest.config.ts",
-        "tsConfig": "apps/ts-events-angular/tsconfig.spec.json"
       }
     }
   }

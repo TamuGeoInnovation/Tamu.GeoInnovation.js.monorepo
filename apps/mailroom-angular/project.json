@@ -94,17 +94,6 @@
       "options": {
         "buildTarget": "mailroom-angular:build"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/mailroom-angular"],
-      "options": {
-        "jestConfig": "apps/mailroom-angular/jest.config.ts",
-        "tsConfig": "apps/mailroom-angular/tsconfig.spec.json"
-      }
     }
   }
 }

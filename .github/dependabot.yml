@@ -76,6 +76,11 @@ updates:
       - /apps/mailroom-nest/src
       - /apps/mailroom-helper-nest/src
     target-branch: development
+    # Node majors come as their own change - builder stage, runtime stage, CI's setup-node and the dev containers
+    # together - not a runtime-only bump (PR 2185 was closed for that, #2138). Patches and minors still come here.
+    ignore:
+      - dependency-name: node
+        update-types: ['version-update:semver-major']
     schedule:
       interval: weekly
       day: monday
