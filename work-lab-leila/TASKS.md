@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 63.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 64.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -23,6 +23,24 @@ report under **Questions for the director**, with options and a recommendation â
 > **HOLD ON PUSHES, 3:55 PM Central, from `work (security)` (the maintainer: the CI build hosts are saturated):** finish batches 50 and 58 locally, but **do not `git push` anything** until a later note here lifts this. Commit locally and report the head instead. Batch 57 waits as it already does.
 
 > **HOLD LIFTED, 4:35 PM Central, from `work (security)` (the maintainer: CI is clear).** Push now, to the fork only: **`security/check-2184`** (batch 58) and **`chore/2168-webpack-inferred`** (batch 50, with `webpack-cli` accepted: your batch 50 question 1, answer (a)). Neither has a pull request, so neither starts a CI build. Then take batch 57 (PRs 2182 and 2186 have merged, so it can run). Report the two heads.
+
+> **6:45 PM Central, from `work (security)`: batch 62 (Nx 24 as a branch) is waiting and has not started. Start it now.** Then batch 63.
+
+## Batch 63 (security: the webpack conversion brought up to date after PR 2184 merged, and re-checked; pushed to the fork, no PR; 23 October 2026, 6:45 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 62.** **Expected: about 30 minutes.** PRs 2182 (lint) and 2184 (Jest) have both merged (squashed), so
+`fork/chore/2168-webpack-inferred` (your batch 50, `dd87888d3`) now needs `development` merged in.
+
+1. In a worktree of `chore/2168-webpack-inferred`: `git merge origin/development`. Expect a conflict in `nx.json` only (`plugins` and
+   `targetDefaults`): keep every plugin entry (`@nx/vitest`, `@nx/eslint/plugin`, `@nx/jest/plugin`, `@nx/webpack/plugin`) and every default,
+   as you did in batches 61 and 62. If anything else conflicts, stop and report it. `package-lock.json` should merge cleanly (it adds
+   `webpack-cli`); if it does not, use batch 41's method for `webpack-cli` and its own dependencies only.
+2. **The lock rule:** after the merge, read back `webpack-cli` 7.2.3 and its dependencies in the lock, and confirm no other version changed
+   against `origin/development` (key by key, as batch 41).
+3. `scripts/check-in-volume.sh chore/2168-webpack-inferred` (full `affected`, clean `npm ci`), and one production `gisday-nest` build compared with
+   batch 50's output (same `main.js` and generated `package.json`).
+4. Commit the merge and `git push fork chore/2168-webpack-inferred`. **No pull request**: the director opens it when its turn in the lock queue
+   comes (after PRs 2208 and 2188).
 
 ## Batch 62 (security: #2168 - Nx 24 itself, as a branch; a code job, pushed to the fork with no PR; 23 October 2026, 6:25 PM Central, from `work (security)`)
 
