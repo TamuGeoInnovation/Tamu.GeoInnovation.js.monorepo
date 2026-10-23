@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 44.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 46.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,42 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 44 (security: batch 42 again, with batch 41's lock method for the Nx set - the Nx 24 premise test; 23 October 2026, 2:00 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 40 minutes.** Your batch 42 question 1: **(a)**. A test: **commit and push nothing.**
+
+Batch 42 as written, with one change at step 2: after `nx migrate 24.0.0`, delete from `package-lock.json` the `node_modules/nx` key and
+every key whose path contains `node_modules/@nx/` (top level and nested, the `@nx/nx-<platform>` binaries included), with the same kind
+of script as batch 41. Then `npm install`. If it still fails, report it in full and stop.
+Then steps 3 to 6 of batch 42 exactly: the five targets unconverted, then **only the lint migrations** and the five again, and the
+one-line answers in step 5. **Also report, for the record:** the lock diff after `npm install` against batch 41's branch (keys added,
+removed, versions changed), so the director knows the size of the Nx 24 lock change before any branch is made.
+
+## Batch 45 (security: #1218 - ESLint 10 and its five fixes; a code job and a branch; 23 October 2026, 2:00 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 44** (or before it, if 44 is waiting on anything). **Expected: about 45 minutes.** Your batch 43 survey found
+ESLint 10 installs cleanly and needs five one-line fixes.
+
+1. `git worktree add C:/TAMU/wt-eslint10 -b chore/1218-eslint-10 fork/chore/2168-angular-eslint-22-6` (on batch 41's branch, so the two
+   lock changes stay in one line).
+2. `package.json`: `eslint` to `^10.13.0` (keep its existing style) and `@eslint/js` to `^10.0.1`; nothing else unless the install requires
+   it (say what). In Docker (`node:24.22.1`, own volume): `npm install --package-lock-only --ignore-scripts`. If ERESOLVE, use batch 41's
+   method for the `eslint` and `@eslint/*` keys only. **Report the lock diff** against batch 41's branch (keys added, removed, versions
+   changed); expect ESLint's own packages and their dependencies only.
+3. Fix the five errors **as the rule intends**, not by disabling it: `preserve-caught-error` (4): `throw new X(msg, { cause: err })` where
+   an error is re-thrown with a new message (check each `X` accepts a second argument; Nest's `HttpException` subclasses take
+   `{ cause }` in their options object); `no-useless-assignment` (1): remove the dead assignment. Files:
+   `libs/common/node/fs/src/lib/common-node-fs.ts:64`, `libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts:1240`,
+   the `gisday/platform` one your batch 43 named, the `ts-events-ngx` one, and
+   `libs/gisday/competitions/data-api/src/lib/export/export.processor.ts:114`. Show each diff.
+4. **The oddity you found:** `gisday-platform-data-api` printed `1 error` but Nx did not list it as failed. Find out why (its lint target's
+   options, an `--max-warnings`, a `continue-on-error`, or ESLint config severity) and report it. **If its lint lets errors through, fix
+   that so errors fail it**, as every other project's do, and say so; if fixing it surfaces other existing errors in that project, list
+   them and fix them too if each is one line, else stop and report.
+5. Proof: `nx run-many -t lint --skip-nx-cache` on all projects (0 errors), then `scripts/check-in-volume.sh chore/1218-eslint-10` (full
+   `affected`, clean `npm ci`). Commit (`chore(workspace): Upgrade ESLint to 10, and fix what its new recommended rules find`, a body,
+   `Part of #1218`, the Co-Authored-By line). Push to the fork if all passed.
 
 ## Batch 43 (security: #1218 - what TypeScript 7, ESLint 10 and typeorm 1 would break; read-only; 23 October 2026, 1:45 PM Central, from `work (security)`)
 
