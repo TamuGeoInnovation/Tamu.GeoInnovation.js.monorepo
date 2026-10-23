@@ -8,7 +8,7 @@ This tool works out what each map shows today, what the order would be if it fol
 whether the two already agree.
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -v "C:/TAMU/<checkout>:/repo:ro" -w /repo node:24.22.0 \
+MSYS_NO_PATHCONV=1 docker run --rm -v "C:/TAMU/<checkout>:/repo:ro" -w /repo node:24.22.1 \
   node tools/layer-order/compare.mjs
 ```
 

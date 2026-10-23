@@ -159,7 +159,7 @@ set +e
 # containers ever write that cache, so it is trusted.
 docker run --rm -m 16g \
   -v "$volume:/w" -v "$src:/src:ro" -w /w \
-  -e NX_DAEMON=false -e NX_REJECT_UNKNOWN_LOCAL_CACHE=0   node:24.22.0 sh -c "$inner" check "$branch" "$mode" "${runs[@]}" >"$log" 2>&1
+  -e NX_DAEMON=false -e NX_REJECT_UNKNOWN_LOCAL_CACHE=0   node:24.22.1 sh -c "$inner" check "$branch" "$mode" "${runs[@]}" >"$log" 2>&1
 code=$?
 set -e
 echo "Exit $code ($branch, $mode). Log: $log"
