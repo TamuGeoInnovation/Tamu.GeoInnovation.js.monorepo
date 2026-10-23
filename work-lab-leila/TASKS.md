@@ -20,6 +20,8 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+> **HOLD ON PUSHES, 3:55 PM Central, from `work (security)` (the maintainer: the CI build hosts are saturated):** finish batches 50 and 58 locally, but **do not `git push` anything** until a later note here lifts this. Commit locally and report the head instead. Batch 57 waits as it already does.
+
 ## Batch 58 (security: PR 2184 (Jest inferred) resolved against PR 2182 (lint inferred) ahead of time; a code job, pushed to a scratch branch; 23 October 2026, 3:45 PM Central, from `work (security)`)
 
 **Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 50** (before 57, which waits on a merge). **Expected: about 40 minutes.**
