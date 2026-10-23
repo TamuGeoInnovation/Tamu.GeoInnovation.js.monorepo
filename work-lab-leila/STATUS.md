@@ -32,7 +32,7 @@ Last written **3:23 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 4:05 PM Central.**
 
-**Batch 50, security: the webpack builds to inferred targets** (a code job and a branch, about 2 hours), started 3:23 PM Central, in `C:/TAMU/wt-2168-webpack23` (`chore/2168-webpack-inferred`, from `development`). Taking the "before" builds first.
+**Batch 55, security: the GitHub Actions majors in PR 2186** (read-only), started 3:23 PM Central, right after 53 as it asks. **Order from here: 55, 56 (after 55), 54 (gisday, "when your security batches allow"), then 50** (2 hours; nothing of it has run but its worktree, `C:/TAMU/wt-2168-webpack23`). Say if 50 should go earlier.
 
 **Batch 52 (aggiemap) cannot start: dev is not serving `6a567ae8c`, and its images were not published.**
 - The `development` run of **Quabity Assuance** for `6a567ae8c` ([run 40013030183](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/actions/runs/40013030183)) **failed**: lint, test and build passed, but `Publish / build-and-push (mailroom-angular)` failed at the push with `ERROR: failed to build: unknown blob` (its security gate passed, 0 criticals; it looks like a transient registry error). **The other publish jobs were cancelled with it, `aggiemap-angular` included**; only `gisday-angular` published.
