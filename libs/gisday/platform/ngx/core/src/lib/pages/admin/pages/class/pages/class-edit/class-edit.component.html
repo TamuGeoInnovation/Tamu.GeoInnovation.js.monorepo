@@ -7,7 +7,7 @@
 
       <div class="form-section-actions">
         @if ((isExporting$ | async) === false ) {
-        <a (click)="exportCSV()">Export as CSV <span class="material-icons action">file_download</span></a>
+        <a (click)="exportCSV()" tabindex="0" role="button" (keydown.enter)="exportCSV()" (keydown.space)="exportCSV(); $event.preventDefault()">Export as CSV <span class="material-icons action">file_download</span></a>
         } @else {
         <div id="export-state">
           <p>Exporting...</p>

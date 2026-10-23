@@ -49,10 +49,10 @@
           <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
         </div>
         <div class="selected-actions">
-          <p class="selected-action" (click)="setSelectedActive(true)">Show on schedule <span class="material-icons action">visibility</span></p>
-          <p class="selected-action" (click)="setSelectedActive(false)">Hide from schedule <span class="material-icons action">visibility_off</span></p>
-          <p class="selected-action" (click)="promptCopyModal()">Copy <span class="material-icons action">content_copy</span></p>
-          <p class="selected-action caution" (click)="promptDeleteModal()">Delete <span class="material-icons action">delete_forever</span></p>
+          <p class="selected-action" (click)="setSelectedActive(true)" tabindex="0" role="button" (keydown.enter)="setSelectedActive(true)" (keydown.space)="setSelectedActive(true); $event.preventDefault()">Show on schedule <span class="material-icons action">visibility</span></p>
+          <p class="selected-action" (click)="setSelectedActive(false)" tabindex="0" role="button" (keydown.enter)="setSelectedActive(false)" (keydown.space)="setSelectedActive(false); $event.preventDefault()">Hide from schedule <span class="material-icons action">visibility_off</span></p>
+          <p class="selected-action" (click)="promptCopyModal()" tabindex="0" role="button" (keydown.enter)="promptCopyModal()" (keydown.space)="promptCopyModal(); $event.preventDefault()">Copy <span class="material-icons action">content_copy</span></p>
+          <p class="selected-action caution" (click)="promptDeleteModal()" tabindex="0" role="button" (keydown.enter)="promptDeleteModal()" (keydown.space)="promptDeleteModal(); $event.preventDefault()">Delete <span class="material-icons action">delete_forever</span></p>
         </div>
       </div>
       } }

@@ -1,7 +1,7 @@
 <div class="presenter-item">
   @if (showActions()) {
   <div class="presenter-actions">
-    <span class="action material-icons" (click)="emitAction('delete')">cancel</span>
+    <span class="action material-icons" aria-label="Remove speaker" (click)="emitAction('delete')" tabindex="0" role="button" (keydown.enter)="emitAction('delete')" (keydown.space)="emitAction('delete'); $event.preventDefault()">cancel</span>
   </div>
   }
 

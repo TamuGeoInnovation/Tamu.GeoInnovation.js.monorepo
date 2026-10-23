@@ -47,7 +47,7 @@
 
       @if ((selectedPresentationFormat$ | async) === 'group' && !form.disabled) {
       <div class="flex flex-row justify-end">
-        <p class="form-collection-actions" (click)="addParticipant()">Add participant <span class="material-icons">add</span></p>
+        <p class="form-collection-actions" (click)="addParticipant()" tabindex="0" role="button" (keydown.enter)="addParticipant()" (keydown.space)="addParticipant(); $event.preventDefault()">Add participant <span class="material-icons">add</span></p>
       </div>
       }
 

@@ -1,0 +1,2108 @@
+{
+  "$comment": [
+    "Advisories this repository has seen and accepted for now, each with the issue that tracks it.",
+    "The daily scan (.github/workflows/security-scan.yml) reports anything NOT in this list, and the",
+    "publish gate fails on a critical not in it. An entry without an issue is rejected outright: an",
+    "acceptance nobody is tracking is how a finding becomes permanent.",
+    "Remove an entry when its issue is fixed - the scan prints the ones nothing finds any more.",
+    "Seeded 23 October 2026 from npm audit --omit=dev and Trivy 0.76.1, so the first run is quiet (#2118)."
+  ],
+  "accepted": [
+    {
+      "id": "1095223",
+      "package": "@koa/cors",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "transitive",
+      "package": "@mapbox/node-pre-gyp",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240600",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240601",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240603",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240604",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240605",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240607",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240608",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240626",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240627",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240628",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240629",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240634",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1115540",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1115541",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1123896",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1123897",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1130588",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1130589",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1130736",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1130737",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240100",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240101",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240104",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240105",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240108",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240109",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "transitive",
+      "package": "busboy",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1088816",
+      "package": "class-validator",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Upgrading to class-validator 0.15 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2113"
+    },
+    {
+      "id": "1093150",
+      "package": "dicer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1242604",
+      "package": "follow-redirects",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1242605",
+      "package": "follow-redirects",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1120744",
+      "package": "form-data",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "form-data has no patched release in range; what pulls it in is being removed",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2116"
+    },
+    {
+      "id": "1120745",
+      "package": "form-data",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "form-data has no patched release in range; what pulls it in is being removed",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2116"
+    },
+    {
+      "id": "1240991",
+      "package": "http-cache-semantics",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1111244",
+      "package": "jws",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1112425",
+      "package": "koa",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113563",
+      "package": "koa",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113459",
+      "package": "minimatch",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113461",
+      "package": "minimatch",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113538",
+      "package": "minimatch",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113540",
+      "package": "minimatch",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113546",
+      "package": "minimatch",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113548",
+      "package": "minimatch",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1104780",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1105262",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1105267",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1106463",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113635",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113636",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113996",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1121089",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1193790",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1193792",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1193793",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1110996",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1110998",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1111068",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1115545",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1115546",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1115548",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1115612",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1240912",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1109804",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1115470",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1116270",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1120795",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1120796",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1123478",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1158513",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1193741",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1193770",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1193778",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1193779",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1239931",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1240033",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1240114",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1241195",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "1242826",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Upgrading nodemailer to 10 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+    },
+    {
+      "id": "transitive",
+      "package": "oidc-provider",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113431",
+      "package": "swiper",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Upgrading swiper to 14 is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2114"
+    },
+    {
+      "id": "1112659",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113300",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1113375",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1114200",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1114302",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1114680",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1120782",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1123939",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1123940",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1123941",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1123942",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1145647",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1109241",
+      "package": "validator",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "1112713",
+      "package": "validator",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Covered by the sweep of in-range security updates",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2112"
+    },
+    {
+      "id": "CVE-2025-66035",
+      "package": "@angular/common",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-50170",
+      "package": "@angular/common",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-50171",
+      "package": "@angular/common",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-54266",
+      "package": "@angular/common",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-54268",
+      "package": "@angular/common",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-68945",
+      "package": "@angular/common",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2025-66412",
+      "package": "@angular/compiler",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-22610",
+      "package": "@angular/compiler",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-69151",
+      "package": "@angular/compiler",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-22610",
+      "package": "@angular/core",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-27970",
+      "package": "@angular/core",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-54267",
+      "package": "@angular/core",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-69151",
+      "package": "@angular/core",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-101895",
+      "package": "@angular/platform-server",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-41423",
+      "package": "@angular/platform-server",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-46417",
+      "package": "@angular/platform-server",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-50168",
+      "package": "@angular/platform-server",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-50555",
+      "package": "@angular/platform-server",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-50556",
+      "package": "@angular/platform-server",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-69149",
+      "package": "@angular/platform-server",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-88056",
+      "package": "@angular/platform-server",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-88058",
+      "package": "@angular/platform-server",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-88060",
+      "package": "@angular/platform-server",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-101896",
+      "package": "@angular/router",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-111752",
+      "package": "@angular/router",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-54264",
+      "package": "@angular/service-worker",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2023-49803",
+      "package": "@koa/cors",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-101898",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-101901",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-101903",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-101905",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-101906",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-101907",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-101909",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-25639",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-42033",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-42035",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-42043",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-42264",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-44486",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-44487",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-44488",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-44494",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-44495",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-44496",
+      "package": "axios",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2024-45590",
+      "package": "body-parser",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-102276",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-102278",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-13149",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-14257",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-69152",
+      "package": "brace-expansion",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-93687",
+      "package": "braces",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2019-18413",
+      "package": "class-validator",
+      "severity": "CRITICAL",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2024-21538",
+      "package": "cross-spawn",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2022-24434",
+      "package": "dicer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-111755",
+      "package": "follow-redirects",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-111756",
+      "package": "follow-redirects",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-12143",
+      "package": "form-data",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2025-64756",
+      "package": "glob",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-93748",
+      "package": "http-cache-semantics",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-69192",
+      "package": "ip-address",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2022-23539",
+      "package": "jsonwebtoken",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2025-65945",
+      "package": "jws",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-27959",
+      "package": "koa",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-4800",
+      "package": "lodash",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-26996",
+      "package": "minimatch",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-27903",
+      "package": "minimatch",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-27904",
+      "package": "minimatch",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2025-47935",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2025-47944",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2025-48997",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2025-7338",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-2359",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-3304",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-3520",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-5079",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-77078",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-82333",
+      "package": "multer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-67213",
+      "package": "nanoid",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-67214",
+      "package": "nanoid",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-73086",
+      "package": "nanoid",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2025-12816",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2025-66031",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-33891",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-33894",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-33895",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-33896",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-85393",
+      "package": "node-forge",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2025-14874",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-82659",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-82662",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "GHSA-2x7j-588g-ccc2",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "GHSA-v53p-9fqp-m79j",
+      "package": "nodemailer",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-9496",
+      "package": "pacote",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2024-45296",
+      "package": "path-to-regexp",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2024-52798",
+      "package": "path-to-regexp",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-4867",
+      "package": "path-to-regexp",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-33671",
+      "package": "picomatch",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-90711",
+      "package": "proxy-addr",
+      "severity": "CRITICAL",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-48815",
+      "package": "sigstore",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-27212",
+      "package": "swiper",
+      "severity": "CRITICAL",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-23745",
+      "package": "tar",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-23950",
+      "package": "tar",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-24842",
+      "package": "tar",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-26960",
+      "package": "tar",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-29786",
+      "package": "tar",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-31802",
+      "package": "tar",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-59873",
+      "package": "tar",
+      "severity": "CRITICAL",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-59874",
+      "package": "tar",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-73566",
+      "package": "tar",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2026-19534",
+      "package": "undici",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2025-12758",
+      "package": "validator",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
+    },
+    {
+      "id": "CVE-2022-43551",
+      "package": "curl",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-23914",
+      "package": "curl",
+      "severity": "CRITICAL",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-27533",
+      "package": "curl",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-27534",
+      "package": "curl",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-28319",
+      "package": "curl",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-38039",
+      "package": "curl",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-38545",
+      "package": "curl",
+      "severity": "CRITICAL",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2022-4450",
+      "package": "libcrypto1.1",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-0215",
+      "package": "libcrypto1.1",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-0286",
+      "package": "libcrypto1.1",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-0464",
+      "package": "libcrypto1.1",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2024-12797",
+      "package": "libcrypto3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2025-15467",
+      "package": "libcrypto3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2025-69421",
+      "package": "libcrypto3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-28387",
+      "package": "libcrypto3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-28388",
+      "package": "libcrypto3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-28389",
+      "package": "libcrypto3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-28390",
+      "package": "libcrypto3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-31789",
+      "package": "libcrypto3",
+      "severity": "CRITICAL",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-45447",
+      "package": "libcrypto3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-84782",
+      "package": "libcrypto3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2022-43551",
+      "package": "libcurl",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-23914",
+      "package": "libcurl",
+      "severity": "CRITICAL",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-27533",
+      "package": "libcurl",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-27534",
+      "package": "libcurl",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-28319",
+      "package": "libcurl",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-38039",
+      "package": "libcurl",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-38545",
+      "package": "libcurl",
+      "severity": "CRITICAL",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2022-4450",
+      "package": "libssl1.1",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-0215",
+      "package": "libssl1.1",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-0286",
+      "package": "libssl1.1",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-0464",
+      "package": "libssl1.1",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2024-12797",
+      "package": "libssl3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2025-15467",
+      "package": "libssl3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2025-69421",
+      "package": "libssl3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-28387",
+      "package": "libssl3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-28388",
+      "package": "libssl3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-28389",
+      "package": "libssl3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-28390",
+      "package": "libssl3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-31789",
+      "package": "libssl3",
+      "severity": "CRITICAL",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-45447",
+      "package": "libssl3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2026-84782",
+      "package": "libssl3",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2023-1999",
+      "package": "libwebp",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-4863",
+      "package": "libwebp",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2025-26519",
+      "package": "musl",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2026-40200",
+      "package": "musl",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2025-26519",
+      "package": "musl-utils",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2026-40200",
+      "package": "musl-utils",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    },
+    {
+      "id": "CVE-2023-29491",
+      "package": "ncurses-libs",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-29491",
+      "package": "ncurses-terminfo-base",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-35945",
+      "package": "nghttp2-libs",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2023-44487",
+      "package": "nghttp2-libs",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2022-41409",
+      "package": "pcre2",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "The nginx base image is from November 2024; rebuilding it on a supported Alpine is in flight",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2119"
+    },
+    {
+      "id": "CVE-2026-22184",
+      "package": "zlib",
+      "severity": "HIGH",
+      "source": "trivy-os",
+      "reason": "Production runs a March image; the build already made on a newer Alpine has none of these",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111"
+    }
+  ]
+}

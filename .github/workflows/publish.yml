@@ -80,6 +80,54 @@ jobs:
         run: |
           cp package.json package-lock.json apps/${{ matrix.image }}
 
+      # The gate (#2118). The image is built locally and scanned before anything is pushed, because
+      # a critical that reaches the registry can be deployed, and pulling a tag back is not
+      # something this pipeline can do. Only CRITICAL blocks: HIGH is reported daily by
+      # `security-scan.yml`, and blocking on it would stop every publish over findings already
+      # tracked and accepted.
+      #
+      # This job has no checkout - its workspace is the build artifact - so the accepted file and
+      # the checker are fetched into a directory of their own, where they cannot collide with it.
+      - name: Fetch the accepted advisories and the checker
+        uses: actions/checkout@v4
+        with:
+          path: .security-gate
+          sparse-checkout: |
+            .github/security
+            tools/security-findings
+          sparse-checkout-cone-mode: false
+
+      - name: Build the image without pushing it
+        uses: docker/build-push-action@v6
+        with:
+          context: ./apps/${{ matrix.image }}
+          push: false
+          load: true
+          tags: localhost/scan/${{ matrix.image }}:${{ github.sha }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+            GIT_TAG=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            GIT_COMMIT=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+
+      # Pinned, and the same version `security-scan.yml` uses: a gate whose scanner changes under
+      # you reports different things on different days for the same image.
+      - name: Scan it
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:/out" \
+            aquasec/trivy:0.76.1 image --scanners vuln --severity CRITICAL,HIGH \
+            --format json --output /out/gate.json --quiet \
+            "localhost/scan/${{ matrix.image }}:${{ github.sha }}"
+
+      - name: Block a critical that is not accepted
+        run: |
+          node .security-gate/tools/security-findings/check.mjs \
+            --accepted .security-gate/.github/security/accepted-advisories.json \
+            --only-critical \
+            --trivy "gate.json=${{ matrix.image }}"
+
+      # Unchanged, and now reached only by an image that passed the gate. Its layers are already
+      # built and cached by the step above, so this publishes rather than rebuilding.
       - name: Build and push Docker images
         uses: docker/build-push-action@v6
         with:

@@ -9,8 +9,11 @@
 #                       from GISDAY_LOCAL_DIR, and map the app login
 #   install             npm ci into the shared node_modules volume (tamu-js-dev-nm)
 #   api                 build gisday-nest and start it (gisday-api, port 3333), with Redis
-#   web [--site <key>]  start the gisday-angular dev server (gisday-dev, port 4201); with --site, serve it
-#                       as that site on 4201 (gisday-site) and as txgisday.org on 4202
+#   web [--static] [--site <key>]
+#                       start the gisday-angular dev server (gisday-dev, port 4201); with --site, serve it
+#                       as that site on 4201 (gisday-site) and as txgisday.org on 4202. With --static, build
+#                       it once and serve the build from nginx instead, on the same ports; nothing
+#                       recompiles, so run it again after an edit (#2057)
 #   migrate <step>      show, run or revert migrations, or generate <Name>, on gisday-db (docs/gisday-migrations.md)
 #   scrub               rewrite the repository's scrubbed copy from the database now restored
 #   status              list the containers
@@ -138,24 +141,45 @@ SQL
   web)
     # --site serves the app as another site (a key of GISDAY_SITES in libs/gisday/common/src/lib/sites.ts),
     # through a proxy on 4201, the only port the local Auth0 application accepts sign-ins on.
-    site="" port=4201
-    if [ "${2:-}" = --site ]; then
-      site="${3:?usage: web [--site <key>]}" port=4202
+    # --static builds once and serves the build from nginx, for when the dev server never finishes its
+    # first page load (#2057).
+    site="" port=4201 static=""
+    shift
+    while [ $# -gt 0 ]; do
+      case "$1" in
+        --static) static=1; shift ;;
+        --site) site="${2:?usage: web [--static] [--site <key>]}" port=4202; shift 2 ;;
+        *) echo "usage: web [--static] [--site <key>]" >&2; exit 2 ;;
+      esac
+    done
+    if [ -n "$site" ]; then
       grep -q "^  $site: {" libs/gisday/common/src/lib/sites.ts || { echo "No site '$site' in libs/gisday/common/src/lib/sites.ts." >&2; exit 2; }
     fi
     network
-    # Nx records each running task, keyed by process id, in its workspace-data directory. `stop` kills this
-    # container, so its record is never cleared, and every container's Nx gets the same process id. Kept in
-    # the checkout, the record would make the next start wait for itself forever (#1626); kept in the
-    # container, it goes when the container does. The cost is a project graph computed on every start.
-    # UV_THREADPOOL_SIZE: --poll=2000 keeps Node's 4 default file-system threads busy checking the
-    # checkout over the Windows bind mount, and Vite's dependency optimizer then waits behind them for
-    # good, so the first page load never finishes (#1955). 64 threads leave it room.
-    docker run -d --name gisday-dev -m 8g --network "$NET" -p "$port:4201" -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 \
-      -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data \
-      -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w \
-      "$NODE_IMAGE" sh -c "node node_modules/nx/dist/bin/nx.js serve gisday-angular --configuration=local --host 0.0.0.0 --port 4201 --poll=2000"
-    echo "gisday-dev started; the first compile takes several minutes: docker logs -f gisday-dev"
+    if [ -n "$static" ]; then
+      docker run --rm -m 8g -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false \
+        "$NODE_IMAGE" node node_modules/nx/dist/bin/nx.js build gisday-angular --configuration local
+      # Replaced on every run: the build deletes and recreates the folder a running container has mounted.
+      docker rm -f gisday-site gisday-dev >/dev/null 2>&1 || true
+      docker run -d --name gisday-dev --network "$NET" -p "$port:4201" \
+        -v "$REPO/dist/apps/gisday-angular:/site:ro" \
+        -v "$REPO/scripts/gisday-local-static.conf:/etc/nginx/conf.d/default.conf:ro" \
+        nginx:alpine >/dev/null
+      echo "gisday-dev is serving a build of gisday-angular. Nothing recompiles: after an edit, run web --static again."
+    else
+      # Nx records each running task, keyed by process id, in its workspace-data directory. `stop` kills this
+      # container, so its record is never cleared, and every container's Nx gets the same process id. Kept in
+      # the checkout, the record would make the next start wait for itself forever (#1626); kept in the
+      # container, it goes when the container does. The cost is a project graph computed on every start.
+      # UV_THREADPOOL_SIZE: --poll=2000 keeps Node's 4 default file-system threads busy checking the
+      # checkout over the Windows bind mount, and Vite's dependency optimizer then waits behind them for
+      # good, so the first page load never finishes (#1955). 64 threads leave it room.
+      docker run -d --name gisday-dev -m 8g --network "$NET" -p "$port:4201" -e NX_DAEMON=false -e UV_THREADPOOL_SIZE=64 \
+        -e NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data \
+        -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w \
+        "$NODE_IMAGE" sh -c "node node_modules/nx/dist/bin/nx.js serve gisday-angular --configuration=local --host 0.0.0.0 --port 4201 --poll=2000"
+      echo "gisday-dev started; the first compile takes several minutes: docker logs -f gisday-dev"
+    fi
     if [ -n "$site" ]; then
       docker run -d --name gisday-site --network "$NET" -p 4201:4201 -v "$REPO/scripts:/s:ro" \
         "$NODE_IMAGE" node /s/gisday-site-proxy.js "$site" gisday-dev 4201 4201 >/dev/null
@@ -202,7 +226,7 @@ SQL
     ;;
 
   *)
-    sed -n '2,20p' "$0"
+    sed -n '2,23p' "$0"
     exit 2
     ;;
 esac

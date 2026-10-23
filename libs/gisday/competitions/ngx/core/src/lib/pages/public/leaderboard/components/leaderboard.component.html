@@ -10,7 +10,7 @@
     <div class="points">Points</div>
   </div>
   @for (leader of leaders; track leader; let i = $index) {
-  <div class="leader" [ngClass]="{me: (me$ | async) === leader.guid, linkable: userIsManager$ | async}" (click)="navigateToFilteredMap(leader.guid)">
+  <div class="leader" [ngClass]="{me: (me$ | async) === leader.guid, linkable: userIsManager$ | async}" [attr.tabindex]="(userIsManager$ | async) ? 0 : null" [attr.role]="(userIsManager$ | async) ? 'link' : null" (click)="navigateToFilteredMap(leader.guid)" (keydown.enter)="navigateToFilteredMap(leader.guid)">
     <div class="rank">{{i+1}}</div>
     <div class="identity">
       <div>
