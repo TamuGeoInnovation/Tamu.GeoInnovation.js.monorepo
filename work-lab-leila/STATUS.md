@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:18 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **12:24 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,9 +30,11 @@ Last written **12:18 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Batch 32, security: #2154, npm test and npm run coverage** (director: work, its security chat). Started 12:18 PM Central.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 32, security: #2154, npm test and npm run coverage** (12:18 to 12:24 PM, 23 October; director: work, security chat): **`fix/2154-root-test-scripts` `93e031a2a`** pushed. The root `jest.config.ts` is deleted; `test` and `coverage` now run `nx run-many -t test`. Proven on a Jest and a Vitest project, and coverage reports. **The pre-push check ran nothing** (`No tasks were run`), so its exit 0 is not a pass; said plainly in the report. Report `work-lab-leila/reports/2026-10-23-23.md`.
 
 - **Batch 33, security: #2155 again, after the gisday-nest fix** (12:13 to 12:18 PM, 23 October; director: work, security chat): `248d79ab5` as required; `check-in-volume.sh` **exit=0** (lint 104, test 100, build 14; `gisday-nest` builds now). `gisday-angular`'s production build has no mail code (`build=0`, grep empty). Report `work-lab-leila/reports/2026-10-23-22.md`.
 
@@ -160,4 +162,4 @@ Last written **12:18 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 33 (31 not pushed; see its report)
+Last batch done: 33, and 32 (31 not pushed; see its report)
