@@ -77,6 +77,26 @@ install the front ends' dependencies. Each came from measuring something the bat
 so plainly. Keep doing that.
 
 
+## Batch 21 (security: the full pre-push check for #2112's second round; 23 October 2026, 10:05 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 20.**
+**Expected: about 10 minutes**, a full `affected` check.
+
+A lock-only security update (`npm audit fix --package-lock-only`) on top of PR 2129, plus a paragraph in `CLAUDE.md`. Do
+exactly these steps, in order, from Git Bash. Change nothing.
+
+1. `git fetch fork security/check-2112b`
+2. `git rev-parse fork/security/check-2112b` must print **`7530277554da08e82f894427e28d8622d61e74ee`**. If not, stop and report it.
+3. `git worktree add C:/TAMU/wt-check-2112b fork/security/check-2112b --detach`, then in that folder `git switch -c security/check-2112b`
+4. In that folder: `scripts/check-in-volume.sh security/check-2112b > ../check-2112b.out 2>&1; echo "exit=$?"`
+   The full `affected` check, with a clean `npm ci`. No project list.
+5. Report the exit code, and every log line containing `Successfully ran target` or `failed`. For a failed test, its name
+   and message. If the only failure is one test in `ui-kits-ngx-forms` (#1898), run
+   `scripts/check-in-volume.sh security/check-2112b ui-kits-ngx-forms` once and report that exit code too.
+6. `git worktree remove C:/TAMU/wt-check-2112b --force`, then `git branch -D security/check-2112b`.
+
+Nothing else: no pushes, no pull request, no comments. Report in `work-lab-leila/reports/` and say "work-lab-leila: finished batch 21".
+
 ## Batch 20 (security: the pre-push check and a scan for #2119, the front ends on the new nginx-base; 23 October 2026, 9:45 AM Central, from `work (security)`)
 
 **Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.**
