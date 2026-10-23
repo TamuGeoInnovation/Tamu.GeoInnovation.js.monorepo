@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **10:06 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **10:09 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **10:06 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 10:26 AM Central.**
-
-**Batch 21 again, on its new head `b94d3985e`** (director: work, its security chat; updated 10:20 AM). Started 10:06 AM Central, 23 October. The first run, at 9:51 on the old head `753027755`, passed (report `2026-10-23-9.md`); the batch now names a new head, so it is run again from the start.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 21 again, on its new head** (10:06 to 10:09 AM, 23 October; director: work, security chat): `fork/security/check-2112b` at `b94d3985e` as required; `check-in-volume.sh` **exit=0**: lint 113, test 106, build 14, nothing from the cache, no failures. No `npm ci`, because the lock is byte-identical to the 9:51 run's. Report `work-lab-leila/reports/2026-10-23-11.md`.
 
 - **Batch 19 (aggiemap): #2134 and #2144** (10:01 to 10:04 AM, 23 October; director: work, AggieMap chat). On the fork: **`ci/2134-publish-yml-quoting` `3b1bd31d4`** (actionlint: 4 SC2086 before, exit 0 and none after) and **`fix/2144-baseline-commit-from-worktree` `aed8a072a`** (a worktree's `gitdir:` is followed, and a missing commit is printed and recorded with its reason; tests red then green, 14 of 14). No pull requests. Report `work-lab-leila/reports/2026-10-23-10.md`.
 
