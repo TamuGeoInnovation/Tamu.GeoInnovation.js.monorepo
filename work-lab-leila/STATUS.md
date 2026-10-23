@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:24 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **12:39 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **12:24 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 1:24 PM Central.**
+
+**Batch 34, security: #2117 part 1, npm out of the API images** (director: work, its security chat). Started 12:39 PM Central, 23 October. Then batch 35 (#2117 part 2) and batch 36 (Nx 24).
 
 ## Finished
 
