@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 55.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 57.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,48 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 55 (security: review Dependabot's GitHub Actions majors, PR 2186 / #2200 - read-only; 23 October 2026, 3:10 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 53.** **Expected: about 45 minutes.** **Push nothing.** The maintainer's decision: take these eight majors after
+a lab review of each one's breaking changes against how **our** workflows use it.
+
+| Action | From → to |
+| --- | --- |
+| `actions/checkout` | 4 → 7 |
+| `actions/setup-node` | 4 → 7 |
+| `actions/cache` | 4 → 6 |
+| `actions/upload-artifact` | 4 → 7 |
+| `actions/download-artifact` | 4 → 8 |
+| `docker/metadata-action` | 5 → 6 |
+| `docker/build-push-action` | 6 → 7 |
+| `dorny/test-reporter` | 2 → 3 |
+
+For each: read its release notes for every major between the two (each repository's `releases` page or `CHANGELOG`), list the breaking
+changes, and for each one say whether our workflows are affected, citing the file and line (`git grep -n "uses: <action>@" .github/workflows`,
+then the `with:` it is given). Pay attention to: `upload-artifact`/`download-artifact` (artifact name, merge-multiple, path and hidden-file
+behaviour: `build.yml` uploads `dist/` and `publish.yml` downloads it; `security-scan.yml` uploads its scan); `checkout` (credential persistence,
+`sparse-checkout` as `publish.yml`'s gate uses it); `setup-node` (cache defaults, the Node version input); `metadata-action` (tag and label
+output format, `fromJSON(steps.meta.outputs.json).labels[...]` in `publish.yml`); `build-push-action` (load/push, `labels`, build args);
+`test-reporter` (inputs `test.yml` and others pass); and the **Node runtime** each action needs on the runner.
+**Answer:** mergeable as it is, mergeable with a named follow-up change, or not, with the reason. Also check PR 2186's own CI result
+(`gh` is not available to you, so read the PR's checks on github.com in the built-in browser if you can, or say you could not).
+
+## Batch 56 (security: #2201 - mailroom-nest parses TYPEORM_EXTRA; a small code job and a branch; 23 October 2026, 3:10 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 55.** **Expected: about 30 minutes.** Your batch 49 report's question 2, decided by the maintainer: **(a)**, an issue
+(#2201, Low) and the fix.
+
+1. `git worktree add C:/TAMU/wt-2201 -b fix/2201-mailroom-typeorm-extra origin/development`.
+2. In `apps/mailroom-nest/src/environments/*.ts`, parse `TYPEORM_EXTRA` the way `gisday-nest` already does (read its environment files and
+   copy the pattern, so the two stay alike): JSON when set, nothing when empty or absent. Add a unit test that a JSON value reaches the
+   TypeORM options as an object, and that an empty one does not break start-up; prove it red on the unfixed code first.
+3. Prove it as batch 49 did: `mailroom-nest` against a throwaway SQL Server with a self-signed certificate, `TYPEORM_EXTRA` set to
+   `{"trustServerCertificate": true}`, **with no preload**: it starts and `GET /all` answers. Then without `TYPEORM_EXTRA`: it refuses the
+   certificate, as before.
+4. `scripts/check-in-volume.sh fix/2201-mailroom-typeorm-extra mailroom-nest,mailroom-data-api` (a bug fix: the projects it edits).
+   Commit (`fix(mailroom-nest): Parse TYPEORM_EXTRA, so its driver options reach the driver`, a body, `Closes #2201`, the Co-Authored-By
+   line) and push if all passed.
 
 ## Batch 54 (gisday: #2196, the local restore runs the migrations; 23 October 2026, 3:05 PM Central, from `work (gisday)`)
 
