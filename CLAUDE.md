@@ -165,6 +165,12 @@ regenerating a lock, run the branch's lock-only update again (for example `npm a
 and compare the versions it was meant to change, or `npm audit --package-lock-only`, against the branch's
 own last commit before pushing.
 
+**Dependabot opens weekly grouped pull requests into `development`** (`.github/dependabot.yml`, Mondays at
+6 AM Central: one per family for npm, one for the API images, one for Actions; #2138). Each is a dependency
+change like any other: file its issue, run the full check with a clean `npm ci`, and follow the lock rules
+above. **A major-version pull request is the maintainer's decision**, not something merged on a green check
+alone.
+
 **Files are LF, and `.gitattributes` will not fix a mistake for you.** It sets `* -text`, which
 turns git's end-of-line normalization off for every file: git stores the bytes it is given, and
 `core.autocrlf` has no effect however a machine is configured. Endings are per-file and permanent

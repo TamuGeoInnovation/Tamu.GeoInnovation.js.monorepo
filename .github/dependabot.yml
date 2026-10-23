@@ -1,0 +1,124 @@
+# Weekly version updates (#2138). Security updates are separate and stay at GitHub's default (on).
+#
+# Every pull request targets development, the trunk; never master. Each one is handled like any dependency change
+# (CLAUDE.md): its own issue, the full check with a clean npm ci, and the lock rule. A major version is the
+# maintainer's decision, not merged on a green check alone.
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    target-branch: development
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: America/Chicago
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore(deps)
+    # One pull request per family, so a week brings a few rather than dozens. A package joins the first group that
+    # matches it. The named families keep their majors in their group, because their packages move together;
+    # everything-else takes minor and patch only, so each other major arrives as a pull request of its own.
+    groups:
+      angular:
+        patterns:
+          - '@angular/*'
+          - '@angular-eslint/*'
+          - angular-eslint
+      nx:
+        patterns:
+          - nx
+          - '@nx/*'
+      nestjs:
+        patterns:
+          - '@nestjs/*'
+      arcgis:
+        patterns:
+          - '@arcgis/*'
+          - '@esri/*'
+      testing:
+        patterns:
+          - 'jest*'
+          - '@jest/*'
+          - 'vitest*'
+          - '@vitest/*'
+          - '@playwright/*'
+          - '@testing-library/*'
+      lint:
+        patterns:
+          - 'eslint*'
+          - '@eslint/*'
+          - typescript-eslint
+          - '@typescript-eslint/*'
+          - prettier
+      everything-else:
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
+
+  # The four API images (node:24.22.1 and node:24.22.1-alpine), in one pull request.
+  - package-ecosystem: docker
+    directories:
+      - /apps/gisday-nest/src
+      - /apps/geoservices-nest/src
+      - /apps/mailroom-nest/src
+      - /apps/mailroom-helper-nest/src
+    target-branch: development
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: America/Chicago
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore(deps)
+    groups:
+      api-images:
+        patterns:
+          - '*'
+
+  # The four front ends. Their FROM is the pinned nginx-base:sha-... tag, and Dependabot finds no newer sha- tags, which
+  # is expected; they are listed so a later move to version tags is covered.
+  - package-ecosystem: docker
+    directories:
+      - /apps/aggiemap-angular/src
+      - /apps/gisday-angular/src
+      - /apps/geoservices-angular/src
+      - /apps/mailroom-angular/src
+    target-branch: development
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: America/Chicago
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore(deps)
+    groups:
+      front-end-images:
+        patterns:
+          - '*'
+
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: development
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: America/Chicago
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore(deps)
+    groups:
+      actions:
+        patterns:
+          - '*'
