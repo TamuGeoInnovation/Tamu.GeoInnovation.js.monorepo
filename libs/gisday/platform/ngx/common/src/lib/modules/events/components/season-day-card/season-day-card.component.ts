@@ -30,6 +30,12 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
    */
   public readonly organizations = input<Array<string>>([]);
 
+  /**
+   * The places whose events the site lists at all, whatever the filters, or null for every place. Texas A&M's site
+   * lists only Texas A&M's sessions (#2142).
+   */
+  public readonly onlyFrom = input<Array<string> | null>(null);
+
   public readonly rsvps = input<Array<string>>([]);
 
   /**
@@ -55,15 +61,24 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
    */
   private _activeOrgFilters: BehaviorSubject<Array<string>> = new BehaviorSubject<Array<string>>([]);
 
+  /**
+   * Observable that gets pushed the input `onlyFrom` on changes.
+   */
+  private _onlyFrom: BehaviorSubject<Array<string> | null> = new BehaviorSubject<Array<string> | null>(null);
+
   private _activeRsvpsForDay: ReplaySubject<Array<string>> = new ReplaySubject<Array<string>>();
 
   public ngOnInit(): void {
     this.events$ = this.sd.getDayEvents(this.seasonDay().guid).pipe(shareReplay());
 
-    this.filteredEvents$ = combineLatest([this._activeTagFilters, this._activeOrgFilters]).pipe(
+    this.filteredEvents$ = combineLatest([this._activeTagFilters, this._activeOrgFilters, this._onlyFrom]).pipe(
       withLatestFrom(this.events$),
-      map(([[tags, orgs], events]) => {
+      map(([[tags, orgs, onlyFrom], events]) => {
         return events.filter((simplifiedEvent) => {
+          if (onlyFrom !== null && !simplifiedEvent.organizations?.some((place) => onlyFrom.includes(place))) {
+            return false;
+          }
+
           const hasTags = this._hasFilterIdentity(simplifiedEvent.tags, tags);
           const hasOrgs = this._hasFilterIdentity(simplifiedEvent.organizations, orgs);
 
@@ -105,6 +120,10 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
 
     if (changes.organizations && changes.organizations.currentValue !== null) {
       this._activeOrgFilters.next(changes.organizations.currentValue);
+    }
+
+    if (changes.onlyFrom) {
+      this._onlyFrom.next(changes.onlyFrom.currentValue ?? null);
     }
 
     if (changes.rsvps && changes.rsvps.currentValue !== null) {
