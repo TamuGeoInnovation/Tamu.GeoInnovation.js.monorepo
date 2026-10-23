@@ -1,5 +1,6 @@
 @if (imageExists$ | async) {
-<img class="image" presenter="presenter" [src]="avatarImageUrl$ | async" />
+<!-- Every caller shows the name beside the avatar, so the photo adds nothing for a screen reader. -->
+<img class="image" presenter="presenter" [src]="avatarImageUrl$ | async" alt="" />
 } @else {
 <div class="image default">
   @if (fallbackStyle() === 'initials') {

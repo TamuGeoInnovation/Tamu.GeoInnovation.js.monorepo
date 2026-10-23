@@ -39,8 +39,8 @@
           <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
         </div>
         <div class="selected-actions">
-          <p class="selected-action" (click)="promptCopyModal('University', null, 'Universities')">Copy <span class="material-icons action">content_copy</span></p>
-          <p class="selected-action caution" (click)="promptDeleteModal('University', null, 'Universities')">Delete <span class="material-icons action">delete_forever</span></p>
+          <p class="selected-action" (click)="promptCopyModal('University', null, 'Universities')" tabindex="0" role="button" (keydown.enter)="promptCopyModal('University', null, 'Universities')" (keydown.space)="promptCopyModal('University', null, 'Universities'); $event.preventDefault()">Copy <span class="material-icons action">content_copy</span></p>
+          <p class="selected-action caution" (click)="promptDeleteModal('University', null, 'Universities')" tabindex="0" role="button" (keydown.enter)="promptDeleteModal('University', null, 'Universities')" (keydown.space)="promptDeleteModal('University', null, 'Universities'); $event.preventDefault()">Delete <span class="material-icons action">delete_forever</span></p>
         </div>
       </div>
       } }

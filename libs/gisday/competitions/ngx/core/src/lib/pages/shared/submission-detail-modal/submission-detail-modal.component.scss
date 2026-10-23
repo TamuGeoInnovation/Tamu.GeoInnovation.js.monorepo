@@ -8,7 +8,8 @@
   display: flex;
   margin-bottom: 0.15rem;
 
-  label {
+  // Not <label>: these name the values beside them, not form controls.
+  strong {
     margin-right: 0.5rem;
     font-weight: 600;
   }

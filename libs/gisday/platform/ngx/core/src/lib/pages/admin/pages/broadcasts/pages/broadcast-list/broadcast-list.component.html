@@ -40,8 +40,8 @@
           <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
         </div>
         <div class="selected-actions">
-          <p class="selected-action" (click)="promptCopyModal('Event Broadcast')">Copy <span class="material-icons action">content_copy</span></p>
-          <p class="selected-action caution" (click)="promptDeleteModal('Event Broadcast')">Delete <span class="material-icons action">delete_forever</span></p>
+          <p class="selected-action" (click)="promptCopyModal('Event Broadcast')" tabindex="0" role="button" (keydown.enter)="promptCopyModal('Event Broadcast')" (keydown.space)="promptCopyModal('Event Broadcast'); $event.preventDefault()">Copy <span class="material-icons action">content_copy</span></p>
+          <p class="selected-action caution" (click)="promptDeleteModal('Event Broadcast')" tabindex="0" role="button" (keydown.enter)="promptDeleteModal('Event Broadcast')" (keydown.space)="promptDeleteModal('Event Broadcast'); $event.preventDefault()">Delete <span class="material-icons action">delete_forever</span></p>
         </div>
       </div>
       } }

@@ -7,51 +7,51 @@
       <div id="sponsor-opportunities"></div>
 
       <div id="swappable-content-container" class="column12 flex flex-row justify-center content-block ends">
-        <div class="swap-content-toggle plaque" rank="point" (click)="changeRank('point')">
+        <div class="swap-content-toggle plaque" rank="point" (click)="changeRank('point')" tabindex="0" role="button" (keydown.enter)="changeRank('point')" (keydown.space)="changeRank('point'); $event.preventDefault()">
           <h2>Point</h2>
           <div class="border"></div>
-          <img src="../assets/images/icons/location.svg" class="default" />
-          <img src="../assets/images/icons/location-color.svg" class="active" />
+          <img src="../assets/images/icons/location.svg" class="default" alt="" />
+          <img src="../assets/images/icons/location-color.svg" class="active" alt="" />
           <br />
           <p class="point">$256</p>
           <p>1 {{ isMobile() ? 'rep' : 'representative' }}</p>
           <p class="cta">View perks</p>
         </div>
-        <div class="swap-content-toggle plaque active" rank="line" (click)="changeRank('line')">
+        <div class="swap-content-toggle plaque active" rank="line" (click)="changeRank('line')" tabindex="0" role="button" (keydown.enter)="changeRank('line')" (keydown.space)="changeRank('line'); $event.preventDefault()">
           <h2>Line</h2>
           <div class="border"></div>
-          <img src="../assets/images/icons/connection.svg" class="default" />
-          <img src="../assets/images/icons/connection-color.svg" class="active" />
+          <img src="../assets/images/icons/connection.svg" class="default" alt="" />
+          <img src="../assets/images/icons/connection-color.svg" class="active" alt="" />
           <br />
           <p class="line">$512</p>
           <p>2 {{ isMobile() ? 'reps' : 'representatives' }}</p>
           <p class="cta">View perks</p>
         </div>
-        <div class="swap-content-toggle plaque active" rank="polygon" (click)="changeRank('polygon')">
+        <div class="swap-content-toggle plaque active" rank="polygon" (click)="changeRank('polygon')" tabindex="0" role="button" (keydown.enter)="changeRank('polygon')" (keydown.space)="changeRank('polygon'); $event.preventDefault()">
           <h2>Polygon</h2>
           <div class="border"></div>
-          <img src="../assets/images/icons/polygon.svg" class="default" />
-          <img src="../assets/images/icons/polygon-color.svg" class="active" />
+          <img src="../assets/images/icons/polygon.svg" class="default" alt="" />
+          <img src="../assets/images/icons/polygon-color.svg" class="active" alt="" />
           <br />
           <p class="poly">$1,024</p>
           <p>3 {{ isMobile() ? 'reps' : 'representatives' }}</p>
           <p class="cta">View Perks</p>
         </div>
-        <div class="swap-content-toggle plaque active" rank="raster" (click)="changeRank('raster')">
+        <div class="swap-content-toggle plaque active" rank="raster" (click)="changeRank('raster')" tabindex="0" role="button" (keydown.enter)="changeRank('raster')" (keydown.space)="changeRank('raster'); $event.preventDefault()">
           <h2>Raster</h2>
           <div class="border"></div>
-          <img src="../assets/images/icons/grid.svg" class="default" />
-          <img src="../assets/images/icons/grid-color.svg" class="active" />
+          <img src="../assets/images/icons/grid.svg" class="default" alt="" />
+          <img src="../assets/images/icons/grid-color.svg" class="active" alt="" />
           <br />
           <p class="raster">$2,048</p>
           <p>4 {{ isMobile() ? 'reps' : 'representatives' }}</p>
           <p class="cta">View Perks</p>
         </div>
-        <div class="swap-content-toggle plaque active" rank="lidar" (click)="changeRank('lidar')">
+        <div class="swap-content-toggle plaque active" rank="lidar" (click)="changeRank('lidar')" tabindex="0" role="button" (keydown.enter)="changeRank('lidar')" (keydown.space)="changeRank('lidar'); $event.preventDefault()">
           <h2>LiDAR</h2>
           <div class="border"></div>
-          <img src="../assets/images/icons/lidar.svg" class="default" />
-          <img src="../assets/images/icons/lidar-color.svg" class="active" />
+          <img src="../assets/images/icons/lidar.svg" class="default" alt="" />
+          <img src="../assets/images/icons/lidar-color.svg" class="active" alt="" />
           <br />
           <p class="lidar">$4,096</p>
           <p>6 {{ isMobile() ? 'reps' : 'representatives' }}</p>

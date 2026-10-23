@@ -4,7 +4,7 @@
       <div class="form-section-title">Seasons</div>
 
       <div class="form-section-actions">
-        <a (click)="createSeason()">Add season <span class="material-icons action">add</span></a>
+        <a (click)="createSeason()" tabindex="0" role="button" (keydown.enter)="createSeason()" (keydown.space)="createSeason(); $event.preventDefault()">Add season <span class="material-icons action">add</span></a>
       </div>
     </div>
 

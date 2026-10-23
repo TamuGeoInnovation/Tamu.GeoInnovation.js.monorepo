@@ -12,7 +12,7 @@
       <!-- The day tiles wrap onto more rows on a phone (#1998). -->
       <div class="form-collection row flex wrap">
         @for (day of activeSeasonDays$ | async; track day; let last = $last) {
-        <tamu-gisc-seasons-day-tile [interactive]="false" [day]="day" (click)="setEventDate(day)" [ngClass]="{selected: (selectedEventDate$ | async) === day.guid}"></tamu-gisc-seasons-day-tile>
+        <tamu-gisc-seasons-day-tile [interactive]="false" [day]="day" tabindex="0" role="button" [attr.aria-pressed]="(selectedEventDate$ | async) === day.guid" (click)="setEventDate(day)" (keydown.enter)="setEventDate(day)" (keydown.space)="setEventDate(day); $event.preventDefault()" [ngClass]="{selected: (selectedEventDate$ | async) === day.guid}"></tamu-gisc-seasons-day-tile>
         }
       </div>
 
@@ -96,7 +96,7 @@
         @if ((speakers$ | async)?.length > 0) { @if (speakers$ | async; as speakers) {
         <tamu-gisc-select-list placeholder="Search speakers..." [options]="speakers" [rowTemplate]="speakerListRowTemplate">
           <ng-template #speakerListRowTemplate let-speaker>
-            <tamu-gisc-presenter-card [speaker]="speaker" [linkable]="false" (click)="patchSpeaker(speaker)"></tamu-gisc-presenter-card>
+            <tamu-gisc-presenter-card [speaker]="speaker" [linkable]="false" tabindex="0" role="button" (click)="patchSpeaker(speaker)" (keydown.enter)="patchSpeaker(speaker)" (keydown.space)="patchSpeaker(speaker); $event.preventDefault()"></tamu-gisc-presenter-card>
           </ng-template>
         </tamu-gisc-select-list>
         <div class="flex flex-row wrap">

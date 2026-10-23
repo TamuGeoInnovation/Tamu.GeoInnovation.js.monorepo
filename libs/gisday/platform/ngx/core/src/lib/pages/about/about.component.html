@@ -79,18 +79,18 @@
       </div>
 
       <div id="swappable-content-container" class="column12 flex flex-row justify-center content-block ends">
-        <div class="swap-content-toggle plaque" rank="volunteer" (click)="makeActive('volunteer')">
+        <div class="swap-content-toggle plaque" rank="volunteer" (click)="makeActive('volunteer')" tabindex="0" role="button" (keydown.enter)="makeActive('volunteer')" (keydown.space)="makeActive('volunteer'); $event.preventDefault()">
           <h2>Event Volunteer</h2>
           <div class="border"></div>
-          <img src="../assets/images/icons/volunteer.svg" class="default" />
-          <img src="../assets/images/icons/volunteer-color.svg" class="active" />
+          <img src="../assets/images/icons/volunteer.svg" class="default" alt="" />
+          <img src="../assets/images/icons/volunteer-color.svg" class="active" alt="" />
           <p class="cta">More Details</p>
         </div>
-        <div class="swap-content-toggle plaque active" rank="ambassador" (click)="makeActive('ambassador')">
+        <div class="swap-content-toggle plaque active" rank="ambassador" (click)="makeActive('ambassador')" tabindex="0" role="button" (keydown.enter)="makeActive('ambassador')" (keydown.space)="makeActive('ambassador'); $event.preventDefault()">
           <h2>Student Ambassador</h2>
           <div class="border"></div>
-          <img src="assets/images/icons/deal.svg" class="default" />
-          <img src="assets/images/icons/deal-color.svg" class="active" />
+          <img src="assets/images/icons/deal.svg" class="default" alt="" />
+          <img src="assets/images/icons/deal-color.svg" class="active" alt="" />
           <p class="cta">More Details</p>
         </div>
       </div>
