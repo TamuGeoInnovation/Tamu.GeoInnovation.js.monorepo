@@ -111,7 +111,7 @@ export class ExportProcessor {
         }
 
         // Parse form values and build CSV row
-        let formValues = {};
+        let formValues: object;
 
         try {
           formValues = typeof submission.value === 'string' ? JSON.parse(submission.value) : submission.value || {};
