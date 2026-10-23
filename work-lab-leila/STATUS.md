@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:23 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **2:41 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,9 +30,9 @@ Last written **2:23 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 3:01 PM Central.**
+**Next update by 3:15 PM Central.**
 
-**Batch 49, security: typeorm 1 and mssql 12** (a code job and a branch, about 2 hours), started 2:21 PM Central, in `C:/TAMU/wt-typeorm1` (`chore/1218-typeorm-1`, on `chore/1218-eslint-10`).
+**Batch 49, security: typeorm 1 and mssql 12** (a code job and a branch, about 2 hours), started 2:21 PM Central, in `C:/TAMU/wt-typeorm1` (`chore/1218-typeorm-1`, on `chore/1218-eslint-10`). Steps 2 to 4 done (code converted, 0 new type errors, 18 GIS Day reads and mailroom identical to development against a throwaway SQL Server). Per the 2:45 PM note: `origin/development` merged in (only the lock conflicted), the apps' `mssql` moved to ^12.7.11; the full check is running again, since 2:41 PM. Then 50 and 51.
 
 ## Finished
 
