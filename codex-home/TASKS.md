@@ -1,5 +1,64 @@
 # codex-home: current tasks
 
+## Batch 6 (workspace: #2144, a capture from a worktree silently records no commit; 23 October 2026, 9:05 AM Central, from `work (aggiemap)`)
+
+**After batch 5.** A small code job with unit tests, which is your remit. **A branch for me to turn into a
+pull request; no PR from you.** Perhaps an hour.
+
+[#2144](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2144) (Medium). Read the
+issue first - it has the mechanism and the evidence. In short:
+`tools/visual-baselines/capture.mjs:207` records the commit a release tag names, and **run from a git
+worktree it records `null` and says nothing**, because a worktree's `.git` is a file pointing at a gitdir
+outside the container's mount, `git rev-parse` fails, and the `catch` swallows it.
+
+### What to change
+
+**1. Find the commit wherever the capture runs.** When `.git` is a file, read its `gitdir:` line and use
+that. If the resolved path is not reachable (the usual case in a container that mounts only the worktree),
+fall back to anything else that works - but do not pretend.
+
+**2. Stop it being silent.** A set without a commit is better than no set, so this need not exit non-zero.
+But the run must **say so plainly at the end**, in the same place it prints `release ...`, and the manifest
+must record *why* rather than only `null`.
+
+That second half is the point of the issue. The first is a convenience; the second is what stops a capture
+quietly losing its one identifying fact.
+
+### What not to change
+
+- **Do not make a missing commit fatal.** Someone mid-release with a captured set and no commit is better
+  off than someone with no set.
+- **Do not touch the capture, comparison or output layout.** This is about one field.
+- **Do not add a README line instead of the code change.** It is welcome *as well*, but on its own it leaves
+  the trap for everyone who does not read it first.
+
+### Tests
+
+`tools/` suites run under `tools-tests.yml` (`node --test 'tools/**/*.test.mjs'`), no network, no Docker. Add
+`tools/visual-baselines/*.test.mjs` covering:
+
+- a directory whose `.git` is a **file** with a `gitdir:` line pointing at a real gitdir - the commit is found;
+- a directory whose `.git` is a **directory** - still works, so this does not regress the main checkout;
+- `.git` missing or the gitdir unreachable - **the loud message is produced**, and the manifest field says why.
+
+**Prove the third red first:** write it, run it against the unchanged code, and confirm it fails because
+nothing is reported. Put that output in your report. A test for "it tells you" that was never seen to fail is
+not evidence it tells you.
+
+### Then
+
+- Branch `fix/2144-baseline-commit-from-worktree` from the latest `origin/development`, pushed to the fork.
+  Commit ends `Closes #2144`.
+- Report in `codex-home/reports/<date>-<n>.md`: the red output, the green output, and what the run prints
+  when the commit cannot be found.
+
+### Why it is worth an hour
+
+AggieMap baselines exist to be a **"before"**, captured as step 8 of the release sequence so a change that
+moves every map's symbology can be compared against the build before it. A set with no commit is a "before"
+for nothing - and the mistake is invisible on the day, surfacing months later when somebody reaches for the
+comparison. **A "before" cannot be retaken.**
+
 ## Batch 5 (workspace: #2134, quote four shell variables in publish.yml; 23 October 2026, 8:45 AM Central, from `work (aggiemap)`)
 
 **Small and well defined. Maybe twenty minutes.** A branch for me to turn into a pull request; no PR from you.
