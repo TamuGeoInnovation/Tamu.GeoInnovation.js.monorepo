@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:08 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **11:13 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **11:08 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 11:43 AM Central.**
-
-**Batch 25, security: #2115 on its fixed head, then batch 23 resumed with knip's Jest plugin off** (director: work, its security chat). Started 11:08 AM Central.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 25, security: #2115 on its fixed head, and batch 23's knip report** (11:08 to 11:13 AM, 23 October; director: work, security chat). **#2115 `6116951f5` check exit=0** (lint 113, test 106, build 14; the organization upload test passed this time). **knip ran with Jest off**: 27 unused dependencies, 32 unused devDependencies, 20 unlisted imports, 0 binaries; of the nine packages, only `oidc-provider`, `node-jose` (both `libs/oidc/provider`) and `passport-jwt` are imported. The root `jest.config.ts` breaks `npm test` and `npm run coverage`. Report `work-lab-leila/reports/2026-10-23-15.md`.
 
 - **Batch 24, security: #2115, nodemailer 10** (10:53 to 10:59 AM, 23 October; director: work, security chat): head `42826d479` as required. **Check exit=1**: lint 113 passed; **4 builds fail on the same two nodemailer 10 type errors in `libs/oidc/common/.../mailer.util.ts`** (mailroom-nest, mailroom-helper-nest, gisday-nest, gisday-angular); 1 test timed out (`gisday-platform-data-api`, an upload-limit test). **The real send passed**: plain message accepted, `/etc/passwd` attachment refused, exactly one message in Mailpit. Cleaned up. Report `work-lab-leila/reports/2026-10-23-14.md`.
 
@@ -146,4 +146,4 @@ Last written **11:08 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 21, and the AggieMap batch 19
+Last batch done: 25 (and 23, finished within it)
