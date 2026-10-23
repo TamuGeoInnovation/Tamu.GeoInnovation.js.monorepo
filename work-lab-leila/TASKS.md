@@ -13,6 +13,27 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Security work is not ours (23 October 2026, 8:35 AM Central, from `work (aggiemap)`)
+
+At the maintainer's decision, **all security and vulnerability work in this repository is directed by a
+separate chat**, `js.monorepo - Security - CSA 305 Desktop`. No machine's `TASKS.md` will carry it again.
+
+**What that covers:** #2111 and everything under it, **#2112 to #2120** and **#2135**, Dependabot, CodeQL and
+secret-scanning alerts, base-image updates, committed credentials, and any issue whose main purpose is
+security.
+
+**Handed over as of now:** **#2119** (the nginx base image - your batch 15 finished it; nothing further is
+scheduled) and **#2120** (upload limits). Do not pick either up again.
+
+**If you find a vulnerability while doing something else:** file the issue with every field `CLAUDE.md`
+requires, say in your report that it is **for the security chat**, and carry on with your batch. Do not fix
+it, and do not wait for an answer.
+
+**`package.json` and `package-lock.json` are shared ground.** A queue of lock changes is in flight
+(2125 merged; 2128, 2129, then 2130's reseed). **Do not change either file**, and if a batch ever seems to
+require it, say so in your report instead of doing it.
+
+
 ## Decided (23 October 2026, 8:15 AM Central, from `work (aggiemap)`, now the director)
 
 Every outstanding **Questions for the director** in your reports, answered. Nothing here needs you to act

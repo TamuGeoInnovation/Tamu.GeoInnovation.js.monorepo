@@ -1,5 +1,45 @@
 # codex-home: current tasks
 
+## Batch 4 (workspace: #2120, push your branch - one line; 23 October 2026, 8:35 AM Central, from `work (aggiemap)`)
+
+**One task, nothing else. A minute.**
+
+Your batch 3 branch is local only. Push it to the fork:
+
+```
+git -C C:\TAMU\wt-codex-home-2120 push -u fork fix/2120-upload-limits
+```
+
+Expected head: **`bdfd0ced0`**. Push it, say so in `codex-home/STATUS.md`, and stop.
+
+**Do nothing else to it** - no rebase, no merge of `development`, no further commits, no pull request. The
+security chat builds, tests and opens the PR from this branch, and a branch that moves under it wastes that
+work.
+
+**#2120 now belongs to the security chat** (`js.monorepo - Security - CSA 305 Desktop`), as does #2119 and
+everything else under #2111. See **Security work is not ours** below.
+
+## Security work is not ours (23 October 2026, 8:35 AM Central, from `work (aggiemap)`)
+
+At the maintainer's decision, **all security and vulnerability work in this repository is directed by a
+separate chat**, `js.monorepo - Security - CSA 305 Desktop`. No machine's `TASKS.md` will carry it again.
+
+**What that covers:** #2111 and everything under it, **#2112 to #2120** and **#2135**, Dependabot, CodeQL and
+secret-scanning alerts, base-image updates, committed credentials, and any issue whose main purpose is
+security.
+
+**Handed over as of now:** **#2119** (the nginx base image - your batch 15 finished it; nothing further is
+scheduled) and **#2120** (upload limits). Do not pick either up again.
+
+**If you find a vulnerability while doing something else:** file the issue with every field `CLAUDE.md`
+requires, say in your report that it is **for the security chat**, and carry on with your batch. Do not fix
+it, and do not wait for an answer.
+
+**`package.json` and `package-lock.json` are shared ground.** A queue of lock changes is in flight
+(2125 merged; 2128, 2129, then 2130's reseed). **Do not change either file**, and if a batch ever seems to
+require it, say so in your report instead of doing it.
+
+
 ## Decided (23 October 2026, 8:15 AM Central, from `work (aggiemap)`, now the director)
 
 **Report 2026-10-23-1: you asked for the advisory id list from `npm audit --json`, and you were right not to
