@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:13 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **11:21 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **11:13 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Idle, watching the branch for the next batch.
+**Next update by 11:41 AM Central.**
+
+**Batch 26, security: #2122, the first eleven unused dependencies removed** (director: work, its security chat). Started 11:21 AM Central, 23 October. Full `affected` check of `security/check-2122`.
 
 ## Finished
 
