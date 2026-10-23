@@ -41,6 +41,11 @@ them. Each branch from the latest `origin/development`, its own worktree, one co
    release-notes file in `docs/releases/unreleased/` (`2111-swiper-14.md`, the one-file format) with its What to test on dev
    row. If either popup looks or behaves differently, say how.
 
+**Issues, filed by home (7:00 AM):** task 1 is **#2112**, task 2 **#2113**, task 3 **#2114** (all High). Name the branches
+`fix/2112-in-range-security-updates`, `fix/2113-class-validator-0.15` and `fix/2114-swiper-14`, end each commit message
+with `Closes #<that issue>`, and name the release-notes file `2114-swiper-14.md` (screenshots in
+`docs/screenshots/2114-swiper-14/`).
+
 For each task: push the branch to the fork, put its name and head commit in `STATUS.md`, and post one line on #2111. Report in
 `work-lab-leila/reports/2026-10-23-3.md`.
 
