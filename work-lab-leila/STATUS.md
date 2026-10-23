@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:35 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **9:39 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **9:35 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 10:10 AM Central.**
-
-**Batch 19, security: the full pre-push check for 2129** (director: work, its security chat). Started 9:35 AM Central, 23 October, **late**: batch 19 was written at 9:25 AM, but this session's mailbox watcher stopped when the desktop app restarted, and nothing here saw it until the maintainer asked. Full `affected` check of `security/check-2129`.
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 19, security: the full pre-push check for 2129** (9:35 to 9:39 AM, 23 October, 10 minutes late; director: work, security chat): `fork/security/check-2129` at `1568148d8` as required; `check-in-volume.sh` **exit=0**: clean `npm ci`, lint 113, test 106, build 14, nothing from the cache, no failures. Worktree removed, volume left. Report `work-lab-leila/reports/2026-10-23-7.md`.
 
 - **Batch 18, security: the pre-push check for #2136** (8:43 to 8:45 AM, 23 October; director: work, security chat): `fix/2136-pin-nginx-base` at `f0ce79757`, `check-in-volume.sh` for the four front ends **exit 0**: lint, test, build for 4 projects and 3 dependencies, 0 of 15 from the cache. Report `work-lab-leila/reports/2026-10-23-6.md`.
 
@@ -130,4 +130,4 @@ Last written **9:35 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 18
+Last batch done: 19
