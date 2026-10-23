@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:34 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **1:36 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,9 @@ Last written **1:34 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Nothing running.** Batch 39 stopped at step 2 (ERESOLVE), so batch 40 has not started, as it says; both wait for the security director. Watching the branch.
+**Next update by 2:16 PM Central.**
+
+**Batch 41, security: angular-eslint 22.6.0 by re-resolving its own lock entries**, started 1:36 PM Central, in `C:/TAMU/wt-ae2206` (`chore/2168-angular-eslint-22-6`). Then 42 (if 41 pushes) and 43. Batch 40 is superseded.
 
 ## Finished
 
