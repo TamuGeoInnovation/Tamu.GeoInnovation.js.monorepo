@@ -178,16 +178,16 @@ install the front ends' dependencies. Each came from measuring something the bat
 so plainly. Keep doing that.
 
 
-## Batch 21 (security: the full pre-push check for #2112's second round; 23 October 2026, 10:05 AM Central, from `work (security)`)
+## Batch 21 (security: the full pre-push check for #2112's second round; 23 October 2026, updated 10:20 AM Central, from `work (security)`)
 
-**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 20.**
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now** (it was skipped after batch 20; the head below is new, so nothing from the old one counts).
 **Expected: about 10 minutes**, a full `affected` check.
 
 A lock-only security update (`npm audit fix --package-lock-only`) on top of PR 2129, plus a paragraph in `CLAUDE.md`. Do
 exactly these steps, in order, from Git Bash. Change nothing.
 
 1. `git fetch fork security/check-2112b`
-2. `git rev-parse fork/security/check-2112b` must print **`7530277554da08e82f894427e28d8622d61e74ee`**. If not, stop and report it.
+2. `git rev-parse fork/security/check-2112b` must print **`b94d3985e9994058d4696f421382ad49a302a028`**. If not, stop and report it.
 3. `git worktree add C:/TAMU/wt-check-2112b fork/security/check-2112b --detach`, then in that folder `git switch -c security/check-2112b`
 4. In that folder: `scripts/check-in-volume.sh security/check-2112b > ../check-2112b.out 2>&1; echo "exit=$?"`
    The full `affected` check, with a clean `npm ci`. No project list.
