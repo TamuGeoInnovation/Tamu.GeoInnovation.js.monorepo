@@ -13,9 +13,6 @@
         "jestConfig": "libs/mailroom/data-access/jest.config.ts",
         "tsConfig": "libs/mailroom/data-access/tsconfig.spec.json"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

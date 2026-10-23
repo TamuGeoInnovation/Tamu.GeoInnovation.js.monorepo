@@ -34,7 +34,11 @@
           "includePaths": ["."]
         },
         "scripts": [],
-        "loader": { ".woff2": "file", ".woff": "file", ".ttf": "file" },
+        "loader": {
+          ".woff2": "file",
+          ".woff": "file",
+          ".ttf": "file"
+        },
         "extractLicenses": false,
         "sourceMap": true,
         "optimization": false,
@@ -125,9 +129,6 @@
         "jestConfig": "apps/signage-angular/jest.config.ts",
         "tsConfig": "apps/signage-angular/tsconfig.spec.json"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

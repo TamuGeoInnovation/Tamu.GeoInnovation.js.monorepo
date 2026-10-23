@@ -33,7 +33,11 @@
           "includePaths": ["."]
         },
         "scripts": [],
-        "loader": { ".woff2": "file", ".woff": "file", ".ttf": "file" },
+        "loader": {
+          ".woff2": "file",
+          ".woff": "file",
+          ".ttf": "file"
+        },
         "browser": "apps/ts-events-angular/src/main.ts"
       },
       "configurations": {
@@ -87,9 +91,6 @@
       "options": {
         "buildTarget": "ts-events-angular:build"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
