@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 43.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 44.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -19,6 +19,35 @@ ends in a report, never in a pull request. The director does the GitHub half.
 report under **Questions for the director**, with options and a recommendation — never to the maintainer.
 
 ---
+
+## Batch 43 (security: #1218 - what TypeScript 7, ESLint 10 and typeorm 1 would break; read-only; 23 October 2026, 1:45 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start whenever nothing else of the security chat's is runnable** (for example if batch 41 stops, or after 42).
+**Expected: about 60 minutes.** Read-only: it ends in a report. **Nothing is committed or pushed.**
+
+Your batch 27 inventory found, besides Nx: **TypeScript 6 → 7**, **ESLint 9 → 10** (with `@eslint/js`), and **typeorm 0.3 → 1**. Each is a
+#1218 step. This batch measures each one's size, so the steps can be planned: try each **in its own throwaway worktree from
+`origin/development`**, one at a time, and measure.
+
+For each of the three:
+1. `git worktree add C:/TAMU/wt-try-<name> origin/development --detach`. In Docker (`node:24.22.1`, its own volume), bump just that package
+   (and its direct companions: `@eslint/js` with ESLint; `typescript-eslint` only if ESLint 10 requires it) in `package.json`, then
+   `npm install`. If it fails to resolve, report the conflict in full and go to the next one.
+2. Run, and count errors by kind (not every line; the counts and three representative examples of each kind):
+   - **TypeScript 7:** `nx run-many -t build --projects=aggiemap-angular,gisday-angular,gisday-nest,geoservices-nest,mailroom-nest`
+     and `npx tsc -p tsconfig.base.json --noEmit` if that works here. Note whether Angular 22's compiler accepts TypeScript 7 at all (its
+     peer range in `@angular/compiler-cli`'s `package.json`).
+   - **ESLint 10:** `nx run-many -t lint` (all projects), plus what ESLint 10's release notes say changed for flat config and for the plugins
+     used here (`angular-eslint`, `typescript-eslint`, `eslint-plugin-*` in `package.json`): does each plugin's current version declare
+     ESLint 10 support?
+   - **typeorm 1:** build `gisday-nest`, `gisday-competitions-nest` (if it builds today), `mailroom-nest`, and run their tests; read
+     typeorm 1's migration notes for anything used here (`find` options, `Repository` methods, `DataSource` setup, decorators). List each
+     API used here that the notes say changed, with the files that use it (`git grep` counts).
+3. Remove the worktree.
+
+**Report:** one table, a row per upgrade: installs (yes/no), errors (count by kind), the peers that block it, the files most affected,
+and your estimate of the work (small: under a day; medium: a few days; large). Then **one recommended order** for them, with a sentence why.
+No changes anywhere.
 
 ## Batch 41 (security: angular-eslint 22.6.0 by re-resolving only its eight lock entries; a code job and a branch; 23 October 2026, 1:40 PM Central, from `work (security)`)
 
