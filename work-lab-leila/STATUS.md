@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:32 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **1:34 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,11 @@ Last written **1:32 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 2:12 PM Central.**
-
-**Batch 39, security: angular-eslint 22.6.0 on its own (Nx 24's first blocker)** (director: work, its security chat). Started 1:32 PM Central.
+**Nothing running.** Batch 39 stopped at step 2 (ERESOLVE), so batch 40 has not started, as it says; both wait for the security director. Watching the branch.
 
 ## Finished
+
+- **Batch 39, security: angular-eslint 22.6.0 on its own - stopped at step 2** (1:32 to 1:34 PM, 23 October; director: work, security chat): the lock-only install hits **the same `ERESOLVE`** as batch 36 with Nx untouched, so the conflict is in the `angular-eslint` set itself (the lock\x27s 22.5.0 `schematics` pins `eslint-plugin-template@22.5.0`). Lock unchanged; nothing committed. **Batch 40 not started**, as it says; its step 4 (Jest and webpack working unconverted on Nx 24) looks impossible, since Nx 24 removes those executors. Report `work-lab-leila/reports/2026-10-23-29.md`.
 
 - **Batch 38, security: #2117 part 2 rebased onto PR 2173** (1:22 to 1:32 PM, 23 October; director: work, security chat): **`chore/2117-api-own-deps` `e46ac6e0c`** force-with-lease pushed. One conflict per Dockerfile, the last line; the builder stage and 2173\x27s npm removal both kept. Every package at the root lock\x27s version; npm gone; `gisday-nest` 200 and 401; Trivy 0 critical, 0 high on all four (as is `:stable` `6eac6d637` now); 205 to 312 packages and 355 to 478 MB against 493 and about 1.35 GB; the check ran 4 projects. Report `work-lab-leila/reports/2026-10-23-28.md`.
 
@@ -174,4 +174,4 @@ Last written **1:32 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 38
+Last batch done: 38 (39 stopped at step 2, 40 not started; see report 2026-10-23-29)
