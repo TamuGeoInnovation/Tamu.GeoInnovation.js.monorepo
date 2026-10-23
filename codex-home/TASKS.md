@@ -1,5 +1,56 @@
 # codex-home: current tasks
 
+## Batch 5 (workspace: #2134, quote four shell variables in publish.yml; 23 October 2026, 8:45 AM Central, from `work (aggiemap)`)
+
+**Small and well defined. Maybe twenty minutes.** A branch for me to turn into a pull request; no PR from you.
+
+[#2134](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2134) (Low). `actionlint`
+reports four shellcheck findings in `.github/workflows/publish.yml`, all in the `list-publishable` job, all
+pre-existing:
+
+| Line | |
+| --- | --- |
+| 25, 28 | `echo "exists=true" >> $GITHUB_OUTPUT` - SC2086 |
+| 37 | `echo $JASON` - SC2086 |
+| 38 | `echo "matrix=$JASON" >> $GITHUB_OUTPUT` - SC2086 |
+
+### What to do
+
+Quote them. `"$GITHUB_OUTPUT"` and `"$JASON"`. Nothing else in the file.
+
+**Leave the variable named `JASON`.** It is a misspelling of `JSON` and renaming it is not this change; a
+one-line fix that also renames things is harder to review than either on its own.
+
+### Prove it
+
+```
+docker run --rm -v "C:/TAMU/<your worktree>:/repo" -w /repo rhysd/actionlint:1.7.7 .github/workflows/publish.yml
+```
+
+**Red first:** run it before your change and confirm you get the four findings above - the point is that the
+tool reports them, not that the lines look wrong. **Green after:** exit 0, no findings. Put both outputs in
+your report.
+
+`check-in-volume.sh` will say `No tasks were run` - a workflow file is not an Nx project - so that is not a
+pass and not worth running.
+
+### Then
+
+- Branch `ci/2134-publish-yml-quoting` from the latest `origin/development`, pushed to the fork. Commit ends
+  `Closes #2134`.
+- Report in `codex-home/reports/<date>-<n>.md` with the before and after actionlint output.
+
+### Why it is worth doing at all
+
+Not the findings - they are `info`, and `$GITHUB_OUTPUT` has no spaces in it. **Nothing in CI runs
+`actionlint`**, which is why four findings sat in a workflow nobody noticed. Clearing them is the cheap half
+of being able to add that check later; adding it today would fail on day one.
+
+**This file is also edited by the security chat's publish-gate work
+([#2135](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2135)), which only adds
+steps and does not touch these four lines.** No conflict is expected; if one appears, stop and say so rather
+than resolving it.
+
 ## Batch 4 - WITHDRAWN at 8:40 AM Central, 23 October 2026, before it was started
 
 **Do not do this batch.** It asked you to push `fix/2120-upload-limits`. **#2120 was already finished by
