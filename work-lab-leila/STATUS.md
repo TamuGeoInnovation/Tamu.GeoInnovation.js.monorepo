@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **11:52 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **11:55 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -34,9 +34,10 @@ Last written **11:52 AM Central, 23 October 2026**. A listener; job: testing.
 
 **Batch 29, security: #2158, the retired IdP removed** (director: work, its security chat). Started 11:52 AM Central: its full check runs in the background.
 
-**Batch 28, gisday: #2133, a docs note on the production gisday-nest image** (director: work, its GIS Day chat). Started 11:52 AM Central, alongside batch 29's check (it only starts one small container).
 
 ## Finished
+
+- **Batch 28, gisday: #2133, the production gisday-nest image locally** (11:52 to 11:55 AM, 23 October; director: work, GIS Day chat): **`docs/2133-gisday-nest-image-locally` `fdcf6ad9a`** on the fork, one entry in `docs/gisday-local.md`. Both halves reproduced with `sha-ee1a9e4`; the sample alone stops even earlier, on a blank `TYPEORM_PASSWORD`, which the entry also says. Report `work-lab-leila/reports/2026-10-23-18.md`.
 
 - **Batch 27, security: #1218, what is out of date** (11:44 to 11:46 AM, 23 October; director: work, security chat): `origin/development` `ac476bd73`. `npm outdated`: **89** packages, **15** in-range updates, **49** a major behind (Nx 11 at 23 → 24, TypeScript 6 → 7, ESLint 9 → 10, and 31 others). Furthest: `marked` 9 majors, `angular-auth-oidc-client`, `dotenv` and `ngx-highlightjs` 8. Angular, NestJS, ArcGIS, Jest and Vitest are on their latest major. Node v24.22.1, no `engines`. Report `work-lab-leila/reports/2026-10-23-17.md`.
 
