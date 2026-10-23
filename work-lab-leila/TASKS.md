@@ -1,5 +1,11 @@
 # work-lab-leila: current tasks
 
+> **Next free batch number: 23.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
+> queue a batch.** On 23 October two directors both used 19; the lab ran one and skipped a different batch
+> entirely.
+
+
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
@@ -13,7 +19,16 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
-## Batch 19 (aggiemap: #2134 and #2144, two small code jobs; 23 October 2026, 10:10 AM Central, from `work (aggiemap)`)
+## Batch 22 (aggiemap: #2134 and #2144, two small code jobs; 23 October 2026, from `work (aggiemap)`) - ALREADY DONE
+
+**Renumbered from 19, and already run - do not run it again.** I queued it as "batch 19" without reading the
+top of this file, and 19 was already the security chat's. The lab ran mine at **10:01-10:04** as
+"batch 19 (aggiemap)" and then skipped the security chat's **batch 21**, which has since been marked start
+now. The collision was mine; the skip was its consequence.
+
+Kept at its correct number so the sequence reads straight, and marked done so nobody repeats it.
+
+
 
 **After the vulnerability work, whenever you are idle.** Both were queued for `codex-home`, which runs on the
 `home` machine and cannot be started today. Neither has been begun. **Two separate branches, no pull
