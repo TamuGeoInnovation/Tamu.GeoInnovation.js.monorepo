@@ -3,7 +3,7 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:57 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **7:34 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -24,11 +24,11 @@ Last written **6:57 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 7:37 AM Central.**
-
-**Batch 14, workspace: #2111, the fixes as three branches** (director: home). Started 6:51 AM Central, 23 October. One at a time: `fix/2111-in-range-security-updates`, `fix/2111-class-validator-0.15`, `fix/2111-swiper-14`. Branches to the fork only. **Task 1 pushed: `fix/2111-in-range-security-updates` at `952c74962`** (check exit 0). Now on task 2 (`fix/2111-class-validator-0.15`, `9550cd968` local).
+Nothing. Idle, watching the branch for the next batch.
 
 ## Finished
+
+- **Batch 14, workspace: #2111, the fixes as three branches** (6:51 to 7:34 AM, 23 October; director: home). On the fork, each with `check-in-volume.sh` exit 0 (lint 113, test 106, build 14): **`fix/2111-in-range-security-updates` `952c74962`** (lock only, 41 packages; audit 68 → 64, critical 6 → 5, high 28 → 19); **`fix/2111-class-validator-0.15` `9550cd968`** (no code change; an invalid body still gets 400 on the production image); **`fix/2111-swiper-14` `c0ef4fb81`** (no code change; before and after images and the release-notes file; only the arrows move a few pixels). No pull requests. Report `work-lab-leila/reports/2026-10-23-3.md`.
 
 - **Batch 13, workspace: #2111, which advisories reach each deployed app** (6:38 to 6:45 AM, 23 October; director: home): 68 packages, 37 with advisories of their own (141 advisories). Of the 24 critical or high: 7 build-only, 17 in all four API images (13 loaded by API code, 4 unused), and only `swiper` (aggiemap, ues-operations) and `axios` (geoservices) in a front-end bundle. Summary on #2111. Report `work-lab-leila/reports/2026-10-23-2.md`.
 
@@ -103,4 +103,4 @@ Last written **6:57 AM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 13
+Last batch done: 14
