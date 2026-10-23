@@ -2,7 +2,6 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 
 import { map } from 'rxjs/operators';
 
-
 import { OldCompetitionEntity, ValidObject } from '../../entities/all.entity';
 
 @Injectable()
