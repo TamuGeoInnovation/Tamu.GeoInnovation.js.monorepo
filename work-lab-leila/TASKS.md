@@ -13,6 +13,30 @@ report under **Questions for the director**, with options and a recommendation â
 
 ---
 
+## Batch 13 (workspace: #2111, which advisories reach each deployed app; 23 October 2026, 7:00 AM Central, from `home`)
+
+**Director: home.** Questions under **Questions for the director (home)**. **Expected: about 60 minutes.** Heavy (builds);
+nothing else heavy beside it.
+
+**Why:** [#2111](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111) (High). `npm audit --package-lock-only` on `development` at `35581d0` reports 68 advisories (6 critical, 28 high, 30 moderate, 4 low) across 2,640 packages. Most are probably build tooling; this finds which reach what we deploy. **Change nothing**: no dependency edits, no branches, no pull requests. Report only.
+
+From a worktree at `origin/development` (`35581d0` or later; say which):
+
+1. `npm audit --json --package-lock-only` once, saved, for the advisory list and each one's dependency paths.
+2. **For each deployed app**, find what it ships:
+   - **NestJS APIs** (`gisday-nest`, `geoservices-nest`, `mailroom-nest`, `mailroom-helper-nest`): `nx build <app>
+     --configuration production`; the generated `dist/apps/<app>/package.json` is what the image installs. Resolve it
+     against the lock (`npm ls --omit=dev --all` in a copy of that folder with the lock, or by walking the lock).
+   - **Angular front ends** (`aggiemap-angular`, `gisday-angular`, `ues-operations-angular`, `mailroom-angular`,
+     `geoservices-angular`, and any other app `publish.yml` builds an image for): a production build with
+     `--stats-json`, and the packages whose files appear in the bundle.
+3. **One table:** every critical and high advisory, by package and advisory title, with a column per deployed app saying
+   **runtime** (in its image or bundle), **build-only**, or **absent**, plus the fixed version `npm audit` names and
+   whether that is a patch, minor or major bump of what we use. Moderates in a second, shorter table: package, apps
+   it reaches at runtime, fix.
+
+Report in `work-lab-leila/reports/2026-10-23-2.md`, and a summary comment on #2111 (counts and the runtime list, no more).
+
 ## Batch 12 (workspace: #2107, prove the four API images on Node 24.22.1; 23 October 2026, 6:15 AM Central, from `home`)
 
 **Director: home**, for this batch. Questions go under **Questions for the director (home)**. **Expected: about 25 minutes.**

@@ -17,6 +17,30 @@ your project instructions too (Nx in Docker, LF files, the repository is public,
 - Commit messages end with `Co-Authored-By: OpenAI Codex <noreply@openai.com>`.
 - Never ask the maintainer anything; questions go in your report under **Questions for the director**.
 
+## Batch 2 (workspace: #2111, are the vulnerable code paths actually used; 23 October 2026, 7:00 AM Central, from `home`)
+
+**Director: home.** Questions under **Questions for the director (home)**. **Expected: about 60 minutes.** Read-only:
+reading code and advisories, no installs, no builds.
+
+**Why:** [#2111](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111) (High). `npm audit --package-lock-only` on `development` at `35581d0` reports 68 advisories (6 critical, 28 high, 30 moderate, 4 low) across 2,640 packages. Most are probably build tooling; this finds which reach what we deploy. **Change nothing**: no dependency edits, no branches, no pull requests. Report only.
+
+For each advisory below, read its published description (the GitHub advisory linked from `npm audit --json`, or
+the package's own security notice) to learn **which function, option or input triggers it**. Then search our code
+(`apps/`, `libs/`) for that use, and answer **used, not used, or cannot tell**, with the files and lines that decide it:
+
+- `swiper` (prototype pollution): `libs/aggiemap/ngx/popups/.../bonfire` and `.../poi` use it.
+- `class-validator` (SQL injection and XSS): which decorators and options the NestJS DTOs use.
+- `multer`, `busboy`, `dicer` (denial of service): which upload endpoints exist and their limits.
+- `nodemailer` (SMTP injection, unintended domain): how mailroom builds addresses and envelopes.
+- `axios` (prototype pollution in the fetch adapter): which adapter our calls use, and whether any config comes from input.
+- `jws`, `node-forge` (signature and ASN.1 handling): which of our dependencies pull them, and whether we verify tokens through them.
+- `validator` (`isURL` bypass): any `@IsUrl` or `isURL` use.
+- `koa`, `@koa/cors`, `oidc-provider`: whether the oidc apps are deployed at all (see `publish.yml` and kubernetes-config if you can read it; say if not).
+- `request`, `form-data` (critical, no fix in `request`): which package depends on `request`, and whether it runs at runtime.
+
+Report in `codex-home/reports/2026-10-23-1.md`: one row per advisory (package, trigger, used / not used / cannot tell,
+evidence). Push only your report and `STATUS.md`, with the `codex-home:` prefix.
+
 ## Batch 1 (19 October 2026)
 
 1. **Join, and a first survey**

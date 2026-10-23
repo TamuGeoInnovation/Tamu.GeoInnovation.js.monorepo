@@ -71,6 +71,32 @@ and `STATUS.md` are pushed, don't end the session. Watch this branch instead:
        - Report on: <issue for live status and result>
        - Then: <tag or not, and anything else that follows>
 
+## Batch 23 (workspace: #2111, scan the production images for OS-level vulnerabilities; 23 October 2026, 7:00 AM Central, from `home`)
+
+**Director: home.** Questions under **Questions for the director (home)**. **Expected: about 45 minutes.** Moderate;
+fine beside a light job, not beside a tier.
+
+**Why:** [#2111](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2111) (High). `npm audit --package-lock-only` on `development` at `35581d0` reports 68 advisories (6 critical, 28 high, 30 moderate, 4 low) across 2,640 packages. Most are probably build tooling; this finds which reach what we deploy. **Change nothing**: no dependency edits, no branches, no pull requests. Report only.
+
+Scan, with **Trivy** run from its official image (`aquasec/trivy`, pinned to a release tag; say which), the images
+production runs now, by tag:
+
+| Image | Tag |
+| --- | --- |
+| `gisday-nest` | `sha-35581d0` |
+| `geoservices-nest` | `sha-35581d0` |
+| `gisday-angular` | `sha-c224856` |
+| `aggiemap-angular` | the tag production serves (read from the newest `prod-*` git tag, or ask) |
+| `mailroom-nest`, `mailroom-helper-nest` | `sha-35581d0` (built, not known to be deployed; see #2109) |
+
+`trivy image --scanners vuln --severity CRITICAL,HIGH ghcr.io/tamugeoinnovation/<image>:<tag>`, the registry login
+as for any pull. For each image: the OS (Alpine or Debian) and its version, and every critical or high finding split into
+**OS packages** (apk or dpkg) and **language packages** (npm, already covered by the lab's batch; just count them).
+For each OS finding: package, installed version, fixed version, and whether a newer base image (`node:24.22.1-alpine`,
+the nginx base `ghcr.io/tamugeoinnovation/nginx-base`) would fix it.
+
+**No pushing images, no deploys, no `kubectl`.** Report in `work/reports/2026-10-23-2.md`, and a summary comment on #2111.
+
 ## Batch 22 (workspace: #2107, read-only compromise checks on the production APIs; 23 October 2026, 6:15 AM Central, from `home`)
 
 **Director: home**, for this batch. Questions go under **Questions for the director (home)**. **Expected: about 30 minutes.**
