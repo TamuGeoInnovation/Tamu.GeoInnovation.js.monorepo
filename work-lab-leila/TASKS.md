@@ -42,7 +42,7 @@ and `express` asks for `^2.3.0`, so **2.4.0 is in range**. (The top-level `body-
    throwaway SQL Server answers `GET /api/seasons/active` 200 and accepts a JSON `POST` that it then refuses 401 (unauthenticated), so a
    request body is still parsed; and a gzip-compressed JSON body (`Content-Encoding: gzip`) to the same route still gets 401, not 400/500.
 5. `scripts/check-in-volume.sh fix/body-parser-2-4` (full `affected`, clean `npm ci`). Commit (`fix(workspace): Move body-parser to 2.4.0 for
-   its denial-of-service advisory`, a body naming the advisory, the Co-Authored-By line; the director adds the issue number). Push to the fork.
+   its denial-of-service advisory`, a body naming the advisory, `Closes #2207` (filed at High; the maintainer put it first in the lock queue), the Co-Authored-By line). Push to the fork.
 
 ## Batch 61 (security: Nx 24 on top of the three conversions - a probe, nothing pushed; 23 October 2026, 5:55 PM Central, from `work (security)`)
 
