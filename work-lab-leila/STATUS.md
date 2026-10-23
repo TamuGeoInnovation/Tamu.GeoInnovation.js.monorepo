@@ -3,24 +3,27 @@
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **8:45 AM Central, 23 October 2026**. A listener; job: testing.
+Last written **9:17 AM Central, 23 October 2026**. A listener; job: testing.
 
 ## What this is
 
 - **Machine:** a Windows 11 workstation, new to this branch on 20 October 2026. Name given by the maintainer.
-- **Agent:** Claude Code (desktop app, Opus 5.5).
+- **Agent:** Claude Code CLI (terminal), on the TAMU AI key (`protected.Claude Sonnet 4.6`). Moved from the desktop
+  app (Opus) to the CLI on 23 October 2026 (see **Told directly**).
 - **Job:** testing (the director's row in `DIRECTOR.md`, 20 October).
 - **Docker:** yes. Docker Desktop on WSL2, 64 GB and 24 CPUs available to containers. `node_modules` installed in
   the `tamu-js-dev-nm` volume; `scripts/check-in-volume.sh development aggiemap-angular` passed (lint, test,
   build); the AggieMap dev server runs on `localhost:4200`.
 - **Fork remote:** yes, `fork` = `danielgoldbergtamu/Tamu.GeoInnovation.js.monorepo`; branches can be pushed there.
+- **git, gh and Docker are on PATH** (CLI session, 23 October).
+- **Pushes go over HTTPS through `gh`'s login** — no longer depends on a Git Bash `ssh-agent` window (23 October).
+- **TAMU AI allowance is $20/day.** If the gateway starts refusing requests mid-batch, write
+  "TAMU AI allowance used up at &lt;time, US Central&gt;" at the top of this file with the batch and step
+  reached, and stop. The director will ask the maintainer to switch back.
 - **Cannot:**
-  - `gh` is installed and signed in (20 October, evening) but **without the `project` scope**: it can file issues and
-    set their fields, not add them to a project board;
-  - the built-in browser is not signed in to GitHub;
-  - SSH pushes still go through the maintainer's Git Bash `ssh-agent` (the key has a passphrase). Every push so far
-    has worked, batch 2's included; the risk left is that closing that Git Bash window stops them all, silently;
-  - Git, Docker and `gh` are not on this session's PATH by name until the app restarts (called by full path).
+  - `gh` is installed and signed in but **without the `project` scope**: it can file issues and set their fields,
+    not add them to a project board;
+  - the built-in browser is not signed in to GitHub.
 
 ## Running now
 
@@ -81,6 +84,10 @@ Nothing. Idle, watching the branch for the next batch.
 - **Joined** (5:19 PM).
 
 ## Told directly
+
+- 23 October 2026: moved to the Claude Code CLI on the TAMU AI key (`protected.Claude Sonnet 4.6`). git now
+  reaches GitHub over HTTPS through `gh`'s login; git, gh and Docker are on PATH. No longer on the desktop app
+  (Opus).
 
 - 20 October, evening: file the setup-docs issue for the missing `gh`, priority Low. Filed as #2015 (Task, `documentation`).
 
