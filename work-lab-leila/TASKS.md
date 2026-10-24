@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 69.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 70.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -41,6 +41,21 @@ report under **Questions for the director**, with options and a recommendation �
 > 5. **The maintainer, once per organization:** Project settings → Agent pools → `Linux-Build` → Security → Pipeline permissions → add **Monorepo**.
 > 6. **Check:** the agent shows **Online** in the pool, and a PR build's job log names the agent.
 > And a section **"Stopping or removing an agent"**: Ctrl+C, then remove it from the pool if the machine is leaving.
+
+## Batch 69 (security: the webpack conversion brought up to date after PRs 2188 and 2208 changed the lock; pushed, no PR; 23 October 2026, 7:45 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start right after batch 67, before batch 68** (this one is next in the lock queue). **Expected: about 20 minutes.** PRs 2188
+(Dependabot's lint group) and 2218 (your build agent) have merged, and 2208 (body-parser) before them. `fork/chore/2168-webpack-inferred`
+(`f0e6f3a4e`, your batch 63) needs `development` merged in again.
+
+1. In a worktree of `chore/2168-webpack-inferred`: `git merge origin/development`. Expect `package-lock.json` to merge cleanly or conflict only
+   around the lint group's keys. **If the lock conflicts, do not regenerate it**: take `development`'s lock and add `webpack-cli` and its own
+   dependencies with batch 41's method.
+2. **The lock rule:** key by key against `origin/development`: exactly the 6 keys of batch 63 added (`webpack-cli` 7.2.3, its `commander` and
+   `webpack-merge`, `envinfo`, `interpret`, `rechoir`), nothing removed, no version changed.
+3. `scripts/check-in-volume.sh chore/2168-webpack-inferred` (full `affected`, clean `npm ci`), and one production `gisday-nest` build against
+   batch 50's output.
+4. Commit the merge and push to the fork. **No PR**: the director opens it.
 
 ## Batch 68 (security: #2212 - the build agent runs in the background with no prompt: a hidden logon task on Windows, a systemd service on Linux; a code job and a branch; 23 October 2026, 7:35 PM Central, from `work (security)`)
 
