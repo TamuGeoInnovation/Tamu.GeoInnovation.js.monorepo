@@ -42,6 +42,8 @@ report under **Questions for the director**, with options and a recommendation â
 > 6. **Check:** the agent shows **Online** in the pool, and a PR build's job log names the agent.
 > And a section **"Stopping or removing an agent"**: Ctrl+C, then remove it from the pool if the machine is leaving.
 
+> **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now: run it right after batch 71, before batch 72.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
+
 ## Batch 70 (security: Dependabot PR 2194, jwt-decode 3 to 4 - the code fix as our own branch; 23 October 2026, 7:55 PM Central, from `work (security)`)
 
 **Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 30 minutes.** Your batch 68 question 1: **(a)**, accept the ACL and DPAPI blob as shown. PRs 2219, 2221
