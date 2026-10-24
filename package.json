@@ -47,7 +47,7 @@
     "@arcgis/core": "5.1.27",
     "@arcgis/map-components": "5.1.27",
     "@auth0/auth0-angular": "^2.13.0",
-    "@esri/calcite-components": "5.1.2",
+    "@esri/calcite-components": "5.2.0",
     "@nestjs/bull": "^12.0.0",
     "@nestjs/common": "12.2.0",
     "@nestjs/core": "12.2.0",
