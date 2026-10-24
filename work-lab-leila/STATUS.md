@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:17 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **9:19 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,7 +32,7 @@ Last written **9:17 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-Nothing. Batch 126 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
+**Batch 127, security: #1218 - better-sqlite3 12 to 13, stacked (a branch)**, started 9:19 AM Central, 24 October.
 
 ## Finished
 
