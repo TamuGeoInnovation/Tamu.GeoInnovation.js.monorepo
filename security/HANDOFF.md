@@ -17,6 +17,7 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 | 4 | maplibre, [#2247](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2247) (no PR yet) | Prepared on 2253: `fork/ready/2247-maplibre` (`ba338ad93`), with its release-notes file; checked: lint 104, test 100, build 14 |
 
 | 5 | `marked` 9 → 18 (lab batch 91, `fork/chore/1218-marked-18`, `9b8e3d45a`; no issue or PR yet) | Checked on `development` (3,177 texts render the same). **Its jest config adds `marked/` to `gisday-platform-ngx-core`'s `transformIgnorePatterns`, the same line GLightbox removes `lightgallery` from**: after GLightbox merges, resolve that line to keep `marked/` without `lightgallery` |
+| 6 | `@swimlane/ngx-datatable` 20 → 25 (lab batch 93, `fork/chore/1218-ngx-datatable-25`, `7aee83bdf`; no issue or PR yet) | Checked on `development`; the tables look the same (the shared styles moved to `libs/sass/components/_datatable.scss`). No release notes needed |
 **After each merge, for the next one:**
 
 1. `git fetch origin development fork`, a worktree of the prepared `ready/` branch, `git merge origin/development`.
