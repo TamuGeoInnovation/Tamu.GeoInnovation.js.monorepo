@@ -31,3 +31,34 @@ jobs:
         name: 'last_successful_sha'
         env:
           AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
+
+      # Where the heavy jobs run (#2212): on the lab's agents (pool Linux-Build) when at least one is online and
+      # enabled, otherwise on the hosted pool, so a pull request never waits for a lab that is switched off. Any
+      # error answers "hosted", with a warning naming the cause. useLab: false in azure-pipelines.yml forces hosted.
+      - bash: |
+          set -u
+          hosted() {
+            echo "##vso[task.logissue type=warning]Running on the hosted pool: $1"
+            echo "##vso[task.setvariable variable=labOnline;isOutput=true]false"
+            exit 0
+          }
+
+          [ "$(useLab)" = "true" ] || hosted "useLab is $(useLab) in azure-pipelines.yml."
+
+          api="$(System.CollectionUri)_apis/distributedtask"
+          pools=$(curl -sS -f --max-time 20 -H "Authorization: Bearer $SYSTEM_ACCESSTOKEN" \
+            "$api/pools?poolName=Linux-Build&api-version=7.1") || hosted "could not list the agent pools (does the build service have Reader on Linux-Build?)."
+          id=$(echo "$pools" | jq -r '.value[0].id // empty')
+          [ -n "$id" ] || hosted "no pool named Linux-Build is visible to the build service."
+
+          agents=$(curl -sS -f --max-time 20 -H "Authorization: Bearer $SYSTEM_ACCESSTOKEN" \
+            "$api/pools/$id/agents?includeCapabilities=false&api-version=7.1") || hosted "could not list Linux-Build's agents."
+          online=$(echo "$agents" | jq '[.value[] | select(.status == "online" and .enabled)] | length')
+          [ "${online:-0}" -gt 0 ] || hosted "no Linux-Build agent is online."
+
+          echo "Linux-Build has $online agent(s) online: the heavy jobs run on the lab."
+          echo "##vso[task.setvariable variable=labOnline;isOutput=true]true"
+        displayName: 'Choose the lab or the hosted pool'
+        name: 'lab_pool'
+        env:
+          SYSTEM_ACCESSTOKEN: $(System.AccessToken)

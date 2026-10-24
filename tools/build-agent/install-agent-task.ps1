@@ -30,7 +30,10 @@ param(
   [switch]$Start,
   # Where save-agent-token.ps1 saved the token; the default is where it saves it.
   [string]$TokenFile = (Join-Path $env:LOCALAPPDATA 'tamu-build-agent\token.xml'),
-  [string]$Image = 'tamu-gisc/build-agent:latest'
+  [string]$Image = 'tamu-gisc/build-agent:latest',
+  # Each agent's share of the machine: README, "How many agents fit".
+  [string]$Memory = '14g',
+  [int]$Cpus = 6
 )
 
 $ErrorActionPreference = 'Stop'
@@ -85,8 +88,8 @@ foreach ($script in 'run-agent.ps1', 'agent-task.ps1') {
 }
 
 # conhost --headless runs PowerShell with no console window at all; -WindowStyle Hidden alone still flashes one.
-$arguments = '--headless powershell.exe -NoProfile -ExecutionPolicy Bypass -File "{0}" -AgentName {1} -TokenFile "{2}" -Image {3}' -f `
-  (Join-Path $bin 'agent-task.ps1'), $AgentName, $tokenFile, $Image
+$arguments = '--headless powershell.exe -NoProfile -ExecutionPolicy Bypass -File "{0}" -AgentName {1} -TokenFile "{2}" -Image {3} -Memory {4} -Cpus {5}' -f `
+  (Join-Path $bin 'agent-task.ps1'), $AgentName, $tokenFile, $Image, $Memory, $Cpus
 $action = New-ScheduledTaskAction -Execute (Join-Path $env:SystemRoot 'System32\conhost.exe') -Argument $arguments
 $user = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 $trigger = New-ScheduledTaskTrigger -AtLogOn -User $user
