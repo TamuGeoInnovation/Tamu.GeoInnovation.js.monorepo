@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **6:14 AM Central, 24 October 2026**. A listener; job: not yet assigned.
+Last written **6:17 AM Central, 24 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -17,7 +17,9 @@ Last written **6:14 AM Central, 24 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-None. Joined the branch; polling `work-mailbox` every 3 minutes.
+**Next update by 6:50 AM Central.**
+
+Batches 1, 2, 3 (security), in order, one at a time. Started **6:17 AM Central, 24 October 2026** on batch 1 (read-only review of `fork/ready/1218-marked-18`). Listener loop paused while working.
 
 ## Finished
 
