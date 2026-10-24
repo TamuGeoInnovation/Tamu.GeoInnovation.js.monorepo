@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 114.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 116.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,33 @@ report under **Questions for the director**, with options and a recommendation �
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 114 (security: #2287 (High) - multer 2.5.0 by override for CVE-2026-113872; a fix and a branch; 24 October 2026, 5:25 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start now, ahead of anything queued** (batch 113 waits; a high vulnerability comes first). **Expected: 45 minutes.** Your batch 112 answers:
+**1 yes**, filed as #2287 (High), #2288 and #2289 (Medium, the maintainer's choice); **2 yes**, let the daily scan report them.
+1. Branch `fix/2287-multer` from `origin/development`. Root `dependencies`: `"multer": "^2.5.0"` (or the latest 2.x that fixes it; read the
+   advisory's patched range), and `overrides`: `"multer": "$multer"`, so `@nestjs/platform-express`'s exact pin is replaced. Lock by batch 41's
+   method, key by key: only `multer` (and anything only it needs) moves.
+2. **Behaviour:** the upload-route specs from #2120 pass; and one API image (gisday-nest, as batch 71) accepts an upload through a real upload
+   route against the seed, and refuses an oversize one as before.
+3. **Re-scan** the four API images with batch 112's Trivy settings: `multer` gone from each; the only high left is `@azure/msal-node` on
+   gisday-nest and mailroom-nest. `npm audit --omit=dev`: `multer` gone.
+4. `scripts/check-in-volume.sh` (full), **and `npx tsc -p test/smoke/aggiemap`** (until #2286 makes the script run it). Commit
+   (`fix(workspace): Override multer to 2.5.0 for its denial-of-service advisory`, `Closes #2287`, Co-Authored-By), push to the fork. No PR.
+
+## Batch 115 (security: #2288 - is @azure/msal-node's authorization-code flow reachable here?; an investigation, a fix or an acceptance; 24 October 2026, 5:25 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 114.** **Expected: 45 minutes.** `@azure/msal-node` 6.0.1 (CVE-2026-109461, the authorization-code flow may
+disclose parameters) reaches gisday-nest and mailroom-nest through `mssql` → `tedious` → `@azure/identity`. No 6.x fixes it; 7.1.0 does.
+1. **Is it reachable?** Read how tedious uses `@azure/identity` (which authentication types load it), and how our APIs configure `mssql`
+   (`authentication.type` in each data source and environment file; never print a secret). If no code path here ever calls MSAL's
+   authorization-code flow, say exactly why.
+2. **If unreachable:** a branch `fix/2288-msal-accept` adding the advisory to `tools/security-findings/accepted-advisories.json` the way that file
+   records an acceptance (read its format and any earlier entries' history), citing #2288 and the reason; `check.mjs` then reports it accepted.
+   **If reachable:** `overrides` to `@azure/msal-node` 7.1.0, tested against a real SQL Server connection (the local GIS Day stack), and a
+   re-scan.
+3. Full check and the smoke tsc. Commit (`Closes #2288`, Co-Authored-By), push to the fork. No PR. Report which path and why.
 
 ## Batch 113 (security: #2286 - the pre-push check runs the smoke suite's typecheck, as CI's lint does; a fix and a branch; 24 October 2026, 5:40 AM Central, from `work (security)`)
 
