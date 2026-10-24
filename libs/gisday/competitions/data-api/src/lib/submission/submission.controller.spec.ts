@@ -215,7 +215,7 @@ describe('SubmissionController', () => {
       await expect(controller.getSubmissionImage(organizer, { guid: 's-1' }, {})).rejects.toThrow(NotFoundException);
 
       expect(service.getOne).toHaveBeenCalledTimes(1);
-      expect(service.getOne).toHaveBeenCalledWith(expect.objectContaining({ relations: expect.arrayContaining(['blobs']) }));
+      expect(service.getOne).toHaveBeenCalledWith(expect.objectContaining({ relations: expect.objectContaining({ blobs: true }) }));
       expect(service.getSubmissionByGuid).not.toHaveBeenCalled();
     });
   });

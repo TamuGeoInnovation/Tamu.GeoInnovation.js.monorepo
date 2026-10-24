@@ -141,7 +141,7 @@ export class EventLocationService extends BaseProvider<EventLocation> {
           where: {
             guid: In(guids)
           },
-          relations: ['events']
+          relations: { events: true }
         });
 
         const events = locationEvents.map((location) => location.events).flat();

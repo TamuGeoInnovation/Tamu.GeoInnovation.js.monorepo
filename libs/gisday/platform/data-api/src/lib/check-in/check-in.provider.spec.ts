@@ -52,7 +52,7 @@ describe('CheckInProvider', () => {
       await expect(provider.getCheckinsForUser('acct-1')).resolves.toEqual([{ guid: 'c-1' }]);
       expect(checkInRepo.find).toHaveBeenCalledWith({
         where: { accountGuid: 'acct-1' },
-        relations: ['event']
+        relations: { event: true }
       });
     });
 
@@ -167,7 +167,7 @@ describe('CheckInProvider', () => {
 
       await provider.insertUserCheckin('e-1', 'acct-1', middleOfMsc);
 
-      expect(eventRepo.findOne).toHaveBeenCalledWith({ where: { guid: 'e-1' }, relations: ['location', 'day'] });
+      expect(eventRepo.findOne).toHaveBeenCalledWith({ where: { guid: 'e-1' }, relations: { location: true, day: true } });
     });
 
     it('checks in an attendee inside the zone, and saves nothing about where they were', async () => {

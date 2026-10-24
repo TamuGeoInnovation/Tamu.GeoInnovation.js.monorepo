@@ -402,7 +402,7 @@ export class SiteCopyService {
     const rule = RULES[kind];
     const rows = await em.find(rule.entity, {
       where,
-      relations: [...rule.links, ...(rule.lists ?? [])]
+      relations: Object.fromEntries([...rule.links, ...(rule.lists ?? [])].map((name) => [name, true]))
     });
 
     return rows.map((row) => this.toRecord(em, kind, row));

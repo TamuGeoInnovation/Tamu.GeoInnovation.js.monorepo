@@ -18,7 +18,7 @@ export class EmailService {
       where: {
         id: parseInt(id, 10)
       },
-      relations: ['attachments']
+      relations: { attachments: true }
     });
   }
 
@@ -30,7 +30,7 @@ export class EmailService {
         // its attachments cascading. The caller still got `true`, so it failed silently.
         id: parseInt(id, 10)
       },
-      relations: ['attachments']
+      relations: { attachments: true }
     });
 
     // `remove(undefined)` throws, so an id matching nothing surfaced as a 500 rather than as

@@ -55,7 +55,7 @@ describe('UniversityProvider', () => {
       await expect(provider.getEntitiesForSeason('season-1')).resolves.toEqual([{ guid: 'u-1' }]);
       expect(universityRepo.find).toHaveBeenCalledWith({
         where: { season: { guid: 'season-1' } },
-        relations: ['season'],
+        relations: { season: true },
         order: { name: 'ASC' }
       });
     });
