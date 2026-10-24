@@ -10,7 +10,6 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { TripPlannerModePickerMobileComponent } from '@tamu-gisc/maps/feature/trip-planner/components';
 import { AsyncPipe } from '@angular/common';
 
-import { offCanvasSlideUpFromTop } from '../../animations/elements';
 
 import esri = __esri;
 
@@ -18,7 +17,6 @@ import esri = __esri;
   selector: 'tamu-gisc-trip-planner-top',
   templateUrl: './trip-planner-top.component.html',
   styleUrls: ['./trip-planner-top.component.scss'],
-  animations: [offCanvasSlideUpFromTop],
   imports: [AsyncPipe, TripPlannerModePickerMobileComponent]
 })
 export class TripPlannerTopComponent implements OnInit, OnDestroy {

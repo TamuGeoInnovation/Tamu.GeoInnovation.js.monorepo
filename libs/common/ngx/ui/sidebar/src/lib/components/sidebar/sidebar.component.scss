@@ -1,7 +1,11 @@
 @import 'libs/sass/mixins';
+@import 'libs/sass/motion';
 
 // Target the top-most div in the component template
 :host {
+  // Slides out of view and back when `visible` changes (the base component sets the transform).
+  @include slide-transition;
+
   font-size: 0.88rem;
   position: fixed;
   background: #ffffff;

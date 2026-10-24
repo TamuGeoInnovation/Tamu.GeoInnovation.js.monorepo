@@ -10,7 +10,6 @@ import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-plan
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { SearchSelection, AltSearchHelper } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { offCanvasSlideInFromBottom, offCanvasSlideUpFromTop } from '../../animations/elements';
 import { SearchMobileComponent } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { BackdropComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
@@ -21,7 +20,6 @@ import esri = __esri;
   selector: 'tamu-gisc-omnisearch',
   templateUrl: './omnisearch.component.html',
   styleUrls: ['./omnisearch.component.scss'],
-  animations: [offCanvasSlideInFromBottom, offCanvasSlideUpFromTop],
   providers: [AltSearchHelper],
   imports: [SearchMobileComponent, BackdropComponent, AsyncPipe]
 })

@@ -1,4 +1,4 @@
-<div [@offCanvasSlideUpFromTop]="hide()">
+<div [class.off-canvas-hidden]="hide()">
   <div id="top">
     <div class="action">
       <i class="material-icons" aria-label="Back" tabindex="0" role="button" (click)="returnBaseRoute()" (keydown.enter)="returnBaseRoute()" (keydown.space)="returnBaseRoute(); $event.preventDefault()">arrow_back</i>
