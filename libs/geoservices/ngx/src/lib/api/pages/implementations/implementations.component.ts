@@ -1,7 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { HighlightModule } from 'ngx-highlightjs';
+import { HighlightAuto } from 'ngx-highlightjs';
+import { HighlightLineNumbers } from 'ngx-highlightjs/line-numbers';
 import { AsyncPipe } from '@angular/common';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
@@ -9,7 +10,7 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
   selector: 'tamu-gisc-implementations',
   templateUrl: './implementations.component.html',
   styleUrls: ['./implementations.component.scss'],
-  imports: [HighlightModule, AsyncPipe, HighlightPlusModule]
+  imports: [HighlightAuto, HighlightLineNumbers, AsyncPipe, HighlightPlusModule]
 })
 export class ImplementationsComponent implements OnInit {
   private readonly env = inject(EnvironmentService);
