@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 131.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 132.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,17 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 131 (security: #2111 - `uuid` 11.1.1 under `bull`, stacked; a branch; 24 October 2026, 9:55 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now.** **Expected: 45 minutes.** Your report 117 is right and is now on #2111. **Decided:** question 1
+yes (this batch); question 2, the dates are on #2111.
+1. Branch `fix/2111-bull-uuid` from **`fork/fix/2320-all-auth0-users`** (`9d9319a77`).
+2. The scoped override `"bull": { "uuid": "11.1.1" }`, re-lock; only `bull`'s `uuid` may move (8.3.2 gone, the shared 11.1.1 used). Show the keys.
+3. Prove it: `npm audit` no longer lists the `uuid` advisory; gisday-nest's production image (built as `publish.yml` builds it) starts, and a Bull
+   queue adds a job and runs it against a throwaway Redis, on the base and on this branch. Say which queue and how you triggered it.
+4. `scripts/check-in-volume.sh` (full). Commit (`fix(workspace): Override bull's uuid to 11.1.1 for its buffer advisory`, `Part of #2111`,
+   Co-Authored-By), push to the fork. No PR.
 
 ## Batch 130 (security: #2111 - the moderate and low advisories, which reach production and what fixes each; read only; 24 October 2026, 9:50 AM Central, from `work (security)`)
 
