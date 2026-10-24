@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { NEVER, of } from 'rxjs';
 
@@ -21,7 +20,6 @@ describe('TripPlannerTopComponent', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        provideNoopAnimations(),
         { provide: TestingService, useValue: { get: () => of(isTesting) } },
         {
           provide: TripPlannerService,
