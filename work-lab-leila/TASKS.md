@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 125.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 127.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,30 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 126 (security: #1218 - `jwks-rsa` 2 to 4, stacked; a branch; 24 October 2026, 9:20 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start after batch 125.** **Expected: 90 minutes.**
+1. Branch `chore/1218-jwks-rsa-4` from **batch 125's branch** (`fix/2318-angular-build-vite`), so it stacks on the lock queue.
+2. `jwks-rsa` to the newest 4.x at least 14 days old (4.1.0, published 19 June, per your report 111). Change `libs/common/nest/auth`'s JWT strategy
+   (`passportJwtSecret`) only as far as 4 needs. The lock: only `jwks-rsa` and its own dependencies may move; list them.
+3. **Prove it works, not only that it builds:** with batch 114's local issuer and a real API image (gisday-nest is the one we can run), a token
+   it signs is accepted and a token signed by another key is refused (401), on both `development` and this branch. If that is more than an hour,
+   say so and prove what you can.
+4. `scripts/check-in-volume.sh` (full). Commit (`chore(workspace): Move jwks-rsa to 4`, `Part of #1218`, Co-Authored-By), push to the fork. No PR.
+
+## Batch 125 (security: #2318 - override the `vite` that `@angular/build` pins; a branch, stacked; 24 October 2026, 9:20 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now.** **Expected: 45 minutes.** Your report 111 is right. Its question 1 is already
+done: PR 2294 adds `cooldown` (merged into `development` soon). Its question 2 is not for this batch.
+1. Branch `fix/2318-angular-build-vite` from **`fork/fix/2277-mail-timeouts`** (`341121633`, the tip of the prepared stack), so it is next in
+   the lock queue.
+2. Add the override `"@angular/build": { "vite": "8.3.4" }` beside the others, re-lock (`npm install --package-lock-only --ignore-scripts`), and
+   show the lock diff: only `node_modules/@angular/build/node_modules/vite` (and anything it alone needs) may move.
+3. Prove it: `npm audit` shows no `vite` advisory (list what is left, High and Critical); `build aggiemap-angular` and `build gisday-angular`;
+   the dev server (`serve aggiemap-angular`) starts and serves a page (Vite runs there).
+4. `scripts/check-in-volume.sh` (full). Commit (`fix(workspace): Override the vite that @angular/build pins, for its High advisories`,
+   `Closes #2318` in the body, Co-Authored-By), push to the fork. No PR.
 
 ## Batch 124 (security: #1218 - what is left before "latest at least 14 days old" is reached; read only; 24 October 2026, 9:10 AM Central, from `work (security)`)
 
