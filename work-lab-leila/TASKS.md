@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 118.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 119.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,21 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 118 (security: #2212 - the agents' reinstall from development, prepared and dry-run, commands for the maintainer; nothing installed; 24 October 2026, 6:10 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start now.** **Expected: 30 minutes.** **Do not reinstall, stop or register any agent yourself.** Your #2291 fix is PR 2303. PRs 2249
+(networks), 2252 (Node in the image, 12 GB / 5 CPUs) and 2255 (git mirror) have merged, so `development`'s `tools/build-agent` has all of it. The
+running `lab-1` to `lab-3` still use batch 74's scripts from `C:\TAMU\wt-2212n` and the old image.
+1. In the main checkout `C:\TAMU\Tamu.GeoInnovation.js.monorepo` (pull `development` first; say the commit): build both images from
+   `tools/build-agent` (`tamu-gisc/build-agent:latest` and the egress image) and confirm Node is in the tool cache and the mirror code is present.
+2. **Dry-run** what the reinstall will do, without touching the running agents: the egress proxy's config accepts the per-agent networks; the mirror
+   volume is created and filled by `Confirm-Mirror` (run it alone, it is host-side and safe); a `lab-test` agent started with a dummy token from
+   the main checkout's scripts reaches Azure through the proxy, mounts `/mirror` read-only, and stops after `VS30063`. Clean it up after.
+3. Write, in **For the maintainer**, the exact PowerShell, one command per block, the first with `cd` (CLAUDE.md's global rule): rebuild both
+   images, reinstall `lab-1` to `lab-3` at 12 GB / 5 CPUs from the main checkout's `tools/build-agent`, add `lab-4`, and how to confirm four
+   agents Online and the next job's log showing *Found tool in cache* and *Checkout from the lab mirror* in about a second. Say to do it when
+   `Linux-Build` shows no job running. Remove the `C:\TAMU\wt-2212n` worktree only after the reinstall, and say so.
 
 ## Batch 117 (security: #2291 - the pre-push check refuses a misspelt project; a fix and a branch; 24 October 2026, 6:30 AM Central, from `work (security)`)
 
