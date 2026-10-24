@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 127.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 128.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,18 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 127 (security: #1218 - `better-sqlite3` 12 to 13, stacked; a branch; 24 October 2026, 9:25 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now.** **Expected: 45 minutes.** Your batches 125 and 126 are right. **Decided** (your report 113,
+question 1): `jose` 6.2.13 is accepted as it is; it is the copy `development` already installs.
+1. Branch `chore/1218-better-sqlite3-13` from **`fork/chore/1218-jwks-rsa-4`** (`c85e3d77c`).
+2. `better-sqlite3` to the newest 13.x at least 14 days old (13.0.3, 5 August, per report 111), in `package.json`'s dependency **and** its
+   `overrides` entry, and anywhere else it is named (an app's own `package.json`). Re-lock; only `better-sqlite3` and its own dependencies may move.
+3. Prove it loads, not only that it installs: in `node:24.22.1`, after `npm ci` (its install script is in `allowScripts` once PR 2317 merges;
+   this branch does not have it yet, so the script runs as today), open an in-memory database through TypeORM's `better-sqlite3` driver,
+   create a table, insert and read back a row; the same on the base branch. Say what changed between 12 and 13 that touches us (its release notes).
+4. `scripts/check-in-volume.sh` (full). Commit (`chore(workspace): Move better-sqlite3 to 13`, `Part of #1218`, Co-Authored-By), push to the fork. No PR.
 
 ## Batch 126 (security: #1218 - `jwks-rsa` 2 to 4, stacked; a branch; 24 October 2026, 9:20 AM Central, from `work (security)`)
 
