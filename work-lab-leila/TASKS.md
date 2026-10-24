@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 120.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 122.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,29 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 120 (security: #1218 - ngx-highlightjs 14 stacked on ngx-datatable 25, with its release-notes file; a branch; 24 October 2026, 7:00 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start now.** **Expected: 45 minutes.** Your batch 119 is right and goes after PR 2314. Same method for the next in the lock queue:
+1. In a worktree of `fork/chore/1218-ngx-highlightjs-14` (your batch 95): `git merge origin/development`, then `git merge
+   fork/chore/1218-ngx-datatable-25` (`08ad06d5d`). For the lock: start from `ngx-datatable`'s, redo `ngx-highlightjs` (and
+   `highlightjs-line-numbers.js`'s removal) alone by batch 41's method; key by key against `ngx-datatable`'s lock, only those move. Check
+   `ngx-highlightjs` 14.0.1's publish date against the 14-day rule (#2292); if it is younger, pin the newest release that is 14 days old and say so.
+2. **It is visible** (geoservices' code samples become highlighted, with line numbers): add `docs/releases/unreleased/<issue>-ngx-highlightjs.md`
+   as `docs/releases/unreleased/README.md` describes, using your batch 95 screenshots, with a *What to test on dev* row (geoservices' dev site, a
+   services page and the getting-started docs). Use the placeholder issue number `9999` in the file name and `issue:`; the director renames it
+   when filing. `node scripts/collate-release-notes.mjs --check` must pass apart from that.
+3. `scripts/check-in-volume.sh chore/1218-ngx-highlightjs-14`. Commit, push to the fork. No PR.
+
+## Batch 121 (security: #1218 - chart.js 4, then got 16 and the mail timeouts, stacked in turn; branches; 24 October 2026, 7:00 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 120.** **Expected: 60 minutes.** The rest of the lock queue, the same way, each on the one before:
+1. `fork/chore/1218-chart-js-4` (batch 104): merge `origin/development`, then `fork/chore/1218-ngx-highlightjs-14`; redo `chart.js` 4.5.1's lock
+   entries (and `chartjs-plugin-colorschemes`, `@types/chart.js`, `moment` going) alone. 4.5.1's age is fine; keep `~4.5.1`. Check, push.
+2. `fork/chore/1218-got-16` (batch 105): merge `origin/development`, then `fork/chore/1218-chart-js-4`; redo `got` 16.0.0's tree alone. Check got
+   16.0.0's age (30 August). Check, push.
+3. `fork/fix/2277-mail-timeouts` (batch 107, already on `got` 16): merge `fork/chore/1218-got-16`; no lock change of its own. Check, push.
+Report each branch's tip and its lock diff against the one before. No PRs.
 
 ## Batch 119 (security: #1218 - ngx-datatable 25 prepared on top of marked 18, with copilot-home's empty-row finding; a branch; 24 October 2026, 6:50 AM Central, from `work (security)`)
 
