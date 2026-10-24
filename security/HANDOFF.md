@@ -41,6 +41,7 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 | 6 | `@swimlane/ngx-datatable` 20 → 25 (lab batch 93, `fork/chore/1218-ngx-datatable-25`, `7aee83bdf`; no issue or PR yet) | Checked on `development`; the tables look the same (the shared styles moved to `libs/sass/components/_datatable.scss`). No release notes needed |
 | 7 | `ngx-highlightjs` 6 → 14 (lab batch 95, `fork/chore/1218-ngx-highlightjs-14`, `05b99e5ef`; no issue or PR yet) | Checked on `development`. **Visible**: geoservices' code samples, plain grey text on `development` today, become highlighted with line numbers; **needs a release-notes file** (screenshots in `docs/screenshots/ngx-highlightjs-14/`). Also makes geoservices provide its own `HttpClient`, which ngx-highlightjs 6 used to supply |
 | 8 | `angulartics2` 13 → 14 (lab batch 103, `fork/chore/1218-angulartics2-14`, `35b544b73`; no issue or PR yet) | Checked; the version and the lock only (14 has no API change for us); the same analytics before and after |
+| 9 | `chart.js` 2 → 4.5.1 (lab batch 104, `fork/chore/1218-chart-js-4`, `52651b825`; no issue or PR yet) | Checked; drops `chartjs-plugin-colorschemes` (its palette kept), `@types/chart.js` and `moment`. `~4.5.1` on purpose: 4.6.1 was two days old; move to `^4.6.1` after 5 November. The only chart is in signage, which does not build (#2276); no release notes |
 **After each merge, for the next one:**
 
 1. `git fetch origin development fork`, a worktree of the prepared `ready/` branch, `git merge origin/development`.
