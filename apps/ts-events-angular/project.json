@@ -84,6 +84,9 @@
         "development": {
           "buildTarget": "ts-events-angular:build:development"
         }
+      },
+      "readyWhen": {
+        "signal": true
       }
     },
     "extract-i18n": {

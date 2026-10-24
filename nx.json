@@ -44,12 +44,6 @@
     "@schematics/angular:service": {
       "type": "service"
     },
-    "@nx/angular:scam": {
-      "type": "component"
-    },
-    "@nx/angular:scam-directive": {
-      "type": "directive"
-    },
     "@schematics/angular:guard": {
       "typeSeparator": "."
     },
@@ -289,5 +283,8 @@
         "serveTargetName": "serve"
       }
     }
-  ]
+  ],
+  "affected": {
+    "legacy": true
+  }
 }
