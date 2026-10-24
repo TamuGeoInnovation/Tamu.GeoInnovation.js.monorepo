@@ -30,11 +30,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 9:45 PM Central.**
-
-**Batch 78, security: Playwright 1.64.1 named wherever its version is written**, started 8:50 PM Central (PR 2187 merged). Batch 77 waits for PR 2191.
+Nothing. Batch 77 waits for PR 2191 to merge.
 
 ## Finished
+
+- **Batch 78, security: Playwright 1.64.1 named wherever its version is written - pushed** (8:50 to 8:54 PM, 23 October): six README commands in four files named `playwright:v1.63.0-noble`; now v1.64.1-noble. The scripts derive the tag from package.json and the workflows use `npx playwright install`, so neither changed. `run-local.sh development one legend.spec.ts` ran on the v1.64.1-noble image: 7 passed. **`docs/playwright-1-64-1` at `ac401baba`.** Report `work-lab-leila/reports/2026-10-23-66.md`.
 
 - **Batch 76, security: what is left between us and the latest (#1218) - a survey, nothing pushed** (8:45 to 8:57 PM, 23 October): **PRs 2231 (Nx 24) and 2195 (typeorm 1) conflict in the lock with each other**: whichever merges second needs batch 41's method. On development + both: 61 direct deps behind, 23 by a major; each with users and reason. TypeScript 7 is blocked by Angular 22 (<6.1); /animations and -devkit/build-angular are deprecated; mapbox-gl 2+ is not open source (maplibre-gl instead); postcss-import and postcss-preset-env are unused; two hand-written deploy manifests (ues-operations-nest, gisday-competitions-nest) still declare Nest 7 / typeorm 0.2. node 24.22.1 and nginx 1.30.6 are current. 14 proposed PRs, smallest first. Report `work-lab-leila/reports/2026-10-23-65.md`.
 
@@ -248,4 +248,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 76 (77 and 78 wait for 2187 and 2191) (42 and 39 stopped; 40 superseded)
+Last batch done: 78 (77 waits for 2191) (42 and 39 stopped; 40 superseded)
