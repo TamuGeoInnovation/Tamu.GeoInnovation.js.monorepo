@@ -3,15 +3,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { from, Subject } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
 
-import { AbstractSlidingDrawerComponent, slide } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AbstractSlidingDrawerComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { SidebarTabComponent } from '../tab/tab.component';
 
 @Component({
   selector: 'tamu-gisc-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss'],
-  animations: [slide]
+  styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent extends AbstractSlidingDrawerComponent implements AfterContentInit, OnDestroy {
   private router = inject(Router);

@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": ["../../node_modules/@arcgis/core/interfaces"],
+    "types": ["@arcgis/core/interfaces"],
     "target": "ES2022",
     "useDefineForClassFields": false,
     "moduleResolution": "bundler"
