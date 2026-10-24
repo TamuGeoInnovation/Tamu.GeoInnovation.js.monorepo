@@ -90,23 +90,37 @@ one (the director handles that). Three of its updates can break at run time with
    Auth0 login page** (do not sign in), no console errors. Compare with `development` the same way.
 4. Report pass/fail per item, and whether 2191 is safe to merge **after PR 2223** (the lock queue), or which update should be split out.
 
-## Batch 72 (security: #2212 - the pipeline's jobs on the `Linux-Build` pool, as a branch; nothing merged; 23 October 2026, 7:55 PM Central, from `work (security)`)
+## Batch 72 (security: #2212 - the pipeline runs on the lab first, hosted agents as the fallback, with as many lab agents as fit; a branch; REWRITTEN 23 October 2026, 8:25 PM Central, from `work (security)`)
 
-**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 71.** **Expected: about 45 minutes.** All prerequisites are in: fork secrets are off (the maintainer, after PR 2219),
-the egress proxy merged (PR 2221), the background agent is your batch 68. Today `azure-pipelines.yml` line 24 sets one `pool:` (`vmImage:
-ubuntu-24.04`) for every job.
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start right after batch 73, before batch 65** (the maintainer wants a real `lab-1` run tonight). **Expected: about 90
+minutes.** **Decided by the maintainer (8:25 PM Central):** max out the lab, which is ours and free. (1) **Lab first, hosted fallback**: when a
+`Linux-Build` agent is online the heavy jobs run there; when none is, they run on the hosted pool as today, so a pull request never stalls
+because the lab is off. (2) **As many agents on this machine as its memory and CPUs allow, up to three**, so a pull request's jobs run side by
+side. Today `azure-pipelines.yml` line 24 sets one `pool:` (`vmImage: ubuntu-24.04`) for every job.
 
-1. Branch `ci/2212-linux-build-pool` from `origin/development`. Make the jobs that do the heavy work (Dependencies Cache or Restore, Lint, Build
-   development, Build production) run on `pool: name: Linux-Build`, and leave the light ones (Setup Last SHA, Tag) on the hosted pool, so a
-   pipeline whose self-hosted agents are all offline still says so quickly. Do it with a template parameter or variable, so switching back
-   is a one-line change; put that line in the README.
-2. Read each job's steps for anything a hosted image has and our agent image does not (the `Cache@2` task, `az` CLI in *Setup Last SHA*,
-   `zip`/`unzip`, Chrome for any test) and either add it to the agent's `Dockerfile` or keep that job hosted; list each.
-3. **Concurrency:** with one agent, the four jobs of a pull request run one after another on it. Estimate a pull request's time on one agent
-   from your batch 64/67 timings, against today's 15-25 minutes on three hosted agents, and say whether one agent is a win or we need two
-   (`lab-1`, `lab-2` on this machine; memory and CPU allowing).
-4. Commit (`ci(workspace): Run the pipeline's heavy jobs on the Linux-Build pool`, `Part of #2212`, Co-Authored-By), push to the fork.
-   **No PR**: it can only be proven by a real Azure run, which the director starts with the maintainer once `lab-1` runs batch 68's way.
+1. **Size the machine.** Report its cores, memory and free disk, and what one agent's job actually uses: run the batch 64 lint and both builds
+   in one agent container and record peak memory (`docker stats` sampled, or the cgroup's `memory.peak`) and CPU. From that, say how many
+   agents fit **while leaving the machine usable for your own work** (keep at least 8 GB and 4 cores free), capped at three, and the per-agent
+   `--memory`/`--cpus` to use. Add a `-Count` (or one task per name) to the install so `lab-1`..`lab-N` can run; **do not register any new agent
+   yourself** - the maintainer runs the install for `lab-2`/`lab-3`.
+2. **Branch `ci/2212-lab-first`** from `origin/development`:
+   - The light first job (*Setup Last SHA*, hosted) also asks Azure whether `Linux-Build` has an online, enabled agent
+     (`GET _apis/distributedtask/pools?poolName=Linux-Build`, then `.../pools/{id}/agents?includeCapabilities=false`, `status == online`,
+     `enabled`), with `$(System.AccessToken)`, and sets an output variable, e.g. `labOnline`. Any error answers `false` (fall back), with a
+     warning that names the cause.
+   - Each heavy job (Dependencies Cache or Restore, Lint, Build development, Build production) comes from a template with a `pool` parameter,
+     instantiated twice: once on `name: Linux-Build` with `condition: ... eq(dependencies.<setup>.outputs['<step>.labOnline'], 'true')`, once on
+     the hosted pool with `ne(...)`. Keep every existing condition (`succeeded()`, the affected logic) on both. Stage and job dependencies must
+     still work when one twin is skipped; check how the Tag stage and the GitHub status names (`Monorepo (Build development)` etc.) come out,
+     and keep the names the required check expects. **Say exactly what the required status check on GitHub will see.**
+   - A one-line switch to force hosted (a variable, e.g. `useLab: false`), documented in the README.
+3. Read each heavy job's steps for anything the hosted image has and our agent image does not (`Cache@2`, `az` CLI, `zip`/`unzip`, Chrome) and
+   add it to the agent's `Dockerfile` or say why not.
+4. **What the maintainer must grant:** the build service identity (`Monorepo Build Service (<org>)` or the project collection one, whichever
+   this pipeline uses) needs **Reader** on the `Linux-Build` pool to list agents. Write the exact clicks in the report's **For the maintainer**.
+5. `scripts/check-in-volume.sh ci/2212-lab-first`, commit (`ci(workspace): Run the pipeline on the lab's agents first, hosted agents as the
+   fallback`, `Part of #2212`, Co-Authored-By), push to the fork. **No PR**: the director opens it; its own Azure run is the first real job.
+   Estimate that run's time with 1 agent and with N, against today's 15-25 minutes.
 
 ## Batch 69 (security: the webpack conversion brought up to date after PRs 2188 and 2208 changed the lock; pushed, no PR; 23 October 2026, 7:45 PM Central, from `work (security)`)
 
