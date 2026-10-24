@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:14 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **4:24 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **4:14 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 5:15 AM Central.**
+**Next update by 5:25 AM Central.**
 
-**Batch 108, security: the notification toasts off @angular/animations (#2278)**, started 4:14 AM Central, 24 October. Then batch 109.
+**Batch 109, security: geoservices' animations off @angular/animations (#2278)**, started 4:24 AM Central, 24 October. Expected 2 hours; may stop after geoservices, as the batch allows.
 
 ## Finished
+
+- **Batch 108, security: the notification toasts off @angular/animations (#2278) - pushed** (4:14 to 4:24 AM, 24 October): the toast's entrance is now animate.enter with a keyframe, and its close a CSS transition with the same timing (it holds that state for 500 ms before the container removes it), in one notification-toast mixin in _motion.scss. Recorded on geoservices: the same resting places and timing within a few milliseconds. ts-events, UES operations, mailroom and GIS Day competitions now provide no animations (ts-events shows a toast with 0 errors). Check exit 0. **`chore/2278-notification-animations` at `afa4e57cc`, on PR 2279's branch.** Report `work-lab-leila/reports/2026-10-23-95.md`.
 
 - **Batch 107, security: mail calls with a timeout, the helper's errors handled (#2277) - pushed** (4:08 to 4:14 AM, 24 October): tests first, from batch 105's stand-in servers: all three calls still waiting after 2 s, and the helper's 400/500/non-JSON 502 surfacing as got's HTTPError. Now one shared 10-second timeout (overridable with MAILROOM_TIMEOUT_MS) in libs/common/nest/services, read by all three, a timeout answering 504 with no retry; the helper reads every answer itself, so mailroom errors become its HttpException. Full check exit 0. **`fix/2277-mail-timeouts` at `6e36cebec`, on the got 16 branch.** Report `work-lab-leila/reports/2026-10-23-94.md`.
 
@@ -306,4 +308,4 @@ Last written **4:14 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 107 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 108 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
