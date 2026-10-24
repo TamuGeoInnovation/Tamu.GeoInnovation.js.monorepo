@@ -83,7 +83,7 @@
     "jwks-rsa": "^2.0.5",
     "jwt-decode": "^4.0.0",
     "maplibre-gl": "^6.15.0",
-    "marked": "^9.1.5",
+    "marked": "18.1.0",
     "mssql": "^12.7.11",
     "multer": "^2.5.0",
     "ngx-highlightjs": "^6.1.3",
