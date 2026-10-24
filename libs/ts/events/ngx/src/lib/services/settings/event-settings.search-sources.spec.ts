@@ -18,11 +18,10 @@ const source = (name: string, param?: string): SearchSource =>
   ({ source: name, name, url: `https://example.test/${name}`, urlQueryParam: param }) as SearchSource;
 
 const subjectWith = (own: SearchSource[] | undefined, environment: unknown) => {
-  const subject = Object.create(EventSettingsService.prototype) as EventSettingsService & {
-    env: { value: (key: string) => unknown };
-  };
+  const subject = Object.create(EventSettingsService.prototype) as EventSettingsService;
 
-  subject.env = { value: () => environment };
+  // `env` is private: as part of the subject's type it would make the whole type `never`.
+  (subject as unknown as { env: { value: (key: string) => unknown } }).env = { value: () => environment };
   (subject as unknown as { eventConfiguration: () => unknown }).eventConfiguration = () => ({
     configuration: own === undefined ? {} : { searchSources: own }
   });

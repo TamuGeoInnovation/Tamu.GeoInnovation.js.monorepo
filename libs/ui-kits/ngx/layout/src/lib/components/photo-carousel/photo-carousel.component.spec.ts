@@ -6,7 +6,14 @@ const { openAt, destroy, glightbox } = vi.hoisted(() => {
   const openAt = vi.fn();
   const destroy = vi.fn();
 
-  return { openAt, destroy, glightbox: vi.fn(() => ({ openAt, destroy })) };
+  // Typed with the options GLightbox is called with, so the tests can read them back from its calls.
+  return {
+    openAt,
+    destroy,
+    glightbox: vi.fn<
+      (options: { elements: Array<{ href: string; type: string }> }) => { openAt: typeof openAt; destroy: typeof destroy }
+    >(() => ({ openAt, destroy }))
+  };
 });
 
 vi.mock('glightbox', () => ({ default: glightbox }));
@@ -48,7 +55,7 @@ describe('PhotoCarouselComponent', () => {
     create();
 
     expect(glightbox).toHaveBeenCalledTimes(1);
-    const options = glightbox.mock.calls[0][0] as { elements: Array<{ href: string; type: string }> };
+    const options = glightbox.mock.calls[0][0];
     expect(options.elements.map((element) => element.href)).toEqual(photos);
     expect(options.elements.every((element) => element.type === 'image')).toBe(true);
   });

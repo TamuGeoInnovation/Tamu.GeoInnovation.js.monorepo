@@ -26,7 +26,7 @@ agent is set up so that code can do as little as possible:
   a host folder, and **read-only**.
 - **One job per container.** The agent runs with `--once`, and `run-agent.ps1` starts a fresh container for every
   job (`docker create --rm`), so nothing one job leaves behind, a file, a process or a cache, reaches the next.
-- **Memory, CPU and processes are capped** (`--memory 24g --cpus 16 --pids-limit 8192`), so a job cannot starve the
+- **Memory, CPU and processes are capped** (`--memory 12g --cpus 5 --pids-limit 8192`), so a job cannot starve the
   machine's own work.
 - **Every Linux capability is dropped** except the three `start.sh` needs to switch to the agent's user and stop it
   (`SETUID`, `SETGID`, `KILL`), and `no-new-privileges` is set. The job's user, `agent`, has no capabilities and

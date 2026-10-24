@@ -88,10 +88,15 @@ describe('EventService, drawing a map whose feature lookup fails', () => {
     const flashFocusFeature = vi.fn().mockResolvedValue(undefined);
     const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
-    const eventService = Object.assign(Object.create(EventService.prototype) as EventService, {
-      eventSettingsService: { eventLayerSources: () => BreakSummerParkingTs.sources },
+    const sources = BreakSummerParkingTs.sources ?? [];
+
+    // Assigned onto the typed object: Object.assign's result type meets EventService's private members with these
+    // public stand-ins, and comes out as `never`.
+    const eventService = Object.create(EventService.prototype) as EventService;
+    Object.assign(eventService, {
+      eventSettingsService: { eventLayerSources: () => sources },
       mapService: { loadLayers: async () => undefined },
-      specialEventLayerReferences: [BreakSummerParkingTs.sources[0].id],
+      specialEventLayerReferences: [sources[0].id],
       visibleOptions: [],
       settings: {},
       applyExclusiveLayerVisibility: async () => undefined,
@@ -172,7 +177,7 @@ describe('EventService', () => {
     const shared = EventDefinitions.filter((definition) => definition.discover?.type !== 'kiosk').flatMap((definition) =>
       layerIds(definition.sources ?? [])
         .filter((id) => mainIds.has(id))
-        .map((id) => `${definition.configuration.id}: ${id}`)
+        .map((id) => `${definition.configuration?.id}: ${id}`)
     );
 
     expect(shared).toEqual([]);
@@ -216,12 +221,14 @@ describe('EventService, the order Indoor Track Parking draws its layers in', () 
       ]
     });
 
-    await Object.assign(TestBed.inject(EventService), {
+    const eventService = TestBed.inject(EventService);
+    Object.assign(eventService, {
       applyExclusiveLayerVisibility: () => undefined,
       selectFeatureFromUrl: async () => undefined,
       applySelectedChoiceView: async () => undefined,
       flashFocusFeature: async () => undefined
-    }).drawEvent();
+    });
+    await eventService.drawEvent();
 
     const ids = loaded.map((source) => source.id);
 

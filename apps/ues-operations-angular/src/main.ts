@@ -8,7 +8,6 @@ import { uesOperationsRoutes } from '@tamu-gisc/ues/operations/ngx';
 import { Angulartics2Module } from 'angulartics2';
 import { AppComponent } from './app/app.component';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideHttpClient, withXhr, withInterceptorsFromDi } from '@angular/common/http';
 import { provideRouter, withEnabledBlockingInitialNavigation } from '@angular/router';
 
@@ -33,7 +32,7 @@ bootstrapApplication(AppComponent, {
     // ErrorHandler, which logs it as "ERROR ...". Without a zone it would go straight to the browser as
     // an uncaught error; these listeners keep it going through the ErrorHandler.
     provideBrowserGlobalErrorListeners(),
-    importProvidersFrom(BrowserModule, BrowserAnimationsModule, Angulartics2Module.forRoot()),
+    importProvidersFrom(BrowserModule, Angulartics2Module.forRoot()),
     provideRouter(uesOperationsRoutes, withEnabledBlockingInitialNavigation()),
     provideHttpClient(withXhr(), withInterceptorsFromDi()),
     { provide: env, useValue: environment },

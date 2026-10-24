@@ -172,5 +172,18 @@
     "better-sqlite3": "^12.11.1",
     "form-data": "$form-data",
     "multer": "$multer"
+  },
+  "allowScripts": {
+    "@parcel/watcher": true,
+    "@swc/core": true,
+    "@vaadin/vaadin-usage-statistics": false,
+    "better-sqlite3": true,
+    "browser-tabs-lock": false,
+    "esbuild": true,
+    "fsevents": true,
+    "lmdb": true,
+    "msgpackr-extract": true,
+    "nx": true,
+    "unrs-resolver": true
   }
 }
