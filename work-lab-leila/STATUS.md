@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:42 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **4:47 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,9 +32,11 @@ Last written **4:42 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 5:45 AM Central.**
 
-**Batch 110, security: Nx 24.0.0 to 24.0.1 (#1218)**, started 4:42 AM Central, 24 October.
+**Batch 111, security: lint's false "Recursive task invocation detected" (#2243)**, started 4:47 AM Central, 24 October.
 
 ## Finished
+
+- **Batch 110, security: Nx 24.0.0 to 24.0.1 (#1218) - pushed** (4:42 to 4:46 AM, 24 October): nx migrate found no migrations (no migrations.json); nx and the ten @nx/* to exact 24.0.1 (published the day before; taken because the batch names it). Lock: only Nx's own entries, plus five @nx/webpack dependencies moved to the top level at the same versions. Full check exit 0 (lint 104 / test 100 / build 14). Noted: Dependabot ignores only Nx majors, not Nx entirely. **`chore/1218-nx-24-0-1` at `dae3fbc6f`.** Report `work-lab-leila/reports/2026-10-23-97.md`.
 
 - **Batch 109, security: geoservices' animations, and @angular/animations gone (#2278) - pushed** (4:24 to 4:41 AM, 24 October): the hamburger (state) as CSS transitions; the tile menu, submenu swap, header rows and forms (enter/leave) as animate.enter/animate.leave; the tile stagger as per-tile CSS delays; the submenu list stagger removed (it matched nothing). Two Angular behaviours kept by hand: tiles do not scale in while the menu opens, and a child does not shrink on its own while the menu closes. No trigger is left, so every app's provider, libs/ui-kits/ngx/animations and @angular/animations itself are gone (lock: only it). Recorded on geoservices and GIS Day: the same states and times within jitter, 0 Angular errors. Check exit 0 (lint 103 / test 99 / build 14). **`chore/2278-geoservices-animations` at `651137f7d`, on the notifications branch.** Report `work-lab-leila/reports/2026-10-23-96.md`.
 
@@ -310,4 +312,4 @@ Last written **4:42 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 109 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 110 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
