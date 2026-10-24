@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:39 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **2:40 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **2:39 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 3:10 AM Central.**
+**Next update by 3:40 AM Central.**
 
-**Batch 102, security: the ArcGIS types path in 30 library tsconfigs (#2271)**, started 2:39 AM Central, 24 October. Then batch 103.
+**Batch 103, security: angulartics2 13 to 14 (#1218)**, started 2:40 AM Central, 24 October (read from the clock). Then batch 104.
 
 ## Finished
+
+- **Batch 102, security: the ArcGIS types path in the library tsconfigs (#2271) - pushed** (after 2:36 to 2:39 AM, 24 October): all 45 non-spec tsconfigs that named the relative path now name `"@arcgis/core/interfaces"`: the 31 wrong ones and, for one spelling everywhere, the 15 that resolved. `libs/maps/esri/tsconfig.lib.json`: TS2688 before, 0 errors after. Full check exit 0 (lint 46 / test 44 / build 5). **`fix/2271-arcgis-lib-types` at `6bc32c472`.** Report `work-lab-leila/reports/2026-10-23-89.md`, which also corrects some STATUS start times since batch 96 that were estimated rather than read.
 
 - **Batch 101, geoservices bug: err.toRenderableJSON is not a function (#2267) - fixed and pushed** (2:32 to 2:36 AM, 24 October): GeoservicesError's constructor read `response.status` from an AxiosError that got no answer (refused, offline, CORS, timeout), so it threw a TypeError the pages' catchError could not render. Visible: the Result tab was empty; it now shows the error. First spec for geoprocessing-core, red first; an answered error unchanged. Check exit 0 (geoprocessing-core, geoservices-angular). **`fix/2267-geoservices-renderable-json` at `7d82ec6e2`.** Report `work-lab-leila/reports/2026-10-23-88.md`.
 
@@ -294,4 +296,4 @@ Last written **2:39 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 101 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 102 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
