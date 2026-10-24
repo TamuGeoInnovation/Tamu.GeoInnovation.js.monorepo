@@ -13,8 +13,8 @@ param(
   [string]$AgentName,
   [string]$TokenFile = (Join-Path $env:LOCALAPPDATA 'tamu-build-agent\token.xml'),
   [string]$Image = 'tamu-gisc/build-agent:latest',
-  [string]$Memory = '14g',
-  [int]$Cpus = 6
+  [string]$Memory = '12g',
+  [int]$Cpus = 5
 )
 
 $ErrorActionPreference = 'Stop'

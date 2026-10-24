@@ -6,7 +6,7 @@ pipeline's work in 3 to 5 minutes. A hosted agent takes 15 to 25 minutes for one
 
 | File | What it is |
 | --- | --- |
-| `Dockerfile` | Ubuntu 24.04, git, curl, jq, Node 24.22.1 and the Azure Pipelines agent (v4), downloaded and checksummed at build time. No secrets. |
+| `Dockerfile` | Ubuntu 24.04, git, curl, jq, the Azure Pipelines agent (v4) and Node 24.22.1 in the agent's tool cache, where `UseNode@1` finds it instead of downloading it (the job log says *Found tool in cache: node 24.22.1 x64*); downloaded and checksummed at build time. No secrets. |
 | `start.sh` | The container's entrypoint, adapted from Microsoft's [Run a self-hosted agent in Docker](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/docker) script: registers the agent, runs **one** job, removes the agent. |
 | `run-agent.ps1` | The supervisor on Windows: reads the saved token (or asks for it), then runs one fresh container per job. |
 | `save-agent-token.ps1` | Windows: asks for the token once and saves it so only this user on this machine can read it (DPAPI). |
@@ -173,19 +173,22 @@ every lab agent is down, pull request builds wait in the queue until one is back
 
 ## How many agents fit
 
-Measured on the lab, 23 October 2026 (#2212): one agent running the pipeline's whole workload (clone, `npm ci`, lint
-of 92 projects, both builds) peaked at **10.4 GB of memory** (the cgroup's `memory.peak`, page cache included) and
-**4.8 cores** (2.5 on average), in about four minutes.
+Measured on the lab (#2212): one agent running the pipeline's whole workload (clone, `npm ci`, lint of 92 projects,
+both builds) peaked at **10.4 GB of memory** with 6 CPUs (23 October 2026), and at **9.3 GB with 5 CPUs** (24 October
+2026; the cgroup's `memory.peak`, page cache included), using at most 4.2 cores.
 
-So each agent gets **`--memory 14g --cpus 6`** (the defaults of `run-agent.ps1`, `install-agent-task.ps1` and
-`linux/run-agent.sh`), and a machine runs as many as fit **while leaving at least 8 GB and 4 cores for its own work**,
-up to three. What counts is what Docker has, not the machine: `docker info --format '{{.NCPU}} {{.MemTotal}}'`. The
-lab's Docker Desktop has 24 CPUs and 62.5 GiB, which fits **three**: 18 cores and 42 GiB, leaving 6 cores and
-20 GiB. Each further agent on Windows is one more task, as in step 4:
+So each agent gets **`--memory 12g --cpus 5`** (the defaults of `run-agent.ps1`, `install-agent-task.ps1` and
+`linux/run-agent.sh`): 2.7 GB over the measured peak. A machine runs as many as fit **while leaving at least 8 GB and 4
+cores for its own work**, up to four. What counts is what Docker has, not the machine: `docker info --format '{{.NCPU}}
+{{.MemTotal}}'`. The lab's Docker Desktop has 24 CPUs and 62.5 GiB, which fits **four**: 20 cores and 48 GiB, leaving 4
+cores and 14.5 GiB. Five CPUs instead of six cost each build about 12 seconds (61 s against 48 s, measured on `development`
+a day apart); a fourth agent saves a pull request the wait for the third agent to come back, about 25 seconds.
+Each further agent on Windows is one more task, as in step 4:
 
 ```powershell
 powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-2 -Start
 powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-3 -Start
+powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-4 -Start
 ```
 
 They share the saved token and the egress proxy; each has its own network, so they cannot reach each other. On
