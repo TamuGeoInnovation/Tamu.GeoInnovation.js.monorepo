@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **7:11 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **7:21 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **7:11 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 122, security: #2263 - the type errors in projects' own files, listed and fixed (a branch)**, started 7:11 AM Central, 24 October.
+Nothing. Batch 122 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
 
 ## Finished
 
+- **Batch 122, security: #2263 - the type errors in projects' own files: 76 listed, all fixed - pushed** (7:11 to 7:20 AM, 24 October): `fix/2263-own-file-type-errors` at `e3e6ade48` on the fork. Survey on development: 76 own-file errors (61 in ts-events-ngx), now 0; failing spec tsconfigs 14 to 11 (maps-esri, ui-kits-ngx-layout, maps-feature-legend now pass). All type-only, none visible: specs read nullable definitions with ?., Object.assign subjects that typed as never are assigned onto the typed object, url read only where present; code: two map signals typed with undefined, popups' layer title guarded, export type, the raster basemap constant typed with its id. Full check exit 0. Report `work-lab-leila/reports/2026-10-23-109.md`.
 - **Batch 121, security: #1218 - chart.js 4, got 16 and the mail timeouts, stacked in turn - pushed** (6:57 to 7:08 AM, 24 October): `chore/1218-chart-js-4` `e68aa3a73` (on ngx-highlightjs; re-lock identical to the merge: only chart.js's tree), `chore/1218-got-16` `93b93d335` (on chart.js; one package.json conflict resolved; re-locked: the same 34 keys as got 16 alone), `fix/2277-mail-timeouts` `341121633` (on got-16; no lock change of its own). Each: full check exit 0, smoke tsc passed. Report `work-lab-leila/reports/2026-10-23-108.md`.
 - **Batch 120, security: #1218 - ngx-highlightjs 14 stacked on ngx-datatable 25, with its release notes - pushed** (6:53 to 6:57 AM, 24 October): `chore/1218-ngx-highlightjs-14` at `15aaa4ef1` on the fork. One package.json conflict with development (multer and ngx-highlightjs lines), resolved to both. Re-locked on ngx-datatable's lock: only ngx-highlightjs (6.1.3 to 14.0.1, published June 2025) and highlightjs-line-numbers.js (removed) move. Release notes `9999-ngx-highlightjs.md` with a What to test on dev row; collate --check clean. Full check exit 0, smoke tsc passed. Report `work-lab-leila/reports/2026-10-23-107.md`.
 - **Batch 119, security: #1218 - ngx-datatable 25 stacked on marked 18; copilot-home's empty-row finding confirmed and fixed - pushed** (6:39 to 6:50 AM, 24 October): `chore/1218-ngx-datatable-25` at `08ad06d5d` on the fork, merged with development and `fork/chore/1218-marked-18`. The lock re-done on marked's is identical to the automatic merge: only ngx-datatable moves (25.1.0, published 10 Aug). The empty message had lost its padding (25 has no datatable-selection); the rule is now `.datatable-body .empty-row`, and both empty after-shots are retaken and match before. Full check exit 0, smoke tsc passed. Report `work-lab-leila/reports/2026-10-23-106.md`.
@@ -324,4 +325,4 @@ Last written **7:11 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 121 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 122 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)

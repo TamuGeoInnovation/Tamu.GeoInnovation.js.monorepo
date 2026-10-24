@@ -1,0 +1,76 @@
+libs/aggiemap/ngx/common/src/lib/definitions.ts:5 TS1205 Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+libs/aggiemap/ngx/common/src/lib/definitions.ts:5 TS1205 Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+libs/aggiemap/ngx/core/src/lib/pages/map/map.component.ts:60 TS2345 Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/aggiemap/ngx/core/src/lib/pages/map/map.component.ts:63 TS2345 Argument of type 'undefined' is not assignable to parameter of type 'LayerSource[]'.
+libs/aggiemap/ngx/core/src/lib/services/event-notifications/event-notifications.dismissal.spec.ts:135 TS2345 Argument of type 'null' is not assignable to parameter of type '{ configuration: { id: string; eventDates: number[]; toast: NotificationProperties; }; }[]'.
+libs/maps/esri/src/lib/services/layer-sources/layer-sources.service.spec.ts:63 TS2353 Object literal may only specify known properties, and 'opacity' does not exist in type 'Partial<LayerSource>'.
+libs/maps/esri/src/lib/services/layer-sources/layer-sources.service.spec.ts:71 TS2353 Object literal may only specify known properties, and 'opacity' does not exist in type 'Partial<LayerSource>'.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.spec.ts:50 TS2722 Cannot invoke an object which is possibly 'undefined'.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.spec.ts:51 TS2722 Cannot invoke an object which is possibly 'undefined'.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.spec.ts:62 TS2722 Cannot invoke an object which is possibly 'undefined'.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.spec.ts:63 TS2722 Cannot invoke an object which is possibly 'undefined'.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.spec.ts:65 TS2722 Cannot invoke an object which is possibly 'undefined'.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.spec.ts:65 TS18048 'gallery' is possibly 'undefined'.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts:187 TS2345 Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+libs/ts/events/ngx/src/lib/definitions/all.definitions.spec.ts:14 TS18047 'definition.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/all.definitions.spec.ts:24 TS18047 'definition.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/all.definitions.spec.ts:25 TS18047 'definition.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/all.definitions.spec.ts:26 TS18047 'definition.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/all.definitions.spec.ts:36 TS18047 'definition.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/all.definitions.spec.ts:38 TS18047 'definition.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/football-parking.micromobility.spec.ts:59 TS2339 Property 'url' does not exist on type 'LayerSource'.
+libs/ts/events/ngx/src/lib/definitions/football-parking.micromobility.spec.ts:60 TS2339 Property 'url' does not exist on type 'LayerSource'.
+libs/ts/events/ngx/src/lib/definitions/football-parking.micromobility.spec.ts:94 TS18048 'effect.conversions' is possibly 'undefined'.
+libs/ts/events/ngx/src/lib/definitions/mens-basketball.definitions.spec.ts:19 TS4111 Property 'name' comes from an index signature, so it must be accessed with ['name'].
+libs/ts/events/ngx/src/lib/definitions/move-out.definitions.spec.ts:23 TS18047 'period.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/move-out.definitions.spec.ts:31 TS18047 'period.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/move-out.definitions.spec.ts:34 TS18047 'period.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/move-out.definitions.spec.ts:37 TS18047 'period.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/move-out.definitions.spec.ts:44 TS18047 'period.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/move-out.definitions.spec.ts:50 TS18047 'period.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/move-out.definitions.spec.ts:57 TS18047 'period.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:21 TS18047 'configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:25 TS18047 'definition.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:28 TS18047 'configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:29 TS18047 'configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:34 TS18047 'sources' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:38 TS18047 'sources' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:43 TS18047 'configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:44 TS18047 'configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:45 TS18047 'configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:49 TS18047 'configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:50 TS18047 'configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:54 TS18047 'configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/definitions/tailgating-kiosk.definitions.spec.ts:55 TS18047 'configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/modules/map/map.component.spec.ts:115 TS2454 Variable 'basemap' is used before being assigned.
+libs/ts/events/ngx/src/lib/modules/map/map.component.ts:103 TS2345 Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/ts/events/ngx/src/lib/modules/map/map.component.ts:106 TS2345 Argument of type 'undefined' is not assignable to parameter of type 'LayerSource[]'.
+libs/ts/events/ngx/src/lib/modules/popups/campus-building-popup/campus-building-popup.component.ts:59 TS2322 Type 'string | null | undefined' is not assignable to type 'string | undefined'.
+libs/ts/events/ngx/src/lib/modules/popups/markdown-popup/markdown-popup.component.ts:18 TS2533 Object is possibly 'null' or 'undefined'.
+libs/ts/events/ngx/src/lib/modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component.ts:21 TS2533 Object is possibly 'null' or 'undefined'.
+libs/ts/events/ngx/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.spec.ts:103 TS2339 Property 'onSearchResult' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.spec.ts:116 TS2339 Property 'onSearchResult' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.spec.ts:130 TS2339 Property 'onSearchResult' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.spec.ts:144 TS2339 Property 'specialEventLayerReferences' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.spec.ts:145 TS2339 Property 'drawEvent' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.spec.ts:148 TS2339 Property 'onSearchResult' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.spec.ts:175 TS2339 Property 'ngOnInit' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.spec.ts:177 TS2339 Property 'searchSources' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.spec.ts:177 TS7006 Parameter 'source' implicitly has an 'any' type.
+libs/ts/events/ngx/src/lib/services/event/event.service.spec.ts:94 TS18047 'BreakSummerParkingTs.sources' is possibly 'null'.
+libs/ts/events/ngx/src/lib/services/event/event.service.spec.ts:103 TS2339 Property 'drawEvent' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/services/event/event.service.spec.ts:175 TS18047 'definition.configuration' is possibly 'null'.
+libs/ts/events/ngx/src/lib/services/event/event.service.spec.ts:224 TS2339 Property 'drawEvent' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/services/settings/event-settings.development-sources.spec.ts:46 TS2339 Property 'url' does not exist on type 'LayerSource'.
+libs/ts/events/ngx/src/lib/services/settings/event-settings.development-sources.spec.ts:72 TS2339 Property 'url' does not exist on type 'LayerSource'.
+libs/ts/events/ngx/src/lib/services/settings/event-settings.search-sources.spec.ts:25 TS2339 Property 'env' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/services/settings/event-settings.search-sources.spec.ts:41 TS2339 Property 'configuredSearchSources' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/services/settings/event-settings.search-sources.spec.ts:43 TS7006 Parameter 's' implicitly has an 'any' type.
+libs/ts/events/ngx/src/lib/services/settings/event-settings.search-sources.spec.ts:47 TS2339 Property 'configuredSearchSources' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/services/settings/event-settings.search-sources.spec.ts:47 TS7006 Parameter 's' implicitly has an 'any' type.
+libs/ts/events/ngx/src/lib/services/settings/event-settings.search-sources.spec.ts:54 TS2339 Property 'configuredSearchSources' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/services/settings/event-settings.search-sources.spec.ts:54 TS7006 Parameter 's' implicitly has an 'any' type.
+libs/ts/events/ngx/src/lib/services/settings/event-settings.search-sources.spec.ts:57 TS2339 Property 'configuredSearchSources' does not exist on type 'never'.
+libs/ts/events/ngx/src/lib/services/settings/event-settings.search-sources.spec.ts:57 TS7006 Parameter 's' implicitly has an 'any' type.
+libs/ts/events/ngx/src/lib/services/settings/event-settings.search-sources.spec.ts:60 TS2339 Property 'configuredSearchSources' does not exist on type 'never'.
+libs/ui-kits/ngx/layout/src/lib/components/photo-carousel/photo-carousel.component.spec.ts:51 TS2493 Tuple type '[]' of length '0' has no element at index '0'.
