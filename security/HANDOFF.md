@@ -3,6 +3,27 @@
 Written by `work (security)` at 11:15 PM Central, Friday 23 October 2026, for whichever machine directs the security and
 dependency work next (the home machine, this weekend). The maintainer keeps the merge button; nothing here merges itself.
 
+## Ready to merge, morning of 24 October (all green; merge order notes in brackets)
+
+**Lock queue, one at a time:** [PR 2253](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2253) GLightbox (then the director pushes maplibre, `marked` 18, `ngx-datatable` 25, `ngx-highlightjs` 14 in turn).
+
+**No lock change, any order:**
+
+| PR | What | Closes |
+| --- | --- | --- |
+| [2260](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2260) | the markdown pipe lets Angular sanitise (security; **before `marked` 18**) | #2258 |
+| [2255](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2255) | warm read-only git mirror for lab checkouts (then rebuild and reinstall the agents) | #2254 |
+| [2257](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2257) | the flaky date-picker test, fixed | #2244 |
+| [2266](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2266) | the select spec typechecks | #2256 |
+| [2268](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2268) | the directory's Abbreviation column (visible, release notes) | #2262 |
+| [2269](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2269) | ArcGIS types path in the spec tsconfigs | #2264 |
+| [2270](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2270) | five type errors only spec typechecking showed | #2265 |
+| [2272](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2272) | the POI popup's console TypeError | #2259 |
+| [2273](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2273) | geoservices' Result tab shows a failed sample (visible, release notes) | #2267 |
+| [2274](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2274) | ArcGIS types path in the library tsconfigs | #2271 |
+
+**Questions for the maintainer:** #2258's priority (set Medium); the lab's "second security observation" (report `2026-10-23-78`); #2263, whether spec tsconfigs are typechecked in CI (no rush).
+
 ## The lock queue: one pull request at a time
 
 Every one of these changes `package-lock.json`. Merge **one**, then bring the next up to date and push it. Each is
