@@ -32,6 +32,13 @@ const micromobility = FootballParkingColdLayerSources.filter((source) =>
 
 const byId = (id: string): LayerSource | undefined => micromobility.find((source) => source.id === id);
 
+/** The address a layer reads, for the kinds of layer that have one. */
+const urlOf = (id: string): string | undefined => {
+  const source = byId(id);
+
+  return source && 'url' in source ? source.url : undefined;
+};
+
 /** Every layer effect declared across the builder steps, flattened. */
 const layerEffects = FootballParkingOptions.flatMap((option) => option.effects?.layers ?? []);
 
@@ -56,8 +63,8 @@ describe('football micromobility layers', () => {
   });
 
   it('reads each route layer from the service and sublayer that publishes it', () => {
-    expect(byId('football-micromobility-entry-routes')?.url).toContain(`${ENTRY_SERVICE}/1`);
-    expect(byId('football-micromobility-exit-routes')?.url).toContain(`${EXIT_SERVICE}/2`);
+    expect(urlOf('football-micromobility-entry-routes')).toContain(`${ENTRY_SERVICE}/1`);
+    expect(urlOf('football-micromobility-exit-routes')).toContain(`${EXIT_SERVICE}/2`);
   });
 
   it('names each layer as its service names it', () => {
@@ -91,7 +98,7 @@ describe('football micromobility layers', () => {
     expect(entry.length).toBeGreaterThan(0);
     expect(exit.length).toBeGreaterThan(0);
 
-    const inputs = (effects: typeof entry) => effects.flatMap((effect) => effect.conversions.map((c) => c.input));
+    const inputs = (effects: typeof entry) => effects.flatMap((effect) => (effect.conversions ?? []).map((c) => c.input));
 
     expect(inputs(entry)).toContain('micromobility');
     expect(inputs(entry)).toContain('exit');

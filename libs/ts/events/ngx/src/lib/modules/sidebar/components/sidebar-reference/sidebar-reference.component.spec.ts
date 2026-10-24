@@ -41,13 +41,17 @@ function tailgatingMapWith(layers: Array<ReturnType<typeof fakeLayer>>) {
   const selectFeatures = vi.fn();
   const toast = vi.fn();
 
-  const eventService = Object.assign(Object.create(EventService.prototype) as EventService, {
+  // Assigned onto the typed object rather than taken from Object.assign's result: that result's type meets the
+  // classes' private members with these public stand-ins, and comes out as `never`.
+  const eventService = Object.create(EventService.prototype) as EventService;
+  Object.assign(eventService, {
     mapService: { selectFeatures, loadLayers: async () => undefined },
     _map: { findLayerById: (id: string) => layers.find((layer) => layer.id === id), allLayers: layers },
     _sources: TailgatingColdLayerSources
   });
 
-  const sidebar = Object.assign(Object.create(SidebarReferenceComponent.prototype) as SidebarReferenceComponent, {
+  const sidebar = Object.create(SidebarReferenceComponent.prototype) as SidebarReferenceComponent;
+  Object.assign(sidebar, {
     configuration: TailgatingConfiguration,
     eventService,
     ns: { toast },
@@ -168,9 +172,8 @@ describe('SidebarReferenceComponent search sources', () => {
       getMergedSettings: () => ({})
     } as unknown as EventSettingsService;
 
-    const sidebar = Object.assign(Object.create(SidebarReferenceComponent.prototype) as SidebarReferenceComponent, {
-      eventSettingsService: settings
-    });
+    const sidebar = Object.create(SidebarReferenceComponent.prototype) as SidebarReferenceComponent;
+    Object.assign(sidebar, { eventSettingsService: settings });
 
     sidebar.ngOnInit();
 
