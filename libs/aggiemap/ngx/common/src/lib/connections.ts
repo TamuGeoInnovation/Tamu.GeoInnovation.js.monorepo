@@ -1,3 +1,5 @@
+import { TAMU_CAMPUS_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
+
 import { actingAsProduction } from './acting-as-production';
 
 function createConnections(gisHost: string): IComposedConnections {
@@ -16,7 +18,7 @@ function createConnections(gisHost: string): IComposedConnections {
     // `basemaps.definition.ts` has always named it. Development therefore reads its buildings and
     // surface lots from the same service it already draws its basemap tiles from. Restore
     // `${gisHost}` once #1696 publishes it on the development server.
-    basemapUrl: `https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer`,
+    basemapUrl: TAMU_CAMPUS_BASEMAP_URL,
     inforUrl: `https://${gisHost}/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer`,
     accessibleUrl: `https://${gisHost}/arcgis/rest/services/FCOR/ADA_120717/MapServer/0`,
     // Lactation rooms, a hosted service from Facilities Analytics & Mapping that replaced layer 2 of

@@ -19,13 +19,6 @@ updates:
       - dependencies
     commit-message:
       prefix: chore(deps)
-    # Nx 24 removes the executors most targets here use (@nx/eslint:lint, @nx/jest:jest, @nx/webpack:webpack) and
-    # does not install as it stands (work-lab-leila batch 36). Its major waits for #2168; remove this when that is done.
-    ignore:
-      - dependency-name: nx
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@nx/*'
-        update-types: ['version-update:semver-major']
     # One pull request per family, so a week brings a few rather than dozens. A package joins the first group that
     # matches it. The named families keep their majors in their group, because their packages move together;
     # everything-else takes minor and patch only, so each other major arrives as a pull request of its own.

@@ -7,15 +7,7 @@
 
 @if (medias?.length > 0) {
 <div class="popup-section">
-  <swiper-container #swiperRef init="false">
-    @for (media of medias; track media) {
-    <swiper-slide [attr.data-src]="media">
-      <a [href]="media" target="_blank">
-        <img [src]="media" alt="Photo {{ $index + 1 }} of {{ medias.length }}, opens full size in a new tab" />
-      </a>
-    </swiper-slide>
-    }
-  </swiper-container>
+  <tamu-gisc-photo-carousel [photos]="medias"></tamu-gisc-photo-carousel>
 </div>
 }
 

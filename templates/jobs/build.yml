@@ -17,6 +17,9 @@ jobs:
     ${{ else }}:
       condition: and(succeeded(), ne(stageDependencies.Setup.Last_SHA.outputs['lab_pool.labOnline'], 'true'))
     steps:
+      - ${{ if parameters.lab }}:
+          - checkout: none
+          - template: ../tasks/checkoutFromMirror.yml
       - template: ../tasks/cacheOrRestoreDependencies.yml
 
       # The secure file is never given to a pull request from a fork (#2216): that code is anyone's, and it runs

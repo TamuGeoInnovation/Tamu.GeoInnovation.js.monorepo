@@ -26,9 +26,12 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    * If no `model` is provided from the parent, the placeholder is automatically selected.
    *
    * A model rather than an input: the component sets it itself, from the user and the forms API.
+   *
+   * The property of the chosen item named by `valueTemplate`, or the item itself without one: the layer filter
+   * takes the whole field (#2256).
    */
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  protected readonly _value = model<string>(undefined, { alias: 'value' });
+  protected readonly _value = model<T | string>(undefined, { alias: 'value' });
 
   public readonly formControlName = input('default');
 
@@ -38,7 +41,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
     return this._value();
   }
 
-  public set value(value: string) {
+  public set value(value: T | string) {
     this._value.set(value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value);
     this._onChange(value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value);
     this._onTouched();
@@ -77,10 +80,10 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   /**
    * Event emitted when the value of the select input element is changed.
    */
-  public readonly changed = output<string>();
+  public readonly changed = output<T | string>();
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-  private _onChange = (value: string) => {};
+  private _onChange = (value: T | string) => {};
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private _onTouched = () => {};
@@ -105,7 +108,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
     }
   }
 
-  public writeValue(value: string) {
+  public writeValue(value: T | string) {
     this.value = value;
   }
 
