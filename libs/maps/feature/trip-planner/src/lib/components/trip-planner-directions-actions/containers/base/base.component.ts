@@ -4,7 +4,6 @@ import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil, pluck } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
-import { v4 as guid } from 'uuid';
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 
@@ -113,7 +112,7 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
     this.plannerService.clearAll();
 
     const label = {
-      guid: guid(),
+      guid: crypto.randomUUID(),
       date: Date.now(),
       type: 'reset'
     };
@@ -130,7 +129,7 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
   public eventCopyTrip() {
     // Route creation analytics tracking
     const label = {
-      guid: guid(),
+      guid: crypto.randomUUID(),
       date: Date.now(),
       name: this.shareUrl,
       type: 'share'

@@ -12,7 +12,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject, Observable } from 'rxjs';
 import { switchMap, takeUntil, shareReplay, distinctUntilChanged, take, filter } from 'rxjs/operators';
 
-import { v4 as guid } from 'uuid';
 import { Angulartics2 } from 'angulartics2';
 
 import { TSRoute, BusService } from '@tamu-gisc/maps/feature/trip-planner';
@@ -131,7 +130,7 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private reportToggleRoute(shortName: string) {
     const label = {
-      guid: guid(),
+      guid: crypto.randomUUID(),
       date: Date.now(),
       name: shortName
     };

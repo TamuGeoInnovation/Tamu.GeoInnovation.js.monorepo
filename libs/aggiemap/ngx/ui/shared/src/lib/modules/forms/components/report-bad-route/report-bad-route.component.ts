@@ -7,7 +7,6 @@ import { TripPlannerService, TripResult } from '@tamu-gisc/maps/feature/trip-pla
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { Angulartics2 } from 'angulartics2';
-import { v4 as guid } from 'uuid';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -49,7 +48,7 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
    */
   public submitBadRoute() {
     const label = {
-      guid: guid(),
+      guid: crypto.randomUUID(),
       date: Date.now(),
       travel_mode: this.result.params.travelMode.id,
       connection: this.result.connection.name,

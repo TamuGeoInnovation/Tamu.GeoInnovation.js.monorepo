@@ -13,7 +13,6 @@ import {
   JoinTable,
   OneToMany
 } from 'typeorm';
-import { v4 as guid } from 'uuid';
 
 
 // TODO:
@@ -131,7 +130,7 @@ export class GuidIdentity extends TimeStampEntity {
   @BeforeInsert()
   private generateGuid(): void {
     if (this.guid === undefined || this.guid === '' || this.guid === null) {
-      this.guid = guid();
+      this.guid = crypto.randomUUID();
     }
   }
 }
