@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 119.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 120.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,22 @@ report under **Questions for the director**, with options and a recommendation �
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 119 (security: #1218 - ngx-datatable 25 prepared on top of marked 18, with copilot-home's empty-row finding; a branch; 24 October 2026, 6:50 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start now.** **Expected: 45 minutes.** The lock queue is now: `marked` 18.1.0 (PR 2314, building) → **`ngx-datatable` 25** → `ngx-highlightjs` 14 →
+`chart.js` 4 → `got` 16 → mail timeouts. `angulartics2` 14 goes as Dependabot's PR 2300 instead of your branch. `copilot-home` (GitHub Copilot on the
+maintainer's home computer, a new listener) reviewed your `ngx-datatable` branch (its report `copilot-home/reports/2026-10-24-3.md`): one likely
+finding, `libs/sass/components/_datatable.scss`'s `datatable-selection { .empty-row { padding } }` rule cannot match 25's markup (there is no
+`<datatable-selection>`; the empty message is `.datatable-empty-row > .empty-row`), so an empty table loses its 0.5rem 1rem padding.
+1. In a worktree of `fork/chore/1218-ngx-datatable-25`: `git merge origin/development`, then `git merge fork/chore/1218-marked-18` (PR 2314's
+   branch), so it is stacked on `marked`. The lock will conflict: take `marked`'s lock and redo `@swimlane/ngx-datatable` alone by batch 41's
+   method; key by key against `fork/chore/1218-marked-18`'s lock, only `node_modules/@swimlane/ngx-datatable` moves. Its 25.1.0 was published in
+   August, so the 14-day rule (#2292) is met.
+2. **Check copilot-home's finding** against your empty-table screenshots (`*-empty-before/after.png`). If the padding is lost, fix the selector
+   (no `datatable-selection` parent) and retake the empty "after" shots; if not, say why the rule still reaches it.
+3. `scripts/check-in-volume.sh chore/1218-ngx-datatable-25` (it now also runs the smoke typecheck). Commit, push to the fork. No PR: the director
+   opens it when `marked` merges.
 
 ## Batch 118 (security: #2212 - the agents' reinstall from development, prepared and dry-run, commands for the maintainer; nothing installed; 24 October 2026, 6:10 AM Central, from `work (security)`)
 
