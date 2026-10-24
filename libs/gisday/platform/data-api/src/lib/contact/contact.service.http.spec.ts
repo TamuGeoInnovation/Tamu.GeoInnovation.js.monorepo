@@ -1,7 +1,7 @@
 import { createServer, IncomingMessage, Server, ServerResponse } from 'node:http';
 import { AddressInfo } from 'node:net';
 
-import { InternalServerErrorException } from '@nestjs/common';
+import { GatewayTimeoutException, InternalServerErrorException } from '@nestjs/common';
 
 import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 
@@ -67,21 +67,23 @@ describe('ContactService over HTTP', () => {
     expect(received).toHaveLength(1);
   });
 
-  it('sets no timeout of its own: a mailroom that never answers keeps the request waiting', async () => {
+  // A mailroom that never answers held the request open for ever (#2277).
+  it('gives up after the mail timeout, as a 504 the API can answer with', async () => {
+    process.env.MAILROOM_TIMEOUT_MS = '300';
     let hung: ServerResponse;
     answer = (_req, res) => (hung = res);
 
-    let settled = false;
-    const sending = new ContactService().sendMessage({ ...message }).then(
-      () => (settled = true),
-      () => (settled = true)
-    );
+    const outcome = await Promise.race([
+      new ContactService().sendMessage({ ...message }).then(
+        () => 'sent',
+        (e) => e
+      ),
+      new Promise((resolve) => setTimeout(() => resolve('still waiting after 2 s'), 2000))
+    ]);
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    expect(settled).toBe(false);
-
-    hung.writeHead(200, { 'content-type': 'application/json' });
-    hung.end('{}');
-    await sending;
+    hung?.end('{}');
+    delete process.env.MAILROOM_TIMEOUT_MS;
+    expect(outcome).toBeInstanceOf(GatewayTimeoutException);
+    expect(received).toHaveLength(1);
   });
 });
