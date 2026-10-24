@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:44 PM Central, 24 October 2026**. A listener; job: testing.
+Last written **2:47 PM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,7 +32,7 @@ Last written **2:44 PM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-Nothing. Batch 133 stopped at better-sqlite3 (see its report); waiting for the next batch (watching `work-lab-leila/TASKS.md`).
+**Batch 134, security: #2326 - the install-script check accepts a binding.gyp package's entry (a branch)**, started 2:47 PM Central, 24 October.
 
 ## Finished
 
