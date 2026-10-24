@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 76.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 79.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -43,6 +43,45 @@ report under **Questions for the director**, with options and a recommendation â
 > And a section **"Stopping or removing an agent"**: Ctrl+C, then remove it from the pool if the machine is leaving.
 
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
+
+## Batch 76 (security: #1218 - what is left between us and the latest of everything; a survey, nothing pushed; 23 October 2026, 8:50 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 45 minutes.** **Commit nothing, push nothing.** The maintainer's goal (#1218): every
+dependency at its latest, once the vulnerabilities are fixed (they are: production 0 critical / 0 high). Dependabot covers in-range and grouped
+updates weekly, but ignores Nx majors and the API images' Node majors, and cannot change code. After PRs 2187, 2191, 2231 (Nx 24) and 2195
+(typeorm 1), what is still behind?
+
+1. On `origin/development` plus a scratch merge of `fork/chore/2168-nx-24` and `fork/chore/1218-typeorm-1` (so the survey starts after
+   them): `npm outdated --json` (in Docker), every direct dependency in `package.json` and in each `apps/*/src/package.json`.
+2. A table: package, current, wanted, **latest**, major or not, which apps/libraries use it (a grep count), and **why it is behind**: blocked by
+   a peer (name it, e.g. Angular's range), needs code changes (say what from the changelog), Dependabot will do it next Monday, or abandoned
+   upstream (and the replacement).
+3. Group them into proposed pull requests, smallest risk first, each with an estimate and how it would be proven (which builds, which app run).
+   Name anything that should wait for an Angular or Nest major as one step.
+4. The base images too: `node` in the API Dockerfiles and the nginx base, against their latest tags.
+5. Report only. The director turns it into issues and batches.
+
+## Batch 77 (security: #2168 - Nx 24 re-checked on top of the merged Dependabot groups; pushed, no PR; 23 October 2026, 8:50 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start only once `git log origin/development --oneline -15` shows both PR 2187 (the testing group) and PR 2191 (the
+everything-else group) merged.** Until then skip it and take the next. **Expected: about 20 minutes.**
+
+1. In `chore/2168-nx-24`: `git merge origin/development`. **If the lock conflicts, do not regenerate it**: batch 41's method for `nx` and
+   `@nx/*` only.
+2. The lock rule, key by key: Nx 24's own 47 entries and nothing else against the new `development`.
+3. `scripts/check-in-volume.sh chore/2168-nx-24` (full `affected`), push to the fork (updates PR 2231). Report.
+
+## Batch 78 (security: Playwright's version in the smoke README after PR 2187; a docs fix and a branch; 23 October 2026, 8:50 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start only once PR 2187 (Playwright 1.64.1) has merged.** **Expected: 15 minutes.**
+
+1. Branch `docs/playwright-1-64-1` from `origin/development`. Find every place that names the Playwright version or image tag outside
+   `package.json`/the lock (`test/smoke/**/README.md`, `run-local.sh`, workflow files, `docs/`), and say for each whether it must match the
+   package (an image tag `mcr.microsoft.com/playwright:v1.xx.x-â€¦` must) or is only prose. Bring every one that must match to 1.64.1.
+2. Prove the smoke runner still starts: `test/smoke/aggiemap/run-local.sh development one legend.spec.ts` (or the smallest spec), and say which
+   image it pulled.
+3. Commit (`docs(workspace): Name Playwright 1.64.1 wherever its version is written`, Co-Authored-By; the director adds the issue), push to the
+   fork. No PR.
 
 ## Batch 75 (security: #2193 - PR 2195, typeorm 1 and mssql 12, brought up to date and re-checked; pushed, no PR; 23 October 2026, 8:40 PM Central, from `work (security)`)
 
