@@ -32,7 +32,7 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 11:00 PM Central.**
 
-**Batch 86, security: where a lab job's time goes, and a cache a fork cannot poison (#2212)**, started 10:05 PM Central.
+**Batch 87, security: the maplibre branch on the university's campus basemap (#1218)**, started 10:06 PM Central, in `C:/TAMU/wt-ml84`. Then batch 86 (the director put 87 first).
 
 ## Finished
 
