@@ -24,3 +24,4 @@ export * from './lib/components/stepper/components/step/step.component';
 export * from './lib/components/stepper/directives/stepper-toggle.directive';
 export * from './lib/components/stepper/stepper.component';
 export * from './lib/components/stepper/components/step-toggle/step-toggle.component';
+export * from './lib/components/photo-carousel/photo-carousel.component';
