@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 96.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 97.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,23 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 96 (security: #2258 - the markdown pipe stops bypassing Angular's sanitiser; a security fix and a branch; 24 October 2026, 1:10 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start next, before batch 93** (it is a security fix). **Expected: 60 minutes.** Your batch 91 answers: **1 yes**, filed as
+#2258 (Bug); **2 yes**, filed as #2259. Your `marked` 18 branch joins the lock queue after maplibre. Your "second security observation" will be
+asked of the maintainer in the morning.
+
+1. **A failing test first** (CLAUDE.md): a spec for `MarkdownParsePipe` (`libs/common/ngx/pipes`) showing that a description containing an
+   event-handler attribute (e.g. `<img src=x onerror=...>`) or a `<script>` reaches the DOM with it intact when bound with `[innerHTML]` as the
+   callers do. Prove it fails on `development`.
+2. Branch `fix/2258-markdown-sanitiser` from `origin/development`: the pipe returns the HTML as a **string**, so `[innerHTML]` sanitises it. Check
+   every caller still compiles (the pipe's return type changes from `SafeHtml`). Find out, on your 3,177-text corpus from batch 91, **what the
+   sanitiser now strips** that the current texts use (`target`, `data-*`, anything else), and whether that changes how any popup or page looks
+   (links opening in a new tab, for instance). If something visible is lost, report it with options rather than adding a bypass back.
+3. The spec now passes (the handler is stripped, ordinary markdown and the allowed tags survive). Before/after screenshots of one AggieMap popup,
+   one dining popup if you can reach one, and one GIS Day session page into `docs/screenshots/markdown-sanitiser/`. Full check.
+4. Commit (`fix(common-ngx-pipes): Let Angular sanitise the markdown pipe's HTML`, `Closes #2258`, Co-Authored-By), push to the fork. No PR.
 
 ## Batch 94 (security: #2256 - the select component's spec does not typecheck; a fix and a branch; 24 October 2026, 12:40 AM Central, from `work (security)`)
 
