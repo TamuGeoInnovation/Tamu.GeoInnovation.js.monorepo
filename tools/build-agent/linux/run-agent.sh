@@ -13,8 +13,8 @@ TOKEN_FILE=${TOKEN_FILE:-/etc/tamu-build-agent/token}
 IMAGE=${IMAGE:-tamu-gisc/build-agent:latest}
 EGRESS_IMAGE=${EGRESS_IMAGE:-tamu-gisc/build-agent-egress:latest}
 # Each agent's share of the machine: README, "How many agents fit".
-MEMORY=${MEMORY:-14g}
-CPUS=${CPUS:-6}
+MEMORY=${MEMORY:-12g}
+CPUS=${CPUS:-5}
 
 container="tamu-build-agent-$AZP_AGENT_NAME"
 # The same network and proxy as on Windows: no route out but the proxy, which refuses every private address.

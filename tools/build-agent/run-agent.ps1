@@ -33,8 +33,8 @@ param(
   [string]$Image = 'tamu-gisc/build-agent:latest',
   [string]$EgressImage = 'tamu-gisc/build-agent-egress:latest',
   # Each agent's share of the machine: README, "How many agents fit".
-  [string]$Memory = '14g',
-  [int]$Cpus = 6,
+  [string]$Memory = '12g',
+  [int]$Cpus = 5,
   [string]$TokenFile
 )
 

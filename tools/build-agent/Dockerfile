@@ -17,12 +17,6 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates curl git jq xz-utils unzip zstd python3 make g++ \
   && rm -rf /var/lib/apt/lists/*
 
-RUN cd /tmp \
-  && curl -fsSLO "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" \
-  && curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/SHASUMS256.txt" | grep " node-v${NODE_VERSION}-linux-x64.tar.xz\$" | sha256sum -c - \
-  && tar -xJf "node-v${NODE_VERSION}-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
-  && rm "node-v${NODE_VERSION}-linux-x64.tar.xz"
-
 # The agent and its work folder belong to 'agent', which runs every job. installdependencies.sh is the
 # agent's own installer for the .NET libraries it needs.
 RUN useradd --create-home --shell /bin/bash agent \
@@ -35,6 +29,22 @@ RUN useradd --create-home --shell /bin/bash agent \
   && ./bin/installdependencies.sh \
   && rm -rf /var/lib/apt/lists/* \
   && chown -R agent:agent /azp
+
+# Node, once, where UseNode@1 looks first: the agent's tool cache ($AGENT_TOOLSDIRECTORY/node/<version>/x64, with the
+# x64.complete marker azure-pipelines-tool-lib checks). A job then finds it instead of downloading it (#2212).
+# node, npm and npx on the PATH are links to the same copy. The Node tree stays root's, so a job cannot change it;
+# the tool cache folder itself is the agent's, for any other tool a job installs.
+ENV AGENT_TOOLSDIRECTORY=/azp/_work/_tool
+RUN tool="${AGENT_TOOLSDIRECTORY}/node/${NODE_VERSION}" \
+  && cd /tmp \
+  && curl -fsSLO "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" \
+  && curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/SHASUMS256.txt" | grep " node-v${NODE_VERSION}-linux-x64.tar.xz\$" | sha256sum -c - \
+  && mkdir -p "${tool}/x64" \
+  && tar -xJf "node-v${NODE_VERSION}-linux-x64.tar.xz" -C "${tool}/x64" --strip-components=1 --no-same-owner \
+  && rm "node-v${NODE_VERSION}-linux-x64.tar.xz" \
+  && touch "${tool}/x64.complete" \
+  && ln -s "${tool}/x64/bin/node" "${tool}/x64/bin/npm" "${tool}/x64/bin/npx" /usr/local/bin/ \
+  && chown agent:agent /azp/_work "${AGENT_TOOLSDIRECTORY}" "${AGENT_TOOLSDIRECTORY}/node"
 
 # COPY then chmod rather than COPY --chmod, which needs BuildKit; Ubuntu's own Docker package builds without it.
 COPY start.sh /usr/local/bin/start.sh
