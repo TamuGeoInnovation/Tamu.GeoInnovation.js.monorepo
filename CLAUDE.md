@@ -145,6 +145,13 @@ The id stays `Central Standard Time` all year; Windows handles the summer change
 containers run in UTC for the same reason, which is why a capture shows the wrong time unless
 `timezoneId: 'America/Chicago'` is passed to `newPage`. See #1423.
 
+**Take the latest version that is at least 14 days old, not simply the latest.** Most supply-chain attacks on npm are
+poisoned new releases that stay on the registry for hours or days before anyone notices, and this repository installs about
+1,600 packages. So an upgrade, ours or Dependabot's, waits until a release is two weeks old: pin with `~` or an exact version
+to stay below a newer release that is not, and say so in the pull request. Dependabot's `cooldown` in `.github/dependabot.yml`
+applies the same wait to its version updates (7 days for patches and minors, 14 for majors). **A security fix is the exception**:
+take it at once, and record why. See #2292.
+
 **After a dependency change, prove the lock file with a clean `npm ci` before pushing.** CI installs
 with `npm ci`, which installs only what `package-lock.json` records and refuses when it disagrees
 with `package.json`. A local `npm install` quietly adds what is missing to `node_modules` without
