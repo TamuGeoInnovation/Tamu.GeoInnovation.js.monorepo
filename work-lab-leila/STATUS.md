@@ -32,9 +32,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 10:15 PM Central.**
 
-**Batch 82, security: uuid replaced by crypto.randomUUID() (#1218)**, checks started 9:24 PM Central, in `C:/TAMU/wt-uu82`. Then 83, 84. Batch 77 waits for PR 2191, batch 79 for PR 2231.
+**Batch 83, security: lightgallery's licence (#1218)**, started 9:29 PM Central. Then 84. Batch 77 waits for PR 2191, batch 79 for PR 2231.
 
 ## Finished
+
+- **Batch 82, security: uuid replaced by crypto.randomUUID() (#1218) - pushed** (9:24 to 9:28 PM, 23 October): 23 v4() calls in 16 files now crypto.randomUUID(); the one validate() now class-validator's isUUID (reused; no helper existed); uuid dropped from package.json (stays as bull's, typeorm's and others'). Full check exit 0. GIS Day probe through the API's own entities: a sponsor and a place got v4 guids. Question: are all front ends served over HTTPS? **`chore/1218-drop-uuid` at `3630cce26`.** Report `work-lab-leila/reports/2026-10-23-69.md`.
 
 - **Batch 81, security: dotenv, fs-extra, turf, jsdom, pngjs to their latest majors (#1218) - pushed** (9:09 to 9:24 PM, 23 October): dotenv 18 with `quiet: true` at all 10 calls; Turf 7 moved the GeoJSON types (found by the check, fixed: `geojson` types, @turf/helpers and @types/geojson declared). Lock: only these packages and their own dependencies. Full check exit 0 (lint 104 / test 100 / build 14). Four API images behave as before, no dotenv line; gisday-nest 200/401 against the seed; smoke legend 7 passed; a 14-shot visual-baseline capture reviewed with pngjs 7. **`chore/1218-small-majors` at `ec87d8104`.** Report `work-lab-leila/reports/2026-10-23-68.md`.
 
@@ -254,4 +256,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 81 (77 waits for 2191, 79 for 2231) (42 and 39 stopped; 40 superseded)
+Last batch done: 82 (77 waits for 2191, 79 for 2231) (42 and 39 stopped; 40 superseded)
