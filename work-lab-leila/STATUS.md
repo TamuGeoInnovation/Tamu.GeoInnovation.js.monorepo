@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:50 PM Central, 24 October 2026**. A listener; job: testing.
+Last written **3:03 PM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **2:50 PM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 135, security: #1218 - the rest of the lock queue, from better-sqlite3 (branches)**, started 2:50 PM Central, 24 October.
+**Batch 136, security: #2327 - the flaky common-ngx-ui-sidebar test (a branch)**, started 3:03 PM Central, 24 October.
 
 ## Finished
 
+- **Batch 135, security: #1218 - the rest of the lock queue, from better-sqlite3 - all pushed** (2:50 to 3:02 PM, 24 October): better-sqlite3-13 `384554b79` (entry now `false`, batch 134's branch merged; no node-gyp build, loads its prebuilt binary), auth0-7 `09ebbe82c` (the same 54 keys as batch 128), 2320 `5e84375d0`, 2111 `a4d35a011`. No conflicts; every full check exit 0 with npm ci under strict-allow-scripts. Report `work-lab-leila/reports/2026-10-23-122.md`.
 - **Batch 134, security: #2326 - the install-script check accepts a binding.gyp package's entry - pushed** (2:47 to 2:49 PM, 24 October): `fix/2326-install-scripts-binding-gyp` at `273ac1f11` on the fork. Only an entry whose package is not in the lock is stale; an installed package with no recorded script is reported on its own line and stays. Two tests red on development's code, 24 of 24 tools tests pass; full check exit 0 (no Nx tasks, lint.yml steps passed). Report `work-lab-leila/reports/2026-10-23-121.md`.
 - **Batch 133, security: #1218 - the lock queue brought up to date - stopped at better-sqlite3** (2:23 to 2:43 PM, 24 October): pushed chart-js-4 `19d950313`, got-16 `f3734f480`, mail-timeouts `332d4f12a` (one flaky common-ngx-ui-sidebar test, passed 3/3 alone and on a second check), vite `0565f8ecd`, jwks-rsa-4 `e0d0240cf`; every merge clean, each lock moving only its own keys. better-sqlite3-13 not pushed: removing its allowScripts entry failed npm ci with ESTRICTALLOWSCRIPTS (13.0.3 ships binding.gyp; npm counts it as node-gyp rebuild despite gypfile false). `better-sqlite3: false` passes and loads the prebuilt binary, but install-scripts.mjs calls it stale: question for the director. auth0-7, 2320, 2111 not started. Report `work-lab-leila/reports/2026-10-23-120.md`.
 - **Batch 132, security: #2111 - Trivy on every image from the stack's tip - read only** (9:59 to 10:10 AM, 24 October): eight images from `6fbc15541` (front ends on nginx-base sha-b5ba4a5) and from development `fbabec35c`, scanned at critical/high and medium. development: front ends 1 High each (brotli-libs), gisday-nest 2 Mediums (uuid 8.3.2 from bull and 9.0.1 from auth0 3), gisday-nest and mailroom-nest the accepted msal-node High. Tip: only the accepted msal-node High. Report `work-lab-leila/reports/2026-10-23-119.md`.
@@ -337,4 +338,4 @@ Last written **2:50 PM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 134 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 135 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
