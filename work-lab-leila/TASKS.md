@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 102.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 103.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,16 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 102 (security: #2271 - the ArcGIS types path in 30 library tsconfigs; a fix and a branch; 24 October 2026, 2:35 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 101.** **Expected: 20 minutes.** Your batch 98 question 2: **yes**, filed as #2271. Your batch 98
+and 99 branches are PRs 2269 and 2270.
+1. Branch `fix/2271-arcgis-lib-types` from `origin/development`: in every `tsconfig.lib.json` (and
+   `libs/common/utils/geometry/generic/tsconfig.json`) that names a relative `node_modules/@arcgis/core/interfaces`, the package name instead, as
+   in #2264. Leave the two-levels-deep ones that resolve, unless one spelling everywhere is simpler (say which you chose).
+2. Prove one three-deep library's own `tsc -p <lib>/tsconfig.lib.json --noEmit` no longer reports TS2688. `scripts/check-in-volume.sh` (full).
+3. Commit (`fix(workspace): Resolve the ArcGIS types from every library tsconfig`, `Closes #2271`, Co-Authored-By), push to the fork. No PR.
 
 ## Batch 100 (aggiemap bug found by security: #2259 - the POI popup's console TypeError; a bug fix and a branch; 24 October 2026, 2:25 AM Central, from `work (security)`)
 
