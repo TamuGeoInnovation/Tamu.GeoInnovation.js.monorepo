@@ -3,17 +3,26 @@
 Runs this machine's Azure Pipelines Linux agent: a fresh container for every job, until Ctrl+C (#2212).
 
 .DESCRIPTION
-Asks once for a personal access token, without echoing it, then starts the agent image one container at a
-time. Each container registers the agent, runs one job, removes the agent and exits; this script then starts
-the next. See README.md for the guard rails, which are set here.
+Reads the token save-agent-token.ps1 stored (-TokenFile), or asks for it once without echoing it, then starts
+the agent image one container at a time. Each container registers the agent, runs one job, removes the agent
+and exits; this script then starts the next. See README.md for the guard rails, which are set here.
 
 .PARAMETER AgentName
-The agent's name in the pool: the machine's short name and a number, e.g. lab-1 or home-1 (or lab-test for a
-test beside a running agent). It is shown in
-every job's log, which is public, so never the computer's own hostname.
+The agent's name in the pool: the machine's short name and a number, e.g. lab-1 or home-1, or lab-test for a
+test beside a running agent. It is shown in every job's log, which is public, so never the computer's own
+hostname.
+
+.PARAMETER TokenFile
+A token saved by save-agent-token.ps1: a SecureString that only this user, on this machine, can read (DPAPI).
+Without it, the script asks for the token.
+
+Exit codes: 2 when Azure DevOps refuses the token (save a new one; retrying will not help), 1 for anything else.
 
 .EXAMPLE
 powershell -File tools/build-agent/run-agent.ps1 -AgentName lab-1
+
+.EXAMPLE
+powershell -File tools/build-agent/run-agent.ps1 -AgentName lab-1 -TokenFile "$env:LOCALAPPDATA\tamu-build-agent\token.xml"
 #>
 param(
   [Parameter(Mandatory = $true)]
@@ -22,7 +31,8 @@ param(
   [string]$Url = 'https://dev.azure.com/tamugeoinnovation',
   [string]$Pool = 'Linux-Build',
   [string]$Image = 'tamu-gisc/build-agent:latest',
-  [string]$EgressImage = 'tamu-gisc/build-agent-egress:latest'
+  [string]$EgressImage = 'tamu-gisc/build-agent-egress:latest',
+  [string]$TokenFile
 )
 
 $ErrorActionPreference = 'Stop'
@@ -61,7 +71,15 @@ function Confirm-Egress {
   }
 }
 
-$secure = Read-Host -AsSecureString -Prompt 'Azure DevOps personal access token (scope: Agent Pools, read & manage)'
+if ($TokenFile) {
+  # Import-Clixml turns the saved SecureString back into one; DPAPI refuses it to any other user or machine.
+  $secure = Import-Clixml -Path $TokenFile
+  if ($secure -isnot [System.Security.SecureString]) {
+    Write-Error "'$TokenFile' does not hold a saved token. Run save-agent-token.ps1."
+  }
+} else {
+  $secure = Read-Host -AsSecureString -Prompt 'Azure DevOps personal access token (scope: Agent Pools, read & manage)'
+}
 if ($secure.Length -eq 0) {
   Write-Error 'No token was entered.'
 }
@@ -102,6 +120,12 @@ try {
     $code = $LASTEXITCODE
     $elapsed = [int]((Get-Date) - $started).TotalSeconds
     Write-Host "The agent's container exited with code $code after $elapsed seconds."
+
+    # start.sh exits 77 when Azure refuses the token. Retrying cannot help, so stop and say what to do.
+    if ($code -eq 77) {
+      Write-Host 'Azure DevOps refused the token (expired, revoked or missing a scope). Create a new one and run save-agent-token.ps1 again.'
+      exit 2
+    }
 
     # A container that fails quickly every time (a wrong or expired token, an unreachable address) would
     # otherwise loop for ever.
