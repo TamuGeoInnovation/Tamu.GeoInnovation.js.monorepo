@@ -83,7 +83,7 @@ export class SubmissionController {
       where: {
         guid: param.guid
       },
-      relations: ['blobs']
+      relations: { blobs: true }
     });
 
     if (!submission) {
@@ -126,7 +126,7 @@ export class SubmissionController {
   @Get()
   public getAll() {
     return this.service.getMany({
-      relations: ['location', 'season', 'season.form']
+      relations: { location: true, season: { form: true } }
     });
   }
 

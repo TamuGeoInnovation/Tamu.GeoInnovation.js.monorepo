@@ -12,7 +12,9 @@ param(
   [Parameter(Mandatory = $true)]
   [string]$AgentName,
   [string]$TokenFile = (Join-Path $env:LOCALAPPDATA 'tamu-build-agent\token.xml'),
-  [string]$Image = 'tamu-gisc/build-agent:latest'
+  [string]$Image = 'tamu-gisc/build-agent:latest',
+  [string]$Memory = '14g',
+  [int]$Cpus = 6
 )
 
 $ErrorActionPreference = 'Stop'
@@ -56,7 +58,7 @@ while ($true) {
   # PowerShell turns a native command's stderr, redirected, into errors, and under 'Stop' the first one (the
   # agent's own error output) would end this script.
   $ErrorActionPreference = 'Continue'
-  & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $runAgent -AgentName $AgentName -TokenFile $TokenFile -Image $Image 2>&1 |
+  & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $runAgent -AgentName $AgentName -TokenFile $TokenFile -Image $Image -Memory $Memory -Cpus $Cpus 2>&1 |
     ForEach-Object { Write-Log "$_" }
   $code = $LASTEXITCODE
   $ErrorActionPreference = 'Stop'

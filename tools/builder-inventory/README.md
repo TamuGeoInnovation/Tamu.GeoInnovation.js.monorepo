@@ -49,7 +49,7 @@ Node runs in Docker here, so Playwright runs in a container and the dev server r
 docker run --rm --network container:aggiemap-dev \
   -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/work" -w /work \
   -e AGGIEMAP_SMOKE_BASE_URL=http://127.0.0.1:4200 \
-  mcr.microsoft.com/playwright:v1.63.0-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --config=tools/builder-inventory/playwright.config.ts
 ```
 

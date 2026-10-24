@@ -26,7 +26,7 @@ export class EventLocationController {
       where: {
         guid: guid
       },
-      relations: ['place']
+      relations: { place: true }
     });
   }
 
