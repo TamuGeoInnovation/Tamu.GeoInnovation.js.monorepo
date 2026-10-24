@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 87.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 88.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,27 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 87 (security: #1218 - the maplibre branch on the university's campus basemap instead of OpenFreeMap; a code job on your branch; 23 October 2026, 10:05 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start right after batch 85, before batch 86.** **Expected: about 75 minutes.** Your batch 84 answers, **decided by the
+maintainer (10:05 PM)**: (1) **(b), a university Esri basemap, not OpenFreeMap**; (2) **leave the Mapbox token**: it is not his account and he
+cannot delete it. Do not mention the token anywhere new.
+
+1. **Reuse what AggieMap already draws.** `libs/aggiemap/ngx/common/src/lib/connections.ts` names the campus basemap AggieMap uses on production,
+   `https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer` (`basemapUrl`), and hosted `VectorTileServer`s for the other
+   campuses. Find out, from the services themselves (`?f=json`): is the main campus basemap a **cached MapServer** (tiles at
+   `.../tile/{z}/{y}/{x}`, Web Mercator, which levels), and does it need a token? Is there a **keyless campus `VectorTileServer`** whose style
+   (`resources/styles/root.json`) MapLibre renders? Mind CLAUDE.md's gating rule: **anything served only on dev must not be used by production
+   pages**; say which services are on production.
+2. On `chore/1218-maplibre` (merge `origin/development` first), make the maps' default style **the university basemap, keyless**, read from the
+   shared connections (so it moves when AggieMap's basemap moves; if the GIS Day library cannot import AggieMap's connections without a bad
+   dependency, put the URL in a shared place both can use, and say where and why). A raster MapServer source is fine; if it covers only campus,
+   say what shows beyond it at the pages' zoom levels (14 to 16, centre `-96.3407, 30.6158`).
+3. **If no university basemap works without a key**, stop and report the options (which need a key, whose, and how it would be kept out of the
+   repository) instead of adding a key.
+4. Redo the four "after" screenshots (replace the OpenFreeMap ones), the full check, the `gisday-angular` production build, and the production
+   path through `nginx-base` as before. Commit, push to the fork. No PR; the director adds the issue and the release-notes file.
 
 ## Batch 85 (security: #1218 - lightgallery replaced by GLightbox, as one shared piece; a branch; 23 October 2026, 9:40 PM Central, from `work (security)`)
 
