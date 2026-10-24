@@ -32,9 +32,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 12:15 AM Central.**
 
-**Batch 89, security: a warm, read-only git mirror for lab checkouts (#2212)**, started 11:13 PM Central, in `C:/TAMU/wt-gm89`.
+**Batch 90, security: the flaky date-picker test (#2244)**, started 11:26 PM Central, in `C:/TAMU/wt-dp90`. Then batch 91.
 
 ## Finished
+
+- **Batch 89, security: a warm, read-only git mirror for lab checkouts (#2212) - pushed** (11:15 to 11:26 PM, 23 October): a bare mirror in a Docker volume, refreshed only by the supervisor from GitHub before each job (47 s first, 1 s warm, locked), mounted read-only; the lab twins check out with a script that borrows its objects (alternates) and fetches refs from GitHub. PR 2249's fork merge ref: 1.4 s and 48 KB with the mirror against 63.4 s and 439 MB without, the same commit and tree, full history; writes refused. Needs an Azure run to prove the YAML. **`ci/2212-git-mirror` at `e5918b7a2`.** Report `work-lab-leila/reports/2026-10-23-76.md`.
 
 - **Batch 88, security: Node in the agent image, room for four agents (#2212) - pushed** (11:04 to 11:13 PM, 23 October): Node 24.22.1 in the tool cache (/azp/_work/_tool/node/24.22.1/x64 + x64.complete, root-owned); tool-lib's findLocalTool finds it ("Found tool in cache: node 24.22.1 x64"). Defaults 12 GB / 5 CPUs: re-measured peak 9.3 GB, 4.2 cores; builds ~12 s slower; four fit with 4 cores and 14.5 GiB spare. Overlaps batch 74's branch (no PR yet). **`ci/2212-agent-node-and-four` at `233d3195b`.** Report `work-lab-leila/reports/2026-10-23-75.md` (the maintainer's five commands).
 
@@ -268,4 +270,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 88 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 89 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
