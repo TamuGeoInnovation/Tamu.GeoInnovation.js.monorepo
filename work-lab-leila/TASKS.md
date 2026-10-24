@@ -55,7 +55,7 @@ token file.** The maintainer has just run batch 68's three switch-over commands 
 3. `docker inspect tamu-build-agent-lab-1 --format '{{json .NetworkSettings.Networks}}'`: **only `tamu-agent-internal`**. And its
    `HostConfig` (`Binds` empty, `Privileged` false, `CapDrop` ALL). **Do not run `docker inspect` without a `--format`** (it would show
    `AZP_TOKEN`).
-4. The newest `%LOCALAPPDATA%	amu-build-agent\logsgent-lab-1-*.log`: its last 15 lines (it never holds the token): `Listening for Jobs`?
+4. The newest `%LOCALAPPDATA%\tamu-build-agent\logs\agent-lab-1-*.log`: its last 15 lines (it never holds the token): `Listening for Jobs`?
 5. Report it in a few lines; if anything is off, say what, and do not fix it.
 
 ## Batch 70 (security: Dependabot PR 2194, jwt-decode 3 to 4 - the code fix as our own branch; 23 October 2026, 7:55 PM Central, from `work (security)`)
