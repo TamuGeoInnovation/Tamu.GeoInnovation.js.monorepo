@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 124.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 125.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,22 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 124 (security: #1218 - what is left before "latest at least 14 days old" is reached; read only; 24 October 2026, 9:10 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now.** **Expected: 45 minutes.** Your batch 123 is right; PR 2317 is open from it.
+The maintainer asked whether "latest of everything" can ever be finished. This batch answers with numbers.
+1. On `origin/development`, plus the stacked branches that already prepare upgrades (`fork/chore/1218-marked-18`, `fork/chore/1218-ngx-datatable-25`
+   and the ngx-highlightjs, chart.js and got branches stacked on it, from your batches 119-121), list every **direct** dependency in the root
+   `package.json` (and each `apps/*/package.json`) that is behind. For each: the version we have, the newest version that is **at least 14 days
+   old** today (from `npm view <pkg> time --json`), whether that is a patch, minor or major, and whether a prepared branch already covers it.
+2. Group what is left into: (a) patch or minor, which Dependabot's grouped weekly pull requests will take with cooldown; (b) majors with no prepared
+   branch, each with a one-line estimate of the work (what breaks; which apps); (c) held on purpose (Node, Nx and Angular majors, and anything
+   `dependabot.yml` ignores), with the reason.
+3. Also: transitive packages that `npm audit` (High or Critical) still reports on `development`, and whether `.github/security/accepted-advisories.json`
+   covers each.
+4. Report only: no branch, no push except the report. End with one sentence: after the prepared branches merge, how many majors are left, and a rough
+   total of the work in hours.
 
 ## Batch 123 (security: #2293 - allow only known install scripts, and check registry signatures; a branch; 24 October 2026, 8:39 AM Central, from `work (security)`)
 
