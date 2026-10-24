@@ -7,15 +7,17 @@ import { BaseService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
+import { GuidIdentity } from '@tamu-gisc/gisday/platform/data-api';
+
 import { BaseAdminListComponent } from './base-admin-list.component';
 
 @Component({ template: '', standalone: false })
-class ThingListComponent extends BaseAdminListComponent<{ guid: string }> {
+class ThingListComponent extends BaseAdminListComponent<GuidIdentity> {
   protected readonly entityService = {
     getEntities: () => of([]),
     getEntitiesForActiveSeason: () => of([]),
     getEntitiesForSeason: (guid: string) => of([{ guid: 'for-' + guid }])
-  } as unknown as BaseService<{ guid: string }>;
+  } as unknown as BaseService<GuidIdentity>;
 }
 
 /**
