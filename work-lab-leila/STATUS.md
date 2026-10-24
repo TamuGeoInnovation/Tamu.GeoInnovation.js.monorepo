@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:08 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **4:14 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **4:08 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 5:10 AM Central.**
+**Next update by 5:15 AM Central.**
 
-**Batch 107, security: the mail calls' timeouts and the helper's errors (#2277)**, started 4:08 AM Central, 24 October (batch 106 stopped early, so 107 starts now, as it allows).
+**Batch 108, security: the notification toasts off @angular/animations (#2278)**, started 4:14 AM Central, 24 October. Then batch 109.
 
 ## Finished
+
+- **Batch 107, security: mail calls with a timeout, the helper's errors handled (#2277) - pushed** (4:08 to 4:14 AM, 24 October): tests first, from batch 105's stand-in servers: all three calls still waiting after 2 s, and the helper's 400/500/non-JSON 502 surfacing as got's HTTPError. Now one shared 10-second timeout (overridable with MAILROOM_TIMEOUT_MS) in libs/common/nest/services, read by all three, a timeout answering 504 with no retry; the helper reads every answer itself, so mailroom errors become its HttpException. Full check exit 0. **`fix/2277-mail-timeouts` at `6e36cebec`, on the got 16 branch.** Report `work-lab-leila/reports/2026-10-23-94.md`.
 
 - **Batch 106, security: animations off @angular/animations (#1218) - AggieMap done, stopped there; pushed** (3:53 to 4:07 AM, 24 October): 13 triggers in 8 apps listed. AggieMap's three (slide, offCanvasSlideUpFromTop, offCanvasSlideInFromBottom) are state triggers, so they became CSS transitions with the same timing and easing (animate.enter/leave only fit elements entering or leaving), via mixins in one new libs/sass/_motion.scss. Trigger files and AggieMap's animations provider removed; three specs now render with no animations provider. Recorded before and after: the same start and end states and timing range; no Angular errors. @angular/animations stays for the other apps. Check exit 0. **`chore/1218-animate-enter-leave` at `9029721e4`.** Report `work-lab-leila/reports/2026-10-23-93.md`.
 
@@ -304,4 +306,4 @@ Last written **4:08 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 106 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 107 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
