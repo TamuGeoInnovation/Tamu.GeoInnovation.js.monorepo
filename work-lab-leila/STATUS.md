@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:00 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **5:16 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **5:00 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 112, security: where security stands after tonight (a scan; nothing pushed)**, started 5:00 AM Central, 24 October.
+**Batch 113, security: #2286 - the pre-push check runs the smoke suite's typecheck (a fix and a branch)**, started 5:16 AM Central, 24 October.
 
 ## Finished
 
+- **Batch 112, security: where security stands after tonight - 3 new highs, no criticals; nothing pushed** (5:00 to 5:15 AM, 24 October): development `0abdf0d29` and maplibre `ba338ad93` are identical. npm audit --omit=dev: 0 critical, 5 high (two advisories: multer 2.4.0, pinned exactly by @nestjs/platform-express, and @azure/msal-node 6.0.1, no 6.x fix), 7 moderate; every high in yesterday's daily is gone. Eight images built as publish does and scanned with Trivy 0.76.1: the APIs carry multer (all four) and msal-node (gisday-nest, mailroom-nest); the four front ends carry brotli-libs from nginx-base (CVE-2026-111497, new in Alpine's data overnight). check.mjs: 15 new, none accepted, no critical. Three recommended issues. Report `work-lab-leila/reports/2026-10-23-99.md`.
 - **Batch 111, security: lint's false "Recursive task invocation" (#2243) - found, already fixed by Nx 24; nothing pushed** (4:47 to 5:00 AM, 24 October): Nx 23.3.0's detector reported any SQLite error from its invocation tracker as a recursion and printed every task registered so far as the "chain"; Nx 24.0.0 (on development) ignores database failures and reports only a genuine ancestor loop. Both failures were on Nx 23 branches. Not reproducible on demand: 3 fresh-volume first runs on Nx 23, a killed run plus rerun and 4 daemon/parallelism variations on 24.0.1, all clean; lint has no dependsOn. Recommend closing #2243. Report `work-lab-leila/reports/2026-10-23-98.md`.
 
 - **Batch 110, security: Nx 24.0.0 to 24.0.1 (#1218) - pushed** (4:42 to 4:46 AM, 24 October): nx migrate found no migrations (no migrations.json); nx and the ten @nx/* to exact 24.0.1 (published the day before; taken because the batch names it). Lock: only Nx's own entries, plus five @nx/webpack dependencies moved to the top level at the same versions. Full check exit 0 (lint 104 / test 100 / build 14). Noted: Dependabot ignores only Nx majors, not Nx entirely. **`chore/1218-nx-24-0-1` at `dae3fbc6f`.** Report `work-lab-leila/reports/2026-10-23-97.md`.
@@ -314,4 +315,4 @@ Last written **5:00 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 111 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 112 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
