@@ -25,6 +25,6 @@ module.exports = {
       }
     ]
   },
-  transformIgnorePatterns: ['node_modules/(?!(.*.mjs$|lightgallery))'],
+  transformIgnorePatterns: ['node_modules/(?!(.*.mjs$))'],
   preset: '../../../../../jest.preset.js'
 };
