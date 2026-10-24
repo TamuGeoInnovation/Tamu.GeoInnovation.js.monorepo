@@ -19,7 +19,7 @@ export class FormService extends BaseService<CompetitionForm> {
 
   public getSeason(seasonGuid: string) {
     return this.competitionSeasonRepo.findOne({
-      relations: ['form'],
+      relations: { form: true },
       where: {
         season: {
           guid: seasonGuid
@@ -35,7 +35,7 @@ export class FormService extends BaseService<CompetitionForm> {
       where: {
         season: activeSeason
       },
-      relations: ['form', 'season']
+      relations: { form: true, season: true }
     });
 
     if (!form) {
@@ -85,7 +85,7 @@ export class FormService extends BaseService<CompetitionForm> {
           guid: formGuid
         }
       },
-      relations: ['form']
+      relations: { form: true }
     });
 
     if (!competitionSeason) {

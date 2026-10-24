@@ -44,7 +44,7 @@ export class SeasonService extends BaseProvider<Season> {
       order: {
         year: 'ASC'
       },
-      relations: ['days']
+      relations: { days: true }
     });
 
     if (seasons) {
@@ -61,7 +61,7 @@ export class SeasonService extends BaseProvider<Season> {
       where: {
         guid
       },
-      relations: ['days']
+      relations: { days: true }
     });
 
     if (season) {
@@ -79,7 +79,7 @@ export class SeasonService extends BaseProvider<Season> {
       where: {
         active: true
       },
-      relations: ['days', 'days.events']
+      relations: { days: { events: true } }
     });
 
     if (!season) {
@@ -102,7 +102,7 @@ export class SeasonService extends BaseProvider<Season> {
       where: {
         year
       },
-      relations: ['days', 'days.events']
+      relations: { days: { events: true } }
     });
 
     if (!season) {
@@ -121,7 +121,7 @@ export class SeasonService extends BaseProvider<Season> {
       where: {
         guid
       },
-      relations: ['days', 'days.events']
+      relations: { days: { events: true } }
     });
 
     if (!season) {
@@ -143,7 +143,7 @@ export class SeasonService extends BaseProvider<Season> {
         where: {
           guid: firstDay.guid
         },
-        relations: ['events']
+        relations: { events: true }
       });
 
       const activeEventsForDay = extendedDay.events.filter((event) => {
@@ -263,56 +263,60 @@ export class SeasonService extends BaseProvider<Season> {
       // Clone places, stripping guid, created, updated, and season properties. Also clones inner locations, links, and logos
       // The inner entities cascade down when the parent is saved. This saves time and hassle of cloning those entities separately
       // and linking them to the parent.
-      const places = (await manager.find(Place, { where, relations: ['locations', 'links', 'logos'] })).map((p) => {
-        const place = this._stripEntityProperties(p);
+      const places = (await manager.find(Place, { where, relations: { locations: true, links: true, logos: true } })).map(
+        (p) => {
+          const place = this._stripEntityProperties(p);
 
-        // Clone locations and stripping guid, created, and updated properties
-        place.locations = p.locations.map((l) => {
-          const location = this._stripEntityProperties(l);
+          // Clone locations and stripping guid, created, and updated properties
+          place.locations = p.locations.map((l) => {
+            const location = this._stripEntityProperties(l);
 
-          return this.seasonRepo.manager.create(EventLocation, {
-            ...location,
-            season: nextSeason
+            return this.seasonRepo.manager.create(EventLocation, {
+              ...location,
+              season: nextSeason
+            });
           });
-        });
 
-        // Clone links and stripping guid, created, and updated properties
-        place.links = p.links.map((l) => {
-          const link = this._stripEntityProperties(l);
+          // Clone links and stripping guid, created, and updated properties
+          place.links = p.links.map((l) => {
+            const link = this._stripEntityProperties(l);
 
-          return this.seasonRepo.manager.create(PlaceLink, link);
-        });
+            return this.seasonRepo.manager.create(PlaceLink, link);
+          });
 
-        // Clone logos and stripping guid, created, and updated properties
-        place.logos = p.logos.map((l) => {
-          const logo = this._stripEntityProperties(l);
+          // Clone logos and stripping guid, created, and updated properties
+          place.logos = p.logos.map((l) => {
+            const logo = this._stripEntityProperties(l);
 
-          return this.seasonRepo.manager.create(Asset, logo);
-        });
+            return this.seasonRepo.manager.create(Asset, logo);
+          });
 
-        return this.seasonRepo.manager.create(Place, {
-          ...place
-        });
-      });
+          return this.seasonRepo.manager.create(Place, {
+            ...place
+          });
+        }
+      );
 
       // Clone organizations stripping guid, created, and updated properties. Also clones logos
-      const organizations = (await manager.find(Organization, { where, relations: ['logos'] })).map((o: Organization) => {
-        const organization = this._stripEntityProperties(o);
+      const organizations = (await manager.find(Organization, { where, relations: { logos: true } })).map(
+        (o: Organization) => {
+          const organization = this._stripEntityProperties(o);
 
-        organization.logos = o.logos.map((l) => {
-          const logo = this._stripEntityProperties(l);
+          organization.logos = o.logos.map((l) => {
+            const logo = this._stripEntityProperties(l);
 
-          return this.seasonRepo.manager.create(Asset, logo);
-        });
+            return this.seasonRepo.manager.create(Asset, logo);
+          });
 
-        return this.seasonRepo.manager.create(Organization, {
-          ...organization,
-          season: nextSeason
-        });
-      });
+          return this.seasonRepo.manager.create(Organization, {
+            ...organization,
+            season: nextSeason
+          });
+        }
+      );
 
       // Clone sponsors stripping guid, created, and updated properties. Also clones logos
-      const sponsors = (await manager.find(Sponsor, { where, relations: ['logos'] })).map((s: Sponsor) => {
+      const sponsors = (await manager.find(Sponsor, { where, relations: { logos: true } })).map((s: Sponsor) => {
         const sponsor = this._stripEntityProperties(s);
 
         sponsor.logos = s.logos.map((l) => {
@@ -348,25 +352,25 @@ export class SeasonService extends BaseProvider<Season> {
       const orgDict = new EntityKeyDictionary(savedOrgs, this.ENTITY_PK_LUT.organization);
       const uniDict = new EntityKeyDictionary(nextSeason.universities, this.ENTITY_PK_LUT.university);
 
-      const speakers = (await manager.find(Speaker, { where, relations: ['organization', 'university', 'images'] })).map(
-        (s: Speaker) => {
-          const speaker = this._stripEntityProperties(s);
+      const speakers = (
+        await manager.find(Speaker, { where, relations: { organization: true, university: true, images: true } })
+      ).map((s: Speaker) => {
+        const speaker = this._stripEntityProperties(s);
 
-          speaker.organization = orgDict.find(speaker.organization);
-          speaker.university = uniDict.find(speaker.university);
+        speaker.organization = orgDict.find(speaker.organization);
+        speaker.university = uniDict.find(speaker.university);
 
-          speaker.images = s.images.map((i) => {
-            const image = this._stripEntityProperties(i);
+        speaker.images = s.images.map((i) => {
+          const image = this._stripEntityProperties(i);
 
-            return this.seasonRepo.manager.create(Asset, image);
-          });
+          return this.seasonRepo.manager.create(Asset, image);
+        });
 
-          return this.seasonRepo.manager.create(Speaker, {
-            ...speaker,
-            season: savedSeason
-          });
-        }
-      );
+        return this.seasonRepo.manager.create(Speaker, {
+          ...speaker,
+          season: savedSeason
+        });
+      });
 
       const savedSpeakers = await manager.save(speakers, { chunk: 25 });
       const savedLocations = nextSeason.places.reduce((acc, place) => {
@@ -452,7 +456,7 @@ export class SeasonService extends BaseProvider<Season> {
       await this.seasonRepo.save(existingActive);
     }
 
-    const existingCurrent = await this.seasonRepo.findOne({ where: { guid }, relations: ['days'] });
+    const existingCurrent = await this.seasonRepo.findOne({ where: { guid }, relations: { days: true } });
 
     if (updateSeasonDto.days) {
       // For days in updateSeasonDto.days that have a guid, update the existing day date
