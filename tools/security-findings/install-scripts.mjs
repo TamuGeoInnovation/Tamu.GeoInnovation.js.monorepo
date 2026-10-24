@@ -58,16 +58,32 @@ export function parseEntry(entry) {
 }
 
 /** The packages with install scripts that no `allowScripts` entry covers, and the entries nothing installs any more. */
-export function uncovered(allowScripts, packages) {
+export function uncovered(allowScripts, packages, installed) {
   const entries = Object.keys(allowScripts ?? {}).map((key) => ({ key, ...parseEntry(key) }));
   const covers = (entry, pkg) =>
     entry.name === pkg.name && (entry.versions === null || entry.versions.includes(pkg.version));
+  const unmatched = entries.filter((entry) => !packages.some((pkg) => covers(entry, pkg)));
+
+  // An entry whose package is installed but has no recorded script is not stale (#2326): npm's strict-allow-scripts
+  // also counts a binding.gyp as `install: node-gyp rebuild`, even with "gypfile": false, and the lock does not record
+  // that. better-sqlite3 13 is one. Without `installed`, every unmatched entry is stale, as before.
+  const isInstalled = (entry) => installed?.includes(entry.name) ?? false;
 
   return {
     missing: packages.filter((pkg) => !entries.some((entry) => covers(entry, pkg))),
-    unused: entries.filter((entry) => !packages.some((pkg) => covers(entry, pkg))).map((entry) => entry.key)
+    unused: unmatched.filter((entry) => !isInstalled(entry)).map((entry) => entry.key),
+    noScript: unmatched.filter(isInstalled).map((entry) => entry.key)
   };
 }
+
+/** Every package the lock installs, by name, at any depth; not the project itself. */
+export const installedNames = (lock) => [
+  ...new Set(
+    Object.keys(lock?.packages ?? {})
+      .filter((key) => key !== '')
+      .map(nameOf)
+  )
+];
 
 function main([packagePath = 'package.json', lockPath = 'package-lock.json']) {
   let manifest, lock;
@@ -81,15 +97,22 @@ function main([packagePath = 'package.json', lockPath = 'package-lock.json']) {
   }
 
   const packages = withInstallScripts(lock);
-  const { missing, unused } = uncovered(manifest.allowScripts, packages);
+  const { missing, unused, noScript } = uncovered(manifest.allowScripts, packages, installedNames(lock));
 
   console.log(
     `${packages.length} package(s) in the lock have install scripts; ${packages.length - missing.length} are in allowScripts.`
   );
 
-  // Not a failure: an entry for a package that has gone or lost its script allows nothing.
+  // Not a failure: an entry for a package that has gone allows nothing.
   if (unused.length) {
     console.log(`Not installed any more, so these entries can go (npm install-scripts prune): ${unused.join(', ')}`);
+  }
+
+  // Not stale either: npm may still treat the package's binding.gyp as an install script (#2326).
+  if (noScript.length) {
+    console.log(
+      `Installed, but no install script recorded in the lock; npm may still treat a binding.gyp as one, so these stay: ${noScript.join(', ')}`
+    );
   }
 
   if (missing.length) {
