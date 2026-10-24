@@ -30,7 +30,9 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing.
+**Next update by 9:45 PM Central.**
+
+**Batch 76, security: what is left between us and the latest of everything (#1218), a survey**, started 8:45 PM Central. Batches 77 and 78 wait for PRs 2187 and 2191 to merge.
 
 ## Finished
 
