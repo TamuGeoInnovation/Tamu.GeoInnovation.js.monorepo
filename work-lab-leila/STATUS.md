@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:21 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **2:25 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **2:21 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 3:05 AM Central.**
+**Next update by 3:25 AM Central.**
 
-**Batch 99, security: five type errors in project files (#2265)**, started 2:21 AM Central, 24 October. Then batches 100 and 101.
+**Batch 100, aggiemap bug: the POI popup's console TypeError (#2259)**, started 2:25 AM Central, 24 October. Then batch 101.
 
 ## Finished
+
+- **Batch 99, security: five type errors in project files (#2265) - pushed** (2:21 to 2:22 AM, 24 October): three were the tests (two fixtures still on `mapType`, now `mapTypes`; an admin-list spec typed `{ guid }` for `GuidIdentity`), two the code's types (`maps-page-header`'s `title` now required, `intro` optional; no visible bug, as every caller passes a title and a missing intro was always left out). Both projects' spec typechecks: 0 errors in their own files. Check exit 0. **`fix/2265-spec-type-errors` at `f021f8c45`.** Report `work-lab-leila/reports/2026-10-23-86.md`.
 
 - **Batch 98, security: the ArcGIS types path in the spec tsconfigs (#2264) - pushed** (2:16 to 2:18 AM, 24 October): 35 spec tsconfigs now name `"@arcgis/core/interfaces"`, which resolves from any depth (no exports map); the base config could not reach them because each spec sets its own `types`. Survey: 89 of 103 pass (was 77); 13 of the 26 now pass, `ui-kits-ngx-forms` fails only until PR 2266 merges. Cause A gone; the masked errors now show: 3,454 in all, 79 in projects' own files (61 in ts-events-ngx). Check exit 0 (lint 53 / test 50 / build 6). The same wrong path is in 30 `tsconfig.lib.json` (inert; not changed). **`fix/2264-arcgis-spec-types` at `cd8a054f6`.** Report `work-lab-leila/reports/2026-10-23-85.md`.
 
@@ -288,4 +290,4 @@ Last written **2:21 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 98 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 99 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
