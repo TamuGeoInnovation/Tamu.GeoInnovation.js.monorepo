@@ -19,6 +19,7 @@ dependency work next (the home machine, this weekend). The maintainer keeps the 
 | [2269](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2269) | ArcGIS types path in the spec tsconfigs | #2264 |
 | [2270](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2270) | five type errors only spec typechecking showed | #2265 |
 | [2272](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2272) | the POI popup's console TypeError | #2259 |
+| [2279](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2279) | AggieMap's animations to CSS transitions (first part of #2278; notifications and geoservices are lab batches 108-109) | #2280 |
 | [2273](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2273) | geoservices' Result tab shows a failed sample (visible, release notes) | #2267 |
 | [2274](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2274) | ArcGIS types path in the library tsconfigs | #2271 |
 
@@ -43,6 +44,7 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 | 8 | `angulartics2` 13 → 14 (lab batch 103, `fork/chore/1218-angulartics2-14`, `35b544b73`; no issue or PR yet) | Checked; the version and the lock only (14 has no API change for us); the same analytics before and after |
 | 9 | `chart.js` 2 → 4.5.1 (lab batch 104, `fork/chore/1218-chart-js-4`, `52651b825`; no issue or PR yet) | Checked; drops `chartjs-plugin-colorschemes` (its palette kept), `@types/chart.js` and `moment`. `~4.5.1` on purpose: 4.6.1 was two days old; move to `^4.6.1` after 5 November. The only chart is in signage, which does not build (#2276); no release notes |
 | 10 | `got` 11 → 16.0.0 (lab batch 105, `fork/chore/1218-got-16`, `de62e0b70`; no issue or PR yet) | Checked, with new behaviour specs (stand-in servers) passing on 11 and 16; the mailroom helper builds a native `FormData`. `~16.0.0` on purpose (16.1.0 was 11 days old) |
+| 11 | mail calls time out after 10 s, the helper's errors handled (#2277; lab batch 107, `fork/fix/2277-mail-timeouts`, `6e36cebec`, **stacked on `got` 16**; no PR yet) | Checked, red first. Push right after `got` 16 merges (identical files; keep the stacked side). `MAILROOM_TIMEOUT_MS` overrides the 10 s (accepted on the lab's recommendation; tell the maintainer) |
 **After each merge, for the next one:**
 
 1. `git fetch origin development fork`, a worktree of the prepared `ready/` branch, `git merge origin/development`.
