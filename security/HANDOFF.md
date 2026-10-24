@@ -17,7 +17,7 @@ into the next (the files will be identical; keep the stacked side), push, file i
 **No lock change, merge when green:** 2294 (cooldown), 2302 (toasts; then geoservices' animations `fork/chore/2278-geoservices-animations`, which removes
 `@angular/animations` and so joins the lock queue), 2303 (project-name check), 2305 (README), 2312 (brotli re-pin).
 
-**Listeners:** work-lab-leila (batch 122 done, PR 2316; batch 123 done, PR 2317 (#2293 install-script allow-list and `npm audit signatures`); idle); **copilot-home** (GitHub Copilot CLI on the home computer; batches 4-6 queued: `got` review,
+**Listeners:** work-lab-leila (batch 122 done, PR 2316; batches 123-124 done (PR 2317; report 111: 4 workable majors left, about 11-17 h); 125 (#2318 vite override) and 126 (jwks-rsa 4) queued, stacked on the mail-timeouts tip; #2319 undici override from 29 Oct); **copilot-home** (GitHub Copilot CLI on the home computer; batches 4-6 queued: `got` review,
 remove `@types/bull` #2311, `chart.js` review). It may be waiting at an approval prompt: the maintainer restarts it with
 `copilot --allow-all-tools --allow-all-paths` and three `--deny-tool` entries (force-push, `gh pr merge`, `gh pr create`), then the listener prompt.
 
