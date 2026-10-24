@@ -115,6 +115,9 @@
         "development": {
           "buildTarget": "gisday-competitions-angular:build:development"
         }
+      },
+      "readyWhen": {
+        "signal": true
       }
     }
   }

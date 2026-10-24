@@ -118,6 +118,9 @@
         "development": {
           "buildTarget": "ues-operations-angular:build:development"
         }
+      },
+      "readyWhen": {
+        "signal": true
       }
     },
     "extract-i18n": {

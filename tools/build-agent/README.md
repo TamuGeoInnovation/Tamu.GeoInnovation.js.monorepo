@@ -143,8 +143,44 @@ a command line, in a log or in a message; no Claude session handles it.
 6. **Check.** Organization settings → Agent pools → `Linux-Build` → Agents shows the agent **Online**. A pull request
    build that runs on the pool names the agent in its job log, under *Initialize job* → *Agent name*.
 
-The pipeline uses the pool only once a job asks for it (`pool: name: Linux-Build` in `azure-pipelines.yml`). Until
-then the agent waits and takes nothing.
+## Lab first, hosted as the fallback
+
+The Monorepo pipeline runs its heavy jobs (Cache or Restore, Lint, both Builds) on `Linux-Build` whenever an agent
+there is online and enabled, and on Azure's hosted agents when none is, so a pull request never waits for a lab that
+is switched off. The Setup stage's *Last SHA* job, which always runs hosted, asks Azure DevOps which it is (*Choose the
+lab or the hosted pool*) and says so in its log; any error there answers "hosted", with a warning naming the cause.
+Each heavy job is in `azure-pipelines.yml` twice, once per pool, and exactly one of each pair runs. The lab's copy is
+named with ` on lab` (for example *Build development on lab*), so the job list and GitHub's checks show where each
+ran.
+
+**To switch the lab off**, so everything runs hosted as before, change one line in `azure-pipelines.yml`:
+
+```yaml
+  useLab: false
+```
+
+The build service needs **Reader** on the `Linux-Build` pool to see its agents (Organization settings → Agent pools →
+`Linux-Build` → Security). Without it, every run falls back to hosted and the *Last SHA* log says why.
+
+## How many agents fit
+
+Measured on the lab, 23 October 2026 (#2212): one agent running the pipeline's whole workload (clone, `npm ci`, lint
+of 92 projects, both builds) peaked at **10.4 GB of memory** (the cgroup's `memory.peak`, page cache included) and
+**4.8 cores** (2.5 on average), in about four minutes.
+
+So each agent gets **`--memory 14g --cpus 6`** (the defaults of `run-agent.ps1`, `install-agent-task.ps1` and
+`linux/run-agent.sh`), and a machine runs as many as fit **while leaving at least 8 GB and 4 cores for its own work**,
+up to three. What counts is what Docker has, not the machine: `docker info --format '{{.NCPU}} {{.MemTotal}}'`. The
+lab's Docker Desktop has 24 CPUs and 62.5 GiB, which fits **three**: 18 cores and 42 GiB, leaving 6 cores and
+20 GiB. Each further agent on Windows is one more task, as in step 4:
+
+```powershell
+powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-2 -Start
+powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-3 -Start
+```
+
+They share the saved token, the egress proxy and its network. On Linux, set `MEMORY` and `CPUS` in the unit's
+environment to change one agent's share.
 
 ## Token renewal
 
