@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 88.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 90.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,49 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 88 (security: #2212 - a fourth lab agent and Node in the agent image; a branch; 23 October 2026, 11:10 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 45 minutes.** Your batch 86 question 2: **yes, in your order.** Your batch 86 question 1, answered from Azure's timeline (read token, task durations in seconds):
+
+| Step | Lab, build 5685 (PR 2245) | Hosted, build 5684 (PR 2195) |
+| --- | --- | --- |
+| Checkout | 38 / 48 / 78 / 54 | 11 to 13 |
+| Install Node | 9 | 3 to 5 |
+| `Cache@2` restore | 6 (Cache job, miss) / 39 / 34 / 41 | 7 / 22 / 21 / 22 |
+| `npm ci` (Cache job) | 43 | 89 |
+| Post-job: Cache (save) | 21 | 43 |
+| Initialize job | 5 to 11 | 3 to 6 |
+| The work | lint 7, builds 6 each (small PR) | lint 344, builds 167 / 201 (big PR) |
+| Publish Artifacts | 5 | **502 / 323** |
+
+So on the lab the fixed costs are checkout (about 40 s more than hosted), the cache restore (about 15 s more) and Node (5 s more), per job.
+
+1. Branch `ci/2212-agent-node-and-four` from `origin/development` (it has the lab-always pipeline, #2245). **Node 24.22.1 in the image's tool
+   cache** where `UseNode@1` looks (`$AGENT_TOOLSDIRECTORY/node/24.22.1/x64`, with the `x64.complete` marker the tool installer checks), checksum
+   verified as the image already does. Prove in a container that `UseNode@1`'s lookup path exists, and say how the job log will show a cache hit.
+2. **Four agents at 12 GB and 5 CPUs**: the defaults of `run-agent.ps1`, `agent-task.ps1`, `install-agent-task.ps1` and `linux/run-agent.sh`,
+   and the README's sizing section, re-measured: one agent's whole workload must still fit under 12 GB with headroom (your 10.4 GB peak). Leave
+   at least 8 GB and 4 cores for this machine. **Do not install `lab-4` yourself**; give the maintainer the exact commands (reinstall `lab-1` to
+   `lab-3` at the new size, then `lab-4`) in **For the maintainer**.
+3. `scripts/check-in-volume.sh`, commit (`ci(workspace): Node in the build agent's image, and room for four agents`, `Part of #2212`,
+   Co-Authored-By), push to the fork. No PR.
+
+## Batch 89 (security: #2212 - a warm, read-only git mirror for lab checkouts; a branch; 23 October 2026, 11:10 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 88.** **Expected: about 90 minutes.** Your option #1. Checkout is the largest fixed cost (38 to 78 s on the
+lab against 11 to 13 hosted).
+1. A bare mirror of `https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo.git` in a **Docker volume** (not a host folder),
+   refreshed by **the supervisor on the host, from `origin` only**, before each job (`git fetch --prune`, a few seconds when warm); never by a job.
+   Mounted into each agent container **read-only**.
+2. Make the pipeline's checkout use it, **without trusting it**: e.g. Git's `alternates`/`--reference` so objects come from the mirror and
+   everything is still fetched and verified from GitHub, or a `checkout: none` plus a script, if the checkout task cannot take a reference. Say
+   which, and why a fork job cannot change the mirror (read-only mount; the supervisor writes it only from `origin`). Keep `fetchDepth: 0` behaviour
+   (`affected` needs the base).
+3. Prove: the same commit checked out with and without the mirror gives an identical tree; time both; a container cannot write to the mount;
+   a branch that exists only on a fork (a PR's merge ref) still checks out.
+4. `scripts/check-in-volume.sh`, commit (`ci(workspace): Check out from a warm, read-only git mirror on the lab`, `Part of #2212`,
+   Co-Authored-By), push to the fork. No PR. The `node_modules` cache (your #2) waits: it needs a trusted pool and a maintainer decision.
 
 ## Batch 87 (security: #1218 - the maplibre branch on the university's campus basemap instead of OpenFreeMap; a code job on your branch; 23 October 2026, 10:05 PM Central, from `work (security)`)
 
