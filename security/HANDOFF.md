@@ -18,6 +18,7 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 
 | 5 | `marked` 9 → 18 (lab batch 91, `fork/chore/1218-marked-18`, `9b8e3d45a`; no issue or PR yet) | Checked on `development` (3,177 texts render the same). **Its jest config adds `marked/` to `gisday-platform-ngx-core`'s `transformIgnorePatterns`, the same line GLightbox removes `lightgallery` from**: after GLightbox merges, resolve that line to keep `marked/` without `lightgallery` |
 | 6 | `@swimlane/ngx-datatable` 20 → 25 (lab batch 93, `fork/chore/1218-ngx-datatable-25`, `7aee83bdf`; no issue or PR yet) | Checked on `development`; the tables look the same (the shared styles moved to `libs/sass/components/_datatable.scss`). No release notes needed |
+| 7 | `ngx-highlightjs` 6 → 14 (lab batch 95, `fork/chore/1218-ngx-highlightjs-14`, `05b99e5ef`; no issue or PR yet) | Checked on `development`. **Visible**: geoservices' code samples, plain grey text on `development` today, become highlighted with line numbers; **needs a release-notes file** (screenshots in `docs/screenshots/ngx-highlightjs-14/`). Also makes geoservices provide its own `HttpClient`, which ngx-highlightjs 6 used to supply |
 **After each merge, for the next one:**
 
 1. `git fetch origin development fork`, a worktree of the prepared `ready/` branch, `git merge origin/development`.
