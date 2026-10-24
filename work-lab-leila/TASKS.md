@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 98.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 100.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,30 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 98 (security: #2264 - the ArcGIS types path in 30 spec tsconfigs; a fix and a branch; 24 October 2026, 2:10 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 97.** **Expected: 30 minutes.** Your batch 94 answers: **1 yes**, filed as #2264; **2 yes**, the policy is #2263 (the
+maintainer decides) and the five own-file errors are #2265. Your select fix is PR 2266.
+1. Branch `fix/2264-arcgis-spec-types` from `origin/development`. Make every `tsconfig.spec.json` that names
+   `"../../node_modules/@arcgis/core/interfaces"` resolve it from its own depth. **Prefer one shared answer over 30 hand-counted paths** if
+   TypeScript allows it (e.g. a `typeRoots` or `paths` entry in `tsconfig.base.json`, or the package name instead of a relative path); say which
+   and why.
+2. Re-run your batch 94 survey: how many of the 26 failing projects now pass, and the new total of error lines by cause (A should be gone).
+3. `scripts/check-in-volume.sh` (full `affected`), commit (`fix(workspace): Resolve the ArcGIS types from every spec tsconfig`,
+   `Closes #2264`, Co-Authored-By), push to the fork. No PR.
+
+## Batch 99 (security: #2265 - five type errors in project files; a fix and a branch; 24 October 2026, 2:10 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 98.** **Expected: 45 minutes.** The five errors your batch 94 found in projects' own files (#2265): three in
+`libs/aggiemap/ngx/discover` (`discover.utils.spec.ts:30`, `maps-page-header.component.ts:27` and `:32`, `discovery.service.spec.ts:147`'s
+`mapType` â†’ `mapTypes`) and one in `libs/gisday/platform/ngx/core` (`base-admin-list.component.spec.ts:13`).
+1. Branch `fix/2265-spec-type-errors` from `origin/development`. For each, decide whether the code or the test is wrong, and fix that. For
+   `maps-page-header`'s `undefined` arguments (component code), say what the page does today when they are `undefined` and whether that is a
+   visible bug; if it is, a test that fails first and before/after screenshots.
+2. Each fixed file typechecks under its project's spec tsconfig (other errors from causes B to D may remain; list them unchanged).
+3. Full check, commit (`fix(workspace): Fix five type errors that only spec typechecking showed`, `Closes #2265`, Co-Authored-By), push to the
+   fork. No PR.
 
 ## Batch 97 (aggiemap bug found by security: #2262 - the building directory's empty Abbreviation column; a bug fix and a branch; 24 October 2026, 1:55 AM Central, from `work (security)`)
 
