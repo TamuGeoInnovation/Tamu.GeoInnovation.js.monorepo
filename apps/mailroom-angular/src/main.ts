@@ -7,7 +7,6 @@ import { env } from '@tamu-gisc/common/ngx/environment';
 import { provideHttpClient, withXhr, withInterceptorsFromDi } from '@angular/common/http';
 import { Angulartics2Module } from 'angulartics2';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { withInMemoryScrolling, provideRouter, Routes } from '@angular/router';
 import { AppComponent } from './app/app.component';
 
@@ -33,7 +32,7 @@ bootstrapApplication(AppComponent, {
     // Every component still relies on Zone.js (ChangeDetectionStrategy.Eager); without this,
     // bootstrapApplication runs zoneless since Angular 21 (#1563, #1478).
     provideZoneChangeDetection(),
-    importProvidersFrom(Angulartics2Module.forRoot(), BrowserModule, BrowserAnimationsModule),
+    importProvidersFrom(Angulartics2Module.forRoot(), BrowserModule),
     NotificationService,
     {
       provide: env,

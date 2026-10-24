@@ -31,7 +31,9 @@
 #     with no list skips nothing). Targets whose lists match share one nx run; the others get their
 #     own, one after another, and the check fails if any of them fails. Until #1475, build.yml's list
 #     was used for all three, so ten projects CI lints were never linted here.
-#     A list of projects runs exactly those projects for every target, with no exclusions.
+#     A list of projects runs exactly those projects for every target, with no exclusions. Each must
+#     be a project (`nx show projects`): an unknown name stops the check with exit 2, naming it and the
+#     nearest real one, because nx would otherwise run nothing and pass (#2291).
 #   - Then, in every mode, each `run:` step of lint.yml that is not nx or the install (today
 #     `npx tsc -p test/smoke/aggiemap`), and the check fails if any does (#2286). A step it cannot run
 #     as CI does (a multi-line block, or `${{ }}`) stops the check before it starts, naming the step.
@@ -77,6 +79,40 @@ lint_steps() {
       *) printf 'run %s\n' "$cmd" ;;
     esac
   done
+}
+
+# Prints each name in the comma-separated <projects> that is not a line of <known file> (the output of
+# `nx show projects`), one per line, with the nearest real name when one is within a few letters:
+# `common-ngx-pipez (did you mean common-ngx-pipes?)`. Prints nothing when every name is a project.
+# `nx run-many -p` with a name that is not a project prints "No tasks were run" and exits 0, so a typo
+# in a bug fix's list passed a check that checked nothing (#2291). Runs in the container as well, so it
+# keeps to POSIX sh and awk. Tested by scripts/check-in-volume.test.sh.
+unknown_projects() {
+  printf '%s\n' "$1" | tr ',' '\n' | awk -v known="$2" '
+    function distance(a, b,   i, j, la, lb, d, cost, best) {
+      la = length(a); lb = length(b)
+      for (i = 0; i <= la; i++) d[i, 0] = i
+      for (j = 0; j <= lb; j++) d[0, j] = j
+      for (i = 1; i <= la; i++)
+        for (j = 1; j <= lb; j++) {
+          cost = substr(a, i, 1) == substr(b, j, 1) ? 0 : 1
+          best = d[i - 1, j] + 1
+          if (d[i, j - 1] + 1 < best) best = d[i, j - 1] + 1
+          if (d[i - 1, j - 1] + cost < best) best = d[i - 1, j - 1] + cost
+          d[i, j] = best
+        }
+      return d[la, lb]
+    }
+    BEGIN { while ((getline line < known) > 0) if (line != "") { names[++n] = line; is[line] = 1 } }
+    $0 == "" || ($0 in is) { next }
+    {
+      nearest = ""; nearestDistance = 4
+      for (i = 1; i <= n; i++) {
+        dist = distance($0, names[i])
+        if (dist < nearestDistance) { nearestDistance = dist; nearest = names[i] }
+      }
+      if (nearest != "") print $0 " (did you mean " nearest "?)"; else print $0
+    }'
 }
 
 # Sourced (by the test): stop here, with only the functions defined.
@@ -165,6 +201,19 @@ fi
 # Nx 22 moved its entry point into dist/ (#1456); the old path still serves a branch from before it.
 nx="node node_modules/nx/dist/bin/nx.js"
 [ -f node_modules/nx/dist/bin/nx.js ] || nx="node node_modules/nx/bin/nx.js"
+# A list of projects must name real ones, or nx runs nothing and passes (#2291). Exit 2, as for any
+# other request this script cannot carry out, naming each.
+case "$mode" in
+  affected|all) ;;
+  *)
+    $nx show projects > /tmp/known-projects || exit 3
+    unknown="$(unknown_projects "$mode" /tmp/known-projects)"
+    if [ -n "$unknown" ]; then
+      printf "%s\n" "$unknown" | sed "s/^/unknown project: /"
+      exit 2
+    fi
+    ;;
+esac
 # Every run goes ahead even when an earlier one failed, so one check reports every failure; the exit
 # code is the first failing run'"'"'s.
 code=0
@@ -203,9 +252,11 @@ set +e
 # containers ever write that cache, so it is trusted.
 docker run --rm -m 16g \
   -v "$volume:/w" -v "$src:/src:ro" -w /w \
-  -e NX_DAEMON=false -e NX_REJECT_UNKNOWN_LOCAL_CACHE=0 -e LINT_STEPS="$extra" node:24.22.1 sh -c "$inner" check "$branch" "$mode" "${runs[@]}" >"$log" 2>&1
+  -e NX_DAEMON=false -e NX_REJECT_UNKNOWN_LOCAL_CACHE=0 -e LINT_STEPS="$extra" node:24.22.1 sh -c "$(declare -f unknown_projects)
+$inner" check "$branch" "$mode" "${runs[@]}" >"$log" 2>&1
 code=$?
 set -e
+grep "^unknown project: " "$log" | sed "s/^unknown project: /No such project: /" >&2 || true
 echo "Exit $code ($branch, $mode). Log: $log"
 run_times_record "$here/docs/build-times/runs" "$started" check "$branch $mode" "$code" \
   "$(run_times_check_summary "$log")" "$SECONDS" "$(run_times_check_setup "$log")"
