@@ -20,7 +20,7 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 import { DeepPartial } from 'typeorm';
 import { Duplex } from 'stream';
-import { validate as isUuid } from 'uuid';
+import { isUUID } from 'class-validator';
 
 import { isOwnerOrPermitted, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
@@ -162,7 +162,7 @@ export class SubmissionController {
       throw new BadRequestException('Submissions are disabled for this season.');
     }
 
-    if (body.guid !== undefined && !isUuid(body.guid)) {
+    if (body.guid !== undefined && !isUUID(body.guid)) {
       throw new BadRequestException('A submission id must be a UUID.');
     }
 

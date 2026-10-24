@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { forkJoin, from, Observable, of, BehaviorSubject, timer } from 'rxjs';
 import { catchError, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 
-import { v4 as guid } from 'uuid';
 import { Angulartics2 } from 'angulartics2';
 
 import { Point as LatLon } from '@tamu-gisc/common/types';
@@ -1127,7 +1126,7 @@ export class BusService {
 
   private reportFailedRequest(type: string, route: string) {
     const label = {
-      guid: guid(),
+      guid: crypto.randomUUID(),
       date: Date.now(),
       name: `${type}|${route}`
     };

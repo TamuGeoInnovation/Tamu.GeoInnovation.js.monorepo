@@ -2,7 +2,6 @@ import { Component, inject, input, model } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 import { Observable } from 'rxjs';
 
-import { v4 as guid } from 'uuid';
 import { ClipboardCopyDirective } from '../../directives/copy/copy.directive';
 import { AsyncPipe } from '@angular/common';
 
@@ -22,7 +21,7 @@ export class CopyComponent {
 
   public copyCoordsClick() {
     const label = {
-      guid: guid(),
+      guid: crypto.randomUUID(),
       date: Date.now(),
       content: this.text()
     };
