@@ -10,9 +10,9 @@ const { openAt, destroy, glightbox } = vi.hoisted(() => {
   return {
     openAt,
     destroy,
-    glightbox: vi.fn<(options: { elements: Array<{ href: string; type: string }> }) => { openAt: typeof openAt; destroy: typeof destroy }>(
-      () => ({ openAt, destroy })
-    )
+    glightbox: vi.fn<
+      (options: { elements: Array<{ href: string; type: string }> }) => { openAt: typeof openAt; destroy: typeof destroy }
+    >(() => ({ openAt, destroy }))
   };
 });
 
