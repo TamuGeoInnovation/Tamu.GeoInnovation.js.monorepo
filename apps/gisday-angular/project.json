@@ -29,6 +29,11 @@
           "apps/gisday-angular/src/.nginx",
           "apps/gisday-angular/src/manifest.webmanifest",
           {
+            "glob": "maplibre-gl-worker.mjs",
+            "input": "node_modules/maplibre-gl/dist",
+            "output": "maplibre"
+          },
+          {
             "glob": "**/*",
             "input": "./libs/assets/",
             "output": "./assets"
