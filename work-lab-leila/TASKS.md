@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 117.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 118.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,17 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 117 (security: #2291 - the pre-push check refuses a misspelt project; a fix and a branch; 24 October 2026, 6:30 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start now.** **Expected: 30 minutes.** Your batch 113, 114, 115 and 116 work is PRs 2290 (merged), 2296 (multer), 2295 (msal) and
+nginx-base PR 2. Your batch 113 finding is #2291: `scripts/check-in-volume.sh <branch> <projects>` passes when a named project does not exist.
+1. **Prove it first**: a misspelt name (e.g. `common-ngx-pipez`) gives exit 0 and *No tasks were run* today.
+2. Branch `fix/2291-check-project-names` from `origin/development` (it has PR 2290's `lint_steps`): before running, check every named project
+   against `nx show projects` in the volume and exit 2 naming each unknown one, with the nearest real name if one is close. Affected and all modes
+   are unchanged. `bash scripts/check-in-volume.test.sh` covers it (a fixture project list).
+3. The misspelt run now exits 2 with the name; a correct list still runs. Commit (`fix(workspace): Refuse a project list naming a project that
+   does not exist`, `Closes #2291`, Co-Authored-By), push to the fork. No PR.
 
 ## Batch 116 (security: #2289 - nginx-base rebuilt with brotli-libs 1.2.1-r0; in the nginx-base repository; a branch; 24 October 2026, 5:40 AM Central, from `work (security)`)
 
