@@ -21,7 +21,8 @@ const CAMPUS_BASEMAP_THUMBNAIL = '/assets/images/basemap_thumbnails/aggieland.pn
  * The vector tile cache below is not published for production, so production keeps this one until
  * it is (#1229). Resolve the campus basemap with `aggiemapBasemap()`, never by naming either constant.
  */
-export const AggiemapRasterBasemap: BaseMapProperties = {
+// Typed with its id, which every saved campus basemap id starts with (basemapForSavedId).
+export const AggiemapRasterBasemap: BaseMapProperties & { id: string } = {
   baseLayers: [
     {
       type: 'TileLayer',
