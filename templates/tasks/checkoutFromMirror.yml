@@ -1,0 +1,28 @@
+# The checkout for jobs on the lab's agents (#2212), in place of the checkout task, which cannot take a reference
+# repository. Each lab agent has a bare mirror of this repository at /mirror/monorepo.git, mounted read-only and
+# refreshed only by the agent's supervisor, from GitHub. Git borrows its objects (objects/info/alternates) and fetches
+# from GitHub only what the mirror lacks, so the job still gets every branch, the pull request's merge ref and the full
+# history (`affected` needs its base), checked against GitHub's own refs. Without a mirror it fetches everything, as
+# the checkout task would.
+steps:
+  - bash: |
+      set -euo pipefail
+      mirror=/mirror/monorepo.git
+      cd "$(Build.SourcesDirectory)"
+      git init -q .
+      if [ -d "$mirror/objects" ]; then
+        echo "$mirror/objects" > .git/objects/info/alternates
+        echo "Borrowing objects from the lab's read-only mirror ($mirror)."
+      else
+        echo "##vso[task.logissue type=warning]No git mirror at $mirror on this agent; fetching everything from GitHub."
+      fi
+      git remote add origin "$(Build.Repository.Uri)"
+
+      refspecs=('+refs/heads/*:refs/remotes/origin/*')
+      if [ "$(Build.Reason)" = "PullRequest" ]; then
+        refspecs+=("+refs/pull/$(System.PullRequest.PullRequestNumber)/merge:refs/remotes/pull/$(System.PullRequest.PullRequestNumber)/merge")
+      fi
+      git -c protocol.version=2 fetch --prune --no-tags --no-recurse-submodules origin "${refspecs[@]}"
+      git checkout --quiet --force "$(Build.SourceVersion)"
+      echo "Checked out $(git rev-parse HEAD) (tree $(git rev-parse 'HEAD^{tree}'))."
+    displayName: 'Checkout from the lab mirror'

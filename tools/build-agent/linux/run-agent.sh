@@ -46,6 +46,18 @@ confirm_egress() {
     grep -qw "$network" || docker network connect --ip "$proxy_ip" "$network" "$proxy"
 }
 
+# A bare mirror of the repository in a Docker volume, for the lab's checkouts (templates/tasks/checkoutFromMirror.yml).
+# Only this supervisor writes it, and only from GitHub: a short container of its own, before each job, on Docker's
+# default network, never a job's container. Each agent gets it read-only. A lock keeps agents started together from
+# fetching into it at once. A failure only costs the next checkout time, so it warns and carries on.
+mirror_volume=tamu-agent-git-mirror
+repository_url=https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo.git
+confirm_mirror() {
+  docker run --rm --entrypoint flock -v "$mirror_volume:/mirror" "$IMAGE" /mirror/.lock sh -c \
+    "umask 022; if [ -d /mirror/monorepo.git ]; then git -C /mirror/monorepo.git fetch --prune --quiet; else git clone --mirror --quiet $repository_url /mirror/monorepo.git; fi" ||
+    echo "warning: could not refresh the git mirror; the next checkout fetches more from GitHub." >&2
+}
+
 stop_agent() {
   if docker container inspect "$container" >/dev/null 2>&1; then
     echo "Stopping agent '$AZP_AGENT_NAME' and removing it from the pool..."
@@ -59,9 +71,11 @@ echo "Starting agent '$AZP_AGENT_NAME' in pool '$AZP_POOL'."
 failures=0
 while true; do
   confirm_egress
+  confirm_mirror
 
   # The token is in this shell only for the 'docker create' that reads it, and passed by name (-e AZP_TOKEN).
   AZP_TOKEN=$(<"$TOKEN_FILE") docker create --rm --name "$container" \
+    --mount "type=volume,source=$mirror_volume,target=/mirror,readonly" \
     --memory "$MEMORY" --memory-swap "$MEMORY" --cpus "$CPUS" --pids-limit 8192 \
     --security-opt no-new-privileges \
     --cap-drop ALL --cap-add SETUID --cap-add SETGID --cap-add KILL \
