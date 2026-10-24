@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 66.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 68.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -41,6 +41,39 @@ report under **Questions for the director**, with options and a recommendation �
 > 5. **The maintainer, once per organization:** Project settings → Agent pools → `Linux-Build` → Security → Pipeline permissions → add **Monorepo**.
 > 6. **Check:** the agent shows **Online** in the pool, and a PR build's job log names the agent.
 > And a section **"Stopping or removing an agent"**: Ctrl+C, then remove it from the pool if the machine is leaving.
+
+## Batch 66 (security: #2216 - fork pull request builds stop downloading the app_configs secure file; a code job and a branch; 23 October 2026, 7:20 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 45 minutes.** Your batch 64 answers: **1 (a)**, as its own pull request (#2216, filed); **2: keep the root
+entrypoint**; **3: yes**, batch 67. Your build-agent branch is PR 2218 (`Closes #2217`).
+
+1. A branch `ci/2216-fork-builds-no-secure-file` from `origin/development`. In `templates/jobs/build.yml`, make the `DownloadSecureFile@1`,
+   extract and copy steps run only when the build is **not** a fork pull request: `condition: ne(variables['System.PullRequest.IsFork'], 'True')`
+   on each (keep `succeeded()` in it). Read the whole pipeline (`azure-pipelines.yml`, `templates/`) for anything else that reads the secure
+   file or a secret variable, and give those the same condition; list each in the report.
+2. Say what a fork build then uses in place of the extracted files (the repository's own environment files) and show, by building the two
+   configurations the pipeline builds (`nx run-many --target=build --configuration=development|production`, the pipeline's exclusions) **in your
+   build-agent container with no secure file**, that both succeed. This is what every fork build will do.
+3. **Do not print, copy or describe the values in `app_configs`.** If you need to know which files it holds, read the copy step's paths only.
+4. `scripts/check-in-volume.sh ci/2216-fork-builds-no-secure-file`, commit (`ci(workspace): Fork pull request builds no longer download the
+   app_configs secure file`, a body, `Closes #2216`, the Co-Authored-By line), push to the fork. **No PR.**
+
+## Batch 67 (security: #2212 - restrict the build agent's network to the internet only; a design and a branch; 23 October 2026, 7:20 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 66.** **Expected: about 60 minutes.** Your batch 64 residual risk: fork code on the agent can reach the host's local
+network. Before any job is pointed at `Linux-Build`, the agent's containers must reach only the internet (npm, GitHub, Azure DevOps, Nx Cloud)
+and **not** 10/8, 172.16/12, 192.168/16, 169.254/16 or the host.
+
+1. Find a way that works on Docker Desktop for Windows (WSL 2) **and** on a plain Linux Docker host (the VMware VMs later), and survives a
+   Docker Desktop restart. Options to weigh: a dedicated Docker network plus `iptables` rules in `DOCKER-USER` applied inside Docker Desktop's VM
+   (and how they are re-applied), an egress proxy container on an internal network as the only route out, or another. Prefer the one with the
+   fewest moving parts that cannot be bypassed from inside the container (`--cap-drop ALL` already blocks changing its own rules).
+2. Build it on branch `ci/2212-agent-egress` (from `fork/ci/2212-lab-build-agent`): changes to `run-agent.ps1` and the README, any helper.
+3. Prove it from inside an agent container: `curl -sI https://registry.npmjs.org`, `https://github.com`, `https://dev.azure.com` succeed;
+   a connection to the host's LAN gateway, any 10.x/172.16.x/192.168.x address and `host.docker.internal` **fails**; DNS still resolves. Then
+   the batch 64 lint and build run still passes inside it.
+4. Commit (`ci(workspace): Keep the build agent off the local network`, `Part of #2212`, Co-Authored-By) and push to the fork. **No PR.**
+   **Do not register an agent**; that stays the maintainer's.
 
 ## Batch 64 (security: #2212 - an Azure Pipelines Linux agent in a container on this machine, built and proven, NOT registered; a code job and a branch; 23 October 2026, 7:00 PM Central, from `work (security)`)
 
