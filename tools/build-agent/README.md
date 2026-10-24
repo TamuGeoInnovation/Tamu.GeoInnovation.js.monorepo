@@ -6,7 +6,7 @@ pipeline's work in 3 to 5 minutes. A hosted agent takes 15 to 25 minutes for one
 
 | File | What it is |
 | --- | --- |
-| `Dockerfile` | Ubuntu 24.04, git, curl, jq, Node 24.22.1 and the Azure Pipelines agent (v4), downloaded and checksummed at build time. No secrets. |
+| `Dockerfile` | Ubuntu 24.04, git, curl, jq, the Azure Pipelines agent (v4) and Node 24.22.1 in the agent's tool cache, where `UseNode@1` finds it instead of downloading it (the job log says *Found tool in cache: node 24.22.1 x64*); downloaded and checksummed at build time. No secrets. |
 | `start.sh` | The container's entrypoint, adapted from Microsoft's [Run a self-hosted agent in Docker](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/docker) script: registers the agent, runs **one** job, removes the agent. |
 | `run-agent.ps1` | The supervisor on Windows: reads the saved token (or asks for it), then runs one fresh container per job. |
 | `save-agent-token.ps1` | Windows: asks for the token once and saves it so only this user on this machine can read it (DPAPI). |
@@ -40,9 +40,10 @@ agent is set up so that code can do as little as possible:
   credential (in `/azp/.credentials`) is readable by the job, as on any agent, so it must stop working once the
   job ends, and removing the agent does that.
 
-- **It reaches the internet, and nothing local.** The agent's container is on `tamu-agent-internal`, a Docker
-  network created with `--internal`: it has no route out at all, and Docker gives it no outside DNS. Its only way out
-  is the egress proxy, `tamu-agent-egress`, a Squid container on that network and on Docker's default bridge. The
+- **It reaches the internet, and nothing local.** Each agent's container is on a network of its own,
+  `tamu-agent-internal-<agent name>`, created with `--internal`: it has no route out at all, not even to another
+  agent, and Docker gives it no outside DNS. Its only way out is the egress proxy, `tamu-agent-egress`, a Squid
+  container on every agent's network and on Docker's default bridge. The
   proxy carries HTTPS (and plain HTTP) to public addresses on ports 443 and 80, and refuses every private,
   link-local, loopback and carrier-grade NAT address: the lab's own network, Docker's networks, the host
   (`host.docker.internal`) and cloud metadata addresses. It checks the address it actually connects to, so a public
@@ -53,6 +54,14 @@ agent is set up so that code can do as little as possible:
   This needs no firewall rules on the host, so it works the same on Docker Desktop for Windows and on a plain Linux
   Docker host, and a restart of Docker changes nothing: the network persists, the proxy restarts itself
   (`--restart unless-stopped`), and `run-agent.ps1` recreates either if it is missing, before every job.
+
+  **Why one network per agent:** a branch build on one agent has `app_configs` on disk while a fork's job may run on
+  the next, so agents must not reach each other. Each network is a /28 of `172.31.251.0/24` picked from the agent's
+  name, so it is the same at every start: `<machine>-<n>` takes slot n (1 to 12), `-test`, `-test2` and `-test3` take
+  13 to 15, and slot s is `172.31.251.(16 s)/28`, with the proxy at `.(16 s + 2)`. So one machine holds up to twelve
+  agents and three test ones. The proxy refuses those addresses like any other private one. Agents installed before
+  this shared one network, `tamu-agent-internal` (`172.31.250.0/24`), which the proxy still accepts; reinstalling an
+  agent moves it to its own, and the shared network is removed once only the proxy is left on it.
 
 **The pipeline's fork settings are part of the guard rails** (step 2 below): secrets are not given to fork builds,
 and a pull request from someone outside the team builds only after a team member comments on it.
@@ -165,23 +174,26 @@ every lab agent is down, pull request builds wait in the queue until one is back
 
 ## How many agents fit
 
-Measured on the lab, 23 October 2026 (#2212): one agent running the pipeline's whole workload (clone, `npm ci`, lint
-of 92 projects, both builds) peaked at **10.4 GB of memory** (the cgroup's `memory.peak`, page cache included) and
-**4.8 cores** (2.5 on average), in about four minutes.
+Measured on the lab (#2212): one agent running the pipeline's whole workload (clone, `npm ci`, lint of 92 projects,
+both builds) peaked at **10.4 GB of memory** with 6 CPUs (23 October 2026), and at **9.3 GB with 5 CPUs** (24 October
+2026; the cgroup's `memory.peak`, page cache included), using at most 4.2 cores.
 
-So each agent gets **`--memory 14g --cpus 6`** (the defaults of `run-agent.ps1`, `install-agent-task.ps1` and
-`linux/run-agent.sh`), and a machine runs as many as fit **while leaving at least 8 GB and 4 cores for its own work**,
-up to three. What counts is what Docker has, not the machine: `docker info --format '{{.NCPU}} {{.MemTotal}}'`. The
-lab's Docker Desktop has 24 CPUs and 62.5 GiB, which fits **three**: 18 cores and 42 GiB, leaving 6 cores and
-20 GiB. Each further agent on Windows is one more task, as in step 4:
+So each agent gets **`--memory 12g --cpus 5`** (the defaults of `run-agent.ps1`, `install-agent-task.ps1` and
+`linux/run-agent.sh`): 2.7 GB over the measured peak. A machine runs as many as fit **while leaving at least 8 GB and 4
+cores for its own work**, up to four. What counts is what Docker has, not the machine: `docker info --format '{{.NCPU}}
+{{.MemTotal}}'`. The lab's Docker Desktop has 24 CPUs and 62.5 GiB, which fits **four**: 20 cores and 48 GiB, leaving 4
+cores and 14.5 GiB. Five CPUs instead of six cost each build about 12 seconds (61 s against 48 s, measured on `development`
+a day apart); a fourth agent saves a pull request the wait for the third agent to come back, about 25 seconds.
+Each further agent on Windows is one more task, as in step 4:
 
 ```powershell
 powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-2 -Start
 powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-3 -Start
+powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-4 -Start
 ```
 
-They share the saved token, the egress proxy and its network. On Linux, set `MEMORY` and `CPUS` in the unit's
-environment to change one agent's share.
+They share the saved token and the egress proxy; each has its own network, so they cannot reach each other. On
+Linux, set `MEMORY` and `CPUS` in the unit's environment to change one agent's share.
 
 ## The git mirror
 
@@ -233,8 +245,8 @@ machine is leaving for good, remove the agent in Organization settings → Agent
 Delete, and delete the image (`docker image rm tamu-gisc/build-agent:latest`).
 
 If a container is left behind (`docker ps --filter name=tamu-build-agent`), `docker stop tamu-build-agent-<agent name>`
-removes it the same way. The proxy and the network can stay; if the machine is leaving, remove them too with
-`docker rm -f tamu-agent-egress` and `docker network rm tamu-agent-internal`.
+removes it the same way. The proxy and the networks can stay; if the machine is leaving, remove them too with
+`docker rm -f tamu-agent-egress` and `docker network rm tamu-agent-internal-<agent name>` for each agent.
 
 ## Proven without Azure
 

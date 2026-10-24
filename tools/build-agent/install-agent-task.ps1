@@ -23,7 +23,7 @@ powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-1 -Unin
 #>
 param(
   [Parameter(Mandatory = $true)]
-  [ValidatePattern('^[a-z][a-z0-9]*-([0-9]+|test)$')]
+  [ValidatePattern('^[a-z][a-z0-9]*-([0-9]+|test[0-9]?)$')]
   [string]$AgentName,
   [switch]$Uninstall,
   # Starts the task now as well as at every logon.
@@ -32,8 +32,8 @@ param(
   [string]$TokenFile = (Join-Path $env:LOCALAPPDATA 'tamu-build-agent\token.xml'),
   [string]$Image = 'tamu-gisc/build-agent:latest',
   # Each agent's share of the machine: README, "How many agents fit".
-  [string]$Memory = '14g',
-  [int]$Cpus = 6
+  [string]$Memory = '12g',
+  [int]$Cpus = 5
 )
 
 $ErrorActionPreference = 'Stop'

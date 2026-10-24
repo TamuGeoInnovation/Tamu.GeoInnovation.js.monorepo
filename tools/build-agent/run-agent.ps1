@@ -26,15 +26,15 @@ powershell -File tools/build-agent/run-agent.ps1 -AgentName lab-1 -TokenFile "$e
 #>
 param(
   [Parameter(Mandatory = $true)]
-  [ValidatePattern('^[a-z][a-z0-9]*-([0-9]+|test)$')]
+  [ValidatePattern('^[a-z][a-z0-9]*-([0-9]+|test[0-9]?)$')]
   [string]$AgentName,
   [string]$Url = 'https://dev.azure.com/tamugeoinnovation',
   [string]$Pool = 'Linux-Build',
   [string]$Image = 'tamu-gisc/build-agent:latest',
   [string]$EgressImage = 'tamu-gisc/build-agent-egress:latest',
   # Each agent's share of the machine: README, "How many agents fit".
-  [string]$Memory = '14g',
-  [int]$Cpus = 6,
+  [string]$Memory = '12g',
+  [int]$Cpus = 5,
   [string]$TokenFile
 )
 
@@ -42,27 +42,47 @@ $ErrorActionPreference = 'Stop'
 # Named after the agent, so two agents on one machine, or a test beside a running agent, never collide.
 $container = "tamu-build-agent-$AgentName"
 
-# The agent's network has no route out (--internal); the egress proxy, on this network and Docker's default
-# bridge, is its only way to the internet, and refuses every private and local address (see egress/squid.conf).
-# The subnet is fixed because squid.conf allows only it.
-$network = 'tamu-agent-internal'
-$subnet = '172.31.250.0/24'
+# Each agent has a network of its own with no route out (--internal), so agents cannot reach each other; the egress
+# proxy, on every agent's network and on Docker's default bridge, is its only way to the internet, and refuses every
+# private and local address (see egress/squid.conf). The subnet comes from the agent's name, so it is the same at
+# every start: <machine>-<n> takes slot n (1 to 12), <machine>-test slot 13, -test2 slot 14 and -test3 slot 15; slot s
+# is the /28 at 172.31.251.(16 s), which squid.conf allows.
+$slot = 0
+if ($AgentName -match '-(\d+)$') {
+  if ([int]$Matches[1] -le 12) { $slot = [int]$Matches[1] }
+} elseif ($AgentName -match '-test(\d?)$') {
+  $slot = 12 + [Math]::Max(1, [int]('0' + $Matches[1]))
+}
+if ($slot -lt 1 -or $slot -gt 15) {
+  Write-Error "'$AgentName' has no network slot: use <machine>-1 to <machine>-12, or <machine>-test, -test2, -test3."
+}
+$network = "tamu-agent-internal-$AgentName"
+$subnet = "172.31.251.$(16 * $slot)/28"
 $proxy = 'tamu-agent-egress'
-$proxyIp = '172.31.250.2'
+$proxyIp = "172.31.251.$(16 * $slot + 2)"
 $proxyUrl = "http://${proxy}:3128"
+# The one network every agent shared before (#2212); removed once no agent is left on it.
+$sharedNetwork = 'tamu-agent-internal'
 
 # Creates the network and starts the proxy if either is missing. Run before every job, so a restart of Docker
 # (or of the machine) while this script runs is recovered from rather than leaving the agent with no way out.
 function Confirm-Egress {
   if (-not (docker network ls -q --filter "name=^$network$")) {
     docker network create --internal --subnet $subnet $network | Out-Null
-    if ($LASTEXITCODE -ne 0) { Write-Error "Could not create the network '$network'." }
+    if ($LASTEXITCODE -ne 0) { Write-Error "Could not create the network '$network' ($subnet): is another network using it?" }
   }
   if (-not (docker ps -aq --filter "name=^$proxy$")) {
+    # Agents started together (two logon tasks) race to create it; losing that race is fine. 'Continue' because
+    # under 'Stop' Windows PowerShell turns the loser's redirected error output into a terminating error.
+    $ErrorActionPreference = 'Continue'
     docker run -d --name $proxy --restart unless-stopped `
       --memory 512m --cpus 1 --cap-drop ALL --security-opt no-new-privileges `
-      $EgressImage | Out-Null
-    if ($LASTEXITCODE -ne 0) { Write-Error "Could not start the egress proxy. Is '$EgressImage' built (README, step 3)?" }
+      $EgressImage 2>$null | Out-Null
+    $created = $LASTEXITCODE
+    $ErrorActionPreference = 'Stop'
+    if ($created -ne 0 -and -not (docker ps -aq --filter "name=^$proxy$")) {
+      Write-Error "Could not start the egress proxy. Is '$EgressImage' built (README, step 3)?"
+    }
   }
   if (-not (docker ps -q --filter "name=^$proxy$")) {
     docker start $proxy | Out-Null
@@ -71,6 +91,14 @@ function Confirm-Egress {
   if ($networks -notcontains $network) {
     docker network connect --ip $proxyIp $network $proxy
     if ($LASTEXITCODE -ne 0) { Write-Error "Could not connect the egress proxy to '$network'." }
+  }
+  # An agent still running the old scripts keeps the shared network; once only the proxy is left on it, it goes.
+  if ($networks -contains $sharedNetwork) {
+    $others = docker network inspect --format '{{range .Containers}}{{.Name}} {{end}}' $sharedNetwork
+    if ("$others".Trim() -eq $proxy) {
+      docker network disconnect $sharedNetwork $proxy | Out-Null
+      docker network rm $sharedNetwork | Out-Null
+    }
   }
 }
 
