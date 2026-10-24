@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:54 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **2:11 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **1:54 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 2:30 AM Central.**
+**Next update by 2:45 AM Central.**
 
-**Batch 95, security: ngx-highlightjs 6 to 14 (#1218)**, started 1:54 AM Central, 24 October. Then batch 97.
+**Batch 97, aggiemap bug: the building directory's empty Abbreviation column (#2262)**, started 2:11 AM Central, 24 October. Then batches 98 and 99.
 
 ## Finished
+
+- **Batch 95, security: ngx-highlightjs 6 to 14 (#1218) - pushed** (1:54 to 2:08 AM, 24 October): geoservices only, no sign-in needed. Set up once in main.ts with provideHighlightOptions: same lazy core, the same three languages and theme; line numbers from ngx-highlightjs/line-numbers (highlightjs-line-numbers.js leaves the lock). `[highlight]` → `[highlightAuto]` + `lineNumbers`. Found: 6's HighlightPlusModule was the app's only source of HttpClient, so main.ts now calls provideHttpClient(withInterceptorsFromDi()). Visible: samples that showed as plain text are now highlighted and numbered. Initial bundle 534.13 → 528.55 kB. Full check exit 0 (lint 104 / test 100 / build 14). **`chore/1218-ngx-highlightjs-14` at `05b99e5ef`.** Report `work-lab-leila/reports/2026-10-23-83.md`.
 
 - **Batch 94, security: the select spec typechecks (#2256) - pushed** (1:48 to 1:51 AM, 24 October): the component was wrong, not the spec. Its value is the item itself without a valueTemplate, and the layer filter relies on that; now typed `T | string`. Spec unchanged and typechecks; full check exit 0 (lint 27 / test 25 / build 5). All 103 spec tsconfigs typechecked: 77 pass, 26 fail. Four causes: a wrong `@arcgis/core/interfaces` path in 30 spec tsconfigs, aggiemap-angular without ArcGIS types, Nest files under front-end settings, and a strict lib importing non-strict ones (824 errors). Only 5 errors in projects' own files. Full list beside the report. **`fix/2256-select-spec-types` at `41103227c`.** Report `work-lab-leila/reports/2026-10-23-82.md`.
 
@@ -282,4 +284,4 @@ Last written **1:54 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 94 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 95 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
