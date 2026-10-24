@@ -30,7 +30,9 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Batches 77 and 78 wait for PRs 2187 and 2191 to merge.
+**Next update by 9:45 PM Central.**
+
+**Batch 78, security: Playwright 1.64.1 named wherever its version is written**, started 8:50 PM Central (PR 2187 merged). Batch 77 waits for PR 2191.
 
 ## Finished
 
