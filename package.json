@@ -178,7 +178,7 @@
     "@parcel/watcher": true,
     "@swc/core": true,
     "@vaadin/vaadin-usage-statistics": false,
-    "better-sqlite3": true,
+    "better-sqlite3": false,
     "browser-tabs-lock": false,
     "esbuild": true,
     "fsevents": true,
