@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 70.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 73.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -41,6 +41,56 @@ report under **Questions for the director**, with options and a recommendation �
 > 5. **The maintainer, once per organization:** Project settings → Agent pools → `Linux-Build` → Security → Pipeline permissions → add **Monorepo**.
 > 6. **Check:** the agent shows **Online** in the pool, and a PR build's job log names the agent.
 > And a section **"Stopping or removing an agent"**: Ctrl+C, then remove it from the pool if the machine is leaving.
+
+## Batch 70 (security: Dependabot PR 2194, jwt-decode 3 to 4 - the code fix as our own branch; 23 October 2026, 7:55 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 30 minutes.** Your batch 68 question 1: **(a)**, accept the ACL and DPAPI blob as shown. PRs 2219, 2221
+have merged; 2223 (webpack) is building, so **batch 65 still waits** for it.
+
+Dependabot's PR 2194 bumps `jwt-decode` 3.1.2 → 4.0.0 and fails Build (Actions and Azure). Version 4 dropped the default export for a named
+`jwtDecode` and ships its own types. The only user found is `libs/ues/common/nest/src/lib/middleware/user-groups/user-groups.middleware.ts`.
+
+1. Branch `chore/2194-jwt-decode-4` from `origin/development`. Bump `jwt-decode` to `^4.0.0` in `package.json`, lock with batch 41's method
+   (only `jwt-decode`'s key may change; remove `@types/jwt-decode` only if it is listed and nothing else needs it). Fix every import (search the
+   whole repository, not just that file) to `import { jwtDecode } from 'jwt-decode'`, and any type the code used from v3.
+2. Read Dependabot's failing Build log (`gh pr checks 2194`, then the run's log) and confirm it is this error and nothing else; say what it was.
+3. **The lock rule**, key by key. `scripts/check-in-volume.sh chore/2194-jwt-decode-4` (full `affected`). Build `ues-operations-nest` for
+   production if it is not in that set (it may be excluded from CI builds; build it anyway) and say whether its generated `package.json` lists
+   `jwt-decode` 4.
+4. Commit (`chore(workspace): Move jwt-decode to 4`, a body, the Co-Authored-By line; the director adds the issue number), push to the fork.
+   **No PR**; **never push to Dependabot's branch**.
+
+## Batch 71 (security: Dependabot PR 2191, the everything-else group (14 updates) - verify it runs, not only builds; nothing pushed; 23 October 2026, 7:55 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 70.** **Expected: about 45 minutes.** **Commit nothing, push nothing.** PR 2191's checks pass except the linked-issue
+one (the director handles that). Three of its updates can break at run time without failing a build: **`@auth0/auth0-angular` 2.3.0 → 2.13.0**
+(GIS Day sign-in), **`reflect-metadata` 0.1.14 → 0.2.2** (every Nest API's decorators) and **`express-session` 1.18.2 → 1.19.0**.
+
+1. A worktree at Dependabot's head (`git fetch origin pull/2191/head:pr-2191`), `scripts/check-in-volume.sh pr-2191` (full `affected`) and the
+   lock diff against `development`: confirm it is only the 14 packages and their own dependencies.
+2. Build and start the `gisday-nest` and `geoservices-nest` production images from it (as batch 38), `gisday-nest` against a throwaway SQL Server:
+   `GET /api/seasons/active` 200, an unauthenticated `POST` 401. That proves `reflect-metadata` 0.2 with Nest's decorators.
+3. GIS Day front end on its dev server from that worktree (its own `node_modules` volume): the home page loads, **the Sign in button reaches the
+   Auth0 login page** (do not sign in), no console errors. Compare with `development` the same way.
+4. Report pass/fail per item, and whether 2191 is safe to merge **after PR 2223** (the lock queue), or which update should be split out.
+
+## Batch 72 (security: #2212 - the pipeline's jobs on the `Linux-Build` pool, as a branch; nothing merged; 23 October 2026, 7:55 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 71.** **Expected: about 45 minutes.** All prerequisites are in: fork secrets are off (the maintainer, after PR 2219),
+the egress proxy merged (PR 2221), the background agent is your batch 68. Today `azure-pipelines.yml` line 24 sets one `pool:` (`vmImage:
+ubuntu-24.04`) for every job.
+
+1. Branch `ci/2212-linux-build-pool` from `origin/development`. Make the jobs that do the heavy work (Dependencies Cache or Restore, Lint, Build
+   development, Build production) run on `pool: name: Linux-Build`, and leave the light ones (Setup Last SHA, Tag) on the hosted pool, so a
+   pipeline whose self-hosted agents are all offline still says so quickly. Do it with a template parameter or variable, so switching back
+   is a one-line change; put that line in the README.
+2. Read each job's steps for anything a hosted image has and our agent image does not (the `Cache@2` task, `az` CLI in *Setup Last SHA*,
+   `zip`/`unzip`, Chrome for any test) and either add it to the agent's `Dockerfile` or keep that job hosted; list each.
+3. **Concurrency:** with one agent, the four jobs of a pull request run one after another on it. Estimate a pull request's time on one agent
+   from your batch 64/67 timings, against today's 15-25 minutes on three hosted agents, and say whether one agent is a win or we need two
+   (`lab-1`, `lab-2` on this machine; memory and CPU allowing).
+4. Commit (`ci(workspace): Run the pipeline's heavy jobs on the Linux-Build pool`, `Part of #2212`, Co-Authored-By), push to the fork.
+   **No PR**: it can only be proven by a real Azure run, which the director starts with the maintainer once `lab-1` runs batch 68's way.
 
 ## Batch 69 (security: the webpack conversion brought up to date after PRs 2188 and 2208 changed the lock; pushed, no PR; 23 October 2026, 7:45 PM Central, from `work (security)`)
 
