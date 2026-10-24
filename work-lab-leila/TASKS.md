@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 113.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 114.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,19 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 113 (security: #2286 - the pre-push check runs the smoke suite's typecheck, as CI's lint does; a fix and a branch; 24 October 2026, 5:40 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start next, after batch 112.** **Expected: 45 minutes.** PR 2285 (maplibre) passed `scripts/check-in-volume.sh` and failed CI's lint on
+`npx tsc -p test/smoke/aggiemap` (a step in `.github/workflows/lint.yml` outside `nx`), which the script never runs.
+1. **Prove it first:** on a branch that breaks the suite's types (e.g. `fork/chore/1218-maplibre` before `c90ba50a3`, i.e. `5012aba01`), the
+   script exits 0 today.
+2. Branch `fix/2286-check-smoke-tsc` from `origin/development`: the script also runs every `run:` step of `lint.yml` that is not an `nx` command
+   (read from the workflow, as it reads the exclusion lists; today that is `npx tsc -p test/smoke/aggiemap`), in the same volume, and fails if any
+   does. Say how it finds them and what it would do with a step it cannot run. `bash scripts/check-in-volume.test.sh` covers the reading.
+3. On `5012aba01` the script now exits non-zero with TS2307; on `development` it exits 0. CLAUDE.md's description of the script, if it lists what
+   it runs, says so. Commit (`fix(workspace): Run the smoke suite's typecheck in the pre-push check, as CI does`, `Closes #2286`,
+   Co-Authored-By), push to the fork. No PR.
 
 ## Batch 112 (security: where security stands after tonight; a scan, nothing pushed; 24 October 2026, 5:00 AM Central, from `work (security)`)
 
