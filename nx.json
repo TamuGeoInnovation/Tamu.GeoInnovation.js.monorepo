@@ -78,11 +78,19 @@
   "nxCloudId": "68bf66e05ea3cd1b684d15cb",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "targetDefaults": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"],
-      "cache": true
-    },
+    "build": [
+      {
+        "dependsOn": ["^build"],
+        "inputs": ["production", "^production"],
+        "cache": true
+      },
+      {
+        "filter": {
+          "plugin": "@nx/webpack/plugin"
+        },
+        "outputs": ["{projectRoot}/{options.outputPath}"]
+      }
+    ],
     "test": [
       {
         "inputs": [
@@ -270,6 +278,15 @@
       "plugin": "@nx/jest/plugin",
       "options": {
         "targetName": "test"
+      }
+    },
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static",
+        "serveTargetName": "serve"
       }
     }
   ]
