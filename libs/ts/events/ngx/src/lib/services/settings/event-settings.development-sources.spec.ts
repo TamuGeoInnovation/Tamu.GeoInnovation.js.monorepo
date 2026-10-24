@@ -43,7 +43,7 @@ describe("the Women's Basketball map's layers (#2001)", () => {
     // replaced it with a hosted view the ordinary connection resolves to on development, so the address
     // moved; what this guards is unchanged - development reads its own service, not production's.
     expect(
-      sources.every((source) => source.url?.includes('/Hosted/WomensBasketballParking_view/FeatureServer/'))
+      sources.every((source) => 'url' in source && source.url?.includes('/Hosted/WomensBasketballParking_view/FeatureServer/'))
     ).toBe(true);
     // Deliberately the path and not the host: `Connections` resolves its hosts once, when the module is
     // first loaded, and in a Node test there is no address to read - so it bakes production's host
@@ -69,6 +69,6 @@ describe("the Women's Basketball map's layers (#2001)", () => {
       WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,
       WOMENS_BASKETBALL_LAYERS.SAFETY_FIRST
     ]);
-    expect(sources.some((source) => source.url?.includes('/TS/WomensBasketballParking/'))).toBe(false);
+    expect(sources.some((source) => 'url' in source && source.url?.includes('/TS/WomensBasketballParking/'))).toBe(false);
   });
 });

@@ -1,4 +1,4 @@
-<div [@animate]="animateStatus()" (mouseenter)="pause()" (mouseleave)="resume()" (focusin)="pause()" (focusout)="resume()">
+<div animate.enter="entering" [class.closing]="!animateStatus()" (mouseenter)="pause()" (mouseleave)="resume()" (focusin)="pause()" (focusout)="resume()">
   <div class="status" [style.width.%]="(timer.current() / timer.limit) * 100"></div>
   <div class="content" [attr.tabindex]="notification().action ? 0 : null" [attr.role]="notification().action ? 'button' : null" (click)="action()" (keydown.enter)="action()" (keydown.space)="action(); $event.preventDefault()" [class.actionable]="notification().action">
     <div>

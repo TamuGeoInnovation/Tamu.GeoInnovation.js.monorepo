@@ -38,3 +38,28 @@ $motion-easing: cubic-bezier(0.25, 0, 0.25, 1);
     }
   }
 }
+
+// A notification toast (the `animate` trigger, #2278): it enters by rising from below its place (animate.enter with
+// $entering-class), rests in view, and when closing slides back down before it is removed. 250 ms each way.
+@mixin notification-toast($entering-class, $closing-class) {
+  @keyframes notification-toast-enter {
+    from {
+      transform: translateY(110%) translateX(0);
+    }
+
+    to {
+      transform: translateY(-110%);
+    }
+  }
+
+  transform: translateY(-110%);
+  transition: transform 250ms $motion-easing;
+
+  &.#{$entering-class} {
+    animation: notification-toast-enter 250ms $motion-easing;
+  }
+
+  &.#{$closing-class} {
+    transform: translateY(10%);
+  }
+}
