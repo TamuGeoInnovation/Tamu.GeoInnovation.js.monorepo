@@ -32,9 +32,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 11:00 PM Central.**
 
-**Batch 87, security: the maplibre branch on the university's campus basemap (#1218)**, started 10:06 PM Central, in `C:/TAMU/wt-ml84`. Then batch 86 (the director put 87 first).
+**Batch 86, security: where a lab job's time goes, and a cache a fork cannot poison (#2212)**, started 10:14 PM Central.
 
 ## Finished
+
+- **Batch 87, security: the maplibre branch on the university's campus basemap (#1218) - pushed** (10:06 to 10:14 PM, 23 October): TAMU_Basemap_20261008 is a cached Web Mercator map service on production, keyless, CORS open; VTBase is dev-only and State Plane. Default style now its raster tiles; its address is one constant, TAMU_CAMPUS_BASEMAP_URL in @tamu-gisc/common/datasets/geographic, read by AggieMap's connections and basemap definitions, ues-operations and libs/maps/mapbox. Full check exit 0 (on rerun: Nx's false "recursive task invocation" again, same chain as batch 80; issue recommended). gisday-angular production build and the real nginx-base image draw the campus basemap. **`chore/1218-maplibre` at `fde48fd24`.** Report `work-lab-leila/reports/2026-10-23-73.md`.
 
 - **Batch 85, security: lightgallery replaced by GLightbox, as one shared piece (#1218) - pushed** (9:50 to 10:04 PM, 23 October): PhotoCarouselComponent in libs/ui-kits/ngx/layout, used by the POI and bonfire popups (Swiper carousel unchanged; a slide opens GLightbox; arrows, swipe, Escape), with a 3-test spec. lightgallery 2.9.0 out, glightbox 3.3.1 in; lightgallery cleaned from jest.preset.js and 19 Jest configs. GLightbox's stylesheet is global in three apps' styles.scss (a component import broke ts-events' 10 kB budget). Full check exit 0. Before/after screenshots (24): the licence console line went from 2 to 0. **`chore/1218-glightbox` at `b25c1b480`.** Report `work-lab-leila/reports/2026-10-23-72.md`.
 
@@ -262,4 +264,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 85 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 87 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
