@@ -1,4 +1,4 @@
-import { InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException, Logger } from '@nestjs/common';
 
 import { ManagementService } from './management.service';
 
@@ -84,13 +84,19 @@ describe('ManagementService, against a stand-in for the Management API', () => {
         return json(200, users[match[1]]);
       }
 
-      // As the API answers: with include_totals, the page in an envelope; without it, a bare array.
+      // As the API answers: sorted by name when asked, a page of `per_page` (50 by default) at `page`, and with
+      // include_totals the page in an envelope with where it starts and how many there are; without it, a bare array.
       if (url.pathname === '/api/v2/users' && request.method === 'GET') {
-        const all = Object.values(users);
+        const all = Object.values(users).sort((a, b) =>
+          url.searchParams.get('sort') === 'name:1' ? String(a['name']).localeCompare(String(b['name'])) : 0
+        );
+        const perPage = Number(url.searchParams.get('per_page') ?? 50);
+        const start = Number(url.searchParams.get('page') ?? 0) * perPage;
+        const page = all.slice(start, start + perPage);
 
         return url.searchParams.get('include_totals') === 'true'
-          ? json(200, { start: 0, limit: 50, length: all.length, total: all.length, users: all })
-          : json(200, all);
+          ? json(200, { start, limit: perPage, length: page.length, total: all.length, users: page })
+          : json(200, page);
       }
 
       return json(404, { message: `no stand-in for ${request.method} ${url.pathname}` });
@@ -200,14 +206,61 @@ describe('ManagementService, against a stand-in for the Management API', () => {
     });
   });
 
+  describe('getUsers, with more users than one page holds (#2320)', () => {
+    // 51 users: a first page of 50 and a second of 1. Named so that sorting by name is not the order they were added in.
+    beforeEach(() => {
+      users = Object.fromEntries(
+        Array.from({ length: 51 }, (_, i) => {
+          const id = `auth0|${i}`;
+          return [id, { user_id: id, name: `User ${String(50 - i).padStart(2, '0')}` }];
+        })
+      );
+    });
+
+    it('lists all 51 users, not only the first 50', async () => {
+      const profiles = await new ManagementService(credentials).getUsers();
+
+      expect(profiles).toHaveLength(51);
+    });
+
+    it('keeps them sorted by name, across pages', async () => {
+      const names = (await new ManagementService(credentials).getUsers()).map((p) => p.user_info.name);
+
+      expect(names[0]).toBe('User 00');
+      expect(names.at(-1)).toBe('User 50');
+      expect(names).toEqual([...names].sort());
+    });
+
+    it('asks for each page in turn, and stops after the last', async () => {
+      await new ManagementService(credentials).getUsers();
+
+      expect(apiRequests().map((r) => r.query['page'])).toEqual(['0', '1']);
+      expect(apiRequests().every((r) => r.query['sort'] === 'name:1' && r.query['per_page'] === '50')).toBe(true);
+    });
+
+    it('stops at 100 pages, and says so, however many pages the API offers', async () => {
+      users = Object.fromEntries(
+        Array.from({ length: 6000 }, (_, i) => [`auth0|${i}`, { user_id: `auth0|${i}`, name: `User ${i}` }])
+      );
+      const warn = vi.spyOn(Logger, 'warn').mockImplementation(() => undefined);
+
+      const profiles = await new ManagementService(credentials).getUsers();
+
+      expect(apiRequests()).toHaveLength(100);
+      expect(profiles).toHaveLength(5000);
+      expect(warn).toHaveBeenCalledWith('Stopped listing users after 100 pages (5000 users).', 'ManagementService');
+      warn.mockRestore();
+    });
+  });
+
   describe('getUsers', () => {
-    it('lists users sorted by name, the first page of 50, as auth0 3 did', async () => {
+    it('asks for the first page of 50, sorted by name, and no more when it is not full', async () => {
       await new ManagementService(credentials).getUsers();
 
       const [list] = apiRequests();
 
       expect(`${list.method} ${list.path}`).toBe('GET /api/v2/users');
-      // auth0 7 states the API's own defaults, which auth0 3 left to the API: the same first page of 50.
+      // The API's own defaults, stated: page 0, 50 to a page, with totals.
       expect(list.query).toEqual({ sort: 'name:1', page: '0', per_page: '50', include_totals: 'true' });
       expect(apiRequests()).toHaveLength(1);
     });

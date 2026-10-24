@@ -12,6 +12,10 @@ import { Management, ManagementClient } from 'auth0';
 
 export const MANAGEMENT_CONFIG = 'MANAGEMENT_CONFIG';
 
+/** The Management API's default page size, and the most pages getUsers reads (#2320). */
+const USERS_PER_PAGE = 50;
+const USERS_MAX_PAGES = 100;
+
 // auth0 4 and later no longer export these names. The user is the Management API's own type. The metadata stays as
 // auth0 3 typed it, any value under any key: 7 types it Record<string, unknown>, which would make every reader of a
 // nested property (a class roster's user_metadata.education.id) cast it.
@@ -141,14 +145,30 @@ export class ManagementService {
     }
   }
 
+  /**
+   * Every user, sorted by name: each page in turn, not only the first 50 (#2320). `per_page` is given so that a short
+   * page ends the walk; without it, auth0 7 asks for one more, empty page. Stops at USERS_MAX_PAGES, logged, so a
+   * misbehaving answer cannot loop for ever. The Management API itself pages through only the first 1,000 users.
+   */
   public async getUsers(filters?: Auth0UserProfileFilters) {
-    // One page, the API's default 50 users, as auth0 3's getUsers returned. `list` answers a Page; its first
-    // page's users are `.data`.
-    const users = await this.client.users.list({
-      sort: 'name:1'
-    });
+    const users: User[] = [];
+    let page = await this.client.users.list({ sort: 'name:1', per_page: USERS_PER_PAGE });
+    let pages = 1;
 
-    return users.data.map((u) => this._composeMetadata(u, filters));
+    users.push(...page.data);
+
+    while (page.hasNextPage()) {
+      if (pages >= USERS_MAX_PAGES) {
+        Logger.warn(`Stopped listing users after ${pages} pages (${users.length} users).`, 'ManagementService');
+        break;
+      }
+
+      page = await page.getNextPage();
+      pages++;
+      users.push(...page.data);
+    }
+
+    return users.map((u) => this._composeMetadata(u, filters));
   }
 
   /**
