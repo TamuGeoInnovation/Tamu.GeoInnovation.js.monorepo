@@ -30,11 +30,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 10:15 PM Central.**
-
-**Batch 84, security: mapbox-gl replaced by maplibre-gl (#1218)**, started 9:29 PM Central, in `C:/TAMU/wt-ml84`. Batch 77 waits for PR 2191, batch 79 for PR 2231.
+Nothing. Batch 77 waits for PR 2191, batch 79 for PR 2231.
 
 ## Finished
+
+- **Batch 84, security: mapbox-gl replaced by maplibre-gl (#1218) - pushed** (9:29 to 9:48 PM, 23 October): libs/maps/mapbox on maplibre-gl 6.15.0 behind its existing names; used only by four GIS Day competition pages (before/after screenshots in docs/screenshots/maplibre/). Basemap: Mapbox light-v10 (token) to OpenFreeMap positron (no key); the live Mapbox public token removed from the templates; signage's undrawn mapbox:// source removed. Two fixes found on the way: MapLibre's CSS made global (component budget), and its worker shipped as an asset and loaded as a blob (nginx-base serves .mjs as octet-stream; proven with the real image). Full check exit 0; gisday-angular production build exit 0. **`chore/1218-maplibre` at `5eb18c96e`.** Report `work-lab-leila/reports/2026-10-23-71.md`.
 
 - **Batch 83, security: lightgallery's licence (#1218) - investigated, no branch** (9:29 to 9:31 PM, 23 October): both 2.9.0 and 3.0.0 are GPLv3 or commercial; this repository is MIT; no licence key anywhere, and both versions log "please provide a valid license key" without one; 3.0.0 rejects v1/v2 keys. Used by AggieMap's POI and bonfire popups (duplicated code). MIT alternatives: PhotoSwipe 5.4.4, GLightbox 3.3.1. Needs the maintainer: GPL, buy, or replace (recommended: GLightbox). Report `work-lab-leila/reports/2026-10-23-70.md`.
 
@@ -258,4 +258,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 83 (77 waits for 2191, 79 for 2231) (42 and 39 stopped; 40 superseded)
+Last batch done: 84 (77 waits for 2191, 79 for 2231) (42 and 39 stopped; 40 superseded)
