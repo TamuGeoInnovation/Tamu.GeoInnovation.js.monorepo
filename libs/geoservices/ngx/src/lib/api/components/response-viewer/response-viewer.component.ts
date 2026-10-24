@@ -1,13 +1,14 @@
 import { Component, OnInit, input, signal } from '@angular/core';
 
 import { ApiBase, TransformersMap } from '@tamu-gisc/geoprocessing-core';
-import { HighlightModule } from 'ngx-highlightjs';
+import { HighlightAuto } from 'ngx-highlightjs';
+import { HighlightLineNumbers } from 'ngx-highlightjs/line-numbers';
 
 @Component({
   selector: 'tamu-gisc-response-viewer',
   templateUrl: './response-viewer.component.html',
   styleUrls: ['./response-viewer.component.scss'],
-  imports: [HighlightModule]
+  imports: [HighlightAuto, HighlightLineNumbers]
 })
 export class ResponseViewerComponent<Type extends object, Res extends object> implements OnInit {
   public readonly runner = input<ApiBase<TransformersMap<Type>, Type, Res>>(undefined);

@@ -1,6 +1,7 @@
 import { Component, OnInit, input, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HighlightModule } from 'ngx-highlightjs';
+import { HighlightAuto } from 'ngx-highlightjs';
+import { HighlightLineNumbers } from 'ngx-highlightjs/line-numbers';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
@@ -8,7 +9,7 @@ import { ClipboardCopyDirective } from '@tamu-gisc/ui-kits/ngx/interactions/clip
   selector: 'tamu-gisc-code-runner',
   templateUrl: './code-runner.component.html',
   styleUrls: ['./code-runner.component.scss'],
-  imports: [HighlightModule, NgClass, ClipboardCopyDirective, AsyncPipe]
+  imports: [HighlightAuto, HighlightLineNumbers, NgClass, ClipboardCopyDirective, AsyncPipe]
 })
 export class CodeRunnerComponent implements OnInit {
   public readonly code = input<string>(undefined);
