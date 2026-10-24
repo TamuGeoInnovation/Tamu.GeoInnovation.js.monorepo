@@ -44,6 +44,8 @@ report under **Questions for the director**, with options and a recommendation â
 
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
+> **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
 ## Batch 85 (security: #1218 - lightgallery replaced by GLightbox, as one shared piece; a branch; 23 October 2026, 9:40 PM Central, from `work (security)`)
 
 **Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 84.** **Expected: 2 hours.** **Decided by the maintainer (9:40 PM): (c), replace `lightgallery` with GLightbox (MIT).**
