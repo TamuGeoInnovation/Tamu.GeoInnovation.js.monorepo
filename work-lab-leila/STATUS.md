@@ -30,7 +30,9 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Batch 77 waits for PR 2191, batch 79 for PR 2231.
+**Next update by 11:00 PM Central.**
+
+**Batch 85, security: lightgallery replaced by GLightbox, as one shared piece (#1218)**, started 9:49 PM Central, in `C:/TAMU/wt-gl85`. Then batch 86. (Batches 77 and 79 withdrawn by the director.)
 
 ## Finished
 
