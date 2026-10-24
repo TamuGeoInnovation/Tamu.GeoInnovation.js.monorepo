@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 97.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 98.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,20 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 97 (aggiemap bug found by security: #2262 - the building directory's empty Abbreviation column; a bug fix and a branch; 24 October 2026, 1:55 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 95.** **Expected: 30 minutes.** Your batch 93 answers: **1 yes**, filed as #2262 (Bug, Low, AggieMap's
+board); **2 none**. Your `ngx-datatable` 25 branch joins the lock queue.
+1. **Before screenshot first** (`/directory`, a building that has an abbreviation, e.g. one whose `BldgAbbr` is set in
+   `assets/data/building-directory.json`) into `docs/screenshots/2262-directory-abbreviation/`.
+2. **A test that fails first:** a unit test (the directory component's spec, or a new one) that the Abbreviation column shows a building's
+   `BldgAbbr`. Prove it fails on `development`.
+3. Branch `fix/2262-directory-abbreviation` from `origin/development`: `prop="BldgAbbrev"` â†’ `BldgAbbr` (search for any other reference to the
+   wrong name). The test passes; after screenshot; `scripts/check-in-volume.sh <branch> <the directory's project>,aggiemap-angular`.
+4. A release-notes file `docs/releases/unreleased/2262-directory-abbreviation.md` as `docs/releases/unreleased/README.md` describes (it is visible:
+   the column now shows abbreviations), with a *What to test on dev* row. Commit (`fix(aggiemap-angular): Show buildings' abbreviations in the
+   directory`, `Closes #2262`, Co-Authored-By), push to the fork. No PR.
 
 ## Batch 96 (security: #2258 - the markdown pipe stops bypassing Angular's sanitiser; a security fix and a branch; 24 October 2026, 1:10 AM Central, from `work (security)`)
 
