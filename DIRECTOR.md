@@ -22,6 +22,23 @@ The maintainer's decisions 1A, 2A and 3A:
 - **Commits** start with the writer's name as before; a director's commits say which: `home (aggiemap):` or `home (gisday):`.
   Older `home:` commits are the AggieMap chat's.
 
+## One listener per machine, and proof that it listens (23 October 2026, [#2250](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2250))
+
+On 23 October `home` took no work all day although it was on and two chats were open on it. Its GIS Day chat said it was
+a listener and never started a watcher; its AggieMap chat was watching, but skipped the GIS Day batches as the other
+chat's and said so only in its own window; and a `Still there?` was up for one minute. The maintainer's decisions:
+
+- **One listener per machine.** Whichever chat on a machine is listening takes **every** batch in that machine's
+  `TASKS.md`, whatever its heading. The heading still says which director wrote it, so questions go back to that
+  director. A chat never leaves a batch for another chat on its machine.
+- **The watcher fires on a commit, not on a change of content.** It waits for any new commit touching its `TASKS.md`
+  (the command is under [Every listener](#every-listener)), so a note added and removed between two polls is still seen.
+- **A `## Still there?` stays up for its full 20 minutes.** The director removes it only once the listener has answered
+  or the 20 minutes are up.
+- **A handover ends with proof of listening.** A chat's last message before it becomes a listener names its running
+  watcher (the background task's id) and says Remote Control is on for the chat. Saying "I am a listener" without both
+  is the 23 October failure. Remote Control is what lets the maintainer look in from another machine.
+
 ## Read this first: are you in the table below?
 
 **If this session's machine is not a row in [The machines](#the-machines), you are new. Announce yourself
@@ -64,7 +81,7 @@ director), its `STATUS.md` and its `reports/` (written only by that machine).
 
 | Machine | Folder | Its job | Since |
 | --- | --- | --- | --- |
-| home | `home/` | Development: branches, agents, pull requests. **Not available on 23 October 2026** - the maintainer cannot start it, so it takes no batches that day; both directors found this out separately before it was written down. Check for a `home:` push newer than 07:55 on 23 October before queueing anything for it | 18 October 2026 |
+| home | `home/` | Development: branches, agents, pull requests. It was **not** down on 23 October 2026: no chat on it was taking batches ([#2250](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2250)). One listener per machine since then | 18 October 2026 |
 | work | `work/` | Testing: smoke tiers, screenshot sets, `dev-*` tags | 18 October 2026 |
 | codex-home | `codex-home/` | OpenAI's Codex CLI, **on the home machine**: reviews and small, well-defined code jobs (unit tests, dead code), each as a branch for the director to turn into a PR. **It runs only when `home` is running.** On 23 October 2026 `home` could not be started, and two batches were queued here before anyone connected the two - its last push was 07:05. **Before queueing for `codex-home`, check that `home` is up** | 19 October 2026 |
 | work-lab-leila | `work-lab-leila/` | **Any kind of batch** (the maintainer, 23 October 2026, correcting a director who read this row as testing-only): smoke tiers, screenshot sets, code, docs, investigations - whatever is waiting when it is idle. It is the largest machine, so give it what wants a machine to itself. **Its tasks are prioritised for vulnerability work at the moment.** 64 GB and 24 CPUs, the largest here. **No `gh` CLI**, so it opens no pull requests, posts no comments and sets no fields: it pushes branches and reports, and the director does the GitHub half | 20 October 2026 |
@@ -167,8 +184,9 @@ written for the terminal CLI). Spend for the day shows in TAMUS AI Chat's own us
 - **Its branch watcher is always running in the background.** It starts the watcher again after every batch and
   after every reply to the maintainer, so a batch pushed while it was answering him is still picked up. If its
   Background tasks panel shows nothing running, it is not watching, and that is a fault.
-- Watches the branch with one background command that exits when it changes, for example
-  `old=$(git ls-remote origin refs/heads/work-mailbox | cut -f1); until [ "$(git ls-remote origin refs/heads/work-mailbox | cut -f1)" != "$old" ]; do sleep 120; done`,
+- Watches the branch with one background command that exits on **any new commit** to its `TASKS.md` or this file
+  (not on a change of content: a note added and removed between two polls must still wake it; [#2250](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2250)), for example
+  `git fetch -q origin work-mailbox; old=$(git rev-parse origin/work-mailbox); until git fetch -q origin work-mailbox && [ -n "$(git log --format=%h $old..origin/work-mailbox -- <name>/TASKS.md DIRECTOR.md)" ]; do sleep 120; done`,
   then pulls and reads this file and its own `TASKS.md`.
 - Does each new batch in its `TASKS.md`: pushes `<machine>: started` to its `STATUS.md` before anything runs, writes
   its report in `<folder>/reports/<yyyy-mm-dd>-<n>.md` and pushes `<machine>: finished` when it ends, records

@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 92.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 93.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,29 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 92 (gisday: #2137 - lint that can never fail in five GIS Day projects; a code job and a branch; 23 October 2026, 11:25 PM Central, from `home (gisday)`)
+
+**After the security batches already queued** (90, 91); about an hour. Medium priority. GIS Day's director is now
+`home (gisday)` for the weekend, so questions go under **Questions for the director (gisday)**.
+
+[#2137](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2137) says what and why. Five
+projects set `"force": true` on `lint`, so ESLint exits 0 whatever it finds: `apps/gisday-nest`,
+`libs/gisday/platform/data-api`, and `libs/gisday/platform/ngx/{common,core,data-access}`.
+
+1. Branch `chore/2137-gisday-lint-force` from the latest `origin/development`, in its own worktree.
+2. **Prove it red first:** add a deliberate lint error (an unused variable) to one of the five, and show `nx lint` on
+   it **exits 0** on unchanged code. Keep the output.
+3. Remove `"force": true` from all five. `grep -rn '"force": true' --include=project.json apps libs` must find no
+   other project; if it does, list them in the report and leave them.
+4. Run `nx lint` on each of the five (in Docker, output to a file, exit code read on its own line). Fix what fails,
+   rule by rule. No blanket `eslint-disable` and no rule switched off; a single justified line disable needs a
+   comment saying why. Re-run step 2's deliberate error: it must now **fail**. Then remove it.
+5. Commit, `scripts/check-in-volume.sh chore/2137-gisday-lint-force`, which must exit 0. Push to the fork.
+
+Report `work-lab-leila/reports/<date>-<n>.md`: the head commit, the red output from step 2 and the failing one from
+step 4, what each project needed (counts per rule), the check's exit code and time. No pull request; the director
+opens it.
 
 ## Batch 90 (security: #2244 - the date-picker test that fails under load, fixed; a bug fix and a branch; 23 October 2026, 11:30 PM Central, from `work (security)`)
 
