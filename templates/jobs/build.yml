@@ -1,8 +1,21 @@
+# Instantiated twice per build type: lab: true runs on the lab's agents when Setup found one online, lab: false on
+# the hosted pool otherwise (#2212). Exactly one of the two runs; see azure-pipelines.yml.
 parameters:
-  buildType: ''
+  - name: buildType
+    type: string
+  - name: lab
+    type: boolean
+    default: false
 
 jobs:
-  - job: ${{ parameters.buildType}}
+  - job: ${{ format('{0}{1}', parameters.buildType, iif(parameters.lab, '_lab', '')) }}
+    displayName: ${{ format('{0}{1}', parameters.buildType, iif(parameters.lab, ' on lab', '')) }}
+    ${{ if parameters.lab }}:
+      pool:
+        name: Linux-Build
+      condition: and(succeeded(), eq(stageDependencies.Setup.Last_SHA.outputs['lab_pool.labOnline'], 'true'))
+    ${{ else }}:
+      condition: and(succeeded(), ne(stageDependencies.Setup.Last_SHA.outputs['lab_pool.labOnline'], 'true'))
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml
 

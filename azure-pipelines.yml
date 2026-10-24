@@ -3,6 +3,9 @@ variables:
   # dist/apps/aggiemap-angular, so it is not deployed. ues-operations-nest needs configuration kept outside
   # the repository (src/environments/secrets, oidc-client-config) and cannot build here.
   EXCLUDED_PROJECTS: 'geoservices-angular,geoservices-nest,gisday-angular,gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-nest,gisday-nest,mailroom-angular,mailroom-helper-nest,mailroom-nest,signage-angular,ues-operations-nest,aggiemap-ngx-core'
+  # The heavy jobs run on the lab's agents (pool Linux-Build) when one is online, the hosted pool otherwise (#2212).
+  # false sends every job to the hosted pool, as before the lab: the one line to change to switch the lab off.
+  useLab: true
   IS_DEVELOPMENT: $[eq(variables['Build.SourceBranchName'], 'development')]
   IS_MASTER: $[eq(variables['Build.SourceBranchName'], 'master')]
   # Branches whose builds are deployed. Their artifacts must be complete, so they build
@@ -34,6 +37,9 @@ stages:
   - stage: Dependencies
     jobs:
       - template: templates/jobs/cacheOrRestoreDependencies.yml
+        parameters:
+          lab: true
+      - template: templates/jobs/cacheOrRestoreDependencies.yml
 
   - stage: Lint
     dependsOn:
@@ -42,6 +48,9 @@ stages:
     variables:
       baseSha: $[stageDependencies.Setup.Last_SHA.outputs['last_successful_sha.BASE_SHA']]
     jobs:
+      - template: templates/jobs/lintProjects.yml
+        parameters:
+          lab: true
       - template: templates/jobs/lintProjects.yml
 
   - stage: Build
@@ -54,6 +63,14 @@ stages:
       - template: templates/jobs/build.yml
         parameters:
           buildType: development
+          lab: true
+      - template: templates/jobs/build.yml
+        parameters:
+          buildType: development
+      - template: templates/jobs/build.yml
+        parameters:
+          buildType: production
+          lab: true
       - template: templates/jobs/build.yml
         parameters:
           buildType: production
