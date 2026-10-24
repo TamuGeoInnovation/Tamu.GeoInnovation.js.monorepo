@@ -32,9 +32,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 8:45 PM Central.**
 
-**Batch 71, security: Dependabot 2191 (14 updates) verified at run time**, started 7:54 PM Central, in `C:/TAMU/wt-2191`. Then batch 72. Batch 65 waits for the webpack PR (2223).
+**Batch 65, security: the Nx 24 branch refreshed now the webpack PR (2223) has merged**, started 8:14 PM Central, in `C:/TAMU/wt-nx24`. Then batch 72.
 
 ## Finished
+
+- **Batch 71, security: Dependabot 2191 (14 updates) - safe to merge after 2223; nothing pushed** (7:54 to 8:13 PM, 23 October): full check exit 0 (lint 104 / test 100 / build 14); lock 63 keys, all traced to the 14 updates. Images: geoservices-nest starts; gisday-nest against SQL Server maps 213 routes, `seasons/active` 200, unauthenticated POSTs 401, 0 errors (reflect-metadata 0.2.2). GIS Day front end, PR and development side by side: home loads, 7 API calls 200, no console errors, Login/Signup reaches the dev tenant's Auth0 login page. express-session runs only in ues-operations-nest (excluded). One question: a real sign-in on dev after merge. Report `work-lab-leila/reports/2026-10-23-59.md`.
 
 - **Batch 70, security: jwt-decode 3 to 4 (Dependabot 2194) - pushed** (7:49 to 7:54 PM, 23 October): Dependabot's only error was TS1192 (no default export) at the user-groups middleware, surfacing in `ues-operations-angular:build:production`. The import is now `{ jwtDecode }` with its generic; `@types/jwt-decode` (a deprecated stub) removed; ues-operations-nest's deploy package.json at ^4.0.0. Lock: jwt-decode 3.1.2 to 4.0.0 and the stub removed, nothing else. Full check exit 0 (lint 104 / test 100 / build 14); ues-operations-nest fails only on its out-of-repo config, its package.json lists jwt-decode ^4.0.0. **`chore/2194-jwt-decode-4` at `62eae715c`.** Report `work-lab-leila/reports/2026-10-23-58.md`.
 
@@ -234,4 +236,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 70 (42 and 39 stopped; 40 superseded)
+Last batch done: 71 (42 and 39 stopped; 40 superseded)
