@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 129.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 130.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,21 @@ report under **Questions for the director**, with options and a recommendation �
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 129 (security: #2320 - Admin → Users lists only the first 50 Auth0 users; a branch, stacked; 24 October 2026, 9:45 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now.** **Expected: 45 minutes.** Your batch 128 is right; `~7.4.0` and the scoped `undici-types`
+override are accepted. Your question 1 is #2320, this batch; question 2: yes, the dev-tenant steps become the auth0 PR's *What to test on dev*.
+Leave the scratch folder `C:/TAMU/b15/b128/a0`; it is outside every repository.
+1. Branch `fix/2320-all-auth0-users` from **`fork/chore/1218-auth0-7`** (`f187b889a`).
+2. **The test first:** in `management.service.requests.spec.ts`, the stubbed API holds 51 users over two pages (50 and 1, with the
+   `include_totals` envelope's `total`, `start`, `limit`); `getUsers` must return all 51, sorted by name. Run it on `f187b889a`: it must fail
+   (50). Record that.
+3. **The fix:** `getUsers` walks every page (7's `Page`: `for await`, or `hasNextPage()` / `getNextPage()`), still sorted by name, mapped as
+   today. Guard against a runaway loop (a page cap, say 100 pages, logged if hit). Green.
+4. `scripts/check-in-volume.sh fix/2320-all-auth0-users common-nest-auth,gisday-platform-data-api,gisday-nest` (a bug fix; the
+   projects it edits and the app). Commit (`fix(gisday-platform-data-api): List every Auth0 user in Admin → Users, not only the first 50`,
+   `Closes #2320`, Co-Authored-By), push to the fork. No PR. It is not visible without a tenant of more than 50 users; say so for the screenshots.
 
 ## Batch 128 (security: #1218 - `auth0` 3 to 7, stacked; a branch; 24 October 2026, 9:30 AM Central, from `work (security)`)
 
