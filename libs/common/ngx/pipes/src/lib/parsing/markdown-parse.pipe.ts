@@ -11,7 +11,8 @@ import { marked } from 'marked';
 export class MarkdownParsePipe implements PipeTransform {
   public transform(value: string): string {
     if (value) {
-      return marked(value);
+      // Synchronous, so a template gets the HTML itself: marked returns a promise only when asked to.
+      return marked(value, { async: false });
     } else {
       return null;
     }
