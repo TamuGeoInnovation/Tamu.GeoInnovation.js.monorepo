@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SidebarComponent } from './sidebar.component';
@@ -8,10 +7,9 @@ import { SidebarTabComponent } from '../tab/tab.component';
 describe('SidebarComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([{ path: 'test', component: SidebarComponent }]), SidebarComponent],
-      // Zoneless, Angular renders a created component by itself, so its @slide trigger needs an
-      // animations provider (#1478).
-      providers: [provideNoopAnimations()]
+      // No animations provider: the sidebar slides with CSS, not an @angular/animations trigger (#1218). It used to need
+      // one because, zoneless, Angular renders a created component by itself (#1478).
+      imports: [RouterTestingModule.withRoutes([{ path: 'test', component: SidebarComponent }]), SidebarComponent]
     }).compileComponents();
   });
 

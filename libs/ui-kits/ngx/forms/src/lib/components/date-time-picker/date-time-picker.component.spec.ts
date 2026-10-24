@@ -1,4 +1,7 @@
+import { OutputRef } from '@angular/core';
+import { outputToObservable } from '@angular/core/rxjs-interop';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { firstValueFrom } from 'rxjs';
 
 import {
   DrawerComponent,
@@ -161,10 +164,22 @@ describe('DateTimePickerComponent', () => {
         component.writeValue(new Date(2026, 10, 18, 15, 45));
         fixture.detectChanges();
 
-        fixture.nativeElement.querySelector('tamu-gisc-tooltip-trigger').click();
-        fixture.detectChanges();
+        // The tooltip reports itself open a moment after it is drawn, and the list opens on that: wait for
+        // the list itself, not for a moment that is long enough on an idle machine (#2244).
+        await until(timepicker().opened, () => {
+          fixture.nativeElement.querySelector('tamu-gisc-tooltip-trigger').click();
+          fixture.detectChanges();
+        });
+      };
 
-        // The tooltip reports itself open a moment after it is drawn, and the list opens on that.
+      // The component's own list of times: until the tooltip opens it is not projected, so no query finds it.
+      const timepicker = () => component['timepicker']();
+
+      // Does what `act` does, then waits until `event` has been emitted and the page has caught up with it.
+      const until = async (event: OutputRef<void>, act: () => void) => {
+        const emitted = firstValueFrom(outputToObservable(event));
+        act();
+        await emitted;
         await settle();
       };
 
@@ -231,8 +246,9 @@ describe('DateTimePickerComponent', () => {
         await open();
         expect(offered().length).toBeGreaterThan(0);
 
-        document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-        await settle();
+        // The tooltip closes at once and the list a moment later, on the tooltip's word: waiting a fixed
+        // moment for it failed one run in four on a busy machine (#2244).
+        await until(timepicker().closed, () => document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })));
 
         expect(document.querySelectorAll('mat-option')).toHaveLength(0);
       });

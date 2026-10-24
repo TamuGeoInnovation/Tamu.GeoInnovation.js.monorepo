@@ -14,7 +14,12 @@
     "types": ["node"],
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    // The suite imports AggieMap's connections.ts, which reads the campus basemap's address from this
+    // library (#2247). Playwright's loader reads these paths too, so the specs resolve it at run time.
+    "paths": {
+      "@tamu-gisc/common/datasets/geographic": ["../../../libs/common/datasets/geographic/src/index.ts"]
+    }
   },
   "include": ["*.ts", "../../../playwright.aggiemap-smoke.config.ts"]
 }

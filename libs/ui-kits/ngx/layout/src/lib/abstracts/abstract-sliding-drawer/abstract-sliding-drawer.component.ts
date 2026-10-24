@@ -1,12 +1,8 @@
 import { Component, HostBinding, OnInit, input, model } from '@angular/core';
 
-import { slide } from '../../animations/drawer';
-import { AnimationOptions } from '@angular/animations';
-
 @Component({
   selector: 'tamu-gisc-abstract-sliding-drawer-model',
-  template: '',
-  animations: [slide]
+  template: ''
 })
 export class AbstractSlidingDrawerComponent implements OnInit {
   /**
@@ -47,18 +43,16 @@ export class AbstractSlidingDrawerComponent implements OnInit {
    */
   public readonly layout = input<'absolute' | 'relative' | 'fixed'>('absolute');
 
-  private _params: Partial<AnimationOptions>;
+  /** How far the drawer moves to hide: its width and offset, towards its own side. */
+  private _xLimit = '0';
 
   /**
-   * Binds the animation `@slide` to the host, triggered by the `visible` property
-   * and using the `width` and `offset` properties as variables for animation parameters.
+   * Slides the host out of view when `visible` is false, by its width and offset. Each drawer's stylesheet includes
+   * `slide-transition` from libs/sass/motion, which animates it (#1218).
    */
-  @HostBinding('@slide')
+  @HostBinding('style.transform')
   private get toggleDrawer() {
-    return {
-      value: this.visible(),
-      ...this._params
-    };
+    return this.visible() ? 'none' : `translate(${this._xLimit})`;
   }
 
   /**
@@ -79,14 +73,10 @@ export class AbstractSlidingDrawerComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this._params = {
-      params: {
-        xLimit:
-          this.position() === 'left'
-            ? `-${this._removeUnits(this.width()) + this._removeUnits(this.offset())}${this._getUnits(this.width())}`
-            : `${this._removeUnits(this.width()) + this._removeUnits(this.offset())}${this._getUnits(this.width())}`
-      }
-    };
+    this._xLimit =
+      this.position() === 'left'
+        ? `-${this._removeUnits(this.width()) + this._removeUnits(this.offset())}${this._getUnits(this.width())}`
+        : `${this._removeUnits(this.width()) + this._removeUnits(this.offset())}${this._getUnits(this.width())}`;
   }
 
   /**
