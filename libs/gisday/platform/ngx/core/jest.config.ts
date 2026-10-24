@@ -25,6 +25,7 @@ module.exports = {
       }
     ]
   },
-  transformIgnorePatterns: ['node_modules/(?!(.*.mjs$|lightgallery))'],
+  // marked 18 is ESM-only and ships .js, not .mjs, so Jest must compile it as well (the markdown pipe).
+  transformIgnorePatterns: ['node_modules/(?!(.*.mjs$|lightgallery|marked/))'],
   preset: '../../../../../jest.preset.js'
 };

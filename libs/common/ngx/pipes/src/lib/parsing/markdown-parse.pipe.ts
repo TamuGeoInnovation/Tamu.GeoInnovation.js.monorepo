@@ -9,7 +9,8 @@ export class MarkdownParsePipe implements PipeTransform {
 
   public transform(value: string): SafeHtml {
     if (value) {
-      const content = marked(value);
+      // Synchronous, so a template gets the HTML itself: marked returns a promise only when asked to.
+      const content = marked(value, { async: false });
 
       return this.sanitizer.bypassSecurityTrustHtml(content);
     } else {

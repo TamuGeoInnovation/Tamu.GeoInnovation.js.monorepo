@@ -83,7 +83,7 @@
     "jwt-decode": "^4.0.0",
     "lightgallery": "^2.7.2",
     "mapbox-gl": "^1.10.0",
-    "marked": "^9.1.5",
+    "marked": "^18.1.1",
     "mssql": "^12.7.11",
     "multer": "^2.4.0",
     "ngx-highlightjs": "^6.1.3",
