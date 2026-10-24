@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:04 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **1:26 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **1:04 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 2:05 AM Central.**
+**Next update by 2:30 AM Central.**
 
-**Batch 96, security: the markdown pipe stops bypassing Angular's sanitiser (#2258)**, started 1:04 AM Central, 24 October. Then batches 93, 94 and 95.
+**Batch 93, security: @swimlane/ngx-datatable 20 to 25 (#1218)**, started 1:26 AM Central, 24 October. Then batches 94 and 95.
 
 ## Finished
+
+- **Batch 96, security: the markdown pipe lets Angular sanitise (#2258) - pushed** (1:04 to 1:23 AM, 24 October): red first, a spec rendering the pipe through `[innerHTML]` as callers do: an `<img onerror>` and a `javascript:` link reached the DOM. The pipe now returns a string; 5/5 pass. On all 3,177 real texts Angular's sanitiser removes no element, text or address, only `data-start`/`data-end` on 10 dining paragraphs and a typo'd attribute on one link; `target` kept. Before/after screenshots identical; dining popup unreachable. Full check exit 0 (lint 18 / test 17 / build 4 apps). Same line as the marked 18 branch: merge this first. **`fix/2258-markdown-sanitiser` at `0efc55cf4`.** Report `work-lab-leila/reports/2026-10-23-80.md`.
 
 - **Batch 92, gisday: lint that can never fail in five GIS Day projects (#2137) - already fixed by #2180; proven, nothing pushed** (12:59 to 1:01 AM, 24 October): `"force": true` is on no project; PR 2180 removed it from exactly these five on 23 October. An unused variable is only a warning here, so it proves nothing; an error-level bare expression gave `nx lint` exit 0 on #2180's parent and exit 1 on development. The five as they stand: check exit 0 (lint, test, build). Recommend closing #2137 as fixed by #2180. Report `work-lab-leila/reports/2026-10-23-79.md`.
 
@@ -276,4 +278,4 @@ Last written **1:04 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 92 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 96 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
