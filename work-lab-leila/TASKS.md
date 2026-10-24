@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 103.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 104.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,18 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 103 (security: #1218 - angulartics2 13 to 14; a branch; 24 October 2026, 2:45 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 102.** **Expected: 90 minutes.** Your POI popup fix is PR 2272. Your survey's PR 7: `angulartics2` 13.1.0 â†’ 14,
+43 files, the Google Analytics wiring in four apps; mostly the module-to-provider change at bootstrap.
+1. **Prove analytics works today first**: the smoke suite's analytics checks (`test/smoke/aggiemap/`, the expected Google Analytics id per
+   environment in `environments.json`), run against a local dev server of each app that has them, and say what each app sends on a page view
+   (the request to Google, its measurement id). Record it.
+2. Branch `chore/1218-angulartics2-14` from `origin/development`: the upgrade; bootstrap as its changelog says, in each of the four apps; keep the
+   same ids per environment. **Reuse rule:** if the four apps set it up the same way, set it up once in a shared provider. Lock key by key.
+3. Prove the same page views go out with the same ids after (the same checks), full check. Commit (`chore(workspace): Move angulartics2 to 14`,
+   Co-Authored-By; the director adds the issue), push to the fork. No PR.
 
 ## Batch 102 (security: #2271 - the ArcGIS types path in 30 library tsconfigs; a fix and a branch; 24 October 2026, 2:35 AM Central, from `work (security)`)
 
