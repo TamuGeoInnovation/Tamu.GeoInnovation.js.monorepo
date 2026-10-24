@@ -32,9 +32,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 10:15 PM Central.**
 
-**Batch 83, security: lightgallery's licence (#1218)**, started 9:29 PM Central. Then 84. Batch 77 waits for PR 2191, batch 79 for PR 2231.
+**Batch 84, security: mapbox-gl replaced by maplibre-gl (#1218)**, started 9:29 PM Central, in `C:/TAMU/wt-ml84`. Batch 77 waits for PR 2191, batch 79 for PR 2231.
 
 ## Finished
+
+- **Batch 83, security: lightgallery's licence (#1218) - investigated, no branch** (9:29 to 9:31 PM, 23 October): both 2.9.0 and 3.0.0 are GPLv3 or commercial; this repository is MIT; no licence key anywhere, and both versions log "please provide a valid license key" without one; 3.0.0 rejects v1/v2 keys. Used by AggieMap's POI and bonfire popups (duplicated code). MIT alternatives: PhotoSwipe 5.4.4, GLightbox 3.3.1. Needs the maintainer: GPL, buy, or replace (recommended: GLightbox). Report `work-lab-leila/reports/2026-10-23-70.md`.
 
 - **Batch 82, security: uuid replaced by crypto.randomUUID() (#1218) - pushed** (9:24 to 9:28 PM, 23 October): 23 v4() calls in 16 files now crypto.randomUUID(); the one validate() now class-validator's isUUID (reused; no helper existed); uuid dropped from package.json (stays as bull's, typeorm's and others'). Full check exit 0. GIS Day probe through the API's own entities: a sponsor and a place got v4 guids. Question: are all front ends served over HTTPS? **`chore/1218-drop-uuid` at `3630cce26`.** Report `work-lab-leila/reports/2026-10-23-69.md`.
 
@@ -256,4 +258,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 82 (77 waits for 2191, 79 for 2231) (42 and 39 stopped; 40 superseded)
+Last batch done: 83 (77 waits for 2191, 79 for 2231) (42 and 39 stopped; 40 superseded)
