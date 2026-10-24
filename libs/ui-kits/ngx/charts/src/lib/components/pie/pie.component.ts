@@ -1,7 +1,12 @@
 import { Component, forwardRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 
+import { ArcElement, PieController, Chart } from 'chart.js';
+
 import { BaseChartComponent } from '../base/base.component';
 import { PieChartConfiguration, ChartContainerComponent } from '../chart-container/chart-container.component';
+
+// What a pie chart draws, registered here so an app that never draws one does not bundle it.
+Chart.register(ArcElement, PieController);
 
 @Component({
   selector: 'tamu-gisc-pie-chart',
