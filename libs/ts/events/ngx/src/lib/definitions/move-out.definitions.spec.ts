@@ -20,7 +20,7 @@ describe('Move Out', () => {
   const periods = [SpringMoveOut, SummerOneMoveOut, SummerTwoMoveOut];
 
   it('offers a period for spring, Summer I and Summer II', () => {
-    expect(periods.map((period) => period.configuration.name)).toEqual([
+    expect(periods.map((period) => period.configuration?.name)).toEqual([
       'Spring Move Out',
       'Summer I Move Out',
       'Summer II Move Out'
@@ -28,33 +28,33 @@ describe('Move Out', () => {
   });
 
   for (const period of periods) {
-    it(`${period.configuration.name} carries its own dates`, () => {
+    it(`${period.configuration?.name} carries its own dates`, () => {
       // Without dates `eventHasPassed` always answers false, which is the fault being fixed: the map
       // can never tell a visitor that the information in front of them is stale.
-      expect(period.configuration.eventDates?.length).toBeGreaterThan(0);
+      expect(period.configuration?.eventDates?.length).toBeGreaterThan(0);
     });
 
-    it(`${period.configuration.name} is listed on the campus events page`, () => {
+    it(`${period.configuration?.name} is listed on the campus events page`, () => {
       expect(period.discover?.visible).not.toBe(false);
       expect(period.discover?.type).toBe('event');
     });
   }
 
   it('gives each period its own route', () => {
-    const ids = periods.map((period) => period.configuration.id);
+    const ids = periods.map((period) => period.configuration?.id);
 
     expect(new Set(ids).size).toBe(ids.length);
   });
 
   it('dates no two periods the same', () => {
-    const dates = periods.map((period) => (period.configuration.eventDates ?? []).join());
+    const dates = periods.map((period) => (period.configuration?.eventDates ?? []).join());
 
     expect(new Set(dates).size).toBe(dates.length);
   });
 
   it('says each period is over once its dates are past', () => {
     for (const period of periods) {
-      const dates = period.configuration.eventDates ?? [];
+      const dates = period.configuration?.eventDates ?? [];
 
       expect(eventHasPassed(dates, Date.parse('2099-01-01T12:00:00-06:00'))).toBe(true);
       expect(eventHasPassed(dates, Date.parse('2020-01-01T12:00:00-06:00'))).toBe(false);

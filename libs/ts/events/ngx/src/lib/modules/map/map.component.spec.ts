@@ -75,7 +75,8 @@ describe('MapComponent (event-passed flow)', () => {
 // zoom levels. A map read against campus can say to open on the campus basemap instead.
 describe('MapComponent (opening basemap)', () => {
   function openingBasemap(options: { configuration?: object; saved?: string; urlBasemap?: string }) {
-    let basemap: MapConfig['basemap']['basemap'];
+    // Set by the subscription below, which the ReplaySubject runs during ngOnInit.
+    let basemap: MapConfig['basemap']['basemap'] | undefined;
 
     const component = TestBed.configureTestingModule({
       providers: [

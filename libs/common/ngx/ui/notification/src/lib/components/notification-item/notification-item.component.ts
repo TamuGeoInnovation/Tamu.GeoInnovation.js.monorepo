@@ -8,7 +8,6 @@ import {
   output,
   signal
 } from '@angular/core';
-import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
 
 import { Notification } from '../../helpers/notification.helper';
@@ -16,24 +15,7 @@ import { Notification } from '../../helpers/notification.helper';
 @Component({
   selector: 'tamu-gisc-notification-item',
   templateUrl: './notification-item.component.html',
-  styleUrls: ['./notification-item.component.scss'],
-  animations: [
-    trigger('animate', [
-      state(
-        'true',
-        style({
-          transform: 'translateY(-110%)'
-        })
-      ),
-      state(
-        'false',
-        style({
-          transform: 'translateY(10%)'
-        })
-      ),
-      transition('* => *', [animate('250ms 0ms cubic-bezier(.25, 0, .25, 1.0)')])
-    ])
-  ]
+  styleUrls: ['./notification-item.component.scss']
 })
 export class NotificationItemComponent implements OnInit, OnDestroy {
   private router = inject(Router);
@@ -59,7 +41,8 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
    */
   public readonly actionNotification = output<Notification>();
 
-  // Animation trigger value.
+  // False while closing: the toast slides back down (the closing class) before it is removed. Its entrance is animate.enter
+  // in the template; both are libs/sass/motion's notification-toast (#2278).
   public readonly animateStatus = signal(true);
 
   /**
