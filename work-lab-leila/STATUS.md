@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:24 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **12:59 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **12:24 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 1:15 AM Central.**
+**Next update by 2:00 AM Central.**
 
-**Batch 91, security: marked 9 to 18 (#1218)**, started 12:24 AM Central, 24 October. Then batch 92 (gisday), then batch 93.
+**Batch 92, gisday: lint that can never fail in five GIS Day projects (#2137)**, started 12:59 AM Central, 24 October. Then batches 93, 94 and 95.
 
 ## Finished
+
+- **Batch 91, security: marked 9 to 18 (#1218) - pushed** (12:24 to 12:56 AM, 24 October): one call site, MarkdownParsePipe; it bypasses Angular's sanitiser and nothing else sanitises, but its writers are permission holders and university services, not the public (fix recommended separately; the dining text comes from another department). Pipe now `marked(value, { async: false })`; GIS Day core's Jest config compiles marked (ESM-only). Lock: only marked. 3,062 GIS Day texts render identically, 115 AggieMap ones identically but for whitespace between HTML blocks; four before/after screenshot pairs identical pixel for pixel. Full check exit 0 (lint 104 / test 100 / build 14). **`chore/1218-marked-18` at `9b8e3d45a`.** Report `work-lab-leila/reports/2026-10-23-78.md`.
 
 - **Batch 90, security: the date-picker test that failed under load (#2244) - fixed and pushed** (11:26 PM, 23 October, to 12:23 AM, 24 October): reproduced 5 in 20 on 1 CPU with 4 busy loops. The tooltip closes at once, the time picker's list a debounced moment later, and the test looked after a fixed 10 ms. The test now waits for the picker's own `opened`/`closed` outputs; the component is unchanged. 40 in a row pass on 1 CPU with 6 busy loops; check exit 0 (lint, test). Found: `select.component.spec.ts` does not typecheck, already on development (issue recommended). **`fix/2244-date-picker-test` at `0569e1134`.** Report `work-lab-leila/reports/2026-10-23-77.md`.
 
@@ -272,4 +274,4 @@ Last written **12:24 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 90 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 91 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
