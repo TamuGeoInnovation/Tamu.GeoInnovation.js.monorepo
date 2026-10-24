@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 93.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 94.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,19 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 93 (security: #1218 - @swimlane/ngx-datatable 20 to 25; a branch; 24 October 2026, 12:05 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 91.** **Expected: 60 minutes.** Your batch 89 question 1: **yes**, 2249 then 88 then 89; the director brings
+each next one up to date itself (2249 is open; 88 and 89 follow it). Your survey's PR 5: `@swimlane/ngx-datatable` 20.1.0 â†’ 25 (peers allow
+Angular 22), 2 files: AggieMap and GIS Day competitions.
+1. **The "before" screenshots first**, into `docs/screenshots/ngx-datatable-25/` at once: every table it draws (find them; say which page and
+   whether a sign-in is needed; GIS Day's runs on `scripts/gisday-local.sh`).
+2. Branch `chore/1218-ngx-datatable-25` from `origin/development`: the upgrade, the changelog's breaking changes applied to our two uses (inputs,
+   column templates, CSS themes/imports), lock by batch 41's method, key by key.
+3. Full check; "after" screenshots beside the befores (sorting, paging, an empty table); no console errors.
+4. Commit (`chore(workspace): Move @swimlane/ngx-datatable to 25`, Co-Authored-By; the director adds the issue and release notes if anything
+   looks different), push to the fork. No PR.
 
 ## Batch 92 (gisday: #2137 - lint that can never fail in five GIS Day projects; a code job and a branch; 23 October 2026, 11:25 PM Central, from `home (gisday)`)
 
