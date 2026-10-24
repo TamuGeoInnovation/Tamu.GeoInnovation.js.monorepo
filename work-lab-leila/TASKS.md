@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 75.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 76.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -43,6 +43,21 @@ report under **Questions for the director**, with options and a recommendation â
 > And a section **"Stopping or removing an agent"**: Ctrl+C, then remove it from the pool if the machine is leaving.
 
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
+
+## Batch 75 (security: #2193 - PR 2195, typeorm 1 and mssql 12, brought up to date and re-checked; pushed, no PR; 23 October 2026, 8:40 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: about 45 minutes.** PR 2195 (`fork/chore/1218-typeorm-1`) was cleared by the GIS Day chat earlier
+today, but `development` has moved a long way since (webpack inferred targets #2223, the lint group #2188, body-parser #2208, jwt-decode #2228)
+and its Azure build was cancelled. It merges after PR 2231 (Nx 24) in the lock queue; prepare it now.
+
+1. In a worktree of `chore/1218-typeorm-1`: `git merge origin/development`. **If `package-lock.json` conflicts, do not regenerate it**: take
+   `development`'s lock and re-apply typeorm 1 and mssql 12 and their own dependencies with batch 41's method. Report every conflict.
+2. **The lock rule**, key by key against `origin/development`: only typeorm, mssql and their own dependencies.
+3. `scripts/check-in-volume.sh chore/1218-typeorm-1` (full `affected`). Then the GIS Day API as in batch 71 item 2, from this branch: the
+   `gisday-nest` production image against a throwaway SQL Server with the repository's seed, `migrate run` (say whether any migration ran or
+   errored under typeorm 1), `GET /api/seasons/active` 200, an unauthenticated `POST` 401, **and one authenticated-free read that touches a
+   relation** (e.g. a season's events or sponsors list, whatever the API exposes publicly) returning data.
+4. Commit the merge, push to the fork (it updates PR 2195; that starts its CI, which is expected). Report.
 
 ## Batch 74 (security: #2212 - one internal network per agent, so lab agents cannot reach each other; a branch; 23 October 2026, 8:30 PM Central, from `work (security)`)
 
