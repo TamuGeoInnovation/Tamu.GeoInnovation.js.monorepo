@@ -1,0 +1,22 @@
+# The build agent on a Linux host (#2212). install.sh installs it, filling in the agent's name.
+[Unit]
+Description=Azure Pipelines build agent %AGENT_NAME% (tools/build-agent)
+Documentation=https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/tools/build-agent/README.md
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment=AZP_AGENT_NAME=%AGENT_NAME%
+ExecStart=/opt/tamu-build-agent/run-agent.sh
+# Restarted whenever it stops, except when Azure DevOps refused the token (exit 2): retrying cannot fix that.
+Restart=always
+RestartSec=60
+RestartPreventExitStatus=2
+# Time for the agent to cancel a job and remove itself from the pool.
+TimeoutStopSec=150
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target

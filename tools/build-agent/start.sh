@@ -89,7 +89,15 @@ VSTS_AGENT_INPUT_TOKEN="$token" as_agent ./config.sh --unattended \
   --replace \
   --acceptTeeEula \
   "${proxy_args[@]}" &
-wait $!
+if ! wait $!; then
+  # A refused token gets its own exit code, so the supervisor stops and says so rather than retrying a token that
+  # will never work. config.sh records Azure's answer in its diagnostic log.
+  if grep -qsE 'VS30063|401 \(Unauthorized\)|TF400813' /azp/_diag/Agent_*.log; then
+    echo "error: Azure DevOps refused the token (expired, revoked or missing the Agent Pools scope)." >&2
+    exit 77
+  fi
+  exit 1
+fi
 
 header "Running one job"
 

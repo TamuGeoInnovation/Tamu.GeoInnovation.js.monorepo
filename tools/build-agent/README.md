@@ -8,7 +8,10 @@ pipeline's work in 3 to 5 minutes. A hosted agent takes 15 to 25 minutes for one
 | --- | --- |
 | `Dockerfile` | Ubuntu 24.04, git, curl, jq, Node 24.22.1 and the Azure Pipelines agent (v4), downloaded and checksummed at build time. No secrets. |
 | `start.sh` | The container's entrypoint, adapted from Microsoft's [Run a self-hosted agent in Docker](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/docker) script: registers the agent, runs **one** job, removes the agent. |
-| `run-agent.ps1` | The supervisor the maintainer starts on a machine: asks for the token once, then runs one fresh container per job until Ctrl+C. |
+| `run-agent.ps1` | The supervisor on Windows: reads the saved token (or asks for it), then runs one fresh container per job. |
+| `save-agent-token.ps1` | Windows: asks for the token once and saves it so only this user on this machine can read it (DPAPI). |
+| `install-agent-task.ps1`, `agent-task.ps1` | Windows: a hidden scheduled task at logon that waits for Docker and keeps `run-agent.ps1` running; `-Uninstall`. |
+| `linux/` | Linux: `install.sh`, the systemd unit `tamu-build-agent.service`, and `run-agent.sh`, the same supervisor in bash. |
 | `setup-organization.ps1` | Once per organization: creates the `Linux-Build` pool and sets the Monorepo pipeline's fork settings. |
 | `egress/` | The agent's only way out: a Squid proxy (`Dockerfile`, `squid.conf`) that reaches the internet and refuses every private and local address. |
 
@@ -57,11 +60,12 @@ and a pull request from someone outside the team builds only after a team member
 
 Each agent is named after its machine, `<machine>-1`: `lab-1`, `home-1`. The name appears in every job's log,
 which is public, so it is never the computer's hostname. **The token is always the maintainer's, typed into a
-hidden prompt.** It is never written to a file, a command line or a message, and no Claude session handles it.
+hidden prompt.** It is saved once per machine where only the agent's owner can read it (below), and never put on
+a command line, in a log or in a message; no Claude session handles it.
 
 1. **The maintainer, once per organization: a token.** In Azure DevOps, User settings → Personal access tokens →
-   New token, with scopes **Agent Pools: Read & manage** and **Build: Read & execute**, and a short expiry. Keep it
-   only in a password manager.
+   New token, with scopes **Agent Pools: Read & manage** and **Build: Read & execute**, and an expiry of **90 days**
+   (see [Token renewal](#token-renewal)). Keep it in a password manager.
 2. **The maintainer, once per organization: the pool and the fork settings.** From the repository root:
 
    ```powershell
@@ -91,19 +95,48 @@ hidden prompt.** It is never written to a file, a command line or a message, and
    docker build -t tamu-gisc/build-agent-egress:latest tools/build-agent/egress
    ```
 
-   About a minute each. `run-agent.ps1` creates the network and starts the proxy itself. Rebuild it to take a new agent or Node version (change the `ARG`s in the `Dockerfile`, with the
-   agent's SHA-256 from its release notes).
-4. **Per machine: the maintainer starts the agent.**
+   About a minute each; the agent's supervisor creates the network and starts the proxy itself. Rebuild the agent's
+   image to take a new agent or Node version (change the `ARG`s in its `Dockerfile`, with the agent's SHA-256 from
+   its release notes). On Linux, `install.sh` builds both.
+4. **Per machine: the maintainer saves the token and starts the agent in the background.** It then runs with no
+   window and no prompt, and comes back by itself after a restart.
+
+   **Windows** (lab, home), as the user the agent runs as, without elevation:
 
    ```powershell
-   powershell -File tools/build-agent/run-agent.ps1 -AgentName lab-1
+   powershell -File tools/build-agent/save-agent-token.ps1
+   powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-1 -Start
    ```
 
-   It asks for the token without echoing it and keeps it in memory for as long as it runs. Each container prints
-   *Configuring agent*, then *Running one job* while it waits for and runs a job, then *Removing agent*; the next
-   container starts at once. If a container fails to start three times in a row within two minutes (a wrong or
-   expired token, an unreachable address), it stops and says so. Leave the window open; closing it is not a clean
-   stop (see below).
+   `save-agent-token.ps1` asks for the token without echoing it and saves it to
+   `%LOCALAPPDATA%\tamu-build-agent\token.xml`: a SecureString protected with DPAPI, which only this user on this
+   machine can decrypt, in a file only this user can open. `install-agent-task.ps1` registers the scheduled task
+   `tamu-build-agent-lab-1`, which starts at this user's logon, hidden (`conhost --headless`). It waits for Docker
+   Desktop to answer, then runs `run-agent.ps1 -TokenFile …` and restarts it a minute after it stops. It copies the
+   scripts to `%LOCALAPPDATA%\tamu-build-agent\bin`, so switching the checkout's branch does not change what runs;
+   run it again after pulling a change to them. `-Start` also starts it now. The task runs only while this user is
+   logged on, because DPAPI needs the user's own logon to decrypt the token. Logs:
+   `%LOCALAPPDATA%\tamu-build-agent\logs\`, one file per start, the newest twenty kept.
+
+   **Linux** (the VMware build machines: Ubuntu with Docker Engine), as root:
+
+   ```bash
+   sudo tools/build-agent/linux/install.sh vm-1
+   ```
+
+   It builds both images, asks for the token without echoing it (unless one is saved), writes it to
+   `/etc/tamu-build-agent/token` (root:root, mode 600, in a mode-700 folder), and installs and starts
+   `tamu-build-agent.service`. That unit runs `linux/run-agent.sh`, the same loop in bash (Ubuntu has no PowerShell by
+   default), after `docker.service`, at boot. Logs: `journalctl -u tamu-build-agent -f`.
+
+   On both, each container prints *Configuring agent*, then *Running one job* while it waits for and runs a job,
+   then *Removing agent*, and the next container starts at once. **If Azure DevOps refuses the token** (expired,
+   revoked, a missing scope), the agent stops at once with one line saying so, and does not retry: see
+   [Token renewal](#token-renewal). If a container fails to start three times in a row for any other reason (an
+   unreachable address, say), the supervisor stops and is started again a minute later.
+
+   To run the agent in a window instead, for a test: `powershell -File tools/build-agent/run-agent.ps1 -AgentName
+   lab-test`, which asks for the token; Ctrl+C stops it.
 5. **The maintainer, once per organization: let the pipeline use the pool.** Project settings → Agent pools →
    `Linux-Build` → Security → Pipeline permissions → add **Monorepo**. Without it, the first job that asks for the
    pool waits for a permission prompt.
@@ -113,11 +146,28 @@ hidden prompt.** It is never written to a file, a command line or a message, and
 The pipeline uses the pool only once a job asks for it (`pool: name: Linux-Build` in `azure-pipelines.yml`). Until
 then the agent waits and takes nothing.
 
+## Token renewal
+
+Tokens last 90 days. Before one expires (Azure DevOps emails a warning), or as soon as an agent stops with *Azure
+DevOps refused the token*:
+
+1. Create a new token as in step 1, and revoke the old one.
+2. **Windows:** run `save-agent-token.ps1` again, then start the task by hand (`Start-ScheduledTask
+   tamu-build-agent-lab-1`) or log off and on. A running agent picks the new token up with its next container.
+   **Linux:** write the new token to `/etc/tamu-build-agent/token` (for example `sudo rm
+   /etc/tamu-build-agent/token` and rerun `install.sh vm-1`, which asks for it), then `sudo systemctl restart
+   tamu-build-agent`.
+
 ## Stopping or removing an agent
 
-**Ctrl+C** in the `run-agent.ps1` window. The supervisor stops the container with `docker stop`, `start.sh` tells
-the agent to cancel any job it is running, and removes the agent from the pool. The agent then disappears from
-the pool's Agents list.
+**In the background:** `install-agent-task.ps1 -AgentName lab-1 -Uninstall` on Windows, or `sudo
+tools/build-agent/linux/install.sh --uninstall` on Linux. Either stops the agent cleanly, as below, and removes the
+task or service. The saved token is left; delete it too if the machine is leaving. `sudo systemctl stop
+tamu-build-agent` stops a Linux agent without removing it.
+
+**In a window:** Ctrl+C. The supervisor stops the container with `docker stop`, `start.sh` tells the agent to
+cancel any job it is running, and removes the agent from the pool. The agent then disappears from the pool's
+Agents list.
 
 Closing the window instead, or a crash or a restart of the machine, leaves the agent registered and offline. That
 is harmless: the next start replaces it (`--replace`), and Azure does not send a job to an offline agent. If the
@@ -142,3 +192,12 @@ Docker Desktop's host address, `host.docker.internal`, 169.254.169.254 and 127.0
 ports 80 and 443; port 22 is refused; and without the proxy nothing is reachable, not even a public address. The
 pipeline's install, lint and both builds still pass through it, and an agent with a dummy token reaches Azure
 through it and is refused there (`VS30063`).
+
+Running in the background, with a dummy token and the agent name `lab-test`, the same day. **Windows:** the saved
+token's file allows only its user, with inheritance off, and holds a DPAPI blob, not the token. Registering the task
+needed no elevation. Run by hand, it started hidden (no window), waited for Docker, reached Azure through the proxy,
+was refused, and stopped once with its one line; no log holds the token. `-Uninstall` stopped a running agent in 2
+seconds and left no task, process or container. **Linux**, on a throwaway Ubuntu 24.04 with systemd and Docker
+Engine 29: `install.sh` built both images and saved the token root-only. The service started after Docker, and again
+at boot; it was refused at *Connect*, exited 2, and was not restarted. With an unreachable address it failed three
+times, exited 1, and systemd started it again. `--uninstall` left no unit or container.

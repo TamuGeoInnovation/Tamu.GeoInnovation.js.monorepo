@@ -34,7 +34,9 @@ RUN useradd --create-home --shell /bin/bash agent \
   && rm -rf /var/lib/apt/lists/* \
   && chown -R agent:agent /azp
 
-COPY --chmod=755 start.sh /usr/local/bin/start.sh
+# COPY then chmod rather than COPY --chmod, which needs BuildKit; Ubuntu's own Docker package builds without it.
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod 755 /usr/local/bin/start.sh
 
 WORKDIR /azp
 
