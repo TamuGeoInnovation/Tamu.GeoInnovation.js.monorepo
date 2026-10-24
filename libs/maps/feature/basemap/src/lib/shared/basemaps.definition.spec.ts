@@ -46,6 +46,8 @@ describe('campus basemap', () => {
       ((isTesting: boolean) => Basemap) | undefined;
 
     expect(resolve).toBeInstanceOf(Function);
+    // The expect above fails the test; this tells TypeScript what it established.
+    if (!resolve) return;
 
     expect(urlsOf(resolve(false)).some((url) => url.includes(VECTOR_SERVICE))).toBe(false);
     expect(urlsOf(resolve(true)).some((url) => url.includes(VECTOR_SERVICE))).toBe(true);
@@ -57,6 +59,7 @@ describe('campus basemap', () => {
     const resolve = (definitions as unknown as Record<string, (isTesting: boolean) => Basemap>)['aggiemapBasemap'];
 
     expect(gallery).toBeInstanceOf(Function);
+    if (!gallery) return;
 
     // Production: the one basemap it has always had, and nothing dated or development-only.
     expect(gallery(false)).toEqual([resolve(false)]);

@@ -18,7 +18,7 @@ export class MarkdownWDirectionsPopupComponent extends BaseEventPopupComponent i
   public override ngOnInit(): void {
     super.ngOnInit();
 
-    this.title = this.data?.attributes?.name ? this.data.attributes.name : this.data.layer.title;
+    this.title = this.data?.attributes?.name ? this.data.attributes.name : this.data?.layer?.title;
 
     this.isContentTheSame = this.data?.attributes?.description === this.data?.attributes?.Notes;
 
