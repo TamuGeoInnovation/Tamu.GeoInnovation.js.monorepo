@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 108.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 110.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,31 @@ report under **Questions for the director**, with options and a recommendation �
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 108 (security: #2278 - the notification toasts off @angular/animations; a branch; 24 October 2026, 4:15 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 107.** **Expected: 90 minutes.** Your batch 106 answers: **1 yes**, notifications next; **2 none**. AggieMap's part is PR 2279
+(closes #2280, a sub-issue of #2278; the director files one sub-issue per part).
+1. The notification item's `animate` trigger (toasts in and out, six apps). **These enter and leave the page, so `animate.enter`/`animate.leave` fit**
+   here. Record before first, in one app that shows a toast without a sign-in (say which; trigger a toast through its component in dev mode if
+   none is natural), into `docs/screenshots/animate-enter-leave/notifications-*`.
+2. Branch `chore/2278-notification-animations` **from `fork/chore/1218-animate-enter-leave`** (so it builds on `libs/sass/_motion.scss`; the director
+   restacks it after 2279 merges): `animate.enter`/`animate.leave` with the same timing and easing, keyframes in `_motion.scss`. Remove the trigger
+   and any provider/spec setup only it needed.
+3. Record after, compare; full check. Commit (`chore(workspace): Move the notification toasts to animate.enter and animate.leave`,
+   Co-Authored-By; the director adds the sub-issue), push to the fork. No PR.
+
+## Batch 109 (security: #2278 - geoservices' animations off @angular/animations; a branch; 24 October 2026, 4:15 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 108.** **Expected: 2 hours.** Geoservices' remaining triggers: `inOutAnimation` (its 8 interactive forms),
+`growAnimation` (header), the tile navigation's four (`baseShowHideAnimation`, `submenuShowHideAnimation`, `tileStaggerAnimation`,
+`submenuListStagger`) and the hamburger's three (`topBun`, `patty`, `bottomBun`), which GIS Day shares at phone width.
+1. Record each before (geoservices, and GIS Day at phone width for the shared tile navigation and hamburger).
+2. Branch `chore/2278-geoservices-animations` from your notifications branch: state triggers → CSS transitions; enter/leave → `animate.enter`/
+   `animate.leave`; staggers as CSS with per-item delays (`--i` custom property or `:nth-child`), all in `_motion.scss`. If, after this, **no
+   trigger is left anywhere**, also remove every app's animation provider and `@angular/animations` itself (lock key by key), and say so.
+3. Record after, compare; full check. Commit (`chore(workspace): Move geoservices' animations off @angular/animations`, Co-Authored-By), push
+   to the fork. No PR. Stop after geoservices if it is too large, and report.
 
 ## Batch 107 (security: #2277 - mail calls with a timeout, and the helper's errors handled; a bug fix and a branch; 24 October 2026, 4:00 AM Central, from `work (security)`)
 
