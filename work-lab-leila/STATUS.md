@@ -32,9 +32,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 8:15 PM Central.**
 
-**Batch 67, security: the build agent kept off the local network (#2212)**, started 7:11 PM Central, in `C:/TAMU/wt-2212e`. Then batch 68 (the agent in the background). Batch 65 waits for the webpack PR to merge.
+**Batch 68, security: the build agent in the background with no token prompt (#2212)**, started 7:23 PM Central, in `C:/TAMU/wt-2212s`. Batch 65 waits for the webpack PR to merge.
 
 ## Finished
+
+- **Batch 67, security: the build agent kept off the local network (#2212) - pushed** (7:11 to 7:22 PM, 23 October): the agent runs on an `--internal` Docker network whose only way out is a Squid egress proxy that refuses every private, link-local and loopback address; no host firewall rules, so it is the same on Docker Desktop and Linux. From inside: npm, GitHub, Azure DevOps, Nx Cloud, nodejs.org work; the LAN gateway, 10/172.16/172.17/192.168, Docker Desktop's host, `host.docker.internal`, metadata and loopback are refused; nothing at all without the proxy; outside DNS off (question 1). Lint 92 and both builds pass through it at the same speed; the agent reaches Azure through it (`VS30063` for the dummy token). **`ci/2212-agent-egress` at `468728eac`.** Report `work-lab-leila/reports/2026-10-23-55.md`.
 
 - **Batch 66, security: fork pull request builds skip the app_configs secure file (#2216) - pushed** (7:09 to 7:13 PM, 23 October): the download, extract and copy steps in `templates/jobs/build.yml` now run only when the build is not a fork pull request; nothing else in the pipeline reads a secure file or secret variable (`System.AccessToken` in Last SHA is the job token, read-only for forks). In the agent image, a clean clone of the branch built both configurations, 7 projects each, with `--skip-nx-cache`, exit 0. Check exit 0, `No tasks were run`. **`ci/2216-fork-builds-no-secure-file` at `3cd14f79f`.** Report `work-lab-leila/reports/2026-10-23-54.md`.
 
@@ -226,4 +228,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 66 (42 and 39 stopped; 40 superseded)
+Last batch done: 67 (42 and 39 stopped; 40 superseded)
