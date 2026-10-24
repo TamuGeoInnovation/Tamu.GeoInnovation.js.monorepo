@@ -11,7 +11,7 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 
 | Order | Pull request / branch | State at 11:15 PM |
 | --- | --- | --- |
-| 1 | [PR 2238](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2238) small majors (`chore/1218-small-majors`, `3ff1061c7`) | **Pushed, CI building on the lab.** Merge when green |
+| 1 | [PR 2238](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2238) small majors (`chore/1218-small-majors`, `3ff1061c7`) | **Green at 11:50 PM. Merge it** |
 | 2 | [PR 2240](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2240) `uuid` dropped | Prepared: `fork/ready/2240-uuid` (`06b616521`), checked: lint 104, test 100, build 14 |
 | 3 | GLightbox, [#2246](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2246) (no PR yet) | Prepared: `fork/ready/2246-glightbox` (`0d8c4b33e`), with its release-notes file; checked: lint 104, test 100, build 14 |
 | 4 | maplibre, [#2247](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2247) (no PR yet) | Prepared: `fork/ready/2247-maplibre` (`1a68c1312`), with its release-notes file; checked: lint 104, test 100, build 14 |
@@ -31,6 +31,14 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 
 `ui-kits-ngx-forms`' date-picker test (#2244) fails now and then under load. A rerun of that one project
 (`scripts/check-in-volume.sh <branch> ui-kits-ngx-forms`) has passed every time. Say so in the pull request.
+
+## Not in the lock queue (merge any time when green)
+
+- [PR 2249](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2249): one network per lab agent (#2248). The lab's agents already run these scripts.
+- Then lab batch 88's branch `ci/2212-agent-node-and-four` (Node in the agent image, four agents at 12 GB / 5 CPUs): it overlaps
+  2249's files, so after 2249 merges, merge `development` into it, check, and open its pull request. The maintainer's commands to
+  rebuild the image and install `lab-4` are in lab report `2026-10-23-75`; give them to him **after** that pull request merges, when
+  no build is running.
 
 ## Decided today (23 October), and where it is recorded
 
