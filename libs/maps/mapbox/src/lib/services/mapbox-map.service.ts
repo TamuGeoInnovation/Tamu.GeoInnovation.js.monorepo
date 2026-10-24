@@ -1,14 +1,28 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
-import { Map, MapOptions, setWorkerUrl } from 'maplibre-gl';
+import { Map, MapOptions, StyleSpecification, setWorkerUrl } from 'maplibre-gl';
+
+import { TAMU_CAMPUS_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
 
 /**
- * The basemap when a caller gives no style: OpenFreeMap's "positron", a light grey vector style from OpenStreetMap
- * data that needs no account, key or token. It replaced Mapbox's hosted `light-v10` when this library moved from
- * mapbox-gl 1 to maplibre-gl (#1218): Mapbox 2 and later are not open source, and their hosted styles need Mapbox's
- * own terms and a token.
+ * The basemap when a caller gives no style: the university's own campus basemap, the one AggieMap draws on
+ * production, as raster tiles from its cached map service (no key or token). It replaced Mapbox's hosted `light-v10`
+ * when this library moved from mapbox-gl 1 to maplibre-gl (#1218): Mapbox 2 and later are not open source, and their
+ * hosted styles need Mapbox's own terms and a token.
  */
-export const DEFAULT_MAP_STYLE = 'https://tiles.openfreemap.org/styles/positron';
+export const DEFAULT_MAP_STYLE: StyleSpecification = {
+  version: 8,
+  sources: {
+    campus: {
+      type: 'raster',
+      tiles: [`${TAMU_CAMPUS_BASEMAP_URL}/tile/{z}/{y}/{x}`],
+      tileSize: 256,
+      maxzoom: 23,
+      attribution: 'Texas A&amp;M University'
+    }
+  },
+  layers: [{ id: 'campus', type: 'raster', source: 'campus' }]
+};
 
 /**
  * Where an app serves maplibre-gl's worker, relative to its base href. Each app that uses this library copies it
