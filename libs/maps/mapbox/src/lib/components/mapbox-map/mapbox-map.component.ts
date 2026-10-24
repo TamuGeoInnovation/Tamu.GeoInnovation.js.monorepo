@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef, ChangeDetectionStrategy, inject, input, viewChild } from '@angular/core';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
-import { MapboxOptions } from 'mapbox-gl';
+import { MapOptions } from 'maplibre-gl';
 
 import { MapboxMapService } from '../../services/mapbox-map.service';
 
@@ -15,15 +15,13 @@ export class MapboxMapComponent implements OnInit {
 
   public readonly mapContainer = viewChild<ElementRef>('map');
 
-  public readonly token = input<string>(undefined);
+  public readonly style = input<MapOptions['style']>(undefined);
 
-  public readonly style = input<MapboxOptions['style']>(undefined);
+  public readonly center = input<MapOptions['center']>(undefined);
 
-  public readonly center = input<MapboxOptions['center']>(undefined);
+  public readonly minZoom = input<MapOptions['minZoom']>(undefined);
 
-  public readonly minZoom = input<MapboxOptions['minZoom']>(undefined);
-
-  public readonly maxZoom = input<MapboxOptions['maxZoom']>(undefined);
+  public readonly maxZoom = input<MapOptions['maxZoom']>(undefined);
 
   /**
    * Emits the map once it has loaded. It was declared as an output and never assigned, so no caller
@@ -33,7 +31,6 @@ export class MapboxMapComponent implements OnInit {
 
   public ngOnInit() {
     this.mapService.createMap({
-      accessToken: this.token(),
       container: this.mapContainer().nativeElement,
       style: this.style(),
       center: this.center(),

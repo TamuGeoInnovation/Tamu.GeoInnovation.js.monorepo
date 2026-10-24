@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HighlightPlusModule } from 'ngx-highlightjs/plus';
+import { provideHighlightOptions } from 'ngx-highlightjs';
 
 import { ClipboardCopyDirective, CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
@@ -12,7 +12,15 @@ describe('CodeRunnerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HighlightPlusModule, ClipboardCopyDirective, CopyComponent, CodeRunnerComponent]
+      imports: [ClipboardCopyDirective, CopyComponent, CodeRunnerComponent],
+      // As geoservices sets it up: the core, the languages its samples use, and line numbers.
+      providers: [
+        provideHighlightOptions({
+          coreLibraryLoader: () => import('highlight.js/lib/core'),
+          lineNumbersLoader: () => import('ngx-highlightjs/line-numbers'),
+          languages: { javascript: () => import('highlight.js/lib/languages/javascript') }
+        })
+      ]
     }).compileComponents();
   });
 

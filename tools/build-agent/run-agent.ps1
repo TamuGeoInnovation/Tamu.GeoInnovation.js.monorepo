@@ -102,6 +102,28 @@ function Confirm-Egress {
   }
 }
 
+# A bare mirror of the repository in a Docker volume, for the lab's checkouts (templates/tasks/checkoutFromMirror.yml).
+# Only this supervisor writes it, and only from GitHub: a short container of its own, before each job, on Docker's
+# default network, never a job's container. Each agent gets it read-only. A lock keeps agents started together from
+# fetching into it at once.
+$mirrorVolume = 'tamu-agent-git-mirror'
+$repositoryUrl = 'https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo.git'
+
+# Creates the mirror, or brings it up to date. A failure only costs the next checkout time (it fetches what the mirror
+# lacks), so it warns and carries on.
+function Confirm-Mirror {
+  $refresh = 'umask 022; if [ -d /mirror/monorepo.git ]; then git -C /mirror/monorepo.git fetch --prune --quiet; ' +
+    "else git clone --mirror --quiet $repositoryUrl /mirror/monorepo.git; fi"
+  $ErrorActionPreference = 'Continue'
+  docker run --rm --entrypoint flock -v "${mirrorVolume}:/mirror" $Image /mirror/.lock sh -c $refresh 2>&1 |
+    ForEach-Object { Write-Host "$_" }
+  $code = $LASTEXITCODE
+  $ErrorActionPreference = 'Stop'
+  if ($code -ne 0) {
+    Write-Warning "Could not refresh the git mirror (exit $code); the next checkout fetches more from GitHub."
+  }
+}
+
 if ($TokenFile) {
   # Import-Clixml turns the saved SecureString back into one; DPAPI refuses it to any other user or machine.
   $secure = Import-Clixml -Path $TokenFile
@@ -121,15 +143,18 @@ $failures = 0
 try {
   while ($true) {
     Confirm-Egress
+    Confirm-Mirror
 
     # The token is put in this process's environment only for the moment 'docker create' reads it, and is
     # passed by name (-e AZP_TOKEN), so it never appears on a command line.
     $env:AZP_TOKEN = [System.Net.NetworkCredential]::new('', $secure).Password
     try {
-      # No mounts, no Docker socket, not privileged; on the internal network, so out only through the proxy;
-      # every capability dropped except the three start.sh needs to run the agent as 'agent' and stop it;
-      # memory and CPU capped. The proxy variables are for the job's tools: git, curl, npm, and Node itself.
+      # No host folder and no Docker socket; one mount, the git mirror, read-only; not privileged; on the internal
+      # network, so out only through the proxy; every capability dropped except the three start.sh needs to run the
+      # agent as 'agent' and stop it; memory and CPU capped. The proxy variables are for the job's tools: git, curl,
+      # npm, and Node itself.
       docker create --rm --name $container `
+        --mount "type=volume,source=$mirrorVolume,target=/mirror,readonly" `
         --memory $Memory --memory-swap $Memory --cpus $Cpus --pids-limit 8192 `
         --security-opt no-new-privileges `
         --cap-drop ALL --cap-add SETUID --cap-add SETGID --cap-add KILL `

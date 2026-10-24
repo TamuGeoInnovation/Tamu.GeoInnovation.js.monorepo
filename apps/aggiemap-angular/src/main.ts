@@ -13,7 +13,6 @@ import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { provideHttpClient, withXhr, withInterceptorsFromDi } from '@angular/common/http';
 import { Angulartics2Module } from 'angulartics2';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { AppComponent } from './app/app.component';
 
@@ -43,7 +42,9 @@ bootstrapApplication(AppComponent, {
     // ErrorHandler, which logs it as "ERROR ...". Without a zone it would go straight to the browser as
     // an uncaught error; these listeners keep it going through the ErrorHandler.
     provideBrowserGlobalErrorListeners(),
-    importProvidersFrom(Angulartics2Module.forRoot(), BrowserModule, BrowserAnimationsModule),
+    // No animations provider: AggieMap's sliding pieces are CSS transitions (libs/sass/motion), not @angular/animations
+    // triggers, which Angular 22 deprecates (#1218).
+    importProvidersFrom(Angulartics2Module.forRoot(), BrowserModule),
     provideRouter(aggiemapRoutes),
     { provide: env, useValue: environment },
     // `?as=production` makes a development host behave as production, for the tab (#1722).
