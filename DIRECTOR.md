@@ -1,6 +1,6 @@
 # Who directs
 
-**Directors: GIS Day - work, its GIS Day chat; AggieMap - work, its AggieMap chat; security and vulnerability work (#2112, #2118, #1146's security parts, Dependabot, CodeQL and secret-scanning alerts, committed secrets) - work, the chat titled "js.monorepo - Security - CSA 305 Desktop"** (maintainer, 23 October 2026). All three run on the work machine; each writes only its own batches and asks him only about its own, so a listener's batch heading (`gisday:`, `aggiemap:`, `security:`) says which chat wrote it and where its questions go. `package.json` and `package-lock.json` are shared: a chat says so before changing either, and security bumps are the security chat's.
+**Directors: AggieMap - home, its AggieMap chat (handed over 6:55 PM Central, 23 October 2026, for the weekend); GIS Day - work, its GIS Day chat; security and vulnerability work (#2112, #2118, #1146's security parts, Dependabot, CodeQL and secret-scanning alerts, committed secrets) - work, the chat titled "js.monorepo - Security - CSA 305 Desktop"** (maintainer, 23 October 2026). All three run on the work machine; each writes only its own batches and asks him only about its own, so a listener's batch heading (`gisday:`, `aggiemap:`, `security:`) says which chat wrote it and where its questions go. `package.json` and `package-lock.json` are shared: a chat says so before changing either, and security bumps are the security chat's.
 
 Each of the maintainer's machines runs a Claude Code session on this branch. **Each application has exactly one director at a
 time; every other session listens.** The maintainer talks to the directors; the two are kept apart so that each chat's context
@@ -313,69 +313,86 @@ A `## Stop` heading in a listener's `TASKS.md` stops that listener: it writes `S
 
 ## Handover
 
-Written by `home (aggiemap)` at 7:40 AM Central, 21 October 2026, as the maintainer left for school.
+Written by `work (aggiemap)` at 6:55 PM Central, 23 October 2026, as the maintainer left for home.
+**`home` directs AggieMap for the weekend.** Nothing is running on any machine for AggieMap; nothing
+is waiting on a build.
 
-### Decided this morning (the maintainer)
+### The one live problem: the athletics maps on dev (#2209)
 
-- **Release-487 is NOT promoted (his 3B).** Build 20261020.40, `b78942631`, tagged `dev-2026-10-20-2`, release tier clean
-  (613/0/0/44). He checked it by hand on dev: everything passed except Indoor Track's Team Bus Parking, hidden under the
-  building (#2059, not a regression). He wants one build carrying the athletics dates and #2059 instead.
-- **Next: a new dev build today, once PR 2060 merges (his 4A)**, then its release tier, new release notes, his hand check, and
-  production. Women's Basketball's season starts **2 November**; its dates (PR 2049) are merged but not built.
-- **The blue parking garages on dev** are the development-only vector-tile campus basemap (#1229), not this release: settled
-  (1A). #2063 asks for the garage styling to be agreed before that basemap reaches production (2A).
-- Priorities set: #2059 Medium, #2061 Medium, plus every issue filed overnight (2040 High, 2042 Low, 2045 High, 2047 Medium,
-  2050 High, 2051 Medium, 2054 Low, 2055 Medium; 2019 High, 2039 Medium, 2015 Medium, 2007 Low, 1969 High). **#2063 has none.**
+#2143 pointed the eleven athletics event maps at the republished development views. It merged
+(`6a567ae8c`) and dev serves it. **8 of the 11 now list a layer that draws nothing**, because the new
+dev views carry a different schema from the production services the definitions were written
+against, so the column each definition filters on is not there. No error: the layer is in the legend
+and comes back empty.
 
-### Waiting on the maintainer
+Two shapes:
 
-| PR | What | State |
-| --- | --- | --- |
-| 2060 | #2059: Team Bus Parking drawn above the Indoor Track building | CI green except Azure `Monorepo`, running at 7:35 AM. Merge, then build |
-| 2041 | Release notes for Release-487, his hand checks recorded (`058937566`) | **Do not merge as is**: Release-487 is not going out. Rewrite it for the new build (below) or close it |
+- **The accessible layer lost `event` and `type`.** Production's has four fields (`objectid`, `id`,
+  `type`, `event`); dev's has 34 and neither, and looks like a marker feed. Indoor track, outdoor
+  track, soccer, softball, swimming, volleyball, women's basketball.
+- **The lots layer lost the per-sport columns.** Production's carries 53 fields including one per
+  sport; dev's carries 39 with none of them. Baseball (`baseball`), cross country (`trackxc`),
+  women's basketball (`wbasketball`) - the three that filter their lots by sport.
 
-Merged overnight and this morning: 2043 (Vitest 5), 2044 (NestJS 12, `@nx/nest` removed), 2046 and 2048 (accessibility rules,
-AggieMap's half of #1474), 2049 (athletics 2026-27 dates), 2052 (a dismissed notice returns next season), 2053 (the dates tool reads
-every athletics schedule, women's tennis included), 2056 (`tools/` tests in CI). `development` after 2043-2048 was checked in full:
-`npm ci`, lint 113, build 14, tests all but the known flake #1898.
+16 columns, 9 maps. Tennis and both basketballs are healthy. **Production is healthy** - all 8
+athletics routes pass `map-layers.spec.ts` there - which is why these views must not be promoted as
+they are.
 
-### What the next AggieMap director does, in order
+**Decided (the maintainer, 1A):** the GIS team adds the columns back, rather than the definitions
+moving to the new schema. Rewriting the definitions would force production to republish the same
+schema in the same window or break. The stale `development-only.ts` entry for
+`TS/WomensBasketballParking/MapServer` is fixed in whichever pull request fixes the maps (his 2A).
 
-1. When 2060 merges, ask the maintainer to queue a dev build from `development` and release it to dev.
-2. Read Azure for the release and its commit (**on `home` only**: `C:\TAMU\logs\az-releases.py`, with `AZURE_DEVOPS_PAT` from home's Windows user environment - `work` and `work-lab-leila` have neither, so a listener asks `home` for this read); **a bundle name
-   cannot identify a commit across environments** (each stage bakes its own analytics id in).
-3. Give a listener the **release** tier on dev; tag `dev-*` only on a clean pass.
-4. Release notes: rework PR 2041 (branch `docs/release-487-notes`, worktree `C:\TAMU\wt-notes-487`) for the new build - its range
-   grows from `prod-2026-10-20..b78942631` to the new commit, and the overnight merges' entries are files in
-   `docs/releases/unreleased/` for `node scripts/collate-release-notes.mjs --check` then `--write` to collate. The hand-check list
-   for the maintainer is on #2040; add rows for the new changes (2049 dates, 2052 notices, 2053 tennis, 2060 team bus).
-5. His hand check on dev, the notes merged, production approved, `prod-*` tagged, the production tier.
+The measurement is in the repository, merged, and is the thing to send the GIS team:
 
-### Machines
+    https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/athletics-dev-views.md
 
-- **`work`** - silent since 11:15 PM 20 October. Its batch 21 was withdrawn at 12:45 AM (moved to home); the GIS Day chat withdrew
-  its batch 20. Probably its session closed when the maintainer left the office.
-- **`work-lab-leila`** - silent since 12:05 AM, part way through **batch 6 (#1969, the lot-link race)**: it had red unit tests and had
-  found "two lookups racing". No branch on the fork. Its batch 7 (#2019) was withdrawn and done on home. **Likely stuck on an approval
-  prompt - someone needs to look at its screen.** Batch 6 is still its own.
-- **`home (aggiemap)`** - a listener from now. Nothing running. Its worktrees hold no uncommitted work.
-- **`home (gisday)`** - directs GIS Day; was finishing #1998 on home.
-- **`codex-home`** - idle since 19 October.
+It ends in five numbered questions for them. **Nothing moves until they answer**; there is no code
+change to make on our side if the answer is that the columns are coming back.
 
-### Open issues still needing the maintainer
+**Do not capture #2143's "after" screenshots yet.** Its release note says they are still to be taken,
+and dev currently draws the broken state - capturing now would put eight half-empty maps into the
+notes. A full capture set can only be taken on `work` in any case; all 38 baselines live there.
 
-- **#2063** (garage styling on the vector basemap): set to Low by the maintainer, 7:45 AM. Nothing else is owed.
-- **#1474** stays open for the GIS Day half (21 projects still have the rules off); the GIS Day chat has been told.
+### Also closed out today
 
-### Things not to relearn
+- **UES Operations deploys again (#2214).** Its release required a build tag no build can carry, so
+  every build was rejected and the release had no artifact. The filter is off, the stages are set
+  (everything *Manual only* except the dev front end, production held by approval), and Release-514
+  put build `20261023.40` on the dev site, confirmed by the bundle loading in the browser. Open: the
+  UES IT team confirming that one host serving dev and prod on different ports is intended. Addresses
+  and host names are on the maintainer's handoff page, not here - this branch is public.
+- **#2210** - the documentation issue behind the file above. Merged as PR 2213.
 
-1. **Squash merges break stacked pull requests.** 2053 was built on 2049's branch; once 2049 squash-merged, 2053 conflicted on the
-   lines both touched. Merge `development` into the stacked branch and keep its (newer) side.
-2. **GitHub re-checks mergeability after every merge**, which is why each "Merge" button waits a minute or two. Nothing needs redoing.
-3. **An event map's drawing order is its `references` enum order**, top first; `layerIndex` does not order an event map's own layers
-   (#2059, PR 2060; 15 more definitions on #2061).
-4. **A green check can mean nothing ran** - read the log for "No tasks were run"; for `test/smoke/aggiemap/` the real check is
-   `tsc -p test/smoke/aggiemap --noEmit`.
+### Open questions for the maintainer
+
+None from AggieMap. Everything asked today was answered: #2209 High, #2210 Low, #2214 Medium, and the
+decisions recorded above.
+
+### What is waiting on whom
+
+| Who | What |
+| --- | --- |
+| The GIS team | The five questions in `docs/athletics-dev-views.md`. Everything else waits on this |
+| The maintainer | Sending them that link |
+| Us | Nothing. No AggieMap release is pending |
+
+### State
+
+- **Production:** `36b962a04`, `prod-2026-10-22`, Release-490. Unchanged since Thursday.
+- **`development`:** 49 commits past that tag, most of it GIS Day and the security chat's work.
+- **Open AggieMap pull requests:** none. 2213 merged at 6:48 PM Central.
+- **Everything else open** (2195, 2194, 2192, 2191, 2188, 2187) is the security chat's; 928, 691, 562
+  and 381 are dormant community work. Leave the security ones alone.
+- **The listeners:** `work-lab-leila` was on the security chat's batches this afternoon; its batch 52
+  was the athletics check above. `codex-home` runs on the home machine.
+
+### A note for whoever directs next
+
+**Compare a service's fields per layer, never per service.** A definition filters one layer, so the
+column has to exist on that layer. The first pass at #2209 unioned each service's fields across its
+layers and reported two columns as missing on production that were present. The published table
+checks each filter against its own layer, which is why it can be sent to the GIS team.
 
 ## Handover (gisday)
 

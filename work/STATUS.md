@@ -3,12 +3,41 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. Clock times are read from PowerShell, not estimated.
 
-Last written **8:08 AM Central, 23 October 2026**. **This machine directs AggieMap and GIS Day**, taken at
-8:05 AM. It is no longer a listener; it writes every other machine's `TASKS.md` and is the only session that
-asks the maintainer anything.
+Last written **6:55 PM Central, 23 October 2026**. **AggieMap was handed over to `home` at 6:55 PM, for the
+weekend**; the AggieMap chat on this machine is a listener from now. GIS Day and the security chat still
+direct from here and write their own lines in `DIRECTOR.md`.
+
 ## Running now
 
 Nothing. **Last batch done: 24.** Watching the branch.
+
+## AggieMap, 23 October: what this machine did before handing over
+
+**The athletics maps on dev are the one live problem.** #2143 merged (`6a567ae8c`) and dev serves it, but
+**8 of the 11 athletics maps list a layer that draws nothing**: the republished dev views carry a different
+schema from production's services, so the column each definition filters on is not there. 16 columns across 9
+maps. Production is healthy, which is exactly why the views must not be promoted. The maintainer decided the
+GIS team adds the columns back rather than the definitions moving to the new schema.
+
+- **[#2209](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2209)** (Bug, High) -
+  the per-layer list of what each dev view needs, and the decision.
+- **[#2210](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2210)** (Task, Low),
+  **merged as PR 2213** at 6:48 PM: `docs/athletics-dev-views.md`, the file to send the GIS team, plus a
+  pointer from `docs/map-layers.md`. Every layer of all eleven views read from both servers' REST, against the
+  SQL expression each map applies. It ends in five questions for them, and nothing moves until they answer.
+- **[#2214](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2214)** (Task, Medium) -
+  the UES Operations release pipeline, repaired. Its artifact filter required a build tag that
+  `templates/jobs/buildTags.yml` excludes, so every build was rejected and the release had no artifact.
+  Release-514 then put build `20261023.40` on the dev site, confirmed by the deployed bundle loading in the
+  browser. Addresses and host names are on the maintainer's handoff page, not on this public branch.
+
+**Do not capture #2143's "after" screenshots.** Dev draws the broken state; capturing now would put eight
+half-empty maps into the release notes. All 38 visual baselines live on this machine, so a full capture set
+can only be taken here when the time comes.
+
+**Compare a service's fields per layer, never per service.** A definition filters one layer, so the column has
+to exist on that layer. The first pass at #2209 unioned each service's fields across its layers and reported
+two columns as missing on production that were present.
 
 ## Batch 24 finished, 7:37 AM Central, 23 October
 
@@ -166,6 +195,13 @@ name.
 
 ## Told directly
 
+- **23 October, 6:55 PM: the maintainer is going home, and `home` directs AggieMap for the weekend.**
+- **23 October, ~8:20 AM: security and vulnerability work belongs to its own chat** ("js.monorepo - Security -
+  CSA 305 Desktop"). Do not start or continue it; a vulnerability found while doing something else becomes an
+  issue with every field and the note that it is for the security chat, not a fix. `C:\TAMU\wt-2118` and the
+  `trivy-cache` volume are theirs.
+- **23 October: a full screenshot set can only be taken on this machine** until the visual tests move to
+  Kubernetes; all 38 baselines are in `C:\TAMU\visual-baselines`.
 - 7:40 AM: this machine directs; home is the worker.
 - 10:25 PM and 11:05 PM: hand the director role to home.
 - **11:35 PM: the maintainer is running a dev build from `b78942631` and wants a worker to start the
