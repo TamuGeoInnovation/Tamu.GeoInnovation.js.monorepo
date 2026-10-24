@@ -143,24 +143,24 @@ a command line, in a log or in a message; no Claude session handles it.
 6. **Check.** Organization settings → Agent pools → `Linux-Build` → Agents shows the agent **Online**. A pull request
    build that runs on the pool names the agent in its job log, under *Initialize job* → *Agent name*.
 
-## Lab first, hosted as the fallback
+## The lab runs the heavy jobs
 
-The Monorepo pipeline runs its heavy jobs (Cache or Restore, Lint, both Builds) on `Linux-Build` whenever an agent
-there is online and enabled, and on Azure's hosted agents when none is, so a pull request never waits for a lab that
-is switched off. The Setup stage's *Last SHA* job, which always runs hosted, asks Azure DevOps which it is (*Choose the
-lab or the hosted pool*) and says so in its log; any error there answers "hosted", with a warning naming the cause.
-Each heavy job is in `azure-pipelines.yml` twice, once per pool, and exactly one of each pair runs. The lab's copy is
-named with ` on lab` (for example *Build development on lab*), so the job list and GitHub's checks show where each
-ran.
+The Monorepo pipeline runs its heavy jobs (Cache or Restore, Lint, both Builds) on `Linux-Build` while `useLab` is
+`true` in `azure-pipelines.yml`, and on Azure's hosted agents when it is `false`. The Setup stage's *Last SHA* job,
+which always runs hosted, reads it (*Choose the lab or the hosted pool*) and says which in its log. Each heavy job is
+in `azure-pipelines.yml` twice, once per pool, and exactly one of each pair runs. The lab's copy is named with
+` on lab` (for example *Build development on lab*), so the job list and GitHub's checks show where each ran.
+
+**There is no automatic fallback.** It was built at first: the Setup job asked Azure DevOps whether a `Linux-Build`
+agent was online. But every pull request here comes from a fork, and a fork build's restricted job token cannot list
+agent pools, so the answer was always "none" and every pull request ran hosted (build 5683, 23 October 2026). So if
+every lab agent is down, pull request builds wait in the queue until one is back.
 
 **To switch the lab off**, so everything runs hosted as before, change one line in `azure-pipelines.yml`:
 
 ```yaml
   useLab: false
 ```
-
-The build service needs **Reader** on the `Linux-Build` pool to see its agents (Organization settings → Agent pools →
-`Linux-Build` → Security). Without it, every run falls back to hosted and the *Last SHA* log says why.
 
 ## How many agents fit
 
