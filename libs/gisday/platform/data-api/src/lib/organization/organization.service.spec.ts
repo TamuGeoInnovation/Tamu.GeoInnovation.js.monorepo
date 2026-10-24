@@ -66,7 +66,7 @@ describe('OrganizationService', () => {
       ]);
       expect(orgRepo.find).toHaveBeenCalledWith({
         where: { season: { guid: 'season-1' } },
-        relations: ['season', 'logos'],
+        relations: { season: true, logos: true },
         order: { name: 'ASC' }
       });
     });
@@ -122,7 +122,7 @@ describe('OrganizationService', () => {
       );
       expect(orgRepo.findOne).toHaveBeenCalledWith({
         where: { guid: 'o-1' },
-        relations: ['season', 'logos']
+        relations: { season: true, logos: true }
       });
     });
 
@@ -132,7 +132,7 @@ describe('OrganizationService', () => {
       await service.getOrganizations();
 
       expect(orgRepo.find).toHaveBeenCalledWith({
-        relations: ['season', 'logos'],
+        relations: { season: true, logos: true },
         order: { name: 'ASC' }
       });
     });

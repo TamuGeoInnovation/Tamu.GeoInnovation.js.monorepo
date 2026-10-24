@@ -50,7 +50,7 @@ describe('BaseProvider', () => {
     });
 
     it('passes an options object through untouched', async () => {
-      const opts = { where: { name: 'thing' }, relations: ['other'] };
+      const opts = { where: { name: 'thing' }, take: 10 };
       await provider.find(opts);
 
       expect(repo.find).toHaveBeenCalledWith(opts);

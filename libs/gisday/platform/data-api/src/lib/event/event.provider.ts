@@ -233,7 +233,7 @@ export class EventProvider extends BaseProvider<Event> {
       where: {
         guid: eventGuid
       },
-      select: ['observedAttendeeStart', 'observedAttendeeEnd', 'guid']
+      select: { observedAttendeeStart: true, observedAttendeeEnd: true, guid: true }
     });
 
     if (!event) {
