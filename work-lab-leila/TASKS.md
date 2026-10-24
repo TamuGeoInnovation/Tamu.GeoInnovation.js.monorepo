@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 73.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 74.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -43,6 +43,20 @@ report under **Questions for the director**, with options and a recommendation â
 > And a section **"Stopping or removing an agent"**: Ctrl+C, then remove it from the pool if the machine is leaving.
 
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now: run it right after batch 71, before batch 72.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
+
+## Batch 73 (security: #2212 - confirm `lab-1` now runs in the background behind the egress proxy; read-only, 5 minutes; 23 October 2026, 8:10 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start right after batch 71, before batch 65.** **Expected: 5 minutes. Read-only: change nothing, stop nothing, never read or print the
+token file.** The maintainer has just run batch 68's three switch-over commands for `lab-1`.
+
+1. `Get-ScheduledTask tamu-build-agent-lab-1`: State, trigger, `Hidden`.
+2. `docker ps --format '{{.Names}} {{.Image}} {{.Status}}'`: the `tamu-build-agent-lab-1` container and `tamu-agent-egress`; the image
+   id of `tamu-gisc/build-agent:latest` against your batch 68 build.
+3. `docker inspect tamu-build-agent-lab-1 --format '{{json .NetworkSettings.Networks}}'`: **only `tamu-agent-internal`**. And its
+   `HostConfig` (`Binds` empty, `Privileged` false, `CapDrop` ALL). **Do not run `docker inspect` without a `--format`** (it would show
+   `AZP_TOKEN`).
+4. The newest `%LOCALAPPDATA%	amu-build-agent\logsgent-lab-1-*.log`: its last 15 lines (it never holds the token): `Listening for Jobs`?
+5. Report it in a few lines; if anything is off, say what, and do not fix it.
 
 ## Batch 70 (security: Dependabot PR 2194, jwt-decode 3 to 4 - the code fix as our own branch; 23 October 2026, 7:55 PM Central, from `work (security)`)
 
