@@ -57,10 +57,10 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public map: esri.Map;
   public view: esri.MapView;
-  public readonly isMobile = signal<boolean>(undefined);
+  public readonly isMobile = signal<boolean | undefined>(undefined);
   public config: ReplaySubject<MapConfig> = new ReplaySubject(undefined);
 
-  public readonly threeDLayers = signal<Array<LayerSource>>(undefined);
+  public readonly threeDLayers = signal<Array<LayerSource> | undefined>(undefined);
 
   public isDev: Observable<boolean>;
   public urlBasemap: string;
