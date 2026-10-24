@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:16 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **2:21 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **2:16 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 2:50 AM Central.**
+**Next update by 3:05 AM Central.**
 
-**Batch 98, security: the ArcGIS types path in 30 spec tsconfigs (#2264)**, started 2:16 AM Central, 24 October. Then batch 99.
+**Batch 99, security: five type errors in project files (#2265)**, started 2:21 AM Central, 24 October. Then batches 100 and 101.
 
 ## Finished
+
+- **Batch 98, security: the ArcGIS types path in the spec tsconfigs (#2264) - pushed** (2:16 to 2:18 AM, 24 October): 35 spec tsconfigs now name `"@arcgis/core/interfaces"`, which resolves from any depth (no exports map); the base config could not reach them because each spec sets its own `types`. Survey: 89 of 103 pass (was 77); 13 of the 26 now pass, `ui-kits-ngx-forms` fails only until PR 2266 merges. Cause A gone; the masked errors now show: 3,454 in all, 79 in projects' own files (61 in ts-events-ngx). Check exit 0 (lint 53 / test 50 / build 6). The same wrong path is in 30 `tsconfig.lib.json` (inert; not changed). **`fix/2264-arcgis-spec-types` at `cd8a054f6`.** Report `work-lab-leila/reports/2026-10-23-85.md`.
 
 - **Batch 97, aggiemap bug: the directory's empty Abbreviation column (#2262) - fixed and pushed** (2:11 to 2:13 AM, 24 October): the column read `BldgAbbrev` (the buildings service's name) instead of the local list's `BldgAbbr`. New spec red first (Abbreviation "" vs "ZACH"), now green; before/after screenshots; release-notes entry (check: no problems). 1,288 of 1,777 buildings now show one. Check exit 0 (aggiemap-ngx-core, aggiemap-angular). **`fix/2262-directory-abbreviation` at `e2195f54a`.** Report `work-lab-leila/reports/2026-10-23-84.md`.
 
@@ -286,4 +288,4 @@ Last written **2:16 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 97 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 98 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
