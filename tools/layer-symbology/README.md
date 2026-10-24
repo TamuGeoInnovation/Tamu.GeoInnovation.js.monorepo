@@ -24,7 +24,7 @@ portal item's symbology (#1497) and every override, not what a definition file a
 
    ```bash
    cp tools/layer-symbology/collect.js collect.tmp.js
-   MSYS_NO_PATHCONV=1 docker run --rm --network host -v "$PWD:/work" -v tamu-js-smoke-nm:/work/node_modules -w /work mcr.microsoft.com/playwright:v1.63.0-noble node collect.tmp.js http://localhost:4200 test/smoke/aggiemap/map-manifest.generated.json symbology-collected.json
+   MSYS_NO_PATHCONV=1 docker run --rm --network host -v "$PWD:/work" -v tamu-js-smoke-nm:/work/node_modules -w /work mcr.microsoft.com/playwright:v1.64.1-noble node collect.tmp.js http://localhost:4200 test/smoke/aggiemap/map-manifest.generated.json symbology-collected.json
    rm collect.tmp.js
    ```
 
