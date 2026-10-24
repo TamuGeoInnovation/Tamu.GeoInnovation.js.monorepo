@@ -61,7 +61,7 @@
     "angulartics2": "^13.1.0",
     "auth0": "^3.7.1",
     "axios": "^1.7.7",
-    "better-sqlite3": "^12.11.1",
+    "better-sqlite3": "^13.0.3",
     "better-sqlite3-session-store": "^0.1.0",
     "bull": "^4.16.5",
     "chart.js": "~4.5.1",
@@ -170,7 +170,7 @@
     "@angular/build": {
       "vite": "8.3.4"
     },
-    "better-sqlite3": "^12.11.1",
+    "better-sqlite3": "^13.0.3",
     "form-data": "$form-data",
     "multer": "$multer"
   }
