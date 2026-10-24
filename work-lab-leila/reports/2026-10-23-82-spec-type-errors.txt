@@ -1,0 +1,1026 @@
+== apps/aggiemap-angular/tsconfig.spec.json
+libs/aggiemap/ngx/common/src/lib/definitions.ts(5,10): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+libs/aggiemap/ngx/common/src/lib/definitions.ts(5,23): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+libs/aggiemap/ngx/common/src/lib/definitions/main.definitions.ts(7,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/popups/src/lib/components/base-directions/base-directions.component.ts(16,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/popups/src/lib/components/base/base.popup.component.ts(4,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/ui/desktop/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/ui/desktop/src/lib/modules/sidebar/components/sidebar-trip-planner/sidebar-trip-planner.component.ts(17,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/omnisearch/omnisearch.component.ts(18,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/trip-planner-top/trip-planner-top.component.ts(15,15): error TS2503: Cannot find namespace '__esri'.
+libs/common/types/src/lib/common-types.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/common/utils/geometry/esri/src/lib/common-utils-geometry-esri.ts(7,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/arcgis-signal.ts(5,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/components/esri-map/esri-map.component.ts(20,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/components/map-compass/map-compass.component.ts(15,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/components/map-compass/map-compass.component.ts(46,18): error TS2304: Cannot find name 'IHandle'.
+libs/maps/esri/src/lib/geographic.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/highlights.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/services/map/basemap-layers.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/services/map/hit-order.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/services/map/map-probe.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/services/map/map.service.ts(34,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/services/map/map.service.ts(63,29): error TS2304: Cannot find name 'IHandle'.
+libs/maps/esri/src/lib/services/map/selection-layer.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/services/map/selection-layer.ts(17,57): error TS2304: Cannot find name 'IHandle'.
+libs/maps/feature/accessibility/src/lib/components/viewfinder/viewfinder.component.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/basemap/src/lib/components/basemap-gallery/basemap-gallery.component.ts(15,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/basemap/src/lib/services/basemap-gallery/basemap-gallery.service.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts(27,7): error TS2353: Object literal may only specify known properties, and 'url' does not exist in type 'LayerProperties'.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts(59,7): error TS2353: Object literal may only specify known properties, and 'url' does not exist in type 'LayerProperties'.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts(193,7): error TS2353: Object literal may only specify known properties, and 'visible' does not exist in type 'LayerProperties'.
+libs/maps/feature/coordinates/src/lib/components/click-coordinates/click-coordinates.component.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/layer-list/src/lib/components/layer-list-item/layer-list-item.component.ts(9,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/layer-list/src/lib/components/layer-list/layer-list.component.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/layer-list/src/lib/services/layer-list.service.ts(7,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/legend/src/lib/components/legend-collection/legend-collection.component.ts(7,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/legend/src/lib/components/legend-element/legend-element.component.ts(22,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/legend/src/lib/components/legend/legend.component.ts(13,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/legend/src/lib/services/legend.service.ts(8,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/perspective/src/lib/components/perspective-toggle/perspective-toggle.component.ts(9,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/popup/src/lib/components/base/base.component.ts(4,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/popup/src/lib/services/popup.service.ts(11,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(3,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(22,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(289,56): error TS2339: Property 'geometry' does not exist on type 'ParkingFeature'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(308,98): error TS2339: Property 'geometry' does not exist on type 'ParkingFeature'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(344,40): error TS2339: Property 'geometry' does not exist on type 'ParkingFeature'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(344,59): error TS2339: Property 'geometry' does not exist on type 'ParkingFeature'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(63,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1013,77): error TS2339: Property 'geometry' does not exist on type 'ParkingFeature'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1219,40): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1219,78): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1220,44): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1221,48): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1805,40): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1810,19): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1931,46): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/ts/events/ngx/src/lib/definitions/150th-kickoff.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/aggie-family-parade.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/aggieland-saturday.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/big-event.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/break-summer.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/cross-country-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/family-weekend.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/fish-camp.definitions.ts(4,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/football-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/games-of-texas.definitions.ts(4,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/graduation-fall.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/graduation-spring.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/graduation-summer.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/hs-graduation.definitions.ts(11,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/indoor-track-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/main-parking.definitions.ts(11,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/maroon-white-game.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/muster.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/nsc-parking.definitions.ts(11,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/outdoor-track-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/phys-engineering-festival.definitions.ts(11,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/sec-grounds-conference.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/soccer-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/softball-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/softball-regionals.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/spirit-of-150-week.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/swimming-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/t-camp.definitions.ts(4,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/tailgating.definitions.ts(12,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/visitor-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/volleyball-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/modules/map/map.component.ts(48,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/modules/popups/base-event-popup/base-event-popup.component.ts(7,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.ts(19,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/services/event/event.service.ts(27,15): error TS2503: Cannot find namespace '__esri'.
+libs/ui-kits/ngx/search/src/lib/services/alt-search.service.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+== libs/aggiemap/ngx/common/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/aggiemap/ngx/core/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/aggiemap/ngx/discover/tsconfig.spec.json
+libs/aggiemap/ngx/common/src/lib/definitions.ts(5,10): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+libs/aggiemap/ngx/common/src/lib/definitions.ts(5,23): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+libs/aggiemap/ngx/common/src/lib/definitions/main.definitions.ts(7,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/discover/src/lib/components/discover.utils.spec.ts(30,3): error TS2322: Type '{ id: string; name: string; description: string; source: "internal"; type: "event"; mapType: "campus"; configuration: { id: string; name: string; applicationName: string; shortApplicationName: string; eventDates: never[]; }; labels: never[]; keywords: never[]; visible: true; }[]' is not assignable to type 'InternalDiscoverApplication[]'.
+libs/aggiemap/ngx/discover/src/lib/components/maps-page-header/maps-page-header.component.ts(27,41): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/aggiemap/ngx/discover/src/lib/components/maps-page-header/maps-page-header.component.ts(32,41): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/aggiemap/ngx/discover/src/lib/services/discovery/discovery.service.spec.ts(147,5): error TS2561: Object literal may only specify known properties, but 'mapType' does not exist in type 'InternalDiscoverApplication'. Did you mean to write 'mapTypes'?
+libs/aggiemap/ngx/popups/src/lib/components/base-directions/base-directions.component.ts(16,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/popups/src/lib/components/base-directions/base-directions.component.ts(34,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BasePopupComponent'.
+libs/aggiemap/ngx/popups/src/lib/components/base-directions/base-directions.component.ts(95,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/aggiemap/ngx/popups/src/lib/components/base-directions/base-directions.component.ts(120,13): error TS2322: Type 'undefined' is not assignable to type 'Partial<SearchSource>'.
+libs/aggiemap/ngx/popups/src/lib/components/base/base.popup.component.ts(4,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/popups/src/lib/components/bonfire/bonfire.component.ts(85,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseDirectionsComponent'.
+libs/aggiemap/ngx/popups/src/lib/components/bonfire/bonfire.component.ts(93,11): error TS7034: Variable 'fileNames' implicitly has type 'any[]' in some locations where its type cannot be determined.
+libs/aggiemap/ngx/popups/src/lib/components/bonfire/bonfire.component.ts(114,24): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ "Lucas John Kimmel '03": string; "Bryan A. McClain '02": string; "Christopher D. Breen '96": string; "Jeremy Richard Frampton '99": string; "Chad A. Powell '03": string; "Jerry Don Self '01": string; ... 5 more ...; "Nathan Scott West '02": string; }'.
+libs/aggiemap/ngx/popups/src/lib/components/bonfire/bonfire.component.ts(121,21): error TS7005: Variable 'fileNames' implicitly has an 'any[]' type.
+libs/aggiemap/ngx/popups/src/lib/components/bonfire/bonfire.component.ts(138,43): error TS2532: Object is possibly 'undefined'.
+libs/aggiemap/ngx/popups/src/lib/components/bonfire/bonfire.component.ts(144,19): error TS18048: '_swiperRef' is possibly 'undefined'.
+libs/aggiemap/ngx/popups/src/lib/components/bonfire/bonfire.component.ts(146,5): error TS18048: '_swiperRef' is possibly 'undefined'.
+libs/aggiemap/ngx/popups/src/lib/components/bonfire/bonfire.component.ts(163,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseDirectionsComponent'.
+libs/aggiemap/ngx/popups/src/lib/components/building/building-popup.component.ts(16,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseDirectionsComponent'.
+libs/aggiemap/ngx/popups/src/lib/components/building/building-popup.component.ts(24,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseDirectionsComponent'.
+libs/aggiemap/ngx/popups/src/lib/components/construction/construction.component.ts(45,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseDirectionsComponent'.
+libs/aggiemap/ngx/popups/src/lib/components/construction/construction.component.ts(61,36): error TS2322: Type 'undefined' is not assignable to type 'string'.
+libs/aggiemap/ngx/popups/src/lib/components/dining/dining.component.ts(54,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseDirectionsComponent'.
+libs/aggiemap/ngx/popups/src/lib/components/dining/dining.component.ts(72,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseDirectionsComponent'.
+libs/aggiemap/ngx/popups/src/lib/components/parking-garage/parking-garage.component.ts(37,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseDirectionsComponent'.
+libs/aggiemap/ngx/popups/src/lib/components/parking-kiosk/parking-kiosk.component.ts(11,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseDirectionsComponent'.
+libs/aggiemap/ngx/popups/src/lib/components/parking-lot/parking-lot.component.ts(34,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseDirectionsComponent'.
+libs/aggiemap/ngx/popups/src/lib/components/poi/poi.component.ts(44,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseDirectionsComponent'.
+libs/aggiemap/ngx/popups/src/lib/components/poi/poi.component.ts(47,63): error TS7006: Parameter 'imgName' implicitly has an 'any' type.
+libs/aggiemap/ngx/popups/src/lib/components/poi/poi.component.ts(63,43): error TS2532: Object is possibly 'undefined'.
+libs/aggiemap/ngx/popups/src/lib/components/poi/poi.component.ts(69,19): error TS18048: '_swiperRef' is possibly 'undefined'.
+libs/aggiemap/ngx/popups/src/lib/components/poi/poi.component.ts(71,5): error TS18048: '_swiperRef' is possibly 'undefined'.
+libs/aggiemap/ngx/popups/src/lib/components/poi/poi.component.ts(92,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseDirectionsComponent'.
+libs/aggiemap/ngx/ui/desktop/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/ui/desktop/src/lib/modules/sidebar/components/sidebar-trip-planner/sidebar-trip-planner.component.ts(17,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/ui/desktop/src/lib/modules/sidebar/components/sidebar-trip-planner/sidebar-trip-planner.component.ts(67,37): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/bus-timetable-bottom/bus-timetable-bottom.component.ts(35,23): error TS4111: Property 'route' comes from an index signature, so it must be accessed with ['route'].
+libs/aggiemap/ngx/ui/mobile/src/lib/components/omnisearch/omnisearch.component.ts(18,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/omnisearch/omnisearch.component.ts(86,39): error TS18048: 'state.dragPercentage' is possibly 'undefined'.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/omnisearch/omnisearch.component.ts(100,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/omnisearch/omnisearch.component.ts(117,52): error TS4111: Property 'id' comes from an index signature, so it must be accessed with ['id'].
+libs/aggiemap/ngx/ui/mobile/src/lib/components/omnisearch/omnisearch.component.ts(125,18): error TS18048: 'selected.result' is possibly 'undefined'.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/trip-planner-bottom/trip-planner-bottom.component.ts(33,47): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'TripResult'.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/trip-planner-bottom/trip-planner-bottom.component.ts(54,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/trip-planner-top/trip-planner-top.component.ts(15,15): error TS2503: Cannot find namespace '__esri'.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/trip-planner-top/trip-planner-top.component.ts(84,44): error TS18048: 'state.dragPercentage' is possibly 'undefined'.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/trip-planner-top/trip-planner-top.component.ts(108,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/trip-planner-top/trip-planner-top.component.ts(120,27): error TS7006: Parameter 'index' implicitly has an 'any' type.
+libs/aggiemap/ngx/ui/mobile/src/lib/components/trip-planner-top/trip-planner-top.component.ts(137,29): error TS7006: Parameter 'handler' implicitly has an 'any' type.
+libs/aggiemap/ngx/ui/shared/src/lib/modules/experiments/components/basemap-override/basemap-override.component.ts(28,9): error TS2322: Type 'null' is not assignable to type 'string | number | boolean'.
+libs/aggiemap/ngx/ui/shared/src/lib/modules/experiments/components/basemap-override/basemap-override.component.ts(37,80): error TS2769: No overload matches this call.
+libs/aggiemap/ngx/ui/shared/src/lib/modules/experiments/components/basemap-override/basemap-override.component.ts(67,11): error TS2322: Type 'string | null' is not assignable to type 'SettingValue'.
+libs/aggiemap/ngx/ui/shared/src/lib/modules/forms/components/report-bad-route/report-bad-route.component.ts(42,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/aggiemap/ngx/ui/shared/src/lib/modules/forms/components/report-bad-route/report-bad-route.component.ts(54,19): error TS2532: Object is possibly 'undefined'.
+libs/aggiemap/ngx/ui/shared/src/lib/modules/forms/components/report-bad-route/report-bad-route.component.ts(63,7): error TS7053: Element implicitly has an 'any' type because expression of type '`stop_${number}`' can't be used to index type '{ guid: `${string}-${string}-${string}-${string}-${string}`; date: number; travel_mode: any; connection: string; description: string; email: string; }'.
+libs/aggiemap/ngx/ui/shared/src/lib/modules/structural/components/backdrop/backdrop.component.ts(15,46): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/aggiemap/ngx/ui/shared/src/lib/modules/structural/components/backdrop/backdrop.component.ts(33,5): error TS2345: Argument of type 'undefined' is not assignable to parameter of type '"off-top" | "off-right" | "off-bottom" | "off-left" | "on-top" | "on-right" | "on-bottom" | "on-left"'.
+libs/aggiemap/ngx/ui/shared/src/lib/modules/structural/components/modal/modal.component.ts(41,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/aggiemap/ngx/ui/shared/src/lib/modules/transportation/components/bus-route/bus-route.component.ts(40,42): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'TSRoute'.
+libs/aggiemap/ngx/ui/shared/src/lib/modules/transportation/components/bus-route/bus-route.component.ts(102,11): error TS2532: Object is possibly 'undefined'.
+libs/aggiemap/ngx/ui/shared/src/lib/modules/transportation/components/bus-timetable/bus-timetable.component.ts(24,42): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'TSRoute'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(7,7): error TS2322: Type 'null' is not assignable to type 'string'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(29,7): error TS2322: Type 'null' is not assignable to type 'string'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(47,11): error TS7053: Element implicitly has an 'any' type because expression of type 'number' can't be used to index type '{}'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(48,9): error TS7053: Element implicitly has an 'any' type because expression of type 'number' can't be used to index type '{}'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(51,11): error TS7053: Element implicitly has an 'any' type because expression of type 'number' can't be used to index type '{}'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(52,9): error TS7053: Element implicitly has an 'any' type because expression of type 'number' can't be used to index type '{}'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(55,7): error TS7053: Element implicitly has an 'any' type because expression of type 'number' can't be used to index type '{}'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(62,34): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(63,22): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(65,37): error TS7006: Parameter 'acc' implicitly has an 'any' type.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(65,42): error TS7006: Parameter 'day' implicitly has an 'any' type.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(65,47): error TS7006: Parameter 'index' implicitly has an 'any' type.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(82,18): error TS2345: Argument of type '{ month: number; ranges: any; }' is not assignable to parameter of type 'never'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(90,16): error TS2345: Argument of type '{ year: number; months: never[]; }' is not assignable to parameter of type 'never'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(100,37): error TS2339: Property 'months' does not exist on type 'never'.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(100,49): error TS7006: Parameter 'month' implicitly has an 'any' type.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(101,51): error TS7006: Parameter 'r' implicitly has an 'any' type.
+libs/common/ngx/pipes/src/lib/date/date-range/date-range.pipe.ts(116,54): error TS2339: Property 'year' does not exist on type 'never'.
+libs/common/ngx/pipes/src/lib/date/nearest-date/nearest-date.pipe.ts(12,9): error TS2322: Type 'null' is not assignable to type 'Date'.
+libs/common/ngx/pipes/src/lib/parsing/markdown-parse.pipe.ts(16,7): error TS2322: Type 'null' is not assignable to type 'SafeHtml'.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(44,9): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(47,9): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(226,58): error TS2345: Argument of type 'SettingValue | undefined' is not assignable to parameter of type 'SettingValue'.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(245,39): error TS7006: Parameter 'previous' implicitly has an 'any' type.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(245,49): error TS7006: Parameter 'current' implicitly has an 'any' type.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(270,15): error TS2538: Type 'undefined' cannot be used as an index type.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(271,13): error TS2538: Type 'undefined' cannot be used as an index type.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(274,13): error TS2538: Type 'undefined' cannot be used as an index type.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(275,13): error TS2538: Type 'undefined' cannot be used as an index type.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(337,7): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(376,9): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(427,15): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/common/ngx/settings/src/lib/services/common-ngx-settings.service.ts(550,6): error TS7006: Parameter 'value' implicitly has an 'any' type.
+libs/common/ngx/ui/notification/src/lib/components/notification-item/notification-item.component.ts(42,54): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'Notification'.
+libs/common/ngx/ui/notification/src/lib/components/notification-item/notification-item.component.ts(44,65): error TS2345: Argument of type 'undefined' is not assignable to parameter of type '"left" | "center" | "right"'.
+libs/common/ngx/ui/notification/src/lib/components/notification-item/notification-item.component.ts(153,5): error TS2322: Type 'Timeout' is not assignable to type 'undefined'.
+libs/common/ngx/ui/notification/src/lib/services/notification.service.ts(79,5): error TS2322: Type 'BehaviorSubject<never[]>' is not assignable to type 'BehaviorSubject<Notification[]>'.
+libs/common/ngx/ui/notification/src/lib/services/notification.service.ts(346,11): error TS2322: Type 'PlatformNotification | undefined' is not assignable to type 'PlatformNotification'.
+libs/common/ngx/ui/sidebar/src/lib/components/sidebar/sidebar.component.ts(52,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'null'.
+libs/common/ngx/ui/sidebar/src/lib/components/tab/tab.component.ts(40,41): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/common/types/src/lib/common-types.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/common/utils/database/src/lib/common-utils-database.ts(68,34): error TS7006: Parameter 'wildcard' implicitly has an 'any' type.
+libs/common/utils/database/src/lib/common-utils-database.ts(83,35): error TS7006: Parameter 'transformation' implicitly has an 'any' type.
+libs/common/utils/database/src/lib/common-utils-database.ts(83,51): error TS7006: Parameter 'key' implicitly has an 'any' type.
+libs/common/utils/database/src/lib/common-utils-database.ts(125,96): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+libs/common/utils/device/guards/src/lib/desktop/desktop.guard.ts(25,27): error TS7006: Parameter 'next' implicitly has an 'any' type.
+libs/common/utils/geometry/esri/src/lib/common-utils-geometry-esri.ts(7,15): error TS2503: Cannot find namespace '__esri'.
+libs/common/utils/geometry/esri/src/lib/common-utils-geometry-esri.ts(37,69): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+libs/common/utils/geometry/esri/src/lib/common-utils-geometry-esri.ts(151,73): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+libs/common/utils/geometry/generic/src/lib/common-utils-geometry-generic.ts(9,22): error TS7016: Could not find a declaration file for module 'geojson-utils'. '/w/node_modules/geojson-utils/geojson-utils.js' implicitly has an 'any' type.
+libs/common/utils/geometry/generic/src/lib/common-utils-geometry-generic.ts(43,5): error TS2322: Type 'BehaviorSubject<undefined>' is not assignable to type 'BehaviorSubject<GeolocationPosition>'.
+libs/common/utils/geometry/generic/src/lib/common-utils-geometry-generic.ts(142,35): error TS2769: No overload matches this call.
+libs/common/utils/geometry/generic/src/lib/common-utils-geometry-generic.ts(153,3): error TS2740: Type 'RelativeDistancePoint' is missing the following properties from type 'number[]': length, pop, push, concat, and 35 more.
+libs/common/utils/geometry/src/lib/common-utils-geometry.ts(7,22): error TS7016: Could not find a declaration file for module 'geojson-utils'. '/w/node_modules/geojson-utils/geojson-utils.js' implicitly has an 'any' type.
+libs/common/utils/routing/src/lib/common-utils-routing.ts(7,3): error TS2322: Type '(string | undefined)[]' is not assignable to type 'string[]'.
+libs/common/utils/routing/src/lib/common-utils-routing.ts(36,22): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/common/utils/string/src/lib/common-utils-string.ts(37,20): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+libs/common/utils/string/src/lib/common-utils-string.ts(39,72): error TS2769: No overload matches this call.
+libs/common/utils/string/src/lib/common-utils-string.ts(50,52): error TS2345: Argument of type 'object | undefined' is not assignable to parameter of type 'object'.
+libs/common/utils/ui/src/lib/common-utils-ui.ts(13,38): error TS2531: Object is possibly 'null'.
+libs/common/utils/ui/src/lib/common-utils-ui.ts(29,15): error TS2531: Object is possibly 'null'.
+libs/common/utils/ui/src/lib/common-utils-ui.ts(52,28): error TS7006: Parameter 'event' implicitly has an 'any' type.
+libs/common/utils/ui/src/lib/common-utils-ui.ts(52,35): error TS7006: Parameter 'target' implicitly has an 'any' type.
+libs/common/utils/ui/src/lib/common-utils-ui.ts(76,37): error TS7006: Parameter 'keydownEvent' implicitly has an 'any' type.
+libs/common/utils/ui/src/lib/common-utils-ui.ts(92,39): error TS7006: Parameter 'mousedownEvent' implicitly has an 'any' type.
+libs/common/utils/ui/src/lib/image.ts(43,5): error TS2531: Object is possibly 'null'.
+libs/common/utils/ui/src/lib/image.ts(45,69): error TS2345: Argument of type '(value: Blob | PromiseLike<Blob>) => void' is not assignable to parameter of type 'BlobCallback'.
+libs/common/utils/ui/src/lib/image.ts(58,5): error TS2454: Variable 'bitmap' is used before being assigned.
+libs/dev-tools/responsive/src/lib/services/responsive.service.ts(7,5): error TS2345: Argument of type '{ screenWidth: number; isMobile: undefined; }' is not assignable to parameter of type 'ResponsiveSnapshot'.
+libs/dev-tools/responsive/src/lib/services/responsive.service.ts(29,18): error TS2769: No overload matches this call.
+libs/dev-tools/responsive/src/lib/services/responsive.service.ts(39,7): error TS2322: Type 'true' is not assignable to type 'undefined'.
+libs/dev-tools/responsive/src/lib/services/responsive.service.ts(41,7): error TS2322: Type 'false' is not assignable to type 'undefined'.
+libs/maps/esri/src/lib/arcgis-signal.ts(5,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/components/esri-map/esri-map.component.ts(20,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/components/esri-map/esri-map.component.ts(51,45): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'MapConfig'.
+libs/maps/esri/src/lib/components/esri-map/esri-map.component.ts(114,12): error TS2532: Object is possibly 'undefined'.
+libs/maps/esri/src/lib/components/esri-map/esri-map.component.ts(127,29): error TS2532: Object is possibly 'undefined'.
+libs/maps/esri/src/lib/components/esri-map/esri-map.component.ts(144,22): error TS2532: Object is possibly 'undefined'.
+libs/maps/esri/src/lib/components/map-compass/map-compass.component.ts(15,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/components/map-compass/map-compass.component.ts(46,18): error TS2304: Cannot find name 'IHandle'.
+libs/maps/esri/src/lib/components/map-compass/map-compass.component.ts(58,10): error TS7006: Parameter 'rotation' implicitly has an 'any' type.
+libs/maps/esri/src/lib/geographic.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/highlights.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/services/map/basemap-layers.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/services/map/hit-order.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/services/map/map-probe.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/services/map/map.service.ts(34,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/services/map/map.service.ts(56,11): error TS2322: Type 'BehaviorSubject<undefined>' is not assignable to type 'BehaviorSubject<MapServiceInstance>'.
+libs/maps/esri/src/lib/services/map/map.service.ts(58,11): error TS2322: Type 'BehaviorSubject<{ graphics: never[]; }>' is not assignable to type 'BehaviorSubject<HitTestSnapshot>'.
+libs/maps/esri/src/lib/services/map/map.service.ts(63,29): error TS2304: Cannot find name 'IHandle'.
+libs/maps/esri/src/lib/services/map/map.service.ts(142,70): error TS2345: Argument of type 'null' is not assignable to parameter of type 'LayerSource[] | undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(160,24): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'MapServiceInstance'.
+libs/maps/esri/src/lib/services/map/map.service.ts(220,61): error TS7006: Parameter 'e' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(232,35): error TS7006: Parameter 'r' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(232,90): error TS7006: Parameter 'r' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(249,23): error TS7006: Parameter 'mapProperties' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(273,66): error TS7006: Parameter 'l' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(303,17): error TS7006: Parameter 'err' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(471,18): error TS7006: Parameter 'l' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(485,15): error TS18048: 'source.auth' is possibly 'undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(485,51): error TS18048: 'source.auth' is possibly 'undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(485,87): error TS18048: 'source.auth' is possibly 'undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(501,33): error TS7006: Parameter 'source' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(503,7): error TS2345: Argument of type '(res: { layers: Array<IPortalLayer>; }) => Promise<esri.Layer[]>' is not assignable to parameter of type '(value: Object) => esri.Layer[] | PromiseLike<esri.Layer[]>'.
+libs/maps/esri/src/lib/services/map/map.service.ts(582,36): error TS18048: 'args.source.native' is possibly 'undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(584,36): error TS18048: 'args.source.native' is possibly 'undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(754,43): error TS7006: Parameter 'info' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(758,47): error TS7006: Parameter 'info' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(785,71): error TS18048: 'source.auth' is possibly 'undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(801,34): error TS18048: 'source.auth' is possibly 'undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(810,25): error TS18048: 'source.auth' is possibly 'undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(819,25): error TS18048: 'source.auth' is possibly 'undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(819,61): error TS18048: 'source.auth' is possibly 'undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(819,97): error TS18048: 'source.auth' is possibly 'undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(836,36): error TS2345: Argument of type 'IPortalLayer | undefined' is not assignable to parameter of type 'IPortalLayer'.
+libs/maps/esri/src/lib/services/map/map.service.ts(997,31): error TS18048: 'queryResults.results' is possibly 'undefined'.
+libs/maps/esri/src/lib/services/map/map.service.ts(1058,19): error TS7006: Parameter 'token' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(1060,14): error TS7006: Parameter 'uniqueList' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(1060,26): error TS7006: Parameter 'token' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(1095,34): error TS2345: Argument of type 'LayerSource | undefined' is not assignable to parameter of type 'object'.
+libs/maps/esri/src/lib/services/map/map.service.ts(1142,65): error TS7006: Parameter 'src' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/map.service.ts(1176,5): error TS2322: Type 'Promise<number | undefined>' is not assignable to type 'Promise<number>'.
+libs/maps/esri/src/lib/services/map/selection-layer.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/esri/src/lib/services/map/selection-layer.ts(17,57): error TS2304: Cannot find name 'IHandle'.
+libs/maps/esri/src/lib/services/map/selection-layer.ts(18,35): error TS7006: Parameter 'event' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/map/selection-layer.ts(24,40): error TS7006: Parameter 'layer' implicitly has an 'any' type.
+libs/maps/esri/src/lib/services/module-provider/module-provider.service.ts(25,13): error TS7053: Element implicitly has an 'any' type because expression of type '"Map" | "rendererJsonUtils" | "TileLayer" | "VectorTileLayer" | "projectOperator" | "Basemap" | "GraphicsLayer" | "webMercatorUtils" | "SpatialReference" | "RouteParameters" | ... 30 more ... | "WMSLayer"' can't be used to index type '{}'.
+libs/maps/feature/accessibility/src/lib/components/viewfinder/viewfinder.component.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/accessibility/src/lib/components/viewfinder/viewfinder.component.ts(28,41): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/maps/feature/accessibility/src/lib/components/viewfinder/viewfinder.component.ts(33,44): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/maps/feature/accessibility/src/lib/components/viewfinder/viewfinder.component.ts(46,68): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'IViewfinderResult[]'.
+libs/maps/feature/accessibility/src/lib/components/viewfinder/viewfinder.component.ts(70,34): error TS7006: Parameter 's' implicitly has an 'any' type.
+libs/maps/feature/accessibility/src/lib/components/viewfinder/viewfinder.component.ts(84,24): error TS7006: Parameter 'handler' implicitly has an 'any' type.
+libs/maps/feature/accessibility/src/lib/components/viewfinder/viewfinder.component.ts(107,32): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/accessibility/src/lib/components/viewfinder/viewfinder.component.ts(160,26): error TS7006: Parameter 'features' implicitly has an 'any' type.
+libs/maps/feature/accessibility/src/lib/components/viewfinder/viewfinder.component.ts(163,73): error TS7006: Parameter 'f' implicitly has an 'any' type.
+libs/maps/feature/accessibility/src/lib/components/viewfinder/viewfinder.component.ts(196,31): error TS7006: Parameter 'handler' implicitly has an 'any' type.
+libs/maps/feature/accessibility/src/lib/components/viewfinder/viewfinder.component.ts(213,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/maps/feature/basemap/src/lib/components/basemap-gallery/basemap-gallery.component.ts(15,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/basemap/src/lib/components/basemap-gallery/basemap-gallery.component.ts(53,26): error TS7006: Parameter 'item' implicitly has an 'any' type.
+libs/maps/feature/basemap/src/lib/components/basemap-gallery/basemap-gallery.component.ts(63,53): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/maps/feature/basemap/src/lib/components/basemap-gallery/basemap-gallery.component.ts(96,33): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/maps/feature/basemap/src/lib/components/nearmap-date-slider/nearmap-date-slider.component.ts(135,94): error TS2345: Argument of type 'number | null' is not assignable to parameter of type 'number'.
+libs/maps/feature/basemap/src/lib/services/basemap-gallery/basemap-gallery.service.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/basemap/src/lib/services/basemap-gallery/basemap-gallery.service.ts(52,47): error TS7006: Parameter 'sublayer' implicitly has an 'any' type.
+libs/maps/feature/basemap/src/lib/services/basemap-gallery/basemap-gallery.service.ts(59,44): error TS7006: Parameter 'sublayer' implicitly has an 'any' type.
+libs/maps/feature/basemap/src/lib/services/basemap-gallery/basemap-gallery.service.ts(469,55): error TS4111: Property 'id' comes from an index signature, so it must be accessed with ['id'].
+libs/maps/feature/basemap/src/lib/services/basemap-gallery/basemap-gallery.service.ts(497,31): error TS7006: Parameter 'sublayer' implicitly has an 'any' type.
+libs/maps/feature/basemap/src/lib/services/basemap-gallery/basemap-gallery.service.ts(587,13): error TS7030: Not all code paths return a value.
+libs/maps/feature/basemap/src/lib/services/basemap-gallery/basemap-gallery.service.ts(636,42): error TS4111: Property 'id' comes from an index signature, so it must be accessed with ['id'].
+libs/maps/feature/basemap/src/lib/services/basemap-gallery/basemap-gallery.service.ts(663,23): error TS7006: Parameter 'layer' implicitly has an 'any' type.
+libs/maps/feature/basemap/src/lib/services/basemap-gallery/basemap-gallery.service.ts(664,54): error TS7006: Parameter 'candidate' implicitly has an 'any' type.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts(27,7): error TS2353: Object literal may only specify known properties, and 'url' does not exist in type 'LayerProperties'.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts(59,7): error TS2353: Object literal may only specify known properties, and 'url' does not exist in type 'LayerProperties'.
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts(175,80): error TS4111: Property 'id' comes from an index signature, so it must be accessed with ['id'].
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts(182,31): error TS4111: Property 'id' comes from an index signature, so it must be accessed with ['id'].
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts(186,46): error TS4111: Property 'id' comes from an index signature, so it must be accessed with ['id'].
+libs/maps/feature/basemap/src/lib/shared/basemaps.definition.ts(193,7): error TS2353: Object literal may only specify known properties, and 'visible' does not exist in type 'LayerProperties'.
+libs/maps/feature/coordinates/src/lib/components/click-coordinates/click-coordinates.component.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/coordinates/src/lib/components/click-coordinates/click-coordinates.component.ts(43,29): error TS7006: Parameter 'handler' implicitly has an 'any' type.
+libs/maps/feature/layer-list/src/lib/components/layer-list-categorized/layer-list-categorized.component.ts(24,24): error TS7006: Parameter 'item' implicitly has an 'any' type.
+libs/maps/feature/layer-list/src/lib/components/layer-list-item/layer-list-item.component.ts(9,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/layer-list/src/lib/components/layer-list/layer-list.component.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/layer-list/src/lib/components/layer-list/layer-list.component.ts(41,58): error TS7006: Parameter 'l' implicitly has an 'any' type.
+libs/maps/feature/layer-list/src/lib/components/layer-list/layer-list.component.ts(47,10): error TS7006: Parameter 'a' implicitly has an 'any' type.
+libs/maps/feature/layer-list/src/lib/components/layer-list/layer-list.component.ts(47,13): error TS7006: Parameter 'b' implicitly has an 'any' type.
+libs/maps/feature/layer-list/src/lib/components/layer-list/layer-list.component.ts(54,27): error TS7006: Parameter 'a' implicitly has an 'any' type.
+libs/maps/feature/layer-list/src/lib/components/layer-list/layer-list.component.ts(54,30): error TS7006: Parameter 'b' implicitly has an 'any' type.
+libs/maps/feature/layer-list/src/lib/services/layer-list.service.ts(7,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/layer-list/src/lib/services/layer-list.service.ts(32,22): error TS7006: Parameter 'handler' implicitly has an 'any' type.
+libs/maps/feature/layer-list/src/lib/services/layer-list.service.ts(33,80): error TS7006: Parameter 'item' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/components/legend-collection/legend-collection.component.ts(7,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/legend/src/lib/components/legend-collection/legend-collection.component.ts(164,51): error TS7006: Parameter 'i' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/components/legend-collection/legend-collection.component.ts(189,78): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+libs/maps/feature/legend/src/lib/components/legend-element/legend-element.component.ts(22,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/legend/src/lib/components/legend-element/legend-element.component.ts(68,46): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/maps/feature/legend/src/lib/components/legend-element/legend-element.component.ts(329,60): error TS7006: Parameter 'u' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/components/legend-element/legend-element.component.ts(520,78): error TS7006: Parameter 'exp' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/components/legend-element/legend-element.component.ts(523,46): error TS7006: Parameter 'exp' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/components/legend-element/legend-element.component.ts(524,50): error TS7006: Parameter 'part' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/components/legend-element/legend-element.component.ts(534,39): error TS7006: Parameter 'pair' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/components/legend-element/legend-element.component.ts(572,36): error TS7006: Parameter 'f' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/components/legend-element/legend-element.component.ts(596,54): error TS7006: Parameter 'value' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/components/legend/legend.component.ts(13,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/legend/src/lib/components/legend/legend.component.ts(81,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/maps/feature/legend/src/lib/services/legend.service.ts(8,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/legend/src/lib/services/legend.service.ts(57,24): error TS7006: Parameter 'handler' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/services/legend.service.ts(58,76): error TS7006: Parameter 'info' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/services/legend.service.ts(69,26): error TS7006: Parameter 'l' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/services/legend.service.ts(70,26): error TS7006: Parameter 'l' implicitly has an 'any' type.
+libs/maps/feature/legend/src/lib/services/legend.service.ts(71,26): error TS7006: Parameter 'l' implicitly has an 'any' type.
+libs/maps/feature/perspective/src/lib/components/perspective-toggle/perspective-toggle.component.ts(9,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/perspective/src/lib/components/perspective-toggle/perspective-toggle.component.ts(25,60): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'LayerSource[]'.
+libs/maps/feature/perspective/src/lib/components/perspective-toggle/perspective-toggle.component.ts(30,58): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'LayerSource[]'.
+libs/maps/feature/popup/src/lib/components/base/base.component.ts(4,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/popup/src/lib/containers/base/base.component.ts(129,29): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/popup/src/lib/containers/mobile/mobile.component.ts(37,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'PopupComponent'.
+libs/maps/feature/popup/src/lib/services/popup.service.ts(11,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/popup/src/lib/services/popup.service.ts(48,10): error TS7030: Not all code paths return a value.
+libs/maps/feature/popup/src/lib/services/popup.service.ts(76,12): error TS18048: 'graphicLayer' is possibly 'undefined'.
+libs/maps/feature/popup/src/lib/services/popup.service.ts(82,11): error TS18048: 'graphicLayer' is possibly 'undefined'.
+libs/maps/feature/popup/src/lib/services/popup.service.ts(85,11): error TS18048: 'graphicLayer' is possibly 'undefined'.
+libs/maps/feature/popup/src/lib/services/popup.service.ts(86,11): error TS18048: 'graphicLayer' is possibly 'undefined'.
+libs/maps/feature/popup/src/lib/services/popup.service.ts(95,20): error TS18048: 'graphicLayer' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-connection-select/containers/base/base.component.ts(30,52): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-directions-actions/containers/base/base.component.ts(60,9): error TS2322: Type 'string' is not assignable to type 'undefined'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-directions-actions/containers/base/base.component.ts(76,11): error TS2322: Type '"leave" | "arrive" | undefined' is not assignable to type 'undefined'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-directions-actions/containers/base/base.component.ts(80,11): error TS2322: Type 'Date' is not assignable to type 'undefined'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-directions-actions/containers/base/base.component.ts(95,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-directions/containers/base/base.component.ts(25,47): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'TripResult'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-directions/containers/base/base.component.ts(41,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-picker/containers/mobile/mobile.component.ts(24,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'TripPlannerModePickerComponent'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-picker/containers/mobile/mobile.component.ts(25,5): error TS2322: Type 'Observable<boolean | undefined>' is not assignable to type 'Observable<boolean>'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-picker/containers/mobile/mobile.component.ts(35,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-switch/components/bus-switch/bus-switch.component.ts(22,50): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'TripModeSwitch'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-switch/components/bus-switch/bus-switch.component.ts(29,10): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-switch/components/bus-switch/bus-switch.component.ts(31,10): error TS2322: Type 'null' is not assignable to type 'number | undefined'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-switch/components/bus-switch/bus-switch.component.ts(32,10): error TS2322: Type 'null' is not assignable to type 'number | undefined'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-switch/components/bus-switch/bus-switch.component.ts(33,10): error TS2322: Type 'null' is not assignable to type 'number | undefined'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-switch/components/bus-switch/bus-switch.component.ts(80,24): error TS7006: Parameter 'time' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-switch/containers/base/base.component.ts(20,54): error TS2345: Argument of type 'null' is not assignable to parameter of type 'TripModeSwitch'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-switch/containers/base/base.component.ts(22,46): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'TripResult'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-switch/containers/base/base.component.ts(25,10): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-switch/containers/base/base.component.ts(37,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-switch/containers/base/base.component.ts(55,5): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-toggle/containers/base/base.component.ts(36,44): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-toggle/containers/base/base.component.ts(47,40): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-toggle/containers/base/base.component.ts(52,41): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-mode-toggle/containers/base/base.component.ts(147,7): error TS2345: Argument of type 'OperatorFunction<TravelOptions, number | undefined>' is not assignable to parameter of type 'OperatorFunction<TravelOptions, number>'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-options/components/base/base.component.ts(45,9): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-options/containers/base/base.component.ts(41,19): error TS2322: Type 'Observable<TripPlannerRuleMode[] | undefined>' is not assignable to type 'Observable<TripPlannerRuleMode[]>'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-options/containers/base/base.component.ts(70,12): error TS2769: No overload matches this call.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-options/containers/base/base.component.ts(86,23): error TS7006: Parameter 'option' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-options/containers/base/base.component.ts(86,31): error TS7006: Parameter 'value' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-options/containers/base/base.component.ts(114,23): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-time-picker/containers/base/base.component.ts(25,88): error TS2345: Argument of type 'OperatorFunction<TravelOptions, TimeModeOption | undefined>' is not assignable to parameter of type 'OperatorFunction<TravelOptions, TimeModeOption>'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-time-picker/containers/base/base.component.ts(30,50): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'number'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-time-picker/containers/base/base.component.ts(42,30): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-time-picker/containers/base/base.component.ts(43,7): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-time-picker/containers/base/base.component.ts(48,24): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/maps/feature/trip-planner/src/lib/components/trip-planner-time-picker/containers/base/base.component.ts(63,29): error TS2345: Argument of type 'null' is not assignable to parameter of type 'Date | DateTimePickerChange<Date>'.
+libs/maps/feature/trip-planner/src/lib/core/route-direction-transformer.pipe.ts(9,20): error TS7006: Parameter 'value' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/core/route-direction-transformer.pipe.ts(17,30): error TS7006: Parameter 'direction' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/core/route-direction-transformer.pipe.ts(17,41): error TS7006: Parameter 'units' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/core/route-direction-transformer.pipe.ts(34,26): error TS7006: Parameter 'direction' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(3,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(55,65): error TS7030: Not all code paths return a value.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(55,66): error TS7006: Parameter 'f' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(173,24): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(175,50): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(213,25): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(213,58): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(228,44): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(236,11): error TS2322: Type '{ name?: string | undefined; Latitude?: string; Longitude?: string; }' is not assignable to type 'TripPointAttributes'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(249,23): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(250,24): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(261,23): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(262,24): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(270,37): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(270,71): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(292,23): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(307,18): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'TripPointAttributes'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(308,16): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'TripPointAttributes'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(309,42): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(309,76): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(310,19): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(310,57): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(322,51): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(346,17): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/core/trip-planner-core.ts(346,43): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bike/bike.service.ts(23,5): error TS2322: Type 'Observable<Bike | undefined>' is not assignable to type 'Observable<Bike>'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bike/bike.service.ts(32,9): error TS2345: Argument of type 'OperatorFunction<NearestJSONResponse, Bike | undefined>' is not assignable to parameter of type 'OperatorFunction<Object, Bike | undefined>'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bike/bike.service.ts(54,9): error TS2345: Argument of type 'OperatorFunction<SearchResult<RelativeDistancePoint>, Point | undefined>' is not assignable to parameter of type 'OperatorFunction<SearchResult<unknown>, Point>'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bike/bike.service.ts(58,55): error TS2345: Argument of type 'RelativeDistancePoint[] | undefined' is not assignable to parameter of type 'RelativeDistancePoint[]'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bike/bike.service.ts(64,29): error TS18048: 'features' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(22,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(69,11): error TS2322: Type 'BehaviorSubject<never[]>' is not assignable to type 'BehaviorSubject<esri.Graphic[]>'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(104,7): error TS2322: Type 'Observable<null>' is not assignable to type 'Observable<TSRoute[]>'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(124,41): error TS4111: Property 'RouteNum' comes from an index signature, so it must be accessed with ['RouteNum'].
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(132,40): error TS4111: Property 'Campus' comes from an index signature, so it must be accessed with ['Campus'].
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(144,31): error TS4111: Property 'RouteName' comes from an index signature, so it must be accessed with ['RouteName'].
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(153,11): error TS2322: Type 'TSRoute[]' is not assignable to type 'null'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(166,68): error TS2339: Property 'short_name' does not exist on type 'never'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(168,64): error TS2339: Property 'stops' does not exist on type 'never'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(169,39): error TS2339: Property 'waypoints' does not exist on type 'never'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(186,7): error TS2345: Argument of type 'OperatorFunction<[TSWaypoint[], [any, any, esri.webMercatorUtils]], Waypoint[]>' is not assignable to parameter of type 'OperatorFunction<[Object, any], Waypoint[]>'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(204,34): error TS2345: Argument of type '{ short_name: string; waypoints: Waypoint[]; }' is not assignable to parameter of type 'never'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(216,61): error TS2339: Property 'short_name' does not exist on type 'never'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(218,58): error TS2339: Property 'stops' does not exist on type 'never'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(219,36): error TS2339: Property 'stops' does not exist on type 'never'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(236,7): error TS2345: Argument of type 'OperatorFunction<[TSStopJson[], [any, any, esri.webMercatorUtils]], BusStop[]>' is not assignable to parameter of type 'OperatorFunction<[Object, any], BusStop[]>'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(254,30): error TS2345: Argument of type '{ short_name: string; stops: BusStop[]; }' is not assignable to parameter of type 'never'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(271,66): error TS2339: Property 'short_name' does not exist on type 'never'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(271,98): error TS2339: Property 'date' does not exist on type 'never'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(273,29): error TS2339: Property 'timetable' does not exist on type 'never'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(276,7): error TS2345: Argument of type 'OperatorFunction<Object, Object>' is not assignable to parameter of type 'OperatorFunction<Object, TSTimetable[]>'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(294,15): error TS2322: Type 'Date | null' is not assignable to type 'Date'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(299,28): error TS2345: Argument of type '{ short_name: string; date: string; stops: TimetableEntry[][]; }' is not assignable to parameter of type 'never'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(340,5): error TS2322: Type 'Observable<{ timetable: TimetableRow[]; linger_minutes: number | null; }>' is not assignable to type 'Observable<TimetableWithLinger>'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(452,15): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(452,70): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(462,38): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(494,28): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(501,14): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(554,12): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(555,13): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(572,9): error TS18048: 'modeSwitch.results.relativeTime' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(636,7): error TS2345: Argument of type 'OperatorFunction<[TSBus[], [any, any, esri.webMercatorUtils]], { name: string; passenger_capacity: number; current_passengers: number; point: esri.Point; angle: number; }[]>' is not assignable to parameter of type 'OperatorFunction<[Object, any], { name: string; passenger_capacity: number; current_passengers: number; point: esri.Point; angle: number; }[]>'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(697,50): error TS7006: Parameter 'graphic' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(874,46): error TS4111: Property 'Route' comes from an index signature, so it must be accessed with ['Route'].
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(881,48): error TS4111: Property 'StopType' comes from an index signature, so it must be accessed with ['StopType'].
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(890,51): error TS4111: Property 'OBJECTID' comes from an index signature, so it must be accessed with ['OBJECTID'].
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(891,41): error TS4111: Property 'StopName' comes from an index signature, so it must be accessed with ['StopName'].
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(894,46): error TS4111: Property 'StopClass' comes from an index signature, so it must be accessed with ['StopClass'].
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(955,20): error TS7006: Parameter 'features' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(959,47): error TS7006: Parameter 'f' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(968,29): error TS7006: Parameter 'res' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(980,9): error TS2345: Argument of type '(result: [[typeof esri.Point, typeof esri.Graphic, typeof esri.FeatureLayer, typeof esri.PictureMarkerSymbol], RouteBus[], esri.Graphic[]]) => void' is not assignable to parameter of type '(value: [any, RouteBus[] | undefined, esri.Graphic[]]) => void | PromiseLike<void>'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(994,35): error TS7006: Parameter 'bus' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(1087,43): error TS18048: 'apiMatch' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(1089,29): error TS18048: 'apiMatch' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts(1090,30): error TS18048: 'apiMatch' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(32,9): error TS2322: Type 'undefined' is not assignable to type 'string | number | boolean'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(97,66): error TS7006: Parameter 'source' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(108,58): error TS2345: Argument of type 'ParkingFeature[] | undefined' is not assignable to parameter of type 'ParkingFeature[]'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(112,30): error TS18048: 'res.results' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(119,23): error TS18048: 'results.results' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(141,51): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(154,30): error TS7006: Parameter 'a' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(154,33): error TS7006: Parameter 'b' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(226,17): error TS18048: 'parkingOptions.UB' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(233,17): error TS18048: 'parkingOptions.UB' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(234,20): error TS18048: 'parkingOptions.UB' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(242,17): error TS18048: 'parkingOptions.H_C' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(243,20): error TS18048: 'parkingOptions.H_C' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(248,18): error TS18048: 'parkingOptions.Visitor_H_C' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(249,17): error TS18048: 'parkingOptions.H_C' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(250,20): error TS18048: 'parkingOptions.Visitor_H_C' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(267,7): error TS18048: 'source' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(267,7): error TS18048: 'source.queryParams' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(272,26): error TS2769: No overload matches this call.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(281,59): error TS2345: Argument of type 'ParkingFeature[] | undefined' is not assignable to parameter of type 'ParkingFeature[]'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(283,17): error TS2538: Type 'undefined' cannot be used as an index type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(284,15): error TS2538: Type 'undefined' cannot be used as an index type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(285,15): error TS2538: Type 'undefined' cannot be used as an index type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(285,62): error TS2538: Type 'undefined' cannot be used as an index type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(287,15): error TS2538: Type 'undefined' cannot be used as an index type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(288,15): error TS2538: Type 'undefined' cannot be used as an index type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(289,15): error TS2538: Type 'undefined' cannot be used as an index type.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(289,56): error TS2339: Property 'geometry' does not exist on type 'ParkingFeature'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(296,11): error TS2345: Argument of type 'MonoTypeOperatorFunction<[string, { count: number; attributes: unknown; geometry: unknown; }]>' is not assignable to parameter of type 'OperatorFunction<[string, unknown], [string, { count: number; attributes: unknown; geometry: unknown; }]>'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(308,98): error TS2339: Property 'geometry' does not exist on type 'ParkingFeature'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(332,16): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(336,13): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(336,24): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ AggieMap?: number | undefined; FAC_CODE?: string | undefined; LotName?: string | undefined; UB?: number | undefined; H_C?: number | undefined; Visitor_H_C?: number | undefined; AVP_Lot?: 0 | ... 1 more ... | undefined; ... 6 more ...; Permit_Pass?: string | ... 1 more ... | undefined; }'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(344,40): error TS2339: Property 'geometry' does not exist on type 'ParkingFeature'.
+libs/maps/feature/trip-planner/src/lib/services/transportation/drive/parking.service.ts(344,59): error TS2339: Property 'geometry' does not exist on type 'ParkingFeature'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner-connection.service.ts(38,5): error TS2322: Type 'BehaviorSubject<never[]>' is not assignable to type 'BehaviorSubject<TripPlannerConnection[]>'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner-connection.service.ts(39,5): error TS2322: Type 'BehaviorSubject<never[]>' is not assignable to type 'BehaviorSubject<TripPlannerConnection[]>'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner-connection.service.ts(68,7): error TS2769: No overload matches this call.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner-connection.service.ts(116,15): error TS7034: Variable 'networks' implicitly has type 'any[]' in some locations where its type cannot be determined.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner-connection.service.ts(134,18): error TS7005: Variable 'networks' implicitly has an 'any[]' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner-connection.service.ts(171,24): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner-connection.service.ts(213,14): error TS7032: Property 'network' implicitly has type 'any', because its set accessor lacks a parameter type annotation.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner-connection.service.ts(213,22): error TS7006: Parameter 'name' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(34,22): error TS7016: Could not find a declaration file for module 'geojson-utils'. '/w/node_modules/geojson-utils/geojson-utils.js' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(63,15): error TS2503: Cannot find namespace '__esri'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(107,9): error TS2322: Type 'undefined' is not assignable to type 'string | number | boolean'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(133,9): error TS2322: Type 'undefined' is not assignable to type 'string | number | boolean'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(304,11): error TS2322: Type 'BehaviorSubject<never[]>' is not assignable to type 'BehaviorSubject<TripResult[]>'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(358,24): error TS7006: Parameter 'handler' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(436,33): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(465,35): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(529,12): error TS7030: Not all code paths return a value.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(552,22): error TS7006: Parameter 'rule' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(554,66): error TS7006: Parameter 'u' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(558,33): error TS7006: Parameter 'acc' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(558,38): error TS7006: Parameter 'curr' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(562,39): error TS7006: Parameter 'cm' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(565,33): error TS7006: Parameter 'instance' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(626,5): error TS2322: Type 'TripPlannerRule | undefined' is not assignable to type 'TripPlannerRule'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(633,34): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(643,78): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(679,9): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(679,21): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'TravelOptions'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(696,35): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(705,28): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ accessible?: boolean | undefined; parking_pass?: boolean | undefined; bike_share?: boolean | undefined; }'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(708,15): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ accessible?: boolean | undefined; parking_pass?: boolean | undefined; bike_share?: boolean | undefined; }'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(710,27): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ accessible?: boolean | undefined; parking_pass?: boolean | undefined; bike_share?: boolean | undefined; }'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(716,27): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ accessible?: boolean | undefined; parking_pass?: boolean | undefined; bike_share?: boolean | undefined; }'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(744,9): error TS2322: Type 'number | undefined' is not assignable to type 'number | TripPlannerRuleMode'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(749,7): error TS2322: Type 'undefined' is not assignable to type 'number | TripPlannerRuleMode'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(767,40): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(794,9): error TS18048: 'modeFromRule' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(795,32): error TS18048: 'modeFromRule' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(881,18): error TS18048: 'a.mode' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(881,27): error TS18048: 'b.mode' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(919,21): error TS18048: 'result.mode' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(925,13): error TS7034: Variable 'previousState' implicitly has type 'any' in some locations where its type cannot be determined.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(949,19): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(949,29): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(950,19): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(950,30): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1013,77): error TS2339: Property 'geometry' does not exist on type 'ParkingFeature'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1019,23): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1019,33): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1020,23): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1020,34): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1058,15): error TS2322: Type '(TripPointOriginParams | undefined)[]' is not assignable to type 'TripPointOriginParams[]'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1067,74): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'string | number'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1087,59): error TS2345: Argument of type 'TripPoint[] | undefined' is not assignable to parameter of type 'TripPoint[]'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1103,54): error TS2345: Argument of type 'TripPoint[] | undefined' is not assignable to parameter of type 'TripPoint[]'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1108,50): error TS18048: 'trip.modeSource' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1108,73): error TS18048: 'trip.modeSource' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1108,73): error TS18048: 'trip.modeSource.split' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1116,78): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'string | number'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1191,39): error TS7005: Variable 'previousState' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1197,18): error TS7006: Parameter 'r' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1219,28): error TS18048: 'item.result' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1219,40): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1219,66): error TS18048: 'item.result' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1219,78): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1220,32): error TS18048: 'item.result' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1220,44): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1221,36): error TS18048: 'item.result' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1221,48): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1239,23): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string | undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1261,46): error TS2769: No overload matches this call.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1267,31): error TS2352: Conversion of type '{ result: esri.RouteSolveResult; trip: TripResult; params: esri.RouteParameters; }' to type 'esri.RouteResult[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1282,17): error TS2322: Type 'any[]' is not assignable to type 'never[]'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1302,84): error TS18048: 'res.trip.modeSource' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1302,84): error TS18048: 'res.trip.modeSource.mode' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1307,70): error TS7006: Parameter 'acc' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1307,75): error TS7006: Parameter 'curr' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1355,28): error TS2769: No overload matches this call.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1358,32): error TS18048: 'matchedResult' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1395,19): error TS2740: Type 'TripModeSwitch' is missing the following properties from type 'esri.Graphic[]': length, pop, push, concat, and 35 more.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1395,66): error TS2769: No overload matches this call.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1403,35): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1404,34): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1506,19): error TS18048: 'result.connection' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1513,7): error TS7053: Element implicitly has an 'any' type because expression of type '`stop_${number}`' can't be used to index type '{ guid: `${string}-${string}-${string}-${string}-${string}`; date: number; travel_mode: any; connection: string; try_count: number | undefined; stop_count: number; }'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1538,15): error TS7006: Parameter 'p' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1544,17): error TS7006: Parameter 'r' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1554,24): error TS18048: 'tripResult.error' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1555,20): error TS18048: 'tripResult.error' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1557,23): error TS18048: 'tripResult.connection' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1564,11): error TS7053: Element implicitly has an 'any' type because expression of type '`stop_${number}`' can't be used to index type '{ guid: `${string}-${string}-${string}-${string}-${string}`; date: number; http_status: any; message: string; travel_mode: any; connection: string; try_count: number | undefined; stop_count: number; }'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1582,24): error TS18048: 'tripResult.error' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1583,20): error TS18048: 'tripResult.error' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1585,23): error TS18048: 'tripResult.connection' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1592,11): error TS7053: Element implicitly has an 'any' type because expression of type '`stop_${number}`' can't be used to index type '{ guid: `${string}-${string}-${string}-${string}-${string}`; date: number; http_status: any; message: string; travel_mode: any; connection: string; try_count: number | undefined; stop_count: number; }'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1611,22): error TS18048: 'tripResult.error' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1613,21): error TS18048: 'tripResult.connection' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1620,9): error TS7053: Element implicitly has an 'any' type because expression of type '`stop_${number}`' can't be used to index type '{ guid: `${string}-${string}-${string}-${string}-${string}`; date: number; http_status: any; travel_mode: any; connection: string; try_count: number | undefined; stop_count: number; }'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1644,74): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1732,23): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ start: { type: string; style: string; size: number; outline: { width: number; }; }; middle: { type: string; style: string; size: number; color: string; }; end: { type: string; style: string; size: number; color: string; path: string; }; }'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1734,27): error TS18048: 'stop.geometry' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1735,28): error TS18048: 'stop.geometry' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1787,10): error TS7030: Not all code paths return a value.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1793,11): error TS7034: Variable 'routeSegments' implicitly has type 'any[]' in some locations where its type cannot be determined.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1805,26): error TS18048: 'result.result' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1805,40): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1810,19): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1810,48): error TS7006: Parameter 'el' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1810,52): error TS7006: Parameter 'i' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1810,55): error TS7006: Parameter 'arr' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1813,45): error TS7005: Variable 'routeSegments' implicitly has an 'any[]' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1814,9): error TS7005: Variable 'routeSegments' implicitly has an 'any[]' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1900,11): error TS7005: Variable 'routeSegments' implicitly has an 'any[]' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1931,32): error TS18048: 'result.result' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1931,46): error TS2339: Property 'directions' does not exist on type 'RouteResult'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1931,74): error TS7006: Parameter 'feature' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(1934,35): error TS7006: Parameter 'feature' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2077,52): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2083,34): error TS18048: 'result.modeSwitches' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2084,15): error TS7034: Variable 'route' implicitly has type 'any[]' in some locations where its type cannot be determined.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2085,15): error TS7034: Variable 'directions' implicitly has type 'any[]' in some locations where its type cannot be determined.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2104,53): error TS7005: Variable 'directions' implicitly has an 'any[]' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2105,28): error TS7005: Variable 'directions' implicitly has an 'any[]' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2130,11): error TS7005: Variable 'route' implicitly has an 'any[]' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2131,11): error TS7005: Variable 'directions' implicitly has an 'any[]' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2147,39): error TS4111: Property 'mode' comes from an index signature, so it must be accessed with ['mode'].
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2149,70): error TS4111: Property 'mode' comes from an index signature, so it must be accessed with ['mode'].
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2165,39): error TS4111: Property 'time' comes from an index signature, so it must be accessed with ['time'].
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2166,75): error TS4111: Property 'time' comes from an index signature, so it must be accessed with ['time'].
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2169,39): error TS4111: Property 'at' comes from an index signature, so it must be accessed with ['at'].
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2170,89): error TS4111: Property 'at' comes from an index signature, so it must be accessed with ['at'].
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2174,39): error TS4111: Property 'stops' comes from an index signature, so it must be accessed with ['stops'].
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2174,78): error TS4111: Property 'stops' comes from an index signature, so it must be accessed with ['stops'].
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2176,52): error TS4111: Property 'stops' comes from an index signature, so it must be accessed with ['stops'].
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2176,77): error TS7006: Parameter 'p' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2196,25): error TS7006: Parameter 'block' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2196,32): error TS7006: Parameter 'index' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2216,19): error TS2345: Argument of type '(blocks: { category: string; index: number; value: string; }[]) => Observable<SearchResult<unknown>> | undefined' is not assignable to parameter of type '(value: { category: string; index: number; value: string; }[], index: number) => ObservableInput<any>'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2216,19): error TS7030: Not all code paths return a value.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2228,18): error TS18048: 'res.results' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2232,33): error TS18048: 'result.features' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2234,22): error TS18048: 'result.features' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2317,15): error TS7034: Variable 'stops' implicitly has type 'any[]' in some locations where its type cannot be determined.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2320,21): error TS7005: Variable 'stops' implicitly has an 'any[]' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2323,25): error TS7005: Variable 'stops' implicitly has an 'any[]' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2334,5): error TS2322: Type 'Promise<number | undefined>' is not assignable to type 'Promise<number>'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2493,11): error TS2322: Type 'LayerSource | undefined' is not assignable to type 'LayerSource'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2495,24): error TS7030: Not all code paths return a value.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2508,20): error TS7006: Parameter 'res' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2510,43): error TS7006: Parameter 'door' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2528,20): error TS7006: Parameter 'doors' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2531,23): error TS7034: Variable 'distanceRef' implicitly has type 'any[]' in some locations where its type cannot be determined.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2535,34): error TS7006: Parameter 'door' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2543,33): error TS18048: 'relativeTo.geometry' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2544,34): error TS18048: 'relativeTo.geometry' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2556,37): error TS7005: Variable 'distanceRef' implicitly has an 'any[]' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2560,57): error TS7006: Parameter 'feature' implicitly has an 'any' type.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2576,19): error TS18048: 'transformed.geometry' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2577,19): error TS18048: 'transformed.geometry' is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2590,59): error TS18046: 'err' is of type 'unknown'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2598,28): error TS2532: Object is possibly 'undefined'.
+libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts(2602,15): error TS18048: 'feature.attributes' is possibly 'undefined'.
+libs/ts/events/ngx/src/lib/definitions/150th-kickoff.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/aggie-family-parade.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/aggieland-saturday.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/big-event.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/break-summer.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/cross-country-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/family-weekend.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/fish-camp.definitions.ts(4,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/football-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/games-of-texas.definitions.ts(4,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/graduation-fall.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/graduation-spring.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/graduation-summer.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/hs-graduation.definitions.ts(11,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/indoor-track-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/main-parking.definitions.ts(11,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/maroon-white-game.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/muster.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/nsc-parking.definitions.ts(11,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/outdoor-track-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/phys-engineering-festival.definitions.ts(11,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/sec-grounds-conference.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/soccer-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/softball-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/softball-regionals.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/spirit-of-150-week.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/swimming-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/t-camp.definitions.ts(4,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/tailgating.definitions.ts(12,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/visitor-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/definitions/volleyball-parking.definitions.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/modules/map/map.component.ts(48,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/modules/map/map.component.ts(103,46): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/ts/events/ngx/src/lib/modules/map/map.component.ts(106,61): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'LayerSource[]'.
+libs/ts/events/ngx/src/lib/modules/popups/base-event-popup/base-event-popup.component.ts(7,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component.ts(19,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/services/event/event.service.ts(27,15): error TS2503: Cannot find namespace '__esri'.
+libs/ts/events/ngx/src/lib/services/event/event.service.ts(273,10): error TS7006: Parameter 'visible' implicitly has an 'any' type.
+libs/ts/events/ngx/src/lib/services/event/event.service.ts(656,39): error TS7006: Parameter 'layer' implicitly has an 'any' type.
+libs/ts/events/ngx/src/lib/services/event/event.service.ts(750,53): error TS7006: Parameter 'field' implicitly has an 'any' type.
+libs/ts/events/ngx/src/lib/services/event/event.service.ts(759,39): error TS7006: Parameter 'name' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/autocomplete/autocomplete.component.ts(34,48): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'FormControl<any>'.
+libs/ui-kits/ngx/forms/src/lib/components/button/button.component.ts(34,105): error TS2345: Argument of type 'undefined' is not assignable to parameter of type '"default" | "success" | "secondary" | "tertiary" | "danger" | "warning"'.
+libs/ui-kits/ngx/forms/src/lib/components/checkbox-group/checkbox-group.component.ts(44,47): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/forms/src/lib/components/checkbox-group/checkbox-group.component.ts(101,18): error TS7006: Parameter 'valueToToggle' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/checkbox-group/checkbox-group.component.ts(152,21): error TS7006: Parameter 'value' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/checkbox-group/checkbox-group.component.ts(169,27): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/checkbox-group/checkbox-group.component.ts(173,28): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/checkbox/checkbox.component.ts(48,40): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'object'.
+libs/ui-kits/ngx/forms/src/lib/components/checkbox/checkbox.component.ts(86,24): error TS7006: Parameter 'v' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/checkbox/checkbox.component.ts(109,27): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/checkbox/checkbox.component.ts(113,28): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/checkbox/checkbox.component.ts(117,21): error TS7006: Parameter 'val' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/checkbox/checkbox.component.ts(122,23): error TS2345: Argument of type 'boolean | undefined' is not assignable to parameter of type 'boolean'.
+libs/ui-kits/ngx/forms/src/lib/components/date-time-picker/date-time-picker.component.ts(151,5): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/forms/src/lib/components/date-time-picker/date-time-picker.component.ts(218,21): error TS2345: Argument of type 'Date | null' is not assignable to parameter of type 'Date'.
+libs/ui-kits/ngx/forms/src/lib/components/date-time-picker/date-time-picker.component.ts(251,24): error TS7006: Parameter 'v' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/date-time-picker/date-time-picker.component.ts(268,5): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/forms/src/lib/components/date-time-picker/date-time-picker.component.ts(299,5): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/forms/src/lib/components/date-time-picker/date-time-picker.component.ts(302,21): error TS7006: Parameter 'v' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/date-time-picker/date-time-picker.component.ts(306,27): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/date-time-picker/date-time-picker.component.ts(310,28): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(20,53): error TS2345: Argument of type 'null' is not assignable to parameter of type 'boolean | File'.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(46,14): error TS7032: Property 'value' implicitly has type 'any', because its set accessor lacks a parameter type annotation.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(46,20): error TS7006: Parameter 'c' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(52,27): error TS7006: Parameter 'event' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(63,62): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(74,24): error TS7006: Parameter 'v' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(81,27): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(85,28): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(89,21): error TS7006: Parameter 'val' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(99,5): error TS2322: Type 'undefined' is not assignable to type 'string'.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(100,5): error TS2322: Type 'undefined' is not assignable to type 'string'.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(101,5): error TS2322: Type 'undefined' is not assignable to type 'string'.
+libs/ui-kits/ngx/forms/src/lib/components/file/file.component.ts(102,28): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'File'.
+libs/ui-kits/ngx/forms/src/lib/components/radio-group/radio-group.component.ts(23,50): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'Option[]'.
+libs/ui-kits/ngx/forms/src/lib/components/radio-group/radio-group.component.ts(32,41): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'Value'.
+libs/ui-kits/ngx/forms/src/lib/components/radio-group/radio-group.component.ts(47,47): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/forms/src/lib/components/radio-group/radio-group.component.ts(49,45): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/forms/src/lib/components/radio-group/radio-group.component.ts(59,22): error TS7006: Parameter 'v' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/radio-group/radio-group.component.ts(67,27): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/radio-group/radio-group.component.ts(71,28): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/radio-group/radio-group.component.ts(97,7): error TS2322: Type 'unknown' is not assignable to type 'Value'.
+libs/ui-kits/ngx/forms/src/lib/components/range/range.component.ts(29,41): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/forms/src/lib/components/range/range.component.ts(54,48): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/ui-kits/ngx/forms/src/lib/components/range/range.component.ts(70,46): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'RangeTick[]'.
+libs/ui-kits/ngx/forms/src/lib/components/range/range.component.ts(103,60): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'RangeInputDataMap'.
+libs/ui-kits/ngx/forms/src/lib/components/range/range.component.ts(123,9): error TS18048: 'liveValue' is possibly 'undefined'.
+libs/ui-kits/ngx/forms/src/lib/components/range/range.component.ts(125,9): error TS18048: 'liveValue' is possibly 'undefined'.
+libs/ui-kits/ngx/forms/src/lib/components/range/range.component.ts(141,32): error TS18048: 'liveValue' is possibly 'undefined'.
+libs/ui-kits/ngx/forms/src/lib/components/range/range.component.ts(149,7): error TS18048: 'liveValue' is possibly 'undefined'.
+libs/ui-kits/ngx/forms/src/lib/components/range/range.component.ts(154,17): error TS4111: Property 'customDataMap' comes from an index signature, so it must be accessed with ['customDataMap'].
+libs/ui-kits/ngx/forms/src/lib/components/range/range.component.ts(154,42): error TS4111: Property 'customDataMap' comes from an index signature, so it must be accessed with ['customDataMap'].
+libs/ui-kits/ngx/forms/src/lib/components/select-list/select-list.component.ts(49,45): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'T[]'.
+libs/ui-kits/ngx/forms/src/lib/components/select-list/select-list.component.ts(57,56): error TS2345: Argument of type 'undefined' is not assignable to parameter of type '(keyof T)[]'.
+libs/ui-kits/ngx/forms/src/lib/components/select-list/select-list.component.ts(62,55): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'TemplateRef<T>'.
+libs/ui-kits/ngx/forms/src/lib/components/select-list/select-list.component.ts(81,18): error TS4111: Property 'options' comes from an index signature, so it must be accessed with ['options'].
+libs/ui-kits/ngx/forms/src/lib/components/select-list/select-list.component.ts(82,38): error TS4111: Property 'options' comes from an index signature, so it must be accessed with ['options'].
+libs/ui-kits/ngx/forms/src/lib/components/select/select.component.ts(34,49): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string | T'.
+libs/ui-kits/ngx/forms/src/lib/components/select/select.component.ts(45,21): error TS2345: Argument of type 'string | T | undefined' is not assignable to parameter of type 'string | T'.
+libs/ui-kits/ngx/forms/src/lib/components/select/select.component.ts(46,20): error TS2345: Argument of type 'string | T | undefined' is not assignable to parameter of type 'string | T'.
+libs/ui-kits/ngx/forms/src/lib/components/select/select.component.ts(54,37): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'T[]'.
+libs/ui-kits/ngx/forms/src/lib/components/select/select.component.ts(59,51): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/forms/src/lib/components/select/select.component.ts(64,49): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/forms/src/lib/components/select/select.component.ts(69,47): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/forms/src/lib/components/select/select.component.ts(115,27): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/select/select.component.ts(119,28): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/components/slide-toggle/slide-toggle.component.ts(65,29): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Value'.
+libs/ui-kits/ngx/forms/src/lib/components/slide-toggle/slide-toggle.component.ts(75,38): error TS2345: Argument of type 'ElementRef<any> | undefined' is not assignable to parameter of type 'ElementRef<any>'.
+libs/ui-kits/ngx/forms/src/lib/components/textbox/textbox.component.ts(42,103): error TS2345: Argument of type 'undefined' is not assignable to parameter of type '"number" | "text" | "url" | "textarea" | "email" | "password" | "tel"'.
+libs/ui-kits/ngx/forms/src/lib/components/textbox/textbox.component.ts(54,47): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/forms/src/lib/components/textbox/textbox.component.ts(72,9): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/forms/src/lib/components/turnstile-challenge/turnstile-challenge.component.ts(40,30): error TS7015: Element implicitly has an 'any' type because index expression is not of type 'number'.
+libs/ui-kits/ngx/forms/src/lib/components/turnstile-challenge/turnstile-challenge.component.ts(44,20): error TS7006: Parameter 'token' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/models/abstract-value-accessor-form/abstract-value-accessor-form.component.ts(16,40): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'T'.
+libs/ui-kits/ngx/forms/src/lib/models/abstract-value-accessor-form/abstract-value-accessor-form.component.ts(38,27): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/models/abstract-value-accessor-form/abstract-value-accessor-form.component.ts(42,28): error TS7006: Parameter 'fn' implicitly has an 'any' type.
+libs/ui-kits/ngx/forms/src/lib/models/abstract-value-accessor-form/abstract-value-accessor-form.component.ts(59,21): error TS2345: Argument of type '(T & {}) | undefined' is not assignable to parameter of type 'T'.
+libs/ui-kits/ngx/forms/src/lib/models/abstract-value-accessor-form/abstract-value-accessor-form.component.ts(63,20): error TS2345: Argument of type '(T & {}) | undefined' is not assignable to parameter of type 'T'.
+libs/ui-kits/ngx/interactions/clipboard/src/lib/components/copy/copy.component.ts(17,40): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/interactions/clipboard/src/lib/components/copy/copy.component.ts(20,56): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'Observable<boolean>'.
+libs/ui-kits/ngx/interactions/clipboard/src/lib/directives/copy/copy.directive.ts(21,40): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/interactions/clipboard/src/lib/directives/copy/copy.directive.ts(43,17): error TS4111: Property 'text' comes from an index signature, so it must be accessed with ['text'].
+libs/ui-kits/ngx/interactions/clipboard/src/lib/directives/copy/copy.directive.ts(44,19): error TS4111: Property 'text' comes from an index signature, so it must be accessed with ['text'].
+libs/ui-kits/ngx/interactions/draggable/src/lib/directives/drag/drag.directive.ts(95,29): error TS7006: Parameter 'event' implicitly has an 'any' type.
+libs/ui-kits/ngx/interactions/draggable/src/lib/directives/drag/drag.directive.ts(98,7): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+libs/ui-kits/ngx/interactions/draggable/src/lib/directives/drag/drag.directive.ts(156,7): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+libs/ui-kits/ngx/interactions/draggable/src/lib/directives/drag/drag.directive.ts(164,7): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+libs/ui-kits/ngx/interactions/draggable/src/lib/services/drag/drag.service.ts(12,11): error TS2322: Type 'BehaviorSubject<never[]>' is not assignable to type 'BehaviorSubject<UIDragState[]>'.
+libs/ui-kits/ngx/layout/modal/src/lib/components/modal-host/modal-host.component.ts(56,27): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/layout/modal/src/lib/components/modal-host/modal-host.component.ts(64,17): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/layout/modal/src/lib/components/modal-host/modal-host.component.ts(81,9): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/layout/modal/src/lib/components/modal-host/modal-host.component.ts(82,7): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/abstracts/abstract-content-swap/abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component.ts(9,41): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/layout/src/lib/abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component.ts(109,9): error TS18047: 'split' is possibly 'null'.
+libs/ui-kits/ngx/layout/src/lib/abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component.ts(110,25): error TS18047: 'split' is possibly 'null'.
+libs/ui-kits/ngx/layout/src/lib/abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component.ts(112,23): error TS18047: 'split' is possibly 'null'.
+libs/ui-kits/ngx/layout/src/lib/abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component.ts(122,18): error TS2531: Object is possibly 'null'.
+libs/ui-kits/ngx/layout/src/lib/components/accordion/accordion-content/accordion-content.component.ts(40,37): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/accordion/accordion-content/accordion-content.component.ts(66,23): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/accordion/accordion-content/accordion-content.component.ts(67,25): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/accordion/directives/accordion-content.directive.ts(23,57): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/ui-kits/ngx/layout/src/lib/components/accordion/directives/accordion-header.directive.ts(12,67): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'AccordionDirective'.
+libs/ui-kits/ngx/layout/src/lib/components/accordion/services/accordion.service.ts(9,11): error TS2322: Type 'BehaviorSubject<{ expanded: false; animate: false; resize: false; }>' is not assignable to type 'BehaviorSubject<IAccordionModel>'.
+libs/ui-kits/ngx/layout/src/lib/components/stepper/components/step-toggle/step-toggle.component.ts(11,58): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'TemplateRef<unknown>'.
+libs/ui-kits/ngx/layout/src/lib/components/stepper/stepper.component.ts(16,19): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'AbstractContentReplacerComponent'.
+libs/ui-kits/ngx/layout/src/lib/components/tabs/tabs.component.ts(15,19): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'AbstractContentReplacerComponent'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(30,41): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(32,42): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'number'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(46,73): error TS2345: Argument of type 'undefined' is not assignable to parameter of type '"left" | "right" | "bottom" | "top"'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(95,23): error TS7006: Parameter 'event' implicitly has an 'any' type.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(105,39): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(157,24): error TS18048: 'boundary.height' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(157,56): error TS18048: 'boundary.width' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(159,17): error TS18048: 'element.height' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(159,34): error TS18048: 'boundary.height' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(159,57): error TS18048: 'element.width' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(159,73): error TS18048: 'boundary.width' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(166,7): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(167,7): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(185,7): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(186,40): error TS18048: 'element.height' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(190,18): error TS18048: 'reference.top' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(190,34): error TS18048: 'reference.height' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(194,18): error TS18048: 'reference.top' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(194,34): error TS18048: 'reference.height' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(195,41): error TS18048: 'element.height' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(199,7): error TS2454: Variable 'yOffset' is used before being assigned.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(202,12): error TS2454: Variable 'yOffset' is used before being assigned.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(213,7): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(214,40): error TS18048: 'element.width' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(216,18): error TS18048: 'reference.left' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(216,35): error TS18048: 'reference.width' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(220,18): error TS18048: 'reference.left' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(220,35): error TS18048: 'reference.width' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(221,41): error TS18048: 'element.width' is possibly 'undefined'.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(225,7): error TS2454: Variable 'xOffset' is used before being assigned.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(228,12): error TS2454: Variable 'xOffset' is used before being assigned.
+libs/ui-kits/ngx/layout/src/lib/components/tooltip/tooltip.component.ts(232,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/ui-kits/ngx/layout/src/lib/directives/element-insert/element-insert.directive.ts(11,50): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'Element'.
+libs/ui-kits/ngx/search/src/lib/components/search-mobile/search-mobile.component.ts(16,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'SearchComponent'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(50,47): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(57,49): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(64,50): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(75,51): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(110,51): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'SearchSource[]'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(188,10): error TS2322: Type 'undefined' is not assignable to type 'boolean'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(225,11): error TS18048: 'res.results' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(226,35): error TS18048: 'res.results' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(226,64): error TS18048: 'result.features' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(253,17): error TS2322: Type 'undefined' is not assignable to type 'Partial<SearchSource>'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(306,7): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(312,25): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'boolean'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(380,81): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(407,5): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(412,9): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/components/search/search.component.ts(457,9): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/pipes/search-result.pipe.ts(13,11): error TS7034: Variable 'ret' implicitly has type 'any[]' in some locations where its type cannot be determined.
+libs/ui-kits/ngx/search/src/lib/pipes/search-result.pipe.ts(26,12): error TS7005: Variable 'ret' implicitly has an 'any[]' type.
+libs/ui-kits/ngx/search/src/lib/services/alt-search.service.ts(10,15): error TS2503: Cannot find namespace '__esri'.
+libs/ui-kits/ngx/search/src/lib/services/alt-search.service.ts(43,20): error TS18048: 'incoming.result' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/alt-search.service.ts(46,64): error TS18048: 'source.altLookup' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/alt-search.service.ts(52,21): error TS2769: No overload matches this call.
+libs/ui-kits/ngx/search/src/lib/services/alt-search.service.ts(57,10): error TS2339: Property 'then' does not exist on type 'Observable<SearchResult<unknown>>'.
+libs/ui-kits/ngx/search/src/lib/services/alt-search.service.ts(57,15): error TS7030: Not all code paths return a value.
+libs/ui-kits/ngx/search/src/lib/services/alt-search.service.ts(58,30): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/alt-search.service.ts(61,26): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(43,6): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(47,7): error TS2322: Type 'undefined' is not assignable to type 'SearchResult<T> | Promise<SearchResult<T>> | Observable<SearchResult<T>>'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(52,7): error TS2322: Type 'undefined' is not assignable to type 'SearchResult<T> | Promise<SearchResult<T>> | Observable<SearchResult<T>>'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(64,7): error TS2322: Type 'undefined' is not assignable to type 'SearchResult<T> | Promise<SearchResult<T>> | Observable<SearchResult<T>>'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(70,11): error TS2322: Type '(SearchSource | undefined)[]' is not assignable to type 'SearchSource[]'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(96,22): error TS18048: 'options.values' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(108,18): error TS18048: 'source.queryParams' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(115,16): error TS18048: 'modifiedScoringSource.queryParams' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(117,47): error TS2345: Argument of type '{ sources: string[]; values: (string | number | (string | number)[])[]; }' is not assignable to parameter of type 'SearchProperties'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(139,7): error TS2345: Argument of type 'OperatorFunction<{ base: Object[]; scoring: Object[]; }, Object[]>' is not assignable to parameter of type 'OperatorFunction<{ base: Object[]; scoring: Object[]; }, T[]>'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(179,39): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Object'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(180,36): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Object'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(184,15): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Object'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(188,15): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Object'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(188,32): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Object'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(188,55): error TS7006: Parameter 'feature' implicitly has an 'any' type.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(188,64): error TS7006: Parameter 'index' implicitly has an 'any' type.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(188,71): error TS7006: Parameter 'arr' implicitly has an 'any' type.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(189,63): error TS7006: Parameter 'f' implicitly has an 'any' type.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(220,46): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(225,74): error TS18048: 'options.values' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(230,26): error TS18048: 'options.values' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(269,9): error TS2322: Type 'Promise<SearchResult<any> | undefined>' is not assignable to type 'SearchResult<T> | Promise<SearchResult<T>> | Observable<SearchResult<T>>'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(279,9): error TS2322: Type 'Promise<SearchResult<T> | undefined>' is not assignable to type 'SearchResult<T> | Promise<SearchResult<T>> | Observable<SearchResult<T>>'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(341,104): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(358,20): error TS18048: 'source.queryParams.where' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(361,25): error TS18048: 'source.queryParams.where' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(365,25): error TS18048: 'source.queryParams.where' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(369,31): error TS18048: 'source.queryParams.where' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(379,36): error TS18048: 'options.values' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(380,26): error TS18048: 'options.values' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(381,17): error TS18048: 'source.queryParams.where' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(381,60): error TS18048: 'options.values' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(384,56): error TS2345: Argument of type '("includes" | "endsWith" | "startsWith" | null)[] | undefined' is not assignable to parameter of type 'string[] | undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(425,26): error TS18048: 'source.scoringKeys' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(433,28): error TS18048: 'source.scoringKeys' is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(469,12): error TS2532: Object is possibly 'undefined'.
+libs/ui-kits/ngx/search/src/lib/services/search.service.ts(474,20): error TS2488: Type 'T[] | undefined' must have a '[Symbol.iterator]()' method that returns an iterator.
+== libs/aggiemap/ngx/popups/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/aggiemap/ngx/ui/desktop/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/aggiemap/ngx/ui/mobile/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/aggiemap/ngx/ui/shared/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/common/utils/geometry/esri/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/common/utils/geometry/generic/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/common/utils/geometry/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/geoservices/ngx/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/gisday/competitions/ngx/common/tsconfig.spec.json
+libs/common/types/src/lib/common-types.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/common/utils/geometry/esri/src/lib/common-utils-geometry-esri.ts(7,15): error TS2503: Cannot find namespace '__esri'.
+libs/gisday/competitions/data-api/src/lib/export/export.controller.ts(30,67): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/competitions/data-api/src/lib/export/export.processor.ts(56,27): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/competitions/data-api/src/lib/export/export.service.ts(15,62): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/class/class.controller.ts(64,42): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/class/class.controller.ts(71,64): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/contact/contact.controller.ts(12,27): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(73,42): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(84,40): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(91,70): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(102,64): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/site-copy/site-copy.controller.ts(43,31): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/speaker/speaker.controller.ts(87,77): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/tag/tag.controller.ts(72,72): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/university/university.controller.ts(54,43): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/university/university.controller.ts(61,72): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/user-info/user-info.controller.ts(51,65): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+== libs/gisday/competitions/ngx/core/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/gisday/platform/ngx/common/tsconfig.spec.json
+libs/gisday/platform/data-api/src/lib/class/class.controller.ts(64,42): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/class/class.controller.ts(71,64): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/contact/contact.controller.ts(12,27): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(73,42): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(84,40): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(91,70): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(102,64): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/site-copy/site-copy.controller.ts(43,31): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/speaker/speaker.controller.ts(87,77): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/tag/tag.controller.ts(72,72): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/university/university.controller.ts(54,43): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/university/university.controller.ts(61,72): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/user-info/user-info.controller.ts(51,65): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+== libs/gisday/platform/ngx/core/tsconfig.spec.json
+libs/common/types/src/lib/common-types.ts(1,15): error TS2503: Cannot find namespace '__esri'.
+libs/gisday/platform/data-api/src/lib/class/class.controller.ts(64,42): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/class/class.controller.ts(71,64): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/contact/contact.controller.ts(12,27): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(73,42): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(84,40): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(91,70): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(102,64): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/site-copy/site-copy.controller.ts(43,31): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/speaker/speaker.controller.ts(87,77): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/tag/tag.controller.ts(72,72): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/university/university.controller.ts(54,43): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/university/university.controller.ts(61,72): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/user-info/user-info.controller.ts(51,65): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/ngx/core/src/lib/pages/admin/pages/base-admin-list/base-admin-list.component.spec.ts(13,57): error TS2344: Type '{ guid: string; }' does not satisfy the constraint 'GuidIdentity'.
+== libs/gisday/platform/ngx/data-access/tsconfig.spec.json
+libs/gisday/platform/data-api/src/lib/class/class.controller.ts(64,42): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/class/class.controller.ts(71,64): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/contact/contact.controller.ts(12,27): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(73,42): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(84,40): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(91,70): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/event/event.controller.ts(102,64): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/site-copy/site-copy.controller.ts(43,31): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/speaker/speaker.controller.ts(87,77): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/tag/tag.controller.ts(72,72): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/university/university.controller.ts(54,43): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/university/university.controller.ts(61,72): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+libs/gisday/platform/data-api/src/lib/user-info/user-info.controller.ts(51,65): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+== libs/maps/esri/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/maps/feature/accessibility/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/maps/feature/basemap/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/maps/feature/coordinates/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/maps/feature/layer-list/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/maps/feature/legend/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/maps/feature/popup/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/ts/events/ngx/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.
+== libs/ui-kits/ngx/search/tsconfig.spec.json
+error TS2688: Cannot find type definition file for '../../node_modules/@arcgis/core/interfaces'.

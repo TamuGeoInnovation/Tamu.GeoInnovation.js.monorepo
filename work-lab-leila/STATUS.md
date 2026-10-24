@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:48 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **1:54 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,9 +32,11 @@ Last written **1:48 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 2:30 AM Central.**
 
-**Batch 94, security: the select component's spec does not typecheck (#2256)**, started 1:48 AM Central, 24 October. Then batch 95.
+**Batch 95, security: ngx-highlightjs 6 to 14 (#1218)**, started 1:54 AM Central, 24 October. Then batch 97.
 
 ## Finished
+
+- **Batch 94, security: the select spec typechecks (#2256) - pushed** (1:48 to 1:51 AM, 24 October): the component was wrong, not the spec. Its value is the item itself without a valueTemplate, and the layer filter relies on that; now typed `T | string`. Spec unchanged and typechecks; full check exit 0 (lint 27 / test 25 / build 5). All 103 spec tsconfigs typechecked: 77 pass, 26 fail. Four causes: a wrong `@arcgis/core/interfaces` path in 30 spec tsconfigs, aggiemap-angular without ArcGIS types, Nest files under front-end settings, and a strict lib importing non-strict ones (824 errors). Only 5 errors in projects' own files. Full list beside the report. **`fix/2256-select-spec-types` at `41103227c`.** Report `work-lab-leila/reports/2026-10-23-82.md`.
 
 - **Batch 93, security: @swimlane/ngx-datatable 20 to 25 (#1218) - pushed** (1:26 to 1:45 AM, 24 October): two tables, AggieMap's building directory and GIS Day's submission review list (sign-in only; rendered on an uncommitted lab page with fixed rows). Lock: only ngx-datatable. `offset` is a model signal now; 25's grid layout made our borders add 1 px to every row and its pager draws buttons, so the styles were fixed, and the two copies of them are now one partial, `libs/sass/components/_datatable.scss`. Same rows, sorting, scrolling, paging and empty tables; 0 console errors. Full check exit 0 (lint 104 / test 100 / build 14). Found: the Abbreviation column is always empty (`BldgAbbrev` vs `BldgAbbr`). **`chore/1218-ngx-datatable-25` at `7aee83bdf`.** Report `work-lab-leila/reports/2026-10-23-81.md`.
 
@@ -280,4 +282,4 @@ Last written **1:48 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 93 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 94 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
