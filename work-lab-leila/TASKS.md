@@ -46,7 +46,7 @@ report under **Questions for the director**, with options and a recommendation â
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
 
-## Batch 123 (security: #2293 - allow only known install scripts, and check registry signatures; a branch; 24 October 2026, 12:30 PM Central, from `work (security)`)
+## Batch 123 (security: #2293 - allow only known install scripts, and check registry signatures; a branch; 24 October 2026, 8:39 AM Central, from `work (security)`)
 
 **Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: 90 minutes.**
 Most malicious npm releases run through an install script, and npm runs every one we install without asking (#2293).
