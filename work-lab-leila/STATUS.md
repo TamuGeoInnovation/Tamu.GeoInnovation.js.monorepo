@@ -30,7 +30,9 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Batch 65 waits for the webpack PR to merge; the watcher is on.
+**Next update by 8:15 PM Central.**
+
+**Batch 66, security: fork pull request builds skip the app_configs secure file (#2216)**, started 7:21 PM Central, in `C:/TAMU/wt-2216`. Then batch 67 (agent egress). Batch 65 waits for the webpack PR to merge.
 
 ## Finished
 
