@@ -30,11 +30,13 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 8:45 PM Central.**
+**Next update by 9:45 PM Central.**
 
-**Batch 65, security: the Nx 24 branch refreshed now the webpack PR (2223) has merged**, started 8:14 PM Central, in `C:/TAMU/wt-nx24`. Then batch 72.
+**Batch 72 (rewritten), security: the pipeline on the lab first, hosted as the fallback, up to three lab agents (#2212)**, started 8:15 PM Central, in `C:/TAMU/wt-2212f`. Then batch 65. (Batch 65 was started by mistake at 8:14 and stopped at once, before changing anything, when the director's new order arrived.)
 
 ## Finished
+
+- **Batch 73, security: lab-1 in the background - confirmed, read-only** (8:15 to 8:16 PM, 23 October): task running, hidden, at logon, not elevated; container on `tamu-agent-internal` only, no binds, not privileged, CapDrop ALL; its start.sh identical to batch 68's; log ends `Listening for Jobs` (8:02 PM); it reaches Azure only through the proxy. Nothing off. Report `work-lab-leila/reports/2026-10-23-60.md`.
 
 - **Batch 71, security: Dependabot 2191 (14 updates) - safe to merge after 2223; nothing pushed** (7:54 to 8:13 PM, 23 October): full check exit 0 (lint 104 / test 100 / build 14); lock 63 keys, all traced to the 14 updates. Images: geoservices-nest starts; gisday-nest against SQL Server maps 213 routes, `seasons/active` 200, unauthenticated POSTs 401, 0 errors (reflect-metadata 0.2.2). GIS Day front end, PR and development side by side: home loads, 7 API calls 200, no console errors, Login/Signup reaches the dev tenant's Auth0 login page. express-session runs only in ues-operations-nest (excluded). One question: a real sign-in on dev after merge. Report `work-lab-leila/reports/2026-10-23-59.md`.
 
@@ -236,4 +238,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 71 (42 and 39 stopped; 40 superseded)
+Last batch done: 73 (42 and 39 stopped; 40 superseded)
