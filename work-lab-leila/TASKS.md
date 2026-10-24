@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 130.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 131.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,17 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 130 (security: #2111 - the moderate and low advisories, which reach production and what fixes each; read only; 24 October 2026, 9:50 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now.** **Expected: 45 minutes.** Your batch 129 is right; it joins the lock queue after auth0 7.
+Your report 112 counted **19 moderate and 1 low** advisories after the vite override. Nobody has looked at them one by one.
+1. On the tip of the prepared stack (`fork/fix/2320-all-auth0-users`, `9d9319a77`), `npm audit --json`. For each moderate or low advisory:
+   the package and version, the path that brings it in, whether it is in **production** (`--omit=dev`) or dev only, the fixed version and when it
+   was published (the 14-day rule, #2292), and whether a direct-dependency bump, a scoped override or nothing (no fix yet) reaches it.
+2. For each that reaches production: is the vulnerable code reachable from ours (what the advisory needs: input we pass, a feature we use)?
+   Say how sure you are. `.github/security/accepted-advisories.json` is the place for an unreachable one, with the reason.
+3. Report only: no branch. End with a short list: fix now (with the override or bump), accept (with the reason), wait (until a date).
 
 ## Batch 129 (security: #2320 - Admin â†’ Users lists only the first 50 Auth0 users; a branch, stacked; 24 October 2026, 9:45 AM Central, from `work (security)`)
 
