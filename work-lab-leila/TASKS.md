@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 79.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 83.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -43,6 +43,44 @@ report under **Questions for the director**, with options and a recommendation �
 > And a section **"Stopping or removing an agent"**: Ctrl+C, then remove it from the pool if the machine is leaving.
 
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
+
+## Batch 79 (security: #2193 - PR 2195 (typeorm 1) re-locked after Nx 24 merges; pushed, no PR; 23 October 2026, 9:05 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start only once `git log origin/development --oneline -15` shows PR 2231 (Nx 24) merged.** Until then skip it. **Expected: 20 minutes.**
+Your batch 76 finding: 2231 and 2195 conflict in the lock. **Nx merges first.** In `chore/1218-typeorm-1`: `git merge origin/development`; for
+the lock, take `development`'s and redo typeorm with batch 41's method (delete `typeorm`, `mssql`, `ts-node` at every nesting, `npm install
+--package-lock-only --ignore-scripts`), exactly as you did on the scratch tree. The lock rule key by key (typeorm 1's 116 entries, `nx` still
+24.0.0), `scripts/check-in-volume.sh chore/1218-typeorm-1`, the `gisday-nest` image's `GET /api/seasons/active` 200 against the seed, push
+(updates PR 2195).
+
+## Batch 80 (security: #1218 - your survey's PR 1: remove the unused postcss packages and the deprecated Angular builder; a branch; 23 October 2026, 9:05 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now** (after batch 78). **Expected: 45 minutes.** Your batch 76 question 2: **yes**. Branch `chore/1218-angular-build` from
+`origin/development`: drop `postcss-import` and `postcss-preset-env` (prove nothing names them, configuration files included); in the eight
+`project.json`, `@angular-devkit/build-angular:application` → `@angular/build:application` and `:dev-server` → `@angular/build:dev-server`
+(and any other `@angular-devkit/build-angular:` builder, e.g. `extract-i18n`, `karma`), then drop `@angular-devkit/build-angular` if nothing
+else needs it, with `@angular/build` at the version Angular 22.2 pins. Lock with batch 41's method, key by key. `scripts/check-in-volume.sh`
+(full); **every front end's production bundle compared with `development`'s** (file list and sizes; say what differs and why); the AggieMap dev
+server starts and the map loads. Commit (`chore(workspace): Build the front ends with @angular/build and drop unused postcss packages`,
+Co-Authored-By; the director adds the issue), push to the fork. No PR.
+
+## Batch 81 (security: #1218 - your survey's PR 2: the small server and tool majors; a branch; 23 October 2026, 9:05 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 80.** **Expected: 60 minutes.** Branch `chore/1218-small-majors` from `origin/development`: `dotenv` 18
+(add `quiet: true` wherever it is loaded, so the APIs do not log a line at start), `fs-extra` 11, `@turf/centroid` 7, `jsdom` 30, `pngjs` 7. Read
+each changelog for breaking changes that touch our use and fix them. Lock with batch 41's method, key by key. `scripts/check-in-volume.sh`
+(full); the four API images start (as batch 71: `gisday-nest` answers 200/401 against the seed); one smoke spec (`run-local.sh development one
+legend.spec.ts`); one `tools/visual-baselines` capture of one map. Commit (`chore(workspace): Move dotenv, fs-extra, turf, jsdom and pngjs to
+their latest majors`, Co-Authored-By), push to the fork. No PR.
+
+## Batch 82 (security: #1218 - your survey's PR 3: uuid replaced by crypto.randomUUID(); a branch; 23 October 2026, 9:05 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 81.** **Expected: 45 minutes.** **Reuse first** (CLAUDE.md): look in `libs/common/**` for an existing id or
+validation helper before adding one. Branch `chore/1218-drop-uuid` from `origin/development`: every `v4()` → `crypto.randomUUID()` (check each
+runs where `crypto.randomUUID` exists: browsers on a secure origin, Node 24; say if any runs on plain HTTP, where browsers withhold it), `validate`
+→ one shared helper exported from the right `libs/common` index, with a unit test; drop `uuid` and `@types/uuid`. Lock key by key; full check;
+the GIS Day local stack (`scripts/gisday-local.sh`): an admin create that makes a guid (a sponsor or place) succeeds and the row's id is a v4.
+Commit (`chore(workspace): Use crypto.randomUUID() and drop uuid`, Co-Authored-By), push to the fork. No PR.
 
 ## Batch 76 (security: #1218 - what is left between us and the latest of everything; a survey, nothing pushed; 23 October 2026, 8:50 PM Central, from `work (security)`)
 
