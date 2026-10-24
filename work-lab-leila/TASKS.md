@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 90.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 92.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,33 @@ report under **Questions for the director**, with options and a recommendation �
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 90 (security: #2244 - the date-picker test that fails under load, fixed; a bug fix and a branch; 23 October 2026, 11:30 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine; report to it the same way. **Start after batch 89.** **Expected: 45 minutes.** `libs/ui-kits/ngx/forms` › `date-time-picker.component.spec.ts` › *a time of day (GIS Day
+event times)* › **takes the list away with the picker** fails now and then: `expected …(288) to have a length of +0 but got 288` after one
+`settle()`. It failed twice on the director's machine tonight with another check running, and passed on each rerun.
+1. **Make it fail on purpose first** (CLAUDE.md: prove the failure): run the spec under load (e.g. `stress-ng` or a parallel full test run in
+   the same container) or with a slowed scheduler, until you can reproduce it, and say how often.
+2. Fix the **test**, not the component, unless the component really leaves its overlay open: wait for the overlay's detach or the closed
+   state (`MatAutocomplete`/`MatSelect` `closed` event, `overlayContainer` empty, or `NoopAnimationsModule` if the spec animates), never a
+   longer fixed delay. Search the same spec and its library for the same pattern and fix those too.
+3. Prove it: the reproduction now passes many times in a row under the same load. `scripts/check-in-volume.sh <branch> ui-kits-ngx-forms`.
+4. Branch `fix/2244-date-picker-test`, commit (`fix(ui-kits-ngx-forms): Wait for the date picker's list to close in its test`, `Closes #2244`,
+   Co-Authored-By), push to the fork. No PR.
+
+## Batch 91 (security: #1218 - marked 9 to 18; a branch; 23 October 2026, 11:30 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine; report to it the same way. **Start after batch 90.** **Expected: 45 minutes.** Your survey's PR 4. `marked` 9.1.6 → latest 18, one call site in
+`libs/common/ngx`.
+1. **Find what renders through it and take the "before" screenshots first**, into `docs/screenshots/marked-18/` at once (which app and page shows
+   markdown; if none is reachable without a sign-in, say how you rendered it instead).
+2. Branch `chore/1218-marked-18` from `origin/development`: the upgrade (ESM-only; `parse` may return a promise: handle it the way the call
+   site's callers can use), lock by batch 41's method, key by key. Read the changelog for **HTML sanitising**: marked dropped its `sanitize`
+   option years ago, so say whether our call site renders untrusted markdown and how it is sanitised (Angular's `[innerHTML]` sanitiser,
+   DOMPurify, or nothing). If it is untrusted and unsanitised, stop and report it as a security finding first.
+3. Full check; "after" screenshots; commit (`chore(workspace): Move marked to 18`, Co-Authored-By; the director adds the issue), push to the fork.
+   No PR.
 
 ## Batch 88 (security: #2212 - a fourth lab agent and Node in the agent image; a branch; 23 October 2026, 11:10 PM Central, from `work (security)`)
 
