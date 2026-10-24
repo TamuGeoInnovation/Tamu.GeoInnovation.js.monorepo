@@ -8,7 +8,7 @@
   "implicitDependencies": ["assets", "sass"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:application",
+      "executor": "@angular/build:application",
       "outputs": ["{options.outputPath.base}"],
       "defaultConfiguration": "",
       "options": {
@@ -105,7 +105,7 @@
       }
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@angular/build:dev-server",
       "continuous": true,
       "options": {
         "proxyConfig": "apps/geoservices-angular/proxy.conf.json",
@@ -122,7 +122,7 @@
       }
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "@angular/build:extract-i18n",
       "options": {
         "buildTarget": "geoservices-angular:build"
       }

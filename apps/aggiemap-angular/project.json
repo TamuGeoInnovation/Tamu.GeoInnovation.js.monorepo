@@ -8,7 +8,7 @@
   "implicitDependencies": ["assets", "sass"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:application",
+      "executor": "@angular/build:application",
       "outputs": ["{options.outputPath.base}"],
       "defaultConfiguration": "",
       "options": {
@@ -114,7 +114,7 @@
       }
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "@angular/build:extract-i18n",
       "options": {
         "buildTarget": "aggiemap-angular:build"
       }
@@ -131,7 +131,7 @@
       }
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@angular/build:dev-server",
       "continuous": true,
       "options": {
         "host": "0.0.0.0",
