@@ -38,5 +38,15 @@ jobs:
       - name: Typecheck the AggieMap smoke suite
         run: npx tsc -p test/smoke/aggiemap
 
+      # A new dependency with an install script must be reviewed into allowScripts first (#2293). .npmrc makes
+      # `npm ci` refuse one too, but the step above is skipped when the node_modules cache hits; this reads the lock.
+      - name: Check install scripts against allowScripts
+        run: node tools/security-findings/install-scripts.mjs
+
+      # Every registry package's signature, and its provenance where it has one, checked against the registry's
+      # keys (#2293). About 15 seconds; fails on a missing or invalid signature.
+      - name: Check registry signatures
+        run: npm audit signatures
+
       - name: Lint Affected
         run: npx nx affected:lint --configuration=production --base=${{ inputs.base }} --parallel=2
