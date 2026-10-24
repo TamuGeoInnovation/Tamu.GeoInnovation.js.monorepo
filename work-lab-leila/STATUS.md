@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:32 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **2:39 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **2:32 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 3:30 AM Central.**
+**Next update by 3:10 AM Central.**
 
-**Batch 101, geoservices bug: the services pages log err.toRenderableJSON is not a function (#2267)**, started 2:32 AM Central, 24 October. Then batch 102.
+**Batch 102, security: the ArcGIS types path in 30 library tsconfigs (#2271)**, started 2:39 AM Central, 24 October. Then batch 103.
 
 ## Finished
+
+- **Batch 101, geoservices bug: err.toRenderableJSON is not a function (#2267) - fixed and pushed** (2:32 to 2:36 AM, 24 October): GeoservicesError's constructor read `response.status` from an AxiosError that got no answer (refused, offline, CORS, timeout), so it threw a TypeError the pages' catchError could not render. Visible: the Result tab was empty; it now shows the error. First spec for geoprocessing-core, red first; an answered error unchanged. Check exit 0 (geoprocessing-core, geoservices-angular). **`fix/2267-geoservices-renderable-json` at `7d82ec6e2`.** Report `work-lab-leila/reports/2026-10-23-88.md`.
 
 - **Batch 100, aggiemap bug: the POI popup's console TypeError (#2259) - fixed and pushed** (2:25 to 2:29 AM, 24 October): TripPlannerConnectionService fetches the routing networks when any directions-capable popup creates it; the production GIS server's Routing folder lists nothing (routing unpublished, #1003), so connection() read `.name` of undefined. Noise only: directions are hidden on production. Now it keeps the empty network and returns nothing. First spec for the service, red first (that TypeError), the published-network case unchanged. Live: no console errors at `/?poi=2`. Check exit 0. **`fix/2259-poi-popup-typeerror` at `5c3f51f2b`.** Report `work-lab-leila/reports/2026-10-23-87.md`.
 
@@ -292,4 +294,4 @@ Last written **2:32 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 100 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 101 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
