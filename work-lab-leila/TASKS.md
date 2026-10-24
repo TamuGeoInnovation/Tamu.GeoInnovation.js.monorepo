@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 128.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 129.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,23 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 128 (security: #1218 - `auth0` 3 to 7, stacked; a branch; 24 October 2026, 9:30 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now.** **Expected: 3 to 4 hours; stop and report at 4.** Your batch 127 is right. **Decided**
+(report 114, question 1): the stale `better-sqlite3` entry in `allowScripts` is removed when the `better-sqlite3` pull request is opened, after PR 2317
+has merged. Not in this batch.
+1. Branch `chore/1218-auth0-7` from **`fork/chore/1218-better-sqlite3-13`** (`e12f83ebd`).
+2. `auth0` to the newest 7.x at least 14 days old (7.4.0 is from 9 October, so it is **not** yet: take the newest 7.x published before
+   10 October, and say which). Re-lock; only `auth0` and its own dependencies may move; list them.
+3. Port the two users, `libs/common/nest/auth` and `libs/gisday/platform/data-api` (the GIS Day user-management client), to 7's
+   `ManagementClient`: each method we call, its 7 name and shape, and the response unwrapping (`.data`) and pagination. List every call
+   site with before and after.
+4. **Prove what can be proved without the tenant:** a unit test per wrapper method that our code sends the request 7 is expected to send
+   (method, path, query, body) and maps the response, against a local HTTP stub (`nock` or a throwaway server) standing in for the
+   management API, red on a wrong mapping. Do **not** use any real Auth0 tenant or credentials; say plainly what remains to be proved against
+   the development tenant (that step is the maintainer's), and how: the pages and actions to try.
+5. `scripts/check-in-volume.sh` (full). Commit (`chore(workspace): Move auth0 to 7`, `Part of #1218`, Co-Authored-By), push to the fork. No PR.
 
 ## Batch 127 (security: #1218 - `better-sqlite3` 12 to 13, stacked; a branch; 24 October 2026, 9:25 AM Central, from `work (security)`)
 

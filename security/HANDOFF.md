@@ -10,7 +10,7 @@ dependency work next (the home machine, this weekend). The maintainer keeps the 
 nginx-base#2.
 
 **The lock queue, each stacked and fully checked on the one before:** PR 2314 `marked` 18.1.0 → `chore/1218-ngx-datatable-25` → `chore/1218-ngx-highlightjs-14`
-(release notes as `9999-*`, rename when filing) → `chore/1218-chart-js-4` → `chore/1218-got-16` → `fix/2277-mail-timeouts` → `fix/2318-angular-build-vite` (`fe02d29d9`, closes #2318, issue already filed) → `chore/1218-jwks-rsa-4` (`c85e3d77c`; `jose` 6.2.13 accepted, already on development) → `chore/1218-better-sqlite3-13` (lab batch 127). After each merge: merge `development`
+(release notes as `9999-*`, rename when filing) → `chore/1218-chart-js-4` → `chore/1218-got-16` → `fix/2277-mail-timeouts` → `fix/2318-angular-build-vite` (`fe02d29d9`, closes #2318, issue already filed) → `chore/1218-jwks-rsa-4` (`c85e3d77c`; `jose` 6.2.13 accepted, already on development) → `chore/1218-better-sqlite3-13` (`e12f83ebd`; after PR 2317 merges, prune its stale `allowScripts` entry when opening it) → `chore/1218-auth0-7` (lab batch 128; needs the maintainer to try it against the dev tenant). After each merge: merge `development`
 into the next (the files will be identical; keep the stacked side), push, file its issue, open its PR. **Dependabot's 2300 (`angulartics2`) goes after
 `marked`** (Dependabot rebases itself). **2297, 2298, 2299 are held until 3-4 November** (14-day rule; tracking issues #2307-#2309).
 
