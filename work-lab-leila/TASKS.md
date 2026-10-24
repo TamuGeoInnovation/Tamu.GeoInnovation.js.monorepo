@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 112.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 113.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,20 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 112 (security: where security stands after tonight; a scan, nothing pushed; 24 October 2026, 5:00 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 111.** **Expected: 45 minutes.** **Commit nothing, push nothing.** Your batch 110 answer: thank you; the Nx ignore
+is removed in PR 2284 (#2283), and your 24.0.1 branch is held in case Monday's Dependabot run brings the same.
+1. On `origin/development` as it is when you start (say the commit): `npm audit --omit=dev --json` and `npm audit --json` in Docker: totals by
+   severity, and every high or critical with its path.
+2. Build the production images the publish workflow builds (the eight in `.github/workflows/security-scan.yml`) from that commit and scan each
+   with the same Trivy settings the daily scan uses (`tools/security-findings/check.mjs`'s inputs; the `trivy-cache` volume if it is free).
+   Report per image: critical and high counts, and anything new against the last daily scan's results.
+3. **The same for the tip of the lock queue** if you can build it cheaply: `fork/chore/1218-got-16` stacked work is not merged, so instead scan
+   `fork/ready/2247-maplibre` (GLightbox and maplibre on top of today's merges) the same way, to see whether the queued upgrades change the
+   count.
+4. Report only: a table per image, and anything that needs a fix, as a recommended issue.
 
 ## Batch 111 (security: #2243 - lint's false "Recursive task invocation detected"; an investigation, a fix if one is clear; 24 October 2026, 4:50 AM Central, from `work (security)`)
 
