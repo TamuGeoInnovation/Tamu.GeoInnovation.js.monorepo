@@ -32,6 +32,9 @@
 #     own, one after another, and the check fails if any of them fails. Until #1475, build.yml's list
 #     was used for all three, so ten projects CI lints were never linted here.
 #     A list of projects runs exactly those projects for every target, with no exclusions.
+#   - Then, in every mode, each `run:` step of lint.yml that is not nx or the install (today
+#     `npx tsc -p test/smoke/aggiemap`), and the check fails if any does (#2286). A step it cannot run
+#     as CI does (a multi-line block, or `${{ }}`) stops the check before it starts, naming the step.
 #
 # With BUILD_TIMES_RECORD=1, a run writes a small file into docs/build-times/runs/ in the checkout it was
 # run from (scripts/run-times.sh, #1593): when it started, in US Central, the machine
@@ -54,6 +57,26 @@ excluded_projects() {
   yml="$(MSYS_NO_PATHCONV=1 git -C "$repo" show "$rev:.github/workflows/$target.yml")" || return 1
   printf '%s
 ' "$yml" | sed -n 's/^ *EXCLUDED_PROJECTS://p' | head -n 1 | tr -dc 'A-Za-z0-9_,-'
+}
+
+# Prints the `run:` steps of .github/workflows/lint.yml at <rev> of <repo> that are not Nx, one per line:
+# `run <command>` for a one-line command this script runs as CI does, or `cannot <command>` for one it
+# cannot (a multi-line `run: |` block, or one using `${{ }}`, which only GitHub can expand). Nx's own steps
+# and the install are left out, because the nx runs and npm ci already cover them. Fails when lint.yml is
+# missing. CI's lint once ran `npx tsc -p test/smoke/aggiemap` outside nx, and a branch that broke it
+# passed this check and failed CI (#2286). Tested by scripts/check-in-volume.test.sh.
+lint_steps() {
+  local repo="$1" rev="$2" yml cmd
+  repo="$(cd "$repo" && { pwd -W 2>/dev/null || pwd; })"
+  yml="$(MSYS_NO_PATHCONV=1 git -C "$repo" show "$rev:.github/workflows/lint.yml")" || return 1
+  printf '%s\n' "$yml" | sed -n 's/^[[:space:]]*\(- \)\{0,1\}run:[[:space:]]*//p' | while IFS= read -r cmd; do
+    cmd="$(printf '%s' "${cmd%$'\r'}" | sed "s/^'\(.*\)'\$/\1/; s/^\"\(.*\)\"\$/\1/")"
+    case "$cmd" in
+      *nx[[:space:]]* | *nx.js* | 'npm ci'* | 'npm install'*) ;;
+      '' | '|'* | '>'* | *'${{'*) printf 'cannot %s\n' "$cmd" ;;
+      *) printf 'run %s\n' "$cmd" ;;
+    esac
+  done
 }
 
 # Sourced (by the test): stop here, with only the functions defined.
@@ -109,6 +132,19 @@ case "$mode" in
   *) runs+=(lint,test,build "") ;;
 esac
 
+# lint.yml's steps outside nx, run after the nx runs in every mode. One this script cannot run stops the
+# check before it starts: passing without it would claim more than was checked.
+extra=""
+if steps="$(lint_steps "$main" "refs/heads/$branch" 2>/dev/null)"; then
+  if printf '%s\n' "$steps" | grep -q '^cannot '; then
+    echo "lint.yml on $branch has a step this script cannot run as CI does:" >&2
+    printf '%s\n' "$steps" | sed -n 's/^cannot /  /p' >&2
+    echo "Make it a one-line run: without \${{ }}, or teach lint_steps in $0 to run it." >&2
+    exit 2
+  fi
+  extra="$(printf '%s\n' "$steps" | sed -n 's/^run //p')"
+fi
+
 # The container's own script. Arguments: <branch> <mode>, then the runs' pairs.
 inner='
 set -u
@@ -142,6 +178,13 @@ while [ $# -ge 2 ]; do
   esac
   c=$?; [ "$code" -ne 0 ] || code=$c
 done
+while IFS= read -r cmd; do
+  [ -n "$cmd" ] || continue
+  step "lint.yml: $cmd" sh -c "$cmd"
+  c=$?; [ "$code" -ne 0 ] || code=$c
+done <<EOF
+$LINT_STEPS
+EOF
 exit "$code"
 '
 
@@ -153,13 +196,14 @@ started="$(run_times_now)"
 SECONDS=0
 echo "Checking $branch ($mode) in volume $volume; log: $log"
 for ((i = 0; i < ${#runs[@]}; i += 2)); do echo "  ${runs[i]}: excluding [${runs[i+1]}]"; done
+[ -z "$extra" ] || printf '%s\n' "$extra" | sed 's/^/  lint.yml: /'
 set +e
 # Every `docker run` is a new machine as far as Nx can tell, so it would refuse the cache the previous
 # check left in the volume ("was not generated on this machine") and fail the run. Only this script's
 # containers ever write that cache, so it is trusted.
 docker run --rm -m 16g \
   -v "$volume:/w" -v "$src:/src:ro" -w /w \
-  -e NX_DAEMON=false -e NX_REJECT_UNKNOWN_LOCAL_CACHE=0   node:24.22.1 sh -c "$inner" check "$branch" "$mode" "${runs[@]}" >"$log" 2>&1
+  -e NX_DAEMON=false -e NX_REJECT_UNKNOWN_LOCAL_CACHE=0 -e LINT_STEPS="$extra" node:24.22.1 sh -c "$inner" check "$branch" "$mode" "${runs[@]}" >"$log" 2>&1
 code=$?
 set -e
 echo "Exit $code ($branch, $mode). Log: $log"
