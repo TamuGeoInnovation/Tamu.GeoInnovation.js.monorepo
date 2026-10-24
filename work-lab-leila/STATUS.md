@@ -30,7 +30,9 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Batch 65 waits for the webpack PR to merge.
+**Next update by 8:45 PM Central.**
+
+**Batch 70, security: jwt-decode 4 (Dependabot 2194)**, started 7:49 PM Central, in `C:/TAMU/wt-2194`. Then batches 71 and 72. Batch 65 waits for the webpack PR (2223).
 
 ## Finished
 
