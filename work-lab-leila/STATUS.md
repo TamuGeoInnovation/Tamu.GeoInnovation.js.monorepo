@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:11 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **2:16 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **2:11 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 2:45 AM Central.**
+**Next update by 2:50 AM Central.**
 
-**Batch 97, aggiemap bug: the building directory's empty Abbreviation column (#2262)**, started 2:11 AM Central, 24 October. Then batches 98 and 99.
+**Batch 98, security: the ArcGIS types path in 30 spec tsconfigs (#2264)**, started 2:16 AM Central, 24 October. Then batch 99.
 
 ## Finished
+
+- **Batch 97, aggiemap bug: the directory's empty Abbreviation column (#2262) - fixed and pushed** (2:11 to 2:13 AM, 24 October): the column read `BldgAbbrev` (the buildings service's name) instead of the local list's `BldgAbbr`. New spec red first (Abbreviation "" vs "ZACH"), now green; before/after screenshots; release-notes entry (check: no problems). 1,288 of 1,777 buildings now show one. Check exit 0 (aggiemap-ngx-core, aggiemap-angular). **`fix/2262-directory-abbreviation` at `e2195f54a`.** Report `work-lab-leila/reports/2026-10-23-84.md`.
 
 - **Batch 95, security: ngx-highlightjs 6 to 14 (#1218) - pushed** (1:54 to 2:08 AM, 24 October): geoservices only, no sign-in needed. Set up once in main.ts with provideHighlightOptions: same lazy core, the same three languages and theme; line numbers from ngx-highlightjs/line-numbers (highlightjs-line-numbers.js leaves the lock). `[highlight]` → `[highlightAuto]` + `lineNumbers`. Found: 6's HighlightPlusModule was the app's only source of HttpClient, so main.ts now calls provideHttpClient(withInterceptorsFromDi()). Visible: samples that showed as plain text are now highlighted and numbered. Initial bundle 534.13 → 528.55 kB. Full check exit 0 (lint 104 / test 100 / build 14). **`chore/1218-ngx-highlightjs-14` at `05b99e5ef`.** Report `work-lab-leila/reports/2026-10-23-83.md`.
 
@@ -284,4 +286,4 @@ Last written **2:11 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 95 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 97 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
