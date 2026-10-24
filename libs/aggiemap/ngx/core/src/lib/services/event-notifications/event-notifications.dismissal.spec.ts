@@ -60,7 +60,8 @@ class FakeNotificationService {
 describe('EventNotificationsService', () => {
   let notifications: FakeNotificationService;
 
-  const build = (definitions: Array<ReturnType<typeof definition>>) => {
+  // null as well: a page that provides no definitions at all is one of the cases tested.
+  const build = (definitions: Array<ReturnType<typeof definition>> | null) => {
     notifications = new FakeNotificationService();
 
     return TestBed.resetTestingModule()
