@@ -7,7 +7,7 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import * as dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ quiet: true });
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
