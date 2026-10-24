@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "../../../../../dist/out-tsc",
     "module": "commonjs",
-    "types": ["vitest/globals", "node", "../../node_modules/@arcgis/core/interfaces"]
+    "types": ["vitest/globals", "node", "@arcgis/core/interfaces"]
   },
   "include": ["**/*.spec.ts", "**/*.test.ts", "**/*.d.ts"]
 }
