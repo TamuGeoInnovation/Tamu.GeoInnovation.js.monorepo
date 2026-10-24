@@ -228,7 +228,7 @@ volume, so run the script once first; or drop that mount to use the checkout's o
 docker run --rm -v "$PWD:/work" -v tamu-js-smoke-nm:/work/node_modules -w /work \
   -e AGGIEMAP_SMOKE_BASE_URL=https://dev.aggiemap.tamu.edu \
   -e AGGIEMAP_EXPECTED_GTAG_ID=G-71VY0QZS5P \
-  mcr.microsoft.com/playwright:v1.63.0-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --config=playwright.aggiemap-smoke.config.ts
 ```
 
@@ -243,7 +243,7 @@ reaches it on `localhost`. The script's `local` environment does this for you:
 docker run --rm --network container:aggiemap-dev -v "$PWD:/work" -v tamu-js-smoke-nm:/work/node_modules -w /work \
   -e AGGIEMAP_SMOKE_BASE_URL=http://localhost:4200 \
   -e AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES="Dining Locations" \
-  mcr.microsoft.com/playwright:v1.63.0-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --config=playwright.aggiemap-smoke.config.ts
 ```
 

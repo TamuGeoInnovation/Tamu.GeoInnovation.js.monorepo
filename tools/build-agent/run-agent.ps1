@@ -32,6 +32,9 @@ param(
   [string]$Pool = 'Linux-Build',
   [string]$Image = 'tamu-gisc/build-agent:latest',
   [string]$EgressImage = 'tamu-gisc/build-agent-egress:latest',
+  # Each agent's share of the machine: README, "How many agents fit".
+  [string]$Memory = '14g',
+  [int]$Cpus = 6,
   [string]$TokenFile
 )
 
@@ -99,7 +102,7 @@ try {
       # every capability dropped except the three start.sh needs to run the agent as 'agent' and stop it;
       # memory and CPU capped. The proxy variables are for the job's tools: git, curl, npm, and Node itself.
       docker create --rm --name $container `
-        --memory 24g --memory-swap 24g --cpus 16 --pids-limit 8192 `
+        --memory $Memory --memory-swap $Memory --cpus $Cpus --pids-limit 8192 `
         --security-opt no-new-privileges `
         --cap-drop ALL --cap-add SETUID --cap-add SETGID --cap-add KILL `
         --network $network `

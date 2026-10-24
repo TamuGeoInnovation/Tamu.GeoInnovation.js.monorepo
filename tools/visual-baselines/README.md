@@ -13,7 +13,7 @@ captured when it was still true.
 MSYS_NO_PATHCONV=1 docker run -d --name vb-<release> -m 8g \
   -v "C:/TAMU/Tamu.GeoInnovation.js.monorepo:/repo" \
   -v "C:/TAMU/visual-baselines:/out" \
-  -w /repo mcr.microsoft.com/playwright:v1.63.0-noble \
+  -w /repo mcr.microsoft.com/playwright:v1.64.1-noble \
   node tools/visual-baselines/capture.mjs --env production --out /out
 ```
 
@@ -65,7 +65,7 @@ Each shot is the **whole page**, because GIS Day's pages scroll and a map does n
 are in `test/e2e/gisday/environments.json`: `production` (txgisday.org) and `local` (port 4201).
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -m 8g   -v "C:/TAMU/Tamu.GeoInnovation.js.monorepo:/repo" -v tamu-js-smoke-nm:/repo/node_modules   -v "C:/TAMU/visual-baselines:/out"   -w /repo mcr.microsoft.com/playwright:v1.63.0-noble   node tools/visual-baselines/capture.mjs --app gisday --env production --release sha-0f69d3b --out /out
+MSYS_NO_PATHCONV=1 docker run --rm -m 8g   -v "C:/TAMU/Tamu.GeoInnovation.js.monorepo:/repo" -v tamu-js-smoke-nm:/repo/node_modules   -v "C:/TAMU/visual-baselines:/out"   -w /repo mcr.microsoft.com/playwright:v1.64.1-noble   node tools/visual-baselines/capture.mjs --app gisday --env production --release sha-0f69d3b --out /out
 ```
 
 - **Where sets go:** under `gisday-<environment>/<release>/`, beside AggieMap's.

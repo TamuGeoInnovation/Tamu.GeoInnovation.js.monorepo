@@ -10,9 +10,11 @@ ARG AGENT_SHA256=416eb9340385d599e3159b86d08c03754af24d1cb2b6624425142a47ca65f34
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# python3, make and g++ are what npm needs to build a native module, as the node images provide.
+# python3, make and g++ are what npm needs to build a native module, as the node images provide. unzip is what
+# ExtractFiles@1 uses on Linux (the Build job unpacks app_configs.zip on branch builds), and zstd lets Cache@2
+# compress, as on a hosted agent.
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates curl git jq xz-utils python3 make g++ \
+  && apt-get install -y --no-install-recommends ca-certificates curl git jq xz-utils unzip zstd python3 make g++ \
   && rm -rf /var/lib/apt/lists/*
 
 RUN cd /tmp \
