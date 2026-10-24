@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 74.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 75.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -43,6 +43,21 @@ report under **Questions for the director**, with options and a recommendation â
 > And a section **"Stopping or removing an agent"**: Ctrl+C, then remove it from the pool if the machine is leaving.
 
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
+
+## Batch 74 (security: #2212 - one internal network per agent, so lab agents cannot reach each other; a branch; 23 October 2026, 8:30 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 65.** **Expected: about 45 minutes.** Your batch 72 answers: **question 1 (b)**, before `lab-2` and
+`lab-3` are added; **question 2**: the director opens the lab-first pull request from the fork, so its own Azure run is a fork build and shows
+whether the restricted token can list pools. Have a token-free check ready in mind in case it cannot.
+
+1. Branch `ci/2212-agent-networks` from `fork/ci/2212-lab-first`. `Confirm-Egress` (and `linux/run-agent.sh`) create **one internal network
+   per agent** (`tamu-agent-internal-<name>`, each its own /28 or /27 in `172.31.250.0/24`, derived from the name so it is stable), connect the
+   one proxy to each, and put each agent only on its own. `squid.conf` accepts all of those subnets. Keep the old single network working for an
+   agent not yet reinstalled, or say how the reinstall removes it.
+2. Prove with two test agents (`lab-test`, `lab-test2`, dummy token, or containers of the image without registering): each reaches npm and
+   GitHub through the proxy; **neither can reach the other's address** (and the proxy refuses the other's address too); `lab-1` untouched.
+3. `scripts/check-in-volume.sh ci/2212-agent-networks`, commit (`ci(workspace): Give each build agent its own network`, `Part of #2212`,
+   Co-Authored-By), push to the fork. **No PR.** In **For the maintainer**, the exact commands to reinstall `lab-1` and add `lab-2`, `lab-3` on it.
 
 ## Batch 73 (security: #2212 - confirm `lab-1` now runs in the background behind the egress proxy; read-only, 5 minutes; 23 October 2026, 8:10 PM Central, from `work (security)`)
 
