@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 110.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 111.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,15 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 110 (security: #1218 - Nx 24.0.0 to 24.0.1, the patch Dependabot skips; a branch; 24 October 2026, 4:30 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 109.** **Expected: 30 minutes.** Your batch 108 answer: **leave the close as it is.** The toasts' sub-issue is #2281.
+Dependabot ignores Nx entirely (`.github/dependabot.yml`), so Nx patches are ours. Nx 24.0.1 is out (your survey, batch 76).
+1. Branch `chore/1218-nx-24-0-1` from `origin/development`: `nx` and every `@nx/*` to 24.0.1 (exact pins, as now), batch 44's lock method for `nx`
+   and `@nx/*` only, key by key (only Nx's own entries move). `nx migrate 24.0.1` first: report any migration it lists, and run them; commit
+   none of `migrations.json`.
+2. Full check. Commit (`chore(workspace): Move Nx to 24.0.1`, Co-Authored-By; the director adds the issue), push to the fork. No PR.
 
 ## Batch 108 (security: #2278 - the notification toasts off @angular/animations; a branch; 24 October 2026, 4:15 AM Central, from `work (security)`)
 
