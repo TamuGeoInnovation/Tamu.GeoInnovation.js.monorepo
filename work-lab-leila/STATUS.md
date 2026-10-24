@@ -34,6 +34,8 @@ Nothing.
 
 ## Finished
 
+- **Batch 74, security: one internal network per agent (#2212) - pushed** (8:30 to 8:36 PM, 23 October): each agent on `tamu-agent-internal-<name>`, a /28 of 172.31.251.0/24 from the name (-1..-12, -test..-test3); the proxy joins each; squid accepts the new range and the old one, and the old shared network removes itself once only the proxy is on it. Two test agents started together: each reaches npm and GitHub; neither reaches the other directly, through the proxy (403) or via the proxy's address on the other network; lab-1 untouched. Two bugs fixed (proxy-creation race; PS 5.1 stderr). **`ci/2212-agent-networks` at `d841b75a1`.** Report `work-lab-leila/reports/2026-10-23-63.md` (the maintainer's eight commands to reinstall lab-1 and add lab-2, lab-3).
+
 - **Batch 65, security: the Nx 24 branch refreshed onto development - pushed** (8:25 to 8:29 PM, 23 October): `development` (`55d871383`, with webpack 2223 and jwt-decode 2228) merged in cleanly, no conflicts; nx.json byte-identical to batch 62's; the lock's Nx 24 changes against development are the same 47 entries as batch 62's; nx 24.0.0, webpack-cli 7.2.3. Full check exit 0 (clean npm ci, lint 104 / test 100 / build 14). Against development the branch is Nx 24's 11 files alone. **`chore/2168-nx-24` at `3da10feac`.** Report `work-lab-leila/reports/2026-10-23-62.md`.
 
 - **Batch 72 (rewritten), security: the pipeline on the lab first, hosted fallback, up to three agents (#2212) - pushed** (8:15 to 8:25 PM, 23 October): Docker has 24 CPUs and 62.5 GiB; one agent's whole workload peaked at 10.4 GB and 4.8 cores, so three agents at 14g / 6 CPUs fit with 20 GiB and 6 cores spare (new -Memory/-Cpus defaults). Setup's Last SHA job checks Linux-Build for an online agent (any error: hosted, with a warning); each heavy job runs twice from its template, lab or hosted, exactly one runs; `useLab: false` switches back. unzip and zstd added to the image. Check exit 0. Estimated full PR: about 12 min on one agent, 6 on three, against 15 to 25 hosted. The maintainer must give the build service Reader on the pool (clicks in the report). **`ci/2212-lab-first` at `f74d7ef57`.** Report `work-lab-leila/reports/2026-10-23-61.md`.
@@ -240,4 +242,4 @@ Nothing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 65 (all queued batches done) (42 and 39 stopped; 40 superseded)
+Last batch done: 74 (all queued batches done) (42 and 39 stopped; 40 superseded)
