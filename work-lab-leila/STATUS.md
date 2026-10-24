@@ -30,11 +30,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 9:45 PM Central.**
-
-**Batch 76, security: what is left between us and the latest of everything (#1218), a survey**, started 8:45 PM Central. Batches 77 and 78 wait for PRs 2187 and 2191 to merge.
+Nothing. Batches 77 and 78 wait for PRs 2187 and 2191 to merge.
 
 ## Finished
+
+- **Batch 76, security: what is left between us and the latest (#1218) - a survey, nothing pushed** (8:45 to 8:57 PM, 23 October): **PRs 2231 (Nx 24) and 2195 (typeorm 1) conflict in the lock with each other**: whichever merges second needs batch 41's method. On development + both: 61 direct deps behind, 23 by a major; each with users and reason. TypeScript 7 is blocked by Angular 22 (<6.1); /animations and -devkit/build-angular are deprecated; mapbox-gl 2+ is not open source (maplibre-gl instead); postcss-import and postcss-preset-env are unused; two hand-written deploy manifests (ues-operations-nest, gisday-competitions-nest) still declare Nest 7 / typeorm 0.2. node 24.22.1 and nginx 1.30.6 are current. 14 proposed PRs, smallest first. Report `work-lab-leila/reports/2026-10-23-65.md`.
 
 - **Batch 75, security: PR 2195 (typeorm 1, mssql 12) brought up to date (#2193) - pushed** (8:37 to 8:44 PM, 23 October): `development` (`55d871383`) merged in cleanly, lock included; the lock's change against development is the same 116 entries as before (typeorm 1.1.2, mssql 12.7.11, ts-node 10.9.2, their own dependencies). Full check exit 0 (lint 104 / test 100 / build 14). gisday-nest image (typeorm 1.1.2) against a seeded SQL Server: both new migrations ran under typeorm 1 and committed; seasons/active 200, unauthenticated POSTs 401; relations load (season days, sponsors with season and logos, places with visibility settings and logos); 0 errors. PR 2195 at `deefed90f`, mergeable. lab-1..3 seen running on their own networks. Report `work-lab-leila/reports/2026-10-23-64.md`.
 
@@ -246,4 +246,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 75 (all queued batches done) (42 and 39 stopped; 40 superseded)
+Last batch done: 76 (77 and 78 wait for 2187 and 2191) (42 and 39 stopped; 40 superseded)
