@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 94.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 96.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,31 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 94 (security: #2256 - the select component's spec does not typecheck; a fix and a branch; 24 October 2026, 12:40 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 93.** **Expected: 30 minutes.** Your batch 90 question 1: **filed**, as #2256 (Bug, Low). Your date-picker fix is
+PR 2257. `tsc -p libs/ui-kits/ngx/forms/tsconfig.spec.json --noEmit` reports `select.component.spec.ts:32` `Type '{ test: string; }' is not
+assignable to type 'string'`.
+1. Decide whether the spec's fixture or the component's input type is wrong (read how the component and its callers use the input), and fix
+   that one. If it is the component, check every caller still compiles (`nx build` of the apps that use it).
+2. Typecheck every **spec** tsconfig in the repository the same way (`tsc -p <lib>/tsconfig.spec.json --noEmit` for each project that has one) and
+   **report** any other errors with their file and line. Fix none of them here; the director files them.
+3. `scripts/check-in-volume.sh <branch> ui-kits-ngx-forms`, commit (`fix(ui-kits-ngx-forms): Make the select component's spec typecheck`,
+   `Closes #2256`, Co-Authored-By), push to the fork as `fix/2256-select-spec-types`. No PR.
+
+## Batch 95 (security: #1218 - ngx-highlightjs 6 to 14; a branch; 24 October 2026, 12:40 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 94.** **Expected: 90 minutes.** Your survey's PR 6: `ngx-highlightjs` 6.1.3 â†’ 14, 9 files (geoservices,
+ui-kits). `HighlightModule` became `provideHighlightOptions` and standalone directives.
+1. **The "before" screenshots first**, into `docs/screenshots/ngx-highlightjs-14/` at once: every page that shows highlighted code (geoservices'
+   API pages; say which, and whether a sign-in is needed).
+2. Branch `chore/1218-ngx-highlightjs-14` from `origin/development`: the upgrade, the providers and directives moved as its changelog says, the
+   same languages registered (lazy-loaded if the old setup was), the same theme. Lock by batch 41's method, key by key. **Reuse rule:** if
+   several modules set up highlighting the same way, set it up once.
+3. Full check; "after" screenshots beside the befores; no console errors; bundle sizes before/after for geoservices.
+4. Commit (`chore(workspace): Move ngx-highlightjs to 14`, Co-Authored-By; the director adds the issue and release notes if anything looks
+   different), push to the fork. No PR.
 
 ## Batch 93 (security: #1218 - @swimlane/ngx-datatable 20 to 25; a branch; 24 October 2026, 12:05 AM Central, from `work (security)`)
 
