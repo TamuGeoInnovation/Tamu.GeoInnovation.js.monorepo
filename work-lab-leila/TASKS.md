@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 107.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 108.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,19 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 107 (security: #2277 - mail calls with a timeout, and the helper's errors handled; a bug fix and a branch; 24 October 2026, 4:00 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 106, or before it if 106 stops early.** **Expected: 60 minutes.** Your batch 105 answers: **1 and 2 yes**, as one
+issue, #2277. Your `got` 16 branch joins the lock queue.
+1. Branch `fix/2277-mail-timeouts` **from `fork/chore/1218-got-16`** (so it is written against got 16; the director merges it after that).
+2. **Tests that fail first**, from your batch 105 stand-in servers: each of the three mail calls gives up after the timeout against a mailroom
+   that never answers, with an error the caller can handle (a 504 or 503 to the API's client, not a hang); and the helper turns a mailroom 4xx/5xx
+   into the `HttpException` its code means to throw.
+3. The fix: **one shared timeout** (a constant or setting in the shared services, read by all three; say what value and why: a mail send should
+   be a few seconds), and the helper's non-2xx handled. Tests pass. Full check.
+4. Commit (`fix(workspace): Give the mail calls a timeout and handle the helper's errors`, `Closes #2277`, Co-Authored-By), push to the
+   fork. No PR.
 
 ## Batch 106 (security: #1218 - @angular/animations to animate.enter / animate.leave; a branch; 24 October 2026, 3:35 AM Central, from `work (security)`)
 
