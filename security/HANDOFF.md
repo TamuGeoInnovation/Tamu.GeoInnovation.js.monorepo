@@ -19,7 +19,7 @@ dependency work next (the home machine, this weekend). The maintainer keeps the 
 | [2269](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2269) | ArcGIS types path in the spec tsconfigs | #2264 |
 | [2270](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2270) | five type errors only spec typechecking showed | #2265 |
 | [2272](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2272) | the POI popup's console TypeError | #2259 |
-| [2279](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2279) | AggieMap's animations to CSS transitions (first part of #2278; then the toasts, `fork/chore/2278-notification-animations` `afa4e57cc`, stacked on 2279, closes #2281; then geoservices, lab batch 109) | #2280 |
+| [2279](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2279) | AggieMap's animations to CSS transitions (first part of #2278; then the toasts, `fork/chore/2278-notification-animations` `afa4e57cc`, stacked on 2279, closes #2281; then geoservices, `fork/chore/2278-geoservices-animations` `651137f7d`, stacked on the toasts, closes #2282 and #2278, and **removes `@angular/animations` (one lock key), so it waits its turn in the lock queue too**) | #2280 |
 | [2273](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2273) | geoservices' Result tab shows a failed sample (visible, release notes) | #2267 |
 | [2274](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2274) | ArcGIS types path in the library tsconfigs | #2271 |
 

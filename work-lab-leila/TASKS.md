@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 111.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 112.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,18 @@ report under **Questions for the director**, with options and a recommendation �
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 111 (security: #2243 - lint's false "Recursive task invocation detected"; an investigation, a fix if one is clear; 24 October 2026, 4:50 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 110.** **Expected: 60 minutes.** Your batch 109 answers: **1 yes**, 2279, then the toasts (#2281), then geoservices
+(#2282, which closes #2278); **2 none**. You hit Nx's *Recursive task invocation detected* on lint twice (batches 80 and 87), through a chain of
+unrelated lint tasks (`maps-esri → common-ngx-pipes → … → maps-esri`), and each passed on a rerun.
+1. **Reproduce it**: run `nx run-many -t lint` (and `affected -t lint`) repeatedly in a check volume, with and without the Nx daemon and the
+   cache, at `--parallel=8` and lower, and say how often it happens. Capture the full chain Nx prints.
+2. **Find why**: lint's `dependsOn` in `nx.json` (`^lint`? something inferred by `@nx/eslint/plugin`?), project implicit dependencies, or a real
+   cycle between projects' lint inputs. Check whether Nx 24.0.1 (batch 110) changes it.
+3. If the cause is clear and the fix small, branch `fix/2243-lint-recursion` from `origin/development`, prove the reproduction no longer fails
+   (as many runs as it took to see it, times three), full check, commit (`Closes #2243`), push. Otherwise report what you found. No PR.
 
 ## Batch 110 (security: #1218 - Nx 24.0.0 to 24.0.1, the patch Dependabot skips; a branch; 24 October 2026, 4:30 AM Central, from `work (security)`)
 
