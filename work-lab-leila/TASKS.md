@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 100.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 102.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,28 @@ report under **Questions for the director**, with options and a recommendation �
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 100 (aggiemap bug found by security: #2259 - the POI popup's console TypeError; a bug fix and a branch; 24 October 2026, 2:25 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 99.** **Expected: 60 minutes.** Your directory fix is PR 2268. Opening AggieMap's POI popup at `/?poi=2` logs
+`TypeError: Cannot read properties of undefined (reading 'name')` on `development` (you traced a similar line to `TripPlannerConnectionService`
+in batch 85).
+1. **Find the cause**: the stack, what reads `name` from what, and why it is undefined on a POI popup. Say whether it breaks anything visible
+   (a trip-planner control, a label) or is only noise.
+2. **A test that fails first** (a unit test of the service or component; or, if it only shows in a running map, a smoke check that the POI
+   popup opens with no console error, in `test/smoke/aggiemap/`, reusing the suite's console helpers). Prove it fails on `development`.
+3. Branch `fix/2259-poi-popup-typeerror`: the fix; the test passes; `scripts/check-in-volume.sh <branch> <projects>,aggiemap-angular`; before/after
+   screenshots only if something visible changes (then a release-notes file too). Commit (`fix(aggiemap-angular): …`, `Closes #2259`,
+   Co-Authored-By), push to the fork. No PR.
+
+## Batch 101 (geoservices bug found by security: #2267 - the services pages log err.toRenderableJSON is not a function; a bug fix and a branch; 24 October 2026, 2:25 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 100.** **Expected: 60 minutes.** On `development`, geoservices' four `/services/*` pages each log
+`err.toRenderableJSON is not a function` three times (your batch 95).
+1. **Find the cause**: where `toRenderableJSON` is called, on what, and why that object lacks it (an error path assuming one error type?). Say
+   whether a user sees anything wrong (a failed request shown as success, an empty result panel).
+2. **A test that fails first**, then the fix, the test passing. `scripts/check-in-volume.sh <branch> <projects>,geoservices-angular`.
+3. Branch `fix/2267-geoservices-renderable-json`. Commit (`fix(geoservices-angular): …`, `Closes #2267`, Co-Authored-By), push to the fork. No PR.
 
 ## Batch 98 (security: #2264 - the ArcGIS types path in 30 spec tsconfigs; a fix and a branch; 24 October 2026, 2:10 AM Central, from `work (security)`)
 
