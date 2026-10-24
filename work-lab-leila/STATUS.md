@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:53 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **4:08 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **3:53 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 4:55 AM Central.**
+**Next update by 5:10 AM Central.**
 
-**Batch 106, security: @angular/animations to animate.enter / animate.leave (#1218)**, started 3:53 AM Central, 24 October. Expected 3 to 4 hours; it may stop after the first app, as the batch allows.
+**Batch 107, security: the mail calls' timeouts and the helper's errors (#2277)**, started 4:08 AM Central, 24 October (batch 106 stopped early, so 107 starts now, as it allows).
 
 ## Finished
+
+- **Batch 106, security: animations off @angular/animations (#1218) - AggieMap done, stopped there; pushed** (3:53 to 4:07 AM, 24 October): 13 triggers in 8 apps listed. AggieMap's three (slide, offCanvasSlideUpFromTop, offCanvasSlideInFromBottom) are state triggers, so they became CSS transitions with the same timing and easing (animate.enter/leave only fit elements entering or leaving), via mixins in one new libs/sass/_motion.scss. Trigger files and AggieMap's animations provider removed; three specs now render with no animations provider. Recorded before and after: the same start and end states and timing range; no Angular errors. @angular/animations stays for the other apps. Check exit 0. **`chore/1218-animate-enter-leave` at `9029721e4`.** Report `work-lab-leila/reports/2026-10-23-93.md`.
 
 - **Batch 105, security: got 11 to 16 (#1218) - pushed** (3:39 to 3:52 AM, 24 October): three POSTs to mailroom (MailerService, GIS Day's ContactService, the mailroom helper), no timeouts or retries. Behaviour tests against a stand-in server written and passing on got 11 first, unchanged and passing on 16. got ~16.0.0 (16.1.0 is eleven days old); the helper now sends the platform's FormData, which 16 requires (a type error only the production build caught, fixed). Lock: only got's tree. The four API images start as before, and require('got') loads 16.0.0 (ESM) inside them on Node 24. Full check exit 0 (lint 104 / test 100 / build 14). **`chore/1218-got-16` at `de62e0b70`.** Report `work-lab-leila/reports/2026-10-23-92.md`.
 
@@ -302,4 +304,4 @@ Last written **3:53 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 105 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 106 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
