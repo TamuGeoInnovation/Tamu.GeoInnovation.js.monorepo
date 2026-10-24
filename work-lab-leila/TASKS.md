@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 105.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 106.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,21 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 105 (security: #1218 - got 11 to 16; a branch; 24 October 2026, 2:55 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 104.** **Expected: 2 hours.** Your library tsconfig fix is PR 2274. Your survey's PR 11: `got` 11.8.6 â†’ 16,
+5 files (`libs/common/nest`, GIS Day platform, mailroom). ESM-only from 12 (Node 24's `require(esm)` loads it from our CommonJS bundles), options
+renamed.
+1. **List every call** that goes through `got`: what it calls (which service, internal or external), with what options (timeouts, retries,
+   `responseType`, hooks, headers), and how each API image uses it. Do not call production services; use the local GIS Day stack and stand-in
+   servers (a throwaway container answering like the real one) for the rest.
+2. **A test of today's behaviour first** for each call you can reach: what it sends and what it does with success, a 4xx, a 5xx and a timeout.
+3. Branch `chore/1218-got-16` from `origin/development`: the upgrade, options renamed per its changelog, the same timeouts and retries. Lock by
+   batch 41's method, key by key. Prove the bundled API images still load `got` (`require(esm)` in the production image, not only in tests): start
+   each image as batch 71 did.
+4. The same tests pass. Full check. Commit (`chore(workspace): Move got to 16`, Co-Authored-By; the director adds the issue), push to the fork.
+   No PR.
 
 ## Batch 104 (security: #1218 - chart.js 2 to 4; a branch; 24 October 2026, 2:50 AM Central, from `work (security)`)
 
