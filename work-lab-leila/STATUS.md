@@ -30,11 +30,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 9:30 PM Central.**
-
-**Batch 75, security: PR 2195 (typeorm 1, mssql 12) brought up to date (#2193)**, started 8:37 PM Central.
+Nothing.
 
 ## Finished
+
+- **Batch 75, security: PR 2195 (typeorm 1, mssql 12) brought up to date (#2193) - pushed** (8:37 to 8:44 PM, 23 October): `development` (`55d871383`) merged in cleanly, lock included; the lock's change against development is the same 116 entries as before (typeorm 1.1.2, mssql 12.7.11, ts-node 10.9.2, their own dependencies). Full check exit 0 (lint 104 / test 100 / build 14). gisday-nest image (typeorm 1.1.2) against a seeded SQL Server: both new migrations ran under typeorm 1 and committed; seasons/active 200, unauthenticated POSTs 401; relations load (season days, sponsors with season and logos, places with visibility settings and logos); 0 errors. PR 2195 at `deefed90f`, mergeable. lab-1..3 seen running on their own networks. Report `work-lab-leila/reports/2026-10-23-64.md`.
 
 - **Batch 74, security: one internal network per agent (#2212) - pushed** (8:30 to 8:36 PM, 23 October): each agent on `tamu-agent-internal-<name>`, a /28 of 172.31.251.0/24 from the name (-1..-12, -test..-test3); the proxy joins each; squid accepts the new range and the old one, and the old shared network removes itself once only the proxy is on it. Two test agents started together: each reaches npm and GitHub; neither reaches the other directly, through the proxy (403) or via the proxy's address on the other network; lab-1 untouched. Two bugs fixed (proxy-creation race; PS 5.1 stderr). **`ci/2212-agent-networks` at `d841b75a1`.** Report `work-lab-leila/reports/2026-10-23-63.md` (the maintainer's eight commands to reinstall lab-1 and add lab-2, lab-3).
 
@@ -244,4 +244,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 74 (all queued batches done) (42 and 39 stopped; 40 superseded)
+Last batch done: 75 (all queued batches done) (42 and 39 stopped; 40 superseded)
