@@ -30,7 +30,9 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing.
+**Next update by 12:15 AM Central.**
+
+**Batch 88, security: Node in the agent image and room for four agents (#2212)**, started 11:04 PM Central, in `C:/TAMU/wt-an88`. Then batch 89.
 
 ## Finished
 
