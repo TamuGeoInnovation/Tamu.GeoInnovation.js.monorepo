@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:40 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **9:43 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **9:40 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 129, security: #2320 - Admin → Users lists every Auth0 user, not only the first 50 (a branch, stacked)**, started 9:40 AM Central, 24 October.
+Nothing. Batch 129 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
 
 ## Finished
 
+- **Batch 129, security: #2320 - Admin → Users lists every Auth0 user - pushed** (9:40 to 9:43 AM, 24 October): `fix/2320-all-auth0-users` at `9d9319a77` on the fork, on auth0 7. Test first: with 51 users over two pages, the old code returned 50, last name User 49, only page 0 (3 failed). Fix: getUsers walks every page with per_page 50, sorted, mapped as before, stopping at 100 pages with a log (tested with 6,000 users). 26 of 26 tests pass; the check on common-nest-auth, gisday-platform-data-api and gisday-nest exit 0. No screenshots: needs a tenant of more than 50 users. Report `work-lab-leila/reports/2026-10-23-116.md`.
 - **Batch 128, security: #1218 - auth0 3 to 7, stacked - pushed** (9:25 to 9:35 AM, 24 October): `chore/1218-auth0-7` at `f187b889a` on the fork, on better-sqlite3 13. auth0 ~7.4.0 (9 Oct; past 14 days, contrary to the batch's note); a scoped override keeps auth0-legacy's undici-types at 6.29.0. ManagementService ported: getUser to users.get, updateUser to users.update, getUsers to users.list(...).data (the same first page of 50); the old metadata types kept as auth0 3's. A new 9-test spec checks every request against a stand-in for the Management API, red on three wrong mappings. No tenant used; the dev-tenant checks are listed. Full check exit 0. Report `work-lab-leila/reports/2026-10-23-115.md`.
 - **Batch 127, security: #1218 - better-sqlite3 12 to 13, stacked - pushed** (9:19 to 9:23 AM, 24 October): `chore/1218-better-sqlite3-13` at `e12f83ebd` on the fork, on jwks-rsa 4. ^13.0.3 in the dependency, override and ues-operations-nest; no ERESOLVE (the override covers TypeORM's optional ^12 peer). Lock: better-sqlite3's tree only; prebuild-install and its dependencies go (1,874 packages, 18 fewer), and 13 has no install script. TypeORM's better-sqlite3 driver opens an in-memory database and reads a row on 12.11.1 and 13.0.3. Full check exit 0. Report `work-lab-leila/reports/2026-10-23-114.md`.
 - **Batch 126, security: #1218 - jwks-rsa 2 to 4, stacked - pushed** (9:11 to 9:17 AM, 24 October): `chore/1218-jwks-rsa-4` at `c85e3d77c` on the fork, on batch 125's branch. jwks-rsa 4.1.0, no code change (passportJwtSecret and its options unchanged). Lock: jwks-rsa's tree only; jose 2 to 6.2.13 and @types/jsonwebtoken 8 to 9, both copies already on development, now shared. Proved on real gisday-nest images with a local issuer: good token 201, another key / wrong audience / expired / none 401, identical on 2.1.5 and 4.1.0. Full check exit 0. Report `work-lab-leila/reports/2026-10-23-113.md`.
@@ -331,4 +332,4 @@ Last written **9:40 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 128 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 129 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
