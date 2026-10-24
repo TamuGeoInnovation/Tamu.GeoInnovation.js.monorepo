@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 85.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 87.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -43,6 +43,36 @@ report under **Questions for the director**, with options and a recommendation â
 > And a section **"Stopping or removing an agent"**: Ctrl+C, then remove it from the pool if the machine is leaving.
 
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
+
+## Batch 85 (security: #1218 - lightgallery replaced by GLightbox, as one shared piece; a branch; 23 October 2026, 9:40 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 84.** **Expected: 2 hours.** **Decided by the maintainer (9:40 PM): (c), replace `lightgallery` with GLightbox (MIT).**
+Your batch 82 question 1: **as done** (`class-validator`'s `isUUID`). Question 2: **every front end is served over HTTPS** (the maintainer).
+1. **Before screenshots first**, into `docs/screenshots/glightbox/` at once: on the AggieMap dev server, a POI popup with photos and the bonfire
+   popup (carousel, then a slide opened full screen); and the browser console line *"please provide a valid license key"* if it appears.
+2. Branch `chore/1218-glightbox` from `origin/development`. **Reuse rule:** the POI and bonfire popups duplicate the gallery code; make **one
+   shared piece** (a directive or small component in `libs/ui-kits/ngx/**` or the AggieMap popups library, whichever the next caller would look
+   in; say why), used by both. GLightbox latest, its CSS imported by the shared piece (CLAUDE.md: shared component styles are imported by the
+   component, not the app); drop `lightgallery` and its `@import` from `styles.scss`. Keep the Swiper carousel as is. Lock key by key.
+3. Full check; after screenshots beside the befores (same popups, same images, the full-screen view, keyboard Esc/arrow keys, mobile width);
+   no console errors; the licence line gone.
+4. Commit (`feat(aggiemap-angular): Open popup photos with GLightbox, replacing lightgallery`, Co-Authored-By; the director adds the issue and the
+   release-notes file), push to the fork. No PR.
+
+## Batch 86 (security: #2212 - where a lab job's time goes, and a cache a fork cannot poison; measure and propose, nothing pushed; 23 October 2026, 9:40 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 85.** **Expected: 60 minutes.** **Decided by the maintainer (9:40 PM): measure, then propose.** Build 5680
+(PR 2230, run by hand) ran every heavy job on the lab: Cache 1:48 (lab-1), Lint 1:46 (lab-2), development 3:06 (lab-3), production 2:44 (lab-1),
+against hosted 2:32 / 0:47 / 0:52 / 0:54 for the same commit (build 5672). The read-only Azure log of each job is available to the director;
+**you** measure inside the agent.
+1. Run the same jobs' steps in an agent container (or read the agent's `_diag` and job logs on this machine, never printing a token) and
+   break each job into: container start and registration, checkout, `UseNode@1`, `Cache@2` restore (hit or miss? the cache key; download size
+   and time), the work itself, post-job steps. Say where hosted saves time (a warm image with Node preinstalled, the Azure cache next door).
+2. Propose, ranked by time saved per job, **only options a fork pull request cannot poison** for the next job: e.g. Node baked into the image
+   (no `UseNode@1` download), a read-only git mirror or reference clone on the host refreshed only by a trusted job, a per-branch or
+   trusted-only writable npm cache with forks read-only, Nx cache handling (Nx Cloud is already remote), keeping one warm container idle. For
+   each: the time saved, what a malicious fork job could do with it, and why that is or is not safe.
+3. Report only. The director turns the chosen ones into a branch.
 
 ## Batch 83 (security: #1218 - lightgallery: the licence first, then the upgrade if it is clear; an investigation, maybe a branch; 23 October 2026, 9:10 PM Central, from `work (security)`)
 
