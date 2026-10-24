@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:50 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **6:53 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,7 +32,7 @@ Last written **6:50 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-Nothing. Batch 119 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
+**Batch 120, security: #1218 - ngx-highlightjs 14 stacked on ngx-datatable 25, with its release-notes file (a branch)**, started 6:53 AM Central, 24 October.
 
 ## Finished
 
