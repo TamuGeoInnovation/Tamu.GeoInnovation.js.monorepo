@@ -46,7 +46,7 @@ report under **Questions for the director**, with options and a recommendation â
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
 
-## Batch 133 (security: #1218 - bring the rest of the lock queue up to date, in order; branches; 24 October 2026, 2:30 PM Central, from `work (security)`)
+## Batch 133 (security: #1218 - bring the rest of the lock queue up to date, in order; branches; 24 October 2026, 2:21 PM Central, from `work (security)`)
 
 **Director: work, its security chat.** **Start now.** **Expected: 2 hours.** Your batch 132 is right and is on #2111.
 **What merged** (PRs 2314, 2312, 2317, 2294, 2316, 2302, 2303, 2305): `development` now has marked 18, `allowScripts` with `strict-allow-scripts`
