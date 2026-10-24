@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:39 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **3:53 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **3:39 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 4:40 AM Central.**
+**Next update by 4:55 AM Central.**
 
-**Batch 105, security: got 11 to 16 (#1218)**, started 3:39 AM Central, 24 October (read from the clock). Then batch 106.
+**Batch 106, security: @angular/animations to animate.enter / animate.leave (#1218)**, started 3:53 AM Central, 24 October. Expected 3 to 4 hours; it may stop after the first app, as the batch allows.
 
 ## Finished
+
+- **Batch 105, security: got 11 to 16 (#1218) - pushed** (3:39 to 3:52 AM, 24 October): three POSTs to mailroom (MailerService, GIS Day's ContactService, the mailroom helper), no timeouts or retries. Behaviour tests against a stand-in server written and passing on got 11 first, unchanged and passing on 16. got ~16.0.0 (16.1.0 is eleven days old); the helper now sends the platform's FormData, which 16 requires (a type error only the production build caught, fixed). Lock: only got's tree. The four API images start as before, and require('got') loads 16.0.0 (ESM) inside them on Node 24. Full check exit 0 (lint 104 / test 100 / build 14). **`chore/1218-got-16` at `de62e0b70`.** Report `work-lab-leila/reports/2026-10-23-92.md`.
 
 - **Batch 104, security: chart.js 2 to 4 (#1218) - pushed** (3:25 to 3:39 AM, 24 October): the one chart is signage's sign-type bar chart, and signage does not build on development, so it was photographed on an uncommitted lab page with signage's inputs. chart.js ~4.5.1 (4.6.1 is two days old); 4's own types, so @types/chart.js goes; each chart type registers only its own pieces; colorschemes (chart.js 2 only) replaced by applyChartColors with its palette and rules, with 4 new specs. Same colours (pixel-sampled), legend and tooltip; the y axis now starts at 0, where 2 hid the smallest bar. No built app bundles chart.js. The lock also drops moment. Full check exit 0 (lint 104 / test 100 / build 14). **`chore/1218-chart-js-4` at `52651b825`.** Report `work-lab-leila/reports/2026-10-23-91.md`.
 
@@ -300,4 +302,4 @@ Last written **3:39 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 104 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 105 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
