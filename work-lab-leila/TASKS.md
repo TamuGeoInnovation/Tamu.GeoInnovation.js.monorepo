@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 116.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 117.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,24 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 116 (security: #2289 - nginx-base rebuilt with brotli-libs 1.2.1-r0; in the nginx-base repository; a branch; 24 October 2026, 5:40 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 114 (multer).** **Expected: 45 minutes.** **Decided by the maintainer (5:40 AM): (a), the lab makes the change in
+`TamuGeoInnovation/nginx-base` through his fork `danielgoldbergtamu/nginx-base`, and he merges it.** A different repository: clone it fresh into
+its own folder (`C:/TAMU/nginx-base`), `origin` = `TamuGeoInnovation/nginx-base`, `fork` = `danielgoldbergtamu/nginx-base`. Its default branch is
+`master`; its `Dockerfile` is `FROM nginx:1.30.6-alpine`, and `.github/workflows/build-publish.yaml` publishes on `master`.
+1. Read the workflow: which tags it publishes (`:latest`, `:sha-<short>`?), and on which events. Read the README for how changes are made there.
+2. Branch `fix/brotli-libs-cve-2026-111497` from `origin/master`: after the `FROM`, `RUN apk upgrade --no-cache brotli-libs` (with a comment
+   naming the CVE and saying it can go once `nginx:1.30.6-alpine` itself carries 1.2.1-r0). If upgrading only that package pulls in others,
+   say which.
+3. Build the image locally, scan it with batch 112's Trivy settings: **0 high, 0 critical**. Then prove it still works as the front ends' base:
+   build `aggiemap-angular`'s production image `FROM` it (the monorepo's `apps/aggiemap-angular/Dockerfile`, with the local tag) and serve one page
+   (200, the token substitution in the entrypoint still runs).
+4. Commit (`fix: Upgrade brotli-libs to 1.2.1-r0 for CVE-2026-111497`, a body linking
+   https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2289, Co-Authored-By), push to **the fork**
+   (`danielgoldbergtamu/nginx-base`). No PR: the director opens it. Report the workflow's tags, so the director knows what the four front ends'
+   Dockerfiles must be moved to after it publishes.
 
 ## Batch 114 (security: #2287 (High) - multer 2.5.0 by override for CVE-2026-113872; a fix and a branch; 24 October 2026, 5:25 AM Central, from `work (security)`)
 
