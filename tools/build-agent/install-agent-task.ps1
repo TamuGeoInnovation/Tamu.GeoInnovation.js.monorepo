@@ -23,7 +23,7 @@ powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-1 -Unin
 #>
 param(
   [Parameter(Mandatory = $true)]
-  [ValidatePattern('^[a-z][a-z0-9]*-([0-9]+|test)$')]
+  [ValidatePattern('^[a-z][a-z0-9]*-([0-9]+|test[0-9]?)$')]
   [string]$AgentName,
   [switch]$Uninstall,
   # Starts the task now as well as at every logon.

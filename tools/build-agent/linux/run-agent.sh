@@ -17,12 +17,25 @@ MEMORY=${MEMORY:-12g}
 CPUS=${CPUS:-5}
 
 container="tamu-build-agent-$AZP_AGENT_NAME"
-# The same network and proxy as on Windows: no route out but the proxy, which refuses every private address.
-network=tamu-agent-internal
-subnet=172.31.250.0/24
+# The same networks and proxy as on Windows (run-agent.ps1 says how): a network of the agent's own with no route out
+# but the proxy, which refuses every private address; its /28 comes from the name's slot.
+case "$AZP_AGENT_NAME" in
+  *-test) slot=13 ;;
+  *-test[1-3]) slot=$((12 + ${AZP_AGENT_NAME##*-test})) ;;
+  *-[0-9]*) slot=${AZP_AGENT_NAME##*-}; [ "$slot" -le 12 ] 2>/dev/null || slot=0 ;;
+  *) slot=0 ;;
+esac
+if ! [ "$slot" -ge 1 ] 2>/dev/null || [ "$slot" -gt 15 ]; then
+  echo "error: '$AZP_AGENT_NAME' has no network slot: use <machine>-1 to <machine>-12, or <machine>-test, -test2, -test3." >&2
+  exit 1
+fi
+network="tamu-agent-internal-$AZP_AGENT_NAME"
+subnet="172.31.251.$((16 * slot))/28"
 proxy=tamu-agent-egress
-proxy_ip=172.31.250.2
+proxy_ip="172.31.251.$((16 * slot + 2))"
 proxy_url="http://$proxy:3128"
+# The one network every agent shared before (#2212); removed once no agent is left on it.
+shared_network=tamu-agent-internal
 
 if [ ! -r "$TOKEN_FILE" ]; then
   echo "error: no token at $TOKEN_FILE. Run install.sh, or write it there (root, mode 600)." >&2
@@ -34,16 +47,27 @@ fi
 confirm_egress() {
   docker network inspect "$network" >/dev/null 2>&1 ||
     docker network create --internal --subnet "$subnet" "$network" >/dev/null
-  if ! docker container inspect "$proxy" >/dev/null 2>&1; then
-    docker run -d --name "$proxy" --restart unless-stopped \
+  # Agents started together race to create the proxy; losing that race is fine.
+  if ! docker container inspect "$proxy" >/dev/null 2>&1 &&
+    ! docker run -d --name "$proxy" --restart unless-stopped \
       --memory 512m --cpus 1 --cap-drop ALL --security-opt no-new-privileges \
-      "$EGRESS_IMAGE" >/dev/null
+      "$EGRESS_IMAGE" >/dev/null 2>&1 &&
+    ! docker container inspect "$proxy" >/dev/null 2>&1; then
+    echo "error: could not start the egress proxy. Is $EGRESS_IMAGE built?" >&2
+    exit 1
   fi
   if [ "$(docker container inspect -f '{{.State.Running}}' "$proxy")" != true ]; then
     docker start "$proxy" >/dev/null
   fi
-  docker container inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' "$proxy" |
-    grep -qw "$network" || docker network connect --ip "$proxy_ip" "$network" "$proxy"
+  networks=$(docker container inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' "$proxy" | tr ' ' '\n')
+  echo "$networks" | grep -qx "$network" ||
+    docker network connect --ip "$proxy_ip" "$network" "$proxy"
+  # An agent still running the old script keeps the shared network; once only the proxy is left on it, it goes.
+  if echo "$networks" | grep -qx "$shared_network" &&
+    [ "$(docker network inspect -f '{{range .Containers}}{{.Name}} {{end}}' "$shared_network" | xargs)" = "$proxy" ]; then
+    docker network disconnect "$shared_network" "$proxy" >/dev/null
+    docker network rm "$shared_network" >/dev/null
+  fi
 }
 
 stop_agent() {

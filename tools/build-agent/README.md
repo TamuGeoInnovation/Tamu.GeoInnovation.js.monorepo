@@ -39,9 +39,10 @@ agent is set up so that code can do as little as possible:
   credential (in `/azp/.credentials`) is readable by the job, as on any agent, so it must stop working once the
   job ends, and removing the agent does that.
 
-- **It reaches the internet, and nothing local.** The agent's container is on `tamu-agent-internal`, a Docker
-  network created with `--internal`: it has no route out at all, and Docker gives it no outside DNS. Its only way out
-  is the egress proxy, `tamu-agent-egress`, a Squid container on that network and on Docker's default bridge. The
+- **It reaches the internet, and nothing local.** Each agent's container is on a network of its own,
+  `tamu-agent-internal-<agent name>`, created with `--internal`: it has no route out at all, not even to another
+  agent, and Docker gives it no outside DNS. Its only way out is the egress proxy, `tamu-agent-egress`, a Squid
+  container on every agent's network and on Docker's default bridge. The
   proxy carries HTTPS (and plain HTTP) to public addresses on ports 443 and 80, and refuses every private,
   link-local, loopback and carrier-grade NAT address: the lab's own network, Docker's networks, the host
   (`host.docker.internal`) and cloud metadata addresses. It checks the address it actually connects to, so a public
@@ -52,6 +53,14 @@ agent is set up so that code can do as little as possible:
   This needs no firewall rules on the host, so it works the same on Docker Desktop for Windows and on a plain Linux
   Docker host, and a restart of Docker changes nothing: the network persists, the proxy restarts itself
   (`--restart unless-stopped`), and `run-agent.ps1` recreates either if it is missing, before every job.
+
+  **Why one network per agent:** a branch build on one agent has `app_configs` on disk while a fork's job may run on
+  the next, so agents must not reach each other. Each network is a /28 of `172.31.251.0/24` picked from the agent's
+  name, so it is the same at every start: `<machine>-<n>` takes slot n (1 to 12), `-test`, `-test2` and `-test3` take
+  13 to 15, and slot s is `172.31.251.(16 s)/28`, with the proxy at `.(16 s + 2)`. So one machine holds up to twelve
+  agents and three test ones. The proxy refuses those addresses like any other private one. Agents installed before
+  this shared one network, `tamu-agent-internal` (`172.31.250.0/24`), which the proxy still accepts; reinstalling an
+  agent moves it to its own, and the shared network is removed once only the proxy is left on it.
 
 **The pipeline's fork settings are part of the guard rails** (step 2 below): secrets are not given to fork builds,
 and a pull request from someone outside the team builds only after a team member comments on it.
@@ -182,8 +191,8 @@ powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-3 -Star
 powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-4 -Start
 ```
 
-They share the saved token, the egress proxy and its network. On Linux, set `MEMORY` and `CPUS` in the unit's
-environment to change one agent's share.
+They share the saved token and the egress proxy; each has its own network, so they cannot reach each other. On
+Linux, set `MEMORY` and `CPUS` in the unit's environment to change one agent's share.
 
 ## Token renewal
 
@@ -214,8 +223,8 @@ machine is leaving for good, remove the agent in Organization settings → Agent
 Delete, and delete the image (`docker image rm tamu-gisc/build-agent:latest`).
 
 If a container is left behind (`docker ps --filter name=tamu-build-agent`), `docker stop tamu-build-agent-<agent name>`
-removes it the same way. The proxy and the network can stay; if the machine is leaving, remove them too with
-`docker rm -f tamu-agent-egress` and `docker network rm tamu-agent-internal`.
+removes it the same way. The proxy and the networks can stay; if the machine is leaving, remove them too with
+`docker rm -f tamu-agent-egress` and `docker network rm tamu-agent-internal-<agent name>` for each agent.
 
 ## Proven without Azure
 
