@@ -30,11 +30,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 9:45 PM Central.**
-
-**Batch 65, security: the Nx 24 branch refreshed onto development (webpack merged)**, started 8:25 PM Central, in `C:/TAMU/wt-nx24`. (Batch 65 was started by mistake at 8:14 and stopped at once, before changing anything, when the director's new order arrived.)
+Nothing.
 
 ## Finished
+
+- **Batch 65, security: the Nx 24 branch refreshed onto development - pushed** (8:25 to 8:29 PM, 23 October): `development` (`55d871383`, with webpack 2223 and jwt-decode 2228) merged in cleanly, no conflicts; nx.json byte-identical to batch 62's; the lock's Nx 24 changes against development are the same 47 entries as batch 62's; nx 24.0.0, webpack-cli 7.2.3. Full check exit 0 (clean npm ci, lint 104 / test 100 / build 14). Against development the branch is Nx 24's 11 files alone. **`chore/2168-nx-24` at `3da10feac`.** Report `work-lab-leila/reports/2026-10-23-62.md`.
 
 - **Batch 72 (rewritten), security: the pipeline on the lab first, hosted fallback, up to three agents (#2212) - pushed** (8:15 to 8:25 PM, 23 October): Docker has 24 CPUs and 62.5 GiB; one agent's whole workload peaked at 10.4 GB and 4.8 cores, so three agents at 14g / 6 CPUs fit with 20 GiB and 6 cores spare (new -Memory/-Cpus defaults). Setup's Last SHA job checks Linux-Build for an online agent (any error: hosted, with a warning); each heavy job runs twice from its template, lab or hosted, exactly one runs; `useLab: false` switches back. unzip and zstd added to the image. Check exit 0. Estimated full PR: about 12 min on one agent, 6 on three, against 15 to 25 hosted. The maintainer must give the build service Reader on the pool (clicks in the report). **`ci/2212-lab-first` at `f74d7ef57`.** Report `work-lab-leila/reports/2026-10-23-61.md`.
 
@@ -240,4 +240,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 72 (42 and 39 stopped; 40 superseded)
+Last batch done: 65 (all queued batches done) (42 and 39 stopped; 40 superseded)
