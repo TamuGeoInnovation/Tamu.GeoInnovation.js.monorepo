@@ -94,4 +94,13 @@ git -C "$repo" -c user.name=t -c user.email=t@t commit -qm gone
 lint_steps "$repo" HEAD >/dev/null 2>&1
 expect "a missing lint.yml is an error" "1" "$?"
 
+# A project list is checked against `nx show projects` (#2291), here a fixture of it.
+printf '%s\n' common-ngx-pipes maps-esri aggiemap-angular gisday-nest >"$repo/projects.txt"
+expect "real projects pass" "" "$(unknown_projects common-ngx-pipes,aggiemap-angular "$repo/projects.txt")"
+expect "a misspelt project is named, with the nearest real one" "common-ngx-pipez (did you mean common-ngx-pipes?)" \
+  "$(unknown_projects common-ngx-pipez "$repo/projects.txt")"
+expect "a name nothing is close to is named alone, and each unknown one is listed" "maps-esri-x (did you mean maps-esri?)
+nothing-like-it" "$(unknown_projects maps-esri-x,gisday-nest,nothing-like-it "$repo/projects.txt")"
+expect "a trailing comma is not a project" "" "$(unknown_projects gisday-nest, "$repo/projects.txt")"
+
 exit "$failed"

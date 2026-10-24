@@ -1,5 +1,4 @@
 import { inject, TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NotificationItemComponent } from './notification-item.component';
@@ -10,7 +9,7 @@ describe('NotificationItemComponent', () => {
     await TestBed.configureTestingModule({
       // Zoneless, Angular renders a created component by itself, so its @animate trigger needs an
       // animations provider (#1478).
-      providers: [NotificationItemComponent, provideNoopAnimations()],
+      providers: [NotificationItemComponent],
       imports: [
         RouterTestingModule.withRoutes([{ path: 'value', component: NotificationItemComponent }]),
         NotificationItemComponent

@@ -16,6 +16,6 @@ describe("Men's Basketball", () => {
   it('titles a parking lot popup with the lot name', () => {
     const parking = MensBasketball_ColdLayerSources.find((source) => source.id === MensBasketball_Definitions.PARKING.id);
 
-    expect(parking?.popupData?.name).toBe('{attributes.name}');
+    expect(parking?.popupData?.['name']).toBe('{attributes.name}');
   });
 });
