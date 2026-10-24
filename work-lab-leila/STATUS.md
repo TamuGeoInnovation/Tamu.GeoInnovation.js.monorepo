@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:59 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **10:11 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **9:59 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 132, security: #2111 - Trivy on every image built from the stack's tip (read only)**, started 9:59 AM Central, 24 October.
+Nothing. Batch 132 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
 
 ## Finished
 
+- **Batch 132, security: #2111 - Trivy on every image from the stack's tip - read only** (9:59 to 10:10 AM, 24 October): eight images from `6fbc15541` (front ends on nginx-base sha-b5ba4a5) and from development `fbabec35c`, scanned at critical/high and medium. development: front ends 1 High each (brotli-libs), gisday-nest 2 Mediums (uuid 8.3.2 from bull and 9.0.1 from auth0 3), gisday-nest and mailroom-nest the accepted msal-node High. Tip: only the accepted msal-node High. Report `work-lab-leila/reports/2026-10-23-119.md`.
 - **Batch 131, security: #2111 - uuid 11.1.1 under bull, stacked - pushed** (9:51 to 9:58 AM, 24 October): `fix/2111-bull-uuid` at `6fbc15541` on the fork, on #2320's branch. Override `bull: { uuid: 11.1.1 }`; the lock's top-level uuid moves 8.3.2 to 11.1.1 and auth0's two 11.1.1 copies share it; nothing else wanted uuid 8. npm audit: the uuid advisory gone (production moderates 6 to 3). A vgi-export season export through the API (a Bull job) completes on both gisday-nest images. Full check exit 0. Report `work-lab-leila/reports/2026-10-23-118.md`.
 - **Batch 130, security: #2111 - the moderate and low advisories, one by one - read only** (9:46 to 9:48 AM, 24 October): on the stack tip `9d9319a77`, 18 moderate and 1 low are 8 advisories. Production by npm's count: got 9.6.0 and jose 1.28.2 under openid-client 3 (in no deployed image; ues-operations-nest only: accept), and uuid 8.3.2 under bull in gisday-nest's image (bull calls only uuid.v4(); unreachable, but a scoped override to 11.1.1 is cheap: fix now). Dev only: fast-uri (fixed 3.1.9, clears 2 Nov) and serialize-javascript (7.1.3, clears 5 Nov): wait. Report `work-lab-leila/reports/2026-10-23-117.md`.
 - **Batch 129, security: #2320 - Admin → Users lists every Auth0 user - pushed** (9:40 to 9:43 AM, 24 October): `fix/2320-all-auth0-users` at `9d9319a77` on the fork, on auth0 7. Test first: with 51 users over two pages, the old code returned 50, last name User 49, only page 0 (3 failed). Fix: getUsers walks every page with per_page 50, sorted, mapped as before, stopping at 100 pages with a log (tested with 6,000 users). 26 of 26 tests pass; the check on common-nest-auth, gisday-platform-data-api and gisday-nest exit 0. No screenshots: needs a tenant of more than 50 users. Report `work-lab-leila/reports/2026-10-23-116.md`.
@@ -334,4 +335,4 @@ Last written **9:59 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 131 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 132 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
