@@ -30,11 +30,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 8:15 PM Central.**
-
-**Batch 68, security: the build agent in the background with no token prompt (#2212)**, started 7:24 PM Central (files begun while batch 69's check ran), in `C:/TAMU/wt-2212s`. Batch 65 waits for the webpack PR to merge.
+Nothing. Batch 65 waits for the webpack PR to merge.
 
 ## Finished
+
+- **Batch 68, security: the build agent in the background with no token prompt (#2212) - pushed** (7:24 to 7:45 PM, 23 October): Windows: `save-agent-token.ps1` (DPAPI SecureString, this-user-only ACL) and `install-agent-task.ps1` (hidden logon task, no elevation needed, waits for Docker, restarts, logs without the token, `-Uninstall`). Linux: `linux/install.sh` + `tamu-build-agent.service` + `run-agent.sh` (bash), token root 600. A refused token (401) now stops the agent at once with one line (exit 77/2; systemd does not retry it). Proved with a dummy token: Windows hidden run, refused and stopped once, uninstall in 2 s; Linux on Ubuntu 24.04 + systemd + Docker Engine 29: starts after Docker and at boot, refused and not retried, ordinary failures restarted. Four bugs found and fixed. **`ci/2212-agent-service` at `fd0c1b8bf`.** Report `work-lab-leila/reports/2026-10-23-57.md` (the maintainer's switch-over commands are in it).
 
 - **Batch 69, security: the webpack branch onto the new lock - pushed** (7:23 to 7:27 PM, 23 October): `development` (`517e6f0ad`, with 2188, 2208, 2218) merged in cleanly, lock included; against development, exactly batch 63's 6 keys added, nothing removed or changed. Full check exit 0 (clean `npm ci`, lint 104 / test 100 / build 14); production `gisday-nest` 202 of 203 files identical to batch 50's, the generated lock differing only by body-parser 2.4.0 (#2208). **`chore/2168-webpack-inferred` at `a93d26efd`.** Report `work-lab-leila/reports/2026-10-23-56.md`.
 
@@ -230,4 +230,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 69 (42 and 39 stopped; 40 superseded)
+Last batch done: 68 (and 69) (42 and 39 stopped; 40 superseded)
