@@ -33,7 +33,7 @@ function createApps(ids: string[]): InternalDiscoverApplication[] {
     description: '',
     source: 'internal' as const,
     type: 'event' as const,
-    mapType: 'campus' as const,
+    mapTypes: ['campus'],
     configuration: {
       id,
       name: id.toUpperCase(),
