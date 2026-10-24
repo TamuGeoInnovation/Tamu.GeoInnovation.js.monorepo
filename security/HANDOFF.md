@@ -16,6 +16,7 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 | 3 | [PR 2253](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2253) GLightbox (#2246) | **Opened 11:52 PM after 2240 merged; CI building.** Merge when green |
 | 4 | maplibre, [#2247](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2247) (no PR yet) | Prepared on 2253: `fork/ready/2247-maplibre` (`ba338ad93`), with its release-notes file; checked: lint 104, test 100, build 14 |
 
+| 5 | `marked` 9 → 18 (lab batch 91, `fork/chore/1218-marked-18`, `9b8e3d45a`; no issue or PR yet) | Checked on `development` (3,177 texts render the same). **Its jest config adds `marked/` to `gisday-platform-ngx-core`'s `transformIgnorePatterns`, the same line GLightbox removes `lightgallery` from**: after GLightbox merges, resolve that line to keep `marked/` without `lightgallery` |
 **After each merge, for the next one:**
 
 1. `git fetch origin development fork`, a worktree of the prepared `ready/` branch, `git merge origin/development`.
@@ -42,6 +43,15 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 
 **After 2252 and 89 merge, give the maintainer the commands to rebuild the image and reinstall the agents** (`lab-1` to `lab-4`,
 12 GB / 5 CPUs) from report `2026-10-23-75`, using the main checkout's `tools/build-agent`, when no build is running.
+
+## Security finding, 24 October, 1 AM: ask the maintainer
+
+- **[#2258](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2258): the markdown pipe bypasses Angular's HTML sanitiser.**
+  Text rendered through it (GIS Day pages, AggieMap POI/bonfire/dining popups) is inserted unsanitised; the dining text comes from
+  another department's API. Nothing harmful is in it today. **Priority was set to Medium by the director; confirm it with the
+  maintainer.** The fix is lab batch 96, queued next.
+- **work-lab-leila's report `2026-10-23-78` mentions "a second security observation, unrelated to marked"** that it would not write in
+  the public mailbox and says it gave the maintainer directly. **Ask him what it is**, and file it (privately if needed).
 
 ## The dev build
 
