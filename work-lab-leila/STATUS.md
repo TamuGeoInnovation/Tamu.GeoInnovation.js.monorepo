@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:19 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **9:23 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **9:19 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 127, security: #1218 - better-sqlite3 12 to 13, stacked (a branch)**, started 9:19 AM Central, 24 October.
+Nothing. Batch 127 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
 
 ## Finished
 
+- **Batch 127, security: #1218 - better-sqlite3 12 to 13, stacked - pushed** (9:19 to 9:23 AM, 24 October): `chore/1218-better-sqlite3-13` at `e12f83ebd` on the fork, on jwks-rsa 4. ^13.0.3 in the dependency, override and ues-operations-nest; no ERESOLVE (the override covers TypeORM's optional ^12 peer). Lock: better-sqlite3's tree only; prebuild-install and its dependencies go (1,874 packages, 18 fewer), and 13 has no install script. TypeORM's better-sqlite3 driver opens an in-memory database and reads a row on 12.11.1 and 13.0.3. Full check exit 0. Report `work-lab-leila/reports/2026-10-23-114.md`.
 - **Batch 126, security: #1218 - jwks-rsa 2 to 4, stacked - pushed** (9:11 to 9:17 AM, 24 October): `chore/1218-jwks-rsa-4` at `c85e3d77c` on the fork, on batch 125's branch. jwks-rsa 4.1.0, no code change (passportJwtSecret and its options unchanged). Lock: jwks-rsa's tree only; jose 2 to 6.2.13 and @types/jsonwebtoken 8 to 9, both copies already on development, now shared. Proved on real gisday-nest images with a local issuer: good token 201, another key / wrong audience / expired / none 401, identical on 2.1.5 and 4.1.0. Full check exit 0. Report `work-lab-leila/reports/2026-10-23-113.md`.
 - **Batch 125, security: #2318 - override the vite that @angular/build pins - pushed** (9:07 to 9:11 AM, 24 October): `fix/2318-angular-build-vite` at `fe02d29d9` on the fork, on the stack tip `341121633`. Override `@angular/build: { vite: 8.3.4 }` (8 Oct); the lock loses only the nested vite 8.3.0. npm audit: no vite advisory; Highs left are msal-node/identity (accepted) and nx's undici. aggiemap-angular and gisday-angular build; the dev server compiles and serves /, /directory and /@vite/client (Vite 8.3.4). Full check exit 0. Report `work-lab-leila/reports/2026-10-23-112.md`.
 - **Batch 124, security: #1218 - what is left before "latest at least 14 days old" - read only** (9:00 to 9:04 AM, 24 October): of 132 direct dependencies, 13 are behind: 12 majors (5 covered by the stack, angulartics2 by PR 2300) and 1 patch (webpack, Dependabot); no minor. 61 are already newer than 14 days. Left after the stack: 4 workable majors (openid-client, auth0, jwks-rsa, better-sqlite3), about 11-17 h, and 2 held (typescript 7 for Angular 23, @types/node 26 for the Node major). dependabot.yml has no cooldown. Audit: production highs all accepted; dev-only undici (nx pin; fix clears 14 days on 29 Oct) and vite (@angular/build pin) are not. Report `work-lab-leila/reports/2026-10-23-111.md`.
@@ -329,4 +330,4 @@ Last written **9:19 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 126 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 127 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
