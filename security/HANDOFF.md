@@ -3,6 +3,27 @@
 Written by `work (security)` at 11:15 PM Central, Friday 23 October 2026, for whichever machine directs the security and
 dependency work next (the home machine, this weekend). The maintainer keeps the merge button; nothing here merges itself.
 
+## Update, 7:25 AM Central, 24 October
+
+**Merged since the morning:** 2187, 2191 (overnight), 2195, 2230, 2231, 2235, 2236, 2238, 2240, 2245, 2249, 2252, 2253 (GLightbox), 2255,
+2257, 2260 (sanitiser), 2261, 2266, 2268, 2269, 2270, 2272, 2273, 2274, 2279, 2284, 2285 (maplibre), 2290, 2295 (msal accepted), 2296 (multer);
+nginx-base#2.
+
+**The lock queue, each stacked and fully checked on the one before:** PR 2314 `marked` 18.1.0 → `chore/1218-ngx-datatable-25` → `chore/1218-ngx-highlightjs-14`
+(release notes as `9999-*`, rename when filing) → `chore/1218-chart-js-4` → `chore/1218-got-16` → `fix/2277-mail-timeouts`. After each merge: merge `development`
+into the next (the files will be identical; keep the stacked side), push, file its issue, open its PR. **Dependabot's 2300 (`angulartics2`) goes after
+`marked`** (Dependabot rebases itself). **2297, 2298, 2299 are held until 3-4 November** (14-day rule; tracking issues #2307-#2309).
+
+**No lock change, merge when green:** 2294 (cooldown), 2302 (toasts; then geoservices' animations `fork/chore/2278-geoservices-animations`, which removes
+`@angular/animations` and so joins the lock queue), 2303 (project-name check), 2305 (README), 2312 (brotli re-pin).
+
+**Listeners:** work-lab-leila (batch 122, own-file type errors); **copilot-home** (GitHub Copilot CLI on the home computer; batches 4-6 queued: `got` review,
+remove `@types/bull` #2311, `chart.js` review). It may be waiting at an approval prompt: the maintainer restarts it with
+`copilot --allow-all-tools --allow-all-paths` and three `--deny-tool` entries (force-push, `gh pr merge`, `gh pr create`), then the listener prompt.
+
+**Decisions taken today:** 14-day rule for upgrades and Dependabot cooldown (#2292); allow-list install scripts and `npm audit signatures` (#2293, not
+started); #1218 to close once the queue drains (proposed, not yet answered); Copilot used as a listener.
+
 ## Ready to merge, morning of 24 October (all green; merge order notes in brackets)
 
 **Lock queue, one at a time:** [PR 2253](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2253) GLightbox (then the director pushes maplibre, `marked` 18, `ngx-datatable` 25, `ngx-highlightjs` 14 in turn).

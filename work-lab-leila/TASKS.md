@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 122.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 123.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,19 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 122 (security: #2263 - the own-file type errors in ts-events-ngx and the other projects, listed and fixed; a branch; 24 October 2026, 7:25 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start now.** **Expected: 90 minutes.** Your batch 121 is right; the lock queue is fully stacked. Your batch 98 survey found **74 type
+errors in projects' own files** once the ArcGIS path was fixed (61 in `ts-events-ngx`'s definition specs). Whatever the maintainer decides on
+#2263 (typechecking specs in CI), errors in our own files are bugs: fix those, not causes C and D (other projects' files).
+1. On `origin/development` (it has #2269's path fix), re-run your spec typecheck survey and list **every error in a project's own files**, by project,
+   file and line. Say for each whether the code or the test is wrong, as batch 99 did.
+2. Branch `fix/2263-own-file-type-errors` from `origin/development`: fix them. For any in component or service code (not a spec), say what it does at
+   run time today and whether a user could see it; a visible bug gets a test that fails first and before/after screenshots.
+3. Each fixed project's own files typecheck under its spec tsconfig (other projects' errors may remain; list the totals before and after).
+   `scripts/check-in-volume.sh` (full). Commit (`fix(workspace): Fix the type errors in projects' own files that spec typechecking shows`,
+   `Part of #2263`, Co-Authored-By), push to the fork. No PR. If it is more than about 100 errors or two hours, stop after `ts-events-ngx` and report.
 
 ## Batch 120 (security: #1218 - ngx-highlightjs 14 stacked on ngx-datatable 25, with its release-notes file; a branch; 24 October 2026, 7:00 AM Central, from `work (security)`)
 
