@@ -1,7 +1,7 @@
 {
   "extends": "../../../../../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["node", "vitest/globals", "../../node_modules/@arcgis/core/interfaces"]
+    "types": ["node", "vitest/globals", "@arcgis/core/interfaces"]
   },
   "include": [],
   "files": [],

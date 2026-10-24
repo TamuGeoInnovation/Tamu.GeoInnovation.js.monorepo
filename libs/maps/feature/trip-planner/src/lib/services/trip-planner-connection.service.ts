@@ -141,14 +141,21 @@ export class TripPlannerConnectionService {
         // Compute and store and list of latest A/B Networks
         this._store.abNetworks = latestAB();
 
-        // Compute and store the latest non-A/B network
-        this._store.latestNonAbNetwork = latestNonAB();
+        // Compute and store the latest non-A/B network. There may be none: routing is unpublished on the production GIS
+        // server (#1003), whose Routing folder lists nothing, and the empty network stays as it was (#2259).
+        const latestNonAbNetwork = latestNonAB();
+
+        if (latestNonAbNetwork) {
+          this._store.latestNonAbNetwork = latestNonAbNetwork;
+        }
 
         // Set the private abNetwork subject value, which triggers observable subscriptions
         this._abNetworks.next(Array.from(this._store.abNetworks));
 
         // Set the private latestNonAbNetwork subject value, which triggers observable subscriptions
-        this._latestNonAbNetwork.next(this._store.latestNonAbNetwork);
+        if (latestNonAbNetwork) {
+          this._latestNonAbNetwork.next(latestNonAbNetwork);
+        }
 
         // Select a random AB network and set it as the initial current network
         this.connection();
@@ -171,6 +178,11 @@ export class TripPlannerConnectionService {
   public connection(): TripPlannerConnection {
     if (this._override.value) {
       if (!this._store.currentNetwork.name || !this._store.currentNetwork.type) {
+        // Nothing published to connect to (#2259).
+        if (!this._store.latestNonAbNetwork.name) {
+          return undefined;
+        }
+
         this._newCurrentNetwork = this._store.latestNonAbNetwork;
 
         // TODO: Remove this return once new implementation is in place

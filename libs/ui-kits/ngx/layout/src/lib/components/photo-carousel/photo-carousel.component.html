@@ -1,0 +1,9 @@
+<swiper-container #swiper init="false">
+  @for (photo of photos(); track photo) {
+  <swiper-slide>
+    <a [href]="photo" target="_blank" (click)="open($event, $index)">
+      <img [src]="photo" alt="Photo {{ $index + 1 }} of {{ photos().length }}, opens full size" />
+    </a>
+  </swiper-slide>
+  }
+</swiper-container>

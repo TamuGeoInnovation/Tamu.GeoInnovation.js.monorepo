@@ -98,6 +98,9 @@ A backup carries the database user `gisday_app` but not the server login, so `re
 login with `GISDAY_APP_PASSWORD` and maps the user to it. `gisday_app` can read and write data
 (`db_datareader`, `db_datawriter`) and has `VIEW DEFINITION`, which TypeORM needs to compare the
 schema; it cannot change tables. The migrations table already records `InitialSchema` as applied.
+Then `restore` runs the migrations, as `migrate run` does, because a backup is only as new as the schema
+it was taken at: the scrubbed copy predates `AddCheckInZones` and `AddSponsorActive`, and without them
+the API answered 500 on the sponsors and on a season day's events (#2196).
 
 ## A copy with no personal data
 

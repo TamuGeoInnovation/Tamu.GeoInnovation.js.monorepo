@@ -1,0 +1,236 @@
+{
+ "sidebar-close": [
+  {
+   "t": 0,
+   "transform": "none",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 240,
+   "transform": "matrix(1, 0, 0, 1, 0, 0)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 520,
+   "transform": "matrix(1, 0, 0, 1, 345.823, 0)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 794,
+   "transform": "matrix(1, 0, 0, 1, 360, 0)",
+   "display": "block",
+   "visibility": "visible"
+  }
+ ],
+ "sidebar-open": [
+  {
+   "t": 0,
+   "transform": "matrix(1, 0, 0, 1, 360, 0)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 238,
+   "transform": "matrix(1, 0, 0, 1, 360, 0)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 386,
+   "transform": "matrix(1, 0, 0, 1, 199.814, 0)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 656,
+   "transform": "none",
+   "display": "block",
+   "visibility": "visible"
+  }
+ ],
+ "backdrop-in": [
+  {
+   "t": 0,
+   "transform": "none",
+   "display": "none",
+   "visibility": "visible"
+  },
+  {
+   "t": 115,
+   "transform": "matrix(1, 0, 0, 1, 0, 812)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 228,
+   "transform": "matrix(1, 0, 0, 1, 0, 373.608)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 352,
+   "transform": "matrix(1, 0, 0, 1, 0, 3.53005)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 468,
+   "transform": "matrix(1, 0, 0, 1, 0, 0)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 528,
+   "transform": "matrix(1, 0, 0, 1, 0, 0)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 584,
+   "transform": "matrix(1, 0, 0, 1, 0, 0)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 647,
+   "transform": "matrix(1, 0, 0, 1, 0, 0)",
+   "display": "block",
+   "visibility": "visible"
+  }
+ ],
+ "backdrop-out": [
+  {
+   "t": 0,
+   "transform": "matrix(1, 0, 0, 1, 0, 0)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 117,
+   "transform": "matrix(1, 0, 0, 1, 0, 0)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 222,
+   "transform": "matrix(1, 0, 0, 1, 0, 296.732)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 344,
+   "transform": "matrix(1, 0, 0, 1, 0, 797.148)",
+   "display": "block",
+   "visibility": "visible"
+  },
+  {
+   "t": 462,
+   "transform": "none",
+   "display": "none",
+   "visibility": "visible"
+  },
+  {
+   "t": 512,
+   "transform": "none",
+   "display": "none",
+   "visibility": "visible"
+  },
+  {
+   "t": 626,
+   "transform": "none",
+   "display": "none",
+   "visibility": "visible"
+  }
+ ],
+ "trip-top-hide": [
+  {
+   "t": 0,
+   "transform": "matrix(1, 0, 0, 1, 0, 149.984)",
+   "display": "flex",
+   "visibility": "visible"
+  },
+  {
+   "t": 116,
+   "transform": "matrix(1, 0, 0, 1, 0, 149.984)",
+   "display": "flex",
+   "visibility": "visible"
+  },
+  {
+   "t": 227,
+   "transform": "matrix(1, 0, 0, 1, 0, 27.2897)",
+   "display": "flex",
+   "visibility": "visible"
+  },
+  {
+   "t": 348,
+   "transform": "matrix(1, 0, 0, 1, 0, -35.3595)",
+   "display": "flex",
+   "visibility": "visible"
+  },
+  {
+   "t": 476,
+   "transform": "matrix(1, 0, 0, 1, 0, -37.4961)",
+   "display": "flex",
+   "visibility": "visible"
+  },
+  {
+   "t": 595,
+   "transform": "matrix(1, 0, 0, 1, 0, -37.4961)",
+   "display": "flex",
+   "visibility": "visible"
+  },
+  {
+   "t": 652,
+   "transform": "matrix(1, 0, 0, 1, 0, -37.4961)",
+   "display": "flex",
+   "visibility": "visible"
+  }
+ ],
+ "trip-top-show": [
+  {
+   "t": 0,
+   "transform": "matrix(1, 0, 0, 1, 0, -37.4961)",
+   "display": "flex",
+   "visibility": "visible"
+  },
+  {
+   "t": 124,
+   "transform": "matrix(1, 0, 0, 1, 0, -37.4961)",
+   "display": "flex",
+   "visibility": "visible"
+  },
+  {
+   "t": 253,
+   "transform": "matrix(1, 0, 0, 1, 0, 115.731)",
+   "display": "flex",
+   "visibility": "visible"
+  },
+  {
+   "t": 316,
+   "transform": "matrix(1, 0, 0, 1, 0, 140.54)",
+   "display": "flex",
+   "visibility": "visible"
+  },
+  {
+   "t": 433,
+   "transform": "matrix(1, 0, 0, 1, 0, 149.984)",
+   "display": "flex",
+   "visibility": "visible"
+  },
+  {
+   "t": 538,
+   "transform": "matrix(1, 0, 0, 1, 0, 149.984)",
+   "display": "flex",
+   "visibility": "visible"
+  },
+  {
+   "t": 653,
+   "transform": "matrix(1, 0, 0, 1, 0, 149.984)",
+   "display": "flex",
+   "visibility": "visible"
+  }
+ ]
+}

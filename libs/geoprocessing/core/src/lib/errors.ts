@@ -10,11 +10,12 @@ export class GeoservicesError extends Error {
   constructor(badResponse: AxiosResponse<Responses | string | XMLDocument> | AxiosError) {
     super();
 
-    // Handle errors thrown by Axios
+    // Handle errors thrown by Axios. A request that got no answer (refused, offline, blocked, timed out) has no
+    // response, only a code such as ERR_NETWORK (#2267).
     if (badResponse instanceof AxiosError) {
       this.response = badResponse;
-      this.statusCode = badResponse.response.status;
-      this.type = badResponse.response.statusText;
+      this.statusCode = badResponse.response?.status ?? 0;
+      this.type = badResponse.response?.statusText ?? badResponse.code;
       this.message = badResponse.message;
     }
 

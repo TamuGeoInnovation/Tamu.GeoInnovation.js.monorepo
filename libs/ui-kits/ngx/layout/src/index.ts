@@ -12,7 +12,6 @@ export * from './lib/components/accordion/services/accordion.service';
 
 export * from './lib/abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component';
 
-export * from './lib/animations/drawer';
 
 export * from './lib/directives/render-host/render-host.directive';
 export * from './lib/directives/element-insert/element-insert.directive';
@@ -24,3 +23,4 @@ export * from './lib/components/stepper/components/step/step.component';
 export * from './lib/components/stepper/directives/stepper-toggle.directive';
 export * from './lib/components/stepper/stepper.component';
 export * from './lib/components/stepper/components/step-toggle/step-toggle.component';
+export * from './lib/components/photo-carousel/photo-carousel.component';

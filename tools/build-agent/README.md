@@ -22,7 +22,8 @@ agent is set up so that code can do as little as possible:
 
 - **It runs in a container, never on the host.** No host folder is mounted, the Docker socket is not, the host's
   network is not used, and the container is not privileged. No SSH keys, no `gh` login,
-  nothing from `C:\Users`. A job sees only what it cloned.
+  nothing from `C:\Users`. A job sees only what it cloned. The one mount is the git mirror (below): a Docker volume, not
+  a host folder, and **read-only**.
 - **One job per container.** The agent runs with `--once`, and `run-agent.ps1` starts a fresh container for every
   job (`docker create --rm`), so nothing one job leaves behind, a file, a process or a cache, reaches the next.
 - **Memory, CPU and processes are capped** (`--memory 24g --cpus 16 --pids-limit 8192`), so a job cannot starve the
@@ -193,6 +194,27 @@ powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-4 -Star
 
 They share the saved token and the egress proxy; each has its own network, so they cannot reach each other. On
 Linux, set `MEMORY` and `CPUS` in the unit's environment to change one agent's share.
+
+## The git mirror
+
+A lab job's checkout used to clone the whole repository from GitHub, about 440 MB and up to 78 seconds, where a hosted
+agent took 11 to 13. Now each agent has a bare mirror of the repository, `tamu-agent-git-mirror`, mounted at `/mirror`
+**read-only**, and the lab's copies of the heavy jobs check out with `templates/tasks/checkoutFromMirror.yml` in place
+of the checkout task (which cannot take a reference repository): `git init`, borrow the mirror's objects
+(`objects/info/alternates`), then fetch every branch and the pull request's merge ref **from GitHub** and check out the
+build's commit. Only what the mirror lacks travels; the history stays complete, as `affected` needs.
+
+- **Only the supervisor writes the mirror, and only from GitHub**: before each job, `run-agent.ps1` (or
+  `linux/run-agent.sh`) runs `git clone --mirror` the first time and `git fetch --prune` after that (about 1 second),
+  in a short container of its own on Docker's default network, never in a job's container. A lock keeps agents
+  started together from fetching into it at once. If the refresh fails, the job still checks out; it fetches more.
+- **A job cannot change it**: the mount is read-only (`touch /mirror/…` gives *Read-only file system*), so nothing a
+  fork's pull request runs can plant an object for the next job.
+- **Measured** (24 October 2026, PR 2249's merge ref, a branch that exists only on a fork): **1.4 s with the mirror,
+  48 KB fetched; 63.4 s and 439 MB without**, the same commit and the same tree, full history, `origin/development`
+  present.
+- Without a mirror (a hosted agent, or a lab agent whose volume is missing) the step fetches everything, with a
+  warning, as the checkout task would.
 
 ## Token renewal
 
