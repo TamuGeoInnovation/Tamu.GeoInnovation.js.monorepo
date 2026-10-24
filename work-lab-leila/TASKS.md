@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 106.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 107.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,23 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 106 (security: #1218 - @angular/animations to animate.enter / animate.leave; a branch; 24 October 2026, 3:35 AM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). From Saturday the security director is the home machine. **Start after batch 105.** **Expected: 3 to 4 hours.** Your batch 103 answers: **1 yes**, filed as #2275 (the maintainer decides what
+each app reports); **2 no**, with #2275; **3 no issue**: GIS Day competitions is being retired (#2232). Your survey's PR 13: `@angular/animations`
+is deprecated in Angular 22 (*"Use `animate.enter` and `animate.leave` instead"*); 16 files use it (`provideAnimations`,
+`BrowserAnimationsModule`, triggers).
+1. **List every animation** (component, trigger, what it animates, where a user sees it) and **record each one before**: a short screen recording
+   or a sequence of screenshots at fixed intervals, into `docs/screenshots/animate-enter-leave/` (sidebars, popups, toasts...). Say which need a
+   sign-in.
+2. Branch `chore/1218-animate-enter-leave` from `origin/development`: replace each trigger with `animate.enter`/`animate.leave` and CSS
+   transitions or keyframes with the same timing and easing; remove `provideAnimations`/`BrowserAnimationsModule` where nothing needs them any
+   more; drop `@angular/animations` only if nothing (Material included) still imports it. **Reuse rule:** shared keyframes or transition styles go
+   in `libs/sass`, once. Lock key by key if the package goes.
+3. Record each one after; say what differs, frame by frame where it matters. Full check. Commit (`chore(workspace): Move animations to
+   animate.enter and animate.leave`, Co-Authored-By; the director adds the issue and release notes if anything looks different), push to the
+   fork. No PR. If it is too large for one change, stop after the first app and report.
 
 ## Batch 105 (security: #1218 - got 11 to 16; a branch; 24 October 2026, 2:55 AM Central, from `work (security)`)
 
