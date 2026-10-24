@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 123.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 124.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,30 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 123 (security: #2293 - allow only known install scripts, and check registry signatures; a branch; 24 October 2026, 12:30 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start now.** **Expected: 90 minutes.**
+Most malicious npm releases run through an install script, and npm runs every one we install without asking (#2293).
+1. **List them.** In a `node:24.22.1` container on a clean `npm ci` of `origin/development`, list every installed package with a
+   `preinstall`, `install` or `postinstall` script (from `node_modules/**/package.json`, plus `binding.gyp` packages, which npm builds
+   implicitly), with: its version, which of our projects pulls it in (`npm ls <name>`), what the script does, and **whether anything breaks
+   without it**. Test that last part with `npm ci --ignore-scripts` and then `nx affected`-free runs of `lint`, `test` and `build` for a few
+   projects that use it (esbuild and @swc/core in a build, better-sqlite3 in a test that opens a database, nx itself). Say which scripts are
+   needed and which can be skipped.
+2. **Find the mechanism.** What does npm 11 (the version `node:24.22.1` ships) support for an allow-list: `allowScripts` in
+   `package.json` or `.npmrc`, `ignore-scripts=true` plus explicit `npm rebuild <pkg>` for the needed ones, or anything else. Say what
+   each does when a **new** package with an install script arrives: is the script skipped silently, does it warn, or does it fail. CI must
+   notice a new one; a silent skip is not enough.
+3. **`npm audit signatures`** on the same install: exit code, how long it takes, and what it reports (packages with no signature, no
+   attestation). Say whether it can run in CI as a failing step today.
+4. Branch `ci/2293-install-scripts` from `origin/development`: the allow-list (step 2's best mechanism), a check that fails when an
+   installed package has an install script not on the list (a script under `tools/security-findings/` or `scripts/`, with its own
+   `bash ...test.sh` or node test, wired into `lint.yml` beside the other non-Nx steps), and `npm audit signatures` as a CI step if step 3
+   says it is safe. Keep the Docker images' installs (`Dockerfile`s that run `npm ci`) working: say which ones you changed and prove each builds.
+5. `scripts/check-in-volume.sh` (full; the lock and `package.json` may change, so it runs `npm ci`). Commit
+   (`ci(workspace): Allow only known install scripts, and check registry signatures`, `Part of #2293`, Co-Authored-By), push to the fork.
+   No PR. If step 1 shows that skipping scripts breaks more than it is worth, stop after step 3 and report.
 
 ## Batch 122 (security: #2263 - the own-file type errors in ts-events-ngx and the other projects, listed and fixed; a branch; 24 October 2026, 7:25 AM Central, from `work (security)`)
 
