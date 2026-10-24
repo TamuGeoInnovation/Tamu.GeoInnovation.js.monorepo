@@ -30,11 +30,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 11:00 PM Central.**
-
-**Batch 86, security: where a lab job's time goes, and a cache a fork cannot poison (#2212)**, started 10:14 PM Central.
+Nothing.
 
 ## Finished
+
+- **Batch 86, security: where a lab job's time goes, and caches a fork cannot poison (#2212) - measured and proposed, nothing pushed** (10:15 to 10:21 PM, 23 October): build 5680 from the agents' logs: Cache 1:56, Lint 1:54, development 3:13, production 2:51 (waited 25 s for a re-registration); 5:15 from Cache start to the end, against hosted 5672's 6:27 with its builds in series. Measured in an agent: full clone 36.4 s (439 MB), Node 3.6 s, npm ci 27.9 s, node_modules 1.5 GB / 243 MB packed, 4.4 s to unpack. Proposed, fork-safe: a read-only warm git mirror (~30 s/job), a trusted-only node_modules cache behind a branch-checked pool, a fourth agent at 12 GB / 5 CPUs (~25 s/PR), Node in the image (~4 s/job); not a shared writable Nx cache or a multi-job container. Report `work-lab-leila/reports/2026-10-23-74.md`.
 
 - **Batch 87, security: the maplibre branch on the university's campus basemap (#1218) - pushed** (10:06 to 10:14 PM, 23 October): TAMU_Basemap_20261008 is a cached Web Mercator map service on production, keyless, CORS open; VTBase is dev-only and State Plane. Default style now its raster tiles; its address is one constant, TAMU_CAMPUS_BASEMAP_URL in @tamu-gisc/common/datasets/geographic, read by AggieMap's connections and basemap definitions, ues-operations and libs/maps/mapbox. Full check exit 0 (on rerun: Nx's false "recursive task invocation" again, same chain as batch 80; issue recommended). gisday-angular production build and the real nginx-base image draw the campus basemap. **`chore/1218-maplibre` at `fde48fd24`.** Report `work-lab-leila/reports/2026-10-23-73.md`.
 
@@ -264,4 +264,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 87 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 86 (and 87) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
