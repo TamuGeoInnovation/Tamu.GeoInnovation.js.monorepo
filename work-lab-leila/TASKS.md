@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 132.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 133.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,18 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 132 (security: #2111 - Trivy on every image built from the stack's tip; read only; 24 October 2026, 10:05 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now.** **Expected: 60 minutes.** Your batch 131 is right; it joins the lock queue after #2320's branch.
+The npm side is now known. This checks what the images themselves carry once the whole stack has merged.
+1. From **`fork/fix/2111-bull-uuid`** (`6fbc15541`), build the eight images as `publish.yml` builds them: the four APIs (`gisday-nest`,
+   `geoservices-nest`, `mailroom-nest`, `mailroom-helper-nest`) and the four front ends (on `nginx-base:sha-b5ba4a5`, as PR 2312 pins).
+2. Trivy 0.76.1, `--scanners vuln --severity CRITICAL,HIGH`, as the publish gate runs it, on each. Then once more at `MEDIUM` for the record.
+3. For each finding: the image, the package (OS or npm), the installed and fixed versions, whether `.github/security/accepted-advisories.json`
+   covers it, and what fixes it (a base-image re-pin, an `apk upgrade` line in nginx-base, an npm change), within the 14-day rule (#2292).
+4. Also the same eight from `origin/development`, so the report says what the stack fixes and what it does not.
+5. Report only: no branch. Remove the test images afterwards.
 
 ## Batch 131 (security: #2111 - `uuid` 11.1.1 under `bull`, stacked; a branch; 24 October 2026, 9:55 AM Central, from `work (security)`)
 
