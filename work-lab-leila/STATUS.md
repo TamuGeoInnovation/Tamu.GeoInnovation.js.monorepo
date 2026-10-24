@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **1:26 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **1:48 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,9 +32,11 @@ Last written **1:26 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 2:30 AM Central.**
 
-**Batch 93, security: @swimlane/ngx-datatable 20 to 25 (#1218)**, started 1:26 AM Central, 24 October. Then batches 94 and 95.
+**Batch 94, security: the select component's spec does not typecheck (#2256)**, started 1:48 AM Central, 24 October. Then batch 95.
 
 ## Finished
+
+- **Batch 93, security: @swimlane/ngx-datatable 20 to 25 (#1218) - pushed** (1:26 to 1:45 AM, 24 October): two tables, AggieMap's building directory and GIS Day's submission review list (sign-in only; rendered on an uncommitted lab page with fixed rows). Lock: only ngx-datatable. `offset` is a model signal now; 25's grid layout made our borders add 1 px to every row and its pager draws buttons, so the styles were fixed, and the two copies of them are now one partial, `libs/sass/components/_datatable.scss`. Same rows, sorting, scrolling, paging and empty tables; 0 console errors. Full check exit 0 (lint 104 / test 100 / build 14). Found: the Abbreviation column is always empty (`BldgAbbrev` vs `BldgAbbr`). **`chore/1218-ngx-datatable-25` at `7aee83bdf`.** Report `work-lab-leila/reports/2026-10-23-81.md`.
 
 - **Batch 96, security: the markdown pipe lets Angular sanitise (#2258) - pushed** (1:04 to 1:23 AM, 24 October): red first, a spec rendering the pipe through `[innerHTML]` as callers do: an `<img onerror>` and a `javascript:` link reached the DOM. The pipe now returns a string; 5/5 pass. On all 3,177 real texts Angular's sanitiser removes no element, text or address, only `data-start`/`data-end` on 10 dining paragraphs and a typo'd attribute on one link; `target` kept. Before/after screenshots identical; dining popup unreachable. Full check exit 0 (lint 18 / test 17 / build 4 apps). Same line as the marked 18 branch: merge this first. **`fix/2258-markdown-sanitiser` at `0efc55cf4`.** Report `work-lab-leila/reports/2026-10-23-80.md`.
 
@@ -278,4 +280,4 @@ Last written **1:26 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 96 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 93 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
