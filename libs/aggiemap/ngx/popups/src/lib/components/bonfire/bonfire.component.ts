@@ -1,20 +1,8 @@
-import {
-  AfterViewChecked,
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  CUSTOM_ELEMENTS_SCHEMA,
-  viewChild
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
-import { register } from 'swiper/element/bundle';
-import { InitDetail } from 'lightgallery/lg-events';
-import lightGallery from 'lightgallery';
-import { LightGallery } from 'lightgallery/lightgallery';
-
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
+import { PhotoCarouselComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AsyncPipe } from '@angular/common';
 
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
@@ -23,22 +11,11 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-bonfire',
   templateUrl: './bonfire.component.html',
   styleUrls: ['./bonfire.component.scss'],
-  // <swiper-container> is the Swiper web component, registered at run time (as the popups module did).
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [AsyncPipe, MarkdownParsePipe]
+  imports: [PhotoCarouselComponent, AsyncPipe, MarkdownParsePipe]
 })
-export class BonfirePopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class BonfirePopupComponent extends BaseDirectionsComponent implements OnInit {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);
   public medias: Array<string> = [];
-
-  public settings = {
-    counter: false
-  };
-
-  private readonly _swiperRef = viewChild<ElementRef>('swiperRef');
-
-  private _lgInstance: LightGallery;
-  private _needsRefresh = false;
 
   private _allMedias = [
     'fallen_BryanAMcClain.jpg',
@@ -121,42 +98,6 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
       this.medias = fileNames.map((imgName) => {
         return `https://aggiemap.tamu.edu/images/bonfire/${imgName}`;
       });
-    }
-  }
-
-  public ngAfterViewInit(): void {
-    register();
-
-    const opts = {
-      slidesPerView: 1,
-      speed: 500,
-      loop: true,
-      navigation: true,
-      preventClicks: true,
-      on: {
-        init: () => {
-          this._lgInstance = lightGallery(this._swiperRef().nativeElement, {});
-        }
-      }
-    };
-
-    const _swiperRef = this._swiperRef();
-    Object.assign(_swiperRef.nativeElement, opts);
-
-    _swiperRef.nativeElement.initialize();
-  }
-
-  // TODO: can be cleaned up?
-  public onLightGalleryInit = (detail: InitDetail) => {
-    this._lgInstance = detail.instance;
-    this._needsRefresh = true;
-  };
-
-  // TODO: can be cleaned up?
-  public ngAfterViewChecked(): void {
-    if (this._needsRefresh) {
-      this._lgInstance.refresh();
-      this._needsRefresh = false;
     }
   }
 
