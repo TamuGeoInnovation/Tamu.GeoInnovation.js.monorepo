@@ -20,15 +20,13 @@ export class SignageComponent implements OnInit {
 
   public ngOnInit(): void {
     // TODO: Finish this -Aaron (1/5/2021)
-    this.mapService.loaded.subscribe((map) => {
+    this.mapService.loaded.subscribe(() => {
       const signage = this.signageService.getSignage();
       signage.subscribe((result) => {
         console.log(result);
       });
-      map.addSource('cases', {
-        type: 'vector',
-        url: 'mapbox://gsepulveda96.covid'
-      });
+      // A Mapbox-hosted tileset ('mapbox://gsepulveda96.covid') was added here as a source and never drawn by any
+      // layer. It went with mapbox-gl (#1218): MapLibre cannot load mapbox:// addresses.
     });
   }
 }

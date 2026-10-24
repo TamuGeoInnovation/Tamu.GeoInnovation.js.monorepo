@@ -6,6 +6,9 @@
 @import 'libs/sass/modules/forms';
 @import 'libs/sass/spacing';
 @import 'libs/sass/dom_flexbox';
+// MapLibre's own styles, for the competition pages' maps (libs/maps/mapbox). Global, not the component's: the map builds
+// its controls itself, outside Angular's style scoping, and at 72 kB they would exceed a component's style budget (#1218).
+@import 'maplibre-gl/dist/maplibre-gl';
 
 :root {
   --gisday-primary: #{$gisday-blue};
