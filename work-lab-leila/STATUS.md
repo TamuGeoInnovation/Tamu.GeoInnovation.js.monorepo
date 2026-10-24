@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:25 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **2:32 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **2:25 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 3:25 AM Central.**
+**Next update by 3:30 AM Central.**
 
-**Batch 100, aggiemap bug: the POI popup's console TypeError (#2259)**, started 2:25 AM Central, 24 October. Then batch 101.
+**Batch 101, geoservices bug: the services pages log err.toRenderableJSON is not a function (#2267)**, started 2:32 AM Central, 24 October. Then batch 102.
 
 ## Finished
+
+- **Batch 100, aggiemap bug: the POI popup's console TypeError (#2259) - fixed and pushed** (2:25 to 2:29 AM, 24 October): TripPlannerConnectionService fetches the routing networks when any directions-capable popup creates it; the production GIS server's Routing folder lists nothing (routing unpublished, #1003), so connection() read `.name` of undefined. Noise only: directions are hidden on production. Now it keeps the empty network and returns nothing. First spec for the service, red first (that TypeError), the published-network case unchanged. Live: no console errors at `/?poi=2`. Check exit 0. **`fix/2259-poi-popup-typeerror` at `5c3f51f2b`.** Report `work-lab-leila/reports/2026-10-23-87.md`.
 
 - **Batch 99, security: five type errors in project files (#2265) - pushed** (2:21 to 2:22 AM, 24 October): three were the tests (two fixtures still on `mapType`, now `mapTypes`; an admin-list spec typed `{ guid }` for `GuidIdentity`), two the code's types (`maps-page-header`'s `title` now required, `intro` optional; no visible bug, as every caller passes a title and a missing intro was always left out). Both projects' spec typechecks: 0 errors in their own files. Check exit 0. **`fix/2265-spec-type-errors` at `f021f8c45`.** Report `work-lab-leila/reports/2026-10-23-86.md`.
 
@@ -290,4 +292,4 @@ Last written **2:25 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 99 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 100 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
