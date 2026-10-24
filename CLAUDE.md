@@ -157,6 +157,13 @@ lock file`, a peer of the upgraded `ng2-dragula`. Sync the lock with
 proves it: whenever the committed `package.json` or `package-lock.json` changes, it runs `npm ci` from
 those files alone, as CI does. See #1347.
 
+**A dependency with an install script must be reviewed into `allowScripts` first.** `.npmrc` sets
+`strict-allow-scripts`, so `npm ci` refuses a package whose `preinstall`, `install` or `postinstall` script is not
+listed in `package.json`'s `allowScripts` (`ESTRICTALLOWSCRIPTS`), and `lint.yml` checks the lock for the same.
+Read the script, then `npm install-scripts approve --no-allow-scripts-pin <name>` or `deny <name>`:
+[`tools/security-findings/README.md`](tools/security-findings/README.md#install-scripts-and-registry-signatures)
+(#2293).
+
 **Regenerating a conflicted lock undoes lock-only updates, and every check still passes.** When
 `package-lock.json` conflicts in a merge, `npm install --package-lock-only` rebuilds it from `package.json`
 and keeps whatever versions are already locked. Anything a branch updated only in the lock (`npm update`,
