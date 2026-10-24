@@ -66,7 +66,7 @@ describe('EmailService', () => {
         expect(email).toBeInstanceOf(MailroomEmail);
         // Assert that the findOne() method was called with the right relations table (attachments) and with the provided id
         expect(spy).toHaveBeenCalledWith({
-          relations: ['attachments'],
+          relations: { attachments: true },
           where: {
             // getEmail() does parseInt(id, 10), so the repository receives a number.
             id: Number(mockParam.id)
@@ -92,7 +92,7 @@ describe('EmailService', () => {
         await service.deleteEmail('1');
 
         expect(spyFind).toHaveBeenCalledWith({
-          relations: ['attachments'],
+          relations: { attachments: true },
           // deleteEmail() does parseInt(id, 10), so the repository receives a number.
           where: { id: 1 }
         });

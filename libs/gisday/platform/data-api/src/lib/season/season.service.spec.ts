@@ -71,7 +71,7 @@ describe('SeasonService', () => {
       expect(season.days.map((d) => d.guid)).toEqual(['d-early', 'd-late']);
       expect(seasonRepo.find).toHaveBeenCalledWith({
         order: { year: 'ASC' },
-        relations: ['days']
+        relations: { days: true }
       });
     });
 
@@ -95,7 +95,7 @@ describe('SeasonService', () => {
       expect(season.days.map((d) => d.guid)).toEqual(['d-early', 'd-late']);
       expect(seasonRepo.findOne).toHaveBeenCalledWith({
         where: { guid: 'season-1' },
-        relations: ['days']
+        relations: { days: true }
       });
     });
 
@@ -124,7 +124,7 @@ describe('SeasonService', () => {
       // The extended lookup must target the *earliest* day, which is second in the unsorted input.
       expect(seasonDayRepo.findOne).toHaveBeenCalledWith({
         where: { guid: 'd-first' },
-        relations: ['events']
+        relations: { events: true }
       });
     });
 
@@ -188,7 +188,7 @@ describe('SeasonService', () => {
 
       expect(seasonRepo.findOne).toHaveBeenCalledWith({
         where: { year: 2025 },
-        relations: ['days', 'days.events']
+        relations: { days: { events: true } }
       });
       expect(season.days.map((d) => d.guid)).toEqual(['d-first', 'd-second']);
       expect(season.firstEventTime).toBe('09:00');
@@ -216,7 +216,7 @@ describe('SeasonService', () => {
 
       expect(seasonRepo.findOne).toHaveBeenCalledWith({
         where: { guid: 'season-1' },
-        relations: ['days', 'days.events']
+        relations: { days: { events: true } }
       });
     });
 

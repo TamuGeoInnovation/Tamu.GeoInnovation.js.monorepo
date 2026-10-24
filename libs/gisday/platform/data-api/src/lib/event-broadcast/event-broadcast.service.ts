@@ -129,7 +129,7 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
           where: {
             guid: In(guids)
           },
-          relations: ['events']
+          relations: { events: true }
         });
 
         const events = broadcastEvents.map((broadcast) => broadcast.events).flat();

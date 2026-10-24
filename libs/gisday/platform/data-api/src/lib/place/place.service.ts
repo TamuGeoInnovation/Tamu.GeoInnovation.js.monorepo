@@ -125,7 +125,7 @@ export class PlaceService extends BaseProvider<Place> {
         where: {
           guid: In(existingEntityGuids)
         },
-        relations: ['links', 'logos']
+        relations: { links: true, logos: true }
       });
 
       if (!entities || entities.length === 0) {
@@ -233,7 +233,7 @@ export class PlaceService extends BaseProvider<Place> {
         where: {
           guid
         },
-        relations: ['logos']
+        relations: { logos: true }
       });
 
       if (!existing) {
@@ -311,7 +311,7 @@ export class PlaceService extends BaseProvider<Place> {
           where: {
             guid: In(guids)
           },
-          relations: ['logos']
+          relations: { logos: true }
         });
 
         const logos = places.map((place) => place.logos).flat();

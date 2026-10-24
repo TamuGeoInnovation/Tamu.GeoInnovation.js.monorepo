@@ -16,7 +16,6 @@ import { Observable, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
-import { v4 as guid } from 'uuid';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -280,7 +279,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
         if (value) {
           const label = {
-            guid: guid(),
+            guid: crypto.randomUUID(),
             date: Date.now(),
             term: value,
             term_size: value.length
@@ -437,7 +436,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         );
 
         const label = {
-          guid: guid(),
+          guid: crypto.randomUUID(),
           date: Date.now(),
           name: `${res.latitude}, ${res.longitude}`
         };
@@ -484,7 +483,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         });
 
         const label = {
-          guid: guid(),
+          guid: crypto.randomUUID(),
           date: Date.now(),
           name: err.message
         };

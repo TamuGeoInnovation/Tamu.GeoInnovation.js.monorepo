@@ -1,13 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { CompetitionSeason, CompetitionSubmission } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
 
 @Injectable()
 export class SeasonService extends BaseService<CompetitionSeason> {
-  constructor(@InjectRepository(CompetitionSeason) private seasonRepo: Repository<CompetitionSeason>) {
+  constructor(
+    @InjectRepository(CompetitionSeason) private seasonRepo: Repository<CompetitionSeason>,
+    @InjectRepository(CompetitionSubmission) private submissionRepo: Repository<CompetitionSubmission>
+  ) {
     super(seasonRepo);
   }
 
@@ -22,7 +25,7 @@ export class SeasonService extends BaseService<CompetitionSeason> {
       throw new NotFoundException();
     }
 
-    const responses = await getRepository(CompetitionSubmission)
+    const responses = await this.submissionRepo
       .createQueryBuilder('response')
       .where('response.season = :seasonGuid')
       .setParameter('seasonGuid', existing.guid)
