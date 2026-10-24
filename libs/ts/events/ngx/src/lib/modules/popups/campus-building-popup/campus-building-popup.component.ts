@@ -56,7 +56,7 @@ export class CampusBuildingPopupComponent extends BaseEventPopupComponent implem
     }
 
     // A structure with no name, number or abbreviation at all still gets a heading.
-    this.content.title = this.content.title ?? this.data.layer?.title;
+    this.content.title = this.content.title ?? this.data.layer?.title ?? undefined;
 
     super.ngOnInit();
   }

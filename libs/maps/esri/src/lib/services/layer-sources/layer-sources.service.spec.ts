@@ -60,15 +60,15 @@ describe('LayerSourcesService', () => {
   });
 
   it('should remove layer property override', () => {
-    service.setLayerOverrides('layer1', { visible: false, opacity: 0.5 });
+    service.setLayerOverrides('layer1', { visible: false, title: 'Renamed' });
     service.removeLayerPropertyOverride('layer1', 'visible');
 
     const overrides = service.getLayerOverrides('layer1');
-    expect(overrides).toEqual({ opacity: 0.5 });
+    expect(overrides).toEqual({ title: 'Renamed' });
   });
 
   it('should remove all layer overrides', () => {
-    service.setLayerOverrides('layer1', { visible: false, opacity: 0.5 });
+    service.setLayerOverrides('layer1', { visible: false, title: 'Renamed' });
     service.removeLayerOverrides('layer1');
 
     const overrides = service.getLayerOverrides('layer1');
