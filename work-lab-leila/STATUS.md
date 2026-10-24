@@ -30,7 +30,9 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-Nothing. Batch 77 waits for PR 2191 to merge.
+**Next update by 10:15 PM Central.**
+
+**Batch 80, security: front ends built with @angular/build, unused postcss packages dropped (#1218)**, started 8:53 PM Central, in `C:/TAMU/wt-ab80`. Then 81, 82, 83, 84. Batch 77 waits for PR 2191, batch 79 for PR 2231.
 
 ## Finished
 
