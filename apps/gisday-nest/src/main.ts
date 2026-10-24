@@ -4,7 +4,7 @@ import { json } from 'express';
 import { logStartupEnvironment } from '@tamu-gisc/common/nest/environment';
 
 import * as dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ quiet: true });
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
