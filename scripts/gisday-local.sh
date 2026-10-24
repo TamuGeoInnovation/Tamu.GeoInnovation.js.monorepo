@@ -111,7 +111,10 @@ ALTER USER gisday_app WITH LOGIN = gisday_app;
 GRANT VIEW DEFINITION TO gisday_app;
 GO
 SQL
-    echo "Restored $bak into $DB_NAME and mapped gisday_app."
+    # A backup is only as new as the schema it was taken at, and the seed predates the newest migrations: without this,
+    # the API answered 500 on the sponsors and on a season day's events until someone ran `migrate run` (#2196).
+    migration "$DB_NAME" run
+    echo "Restored $bak into $DB_NAME, mapped gisday_app, and ran the migrations."
     ;;
 
   install)
