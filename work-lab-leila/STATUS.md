@@ -32,9 +32,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 11:00 PM Central.**
 
-**Batch 85, security: lightgallery replaced by GLightbox, as one shared piece (#1218)**, started 9:49 PM Central, in `C:/TAMU/wt-gl85`. Then batch 86. (Batches 77 and 79 withdrawn by the director.)
+**Batch 86, security: where a lab job's time goes, and a cache a fork cannot poison (#2212)**, started 10:05 PM Central.
 
 ## Finished
+
+- **Batch 85, security: lightgallery replaced by GLightbox, as one shared piece (#1218) - pushed** (9:50 to 10:04 PM, 23 October): PhotoCarouselComponent in libs/ui-kits/ngx/layout, used by the POI and bonfire popups (Swiper carousel unchanged; a slide opens GLightbox; arrows, swipe, Escape), with a 3-test spec. lightgallery 2.9.0 out, glightbox 3.3.1 in; lightgallery cleaned from jest.preset.js and 19 Jest configs. GLightbox's stylesheet is global in three apps' styles.scss (a component import broke ts-events' 10 kB budget). Full check exit 0. Before/after screenshots (24): the licence console line went from 2 to 0. **`chore/1218-glightbox` at `b25c1b480`.** Report `work-lab-leila/reports/2026-10-23-72.md`.
 
 - **Batch 84, security: mapbox-gl replaced by maplibre-gl (#1218) - pushed** (9:29 to 9:48 PM, 23 October): libs/maps/mapbox on maplibre-gl 6.15.0 behind its existing names; used only by four GIS Day competition pages (before/after screenshots in docs/screenshots/maplibre/). Basemap: Mapbox light-v10 (token) to OpenFreeMap positron (no key); the live Mapbox public token removed from the templates; signage's undrawn mapbox:// source removed. Two fixes found on the way: MapLibre's CSS made global (component budget), and its worker shipped as an asset and loaded as a blob (nginx-base serves .mjs as octet-stream; proven with the real image). Full check exit 0; gisday-angular production build exit 0. **`chore/1218-maplibre` at `5eb18c96e`.** Report `work-lab-leila/reports/2026-10-23-71.md`.
 
@@ -260,4 +262,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 84 (77 waits for 2191, 79 for 2231) (42 and 39 stopped; 40 superseded)
+Last batch done: 85 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
