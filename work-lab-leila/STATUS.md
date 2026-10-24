@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:59 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **6:02 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,7 +32,7 @@ Last written **5:59 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-Nothing. Batch 117 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
+**Batch 118, security: #2212 - the agents' reinstall from development, prepared and dry-run (nothing installed)**, started 6:02 AM Central, 24 October.
 
 ## Finished
 
