@@ -49,7 +49,7 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 - **[#2258](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2258): the markdown pipe bypasses Angular's HTML sanitiser.**
   Text rendered through it (GIS Day pages, AggieMap POI/bonfire/dining popups) is inserted unsanitised; the dining text comes from
   another department's API. Nothing harmful is in it today. **Priority was set to Medium by the director; confirm it with the
-  maintainer.** The fix is lab batch 96, queued next.
+  maintainer.** **The fix is [PR 2260](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2260)** (lab batch 96): red first, then 0 visible changes on all 3,177 texts. No lock change; **merge it before `marked` 18**, which then needs `return marked(value, { async: false });` in the pipe.
 - **work-lab-leila's report `2026-10-23-78` mentions "a second security observation, unrelated to marked"** that it would not write in
   the public mailbox and says it gave the maintainer directly. **Ask him what it is**, and file it (privately if needed).
 
