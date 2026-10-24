@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 134.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 137.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,37 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 136 (security: #2327 - the flaky `common-ngx-ui-sidebar` test; a branch; 24 October 2026, 2:50 PM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start after batch 135.** **Expected: 60 minutes.**
+1. Read the failing log you kept (report 120), name the spec and the assertion, and say why load makes it fail.
+2. Reproduce it: the project's tests under load (for example `--parallel=8` with other projects' tests, or `taskset` to two CPUs), enough runs to
+   show red at a rate you can state. Then the fix (deterministic waits or fake timers, not a longer timeout), and the same runs green.
+3. Branch `fix/2327-sidebar-test-under-load` from `origin/development`. `scripts/check-in-volume.sh <branch> common-ngx-ui-sidebar`. Commit
+   (`fix(common-ngx-ui-sidebar): Make its test pass under load`, `Closes #2327`, Co-Authored-By), push to the fork. No PR.
+
+## Batch 135 (security: #1218 - the rest of the lock queue, from `better-sqlite3`; branches; 24 October 2026, 2:50 PM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start after batch 134.** **Expected: 90 minutes.** **Decided** (report 120): question 2, yes.
+1. `chore/1218-better-sqlite3-13`: drop your local `5e914fd66`; on `4631ad03e` (jwks-rsa merged in), set the entry to **`"better-sqlite3": false`**
+   (deny: the prebuilt binary, never a build), with the reason in the commit. Merge **batch 134's branch** into it too, so the tool accepts the
+   entry (it will also come from `development` once its PR merges). Check (full); push only on exit 0.
+2. Then, in order, as batch 133: `chore/1218-auth0-7`, `fix/2320-all-auth0-users`, `fix/2111-bull-uuid`, each on the one before, each checked
+   (full), pushed on exit 0. A branch adding a package with an install script (or a `binding.gyp`) adds its entry, read and named.
+3. Report each new head and its check lines, and every conflict. A flaky failure is re-run once and reported as batch 133 did.
+
+## Batch 134 (security: #2326 - the install-script check accepts a `binding.gyp` package's entry; a branch; 24 October 2026, 2:50 PM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now.** **Expected: 30 minutes.** Your report 120 is right, and the finding is good: thank you.
+**Decided:** question 1 yes (this batch, then batch 135); question 3 yes (#2327, batch 136).
+1. Branch `fix/2326-install-scripts-binding-gyp` from `origin/development`.
+2. `tools/security-findings/install-scripts.mjs`: *Not installed any more* only for an entry whose package is not in the lock at all. An entry for an
+   installed package with no `hasInstallScript` is reported on its own line (*no install script recorded; npm may still treat a `binding.gyp` as one*)
+   and is not stale. Two tests in `install-scripts.test.mjs` (one each), red first on the current code. The README's description to match.
+3. `node --test 'tools/**/*.test.mjs'`; then `scripts/check-in-volume.sh fix/2326-install-scripts-binding-gyp` (it should run no Nx tasks, and the
+   `lint.yml` steps). Commit (`fix(workspace): Accept an allowScripts entry for an installed package with no recorded script`, `Closes #2326`,
+   Co-Authored-By), push to the fork. No PR.
 
 ## Batch 133 (security: #1218 - bring the rest of the lock queue up to date, in order; branches; 24 October 2026, 2:21 PM Central, from `work (security)`)
 
