@@ -131,7 +131,7 @@
     "@playwright/test": "^1.64.1",
     "@schematics/angular": "22.2.3",
     "@swc/core": "1.16.18",
-    "@types/bull": "^3.15.9",
+    "@types/bull": "^4.10.4",
     "@types/chart.js": "^2.9.3",
     "@types/clipboard": "2.0.10",
     "@types/express": "5.0.6",
