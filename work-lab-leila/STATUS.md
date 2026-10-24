@@ -32,9 +32,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 12:15 AM Central.**
 
-**Batch 88, security: Node in the agent image and room for four agents (#2212)**, started 11:04 PM Central, in `C:/TAMU/wt-an88`. Then batch 89.
+**Batch 89, security: a warm, read-only git mirror for lab checkouts (#2212)**, started 11:13 PM Central, in `C:/TAMU/wt-gm89`.
 
 ## Finished
+
+- **Batch 88, security: Node in the agent image, room for four agents (#2212) - pushed** (11:04 to 11:13 PM, 23 October): Node 24.22.1 in the tool cache (/azp/_work/_tool/node/24.22.1/x64 + x64.complete, root-owned); tool-lib's findLocalTool finds it ("Found tool in cache: node 24.22.1 x64"). Defaults 12 GB / 5 CPUs: re-measured peak 9.3 GB, 4.2 cores; builds ~12 s slower; four fit with 4 cores and 14.5 GiB spare. Overlaps batch 74's branch (no PR yet). **`ci/2212-agent-node-and-four` at `233d3195b`.** Report `work-lab-leila/reports/2026-10-23-75.md` (the maintainer's five commands).
 
 - **Batch 86, security: where a lab job's time goes, and caches a fork cannot poison (#2212) - measured and proposed, nothing pushed** (10:15 to 10:21 PM, 23 October): build 5680 from the agents' logs: Cache 1:56, Lint 1:54, development 3:13, production 2:51 (waited 25 s for a re-registration); 5:15 from Cache start to the end, against hosted 5672's 6:27 with its builds in series. Measured in an agent: full clone 36.4 s (439 MB), Node 3.6 s, npm ci 27.9 s, node_modules 1.5 GB / 243 MB packed, 4.4 s to unpack. Proposed, fork-safe: a read-only warm git mirror (~30 s/job), a trusted-only node_modules cache behind a branch-checked pool, a fourth agent at 12 GB / 5 CPUs (~25 s/PR), Node in the image (~4 s/job); not a shared writable Nx cache or a multi-job container. Report `work-lab-leila/reports/2026-10-23-74.md`.
 
@@ -266,4 +268,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 86 (and 87) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 88 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
