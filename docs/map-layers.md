@@ -15,6 +15,12 @@ each symbol and anything better had to be hard-coded; after [#1508][1508] the se
 practice as well as in principle. An override is now the exception, and an exception nobody can find
 is one that gets reinvented badly.
 
+The other half of this is a service that changes under us. When the owner republishes a layer with
+different columns, nothing overrides anything and the map simply draws nothing — the legend still
+lists the layer. [`athletics-dev-views.md`](athletics-dev-views.md) records what the development
+athletics views carry against production's, after the October 2026 republish left eight of the
+eleven athletics maps with an empty layer ([#2209][2209]).
+
 ## Where a layer's appearance comes from
 
 Three places, in this order. The first one that supplies a value wins.
@@ -236,3 +242,4 @@ rediscover the reason — or, more likely, leave it alone because they cannot te
 [1508]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1508
 [1802]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1802
 [2059]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2059
+[2209]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2209
