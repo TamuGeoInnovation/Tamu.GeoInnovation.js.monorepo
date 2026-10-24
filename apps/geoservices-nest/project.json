@@ -6,35 +6,8 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/apps/geoservices-nest",
-        "main": "apps/geoservices-nest/src/main.ts",
-        "tsConfig": "apps/geoservices-nest/tsconfig.app.json",
-        "webpackConfig": "apps/geoservices-nest/webpack.config.js",
-        "assets": [
-          "apps/geoservices-nest/src/assets",
-          "apps/geoservices-nest/src/Dockerfile",
-          "apps/geoservices-nest/src/docker-compose.yml",
-          "apps/geoservices-nest/src/.dockerignore"
-        ],
-        "target": "node",
-        "compiler": "tsc"
-      },
       "configurations": {
-        "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false,
-          "generatePackageJson": true,
-          "fileReplacements": [
-            {
-              "replace": "apps/geoservices-nest/src/environments/environment.ts",
-              "with": "apps/geoservices-nest/src/environments/environment.prod.ts"
-            }
-          ]
-        }
+        "production": {}
       }
     },
     "serve": {
@@ -42,17 +15,6 @@
       "options": {
         "buildTarget": "geoservices-nest:build",
         "host": "0.0.0.0"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/geoservices-nest"],
-      "options": {
-        "jestConfig": "apps/geoservices-nest/jest.config.ts"
       }
     }
   }

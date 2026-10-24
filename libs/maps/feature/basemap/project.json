@@ -5,9 +5,6 @@
   "sourceRoot": "libs/maps/feature/basemap/src",
   "prefix": "tamu-gisc",
   "tags": [],
-  "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    }
-  }
+  "// targets": "to see all targets run: nx show project maps-feature-basemap --web",
+  "targets": {}
 }

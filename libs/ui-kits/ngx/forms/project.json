@@ -5,9 +5,6 @@
   "projectType": "library",
   "sourceRoot": "libs/ui-kits/ngx/forms/src",
   "tags": [],
-  "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    }
-  }
+  "// targets": "to see all targets run: nx show project ui-kits-ngx-forms --web",
+  "targets": {}
 }

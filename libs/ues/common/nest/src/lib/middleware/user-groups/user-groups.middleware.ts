@@ -1,6 +1,6 @@
 import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
 
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
@@ -20,7 +20,7 @@ export class UserGroupsMiddleware implements NestMiddleware {
       if (!expired) {
         try {
           const userInfo = await OpenIdClient.client.userinfo(req.user.access_token);
-          const id_token = jwt_decode(req.user.id_token) as { groups?: Array<string> };
+          const id_token = jwtDecode<{ groups?: Array<string> }>(req.user.id_token);
           const groups = id_token?.groups;
 
           req.user.claims = userInfo;
