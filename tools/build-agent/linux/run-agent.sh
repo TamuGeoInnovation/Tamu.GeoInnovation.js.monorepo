@@ -12,6 +12,9 @@ AZP_POOL=${AZP_POOL:-Linux-Build}
 TOKEN_FILE=${TOKEN_FILE:-/etc/tamu-build-agent/token}
 IMAGE=${IMAGE:-tamu-gisc/build-agent:latest}
 EGRESS_IMAGE=${EGRESS_IMAGE:-tamu-gisc/build-agent-egress:latest}
+# Each agent's share of the machine: README, "How many agents fit".
+MEMORY=${MEMORY:-14g}
+CPUS=${CPUS:-6}
 
 container="tamu-build-agent-$AZP_AGENT_NAME"
 # The same network and proxy as on Windows: no route out but the proxy, which refuses every private address.
@@ -59,7 +62,7 @@ while true; do
 
   # The token is in this shell only for the 'docker create' that reads it, and passed by name (-e AZP_TOKEN).
   AZP_TOKEN=$(<"$TOKEN_FILE") docker create --rm --name "$container" \
-    --memory 24g --memory-swap 24g --cpus 16 --pids-limit 8192 \
+    --memory "$MEMORY" --memory-swap "$MEMORY" --cpus "$CPUS" --pids-limit 8192 \
     --security-opt no-new-privileges \
     --cap-drop ALL --cap-add SETUID --cap-add SETGID --cap-add KILL \
     --network "$network" \

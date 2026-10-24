@@ -23,7 +23,7 @@ export class UniversityProvider extends BaseProvider<University> {
           guid
         }
       },
-      relations: ['season'],
+      relations: { season: true },
       order: {
         name: 'ASC'
       }
@@ -99,7 +99,7 @@ export class UniversityProvider extends BaseProvider<University> {
           where: {
             university: In(guids)
           },
-          relations: ['university']
+          relations: { university: true }
         });
 
         // Remove university from all events

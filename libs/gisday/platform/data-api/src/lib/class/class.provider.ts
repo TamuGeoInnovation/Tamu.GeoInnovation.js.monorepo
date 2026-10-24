@@ -119,7 +119,7 @@ export class ClassProvider extends BaseProvider<Class> {
       where: {
         guid: classGuid
       },
-      relations: ['students']
+      relations: { students: true }
     });
 
     if (!classWithStudents) {
