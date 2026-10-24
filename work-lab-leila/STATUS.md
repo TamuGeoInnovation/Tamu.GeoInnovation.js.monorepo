@@ -32,9 +32,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 8:15 PM Central.**
 
-**Batch 66, security: fork pull request builds skip the app_configs secure file (#2216)**, started 7:09 PM Central, in `C:/TAMU/wt-2216`. Then batch 67 (agent egress). Batch 65 waits for the webpack PR to merge.
+**Batch 67, security: the build agent kept off the local network (#2212)**, started 7:11 PM Central, in `C:/TAMU/wt-2212e`. Then batch 68 (the agent in the background). Batch 65 waits for the webpack PR to merge.
 
 ## Finished
+
+- **Batch 66, security: fork pull request builds skip the app_configs secure file (#2216) - pushed** (7:09 to 7:13 PM, 23 October): the download, extract and copy steps in `templates/jobs/build.yml` now run only when the build is not a fork pull request; nothing else in the pipeline reads a secure file or secret variable (`System.AccessToken` in Last SHA is the job token, read-only for forks). In the agent image, a clean clone of the branch built both configurations, 7 projects each, with `--skip-nx-cache`, exit 0. Check exit 0, `No tasks were run`. **`ci/2216-fork-builds-no-secure-file` at `3cd14f79f`.** Report `work-lab-leila/reports/2026-10-23-54.md`.
 
 - **Batch 64 (with the 7:15 PM addition), security: a containerised Linux build agent (#2212) - pushed, not registered** (6:47 to 7:01 PM, 23 October): `tools/build-agent/` (Dockerfile, start.sh, run-agent.ps1, setup-organization.ps1, README). In a capped, unmounted container: clone 39 s, `npm ci` 29 s, lint 92 projects 75 s, build development and production 7 projects 46 s and 47 s, all exit 0. `start.sh` refuses without URL, token or root; guard rails hold (no socket, no host folder, no capabilities, 24 GiB); **the job cannot read the token** (start.sh holds it as root; the agent runs as `agent`). Stop-path bug fixed. Check exit 0, `No tasks were run` (no project). **Fork-secrets setting would break PR builds until the pipeline skips `app_configs.zip` for forks: question 1.** **`ci/2212-lab-build-agent` at `05cb2de82`.** Report `work-lab-leila/reports/2026-10-23-53.md`.
 
@@ -224,4 +226,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 64 (42 and 39 stopped; 40 superseded)
+Last batch done: 66 (42 and 39 stopped; 40 superseded)
