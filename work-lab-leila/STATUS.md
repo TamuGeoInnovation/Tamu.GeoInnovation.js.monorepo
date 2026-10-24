@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **8:40 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **8:56 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **8:40 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 123, security: #2293 - allow only known install scripts, and check registry signatures (a branch)**, started 8:40 AM Central, 24 October.
+Nothing. Batch 123 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
 
 ## Finished
 
+- **Batch 123, security: #2293 - allow only known install scripts, and check registry signatures - pushed** (8:40 to 8:55 AM, 24 October): `ci/2293-install-scripts` at `d0d1ac7a4` on the fork. 10 installed packages (+ fsevents) have install scripts; with all skipped, lint/test/build still pass, and only better-sqlite3 (ues-operations-nest only) breaks. npm 11.19's allowScripts is advisory unless .npmrc sets strict-allow-scripts (then ESTRICTALLOWSCRIPTS, exit 1). Pushed: allowScripts (9 allowed, 2 denied), .npmrc strict, a lock-based check with 8 tests, lint.yml steps for it and `npm audit signatures` (1,901 signed, 16 s), allowScripts carried into the four API images. Full check exit 0 (npm ci under strict). Report `work-lab-leila/reports/2026-10-23-110.md`.
 - **Batch 122, security: #2263 - the type errors in projects' own files: 76 listed, all fixed - pushed** (7:11 to 7:20 AM, 24 October): `fix/2263-own-file-type-errors` at `e3e6ade48` on the fork. Survey on development: 76 own-file errors (61 in ts-events-ngx), now 0; failing spec tsconfigs 14 to 11 (maps-esri, ui-kits-ngx-layout, maps-feature-legend now pass). All type-only, none visible: specs read nullable definitions with ?., Object.assign subjects that typed as never are assigned onto the typed object, url read only where present; code: two map signals typed with undefined, popups' layer title guarded, export type, the raster basemap constant typed with its id. Full check exit 0. Report `work-lab-leila/reports/2026-10-23-109.md`.
 - **Batch 121, security: #1218 - chart.js 4, got 16 and the mail timeouts, stacked in turn - pushed** (6:57 to 7:08 AM, 24 October): `chore/1218-chart-js-4` `e68aa3a73` (on ngx-highlightjs; re-lock identical to the merge: only chart.js's tree), `chore/1218-got-16` `93b93d335` (on chart.js; one package.json conflict resolved; re-locked: the same 34 keys as got 16 alone), `fix/2277-mail-timeouts` `341121633` (on got-16; no lock change of its own). Each: full check exit 0, smoke tsc passed. Report `work-lab-leila/reports/2026-10-23-108.md`.
 - **Batch 120, security: #1218 - ngx-highlightjs 14 stacked on ngx-datatable 25, with its release notes - pushed** (6:53 to 6:57 AM, 24 October): `chore/1218-ngx-highlightjs-14` at `15aaa4ef1` on the fork. One package.json conflict with development (multer and ngx-highlightjs lines), resolved to both. Re-locked on ngx-datatable's lock: only ngx-highlightjs (6.1.3 to 14.0.1, published June 2025) and highlightjs-line-numbers.js (removed) move. Release notes `9999-ngx-highlightjs.md` with a What to test on dev row; collate --check clean. Full check exit 0, smoke tsc passed. Report `work-lab-leila/reports/2026-10-23-107.md`.
@@ -325,4 +326,4 @@ Last written **8:40 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 122 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 123 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
