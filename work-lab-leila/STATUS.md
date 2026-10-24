@@ -32,9 +32,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 8:15 PM Central.**
 
-**Batch 69, security: the webpack branch onto the new lock**, started 7:24 PM Central. Then batch 68 (the agent in the background). Batch 65 waits for the webpack PR to merge.
+**Batch 68, security: the build agent in the background with no token prompt (#2212)**, started 7:24 PM Central (files begun while batch 69's check ran), in `C:/TAMU/wt-2212s`. Batch 65 waits for the webpack PR to merge.
 
 ## Finished
+
+- **Batch 69, security: the webpack branch onto the new lock - pushed** (7:23 to 7:27 PM, 23 October): `development` (`517e6f0ad`, with 2188, 2208, 2218) merged in cleanly, lock included; against development, exactly batch 63's 6 keys added, nothing removed or changed. Full check exit 0 (clean `npm ci`, lint 104 / test 100 / build 14); production `gisday-nest` 202 of 203 files identical to batch 50's, the generated lock differing only by body-parser 2.4.0 (#2208). **`chore/2168-webpack-inferred` at `a93d26efd`.** Report `work-lab-leila/reports/2026-10-23-56.md`.
 
 - **Batch 67, security: the build agent kept off the local network (#2212) - pushed** (7:11 to 7:22 PM, 23 October): the agent runs on an `--internal` Docker network whose only way out is a Squid egress proxy that refuses every private, link-local and loopback address; no host firewall rules, so it is the same on Docker Desktop and Linux. From inside: npm, GitHub, Azure DevOps, Nx Cloud, nodejs.org work; the LAN gateway, 10/172.16/172.17/192.168, Docker Desktop's host, `host.docker.internal`, metadata and loopback are refused; nothing at all without the proxy; outside DNS off (question 1). Lint 92 and both builds pass through it at the same speed; the agent reaches Azure through it (`VS30063` for the dummy token). **`ci/2212-agent-egress` at `468728eac`.** Report `work-lab-leila/reports/2026-10-23-55.md`.
 
@@ -228,4 +230,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 67 (42 and 39 stopped; 40 superseded)
+Last batch done: 69 (42 and 39 stopped; 40 superseded)
