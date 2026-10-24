@@ -1,4 +1,5 @@
-@import url('https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css');
+// maplibre-gl's own stylesheet is global, in each app that uses this component (apps/gisday-angular/src/styles.scss):
+// the map builds its controls outside Angular's style scoping, and it is too large for a component's style budget.
 
 :host {
   height: 100%;
@@ -6,7 +7,7 @@
   display: flex;
 }
 
-.mapboxgl-map {
+.maplibregl-map {
   height: inherit;
   width: inherit;
 }
