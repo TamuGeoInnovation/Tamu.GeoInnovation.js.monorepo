@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:33 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **5:37 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **5:33 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 116, security: #2289 - nginx-base rebuilt with brotli-libs 1.2.1-r0 (in the nginx-base repository; a branch)**, started 5:33 AM Central, 24 October.
+Nothing. Batch 116 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
 
 ## Finished
 
+- **Batch 116, security: #2289 - nginx-base with brotli-libs 1.2.1-r0 - pushed to the maintainer's fork** (5:33 to 5:36 AM, 24 October): `fix/brotli-libs-cve-2026-111497` at `56e83f6` on danielgoldbergtamu/nginx-base. `RUN apk upgrade --no-cache brotli-libs`; only brotli-libs changes (73 packages before and after). Trivy: 0 critical, 0 high. AggieMap's production image on it serves / and a deep route (200) with all six tokens replaced, the same as on sha-09b7e41. The workflow publishes sha-<short>, the branch name, and latest on master only, on every push; the front ends move to sha-<merge commit> after merge. The fork's own workflow published to the fork's package. Report `work-lab-leila/reports/2026-10-23-103.md`.
 - **Batch 115, security: #2288 - msal-node's auth-code flow unreachable here - accepted, pushed** (5:29 to 5:32 AM, 24 October): `fix/2288-msal-accept` at `edfa351a7` on the fork. Only path: mssql -> tedious -> @azure/identity; our APIs use a SQL login (tedious type default); no tedious Azure AD type reaches acquireTokenByCode (DefaultAzureCredential's interactive members need plugins not installed; token-credential needs an object JSON cannot carry). Three entries in .github/security/accepted-advisories.json (npm 1243111, npm transitive @azure/identity, Trivy CVE-2026-109461); check.mjs on batch 112's scan: accepted 4, new 11. Full check exit 0 (no project affected), smoke tsc 0, findings tests 8/8. Question: Closes #2288 would orphan the acceptance. Report `work-lab-leila/reports/2026-10-23-102.md`.
 - **Batch 114, security: #2287 (High) - multer 2.5.0 by override - pushed** (5:20 to 5:28 AM, 24 October): `fix/2287-multer` at `c161db867` on the fork. Root multer ^2.5.0 plus `overrides: multer $multer`; the lock loses only Nest's nested 2.4.0 copy. #2120's upload specs pass; real uploads to POST /api/organizations in a gisday-nest image (throwaway local issuer, seed DB) give the same 401/403/201/201/413/201 on development and on the branch. Re-scan: multer gone from all four APIs; the only high left is msal-node on gisday-nest and mailroom-nest; npm audit --omit=dev 2 high, multer gone. Full check exit 0, smoke tsc exit 0. Report `work-lab-leila/reports/2026-10-23-101.md`.
 - **Batch 113, security: #2286 - the pre-push check runs the smoke suite's typecheck - pushed** (5:16 to 5:20 AM, 24 October): `fix/2286-check-smoke-tsc` at `13847ee63` on the fork. `lint_steps` reads lint.yml's `run:` steps from the checked branch; one-line steps outside nx and the install run after the nx runs in every mode, and a block or `${{ }}` step stops the check (exit 2). Before: the script exited 0 on `5012aba01` while the smoke tsc gave TS2307; after: exit 2 there, exit 0 on development; full check exit 0 (no project affected; the typecheck ran). Test 10/10. Noted: a misspelt project list passes with "No tasks were run". Report `work-lab-leila/reports/2026-10-23-100.md`.
@@ -318,4 +319,4 @@ Last written **5:33 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 115 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 116 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
