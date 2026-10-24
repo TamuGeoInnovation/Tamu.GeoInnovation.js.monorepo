@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:53 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **6:57 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **6:53 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 120, security: #1218 - ngx-highlightjs 14 stacked on ngx-datatable 25, with its release-notes file (a branch)**, started 6:53 AM Central, 24 October.
+**Batch 121, security: #1218 - chart.js 4, then got 16 and the mail timeouts, stacked in turn (branches)**, started 6:57 AM Central, 24 October.
 
 ## Finished
 
+- **Batch 120, security: #1218 - ngx-highlightjs 14 stacked on ngx-datatable 25, with its release notes - pushed** (6:53 to 6:57 AM, 24 October): `chore/1218-ngx-highlightjs-14` at `15aaa4ef1` on the fork. One package.json conflict with development (multer and ngx-highlightjs lines), resolved to both. Re-locked on ngx-datatable's lock: only ngx-highlightjs (6.1.3 to 14.0.1, published June 2025) and highlightjs-line-numbers.js (removed) move. Release notes `9999-ngx-highlightjs.md` with a What to test on dev row; collate --check clean. Full check exit 0, smoke tsc passed. Report `work-lab-leila/reports/2026-10-23-107.md`.
 - **Batch 119, security: #1218 - ngx-datatable 25 stacked on marked 18; copilot-home's empty-row finding confirmed and fixed - pushed** (6:39 to 6:50 AM, 24 October): `chore/1218-ngx-datatable-25` at `08ad06d5d` on the fork, merged with development and `fork/chore/1218-marked-18`. The lock re-done on marked's is identical to the automatic merge: only ngx-datatable moves (25.1.0, published 10 Aug). The empty message had lost its padding (25 has no datatable-selection); the rule is now `.datatable-body .empty-row`, and both empty after-shots are retaken and match before. Full check exit 0, smoke tsc passed. Report `work-lab-leila/reports/2026-10-23-106.md`.
 - **Batch 118, security: #2212 - the agents' reinstall, dry-run; nothing installed** (6:02 to 6:07 AM, 24 October): main checkout at `1f97e511b`; both images built under a test tag (not :latest, which the running agents use): Node 24.22.1 in the tool cache, flock and git present, squid.conf identical to the running proxy's (accepts the per-agent /24). Mirror volume created (89 s clone, 1 s refresh) and kept. A lab-test agent, by run-agent.ps1's own commands with a separate test proxy and a random dummy token, reached Azure through the proxy and stopped on VS30063 (exit 77); /mirror read-only; the mirror checkout as agent took 1.43 s. The maintainer's commands are in the report. Report `work-lab-leila/reports/2026-10-23-105.md`.
 - **Batch 117, security: #2291 - the pre-push check refuses a misspelt project - pushed** (5:56 to 5:58 AM, 24 October): `fix/2291-check-project-names` at `43e2bb8f3` on the fork. Before: `common-ngx-pipez` exited 0 with No tasks were run. Now a project list is checked against `nx show projects` in the volume; an unknown name stops with exit 2, named on the terminal with the nearest real one (`did you mean common-ngx-pipes?`). A correct list still runs; affected mode unchanged. Test 14/14. Report `work-lab-leila/reports/2026-10-23-104.md`.
@@ -322,4 +323,4 @@ Last written **6:53 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 119 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 120 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
