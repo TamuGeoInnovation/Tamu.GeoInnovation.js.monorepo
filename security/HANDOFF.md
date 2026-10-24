@@ -34,14 +34,14 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 
 ## Not in the lock queue (merge any time when green)
 
-- [PR 2249](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2249): one network per lab agent (#2248). The lab's agents already run these scripts.
-- Then **batch 88** (Node in the agent image, four agents at 12 GB / 5 CPUs) and **batch 89** (a warm, read-only git mirror:
-  checkout 63 s to 1.4 s, report `2026-10-23-76`), in that order. Each is **already stacked on the one before it** and checked:
-  `fork/ready/2212-node-and-four` (`f1b608573`, on 2249) and `fork/ready/2212-git-mirror` (`aa7a48ca3`, on 88). After each merge,
-  merge `development` into the next (the squashed files will be identical; keep the stacked side), push it to its own branch
-  (`ci/2212-agent-node-and-four`, `ci/2212-git-mirror`), file an issue, and open its pull request. None touches the lock.
-- **After 88 and 89 merge, give the maintainer the commands to rebuild the image and reinstall the agents** (`lab-1` to `lab-4`,
-  12 GB / 5 CPUs) from report `2026-10-23-75`, using the main checkout's `tools/build-agent`, when no build is running.
+| Order | Pull request / branch | State at 12:25 AM, 24 October |
+| --- | --- | --- |
+| 1 | PR 2249, one network per agent | **Merged** |
+| 2 | [PR 2252](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2252), Node in the agent image and room for four agents (#2251) | **Pushed, CI building.** Merge when green |
+| 3 | batch 89, a warm read-only git mirror (checkout 63 s to 1.4 s) | Stacked on 2252: `fork/ready/2212-git-mirror` (`7f908c179`). After 2252 merges: merge `development` in (identical files; keep the stacked side), push to `ci/2212-git-mirror`, file an issue, open its pull request |
+
+**After 2252 and 89 merge, give the maintainer the commands to rebuild the image and reinstall the agents** (`lab-1` to `lab-4`,
+12 GB / 5 CPUs) from report `2026-10-23-75`, using the main checkout's `tools/build-agent`, when no build is running.
 
 ## Decided today (23 October), and where it is recorded
 
