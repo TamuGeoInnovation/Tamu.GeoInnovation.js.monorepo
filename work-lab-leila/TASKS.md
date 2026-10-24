@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 83.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 85.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -43,6 +43,32 @@ report under **Questions for the director**, with options and a recommendation â
 > And a section **"Stopping or removing an agent"**: Ctrl+C, then remove it from the pool if the machine is leaving.
 
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
+
+## Batch 83 (security: #1218 - lightgallery: the licence first, then the upgrade if it is clear; an investigation, maybe a branch; 23 October 2026, 9:10 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 82.** **Expected: 30 minutes, plus 45 if the licence is clear.** **Decided by the maintainer (9:10 PM): check the
+licence before anything else.** AggieMap uses `lightgallery` 2.9.0 in 2 files; 3.0.0 is out.
+1. Read the licence of the version we ship and of 3.0.0 (`node_modules/lightgallery/package.json` and `LICENSE`, the project's site): GPLv3,
+   commercial, or other; and what GPLv3 would mean for a front end this repository serves (the repository's own licence is in `LICENSE`; say what it
+   is). **Do not decide whether we comply; describe the terms and the facts** (who holds a commercial licence, if the repository shows one: a
+   licence key in configuration, a `licenseKey` option, etc.).
+2. Name the open-source alternatives that do the same job in an Angular 22 app (e.g. PhotoSwipe, MIT), with their size and how much code a
+   switch would change.
+3. Report. **Only if** the licence question has a clear answer that needs nothing from the maintainer, carry on: branch `chore/1218-lightgallery-3`,
+   the upgrade, full check, AggieMap's gallery before/after screenshots into `docs/screenshots/lightgallery-3/`, push to the fork, no PR.
+
+## Batch 84 (security: #1218 - mapbox-gl 1 replaced by maplibre-gl; a branch; 23 October 2026, 9:10 PM Central, from `work (security)`)
+
+**Director: work, its security chat** (questions go under **Questions for the director (security)**). **Start after batch 83.** **Expected: 2 hours.** **Decided by the maintainer (9:10 PM): replace `mapbox-gl` with
+`maplibre-gl`**, the BSD-licensed fork (Mapbox 2 and 3 are not open source). Users: 2 files in `libs/maps/mapbox`.
+1. Find every map, page or app that uses `libs/maps/mapbox` (and anything else importing `mapbox-gl` or its CSS), and **take the "before"
+   screenshots first**, saved at once into `docs/screenshots/maplibre/` (CLAUDE.md: a before dies with the fix). If no deployed or local page uses
+   it, say so and how you know.
+2. Branch `chore/1218-maplibre` from `origin/development`: `maplibre-gl` latest, its CSS, drop `mapbox-gl` and `@types/mapbox-gl`; adapt the two
+   files (style URLs or access tokens that named Mapbox's hosted styles need a replacement: say what they were and what you chose, and why).
+   Lock key by key.
+3. Full check; the page(s) from step 1 on a dev server, "after" screenshots beside the befores; a note of anything that looks different.
+4. Commit (`chore(workspace): Replace mapbox-gl with maplibre-gl`, Co-Authored-By; the director adds the issue), push to the fork. No PR.
 
 ## Batch 79 (security: #2193 - PR 2195 (typeorm 1) re-locked after Nx 24 merges; pushed, no PR; 23 October 2026, 9:05 PM Central, from `work (security)`)
 
