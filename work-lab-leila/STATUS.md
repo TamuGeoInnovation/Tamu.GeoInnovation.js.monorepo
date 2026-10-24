@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:23 PM Central, 24 October 2026**. A listener; job: testing.
+Last written **2:44 PM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **2:23 PM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 133, security: #1218 - the rest of the lock queue brought up to date, in order (branches)**, started 2:23 PM Central, 24 October.
+Nothing. Batch 133 stopped at better-sqlite3 (see its report); waiting for the next batch (watching `work-lab-leila/TASKS.md`).
 
 ## Finished
 
+- **Batch 133, security: #1218 - the lock queue brought up to date - stopped at better-sqlite3** (2:23 to 2:43 PM, 24 October): pushed chart-js-4 `19d950313`, got-16 `f3734f480`, mail-timeouts `332d4f12a` (one flaky common-ngx-ui-sidebar test, passed 3/3 alone and on a second check), vite `0565f8ecd`, jwks-rsa-4 `e0d0240cf`; every merge clean, each lock moving only its own keys. better-sqlite3-13 not pushed: removing its allowScripts entry failed npm ci with ESTRICTALLOWSCRIPTS (13.0.3 ships binding.gyp; npm counts it as node-gyp rebuild despite gypfile false). `better-sqlite3: false` passes and loads the prebuilt binary, but install-scripts.mjs calls it stale: question for the director. auth0-7, 2320, 2111 not started. Report `work-lab-leila/reports/2026-10-23-120.md`.
 - **Batch 132, security: #2111 - Trivy on every image from the stack's tip - read only** (9:59 to 10:10 AM, 24 October): eight images from `6fbc15541` (front ends on nginx-base sha-b5ba4a5) and from development `fbabec35c`, scanned at critical/high and medium. development: front ends 1 High each (brotli-libs), gisday-nest 2 Mediums (uuid 8.3.2 from bull and 9.0.1 from auth0 3), gisday-nest and mailroom-nest the accepted msal-node High. Tip: only the accepted msal-node High. Report `work-lab-leila/reports/2026-10-23-119.md`.
 - **Batch 131, security: #2111 - uuid 11.1.1 under bull, stacked - pushed** (9:51 to 9:58 AM, 24 October): `fix/2111-bull-uuid` at `6fbc15541` on the fork, on #2320's branch. Override `bull: { uuid: 11.1.1 }`; the lock's top-level uuid moves 8.3.2 to 11.1.1 and auth0's two 11.1.1 copies share it; nothing else wanted uuid 8. npm audit: the uuid advisory gone (production moderates 6 to 3). A vgi-export season export through the API (a Bull job) completes on both gisday-nest images. Full check exit 0. Report `work-lab-leila/reports/2026-10-23-118.md`.
 - **Batch 130, security: #2111 - the moderate and low advisories, one by one - read only** (9:46 to 9:48 AM, 24 October): on the stack tip `9d9319a77`, 18 moderate and 1 low are 8 advisories. Production by npm's count: got 9.6.0 and jose 1.28.2 under openid-client 3 (in no deployed image; ues-operations-nest only: accept), and uuid 8.3.2 under bull in gisday-nest's image (bull calls only uuid.v4(); unreachable, but a scoped override to 11.1.1 is cheap: fix now). Dev only: fast-uri (fixed 3.1.9, clears 2 Nov) and serialize-javascript (7.1.3, clears 5 Nov): wait. Report `work-lab-leila/reports/2026-10-23-117.md`.
@@ -335,4 +336,4 @@ Last written **2:23 PM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 132 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 133 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
