@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 133.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 134.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,26 @@ report under **Questions for the director**, with options and a recommendation ‚
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 133 (security: #1218 - bring the rest of the lock queue up to date, in order; branches; 24 October 2026, 2:30 PM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now.** **Expected: 2 hours.** Your batch 132 is right and is on #2111.
+**What merged** (PRs 2314, 2312, 2317, 2294, 2316, 2302, 2303, 2305): `development` now has marked 18, `allowScripts` with `strict-allow-scripts`
+(#2293), Dependabot's cooldown, and the rest. The director has done the first two of the queue:
+- `chore/1218-ngx-datatable-25` = **PR 2324** (`43e044240`, development merged in, check exit 0);
+- `chore/1218-ngx-highlightjs-14` (`6e7e2a183`, stacked on it, release notes renamed to `2325-*`, #2325; the director is checking it).
+1. **In this order, each on the one before** (fetch each from the fork; merge the previous branch's *new* head into it; `git merge`, no rebase, no
+   force-push): `chore/1218-chart-js-4` ‚Üê `6e7e2a183`; then `chore/1218-got-16`; `fix/2277-mail-timeouts`; `fix/2318-angular-build-vite`;
+   `chore/1218-jwks-rsa-4`; `chore/1218-better-sqlite3-13`; `chore/1218-auth0-7`; `fix/2320-all-auth0-users`; `fix/2111-bull-uuid`.
+2. **The lock:** if a merge conflicts on `package-lock.json`, take the lower branch's lock, remove the upper branch's own package entries, and
+   re-lock (`npm install --package-lock-only --ignore-scripts`), as batch 41 did; compare key by key. After each, run the branch's own lock-only
+   change again if it had one, as CLAUDE.md's "Regenerating a conflicted lock" says.
+3. **`allowScripts`:** on `chore/1218-better-sqlite3-13`, remove its now-stale `better-sqlite3` entry (`npm install-scripts prune` or by hand), and
+   `node tools/security-findings/install-scripts.mjs` must report no stale entries. On every branch it must exit 0: a branch adding a package
+   with an install script must add the entry, with the script read and named in the report.
+4. **`scripts/check-in-volume.sh <branch>`** (full) on each, in order; push each to the fork **only when its check exits 0**. Stop at the first
+   that fails and report.
+5. Report the new head of each, the check's lines for each, and every conflict and how it was resolved.
 
 ## Batch 132 (security: #2111 - Trivy on every image built from the stack's tip; read only; 24 October 2026, 10:05 AM Central, from `work (security)`)
 
