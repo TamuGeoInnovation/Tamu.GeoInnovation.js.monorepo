@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:02 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **6:07 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **6:02 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 118, security: #2212 - the agents' reinstall from development, prepared and dry-run (nothing installed)**, started 6:02 AM Central, 24 October.
+Nothing. Batch 118 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
 
 ## Finished
 
+- **Batch 118, security: #2212 - the agents' reinstall, dry-run; nothing installed** (6:02 to 6:07 AM, 24 October): main checkout at `1f97e511b`; both images built under a test tag (not :latest, which the running agents use): Node 24.22.1 in the tool cache, flock and git present, squid.conf identical to the running proxy's (accepts the per-agent /24). Mirror volume created (89 s clone, 1 s refresh) and kept. A lab-test agent, by run-agent.ps1's own commands with a separate test proxy and a random dummy token, reached Azure through the proxy and stopped on VS30063 (exit 77); /mirror read-only; the mirror checkout as agent took 1.43 s. The maintainer's commands are in the report. Report `work-lab-leila/reports/2026-10-23-105.md`.
 - **Batch 117, security: #2291 - the pre-push check refuses a misspelt project - pushed** (5:56 to 5:58 AM, 24 October): `fix/2291-check-project-names` at `43e2bb8f3` on the fork. Before: `common-ngx-pipez` exited 0 with No tasks were run. Now a project list is checked against `nx show projects` in the volume; an unknown name stops with exit 2, named on the terminal with the nearest real one (`did you mean common-ngx-pipes?`). A correct list still runs; affected mode unchanged. Test 14/14. Report `work-lab-leila/reports/2026-10-23-104.md`.
 - **Batch 116, security: #2289 - nginx-base with brotli-libs 1.2.1-r0 - pushed to the maintainer's fork** (5:33 to 5:36 AM, 24 October): `fix/brotli-libs-cve-2026-111497` at `56e83f6` on danielgoldbergtamu/nginx-base. `RUN apk upgrade --no-cache brotli-libs`; only brotli-libs changes (73 packages before and after). Trivy: 0 critical, 0 high. AggieMap's production image on it serves / and a deep route (200) with all six tokens replaced, the same as on sha-09b7e41. The workflow publishes sha-<short>, the branch name, and latest on master only, on every push; the front ends move to sha-<merge commit> after merge. The fork's own workflow published to the fork's package. Report `work-lab-leila/reports/2026-10-23-103.md`.
 - **Batch 115, security: #2288 - msal-node's auth-code flow unreachable here - accepted, pushed** (5:29 to 5:32 AM, 24 October): `fix/2288-msal-accept` at `edfa351a7` on the fork. Only path: mssql -> tedious -> @azure/identity; our APIs use a SQL login (tedious type default); no tedious Azure AD type reaches acquireTokenByCode (DefaultAzureCredential's interactive members need plugins not installed; token-credential needs an object JSON cannot carry). Three entries in .github/security/accepted-advisories.json (npm 1243111, npm transitive @azure/identity, Trivy CVE-2026-109461); check.mjs on batch 112's scan: accepted 4, new 11. Full check exit 0 (no project affected), smoke tsc 0, findings tests 8/8. Question: Closes #2288 would orphan the acceptance. Report `work-lab-leila/reports/2026-10-23-102.md`.
@@ -320,4 +321,4 @@ Last written **6:02 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 117 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 118 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
