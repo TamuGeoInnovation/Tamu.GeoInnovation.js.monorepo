@@ -33,6 +33,14 @@ unset AZP_TOKEN AZP_TOKEN_FILE
 
 pool=${AZP_POOL:-Linux-Build}
 agent_name=${AZP_AGENT_NAME:-$(hostname)}
+
+# The egress proxy, when the container has no other way out (run-agent.ps1 sets it). The agent uses it for its own
+# connection, and passes it to the tasks it runs.
+proxy_args=()
+if [ -n "${AZP_PROXY_URL:-}" ]; then
+  proxy_args=(--proxyurl "$AZP_PROXY_URL")
+fi
+
 agent_pid=
 
 # Runs a command as 'agent'. The agent reads its token from VSTS_AGENT_INPUT_TOKEN, so it is set only on the
@@ -79,7 +87,8 @@ VSTS_AGENT_INPUT_TOKEN="$token" as_agent ./config.sh --unattended \
   --agent "$agent_name" \
   --work _work \
   --replace \
-  --acceptTeeEula &
+  --acceptTeeEula \
+  "${proxy_args[@]}" &
 wait $!
 
 header "Running one job"

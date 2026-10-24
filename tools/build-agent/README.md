@@ -10,14 +10,15 @@ pipeline's work in 3 to 5 minutes. A hosted agent takes 15 to 25 minutes for one
 | `start.sh` | The container's entrypoint, adapted from Microsoft's [Run a self-hosted agent in Docker](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/docker) script: registers the agent, runs **one** job, removes the agent. |
 | `run-agent.ps1` | The supervisor the maintainer starts on a machine: asks for the token once, then runs one fresh container per job until Ctrl+C. |
 | `setup-organization.ps1` | Once per organization: creates the `Linux-Build` pool and sets the Monorepo pipeline's fork settings. |
+| `egress/` | The agent's only way out: a Squid proxy (`Dockerfile`, `squid.conf`) that reaches the internet and refuses every private and local address. |
 
 ## Guard rails, and why
 
 This repository is public and every pull request comes from a fork, so **the code a job runs is anyone's**. The
 agent is set up so that code can do as little as possible:
 
-- **It runs in a container, never on the host.** No host folder is mounted, the Docker socket is not, the network
-  is Docker's own bridge rather than the host's, and the container is not privileged. No SSH keys, no `gh` login,
+- **It runs in a container, never on the host.** No host folder is mounted, the Docker socket is not, the host's
+  network is not used, and the container is not privileged. No SSH keys, no `gh` login,
   nothing from `C:\Users`. A job sees only what it cloned.
 - **One job per container.** The agent runs with `--once`, and `run-agent.ps1` starts a fresh container for every
   job (`docker create --rm`), so nothing one job leaves behind, a file, a process or a cache, reaches the next.
@@ -35,10 +36,19 @@ agent is set up so that code can do as little as possible:
   credential (in `/azp/.credentials`) is readable by the job, as on any agent, so it must stop working once the
   job ends, and removing the agent does that.
 
-**What it does not stop: a job can reach the network**, including the machine's local network. The container is
-on Docker's bridge network, so fork code could connect to anything the machine can reach. Before this takes a
-fork's pull request unattended, restrict its outbound traffic (for example, a Docker network whose firewall rules
-allow only the internet and not the local subnet).
+- **It reaches the internet, and nothing local.** The agent's container is on `tamu-agent-internal`, a Docker
+  network created with `--internal`: it has no route out at all, and Docker gives it no outside DNS. Its only way out
+  is the egress proxy, `tamu-agent-egress`, a Squid container on that network and on Docker's default bridge. The
+  proxy carries HTTPS (and plain HTTP) to public addresses on ports 443 and 80, and refuses every private,
+  link-local, loopback and carrier-grade NAT address: the lab's own network, Docker's networks, the host
+  (`host.docker.internal`) and cloud metadata addresses. It checks the address it actually connects to, so a public
+  name that resolves to a private address is refused too. A job that ignores the proxy settings has nowhere to go,
+  and with no capabilities it cannot change the container's routes. The proxy logs every connection, allowed or
+  refused, to `docker logs tamu-agent-egress`.
+
+  This needs no firewall rules on the host, so it works the same on Docker Desktop for Windows and on a plain Linux
+  Docker host, and a restart of Docker changes nothing: the network persists, the proxy restarts itself
+  (`--restart unless-stopped`), and `run-agent.ps1` recreates either if it is missing, before every job.
 
 **The pipeline's fork settings are part of the guard rails** (step 2 below): secrets are not given to fork builds,
 and a pull request from someone outside the team builds only after a team member comments on it.
@@ -69,18 +79,19 @@ hidden prompt.** It is never written to a file, a command line or a message, and
    forks*: check *Require a team member's comment…* and *Only on pull requests from non-team members*, uncheck *Make
    secrets available to builds of forks*, and Save (not Save & queue).
 
-   **Not yet safe to turn secrets off:** the Build stage downloads the secure file `app_configs.zip`, and every pull
-   request here comes from a fork, so with secrets off for forks every pull request build would fail at that step.
-   The pipeline must first skip that download on fork pull requests (#2212). Until then, run the script with
+   **Not safe to turn secrets off until #2216 merges:** the Build stage downloads the secure file `app_configs.zip`,
+   and every pull request here comes from a fork, so with secrets off for forks every pull request build would fail
+   at that step until the pipeline skips the download on fork pull requests (#2216). Until then, run the script with
    `-DryRun` only, and change only the comment setting by hand.
 
-3. **Per machine (needs Docker): build the image.** Fetch the repository, then:
+3. **Per machine (needs Docker): build the two images.** Fetch the repository, then:
 
    ```bash
    docker build -t tamu-gisc/build-agent:latest tools/build-agent
+   docker build -t tamu-gisc/build-agent-egress:latest tools/build-agent/egress
    ```
 
-   About a minute. Rebuild it to take a new agent or Node version (change the `ARG`s in the `Dockerfile`, with the
+   About a minute each. `run-agent.ps1` creates the network and starts the proxy itself. Rebuild it to take a new agent or Node version (change the `ARG`s in the `Dockerfile`, with the
    agent's SHA-256 from its release notes).
 4. **Per machine: the maintainer starts the agent.**
 
@@ -113,8 +124,9 @@ is harmless: the next start replaces it (`--replace`), and Azure does not send a
 machine is leaving for good, remove the agent in Organization settings → Agent pools → `Linux-Build` → Agents → ⋮ →
 Delete, and delete the image (`docker image rm tamu-gisc/build-agent:latest`).
 
-If a container is left behind (`docker ps --filter name=tamu-build-agent`), `docker stop tamu-build-agent` removes
-it the same way.
+If a container is left behind (`docker ps --filter name=tamu-build-agent`), `docker stop tamu-build-agent-<agent name>`
+removes it the same way. The proxy and the network can stay; if the machine is leaving, remove them too with
+`docker rm -f tamu-agent-egress` and `docker network rm tamu-agent-internal`.
 
 ## Proven without Azure
 
@@ -123,3 +135,10 @@ with these caps and no mounts; `start.sh` refuses to start without an address, w
 user; the guard rails hold from inside a running container (no Docker socket, no host folder, `agent` with no
 capabilities, `memory.max` 24 GiB); and the token never reaches the job's environment or any process the job's
 user can read. Registering with Azure, which needs the token, was not part of it.
+
+The network restriction, on the lab the same day: from an agent container, npm, GitHub, Azure DevOps, Nx Cloud and
+nodejs.org answer through the proxy; the LAN gateway, 10.x, 172.16.x, 172.17.x (Docker's bridge), 192.168.x,
+Docker Desktop's host address, `host.docker.internal`, 169.254.169.254 and 127.0.0.1 are refused by it (403) on
+ports 80 and 443; port 22 is refused; and without the proxy nothing is reachable, not even a public address. The
+pipeline's install, lint and both builds still pass through it, and an agent with a dummy token reaches Azure
+through it and is refused there (`VS30063`).
