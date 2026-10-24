@@ -28,7 +28,7 @@ if [ "${1:-}" = --uninstall ]; then
 fi
 
 name=${1:-}
-if ! [[ "$name" =~ ^[a-z][a-z0-9]*-([0-9]+|test)$ ]]; then
+if ! [[ "$name" =~ ^[a-z][a-z0-9]*-([0-9]+|test[0-9]?)$ ]]; then
   echo "usage: install.sh <machine>-1, e.g. vm-1. Never the hostname: the name is shown in public job logs." >&2
   exit 1
 fi
