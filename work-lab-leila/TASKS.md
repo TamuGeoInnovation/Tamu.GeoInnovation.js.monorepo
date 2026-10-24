@@ -53,11 +53,11 @@ On branch `ci/2212-agent-service` from your batch 67 branch (`ci/2212-agent-egre
 
 1. **`run-agent.ps1 -TokenFile <path>`**: reads the token from a file written by `Export-Clixml` of a `SecureString` (DPAPI, current user, this
    machine). A new **`save-agent-token.ps1`** asks once (hidden `Read-Host -AsSecureString`) and writes it to
-   `$env:LOCALAPPDATA	amu-build-agent	oken.xml`, with an ACL for the current user only. Neither script ever prints the token. A token that
+   `$env:LOCALAPPDATA\tamu-build-agent\token.xml`, with an ACL for the current user only. Neither script ever prints the token. A token that
    Azure refuses (401) stops the loop with one line telling the maintainer to run `save-agent-token.ps1` again, instead of retrying forever.
 2. **`install-agent-task.ps1 -AgentName <machine>-1`**: registers a scheduled task **at the maintainer's logon**, hidden (no window), that
    waits for `docker info` to succeed (Docker Desktop starting), then runs `run-agent.ps1 -TokenFile ...`; restart on failure; a log under
-   `$env:LOCALAPPDATA	amu-build-agent\logs\` (no token in it). `-Uninstall` removes the task and stops the agent cleanly (deregisters).
+   `$env:LOCALAPPDATA\tamu-build-agent\logs\` (no token in it). `-Uninstall` removes the task and stops the agent cleanly (deregisters).
    Running it must not need an elevated prompt if Task Scheduler allows a per-user logon task; say if it does.
 3. **Linux: `linux/tamu-build-agent.service`** (systemd) plus `linux/install.sh`: the same supervisor loop for a Linux host (bash or the
    PowerShell script under `pwsh`, your choice, say why), token read from `/etc/tamu-build-agent/token` (root:root 0600) and handed to the
