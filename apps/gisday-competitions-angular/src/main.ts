@@ -6,7 +6,6 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { env } from '@tamu-gisc/common/ngx/environment';
 import { provideHttpClient, withXhr, withInterceptorsFromDi } from '@angular/common/http';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { Angulartics2Module } from 'angulartics2';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -30,7 +29,6 @@ bootstrapApplication(AppComponent, {
     provideZoneChangeDetection(),
     importProvidersFrom(
       BrowserModule,
-      BrowserAnimationsModule,
       Angulartics2Module.forRoot(),
       ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production })
     ),
