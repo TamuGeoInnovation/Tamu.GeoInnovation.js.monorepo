@@ -1,5 +1,18 @@
+# Instantiated twice: lab: true runs on the lab's agents when Setup found one online, lab: false on the hosted
+# pool otherwise (#2212). Exactly one of the two runs; see azure-pipelines.yml.
+parameters:
+  - name: lab
+    type: boolean
+    default: false
+
 jobs:
-  - job:
-    displayName: Cache or Restore
+  - job: ${{ format('Cache_or_Restore{0}', iif(parameters.lab, '_lab', '')) }}
+    displayName: ${{ format('Cache or Restore{0}', iif(parameters.lab, ' on lab', '')) }}
+    ${{ if parameters.lab }}:
+      pool:
+        name: Linux-Build
+      condition: and(succeeded(), eq(stageDependencies.Setup.Last_SHA.outputs['lab_pool.labOnline'], 'true'))
+    ${{ else }}:
+      condition: and(succeeded(), ne(stageDependencies.Setup.Last_SHA.outputs['lab_pool.labOnline'], 'true'))
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml

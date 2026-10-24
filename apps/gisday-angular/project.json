@@ -8,7 +8,7 @@
   "implicitDependencies": ["assets", "sass", "gisday-sass"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:application",
+      "executor": "@angular/build:application",
       "outputs": ["{options.outputPath.base}"],
       "defaultConfiguration": "",
       "options": {
@@ -39,7 +39,11 @@
           "includePaths": ["."]
         },
         "scripts": [],
-        "loader": { ".woff2": "file", ".woff": "file", ".ttf": "file" },
+        "loader": {
+          ".woff2": "file",
+          ".woff": "file",
+          ".ttf": "file"
+        },
         "extractLicenses": false,
         "sourceMap": true,
         "optimization": false,
@@ -121,7 +125,7 @@
       }
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@angular/build:dev-server",
       "continuous": true,
       "options": {
         "host": "0.0.0.0",
@@ -138,24 +142,16 @@
           "buildTarget": "gisday-angular:build:local",
           "proxyConfig": "apps/gisday-angular/proxy.local.json"
         }
+      },
+      "readyWhen": {
+        "signal": true
       }
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "@angular/build:extract-i18n",
       "options": {
         "buildTarget": "gisday-angular:build"
       }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/gisday-angular"],
-      "options": {
-        "jestConfig": "apps/gisday-angular/jest.config.ts",
-        "tsConfig": "apps/gisday-angular/tsconfig.spec.json"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

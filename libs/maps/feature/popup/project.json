@@ -5,9 +5,6 @@
   "sourceRoot": "libs/maps/feature/popup/src",
   "prefix": "tamu-gisc",
   "tags": [],
-  "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    }
-  }
+  "// targets": "to see all targets run: nx show project maps-feature-popup --web",
+  "targets": {}
 }

@@ -27,14 +27,14 @@ export class SponsorController {
       where: {
         guid: guid
       },
-      relations: ['season', 'logos']
+      relations: { season: true, logos: true }
     });
   }
 
   @Get()
   public async getEntities() {
     return this.provider.find({
-      relations: ['season', 'logos']
+      relations: { season: true, logos: true }
     });
   }
 

@@ -59,7 +59,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
 
     const competitionSeason = await this.compSeasonRepo.findOne({
       where: { season: activeSeason },
-      relations: ['form']
+      relations: { form: true }
     });
 
     if (!competitionSeason) {
@@ -101,7 +101,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
   public async getLeaderBoardItemsForSeason(competitionSeasonGuid: string) {
     const competitionSeason = await this.compSeasonRepo.findOne({
       where: { guid: competitionSeasonGuid },
-      relations: ['form']
+      relations: { form: true }
     });
 
     if (!competitionSeason) {
@@ -131,7 +131,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       where: {
         season: { guid: competitionSeason.guid }
       },
-      relations: ['validationStatus', 'location'],
+      relations: { validationStatus: true, location: true },
       order: { created: 'ASC', guid: 'ASC' }
     });
 

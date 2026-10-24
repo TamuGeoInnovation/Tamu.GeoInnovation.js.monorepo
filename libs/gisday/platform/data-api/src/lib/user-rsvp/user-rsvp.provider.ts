@@ -89,7 +89,7 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
       where: {
         accountGuid: accountGuid
       },
-      relations: ['event']
+      relations: { event: true }
     });
   }
 

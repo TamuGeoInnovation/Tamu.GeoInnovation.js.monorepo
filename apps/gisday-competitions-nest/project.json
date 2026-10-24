@@ -7,37 +7,8 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/apps/gisday-competitions-nest",
-        "main": "apps/gisday-competitions-nest/src/main.ts",
-        "tsConfig": "apps/gisday-competitions-nest/tsconfig.app.json",
-        "webpackConfig": "apps/gisday-competitions-nest/webpack.config.js",
-        "assets": [
-          "apps/gisday-competitions-nest/src/assets",
-          "apps/gisday-competitions-nest/src/package.json",
-          {
-            "glob": "**/*",
-            "input": "./libs/assets/powershell",
-            "output": "./assets/powershell"
-          }
-        ],
-        "target": "node",
-        "compiler": "tsc"
-      },
       "configurations": {
-        "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/gisday-competitions-nest/src/environments/environment.ts",
-              "with": "apps/gisday-competitions-nest/src/environments/environment.prod.ts"
-            }
-          ]
-        }
+        "production": {}
       }
     },
     "serve": {
@@ -45,16 +16,6 @@
       "options": {
         "buildTarget": "gisday-competitions-nest:build",
         "host": "0.0.0.0"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/gisday-competitions-nest"],
-      "options": {
-        "jestConfig": "apps/gisday-competitions-nest/jest.config.ts"
       }
     }
   }

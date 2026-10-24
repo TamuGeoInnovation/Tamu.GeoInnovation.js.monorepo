@@ -171,6 +171,23 @@ change like any other: file its issue, run the full check with a clean `npm ci`,
 above. **A major-version pull request is the maintainer's decision**, not something merged on a green check
 alone.
 
+**How a Dependabot pull request is handled** (the maintainer, 23 October 2026, #2138):
+
+1. **Its issue first.** Dependabot's body has no `Closes #N`, so the linked-issue check fails until it has one. File
+   an issue for it (Task, `dependencies`, Priority **Low** unless it is a major), set the fields as for any issue, and
+   **start the issue's body with `Tracks PR #<number>`**: the check accepts that for a Dependabot pull request, and it
+   survives Dependabot's rebases, which rewrite the pull request's body. Also put `Closes #<issue>` at the top of the
+   pull request's body, so the issue closes on merge; if a rebase has removed it by then, close the issue by hand
+   after the merge.
+2. **Checked by a listener** (the lab), like any dependency change: the full check with a clean `npm ci`, the lock diff
+   against `development` (only the named packages and their own dependencies may move), and for an image or tool bump,
+   the thing actually run (an image started, the smoke suite on the new Playwright). The result goes on the pull request.
+3. **A major is brought to the maintainer** with a recommendation, never merged on a green check. Node majors and Nx
+   majors are held back in `dependabot.yml` until each is done as its own change.
+
+Never push to a Dependabot branch: it lives on `TamuGeoInnovation` and Dependabot rewrites it. A fix it needs (for
+example the READMEs that hard-code a Playwright image version) is its own small pull request.
+
 **Files are LF, and `.gitattributes` will not fix a mistake for you.** It sets `* -text`, which
 turns git's end-of-line normalization off for every file: git stores the bytes it is given, and
 `core.autocrlf` has no effect however a machine is configured. Endings are per-file and permanent

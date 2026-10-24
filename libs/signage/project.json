@@ -5,17 +5,5 @@
   "sourceRoot": "libs/signage/src",
   "prefix": "tamu-gisc",
   "tags": [],
-  "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/signage"],
-      "options": {
-        "jestConfig": "libs/signage/jest.config.ts",
-        "tsConfig": "libs/signage/tsconfig.spec.json"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    }
-  }
+  "targets": {}
 }

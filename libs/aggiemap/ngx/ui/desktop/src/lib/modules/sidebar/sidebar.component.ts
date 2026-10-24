@@ -2,7 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
-import { v4 as guid } from 'uuid';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
@@ -40,7 +39,7 @@ export class AggiemapSidebarComponent implements OnInit {
 
   public reportSidebarContent(tabTitle: string) {
     const label = {
-      guid: guid(),
+      guid: crypto.randomUUID(),
       date: Date.now(),
       name: tabTitle
     };
