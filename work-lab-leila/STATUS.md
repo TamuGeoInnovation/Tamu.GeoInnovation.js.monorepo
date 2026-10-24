@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **4:24 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **4:42 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **4:24 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 5:25 AM Central.**
+**Next update by 5:45 AM Central.**
 
-**Batch 109, security: geoservices' animations off @angular/animations (#2278)**, started 4:24 AM Central, 24 October. Expected 2 hours; may stop after geoservices, as the batch allows.
+**Batch 110, security: Nx 24.0.0 to 24.0.1 (#1218)**, started 4:42 AM Central, 24 October.
 
 ## Finished
+
+- **Batch 109, security: geoservices' animations, and @angular/animations gone (#2278) - pushed** (4:24 to 4:41 AM, 24 October): the hamburger (state) as CSS transitions; the tile menu, submenu swap, header rows and forms (enter/leave) as animate.enter/animate.leave; the tile stagger as per-tile CSS delays; the submenu list stagger removed (it matched nothing). Two Angular behaviours kept by hand: tiles do not scale in while the menu opens, and a child does not shrink on its own while the menu closes. No trigger is left, so every app's provider, libs/ui-kits/ngx/animations and @angular/animations itself are gone (lock: only it). Recorded on geoservices and GIS Day: the same states and times within jitter, 0 Angular errors. Check exit 0 (lint 103 / test 99 / build 14). **`chore/2278-geoservices-animations` at `651137f7d`, on the notifications branch.** Report `work-lab-leila/reports/2026-10-23-96.md`.
 
 - **Batch 108, security: the notification toasts off @angular/animations (#2278) - pushed** (4:14 to 4:24 AM, 24 October): the toast's entrance is now animate.enter with a keyframe, and its close a CSS transition with the same timing (it holds that state for 500 ms before the container removes it), in one notification-toast mixin in _motion.scss. Recorded on geoservices: the same resting places and timing within a few milliseconds. ts-events, UES operations, mailroom and GIS Day competitions now provide no animations (ts-events shows a toast with 0 errors). Check exit 0. **`chore/2278-notification-animations` at `afa4e57cc`, on PR 2279's branch.** Report `work-lab-leila/reports/2026-10-23-95.md`.
 
@@ -308,4 +310,4 @@ Last written **4:24 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 108 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 109 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
