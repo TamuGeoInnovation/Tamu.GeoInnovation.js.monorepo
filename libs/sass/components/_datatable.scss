@@ -35,10 +35,9 @@
           }
         }
 
-        datatable-selection {
-          .empty-row {
-            padding: 0.5rem 1rem;
-          }
+        // "No data to display". Since 25 it is a direct child of the body, with no <datatable-selection> around it.
+        .empty-row {
+          padding: 0.5rem 1rem;
         }
 
         .datatable-body-cell {
