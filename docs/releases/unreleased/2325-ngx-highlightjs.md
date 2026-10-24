@@ -1,8 +1,8 @@
 ---
-issue: 9999
+issue: 2325
 title: Geoservices' code samples are highlighted again, with line numbers
 testOnDev: |
-  | Geoservices' code samples, highlighted and numbered ([#9999](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/9999)) | Geoservices' dev site: a services page such as `/services/geocoding`, and the docs' `/docs/getting-started`. (The dev environment's settings name `geoservices-dev.geoservices.tamu.edu` only as the legacy host; if the Angular site is not deployed there, check it locally with `geoservices-angular`) | The **JS** and **cURL** samples in the code runner, and the samples in the getting-started docs, are in colour on the dark background, with line numbers down the left. The **Result** tab still shows the sample response. No console errors |
+  | Geoservices' code samples, highlighted and numbered ([#2325](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2325)) | Geoservices' dev site: a services page such as `/services/geocoding`, and the docs' `/docs/getting-started`. (The dev environment's settings name `geoservices-dev.geoservices.tamu.edu` only as the legacy host; if the Angular site is not deployed there, check it locally with `geoservices-angular`) | The **JS** and **cURL** samples in the code runner, and the samples in the getting-started docs, are in colour on the dark background, with line numbers down the left. The **Result** tab still shows the sample response. No console errors |
 ---
 
 ### Geoservices' code samples are highlighted again, with line numbers
@@ -12,7 +12,7 @@ intersection) and in its documentation showed as plain grey text: no colours and
 highlighting library to its current version (`ngx-highlightjs` 6 to 14, part of
 [#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218)) brings both back: each
 sample is coloured by language, in the same dark theme, and numbered line by line.
-([#9999](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/9999))
+([#2325](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2325))
 
 | Before | After |
 | --- | --- |
