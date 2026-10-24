@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **5:16 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **5:20 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **5:16 AM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 113, security: #2286 - the pre-push check runs the smoke suite's typecheck (a fix and a branch)**, started 5:16 AM Central, 24 October.
+Nothing. Batch 113 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
 
 ## Finished
 
+- **Batch 113, security: #2286 - the pre-push check runs the smoke suite's typecheck - pushed** (5:16 to 5:20 AM, 24 October): `fix/2286-check-smoke-tsc` at `13847ee63` on the fork. `lint_steps` reads lint.yml's `run:` steps from the checked branch; one-line steps outside nx and the install run after the nx runs in every mode, and a block or `${{ }}` step stops the check (exit 2). Before: the script exited 0 on `5012aba01` while the smoke tsc gave TS2307; after: exit 2 there, exit 0 on development; full check exit 0 (no project affected; the typecheck ran). Test 10/10. Noted: a misspelt project list passes with "No tasks were run". Report `work-lab-leila/reports/2026-10-23-100.md`.
 - **Batch 112, security: where security stands after tonight - 3 new highs, no criticals; nothing pushed** (5:00 to 5:15 AM, 24 October): development `0abdf0d29` and maplibre `ba338ad93` are identical. npm audit --omit=dev: 0 critical, 5 high (two advisories: multer 2.4.0, pinned exactly by @nestjs/platform-express, and @azure/msal-node 6.0.1, no 6.x fix), 7 moderate; every high in yesterday's daily is gone. Eight images built as publish does and scanned with Trivy 0.76.1: the APIs carry multer (all four) and msal-node (gisday-nest, mailroom-nest); the four front ends carry brotli-libs from nginx-base (CVE-2026-111497, new in Alpine's data overnight). check.mjs: 15 new, none accepted, no critical. Three recommended issues. Report `work-lab-leila/reports/2026-10-23-99.md`.
 - **Batch 111, security: lint's false "Recursive task invocation" (#2243) - found, already fixed by Nx 24; nothing pushed** (4:47 to 5:00 AM, 24 October): Nx 23.3.0's detector reported any SQLite error from its invocation tracker as a recursion and printed every task registered so far as the "chain"; Nx 24.0.0 (on development) ignores database failures and reports only a genuine ancestor loop. Both failures were on Nx 23 branches. Not reproducible on demand: 3 fresh-volume first runs on Nx 23, a killed run plus rerun and 4 daemon/parallelism variations on 24.0.1, all clean; lint has no dependsOn. Recommend closing #2243. Report `work-lab-leila/reports/2026-10-23-98.md`.
 
@@ -315,4 +316,4 @@ Last written **5:16 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 112 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 113 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
