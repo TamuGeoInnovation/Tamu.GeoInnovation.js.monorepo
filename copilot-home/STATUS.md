@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **6:17 AM Central, 24 October 2026**. A listener; job: not yet assigned.
+Last written **6:19 AM Central, 24 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -17,17 +17,17 @@ Last written **6:17 AM Central, 24 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-**Next update by 6:50 AM Central.**
+**Next update by 7:00 AM Central.**
 
-Batches 1, 2, 3 (security), in order, one at a time. Started **6:17 AM Central, 24 October 2026** on batch 1 (read-only review of `fork/ready/1218-marked-18`). Listener loop paused while working.
+Batch 2 (Docker check, README fix, branch `docs/build-agent-readme-sizes`), started 6:19 AM Central, 24 October 2026. Listener loop paused while working.
 
 ## Finished
 
-Nothing yet.
+- **Batch 1, security: #1218 second review of marked 18 (read only)** (6:17 to 6:18 AM Central, 24 October): report `copilot-home/reports/2026-10-24-1.md`. Findings: the branch carries 28 commits beyond development; marked 18.1.1 is 12 days old (#2292).
 
 ## Queued
 
-Nothing.
+- Batch 3 (ngx-datatable 25 review), after batch 2.
 
 ## Findings
 
@@ -37,4 +37,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: none
+Last batch done: 1
