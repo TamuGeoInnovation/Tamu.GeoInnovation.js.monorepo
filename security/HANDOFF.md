@@ -12,9 +12,9 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 | Order | Pull request / branch | State at 11:15 PM |
 | --- | --- | --- |
 | 1 | PR 2238 small majors | **Merged** |
-| 2 | [PR 2240](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2240) `uuid` dropped | **Pushed after 2238 merged (`34f7d4e9a`); CI building on the lab.** Merge when green |
-| 3 | GLightbox, [#2246](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2246) (no PR yet) | Prepared: `fork/ready/2246-glightbox` (`0d8c4b33e`), with its release-notes file; checked: lint 104, test 100, build 14 |
-| 4 | maplibre, [#2247](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2247) (no PR yet) | Prepared: `fork/ready/2247-maplibre` (`1a68c1312`), with its release-notes file; checked: lint 104, test 100, build 14 |
+| 2 | PR 2240 `uuid` dropped | **Merged** |
+| 3 | [PR 2253](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2253) GLightbox (#2246) | **Opened 11:52 PM after 2240 merged; CI building.** Merge when green |
+| 4 | maplibre, [#2247](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2247) (no PR yet) | Prepared on 2253: `fork/ready/2247-maplibre` (`ba338ad93`), with its release-notes file; checked: lint 104, test 100, build 14 |
 
 **After each merge, for the next one:**
 
@@ -37,11 +37,18 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 | Order | Pull request / branch | State at 12:25 AM, 24 October |
 | --- | --- | --- |
 | 1 | PR 2249, one network per agent | **Merged** |
-| 2 | [PR 2252](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2252), Node in the agent image and room for four agents (#2251) | **Pushed, CI building.** Merge when green |
-| 3 | batch 89, a warm read-only git mirror (checkout 63 s to 1.4 s) | Stacked on 2252: `fork/ready/2212-git-mirror` (`7f908c179`). After 2252 merges: merge `development` in (identical files; keep the stacked side), push to `ci/2212-git-mirror`, file an issue, open its pull request |
+| 2 | PR 2252 Node in the image, four agents | **Merged** |
+| 3 | [PR 2255](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2255) git mirror (#2254) | **Opened; CI building.** Its Azure run tests the no-mirror fallback (the agents run the old scripts). Merge when green |
 
 **After 2252 and 89 merge, give the maintainer the commands to rebuild the image and reinstall the agents** (`lab-1` to `lab-4`,
 12 GB / 5 CPUs) from report `2026-10-23-75`, using the main checkout's `tools/build-agent`, when no build is running.
+
+## The dev build
+
+The maintainer queued Monorepo build **5692** (`20261023.89`) on `development` at `cee61ef2f` (everything through #2252) at
+11:53 PM. Next, per `docs/releases/README.md`: release to `GIS-1D Development` (the maintainer), confirm dev serves it, then
+`test/smoke/aggiemap/run-local.sh development quick` and, if it is the build going to production, `release`; tag `dev-*` only if the
+quick tier passes.
 
 ## Decided today (23 October), and where it is recorded
 
