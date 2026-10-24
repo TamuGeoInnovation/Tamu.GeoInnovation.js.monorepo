@@ -144,7 +144,7 @@ function createDiscoverApplication(overrides: Partial<InternalDiscoverApplicatio
     description: '',
     source: 'internal',
     type: 'event',
-    mapType: 'campus',
+    mapTypes: ['campus'],
     configuration,
     ...overrides
   };

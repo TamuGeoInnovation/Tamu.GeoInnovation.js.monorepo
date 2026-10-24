@@ -24,12 +24,12 @@ export class MapsPageHeaderComponent {
   /**
    * Page title and the label shown as the active breadcrumb.
    */
-  public readonly title = input<string>(undefined);
+  public readonly title = input.required<string>();
 
   /**
    * Optional intro paragraph rendered beneath the title.
    */
-  public readonly intro = input<string>(undefined);
+  public readonly intro = input<string>();
 
   /**
    * Whether to render the featured Campus Main Parking button. Defaults to `true`.
