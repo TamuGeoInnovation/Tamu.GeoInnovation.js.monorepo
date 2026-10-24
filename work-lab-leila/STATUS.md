@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **2:40 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **3:25 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **2:40 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 3:40 AM Central.**
+**Next update by 4:25 AM Central.**
 
-**Batch 103, security: angulartics2 13 to 14 (#1218)**, started 2:40 AM Central, 24 October (read from the clock). Then batch 104.
+**Batch 104, security: chart.js 2 to 4 (#1218)**, started 3:25 AM Central, 24 October (read from the clock). Then batch 105.
 
 ## Finished
+
+- **Batch 103, security: angulartics2 13 to 14 (#1218) - pushed** (2:40 to 3:25 AM, 24 October): 14's public API is unchanged for us (no provider function, nothing standalone), so only the version and the lock changed. The same probes on local AggieMap, GIS Day and UES operations dev servers saw identical requests and dataLayer entries before and after, including AggieMap's builder event; dev's 3 analytics smoke checks pass. GIS Day competitions' dev server hangs in Vite's optimizer, so it was not probed. Found: Angulartics sends no page views anywhere (AggieMap has no tracking ids; GIS Day's provider expects `ga()`), and two apps report to retired UA properties. Full check exit 0 (lint 104 / test 100 / build 14). **`chore/1218-angulartics2-14` at `35b544b73`.** Report `work-lab-leila/reports/2026-10-23-90.md`.
 
 - **Batch 102, security: the ArcGIS types path in the library tsconfigs (#2271) - pushed** (after 2:36 to 2:39 AM, 24 October): all 45 non-spec tsconfigs that named the relative path now name `"@arcgis/core/interfaces"`: the 31 wrong ones and, for one spelling everywhere, the 15 that resolved. `libs/maps/esri/tsconfig.lib.json`: TS2688 before, 0 errors after. Full check exit 0 (lint 46 / test 44 / build 5). **`fix/2271-arcgis-lib-types` at `6bc32c472`.** Report `work-lab-leila/reports/2026-10-23-89.md`, which also corrects some STATUS start times since batch 96 that were estimated rather than read.
 
@@ -296,4 +298,4 @@ Last written **2:40 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 102 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 103 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
