@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:25 AM Central, 24 October 2026**. A listener; job: testing.
+Last written **3:39 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **3:25 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 4:25 AM Central.**
+**Next update by 4:40 AM Central.**
 
-**Batch 104, security: chart.js 2 to 4 (#1218)**, started 3:25 AM Central, 24 October (read from the clock). Then batch 105.
+**Batch 105, security: got 11 to 16 (#1218)**, started 3:39 AM Central, 24 October (read from the clock). Then batch 106.
 
 ## Finished
+
+- **Batch 104, security: chart.js 2 to 4 (#1218) - pushed** (3:25 to 3:39 AM, 24 October): the one chart is signage's sign-type bar chart, and signage does not build on development, so it was photographed on an uncommitted lab page with signage's inputs. chart.js ~4.5.1 (4.6.1 is two days old); 4's own types, so @types/chart.js goes; each chart type registers only its own pieces; colorschemes (chart.js 2 only) replaced by applyChartColors with its palette and rules, with 4 new specs. Same colours (pixel-sampled), legend and tooltip; the y axis now starts at 0, where 2 hid the smallest bar. No built app bundles chart.js. The lock also drops moment. Full check exit 0 (lint 104 / test 100 / build 14). **`chore/1218-chart-js-4` at `52651b825`.** Report `work-lab-leila/reports/2026-10-23-91.md`.
 
 - **Batch 103, security: angulartics2 13 to 14 (#1218) - pushed** (2:40 to 3:25 AM, 24 October): 14's public API is unchanged for us (no provider function, nothing standalone), so only the version and the lock changed. The same probes on local AggieMap, GIS Day and UES operations dev servers saw identical requests and dataLayer entries before and after, including AggieMap's builder event; dev's 3 analytics smoke checks pass. GIS Day competitions' dev server hangs in Vite's optimizer, so it was not probed. Found: Angulartics sends no page views anywhere (AggieMap has no tracking ids; GIS Day's provider expects `ga()`), and two apps report to retired UA properties. Full check exit 0 (lint 104 / test 100 / build 14). **`chore/1218-angulartics2-14` at `35b544b73`.** Report `work-lab-leila/reports/2026-10-23-90.md`.
 
@@ -298,4 +300,4 @@ Last written **3:25 AM Central, 24 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 103 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 104 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
