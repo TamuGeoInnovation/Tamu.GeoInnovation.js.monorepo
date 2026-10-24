@@ -32,9 +32,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 10:15 PM Central.**
 
-**Batch 80, security: front ends built with @angular/build, unused postcss packages dropped (#1218)**, started 8:53 PM Central, in `C:/TAMU/wt-ab80`. Then 81, 82, 83, 84. Batch 77 waits for PR 2191, batch 79 for PR 2231.
+**Batch 81, security: dotenv, fs-extra, turf, jsdom, pngjs to their latest majors (#1218)**, checks started 9:09 PM Central, in `C:/TAMU/wt-sm81` (its commit and batch 82's were made while batch 80's builds ran). Then 82, 83, 84. Batch 77 waits for PR 2191, batch 79 for PR 2231.
 
 ## Finished
+
+- **Batch 80, security: front ends built with @angular/build, unused postcss dropped (#1218) - pushed** (8:53 to 9:08 PM, 23 October): 24 builder names in 8 apps (application, dev-server, extract-i18n) moved to @angular/build; @angular-devkit/build-angular, postcss-import and postcss-preset-env dropped; webpack made a direct dev dependency (it was left only as a peer). Lock: 320 entries removed, nothing added or changed. Check: first run lint hit Nx's "recursive task invocation" once, rerun exit 0 (lint 104 / test 100 / build 14). All 7 buildable front ends: 11,802 files, every app's total size byte-identical to development's; 3 files differ, none from this change. AggieMap dev server: map ready. **`chore/1218-angular-build` at `f353124e6`.** Report `work-lab-leila/reports/2026-10-23-67.md`.
 
 - **Batch 78, security: Playwright 1.64.1 named wherever its version is written - pushed** (8:50 to 8:54 PM, 23 October): six README commands in four files named `playwright:v1.63.0-noble`; now v1.64.1-noble. The scripts derive the tag from package.json and the workflows use `npx playwright install`, so neither changed. `run-local.sh development one legend.spec.ts` ran on the v1.64.1-noble image: 7 passed. **`docs/playwright-1-64-1` at `ac401baba`.** Report `work-lab-leila/reports/2026-10-23-66.md`.
 
@@ -250,4 +252,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 78 (77 waits for 2191) (42 and 39 stopped; 40 superseded)
+Last batch done: 80 (77 waits for 2191, 79 for 2231) (42 and 39 stopped; 40 superseded)
