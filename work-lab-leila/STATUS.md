@@ -32,9 +32,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 **Next update by 8:45 PM Central.**
 
-**Batch 70, security: jwt-decode 4 (Dependabot 2194)**, started 7:49 PM Central, in `C:/TAMU/wt-2194`. Then batches 71 and 72. Batch 65 waits for the webpack PR (2223).
+**Batch 71, security: Dependabot 2191 (14 updates) verified at run time**, started 7:54 PM Central, in `C:/TAMU/wt-2191`. Then batch 72. Batch 65 waits for the webpack PR (2223).
 
 ## Finished
+
+- **Batch 70, security: jwt-decode 3 to 4 (Dependabot 2194) - pushed** (7:49 to 7:54 PM, 23 October): Dependabot's only error was TS1192 (no default export) at the user-groups middleware, surfacing in `ues-operations-angular:build:production`. The import is now `{ jwtDecode }` with its generic; `@types/jwt-decode` (a deprecated stub) removed; ues-operations-nest's deploy package.json at ^4.0.0. Lock: jwt-decode 3.1.2 to 4.0.0 and the stub removed, nothing else. Full check exit 0 (lint 104 / test 100 / build 14); ues-operations-nest fails only on its out-of-repo config, its package.json lists jwt-decode ^4.0.0. **`chore/2194-jwt-decode-4` at `62eae715c`.** Report `work-lab-leila/reports/2026-10-23-58.md`.
 
 - **Batch 68, security: the build agent in the background with no token prompt (#2212) - pushed** (7:24 to 7:45 PM, 23 October): Windows: `save-agent-token.ps1` (DPAPI SecureString, this-user-only ACL) and `install-agent-task.ps1` (hidden logon task, no elevation needed, waits for Docker, restarts, logs without the token, `-Uninstall`). Linux: `linux/install.sh` + `tamu-build-agent.service` + `run-agent.sh` (bash), token root 600. A refused token (401) now stops the agent at once with one line (exit 77/2; systemd does not retry it). Proved with a dummy token: Windows hidden run, refused and stopped once, uninstall in 2 s; Linux on Ubuntu 24.04 + systemd + Docker Engine 29: starts after Docker and at boot, refused and not retried, ordinary failures restarted. Four bugs found and fixed. **`ci/2212-agent-service` at `fd0c1b8bf`.** Report `work-lab-leila/reports/2026-10-23-57.md` (the maintainer's switch-over commands are in it).
 
@@ -232,4 +234,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 68 (and 69) (42 and 39 stopped; 40 superseded)
+Last batch done: 70 (42 and 39 stopped; 40 superseded)
