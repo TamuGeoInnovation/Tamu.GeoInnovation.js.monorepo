@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
+Last written **12:24 AM Central, 24 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,11 +30,13 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 12:15 AM Central.**
+**Next update by 1:15 AM Central.**
 
-**Batch 90, security: the flaky date-picker test (#2244)**, started 11:26 PM Central, in `C:/TAMU/wt-dp90`. Then batch 91.
+**Batch 91, security: marked 9 to 18 (#1218)**, started 12:24 AM Central, 24 October. Then batch 92 (gisday), then batch 93.
 
 ## Finished
+
+- **Batch 90, security: the date-picker test that failed under load (#2244) - fixed and pushed** (11:26 PM, 23 October, to 12:23 AM, 24 October): reproduced 5 in 20 on 1 CPU with 4 busy loops. The tooltip closes at once, the time picker's list a debounced moment later, and the test looked after a fixed 10 ms. The test now waits for the picker's own `opened`/`closed` outputs; the component is unchanged. 40 in a row pass on 1 CPU with 6 busy loops; check exit 0 (lint, test). Found: `select.component.spec.ts` does not typecheck, already on development (issue recommended). **`fix/2244-date-picker-test` at `0569e1134`.** Report `work-lab-leila/reports/2026-10-23-77.md`.
 
 - **Batch 89, security: a warm, read-only git mirror for lab checkouts (#2212) - pushed** (11:15 to 11:26 PM, 23 October): a bare mirror in a Docker volume, refreshed only by the supervisor from GitHub before each job (47 s first, 1 s warm, locked), mounted read-only; the lab twins check out with a script that borrows its objects (alternates) and fetches refs from GitHub. PR 2249's fork merge ref: 1.4 s and 48 KB with the mirror against 63.4 s and 439 MB without, the same commit and tree, full history; writes refused. Needs an Azure run to prove the YAML. **`ci/2212-git-mirror` at `e5918b7a2`.** Report `work-lab-leila/reports/2026-10-23-76.md`.
 
@@ -270,4 +272,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 89 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 90 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
