@@ -30,11 +30,11 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Next update by 8:00 PM Central.**
-
-**Batch 64, security: a containerised Azure Pipelines Linux agent (#2212), built and proven, not registered**, started 6:47 PM Central, in `C:/TAMU/wt-2212`. Batch 65 waits for the webpack PR to merge.
+Nothing. Batch 65 waits for the webpack PR to merge; the watcher is on.
 
 ## Finished
+
+- **Batch 64 (with the 7:15 PM addition), security: a containerised Linux build agent (#2212) - pushed, not registered** (6:47 to 7:01 PM, 23 October): `tools/build-agent/` (Dockerfile, start.sh, run-agent.ps1, setup-organization.ps1, README). In a capped, unmounted container: clone 39 s, `npm ci` 29 s, lint 92 projects 75 s, build development and production 7 projects 46 s and 47 s, all exit 0. `start.sh` refuses without URL, token or root; guard rails hold (no socket, no host folder, no capabilities, 24 GiB); **the job cannot read the token** (start.sh holds it as root; the agent runs as `agent`). Stop-path bug fixed. Check exit 0, `No tasks were run` (no project). **Fork-secrets setting would break PR builds until the pipeline skips `app_configs.zip` for forks: question 1.** **`ci/2212-lab-build-agent` at `05cb2de82`.** Report `work-lab-leila/reports/2026-10-23-53.md`.
 
 - **Batch 63, security: the webpack branch brought up to date after PR 2184 - pushed** (6:40 to 6:44 PM, 23 October): `development` merged in; only `nx.json` conflicted (resolved three-way, all four plugins, byte-identical to batch 62's); the lock differs from development only by `webpack-cli` 7.2.3 and its five dependencies. Full check exit 0 (lint 104 / test 100 / build 14); `gisday-nest`'s 203 output files byte-identical to batch 50's. **`chore/2168-webpack-inferred` at `f0e6f3a4e`.** Report `work-lab-leila/reports/2026-10-23-52.md`.
 
@@ -222,4 +222,4 @@ Last written **6:47 PM Central, 23 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 63 (42 and 39 stopped; 40 superseded)
+Last batch done: 64 (42 and 39 stopped; 40 superseded)
