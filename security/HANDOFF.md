@@ -14,7 +14,7 @@ the fork under a `ready/` name, so after each merge the next step is a quick re-
 | 1 | [PR 2238](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2238) small majors (`chore/1218-small-majors`, `3ff1061c7`) | **Pushed, CI building on the lab.** Merge when green |
 | 2 | [PR 2240](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2240) `uuid` dropped | Prepared: `fork/ready/2240-uuid` (`06b616521`), checked: lint 104, test 100, build 14 |
 | 3 | GLightbox, [#2246](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2246) (no PR yet) | Prepared: `fork/ready/2246-glightbox` (`0d8c4b33e`), with its release-notes file; checked: lint 104, test 100, build 14 |
-| 4 | maplibre, [#2247](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2247) (no PR yet) | Prepared: `fork/ready/2247-maplibre` (`1a68c1312`), with its release-notes file; full check running when written |
+| 4 | maplibre, [#2247](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2247) (no PR yet) | Prepared: `fork/ready/2247-maplibre` (`1a68c1312`), with its release-notes file; checked: lint 104, test 100, build 14 |
 
 **After each merge, for the next one:**
 
