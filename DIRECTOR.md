@@ -184,7 +184,7 @@ written for the terminal CLI). Spend for the day shows in TAMUS AI Chat's own us
 - **Its branch watcher is always running in the background.** It starts the watcher again after every batch and
   after every reply to the maintainer, so a batch pushed while it was answering him is still picked up. If its
   Background tasks panel shows nothing running, it is not watching, and that is a fault.
-- Watches the branch with one background command that exits on **any new commit** to its `TASKS.md` or this file
+- Watches the branch with **`tools/listen.sh <name>`** ([Checking in](#checking-in-who-is-up-and-can-take-work-25-october-2026)), one background command that also checks in every 30 minutes and exits on **any new commit** to its `TASKS.md` or this file
   (not on a change of content: a note added and removed between two polls must still wake it; [#2250](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2250)), for example
   `git fetch -q origin work-mailbox; old=$(git rev-parse origin/work-mailbox); until git fetch -q origin work-mailbox && [ -n "$(git log --format=%h $old..origin/work-mailbox -- <name>/TASKS.md DIRECTOR.md)" ]; do sleep 120; done`,
   then pulls and reads this file and its own `TASKS.md`.
@@ -255,6 +255,27 @@ deciding a production release. Contention does not look like contention in a rep
 
 The listener running the long job owns its machine until it finishes. The director plans around that rather than
 asking for something in the middle of it.
+
+## Checking in: who is up and can take work (25 October 2026)
+
+The maintainer asked that every machine, and every agent on it, check in regularly, so anyone can see at a glance
+which are up and able to take work. Silence alone cannot say that (see [Saying when you will next be heard
+from](#saying-when-you-will-next-be-heard-from)); a heartbeat that each one sets itself can.
+
+- **Every listener runs `tools/listen.sh <name>` as its watcher**, in the background, in place of the hand-written
+  `until` loop under [Every listener](#every-listener). It pushes `<name>/HEARTBEAT.md` at once and every 30 minutes
+  while idle, and exits when a commit touches its `TASKS.md` or this file, as the old watcher did.
+- **On starting a batch it runs `tools/heartbeat.sh <name> "running batch <n>" <minutes>`**, with the batch's expected
+  time, and `tools/heartbeat.sh <name> idle` when it reports. Blocked on something it cannot clear (a prompt, a
+  missing tool): `tools/heartbeat.sh <name> "blocked: <why>"`. Stopping: `tools/heartbeat.sh <name> stopped`.
+- **The file is one participant's, written only by it**: its name, agent, machine (from its `STATUS.md`), state,
+  whether it takes work, when it was seen and when it will next be (UTC; the roster shows Central). Commits are
+  `<name>: heartbeat - <state>`, so a director's watcher can skip them.
+- **Anyone runs `tools/roster.sh`** for the table: participant, agent, state, takes work, last seen (Central), and
+  health - **up** (inside its own next time), **late** (past it, by how long), **gone** (two hours past), or **never
+  checked in**. A director reads it before writing a batch, and gives work only to one that is **up** and takes work.
+- **A participant that is late is chased as [When a listener stops](#when-a-listener-stops-or-goes-wrong) says.**
+  The roster raises no alarm by itself; it makes the question a table to read.
 
 ## Saying when you will next be heard from
 
