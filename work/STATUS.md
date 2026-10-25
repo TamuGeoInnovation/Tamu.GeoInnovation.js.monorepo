@@ -3,9 +3,10 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. Clock times are read from PowerShell, not estimated.
 
-Last written **6:55 PM Central, 23 October 2026**. **AggieMap was handed over to `home` at 6:55 PM, for the
-weekend**; the AggieMap chat on this machine is a listener from now. GIS Day and the security chat still
-direct from here and write their own lines in `DIRECTOR.md`.
+Last written **25 October 2026**. **AggieMap was handed over to `home` at 6:55 PM on 23 October**; the
+AggieMap chat on this machine is a listener. GIS Day and the security chat still direct from here and
+write their own lines in `DIRECTOR.md`. On 25 October the maintainer gave this chat AggieMap work
+directly; it is recorded below so the home director does not ask again.
 
 ## Running now
 
@@ -194,6 +195,37 @@ name.
 - **`prod-2026-10-20` baselines are complete**: 424 desktop, 424 phone, in `C:/TAMU/visual-baselines`.
 
 ## Told directly
+
+### 25 October, direct to this chat while `home` directs AggieMap
+
+**Three old pull requests and the bus routes question.** Decisions 1A, 2A and 3 are the maintainer's.
+
+- **PR 562 closed as superseded** (`jameslee-debug`, Dec 2025): `test/joonseo-validation/`, a parallel
+  Playwright tree of 30 placeholders and one real spec that hard-coded production, swallowed every error
+  and asserted only that one of three words was visible. `test/smoke/aggiemap/` now holds 37 specs
+  reading `environments.json`. The directory never reached `development`, so nothing was removed.
+- **PR 691 closed as superseded** (`sloneearly`, Mar 2026) by that author's own **#802** (`848695a72`,
+  May 2026). Campus Stops already has a **richer** popup than the branch proposed
+  (`MarkdownWDirectionsPopupComponent`, so it offers directions), and #802 deliberately set
+  `labelsVisible: false` on Route Stop/Start Points, which the branch would have switched back on.
+- **#2369 filed (Feature, High)** for the two parts of 691 that never landed and are worth having:
+  `additionalContent` on the markdown popup components with `popup-content.utils.ts` behind it, and the
+  bus route map link on Campus Stops. Neither exists on `development`. **691's label mechanism is not
+  wanted as written** - it put ~128 lines in the shared `event.service.ts` hard-coding
+  `TS_MAIN_PARKING_EVENT_ID = 'ts-main-parking'` and building a private `GraphicsLayer` for one map.
+- **Bus routes on production: no new issue.** #1189 already covers it and was already Priority **High**;
+  filing another would have duplicated it. The maintainer decided **option 1 - wait for the #1174 data
+  fix and go live with every route drawing correctly**, recorded on #1189 with the other two options
+  struck through. **Mobile is now a checklist item on #1189** rather than its own issue: the bus entry
+  point is commented out in `map.component.html`, so a go-live would otherwise be desktop-only.
+- **#1745 now leads with Transportation**, because its first two rows are the whole of what keeps bus
+  routes off production: **#1191** (publish `TS/Bus_Routes` on a production GIS server, **Urgent** -
+  until it lands, going live points production at the development server) and **#1174** (correct the bus
+  stops' `Route` codes, **High**). Row count unchanged at 25; the sections were reordered, nothing
+  duplicated or dropped.
+- **The maintainer is sending the GIS team one message** covering the athletics views (#2209) and those
+  two bus rows.
+
 
 - **23 October, 6:55 PM: the maintainer is going home, and `home` directs AggieMap for the weekend.**
 - **23 October, ~8:20 AM: security and vulnerability work belongs to its own chat** ("js.monorepo - Security -
