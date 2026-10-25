@@ -136,3 +136,16 @@ the rest of #1218's planned pull requests (`marked`, `ngx-datatable`, `ngx-highl
 
 Dependabot's weekly run is Monday 6:00 AM Central. Each of its npm pull requests joins the lock queue. One that cannot pass
 needs an open `dependencies` issue whose body says `Tracks PR #<n>` (CLAUDE.md).
+
+## The 25 October 2026 release (AggieMap and GIS Day at `eab737da7`)
+
+- **Tagged `dev-2026-10-25` → `eab737da7`** (build 5733, Release-493). Quick tier on dev: 382 passed, 11 failed; release tier on dev (lab report
+  2026-10-25-127): 669 passed, 13 failed. Every failure was traced; none is the release: the same code against **production's** GIS server passed every test
+  that failed on dev (map layers on 20 maps 18 passed + 2 on retry, development-only, viewfinder, searches). Dev's failures are #2209's athletics views; the
+  raster basemap test fails everywhere (#2351); known failures to list: #2350.
+- **GIS Day promoted:** both sites on `sha-eab737d` (kubernetes-config PR 77). Signed-in checks (lab batch 141) pass except registration (test admin's
+  incomplete profile).
+- **Release notes: the maintainer's decision (25 October): written on Monday 26 October**, together with the security work merged after `eab737da7`
+  (got 16, mail timeouts, vite, and the rest of the queue) and once the GIS team confirms the dev and production athletics layers match (#2209). This is
+  an exception to "the notes merge before production".
+- Not checked on dev: entry 2119 (nginx 1.30; dev AggieMap is IIS) and 2325 (geoservices' dev site unreachable from the lab's browser).
