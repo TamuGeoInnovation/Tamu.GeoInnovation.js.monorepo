@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **8:45 AM Central, 25 October 2026**. A listener; job: testing.
+Last written **8:54 AM Central, 25 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,10 +32,11 @@ Last written **8:45 AM Central, 25 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 137, security: #2319 - override the undici that nx pins, stacked (a branch)**, started 8:45 AM Central, 25 October.
+Nothing. Batch 137 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
 
 ## Finished
 
+- **Batch 137, security: #2319 - override the undici that nx pins - pushed** (8:45 to 8:54 AM, 25 October): `fix/2319-nx-undici` at `4665397bf` on the fork, at the queue's end. `nx: { undici: 7.30.1 }`; one key moves (top-level undici 7.29.0 to 7.30.1; jsdom's 8.12.3 unchanged). npm audit: no undici; everything 2 high (msal, accepted), 4 moderate. nx --version, show projects (110) and build geoservices-angular work. First full check failed on a load timeout in gisday-platform-data-api's 5 MiB upload spec (passes 3/3 alone; uses Node's built-in fetch); second exit 0. Report `work-lab-leila/reports/2026-10-25-124.md`.
 - **Batch 136, security: #2327 - the sidebar "flake" is a Vitest crash at exit - nothing pushed** (3:03 to 3:14 PM, 24 October): the kept log shows all 10 tests passed and the JUnit written, then `Segmentation fault (core dumped)` from the vitest process; no spec or assertion to fix. 0 crashes in 240 runs under load (8 at once on 2 and 4 CPUs); the only segfault in 59 kept check logs (about 1,500 test tasks). No branch: deterministic waits would change nothing. Recommendation: retitle #2327 and capture a core dump next time. Report `work-lab-leila/reports/2026-10-23-123.md`.
 - **Batch 135, security: #1218 - the rest of the lock queue, from better-sqlite3 - all pushed** (2:50 to 3:02 PM, 24 October): better-sqlite3-13 `384554b79` (entry now `false`, batch 134's branch merged; no node-gyp build, loads its prebuilt binary), auth0-7 `09ebbe82c` (the same 54 keys as batch 128), 2320 `5e84375d0`, 2111 `a4d35a011`. No conflicts; every full check exit 0 with npm ci under strict-allow-scripts. Report `work-lab-leila/reports/2026-10-23-122.md`.
 - **Batch 134, security: #2326 - the install-script check accepts a binding.gyp package's entry - pushed** (2:47 to 2:49 PM, 24 October): `fix/2326-install-scripts-binding-gyp` at `273ac1f11` on the fork. Only an entry whose package is not in the lock is stale; an installed package with no recorded script is reported on its own line and stays. Two tests red on development's code, 24 of 24 tools tests pass; full check exit 0 (no Nx tasks, lint.yml steps passed). Report `work-lab-leila/reports/2026-10-23-121.md`.
@@ -339,4 +340,4 @@ Last written **8:45 AM Central, 25 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 136 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 137 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
