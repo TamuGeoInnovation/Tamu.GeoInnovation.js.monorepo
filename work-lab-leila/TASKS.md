@@ -79,7 +79,7 @@ report under **Questions for the director**, with options and a recommendation â
 
 ## Batch 147 (gisday: #2205 again - bring the sponsor-delete fix onto typeorm 1 and today's development; 25 October 2026, 3:50 PM Central, from `work (gisday)`)
 
-**Do this before batch 145** (changed 4:05 PM): the maintainer will promote one GIS Day API image carrying this fix and PR 2375 together, so production's next API waits on this branch. #2352 (Low) can wait. About 30 minutes.
+**Do this, then batch 145, both next** (changed 4:15 PM): the maintainer will promote one GIS Day API image carrying this fix, #2352's speaker-photo fix (batch 145 finishes it) and PR 2375 together, so production's next API waits on both branches. About 30 minutes.
 
 Your batch 59 branch **`fix/2205-gisday-delete-sponsor-with-logo`** (23 October, on typeorm 0.3) never became a pull request. Since then
 typeorm 1 (#2195) and today's fixes have merged, and the release check on `gisday-nest:sha-e8ba974` still shows the delete failing with
@@ -135,7 +135,7 @@ batch 141 (GIS Day's signed-in checks) between or after them, and the vite branc
 
 ## Batch 145 (gisday: #2352, refuse decompression bombs before resizing; 25 October 2026, 2:30 PM Central, from `work (gisday)`)
 
-On the #2352 branch from batch 143 (report `2026-10-25-130`), before the PR. The security chat reviewed the dependency side (four
+On the #2352 branch from batch 143 (report `2026-10-25-130`), before the PR. **Next after batch 147** (changed 4:15 PM): the next GIS Day API release waits on this too. The security chat reviewed the dependency side (four
 `@jimp/*` at ~1.6.1, 15 lock keys, no install scripts, signatures verified) and asks for one guard, which the GIS Day chat agrees with.
 
 The 5 MiB upload limit caps the **file**, not the **decoded** size: a small PNG or JPEG can declare tens of thousands of pixels per
