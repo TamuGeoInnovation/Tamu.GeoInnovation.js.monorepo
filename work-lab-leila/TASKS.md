@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 147.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 148.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -76,6 +76,32 @@ report under **Questions for the director**, with options and a recommendation â
 
 > **Batch 138, from `work (security)`: PR 2362 (better-sqlite3 13) has merged.** Next: `chore/1218-auth0-7`, merge `origin/development`, check, push on exit 0.
 > After GIS Day's #2352 guard batch if that is waiting; GIS Day's urgent work stays first.
+
+## Batch 147 (gisday: #2205 again - bring the sponsor-delete fix onto typeorm 1 and today's development; 25 October 2026, 3:50 PM Central, from `work (gisday)`)
+
+After batch 145 (#2352's guard). About 30 minutes.
+
+Your batch 59 branch **`fix/2205-gisday-delete-sponsor-with-logo`** (23 October, on typeorm 0.3) never became a pull request. Since then
+typeorm 1 (#2195) and today's fixes have merged, and the release check on `gisday-nest:sha-e8ba974` still shows the delete failing with
+the same foreign key (`FK_98821d8bf60cd7694ecaa84dc99`, `assets.sponsorGuid`). (On `sha-e9e416e` it once passed on `work` and on
+your stack; find out why it is intermittent, if you can, and say.)
+
+### What to do
+
+1. Merge the latest `origin/development` into the branch (or rebuild it on top, if that is cleaner), resolving for typeorm 1: the
+   delete criteria must use keys, not whole rows (the same lesson as #2356).
+2. Its tests red on development's code, green on the branch; if the tests mock the repository, add a spec on
+   `queryCheckingRepository` (from #2360) for the delete's queries.
+3. On your stack with an API built from the branch: create a sponsor **with a logo**, delete it through the admin page: 200, and
+   the sponsor, its asset rows and the logo file are gone. Then the whole release check (`work/tools/gisday-release-check*.cjs`).
+4. Places and organizations, which batch 59 also looked at: say again what holds on typeorm 1.
+5. The bug-fix check on the projects edited plus `gisday-nest`: exit 0. Push.
+
+### Then
+
+Report as usual; the director opens the PR. Nothing on GitHub, nothing against production.
+
+---
 
 ## Batch 146 (security: PR 2366 - `auth0` 7 against the development tenant; 25 October 2026, 2:47 PM Central, from `work (security)`)
 
