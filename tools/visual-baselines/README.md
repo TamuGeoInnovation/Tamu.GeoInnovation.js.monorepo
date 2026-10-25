@@ -149,7 +149,9 @@ names. A site's `main-*.js` can keep its name across builds whose changes are on
 the newest finished set is compared with the one before it if that comparison is missing, or was made
 before the newer set finished (from a capture still running). So a set captured by hand with
 `start-capture.ps1` needs no `start-compare.ps1` afterwards. A comparison touches neither environment, so
-it is not held back by the hour's wait or the quiet window, only by a capture running.
+it is not held back by the hour's wait or the quiet window, only by a capture running. A run makes its
+comparisons **before** starting a capture, and the capture's own after it, so a build that has just finished
+is compared within 15 minutes rather than after the next capture's three hours.
 
 `--dry-run` prints what it would do and why, one line per tag. A set whose capture finished counts as done
 even if some shots failed (its log names them), so one page that keeps failing is not retried forever.

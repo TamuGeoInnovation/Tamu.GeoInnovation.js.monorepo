@@ -13,7 +13,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-import { centralMinutes, inQuiet, missingComparisons, plan, runningCapture, setState } from './poll.mjs';
+import { act, centralMinutes, inQuiet, missingComparisons, plan, runningCapture, setState } from './poll.mjs';
 
 /** 25 October 2026 at hh:mm US Central (UTC-5 that day). */
 const central = (hh, mm = 0) => new Date(Date.UTC(2026, 9, 25, hh + 5, mm));
@@ -152,4 +152,39 @@ test('a running capture is seen on the volume: unfinished and written to recentl
 
   fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify(done));
   assert.equal(runningCapture(out), null, 'a finished set is not running');
+});
+
+test('a waiting comparison is made before a capture starts, and the capture gets its own after', () => {
+  const calls = [];
+  let pending = [{ kind: 'development', before: 'dev-2026-10-06-4', after: 'dev-2026-10-25', name: 'dev-2026-10-06-4-vs-dev-2026-10-25' }];
+  const node = (script, args) => {
+    calls.push(script === 'review.mjs' ? `review ${path.basename(args[1])}` : script);
+
+    if (script === 'review.mjs') {
+      pending = [];
+    }
+
+    if (script === 'capture.mjs') {
+      // the capture finishing leaves its own comparison to make
+      pending = [{ kind: 'production', before: 'prod-2026-10-20', after: 'prod-2026-10-22', name: 'prod-2026-10-20-vs-prod-2026-10-22' }];
+    }
+
+    return 0;
+  };
+
+  act({ capture: { environment: 'production', tag: 'prod-2026-10-22' } }, '/sets', { node, missing: () => pending, running: () => null });
+
+  assert.deepEqual(calls, ['review dev-2026-10-25', 'index.mjs', 'capture.mjs', 'review prod-2026-10-22', 'index.mjs']);
+});
+
+test('no comparison is made while another capture runs', () => {
+  const calls = [];
+
+  act({ capture: null }, '/sets', {
+    node: (script) => calls.push(script),
+    missing: () => [{ kind: 'development', before: 'a', after: 'b', name: 'a-vs-b' }],
+    running: () => 'development/dev-2026-10-25'
+  });
+
+  assert.deepEqual(calls, []);
 });
