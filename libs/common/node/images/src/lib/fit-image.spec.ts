@@ -38,9 +38,13 @@ function withExif(jpegBuffer: Buffer) {
   return Buffer.concat([jpegBuffer.subarray(0, 2), segment, jpegBuffer.subarray(2)]);
 }
 
+// jimp is pure JavaScript: making, encoding and resizing a 1800 px image takes about a second on a quiet machine and several
+// under the full check's load, so the tests that do get 30 s rather than vitest's 5.
+const SLOW = 30_000;
+
 describe('fitImage', () => {
   it('scales a large photo down until its shorter side is the target, and makes it smaller', async () => {
-    const input = await photo(3000, 3000);
+    const input = await photo(1800, 1800);
 
     const result = await fitImage(input, { shortSide: 840 });
 
@@ -48,13 +52,13 @@ describe('fitImage', () => {
     expect(await sizeOf(result.buffer)).toEqual({ width: 840, height: 840 });
     expect(result.buffer.length).toBeLessThan(input.length);
     expect(result.mime).toBe('image/jpeg');
-  });
+  }, SLOW);
 
   it('keeps the aspect ratio, so the image still covers a square box of the target size', async () => {
-    const result = await fitImage(await photo(3000, 2000), { shortSide: 840 });
+    const result = await fitImage(await photo(1800, 1200), { shortSide: 840 });
 
     expect(await sizeOf(result.buffer)).toEqual({ width: 1260, height: 840 });
-  });
+  }, SLOW);
 
   it('keeps a PNG a PNG', async () => {
     const result = await fitImage(await photo(1800, 1200, 'image/png'), { shortSide: 840 });
@@ -62,7 +66,7 @@ describe('fitImage', () => {
     expect(result.mime).toBe('image/png');
     expect(result.buffer.subarray(1, 4).toString('latin1')).toBe('PNG');
     expect(await sizeOf(result.buffer)).toEqual({ width: 1260, height: 840 });
-  });
+  }, SLOW);
 
   it('leaves a small image with no metadata exactly as it was', async () => {
     const input = await photo(200, 200, 'image/png');

@@ -312,6 +312,7 @@ describe('SpeakerProvider', () => {
       expect((speakerRepo.save as jest.Mock).mock.calls[0][0].images).toEqual([{ guid: 'i-2' }]);
     });
 
+    // jimp is pure JavaScript, so a 3000 px photo takes a second or more; 30 s, not 5, under the full check's load.
     it('stores a large photo at the size the site shows it, not as uploaded (#2352)', async () => {
       jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
       jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
@@ -326,7 +327,7 @@ describe('SpeakerProvider', () => {
       expect([width, height]).toEqual([840, 840]);
       expect(stored.size).toBe(stored.buffer.length);
       expect(stored.originalname).toBe('face.jpg');
-    });
+    }, 30_000);
 
     it('does not let the caller overwrite the guid', async () => {
       jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
