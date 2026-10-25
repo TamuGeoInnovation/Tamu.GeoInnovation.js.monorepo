@@ -1,7 +1,7 @@
 import { createServer, IncomingMessage, Server, ServerResponse } from 'node:http';
 import { AddressInfo } from 'node:net';
 
-import { HttpException } from '@nestjs/common';
+import { GatewayTimeoutException, HttpException, HttpStatus } from '@nestjs/common';
 
 import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
 
@@ -90,33 +90,44 @@ describe('HelperController over HTTP', () => {
     await expect(forward(reply().res)).rejects.toThrow(HttpException);
   });
 
-  // A 4xx or 5xx never reaches the controller's own error branch: the HTTP client rejects first, so the request fails
-  // with the client's error rather than an HttpException.
-  it.each([400, 500])('fails with the HTTP client\'s error on a %i, without retrying', async (status) => {
-    respond(status, JSON.stringify({ exception: 'no' }));
+  // A 4xx or 5xx used to fail with the HTTP client's own error before the controller's error branch was reached (#2277).
+  it.each([400, 500])("throws the HttpException carrying mailroom's exception on a %i, without retrying", async (status) => {
+    respond(status, JSON.stringify({ exception: 'mailbox full' }));
 
     const failure = await forward(reply().res).catch((e) => e);
 
-    expect(failure).not.toBeInstanceOf(HttpException);
-    expect(failure.response?.statusCode).toBe(status);
+    expect(failure).toBeInstanceOf(HttpException);
+    expect(failure.getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+    expect(failure.getResponse()).toBe('mailbox full');
     expect(received).toHaveLength(1);
   });
 
-  it('sets no timeout of its own: a mailroom that never answers keeps the request waiting', async () => {
+  it('throws an HttpException, not a parse error, when mailroom answers an error that is not JSON', async () => {
+    respond(502, '<html>Bad Gateway</html>');
+
+    const failure = await forward(reply().res).catch((e) => e);
+
+    expect(failure).toBeInstanceOf(HttpException);
+    expect(failure.getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+  });
+
+  // A mailroom that never answers held the request open for ever (#2277).
+  it('gives up after the mail timeout, as a 504 the API can answer with', async () => {
+    process.env.MAILROOM_TIMEOUT_MS = '300';
     let hung: ServerResponse;
     answer = (_req, res) => (hung = res);
 
-    let settled = false;
-    const sending = forward(reply().res).then(
-      () => (settled = true),
-      () => (settled = true)
-    );
+    const outcome = await Promise.race([
+      forward(reply().res).then(
+        () => 'sent',
+        (e) => e
+      ),
+      new Promise((resolve) => setTimeout(() => resolve('still waiting after 2 s'), 2000))
+    ]);
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    expect(settled).toBe(false);
-
-    hung.writeHead(200, { 'content-type': 'application/json' });
-    hung.end('{}');
-    await sending;
+    hung?.end('{}');
+    delete process.env.MAILROOM_TIMEOUT_MS;
+    expect(outcome).toBeInstanceOf(GatewayTimeoutException);
+    expect(received).toHaveLength(1);
   });
 });

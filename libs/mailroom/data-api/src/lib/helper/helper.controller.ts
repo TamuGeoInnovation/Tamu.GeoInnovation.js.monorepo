@@ -1,8 +1,18 @@
-import { Body, Controller, HttpException, HttpStatus, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  GatewayTimeoutException,
+  HttpException,
+  HttpStatus,
+  Post,
+  Res,
+  UploadedFiles,
+  UseInterceptors
+} from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
-import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
+import { DEFAULT_UPLOAD_LIMITS, isMailroomTimeout, mailroomRequestOptions } from '@tamu-gisc/common/nest/services';
 import { MAIL_CONTENT_FIELDS } from '@tamu-gisc/mailroom/common';
 
 import got from 'got';
@@ -42,15 +52,32 @@ export class HelperController {
 
     const reject = this.env.value('rejectUnauthorized');
 
+    // Every answer reaches the checks below (throwHttpErrors: false), so a mailroom error becomes this controller's
+    // HttpException rather than the HTTP client's own error; a mailroom that never answers becomes a 504 (#2277).
     const status = await got(`${this.env.value('mailroomUrl')}/form`, {
       method: 'POST',
       https: {
         rejectUnauthorized: reject
       },
-      body: form
+      body: form,
+      throwHttpErrors: false,
+      ...mailroomRequestOptions()
+    }).catch((e) => {
+      if (isMailroomTimeout(e)) {
+        throw new GatewayTimeoutException('Mailroom did not answer in time.');
+      }
+
+      throw e;
     });
 
-    const parsed = JSON.parse(status.body);
+    // An error page need not be JSON.
+    let parsed: { exception?: string };
+
+    try {
+      parsed = JSON.parse(status.body);
+    } catch {
+      parsed = { exception: `Mailroom answered ${status.statusCode} with no readable reason.` };
+    }
 
     if (
       (!parsed.exception && status.statusCode.toString().startsWith('2')) ||
