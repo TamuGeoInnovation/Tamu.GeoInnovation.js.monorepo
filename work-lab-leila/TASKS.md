@@ -78,7 +78,7 @@ dev has had build 5733 since about 9:46 AM). **The director is running the Aggie
 passes**, because the maintainer needs the tag. **So skip batch 139's steps 2 and 3.** Do step 4 (the release tier) and step 5 (the What to test on dev rows), then
 batch 141 (GIS Day's signed-in checks) between or after them, and the vite branch (batch 138) after. Push a one-line status when you read this.
 
-## Batch 144 (gisday: URGENT, FIRST PRIORITY - session registration answers 500 on typeorm 1; 25 October 2026, 2:35 PM Central, from `work (gisday)`)
+## Batch 144 (gisday: URGENT, FIRST PRIORITY - #2356, session registration answers 500 on typeorm 1; 25 October 2026, 2:35 PM Central, from `work (gisday)`)
 
 **Do this before anything else in this file, including batch 138's lock queue** (the security chat agrees: the GIS Day API has
 been rolled back to `sha-ee1a9e4` because of this, which also takes production back off multer's DoS fix until the fixed image
@@ -104,7 +104,7 @@ answers 500. The maintainer chose: the GIS Day chat's fix, with a test that fail
    (`work/tools/gisday-release-check.cjs` should now print PASS for registration), plus the rest of the release check (saves,
    uploads, Show/Hide) still passing.
 6. `scripts/check-in-volume.sh fix/gisday-rsvp-null-capacity <the projects you edited>,gisday-nest` (the bug-fix form in
-   CLAUDE.md) must exit 0. Commit with a message saying it fixes the registration 500 on typeorm 1; push to the fork.
+   CLAUDE.md) must exit 0. Commit with `Closes #2356` and a message saying it fixes the registration 500 on typeorm 1; push to the fork.
 
 ### Then
 
