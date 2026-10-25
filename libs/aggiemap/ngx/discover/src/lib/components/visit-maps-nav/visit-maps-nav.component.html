@@ -6,7 +6,7 @@ featured Main Campus Parking button, which is not a tile.
 
 <div class="visit-maps-row">
   @for (tile of tiles; track tile.route) { @if (!tile.isDev || (isDev | async) === true) {
-  <a class="visit-maps-tile" [routerLink]="tile.route" [attr.aria-label]="tile.ariaLabel || null">
+  <a class="visit-maps-tile" [routerLink]="tile.route" [attr.aria-label]="tile.ariaLabel || tile.label">
     <span class="visit-maps-icon" [class.visit-maps-icon--mark]="tile.icon.kind === 'image'">
       @if (tile.icon.kind === 'path') {
       <svg [attr.viewBox]="tile.icon.viewBox" fill="currentColor" aria-hidden="true">

@@ -18,7 +18,11 @@ export interface VisitMapsTile {
   label: string;
   /** Where the tile navigates. */
   route: string;
-  /** Only when the accessible name should differ from the visible label. */
+  /**
+   * Only when the accessible name should differ from the visible label; the label is used otherwise.
+   * Every tile carries an `aria-label` either way - two unit tests assert it, because the icon is
+   * decorative and the label alone is what a screen reader would otherwise have.
+   */
   ariaLabel?: string;
   /**
    * Development-only tiles are rendered only on a development host, through `TestingService`. The
