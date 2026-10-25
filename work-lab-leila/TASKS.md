@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 142.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 143.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -73,6 +73,26 @@ Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting fo
 dev has had build 5733 since about 9:46 AM). **The director is running the AggieMap quick tier from the work computer now, and will push the `dev-*` tag if it
 passes**, because the maintainer needs the tag. **So skip batch 139's steps 2 and 3.** Do step 4 (the release tier) and step 5 (the What to test on dev rows), then
 batch 141 (GIS Day's signed-in checks) between or after them, and the vite branch (batch 138) after. Push a one-line status when you read this.
+
+## Batch 142 (gisday: complete the dev test admin's profile, so release checks cover registration; 25 October 2026, 1:40 PM Central, from `work (gisday)`)
+
+Small, about 15 minutes, whenever your queue allows. **Decided by the maintainer** (answering your batch 141 question 1): yes.
+
+### What to do
+
+1. On your local GIS Day stack (as in batch 141), sign in as the dev tenant's test admin and complete the account's profile
+   on the site's own profile page (Account, then Details), with obviously made-up values (for example "Release Check" as
+   the name). This writes only to the **development** Auth0 tenant's test account; nothing touches production.
+2. Prove it: on Sessions, register for one session and unregister again, through the site. Expect a POST to the RSVP
+   route answering 2xx, then the delete answering 2xx. `work/tools/gisday-release-check.cjs` (its last step) should now
+   print PASS for registration.
+3. Leave the profile complete. Never print or commit any value from `auth0-dev.local.env`.
+
+### Then
+
+Report the two requests and their statuses, and the script's registration line. Nothing on GitHub.
+
+---
 
 ## Batch 141 (gisday: the signed-in release checks for `eab737da7`, now that this machine has the dev-tenant file; 25 October 2026, 10:40 AM Central, from `work (gisday)`)
 
