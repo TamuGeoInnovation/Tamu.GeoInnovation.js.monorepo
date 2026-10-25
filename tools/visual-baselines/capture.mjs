@@ -64,6 +64,8 @@ import * as path from 'path';
 import { execFileSync } from 'child_process';
 
 import { commitFields, releaseCommit, releaseLine } from './release-commit.mjs';
+import { centralNow } from './central.mjs';
+import { slugFor } from './slug.mjs';
 
 const arg = (name, fallback) => {
   const i = process.argv.indexOf('--' + name);
@@ -135,15 +137,6 @@ const VIEWPORTS = {
   phone: { width: 390, height: 844 }
 };
 
-/** A file name that is stable, readable and safe, derived from the route it captures. */
-const slugFor = (route) =>
-  route
-    .replace(/^\//, '')
-    .replace(/[?&=]/g, '__')
-    .replace(/[^A-Za-z0-9._-]+/g, '-')
-    .replace(/-+/g, '-')
-    .slice(0, 120) || 'root';
-
 /**
  * Which build this environment is serving.
  *
@@ -204,21 +197,6 @@ function resolveRelease(fallbackBundle) {
   console.error('Pass --release <tag>, for example --release ' + prefix + '2026-10-06.');
   process.exit(2);
 }
-
-/** US Central, named, as everything reported here is (CLAUDE.md). */
-const centralNow = () =>
-  new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/Chicago',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  })
-    .format(new Date())
-    .replace(',', '') + ' US Central';
 
 /**
  * GIS Day's pages: the public routes the end-to-end suite lists, plus every page reachable from them,

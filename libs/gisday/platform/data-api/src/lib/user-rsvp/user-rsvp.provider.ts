@@ -54,9 +54,11 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
         throw new UnprocessableEntityException(null, 'Event could not be found');
       }
 
+      // By the event's key, not the loaded event: typeorm 1 refuses a null anywhere in a where value, and passing the
+      // whole event put its null capacity there, so every registration answered 500.
       const existingRsvp = await this.userRsvpRepo.findOne({
         where: {
-          event: event,
+          event: { guid: event.guid },
           accountGuid: accountGuid
         }
       });
