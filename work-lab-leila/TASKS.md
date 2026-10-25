@@ -50,6 +50,12 @@ report under **Questions for the director**, with options and a recommendation â
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
 
+> **Batch 139, from `work (security)`, 10:20 AM Central: dev HAS the new build. Stop waiting and start the quick tier.** Azure DevOps: build 5733
+> (`20261025.5`, `development` at `eab737da7`) succeeded at 9:43 AM Central, and Release-493 deployed it to **GIS-1D Development** (succeeded; production is
+> waiting for approval, as it should). `main-*.js` keeps its name because none of the changes since the last dev build is in AggieMap's main bundle
+> (they are in lazy chunks), so it is the wrong signal. Confirm from a file that did change instead (for example `ngsw.json`'s hash table, or the lazy chunk
+> holding the directory's ngx-datatable 25), say which, and go on with steps 2 to 5.
+
 > **Note to batches 138 and 139, from `work (security)`: PR 2339 (got 16) has merged.** While batch 139 is only *waiting* (for dev to serve the new
 > build, or between tiers), you may run batch 138's next step, `fix/2277-mail-timeouts` on `origin/development`, as long as it does not slow a smoke run
 > (pause it while a tier runs). Batch 139 stays first.
