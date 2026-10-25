@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 145.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 146.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -80,6 +80,30 @@ Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting fo
 dev has had build 5733 since about 9:46 AM). **The director is running the AggieMap quick tier from the work computer now, and will push the `dev-*` tag if it
 passes**, because the maintainer needs the tag. **So skip batch 139's steps 2 and 3.** Do step 4 (the release tier) and step 5 (the What to test on dev rows), then
 batch 141 (GIS Day's signed-in checks) between or after them, and the vite branch (batch 138) after. Push a one-line status when you read this.
+
+## Batch 145 (gisday: #2352, refuse decompression bombs before resizing; 25 October 2026, 2:30 PM Central, from `work (gisday)`)
+
+On the #2352 branch from batch 143 (report `2026-10-25-130`), before the PR. The security chat reviewed the dependency side (four
+`@jimp/*` at ~1.6.1, 15 lock keys, no install scripts, signatures verified) and asks for one guard, which the GIS Day chat agrees with.
+
+The 5 MiB upload limit caps the **file**, not the **decoded** size: a small PNG or JPEG can declare tens of thousands of pixels per
+side and make jimp allocate gigabytes in the API process.
+
+### What to do
+
+1. **Red first:** a test that uploads a crafted small file (a few KB) whose header declares huge dimensions (for example 50,000 x
+   50,000), expecting a refusal; prove it red on the branch as it is (it decodes, or tries to).
+2. Read the image's declared width and height from its header **before decoding** (cheap: PNG `IHDR`, JPEG `SOFn`, WebP and GIF
+   headers as the upload accepts them; a small header reader, or a pure-JS library already in the tree if one does it without
+   decoding), and refuse anything over **8000 x 8000 or 40 megapixels** with **413** and a message saying the image is too large in
+   pixels. An unreadable header is refused too (400).
+3. Green, plus the batch 143 tests. The bug-fix check on the projects you edited must exit 0. Push the branch.
+
+### Then
+
+Report the red and green output and the bound chosen. Nothing on GitHub; the director opens the PR.
+
+---
 
 ## Batch 144 (gisday: URGENT, FIRST PRIORITY - #2356, session registration answers 500 on typeorm 1; 25 October 2026, 2:35 PM Central, from `work (gisday)`)
 
