@@ -5,8 +5,9 @@
  *
  * Run from a checkout with its tags (the cluster's CronJob clones one every 15 minutes). It finds the
  * newest `dev-*` and `prod-*` tag, and if either has no complete set yet, and the plan below allows it
- * now, it captures that release, compares it with the previous set of the same kind, and rebuilds the
- * pages. One capture per run; the next run takes the other.
+ * now, it captures that release. One capture per run; the next run takes the other. Then, for every kind
+ * of set, it compares the newest finished set with the one before it if that comparison is missing or was
+ * made too early (#2364), whoever captured the sets, and rebuilds the pages.
  *
  * Why tags and not the sites: a `dev-*` tag is pushed only once a build passes its quick tier, and a
  * `prod-*` tag once it is deployed, so only tested builds are photographed and each set gets its name.
@@ -135,30 +136,6 @@ export function plan({ tags, sets, lastWrites = {}, running = null, now, waitMin
   return { capture: ready[0] ? { environment: ready[0].environment, tag: ready[0].tag } : null, reasons };
 }
 
-/** The newest set of a kind other than `except`, by when it was captured, to compare a new one with. */
-export function previousSet(out, environment, except) {
-  const dir = path.join(out, environment);
-
-  if (!fs.existsSync(dir)) {
-    return null;
-  }
-
-  return (
-    fs
-      .readdirSync(dir)
-      .filter((name) => name !== except)
-      .map((name) => {
-        try {
-          return { name, manifest: JSON.parse(fs.readFileSync(path.join(dir, name, 'manifest.json'), 'utf8')) };
-        } catch {
-          return null;
-        }
-      })
-      .filter((s) => s && setState(s.manifest) === 'complete')
-      .sort((a, b) => b.manifest.capturedAt.localeCompare(a.manifest.capturedAt))[0]?.name || null
-  );
-}
-
 /** When anything in a set folder was last written, or null if there is no folder. */
 function lastWrite(dir) {
   if (!fs.existsSync(dir)) {
@@ -201,6 +178,61 @@ export function runningCapture(out, now = new Date()) {
   }
 
   return null;
+}
+
+/**
+ * Comparisons the volume should have and does not (#2364): for each kind of set, its newest finished set
+ * against the previous finished one. A comparison counts as missing if none names that pair in its
+ * summary.json, or if it was written before the newer set finished (made from a capture still running).
+ * So a set captured by hand gets its comparison too, and a comparison made too early is made again.
+ *
+ * Returns [{ kind, before, after, name }], `name` being the folder under compare/: the two releases, and
+ * the kind as well unless it is development or production, whose release names cannot collide.
+ */
+export function missingComparisons(out) {
+  const kinds = (fs.existsSync(out) ? fs.readdirSync(out) : []).filter(
+    (kind) => kind !== 'compare' && kind !== 'lost+found' && fs.statSync(path.join(out, kind)).isDirectory()
+  );
+  const made = fs.existsSync(path.join(out, 'compare'))
+    ? fs
+        .readdirSync(path.join(out, 'compare'))
+        .map((name) => readManifest(path.join(out, 'compare', name, 'summary.json')))
+        .filter(Boolean)
+    : [];
+  const missing = [];
+
+  for (const kind of kinds) {
+    const finished = fs
+      .readdirSync(path.join(out, kind))
+      .map((name) => ({ name, manifest: readManifest(path.join(out, kind, name, 'manifest.json')) }))
+      .filter((set) => set.manifest && setState(set.manifest) === 'complete' && set.manifest.capturedAt)
+      .sort((a, b) => b.manifest.capturedAt.localeCompare(a.manifest.capturedAt));
+
+    if (finished.length < 2) {
+      continue;
+    }
+
+    const [after, before] = finished;
+    const current = made.some(
+      (summary) =>
+        summary.before === `${kind}/${before.name}` &&
+        summary.after === `${kind}/${after.name}` &&
+        (summary.writtenAt || '') >= (after.manifest.completedAt || '')
+    );
+
+    if (!current) {
+      missing.push({
+        kind,
+        before: before.name,
+        after: after.name,
+        name: ['development', 'production'].includes(kind)
+          ? `${before.name}-vs-${after.name}`
+          : `${kind}-${before.name}-vs-${kind}-${after.name}`
+      });
+    }
+  }
+
+  return missing;
 }
 
 const readManifest = (file) => {
@@ -253,29 +285,40 @@ function main() {
 
   decided.reasons.forEach((reason) => console.log(reason));
 
-  if (!decided.capture || process.argv.includes('--dry-run')) {
+  if (process.argv.includes('--dry-run')) {
+    missingComparisons(out).forEach((c) => console.log(`would compare ${c.kind}/${c.before} with ${c.kind}/${c.after}`));
+
     return 0;
   }
 
-  const { environment, tag } = decided.capture;
-  const captured = node('capture.mjs', ['--env', environment, '--release', tag, '--out', out]);
-  const previous = previousSet(out, environment, tag);
+  let status = 0;
 
-  // A comparison only of a complete capture: a partial one would list every missing page as unchanged.
-  if (captured === 0 && setState(readManifest(path.join(out, environment, tag, 'manifest.json'))) === 'complete' && previous) {
-    const name = `${previous}-vs-${tag}`;
+  if (decided.capture) {
+    const { environment, tag } = decided.capture;
 
+    status = node('capture.mjs', ['--env', environment, '--release', tag, '--out', out]);
+  }
+
+  // Every comparison the volume lacks, this capture's included, but not while another capture runs:
+  // one heavy job at a time. A comparison touches neither environment, so the wait and the quiet window
+  // that keep captures off a smoke run do not apply.
+  const compares = runningCapture(out) ? [] : missingComparisons(out);
+
+  for (const c of compares) {
+    console.log(`comparing ${c.kind}/${c.before} with ${c.kind}/${c.after}`);
     node('review.mjs', [
-      path.join(out, environment, previous),
-      path.join(out, environment, tag),
-      path.join(out, 'compare', name, 'diff'),
-      path.join(out, 'compare', name, 'index.html')
+      path.join(out, c.kind, c.before),
+      path.join(out, c.kind, c.after),
+      path.join(out, 'compare', c.name, 'diff'),
+      path.join(out, 'compare', c.name, 'index.html')
     ]);
   }
 
-  node('index.mjs', [out]);
+  if (decided.capture || compares.length) {
+    node('index.mjs', [out]);
+  }
 
-  return captured;
+  return status;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {

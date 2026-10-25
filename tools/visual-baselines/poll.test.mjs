@@ -13,7 +13,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-import { centralMinutes, inQuiet, plan, previousSet, runningCapture, setState } from './poll.mjs';
+import { centralMinutes, inQuiet, missingComparisons, plan, runningCapture, setState } from './poll.mjs';
 
 /** 25 October 2026 at hh:mm US Central (UTC-5 that day). */
 const central = (hh, mm = 0) => new Date(Date.UTC(2026, 9, 25, hh + 5, mm));
@@ -85,20 +85,50 @@ test('with two releases waiting, the older tag goes first', () => {
   assert.equal(plan({ tags, sets: {}, now: central(15, 0) }).capture.tag, 'prod-2026-10-25');
 });
 
-test('a new set is compared with the newest other complete set of its kind', () => {
+test('the newest finished set of each kind is compared with the one before it, once', () => {
   const out = fs.mkdtempSync(path.join(os.tmpdir(), 'poll-'));
-  const write = (name, manifest) => {
-    fs.mkdirSync(path.join(out, 'development', name), { recursive: true });
-    fs.writeFileSync(path.join(out, 'development', name, 'manifest.json'), JSON.stringify(manifest));
+  const write = (kind, name, manifest) => {
+    fs.mkdirSync(path.join(out, kind, name), { recursive: true });
+    fs.writeFileSync(path.join(out, kind, name, 'manifest.json'), JSON.stringify(manifest));
+  };
+  const summary = (name, body) => {
+    fs.mkdirSync(path.join(out, 'compare', name), { recursive: true });
+    fs.writeFileSync(path.join(out, 'compare', name, 'summary.json'), JSON.stringify(body));
   };
 
-  write('dev-2026-10-06-4', { ...done, capturedAt: '2026-10-06 12:00:00 US Central' });
-  write('dev-2026-10-21', { ...done, capturedAt: '2026-10-21 12:00:00 US Central' });
-  write('dev-2026-10-22', { capturedAt: '2026-10-22 12:00:00 US Central' }); // never finished
-  write('dev-2026-10-25', { ...done, capturedAt: '2026-10-25 13:37:00 US Central' });
+  write('development', 'dev-2026-10-06-4', { ...done, capturedAt: '2026-10-06 12:00:00 US Central', completedAt: '2026-10-06 14:00:00 US Central' });
+  write('development', 'dev-2026-10-21', { ...done, capturedAt: '2026-10-21 12:00:00 US Central', completedAt: '2026-10-21 14:00:00 US Central' });
+  write('development', 'dev-2026-10-22', { capturedAt: '2026-10-22 12:00:00 US Central' }); // never finished
+  write('development', 'dev-2026-10-25', { ...done, capturedAt: '2026-10-25 13:37:00 US Central', completedAt: '2026-10-25 16:45:00 US Central' });
+  write('production', 'prod-2026-10-20', done); // only one: nothing to compare with
+  write('development-as-production', 'dev-2026-10-18-3', { ...done, capturedAt: '2026-10-18 12:00:00 US Central' });
+  write('development-as-production', 'dev-2026-10-21', { ...done, capturedAt: '2026-10-21 12:00:00 US Central' });
 
-  assert.equal(previousSet(out, 'development', 'dev-2026-10-25'), 'dev-2026-10-21');
-  assert.equal(previousSet(out, 'production', 'prod-x'), null);
+  assert.deepEqual(missingComparisons(out), [
+    { kind: 'development', before: 'dev-2026-10-21', after: 'dev-2026-10-25', name: 'dev-2026-10-21-vs-dev-2026-10-25' },
+    {
+      kind: 'development-as-production',
+      before: 'dev-2026-10-18-3',
+      after: 'dev-2026-10-21',
+      name: 'development-as-production-dev-2026-10-18-3-vs-development-as-production-dev-2026-10-21'
+    }
+  ]);
+
+  // made while dev-2026-10-25 was still being captured: too early, so made again
+  summary('dev-2026-10-21-vs-dev-2026-10-25', {
+    before: 'development/dev-2026-10-21',
+    after: 'development/dev-2026-10-25',
+    writtenAt: '2026-10-25 14:31:14 US Central'
+  });
+  assert.equal(missingComparisons(out).filter((c) => c.kind === 'development').length, 1);
+
+  // made after it finished: current
+  summary('dev-2026-10-21-vs-dev-2026-10-25', {
+    before: 'development/dev-2026-10-21',
+    after: 'development/dev-2026-10-25',
+    writtenAt: '2026-10-25 16:50:00 US Central'
+  });
+  assert.equal(missingComparisons(out).filter((c) => c.kind === 'development').length, 0);
 });
 
 test('nothing starts while any capture is running, of any kind', () => {

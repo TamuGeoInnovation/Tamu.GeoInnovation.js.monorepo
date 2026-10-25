@@ -145,6 +145,12 @@ names. A site's `main-*.js` can keep its name across builds whose changes are on
 | Not between 02:30 and 08:30 US Central (`--quiet`) | the nightly smoke run starts at 6:17 AM, and a capture on the cluster takes about 3.5 hours |
 | Not while any set is being captured, by anyone | two captures share the cluster's workers and slow each other until pages time out; a set unfinished and written to in the last 15 minutes is running |
 
+**Every set gets its comparison, however it was captured** ([#2364][2364]). On each run, for each kind of set,
+the newest finished set is compared with the one before it if that comparison is missing, or was made
+before the newer set finished (from a capture still running). So a set captured by hand with
+`start-capture.ps1` needs no `start-compare.ps1` afterwards. A comparison touches neither environment, so
+it is not held back by the hour's wait or the quiet window, only by a capture running.
+
 `--dry-run` prints what it would do and why, one line per tag. A set whose capture finished counts as done
 even if some shots failed (its log names them), so one page that keeps failing is not retried forever.
 
@@ -169,3 +175,4 @@ out. Neither run meant anything and both had to be thrown away.
 [2345]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2345
 [2355]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2355
 [2357]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2357
+[2364]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2364
