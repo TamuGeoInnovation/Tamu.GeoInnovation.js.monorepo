@@ -9,7 +9,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { nameOf, parseEntry, uncovered, withInstallScripts } from './install-scripts.mjs';
+import { installedNames, nameOf, parseEntry, uncovered, withInstallScripts } from './install-scripts.mjs';
 
 const LOCK = {
   lockfileVersion: 3,
@@ -69,6 +69,33 @@ test('fails on a version a pinned entry does not name: an upgrade of a reviewed 
 
 test('fails on everything when there is no allowScripts at all', () => {
   assert.equal(uncovered(undefined, withInstallScripts(LOCK)).missing.length, 4);
+});
+
+const LOCK_WITH_GYP = {
+  lockfileVersion: 3,
+  packages: {
+    ...LOCK.packages,
+    // better-sqlite3 13: its manifest has no install script, so the lock records none, but it ships a binding.gyp,
+    // which npm's strict-allow-scripts still counts as `install: node-gyp rebuild`.
+    'node_modules/better-sqlite3': { version: '13.0.3' }
+  }
+};
+
+test('an entry for an installed package with no recorded script is not stale: npm may count its binding.gyp (#2326)', () => {
+  const allow = { '@swc/core': true, esbuild: true, 'browser-tabs-lock': false, 'better-sqlite3': false };
+  const result = uncovered(allow, withInstallScripts(LOCK_WITH_GYP), installedNames(LOCK_WITH_GYP));
+
+  assert.deepEqual(result.missing, []);
+  assert.deepEqual(result.unused, []);
+  assert.deepEqual(result.noScript, ['better-sqlite3']);
+});
+
+test('an entry for a package not in the lock at all is still stale (#2326)', () => {
+  const allow = { '@swc/core': true, esbuild: true, 'browser-tabs-lock': false, 'gone-package': true };
+  const result = uncovered(allow, withInstallScripts(LOCK_WITH_GYP), installedNames(LOCK_WITH_GYP));
+
+  assert.deepEqual(result.unused, ['gone-package']);
+  assert.deepEqual(result.noScript, []);
 });
 
 test('reports, without failing, an entry nothing installs any more', () => {
