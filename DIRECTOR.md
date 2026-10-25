@@ -278,6 +278,10 @@ from](#saying-when-you-will-next-be-heard-from)); a heartbeat that each one sets
 - **Anyone runs `tools/roster.sh`** for the table: participant, agent, state, takes work, last seen (Central), and
   health - **up** (inside its own next time), **late** (past it, by how long), **gone** (two hours past), or **never
   checked in**. A director reads it before writing a batch, and gives work only to one that is **up** and takes work.
+- **A heartbeat proves only that the session's background task is alive.** On 25 October the lab's ran every 30 minutes for
+  three hours while the session sat in a wait that could never end, and read no note in that time. So the roster also shows
+  **Last real push** (its `STATUS.md` or a report) and flags *stuck?* when a participant says it is running a batch and has
+  pushed no work for 60 minutes. A listener in a long wait checks its `TASKS.md` for new notes at least every 30 minutes.
 - **A participant that is late is chased as [When a listener stops](#when-a-listener-stops-or-goes-wrong) says.**
   The roster raises no alarm by itself; it makes the question a table to read.
 
