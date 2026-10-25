@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 143.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 144.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -77,6 +77,41 @@ Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting fo
 dev has had build 5733 since about 9:46 AM). **The director is running the AggieMap quick tier from the work computer now, and will push the `dev-*` tag if it
 passes**, because the maintainer needs the tag. **So skip batch 139's steps 2 and 3.** Do step 4 (the release tier) and step 5 (the What to test on dev rows), then
 batch 141 (GIS Day's signed-in checks) between or after them, and the vite branch (batch 138) after. Push a one-line status when you read this.
+
+## Batch 143 (gisday: #2352, resize speaker photos on upload, and a script for the ones already stored; 25 October 2026, 2:05 PM Central, from `work (gisday)`)
+
+Low priority: after your security work and batch 142. Development, ending in a branch. About an hour.
+[#2352](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2352) has the measurements (Presenters loads
+60 photos, 9.0 MB, for 255 px cards; five over 500 KB) and what to do.
+
+**A new dependency** (an image library such as `sharp`) changes `package.json` and the lock, which are shared. The GIS Day chat
+has told the security chat; follow the lock rules in `DIRECTOR.md` (age, allowed install scripts, signatures), and say in the
+report which library and version, and that `npm ci` passes under the install-script allowlist. If `sharp`'s install script is
+not allowed, say so under questions rather than working around it.
+
+### What to do
+
+1. Branch `fix/2352-gisday-speaker-photo-size` from the latest `origin/development`, in its own worktree.
+2. **Red first:** a test that uploads a large speaker photo (for example 3000 x 3000) and expects it stored at the target
+   size; prove it red.
+3. **On upload** (`libs/gisday/platform/data-api/src/lib/speaker/`, `images/speakers`): resize to cover the largest place a
+   speaker photo is shown at twice its pixel size, keep the aspect ratio, re-encode at a sensible quality, strip EXIF, keep
+   the file-name pattern. Find the largest display size in the site's templates (the presenter card is 255 px wide; check
+   the presenter's own page) and say what you chose and why. Small photos are left alone or only re-encoded.
+4. **Existing photos:** a re-runnable script (in `apps/gisday-nest` or `tools/`, beside how other one-time jobs live) that
+   resizes every file under the uploads' `images/speakers` the same way, **in place, same names**, so no database row
+   changes; a dry run by default listing before and after sizes; `--apply` to write; originals copied aside first. Prove it
+   on the local stack's uploads. On production the maintainer runs it later, on the uploads volume; do not run it there.
+5. Before/after: the Presenters page's total image weight on the local stack, and the release-notes entry
+   `docs/releases/unreleased/2352-gisday-speaker-photo-size.md` with a What to test row.
+6. `scripts/check-in-volume.sh fix/2352-gisday-speaker-photo-size` must exit 0 (with the lock's clean `npm ci`). Push.
+
+### Then
+
+Report: branch and head, the library and version, red then green, the chosen size and quality, the script's dry run and
+apply output locally, the page-weight comparison, the check's exit code. Nothing on GitHub; the director opens the PR.
+
+---
 
 ## Batch 142 (gisday: complete the dev test admin's profile, so release checks cover registration; 25 October 2026, 1:40 PM Central, from `work (gisday)`)
 
