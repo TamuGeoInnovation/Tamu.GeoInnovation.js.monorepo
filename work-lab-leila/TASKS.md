@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 146.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 147.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -76,6 +76,21 @@ report under **Questions for the director**, with options and a recommendation â
 
 > **Batch 138, from `work (security)`: PR 2362 (better-sqlite3 13) has merged.** Next: `chore/1218-auth0-7`, merge `origin/development`, check, push on exit 0.
 > After GIS Day's #2352 guard batch if that is waiting; GIS Day's urgent work stays first.
+
+## Batch 146 (security: PR 2366 - `auth0` 7 against the development tenant; 25 October 2026, 2:47 PM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now** (after anything GIS Day has marked urgent). **Expected: 60 minutes.** **The maintainer decided (25 October)
+that you run these checks, with the development tenant's test-admin file he put on this machine for GIS Day.** Never print, copy, commit or quote its values,
+and leave the test account's id out of the report.
+1. GIS Day's local stack built from **`fork/chore/1218-auth0-7`** (`d181a4a57`): the API from this branch (built as `publish.yml` builds it) and the site, on the seed, migrated.
+2. Signed in as the test admin, as batch 141's release check does:
+   1. **Profile:** open it; name, email and the GIS Day fields load.
+   2. **Edit and save** one GIS Day field, reload: the change is kept and the email is unchanged. Put the field back.
+   3. **Admin â†’ Users:** the list loads, sorted by name, with each user's connection. Say how many it shows.
+   4. **A class roster and a competition leaderboard** show names and emails, not *N/A*.
+   5. **The API log:** no `ManagementService` errors.
+3. The same five on `origin/development` first, so each result has a "before" to compare with.
+4. Report each step before and after. Nothing on GitHub; the director puts the result on PR 2366.
 
 ## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
 
