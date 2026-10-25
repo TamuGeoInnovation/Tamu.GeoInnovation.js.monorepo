@@ -2,6 +2,7 @@ import { createJimp } from '@jimp/core';
 import jpeg from '@jimp/js-jpeg';
 import png from '@jimp/js-png';
 
+import { declaredPng } from './declared-image';
 import { fitImage } from './fit-image';
 
 const Jimp = createJimp({ formats: [jpeg, png] });
@@ -97,6 +98,16 @@ describe('fitImage', () => {
     expect(result.reason).toContain('metadata removed');
     expect(result.buffer.includes('Exif\0\0', 0, 'latin1')).toBe(false);
     expect(await sizeOf(result.buffer)).toEqual({ width: 200, height: 200 });
+  });
+
+  it('does not decode a file that declares more pixels than the limits, and returns it as it was', async () => {
+    const bomb = declaredPng(50_000, 50_000);
+
+    const result = await fitImage(bomb, { shortSide: 840 });
+
+    expect(result.changed).toBe(false);
+    expect(result.reason).toBe('too large in pixels to decode');
+    expect(result.buffer).toBe(bomb);
   });
 
   it('returns a file it cannot read as it was', async () => {

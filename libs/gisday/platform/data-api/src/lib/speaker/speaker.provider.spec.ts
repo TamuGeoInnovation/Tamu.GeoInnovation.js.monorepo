@@ -5,7 +5,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Repository } from 'typeorm';
 import { createJimp } from '@jimp/core';
 import jpeg from '@jimp/js-jpeg';
-import { crc32, deflateSync } from 'zlib';
+
+import { declaredPng } from '@tamu-gisc/common/node/images';
 
 import { AssetsService } from '../assets/assets.service';
 import { Asset, Event, Organization, Season, Speaker, University } from '../entities/all.entity';
@@ -13,29 +14,6 @@ import { SeasonService } from '../season/season.service';
 import { SpeakerProvider } from './speaker.provider';
 
 const Jimp = createJimp({ formats: [jpeg] });
-
-// A valid PNG whose header declares width x height, with almost no pixel data: what a decompression bomb looks like.
-function declaredPng(width: number, height: number) {
-  const chunk = (type: string, data: Buffer) => {
-    const body = Buffer.concat([Buffer.from(type, 'latin1'), data]);
-    const length = Buffer.alloc(4);
-    const crc = Buffer.alloc(4);
-    length.writeUInt32BE(data.length);
-    crc.writeUInt32BE(crc32(body));
-    return Buffer.concat([length, body, crc]);
-  };
-  const ihdr = Buffer.alloc(13);
-  ihdr.writeUInt32BE(width, 0);
-  ihdr.writeUInt32BE(height, 4);
-  ihdr.set([8, 6, 0, 0, 0], 8);
-
-  return Buffer.concat([
-    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
-    chunk('IHDR', ihdr),
-    chunk('IDAT', deflateSync(Buffer.alloc(1024))),
-    chunk('IEND', Buffer.alloc(0))
-  ]);
-}
 
 describe('SpeakerProvider', () => {
   let provider: SpeakerProvider;
@@ -364,6 +342,17 @@ describe('SpeakerProvider', () => {
         provider.updateWithInfo('s-1', {}, { originalname: 'bomb.png', mimetype: 'image/png', buffer: bomb, size: bomb.length })
       ).rejects.toThrow(PayloadTooLargeException);
       expect(assetService.saveAsset).not.toHaveBeenCalled();
+    });
+
+    it('creates no speaker when the new speaker brings a photo that declares a huge image', async () => {
+      const save = jest.fn();
+      jest.spyOn(speakerRepo, 'create').mockReturnValue({ save } as never);
+      const bomb = declaredPng(9000, 9000);
+
+      await expect(
+        provider.insertWithInfo({ firstName: 'A' }, { originalname: 'bomb.png', mimetype: 'image/png', buffer: bomb, size: bomb.length })
+      ).rejects.toThrow(PayloadTooLargeException);
+      expect(save).not.toHaveBeenCalled();
     });
 
     it('refuses a file whose header is not an image it can read, with 400', async () => {

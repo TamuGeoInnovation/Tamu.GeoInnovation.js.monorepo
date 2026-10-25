@@ -3,6 +3,8 @@ import jpeg from '@jimp/js-jpeg';
 import png from '@jimp/js-png';
 import { methods as resize } from '@jimp/plugin-resize';
 
+import { exceedsImageSizeLimits, readImageSize } from './image-size';
+
 // Pure JavaScript on purpose: uploads are untrusted, and a native image library (sharp, libvips) would decode them in native
 // code and bring install scripts and platform binaries the lock otherwise avoids (#2293, #2326). Only the two formats
 // re-encoded here are loaded. jimp applies a JPEG's EXIF orientation when it reads one, and its encoders write no metadata.
@@ -55,6 +57,14 @@ export interface FitImageResult {
  */
 export async function fitImage(input: Buffer, options: FitImageOptions): Promise<FitImageResult> {
   const { shortSide, keepBelowBytes = 300 * 1024, quality = 80 } = options;
+
+  // Never decode what the header says is too large: the decoder would allocate it all first (a decompression bomb). An upload
+  // is refused before it gets here; this keeps fit-speaker-photos safe on files that were stored before that check existed.
+  const declared = readImageSize(input);
+
+  if (declared && exceedsImageSizeLimits(declared)) {
+    return unchanged(input, 'unknown', declared.width, declared.height, 'too large in pixels to decode');
+  }
 
   let image: Awaited<ReturnType<typeof Jimp.fromBuffer>>;
 
