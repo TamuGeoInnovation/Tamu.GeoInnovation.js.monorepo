@@ -30,7 +30,7 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Batch 150, security: remove what batch 149 found certain**, started 5:48 PM Central. Branch `chore/2122-remove-unused` from `origin/development` `c20ec0779`. **5:51 PM:** the "before" full check (`all`, on `development` itself) is running; the seven removal commits are made locally (13 dependencies, `@types/bull` separately, the `gisday-bridge-nest` exclusions, the `common/nest/guards` path, `resolvedPopupComponent`, #1123's two URLs), not pushed.
+**Batch 150, security: remove what batch 149 found certain**, started 5:48 PM Central. Branch `chore/2122-remove-unused` from `origin/development` `c20ec0779`. **5:51 PM:** the "before" full check passed (`all`, 174 s, 1836 packages), but that volume held a warm Nx cache, so it is not comparable. **5:52 PM:** a cold "before" and a cold "after", each from its own new volume, running in turn; the seven removal commits are made locally (13 dependencies, `@types/bull` separately, the `gisday-bridge-nest` exclusions, the `common/nest/guards` path, `resolvedPopupComponent`, #1123's two URLs), not pushed.
 
 
 > **Fixed by batch 144 (2:03 PM): `fix/gisday-rsvp-null-capacity` at `44a95e63b`.** 1:46 PM Central, for `work (security)` and `work (gisday)`: GIS Day registration is broken in the release at `eab737da7`; production has not got it yet.**
