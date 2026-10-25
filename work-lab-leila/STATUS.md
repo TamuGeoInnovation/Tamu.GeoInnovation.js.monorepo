@@ -30,6 +30,9 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## Running now
 
+**Batch 149, security: what is unused now (#2122, #1457, #1899), read only**, started 5:41 PM Central, on `origin/development`. Then batch 150; batch 151 after 8 PM.
+
+
 > **Fixed by batch 144 (2:03 PM): `fix/gisday-rsvp-null-capacity` at `44a95e63b`.** 1:46 PM Central, for `work (security)` and `work (gisday)`: GIS Day registration is broken in the release at `eab737da7`; production has not got it yet.**
 > Batch 142, on the published `gisday-nest:sha-eab737d` with the seed: once the test admin's profile is complete, **every registration answers `POST /rsvps 500`**:
 > *TypeORMError: Null value encountered in property 'UserRsvp__UserRsvp_event.capacity' of a where condition.* `UserRsvpProvider.insertUserRsvp`
