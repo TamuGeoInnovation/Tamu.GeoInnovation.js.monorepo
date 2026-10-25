@@ -76,6 +76,9 @@ jobs:
         displayName: 'Verify artifact contains applications'
         condition: and(succeeded(), eq(variables['IS_DEPLOYABLE'], 'True'))
 
+      # Only a deployable branch's build is ever released, so only it publishes an artifact. A pull request build
+      # cannot be deployed, and its upload was the longest step of the whole build: 8 to 9 minutes of a 16 to 21
+      # minute run, on the lab as on the hosted pool (#2340).
       - task: CopyFiles@2
         inputs:
           Contents: |
@@ -84,9 +87,11 @@ jobs:
             package-lock.json
           TargetFolder: '$(Build.ArtifactStagingDirectory)'
         displayName: 'Copy Distribution Files'
+        condition: and(succeeded(), eq(variables['IS_DEPLOYABLE'], 'True'))
 
       - task: PublishBuildArtifacts@1
         inputs:
           pathToPublish: $(Build.ArtifactStagingDirectory) # dist or build files
           artifactName: 'js-monorepo-${{parameters.buildType}}'
         displayName: 'Publish Artifacts'
+        condition: and(succeeded(), eq(variables['IS_DEPLOYABLE'], 'True'))
