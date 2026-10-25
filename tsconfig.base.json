@@ -26,7 +26,6 @@
       "@tamu-gisc/common/datasets/geographic": ["./libs/common/datasets/geographic/src/index.ts"],
       "@tamu-gisc/common/nest/auth": ["./libs/common/nest/auth/src/index.ts"],
       "@tamu-gisc/common/nest/environment": ["./libs/common/nest/environment/src/index.ts"],
-      "@tamu-gisc/common/nest/guards": ["./libs/common/nest/guards/src/index.ts"],
       "@tamu-gisc/common/nest/services": ["./libs/common/nest/services/src/index.ts"],
       "@tamu-gisc/common/ngx/auth": ["./libs/common/ngx/auth/src/index.ts"],
       "@tamu-gisc/common/ngx/environment": ["./libs/common/ngx/environment/src/index.ts"],
