@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **12:45 PM Central, 25 October 2026**. A listener; job: testing.
+Last written **1:01 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,6 +32,7 @@ Last written **12:45 PM Central, 25 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
+**Batch 141, gisday: the signed-in release checks for `eab737da7`**, started 12:50 PM Central. **1:01 PM: the dev-tenant file works** (all five keys present; values never read out). Signed in as the test admin through the release-check script on the published `gisday-nest:sha-eab737d` with the local site build on 4201: Admin lists 46 events, 5 authenticated calls 200. First script: every save keeps every field (events, sponsors, speakers, classes), the 21 KB upload 201 and the 6 MiB one 413; registration blocked by *Profile Incomplete*, as on `work`. Second script next. (Batch 139's release tier is running alongside.)
 **Batch 139, security: the release at `eab737da7` (first priority)**, started 9:55 AM Central, 25 October. **Done so far:** GIS Day: both `sha-eab737d` images run locally on the seed (API 213 routes; home, Sessions, Presenters and a presenter, VGI competition and Sponsors all load; the only console errors are the service worker failing to register in the app's built-in browser over http://localhost, which production's same worker does not do there, and the release's worker is byte-identical to production's). Signed-in checks: this machine has no dev-tenant settings, so they go to the maintainer. Schema since `36b962a04`: none (code only, the same 3 migrations). **12:45 PM: read the Still there? note.** My mistake: I took the bundle baseline at 9:55, after dev already had build 5733 (9:46), so I waited for a change that had happened. Skipping steps 2 and 3 (the director runs the quick tier and the dev tag). **Now: step 4, the release tier**, then step 5, then batch 141.
 **Batch 138, security: the lock queue's checks, on this machine (standing)**, started 9:12 AM Central, 25 October. **Dependabot's PRs both pass:** PR 2322 (`778e983bd`: marked 18.1.1, webpack 5.112.0 with its watchpack 2.6.2, all 8 days old or more) **check exit 0**; PR 2300 (`1e661e005`: angulartics2 14.1.0 alone) **check exit 0**; each lock moves only its own packages. Not pushed (Dependabot's branches). PRs 2322 and 2300 merged. **`chore/1218-got-16` at `f309389ac`** (`origin/development` `eab737da7` merged in; no conflicts; the lock moves only got 16's 34 keys) **check exit 0, pushed (9:34 AM), ready for its PR.** PR 2339 (got 16) merged. **`fix/2277-mail-timeouts` at `4eaf67616`** (`origin/development` `a94e4dc06` merged in: add/add conflicts from 2339's squash, each resolved to this branch's side after checking `development`'s copy equals got-16's; the lock taken from `development`, which it now equals, as the branch changes no package) **check exit 0, pushed (10:09 AM), ready for its PR.** Batch 138 is paused for batch 139 again; next, `fix/2318-angular-build-vite` after the mail timeouts merge.
 
