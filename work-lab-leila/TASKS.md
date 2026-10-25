@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 140.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 141.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -49,6 +49,22 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 140 (security: #2343 - re-install this machine's build agents so they mount the git mirror; 25 October 2026, 9:47 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **The maintainer decided (25 October) that you do this.** **Do it in the first gap in batch 139** (for example
+while waiting for dev to serve the new build, or between the two smoke tiers), **but only when no Azure Pipelines job is running on this machine**:
+re-installing restarts each agent and would cancel a job in progress. **The release build, 5733, is running on the lab now: wait for it to finish.**
+How to tell: `docker ps` shows no agent job container busy (a job's container runs a `Linux-Build` job; the supervisor's log under
+`%LOCALAPPDATA%	amu-build-agent\logs\` says the agent is listening). **Expected: 15 minutes.**
+1. **Why** (#2343): build 5733 warned *No git mirror at /mirror/monorepo.git on this agent* on every lab job. The scheduled tasks run copies of the scripts
+   made at install, from before #2255 added the mirror (`tools/build-agent/README.md`: "run it again after pulling a change to them").
+2. In the checkout the agents were installed from: `git pull` `development`. Then, for each agent installed here (`lab-1`, `lab-2`, `lab-3`, and `lab-4` if it
+   is): `powershell -File tools/build-agent/install-agent-task.ps1 -AgentName lab-N -Start`. **No token is involved**: the saved DPAPI token is reused. Never
+   print or read it. If any step asks for a token, stop and report; that part is the maintainer's.
+3. **Check:** `docker volume ls` shows `tamu-agent-git-mirror` with `monorepo.git` in it; each agent is back online (its log). Then the next lab job's
+   *Checkout from the lab mirror* step says *Borrowing objects from the lab's read-only mirror* and there is no warning. PR 2339 or 2342's next build will show it; say which.
+4. Report each step's result, and the install script's version (the commit of `tools/build-agent/` you installed from).
 
 ## Batch 139 (security: the release - test AggieMap and GIS Day at `eab737da7` before production; **first priority**; 25 October 2026, 9:23 AM Central, from `work (security)`)
 
