@@ -1,6 +1,6 @@
 # Who directs
 
-**Directors: AggieMap - work, its AggieMap chat (taken back 4:45 PM Central, 25 October 2026: home never picked it up - it has made no AggieMap commit since the handover, and work had already flagged it silent on 23 October); GIS Day - home, its GIS Day chat (handed over by work at 7:30 PM Central, 23 October 2026, for the weekend; see Handover (gisday)); security and vulnerability work (#2112, #2118, #1146's security parts, Dependabot, CodeQL and secret-scanning alerts, committed secrets) - work, the chat titled "js.monorepo - Security - CSA 305 Desktop"** (maintainer, 23 October 2026). All three run on the work machine; each writes only its own batches and asks him only about its own, so a listener's batch heading (`gisday:`, `aggiemap:`, `security:`) says which chat wrote it and where its questions go. `package.json` and `package-lock.json` are shared: a chat says so before changing either, and security bumps are the security chat's.
+**Directors: AggieMap - work, its AggieMap chat (taken back 4:45 PM Central, 25 October 2026: home never picked it up - it has made no AggieMap commit since the handover, and work had already flagged it silent on 23 October); GIS Day - home, its GIS Day chat (handed over by work at 5:00 PM Central, Sunday 25 October 2026; work directed GIS Day on 24 and 25 October because the maintainer was there; see Handover (gisday)); security and vulnerability work (#2112, #2118, #1146's security parts, Dependabot, CodeQL and secret-scanning alerts, committed secrets) - work, the chat titled "js.monorepo - Security - CSA 305 Desktop"** (maintainer, 23 October 2026). All three run on the work machine; each writes only its own batches and asks him only about its own, so a listener's batch heading (`gisday:`, `aggiemap:`, `security:`) says which chat wrote it and where its questions go. `package.json` and `package-lock.json` are shared: a chat says so before changing either, and security bumps are the security chat's.
 
 Each of the maintainer's machines runs a Claude Code session on this branch. **Each application has exactly one director at a
 time; every other session listens.** The maintainer talks to the directors; the two are kept apart so that each chat's context
@@ -443,62 +443,62 @@ checks each filter against its own layer, which is why it can be sent to the GIS
 
 ## Handover (gisday)
 
-Written by `work` (GIS Day chat) at 7:30 PM Central, Friday 23 October 2026, as the maintainer left for home. **The GIS Day
-director is `home` for the weekend**, from when the maintainer speaks to it there; `work`'s GIS Day chat becomes a listener.
-Security and vulnerability work is **not** GIS Day's: it belongs to the security chat on `work` ("js.monorepo - Security -
-CSA 305 Desktop"). File what you find, write "for the security chat", leave it unfixed. AggieMap has its own director.
+Written by `work` (GIS Day chat) at 5:00 PM Central, Sunday 25 October 2026, as the maintainer left for home. **The GIS Day
+director is `home`** from when the maintainer speaks to it there; `work`'s GIS Day chat becomes a listener. (Home did not pick
+up the 23 October handover; work directed GIS Day on 24 and 25 October because the maintainer worked from there.) Security and
+vulnerability work is **not** GIS Day's: it belongs to the security chat on `work` ("js.monorepo - Security - CSA 305
+Desktop"). File what you find, write "for the security chat", leave it unfixed. AggieMap has its own director. The lab
+(`work-lab-leila`) takes any kind of batch; send work to it first.
 
-### Production
+### Production (both namespaces, `gisday` and `gisday-ucgis`)
 
-- `gisday-angular` and `gisday-nest` **`sha-ee1a9e4`** in `gisday` (txgisday.org, gisday.tamu.edu, tamu.txgisday.org) and
-  `gisday-ucgis` (gisday.ucgis.org), live about 11:30 AM on 23 October, recorded in kubernetes-config #72 (merged).
-  Rollback: site `sha-8ee8c6e`, API `sha-35581d0`.
-- Carries #1474 (keyboard access), #2142 (gisday.tamu.edu lists only Texas A&M's sessions) and the security chat's changes
-  (upload limits, multer 2.5, class-validator 0.15 with whitelisted bodies, nginx 1.30.6, Node 24.22.1, package updates).
-- Checked before release on `ee1a9e499` and the published images, and after on all four addresses; the maintainer confirmed
-  registration on production.
-- **The next GIS Day release carries typeorm 1** (PR 2195, merged 23 October). Before the maintainer runs `set image`, run
-  `work/tools/gisday-release-check.cjs` and `gisday-release-check2.cjs` against the local stack on the release commit
-  (instructions at the top of each). PR 2195's branch passed them; the sponsor delete fails until #2205 is fixed.
+- **Site `gisday-angular:sha-eab737d`, API `gisday-nest:sha-e9e416e`**, recorded in kubernetes-config #77 and #80 (merged).
+  Rollback for the API: `sha-ee1a9e4`.
+- 25 October: `sha-eab737d` (typeorm 1, Nx 24, the weekend's security work) went live at about 1:50 PM; **every session
+  registration answered 500** (#2356, Urgent: typeorm 1 refuses a whole entity as a where value when a column is null). API
+  rolled back to `sha-ee1a9e4` at about 2:40 PM (#78); the fix (PR 2360, lab batch 144, tests through typeorm itself) shipped as
+  `sha-e9e416e` mid-afternoon (#80). The maintainer confirmed registration on production.
+- **Do not promote `sha-e8ba974`** (auth0 7 and #2320, audited clear): the maintainer chose to promote **one** API image carrying
+  PR 2375 (merged), #2205 and #2352 together.
 
-### In flight
+### The next GIS Day release (the maintainer's decision, 25 October)
 
-| What | Where | Next |
-| --- | --- | --- |
-| #2196, the local restore runs the migrations (Low) | `work-lab-leila` batch 54 | Open the PR when its branch comes back |
-| #2205, deleting a sponsor with a logo fails with 500 (Medium) | `work-lab-leila` batch 59 | Run the admin delete locally with sign-in, then open the PR |
-| Retiring `gisday-competitions-nest` and `-angular` (competitions moved into `gisday-nest` in Feb 2024, #351) | The security chat, under #1203 | Nothing for GIS Day; keep `libs/gisday/competitions/**` |
+| What | State at 5:00 PM |
+| --- | --- |
+| PR 2375, bull's uuid (security chat) | merged |
+| #2205, delete a sponsor that has a logo | **PR 2381 open**, waiting on the maintainer's merge (lab batches 59 and 147) |
+| #2352, speaker photos resized on upload, decompression-bomb guard, script for existing photos | **PR 2382 open**, waiting on the maintainer's merge (lab batches 143 and 145; jimp, reviewed by the security chat) |
+| auth0 7 (#2366) and Admin, Users lists everyone (#2320, PR 2370) | merged; in the same image |
 
-No GIS Day pull request is open. Merged on 23 October: 2140 (#2057), 2145 (#1474), 2150 (#2142), 2197 (#2133).
+When both PRs have merged and `gisday-nest` (and `gisday-angular`, built in the same run) are published for the merge commit:
+1. Run `work/tools/gisday-release-check.cjs` and `gisday-release-check2.cjs` against the local stack on the **published API
+   image** (a machine with `C:/TAMU/gisday-local/auth0-dev.local.env`: `work` or the lab; the dev test admin's profile is now
+   complete, so registration is covered). Add a speaker photo upload and a crafted small file declaring huge dimensions
+   (expect 413). Sponsor delete should now pass.
+2. Send the image's sha to the security chat for its audit.
+3. Give the maintainer the `set image` commands (API, and the site if it changed), `get deploy` in both namespaces, then check
+   the four addresses and `GET /api/events/<session>/rsvps`, record it in kubernetes-config, and ask him to register on
+   production.
+4. **After it ships:** the maintainer runs `nx run gisday-nest:fit-speaker-photos` against production's uploads, dry run first,
+   then `--apply` (originals are copied aside). Write him the exact commands for the uploads volume.
 
-### Waiting on the maintainer
+### Other open GIS Day work
 
-- **Career fair, Wed 18 November, MSC 2300 A and B.** The site's Career Fair session has 38 people from 27 organizations.
-  He is adding Hilcorp (Ronald McAdams) and five who emailed that they are coming (BGE, Dunaway, FCC Environmental,
-  Perennial Environmental, Second Spatial). Wyatt Buckner (City of Austin) confirms early next week; then add him and mark
-  him Coming in the CRM. About 35 to 36 tables.
-- **The TAMU AI key:** the lab's trial used the $20 by 9:28 AM; it is back on his account. Nothing to do unless he asks.
+- #2363 (Low): run the remaining provider specs on the query-checking data source, for a listener.
+- #2196 closed (the local restore migrates). #2137 closed (fixed by #2180).
+- The lab found that report 130's branch for #2352 is the one in PR 2382; batch 143's first jimp attempt (`sharp`) was discarded.
 
-### Open questions for the maintainer
+### Not in the repository (the maintainer's, on `work` only)
 
-1. **#2137 (Medium), lint that can never fail in five GIS Day projects (`"force": true`).** Who takes it?
-   - **A. A listener batch, when the lab is free ← recommended** (a small code job with a full check; the lab is fastest)
-   - B. Wait until after GIS Day (20 November)
-
-### What the next GIS Day director does, in order
-
-1. Read this, tell the maintainer it directs GIS Day, and ask question 1.
-2. Watch `work-lab-leila/STATUS.md` and its reports for batches 54 and 59; open their PRs (every field, per CLAUDE.md).
-3. The open GIS Day issues, for listeners: #2024 (footer My Account links), #2084 (tab icon), #2088 (each address calls its
-   own API), #2097 (leftover table on production), #2072 (txgisday.org as a landing page), #2079 (sub-admins).
-4. Send work to idle listeners first, the lab first (see "The director"). Only GIS Day batches, headed `gisday:`.
+- Award nomination numbers: `C:\TAMU\gisday-local\gisday-award-numbers.md` and the reports and CSVs beside it (students,
+  employers, industry guests and former students, prizes, sponsorship estimates, 2013-2026).
+- The read-only production report scripts `gisday-impact-report*.ps1` in the same folder.
 
 ### Things not to relearn
 
 - The production `gisday-angular` build overwrites a local `dist/apps/gisday-angular`; take signed-in local photos before it.
-- Signed-in checks: Playwright in a container on `--network container:gisday-dev` (or `container:gisday-site` for the
-  Texas A&M site), `http://localhost:4201`, as the dev tenant's test admin. Navigate inside the app (click links) after
-  signing in: a full page load of a public page relies on silent sign-in to another domain and comes back signed out.
-- Places are each organization's GIS Day ("Texas A&M University GIS Day(s)"); an event's organization is its location's
-  place. All 2026 sessions today are Texas A&M's.
+- Signed-in checks: Playwright on `--network container:gisday-dev` (or `container:gisday-site` for the Texas A&M site),
+  `http://localhost:4201`, as the dev tenant's test admin. Navigate inside the app after signing in.
+- typeorm 1: never pass a whole loaded entity as a where value or a delete criterion; use keys. The query-checking data source
+  (`libs/gisday/platform/data-api/src/lib/_base/query-checking-data-source.ts`, with `recordWrites`) catches it in a unit test.
 - Production strips nginx's `Server` header; check the nginx version on the image locally.
