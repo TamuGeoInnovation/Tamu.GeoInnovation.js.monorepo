@@ -16,6 +16,7 @@ import { DiscoveryService, FEATURED_PARKING_ID } from '../../services/discovery/
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
 import { getApplicationRoute, getNextEventDate } from '../discover.utils';
 import { QuickLinkItem, QuickLinksComponent } from '../quick-links/quick-links.component';
+import { VisitMapsNavComponent } from '../visit-maps-nav/visit-maps-nav.component';
 import { AutocompleteComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AutocompleteOptionTemplateDirective } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -33,6 +34,7 @@ import { FooterComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
   styleUrls: ['./all-maps.component.scss'],
   imports: [
     RouterLink,
+    VisitMapsNavComponent,
     AutocompleteComponent,
     AutocompleteOptionTemplateDirective,
     QuickLinksComponent,
