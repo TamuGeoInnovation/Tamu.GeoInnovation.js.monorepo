@@ -85,8 +85,10 @@ MSYS_NO_PATHCONV=1 docker run --rm -m 8g   -v "C:/TAMU/Tamu.GeoInnovation.js.mon
 node tools/visual-baselines/review.mjs <beforeDir> <afterDir> <diffDir> <out.html>
 ```
 
-It writes a page with before, after and changed pixels for each route, sorted by how much moved, with
-a toggle for "only what changed". That page is what the decision to delete 95 hard-coded renderers
+It writes a page with before, after and **what changed** for each route, sorted by how much moved, with
+a toggle for "only what changed". The third column is drawn by `review.mjs` itself ([#2357][2357]), into
+`<diffDir>`: the after shot dimmed, with every pixel that moved more than rendering noise in pink. A page
+whose size changed (a GIS Day page that grew) gets no picture, since its pixels do not line up. That page is what the decision to delete 95 hard-coded renderers
 was actually made on: 30 pages, 9 changed, 21 identical as a control.
 
 When `<out.html>` is `<baselines>/compare/<name>/index.html`, the home page below lists it: `review.mjs`
@@ -166,3 +168,4 @@ out. Neither run meant anything and both had to be thrown away.
 [1533]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1533
 [2345]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2345
 [2355]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2355
+[2357]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2357
