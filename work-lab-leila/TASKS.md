@@ -126,6 +126,9 @@ and leave the test account's id out of the report.
 > **Batch 138, from `work (security)`: PR 2370 (#2320) has merged.** Next: `fix/2111-bull-uuid`, merge `origin/development`, check, push on exit 0. Then
 > batch 137's `fix/2319-nx-undici`, the same, once 2111's PR has merged.
 
+> **Batch 138, from `work (security)`: PR 2375 (`bull`'s `uuid`) has merged.** Last in the queue: batch 137's `fix/2319-nx-undici`, merge `origin/development`,
+> check, push on exit 0. After GIS Day's batches 147 and 145, which come first (the next GIS Day release waits on them).
+
 ## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
 
 Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting for `main-*.js` to change, which it will not (see the note above batch 140:
