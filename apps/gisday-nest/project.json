@@ -81,6 +81,18 @@
           "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\"}"
         }
       }
+    },
+    "fit-speaker-photos": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node -r ts-node/register -r tsconfig-paths/register apps/gisday-nest/src/scripts/fit-speaker-photos.ts",
+        "env": {
+          "TS_NODE_PROJECT": "apps/gisday-nest/tsconfig.app.json",
+          "TS_NODE_BASEURL": "../..",
+          "TS_NODE_TRANSPILE_ONLY": "true",
+          "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\"}"
+        }
+      }
     }
   }
 }

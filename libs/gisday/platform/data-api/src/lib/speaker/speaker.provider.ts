@@ -9,10 +9,13 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, DeleteResult, In, Repository } from 'typeorm';
 
+import { fitImage } from '@tamu-gisc/common/node/images';
+
 import { Speaker, EntityRelationsLUT, University, Organization, Event, Asset, Season } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
+import { SPEAKER_PHOTO_FIT } from './speaker-photo';
 
 @Injectable()
 export class SpeakerProvider extends BaseProvider<Speaker> {
@@ -504,6 +507,14 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   private async _saveImage(file, guid: string) {
+    // Stored at the size the site shows it, not as uploaded: photos of 1 MB and more made Presenters download 9 MB for
+    // 255 px cards (#2352). The file keeps its name, so a JPEG stays a JPEG and anything not a JPEG or PNG is kept as it is.
+    if (file?.buffer) {
+      const fitted = await fitImage(file.buffer, SPEAKER_PHOTO_FIT);
+
+      file = { ...file, buffer: fitted.buffer, size: fitted.buffer.length };
+    }
+
     return this.assetService.saveAsset(this._resourcePath, file, 'speaker-image', {
       prefix: `${guid}-`
     });
