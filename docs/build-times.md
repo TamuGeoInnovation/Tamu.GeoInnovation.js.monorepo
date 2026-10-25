@@ -175,6 +175,8 @@ well, since that project's directory contains it; Vitest runs them once, in thei
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 25 Oct 2026 | lab | `npm ci` after removing 12 unused or redundant packages (#2122): **1804 packages** | check script, new volume | 33 s |
+| 25 Oct 2026 | lab | `npm ci`, `development` at `c20ec0779`, before (#2122): **1836 packages** | check script, new volume | 30 s |
 | 6 Oct 2026 | home | `npm ci` after the Angular 22 migrations (lock unchanged) | clean, from only `package.json` and the lock | 51 s |
 | 6 Oct 2026 | home | `npm ci`, Angular 22 install proof | clean, from only `package.json` and the lock | 48 s |
 | 6 Oct 2026 | home | `npm install`, Angular 22's new versions | into the `tamu-js-ng22` Docker volume | **53 s** |
@@ -192,9 +194,15 @@ well, since that project's directory contains it; Vitest runs them once, in thei
 | 5 Oct 2026 | office | `npm ci` | into the `tamu-js-dev-nm` Docker volume | **4 min 45 s** |
 | 5 Oct 2026 | office | `npm ci` | into the bind-mounted Windows checkout | **13 min 56 s** |
 
-Those two ran on the same machine, from the same lock file, within the same hour: **2.9 times
+The two `office` rows of 5 October ran on the same machine, from the same lock file, within the same hour: **2.9 times
 faster** in a volume, with everything else held constant. This is the cleanest before-and-after on
 record for the volume work (#1402), because nothing but the destination differed.
+
+The two 25 October rows are a before and after on the same machine within ten minutes (#2122): removing
+those packages takes **32 packages out of every install** (1836 to 1804), which is not a measurable change
+in `npm ci`'s time at this size. The full checks that ran with them (all projects, 3 min 5 s before and
+2 min 47 s after, `docs/build-times/runs/`) do not measure the removal either: both were served almost
+entirely from Nx's caches, so they show only that nothing failed.
 
 ## Dev servers
 

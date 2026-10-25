@@ -1,0 +1,2 @@
+started,machine,tool,ran,exit,summary,seconds,elapsed,setup
+2026-10-25 17:52:37 CDT,lab,check,lab/cold-before all,0,lint for 104 projects; test for 100 projects; build for 14 projects,185,0:03:05,"clone 23 s, npm ci 30 s"
