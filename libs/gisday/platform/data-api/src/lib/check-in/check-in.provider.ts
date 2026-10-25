@@ -32,7 +32,7 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
       where: {
         accountGuid: userGuid
       },
-      relations: ['event']
+      relations: { event: true }
     });
   }
 
@@ -93,7 +93,7 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
       where: {
         guid: eventGuid
       },
-      relations: ['location', 'day']
+      relations: { location: true, day: true }
     });
 
     if (!event) {

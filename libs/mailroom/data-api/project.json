@@ -4,13 +4,5 @@
   "sourceRoot": "libs/mailroom/data-api/src",
   "projectType": "library",
   "tags": [],
-  "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/mailroom/data-api"],
-      "options": {
-        "jestConfig": "libs/mailroom/data-api/jest.config.ts"
-      }
-    }
-  }
+  "targets": {}
 }

@@ -39,9 +39,9 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
 
       return this.find({
         where: {
-          season: season
+          season: { guid: season.guid }
         },
-        relations: ['season', 'logos'],
+        relations: { season: true, logos: true },
         order: {
           name: 'ASC'
         }
@@ -94,7 +94,7 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
       where: {
         guid: In(existingEntityGuids)
       },
-      relations: ['logos']
+      relations: { logos: true }
     });
 
     if (!entities || entities.length === 0) {
@@ -179,7 +179,7 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
       where: {
         guid: guid
       },
-      relations: ['logos']
+      relations: { logos: true }
     });
 
     if (existing) {
@@ -227,7 +227,7 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
           where: {
             guid: In(guids)
           },
-          relations: ['logos']
+          relations: { logos: true }
         });
 
         logos = sponsors.map((sponsor) => sponsor.logos).flat();

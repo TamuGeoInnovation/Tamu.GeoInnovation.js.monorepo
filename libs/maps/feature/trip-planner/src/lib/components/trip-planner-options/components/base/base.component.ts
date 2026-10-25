@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
-import { v4 as guid } from 'uuid';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
@@ -75,7 +74,7 @@ export class TripPlannerOptionsBaseComponent implements OnInit {
         gstCustom: {
           type: 'set',
           date: Date.now(),
-          guid: guid(),
+          guid: crypto.randomUUID(),
           ...opts
         }
       }

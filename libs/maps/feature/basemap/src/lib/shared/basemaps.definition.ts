@@ -1,4 +1,5 @@
 import { BaseMapProperties } from '@tamu-gisc/maps/esri';
+import { TAMU_CAMPUS_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
 
 /**
  * The picture of a campus basemap in the basemap panel, shipped with the application (#1730).
@@ -20,11 +21,12 @@ const CAMPUS_BASEMAP_THUMBNAIL = '/assets/images/basemap_thumbnails/aggieland.pn
  * The vector tile cache below is not published for production, so production keeps this one until
  * it is (#1229). Resolve the campus basemap with `aggiemapBasemap()`, never by naming either constant.
  */
-export const AggiemapRasterBasemap: BaseMapProperties = {
+// Typed with its id, which every saved campus basemap id starts with (basemapForSavedId).
+export const AggiemapRasterBasemap: BaseMapProperties & { id: string } = {
   baseLayers: [
     {
       type: 'TileLayer',
-      url: `https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer`,
+      url: TAMU_CAMPUS_BASEMAP_URL,
       spatialReference: {
         wkid: 102100
       },

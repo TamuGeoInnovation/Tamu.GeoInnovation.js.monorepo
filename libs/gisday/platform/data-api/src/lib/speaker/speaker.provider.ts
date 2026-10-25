@@ -60,7 +60,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: guid
       },
-      relations: ['organization', 'university', 'images', 'events', 'events.day'],
+      relations: { organization: true, university: true, images: true, events: { day: true } },
       order: {
         events: {
           day: {
@@ -124,7 +124,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: In(eventGuids)
       },
-      relations: ['speakers', 'speakers.images', 'speakers.organization', 'speakers.university'],
+      relations: { speakers: { images: true, organization: true, university: true } },
       order: {
         speakers: {
           firstName: 1,
@@ -162,7 +162,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
   public async getPresenters() {
     return this.speakerRepo.find({
-      relations: ['organization', 'university', 'images'],
+      relations: { organization: true, university: true, images: true },
       order: {
         lastName: 'ASC'
       }
@@ -175,7 +175,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         isOrganizer: true,
         season: { guid: seasonGuid }
       },
-      relations: ['organization', 'university', 'images'],
+      relations: { organization: true, university: true, images: true },
       order: {
         lastName: 'ASC'
       }
@@ -194,7 +194,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         isOrganizer: true,
         season: { guid: season.guid }
       },
-      relations: ['organization', 'university', 'images'],
+      relations: { organization: true, university: true, images: true },
       order: {
         lastName: 'ASC'
       }
@@ -206,7 +206,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         isOrganizer: true
       },
-      relations: ['organization', 'university', 'images'],
+      relations: { organization: true, university: true, images: true },
       order: {
         lastName: 'ASC'
       }
@@ -308,7 +308,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: In(existingEntityGuids)
       },
-      relations: ['images']
+      relations: { images: true }
     });
 
     if (!existingSpeakers || existingSpeakers.length === 0) {
@@ -483,7 +483,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
           where: {
             guid: In(guids)
           },
-          relations: ['images']
+          relations: { images: true }
         });
 
         images = speakers.map((speaker) => speaker.images).flat();

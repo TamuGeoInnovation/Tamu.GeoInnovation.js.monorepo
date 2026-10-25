@@ -31,3 +31,23 @@ jobs:
         name: 'last_successful_sha'
         env:
           AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
+
+      # Where the heavy jobs run (#2212): on the lab's agents (pool Linux-Build) whenever useLab is true in
+      # azure-pipelines.yml, and on the hosted pool when it is false. There is no automatic fallback: every pull
+      # request here comes from a fork, and a fork build's restricted job token cannot list agent pools, so a check
+      # of which agents are online sent every pull request to the hosted pool (build 5683, 23 October 2026). If the
+      # lab is down, pull request builds wait for it; set useLab: false to send them to the hosted pool instead.
+      - bash: |
+          set -u
+          hosted() {
+            echo "##vso[task.logissue type=warning]Running on the hosted pool: $1"
+            echo "##vso[task.setvariable variable=labOnline;isOutput=true]false"
+            exit 0
+          }
+
+          [ "$(useLab)" = "true" ] || hosted "useLab is $(useLab) in azure-pipelines.yml."
+
+          echo "useLab is true: the heavy jobs run on the lab (pool Linux-Build)."
+          echo "##vso[task.setvariable variable=labOnline;isOutput=true]true"
+        displayName: 'Choose the lab or the hosted pool'
+        name: 'lab_pool'

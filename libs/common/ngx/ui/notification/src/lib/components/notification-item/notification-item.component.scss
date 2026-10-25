@@ -1,4 +1,5 @@
 @import 'libs/sass/mixins';
+@import 'libs/sass/motion';
 
 :host {
   position: fixed;
@@ -26,9 +27,11 @@
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15);
   padding: 0.95rem 1.25rem 1.25rem 1.25rem;
   box-sizing: border-box;
-  @include transform(translateY(110%) translateX(0));
   border-radius: 5px;
   overflow: hidden;
+
+  // Rises into view as it enters, and slides back down when it closes.
+  @include notification-toast(entering, closing);
 }
 
 .content {

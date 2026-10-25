@@ -1,0 +1,675 @@
+{
+ "enter": [
+  {
+   "t": 0,
+   "absent": true
+  },
+  {
+   "t": 10,
+   "transform": "matrix(1, 0, 0, 1, 0, 81.2625)",
+   "classes": "entering"
+  },
+  {
+   "t": 21,
+   "transform": "matrix(1, 0, 0, 1, 0, 76.9707)",
+   "classes": "entering"
+  },
+  {
+   "t": 31,
+   "transform": "matrix(1, 0, 0, 1, 0, 62.8488)",
+   "classes": "entering"
+  },
+  {
+   "t": 41,
+   "transform": "matrix(1, 0, 0, 1, 0, 62.8488)",
+   "classes": "entering"
+  },
+  {
+   "t": 51,
+   "transform": "matrix(1, 0, 0, 1, 0, 40.4712)",
+   "classes": "entering"
+  },
+  {
+   "t": 62,
+   "transform": "matrix(1, 0, 0, 1, 0, 15.7685)",
+   "classes": "entering"
+  },
+  {
+   "t": 72,
+   "transform": "matrix(1, 0, 0, 1, 0, 15.7685)",
+   "classes": "entering"
+  },
+  {
+   "t": 82,
+   "transform": "matrix(1, 0, 0, 1, 0, -6.56347)",
+   "classes": "entering"
+  },
+  {
+   "t": 92,
+   "transform": "matrix(1, 0, 0, 1, 0, -6.56347)",
+   "classes": "entering"
+  },
+  {
+   "t": 103,
+   "transform": "matrix(1, 0, 0, 1, 0, -25.1063)",
+   "classes": "entering"
+  },
+  {
+   "t": 113,
+   "transform": "matrix(1, 0, 0, 1, 0, -39.8516)",
+   "classes": "entering"
+  },
+  {
+   "t": 123,
+   "transform": "matrix(1, 0, 0, 1, 0, -39.8516)",
+   "classes": "entering"
+  },
+  {
+   "t": 133,
+   "transform": "matrix(1, 0, 0, 1, 0, -51.5871)",
+   "classes": "entering"
+  },
+  {
+   "t": 144,
+   "transform": "matrix(1, 0, 0, 1, 0, -51.5871)",
+   "classes": "entering"
+  },
+  {
+   "t": 154,
+   "transform": "matrix(1, 0, 0, 1, 0, -60.7444)",
+   "classes": "entering"
+  },
+  {
+   "t": 164,
+   "transform": "matrix(1, 0, 0, 1, 0, -67.7821)",
+   "classes": "entering"
+  },
+  {
+   "t": 174,
+   "transform": "matrix(1, 0, 0, 1, 0, -67.7821)",
+   "classes": "entering"
+  },
+  {
+   "t": 184,
+   "transform": "matrix(1, 0, 0, 1, 0, -73.0738)",
+   "classes": "entering"
+  },
+  {
+   "t": 195,
+   "transform": "matrix(1, 0, 0, 1, 0, -76.8878)",
+   "classes": "entering"
+  },
+  {
+   "t": 205,
+   "transform": "matrix(1, 0, 0, 1, 0, -76.8878)",
+   "classes": "entering"
+  },
+  {
+   "t": 215,
+   "transform": "matrix(1, 0, 0, 1, 0, -79.3993)",
+   "classes": "entering"
+  },
+  {
+   "t": 225,
+   "transform": "matrix(1, 0, 0, 1, 0, -79.3993)",
+   "classes": "entering"
+  },
+  {
+   "t": 236,
+   "transform": "matrix(1, 0, 0, 1, 0, -80.8178)",
+   "classes": "entering"
+  },
+  {
+   "t": 246,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": "entering"
+  },
+  {
+   "t": 256,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": "entering"
+  },
+  {
+   "t": 266,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 277,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 287,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 297,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 307,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 317,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 327,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 338,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 348,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 358,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 368,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 378,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 388,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 399,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 409,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 419,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 429,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 439,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 450,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 460,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 470,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 480,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 491,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 501,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 511,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 521,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 531,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 541,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 552,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 562,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 572,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 582,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 593,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 603,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  }
+ ],
+ "close": [
+  {
+   "t": 0,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": ""
+  },
+  {
+   "t": 10,
+   "transform": "matrix(1, 0, 0, 1, 0, -81.2625)",
+   "classes": "closing"
+  },
+  {
+   "t": 21,
+   "transform": "matrix(1, 0, 0, 1, 0, -78.9044)",
+   "classes": "closing"
+  },
+  {
+   "t": 31,
+   "transform": "matrix(1, 0, 0, 1, 0, -78.9044)",
+   "classes": "closing"
+  },
+  {
+   "t": 41,
+   "transform": "matrix(1, 0, 0, 1, 0, -71.2038)",
+   "classes": "closing"
+  },
+  {
+   "t": 51,
+   "transform": "matrix(1, 0, 0, 1, 0, -71.2038)",
+   "classes": "closing"
+  },
+  {
+   "t": 61,
+   "transform": "matrix(1, 0, 0, 1, 0, -59.0175)",
+   "classes": "closing"
+  },
+  {
+   "t": 71,
+   "transform": "matrix(1, 0, 0, 1, 0, -45.5181)",
+   "classes": "closing"
+  },
+  {
+   "t": 82,
+   "transform": "matrix(1, 0, 0, 1, 0, -45.5181)",
+   "classes": "closing"
+  },
+  {
+   "t": 92,
+   "transform": "matrix(1, 0, 0, 1, 0, -33.3614)",
+   "classes": "closing"
+  },
+  {
+   "t": 102,
+   "transform": "matrix(1, 0, 0, 1, 0, -23.2833)",
+   "classes": "closing"
+  },
+  {
+   "t": 113,
+   "transform": "matrix(1, 0, 0, 1, 0, -23.2833)",
+   "classes": "closing"
+  },
+  {
+   "t": 123,
+   "transform": "matrix(1, 0, 0, 1, 0, -15.1744)",
+   "classes": "closing"
+  },
+  {
+   "t": 133,
+   "transform": "matrix(1, 0, 0, 1, 0, -15.1744)",
+   "classes": "closing"
+  },
+  {
+   "t": 143,
+   "transform": "matrix(1, 0, 0, 1, 0, -8.7903)",
+   "classes": "closing"
+  },
+  {
+   "t": 154,
+   "transform": "matrix(1, 0, 0, 1, 0, -3.80576)",
+   "classes": "closing"
+  },
+  {
+   "t": 164,
+   "transform": "matrix(1, 0, 0, 1, 0, -3.80576)",
+   "classes": "closing"
+  },
+  {
+   "t": 174,
+   "transform": "matrix(1, 0, 0, 1, 0, 0.0397728)",
+   "classes": "closing"
+  },
+  {
+   "t": 184,
+   "transform": "matrix(1, 0, 0, 1, 0, 0.0397728)",
+   "classes": "closing"
+  },
+  {
+   "t": 194,
+   "transform": "matrix(1, 0, 0, 1, 0, 2.92007)",
+   "classes": "closing"
+  },
+  {
+   "t": 204,
+   "transform": "matrix(1, 0, 0, 1, 0, 4.99374)",
+   "classes": "closing"
+  },
+  {
+   "t": 215,
+   "transform": "matrix(1, 0, 0, 1, 0, 4.99374)",
+   "classes": "closing"
+  },
+  {
+   "t": 225,
+   "transform": "matrix(1, 0, 0, 1, 0, 6.36867)",
+   "classes": "closing"
+  },
+  {
+   "t": 235,
+   "transform": "matrix(1, 0, 0, 1, 0, 6.36867)",
+   "classes": "closing"
+  },
+  {
+   "t": 245,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.14373)",
+   "classes": "closing"
+  },
+  {
+   "t": 255,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 265,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 276,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 286,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 296,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 306,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 316,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 326,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 337,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 347,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 357,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 367,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 377,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 387,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 398,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 408,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 418,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 428,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 439,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 449,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 459,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 469,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 479,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 490,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 500,
+   "transform": "matrix(1, 0, 0, 1, 0, 7.3875)",
+   "classes": "closing"
+  },
+  {
+   "t": 510,
+   "absent": true
+  },
+  {
+   "t": 520,
+   "absent": true
+  },
+  {
+   "t": 530,
+   "absent": true
+  },
+  {
+   "t": 541,
+   "absent": true
+  },
+  {
+   "t": 551,
+   "absent": true
+  },
+  {
+   "t": 561,
+   "absent": true
+  },
+  {
+   "t": 571,
+   "absent": true
+  },
+  {
+   "t": 581,
+   "absent": true
+  },
+  {
+   "t": 591,
+   "absent": true
+  },
+  {
+   "t": 602,
+   "absent": true
+  },
+  {
+   "t": 612,
+   "absent": true
+  },
+  {
+   "t": 622,
+   "absent": true
+  },
+  {
+   "t": 632,
+   "absent": true
+  },
+  {
+   "t": 642,
+   "absent": true
+  },
+  {
+   "t": 652,
+   "absent": true
+  },
+  {
+   "t": 662,
+   "absent": true
+  },
+  {
+   "t": 673,
+   "absent": true
+  },
+  {
+   "t": 683,
+   "absent": true
+  },
+  {
+   "t": 693,
+   "absent": true
+  },
+  {
+   "t": 703,
+   "absent": true
+  },
+  {
+   "t": 713,
+   "absent": true
+  },
+  {
+   "t": 724,
+   "absent": true
+  },
+  {
+   "t": 734,
+   "absent": true
+  },
+  {
+   "t": 744,
+   "absent": true
+  },
+  {
+   "t": 754,
+   "absent": true
+  },
+  {
+   "t": 764,
+   "absent": true
+  },
+  {
+   "t": 774,
+   "absent": true
+  },
+  {
+   "t": 784,
+   "absent": true
+  },
+  {
+   "t": 795,
+   "absent": true
+  },
+  {
+   "t": 805,
+   "absent": true
+  }
+ ]
+}

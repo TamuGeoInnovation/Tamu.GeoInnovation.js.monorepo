@@ -1,0 +1,65 @@
+// The movement the interface's sliding pieces share, in CSS: what @angular/animations' triggers did until it was
+// deprecated in Angular 22 (#1218). Each piece keeps its triggers' duration, delay and easing.
+
+// The easing every trigger used.
+$motion-easing: cubic-bezier(0.25, 0, 0.25, 1);
+
+// A drawer or sidebar sliding in and out (the `slide` trigger): 350 ms. The component sets the transform itself.
+@mixin slide-transition {
+  transition: transform 350ms $motion-easing;
+}
+
+// A bar that slides up out of the way and back (`offCanvasSlideUpFromTop`): 250 ms. Hidden is a quarter of its height
+// above its place; shown is its own height below, as the trigger had it.
+@mixin off-canvas-slide-up-from-top($hidden-class) {
+  transform: translateY(100%);
+  transition: transform 250ms $motion-easing;
+
+  &.#{$hidden-class} {
+    transform: translateY(-25%);
+  }
+}
+
+// A panel that slides in from the bottom and out again, and is gone while out (`offCanvasSlideInFromBottom`): 200 ms
+// after 50 ms. `display` changes at the start of showing and the end of hiding, as the trigger's sequence did.
+@mixin off-canvas-slide-in-from-bottom($shown-class) {
+  display: none;
+  transform: translateY(100%);
+  transition:
+    transform 200ms 50ms $motion-easing,
+    display 200ms 50ms allow-discrete;
+
+  &.#{$shown-class} {
+    display: initial;
+    transform: translateY(0%);
+
+    @starting-style {
+      transform: translateY(100%);
+    }
+  }
+}
+
+// A notification toast (the `animate` trigger, #2278): it enters by rising from below its place (animate.enter with
+// $entering-class), rests in view, and when closing slides back down before it is removed. 250 ms each way.
+@mixin notification-toast($entering-class, $closing-class) {
+  @keyframes notification-toast-enter {
+    from {
+      transform: translateY(110%) translateX(0);
+    }
+
+    to {
+      transform: translateY(-110%);
+    }
+  }
+
+  transform: translateY(-110%);
+  transition: transform 250ms $motion-easing;
+
+  &.#{$entering-class} {
+    animation: notification-toast-enter 250ms $motion-easing;
+  }
+
+  &.#{$closing-class} {
+    transform: translateY(10%);
+  }
+}

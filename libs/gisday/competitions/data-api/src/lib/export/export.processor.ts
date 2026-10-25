@@ -61,7 +61,7 @@ export class ExportProcessor {
     // 1. Query all submissions (metadata only, no blob binary)
     const submissions = await this.submissionRepo.find({
       where: { season: { guid: seasonGuid } },
-      relations: ['location', 'validationStatus', 'blobs'],
+      relations: { location: true, validationStatus: true, blobs: true },
       select: {
         blobs: { guid: true, mimeType: true, fieldName: true, sha256: true }
       },

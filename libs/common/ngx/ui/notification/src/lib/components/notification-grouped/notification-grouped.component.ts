@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy, inject, input, signal } from '@angular/co
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { v4 as guid } from 'uuid';
 import { Angulartics2 } from 'angulartics2';
 
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -138,7 +137,7 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
   public action(event: Notification): void {
     if (this.analytics !== null) {
       const label = {
-        guid: guid(),
+        guid: crypto.randomUUID(),
         date: Date.now(),
         name: event.id
       };

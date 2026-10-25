@@ -8,7 +8,7 @@
   "implicitDependencies": ["assets", "sass"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:application",
+      "executor": "@angular/build:application",
       "outputs": ["{options.outputPath.base}"],
       "defaultConfiguration": "",
       "options": {
@@ -101,7 +101,7 @@
       }
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@angular/build:dev-server",
       "continuous": true,
       "options": {
         "host": "0.0.0.0",
@@ -114,20 +114,15 @@
         "development": {
           "buildTarget": "signage-angular:build:development"
         }
+      },
+      "readyWhen": {
+        "signal": true
       }
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "@angular/build:extract-i18n",
       "options": {
         "buildTarget": "signage-angular:build"
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/signage-angular"],
-      "options": {
-        "jestConfig": "apps/signage-angular/jest.config.ts",
-        "tsConfig": "apps/signage-angular/tsconfig.spec.json"
       }
     }
   }

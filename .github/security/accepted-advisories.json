@@ -8,7 +8,34 @@
     "Seeded 23 October 2026 from npm audit --omit=dev and Trivy 0.76.1 (#2118). Reseeded the same day from the scan's own run 39984219123, on sha-ee1a9e4: the 232 entries it no longer found were removed, the 30 it did were kept (the three tied to the closed #2112 now point at #2122), and its one new finding, node-jose, was added.",
     "23 October 2026: the nodemailer entries were removed when nodemailer 10 merged (#2115, PR 2153).",
     "23 October 2026: the entries for the retired IdP's packages (oidc-provider, node-jose, and @koa/cors and node-forge, which came only through them) were removed with the IdP (#2158).",
-    "23 October 2026: the four image findings under #2117 (brace-expansion twice, http-cache-semantics, undici) were removed with npm itself, which carried them, from the API images' runtime stage (#2172)."
+    "23 October 2026: the four image findings under #2117 (brace-expansion twice, http-cache-semantics, undici) were removed with npm itself, which carried them, from the API images' runtime stage (#2172).",
+    "24 October 2026: @azure/msal-node 6.0.1 (CVE-2026-109461) accepted as unreachable, with @azure/identity, which npm reports through it (#2288).",
+    "25 October 2026: those two entries now point at #2371, which stays open until @azure/identity takes msal-node 7.1.0; #2288, which made the decision, is closed."
   ],
-  "accepted": []
+  "accepted": [
+    {
+      "id": "1243111",
+      "package": "@azure/msal-node",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Unreachable here: the advisory is in MSAL's authorization-code flow (acquireTokenByCode), and nothing here runs it. @azure/msal-node comes only through mssql -> tedious -> @azure/identity; gisday-nest and mailroom-nest sign in to SQL Server with a SQL login (tedious type \"default\"), and none of tedious's Azure AD types uses the code flow: password, service principal, managed identity and DefaultAzureCredential, whose only interactive members need plugins not installed. No 6.x fix; 7.1.0 is a major @azure/identity 4.14.0 does not accept. Remove when @azure/identity takes @azure/msal-node 7.1.0 or later",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2371"
+    },
+    {
+      "id": "transitive",
+      "package": "@azure/identity",
+      "severity": "HIGH",
+      "source": "npm",
+      "reason": "Reported only because it depends on @azure/msal-node 6.0.1; see that entry",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2371"
+    },
+    {
+      "id": "CVE-2026-109461",
+      "package": "@azure/msal-node",
+      "severity": "HIGH",
+      "source": "trivy-lang",
+      "reason": "The same advisory as npm 1243111, found by Trivy in gisday-nest and mailroom-nest; see that entry",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2371"
+    }
+  ]
 }

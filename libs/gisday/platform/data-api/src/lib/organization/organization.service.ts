@@ -35,7 +35,7 @@ export class OrganizationService extends BaseProvider<Organization> {
             guid
           }
         },
-        relations: ['season', 'logos'],
+        relations: { season: true, logos: true },
         order: {
           name: 'ASC'
         }
@@ -76,7 +76,7 @@ export class OrganizationService extends BaseProvider<Organization> {
   public getOrganizations() {
     try {
       return this.find({
-        relations: ['season', 'logos'],
+        relations: { season: true, logos: true },
         order: {
           name: 'ASC'
         }
@@ -99,7 +99,7 @@ export class OrganizationService extends BaseProvider<Organization> {
         where: {
           guid
         },
-        relations: ['season', 'logos']
+        relations: { season: true, logos: true }
       });
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
@@ -157,7 +157,7 @@ export class OrganizationService extends BaseProvider<Organization> {
       where: {
         guid: In(entityGuids)
       },
-      relations: ['logos']
+      relations: { logos: true }
     });
 
     if (!entities || entities.length === 0) {
@@ -209,7 +209,7 @@ export class OrganizationService extends BaseProvider<Organization> {
       where: {
         guid: guid
       },
-      relations: ['logos']
+      relations: { logos: true }
     });
 
     if (existing) {
@@ -248,7 +248,7 @@ export class OrganizationService extends BaseProvider<Organization> {
 
   public async getOrgsWithEvents() {
     const events = await this.es.find({
-      relations: ['speakers', 'speakers.organization']
+      relations: { speakers: { organization: true } }
     });
 
     // Pluck out all orgs from event speakers.
@@ -284,7 +284,7 @@ export class OrganizationService extends BaseProvider<Organization> {
           where: {
             guid: In(guids)
           },
-          relations: ['logos']
+          relations: { logos: true }
         });
 
         logos = orgs.map((org) => org.logos).flat();

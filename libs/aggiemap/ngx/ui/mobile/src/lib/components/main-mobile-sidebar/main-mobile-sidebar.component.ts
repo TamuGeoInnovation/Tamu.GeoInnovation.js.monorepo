@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 
 import { Angulartics2 } from 'angulartics2';
-import { v4 as guid } from 'uuid';
 import { TamuBlockBrandingComponent } from '@tamu-gisc/ui-kits/ngx/branding';
 import { RouterLink } from '@angular/router';
 
@@ -111,7 +110,7 @@ export class MainMobileSidebarComponent {
 
   public reportNavigation(name: string) {
     const label = {
-      guid: guid(),
+      guid: crypto.randomUUID(),
       date: Date.now(),
       name: name
     };

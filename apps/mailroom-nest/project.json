@@ -7,52 +7,9 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/apps/mailroom-nest",
-        "main": "apps/mailroom-nest/src/main.ts",
-        "tsConfig": "apps/mailroom-nest/tsconfig.app.json",
-        "webpackConfig": "apps/mailroom-nest/webpack.config.js",
-        "assets": [
-          "apps/mailroom-nest/src/assets",
-          "apps/mailroom-nest/src/Dockerfile",
-          "apps/mailroom-nest/src/docker-compose.yml",
-          "apps/mailroom-nest/src/.dockerignore",
-          {
-            "glob": "**/*",
-            "input": "./libs/assets/",
-            "output": "./assets"
-          }
-        ],
-        "target": "node",
-        "compiler": "tsc"
-      },
       "configurations": {
-        "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/mailroom-nest/src/environments/environment.ts",
-              "with": "apps/mailroom-nest/src/environments/environment.prod.ts"
-            }
-          ],
-          "generatePackageJson": true
-        },
-        "development": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/mailroom-nest/src/environments/environment.ts",
-              "with": "apps/mailroom-nest/src/environments/environment.dev.ts"
-            }
-          ],
-          "generatePackageJson": true
-        }
+        "production": {},
+        "development": {}
       }
     },
     "serve": {
@@ -60,13 +17,6 @@
       "options": {
         "buildTarget": "mailroom-nest:build",
         "host": "0.0.0.0"
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/mailroom-nest"],
-      "options": {
-        "jestConfig": "apps/mailroom-nest/jest.config.ts"
       }
     }
   }

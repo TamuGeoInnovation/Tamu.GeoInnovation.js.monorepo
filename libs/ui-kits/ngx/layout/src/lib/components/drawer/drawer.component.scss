@@ -1,9 +1,13 @@
 @import 'libs/sass/mixins';
+@import 'libs/sass/motion';
 @import 'libs/sass/variables';
 
 $border-radius: 1.5rem;
 
 :host {
+  // Slides out of view and back when `visible` changes (the base component sets the transform).
+  @include slide-transition;
+
   position: absolute;
   z-index: 101;
   background: white;

@@ -44,12 +44,6 @@
     "@schematics/angular:service": {
       "type": "service"
     },
-    "@nx/angular:scam": {
-      "type": "component"
-    },
-    "@nx/angular:scam-directive": {
-      "type": "directive"
-    },
     "@schematics/angular:guard": {
       "typeSeparator": "."
     },
@@ -78,44 +72,64 @@
   "nxCloudId": "68bf66e05ea3cd1b684d15cb",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "targetDefaults": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"],
-      "cache": true
-    },
-    "@nx/jest:jest": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
-      "cache": true,
-      "options": {
-        "passWithNoTests": true
+    "build": [
+      {
+        "dependsOn": ["^build"],
+        "inputs": ["production", "^production"],
+        "cache": true
       },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
+      {
+        "filter": {
+          "plugin": "@nx/webpack/plugin"
+        },
+        "outputs": ["{projectRoot}/{options.outputPath}"]
+      }
+    ],
+    "test": [
+      {
+        "inputs": [
+          "default",
+          "^production",
+          {
+            "fileset": "{projectRoot}/tsconfig.spec.json",
+            "dependencies": true
+          },
+          "{workspaceRoot}/vitest.preset.mts",
+          "{workspaceRoot}/test/polyfills.ts",
+          "{workspaceRoot}/test/vitest-setup-angular.ts",
+          {
+            "externalDependencies": ["vitest"]
+          },
+          {
+            "env": "CI"
+          }
+        ],
+        "cache": true
+      },
+      {
+        "filter": {
+          "plugin": "@nx/jest/plugin"
+        },
+        "inputs": [
+          "default",
+          "^production",
+          "{workspaceRoot}/jest.preset.js",
+          "{workspaceRoot}/test/polyfills.ts",
+          {
+            "externalDependencies": ["jest", "ts-jest", "jest-preset-angular", "jest-junit"]
+          }
+        ],
+        "configurations": {
+          "ci": {
+            "ci": true,
+            "coverage": true
+          }
+        },
+        "options": {
+          "passWithNoTests": true
         }
       }
-    },
-    "test": {
-      "inputs": [
-        "default",
-        "^production",
-        {
-          "fileset": "{projectRoot}/tsconfig.spec.json",
-          "dependencies": true
-        },
-        "{workspaceRoot}/vitest.preset.mts",
-        "{workspaceRoot}/test/polyfills.ts",
-        "{workspaceRoot}/test/vitest-setup-angular.ts",
-        {
-          "externalDependencies": ["vitest"]
-        },
-        {
-          "env": "CI"
-        }
-      ],
-      "cache": true
-    }
+    ]
   },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
@@ -253,6 +267,24 @@
         "libs/ui-kits/ngx/search/**/*"
       ],
       "exclude": ["apps/gisday-competitions-nest/src/**/*", "apps/ues-operations-nest/src/**/*"]
+    },
+    {
+      "plugin": "@nx/jest/plugin",
+      "options": {
+        "targetName": "test"
+      }
+    },
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static",
+        "serveTargetName": "serve"
+      }
     }
-  ]
+  ],
+  "affected": {
+    "legacy": true
+  }
 }

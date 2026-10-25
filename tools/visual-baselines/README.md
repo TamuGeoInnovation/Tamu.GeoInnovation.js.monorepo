@@ -13,7 +13,7 @@ captured when it was still true.
 MSYS_NO_PATHCONV=1 docker run -d --name vb-<release> -m 8g \
   -v "C:/TAMU/Tamu.GeoInnovation.js.monorepo:/repo" \
   -v "C:/TAMU/visual-baselines:/out" \
-  -w /repo mcr.microsoft.com/playwright:v1.63.0-noble \
+  -w /repo mcr.microsoft.com/playwright:v1.64.1-noble \
   node tools/visual-baselines/capture.mjs --env production --out /out
 ```
 
@@ -54,8 +54,12 @@ wrong or the environment moved under it, and both matter more than the capture d
 Outside the repository, under `<repo>/../visual-baselines` by default, or `AGGIEMAP_BASELINES`.
 
 A set is hundreds of megabytes, and there is one per release per environment. That is not what git is
-for, and committing them would make every clone pay for them forever. The consequence is that
-baselines are **per machine**: a set captured at work is not available at home.
+for, and committing them would make every clone pay for them forever. A set captured on a
+workstation is therefore **per machine**: one captured at work is not available at home.
+
+**The shared copy is on the cluster** ([#1533][1533]): captures started there land on one disk that every
+machine can see, at `https://visual-baselines.geoservices.tamu.edu/` from Texas A&M networks. How to start
+one, and the cluster's side of it, is in the private cluster configuration repository.
 
 ## GIS Day
 
@@ -65,7 +69,7 @@ Each shot is the **whole page**, because GIS Day's pages scroll and a map does n
 are in `test/e2e/gisday/environments.json`: `production` (txgisday.org) and `local` (port 4201).
 
 ```bash
-MSYS_NO_PATHCONV=1 docker run --rm -m 8g   -v "C:/TAMU/Tamu.GeoInnovation.js.monorepo:/repo" -v tamu-js-smoke-nm:/repo/node_modules   -v "C:/TAMU/visual-baselines:/out"   -w /repo mcr.microsoft.com/playwright:v1.63.0-noble   node tools/visual-baselines/capture.mjs --app gisday --env production --release sha-0f69d3b --out /out
+MSYS_NO_PATHCONV=1 docker run --rm -m 8g   -v "C:/TAMU/Tamu.GeoInnovation.js.monorepo:/repo" -v tamu-js-smoke-nm:/repo/node_modules   -v "C:/TAMU/visual-baselines:/out"   -w /repo mcr.microsoft.com/playwright:v1.64.1-noble   node tools/visual-baselines/capture.mjs --app gisday --env production --release sha-0f69d3b --out /out
 ```
 
 - **Where sets go:** under `gisday-<environment>/<release>/`, beside AggieMap's.
@@ -81,9 +85,76 @@ MSYS_NO_PATHCONV=1 docker run --rm -m 8g   -v "C:/TAMU/Tamu.GeoInnovation.js.mon
 node tools/visual-baselines/review.mjs <beforeDir> <afterDir> <diffDir> <out.html>
 ```
 
-It writes a page with before, after and changed pixels for each route, sorted by how much moved, with
-a toggle for "only what changed". That page is what the decision to delete 95 hard-coded renderers
+It writes a page with before, after and **what changed** for each route, sorted by how much moved, with
+a toggle for "only what changed". The third column is drawn by `review.mjs` itself ([#2357][2357]), into
+`<diffDir>`: the after shot dimmed, with every pixel that moved more than rendering noise in pink. A page
+whose size changed (a GIS Day page that grew) gets no picture, since its pixels do not line up. That page is what the decision to delete 95 hard-coded renderers
 was actually made on: 30 pages, 9 changed, 21 identical as a control.
+
+When `<out.html>` is `<baselines>/compare/<name>/index.html`, the home page below lists it: `review.mjs`
+writes a `summary.json` beside the page with the two sets and how many pages changed.
+
+## Browsing the sets
+
+```bash
+node tools/visual-baselines/index.mjs <baselines>
+```
+
+It writes the pages for browsing a whole baselines folder ([#2345][2345]):
+
+- **`<baselines>/index.html`**, the home page: every set by kind (production, development, development as
+  production, GIS Day), newest first, with when it was captured (US Central), the commit and bundle from its
+  manifest, and how many shots it has against how many it should. Then every comparison, with how many
+  pages changed, and two drop-downs that give the command for comparing any two sets.
+- **`<baselines>/<kind>/<release>/index.html`**, each set as a gallery: desktop or phone, a filter by route,
+  each picture opening full size, and a link to the live page it shows.
+
+Run it again after anything changes; on the cluster every capture, comparison and clean-up does. It reads
+only what is on disk, so a folder of older sets works too.
+
+**The pages use the repository's shared styles**, not their own: `pages.scss` brings in `libs/sass` (the
+`.button`, the `floating-table`, spacing and fonts) and All Maps' `discover-shared.scss` (the page shell,
+section headings and `.chip` labels), and `page.mjs` compiles it into each page, for `review.mjs` too. So
+writing a page needs the repository's `sass` package; the tests pass their own styles and need nothing.
+
+**Why not an Angular app.** These pages are written by a script beside the two that write the sets, from the
+same files they read, and need no build, image or deployment. That costs the Angular components (the copy
+field, for example). **Decided 25 October 2026: keep it a static page for now, and consider promoting it to
+an Angular app in the monorepo when there is time**, if it grows past browsing (starting a capture, say).
+
+## Capturing each release by itself
+
+```bash
+node tools/visual-baselines/poll.mjs --out <baselines> [--dry-run]
+```
+
+On the cluster a CronJob runs this every 15 minutes ([#2355][2355]). It reads the newest `dev-*` and `prod-*`
+tag in its checkout, and if one has no finished set, it captures it, compares it with the previous set of
+the same kind (dev with the last dev, production with the last production) and rebuilds the pages. So a
+release gets its set and its comparison with nobody starting them.
+
+**Tags, not the sites**, decided 25 October 2026: a `dev-*` tag is pushed only after the build passes its
+quick tier, and a `prod-*` tag after the deploy, so only tested builds are photographed, under their own
+names. A site's `main-*.js` can keep its name across builds whose changes are only in lazy chunks.
+
+**When it will not start**, so it never photographs an environment while a smoke run tests it:
+
+| Rule | Why |
+|---|---|
+| Not until 60 minutes after the tag (`--wait-minutes`) | the release tier runs on dev after its tag (step 3b of the release sequence) |
+| Not between 02:30 and 08:30 US Central (`--quiet`) | the nightly smoke run starts at 6:17 AM, and a capture on the cluster takes about 3.5 hours |
+| Not while any set is being captured, by anyone | two captures share the cluster's workers and slow each other until pages time out; a set unfinished and written to in the last 15 minutes is running |
+
+**Every set gets its comparison, however it was captured** ([#2364][2364]). On each run, for each kind of set,
+the newest finished set is compared with the one before it if that comparison is missing, or was made
+before the newer set finished (from a capture still running). So a set captured by hand with
+`start-capture.ps1` needs no `start-compare.ps1` afterwards. A comparison touches neither environment, so
+it is not held back by the hour's wait or the quiet window, only by a capture running. A run makes its
+comparisons **before** starting a capture, and the capture's own after it, so a build that has just finished
+is compared within 15 minutes rather than after the next capture's three hours.
+
+`--dry-run` prints what it would do and why, one line per tag. A set whose capture finished counts as done
+even if some shots failed (its log names them), so one page that keeps failing is not retried forever.
 
 ## Two things that will catch you
 
@@ -102,3 +173,8 @@ out. Neither run meant anything and both had to be thrown away.
 [1508]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1508
 [1525]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525
 [1980]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1980
+[1533]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1533
+[2345]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2345
+[2355]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2355
+[2357]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2357
+[2364]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2364
