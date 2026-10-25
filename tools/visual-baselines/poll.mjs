@@ -261,6 +261,54 @@ function newestTags(repo) {
   }).filter(Boolean);
 }
 
+/**
+ * Does what was decided, in this order: every comparison the volume lacks, then the capture, then the
+ * capture's own comparison. Comparisons first because they take minutes and a capture hours: a build
+ * that has just finished gets its comparison now, not after the next release's capture (25 October
+ * 2026). None while another capture runs: one heavy job at a time. A comparison touches neither
+ * environment, so the wait and the quiet window that keep captures off a smoke run do not apply.
+ *
+ * `deps` is how it runs a script (`node`), finds missing comparisons and a running capture; the tests
+ * pass their own. Returns the capture's exit status, or 0.
+ */
+export function act(decided, out, { node, missing, running }) {
+  const compareAll = () => {
+    const compares = running(out) ? [] : missing(out);
+
+    for (const c of compares) {
+      console.log(`comparing ${c.kind}/${c.before} with ${c.kind}/${c.after}`);
+      node('review.mjs', [
+        path.join(out, c.kind, c.before),
+        path.join(out, c.kind, c.after),
+        path.join(out, 'compare', c.name, 'diff'),
+        path.join(out, 'compare', c.name, 'index.html')
+      ]);
+    }
+
+    return compares.length;
+  };
+
+  let compared = compareAll();
+  let status = 0;
+
+  if (decided.capture) {
+    const { environment, tag } = decided.capture;
+
+    if (compared) {
+      node('index.mjs', [out]);
+    }
+
+    status = node('capture.mjs', ['--env', environment, '--release', tag, '--out', out]);
+    compared += compareAll();
+  }
+
+  if (decided.capture || compared) {
+    node('index.mjs', [out]);
+  }
+
+  return status;
+}
+
 /** Runs a node script beside this one, its output shown as it goes; returns its exit status. */
 const node = (script, args) => spawnSync(process.execPath, [path.join(HERE, script), ...args], { stdio: 'inherit' }).status;
 
@@ -291,34 +339,7 @@ function main() {
     return 0;
   }
 
-  let status = 0;
-
-  if (decided.capture) {
-    const { environment, tag } = decided.capture;
-
-    status = node('capture.mjs', ['--env', environment, '--release', tag, '--out', out]);
-  }
-
-  // Every comparison the volume lacks, this capture's included, but not while another capture runs:
-  // one heavy job at a time. A comparison touches neither environment, so the wait and the quiet window
-  // that keep captures off a smoke run do not apply.
-  const compares = runningCapture(out) ? [] : missingComparisons(out);
-
-  for (const c of compares) {
-    console.log(`comparing ${c.kind}/${c.before} with ${c.kind}/${c.after}`);
-    node('review.mjs', [
-      path.join(out, c.kind, c.before),
-      path.join(out, c.kind, c.after),
-      path.join(out, 'compare', c.name, 'diff'),
-      path.join(out, 'compare', c.name, 'index.html')
-    ]);
-  }
-
-  if (decided.capture || compares.length) {
-    node('index.mjs', [out]);
-  }
-
-  return status;
+  return act(decided, out, { node, missing: missingComparisons, running: runningCapture });
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
