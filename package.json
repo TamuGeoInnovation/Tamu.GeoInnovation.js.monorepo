@@ -125,7 +125,6 @@
     "@playwright/test": "^1.64.1",
     "@schematics/angular": "22.2.3",
     "@swc/core": "1.16.18",
-    "@types/bull": "^3.15.9",
     "@types/express": "5.0.6",
     "@types/geojson": "^7946.0.16",
     "@types/jest": "30.0.0",
