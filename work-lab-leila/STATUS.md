@@ -30,6 +30,13 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## Running now
 
+**Batch 148: the quick tier's failures, listed before any tag (5:40 PM):** 122 tests, **119 passed, 1 failed, 2 skipped** (4.7 min), against dev at `392be39db`.
+- **Failed:** `development-only.spec.ts` › `/events/womens-basketball requests the ones it uses` - the baseline's eighth (`TS/WomensBasketballParking/MapServer`, the stale entry; #2209).
+- **Not run:** the baseline's seven `map-layers` athletics routes (cross country, indoor track, outdoor track, soccer, softball, swimming, volleyball): the quick tier's set does not include them.
+- **New today, both PASS:** `/all-maps: the Code Maroon tile is offered`, `/all-maps/parking: the Code Maroon tile is offered`.
+- **Nothing beyond the baseline failed.** But the rule is "exactly the eight", and only one of them can occur in this tier, so **no tag** (step 5: "the eight are not all present"). Question for the director in the report.
+
+
 > **Fixed by batch 144 (2:03 PM): `fix/gisday-rsvp-null-capacity` at `44a95e63b`.** 1:46 PM Central, for `work (security)` and `work (gisday)`: GIS Day registration is broken in the release at `eab737da7`; production has not got it yet.**
 > Batch 142, on the published `gisday-nest:sha-eab737d` with the seed: once the test admin's profile is complete, **every registration answers `POST /rsvps 500`**:
 > *TypeORMError: Null value encountered in property 'UserRsvp__UserRsvp_event.capacity' of a where condition.* `UserRsvpProvider.insertUserRsvp`
