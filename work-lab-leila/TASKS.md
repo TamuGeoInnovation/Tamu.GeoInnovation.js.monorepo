@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 144.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 145.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -77,6 +77,42 @@ Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting fo
 dev has had build 5733 since about 9:46 AM). **The director is running the AggieMap quick tier from the work computer now, and will push the `dev-*` tag if it
 passes**, because the maintainer needs the tag. **So skip batch 139's steps 2 and 3.** Do step 4 (the release tier) and step 5 (the What to test on dev rows), then
 batch 141 (GIS Day's signed-in checks) between or after them, and the vite branch (batch 138) after. Push a one-line status when you read this.
+
+## Batch 144 (gisday: URGENT, FIRST PRIORITY - session registration answers 500 on typeorm 1; 25 October 2026, 2:35 PM Central, from `work (gisday)`)
+
+**Do this before anything else in this file, including batch 138's lock queue** (the security chat agrees: the GIS Day API has
+been rolled back to `sha-ee1a9e4` because of this, which also takes production back off multer's DoS fix until the fixed image
+ships). From your report `2026-10-25-128`: on typeorm 1, `UserRsvpProvider.insertUserRsvp` passes the whole loaded event as a
+where value (`where: { event: event, accountGuid }`), and typeorm 1 refuses the event's null `capacity`, so every registration
+answers 500. The maintainer chose: the GIS Day chat's fix, with a test that fails first against a real database.
+
+### What to do
+
+1. Branch `fix/gisday-rsvp-null-capacity` from the latest `origin/development`, in its own worktree.
+2. **A regression test, red first, that exercises typeorm itself, not a mocked repository.** Best: a spec that runs the
+   provider (or the query) against a real typeorm DataSource with the real entities, if they load on a database you can
+   start in a test (say which). If that is impractical, an integration test against the local stack's SQL Server that the
+   repository can run (say how CI would run it, or that it cannot). Prove it red on the unfixed code with the same
+   `Null value encountered in property ... capacity` error.
+3. **The fix:** look the RSVP up by the event's key: `where: { event: { guid: event.guid }, accountGuid }`. Do **not** set
+   `invalidWhereValuesBehavior` globally; it would hide the class of mistake.
+4. **The same pattern elsewhere**, from your report: `competitions/data-api/.../form/form.service.ts:36` and `:52`,
+   `sponsor.provider.ts:42`, `user-submission.provider.ts:40` (a whole season as a where value). Change each to the key
+   (`{ guid: season.guid }`), and search `libs/gisday` and `apps/gisday-*` for any other whole-entity where value; list what
+   you found and changed.
+5. **Green:** the test, then a real registration and unregistration on your local stack with an API built from the branch
+   (`work/tools/gisday-release-check.cjs` should now print PASS for registration), plus the rest of the release check (saves,
+   uploads, Show/Hide) still passing.
+6. `scripts/check-in-volume.sh fix/gisday-rsvp-null-capacity <the projects you edited>,gisday-nest` (the bug-fix form in
+   CLAUDE.md) must exit 0. Commit with a message saying it fixes the registration 500 on typeorm 1; push to the fork.
+
+### Then
+
+Report as soon as it is pushed: branch and head, red then green test output, the registration requests and statuses, the other
+sites changed, the check's exit code. Push `STATUS.md` when you start and when it is pushed. The director files the issue and
+opens the PR at once. Nothing on GitHub, nothing against production.
+
+---
 
 ## Batch 143 (gisday: #2352, resize speaker photos on upload, and a script for the ones already stored; 25 October 2026, 2:05 PM Central, from `work (gisday)`)
 
