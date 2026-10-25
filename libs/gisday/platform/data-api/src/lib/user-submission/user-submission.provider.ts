@@ -37,7 +37,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     try {
       return this.userSubmissionRepo.find({
         where: {
-          season: existingSeason
+          season: { guid: existingSeason.guid }
         }
       });
     } catch (err) {

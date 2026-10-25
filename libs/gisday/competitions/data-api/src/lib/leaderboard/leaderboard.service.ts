@@ -58,7 +58,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     }
 
     const competitionSeason = await this.compSeasonRepo.findOne({
-      where: { season: activeSeason },
+      where: { season: { guid: activeSeason.guid } },
       relations: { form: true }
     });
 
