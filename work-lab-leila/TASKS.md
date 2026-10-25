@@ -56,7 +56,7 @@ report under **Questions for the director**, with options and a recommendation â
 while waiting for dev to serve the new build, or between the two smoke tiers), **but only when no Azure Pipelines job is running on this machine**:
 re-installing restarts each agent and would cancel a job in progress. **The release build, 5733, is running on the lab now: wait for it to finish.**
 How to tell: `docker ps` shows no agent job container busy (a job's container runs a `Linux-Build` job; the supervisor's log under
-`%LOCALAPPDATA%	amu-build-agent\logs\` says the agent is listening). **Expected: 15 minutes.**
+`%LOCALAPPDATA%\tamu-build-agent\logs\` says the agent is listening). **Expected: 15 minutes.**
 1. **Why** (#2343): build 5733 warned *No git mirror at /mirror/monorepo.git on this agent* on every lab job. The scheduled tasks run copies of the scripts
    made at install, from before #2255 added the mirror (`tools/build-agent/README.md`: "run it again after pulling a change to them").
 2. In the checkout the agents were installed from: `git pull` `development`. Then, for each agent installed here (`lab-1`, `lab-2`, `lab-3`, and `lab-4` if it
