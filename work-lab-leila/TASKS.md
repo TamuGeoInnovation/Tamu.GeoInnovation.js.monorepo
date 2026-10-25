@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 151.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 152.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,62 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 151 (aggiemap: check the capture fixes in PR 2384 at full scale, against production, tonight; 25 October 2026, 5:40 PM Central, from `work (aggiemap, visual baselines)`)
+
+**Written by the work machine's visual-baselines chat at the maintainer's instruction** ("fix all of these in coordination
+with the lab machine", 25 October 2026, 5:30 PM Central). **AggieMap's director is `home` from tonight:** questions go
+under **Questions for the director (aggiemap)**, and home's AggieMap chat answers them. **After batch 148**, and after
+anything ahead of it. About 45 minutes.
+
+### Why
+
+PR 2384 (`danielgoldbergtamu:fix/2346-2347-capture-settle`, at `cf7216e36`) changes `tools/visual-baselines/capture.mjs`:
+
+- **#2346:** a map still loading or drawing after 60 s, or with a visible layer that never loaded, is tried once
+  more, then photographed and listed in the manifest's `unsettled` with the reason. Before, it was saved as if
+  finished, and comparisons showed it as a change.
+- **#2347:** every shot gets its own browser session. Before, the phone shot of `/events/big-event` showed whichever
+  choice the previous shot had visited.
+
+Both were proven on 8 Big Event shots on production. This checks them on a whole routes-only set, about 120 shots.
+
+### When: only all of these
+
+- **After 8:00 PM Central, and before 2:30 AM.** The nightly smoke run starts at 6:17 AM.
+- **The cluster's production capture has finished:** `https://visual-baselines.geoservices.tamu.edu/production/prod-2026-10-22/manifest.json`
+  contains `"completedAt"`. It started at 4:17 PM and takes about 3.5 hours. Do not capture production while it runs.
+- **Nothing of yours is running against production.**
+
+If it is past 2:30 AM before all three hold, say so in `STATUS.md` and leave it. Do not run it in the morning.
+
+### What to do
+
+1. A worktree at the fork branch: `git fetch fork fix/2346-2347-capture-settle`, then a worktree at `cf7216e36`, with the
+   smoke `node_modules` volume and `mcr.microsoft.com/playwright:v1.64.1-noble` (the version `package.json` names).
+2. **The tests:** `node --test 'tools/visual-baselines/*.test.mjs'`. Expect 27 of 27.
+3. **The capture**, into a folder outside every repository, for example `C:\TAMU\visual-baselines-verify`:
+   `node tools/visual-baselines/capture.mjs --env production --release verify-2384 --routes-only --concurrency 3 --out /out`.
+   Record its last line (`done: N captured, F failed, U unfinished, M min`) and every `~` line (an unfinished map, with its reason).
+4. **The same routes from the cluster's set:** for each file in your `desktop/` and `phone/`, download
+   `https://visual-baselines.geoservices.tamu.edu/production/prod-2026-10-22/<viewport>/<file>` into a second folder, with its
+   `manifest.json`. Then `node tools/visual-baselines/review.mjs <cluster set> <your set> <out>/diff <out>/index.html`.
+   Both are production, a few hours apart, so the pages should barely differ. A page that does is either a real
+   change or noise this PR should have caught.
+5. **Look at the phone event pages** in your set (`phone/events-*.png`). None should show a choice selected that
+   the page itself did not choose.
+
+### Report
+
+- the test count; the capture's last line, and every unfinished map with its reason;
+- the comparison's `N pages, C changed`, and **for each changed page, your judgement**: a real change, an unfinished
+  map that is marked "unfinished", or noise that is not marked. The third kind is what matters;
+- whether any phone event page shows a carried-over choice.
+
+**Nothing on GitHub** (you have no `gh`), no pushes but your report, and nothing against development: its smoke tiers and
+the cluster's poller use it tonight.
+
+---
 
 ## Batch 148 (aggiemap: the quick tier on today's dev build; 25 October 2026, 4:45 PM Central)
 
