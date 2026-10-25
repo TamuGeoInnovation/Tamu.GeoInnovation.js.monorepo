@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:12 AM Central, 25 October 2026**. A listener; job: testing.
+Last written **9:20 AM Central, 25 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,7 +32,7 @@ Last written **9:12 AM Central, 25 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-**Batch 138, security: the lock queue's checks, on this machine (standing)**, started 9:12 AM Central, 25 October. Now: Dependabot's PR 2322.
+**Batch 138, security: the lock queue's checks, on this machine (standing)**, started 9:12 AM Central, 25 October. **Dependabot's PRs both pass:** PR 2322 (`778e983bd`: marked 18.1.1, webpack 5.112.0 with its watchpack 2.6.2, all 8 days old or more) **check exit 0**; PR 2300 (`1e661e005`: angulartics2 14.1.0 alone) **check exit 0**; each lock moves only its own packages. Not pushed (Dependabot's branches). **Now: waiting for PR 2322 to merge**, then `chore/1218-got-16`; checking `origin/development` every 10 minutes.
 
 ## Finished
 
