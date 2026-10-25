@@ -10,10 +10,10 @@
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
-## Batch 151 (aggiemap: check the capture fixes in PR 2384 at full scale, against production, tonight; 25 October 2026, 5:40 PM Central, from `work (aggiemap, visual baselines)`)
+## Batch 151 (aggiemap: check the capture fixes in PR 2384 at full scale, against production, tonight; 25 October 2026, 5:12 PM Central, from `work (aggiemap, visual baselines)`)
 
 **Written by the work machine's visual-baselines chat at the maintainer's instruction** ("fix all of these in coordination
-with the lab machine", 25 October 2026, 5:30 PM Central). **AggieMap's director is `home` from tonight:** questions go
+with the lab machine", 25 October 2026, about 5:05 PM Central). **AggieMap's director is `home` from tonight:** questions go
 under **Questions for the director (aggiemap)**, and home's AggieMap chat answers them. **After batch 148**, and after
 anything ahead of it. About 45 minutes.
 
