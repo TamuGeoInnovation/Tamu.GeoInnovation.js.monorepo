@@ -29,7 +29,7 @@ describe('AssetsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AssetsService,
-        { provide: getRepositoryToken(Asset), useValue: { findOne: jest.fn(), create: jest.fn() } }
+        { provide: getRepositoryToken(Asset), useValue: { findOne: jest.fn(), create: jest.fn(), count: jest.fn().mockResolvedValue(0) } }
       ]
     }).compile();
 
@@ -192,6 +192,21 @@ describe('AssetsService', () => {
       ).resolves.toBeUndefined();
 
       expect(deleteFileFromDisk).toHaveBeenCalledTimes(2);
+    });
+
+    // Files are stored under their upload name, so two sponsors' "logo.png" are one file, and every seeded speaker's photo is
+    // images/placeholder.svg: 930 rows on the seed. Removing a file another row still uses would break that one too.
+    it('keeps a file that another asset row still uses', async () => {
+      (assetRepo.count as jest.Mock).mockImplementation(async ({ where }) => (where.path === 'images/placeholder.svg' ? 930 : 0));
+      (deleteFileFromDisk as jest.Mock).mockResolvedValue(true);
+
+      await service.deleteAssetFiles([
+        { guid: 'a-1', path: 'images/placeholder.svg' },
+        { guid: 'a-2', path: 'images/sponsors/two.png' }
+      ] as Asset[]);
+
+      expect(deleteFileFromDisk).not.toHaveBeenCalledWith(`${APP_DATA}/images/placeholder.svg`);
+      expect(deleteFileFromDisk).toHaveBeenCalledWith(`${APP_DATA}/images/sponsors/two.png`);
     });
 
     it('skips an asset with no path', async () => {
