@@ -21,12 +21,10 @@ updates:
       prefix: chore(deps)
     # Version updates wait for a release to age before they are proposed, against supply-chain attacks: most poisoned
     # releases are found and pulled within days (#2292). Security updates are not delayed; cooldown applies to version
-    # updates only. The same rule holds for our own upgrades (CLAUDE.md).
+    # updates only. 7 days for every kind of update, the same rule as our own upgrades (CLAUDE.md), so every pull request
+    # Dependabot opens can be merged once it is green (#2333).
     cooldown:
       default-days: 7
-      semver-major-days: 14
-      semver-minor-days: 7
-      semver-patch-days: 7
     # One pull request per family, so a week brings a few rather than dozens. A package joins the first group that
     # matches it. The named families keep their majors in their group, because their packages move together;
     # everything-else takes minor and patch only, so each other major arrives as a pull request of its own.
@@ -91,7 +89,7 @@ updates:
       - dependencies
     commit-message:
       prefix: chore(deps)
-    # Version updates wait 7 days after a release (#2292); security updates are not delayed.
+    # Version updates wait 7 days after a release (#2292, #2333); security updates are not delayed.
     cooldown:
       default-days: 7
     groups:
@@ -117,7 +115,7 @@ updates:
       - dependencies
     commit-message:
       prefix: chore(deps)
-    # Version updates wait 7 days after a release (#2292); security updates are not delayed.
+    # Version updates wait 7 days after a release (#2292, #2333); security updates are not delayed.
     cooldown:
       default-days: 7
     groups:
@@ -137,7 +135,7 @@ updates:
       - dependencies
     commit-message:
       prefix: chore(deps)
-    # Version updates wait 7 days after a release (#2292); security updates are not delayed.
+    # Version updates wait 7 days after a release (#2292, #2333); security updates are not delayed.
     cooldown:
       default-days: 7
     groups:
