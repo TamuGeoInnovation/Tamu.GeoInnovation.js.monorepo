@@ -154,3 +154,12 @@ needs an open `dependencies` issue whose body says `Tracks PR #<n>` (CLAUDE.md).
   (got 16, mail timeouts, vite, and the rest of the queue) and once the GIS team confirms the dev and production athletics layers match (#2209). This is
   an exception to "the notes merge before production".
 - Not checked on dev: entry 2119 (nginx 1.30; dev AggieMap is IIS) and 2325 (geoservices' dev site unreachable from the lab's browser).
+
+## End of 25 October 2026: the lock queue is done
+
+Merged today: 2322, 2300, 2324, 2328, 2330, 2332, 2336 (7-day rule), 2339 (got 16), 2342 (no PR artifact), 2344 (mail timeouts), 2349 (vite), 2354 (jwks-rsa 4),
+2360 (GIS Day registration, GIS Day chat), 2362 (better-sqlite3 13), 2366 (auth0 7), 2370 (#2320), 2373 (#2371 tracking), 2375 (bull's uuid), 2378 (Nx's undici).
+`npm audit` on `development`: High only the accepted msal-node/identity (#2371); Moderate only `openid-client` 3's (accepted, unreachable) and dev-only
+`fast-uri` (fix allowed 26 Oct: queue a lock refresh) ; Low `serialize-javascript` (allowed 29 Oct).
+Next: `fast-uri` on 26 Oct; Monday's Dependabot; Monday's release notes and AggieMap production (#2209; the 4:40 PM dev build `392be39db` is the better
+candidate); the next GIS Day API image (2375 + #2205 + #2352), audit before promotion; lab batches 149 (unused-code survey) and 150 (remove the certain ones).
