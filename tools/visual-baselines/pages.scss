@@ -1,0 +1,35 @@
+// The repository's shared styles, for the pages the visual-baselines tools write (#2345). page.mjs
+// compiles this with the repository root as a load path and puts the result in each page, so the
+// pages use the same buttons, tables, spacing and fonts as AggieMap rather than styles of their own.
+//
+// The order and the button settings are AggieMap's (apps/aggiemap-angular/src/styles.scss).
+
+@import 'libs/sass/variables';
+@import 'libs/sass/mixins';
+@import 'libs/sass/dom_flexbox';
+@import 'libs/sass/spacing';
+@import 'libs/sass/modules/tables';
+
+// All Maps' page shell, section headings and chips, so these pages look like AggieMap's own lists.
+@import 'libs/aggiemap/ngx/discover/src/lib/components/discover-shared';
+
+$button-background: #0079c1;
+$button-hover: #005e95;
+@import 'libs/sass/components/button';
+@include button-base;
+@include button-anchors($secondary: darken(#0079c1, 7%), $tertiary: #eeeeee);
+
+// AggieMap's body text and page titles: Open Sans, and maroon uppercase Oswald, as its directory
+// pages' headings (libs/aggiemap/ngx/discover/.../maps-page-header.component.scss).
+body {
+  font-family: $open-sans-fStack;
+  color: $font-color;
+}
+
+.page-title {
+  font-family: $oswald-fStack;
+  color: #500000;
+  font-weight: 600;
+  text-transform: uppercase;
+  line-height: 1.1;
+}

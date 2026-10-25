@@ -54,8 +54,12 @@ wrong or the environment moved under it, and both matter more than the capture d
 Outside the repository, under `<repo>/../visual-baselines` by default, or `AGGIEMAP_BASELINES`.
 
 A set is hundreds of megabytes, and there is one per release per environment. That is not what git is
-for, and committing them would make every clone pay for them forever. The consequence is that
-baselines are **per machine**: a set captured at work is not available at home.
+for, and committing them would make every clone pay for them forever. A set captured on a
+workstation is therefore **per machine**: one captured at work is not available at home.
+
+**The shared copy is on the cluster** ([#1533][1533]): captures started there land on one disk that every
+machine can see, at `https://visual-baselines.geoservices.tamu.edu/` from Texas A&M networks. How to start
+one, and the cluster's side of it, is in the private cluster configuration repository.
 
 ## GIS Day
 
@@ -85,6 +89,37 @@ It writes a page with before, after and changed pixels for each route, sorted by
 a toggle for "only what changed". That page is what the decision to delete 95 hard-coded renderers
 was actually made on: 30 pages, 9 changed, 21 identical as a control.
 
+When `<out.html>` is `<baselines>/compare/<name>/index.html`, the home page below lists it: `review.mjs`
+writes a `summary.json` beside the page with the two sets and how many pages changed.
+
+## Browsing the sets
+
+```bash
+node tools/visual-baselines/index.mjs <baselines>
+```
+
+It writes the pages for browsing a whole baselines folder ([#2345][2345]):
+
+- **`<baselines>/index.html`**, the home page: every set by kind (production, development, development as
+  production, GIS Day), newest first, with when it was captured (US Central), the commit and bundle from its
+  manifest, and how many shots it has against how many it should. Then every comparison, with how many
+  pages changed, and two drop-downs that give the command for comparing any two sets.
+- **`<baselines>/<kind>/<release>/index.html`**, each set as a gallery: desktop or phone, a filter by route,
+  each picture opening full size, and a link to the live page it shows.
+
+Run it again after anything changes; on the cluster every capture, comparison and clean-up does. It reads
+only what is on disk, so a folder of older sets works too.
+
+**The pages use the repository's shared styles**, not their own: `pages.scss` brings in `libs/sass` (the
+`.button`, the `floating-table`, spacing and fonts) and All Maps' `discover-shared.scss` (the page shell,
+section headings and `.chip` labels), and `page.mjs` compiles it into each page, for `review.mjs` too. So
+writing a page needs the repository's `sass` package; the tests pass their own styles and need nothing.
+
+**Why not an Angular app.** These pages are written by a script beside the two that write the sets, from the
+same files they read, and need no build, image or deployment. That costs the Angular components (the copy
+field, for example). **Decided 25 October 2026: keep it a static page for now, and consider promoting it to
+an Angular app in the monorepo when there is time**, if it grows past browsing (starting a capture, say).
+
 ## Two things that will catch you
 
 **Wait for the right signal.** `probe.ready` means the layers have settled, about six seconds in.
@@ -102,3 +137,5 @@ out. Neither run meant anything and both had to be thrown away.
 [1508]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1508
 [1525]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525
 [1980]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1980
+[1533]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1533
+[2345]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2345
