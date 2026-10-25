@@ -71,6 +71,13 @@ listed (`ESTRICTALLOWSCRIPTS`). Without that setting npm runs it anyway and only
 `hasInstallScript` for each package, so it needs no install. `lint.yml` runs it on every pull request, because
 its own `npm ci` is skipped when the `node_modules` cache hits. Exit 1 names each package not listed.
 
+Two kinds of entry are reported without failing. *Not installed any more* is an entry whose package is not in the lock
+at all: it allows nothing, and `npm install-scripts prune` removes it. *Installed, but no install script recorded* is an
+entry for a package the lock installs without `hasInstallScript`, and it **stays**: npm's `strict-allow-scripts` also
+counts a `binding.gyp` as `install: node-gyp rebuild`, even when the package sets `"gypfile": false`, and the lock does
+not record that. `better-sqlite3` 13 is one: it ships its own binaries, so it is denied (`false`), but removing the entry
+makes `npm ci` fail with `ESTRICTALLOWSCRIPTS` (#2326).
+
 **When it fails**, a dependency change brought a new install script, or a new copy of one. Read what the
 script does (`node_modules/<name>/package.json`, `scripts`), then either:
 
