@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 137.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 138.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,19 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 137 (security: #2319 - override the `undici` that `nx` pins, stacked; a branch; 25 October 2026, 9:15 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now.** **Expected: 45 minutes.** Your batch 136 is right; #2327 is retitled and recorded.
+**Decided (the maintainer, 25 October): the release-age rule is now 7 days, not 14** (#2333): for Dependabot and for our own upgrades.
+Since yesterday the director has re-stacked the whole queue (heads in `security/HANDOFF.md`); PRs 2324, 2328 and 2330 have merged and chart.js is PR 2332.
+1. Branch `fix/2319-nx-undici` from **`fork/fix/2111-bull-uuid`** (`4dbf8b852`, the end of the queue).
+2. The scoped override `"nx": { "undici": "7.30.1" }` (published 15 October, so past the 7-day rule), re-lock; only `nx`'s `undici` may move. If `nx` pins
+   it in a nested copy, check the override reaches that copy (`npm ls undici`). Show the keys.
+3. Prove it: `npm audit` no longer lists `undici` (list the High and Critical left); Nx itself still runs (`nx --version`, `nx show projects`, and one
+   real target, such as `build geoservices-angular`).
+4. `scripts/check-in-volume.sh` (full). Commit (`fix(workspace): Override the undici that nx pins, for its advisories`, `Closes #2319`,
+   Co-Authored-By), push to the fork. No PR.
 
 ## Batch 136 (security: #2327 - the flaky `common-ngx-ui-sidebar` test; a branch; 24 October 2026, 2:50 PM Central, from `work (security)`)
 
