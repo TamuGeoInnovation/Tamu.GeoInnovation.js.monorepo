@@ -104,6 +104,14 @@ export class AssetsService {
       const filePath = `${this._assetsDir}/${asset.path}`;
 
       try {
+        // Files are stored under their upload name, so another row can point at the same file: two sponsors' "logo.png",
+        // or images/placeholder.svg, which 930 seeded speakers use. Such a file stays.
+        const stillUsed = await this.ar.count({ where: { path: asset.path } });
+
+        if (stillUsed > 0) {
+          continue;
+        }
+
         await deleteFileFromDisk(filePath);
       } catch (err) {
         Logger.error(`Could not delete ${filePath}: ${err.message}`, 'AssetsService');
