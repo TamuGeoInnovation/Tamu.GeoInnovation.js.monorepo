@@ -145,6 +145,8 @@ needs an open `dependencies` issue whose body says `Tracks PR #<n>` (CLAUDE.md).
   raster basemap test fails everywhere (#2351); known failures to list: #2350.
 - **GIS Day promoted:** both sites on `sha-eab737d` (kubernetes-config PR 77). Signed-in checks (lab batch 141) pass except registration (test admin's
   incomplete profile).
+- **AggieMap production is on hold (the maintainer, 25 October):** the development athletics layers differ from production's (#2209), so Release-493's
+  production stage stays unapproved until the GIS team makes them match. No `prod-*` tag until then.
 - **Release notes: the maintainer's decision (25 October): written on Monday 26 October**, together with the security work merged after `eab737da7`
   (got 16, mail timeouts, vite, and the rest of the queue) and once the GIS team confirms the dev and production athletics layers match (#2209). This is
   an exception to "the notes merge before production".
