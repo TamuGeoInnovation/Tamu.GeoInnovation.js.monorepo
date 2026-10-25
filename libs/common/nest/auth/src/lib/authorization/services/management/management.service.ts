@@ -8,9 +8,18 @@ import {
   UnprocessableEntityException
 } from '@nestjs/common';
 
-import { AppMetadata, ManagementClient, User, UserMetadata } from 'auth0';
+import { Management, ManagementClient } from 'auth0';
 
 export const MANAGEMENT_CONFIG = 'MANAGEMENT_CONFIG';
+
+// auth0 4 and later no longer export these names. The user is the Management API's own type. The metadata stays as
+// auth0 3 typed it, any value under any key: 7 types it Record<string, unknown>, which would make every reader of a
+// nested property (a class roster's user_metadata.education.id) cast it.
+export type User = Management.UserResponseSchema;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AppMetadata = Record<string, any>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type UserMetadata = Record<string, any>;
 
 @Injectable()
 export class ManagementService {
@@ -68,7 +77,7 @@ export class ManagementService {
     const client = this.client;
 
     try {
-      const user = await client.getUser({ id: userId });
+      const user = await client.users.get(userId);
 
       if (!user) {
         throw new NotFoundException();
@@ -92,7 +101,7 @@ export class ManagementService {
    * @param {Auth0UserProfileFilters} filters Defines and limits which properties can be updated. This serves as a safety mechanism to prevent unwanted updates to other application metadata or user grouping properties.
    */
   public async updateUserMetadata(userId: string, info: Auth0UserProfile, filters: Auth0UserProfileFilters) {
-    const user = await this.client.getUser({ id: userId });
+    const user = await this.client.users.get(userId);
 
     if (!user) {
       throw new NotFoundException('User not found.');
@@ -123,7 +132,7 @@ export class ManagementService {
         }
       }
 
-      const updatedMetadata = await this.client.updateUser({ id: userId }, payload);
+      const updatedMetadata = await this.client.users.update(userId, payload);
 
       return this._composeMetadata(updatedMetadata, filters);
     } catch (err) {
@@ -133,11 +142,13 @@ export class ManagementService {
   }
 
   public async getUsers(filters?: Auth0UserProfileFilters) {
-    const users = await this.client.getUsers({
+    // One page, the API's default 50 users, as auth0 3's getUsers returned. `list` answers a Page; its first
+    // page's users are `.data`.
+    const users = await this.client.users.list({
       sort: 'name:1'
     });
 
-    return users.map((u) => this._composeMetadata(u, filters));
+    return users.data.map((u) => this._composeMetadata(u, filters));
   }
 
   /**

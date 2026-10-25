@@ -59,7 +59,7 @@
     "@turf/helpers": "^7.4.0",
     "@types/auth0": "^3.3.8",
     "angulartics2": "^14.1.0",
-    "auth0": "^3.7.1",
+    "auth0": "~7.4.0",
     "axios": "^1.7.7",
     "better-sqlite3": "^13.0.3",
     "better-sqlite3-session-store": "^0.1.0",
@@ -169,6 +169,9 @@
   "overrides": {
     "@angular/build": {
       "vite": "8.3.4"
+    },
+    "auth0": {
+      "undici-types": "6.29.0"
     },
     "better-sqlite3": "^13.0.3",
     "form-data": "$form-data",
