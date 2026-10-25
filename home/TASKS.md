@@ -1,5 +1,9 @@
 # Home machine: current tasks
 
+
+> **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
+> `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
+
 ## Decided (23 October 2026)
 
 - From 23 October, all security and vulnerability work in this repository belongs to the security chat on the work

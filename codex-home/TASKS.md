@@ -1,5 +1,9 @@
 # codex-home: current tasks
 
+
+> **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
+> `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
+
 ## Batches 5 and 6 - WITHDRAWN at 10:06 AM Central, 23 October 2026, before either was started
 
 **Do neither.** Both were queued here while this machine was not running: its last push was **07:05**, and

@@ -1,5 +1,9 @@
 # Work machine: current tasks
 
+
+> **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
+> `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
+
 You're on the `work-mailbox` branch of TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo, in a Claude Code session
 on the maintainer's **work machine**. Its job is testing, so the home machine's resources stay free for
 development (#1862). Read this file, do the current batch, report, and stop. The home session rewrites the batch for
