@@ -1094,12 +1094,6 @@ export class EsriMapService {
     const selectionLayers = this.environment.value('LayerSources') as LayerSource[];
     const source = Object.assign(selectionLayers.find((src) => src.id === SELECTION_LAYER_ID)) as LayerSource;
 
-    // Resolve the popup component to assign to the selection layer instance. Without this,
-    // a follow-up click on the highlighted graphic would fall back to the source's static
-    // popupComponent (BUILDINGS), producing the wrong popup for non-building selections like
-    // parking lots. The assignment is ephemeral — overwritten on each new selection.
-    const resolvedPopupComponent = properties.popupComponent ?? source.popupComponent;
-
     // Add the symbol and polygon type to each feature
     const features = graphics.map((ft) => {
       const feature = ft;
