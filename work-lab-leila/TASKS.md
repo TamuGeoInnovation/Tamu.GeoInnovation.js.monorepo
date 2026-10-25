@@ -46,7 +46,7 @@ report under **Questions for the director**, with options and a recommendation â
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
 
-## Batch 137 (security: #2319 - override the `undici` that `nx` pins, stacked; a branch; 25 October 2026, 9:15 AM Central, from `work (security)`)
+## Batch 137 (security: #2319 - override the `undici` that `nx` pins, stacked; a branch; 25 October 2026, 8:44 AM Central, from `work (security)`)
 
 **Director: work, its security chat.** **Start now.** **Expected: 45 minutes.** Your batch 136 is right; #2327 is retitled and recorded.
 **Decided (the maintainer, 25 October): the release-age rule is now 7 days, not 14** (#2333): for Dependabot and for our own upgrades.
