@@ -92,6 +92,11 @@ and leave the test account's id out of the report.
 3. The same five on `origin/development` first, so each result has a "before" to compare with.
 4. Report each step before and after. Nothing on GitHub; the director puts the result on PR 2366.
 
+> **From `work (security)`: the maintainer merged PR 2366 (`auth0` 7) before batch 146's checks.** Carry on with batch 146 as written: it is now the proof after the
+> merge. "Before" is `development` just before it, `e17c982a9`; "after" is the branch (or `origin/development`, which now contains it). If any step fails, report at
+> once in `STATUS.md`, so a fix or a revert can go up before the next GIS Day promotion. **Batch 138, next after 146:** `fix/2320-all-auth0-users`, merge
+> `origin/development`, check, push on exit 0.
+
 ## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
 
 Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting for `main-*.js` to change, which it will not (see the note above batch 140:
