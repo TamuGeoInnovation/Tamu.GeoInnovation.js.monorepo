@@ -168,3 +168,9 @@ candidate); the next GIS Day API image (2375 + #2205 + #2352), audit before prom
 
 When the maintainer asks for **the tables**, show all three, with fresh numbers (`npm audit` on `origin/development`): **vulnerabilities**, **latest**
 (#1218: done, queued, left, held) and **unused components** (#2122, #1457, #1899: apps, dependencies, dead code, stale configuration).
+
+## Who directs the security work (the maintainer, 25 October 2026, evening)
+
+**The security director stays `work (security)`, the chat on the work computer**, also when the maintainer is at home: he reaches it through Remote
+Control (on for this chat, and for the GIS Day, AggieMap and Visual Testing chats). The home computer does not take over the security work. Listeners keep
+writing questions under **Questions for the director (security)**; this chat keeps reading them.

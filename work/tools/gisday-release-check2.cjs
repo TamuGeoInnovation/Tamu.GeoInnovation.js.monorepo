@@ -1,5 +1,6 @@
-// GIS Day release check, part 2: Show/Hide on schedule (PATCH events/active) both ways, and deleting the REL CHECK
-// sponsors through the admin form (fails with 500 until #2205 is fixed). Same docker command as part 1.
+// GIS Day release check, part 2: Show/Hide on schedule (PATCH events/active) both ways, Admin -> Users (the Auth0
+// management API; added 25 Oct for #2320 and auth0 7), and deleting the REL CHECK sponsors through the admin form
+// (500 until #2205's fix, PR 2381, ships). Same docker command as part 1.
 const { chromium } = require('/w/node_modules/playwright');
 const fs = require('fs');
 const base = 'http://localhost:4201';
@@ -33,6 +34,11 @@ async function throughSignIn(page) {
   await row.locator('input[type="checkbox"]').first().click(); await page.waitForTimeout(800);
   n = seen.length; await page.getByText('Show on schedule').click(); await page.waitForTimeout(2500);
   console.log('show:', seen.slice(n).join('; ') || 'no request');
+  // Admin, Users (the Auth0 management API: #2320 lists every user, auth0 7 reads them).
+  { const st = []; page.on('response', (r) => { if (/ANGULAR_API_URL___\/users/.test(r.url())) st.push(r.status()); });
+    await page.goto(base + '/admin/users', { waitUntil: 'domcontentloaded' }); await throughSignIn(page); await page.waitForTimeout(6000);
+    const shown = await page.locator('text=/Displaying \d+ users/').first().innerText().catch(() => 'no count shown');
+    console.log('admin users:', shown, '| rows', await page.locator('table.floating-table tbody tr').count(), '| API statuses', [...new Set(st)].join(',') || 'none'); }
   // Delete the two test sponsors through the admin form.
   for (let i = 0; i < 2; i++) {
     await page.goto(base + '/admin/sponsors', { waitUntil: 'domcontentloaded' }); await throughSignIn(page); await page.waitForTimeout(4000);
