@@ -3,11 +3,15 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
+import { createJimp } from '@jimp/core';
+import jpeg from '@jimp/js-jpeg';
 
 import { AssetsService } from '../assets/assets.service';
 import { Asset, Event, Organization, Season, Speaker, University } from '../entities/all.entity';
 import { SeasonService } from '../season/season.service';
 import { SpeakerProvider } from './speaker.provider';
+
+const Jimp = createJimp({ formats: [jpeg] });
 
 describe('SpeakerProvider', () => {
   let provider: SpeakerProvider;
@@ -306,6 +310,22 @@ describe('SpeakerProvider', () => {
         { prefix: 's-1-' }
       );
       expect((speakerRepo.save as jest.Mock).mock.calls[0][0].images).toEqual([{ guid: 'i-2' }]);
+    });
+
+    it('stores a large photo at the size the site shows it, not as uploaded (#2352)', async () => {
+      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+      const upload = await new Jimp({ width: 3000, height: 3000, color: 0x7f7f7fff }).getBuffer('image/jpeg');
+
+      await provider.updateWithInfo('s-1', {}, { originalname: 'face.jpg', mimetype: 'image/jpeg', buffer: upload, size: upload.length });
+
+      const stored = (assetService.saveAsset as jest.Mock).mock.calls[0][1];
+      const { width, height } = (await Jimp.fromBuffer(stored.buffer)).bitmap;
+      // Twice the 420 px a presenter's own page draws it at, for sharp screens.
+      expect([width, height]).toEqual([840, 840]);
+      expect(stored.size).toBe(stored.buffer.length);
+      expect(stored.originalname).toBe('face.jpg');
     });
 
     it('does not let the caller overwrite the guid', async () => {
