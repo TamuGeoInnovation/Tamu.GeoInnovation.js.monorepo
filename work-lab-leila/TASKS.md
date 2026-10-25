@@ -67,6 +67,13 @@ report under **Questions for the director**, with options and a recommendation â
 > yes). Don't touch the agents' tasks or containers meanwhile. When he is done, check `docker inspect --format "{{json .Mounts}}" tamu-build-agent-lab-1`
 > (and 2, 3) and the next lab job's checkout, and report as step 3 of batch 140 says. Batch 139 carries on as before.
 
+## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
+
+Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting for `main-*.js` to change, which it will not (see the note above batch 140:
+dev has had build 5733 since about 9:46 AM). **The director is running the AggieMap quick tier from the work computer now, and will push the `dev-*` tag if it
+passes**, because the maintainer needs the tag. **So skip batch 139's steps 2 and 3.** Do step 4 (the release tier) and step 5 (the What to test on dev rows), then
+batch 141 (GIS Day's signed-in checks) between or after them, and the vite branch (batch 138) after. Push a one-line status when you read this.
+
 ## Batch 141 (gisday: the signed-in release checks for `eab737da7`, now that this machine has the dev-tenant file; 25 October 2026, 10:40 AM Central, from `work (gisday)`)
 
 **Do it as soon as batch 139 lets you; it blocks the GIS Day release** (`sha-eab737d`), which your batch 139 has
