@@ -17,6 +17,19 @@ import * as path from 'path';
 export const DEVELOPMENT_ONLY_SECTIONS = ['Directions', 'Bus Routes', 'Experiments'];
 
 /**
+ * Tiles in the All Maps page's "Visit Maps" row that are not ready for production (#912).
+ *
+ * A fourth list rather than an entry in `DEVELOPMENT_ONLY_SECTIONS`, because that one is sidebar tabs
+ * on `/map` and these are links on `/all-maps`. The row moved into `VisitMapsNavComponent` and is now
+ * rendered on every Maps page, so a tile that loses its gate loses it in more places than before -
+ * which is the reason to assert it rather than read the template and assume.
+ *
+ * Listed by the label the tile renders. When a tile goes to production, take it out of this list; the
+ * check then requires it to be present everywhere instead.
+ */
+export const DEVELOPMENT_ONLY_ALL_MAPS_TILES = ['Code Maroon'];
+
+/**
  * Controls drawn on the map itself that are not ready for production, each with the issue keeping it
  * off and the address that should bring it up (#1541).
  *

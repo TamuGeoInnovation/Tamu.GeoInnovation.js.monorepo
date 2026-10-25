@@ -1,0 +1,75 @@
+@import '../discover-shared';
+
+:host {
+  display: block;
+}
+
+// A grid rather than a wrapping flex row. Wrapping distributed tiles unevenly - at phone widths
+// two of them ended up on their own lines 8px apart, which read as a layout fault - and the count
+// is not fixed: Code Maroon is development-only and tiles get added over time.
+.visit-maps-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6rem, max-content));
+  justify-content: start;
+  align-items: start;
+  gap: 2.5rem;
+}
+
+.visit-maps-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: #500000;
+  width: 6rem;
+
+  &:hover .visit-maps-icon,
+  &:focus .visit-maps-icon {
+    color: #3d0000;
+  }
+}
+
+.visit-maps-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  color: #500000;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// The 150th anniversary wordmark is the university's own artwork, used unaltered. It is square
+// and single-colour in the same maroon the row already uses, so it sits at the same size as the
+// traced glyphs beside it. It does not inherit `currentColor`, so unlike them it does not darken
+// on hover; making it do so would mean editing the artwork.
+.visit-maps-icon--mark img {
+  width: 100%;
+  height: 100%;
+}
+
+.visit-maps-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+  line-height: 1.2;
+}
+
+// Two columns of the shared icon-beside-label rows. The pattern lives in discover-shared so other
+// discover pages can use it; only the column count is decided here. This moved out of All Maps with
+// the row itself (#912) - the header renders the same tiles on every Maps page, so the phone layout
+// has to travel with them rather than belong to one page.
+@media (max-width: 768px) {
+  .visit-maps-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+
+    @include icon-label-rows;
+  }
+}

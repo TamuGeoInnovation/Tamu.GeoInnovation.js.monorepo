@@ -1,0 +1,22 @@
+<!--
+Anything projected here sits ahead of the row rather than inside it. All Maps uses it for the
+featured Main Campus Parking button, which is not a tile.
+-->
+<ng-content></ng-content>
+
+<div class="visit-maps-row">
+  @for (tile of tiles; track tile.route) { @if (!tile.isDev || (isDev | async) === true) {
+  <a class="visit-maps-tile" [routerLink]="tile.route" [attr.aria-label]="tile.ariaLabel || null">
+    <span class="visit-maps-icon" [class.visit-maps-icon--mark]="tile.icon.kind === 'image'">
+      @if (tile.icon.kind === 'path') {
+      <svg [attr.viewBox]="tile.icon.viewBox" fill="currentColor" aria-hidden="true">
+        <path [attr.d]="tile.icon.d" />
+      </svg>
+      } @else {
+      <img [src]="tile.icon.src" alt="" aria-hidden="true" />
+      }
+    </span>
+    <span class="visit-maps-label">{{ tile.label }}</span>
+  </a>
+  } }
+</div>
