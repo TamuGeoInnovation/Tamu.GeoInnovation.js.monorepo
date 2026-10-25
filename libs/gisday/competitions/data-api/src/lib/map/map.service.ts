@@ -67,7 +67,7 @@ export class MapService extends BaseService<CompetitionSubmission> {
       throw new NotFoundException('No active season found.');
     }
 
-    const competitionSeason = await this.compSeasonRepo.findOne({ where: { season: activeSeason } });
+    const competitionSeason = await this.compSeasonRepo.findOne({ where: { season: { guid: activeSeason.guid } } });
 
     if (!competitionSeason) {
       throw new NotFoundException('No competition season found.');

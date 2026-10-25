@@ -194,9 +194,10 @@ export class EventProvider extends BaseProvider<Event> {
     });
 
     if (event) {
+      // By the event's key, not the loaded event, whose null columns typeorm 1 refuses in a where value.
       return this.userRsvpRepo.count({
         where: {
-          event
+          event: { guid: event.guid }
         }
       });
     } else {
