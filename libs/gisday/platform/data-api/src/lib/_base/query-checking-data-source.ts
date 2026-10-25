@@ -30,6 +30,7 @@ export function queryCheckingRepository<T extends ObjectLiteral>(dataSource: Dat
 
   repository.findOne = async (options) => (build(options), null);
   repository.find = async (options) => (build(options), []);
+  repository.count = async (options) => (build(options), 0);
   repository.save = (async (entity) => entity) as Repository<T>['save'];
 
   return repository;
