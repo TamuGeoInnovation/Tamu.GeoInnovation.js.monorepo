@@ -92,7 +92,7 @@ export class DirectoryComponent implements OnInit {
         this.loadingIndicator = false;
         const table = this.table();
         if (table) {
-          table.offset = 0;
+          table.offset.set(0);
         }
       })
     );
