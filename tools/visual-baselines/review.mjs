@@ -7,6 +7,10 @@
  * need not be the same environment - comparing one release across dev and production asks whether
  * two builds of the same commit render the same, which nothing else answers.
  *
+ * For each page that changed beyond rendering noise it also writes a picture of what changed into
+ * `<diffDir>`: the after shot dimmed, with each changed pixel in pink (diff.mjs, #2357), shown as a third
+ * column.
+ *
  * Written next to the images, with relative links, so it opens from disk in a browser with no server
  * and no upload. The question it is for is "does the after look worse", which only a person can
  * answer - the percentages only decide what order to show them in.
@@ -17,6 +21,7 @@ import * as path from 'path';
 import { PNG } from 'pngjs';
 
 import { centralNow } from './central.mjs';
+import { comparePixels } from './diff.mjs';
 import { escape, page } from './page.mjs';
 
 const [beforeRoot, afterRoot, diffRoot, outFile] = process.argv.slice(2);
@@ -61,27 +66,34 @@ function shots(root) {
   return found;
 }
 
-function ratio(aPath, bPath) {
+/**
+ * How much moved between two shots of the same page, and, when it is more than rendering noise, a
+ * picture of where, written to `diffPath` (#2357). Shots of different sizes (a GIS Day page whose
+ * height changed) count as wholly changed and get no picture, since their pixels do not line up.
+ */
+function compareShots(aPath, bPath, diffPath) {
   const a = PNG.sync.read(fs.readFileSync(aPath));
   const b = PNG.sync.read(fs.readFileSync(bPath));
 
   if (a.width !== b.width || a.height !== b.height) {
-    return 1;
+    return { ratio: 1, diff: null, sizeChanged: true };
   }
 
-  let changed = 0;
+  const size = { width: a.width, height: a.height };
+  const { ratio } = comparePixels(a.data, b.data, size);
 
-  for (let i = 0; i < a.data.length; i += 4) {
-    if (
-      Math.abs(a.data[i] - b.data[i]) > 24 ||
-      Math.abs(a.data[i + 1] - b.data[i + 1]) > 24 ||
-      Math.abs(a.data[i + 2] - b.data[i + 2]) > 24
-    ) {
-      changed += 1;
-    }
+  if (ratio <= NOISE) {
+    return { ratio, diff: null };
   }
 
-  return changed / (a.width * a.height);
+  const { picture } = comparePixels(a.data, b.data, { ...size, picture: true });
+  const png = new PNG(size);
+
+  picture.copy(png.data);
+  fs.mkdirSync(path.dirname(diffPath), { recursive: true });
+  fs.writeFileSync(diffPath, PNG.sync.write(png));
+
+  return { ratio, diff: diffPath };
 }
 
 const before = shots(beforeRoot);
@@ -98,14 +110,15 @@ for (const [key, aPath] of before) {
     continue;
   }
 
-  const diffPath = path.join(diffRoot, key);
+  const compared = compareShots(aPath, bPath, path.join(diffRoot, key));
 
   rows.push({
     key,
-    ratio: ratio(aPath, bPath),
+    ratio: compared.ratio,
     before: rel(aPath),
     after: rel(bPath),
-    diff: fs.existsSync(diffPath) ? rel(diffPath) : null
+    diff: compared.diff ? rel(compared.diff) : null,
+    sizeChanged: Boolean(compared.sizeChanged)
   });
 }
 
@@ -128,7 +141,13 @@ const card = (r) => `
     <div class="pair">
       <figure><figcaption>Before &mdash; ${escape(beforeName)}</figcaption><a href="${r.before}" target="_blank"><img loading="lazy" src="${r.before}" alt="before"></a></figure>
       <figure><figcaption>After &mdash; ${escape(afterName)}</figcaption><a href="${r.after}" target="_blank"><img loading="lazy" src="${r.after}" alt="after"></a></figure>
-      ${r.diff ? `<figure class="diffcol"><figcaption>Changed pixels</figcaption><a href="${r.diff}" target="_blank"><img loading="lazy" src="${r.diff}" alt="diff"></a></figure>` : ''}
+      ${
+        r.diff
+          ? `<figure class="diffcol"><figcaption>What changed &mdash; in pink, over the after picture dimmed</figcaption><a href="${r.diff}" target="_blank"><img loading="lazy" src="${r.diff}" alt="changed areas"></a></figure>`
+          : r.sizeChanged
+            ? '<figure class="diffcol"><figcaption>What changed</figcaption><p class="meta">The page is a different size, so its pixels do not line up: compare the two by eye.</p></figure>'
+            : ''
+      }
     </div>
   </section>`;
 
@@ -158,7 +177,7 @@ const html = page({
   meta: `<strong>${changed}</strong> of ${rows.length} pages changed beyond rendering noise (${(NOISE * 100).toFixed(1)}%),
     most changed first. The question is whether the right-hand side looks <em>worse</em>; only a person can answer it.`,
   controls: `<label><input type="checkbox" id="onlyChanged" checked> Only pages that changed</label>
-    <label><input type="checkbox" id="showDiff" checked> Show the changed-pixels column</label>
+    <label><input type="checkbox" id="showDiff" checked> Show what changed</label>
     <span class="meta">Click any image to open it full size.</span>`,
   body: rows.map(card).join('\n'),
   css,
