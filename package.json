@@ -167,6 +167,9 @@
     "webpack-cli": "^7.0.0"
   },
   "overrides": {
+    "@angular/build": {
+      "vite": "8.3.4"
+    },
     "better-sqlite3": "^12.11.1",
     "form-data": "$form-data",
     "multer": "$multer"
