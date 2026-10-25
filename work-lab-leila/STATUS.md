@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **3:14 PM Central, 24 October 2026**. A listener; job: testing.
+Last written **8:45 AM Central, 25 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -32,7 +32,7 @@ Last written **3:14 PM Central, 24 October 2026**. A listener; job: testing.
 
 **Next update by 6:00 AM Central.**
 
-Nothing. Batch 136 is finished; waiting for the next batch (watching `work-lab-leila/TASKS.md`).
+**Batch 137, security: #2319 - override the undici that nx pins, stacked (a branch)**, started 8:45 AM Central, 25 October.
 
 ## Finished
 
