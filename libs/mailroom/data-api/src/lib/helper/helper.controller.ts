@@ -5,7 +5,6 @@ import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
 import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 import { MAIL_CONTENT_FIELDS } from '@tamu-gisc/mailroom/common';
 
-import FormData from 'form-data';
 import got from 'got';
 
 @Controller('mail')
@@ -20,12 +19,13 @@ export class HelperController {
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Res() res
   ) {
+    // The platform's FormData: got 12 and later send no other kind, and set the multipart headers themselves (#1218).
     const form = new FormData();
 
     // Forward only the message content. The addresses are fixed below, and anything else (raw,
     // envelope, headers, ...) is dropped rather than passed to mailroom (#2121).
     MAIL_CONTENT_FIELDS.filter((key) => typeof body[key] === 'string').forEach((key) => {
-      form.append(key, body[key]);
+      form.append(key, body[key] as string);
     });
 
     // Since this module is used either as a standalone microservice or imported into another,
@@ -36,7 +36,8 @@ export class HelperController {
 
     // Repackage files as form data
     files.forEach((file) => {
-      form.append('attachments', file.buffer, file.originalname);
+      // Copied into a plain Uint8Array: a Buffer's memory may be shared, which a Blob does not take.
+      form.append('attachments', new Blob([new Uint8Array(file.buffer)]), file.originalname);
     });
 
     const reject = this.env.value('rejectUnauthorized');
@@ -46,8 +47,7 @@ export class HelperController {
       https: {
         rejectUnauthorized: reject
       },
-      body: form,
-      headers: form.getHeaders()
+      body: form
     });
 
     const parsed = JSON.parse(status.body);
