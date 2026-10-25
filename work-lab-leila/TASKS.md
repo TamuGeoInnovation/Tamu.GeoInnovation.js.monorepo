@@ -229,6 +229,11 @@ where removing unused components and imports stands, and to carry it on. Today's
    (`gisday-bridge-nest` is one); `tsconfig.base.json` paths to folders that do not exist.
 6. Report only: one table per section. Questions for the director (security) for anything the maintainer must decide.
 
+> **Batches 149 and 150, from `work (security)`:** the AggieMap chat is deleting the retired `ues-operations-nest` and `openid-client` 3 (#2380, PR going up).
+> Once it has merged, **`better-sqlite3` and `better-sqlite3-session-store` are unused**: batch 150 removes them as one set, the root dependencies, the
+> `overrides` entry and the `"better-sqlite3": false` `allowScripts` entry, if batch 149 confirms nothing else uses them. If #2380 has not merged when batch 149
+> runs, survey `origin/development` as it is and say so.
+
 ## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
 
 Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting for `main-*.js` to change, which it will not (see the note above batch 140:
