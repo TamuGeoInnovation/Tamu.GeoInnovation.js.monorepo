@@ -39,7 +39,7 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
 
       return this.find({
         where: {
-          season: season
+          season: { guid: season.guid }
         },
         relations: { season: true, logos: true },
         order: {
