@@ -143,7 +143,9 @@ needs an open `dependencies` issue whose body says `Tracks PR #<n>` (CLAUDE.md).
   2026-10-25-127): 669 passed, 13 failed. Every failure was traced; none is the release: the same code against **production's** GIS server passed every test
   that failed on dev (map layers on 20 maps 18 passed + 2 on retry, development-only, viewfinder, searches). Dev's failures are #2209's athletics views; the
   raster basemap test fails everywhere (#2351); known failures to list: #2350.
-- **GIS Day promoted:** both sites on `sha-eab737d` (kubernetes-config PR 77). Signed-in checks (lab batch 141) pass except registration (test admin's
+- **GIS Day promoted:** both sites on `sha-eab737d` (kubernetes-config PR 77). **Then the API was rolled back to `sha-ee1a9e4`** (the maintainer, about 2 PM):
+  every session registration answered 500 under typeorm 1 (lab report 128; fix #2356, lab batch 144). The front end stays at `sha-eab737d`. Until the fixed
+  API is promoted, GIS Day's API lacks today's security fixes, multer's DoS fix (PR 2296) among them. Signed-in checks (lab batch 141) pass except registration (test admin's
   incomplete profile).
 - **AggieMap production is on hold (the maintainer, 25 October):** the development athletics layers differ from production's (#2209), so Release-493's
   production stage stays unapproved until the GIS team makes them match. No `prod-*` tag until then.
