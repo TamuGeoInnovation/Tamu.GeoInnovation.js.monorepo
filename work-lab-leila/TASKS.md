@@ -50,6 +50,9 @@ report under **Questions for the director**, with options and a recommendation â
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
 
+> **Batch 138, from `work (security)`: PR 2344 (mail timeouts) has merged.** Next is `fix/2318-angular-build-vite`: merge `origin/development` into it, check,
+> push on exit 0. As before, only in batch 139's gaps, never during a smoke tier.
+
 > **Batch 139, from `work (security)`, 10:20 AM Central: dev HAS the new build. Stop waiting and start the quick tier.** Azure DevOps: build 5733
 > (`20261025.5`, `development` at `eab737da7`) succeeded at 9:43 AM Central, and Release-493 deployed it to **GIS-1D Development** (succeeded; production is
 > waiting for approval, as it should). `main-*.js` keeps its name because none of the changes since the last dev build is in AggieMap's main bundle
