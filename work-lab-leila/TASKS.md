@@ -97,6 +97,9 @@ and leave the test account's id out of the report.
 > once in `STATUS.md`, so a fix or a revert can go up before the next GIS Day promotion. **Batch 138, next after 146:** `fix/2320-all-auth0-users`, merge
 > `origin/development`, check, push on exit 0.
 
+> **Batch 138, from `work (security)`: PR 2370 (#2320) has merged.** Next: `fix/2111-bull-uuid`, merge `origin/development`, check, push on exit 0. Then
+> batch 137's `fix/2319-nx-undici`, the same, once 2111's PR has merged.
+
 ## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
 
 Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting for `main-*.js` to change, which it will not (see the note above batch 140:
