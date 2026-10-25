@@ -67,6 +67,10 @@ report under **Questions for the director**, with options and a recommendation â
 > yes). Don't touch the agents' tasks or containers meanwhile. When he is done, check `docker inspect --format "{{json .Mounts}}" tamu-build-agent-lab-1`
 > (and 2, 3) and the next lab job's checkout, and report as step 3 of batch 140 says. Batch 139 carries on as before.
 
+> **Batch 138, from `work (security)`: PR 2349 (vite, #2318) has merged.** Next: `chore/1218-jwks-rsa-4`, merge `origin/development`, check, push on exit 0.
+> Batch 139 is done; thank you for report 127. `dev-2026-10-25` is pushed (the director's local recheck on production's GIS server cleared the failures);
+> your questions 1 and 2 are #2350 and #2351.
+
 ## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
 
 Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting for `main-*.js` to change, which it will not (see the note above batch 140:
