@@ -3,10 +3,9 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. Clock times are read from PowerShell, not estimated.
 
-Last written **25 October 2026**. **AggieMap was handed over to `home` at 6:55 PM on 23 October**; the
-AggieMap chat on this machine is a listener. GIS Day and the security chat still direct from here and
-write their own lines in `DIRECTOR.md`. On 25 October the maintainer gave this chat AggieMap work
-directly; it is recorded below so the home director does not ask again.
+Last written **4:45 PM Central, 25 October 2026**. **This machine directs AggieMap again**, taken back at
+4:45 PM: it was handed to `home` on 23 October for the weekend and `home` never picked it up - no AggieMap
+commit since, and work had already flagged it silent on the 23rd. GIS Day and security direct from here too.
 
 ## Running now
 
@@ -195,6 +194,25 @@ name.
 - **`prod-2026-10-20` baselines are complete**: 424 desktop, 424 phone, in `C:/TAMU/visual-baselines`.
 
 ## Told directly
+
+### 25 October, afternoon
+
+- **PR 2376 (#912) merged** as `392be39db`: the Visit Maps row now renders on every Maps page through
+  `MapsPageHeaderComponent`, rebuilt from closed PR 928's design. All six map-type pages verified by reading
+  the live DOM - the same six tiles on a production host, seven with Code Maroon on a development host.
+  **Campus Maps is correctly ungated** (#1490 put the satellite campuses on production); Code Maroon is the
+  only development-only tile, which the maintainer confirmed.
+- **PRs 562, 691 and 928 closed as superseded**, each crediting its author; #2369 and #912 carry what was
+  worth keeping. That clears every dangling pull request.
+- **The maintainer started a dev build from `392be39db`** at about 4:40 PM. Batch 148 clears it: the quick
+  tier, tagging **only** if the failures are exactly #2209's known eight (his decision 1A).
+- **`tamu-js-dev-nm` is repaired.** It was two dependency changes stale and failed any build with
+  `Can't find stylesheet to import: 'glightbox/dist/css/glightbox.min'` plus a misleading `TS2339`. Nothing
+  was running against it - no `aggiemap-dev` container existed - so it was reinstalled from `development`'s
+  lock: 949 packages, `glightbox` and `maplibre-gl` present, and the build that failed on it now completes
+  in 74 s. **It goes stale again every time the lock moves**, which while the security chat's queue is
+  running is most days.
+
 
 ### 25 October, direct to this chat while `home` directs AggieMap
 

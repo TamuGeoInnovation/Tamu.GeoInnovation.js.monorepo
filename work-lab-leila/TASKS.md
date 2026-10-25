@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 148.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 149.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,78 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 148 (aggiemap: the quick tier on today's dev build; 25 October 2026, 4:45 PM Central)
+
+**Director: `work (aggiemap)`.** Questions go under **Questions for the director (aggiemap)**.
+
+The maintainer started a dev build at about 4:40 PM Central from `development` at **`392be39db`**
+(PR 2376, #912: the Visit Maps row on every Maps page). This batch clears that build.
+
+### 1. Wait until dev is actually serving it
+
+**Do not trust a bundle name** - each stage bakes its own analytics id in, so the name differs from
+any local build. This build has a content marker that is exact and visible:
+
+> **`https://aggiemap-dev.tamu.edu/all-maps/parking` renders a `.visit-maps-row` with six
+> `.visit-maps-tile` links.** Before `392be39db` that page has no such row at all.
+
+Check for it; when it is there, dev has this build or newer. If it is not there after a reasonable
+wait, say so in `STATUS.md` and stop - do not run the tier against the old build.
+
+### 2. Run the quick tier
+
+```
+test/smoke/aggiemap/run-local.sh development quick
+```
+
+From a clean worktree at `392be39db`. **Say what it will run** before the first test, as the suite
+prints it.
+
+### 3. The expected result - this is the important part
+
+**The run will not be clean, and that is not a regression.** The baseline is your own batch 52:
+**434 tests, 388 passed, 8 failed, 1 flaky.** The eight are:
+
+| Failure | Why |
+| --- | --- |
+| `map-layers` on cross country, indoor track, outdoor track, soccer, softball, swimming, volleyball (7) | [#2209](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2209) - the republished dev athletics views lost the columns the definitions filter on. With the GIS team; nothing for us to fix |
+| `development-only.spec.ts` > `/events/womens-basketball requests the ones it uses` | the stale `TS/WomensBasketballParking/MapServer` entry #2176 orphaned. Listed on #2209 to fix in whichever PR fixes the maps |
+
+**Anything beyond those eight is new and belongs to today's merges** - say so plainly and name it.
+
+### 4. Two checks that are new today, and must pass
+
+`392be39db` adds `DEVELOPMENT_ONLY_ALL_MAPS_TILES` to `test/smoke/aggiemap/development-only.ts`, run
+as **`/all-maps: the Code Maroon tile is offered`** and **`/all-maps/parking: the Code Maroon tile is
+offered`**. Dev is a development host, so both expect the tile to be **present**. This is the first
+time that check has run anywhere but the author's machine. **If either fails, it is ours, not the
+GIS team's** - report it as a finding rather than folding it into the #2209 count.
+
+### 5. Tag, but only on the exact baseline
+
+The maintainer's decision (1A, 25 October): **tag if and only if the failures are exactly the eight
+above** - same specs, same tests, no additions.
+
+- **List the failures in `STATUS.md` before tagging**, so the comparison is on the record rather than
+  asserted.
+- If they match: `scripts/tag-build.sh dev 392be39db`, then `git push origin <tag>`. The tag means
+  *nothing new broke*, which is the most it can honestly mean while #2209 is open - **say that in the
+  tag message**, naming #2209.
+- If anything else failed, or the eight are not all present: **do not tag.** Report and stop.
+
+### 6. Report
+
+`work-lab-leila/reports/<date>-<n>.md`, and post the result on
+[#912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/912) - per
+environment, what failed and why, not only pass or fail. A manual run opens no health issue; only a
+GitHub workflow run does.
+
+### Don't touch
+
+`fix/912-visit-maps-nav` is merged and its worktree is gone. The security chat's lock-queue branches
+are not yours.
+
 
 **You joined properly** — the folder, the push, and the **What this is** section saying what you can and
 cannot do. That last part is the useful one: it changed what you are being asked to do. You have 64 GB and
