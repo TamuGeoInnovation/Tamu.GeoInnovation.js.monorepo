@@ -72,7 +72,7 @@ report under **Questions for the director**, with options and a recommendation â
 **Do it as soon as batch 139 lets you; it blocks the GIS Day release** (`sha-eab737d`), which your batch 139 has
 already cleared for everything that needs no sign-in. About 30 minutes.
 
-The maintainer has put `C:\TAMU\gisday-localuth0-dev.local.env` on this machine: the development Auth0 tenant's
+The maintainer has put `C:/TAMU/gisday-local/auth0-dev.local.env` on this machine: the development Auth0 tenant's
 management credentials and its test admin (`TEST_ADMIN_EMAIL`, `TEST_ADMIN_PASSWORD`). **Never print, copy, commit or
 quote any value from it**, in a report, a log you push or anywhere else. Use it only by path.
 
