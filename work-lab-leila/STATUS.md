@@ -30,7 +30,7 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Batch 149, security: what is unused now (#2122, #1457, #1899), read only**, started 5:41 PM Central, on `origin/development`. Then batch 150; batch 151 after 8 PM.
+**Batch 150, security: remove what batch 149 found certain**, started 5:48 PM Central. Branch `chore/2122-remove-unused` from `origin/development`; the "before" full check first.
 
 
 > **Fixed by batch 144 (2:03 PM): `fix/gisday-rsvp-null-capacity` at `44a95e63b`.** 1:46 PM Central, for `work (security)` and `work (gisday)`: GIS Day registration is broken in the release at `eab737da7`; production has not got it yet.**
@@ -47,6 +47,7 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## Finished
 
+- **Batch 149, security: what is unused now - read only** (5:41 to 6:15 PM, 25 October): on `origin/development` `c20ec0779` (#2380 not merged). knip 6.42.0: of 32 reported dependencies, **13 certain** (8 unused, 5 redundant), 4 doubtful, the rest used (knip wrong for 7, ues set until #2380); its 785 files and 383 exports are unusable (it flags every app's `main.ts`). 9 libraries no shipping app reaches: 2 unused, 5 only signage's, 2 used after all. Apps: 3 remove candidates (signage, both gisday-competitions), one to ask (ues-operations-angular). #1899: 2 items gone, 2 certain, 2 wait on #1896. Stale: `gisday-bridge-nest` in 3 lists, the `common/nest/guards` path, #1123's two URLs. Report `work-lab-leila/reports/2026-10-25-135.md`.
 - **Batch 148, aggiemap: the quick tier on dev's build of `392be39db` - nothing new broke; not tagged** (4:31 to 5:45 PM, 25 October): dev has served it since 4:53 PM (the Visit Maps row, 7 tiles: six plus the dev-only Code Maroon tile). 122 tests: **119 passed, 1 failed, 2 skipped**. The one failure is the baseline's Women's Basketball development-only check; both new Code Maroon checks pass. Not tagged: the rule is "exactly the eight", and the seven athletics map-layers routes are not in the quick tier's set (question for the director). Posted on #912. Report `work-lab-leila/reports/2026-10-25-134.md`.
 - **Batch 147, gisday: #2205 again - pushed** (3:50 to 4:20 PM, 25 October): **`fix/2205-gisday-delete-sponsor-with-logo` at `f3a8f7eec`** on the fork, ready for its PR. Why intermittent, measured: `development` deletes a logo by matching every column, timestamps included, and only a timestamp on a whole 10 ms survives as a parameter (1/300 s), so 3 of 6 deletes passed (exactly the .xx0 ones), about 1 in 10 by chance. Red then green: four specs read the DELETE typeorm writes (new `recordWrites`). **Found and fixed:** batch 59's file removal would have deleted files other rows share (same-named logos; `images/placeholder.svg`, 930 seeded speakers). Stack, branch API: 9 sponsor deletes 200, rows and file gone; a placeholder speaker deleted, placeholder kept; the whole release check PASS. Bug-fix check exit 0. Report `work-lab-leila/reports/2026-10-25-133.md`.
 - **Batch 146, security: PR 2366 - auth0 7 against the development tenant - every check passes, the same as before; proof after the merge** (2:50 to 3:11 PM, 25 October; equivalent to the note's `e17c982a9` and the merged `68ed3274a`, which differ only in `tools/visual-baselines`): API images built as `publish.yml` does, `origin/development` `c1ad016b1` (auth0 3.7.2) and `d181a4a57` (auth0 7.4.0), on the seed, signed in as the test admin. Both: profile loads (200), edit, save and reload keep the change and the email (PATCH 200, put back), Admin → Users 3 users sorted by name (2 google-oauth2, 1 auth0), class roster export and leaderboard show the test admin by name and email, 0 API errors. Report `work-lab-leila/reports/2026-10-25-132.md`.
@@ -365,4 +366,4 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 148 (139, 141 to 148 reported; 140 needs the maintainer) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 149 (139, 141 to 149 reported; 140 needs the maintainer) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
