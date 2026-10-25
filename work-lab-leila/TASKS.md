@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 149.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 151.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -200,6 +200,34 @@ and leave the test account's id out of the report.
 
 > **Batch 138, from `work (security)`: PR 2375 (`bull`'s `uuid`) has merged.** Last in the queue: batch 137's `fix/2319-nx-undici`, merge `origin/development`,
 > check, push on exit 0. After GIS Day's batches 147 and 145, which come first (the next GIS Day release waits on them).
+
+## Batch 150 (security: #2122, #1899 - remove what batch 149 found certain; a branch; 25 October 2026, 4:36 PM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start after batch 149.** **Expected: 2 hours.** Only what batch 149 lists as **certain**; anything doubtful stays on the list.
+1. Branch `chore/2122-remove-unused` from `origin/development`. Remove, in separate commits so each can be reviewed or reverted alone: the certain unused
+   dependencies (and `@types/bull`, #2311, if certain); the certain unused files and exports; the stale `gisday-bridge-nest` entries in every exclusion list; the
+   `tsconfig.base.json` path to the missing `common/nest/guards`; #1899's AggieMap and shared-library items batch 149 proved dead; #1123's two unused
+   connection URLs. **No app or library removal in this batch** (those are the maintainer's decisions).
+2. Re-lock (`npm install --package-lock-only --ignore-scripts`); the lock diff must show only removals of the named packages' trees.
+3. `scripts/check-in-volume.sh` (full), with a clean `npm ci`. Record `npm ci`'s package count and the full check's time before and after (`docs/build-times.md`
+   rules: the "before" first).
+4. Commit messages say `Part of #2122` (or `#1899`, `#2311`, `#1123`), Co-Authored-By. Push to the fork. No PR. Report each removal with its proof.
+
+## Batch 149 (security: #2122, #1457, #1899 - what is unused, now; read only; 25 October 2026, 4:36 PM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start after the GIS Day and AggieMap batches ahead of it.** **Expected: 90 minutes.** The maintainer asked (25 October)
+where removing unused components and imports stands, and to carry it on. Today's upgrades removed a lot; this finds what is left, on `origin/development`.
+1. **knip** (pinned; the newest release at least 7 days old) across the workspace: unused dependencies, devDependencies, files and exports. **Check each by hand**:
+   on 23 October 16 of knip's 27 "unused" dependencies turned out to be used, by app entry points knip did not follow (#2157). Mark each **certain**, **doubtful**
+   (with what might use it) or **used** (knip was wrong, and why).
+2. **Libraries no deployed project depends on:** `nx graph --file=…` and list each library with no dependant among the apps that ship (#1203's rule: an app can
+   be dead while its library is load-bearing; check per project).
+3. **Apps:** for each of the 14 under `apps/`, whether it ships (Azure `EXCLUDED_PROJECTS` in `azure-pipelines.yml`, and a Dockerfile for `publish.yml`), when it
+   last had a real change, and whether CI builds it. Recommend keep or remove for each, with the evidence; **the decision is the maintainer's.**
+4. **#1899's running list:** for each item, still there, and still dead?
+5. **Stale configuration:** names in `EXCLUDED_PROJECTS` lists (`build.yml`, `lint.yml`, `test.yml`, `azure-pipelines.yml`) of projects that no longer exist
+   (`gisday-bridge-nest` is one); `tsconfig.base.json` paths to folders that do not exist.
+6. Report only: one table per section. Questions for the director (security) for anything the maintainer must decide.
 
 ## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
 
