@@ -120,6 +120,32 @@ same files they read, and need no build, image or deployment. That costs the Ang
 field, for example). **Decided 25 October 2026: keep it a static page for now, and consider promoting it to
 an Angular app in the monorepo when there is time**, if it grows past browsing (starting a capture, say).
 
+## Capturing each release by itself
+
+```bash
+node tools/visual-baselines/poll.mjs --out <baselines> [--dry-run]
+```
+
+On the cluster a CronJob runs this every 15 minutes ([#2355][2355]). It reads the newest `dev-*` and `prod-*`
+tag in its checkout, and if one has no finished set, it captures it, compares it with the previous set of
+the same kind (dev with the last dev, production with the last production) and rebuilds the pages. So a
+release gets its set and its comparison with nobody starting them.
+
+**Tags, not the sites**, decided 25 October 2026: a `dev-*` tag is pushed only after the build passes its
+quick tier, and a `prod-*` tag after the deploy, so only tested builds are photographed, under their own
+names. A site's `main-*.js` can keep its name across builds whose changes are only in lazy chunks.
+
+**When it will not start**, so it never photographs an environment while a smoke run tests it:
+
+| Rule | Why |
+|---|---|
+| Not until 60 minutes after the tag (`--wait-minutes`) | the release tier runs on dev after its tag (step 3b of the release sequence) |
+| Not between 02:30 and 08:30 US Central (`--quiet`) | the nightly smoke run starts at 6:17 AM, and a capture on the cluster takes about 3.5 hours |
+| Not while any set is being captured, by anyone | two captures share the cluster's workers and slow each other until pages time out; a set unfinished and written to in the last 15 minutes is running |
+
+`--dry-run` prints what it would do and why, one line per tag. A set whose capture finished counts as done
+even if some shots failed (its log names them), so one page that keeps failing is not retried forever.
+
 ## Two things that will catch you
 
 **Wait for the right signal.** `probe.ready` means the layers have settled, about six seconds in.
@@ -139,3 +165,4 @@ out. Neither run meant anything and both had to be thrown away.
 [1980]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1980
 [1533]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1533
 [2345]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2345
+[2355]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2355
