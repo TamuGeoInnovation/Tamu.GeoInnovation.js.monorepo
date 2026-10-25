@@ -79,7 +79,7 @@ report under **Questions for the director**, with options and a recommendation â
 
 ## Batch 147 (gisday: #2205 again - bring the sponsor-delete fix onto typeorm 1 and today's development; 25 October 2026, 3:50 PM Central, from `work (gisday)`)
 
-After batch 145 (#2352's guard). About 30 minutes.
+**Do this before batch 145** (changed 4:05 PM): the maintainer will promote one GIS Day API image carrying this fix and PR 2375 together, so production's next API waits on this branch. #2352 (Low) can wait. About 30 minutes.
 
 Your batch 59 branch **`fix/2205-gisday-delete-sponsor-with-logo`** (23 October, on typeorm 0.3) never became a pull request. Since then
 typeorm 1 (#2195) and today's fixes have merged, and the release check on `gisday-nest:sha-e8ba974` still shows the delete failing with
