@@ -74,6 +74,9 @@ report under **Questions for the director**, with options and a recommendation â
 > **Batch 138, from `work (security)`: PR 2354 (jwks-rsa 4) has merged.** Next, **after batch 144** (GIS Day's registration fix comes first):
 > `chore/1218-better-sqlite3-13`, merge `origin/development`, check, push on exit 0.
 
+> **Batch 138, from `work (security)`: PR 2362 (better-sqlite3 13) has merged.** Next: `chore/1218-auth0-7`, merge `origin/development`, check, push on exit 0.
+> After GIS Day's #2352 guard batch if that is waiting; GIS Day's urgent work stays first.
+
 ## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
 
 Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting for `main-*.js` to change, which it will not (see the note above batch 140:
