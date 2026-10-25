@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 139.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 140.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -49,6 +49,37 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 139 (security: the release - test AggieMap and GIS Day at `eab737da7` before production; **first priority**; 25 October 2026, 9:23 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now; pause batch 138** (finish the check it is in, then leave the queue until this is reported).
+**Expected: 2 hours, most of it waiting for the deploy.** The maintainer decided (25 October) to release `development` at **`eab737da7`**
+(PR 2300, angulartics2): two days of security work and 100 commits since `prod-2026-10-22`. He is starting AggieMap's dev build and release
+by hand; GIS Day's images for `eab737da7` (`sha-eab737d`) are being built by the `Quabity Assuance` workflow. Follow
+[`docs/releases/README.md`](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/releases/README.md) "Cutting a release".
+
+**AggieMap**
+1. **Now:** record dev's current `/map` bundle hash (the main `*.js` file named in `https://aggiemap.dev.geoservices.tamu.edu/map`'s HTML, or whichever
+   dev address `test/smoke/aggiemap/environments.json` gives). Then check it every 5 minutes; **dev has the new build when it changes**, and the new bundle
+   contains something only this build has (for example a string from PR 2330's code runner, `lineNumbers`). Stop waiting after 3 hours and report.
+2. From a worktree at `eab737da7`: **`test/smoke/aggiemap/run-local.sh development quick`**. Say what it chose to run before it starts.
+3. **Only if it passes:** `bash scripts/tag-build.sh dev` at `eab737da7` and `git push origin <the dev-* tag>` (this task says so). If it fails, no tag;
+   report each failure and why.
+4. Then **`test/smoke/aggiemap/run-local.sh development release`** on the same build: passed, failed, skipped, duration. These numbers go in the notes.
+5. **The visible changes on dev:** work through the *What to test on dev* rows of every `docs/releases/unreleased/*.md` entry (front matter `testOnDev`)
+   on dev: for each, pass or fail, with a screenshot to `docs/screenshots/<slug>/dev-<date>.png` in the report's branch or the report itself.
+
+**GIS Day** (no dev site; production is the first place an image runs, so the local stack is the test)
+6. When `sha-eab737d` of `gisday-angular` and `gisday-nest` exist (`gh` is not here: `docker pull ghcr.io/tamugeoinnovation/gisday-angular:sha-eab737d`
+   succeeds), run the local stack on `eab737da7` as [`docs/gisday-local.md`](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/gisday-local.md)
+   says, and check the public pages: home, Sessions, Presenters and one presenter, competitions, sponsors; no console errors.
+7. **Signed in** (admin saves, uploads and their limit, registration): `work/tools/gisday-release-check.cjs` needs the development tenant's test admin.
+   If this machine has those settings (never print them), run it and report each line. If it does not, say so; that part goes to the maintainer.
+8. **The schema:** `git diff 36b962a04..eab737da7 -- libs/gisday/platform/data-api/src/lib/entities`. Empty means the API can be promoted without a migration;
+   otherwise list each change ([`docs/gisday-migrations.md`](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/gisday-migrations.md)).
+   `36b962a04` is AggieMap's production commit; if GIS Day's production image is another `sha-`, say the director must check it against that one too.
+
+Report everything above, then resume batch 138.
 
 ## Batch 138 (security: the lock queue's checks, from now on on this machine; standing; 25 October 2026, 9:12 AM Central, from `work (security)`)
 
