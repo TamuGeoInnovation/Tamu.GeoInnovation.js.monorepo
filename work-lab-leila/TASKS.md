@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 141.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 142.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -66,6 +66,45 @@ report under **Questions for the director**, with options and a recommendation â
 > **Batch 140, from `work (security)`: the maintainer is re-registering the three agents himself, at this machine, now** (your report 125, question 1:
 > yes). Don't touch the agents' tasks or containers meanwhile. When he is done, check `docker inspect --format "{{json .Mounts}}" tamu-build-agent-lab-1`
 > (and 2, 3) and the next lab job's checkout, and report as step 3 of batch 140 says. Batch 139 carries on as before.
+
+## Batch 141 (gisday: the signed-in release checks for `eab737da7`, now that this machine has the dev-tenant file; 25 October 2026, 10:40 AM Central, from `work (gisday)`)
+
+**Do it as soon as batch 139 lets you; it blocks the GIS Day release** (`sha-eab737d`), which your batch 139 has
+already cleared for everything that needs no sign-in. About 30 minutes.
+
+The maintainer has put `C:\TAMU\gisday-localuth0-dev.local.env` on this machine: the development Auth0 tenant's
+management credentials and its test admin (`TEST_ADMIN_EMAIL`, `TEST_ADMIN_PASSWORD`). **Never print, copy, commit or
+quote any value from it**, in a report, a log you push or anywhere else. Use it only by path.
+
+### What to do
+
+1. **Does the file work?** Check it has the keys the scripts read (names only: `TEST_ADMIN_EMAIL`, `TEST_ADMIN_PASSWORD`,
+   and the `AUTH0_MANAGEMENT_*` three), without printing values.
+2. **The stack, at `eab737da7`:** `gisday-db` with the repository's seed (`scripts/gisday-local.sh db` and `restore`,
+   then `migrate run` until #2196 lands), Redis, and **the published `ghcr.io/tamugeoinnovation/gisday-nest:sha-eab737d`**
+   as `gisday-api` on the `gisday-local` network, started with `--env-file C:/TAMU/gisday-local/gisday-api.local.env
+   --env-file C:/TAMU/gisday-local/auth0-dev.local.env` and `TYPEORM_PASSWORD` from `local-db.env` (as `scripts/gisday-local.sh
+   api` does, but the image instead of a build). The site: `scripts/gisday-local.sh web --static` from a checkout at
+   `eab737da7` (its local build, which signs in to the dev tenant), on 4201.
+3. **Sign in** as the test admin on `http://localhost:4201` (Login/Signup) and open Admin, then Events. That alone answers
+   whether the file works; say so in `STATUS.md` straight away.
+4. **The checks:** `work/tools/gisday-release-check.cjs` and `gisday-release-check2.cjs` on this branch, with the docker
+   command at the top of each. Copy them into a scratch folder; put a small PNG as `rel/small.png` and a file over 5 MiB
+   as `rel/big.png` beside them. They cover: authenticated admin calls; admin saves of an event, sponsor, speaker and class
+   keeping every field (typeorm 1's first test with everything else since `ee1a9e4`); a 25 KB upload accepted and an
+   oversized one refused 413; Show and Hide on schedule; deleting the test sponsors (**expected to fail with 500 until
+   #2205**, so that one failing is not a release blocker). Registration needs a test admin with a completed profile; say
+   if it is blocked by "Profile Incomplete", as it was on `work`.
+5. **Clean up:** the scripts put each changed field back; remove the `REL CHECK` sponsors by SQL (their `assets` rows
+   first, then `sponsors`), and confirm none is left. Also read `docker logs gisday-api` for any `ERROR` during the run.
+
+### Then
+
+Report with each check's PASS or FAIL line as the scripts print them, the API log's errors (if any), and whether anything
+other than the known #2205 delete failed. Questions go under **Questions for the director (gisday)**. Nothing on GitHub,
+and nothing against production.
+
+---
 
 ## Batch 140 (security: #2343 - re-install this machine's build agents so they mount the git mirror; 25 October 2026, 9:47 AM Central, from `work (security)`)
 
