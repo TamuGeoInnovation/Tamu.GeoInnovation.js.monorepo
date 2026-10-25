@@ -54,6 +54,10 @@ report under **Questions for the director**, with options and a recommendation â
 > build, or between tiers), you may run batch 138's next step, `fix/2277-mail-timeouts` on `origin/development`, as long as it does not slow a smoke run
 > (pause it while a tier runs). Batch 139 stays first.
 
+> **Batch 140, from `work (security)`: the maintainer is re-registering the three agents himself, at this machine, now** (your report 125, question 1:
+> yes). Don't touch the agents' tasks or containers meanwhile. When he is done, check `docker inspect --format "{{json .Mounts}}" tamu-build-agent-lab-1`
+> (and 2, 3) and the next lab job's checkout, and report as step 3 of batch 140 says. Batch 139 carries on as before.
+
 ## Batch 140 (security: #2343 - re-install this machine's build agents so they mount the git mirror; 25 October 2026, 9:47 AM Central, from `work (security)`)
 
 **Director: work, its security chat.** **The maintainer decided (25 October) that you do this.** **Do it in the first gap in batch 139** (for example
