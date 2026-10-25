@@ -84,10 +84,11 @@ export async function fitImage(input: Buffer, options: FitImageOptions): Promise
       ? await image.getBuffer('image/png', { deflateLevel: 9, colorType: isOpaque(image.bitmap.data) ? 2 : 6 })
       : await image.getBuffer('image/jpeg', { quality });
 
-  // Re-encoding a small image can make it larger. Keep the original then, unless it had to change anyway: it was too
-  // large, or it carried metadata that should not be served.
-  if (!tooLarge && !hasMetadata && data.length >= input.length) {
-    return unchanged(input, mime, width, height, 're-encoding would not make it smaller');
+  // Re-encoding an image already within the size can make it larger, or save a few bytes at the cost of another
+  // generation of JPEG loss, which a second run would then repeat. Keep the original unless it saves a tenth, or had to
+  // change anyway: it was too large, or it carried metadata that should not be served.
+  if (!tooLarge && !hasMetadata && data.length > input.length * 0.9) {
+    return unchanged(input, mime, width, height, 're-encoding would save less than a tenth');
   }
 
   return {

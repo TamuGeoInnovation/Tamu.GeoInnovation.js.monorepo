@@ -68,6 +68,16 @@ describe('fitImage', () => {
     expect(await sizeOf(result.buffer)).toEqual({ width: 1260, height: 840 });
   }, SLOW);
 
+  it('changes nothing the second time, so a re-run does not lose JPEG quality again', async () => {
+    const once = await fitImage(await photo(1800, 1800), { shortSide: 840, keepBelowBytes: 0 });
+
+    const twice = await fitImage(once.buffer, { shortSide: 840, keepBelowBytes: 0 });
+
+    expect(once.changed).toBe(true);
+    expect(twice.changed).toBe(false);
+    expect(twice.buffer).toBe(once.buffer);
+  }, SLOW);
+
   it('leaves a small image with no metadata exactly as it was', async () => {
     const input = await photo(200, 200, 'image/png');
 
