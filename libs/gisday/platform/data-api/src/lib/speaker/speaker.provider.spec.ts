@@ -1,10 +1,11 @@
-import { NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, NotFoundException, PayloadTooLargeException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
 import { createJimp } from '@jimp/core';
 import jpeg from '@jimp/js-jpeg';
+import { crc32, deflateSync } from 'zlib';
 
 import { AssetsService } from '../assets/assets.service';
 import { Asset, Event, Organization, Season, Speaker, University } from '../entities/all.entity';
@@ -12,6 +13,29 @@ import { SeasonService } from '../season/season.service';
 import { SpeakerProvider } from './speaker.provider';
 
 const Jimp = createJimp({ formats: [jpeg] });
+
+// A valid PNG whose header declares width x height, with almost no pixel data: what a decompression bomb looks like.
+function declaredPng(width: number, height: number) {
+  const chunk = (type: string, data: Buffer) => {
+    const body = Buffer.concat([Buffer.from(type, 'latin1'), data]);
+    const length = Buffer.alloc(4);
+    const crc = Buffer.alloc(4);
+    length.writeUInt32BE(data.length);
+    crc.writeUInt32BE(crc32(body));
+    return Buffer.concat([length, body, crc]);
+  };
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(width, 0);
+  ihdr.writeUInt32BE(height, 4);
+  ihdr.set([8, 6, 0, 0, 0], 8);
+
+  return Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    chunk('IHDR', ihdr),
+    chunk('IDAT', deflateSync(Buffer.alloc(1024))),
+    chunk('IEND', Buffer.alloc(0))
+  ]);
+}
 
 describe('SpeakerProvider', () => {
   let provider: SpeakerProvider;
@@ -328,6 +352,30 @@ describe('SpeakerProvider', () => {
       expect(stored.size).toBe(stored.buffer.length);
       expect(stored.originalname).toBe('face.jpg');
     }, 30_000);
+
+    it('refuses a small file that declares a huge image, before decoding it, with 413', async () => {
+      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+      // A few KB that would make the decoder allocate 50,000 x 50,000 x 4 bytes: 10 GB.
+      const bomb = declaredPng(50_000, 50_000);
+      expect(bomb.length).toBeLessThan(4096);
+
+      await expect(
+        provider.updateWithInfo('s-1', {}, { originalname: 'bomb.png', mimetype: 'image/png', buffer: bomb, size: bomb.length })
+      ).rejects.toThrow(PayloadTooLargeException);
+      expect(assetService.saveAsset).not.toHaveBeenCalled();
+    });
+
+    it('refuses a file whose header is not an image it can read, with 400', async () => {
+      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+      const notAnImage = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>');
+
+      await expect(
+        provider.updateWithInfo('s-1', {}, { originalname: 'face.svg', mimetype: 'image/svg+xml', buffer: notAnImage, size: notAnImage.length })
+      ).rejects.toThrow(BadRequestException);
+      expect(assetService.saveAsset).not.toHaveBeenCalled();
+    });
 
     it('does not let the caller overwrite the guid', async () => {
       jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
