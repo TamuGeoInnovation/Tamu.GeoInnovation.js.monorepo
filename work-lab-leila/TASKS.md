@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 138.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 139.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -45,6 +45,23 @@ report under **Questions for the director**, with options and a recommendation â
 > **8:05 PM Central, from `work (security)`: PR 2223 (webpack) and PR 2225 (background agent) have merged. Batch 65 (the Nx 24 refresh) can start now.** **Order, replacing this note's earlier one (8:25 PM): 71, then 73, then 72 (rewritten), then 65.** Batch 65's base is now `development` itself (the webpack conversion is in it), so merge `origin/development` into `chore/2168-nx-24`.
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
+
+## Batch 138 (security: the lock queue's checks, from now on on this machine; standing; 25 October 2026, 9:12 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start after batch 137** (or now, in parallel, if 137 is waiting on something). The maintainer needs the work
+computer, so **every full check is yours from now**; the director only opens pull requests. Merged since batch 136: PRs 2324, 2328, 2330, 2332 (chart.js),
+2336 (**the release-age rule is now 7 days**, #2333).
+1. **Dependabot's PR 2322** (`marked` 18.1.1, `webpack` 5.111.1; #2329): on a scratch branch from `origin/development`, merge `pull/2322/head`
+   (`git fetch origin pull/2322/head`) and run `scripts/check-in-volume.sh` (full). Compare the lock key by key against `development`: only those two and
+   their own dependencies. Report the result; **do not push** (it is Dependabot's branch).
+2. **Dependabot's PR 2300** (`angulartics2` 14; #2310): the same. If Dependabot has recreated it by then, use its new head.
+3. **Then `chore/1218-got-16`** (fork, `90fa7f03e`, `development` already merged in): after 2322 merges, merge `origin/development` into it and run the
+   check; push on exit 0. Then the same for each next branch **as the one before merges**: watch `gh`-free with `git fetch origin` every 10 minutes and
+   `git log origin/development`. The order is `got-16`, `fix/2277-mail-timeouts`, `fix/2318-angular-build-vite`, `chore/1218-jwks-rsa-4`,
+   `chore/1218-better-sqlite3-13`, `chore/1218-auth0-7`, `fix/2320-all-auth0-users`, `fix/2111-bull-uuid`, then batch 137's `fix/2319-nx-undici`.
+   Each branch must already contain the previous one; merge `origin/development` in only once the previous branch's PR has merged.
+4. After each, push `work-lab-leila/STATUS.md` with the branch, its new head and the check's exit code, so the director can open its PR. A short
+   report every few branches is enough.
 
 ## Batch 137 (security: #2319 - override the `undici` that `nx` pins, stacked; a branch; 25 October 2026, 8:44 AM Central, from `work (security)`)
 

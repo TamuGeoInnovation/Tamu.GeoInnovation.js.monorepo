@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 7.** Written only by the director, `work (security)` (the security and dependency chat on the work
+> **Next free batch number: 9.** Written only by the director, `work (security)` (the security and dependency chat on the work
 > computer). You write `copilot-home/STATUS.md` and `copilot-home/reports/`, never this file. Do the batches in number order,
 > one at a time.
 
@@ -23,6 +23,26 @@ batches below are fitted to it.
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
 
 ---
+
+## Batch 8 (security: #2335 - what every CI token can reach; read only, a report; 25 October 2026, 9:12 AM Central, from `work (security)`)
+
+**Start after batch 7.** **Expected: 90 minutes.** Read `.github/workflows/*.yml`, `azure-pipelines.yml`, `templates/**`, `tools/build-agent/**` and
+`publish.yml`'s registry steps. For each workflow and job: its `permissions:` (or the default it gets), its triggers (flag `pull_request_target` and
+`workflow_run`), the secrets it reads, and the third-party actions it uses with how each is pinned (tag or commit SHA). For Azure Pipelines: what the
+pipeline's own files say about fork builds and secrets. **Do not** call any admin API, read any secret, or change a setting; what only an admin can
+see, list as a question. Report a table and, for each, the least it needs. Then a branch `ci/2335-least-privilege` with only the safe file changes
+(`permissions: contents: read` defaults, per-job widening, SHA pins with the tag in a comment), `bash scripts/check-in-volume.sh <branch>`, push to
+`fork`. No PR. Never print or write a token.
+
+## Batch 7 (security: #2334 - which behaviour-based malware scanner, if any; read only, a report; 25 October 2026, 9:12 AM Central, from `work (security)`)
+
+**Start now** (after you restart). **Expected: 60 minutes.** Research and compare what scans npm dependencies for malicious behaviour (not only known
+advisories), for a **public** GitHub repository: for example Socket, Aikido, Phylum, and OSV-Scanner with the OpenSSF malicious-packages data. For
+each: cost for a public repository, what it checks (a pull request's lock changes, a daily scan), how it reports (a check, a comment), what it needs
+(a GitHub App and its permissions, a token), how noisy it is by its own docs, and how it would fit `lint.yml` and the daily security scan we already
+run (`tools/security-findings/`). Recommend one or none, with reasons. Report only: no branch, nothing installed.
+
+**Batch 6 is withdrawn** (chart.js 4 has merged, PR 2332). Batches 4 and 5 still stand; do them after 7 and 8.
 
 ## Batch 6 (security: #1218 - a second review of the chart.js 4 branch; read only; 24 October 2026, 6:50 AM Central, from `work (security)`)
 
