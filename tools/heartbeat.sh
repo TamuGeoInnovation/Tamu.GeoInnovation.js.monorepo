@@ -15,6 +15,32 @@ agent=$(sed -n 's/^- \*\*Agent:\*\* *//p' "$name/STATUS.md" 2>/dev/null | head -
 machine=$(sed -n 's/^- \*\*Machine:\*\* *//p' "$name/STATUS.md" 2>/dev/null | head -1 | cut -c1-60)
 printf 'name: %s\nagent: %s\nmachine: %s\nstate: %s\naccepting: %s\nseen_utc: %s\nnext_utc: %s\n' \
   "$name" "${agent:-unknown}" "${machine:-unknown}" "$state" "$accepting" "$now" "$due" | tr -d '\r' > "$name/HEARTBEAT.md"
+# Where to reach this machine (host and LAN addresses, for RDP) goes ONLY to the maintainer's private repository, never to this
+# branch: work-mailbox is public, and CLAUDE.md keeps internal addresses out of it. One file per participant,
+# listeners/<name>.md, beside the repository's own ip-report.md (which its own script writes; this never touches it). It is
+# committed only when the host or addresses change, so the private history is a record of moves, not of every check-in.
+# Skipped quietly where the private repository cannot be reached. PRIVATE_ROSTER overrides it.
+private=${PRIVATE_ROSTER:-git@github.com:danielgoldbergtamu/danielgoldbergtamu-tamu-geography-machine-ip-report.git}
+pdir="${HOME:-/tmp}/.tamu-machine-ip-report"
+if { [ -d "$pdir/.git" ] || git clone -q "$private" "$pdir" 2>/dev/null; } && git -C "$pdir" pull -q --rebase 2>/dev/null; then
+  if command -v ipconfig >/dev/null 2>&1; then
+    ips=$(ipconfig | tr -d '\r' | sed -n 's/.*IPv4[^:]*: *//p' | grep -v '^127\.' | paste -sd ',' -)
+  else
+    ips=$(hostname -I 2>/dev/null | tr ' ' '\n' | grep -E '^[0-9.]+$' | grep -v '^127\.' | paste -sd ',' -)
+  fi
+  host=$(hostname)
+  mkdir -p "$pdir/listeners"
+  line="host=$host | lan=${ips:-unknown}"
+  if ! grep -qF -- "$line" "$pdir/listeners/$name.md" 2>/dev/null; then
+    { printf '# %s\n\nWhere this participant runs, for RDP. Newest first; a line is added only when the host or address changes.\n\n' "$name"
+      printf -- '- %s | %s\n' "$now" "$line"
+      sed -n 's/^- /- /p' "$pdir/listeners/$name.md" 2>/dev/null; } > "$pdir/listeners/$name.md.new"
+    mv "$pdir/listeners/$name.md.new" "$pdir/listeners/$name.md"
+    git -C "$pdir" add "listeners/$name.md" && git -C "$pdir" commit -q -m "$name: $line" 2>/dev/null && git -C "$pdir" push -q 2>/dev/null ||
+      echo "private address report push failed; the public heartbeat goes on" >&2
+  fi
+fi
+
 git add "$name/HEARTBEAT.md"
 git commit -q -m "$name: heartbeat - $state" -- "$name/HEARTBEAT.md" || exit 0
 for i in 1 2 3 4 5; do

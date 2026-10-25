@@ -271,6 +271,10 @@ from](#saying-when-you-will-next-be-heard-from)); a heartbeat that each one sets
 - **The file is one participant's, written only by it**: its name, agent, machine (from its `STATUS.md`), state,
   whether it takes work, when it was seen and when it will next be (UTC; the roster shows Central). Commits are
   `<name>: heartbeat - <state>`, so a director's watcher can skip them.
+- **Where each one runs, for RDP, is private.** `tools/heartbeat.sh` also writes the machine's host name and LAN addresses
+  to `listeners/<name>.md` in the maintainer's **private** repository (the one that already holds his machine IP report),
+  committed only when they change. **Never on this branch**: it is public, and CLAUDE.md keeps internal addresses out of it.
+  A machine that cannot reach the private repository skips that part; its public heartbeat is unchanged.
 - **Anyone runs `tools/roster.sh`** for the table: participant, agent, state, takes work, last seen (Central), and
   health - **up** (inside its own next time), **late** (past it, by how long), **gone** (two hours past), or **never
   checked in**. A director reads it before writing a batch, and gives work only to one that is **up** and takes work.
