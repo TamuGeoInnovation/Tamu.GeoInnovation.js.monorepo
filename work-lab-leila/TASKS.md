@@ -50,6 +50,10 @@ report under **Questions for the director**, with options and a recommendation â
 
 > **9:55 PM Central, from `work (security)`: batches 77 and 79 are withdrawn; skip both.** The director is doing them on its own machine so the lock queue does not wait behind batch 84: Nx 24 re-merged onto `development` after PRs 2191, 2230 and 2235 merged (batch 77), and the typeorm re-lock after Nx 24 merges (batch 79).
 
+> **Note to batches 138 and 139, from `work (security)`: PR 2339 (got 16) has merged.** While batch 139 is only *waiting* (for dev to serve the new
+> build, or between tiers), you may run batch 138's next step, `fix/2277-mail-timeouts` on `origin/development`, as long as it does not slow a smoke run
+> (pause it while a tier runs). Batch 139 stays first.
+
 ## Batch 140 (security: #2343 - re-install this machine's build agents so they mount the git mirror; 25 October 2026, 9:47 AM Central, from `work (security)`)
 
 **Director: work, its security chat.** **The maintainer decided (25 October) that you do this.** **Do it in the first gap in batch 139** (for example
