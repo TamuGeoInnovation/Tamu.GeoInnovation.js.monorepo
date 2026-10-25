@@ -630,6 +630,26 @@ fix to that session. One that needs to change `package.json` or `package-lock.js
 says so first, so two sessions are never editing the lock file at once. Ask the maintainer which
 session it is.
 
+### Visual baselines on the cluster, 25 October
+
+Screenshot sets of every AggieMap map ([`tools/visual-baselines`](../../tools/visual-baselines/README.md)) are now taken on the
+cluster, not on one workstation, and every machine sees them at `https://visual-baselines.geoservices.tamu.edu/`, from
+Texas A&M networks ([#1533](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1533), closed). The cluster side is in the private cluster configuration
+repository, folder `12. Visual Baselines`.
+
+| What | State |
+| --- | --- |
+| Captures start by themselves ([#2355](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2355), [#2364](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2364)) | Done. A CronJob checks the newest `dev-*` and `prod-*` tags every 15 minutes; about an hour after a tag it captures that release and compares it with the previous set of its kind. Not between 2:30 and 8:30 AM Central (the nightly smoke run), one capture at a time. Any comparison missing, or made before its set finished, is made |
+| What changed, as a third column ([#2357](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2357)) | Done: the after shot dimmed, changed pixels in pink |
+| A front end for the sets ([#2345](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2345)) | Done: a home page of sets and comparisons, and a gallery per set |
+| Maps photographed before they finished; a shot depending on the one before it ([#2346](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2346), [#2347](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2347)) | Fixed in [#2384](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2384), open. Proven red then green on production; the lab checks it on a whole set on 25 October at night (its batch 151) |
+| A good capture shown as failed when only the page rebuild after it fails ([#2377](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2377)) | Fixed in the cluster configuration repository's pull request 82, open |
+| The first sets | `dev-2026-10-25` (`eab737da7`): 846 of 846 shots, compared with `dev-2026-10-06-4` (838 pages, 822 changed: three weeks of releases, so a first look rather than a verdict). `prod-2026-10-22` was captured on the evening of 25 October, and compared with `prod-2026-10-20` automatically |
+
+Which comparison answers which question: **dev against the previous dev**, before promoting a build; **production against
+the previous production**, after a release. Dev against production is rarely useful: the same commit differed on 241 of
+848 shots, because the two are built with different settings and use different GIS services.
+
 ### The smoke suite, 13 October
 
 | What | State |
