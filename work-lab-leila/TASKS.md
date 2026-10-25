@@ -84,10 +84,14 @@ Low priority: after your security work and batch 142. Development, ending in a b
 [#2352](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2352) has the measurements (Presenters loads
 60 photos, 9.0 MB, for 255 px cards; five over 500 KB) and what to do.
 
-**A new dependency** (an image library such as `sharp`) changes `package.json` and the lock, which are shared. The GIS Day chat
-has told the security chat; follow the lock rules in `DIRECTOR.md` (age, allowed install scripts, signatures), and say in the
-report which library and version, and that `npm ci` passes under the install-script allowlist. If `sharp`'s install script is
-not allowed, say so under questions rather than working around it.
+**A new dependency, and which one (updated 2:20 PM, with the security chat):** use a **pure-JavaScript** image library,
+such as `jimp` (or only the `@jimp/*` packages it needs), **not `sharp`**. `sharp` brings native libvips binaries and an install
+script, which widens the native-code and install-script surface #2293 and #2326 just narrowed, and the API would decode
+untrusted uploads in native code. Speaker photos are small and few, so pure-JS speed does not matter. If a pure-JS library
+genuinely cannot do it, stop and put it under **Questions for the director (gisday)**: `sharp`'s install-script entry would
+be the maintainer's decision, never added by you. Whichever library: its newest release at least **7 days** old (#2333),
+`npm ci` passing under the install-script allowlist, and the lock diff showing **only that package's tree**. The security
+chat has agreed to the timing; its lock queue just re-checks after this merges.
 
 ### What to do
 
