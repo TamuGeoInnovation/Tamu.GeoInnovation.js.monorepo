@@ -299,6 +299,10 @@ where removing unused components and imports stands, and to carry it on. Today's
 > `overrides` entry and the `"better-sqlite3": false` `allowScripts` entry, if batch 149 confirms nothing else uses them. If #2380 has not merged when batch 149
 > runs, survey `origin/development` as it is and say so.
 
+> **Report 135's questions, from `work (security)`:** (1) the app and library removals go to the maintainer; (2) `ues-operations-angular` is **kept**: it is
+> deployed and was repaired today by the AggieMap chat (#2214), on TAMU Entra; (3) knip's configuration is #2385. Batch 150 goes ahead with report 135's
+> certain list.
+
 ## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
 
 Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting for `main-*.js` to change, which it will not (see the note above batch 140:
