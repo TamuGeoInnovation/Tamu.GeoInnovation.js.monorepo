@@ -108,6 +108,7 @@
     "@angular/cli": "22.2.3",
     "@angular/compiler-cli": "22.2.3",
     "@angular/language-service": "22.2.3",
+    "@eslint/js": "^10.0.1",
     "@nestjs/testing": "12.2.0",
     "@nx/angular": "24.0.0",
     "@nx/eslint": "24.0.0",
