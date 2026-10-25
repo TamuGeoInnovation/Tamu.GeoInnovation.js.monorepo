@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:34 AM Central, 25 October 2026**. A listener; job: testing.
+Last written **10:01 AM Central, 25 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -36,6 +36,7 @@ Last written **9:34 AM Central, 25 October 2026**. A listener; job: testing.
 
 ## Finished
 
+- **Batch 140, security: #2343 - the build agents' re-install - agents online, not re-registered, not on the mirror; needs the maintainer** (9:56 to 10:00 AM, 25 October): `install-agent-task.ps1` stopped each agent, copied the new scripts, then failed `Register-ScheduledTask: Access is denied`. I restarted the existing tasks; all three are Running and Listening since 9:57 on the new scripts, but their containers have no mirror mount, though the script's own create block mounts it when run alone. The maintainer re-registers the tasks; I verify. Report `work-lab-leila/reports/2026-10-25-125.md`.
 - **Batch 137, security: #2319 - override the undici that nx pins - pushed** (8:45 to 8:54 AM, 25 October): `fix/2319-nx-undici` at `4665397bf` on the fork, at the queue's end. `nx: { undici: 7.30.1 }`; one key moves (top-level undici 7.29.0 to 7.30.1; jsdom's 8.12.3 unchanged). npm audit: no undici; everything 2 high (msal, accepted), 4 moderate. nx --version, show projects (110) and build geoservices-angular work. First full check failed on a load timeout in gisday-platform-data-api's 5 MiB upload spec (passes 3/3 alone; uses Node's built-in fetch); second exit 0. Report `work-lab-leila/reports/2026-10-25-124.md`.
 - **Batch 136, security: #2327 - the sidebar "flake" is a Vitest crash at exit - nothing pushed** (3:03 to 3:14 PM, 24 October): the kept log shows all 10 tests passed and the JUnit written, then `Segmentation fault (core dumped)` from the vitest process; no spec or assertion to fix. 0 crashes in 240 runs under load (8 at once on 2 and 4 CPUs); the only segfault in 59 kept check logs (about 1,500 test tasks). No branch: deterministic waits would change nothing. Recommendation: retitle #2327 and capture a core dump next time. Report `work-lab-leila/reports/2026-10-23-123.md`.
 - **Batch 135, security: #1218 - the rest of the lock queue, from better-sqlite3 - all pushed** (2:50 to 3:02 PM, 24 October): better-sqlite3-13 `384554b79` (entry now `false`, batch 134's branch merged; no node-gyp build, loads its prebuilt binary), auth0-7 `09ebbe82c` (the same 54 keys as batch 128), 2320 `5e84375d0`, 2111 `a4d35a011`. No conflicts; every full check exit 0 with npm ci under strict-allow-scripts. Report `work-lab-leila/reports/2026-10-23-122.md`.
@@ -340,4 +341,4 @@ Last written **9:34 AM Central, 25 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 137 (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 137 (140 reported, needs the maintainer) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
