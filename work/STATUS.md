@@ -3,9 +3,9 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. Clock times are read from PowerShell, not estimated.
 
-Last written **4:45 PM Central, 25 October 2026**. **This machine directs AggieMap again**, taken back at
-4:45 PM: it was handed to `home` on 23 October for the weekend and `home` never picked it up - no AggieMap
-commit since, and work had already flagged it silent on the 23rd. GIS Day and security direct from here too.
+Last written **5:25 PM Central, 25 October 2026**. **AggieMap handed back to `home`** at 5:25 PM, as the
+maintainer left the office; this machine held it from 4:45 PM that afternoon because `home` had never picked
+up Friday's handover. GIS Day and security direct from here.
 
 ## Running now
 
@@ -194,6 +194,28 @@ name.
 - **`prod-2026-10-20` baselines are complete**: 424 desktop, 424 phone, in `C:/TAMU/visual-baselines`.
 
 ## Told directly
+
+### 25 October, late afternoon - what `home` is picking up
+
+- **PR 2376 (#912) merged** as `392be39db` and **dev has it**: Release-494's development stage succeeded at
+  4:47 PM Central with build `20261025.25`. **Release-494's production stage is pending the maintainer's
+  approval and has deployed nothing** - production is still Release-490 (`36b962a04`).
+- **Batch 148 is queued for the lab**: the quick tier on that build, tagging only if the failures are
+  exactly #2209's known eight (the maintainer's decision 1A). It now says dev already has the build.
+- **[PR 2383](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2383) (#2380) is open
+  and waiting on him**: deletes the retired UES Operations API, `libs/oidc`, `libs/ues/common/nest` and the
+  dead client half, and `openid-client` with them. Full affected check exit 0 with a clean `npm ci`; the lock
+  loses 38 package entries and gains none. **It closes #1218's `openid-client` 6 by removal.**
+- **`UserService` called `GET {apiUrl}/oidc/userinfo`** on that retired API, which is why nothing live
+  consumed `Roles` or `IUser` and the whole nest library could go. Worth knowing before anyone tries to
+  revive UES auth.
+- **Three dangling pull requests are closed** - 562, 691, 928 - each crediting its author, with #2369 and
+  #912 carrying what was worth keeping. There are none left.
+- **The security chat has been told** what #2380 removes and is taking the orphaned `better-sqlite3` and
+  `better-sqlite3-session-store` in its own batch 150, so neither of us touches the lock twice. Its own lock
+  queue is empty.
+- **`tamu-js-dev-nm` was repaired** (949 packages). It goes stale whenever the lock moves.
+
 
 ### 25 October, afternoon
 

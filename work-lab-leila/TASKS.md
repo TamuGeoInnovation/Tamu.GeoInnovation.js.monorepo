@@ -17,7 +17,16 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 The maintainer started a dev build at about 4:40 PM Central from `development` at **`392be39db`**
 (PR 2376, #912: the Visit Maps row on every Maps page). This batch clears that build.
 
-### 1. Wait until dev is actually serving it
+### 0. Dev already has it - confirmed 5:20 PM Central
+
+**Release-494's `GIS-1D Development` stage succeeded at 21:47 UTC (4:47 PM Central)** with build
+`20261025.25`, whose `sourceVersion` is `392be39db`, read from the Azure release API. So you can go
+straight to section 2; section 1 is the independent confirmation if you want it.
+
+Release-494's `GIS-1P Production` stage is **pending the maintainer's approval** and has deployed
+nothing. Production is still Release-490 (`36b962a04`). Do not touch it.
+
+### 1. Confirming it yourself, if you want to
 
 **Do not trust a bundle name** - each stage bakes its own analytics id in, so the name differs from
 any local build. This build has a content marker that is exact and visible:
