@@ -163,3 +163,8 @@ Merged today: 2322, 2300, 2324, 2328, 2330, 2332, 2336 (7-day rule), 2339 (got 1
 `fast-uri` (fix allowed 26 Oct: queue a lock refresh) ; Low `serialize-javascript` (allowed 29 Oct).
 Next: `fast-uri` on 26 Oct; Monday's Dependabot; Monday's release notes and AggieMap production (#2209; the 4:40 PM dev build `392be39db` is the better
 candidate); the next GIS Day API image (2375 + #2205 + #2352), audit before promotion; lab batches 149 (unused-code survey) and 150 (remove the certain ones).
+
+## "The tables" (the maintainer, 25 October 2026)
+
+When the maintainer asks for **the tables**, show all three, with fresh numbers (`npm audit` on `origin/development`): **vulnerabilities**, **latest**
+(#1218: done, queued, left, held) and **unused components** (#2122, #1457, #1899: apps, dependencies, dead code, stale configuration).
