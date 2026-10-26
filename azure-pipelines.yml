@@ -1,8 +1,8 @@
 variables:
   # ues-operations-angular is built so dev's artifact carries it (#1905); the AggieMap release copies only
-  # dist/apps/aggiemap-angular, so it is not deployed. ues-operations-nest needs configuration kept outside
-  # the repository (src/environments/secrets, oidc-client-config) and cannot build here.
-  EXCLUDED_PROJECTS: 'geoservices-angular,geoservices-nest,gisday-angular,gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-nest,gisday-nest,mailroom-angular,mailroom-helper-nest,mailroom-nest,signage-angular,ues-operations-nest,aggiemap-ngx-core'
+  # dist/apps/aggiemap-angular, so it is not deployed. ues-operations-nest was excluded here for the same
+  # reason until it was deleted with the retired API (#2380).
+  EXCLUDED_PROJECTS: 'geoservices-angular,geoservices-nest,gisday-angular,gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-nest,gisday-nest,mailroom-angular,mailroom-helper-nest,mailroom-nest,signage-angular,aggiemap-ngx-core'
   # true runs the heavy jobs on the lab's agents (pool Linux-Build); false runs them on the hosted pool, as before
   # the lab (#2212). There is no automatic fallback, so if the lab is down, this is the one line to change.
   useLab: true
