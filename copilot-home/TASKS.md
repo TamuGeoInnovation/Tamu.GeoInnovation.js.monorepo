@@ -38,7 +38,7 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
 
-## Batch 25 (gisday: remove the 19 GIS Day files nothing uses, after proving each; a branch; 26 October 2026, 11:20 AM Central, from `work (gisday)`)
+## Batch 25 (gisday: #2427, remove the 19 GIS Day files nothing uses, after proving each; a branch; 26 October 2026, 11:20 AM Central, from `work (gisday)`)
 
 After batch 24. About an hour. **The maintainer decided (26 October): remove them in one pull request, once each is shown unused.**
 Your own batch 19 report (`copilot-home/reports/2026-10-26-19.md`) lists them: `gisday-platform-ngx-core` 15 (the check-in admin
@@ -54,7 +54,7 @@ prints the current list.
 4. Prove nothing broke: `scripts/check-in-volume.sh chore/gisday-remove-unused-files` (the **full** affected check, since this is a
    cleanup, not a bug fix) must exit 0, which includes the `gisday-angular` production build; and build `gisday-angular --configuration
    local` and confirm in a headless browser that the public routes in `test/e2e/gisday/routes.ts` still load (no sign-in needed).
-5. Commit with `Part of #2122` (the director files a GIS Day issue for the pull request); push to the fork.
+5. Commit with `Closes #2427` (part of #2122); push to the fork.
 
 Report: branch and head, the per-file evidence, anything kept and why, the check's exit code and the routes result. Nothing on GitHub.
 
