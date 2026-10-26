@@ -75,7 +75,10 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Log in to the registry
-        run: echo '${{ github.token }}' | docker login ghcr.io -u '${{ github.actor }}' --password-stdin
+        env:
+          REGISTRY_USER: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ github.token }}
+        run: echo "$REGISTRY_TOKEN" | docker login ghcr.io -u "$REGISTRY_USER" --password-stdin
 
       # Each image scanned into its own file, named for the image, so a finding can be traced back
       # to where it lives. Every listed image must exist: `:stable` always does for an app that has
@@ -83,6 +86,10 @@ jobs:
       # the run look clean while checking less than it says.
       - name: Trivy
         id: trivy
+        env:
+          REGISTRY_USER: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ github.token }}
+          IMAGES: ${{ steps.images.outputs.list }}
         run: |
           mkdir -p scan
           args=()
@@ -95,11 +102,11 @@ jobs:
               continue
             fi
             docker run --rm -v "$PWD/scan:/out" \
-              -e TRIVY_USERNAME='${{ github.actor }}' -e TRIVY_PASSWORD='${{ github.token }}' \
+              -e TRIVY_USERNAME="$REGISTRY_USER" -e TRIVY_PASSWORD="$REGISTRY_TOKEN" \
               "aquasec/trivy:${TRIVY_VERSION}" image --scanners vuln --severity CRITICAL,HIGH \
               --format json --output "/out/${name}.json" --quiet "$image"
             args+=("--trivy" "scan/${name}.json=${image}")
-          done <<< '${{ steps.images.outputs.list }}'
+          done <<< "$IMAGES"
           printf '%s\n' "${args[@]}" > trivy-args.txt
           echo "scanned $(( ${#args[@]} / 2 )) image(s)"
           [ -z "${missing:-}" ]

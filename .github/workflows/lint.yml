@@ -52,4 +52,6 @@ jobs:
         run: npm audit signatures
 
       - name: Lint Affected
-        run: npx nx affected:lint --configuration=production --base=${{ inputs.base }} --parallel=2
+        env:
+          BASE: ${{ inputs.base }}
+        run: npx nx affected:lint --configuration=production --base="$BASE" --parallel=2

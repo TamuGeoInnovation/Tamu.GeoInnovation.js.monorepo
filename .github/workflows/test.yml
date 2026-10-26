@@ -49,7 +49,8 @@ jobs:
         env:
           # Absolute, so every project writes into one place regardless of its depth.
           JEST_JUNIT_OUTPUT_DIR: ${{ github.workspace }}/test-results/junit
-        run: npx nx affected:test --configuration=production --exclude=${{ env.EXCLUDED_PROJECTS }} --base=${{ inputs.base }} --parallel=2 --coverage=false
+          BASE: ${{ inputs.base }}
+        run: npx nx affected:test --configuration=production --exclude="$EXCLUDED_PROJECTS" --base="$BASE" --parallel=2 --coverage=false
 
       # Everything below runs even when the tests fail. A failing run is the one whose results are
       # worth reading, and the default `success()` condition would skip exactly those.

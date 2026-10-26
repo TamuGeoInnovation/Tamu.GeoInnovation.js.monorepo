@@ -1,0 +1,30 @@
+name: Actionlint
+
+# Lints the workflows themselves. Its expression check flags a `${{ }}` that puts text an outsider controls
+# (a branch name, a pull request title) straight into a `run:` script, where it executes as shell, and shellcheck
+# runs over every script. Any finding fails the check. See #2388.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/**'
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      # rhysd/actionlint 1.7.12, by digest: a tag can be moved, and this runs on every pull request that touches a workflow.
+      - name: Run actionlint
+        run: |
+          docker run --rm -v "$PWD:/repo" -w /repo \
+            rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 -color

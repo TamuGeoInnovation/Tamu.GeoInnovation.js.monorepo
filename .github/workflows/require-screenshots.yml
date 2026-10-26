@@ -46,6 +46,7 @@ jobs:
           gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename' > changed.txt
           echo "Changed files:"; sed 's/^/  /' changed.txt
 
+          # shellcheck disable=SC2016 # the backticks are inside the JavaScript string, not shell
           node --input-type=module -e '
             import { evaluate } from "./.github/scripts/require-screenshots.mjs";
             import { readFileSync } from "node:fs";
