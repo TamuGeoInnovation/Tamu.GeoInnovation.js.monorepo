@@ -11,7 +11,10 @@ beat=0
 while true; do
   now=$(date +%s)
   if [ $((now - beat)) -ge $((every * 60)) ]; then
-    bash tools/heartbeat.sh "$name" idle $((every + 15)) && beat=$now
+    # Keep whatever state the listener last set: a batch in progress stays "running batch N" (it sets "idle" itself when it
+    # reports). Before 26 October this always said "idle", so a busy machine showed "takes work: yes" (home's batch 3 report).
+    state=$(git show "origin/work-mailbox:$name/HEARTBEAT.md" 2>/dev/null | tr -d '' | sed -n 's/^state: //p')
+    bash tools/heartbeat.sh "$name" "${state:-idle}" $((every + 15)) && beat=$now
     old=$(git rev-parse HEAD)   # our own heartbeat is not news
   fi
   sleep 120

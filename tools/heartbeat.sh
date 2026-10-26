@@ -44,7 +44,10 @@ fi
 git add "$name/HEARTBEAT.md"
 git commit -q -m "$name: heartbeat - $state" -- "$name/HEARTBEAT.md" || exit 0
 for i in 1 2 3 4 5; do
-  git pull -q --rebase origin work-mailbox && git push -q origin HEAD:work-mailbox && exit 0
+  # fetch, then rebase onto the remote branch by name: `git pull --rebase origin work-mailbox` sometimes failed with "Cannot
+  # rebase onto multiple branches" when another push landed at the same moment (home's batch 3 report, 26 October).
+  git fetch -q origin work-mailbox && git rebase -q origin/work-mailbox && git push -q origin HEAD:work-mailbox && exit 0
+  git rebase --abort 2>/dev/null
   sleep $((i * 5))
 done
 echo "heartbeat push failed after 5 tries" >&2; exit 1
