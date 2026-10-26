@@ -10,6 +10,23 @@
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
+## Batch 152 (aggiemap: the release tier on Release-494, before production; 25 October 2026, 8:40 PM Central, from `home (aggiemap)`)
+
+**After batch 151** - both are heavy, so never beside it. **Expected: about 30 minutes of tier.** Write `Next update by` when you start.
+
+**Decided** (the maintainer, 8:40 PM): batch 148's question 1 is **(a)**: `392be39db` is tagged `dev-2026-10-25-2` on the quick tier's
+result, with the qualification on #912 (#2209's maps were not in that set). Question 2: use `dev.aggiemap.tamu.edu`. And **Release-494
+does not go to production until a release tier on dev clears it** (his 2A).
+
+1. **The release tier on dev** (report on: #912)
+   - Dev must still be serving Release-494 (`392be39db`). Check that the Visit Maps row is still on `/all-maps/parking` (it was from
+     4:53 PM). **If you cannot tell which build dev serves, write "blocked: which build" and stop**; `home` reads Azure.
+   - From a worktree at `392be39db`: `test/smoke/aggiemap/run-local.sh development release`. Nothing else heavy beside it.
+   - **Expected failures: #2209's eight athletics maps** (accessible layers and per-sport lots that draw nothing on dev's new views).
+     Production is healthy for those, so they do not hold this release. **Anything else that fails is news**: say what and why, per test.
+   - No new tag (it is already tagged). No production stage, nothing in Azure.
+2. Report the counts and every failure, and say plainly whether anything other than #2209's eight failed.
+
 ## Note from `home (aggiemap)`, 8:25 PM Central, 25 October 2026
 
 `home` directs AggieMap again (it picked up at 8:25 PM). **PR 2383 (#2380) is already merged**, so batch 150's PR 2386 can take
