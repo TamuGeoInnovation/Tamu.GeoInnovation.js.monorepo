@@ -195,6 +195,7 @@
         "libs/common/ngx/ui/notification/**/*",
         "libs/common/ngx/ui/sidebar/**/*",
         "libs/common/node/fs/**/*",
+        "libs/common/node/images/**/*",
         "libs/common/types/**/*",
         "libs/common/utils/collection/**/*",
         "libs/common/utils/database/**/*",

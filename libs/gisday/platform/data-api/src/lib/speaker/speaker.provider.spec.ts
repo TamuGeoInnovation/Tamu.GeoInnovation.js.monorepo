@@ -1,13 +1,19 @@
-import { NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, NotFoundException, PayloadTooLargeException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
+import { createJimp } from '@jimp/core';
+import jpeg from '@jimp/js-jpeg';
+
+import { declaredPng } from '@tamu-gisc/common/node/images';
 
 import { AssetsService } from '../assets/assets.service';
 import { Asset, Event, Organization, Season, Speaker, University } from '../entities/all.entity';
 import { SeasonService } from '../season/season.service';
 import { SpeakerProvider } from './speaker.provider';
+
+const Jimp = createJimp({ formats: [jpeg] });
 
 describe('SpeakerProvider', () => {
   let provider: SpeakerProvider;
@@ -309,6 +315,58 @@ describe('SpeakerProvider', () => {
         { prefix: 's-1-' }
       );
       expect((speakerRepo.save as jest.Mock).mock.calls[0][0].images).toEqual([{ guid: 'i-2' }]);
+    });
+
+    // jimp is pure JavaScript, so a 3000 px photo takes a second or more; 30 s, not 5, under the full check's load.
+    it('stores a large photo at the size the site shows it, not as uploaded (#2352)', async () => {
+      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      jest.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+      const upload = await new Jimp({ width: 3000, height: 3000, color: 0x7f7f7fff }).getBuffer('image/jpeg');
+
+      await provider.updateWithInfo('s-1', {}, { originalname: 'face.jpg', mimetype: 'image/jpeg', buffer: upload, size: upload.length });
+
+      const stored = (assetService.saveAsset as jest.Mock).mock.calls[0][1];
+      const { width, height } = (await Jimp.fromBuffer(stored.buffer)).bitmap;
+      // Twice the 420 px a presenter's own page draws it at, for sharp screens.
+      expect([width, height]).toEqual([840, 840]);
+      expect(stored.size).toBe(stored.buffer.length);
+      expect(stored.originalname).toBe('face.jpg');
+    }, 30_000);
+
+    it('refuses a small file that declares a huge image, before decoding it, with 413', async () => {
+      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+      // A few KB that would make the decoder allocate 50,000 x 50,000 x 4 bytes: 10 GB.
+      const bomb = declaredPng(50_000, 50_000);
+      expect(bomb.length).toBeLessThan(4096);
+
+      await expect(
+        provider.updateWithInfo('s-1', {}, { originalname: 'bomb.png', mimetype: 'image/png', buffer: bomb, size: bomb.length })
+      ).rejects.toThrow(PayloadTooLargeException);
+      expect(assetService.saveAsset).not.toHaveBeenCalled();
+    });
+
+    it('creates no speaker when the new speaker brings a photo that declares a huge image', async () => {
+      const save = jest.fn();
+      jest.spyOn(speakerRepo, 'create').mockReturnValue({ save } as never);
+      const bomb = declaredPng(9000, 9000);
+
+      await expect(
+        provider.insertWithInfo({ firstName: 'A' }, { originalname: 'bomb.png', mimetype: 'image/png', buffer: bomb, size: bomb.length })
+      ).rejects.toThrow(PayloadTooLargeException);
+      expect(save).not.toHaveBeenCalled();
+    });
+
+    it('refuses a file whose header is not an image it can read, with 400', async () => {
+      jest.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
+      jest.spyOn(assetService, 'saveAsset').mockResolvedValue({ guid: 'i-2' } as never);
+      const notAnImage = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>');
+
+      await expect(
+        provider.updateWithInfo('s-1', {}, { originalname: 'face.svg', mimetype: 'image/svg+xml', buffer: notAnImage, size: notAnImage.length })
+      ).rejects.toThrow(BadRequestException);
+      expect(assetService.saveAsset).not.toHaveBeenCalled();
     });
 
     it('does not let the caller overwrite the guid', async () => {
