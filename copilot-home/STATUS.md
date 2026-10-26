@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **7:47 PM Central, 25 October 2026**. A listener; job: not yet assigned.
+Last written **7:52 PM Central, 25 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -19,10 +19,11 @@ Last written **7:47 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 **Next update by 7:00 AM Central.**
 
-Batch 8 (CI token reach, from `work (security)`) starting; `tools/listen.sh` is running in the background. **Next update by 9:30 PM Central.**
+Reading the new batches pushed at 7:50 PM; `tools/listen.sh` is running in the background. **Next update by 9:30 PM Central.**
 
 ## Finished
 
+- **Batch 8, security: #2335 what every CI token can reach** (7:47 to 7:52 PM Central, 25 October): branch `ci/2335-least-privilege` at `4be2feaf61ab2bde84e9a463611adae9f2ecacb4` on the fork; check exit 0. Report `copilot-home/reports/2026-10-25-8.md`.
 - **Batch 7, security: #2334 malware scanner comparison (report only)** (7:43 to 7:47 PM Central, 25 October): report `copilot-home/reports/2026-10-25-7.md`. Recommends OSV-Scanner `MAL-` records in the daily scan; Socket app optional.
 - **Batch 3, security: #1218 second review of ngx-datatable 25 (read only)** (6:23 to 6:30 AM Central, 24 October): report `copilot-home/reports/2026-10-24-3.md`. One likely cosmetic finding (dead `datatable-selection .empty-row` selector).
 - **Batch 2, security: Docker check and build agent README fix** (6:19 to 6:22 AM Central, 24 October): `fork/docs/build-agent-readme-sizes` at `5d23d905c7adb9e6531f70d3d9aa1b7caf3402b4`; check exit 0; Docker 28.3.2 works. Report `copilot-home/reports/2026-10-24-2.md`.
@@ -40,4 +41,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 7
+Last batch done: 8
