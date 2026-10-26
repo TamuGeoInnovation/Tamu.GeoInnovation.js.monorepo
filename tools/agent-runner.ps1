@@ -49,7 +49,7 @@ function Heartbeat([string]$status, [int]$nextMinutes) {
 }
 
 $prompt = "You are the listener '$Name' (see DIRECTOR.md on the work-mailbox branch). In $Repo, fetch origin, check out work-mailbox and pull it. " +
-  "Read DIRECTOR.md and $Name/TASKS.md. Do every batch in $Name/TASKS.md that you have not yet reported, in number order, without asking anyone: " +
+  "Read DIRECTOR.md and $Name/TASKS.md. Do every batch in $Name/TASKS.md that you have not yet reported and that no heading or note marks as withdrawn, in number order, without asking anyone: " +
   "for each, push '${Name}: started' to $Name/STATUS.md, do it, write its report under $Name/reports/, and push '${Name}: batch N done'. " +
   "Respect every rule in DIRECTOR.md and CLAUDE.md (no pull requests, no merges, no force-push, branches only to 'fork', never print a token). " +
   "If something blocks a batch, push a report saying what, and go on to the next. When none is left, end your reply with the line NOTHING LEFT."
