@@ -278,6 +278,11 @@ from](#saying-when-you-will-next-be-heard-from)); a heartbeat that each one sets
 - **Anyone runs `tools/roster.sh`** for the table: participant, agent, state, takes work, last seen (Central), and
   health - **up** (inside its own next time), **late** (past it, by how long), **gone** (two hours past), or **never
   checked in**. A director reads it before writing a batch, and gives work only to one that is **up** and takes work.
+- **A non-Claude listener (Copilot CLI, Codex CLI) is started by `tools/agent-runner.ps1`, not by itself** (the maintainer, 25 October 2026). A chat
+  agent does nothing between messages, and a background watcher cannot wake it: copilot-home sat idle for 37 hours with batches waiting. The runner, started
+  once in its own PowerShell window on the agent's machine, watches `work-mailbox`, starts the agent non-interactively for each new commit to its `TASKS.md`
+  or this file (Copilot with `copilot -p … --allow-all-tools` and the deny list; Codex with `codex exec --full-auto`), re-runs it while batches are left,
+  and checks in for it. Its logs are in `%LOCALAPPDATA%	amu-agent-runner\logs\`. The machine must not sleep while plugged in.
 - **A heartbeat proves only that the session's background task is alive.** On 25 October the lab's ran every 30 minutes for
   three hours while the session sat in a wait that could never end, and read no note in that time. So the roster also shows
   **Last real push** (its `STATUS.md` or a report) and flags *stuck?* when a participant says it is running a batch and has
