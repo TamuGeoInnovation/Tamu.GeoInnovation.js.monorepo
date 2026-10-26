@@ -157,6 +157,12 @@
     "@angular/build": {
       "vite": "8.3.4"
     },
+    "@jimp/plugin-resize": {
+      "zod": "4.6.6"
+    },
+    "@jimp/types": {
+      "zod": "4.6.6"
+    },
     "auth0": {
       "undici-types": "6.29.0"
     },

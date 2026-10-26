@@ -11,7 +11,8 @@
     "23 October 2026: the four image findings under #2117 (brace-expansion twice, http-cache-semantics, undici) were removed with npm itself, which carried them, from the API images' runtime stage (#2172).",
     "24 October 2026: @azure/msal-node 6.0.1 (CVE-2026-109461) accepted as unreachable, with @azure/identity, which npm reports through it (#2288).",
     "25 October 2026: those two entries now point at #2371, which stays open until @azure/identity takes msal-node 7.1.0; #2288, which made the decision, is closed.",
-    "26 October 2026: zod 3.25.76 (GHSA-mrhx-c7xc-m3w5, CVE-2023-54404) accepted as unreachable, with the six @jimp packages npm reports through it; jimp arrived with PR 2382. Remove when jimp takes zod 4.6.6, or replace jimp if it has not by 9 November (#2408)."
+    "26 October 2026: zod 3.25.76 (GHSA-mrhx-c7xc-m3w5, CVE-2023-54404) accepted as unreachable, with the six @jimp packages npm reports through it; jimp arrived with PR 2382. Remove when jimp takes zod 4.6.6, or replace jimp if it has not by 9 November (#2408).",
+    "26 October 2026: the zod and @jimp entries were removed when zod 4.6.6 was forced under jimp with an npm override (#2408), which ends the finding rather than accepting it."
   ],
   "accepted": [
     {
@@ -37,70 +38,6 @@
       "source": "trivy-lang",
       "reason": "The same advisory as npm 1243111, found by Trivy in gisday-nest and mailroom-nest; see that entry",
       "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2371"
-    },
-    {
-      "id": "1243066",
-      "package": "zod",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Unreachable here: the advisory needs an attacker-controlled oversized collection validated by zod. The vulnerable zod 3.25.76 is only jimp's own copy (under @jimp/types and @jimp/plugin-resize; the top-level zod is 4.6.6), and jimp validates only the resize options our own code passes it (a width, a height, a mode), never the uploaded image bytes. No fix: jimp 1.6.1 is the newest and requires zod ^3, and zod 3 has no patched release. Remove when jimp moves to zod 4.6.6 or later; if it has not by 9 November 2026, jimp is replaced",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2408"
-    },
-    {
-      "id": "CVE-2023-54404",
-      "package": "zod",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "The same advisory as npm 1243066, as Trivy names it in gisday-nest; see that entry",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2408"
-    },
-    {
-      "id": "transitive",
-      "package": "@jimp/core",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Reported only because it depends on jimp's zod 3; see the zod entry",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2408"
-    },
-    {
-      "id": "transitive",
-      "package": "@jimp/js-jpeg",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Reported only because it depends on jimp's zod 3; see the zod entry",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2408"
-    },
-    {
-      "id": "transitive",
-      "package": "@jimp/js-png",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Reported only because it depends on jimp's zod 3; see the zod entry",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2408"
-    },
-    {
-      "id": "transitive",
-      "package": "@jimp/plugin-resize",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Reported only because it depends on jimp's zod 3; see the zod entry",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2408"
-    },
-    {
-      "id": "transitive",
-      "package": "@jimp/types",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Reported only because it depends on jimp's zod 3; see the zod entry",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2408"
-    },
-    {
-      "id": "transitive",
-      "package": "@jimp/utils",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Reported only because it depends on jimp's zod 3; see the zod entry",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2408"
     }
   ]
 }
