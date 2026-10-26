@@ -2,6 +2,7 @@ import { DeepPartial } from 'typeorm';
 
 import { CompetitionSubmission, SubmissionLocation, SubmissionMedia } from '../entities/all.entities';
 import { clampAccuracy, SubmissionService } from './submission.service';
+import { AUTOMATIC_REVIEWER } from './automatic-review';
 
 describe('clampAccuracy', () => {
   it('keeps the reported accuracy in metres, to the centimetre (#1784)', () => {
@@ -59,7 +60,8 @@ describe('SubmissionService.createCompetitionSubmission', () => {
     expect(inserted(SubmissionMedia)).toEqual([
       [expect.objectContaining({ fieldName: 'head1', submission: sub }), expect.objectContaining({ fieldName: 'head2', submission: sub })]
     ]);
-    expect(em.save.mock.calls.every(([value]) => value instanceof SubmissionLocation)).toBe(true);
+    expect(em.save.mock.calls.some(([value]) => value instanceof SubmissionLocation)).toBe(true);
+    expect(em.save.mock.calls.some(([value]) => value instanceof CompetitionSubmission)).toBe(false);
   });
 
   it('when the guid is already saved, fails on the duplicate and inserts no photographs', async () => {
@@ -68,5 +70,140 @@ describe('SubmissionService.createCompetitionSubmission', () => {
 
     await expect(service.createCompetitionSubmission(entity, blobs)).rejects.toBe(duplicate);
     expect(inserted(SubmissionMedia)).toEqual([]);
+  });
+
+  /**
+   * #2164: every new submission is reviewed by the app as it is saved.
+   */
+  describe('reviewing it automatically', () => {
+    const form = {
+      model: [
+        {
+          attribute: 'memorial_type',
+          isDiscriminator: true,
+          options: [{ name: 'Tree or bench memorial plaque', value: 'tree_bench_plaque', sameThingMetres: 10, nameAttribute: 'memorial_name' }]
+        },
+        { attribute: 'memorial_name', options: [] }
+      ]
+    };
+    const plaque: DeepPartial<CompetitionSubmission> = {
+      guid: '0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11',
+      userGuid: 'auth0|ann',
+      value: { memorial_type: 'tree_bench_plaque', memorial_name: 'John Smith' } as never,
+      location: { latitude: 30.61316, longitude: -96.34062, accuracy: 6 },
+      season: { guid: 'cs-2026', form } as never
+    };
+
+    const status = () => inserted(CompetitionSubmission)[0]?.validationStatus;
+
+    beforeEach(() => {
+      (em as unknown as { find: jest.Mock }).find = jest.fn(() => Promise.resolve([]));
+    });
+
+    it('marks one that passes every check as verified by the app', async () => {
+      await service.createCompetitionSubmission(plaque, blobs);
+
+      expect(status()).toEqual(expect.objectContaining({ status: 'verified', verifiedBy: AUTOMATIC_REVIEWER }));
+    });
+
+    it('leaves one that fails a check unverified, for a person to look at', async () => {
+      await service.createCompetitionSubmission(plaque, []);
+
+      expect(status()).toEqual(expect.objectContaining({ status: 'unverified', verifiedBy: AUTOMATIC_REVIEWER }));
+    });
+
+    it("compares with the participant's own earlier submissions in the season", async () => {
+      const earlier = Object.assign(new CompetitionSubmission(), {
+        created: new Date(Date.now() - 60 * 60 * 1000),
+        userGuid: 'auth0|ann',
+        value: { memorial_type: 'tree_bench_plaque', memorial_name: 'john smith' },
+        location: { latitude: '30.61318', longitude: '-96.34062', accuracy: '5' },
+        validationStatus: null
+      });
+      (em as unknown as { find: jest.Mock }).find.mockResolvedValue([earlier]);
+
+      await service.createCompetitionSubmission(plaque, blobs);
+
+      expect((em as unknown as { find: jest.Mock }).find).toHaveBeenCalledWith(
+        CompetitionSubmission,
+        expect.objectContaining({ where: { userGuid: 'auth0|ann', season: { guid: 'cs-2026' } } })
+      );
+      expect(status()).toEqual(expect.objectContaining({ status: 'unverified' }));
+    });
+  });
+});
+
+/**
+ * #2164: the admin list says why the app left a submission for a person, and the name typed on it.
+ */
+describe('SubmissionService.getAdminSubmissions', () => {
+  const form = {
+    model: [
+      {
+        attribute: 'memorial_type',
+        isDiscriminator: true,
+        options: [{ name: 'Tree or bench memorial plaque', value: 'tree_bench_plaque', sameThingMetres: 10, nameAttribute: 'memorial_name' }]
+      },
+      { attribute: 'memorial_name', options: [] }
+    ]
+  };
+
+  const row = (guid: string, minutesAgo: number, overrides: Record<string, unknown> = {}) =>
+    Object.assign(new CompetitionSubmission(), {
+      guid,
+      created: new Date(Date.now() - minutesAgo * 60 * 1000),
+      userGuid: 'auth0|ann',
+      value: { memorial_type: 'tree_bench_plaque', memorial_name: 'John Smith' },
+      location: { latitude: '30.61316', longitude: '-96.34062', accuracy: '5' },
+      validationStatus: { status: 'verified', verifiedBy: AUTOMATIC_REVIEWER },
+      blobs: [{ guid: `${guid}-photo`, sha256: 'abc' }],
+      ...overrides
+    });
+
+  let find: jest.Mock;
+  let service: SubmissionService;
+
+  beforeEach(() => {
+    find = jest.fn();
+    service = new SubmissionService(
+      { find } as never,
+      {} as never,
+      {} as never,
+      { findOne: jest.fn(() => Promise.resolve({ guid: 'cs-2026', form })) } as never,
+      { findOne: jest.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never,
+      { getUserMetadata: jest.fn(() => Promise.reject(new Error('offline'))) } as never
+    );
+  });
+
+  it('gives each submission its name, why it needs a look, and whether the app verified it', async () => {
+    // Newest first, as the list is.
+    find.mockResolvedValue([
+      row('again', 10, { validationStatus: { status: 'unverified', verifiedBy: AUTOMATIC_REVIEWER } }),
+      row('first', 60)
+    ]);
+
+    const list = await service.getAdminSubmissions({});
+    const byGuid = Object.fromEntries(list.map((s) => [s.guid, s]));
+
+    expect(byGuid['first']).toEqual(expect.objectContaining({ name: 'John Smith', reviewReasons: [], verifiedAutomatically: true }));
+    expect(byGuid['again']).toEqual(
+      expect.objectContaining({ reviewReasons: ['Already submitted by this participant'], verifiedAutomatically: false })
+    );
+    expect(find).toHaveBeenCalledWith(
+      expect.objectContaining({
+        select: expect.objectContaining({
+          location: expect.objectContaining({ accuracy: true }),
+          validationStatus: expect.objectContaining({ verifiedBy: true })
+        })
+      })
+    );
+  });
+
+  it('gives no reasons for a submission a person has already decided on', async () => {
+    find.mockResolvedValue([row('decided', 5, { blobs: [], validationStatus: { status: 'verified', verifiedBy: 'auth0|reviewer' } })]);
+
+    const [decided] = await service.getAdminSubmissions({});
+
+    expect(decided).toEqual(expect.objectContaining({ reviewReasons: [], verifiedAutomatically: false }));
   });
 });
