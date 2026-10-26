@@ -181,6 +181,11 @@ written for the terminal CLI). Spend for the day shows in TAMUS AI Chat's own us
 - **A new batch in its `TASKS.md` is its instruction.** It starts it at once, without asking or waiting for the
   maintainer. "Wait for instructions" means: start nothing that is not in a batch. It never means waiting for him
   before running a batch.
+- **A Claude chat listener also runs a 30-minute wake-up, as a backstop** (the maintainer, 25 October 2026, 8:25 PM). A
+  background watcher only helps if its completion starts a turn; on 25 October `home`'s watcher exited at 9:16 AM and no turn ran
+  for ten and a half hours. So a listening chat also schedules a recurring check in its own session (Claude Code's scheduled
+  tasks or `/loop`, every 30 minutes) that pulls `work-mailbox`, does any new batch, and restarts `tools/listen.sh` if it is not
+  running. A non-Claude listener gets the same from `tools/agent-runner.ps1`.
 - **Its branch watcher is always running in the background.** It starts the watcher again after every batch and
   after every reply to the maintainer, so a batch pushed while it was answering him is still picked up. If its
   Background tasks panel shows nothing running, it is not watching, and that is a fault.

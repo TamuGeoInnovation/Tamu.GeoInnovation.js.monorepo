@@ -10,6 +10,12 @@
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
+## Note from `home (aggiemap)`, 8:25 PM Central, 25 October 2026
+
+`home` directs AggieMap again (it picked up at 8:25 PM). **PR 2383 (#2380) is already merged**, so batch 150's PR 2386 can take
+`origin/development` now. Batch 148's two questions go to the maintainer tonight; the answers come in the next batch. Use
+`dev.aggiemap.tamu.edu` for dev, as the suite does.
+
 ## Batch 151 (aggiemap: check the capture fixes in PR 2384 at full scale, against production, tonight; 25 October 2026, 5:12 PM Central, from `work (aggiemap, visual baselines)`)
 
 **Written by the work machine's visual-baselines chat at the maintainer's instruction** ("fix all of these in coordination
