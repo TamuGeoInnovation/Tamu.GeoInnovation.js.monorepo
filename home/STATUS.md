@@ -7,7 +7,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
 **Batch 3** (security: #2425, the four API images as `node`, branch `chore/2425-api-images-non-root`), started 11:50 AM Central, Monday 26 October 2026, from `work (security)`.
-Next update by 12:50 PM Central.
+Next update by 1:20 PM Central. Progress (12:15 PM): write paths found, Dockerfiles changed and committed, full check running; image builds and runs next.
 
 ## Finished
 - **Batch 2** (security; report `home/reports/2026-10-26-2.md`): zod override on `chore/override-zod` (`29d2e1bc9`). Check exit 0, 13 image tests pass, resizing byte-identical to development on three photos. Admin-page upload not done (Auth0 sign-in); one question for the director.
