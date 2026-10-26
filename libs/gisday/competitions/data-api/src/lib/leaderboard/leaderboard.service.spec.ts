@@ -138,6 +138,181 @@ describe('LeaderboardService', () => {
     ]);
   });
 
+  /**
+   * #2162: the 2026 Monument Trail Challenge. A thing documented in 2025 scores 1, and plaques, which sit a
+   * few metres apart, are told apart by the name on them.
+   */
+  describe('with the 2026 form', () => {
+    // As the 2026 form schema configures them: plaques within 10 m are the same only when their names
+    // match, and against 2025, which has no names, only within 3 m; monuments within 15 m, as before.
+    const form2026 = {
+      model: [
+        {
+          attribute: 'memorial_type',
+          isDiscriminator: true,
+          options: [
+            { name: 'Monument', value: 'monument', earlier: { values: ['statues_monuments'], metres: 15 } },
+            { name: 'Memorial marker', value: 'memorial_marker' },
+            {
+              name: 'Tree or bench memorial plaque',
+              value: 'tree_bench_plaque',
+              sameThingMetres: 10,
+              nameAttribute: 'memorial_name',
+              earlier: { values: ['tree_bench_plaque'], metres: 3 }
+            }
+          ]
+        },
+        { attribute: 'memorial_name', type: 'text', options: [] }
+      ]
+    };
+    const form2025 = {
+      model: [
+        {
+          attribute: 'art_type',
+          isDiscriminator: true,
+          options: [
+            { name: 'Unknown Art Piece', value: 'unknown' },
+            { name: 'Statue or Monument', value: 'statues_monuments' },
+            { name: 'Tree or Bench Plaque', value: 'tree_bench_plaque' }
+          ]
+        }
+      ]
+    };
+
+    let earlier: Array<unknown>;
+    let findSeasons: jest.Mock;
+
+    const find2026 = (user: string, location: { latitude: number; longitude: number }, kind: string, name?: string) => ({
+      ...submission(user, location),
+      value: { memorial_type: kind, memorial_name: name }
+    });
+    const found2025 = (location: { latitude: number; longitude: number }, kind: string, status?: string) => ({
+      ...submission('class-of-2025', location, undefined, status),
+      value: { art_type: kind }
+    });
+
+    beforeEach(() => {
+      earlier = [];
+      find = jest.fn((options) => Promise.resolve(options.where.season.guid === 'cs-2025' ? earlier : submissions));
+      findCompetitionSeason = jest.fn(() => Promise.resolve({ guid: 'cs-2026', form: form2026, season: { year: 2026 } }));
+      findSeasons = jest.fn(() =>
+        Promise.resolve([
+          { guid: 'cs-2024', form: { model: [] }, season: { year: 2024 } },
+          { guid: 'cs-2025', form: form2025, season: { year: 2025 } },
+          { guid: 'cs-2026', form: form2026, season: { year: 2026 } }
+        ])
+      );
+
+      service = new LeaderboardService(
+        { find } as never,
+        undefined,
+        undefined,
+        { findOne: findCompetitionSeason, find: findSeasons } as never,
+        { findOne: jest.fn(() => Promise.resolve({ guid: 's-2026', active: true, year: 2026 })) } as never,
+        undefined
+      );
+    });
+
+    it('scores 1 for a plaque documented in 2025, found again in 2026', async () => {
+      earlier = [found2025(monument, 'tree_bench_plaque')];
+      submissions = [find2026('ann', north(2), 'tree_bench_plaque', 'John Smith')];
+
+      expect(await scores()).toEqual({ ann: 1 });
+      expect(find).toHaveBeenCalledWith(expect.objectContaining({ where: { season: { guid: 'cs-2025' } } }));
+    });
+
+    it('scores 2 for a plaque 4.5 m from a 2025 plaque, the usual spacing on Military Walk', async () => {
+      earlier = [found2025(monument, 'tree_bench_plaque')];
+      submissions = [find2026('ann', north(4.5), 'tree_bench_plaque', 'John Smith')];
+
+      expect(await scores()).toEqual({ ann: 2 });
+    });
+
+    it('scores 1 for a monument within 15 m of a 2025 statue or monument', async () => {
+      earlier = [found2025(monument, 'statues_monuments')];
+      submissions = [find2026('ann', north(12), 'monument', 'Aggie Bonfire Memorial')];
+
+      expect(await scores()).toEqual({ ann: 1 });
+    });
+
+    it('does not count 2025 art, a 2025 discarded submission, or a 2025 thing of another type', async () => {
+      earlier = [
+        found2025(monument, 'unknown'),
+        found2025(north(30), 'tree_bench_plaque', COMPETITION_VALIDATION_STATUS.discarded),
+        found2025(north(60), 'statues_monuments')
+      ];
+      submissions = [
+        find2026('ann', monument, 'monument', 'A'),
+        find2026('bob', north(30), 'tree_bench_plaque', 'John Smith'),
+        find2026('cat', north(60), 'tree_bench_plaque', 'Jane Doe')
+      ];
+
+      expect(await scores()).toEqual({ ann: 2, bob: 2, cat: 2 });
+    });
+
+    it('counts an unreviewed 2025 submission as well as a verified one', async () => {
+      earlier = [
+        found2025(monument, 'tree_bench_plaque', COMPETITION_VALIDATION_STATUS.unverified),
+        found2025(north(50), 'tree_bench_plaque', COMPETITION_VALIDATION_STATUS.verified)
+      ];
+      submissions = [
+        find2026('ann', monument, 'tree_bench_plaque', 'John Smith'),
+        find2026('bob', north(50), 'tree_bench_plaque', 'Jane Doe')
+      ];
+
+      expect(await scores()).toEqual({ ann: 1, bob: 1 });
+    });
+
+    it('compares with the latest earlier season only, not with every one', async () => {
+      submissions = [find2026('ann', monument, 'monument', 'A')];
+      await scores();
+
+      expect(find).not.toHaveBeenCalledWith(expect.objectContaining({ where: { season: { guid: 'cs-2024' } } }));
+    });
+
+    it('tells two 2026 plaques 4.5 m apart apart by their names', async () => {
+      submissions = [
+        find2026('ann', monument, 'tree_bench_plaque', 'John Smith'),
+        find2026('bob', north(4.5), 'tree_bench_plaque', 'Jane Doe')
+      ];
+
+      expect(await scores()).toEqual({ ann: 2, bob: 2 });
+    });
+
+    it('scores 1 for the same plaque found again in 2026, its name typed differently', async () => {
+      submissions = [
+        find2026('ann', monument, 'tree_bench_plaque', 'In loving memory of John A. Smith'),
+        find2026('bob', north(8), 'tree_bench_plaque', 'john a smith')
+      ];
+
+      expect(await scores()).toEqual({ ann: 2, bob: 1 });
+    });
+
+    it('scores 2 for a plaque with the same name more than 10 m away', async () => {
+      submissions = [
+        find2026('ann', monument, 'tree_bench_plaque', 'John Smith'),
+        find2026('bob', north(12), 'tree_bench_plaque', 'John Smith')
+      ];
+
+      expect(await scores()).toEqual({ ann: 2, bob: 2 });
+    });
+
+    it('compares a 2026 plaque with no name by distance alone', async () => {
+      submissions = [find2026('ann', monument, 'tree_bench_plaque', 'John Smith'), find2026('bob', north(6), 'tree_bench_plaque', '')];
+
+      expect(await scores()).toEqual({ ann: 2, bob: 1 });
+    });
+
+    it('still scores monuments by distance and type alone, whatever name was typed', async () => {
+      submissions = [
+        find2026('ann', monument, 'monument', 'Bonfire Memorial'),
+        find2026('bob', north(10), 'monument', 'Aggie Bonfire Memorial Spirit Ring')
+      ];
+
+      expect(await scores()).toEqual({ ann: 2, bob: 1 });
+    });
+  });
+
   it('scores a season named by its guid the same way as the active one', async () => {
     submissions = [submission('ann', monument), submission('bob', north(5)), submission('bob', north(40))];
 
