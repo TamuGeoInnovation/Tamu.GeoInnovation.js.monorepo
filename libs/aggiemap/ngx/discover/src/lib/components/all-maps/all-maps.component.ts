@@ -80,6 +80,12 @@ export class AllMapsComponent implements OnInit {
    */
   public campusApplications: Array<InternalDiscoverApplication & { url: string }> = [];
 
+  /**
+   * The campuses this environment lists: all of them on development, and on production only those
+   * without `visible: false` (#2437, #2438). The template reads this, not `campusApplications`.
+   */
+  public visibleCampusApplications: Observable<Array<InternalDiscoverApplication & { url: string }>>;
+
   public upcomingApplications: InternalDiscoverApplication[] = [];
   public quickLinks: QuickLinkItem[] = [];
 
@@ -127,9 +133,18 @@ export class AllMapsComponent implements OnInit {
     }));
     // Sourced from the internal list rather than a dedicated service method: unlike kiosk maps,
     // satellite-campus maps are ordinary discover applications and are only excluded from search.
+    //
+    // A campus with `visible: false` is development-only and is listed on development alone (#2437,
+    // #2438). The unfiltered list is used because this page is the campuses' only listing, so the
+    // gate is applied here against `isTesting` rather than by taking the visible-filtered list, which
+    // would hide them on development too.
     this.campusApplications = this.internalApplications
       .filter((app) => app.type === 'satellite-campus')
       .map((app) => ({ ...app, url: `${window.location.origin}${getApplicationRoute(app).join('/')}` }));
+    this.visibleCampusApplications = this.isDev.pipe(
+      map((isDev) => this.campusApplications.filter((app) => isDev || app.visible !== false)),
+      shareReplay(1)
+    );
     this.quickLinks = this.discoveryService.getQuickLinkApplications().map((app) => ({
       label: app.name,
       routerLink: getApplicationRoute(app)

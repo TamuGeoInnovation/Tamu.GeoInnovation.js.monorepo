@@ -93,7 +93,10 @@ export const HoustonSpaceInstituteConfiguration: EventConfiguration = {
   // `longitude`/`latitude` fields. Layer `4` holds exactly that one feature, so the extent centre and
   // the building agree here - unlike Fort Worth Law School, where they do not.
   mapCenter: [-95.100068, 29.556426],
-  zoom: 18,
+  // 17 rather than 18: the building is 244 m across, so at 18 it fills the view and the map opens on
+  // a featureless rectangle. At 17 the whole campus parcel is in frame, with its parking and Cow
+  // Bayou - looked at, not calculated.
+  zoom: 17,
   hideLayerToggle: true,
   sidebarTabs: ['features'],
   buildingPopup: {
@@ -121,6 +124,10 @@ export const HoustonSpaceInstituteTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'satellite-campus',
     mapType: 'satellite-campus',
+    // Development-only to begin with, as the other satellite campuses were until #1490 put them on
+    // production. All Maps lists a campus with `visible: false` on development alone, and the general
+    // map search excludes every satellite campus on both (#1482).
+    visible: false,
     thumbnail: './assets/images/campus/houston-space-institute.jpg'
   }
 };

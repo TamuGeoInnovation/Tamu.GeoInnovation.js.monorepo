@@ -67,6 +67,18 @@ describe('satellite campus thumbnails', () => {
     expect(root.discover?.thumbnail?.startsWith('./assets/')).toBe(true);
   });
 
+  it('lists which campuses are development-only, so one cannot go public unnoticed', () => {
+    // `visible: false` is what keeps a campus off production's All Maps page (#2437, #2438). Removing
+    // it is how a campus the GIS team is still checking reaches the public, and nothing else in the
+    // repository would notice, so the two lists are pinned against each other here.
+    const developmentOnly = campuses
+      .filter(({ root }) => root.discover?.visible === false)
+      .map(({ label }) => label)
+      .sort();
+
+    expect(developmentOnly).toEqual(['Fort Worth Law School', 'Houston Space Institute']);
+  });
+
   it.each(campuses)('$label thumbnail file exists', ({ root }) => {
     const thumbnail = root.discover?.thumbnail ?? '';
     const onDisk = path.join(ASSETS_ROOT, thumbnail.replace(/^\.\//, ''));
