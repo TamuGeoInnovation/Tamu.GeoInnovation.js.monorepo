@@ -165,8 +165,6 @@
         "apps/geoservices-angular/**/*",
         "apps/geoservices-nest/**/*",
         "apps/gisday-angular/**/*",
-        "apps/gisday-competitions-angular/**/*",
-        "apps/gisday-competitions-nest/**/*",
         "apps/gisday-nest/**/*",
         "apps/mailroom-angular/**/*",
         "apps/mailroom-helper-nest/**/*",
@@ -257,8 +255,7 @@
         "libs/ui-kits/ngx/navigation/mobile-tile/**/*",
         "libs/ui-kits/ngx/navigation/triggers/**/*",
         "libs/ui-kits/ngx/search/**/*"
-      ],
-      "exclude": ["apps/gisday-competitions-nest/src/**/*"]
+      ]
     },
     {
       "plugin": "@nx/jest/plugin",

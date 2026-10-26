@@ -8,7 +8,7 @@ on:
         type: string
 
 env:
-  EXCLUDED_PROJECTS: 'gisday-competitions-angular,gisday-competitions-nest'
+  EXCLUDED_PROJECTS: ''
 
 permissions:
   contents: read
