@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 27.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 28.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
