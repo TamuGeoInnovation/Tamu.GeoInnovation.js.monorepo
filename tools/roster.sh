@@ -2,6 +2,8 @@
 # Who is up and able to take work: one row per participant, from each <name>/HEARTBEAT.md on origin/work-mailbox.
 # Usage: tools/roster.sh        (read only; changes nothing)
 # A heartbeat older than its own next_utc is "late"; 2 hours past it, "gone". No file at all is "never checked in".
+# Late or gone says "check it is signed in" first: on 25 October two chats on home went silent because the session's login
+# had expired ("401 OAuth access token has expired"), with their watchers working.
 set -u
 git fetch -q origin work-mailbox
 central() {  # UTC ISO -> "Sun 25 Oct 9:10 AM" in US Central, when PowerShell is there to do it right
@@ -29,7 +31,7 @@ for d in $(git ls-tree -d --name-only origin/work-mailbox); do
   f() { printf '%s\n' "$hb" | sed -n "s/^$1: //p" | head -1; }
   seen=$(f seen_utc); due=$(f next_utc)
   late=$(( now - $(date -u -d "$due" +%s) ))
-  if [ $late -le 0 ]; then health=up; elif [ $late -le 7200 ]; then health="late $((late / 60)) min"; else health=gone; fi
+  if [ $late -le 0 ]; then health=up; elif [ $late -le 7200 ]; then health="late $((late / 60)) min: check it is signed in"; else health="gone: check it is signed in"; fi
   acc=$(f accepting); [ "$health" = up ] || acc=no
   case "$(f state)" in running*) [ -n "$w" ] && [ $(( now - w )) -gt 3600 ] && health="$health, but no work pushed for $(( (now - w) / 60 )) min: stuck?" ;; esac
   printf '| %s | %s | %s | %s | %s | %s | %s | %s |\n' "$d" "$(f agent)" "$(f state)" "$acc" "$(central "$seen")" "$wl" "$health" "$(addr "$d")"
