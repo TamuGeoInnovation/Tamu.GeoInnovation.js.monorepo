@@ -154,6 +154,9 @@
     "webpack-cli": "^7.0.0"
   },
   "overrides": {
+    "@azure/identity": {
+      "@azure/msal-node": "7.1.0"
+    },
     "@angular/build": {
       "vite": "8.3.4"
     },
