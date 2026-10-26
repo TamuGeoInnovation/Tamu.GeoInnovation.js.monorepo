@@ -23,3 +23,6 @@ You are the coordinator for the TAMU GeoInnovation monorepo work. Pull TamuGeoIn
 - **The lock-file queue:** PR 2386 (unused dependencies, security) is next when green; the next GIS Day API image (`sha-` after PRs 2375,
   2381, 2382) waits for the GIS Day lead's release check and the security lead's audit before the maintainer promotes it.
 - **AggieMap production** waits on #2209 (the athletics layers matching between dev and production) and Monday's release notes.
+- **Dated security work:** `fast-uri` 3.1.9 (dev-only advisories) clears the 7-day rule at **6:05 PM Central on 26 October** (published 19 October, 23:05 UTC):
+  queue a lab batch then for a lock refresh within `ajv`'s range. `serialize-javascript` 7.1.3 clears on 29 October, the same way.
+- **Waiting for the maintainer to merge** (all green, none change the lock, any order): PRs 2391, 2392, 2394, 2395, 2396, 2400.
