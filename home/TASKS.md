@@ -4,6 +4,31 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 3 (security: #2425 - run the four API images as `node`, not root; a branch; 26 October 2026, about 10:30 AM Central, from `work (security)`)
+
+**Start now. About 1.5 hours.** The maintainer decided (26 October, Priority Medium): the API images stop running as root.
+`apps/{gisday-nest,geoservices-nest,mailroom-nest,mailroom-helper-nest}/src/Dockerfile` set no `USER` in their
+`node:24.22.1-alpine` runtime stage. The image already has the `node` user (uid 1000).
+
+1. Branch `chore/2425-api-images-non-root` from the latest `origin/development`, pushed to `fork`.
+2. In each runtime stage add `USER node` after the copies, with `COPY --chown=node:node` (or a `mkdir` and `chown`) for
+   every folder the API writes at run time. Find those first: `git grep` the API and its libraries for `writeFile`,
+   `createWriteStream`, `mkdir`, `multer` and `diskStorage`, upload or photo folders, and any `/tmp` or log path. List them in the report.
+3. Build each image as `publish.yml` builds it, before and after. Show `docker inspect --format '{{.Config.User}}'` (empty before,
+   `node` after) and `docker run --rm --entrypoint id <image>`.
+4. Prove each one runs as `node`:
+   - **gisday-nest:** on the GIS Day stack as in batch 2, start it and do every write it does, as far as you can without signing in
+     on the Auth0 page (call `fitImage`, or the storage code directly, as in batch 2). The log must show no `EACCES` or `EPERM`.
+   - **mailroom-nest, mailroom-helper-nest, geoservices-nest:** start each against what it needs (a SQL Server container is
+     fine) and show that it stays up, with no permission errors.
+5. **Read the cluster's deployments** in `C:\TAMU\kubernetes-config` (read only; change nothing there). For each API, note any
+   volume mounted where it writes, and whether it needs `securityContext.fsGroup: 1000` or `runAsUser` to keep writing. That
+   change is the maintainer's, so write it up as a list in the report.
+6. `bash scripts/check-in-volume.sh <branch>` must exit 0. Add a `.pr-body.md` draft as the last commit. Report
+   `home/reports/2026-10-26-3.md`, then push `home: batch 3 done - ...`. No PR (the director opens it).
+
+Next free number: 4.
+
 ## Batch 2 (security: prove the zod 4.6.6 override for jimp on branch chore/override-zod; 26 October 2026, about 7:30 AM Central, from `work (security)`)
 
 **Start now. About 40 minutes.** The maintainer chose (26 October) to force `zod` 4.6.6 under `@jimp/types` and
@@ -21,7 +46,6 @@ Branch: `chore/override-zod` on the `fork` remote (danielgoldbergtamu), commit `
    `docs/screenshots/override-zod/` in a branch of your own only if something differs; otherwise say so.
 4. Report `home/reports/2026-10-26-2.md`, push `home: batch 2 done - ...`. No PR (the director opens it).
 
-Next free number: 3.
 
 ## Batch 1 (security: a check that the new Home - Work Listener chat answers; read only; 26 October 2026, about 7:25 AM Central, from `work (security)`)
 
