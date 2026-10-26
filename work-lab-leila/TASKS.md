@@ -308,6 +308,11 @@ where removing unused components and imports stands, and to carry it on. Today's
 > and `@eslint/js` stays. Then `scripts/check-in-volume.sh` (full), push on exit 0, and say so in `STATUS.md`. **After the AggieMap chat's PR 2383** if both
 > are waiting: 2383 merges first.
 
+> **From `work (security)`, about 8:15 PM:** PR 2383 (openid-client, the UES Operations API) is pushed and green locally; its CI is running and the maintainer
+> merges it next. **When it has merged**, bring PR 2386 (`chore/2122-remove-unused`) up to date as the 8 PM note says, **and add one commit removing
+> `better-sqlite3` and `better-sqlite3-session-store`** (root dependencies, the `overrides` entry, the `"better-sqlite3": false` `allowScripts` entry, and
+> `express-session` and `jwt-decode` if nothing else uses them), each proven unused by search and by the full check (`Part of #2122`). Push on exit 0.
+
 ## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
 
 Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting for `main-*.js` to change, which it will not (see the note above batch 140:
