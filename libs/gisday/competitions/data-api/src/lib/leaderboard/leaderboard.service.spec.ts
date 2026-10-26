@@ -311,6 +311,49 @@ describe('LeaderboardService', () => {
 
       expect(await scores()).toEqual({ ann: 2, bob: 1 });
     });
+
+    // #2424 review: a name of only a plaque's own wording, or in a script the matcher cannot read, is no
+    // name, so the plaque is judged by distance as one with no name is.
+    it('compares a plaque whose name is only wording, or unreadable, by distance alone', async () => {
+      submissions = [
+        find2026('ann', monument, 'tree_bench_plaque', 'John Smith'),
+        find2026('bob', north(4), 'tree_bench_plaque', 'In loving memory'),
+        find2026('cat', north(6), 'tree_bench_plaque', 'Dr.'),
+        find2026('dan', north(8), 'tree_bench_plaque', '王小明')
+      ];
+
+      expect(await scores()).toEqual({ ann: 2, bob: 1, cat: 1, dan: 1 });
+    });
+
+    // #2424 review, decided 26 October: one person retyping a plaque's name does not make it new.
+    it("scores 1 for a participant's own second submission of a plaque nearby, whatever name they type", async () => {
+      submissions = [
+        find2026('ann', monument, 'tree_bench_plaque', 'John Smith'),
+        find2026('ann', north(3), 'tree_bench_plaque', 'Smith'),
+        find2026('ann', north(5), 'tree_bench_plaque', 'J. Smith')
+      ];
+
+      expect(await scores()).toEqual({ ann: 4 });
+    });
+
+    it("scores 1 for a participant's retyped plaque even when their first one only matched someone else's", async () => {
+      submissions = [
+        find2026('ann', monument, 'tree_bench_plaque', 'John Smith'),
+        find2026('bob', north(2), 'tree_bench_plaque', 'John Smith'),
+        find2026('bob', north(3), 'tree_bench_plaque', 'Jonathan Smithers')
+      ];
+
+      expect(await scores()).toEqual({ ann: 2, bob: 2 });
+    });
+
+    it('still scores different people with different names at neighbouring plaques separately', async () => {
+      submissions = [
+        find2026('ann', monument, 'tree_bench_plaque', 'John Smith'),
+        find2026('bob', north(3), 'tree_bench_plaque', 'Jane Doe')
+      ];
+
+      expect(await scores()).toEqual({ ann: 2, bob: 2 });
+    });
   });
 
   it('scores a season named by its guid the same way as the active one', async () => {
