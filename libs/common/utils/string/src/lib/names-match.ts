@@ -1,26 +1,4 @@
 /**
- * Words a plaque or a person typing it adds around a name, which say nothing about whose name it is.
- */
-const NAME_FILLER_WORDS = new Set([
-  'in',
-  'loving',
-  'memory',
-  'of',
-  'the',
-  'and',
-  'to',
-  'dedicated',
-  'honor',
-  'honour',
-  'memorial',
-  'class',
-  'dr',
-  'mr',
-  'mrs',
-  'ms'
-]);
-
-/**
  * A name as words to compare: lower case, without accents, with every run of punctuation and spaces
  * as one space. An empty string for no name.
  */
@@ -34,14 +12,19 @@ export function normalizeName(name: string | null | undefined): string {
 }
 
 /**
- * Whether two typed names are the same name: the same words once case, accents, punctuation and a
- * plaque's own wording ("In loving memory of") are set aside, allowing a small typing mistake in a
- * word but not in its first letter. The shorter name needs at least two words, so a surname alone
- * matches nobody: many plaques share one. False when either is missing.
+ * Whether two typed names are the same name: the same words once case, accents, punctuation and any
+ * `ignoredWords` are set aside (a caller's own wording around a name, such as a plaque's "In loving memory
+ * of"), allowing a small typing mistake in a word but not in its first letter. The shorter name needs at
+ * least two words, so a surname alone matches nobody. False when either has no words left
+ * (`hasNameWords`).
  */
-export function namesMatch(a: string | null | undefined, b: string | null | undefined): boolean {
-  const first = nameWords(a);
-  const second = nameWords(b);
+export function namesMatch(
+  a: string | null | undefined,
+  b: string | null | undefined,
+  ignoredWords: ReadonlySet<string> = new Set()
+): boolean {
+  const first = nameWords(a, ignoredWords);
+  const second = nameWords(b, ignoredWords);
 
   if (first.length === 0 || second.length === 0) {
     return false;
@@ -56,10 +39,19 @@ export function namesMatch(a: string | null | undefined, b: string | null | unde
   return shorter.length >= 2 && shorter.every((word) => longer.some((other) => wordsMatch(word, other)));
 }
 
-function nameWords(name: string | null | undefined): Array<string> {
+/**
+ * Whether a typed name has any words `namesMatch` can compare, once case, accents, punctuation and
+ * `ignoredWords` are set aside. False for nothing, for only ignored words ("In loving memory") and for a
+ * name in a script other than Latin letters and digits, which `namesMatch` cannot compare.
+ */
+export function hasNameWords(name: unknown, ignoredWords: ReadonlySet<string> = new Set()): boolean {
+  return typeof name === 'string' && nameWords(name, ignoredWords).length > 0;
+}
+
+function nameWords(name: string | null | undefined, ignoredWords: ReadonlySet<string>): Array<string> {
   return normalizeName(name)
     .split(' ')
-    .filter((word) => word !== '' && !NAME_FILLER_WORDS.has(word));
+    .filter((word) => word !== '' && !ignoredWords.has(word));
 }
 
 /**

@@ -1,4 +1,13 @@
-import { DataSource, EntityManager, EntityTarget, FindManyOptions, FindOneOptions, ObjectLiteral, QueryRunner, Repository } from 'typeorm';
+import {
+  DataSource,
+  EntityManager,
+  EntityTarget,
+  FindManyOptions,
+  FindOneOptions,
+  ObjectLiteral,
+  QueryRunner,
+  Repository
+} from 'typeorm';
 
 import { GISDAY_ENTITIES } from '../entities/all.entity';
 
@@ -12,8 +21,13 @@ import { GISDAY_ENTITIES } from '../entities/all.entity';
  * entity as a where value (`where: { event: event }`) failed for every event with a `null` column, and every registration
  * answered 500.
  */
-export async function queryCheckingDataSource(): Promise<DataSource> {
-  const dataSource = new DataSource({ type: 'mssql', host: 'localhost', entities: GISDAY_ENTITIES });
+export async function queryCheckingDataSource(extraEntities: Array<EntityTarget<ObjectLiteral>> = []): Promise<DataSource> {
+  // `extraEntities` adds another library's entities that relate to these, such as the competitions' (#2424).
+  const dataSource = new DataSource({
+    type: 'mssql',
+    host: 'localhost',
+    entities: [...GISDAY_ENTITIES, ...extraEntities] as never
+  });
 
   // initialize() would connect. The metadata is all the query builder needs, and building it is what initialize does next.
   await (dataSource as unknown as { buildMetadatas(): Promise<void> }).buildMetadatas();
@@ -24,9 +38,16 @@ export async function queryCheckingDataSource(): Promise<DataSource> {
 /**
  * A repository of `dataSource` whose reads build their SQL and find nothing, and whose saves return what they are given.
  */
-export function queryCheckingRepository<T extends ObjectLiteral>(dataSource: DataSource, entity: EntityTarget<T>): Repository<T> {
+export function queryCheckingRepository<T extends ObjectLiteral>(
+  dataSource: DataSource,
+  entity: EntityTarget<T>
+): Repository<T> {
   const repository = dataSource.getRepository(entity);
-  const build = (options?: FindManyOptions<T> | FindOneOptions<T>) => repository.createQueryBuilder().setFindOptions(options ?? {}).getQuery();
+  const build = (options?: FindManyOptions<T> | FindOneOptions<T>) =>
+    repository
+      .createQueryBuilder()
+      .setFindOptions(options ?? {})
+      .getQuery();
 
   repository.findOne = async (options) => (build(options), null);
   repository.find = async (options) => (build(options), []);
@@ -63,11 +84,15 @@ export function recordWrites(
       startTransaction: async () => ((runner.isTransactionActive = true), undefined),
       commitTransaction: async () => ((runner.isTransactionActive = false), undefined),
       rollbackTransaction: async () => ((runner.isTransactionActive = false), undefined),
-      query: async (sql: string, parameters: Array<unknown> = []) => (statements.push({ sql, parameters }), { raw: [], affected: 0, records: [] })
+      query: async (sql: string, parameters: Array<unknown> = []) => (
+        statements.push({ sql, parameters }),
+        { raw: [], affected: 0, records: [] }
+      )
     } as unknown as QueryRunner & { isTransactionActive: boolean; manager: EntityManager };
 
     runner.manager = dataSource.createEntityManager(runner);
-    runner.manager.find = (async (entity: EntityTarget<ObjectLiteral>) => rows.find(([e]) => e === entity)?.[1] ?? []) as EntityManager['find'];
+    runner.manager.find = (async (entity: EntityTarget<ObjectLiteral>) =>
+      rows.find(([e]) => e === entity)?.[1] ?? []) as EntityManager['find'];
 
     return runner;
   };
