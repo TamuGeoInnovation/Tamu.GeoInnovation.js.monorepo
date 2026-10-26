@@ -11,6 +11,9 @@ The maintainer wants to see you respond before he leaves for the day. Short, rea
 1. Push `home: started batch 1` to `home/STATUS.md`, with `tools/heartbeat.sh home "running batch 1" 30`.
 2. In a worktree at the latest `origin/development`, run the security-findings tests in a `node:24.22.1` container:
    `node --test tools/security-findings/` (the same tests `tools-tests.yml` runs). Record the pass and fail counts.
+   **Correction, 6:58 AM:** that directory form reports 1 failure on Node 24 because it treats the folder as a file. Name the
+   files instead: `node --test tools/security-findings/findings.test.mjs tools/security-findings/install-scripts.test.mjs`
+   (18 pass on `be9581cdc`).
 3. Run `bash tools/roster.sh` on `work-mailbox` and paste its table into the report.
 4. Write `home/reports/2026-10-26-1.md` with the commit of `development` you used, the test counts and the table. Push
    `home: batch 1 done - <counts>`, then `tools/heartbeat.sh home idle 45`.
