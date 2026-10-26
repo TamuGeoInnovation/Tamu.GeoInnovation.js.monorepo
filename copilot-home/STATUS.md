@@ -19,10 +19,11 @@ Last written **8:06 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 **Next update by 7:00 AM Central.**
 
-Batch 10 (security: #2379 upload-limit timeout) started 8:15 PM Central. **Next update by 9:15 PM Central.**
+Batch 11 (security: #2351 raster basemap test) started 8:55 PM Central. **Next update by 9:55 PM Central.**
 
 ## Finished
 
+- **Batch 10, security: #2379 upload-limit timeout** (8:15 to 8:50 PM Central, 25 October): branch `fix/2379-upload-limit-timeout` at `f16d98fed296856fe93d677f6e74dcf12da2a27f` on the fork; check exit 0; 10 runs under load max 134 ms. Report `copilot-home/reports/2026-10-25-10.md`.
 - **Batch 9, security: #2385 knip configuration** (7:50 to 8:05 PM Central, 25 October): branch `chore/2385-knip-config` at `4f5141b9100294d70252ba5ef6ba4b235dbdb505` on the fork; check exit 0; unused files 787 to 40. Report `copilot-home/reports/2026-10-25-9.md`.
 
 - **Batch 8, security: #2335 what every CI token can reach** (7:47 to 7:52 PM Central, 25 October): branch `ci/2335-least-privilege` at `4be2feaf61ab2bde84e9a463611adae9f2ecacb4` on the fork; check exit 0. Report `copilot-home/reports/2026-10-25-8.md`.
@@ -33,7 +34,7 @@ Batch 10 (security: #2379 upload-limit timeout) started 8:15 PM Central. **Next 
 
 ## Queued
 
-Batches 10 to 16.
+Batches 11 to 16.
 
 ## Findings
 
@@ -43,4 +44,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 9
+Last batch done: 10
