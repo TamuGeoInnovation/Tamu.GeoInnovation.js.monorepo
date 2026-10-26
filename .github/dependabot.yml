@@ -66,6 +66,12 @@ updates:
         update-types:
           - minor
           - patch
+    # The Node type definitions stay at the runtime's major, Node 24 (node:24.22.1 everywhere), so code cannot use an API
+    # that does not exist at run time. They move with the Node upgrade itself, as the images' Node major does (#2405).
+    ignore:
+      - dependency-name: '@types/node'
+        update-types:
+          - version-update:semver-major
 
   # The four API images (node:24.22.1 and node:24.22.1-alpine), in one pull request.
   - package-ecosystem: docker
