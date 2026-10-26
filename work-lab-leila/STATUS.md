@@ -30,6 +30,9 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## Running now
 
+**Batch 156, aggiemap: the quick tier on Release-495 (`c525d8d6b`, #2209's athletics fix)**, started 3:46 PM Central. **Next update by 4:30 PM Central.**
+
+
 **One more commit (`fec8a16ab`, Part of #2122):** `better-sqlite3`, `better-sqlite3-session-store`, `express-session` and `jwt-decode` removed, with better-sqlite3's `overrides` entry and its `false` `allowScripts` entry. Search: nothing imports any of them (the only mentions left are an example in `install-scripts.mjs`'s comment and its test data). The lock loses only their trees.
 
 **Full check exit 0:** clean `npm ci`, **1769 packages** (1804 before this, 1836 on `c20ec0779`); lint 102, test and build 99; the smoke tsc; install scripts 10 of 10; 1768 signatures verified.
