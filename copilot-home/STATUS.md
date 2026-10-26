@@ -17,11 +17,11 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Batch 27 (security: #2122 dependencies knip calls unused; read only) started 5:35 PM Central, 26 October.
-
-Next update by 6:30 PM Central.
+Idle: batch 27 reported; nothing left in the queue.
 
 ## Finished
+
+- **Batch 27, security: #2122 the 10 dependencies knip calls unused (read only)** (5:35 to about 6:30 PM Central, 26 October): 3 removable (@angular/language-service, @nx/web, @oxc-project/runtime; full check exit 0 without them), 7 needed (jest-environment-jsdom removal failed 16 test targets). Nothing pushed but this report copilot-home/reports/2026-10-26-27.md.
 
 - **Batch 26, gisday: #2431 Texas A&M site drops three Explore Events links** (12:40 PM to about 1:10 PM Central, 26 October): branch `feat/2431-gisday-tamu-home-links` at `fafc7614c324fedced9835c0ed15ef377668abd7` on the fork; red (1 failed) then green; four screenshots; check exit 0 (only with a lower-memory copy of the script; the stock one was OOM-killed three times). Report `copilot-home/reports/2026-10-26-26.md`.
 - **Batch 25, gisday: remove 19 unused GIS Day files** (12:35 to about 1:25 PM Central, 26 October): branch `chore/gisday-remove-unused-files` at `ff19d196776ec77a9d72d9cd97e75a3d22191f99` on the fork; full check exit 0; public routes 11 passed on the local build. Report `copilot-home/reports/2026-10-26-25.md`.
@@ -60,4 +60,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 26 (batch 6 reported later, out of order; 4 and 5 withdrawn)
+Last batch done: 27 (batch 6 reported later, out of order; 4 and 5 withdrawn)
