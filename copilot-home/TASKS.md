@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 16.** Written only by the director, `work (security)` (the security and dependency chat on the work
+> **Next free batch number: 17.** Written only by the director, `work (security)` (the security and dependency chat on the work
 > computer). You write `copilot-home/STATUS.md` and `copilot-home/reports/`, never this file. Do the batches in number order,
 > one at a time.
 
@@ -30,6 +30,18 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
+
+## Batch 16 (security: #2388 - the two workflow script injections, and actionlint on PRs; a branch; 25 October 2026, about 8:10 PM Central, from `work (security)`)
+
+**Start after batch 15**, and keep going in number order as before. **Expected: 60 minutes.** Your batch 8 report is good: thank you. **Two corrections:**
+its finding 1 is wrong: `.github/dependabot.yml` already has a `github-actions` ecosystem (line 126; you read only the first 30 lines). And the release-age rule
+is **7 days** now, not 14 (#2333). Your branch is PR 2387.
+1. Branch `ci/2388-workflow-injection` from **`fork/ci/2335-least-privilege`** (it builds on your pins).
+2. In `main.yml` and `build.yml`, pass `github.ref_name` and `github.head_ref` (and any other `${{ github.* }}` or `${{ inputs.* }}` used inside a `run:` script)
+   through `env:`, and use `"$VAR"` in the script. Search all 14 workflows for the same pattern.
+3. Add a check, in `tools-tests.yml` or a new small workflow on `pull_request` paths `.github/workflows/**`: `actionlint` from a pinned image (by digest), failing
+   on any finding. It must pass on the branch (red first: run it on `fork/ci/2335-least-privilege` and record its warning).
+4. `bash scripts/check-in-volume.sh ci/2388-workflow-injection`. Commit (`Closes #2388`, Co-Authored-By), push to `fork`. No PR.
 
 ## Batch 15 (security: #2341 - plan the move to PublishPipelineArtifact for release builds; read only; 25 October 2026, 7:47 PM Central, from `work (security)`)
 
