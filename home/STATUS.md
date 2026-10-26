@@ -1,17 +1,14 @@
 # Home machine: status
 
-- **Agent:** Claude Code (AggieMap chat), the only listener on this machine
+- **Agent:** Claude Code (Listener chat), the only listener on this machine
 - **Machine:** home
 
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home (aggiemap)`: a listener, nothing running** (7:45 AM Central, Friday 23 October 2026, as the maintainer leaves for work;
-the work computer directs AggieMap when he gets there). No uncommitted work in its worktrees. The last batch it did was the
-production watch: Release-490 (`36b962a04`) reached production by 7:06 AM Thursday 22 October.
-
-The `home:` commits on 23 October (lab batch 14, codex-home batch 3, work batch 24, #2118) are the GIS Day chat's, which directs
-GIS Day from home.
+**`home`: a listener, nothing running** (6:32 AM Central, Monday 26 October 2026). From now on the listener on `home` is its own chat,
+"js.monorepo - Home - Work Listener", which does nothing but take batches from `home/TASKS.md`, whichever director writes them. The
+AggieMap and GIS Day chats on this machine run no listener and only direct.
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
@@ -28,6 +25,7 @@ GIS Day from home.
   Services' map server fails about half its queries, production included. No code changed. Four questions for the director.
 
 ## Told directly
+- 26 October, 6:32 AM (to the new Listener chat): **this chat is the only listener on `home`**, for task directions from whoever directs. The AggieMap chat's watcher (running since 8:34 PM 25 October) was stopped; that chat no longer listens.
 - 23 October, 11:20 PM (to the GIS Day chat, now home): **home directs GIS Day for the weekend.** Home was not down on 23 October; no chat on it was taking batches (#2250). From now on one listener per machine, and a handover names its running watcher and says Remote Control is on.
 - 23 October, 7:40 AM (to the GIS Day chat): the maintainer is going to work; **home becomes a worker (listener)** and `work` becomes the director when he gets there. Everything is committed; `feat/2057-gisday-local-static` and `fix/1474-gisday-template-a11y` pushed to the fork.
 - 22 October, 6:55 AM (to the GIS Day chat): **the work computer's GIS Day chat directs GIS Day**; this home GIS Day chat stays a listener and acts only on home batches headed "(gisday: ...)". Home's local GIS Day stack (UCGIS on 4201, txgisday.org on 4202) stays running.
