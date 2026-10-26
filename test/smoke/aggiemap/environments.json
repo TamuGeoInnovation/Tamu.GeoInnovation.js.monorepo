@@ -20,7 +20,6 @@
     "allowedServiceFailures": {
       "accessibleUrl": "#1005: the development GIS server does not serve this layer",
       "bikeMapUrl": "#1005: the development GIS server requires a token for this service",
-      "footballGamedayShuttlesUrl": "#1123: unused entry; the development GIS server requires a token",
       "bikeRacksUrl": "#1005: the development GIS server requires a token for TS/BikeMap"
     },
     "allowedSearchSourceFailures": {
@@ -51,8 +50,6 @@
     "developmentSectionsVisible": false,
     "allowedLayerFailures": [],
     "allowedServiceFailures": {
-      "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
-      "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service",
       "womensBasketballParkingUrl": "#2001: the Women's Basketball map's new version is stopped on the production GIS server until Transportation Services publish it; production draws womensBasketballUrl until then"
     },
     "allowedSearchSourceFailures": {
@@ -73,8 +70,6 @@
       "Dining Locations"
     ],
     "allowedServiceFailures": {
-      "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
-      "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service",
       "womensBasketballParkingUrl": "#2001: the Women's Basketball map's new version is stopped on the production GIS server until Transportation Services publish it; production draws womensBasketballUrl until then"
     },
     "allowedSearchSourceFailures": {
@@ -102,8 +97,6 @@
     "developmentSectionsVisible": false,
     "allowedLayerFailures": [],
     "allowedServiceFailures": {
-      "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
-      "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service",
       "womensBasketballParkingUrl": "#2001: the Women's Basketball map's new version is stopped on the production GIS server until Transportation Services publish it; production draws womensBasketballUrl until then"
     },
     "allowedSearchSourceFailures": {
