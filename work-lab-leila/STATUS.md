@@ -30,7 +30,14 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**7:47 PM Central:** read the 8 PM note. PR 2383 is still open, so PR 2386 (`chore/2122-remove-unused`) gets `origin/development` merged in **after 2383 merges**, as the note orders; watching for it. Batch 151 waits for 8 PM and the cluster capture's `completedAt` (not there at 7:46 PM).
+**PR 2386, 8:22 PM Central: `chore/2122-remove-unused` at `fec8a16ab`, pushed.** After PR 2383 merged, `origin/development` `9ea0d7a60` merged in:
+- `build.yml` and `azure-pipelines.yml` conflicted on `EXCLUDED_PROJECTS`: took `development`'s (`ues-operations-nest` gone, with its comment) and removed `gisday-bridge-nest` again;
+- the lock: `development`'s, re-locked from the merged `package.json`: only the branch's 32 keys removed; `@eslint/js` stays.
+
+**One more commit (`fec8a16ab`, Part of #2122):** `better-sqlite3`, `better-sqlite3-session-store`, `express-session` and `jwt-decode` removed, with better-sqlite3's `overrides` entry and its `false` `allowScripts` entry. Search: nothing imports any of them (the only mentions left are an example in `install-scripts.mjs`'s comment and its test data). The lock loses only their trees.
+
+**Full check exit 0:** clean `npm ci`, **1769 packages** (1804 before this, 1836 on `c20ec0779`); lint 102, test and build 99; the smoke tsc; install scripts 10 of 10; 1768 signatures verified.
+
 
 
 > **Fixed by batch 144 (2:03 PM): `fix/gisday-rsvp-null-capacity` at `44a95e63b`.** 1:46 PM Central, for `work (security)` and `work (gisday)`: GIS Day registration is broken in the release at `eab737da7`; production has not got it yet.**
