@@ -41,6 +41,9 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          BASE: ${{ inputs.base }}
         run: |
           set -euo pipefail
 
@@ -52,7 +55,7 @@ jobs:
           #
           # Build every app that has a Dockerfile, derived rather than listed, so adding one is
           # all it takes for a new app to be built and published.
-          if [ "${{ github.ref_name }}" = "development" ] || [ "${{ github.ref_name }}" = "master" ]; then
+          if [ "$REF_NAME" = "development" ] || [ "$REF_NAME" = "master" ]; then
             PUBLISHABLE=$(find apps -name Dockerfile -not -path "*/node_modules/*" | cut -d/ -f2 | sort -u | paste -sd, -)
 
             if [ -z "$PUBLISHABLE" ]; then
@@ -64,7 +67,7 @@ jobs:
             npx nx run-many --target=build --projects="$PUBLISHABLE" --configuration=production --parallel=2
           else
             echo "Validation build: affected projects only."
-            npx nx affected:build --configuration=production --exclude=${{ env.EXCLUDED_PROJECTS }} --base=${{ inputs.base }} --parallel=2
+            npx nx affected:build --configuration=production --exclude="$EXCLUDED_PROJECTS" --base="$BASE" --parallel=2
           fi
 
       - name: Verify the artifact has something to publish

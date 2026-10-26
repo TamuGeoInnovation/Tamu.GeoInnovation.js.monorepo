@@ -83,8 +83,10 @@ jobs:
         # An API's build writes its own package.json (generatePackageJson), so it gets the root files beside it as
         # root-package.json and root-package-lock.json: its image installs the root lock's versions, then prunes to its own
         # package.json (#2117). An app without its own package.json (the front ends) gets the root files as before.
+        env:
+          IMAGE: ${{ matrix.image }}
         run: |
-          app=apps/${{ matrix.image }}
+          app="apps/$IMAGE"
           if [ -f "$app/package.json" ]; then
             cp package.json "$app/root-package.json"
             cp package-lock.json "$app/root-package-lock.json"
@@ -125,18 +127,23 @@ jobs:
       # Pinned, and the same version `security-scan.yml` uses: a gate whose scanner changes under
       # you reports different things on different days for the same image.
       - name: Scan it
+        env:
+          IMAGE: ${{ matrix.image }}
+          SHA: ${{ github.sha }}
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:/out" \
             aquasec/trivy:0.76.1 image --scanners vuln --severity CRITICAL,HIGH \
             --format json --output /out/gate.json --quiet \
-            "localhost/scan/${{ matrix.image }}:${{ github.sha }}"
+            "localhost/scan/${IMAGE}:${SHA}"
 
       - name: Block a critical that is not accepted
+        env:
+          IMAGE: ${{ matrix.image }}
         run: |
           node .security-gate/tools/security-findings/check.mjs \
             --accepted .security-gate/.github/security/accepted-advisories.json \
             --only-critical \
-            --trivy "gate.json=${{ matrix.image }}"
+            --trivy "gate.json=${IMAGE}"
 
       # Unchanged, and now reached only by an image that passed the gate. Its layers are already
       # built and cached by the step above, so this publishes rather than rebuilding.

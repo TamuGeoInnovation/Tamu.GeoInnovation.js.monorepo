@@ -52,8 +52,10 @@ jobs:
 
       - id: pick
         shell: bash
+        env:
+          ENVIRONMENT: ${{ github.event.inputs.environment || 'both' }}
         run: |
-          case "${{ github.event.inputs.environment || 'both' }}" in
+          case "$ENVIRONMENT" in
             production)  selected='["production"]' ;;
             development) selected='["development"]' ;;
             *)           selected='["production","development"]' ;;
