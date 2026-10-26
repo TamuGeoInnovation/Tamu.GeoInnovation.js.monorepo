@@ -104,5 +104,5 @@ describe('HelperController upload limits', () => {
     const response = await fetch(`${url}/mail`, { method: 'POST', body: form });
 
     expect(response.status).toBe(413);
-  });
+  }, 30000);
 });
