@@ -12,5 +12,4 @@ export * from './definitions';
 export * from './notification-events';
 export * from './polygons';
 
-export const apiUrl = `https://ues.geoservices.tamu.edu/api/operations`;
 
