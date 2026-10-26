@@ -30,15 +30,9 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**PR 2386, 8:22 PM Central: `chore/2122-remove-unused` at `fec8a16ab`, pushed.** After PR 2383 merged, `origin/development` `9ea0d7a60` merged in:
-- `build.yml` and `azure-pipelines.yml` conflicted on `EXCLUDED_PROJECTS`: took `development`'s (`ues-operations-nest` gone, with its comment) and removed `gisday-bridge-nest` again;
-- the lock: `development`'s, re-locked from the merged `package.json`: only the branch's 32 keys removed; `@eslint/js` stays.
-
 **One more commit (`fec8a16ab`, Part of #2122):** `better-sqlite3`, `better-sqlite3-session-store`, `express-session` and `jwt-decode` removed, with better-sqlite3's `overrides` entry and its `false` `allowScripts` entry. Search: nothing imports any of them (the only mentions left are an example in `install-scripts.mjs`'s comment and its test data). The lock loses only their trees.
 
 **Full check exit 0:** clean `npm ci`, **1769 packages** (1804 before this, 1836 on `c20ec0779`); lint 102, test and build 99; the smoke tsc; install scripts 10 of 10; 1768 signatures verified.
-
-
 
 > **Fixed by batch 144 (2:03 PM): `fix/gisday-rsvp-null-capacity` at `44a95e63b`.** 1:46 PM Central, for `work (security)` and `work (gisday)`: GIS Day registration is broken in the release at `eab737da7`; production has not got it yet.**
 > Batch 142, on the published `gisday-nest:sha-eab737d` with the seed: once the test admin's profile is complete, **every registration answers `POST /rsvps 500`**:
@@ -54,6 +48,8 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## Finished
 
+- **Batch 151, aggiemap: PR 2384's capture fixes against production - not run** (watched 7:46 PM to 2:39 AM, 25 to 26 October): the window passed without `completedAt`, but **the manifest's host, `visual-baselines.geoservices.tamu.edu`, does not resolve from this machine**, so the watcher never had an answer; my mistake not to check the fetch's status. Nothing captured. Report `work-lab-leila/reports/2026-10-26-137.md`.
+- **PR 2386: `chore/2122-remove-unused` at `fec8a16ab`, pushed** (25 October, after PR 2383): `origin/development` merged in (the exclusion lists taken from `development`, `gisday-bridge-nest` removed again; the lock re-made, only the branch's keys removed, `@eslint/js` kept); one more commit removes `better-sqlite3`, its session store, `express-session` and `jwt-decode`, with the overrides and allowScripts entries. Full check exit 0, **1769 packages**.
 - **Batch 150, security: remove what batch 149 found certain - pushed** (5:48 to 6:05 PM, 25 October): **`chore/2122-remove-unused` at `1acdc14fc`** on the fork, nine commits, one kind each: 12 dependencies removed or dropped (`@types/bull` alone, Part of #2311), `gisday-bridge-nest` out of three exclusion lists, the missing `common/nest/guards` path, `resolvedPopupComponent` (#1899), #1123's two URLs. **`@eslint/js` was wrong to remove** (`@nx/eslint-plugin` requires it without declaring it; lint failed on 101 projects): restored in its own commit before any push. `npm ci` 1836 to 1804 packages, no measurable time change. Full check exit 0. Report `work-lab-leila/reports/2026-10-25-136.md`.
 - **Batch 149, security: what is unused now - read only** (5:41 to 5:48 PM, 25 October): on `origin/development` `c20ec0779` (#2380 not merged). knip 6.42.0: of 32 reported dependencies, **13 certain** (8 unused, 5 redundant), 4 doubtful, the rest used (knip wrong for 7, ues set until #2380); its 785 files and 383 exports are unusable (it flags every app's `main.ts`). 9 libraries no shipping app reaches: 2 unused, 5 only signage's, 2 used after all. Apps: 3 remove candidates (signage, both gisday-competitions), one to ask (ues-operations-angular). #1899: 2 items gone, 2 certain, 2 wait on #1896. Stale: `gisday-bridge-nest` in 3 lists, the `common/nest/guards` path, #1123's two URLs. Report `work-lab-leila/reports/2026-10-25-135.md`.
 - **Batch 148, aggiemap: the quick tier on dev's build of `392be39db` - nothing new broke; not tagged** (4:31 to 5:45 PM, 25 October): dev has served it since 4:53 PM (the Visit Maps row, 7 tiles: six plus the dev-only Code Maroon tile). 122 tests: **119 passed, 1 failed, 2 skipped**. The one failure is the baseline's Women's Basketball development-only check; both new Code Maroon checks pass. Not tagged: the rule is "exactly the eight", and the seven athletics map-layers routes are not in the quick tier's set (question for the director). Posted on #912. Report `work-lab-leila/reports/2026-10-25-134.md`.
@@ -329,6 +325,7 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 - **Joined** (5:19 PM).
 
 ## Questions for the director (aggiemap)
+2. **Batch 151:** the cluster manifest's host does not resolve from this machine; which address should it use, and run it in tonight's window? See report 137.
 
 1. **Batch 148:** tag `392be39db` on "no failure outside the eight" (recommended), or run the athletics routes first? See report 134.
 
@@ -374,4 +371,4 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 150 (139, 141 to 150 reported; 140 needs the maintainer; 151 waits for 8 PM) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 151 (139, 141 to 151 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
