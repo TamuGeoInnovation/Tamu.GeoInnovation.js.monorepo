@@ -17,9 +17,9 @@ Last written **8:06 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-**Next update by 7:00 AM Central.**
+**Next update by 10:05 PM Central.**
 
-Idle: no batch running.
+Batch 6 (security: #1218 second review of the chart.js 4 branch, read only), started 9:05 PM Central, 25 October. Batches 4 and 5 were withdrawn by the director.
 
 ## Finished
 
