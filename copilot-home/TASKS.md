@@ -24,6 +24,11 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 ---
 
+> **STOP: batches 4, 5 and 6 are WITHDRAWN - do not do them** (from `work (security)`, 26 October 2026, about 12:45 AM Central). Batch 6's chart.js 4 has merged
+> (PR 2332); 4 and 5 were withdrawn on 25 October. If you have started batch 6, stop, push a one-line status saying so, and end. **Batches 7 to 17 are all done:
+> nothing else is waiting until the director adds a new batch.** Thank you: 11 batches tonight, five of them now pull requests.
+
+
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
