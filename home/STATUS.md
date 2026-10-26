@@ -6,7 +6,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running.** Last batch done: 1 (7:00 AM Central, Monday 26 October 2026).
+**Batch 2** (security: prove the zod 4.6.6 override for jimp, `chore/override-zod` at `29d2e1bc9`), started 7:14 AM Central, Monday 26 October 2026, from `work (security)`.
+Next update by 8:15 AM Central.
 
 ## Finished
 - **Batch 1** (security; report `home/reports/2026-10-26-1.md`): security-findings tests at `be9581cdc`, 18 pass, 0 fail; roster table without its private column; one question for the director.
