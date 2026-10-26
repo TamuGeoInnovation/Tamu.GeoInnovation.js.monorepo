@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { DCBushSchoolTs } from './dc-bush-school.definitions';
+import { FortWorthLawTs } from './fort-worth-law.definitions';
+import { HoustonSpaceInstituteTs } from './houston-space-institute.definitions';
 import { GalvestonTs } from './galveston.definitions';
 import { McAllenTs } from './mcallen.definitions';
 
@@ -39,13 +41,15 @@ const ASSETS_ROOT = path.join(REPO_ROOT, 'apps', 'aggiemap-angular', 'src');
 const campuses = [
   { label: 'Galveston', root: GalvestonTs },
   { label: 'McAllen', root: McAllenTs },
-  { label: 'DC / Bush School', root: DCBushSchoolTs }
+  { label: 'DC / Bush School', root: DCBushSchoolTs },
+  { label: 'Fort Worth Law School', root: FortWorthLawTs },
+  { label: 'Houston Space Institute', root: HoustonSpaceInstituteTs }
 ];
 
 describe('satellite campus thumbnails', () => {
   it('covers every campus the definitions declare', () => {
     // A campus added without being added here would otherwise be silently unchecked.
-    expect(campuses.length).toBe(3);
+    expect(campuses.length).toBe(5);
   });
 
   it.each(campuses)('$label is listed as a satellite campus', ({ root }) => {
