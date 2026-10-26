@@ -30,6 +30,9 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## Running now
 
+**Batch 153, security: Dependabot's PR 2401 (auth0 7.6.0, got 16.1.0) on today's `development`**, started 6:22 AM Central, on a scratch branch; not pushed.
+
+
 **One more commit (`fec8a16ab`, Part of #2122):** `better-sqlite3`, `better-sqlite3-session-store`, `express-session` and `jwt-decode` removed, with better-sqlite3's `overrides` entry and its `false` `allowScripts` entry. Search: nothing imports any of them (the only mentions left are an example in `install-scripts.mjs`'s comment and its test data). The lock loses only their trees.
 
 **Full check exit 0:** clean `npm ci`, **1769 packages** (1804 before this, 1836 on `c20ec0779`); lint 102, test and build 99; the smoke tsc; install scripts 10 of 10; 1768 signatures verified.
