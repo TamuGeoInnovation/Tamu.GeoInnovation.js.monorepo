@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 155.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 156.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,39 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 155 (gisday: the release check for `sha-eb0fe7d`, the next GIS Day API; read only against production; 26 October 2026, 10:05 AM Central, from `work (gisday)`)
+
+**First priority for GIS Day.** About 30 minutes. `work (gisday)` directs GIS Day again from 9:58 AM.
+
+The maintainer's next GIS Day API release is one image carrying #2205 (PR 2381), #2352 (PR 2382, speaker photos and the
+decompression-bomb guard) and the security chat's fixes since `sha-e9e416e` (PR 2375 and later). The newest published images are
+**`gisday-nest:sha-eb0fe7d`** and **`gisday-angular:sha-eb0fe7d`** (13:23 UTC today). Production runs site `sha-eab737d`, API
+`sha-e9e416e`.
+
+### What to do
+
+1. Your local stack (seed, migrated) with the **published `gisday-nest:sha-eb0fe7d`** as `gisday-api` (local settings, the
+   dev-tenant file, `TYPEORM_PASSWORD` from `local-db.env`), and a local site build of `eb0fe7d` on 4201.
+2. `work/tools/gisday-release-check.cjs` and `gisday-release-check2.cjs`: every line should PASS, including registration and,
+   **now, the sponsor delete** (#2205), and Admin, Users.
+3. **#2352 on the real image:**
+   - upload a speaker photo larger than 840 px on its shorter side through Admin, Speakers: it is stored resized (say the stored
+     file's pixel size and bytes), and the Presenters page shows it;
+   - upload a small crafted PNG declaring 50,000 x 50,000: refused with 413 before decoding, and the API keeps running (memory
+     unchanged, no restart);
+   - an unreadable or SVG file: 400.
+   - Remove any test speakers and sponsors afterwards (by SQL if needed).
+4. `docker logs gisday-api`: count of `ERROR` lines during the run; anything new, quote it.
+5. Also run `nx run gisday-nest:fit-speaker-photos` (dry run only) against your local uploads and paste its summary, so the
+   director can write the maintainer's production commands from it.
+
+### Then
+
+Report with every PASS or FAIL line, the #2352 results, the API errors, and the dry run's summary. Push `STATUS.md` when you start
+and finish. Nothing on GitHub, nothing against production.
+
+---
 
 ## Batch 154 (security: #2371 - prove the msal-node 7.1.0 override on branch chore/override-msal; 26 October 2026, about 7:25 AM Central, from `work (security)`)
 
