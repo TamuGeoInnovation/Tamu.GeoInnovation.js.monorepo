@@ -1,4 +1,7 @@
-import { namesMatch, normalizeName } from './names-match';
+import { hasNameWords, namesMatch, normalizeName } from './names-match';
+
+// A caller's own wording around a name, as GIS Day's memorial plaques use it.
+const plaqueWording = new Set(['in', 'loving', 'memory', 'of', 'dedicated', 'to', 'dr', 'class']);
 
 describe('normalizeName', () => {
   it('ignores case, accents, punctuation and spacing', () => {
@@ -23,9 +26,15 @@ describe('namesMatch', () => {
     expect(namesMatch('Robert Hernandez', 'Robert Hernandes')).toBe(true);
   });
 
-  it("matches a name with the plaque's own wording around it", () => {
+  it("matches a name with the caller's own wording around it, when told which words those are", () => {
+    expect(namesMatch('In loving memory of Robert Hernandez', 'Robert Hernandez', plaqueWording)).toBe(true);
+    expect(namesMatch('Dedicated to Dr. Susan Lee, Class of 1985', 'Susan Lee', plaqueWording)).toBe(true);
+  });
+
+  it('ignores no words unless told to', () => {
     expect(namesMatch('In loving memory of Robert Hernandez', 'Robert Hernandez')).toBe(true);
-    expect(namesMatch('Dedicated to Dr. Susan Lee, Class of 1985', 'Susan Lee')).toBe(true);
+    expect(namesMatch('Memory Lane', 'Memory Lane', plaqueWording)).toBe(true);
+    expect(namesMatch('In Memory', 'In Memory')).toBe(true);
   });
 
   it('does not match different people', () => {
@@ -38,9 +47,30 @@ describe('namesMatch', () => {
     expect(namesMatch('Smith', 'John Smith')).toBe(false);
   });
 
-  it('does not match when either name is missing', () => {
+  it('does not match when either name is missing, or has no words left to compare', () => {
     expect(namesMatch('', 'John Smith')).toBe(false);
     expect(namesMatch('John Smith', undefined)).toBe(false);
     expect(namesMatch(undefined, undefined)).toBe(false);
+    expect(namesMatch('In loving memory', 'In loving memory', plaqueWording)).toBe(false);
+  });
+});
+
+describe('hasNameWords', () => {
+  it('is true for a name namesMatch can compare', () => {
+    expect(hasNameWords('John Smith')).toBe(true);
+    expect(hasNameWords('In loving memory of John Smith', plaqueWording)).toBe(true);
+  });
+
+  it('is false for nothing, punctuation, or only the words to ignore (#2424)', () => {
+    expect(hasNameWords(undefined)).toBe(false);
+    expect(hasNameWords(42)).toBe(false);
+    expect(hasNameWords('  ...  ')).toBe(false);
+    expect(hasNameWords('In loving memory', plaqueWording)).toBe(false);
+    expect(hasNameWords('Dr.', plaqueWording)).toBe(false);
+    expect(hasNameWords('Class of', plaqueWording)).toBe(false);
+  });
+
+  it('is false for a name in a script namesMatch cannot compare', () => {
+    expect(hasNameWords('王小明')).toBe(false);
   });
 });

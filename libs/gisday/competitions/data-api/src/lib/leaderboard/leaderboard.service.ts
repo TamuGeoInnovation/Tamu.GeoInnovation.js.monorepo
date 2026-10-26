@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 
@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
 import { ManagementService } from '@tamu-gisc/common/nest/auth';
 import { distanceInMetres } from '@tamu-gisc/common/utils/geometry';
-import { namesMatch } from '@tamu-gisc/common/utils/string';
+import { hasNameWords, namesMatch } from '@tamu-gisc/common/utils/string';
 
 import {
   CompetitionSeason,
@@ -35,6 +35,30 @@ export const ALREADY_SUBMITTED_POINTS = 1;
  * its own distance in the form (`sameThingMetres`), as plaques do (#2162).
  */
 export const SAME_THING_DISTANCE_METRES = 15;
+
+/**
+ * Words a memorial plaque, or someone typing its name, puts around the name ("In loving memory of", "Dr.",
+ * "Class of"), which say nothing about whose name it is. Names are compared without them, and a name made
+ * only of them is no name (#2162).
+ */
+export const MEMORIAL_NAME_WORDING: ReadonlySet<string> = new Set([
+  'in',
+  'loving',
+  'memory',
+  'of',
+  'the',
+  'and',
+  'to',
+  'dedicated',
+  'honor',
+  'honour',
+  'memorial',
+  'class',
+  'dr',
+  'mr',
+  'mrs',
+  'ms'
+]);
 
 interface LeaderboardCache {
   data: Array<{ identity: string; guid: string; points: number }>;
@@ -131,6 +155,9 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
    * question (`nameAttribute`), so that finds within that distance are the same thing only when their
    * names match; and the previous season's answers it continues (`earlier`), so that a thing found then,
    * within `earlier.metres`, is already found now.
+   *
+   * Whatever the names, a participant's own earlier submission of the same type within the type's distance
+   * makes theirs a repeat, so nobody scores twice at one plaque by typing its name differently.
    */
   private async calculateLeaderboard(
     competitionSeason: CompetitionSeason
@@ -152,6 +179,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
 
     const earlierFinds = await this.earlierSeasonFinds(competitionSeason);
     const newFinds: Array<{ location: { latitude: number; longitude: number }; type: unknown; name: unknown }> = [];
+    const submittedBy = new Map<string, Array<{ location: { latitude: number; longitude: number }; type: unknown }>>();
     const userPointsMap = new Map<string, number>();
 
     for (const submission of submissions.filter(counts)) {
@@ -174,9 +202,20 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
         location !== undefined &&
         newFinds.some((find) => find.type === type && isSameThing(find, { location, name }, settings));
 
-      if (location && !foundBefore && !foundThisSeason) {
+      // The participant's own earlier submission of this type nearby, whatever name either gave (#2424).
+      const ownRepeat =
+        location !== undefined &&
+        (submittedBy.get(submission.userGuid) ?? []).some(
+          (earlier) => earlier.type === type && isOwnRepeat(earlier, { location }, settings)
+        );
+
+      if (location && !foundBefore && !foundThisSeason && !ownRepeat) {
         points = NEW_FIND_POINTS;
         newFinds.push({ location, type, name });
+      }
+
+      if (location) {
+        submittedBy.set(submission.userGuid, [...(submittedBy.get(submission.userGuid) ?? []), { location, type }]);
       }
 
       userPointsMap.set(submission.userGuid, (userPointsMap.get(submission.userGuid) || 0) + points);
@@ -210,15 +249,38 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     }
 
     const seasons = await this.compSeasonRepo.find({ relations: { season: true, form: true } });
+    const withoutYear = seasons.filter((candidate) => !candidate.season?.year).length;
+
+    if (withoutYear > 0) {
+      Logger.warn(
+        `${withoutYear} competition season(s) have no season year, so cannot be the one before ${year}.`,
+        'LeaderboardService'
+      );
+    }
     const previous = seasons
       .filter((candidate) => candidate.season?.year < year)
       .sort((a, b) => b.season.year - a.season.year)[0];
 
+    // Without the previous season, every find it had scores as new: say so, so the gap is noticed.
     if (!previous) {
+      Logger.warn(
+        `Competition season ${competitionSeason.guid} (${year}) continues an earlier season, but no competition season with an earlier year was found. Nothing found then counts as already found.`,
+        'LeaderboardService'
+      );
+
       return [];
     }
 
     const typeAttribute = previous.form?.model?.find((q) => q.isDiscriminator === true)?.attribute;
+
+    if (!typeAttribute) {
+      Logger.warn(
+        `The ${previous.season.year} competition season's form has no type question, so none of its finds can count as already found in ${year}.`,
+        'LeaderboardService'
+      );
+
+      return [];
+    }
     const submissions = await this.submissionRepo.find({
       where: { season: { guid: previous.guid } },
       relations: { validationStatus: true, location: true }
@@ -228,7 +290,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       .filter(counts)
       .map((submission) => ({
         location: usableLocation(submission.location),
-        type: typeAttribute ? submission.value?.[typeAttribute] : undefined
+        type: submission.value?.[typeAttribute]
       }))
       .filter((find) => find.location !== undefined);
   }
@@ -257,8 +319,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
 /**
  * Whether a later find of a type is of the same thing as an earlier find of that type: within the
  * type's `sameThingMetres` (`SAME_THING_DISTANCE_METRES` without it) and, when the type has a name
- * question and both finds have a name, with matching names (#2162). Used by scoring and by the
- * automatic review's check for a participant's repeats (#2164).
+ * question and both finds have a name, with matching names (#2162).
  */
 export function isSameThing(
   earlier: { location: { latitude: number; longitude: number }; name?: unknown },
@@ -270,8 +331,21 @@ export function isSameThing(
     (!settings?.nameAttribute ||
       !hasName(earlier.name) ||
       !hasName(later.name) ||
-      namesMatch(earlier.name as string, later.name as string))
+      namesMatch(earlier.name as string, later.name as string, MEMORIAL_NAME_WORDING))
   );
+}
+
+/**
+ * Whether a participant's later submission of a type repeats their own earlier one of that type: within the
+ * type's `sameThingMetres`, whatever names either gave, as Dan decided on 26 October (#2424). Scoring gives it
+ * `ALREADY_SUBMITTED_POINTS`, and the automatic review leaves it for a person (#2164).
+ */
+export function isOwnRepeat(
+  earlier: { location: { latitude: number; longitude: number } },
+  later: { location: { latitude: number; longitude: number } },
+  settings?: ICompetitionSeasonFormOption
+): boolean {
+  return distanceInMetres(earlier.location, later.location) <= (settings?.sameThingMetres ?? SAME_THING_DISTANCE_METRES);
 }
 
 /**
@@ -285,8 +359,12 @@ export function counts(submission: Pick<CompetitionSubmission, 'validationStatus
   );
 }
 
+/**
+ * Whether a typed name is a name: it has words left once a plaque's wording is set aside, as
+ * `namesMatch` compares them (#2424). Scoring and the automatic review's name check both use it.
+ */
 export function hasName(name: unknown): boolean {
-  return typeof name === 'string' && name.trim() !== '';
+  return hasNameWords(name, MEMORIAL_NAME_WORDING);
 }
 
 /**
