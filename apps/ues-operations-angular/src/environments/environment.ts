@@ -12,5 +12,4 @@ export * from './definitions';
 export * from './notification-events';
 export * from './polygons';
 
-export const apiUrl = 'http://localhost:3333/api';
 

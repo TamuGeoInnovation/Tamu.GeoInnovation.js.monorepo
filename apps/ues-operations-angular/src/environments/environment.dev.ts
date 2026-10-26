@@ -6,5 +6,4 @@ export const environment = {
 export * from './definitions';
 export * from './notification-events';
 
-export const apiUrl = `https://ues-dev.geoservices.tamu.edu/api/operations/`;
 
