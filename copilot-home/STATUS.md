@@ -17,7 +17,9 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Idle: batch 26 reported; nothing left in the queue.
+Batch 27 (security: #2122 dependencies knip calls unused; read only) started 5:35 PM Central, 26 October.
+
+Next update by 6:30 PM Central.
 
 ## Finished
 
