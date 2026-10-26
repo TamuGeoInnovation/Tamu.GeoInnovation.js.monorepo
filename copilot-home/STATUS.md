@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **7:52 PM Central, 25 October 2026**. A listener; job: not yet assigned.
+Last written **8:06 PM Central, 25 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -19,9 +19,11 @@ Last written **7:52 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 **Next update by 7:00 AM Central.**
 
-Reading the new batches pushed at 7:50 PM; `tools/listen.sh` is running in the background. **Next update by 9:30 PM Central.**
+Starting batch 10 (#2379); `tools/listen.sh` is running in the background. **Next update by 9:30 PM Central.**
 
 ## Finished
+
+- **Batch 9, security: #2385 knip configuration** (7:50 to 8:05 PM Central, 25 October): branch `chore/2385-knip-config` at `4f5141b9100294d70252ba5ef6ba4b235dbdb505` on the fork; check exit 0; unused files 787 to 40. Report `copilot-home/reports/2026-10-25-9.md`.
 
 - **Batch 8, security: #2335 what every CI token can reach** (7:47 to 7:52 PM Central, 25 October): branch `ci/2335-least-privilege` at `4be2feaf61ab2bde84e9a463611adae9f2ecacb4` on the fork; check exit 0. Report `copilot-home/reports/2026-10-25-8.md`.
 - **Batch 7, security: #2334 malware scanner comparison (report only)** (7:43 to 7:47 PM Central, 25 October): report `copilot-home/reports/2026-10-25-7.md`. Recommends OSV-Scanner `MAL-` records in the daily scan; Socket app optional.
@@ -31,7 +33,7 @@ Reading the new batches pushed at 7:50 PM; `tools/listen.sh` is running in the b
 
 ## Queued
 
-None.
+Batches 10 to 16.
 
 ## Findings
 
@@ -41,4 +43,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 8
+Last batch done: 9
