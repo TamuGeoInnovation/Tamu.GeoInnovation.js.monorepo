@@ -50,7 +50,8 @@ describe('SubmissionService.createCompetitionSubmission', () => {
       // The participant's earlier submissions, for the automatic review (#2164).
       find: jest.fn(() => Promise.resolve([]))
     };
-    const submissionRepo = { manager: { transaction: (work) => work(em) } };
+    // The participant's earlier submissions are read before the save, outside its transaction (#2428 review).
+    const submissionRepo = { manager: { transaction: (work) => work(em) }, find: (options) => em.find(options) };
 
     service = new SubmissionService(submissionRepo as never, {} as never, {} as never, {} as never, {} as never, {} as never);
   });
@@ -123,10 +124,29 @@ describe('SubmissionService.createCompetitionSubmission', () => {
       await service.createCompetitionSubmission(plaque, blobs);
 
       expect(em.find).toHaveBeenCalledWith(
-        CompetitionSubmission,
         expect.objectContaining({ where: { userGuid: 'auth0|ann', season: { guid: 'cs-2026' } } })
       );
       expect(status()).toEqual(expect.objectContaining({ status: 'unverified' }));
+    });
+
+    // #2428 review: a review that fails must never lose the participant's submission.
+    it('saves the submission unverified when the review itself fails', async () => {
+      em.find.mockRejectedValue(new Error('connection reset'));
+
+      const sub = await service.createCompetitionSubmission(plaque, blobs);
+
+      expect(sub).toEqual(expect.objectContaining({ guid: plaque.guid }));
+      expect(inserted(CompetitionSubmission)).toEqual([expect.objectContaining({ guid: plaque.guid })]);
+      expect(inserted(SubmissionMedia)).toHaveLength(1);
+      expect(status()).toEqual(expect.objectContaining({ status: 'unverified', verifiedBy: AUTOMATIC_REVIEWER }));
+    });
+
+    it('saves the submission unverified when its form data is not what the review expects', async () => {
+      const odd = { ...plaque, season: { guid: 'cs-2026', form: { model: 'not a list' } } as never };
+
+      await service.createCompetitionSubmission(odd, blobs);
+
+      expect(status()).toEqual(expect.objectContaining({ status: 'unverified', verifiedBy: AUTOMATIC_REVIEWER }));
     });
   });
 });

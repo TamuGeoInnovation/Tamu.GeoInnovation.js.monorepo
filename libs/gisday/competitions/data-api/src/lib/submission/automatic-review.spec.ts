@@ -48,11 +48,17 @@ describe('automaticReviewReasons', () => {
     expect(automaticReviewReasons(submission({ photos: 0 }), [], form)).toEqual(['No photo']);
   });
 
-  it('fails a submission with no name, or only spaces', () => {
-    expect(automaticReviewReasons(submission({ value: { memorial_type: 'monument' } }), [], form)).toEqual(['No name']);
-    expect(
-      automaticReviewReasons(submission({ value: { memorial_type: 'monument', memorial_name: '  ' } }), [], form)
-    ).toEqual(['No name']);
+  it("fails a plaque with no name, only spaces, or only a plaque's wording", () => {
+    for (const memorial_name of [undefined, '  ', 'In loving memory']) {
+      expect(automaticReviewReasons(submission({ value: { memorial_type: 'tree_bench_plaque', memorial_name } }), [], form)).toEqual([
+        'No name'
+      ]);
+    }
+  });
+
+  // #2428 review: only a type with a name question needs a name.
+  it('does not ask for a name for a type without a name question', () => {
+    expect(automaticReviewReasons(submission({ value: { memorial_type: 'monument' } }), [], form)).toEqual([]);
   });
 
   it('does not ask for a name when the form has no name question', () => {
@@ -105,26 +111,25 @@ describe('automaticReviewReasons', () => {
     expect(automaticReviewReasons(again, earlier, form)).toEqual(['Already submitted by this participant']);
   });
 
-  it('passes the same participant submitting a neighbouring plaque with another name, or another type at the spot', () => {
+  // Dan's decision of 26 October (#2424): one person's own earlier submission of the type nearby is a
+  // repeat, whatever the names; the review follows the scoring's rule.
+  it('fails the same participant submitting another plaque of the type nearby, whatever its name', () => {
+    const earlier = [submission({ created: secondsBefore(600) })];
+    const neighbour = submission({
+      location: { ...north(4), accuracy: 5 },
+      value: { memorial_type: 'tree_bench_plaque', memorial_name: 'Jane Doe' }
+    });
+
+    expect(automaticReviewReasons(neighbour, earlier, form)).toEqual(['Already submitted by this participant']);
+  });
+
+  it('passes the same participant submitting another type at the spot, or the same type further away', () => {
     const earlier = [submission({ created: secondsBefore(600) })];
 
-    expect(
-      automaticReviewReasons(
-        submission({
-          location: { ...north(4), accuracy: 5 },
-          value: { memorial_type: 'tree_bench_plaque', memorial_name: 'Jane Doe' }
-        }),
-        earlier,
-        form
-      )
-    ).toEqual([]);
-    expect(
-      automaticReviewReasons(
-        submission({ value: { memorial_type: 'monument', memorial_name: 'John Smith' } }),
-        earlier,
-        form
-      )
-    ).toEqual([]);
+    expect(automaticReviewReasons(submission({ value: { memorial_type: 'monument', memorial_name: 'John Smith' } }), earlier, form)).toEqual(
+      []
+    );
+    expect(automaticReviewReasons(submission({ location: { ...north(12), accuracy: 5 } }), earlier, form)).toEqual([]);
   });
 
   it("ignores the participant's discarded submissions", () => {
