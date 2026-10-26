@@ -1,4 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+
+import { athleticsDevelopmentSource } from './common.definitions';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
@@ -149,37 +151,14 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
 const parkingUrl = Connections.womensBasketballUrl;
 
 export const WomensBasketball_DevelopmentLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
+  athleticsDevelopmentSource({
     id: WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING,
-    url: `${parkingUrl}/0`,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: 'attributes.name',
-      description: 'attributes.description'
-    },
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-
-  {
-    type: 'feature',
+    url: `${parkingUrl}/0`
+  }),
+  athleticsDevelopmentSource({
     id: WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,
-    url: `${parkingUrl}/1`,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: 'attributes.name',
-      description: 'attributes.description'
-    },
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  }
+    url: `${parkingUrl}/1`
+  })
 ];
 
 export const WomensBasketball_Configuration: EventConfiguration = {

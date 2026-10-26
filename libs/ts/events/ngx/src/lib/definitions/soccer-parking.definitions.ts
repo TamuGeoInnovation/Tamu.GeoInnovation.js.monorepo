@@ -9,6 +9,7 @@ import {
 
 import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
+import { athleticsDevelopmentSource } from './common.definitions';
 
 export enum SOCCER_PARKING_LAYERS {
   VISITOR_KIOSK = 'soccer-parking-visitor-kiosk',
@@ -133,42 +134,17 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
  * development differs only by the two layers the GIS team removed.
  */
 export const SoccerParking_DevelopmentLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
+  athleticsDevelopmentSource({
     id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: `${eventUrl}/0`,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    visible: true,
-    listMode: 'show',
-    layerIndex: 11,
-    native: {
-      outFields: ['*'],
-      definitionExpression: `event = 'Soccer'`
-    }
-  } as unknown as LayerSource,
-  {
-    type: 'feature',
+    layerIndex: 11
+  }),
+  athleticsDevelopmentSource({
     id: SoccerParkingDefinitions.PARKING.id,
     url: `${eventUrl}/1`,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'lotname',
-        collapsed: true
-      },
-      description: {
-        field: 'soccern',
-        collapsed: true
-      }
-    },
-    visible: true,
-    listMode: 'show',
-    layerIndex: 10,
-    native: {
-      outFields: ['*']
-    }
-  } as unknown as LayerSource
+    layerIndex: 10
+  })
 ];
 
 export const SoccerParkingConfiguration: EventConfiguration = {

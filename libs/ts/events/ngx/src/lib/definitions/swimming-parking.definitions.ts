@@ -1,4 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+
+import { athleticsDevelopmentSource } from './common.definitions';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
@@ -137,12 +139,12 @@ const swimmingParkingDevelopmentIndex: Record<string, number> = {
 
 export const SwimmingParking_DevelopmentLayerSources: LayerSource[] = SwimmingParkingColdLayerSources.filter(
   (source) => (source as { id: string }).id in swimmingParkingDevelopmentIndex
-).map(
-  (source) =>
-    ({
-      ...source,
-      url: `${eventUrl}/${swimmingParkingDevelopmentIndex[(source as { id: string }).id]}`
-    }) as unknown as LayerSource
+).map((source) =>
+  athleticsDevelopmentSource({
+    id: (source as { id: string }).id,
+    url: `${eventUrl}/${swimmingParkingDevelopmentIndex[(source as { id: string }).id]}`,
+    layerIndex: (source as { layerIndex?: number }).layerIndex
+  })
 );
 
 export const SwimmingParkingConfiguration: EventConfiguration = {
