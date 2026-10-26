@@ -1,4 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+
+import { athleticsDevelopmentSource } from './common.definitions';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
@@ -129,6 +131,39 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
   }
 ];
 
+/**
+ * Baseball on the development server (#2209). Its view's layers sit at the same indexes as
+ * production's, so only the filters and the popup fields change - see `athleticsDevelopmentSource`.
+ *
+ * Production splits the one lots layer in two by `baseball`; `type` carries that here. It splits the
+ * one symbols layer in two by `type`, which the development symbols layer does not have, so the two
+ * become one: the map shows its symbols once rather than twice.
+ */
+export const BaseballParking_DevelopmentLayerSources: LayerSource[] = [
+  athleticsDevelopmentSource({
+    id: BASEBALL_PARKING_LAYERS.EVENT_SYMBOLS,
+    url: `${eventUrl}/0`
+  }),
+  athleticsDevelopmentSource({
+    id: BASEBALL_PARKING_LAYERS.ACCESSIBLE_SHUTTLES,
+    url: `${eventUrl}/1`
+  }),
+  athleticsDevelopmentSource({
+    id: BASEBALL_PARKING_LAYERS.GATE_ROAD_CLOSURE,
+    url: `${eventUrl}/2`
+  }),
+  athleticsDevelopmentSource({
+    id: BASEBALL_PARKING_LAYERS.EVENT_LOTS,
+    url: `${eventUrl}/3`,
+    onlyType: 'Event Parking'
+  }),
+  athleticsDevelopmentSource({
+    id: BASEBALL_PARKING_LAYERS.ACCESSIBLE_LOTS,
+    url: `${eventUrl}/3`,
+    onlyType: 'Reserved'
+  })
+];
+
 export const BaseballParkingConfiguration: EventConfiguration = {
   id: 'baseball-parking',
   name: 'Baseball',
@@ -254,6 +289,7 @@ export const BaseballParkingTs: AggiemapCustomMapConfiguration = {
   configuration: BaseballParkingConfiguration,
   options: BaseballParkingOptions,
   sources: BaseballParkingColdLayerSources,
+  developmentSources: BaseballParking_DevelopmentLayerSources,
   references: BASEBALL_PARKING_LAYERS,
   type: 'general-map',
   discover: {

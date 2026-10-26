@@ -106,3 +106,28 @@ the list and still runs: it patches `@angular/service-worker`, which the front e
 keys, and its provenance where it has one, in about 15 seconds; it fails on a missing or invalid signature. On 24
 October all 1,901 registry packages were signed and 456 had provenance. The one git dependency (`geojson-utils`)
 has no registry signature to check and is not counted.
+
+## The tables
+
+"The tables" are three, always shown together, because the maintainer asks for all of them at once: **vulnerabilities**,
+**latest** (how far each dependency is from the newest release it may take, #1218), and **unused components** (#2122,
+#1457, #1899). They used to be rebuilt by hand each time, from commands nobody had written down. Now:
+
+```bash
+git fetch origin
+scripts/security-tables.sh > tables.md          # origin/development
+scripts/security-tables.sh <branch> > tables.md # a branch, to see what it changes
+```
+
+From Git Bash; about 2.5 minutes, longer when the lock has changed (it runs `npm ci` in the Docker volume
+`tamu-js-tables`, because knip needs the install). Only committed work is seen. `tables.mjs` turns the inputs into the
+markdown, and `tables.test.mjs` tests it without the network.
+
+| Table | Built from | How to read it |
+| --- | --- | --- |
+| 1. Vulnerabilities | `npm audit --package-lock-only`, everything and `--omit=dev`, compared with [`accepted-advisories.json`](../../.github/security/accepted-advisories.json) as the daily scan compares them | Each finding, production or dev only, with its fix and whether it is accepted (and by which issue). **NOT ACCEPTED** is a High or Critical the scan will report. The maintainer's goal is none of any severity |
+| 2. Latest | Each direct dependency's version in `package-lock.json` against the newest stable release at least 7 days old (never above the registry's `latest` tag); holds from `.github/dependabot.yml` | Majors are each their own change and the maintainer's decision; patches and minors come from Dependabot. "Under 7 days old" is what the cooldown is holding back |
+| 3. Unused | knip 6.42.0 with [`knip.json`](../../knip.json) (PR 2389); the projects `build.yml` excludes | Candidates, not verdicts: each file needs evidence before it is deleted (copilot-home's batch 19 did the 40 of 26 October) |
+
+What the script cannot know - a decision taken, an override being proven, a PR in flight - is added by whoever shows the
+tables, as a status column beside these numbers.

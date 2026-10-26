@@ -15,9 +15,13 @@ draws nothing**, because those views carry a different schema from the productio
 definitions were written against. Production is healthy: all 8 athletics routes pass
 `map-layers.spec.ts` there.
 
-**So these views must not be published to production as they are** - production's definitions would
-then fail the same way. What to do about it is
-[#2209](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2209).
+> [!NOTE]
+> **Updated 26 October 2026.** The GIS team has confirmed these views are the intended final form and
+> that production will be republished to match them, so the development definitions have been changed
+> to read this schema ([#2209](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2209)).
+> The paragraph above describes the state that prompted the measurement, and the comparison below is
+> still the record of it. See **Answered by the GIS team** at the end for what changed and the order
+> the republish has to happen in.
 
 The maps filter each layer with a SQL expression. Where the view does not carry the column that
 expression names, the layer appears in the map's legend and draws nothing - no error, just an empty
@@ -470,9 +474,38 @@ Tennis and both basketballs draw correctly on dev today.
 - both (0): none
 
 
-## Questions for the GIS team
+## Answered by the GIS team, 26 October 2026
 
-This file exists so these can be answered against something concrete rather than a description.
+**The development views are the intended final form, and the production services will be republished
+to match them.** The per-sport columns are being retired; the generic `event` / `type` / `name` /
+`description` set and the marker-feed accessible layer are the schema going forward. That answers
+questions 1 and 2 below, and settles 3 and 5 as deliberate.
+
+So the definitions were ours to change, and
+[#2209](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2209) has changed
+them: each view already holds one sport, so the per-sport filters are dropped rather than translated,
+and `type` carries the distinction where production split one service layer into two map layers.
+
+**The schema comparison below is still accurate and still worth keeping** - it is the record of what
+the two environments carried while they differed, and it is what the production republish has to
+produce. It stops being a difference to fix once production is republished, and becomes the
+description of both.
+
+### The order this has to happen in
+
+**Our change reaches production first; the production services are republished after.** Production is
+healthy today only because its services still carry the old columns and our production definitions
+filter on them. If those services change first, production breaks exactly as development did - eight
+of eleven maps listing a layer that draws nothing, on gameday maps.
+
+The repository therefore carries both forms at once, through the per-environment sources
+[#2143](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2143) added: the
+development side reads the new schema, production's definitions are untouched and keep working, and
+the production branch is deleted once the republish lands.
+
+## The questions as they were asked
+
+Kept as they were put to the GIS team, since the answers above are answers *to these*.
 
 1. **Which schema was intended?** The dev views' lots layer carries a generic `event` / `type` /
    `name` / `description` set plus marker-feed fields; production's carries one column per sport. Is
@@ -489,7 +522,3 @@ This file exists so these can be answered against something concrete rather than
    2026, and recorded here so nobody restores it.
 5. **Safety First! and Purchase hourly visitor parking are absent from every dev view.** Intended?
    The maps no longer request them on dev.
-
-If the answer to 1 and 2 is that the per-sport columns and `event` / `type` are coming back, nothing
-in this repository needs to change. If it is that the new schema is the direction, the definitions
-have to be rewritten and production republished in the same window, because the two cannot disagree.
