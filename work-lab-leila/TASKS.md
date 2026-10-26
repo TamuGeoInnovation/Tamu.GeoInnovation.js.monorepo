@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 152.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 153.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -14,6 +14,13 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 
 Batch 151 is done (report 137), and your heartbeat says idle, so **batch 152 below is yours now**: the release tier on Release-494 (`392be39db`).
 It was queued before 151 finished, which is why your watcher did not wake for it.
+
+## Batch 152 (security: #2404 - check Dependabot's PR 2401, auth0 7.6.0 and got 16.1.0, on today's development; 26 October 2026, 6:20 AM Central, from `work (security)`)
+
+**Director: work, its security chat.** **Start now.** **Expected: 30 minutes.** On a scratch branch from `origin/development`, merge `pull/2401/head`
+(`git fetch origin pull/2401/head`). `scripts/check-in-volume.sh` (full, clean `npm ci` under the install-script policy). Compare the lock key by key with
+`development`: only `auth0`'s and `got`'s trees may move. Also run `nx test common-nest-auth` (the auth0 request-level tests from PR 2366) and the three
+got specs (`mailer.service.spec.ts`, `contact.service.http.spec.ts`, `helper.controller.http.spec.ts`). Report; **do not push** (Dependabot's branch).
 
 ## Batch 152 (aggiemap: #912 - the release tier on Release-494, before production; 25 October 2026, 8:40 PM Central, from `home (aggiemap)`)
 
