@@ -174,3 +174,5 @@ When the maintainer asks for **the tables**, show all three, with fresh numbers 
 **The security director stays `work (security)`, the chat on the work computer**, also when the maintainer is at home: he reaches it through Remote
 Control (on for this chat, and for the GIS Day, AggieMap and Visual Testing chats). The home computer does not take over the security work. Listeners keep
 writing questions under **Questions for the director (security)**; this chat keeps reading them.
+
+- **25 October, evening:** PR 2386 merged (16 unused packages, stale `gisday-bridge-nest` exclusion, dead `tsconfig` path, dead code; closes #2311, #1123). PRs 2383 (UES Operations API and openid-client deleted; AggieMap lead), 2387 (read-only CI tokens, pinned actions), 2389 (knip config) merged. Production `npm audit`: only the accepted msal-node High (#2371).
