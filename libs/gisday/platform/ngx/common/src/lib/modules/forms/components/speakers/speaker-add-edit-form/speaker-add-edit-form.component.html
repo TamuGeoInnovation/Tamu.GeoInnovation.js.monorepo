@@ -34,7 +34,7 @@
           <!-- The banner the public pages draw on this photograph, following the University and Graduation Year fields as they change. -->
           <div class="speaker-photo">
             <tamu-gisc-speaker-class-banner [speaker]="bannerSpeaker$ | async"></tamu-gisc-speaker-class-banner>
-            <img [src]="speakerPhotoUrl$ | async" alt="Speaker photo preview" />
+            <img [src]="(speakerPhotoUrl$ | async) || (placeholderUrl$ | async)" alt="Speaker photo preview" />
           </div>
           <tamu-gisc-file formControlName="file" clearMessage="Undo" accept="image/*">
             <p class="placeholder">Select Profile Picture</p>

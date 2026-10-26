@@ -14,6 +14,68 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { SpeakerAddEditFormComponent } from './speaker-add-edit-form.component';
 
 describe('SpeakerAddEditFormComponent', () => {
+  // A new speaker has no photograph, and the form drew an image with no source: a broken image and its alt text (#2422).
+  describe('the photograph preview', () => {
+    function create() {
+      TestBed.configureTestingModule({
+        providers: [
+          provideRouter([]),
+          { provide: SpeakerService, useValue: { getEntity: () => of({}) } },
+          { provide: AssetsService, useValue: { getAssetUrl: (path: string) => of(`assets/uploads/${path}`) } },
+          { provide: UniversityService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+          { provide: OrganizationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+          { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season' }) } },
+          { provide: NotificationService, useValue: { toast: () => undefined } }
+        ]
+      });
+
+      const fixture = TestBed.createComponent(SpeakerAddEditFormComponent);
+      fixture.componentRef.setInput('type', 'create');
+      fixture.detectChanges();
+
+      const images = () => Array.from((fixture.nativeElement as HTMLElement).querySelectorAll<HTMLImageElement>('.speaker-photo img'));
+      const choose = (file: File | null) => {
+        fixture.componentInstance.form.get('file').setValue(file);
+        fixture.detectChanges();
+      };
+
+      return { images, choose };
+    }
+
+    beforeEach(() => {
+      URL.createObjectURL = jest.fn(() => 'blob:chosen-photo');
+    });
+
+    it('draws no image without a source before a photograph is chosen', () => {
+      const { images } = create();
+
+      expect(images().filter((img) => !img.getAttribute('src'))).toEqual([]);
+    });
+
+    it('shows the placeholder before a photograph is chosen', () => {
+      const { images } = create();
+
+      expect(images().map((img) => img.getAttribute('src'))).toEqual(['assets/uploads/images/placeholder.svg']);
+    });
+
+    it('shows the chosen photograph in place of the placeholder', () => {
+      const { images, choose } = create();
+
+      choose(new File(['x'], 'speaker.png', { type: 'image/png' }));
+
+      expect(images().map((img) => img.getAttribute('src'))).toEqual(['blob:chosen-photo']);
+    });
+
+    it('brings the placeholder back on Undo', () => {
+      const { images, choose } = create();
+
+      choose(new File(['x'], 'speaker.png', { type: 'image/png' }));
+      choose(null);
+
+      expect(images().map((img) => img.getAttribute('src'))).toEqual(['assets/uploads/images/placeholder.svg']);
+    });
+  });
+
   // The admin form showed a speaker's photo without the university banner the public pages draw on it,
   // so an admin could not see what a change to the university or the year would look like (#1757).
   describe('the banner on the photograph', () => {
