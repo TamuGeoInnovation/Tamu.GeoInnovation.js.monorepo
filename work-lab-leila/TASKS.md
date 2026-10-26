@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 157.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 158.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,67 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 157 (aggiemap: the RELEASE tier on tonight's dev build - this one is the production candidate; 26 October 2026, from `work (aggiemap)`)
+
+**The maintainer intends this build to go to production if it is clean**, so this is the `release`
+tier, not `quick`. About thirty minutes.
+
+### Wait for the right build
+
+The build is from `development` at **`2a09a308c`**. It had not registered on Azure when this was
+written, so **check what dev is serving rather than assuming**:
+
+> **`https://aggiemap-dev.tamu.edu/all-maps` lists "Fort Worth Law School" and "Houston Space
+> Institute" under Campus Maps.** Neither exists before `2a09a308c`.
+
+A second marker, if you want one: the basemap panel's first entry is **"Aggieland vector, October
+2026"**. If neither is there, dev has an older build - say so in `STATUS.md` and wait rather than
+running the tier against it.
+
+### Run
+
+```
+test/smoke/aggiemap/run-local.sh development release
+```
+
+From a clean worktree at `2a09a308c`.
+
+### What is in this build, so a failure can be placed
+
+Four changes merged today, and a failure in any of them is ours:
+
+| | |
+| --- | --- |
+| **#2209** athletics definitions read the development schema | Already proven on Release-495 by your batch 156 - every previously-failing route passed and you confirmed the lot popups. A failure here is a **regression**, not the known problem |
+| **#2436** the new vector tile basemap | `VTBase3` is now what dev opens on, titled *Aggieland vector, October 2026*; the September cache is the second gallery entry. Maps may well **look** different - that is the point of the release, not a fault |
+| **#2437, #2438** two new campus maps | Fort Worth Law School and Houston Space Institute, **development-only** |
+| **#2444** `notification-events.spec.ts` | Its three tests should no longer be skipped under load |
+
+### The three things the suite cannot tell us, and which decide this release
+
+1. **Open each new campus map and type a building name into its search.** The sources are declared from
+   fields proven to exist on the services, but nobody has searched these maps. Fort Worth has LAWS,
+   RIB-A and FWLE; Houston has B500.
+2. **Confirm the two new campuses are NOT listed on production.** The unit tests assert the gate from
+   both sides, but the deployed page is what matters. They should be on dev's All Maps and absent from
+   production's.
+3. **Look at the new basemap.** It is the first thing a visitor on dev now sees. Compare it with
+   *Aggieland vector, September 2026* in the basemap panel and say what you think - it is being
+   evaluated, and nobody has given an opinion yet.
+
+Say plainly if any of the three is something you cannot do from there, rather than leaving it unsaid.
+
+### Tagging
+
+**Do not tag.** The maintainer decides whether this goes to production. Report and stop.
+
+### Report
+
+`work-lab-leila/reports/<date>-<n>.md`, and post the result on
+[#912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/912). Report per
+environment what failed and why, not only pass or fail.
+
 
 ## Batch 156 (aggiemap: the quick tier on Release-495, which carries #2209's athletics fix; 26 October 2026, 3:35 PM Central, from `work (aggiemap)`)
 
