@@ -17,9 +17,9 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-**Next update by 7:00 AM Central.**
+**Next update by 7:30 AM Central.**
 
-Idle: no batch running.
+Batch 18 (npm audit check) started 6:48 AM Central, 26 October; then batch 19.
 
 ## Finished
 
