@@ -13,9 +13,6 @@ env:
 permissions:
   contents: read
 
-permissions:
-  contents: read
-
 jobs:
   test:
     name: Affected

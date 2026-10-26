@@ -15,9 +15,6 @@ env:
 permissions:
   contents: read
 
-permissions:
-  contents: read
-
 jobs:
   build:
     name: Affected
