@@ -1,6 +1,6 @@
 /**
- * Options for the legacy session sign-in (`LegacyAuthService` in `@tamu-gisc/common/ngx/auth`). Moved here from
- * `libs/oidc/client` (#2155), so a front end can name it without compiling that server-side library.
+ * Options for the legacy session sign-in (`LegacyAuthService` in `@tamu-gisc/common/ngx/auth`). Lives here, in
+ * `@tamu-gisc/common/types` (#2155), so a front end can name it without compiling a server-side library.
  */
 export interface AuthOptions {
   /**

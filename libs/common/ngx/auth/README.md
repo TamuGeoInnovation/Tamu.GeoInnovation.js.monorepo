@@ -62,7 +62,7 @@ export class CustomComponent implements OnInit {
 
 The auth interceptor and service require the variable `auth_url` to be exported from the application environments. This URL should point to the base API that itself implements idp client sub-routes (`oidc/login`).
 
-Alternatively the variable `auth_options` of type `AuthOptions`, from `@tamu-gisc/oidc/client`, can be exported from the same environment.
+Alternatively the variable `auth_options` of type `AuthOptions`, from `@tamu-gisc/common/types`, can be exported from the same environment.
 
 ## Running unit tests
 
