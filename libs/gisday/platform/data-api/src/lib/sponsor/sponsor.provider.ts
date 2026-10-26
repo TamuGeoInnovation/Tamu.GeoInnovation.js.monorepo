@@ -216,11 +216,13 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
     }
   }
 
-  public override deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
+  public override async deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
     const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
+    let logos: Array<Asset> = [];
 
     try {
-      return this.sponsorRepo.manager.transaction(async (manager) => {
+      // Awaited, so a failed delete lands in the catch below rather than reaching the caller as the raw database error.
+      const result = await this.sponsorRepo.manager.transaction(async (manager) => {
         const sponsors = await manager.find(Sponsor, {
           where: {
             guid: In(guids)
@@ -228,14 +230,17 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
           relations: { logos: true }
         });
 
-        const logos = sponsors.map((sponsor) => sponsor.logos).flat();
+        logos = sponsors.map((sponsor) => sponsor.logos).flat();
 
-        if (logos.length > 0) {
-          await manager.delete(Asset, logos);
-        }
+        await this.assetService.deleteAssets(manager, logos);
 
         return manager.delete(Sponsor, guids);
       });
+
+      // Only once the rows are gone: a rolled-back delete must not leave a sponsor pointing at a removed file.
+      await this.assetService.deleteAssetFiles(logos);
+
+      return result;
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".

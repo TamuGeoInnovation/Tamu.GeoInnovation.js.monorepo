@@ -43,7 +43,10 @@ describe('PlaceService', () => {
           }
         },
         { provide: getRepositoryToken(PlaceLink), useValue: { create: jest.fn((l) => l) } },
-        { provide: AssetsService, useValue: { saveAsset: jest.fn() } },
+        {
+          provide: AssetsService,
+          useValue: { saveAsset: jest.fn(), deleteAssets: jest.fn(), deleteAssetFiles: jest.fn() }
+        },
         { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } }
       ]
     }).compile();
@@ -330,7 +333,9 @@ describe('PlaceService', () => {
 
       await service.deleteEntities(['p-1']);
 
-      expect(manager.delete).toHaveBeenCalledWith(Asset, [logo]);
+      // Through AssetsService, which deletes the rows by guid and their files after commit (#2205).
+      expect(assetService.deleteAssets).toHaveBeenCalledWith(manager, [logo]);
+      expect(assetService.deleteAssetFiles).toHaveBeenCalledWith([logo]);
     });
   });
 });

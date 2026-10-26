@@ -1,4 +1,4 @@
-import { DataSource, EntityTarget, FindManyOptions, FindOneOptions, ObjectLiteral, Repository } from 'typeorm';
+import { DataSource, EntityManager, EntityTarget, FindManyOptions, FindOneOptions, ObjectLiteral, QueryRunner, Repository } from 'typeorm';
 
 import { GISDAY_ENTITIES } from '../entities/all.entity';
 
@@ -34,4 +34,43 @@ export function queryCheckingRepository<T extends ObjectLiteral>(dataSource: Dat
   repository.save = (async (entity) => entity) as Repository<T>['save'];
 
   return repository;
+}
+
+/**
+ * For specs: makes `dataSource` record the SQL that typeorm writes, instead of sending it anywhere. Every query runner it hands
+ * out (transactions included) records each statement and its parameters in `statements` and answers with no rows. Reads that a
+ * provider makes inside a transaction come from `rows`, by entity, so a spec can give it the rows a real database would hold.
+ *
+ * This is what shows how a delete or update matches its rows: the statement itself, built by typeorm from the provider's own
+ * criteria. A delete handed whole loaded rows matched on every column, timestamps included, and on SQL Server that matched only
+ * some of the time, so a sponsor with a logo could not always be deleted (#2205).
+ */
+export function recordWrites(
+  dataSource: DataSource,
+  rows: Array<[EntityTarget<ObjectLiteral>, Array<ObjectLiteral>]> = []
+): { statements: Array<{ sql: string; parameters: Array<unknown> }> } {
+  const statements: Array<{ sql: string; parameters: Array<unknown> }> = [];
+
+  dataSource.createQueryRunner = () => {
+    const runner = {
+      connection: dataSource,
+      data: {},
+      isReleased: false,
+      isTransactionActive: false,
+      broadcaster: { broadcast: async () => undefined },
+      connect: async () => undefined,
+      release: async () => undefined,
+      startTransaction: async () => ((runner.isTransactionActive = true), undefined),
+      commitTransaction: async () => ((runner.isTransactionActive = false), undefined),
+      rollbackTransaction: async () => ((runner.isTransactionActive = false), undefined),
+      query: async (sql: string, parameters: Array<unknown> = []) => (statements.push({ sql, parameters }), { raw: [], affected: 0, records: [] })
+    } as unknown as QueryRunner & { isTransactionActive: boolean; manager: EntityManager };
+
+    runner.manager = dataSource.createEntityManager(runner);
+    runner.manager.find = (async (entity: EntityTarget<ObjectLiteral>) => rows.find(([e]) => e === entity)?.[1] ?? []) as EntityManager['find'];
+
+    return runner;
+  };
+
+  return { statements };
 }

@@ -1,4 +1,4 @@
-import { writeFile, readdir, mkdir, stat } from 'node:fs/promises';
+import { writeFile, readdir, mkdir, stat, unlink } from 'node:fs/promises';
 
 export function commonNodeFs(): string {
   return 'common-node-fs';
@@ -62,6 +62,25 @@ export async function writeFileToDisk(
     return `${endFileName}`;
   } catch (error) {
     throw new Error(`Error writing file to disk. ${error.message}`, { cause: error });
+  }
+}
+
+/**
+ * Deletes a file from disk.
+ *
+ * Resolves `true` when it removed the file, and `false` when there was no file there: an already-missing file is the
+ * outcome the caller wanted, so it is not an error. Anything else (a directory, a permission error) is thrown.
+ */
+export async function deleteFileFromDisk(path: string): Promise<boolean> {
+  try {
+    await unlink(path);
+    return true;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return false;
+    }
+
+    throw error;
   }
 }
 

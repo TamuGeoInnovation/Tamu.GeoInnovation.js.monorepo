@@ -1,0 +1,9 @@
+{
+  "name": "common-node-images",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/common/node/images/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project common-node-images --web",
+  "targets": {}
+}

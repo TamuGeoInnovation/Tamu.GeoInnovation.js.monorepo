@@ -1,4 +1,4 @@
-import { NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -29,7 +29,10 @@ describe('SponsorProvider', () => {
             manager: { transaction: jest.fn() }
           }
         },
-        { provide: AssetsService, useValue: { saveAsset: jest.fn() } },
+        {
+          provide: AssetsService,
+          useValue: { saveAsset: jest.fn(), deleteAssets: jest.fn(), deleteAssetFiles: jest.fn() }
+        },
         { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } }
       ]
     }).compile();
@@ -236,17 +239,31 @@ describe('SponsorProvider', () => {
       expect(manager.delete).toHaveBeenLastCalledWith(Sponsor, ['sp-3']);
     });
 
-    it('removes the logos belonging to the sponsors being deleted', async () => {
-      const logo = { guid: 'a-1' } as Asset;
+    /**
+     * A logo as the database returns it: every column, timestamps included. Passing rows like this
+     * to `manager.delete` made TypeORM match on every column, which on SQL Server matched nothing,
+     * so the sponsor's delete then failed on the logo's foreign key and answered 500 (#2205).
+     */
+    it('deletes a sponsor with a logo: the logo row by its guid, then its file once the delete commits', async () => {
+      const logo = {
+        guid: 'a-1',
+        name: 'logo.png',
+        path: 'images/sponsors/logo.png',
+        type: 'sponsor-logo',
+        created: new Date('2026-10-23T18:00:00.123Z'),
+        updated: new Date('2026-10-23T18:00:00.123Z')
+      } as Asset;
       const manager = {
         find: jest.fn().mockResolvedValue([{ guid: 'sp-1', logos: [logo] }]),
         delete: jest.fn().mockResolvedValue({ affected: 1 })
       };
       withManager(manager);
 
-      await provider.deleteEntities(['sp-1']);
+      await expect(provider.deleteEntities(['sp-1'])).resolves.toEqual({ affected: 1 });
 
-      expect(manager.delete).toHaveBeenCalledWith(Asset, [logo]);
+      expect(assetService.deleteAssets).toHaveBeenCalledWith(manager, [logo]);
+      expect(manager.delete).toHaveBeenCalledWith(Sponsor, ['sp-1']);
+      expect(assetService.deleteAssetFiles).toHaveBeenCalledWith([logo]);
     });
 
     it('does not attempt a logo delete when there are none', async () => {
@@ -258,9 +275,21 @@ describe('SponsorProvider', () => {
 
       await provider.deleteEntities(['sp-1']);
 
-      // A delete with an empty list would remove every asset in the table on some drivers.
+      // AssetsService.deleteAssets skips an empty list (its own spec covers that); here, only the sponsor goes.
+      expect(assetService.deleteAssets).toHaveBeenCalledWith(manager, []);
       expect(manager.delete).toHaveBeenCalledTimes(1);
       expect(manager.delete).toHaveBeenCalledWith(Sponsor, ['sp-1']);
+    });
+
+    /**
+     * The transaction's promise used to be returned from inside the `try`, so a failed delete
+     * escaped the catch and reached the caller as the raw database error.
+     */
+    it('reports a failed delete as its own 500 and leaves the files alone', async () => {
+      (sponsorRepo.manager.transaction as jest.Mock).mockRejectedValue(new Error('REFERENCE constraint'));
+
+      await expect(provider.deleteEntities(['sp-1'])).rejects.toThrow(InternalServerErrorException);
+      expect(assetService.deleteAssetFiles).not.toHaveBeenCalled();
     });
   });
 });

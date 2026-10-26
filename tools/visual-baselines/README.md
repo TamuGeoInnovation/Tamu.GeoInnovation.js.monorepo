@@ -156,6 +156,20 @@ is compared within 15 minutes rather than after the next capture's three hours.
 `--dry-run` prints what it would do and why, one line per tag. A set whose capture finished counts as done
 even if some shots failed (its log names them), so one page that keeps failing is not retried forever.
 
+## Unfinished maps, and one session per shot
+
+**A map that does not finish is retried once, then photographed and recorded** ([#2346][2346]). A shot counts
+as unfinished when its layers are still loading after 60 seconds, it is still drawing after another 60, or
+a visible layer never loaded. The manifest lists each one under `unsettled` with the reason, the next run of
+the same set takes it again, the comparison page marks a pair with either side unfinished, and the home page
+and gallery count and mark them. Until 25 October 2026 such a shot was saved as if it were finished, and the
+parking maps in `production/prod-2026-10-20` were compared as if their layers had disappeared.
+
+**Every shot has its own browser session** ([#2347][2347]), except when signed in, where the session is the
+sign-in. AggieMap remembers some choices between visits (an event map highlights the last choice made on it),
+so with one shared session the phone shot of `/events/big-event` showed whichever choice the desktop shots had
+visited last.
+
 ## Two things that will catch you
 
 **Wait for the right signal.** `probe.ready` means the layers have settled, about six seconds in.
@@ -176,5 +190,7 @@ out. Neither run meant anything and both had to be thrown away.
 [1533]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1533
 [2345]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2345
 [2355]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2355
+[2346]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2346
+[2347]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2347
 [2357]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2357
 [2364]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2364
