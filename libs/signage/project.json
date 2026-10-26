@@ -1,9 +1,0 @@
-{
-  "name": "signage",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "library",
-  "sourceRoot": "libs/signage/src",
-  "prefix": "tamu-gisc",
-  "tags": [],
-  "targets": {}
-}
