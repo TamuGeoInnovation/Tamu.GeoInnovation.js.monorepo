@@ -4,6 +4,19 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 1 (security: a check that the new Home - Work Listener chat answers; read only; 26 October 2026, about 7:25 AM Central, from `work (security)`)
+
+The maintainer wants to see you respond before he leaves for the day. Short, read only, no branch.
+
+1. Push `home: started batch 1` to `home/STATUS.md`, with `tools/heartbeat.sh home "running batch 1" 30`.
+2. In a worktree at the latest `origin/development`, run the security-findings tests in a `node:24.22.1` container:
+   `node --test tools/security-findings/` (the same tests `tools-tests.yml` runs). Record the pass and fail counts.
+3. Run `bash tools/roster.sh` on `work-mailbox` and paste its table into the report.
+4. Write `home/reports/2026-10-26-1.md` with the commit of `development` you used, the test counts and the table. Push
+   `home: batch 1 done - <counts>`, then `tools/heartbeat.sh home idle 45`.
+
+Batches here are numbered from now on; the next free number is 2.
+
 ## Decided (23 October 2026)
 
 - From 23 October, all security and vulnerability work in this repository belongs to the security chat on the work
