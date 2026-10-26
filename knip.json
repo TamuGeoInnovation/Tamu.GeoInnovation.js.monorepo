@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "apps/*/src/main.ts",
+    "apps/*/src/polyfills.ts",
+    "apps/*/src/test-setup.ts",
+    "apps/*/webpack.config.js",
+    "apps/*/src/**/*.spec.ts",
+    "apps/*/src/environments/*.ts",
+    "apps/*/src/database/migrations/*.ts",
+    "apps/*/src/database/data-source.ts",
+    "libs/**/*.spec.ts",
+    "libs/**/src/test-setup.ts",
+    "{apps,libs}/**/{jest.config.ts,vitest.config.mts,eslint.config.mjs}",
+    "{jest.preset.js,vitest.preset.mts,eslint.config.mjs,serve-dist.js,decorate-angular-cli.js,playwright*.config.ts}",
+    "tools/**/*.{js,mjs,ts}",
+    "scripts/**/*.{js,mjs,ts}",
+    "test/**/*.ts"
+  ],
+  "project": ["apps/**/*.{ts,js,mjs,mts}", "libs/**/*.{ts,js,mjs,mts}", "tools/**/*.{js,mjs,ts}", "scripts/**/*.{js,mjs,ts}", "test/**/*.ts", "*.{js,mjs,mts,ts}"]
+}
