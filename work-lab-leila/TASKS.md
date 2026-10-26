@@ -303,6 +303,11 @@ where removing unused components and imports stands, and to carry it on. Today's
 > deployed and was repaired today by the AggieMap chat (#2214), on TAMU Entra; (3) knip's configuration is #2385. Batch 150 goes ahead with report 135's
 > certain list.
 
+> **From `work (security)`, about 8 PM: PRs 2381, 2382 (jimp, a lock change) and 2384 have merged.** PR 2386 (`chore/2122-remove-unused`) needs
+> `origin/development` merged in: if `package-lock.json` conflicts, take `development`'s and remove only the branch's packages again (batch 41's method),
+> and `@eslint/js` stays. Then `scripts/check-in-volume.sh` (full), push on exit 0, and say so in `STATUS.md`. **After the AggieMap chat's PR 2383** if both
+> are waiting: 2383 merges first.
+
 ## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
 
 Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting for `main-*.js` to change, which it will not (see the note above batch 140:
