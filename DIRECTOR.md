@@ -503,8 +503,10 @@ When both PRs have merged and `gisday-nest` (and `gisday-angular`, built in the 
    (expect 413). Sponsor delete should now pass.
 2. Send the image's sha to the security chat for its audit.
 3. Give the maintainer the `set image` commands (API, and the site if it changed), `get deploy` in both namespaces, then check
-   the four addresses and `GET /api/events/<session>/rsvps`, record it in kubernetes-config, and ask him to register on
-   production.
+   the four addresses and `GET /api/events/<session>/rsvps`, and record it in kubernetes-config. **Do not ask him to register
+   on production after every release** (his decision, 26 October): the release check covers registration on the published
+   image, and the public count covers the lookup on production. Ask only when a release changes the registration or
+   sign-in code (`user-rsvp`, auth, Auth0 management, or the site's sign-in).
 4. **After it ships:** the maintainer runs `nx run gisday-nest:fit-speaker-photos` against production's uploads, dry run first,
    then `--apply` (originals are copied aside). Write him the exact commands for the uploads volume.
 
