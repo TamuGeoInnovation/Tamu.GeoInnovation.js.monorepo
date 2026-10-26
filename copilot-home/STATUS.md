@@ -17,7 +17,9 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Idle: batch 25 reported; nothing left in the queue.
+Batch 26 (gisday: #2431, remove the three Explore Events links on the Texas A&M site) started 12:40 PM Central, 26 October.
+
+Next update by 1:45 PM Central.
 
 ## Finished
 
