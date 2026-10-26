@@ -3,6 +3,9 @@ name: Build and Publish Images
 on:
   workflow_call:
 
+permissions:
+  contents: read
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -14,7 +17,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix || '[]' }}
     steps:
       - name: 'Download artifacts'
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: ${{ github.sha }}
       - name: 'Check for produced artifacts'
@@ -48,11 +51,11 @@ jobs:
         image: ${{ fromJson(needs.list-publishable.outputs.matrix) }}
     steps:
       - name: 'Download artifacts'
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: ${{ github.sha }}
       - name: Docker login
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -60,7 +63,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v6
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image }}
           # `flavor: latest=true` was set here, which overrode the action's `latest=auto` default
@@ -98,7 +101,7 @@ jobs:
       # This job has no checkout - its workspace is the build artifact - so the accepted file and
       # the checker are fetched into a directory of their own, where they cannot collide with it.
       - name: Fetch the accepted advisories and the checker
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           path: .security-gate
           sparse-checkout: |
@@ -107,7 +110,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Build the image without pushing it
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
           context: ./apps/${{ matrix.image }}
           push: false
@@ -138,7 +141,7 @@ jobs:
       # Unchanged, and now reached only by an image that passed the gate. Its layers are already
       # built and cached by the step above, so this publishes rather than rebuilding.
       - name: Build and push Docker images
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
           context: ./apps/${{ matrix.image }}
           push: true
