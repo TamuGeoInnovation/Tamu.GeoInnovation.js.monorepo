@@ -96,6 +96,17 @@ function compareShots(aPath, bPath, diffPath) {
   return { ratio, diff: diffPath };
 }
 
+/** A set's shots taken before their map had finished, keyed `<viewport>/<file>`, from its manifest (#2346). */
+const unsettledIn = (root) => {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8')).unsettled || {};
+  } catch {
+    return {};
+  }
+};
+const unsettledBefore = unsettledIn(beforeRoot);
+const unsettledAfter = unsettledIn(afterRoot);
+
 const before = shots(beforeRoot);
 const after = shots(afterRoot);
 const outDir = path.dirname(outFile);
@@ -118,7 +129,9 @@ for (const [key, aPath] of before) {
     before: rel(aPath),
     after: rel(bPath),
     diff: compared.diff ? rel(compared.diff) : null,
-    sizeChanged: Boolean(compared.sizeChanged)
+    sizeChanged: Boolean(compared.sizeChanged),
+    // Either side photographed before its map had finished: a difference here may be that, not the build.
+    unfinished: [unsettledBefore[key] && 'before: ' + unsettledBefore[key], unsettledAfter[key] && 'after: ' + unsettledAfter[key]].filter(Boolean)
   });
 }
 
@@ -136,6 +149,7 @@ const card = (r) => `
   <section class="row${r.ratio > NOISE ? '' : ' same'}" data-changed="${r.ratio > NOISE}">
     <header>
       <h2>${escape(r.key)}</h2>
+      ${r.unfinished.length ? `<span class="chip chip-label" title="${escape(r.unfinished.join('; '))}">unfinished ${escape(r.unfinished.map((u) => u.split(':')[0]).join(' and '))}</span>` : ''}
       <span class="chip ${r.ratio > NOISE ? 'chip-external' : 'chip-label'}">${pct(r)}</span>
     </header>
     <div class="pair">
@@ -200,7 +214,16 @@ fs.writeFileSync(outFile, html);
 fs.writeFileSync(
   path.join(outDir, 'summary.json'),
   JSON.stringify(
-    { before: beforeName, after: afterName, page: path.basename(outFile), pages: rows.length, changed, noise: NOISE, writtenAt: centralNow() },
+    {
+      before: beforeName,
+      after: afterName,
+      page: path.basename(outFile),
+      pages: rows.length,
+      changed,
+      unfinished: rows.filter((r) => r.unfinished.length).length,
+      noise: NOISE,
+      writtenAt: centralNow()
+    },
     null,
     2
   )

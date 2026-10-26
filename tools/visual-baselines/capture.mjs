@@ -424,7 +424,7 @@ async function settle(page) {
 
     await page.waitForTimeout(4000);
 
-    return;
+    return { settled: true };
   }
 
   try {
@@ -440,24 +440,59 @@ async function settle(page) {
     // Captured anyway: a page that never rendered is itself worth seeing in the comparison.
   }
 
+  let why = null;
+
   try {
     // Layers first, then the canvas. A page with no probe is not a map and needs neither.
     await page.waitForFunction(() => !window.__tamuGiscMapProbe || window.__tamuGiscMapProbe.ready === true, {
       timeout: 60000,
       polling: 500
     });
-
-    await page.waitForFunction(() => !window.__tamuGiscMapProbe || window.__tamuGiscMapProbe.drawing === false, {
-      timeout: 60000,
-      polling: 500
-    });
   } catch {
-    // As above - a map that never settles is worth seeing, but it is recorded rather than hidden.
+    why = 'its layers were still loading after 60 s';
+  }
+
+  if (!why) {
+    try {
+      await page.waitForFunction(() => !window.__tamuGiscMapProbe || window.__tamuGiscMapProbe.drawing === false, {
+        timeout: 60000,
+        polling: 500
+      });
+    } catch {
+      why = 'it was still drawing after 60 s';
+    }
   }
 
   // The notices dismiss themselves after about ten seconds; they are outlasted rather than hidden, so
   // the space they occupied is still compared.
   await page.waitForTimeout(11000);
+
+  // Settled is not the same as drawn: a visible layer that never loaded leaves its part of the map empty,
+  // as on the parking maps in production/prod-2026-10-20 (#2346). An errored layer is a layer failure,
+  // which the smoke suite reports; this is only about whether the picture is finished.
+  if (!why) {
+    const unloaded = await page
+      .evaluate(async () => {
+        const probe = window.__tamuGiscMapProbe;
+
+        if (!probe || typeof probe.snapshot !== 'function') {
+          return [];
+        }
+
+        return ((await probe.snapshot()).layers || [])
+          .filter((layer) => layer.visible && !layer.loaded && !layer.error)
+          .map((layer) => layer.title || layer.id);
+      })
+      .catch(() => []);
+
+    if (unloaded.length) {
+      why = 'visible layers had not loaded: ' + unloaded.join(', ');
+    }
+  }
+
+  // A map that never settles is still photographed, because it is worth seeing, but the caller records
+  // it, so a comparison can tell an unfinished map from a changed one (#2346).
+  return why ? { settled: false, why } : { settled: true };
 }
 
 (async () => {
@@ -493,8 +528,13 @@ async function settle(page) {
   // A set already here for this release must have come from the same bundle. If it did not, either
   // the tag names a different build or the environment moved under it, and overwriting would quietly
   // replace a baseline with pictures of something else.
+  // Shots an earlier run of this set took before their map had finished, taken again now (#2346).
+  let unsettled = {};
+
   if (fs.existsSync(manifestPath)) {
     const existing = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+
+    unsettled = existing.unsettled || {};
 
     if (existing.build && existing.build !== build && !force) {
       console.error('Release ' + release + ' on ' + envName + ' was captured from bundle ' + existing.build + ',');
@@ -521,6 +561,8 @@ async function settle(page) {
     viewports: VIEWPORTS,
     routeCount: routes.length,
     routes: routes,
+    // `<viewport>/<file>` for each shot taken before its map had finished, and why (#2346)
+    unsettled: unsettled,
     note:
       'Captured by tools/visual-baselines/capture.mjs. `release` is the tag recording which commit ' +
       'this environment serves; `build` is the bundle hash actually served, which is what proves it, ' +
@@ -548,7 +590,8 @@ async function settle(page) {
     }
   }
 
-  const todo = jobs.filter((job) => !fs.existsSync(job.file));
+  const keyOf = (job) => job.viewportName + '/' + path.basename(job.file);
+  const todo = jobs.filter((job) => !fs.existsSync(job.file) || unsettled[keyOf(job)]);
 
   console.log('to capture   ' + todo.length + ' (' + (jobs.length - todo.length) + ' already on disk, resuming)\n');
 
@@ -558,28 +601,55 @@ async function settle(page) {
 
   await Promise.all(
     Array.from({ length: signedInContext ? 1 : concurrency }, async () => {
-      const context = signedInContext || (await browser.newContext({ timezoneId: 'America/Chicago' }));
+      // A fresh browser session for every shot, unless signed in, where the session is the sign-in. A page
+      // remembers state between visits (an event map highlights the last choice made on it), so a shared
+      // session made each picture depend on the one taken before it (#2347).
+      const open = async () => {
+        const context = signedInContext || (await browser.newContext({ timezoneId: 'America/Chicago' }));
 
-      if (actingAs) {
-        await context.addInitScript(HIDE_ACTING_AS);
-      }
+        if (actingAs) {
+          await context.addInitScript(HIDE_ACTING_AS);
+        }
 
-      const page = await context.newPage();
+        return { context, page: await context.newPage() };
+      };
+      const close = ({ context, page }) => (signedInContext ? page.close() : context.close());
 
       while (queue.length) {
         const job = queue.shift();
 
         try {
-          await page.setViewportSize(job.viewport);
-          await page.goto(addressOf(job.route), { waitUntil: 'domcontentloaded', timeout: 60000 });
+          let result = { settled: false };
 
-          if (signedInContext) {
-            await throughSignIn(page);
+          // Two tries for a map that does not finish: a slow service is often slow only once.
+          for (let attempt = 1; attempt <= 2 && !result.settled; attempt += 1) {
+            const session = await open();
+
+            try {
+              await session.page.setViewportSize(job.viewport);
+              await session.page.goto(addressOf(job.route), { waitUntil: 'domcontentloaded', timeout: 60000 });
+
+              if (signedInContext) {
+                await throughSignIn(session.page);
+              }
+
+              result = await settle(session.page);
+
+              if (result.settled || attempt === 2) {
+                // A GIS Day page scrolls, so the whole page is the picture; a map is one screen.
+                await session.page.screenshot({ path: job.file, fullPage: gisday });
+              }
+            } finally {
+              await close(session);
+            }
           }
 
-          await settle(page);
-          // A GIS Day page scrolls, so the whole page is the picture; a map is one screen.
-          await page.screenshot({ path: job.file, fullPage: gisday });
+          if (result.settled) {
+            delete unsettled[keyOf(job)];
+          } else {
+            unsettled[keyOf(job)] = result.why;
+            console.log('  ~ ' + job.viewportName + ' ' + job.route + ': taken unfinished, ' + result.why);
+          }
         } catch (error) {
           failed += 1;
           console.log('  ! ' + job.viewportName + ' ' + job.route + ': ' + String(error).split('\n')[0].slice(0, 90));
@@ -595,9 +665,6 @@ async function settle(page) {
         }
       }
 
-      if (!signedInContext) {
-        await context.close();
-      }
     })
   );
 
@@ -606,8 +673,12 @@ async function settle(page) {
   manifest.completedAt = centralNow();
   manifest.captured = done - failed;
   manifest.failed = failed;
+  manifest.unsettled = unsettled;
 
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
-  console.log('\ndone: ' + (done - failed) + ' captured, ' + failed + ' failed, ' + Math.round((Date.now() - started) / 60000) + ' min');
+  console.log(
+    '\ndone: ' + (done - failed) + ' captured, ' + failed + ' failed, ' + Object.keys(unsettled).length + ' unfinished, ' +
+      Math.round((Date.now() - started) / 60000) + ' min'
+  );
 })();
