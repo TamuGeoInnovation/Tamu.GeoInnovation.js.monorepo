@@ -159,7 +159,6 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       const type = typeAttribute ? submission.value?.[typeAttribute] : undefined;
       const settings = settingsFor(type);
       const name = settings?.nameAttribute ? submission.value?.[settings.nameAttribute] : undefined;
-      const sameThingMetres = settings?.sameThingMetres ?? SAME_THING_DISTANCE_METRES;
       let points = ALREADY_SUBMITTED_POINTS;
 
       const foundBefore =
@@ -173,15 +172,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
 
       const foundThisSeason =
         location !== undefined &&
-        newFinds.some(
-          (find) =>
-            find.type === type &&
-            distanceInMetres(find.location, location) <= sameThingMetres &&
-            (!settings?.nameAttribute ||
-              !hasName(name) ||
-              !hasName(find.name) ||
-              namesMatch(find.name as string, name as string))
-        );
+        newFinds.some((find) => find.type === type && isSameThing(find, { location, name }, settings));
 
       if (location && !foundBefore && !foundThisSeason) {
         points = NEW_FIND_POINTS;
@@ -264,9 +255,29 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
 }
 
 /**
+ * Whether a later find of a type is of the same thing as an earlier find of that type: within the
+ * type's `sameThingMetres` (`SAME_THING_DISTANCE_METRES` without it) and, when the type has a name
+ * question and both finds have a name, with matching names (#2162). Used by scoring and by the
+ * automatic review's check for a participant's repeats (#2164).
+ */
+export function isSameThing(
+  earlier: { location: { latitude: number; longitude: number }; name?: unknown },
+  later: { location: { latitude: number; longitude: number }; name?: unknown },
+  settings?: ICompetitionSeasonFormOption
+): boolean {
+  return (
+    distanceInMetres(earlier.location, later.location) <= (settings?.sameThingMetres ?? SAME_THING_DISTANCE_METRES) &&
+    (!settings?.nameAttribute ||
+      !hasName(earlier.name) ||
+      !hasName(later.name) ||
+      namesMatch(earlier.name as string, later.name as string))
+  );
+}
+
+/**
  * Whether a submission counts towards scoring: anything not discarded.
  */
-function counts(submission: CompetitionSubmission): boolean {
+export function counts(submission: Pick<CompetitionSubmission, 'validationStatus'>): boolean {
   return (
     !submission.validationStatus ||
     submission.validationStatus.status === COMPETITION_VALIDATION_STATUS.unverified ||
@@ -274,7 +285,7 @@ function counts(submission: CompetitionSubmission): boolean {
   );
 }
 
-function hasName(name: unknown): boolean {
+export function hasName(name: unknown): boolean {
   return typeof name === 'string' && name.trim() !== '';
 }
 
@@ -282,7 +293,9 @@ function hasName(name: unknown): boolean {
  * A submission's latitude and longitude as numbers, or `undefined` when it has none. The database
  * returns decimals as text, and a submission sent with no location was saved at 0, 0.
  */
-function usableLocation(location: SubmissionLocation): { latitude: number; longitude: number } | undefined {
+export function usableLocation(
+  location: Pick<SubmissionLocation, 'latitude' | 'longitude'> | undefined | null
+): { latitude: number; longitude: number } | undefined {
   const latitude = Number(location?.latitude);
   const longitude = Number(location?.longitude);
 

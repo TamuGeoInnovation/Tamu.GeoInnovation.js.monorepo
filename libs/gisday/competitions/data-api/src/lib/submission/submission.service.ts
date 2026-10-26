@@ -22,6 +22,8 @@ import {
 } from '../dtos/dtos';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
+import { AUTOMATIC_REVIEWER, automaticReviewReasons, ReviewedSubmission } from './automatic-review';
+
 @Injectable()
 export class SubmissionService extends BaseService<CompetitionSubmission> {
   constructor(
@@ -71,8 +73,26 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       // INSERT, never save(): save() updates a row whose guid already exists, and the app chooses the
       // guid (#1786). A duplicate fails on the primary key and rolls back its location and photographs.
       return this.submissionRepo.manager.transaction(async (em) => {
+        // The app reviews every new submission (#2164): verified when it passes every check, otherwise
+        // left unverified for a person, who can always decide otherwise.
+        const earlier = await em.find(CompetitionSubmission, {
+          where: { userGuid: entity.userGuid, season: { guid: entity.season.guid } },
+          relations: { location: true, validationStatus: true }
+        });
+        const reasons = automaticReviewReasons(
+          { created: new Date(), value: entity.value as never, location: truncated as never, photos: blobs?.length ?? 0 },
+          earlier.map((other) => toReviewed(other)),
+          (entity.season as CompetitionSeason).form?.model ?? []
+        );
+        const validationStatus = await em.save(
+          em.create(CompetitionSubmissionValidationStatus, {
+            status: reasons.length === 0 ? COMPETITION_VALIDATION_STATUS.verified : COMPETITION_VALIDATION_STATUS.unverified,
+            verifiedBy: AUTOMATIC_REVIEWER
+          })
+        );
+
         const location = await em.save(em.create(SubmissionLocation, truncated));
-        const sub = em.create(CompetitionSubmission, { ...entity, location });
+        const sub = em.create(CompetitionSubmission, { ...entity, location, validationStatus });
 
         await em.insert(CompetitionSubmission, sub);
 
@@ -199,10 +219,12 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         userGuid: true,
         location: {
           latitude: true,
-          longitude: true
+          longitude: true,
+          accuracy: true
         },
         validationStatus: {
-          status: true
+          status: true,
+          verifiedBy: true
         },
         blobs: {
           guid: true,
@@ -214,7 +236,9 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       }
     });
 
-    const mapped = this.mapSubmissionsToReviewDto(submissions, compSeason);
+    const mapped = this.mapSubmissionsToReviewDto(submissions, compSeason).map((dto, i) =>
+      withAutomaticReview(dto, submissions[i], submissions, compSeason)
+    );
     return this.resolveIdentities(mapped);
   }
 
@@ -309,6 +333,56 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         : undefined
     }));
   }
+}
+
+/**
+ * A saved submission as the automatic review reads it (#2164).
+ */
+function toReviewed(submission: CompetitionSubmission): ReviewedSubmission {
+  return {
+    created: new Date(submission.created),
+    value: submission.value as never,
+    location: submission.location,
+    photos: submission.blobs?.length ?? 0,
+    discarded: submission.validationStatus?.status === COMPETITION_VALIDATION_STATUS.discarded
+  };
+}
+
+/**
+ * A submission in the admin list with the name typed on it, whether the app verified it, and, while no
+ * one has verified or discarded it, why it needs a person to look (#2164). The reasons are worked out
+ * again from the season's submissions, so they follow the checks as they are now.
+ */
+function withAutomaticReview(
+  dto: SubmissionReviewDto,
+  submission: CompetitionSubmission,
+  all: Array<CompetitionSubmission>,
+  compSeason: CompetitionSeason
+): SubmissionReviewDto {
+  const model = compSeason.form?.model ?? [];
+  const nameAttribute = model.find((q) => q.isDiscriminator === true)?.options?.find((option) => option.nameAttribute)?.nameAttribute;
+  const name = nameAttribute ? submission.value?.[nameAttribute] : undefined;
+  const status = submission.validationStatus?.status ?? COMPETITION_VALIDATION_STATUS.unverified;
+  const created = new Date(submission.created).getTime();
+
+  const reviewReasons =
+    status === COMPETITION_VALIDATION_STATUS.unverified
+      ? automaticReviewReasons(
+          toReviewed(submission),
+          all
+            .filter((other) => other.userGuid === submission.userGuid && new Date(other.created).getTime() < created)
+            .map((other) => toReviewed(other)),
+          model
+        )
+      : [];
+
+  return {
+    ...dto,
+    name: typeof name === 'string' ? name : undefined,
+    reviewReasons,
+    verifiedAutomatically:
+      status === COMPETITION_VALIDATION_STATUS.verified && submission.validationStatus?.verifiedBy === AUTOMATIC_REVIEWER
+  };
 }
 
 /**

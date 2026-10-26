@@ -66,6 +66,12 @@ export interface SubmissionReviewDto {
   };
   imageGuids: string[];
   sha256Hashes: string[];
+  /** The name typed on it, when the form asks for one (#2164). Admin list only. */
+  name?: string;
+  /** Why it needs a person to look, while nobody has verified or discarded it (#2164). Admin list only. */
+  reviewReasons?: string[];
+  /** Verified by the app as it was saved, not by a person (#2164). Admin list only. */
+  verifiedAutomatically?: boolean;
 }
 
 export interface SubmissionMediaDto {

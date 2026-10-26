@@ -28,7 +28,7 @@ describe('clampAccuracy', () => {
  * would update a row that already has that guid), together with its photographs in one transaction.
  */
 describe('SubmissionService.createCompetitionSubmission', () => {
-  let em: { create: jest.Mock; save: jest.Mock; insert: jest.Mock };
+  let em: { create: jest.Mock; save: jest.Mock; insert: jest.Mock; find: jest.Mock };
   let service: SubmissionService;
 
   const entity: DeepPartial<CompetitionSubmission> = {
@@ -46,7 +46,9 @@ describe('SubmissionService.createCompetitionSubmission', () => {
     em = {
       create: jest.fn((type, values) => Object.assign(new type(), values)),
       save: jest.fn((value) => Promise.resolve(value)),
-      insert: jest.fn(() => Promise.resolve({}))
+      insert: jest.fn(() => Promise.resolve({})),
+      // The participant's earlier submissions, for the automatic review (#2164).
+      find: jest.fn(() => Promise.resolve([]))
     };
     const submissionRepo = { manager: { transaction: (work) => work(em) } };
 
@@ -96,10 +98,6 @@ describe('SubmissionService.createCompetitionSubmission', () => {
 
     const status = () => inserted(CompetitionSubmission)[0]?.validationStatus;
 
-    beforeEach(() => {
-      (em as unknown as { find: jest.Mock }).find = jest.fn(() => Promise.resolve([]));
-    });
-
     it('marks one that passes every check as verified by the app', async () => {
       await service.createCompetitionSubmission(plaque, blobs);
 
@@ -120,11 +118,11 @@ describe('SubmissionService.createCompetitionSubmission', () => {
         location: { latitude: '30.61318', longitude: '-96.34062', accuracy: '5' },
         validationStatus: null
       });
-      (em as unknown as { find: jest.Mock }).find.mockResolvedValue([earlier]);
+      em.find.mockResolvedValue([earlier]);
 
       await service.createCompetitionSubmission(plaque, blobs);
 
-      expect((em as unknown as { find: jest.Mock }).find).toHaveBeenCalledWith(
+      expect(em.find).toHaveBeenCalledWith(
         CompetitionSubmission,
         expect.objectContaining({ where: { userGuid: 'auth0|ann', season: { guid: 'cs-2026' } } })
       );

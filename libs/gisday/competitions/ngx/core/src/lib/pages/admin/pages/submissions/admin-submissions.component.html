@@ -1,5 +1,12 @@
 <div class="admin-submissions-container">
   <h1>VGI Competition Submissions</h1>
+  <p>The app reviews each submission as it arrives. It verifies one that passes every check and leaves the rest unverified, with the reason, under <strong>Needs a look</strong>. Before prizes are awarded, check the <strong>Top finishers</strong>' submissions: that each photo shows what was submitted, and its name.</p>
+  @let view = view$ | async;
+  <div class="flex flex-row wrap views leader-1 trailer-1" role="group" aria-label="Which submissions to show">
+    <button type="button" class="button" [class.secondary]="view !== 'all'" [attr.aria-pressed]="view === 'all'" (click)="show('all')">All</button>
+    <button type="button" class="button" [class.secondary]="view !== 'needs-a-look'" [attr.aria-pressed]="view === 'needs-a-look'" (click)="show('needs-a-look')">Needs a look</button>
+    <button type="button" class="button" [class.secondary]="view !== 'top-finishers'" [attr.aria-pressed]="view === 'top-finishers'" (click)="show('top-finishers')">Top finishers</button>
+  </div>
   <tamu-gisc-submission-review-list
     [submissions$]="submissions$"
     [isAdmin]="true"

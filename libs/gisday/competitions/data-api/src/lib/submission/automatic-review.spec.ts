@@ -18,7 +18,12 @@ describe('automaticReviewReasons', () => {
       options: [
         { name: 'Monument', value: 'monument', sameThingMetres: 15 },
         { name: 'Memorial marker', value: 'memorial_marker', sameThingMetres: 15 },
-        { name: 'Tree or bench memorial plaque', value: 'tree_bench_plaque', sameThingMetres: 10, nameAttribute: 'memorial_name' }
+        {
+          name: 'Tree or bench memorial plaque',
+          value: 'tree_bench_plaque',
+          sameThingMetres: 10,
+          nameAttribute: 'memorial_name'
+        }
       ]
     },
     { attribute: 'memorial_name', options: [] }
@@ -45,9 +50,9 @@ describe('automaticReviewReasons', () => {
 
   it('fails a submission with no name, or only spaces', () => {
     expect(automaticReviewReasons(submission({ value: { memorial_type: 'monument' } }), [], form)).toEqual(['No name']);
-    expect(automaticReviewReasons(submission({ value: { memorial_type: 'monument', memorial_name: '  ' } }), [], form)).toEqual([
-      'No name'
-    ]);
+    expect(
+      automaticReviewReasons(submission({ value: { memorial_type: 'monument', memorial_name: '  ' } }), [], form)
+    ).toEqual(['No name']);
   });
 
   it('does not ask for a name when the form has no name question', () => {
@@ -75,7 +80,9 @@ describe('automaticReviewReasons', () => {
     expect(automaticReviewReasons(submission({ location: { ...houston, accuracy: 5 } }), [], form)).toEqual([
       'Not on Texas A&M property in Brazos County'
     ]);
-    expect(automaticReviewReasons(submission({ location: { latitude: 0, longitude: 0, accuracy: 0 } }), [], form)).toEqual(['No location']);
+    expect(automaticReviewReasons(submission({ location: { latitude: 0, longitude: 0, accuracy: 0 } }), [], form)).toEqual([
+      'No location'
+    ]);
   });
 
   it('fails a location the phone did not give an accuracy for, or gave as worse than 15 m', () => {
@@ -90,7 +97,10 @@ describe('automaticReviewReasons', () => {
 
   it('fails the same participant submitting the same thing again', () => {
     const earlier = [submission({ created: secondsBefore(600) })];
-    const again = submission({ location: { ...north(4), accuracy: 5 }, value: { memorial_type: 'tree_bench_plaque', memorial_name: 'john smith' } });
+    const again = submission({
+      location: { ...north(4), accuracy: 5 },
+      value: { memorial_type: 'tree_bench_plaque', memorial_name: 'john smith' }
+    });
 
     expect(automaticReviewReasons(again, earlier, form)).toEqual(['Already submitted by this participant']);
   });
@@ -100,15 +110,24 @@ describe('automaticReviewReasons', () => {
 
     expect(
       automaticReviewReasons(
-        submission({ location: { ...north(4), accuracy: 5 }, value: { memorial_type: 'tree_bench_plaque', memorial_name: 'Jane Doe' } }),
+        submission({
+          location: { ...north(4), accuracy: 5 },
+          value: { memorial_type: 'tree_bench_plaque', memorial_name: 'Jane Doe' }
+        }),
         earlier,
         form
       )
     ).toEqual([]);
-    expect(automaticReviewReasons(submission({ value: { memorial_type: 'monument', memorial_name: 'John Smith' } }), earlier, form)).toEqual([]);
+    expect(
+      automaticReviewReasons(
+        submission({ value: { memorial_type: 'monument', memorial_name: 'John Smith' } }),
+        earlier,
+        form
+      )
+    ).toEqual([]);
   });
 
-  it('ignores the participant\'s discarded submissions', () => {
+  it("ignores the participant's discarded submissions", () => {
     const earlier = [submission({ created: secondsBefore(600), discarded: true })];
 
     expect(automaticReviewReasons(submission(), earlier, form)).toEqual([]);
@@ -129,7 +148,11 @@ describe('automaticReviewReasons', () => {
 
   it('lists every reason that applies', () => {
     expect(
-      automaticReviewReasons(submission({ photos: 0, value: { memorial_type: 'tree_bench_plaque' }, location: { ...rudderPlaza, accuracy: 0 } }), [], form)
+      automaticReviewReasons(
+        submission({ photos: 0, value: { memorial_type: 'tree_bench_plaque' }, location: { ...rudderPlaza, accuracy: 0 } }),
+        [],
+        form
+      )
     ).toEqual(['No photo', 'No name', 'Location accuracy not recorded']);
   });
 });

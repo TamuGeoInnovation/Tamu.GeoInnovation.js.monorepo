@@ -8,6 +8,17 @@
 
     <ngx-datatable-column name="Question" prop="questionValue" [width]="200" [resizeable]="true"> </ngx-datatable-column>
 
+    @if (isAdmin()) {
+    <ngx-datatable-column name="Name" prop="name" [width]="200" [resizeable]="true"> </ngx-datatable-column>
+
+    <!-- Why the app left it for a person (#2164). -->
+    <ngx-datatable-column name="Needs a look because" [width]="250" [resizeable]="true">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <span [title]="row.reviewReasons?.join('; ')">{{ row.reviewReasons?.join('; ') }}</span>
+      </ng-template>
+    </ngx-datatable-column>
+    }
+
     <ngx-datatable-column name="SHA256" [width]="150" [resizeable]="true">
       <ng-template let-row="row" ngx-datatable-cell-template>
         @if (row.sha256Hashes && row.sha256Hashes.length > 0) {
@@ -20,7 +31,7 @@
 
     <ngx-datatable-column name="Status" [width]="120" [resizeable]="true">
       <ng-template let-row="row" ngx-datatable-cell-template>
-        <span [class]="'status-badge status-' + row.validationStatus"> {{ row.validationStatus }} </span>
+        <span [class]="'status-badge status-' + row.validationStatus"> {{ row.validationStatus }}{{ row.verifiedAutomatically ? ' by app' : '' }} </span>
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>
