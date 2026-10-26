@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "include": ["**/*.ts"],
-  "compilerOptions": {
-    "types": ["jest", "node", "@arcgis/core/interfaces"]
-  },
-  "exclude": ["jest.config.ts"]
-}
