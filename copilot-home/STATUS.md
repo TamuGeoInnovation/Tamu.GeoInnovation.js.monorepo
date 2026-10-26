@@ -55,4 +55,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 21 (batch 22 started; batch 6 reported later, out of order; 4 and 5 withdrawn)
+Last batch done: 22 (batch 6 reported later, out of order; 4 and 5 withdrawn)
