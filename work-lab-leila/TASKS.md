@@ -10,7 +10,7 @@
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
-## Batch 152 (aggiemap: the release tier on Release-494, before production; 25 October 2026, 8:40 PM Central, from `home (aggiemap)`)
+## Batch 152 (aggiemap: #912 - the release tier on Release-494, before production; 25 October 2026, 8:40 PM Central, from `home (aggiemap)`)
 
 **After batch 151** - both are heavy, so never beside it. **Expected: about 30 minutes of tier.** Write `Next update by` when you start.
 

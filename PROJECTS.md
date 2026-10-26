@@ -10,7 +10,7 @@ director handing over, in the same commit as its handover notes. **If this file 
 | --- | --- | --- | --- |
 | **Coordination** (lab time, the lock-file queue, questions to the maintainer) | *to be started the morning of 26 October 2026*: a fresh chat on the work computer, "coordinator" | - | Until then each project lead schedules its own work, as before. Its start: `coordinator/START.md` |
 | **Security and dependencies** (#1218, #2111, #2122, the lock queue's security PRs) | `work (security)`: the work computer's security chat | 23 October 2026 | Hand-off: `security/HANDOFF.md`. Stays on the work computer, reached over Remote Control |
-| **AggieMap** | `home (aggiemap)`: the home computer's AggieMap chat | 25 October 2026, evening | Release-494 (`392be39db`) is the production candidate, waiting on #2209 |
+| **AggieMap** | `home (aggiemap)`: the home computer's AggieMap chat | 25 October 2026, evening | Release-494 (`392be39db`, tagged `dev-2026-10-25-2`) is the production candidate. It waits on the release tier on dev (lab batch 152, after batch 151), not on #2209: #2209's eight dev-only failures are expected and do not hold it (the maintainer, 8:40 PM) |
 | **GIS Day** | `home (gisday)`: the home computer's GIS Day chat | 25 October 2026, evening | `DIRECTOR.md`, "Handover (gisday)" |
 | **Visual testing** (`tools/visual-baselines`) | `work (visual testing)`: the work computer's Visual Testing chat | 25 October 2026 | |
 
