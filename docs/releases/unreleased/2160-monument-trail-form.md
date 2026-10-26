@@ -27,3 +27,4 @@ you find?" as the type question, and saves. Until then the competition keeps the
 | --- | --- |
 | ![The page lists only plaques for trees and benches](../screenshots/2160-monument-trail-form/before-details-page.jpg) | ![The page lists monuments, memorial markers and memorial plaques, and asks for the name](../screenshots/2160-monument-trail-form/after-details-page.jpg) |
 | | ![Examples for monuments, memorial markers and memorial plaques](../screenshots/2160-monument-trail-form/after-examples.jpg) |
+| | ![The competitions app asks what was found and the name on it](../screenshots/2160-monument-trail-form/after-app-form.jpg) |
