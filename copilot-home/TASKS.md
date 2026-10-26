@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 17.** Written only by the director, `work (security)` (the security and dependency chat on the work
+> **Next free batch number: 18.** Written only by the director, `work (security)` (the security and dependency chat on the work
 > computer). You write `copilot-home/STATUS.md` and `copilot-home/reports/`, never this file. Do the batches in number order,
 > one at a time.
 
@@ -30,6 +30,17 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
+
+## Batch 17 (security: #2122 - the cosmetic leftovers your batch 13 found after PRs 2383 and 2386; a branch; 25 October 2026, about 10:25 PM Central, from `work (security)`)
+
+**Start after batch 16**, in number order as before. **Expected: 30 minutes.** Your batch 13 review is good. Finding 1 (`session/expired` in UES Operations' front
+end) is the AggieMap lead's decision; **do not touch it**. Do findings 2 and 3 only:
+1. Branch `chore/2122-stale-references` from `origin/development`.
+2. `nx.json` line 247: remove `"libs/oidc/client/**/*"` (the folder is gone). `libs/common/ngx/auth/README.md` line 65 and `libs/common/types/src/lib/auth-types.ts`
+   line 3: point at `@tamu-gisc/common/types`, not `libs/oidc/client`. `tools/security-findings/README.md` line 97: `better-sqlite3` is gone (PR 2386); reword or drop
+   the line, and check the rest of that README for `better-sqlite3`. Leave `.gitignore`'s `oidc-client-config.*` (a deploy machine may still hold one).
+3. `bash scripts/check-in-volume.sh chore/2122-stale-references`. Commit (`chore(workspace): Drop references to libraries and packages that are gone`, `Part of #2122`,
+   Co-Authored-By), push to `fork`. No PR.
 
 ## Batch 16 (security: #2388 - the two workflow script injections, and actionlint on PRs; a branch; 25 October 2026, about 8:10 PM Central, from `work (security)`)
 
