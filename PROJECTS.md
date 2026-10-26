@@ -21,5 +21,5 @@ director handing over, in the same commit as its handover notes. **If this file 
 | `work-lab-leila` | the lab | Claude Code | itself (`tools/listen.sh`) | any project lead; the coordinator orders them once it exists |
 | `copilot-home` | the home computer | GitHub Copilot CLI | `tools/agent-runner.ps1` | any project lead |
 | `codex-home` | the home computer | OpenAI Codex CLI | `tools/agent-runner.ps1 -Agent codex` (not running yet) | any project lead |
-| `home` | the home computer | Claude Code | itself (`tools/listen.sh`) | any project lead |
+| `home` | the home computer | Claude Code, its own chat "Home - Work Listener" since 26 October (the AggieMap chat no longer listens) | itself (`tools/listen.sh`) | any project lead |
 | `work` | the work computer | Claude Code | itself (`tools/listen.sh`) | any project lead (not listening as of 25 October) |
