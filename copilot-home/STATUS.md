@@ -17,7 +17,7 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Idle between batches: batch 24 reported.
+Batch 25 (gisday: remove 19 unused GIS Day files) started 12:35 PM Central, 26 October. Next update by 1:35 PM Central.
 
 ## Finished
 
