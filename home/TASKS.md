@@ -24,6 +24,14 @@ failures are recorded below so nobody re-derives them.
 **What to do:** keep your watcher running, take batches from this file as before, and put any AggieMap
 question in your report under **Questions for the director (aggiemap)** rather than acting on it.
 
+## Batch 4 (security: #2425 - push the clean branch under a new name; 26 October 2026, about 3:40 PM Central, from `work (security)`)
+
+**Start now. A few minutes.** Your batch 3 question 1: **the maintainer chose B** (26 October). Push your rewritten branch
+(`34e42dae3`, then `160f65e80`) to `fork` as a **new** branch, `chore/2425-api-images-non-root-2`. No force-push. Read it back
+with `git ls-remote fork` and put the commit in a short report, `home/reports/2026-10-26-4.md`, then push `home: batch 4 done - ...`.
+The director deletes the old `chore/2425-api-images-non-root` from the fork once the new one is there, and opens the PR.
+Thank you for catching the cluster details yourself.
+
 ## Batch 3 (security: #2425 - run the four API images as `node`, not root; a branch; 26 October 2026, 11:48 AM Central, from `work (security)`)
 
 **Start now. About 1.5 hours.** The maintainer decided (26 October, Priority Medium): the API images stop running as root.
@@ -47,7 +55,7 @@ question in your report under **Questions for the director (aggiemap)** rather t
 6. `bash scripts/check-in-volume.sh <branch>` must exit 0. Add a `.pr-body.md` draft as the last commit. Report
    `home/reports/2026-10-26-3.md`, then push `home: batch 3 done - ...`. No PR (the director opens it).
 
-Next free number: 4.
+Next free number: 5.
 
 ## Batch 2 (security: prove the zod 4.6.6 override for jimp on branch chore/override-zod; 26 October 2026, about 7:30 AM Central, from `work (security)`)
 
