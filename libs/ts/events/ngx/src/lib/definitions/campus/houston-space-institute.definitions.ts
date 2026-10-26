@@ -89,8 +89,10 @@ export const HoustonSpaceInstituteConfiguration: EventConfiguration = {
   shortApplicationName: 'Houston Space Institute',
   introductionText: 'Map of the Texas A&M University Houston Space Institute campus.',
   eventDates: [],
-  // Centre and zoom derived from layer `4`'s published extent: 263 m by 244 m.
-  mapCenter: [-95.100091, 29.556442],
+  // Centred on the campus's one building, Texas A&M University Space Institute (B500), from its own
+  // `longitude`/`latitude` fields. Layer `4` holds exactly that one feature, so the extent centre and
+  // the building agree here - unlike Fort Worth Law School, where they do not.
+  mapCenter: [-95.100068, 29.556426],
   zoom: 18,
   hideLayerToggle: true,
   sidebarTabs: ['features'],

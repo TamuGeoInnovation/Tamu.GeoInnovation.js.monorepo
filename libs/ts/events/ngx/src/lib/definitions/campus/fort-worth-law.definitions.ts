@@ -86,8 +86,14 @@ export const FortWorthLawConfiguration: EventConfiguration = {
   shortApplicationName: 'Fort Worth Law School',
   introductionText: 'Map of the Texas A&M University School of Law campus in Fort Worth.',
   eventDates: [],
-  // Centre and zoom derived from layer `0`'s published extent: 1310 m by 997 m.
-  mapCenter: [-97.329855, 32.751674],
+  // Centred on the three TAMU buildings - the Law School (LAWS), the Law & Education building (FWLE)
+  // and Research & Innovation A (RIB-A) - which sit together around 3800-3901 on the east side.
+  //
+  // Deliberately NOT the layer's published extent centre, which is about a kilometre north-west of
+  // them: the layer's fourth feature is "Tarrant County" (DS04) at -97.3353, 32.7551, and it stretches
+  // the extent across 1310 m. A map opened on that centre shows downtown Fort Worth with the campus at
+  // the edge of the frame.
+  mapCenter: [-97.324918, 32.748586],
   zoom: 17,
   hideLayerToggle: true,
   sidebarTabs: ['features'],

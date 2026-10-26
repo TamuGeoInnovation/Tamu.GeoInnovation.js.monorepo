@@ -155,6 +155,10 @@
     "layerList": false,
     "layers": []
   },
+  "fort-worth-law": {
+    "layerList": false,
+    "layers": []
+  },
   "galveston": {
     "layerList": false,
     "layers": []
@@ -232,6 +236,10 @@
   },
   "graduation-summer": {
     "layerList": true,
+    "layers": []
+  },
+  "houston-space-institute": {
+    "layerList": false,
     "layers": []
   },
   "hs-graduation-2026": {
