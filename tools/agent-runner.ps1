@@ -58,6 +58,10 @@ function Run-Agent {
   $log = Join-Path $logs ("{0}-{1}.log" -f $Name, (Get-Date -Format 'yyyyMMdd-HHmmss'))
   Log "starting $Agent (log $log)"
   Push-Location $Repo
+  # Windows PowerShell 5.1 turns a native program's stderr into an error record when it is redirected, and with the script's
+  # $ErrorActionPreference = 'Stop' the first line the agent writes to stderr threw - every poll, all night on 25-26 October
+  # (184 "running" heartbeats, no batch). Inside this function, stderr is just output.
+  $ErrorActionPreference = 'Continue'
   try {
     if ($Agent -eq 'copilot') {
       & copilot -p $prompt --allow-all-tools --allow-all-paths --deny-tool 'shell(git push --force)' --deny-tool 'shell(gh pr merge)' --deny-tool 'shell(gh pr create)' *>&1 | Tee-Object -FilePath $log | Out-Null
@@ -74,10 +78,18 @@ function Run-Agent {
 Log "agent-runner for $Name ($Agent) in $Repo; polling every $PollSeconds s"
 $last = if (Test-Path $state) { (Get-Content $state -Raw).Trim() } else { '' }
 $lastBeat = [datetime]::MinValue
+$failures = 0
 while ($true) {
   try {
     $now = Latest-Change
     if ($now -and $now -ne $last) {
+      if ($failures -ge 3) {
+        # Never retry the same change forever: after three failed runs, mark it handled and say so, so the director sees it.
+        Log "giving up on $now after $failures failed runs; see the logs"
+        Heartbeat 'blocked: agent-runner failed 3 runs; see its logs' 120
+        $last = $now; Set-Content -Path $state -Value $last; $failures = 0; $lastBeat = Get-Date
+        Start-Sleep -Seconds $PollSeconds; continue
+      }
       Log "new commit for ${Name}: $now"
       Heartbeat 'running (agent-runner)' 120
       for ($i = 1; $i -le $MaxRunsPerChange; $i++) {
@@ -86,12 +98,13 @@ while ($true) {
       }
       $last = $now
       Set-Content -Path $state -Value $last
+      $failures = 0
       Heartbeat 'idle' ($HeartbeatMinutes + 15)
       $lastBeat = Get-Date
     } elseif (((Get-Date) - $lastBeat).TotalMinutes -ge $HeartbeatMinutes) {
       Heartbeat 'idle' ($HeartbeatMinutes + 15)
       $lastBeat = Get-Date
     }
-  } catch { Log "error: $_" }
+  } catch { $failures++; Log "error (failure $failures): $_" }
   Start-Sleep -Seconds $PollSeconds
 }
