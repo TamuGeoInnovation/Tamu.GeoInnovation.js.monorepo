@@ -64,8 +64,6 @@
     "angulartics2": "^14.1.0",
     "auth0": "~7.4.0",
     "axios": "^1.7.7",
-    "better-sqlite3": "^13.0.3",
-    "better-sqlite3-session-store": "^0.1.0",
     "bull": "^4.16.5",
     "chart.js": "~4.5.1",
     "class-transformer": "^0.5.1",
@@ -74,7 +72,6 @@
     "deepmerge": "^4.2.2",
     "dotenv": "18.0.9",
     "express": "5.3.0",
-    "express-session": "^1.19.0",
     "form-data": "^4.0.0",
     "fs-extra": "^11.4.1",
     "geojson-utils": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.geojsonutils.git",
@@ -83,7 +80,6 @@
     "interactjs": "^1.10.28",
     "jszip": "^3.10.2",
     "jwks-rsa": "^4.1.0",
-    "jwt-decode": "^4.0.0",
     "maplibre-gl": "^6.15.0",
     "marked": "18.1.1",
     "mssql": "^12.7.11",
@@ -164,7 +160,6 @@
     "auth0": {
       "undici-types": "6.29.0"
     },
-    "better-sqlite3": "^13.0.3",
     "bull": {
       "uuid": "11.1.1"
     },
@@ -178,7 +173,6 @@
     "@parcel/watcher": true,
     "@swc/core": true,
     "@vaadin/vaadin-usage-statistics": false,
-    "better-sqlite3": false,
     "browser-tabs-lock": false,
     "esbuild": true,
     "fsevents": true,
