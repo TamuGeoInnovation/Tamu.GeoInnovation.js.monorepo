@@ -17,10 +17,11 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Batch 24 (gisday: #2426 photo never larger) started 11:55 AM Central, 26 October. Next update by 12:55 PM Central.
+Idle between batches: batch 24 reported.
 
 ## Finished
 
+- **Batch 24, gisday: #2426 photo never larger** (11:55 AM to about 12:30 PM Central, 26 October): branch `fix/2426-gisday-photo-never-larger` at `2f56a66703a09225adaf050caacc9925fe85ddc5` on the fork; red (274,491 to 696,745 bytes) then green (141,556); check exit 0. Report `copilot-home/reports/2026-10-26-24.md`.
 - **Batch 23, gisday: #2422 speaker photo preview** (10:05 to about 10:35 AM Central, 26 October): branch `fix/2422-gisday-speaker-photo-preview` at `e9e95440db8ae0df4039f59c8844f6eb7ab010ad` on the fork; red (3 failed) then green (7 passed); check exit 0. Report `copilot-home/reports/2026-10-26-23.md`.
 
 - **Batch 6, security: #1218 second review of the chart.js 4 branch (read only)** (9:01 to 9:05 PM Central, 25 October): branch already merged as PR 2332; registrations and colour rules match, lock clean, 14-day rule met; latent differences only (line fill/tension, colour persistence). Report `copilot-home/reports/2026-10-25-6.md`. Batches 4 and 5 were withdrawn by the director.
