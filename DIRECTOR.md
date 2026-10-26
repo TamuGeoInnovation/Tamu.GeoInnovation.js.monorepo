@@ -1,6 +1,6 @@
 # Who directs
 
-**Directors: AggieMap - home, its AggieMap chat (handed back 5:25 PM Central, 25 October 2026, as the maintainer left the office; work held it from 4:45 PM that afternoon); GIS Day - home, its GIS Day chat (handed over by work at 5:00 PM Central, Sunday 25 October 2026; work directed GIS Day on 24 and 25 October because the maintainer was there; see Handover (gisday)); security and vulnerability work (#2112, #2118, #1146's security parts, Dependabot, CodeQL and secret-scanning alerts, committed secrets) - work, the chat titled "js.monorepo - Security - CSA 305 Desktop"** (maintainer, 23 October 2026). All three run on the work machine; each writes only its own batches and asks him only about its own, so a listener's batch heading (`gisday:`, `aggiemap:`, `security:`) says which chat wrote it and where its questions go. `package.json` and `package-lock.json` are shared: a chat says so before changing either, and security bumps are the security chat's.
+**Directors: AggieMap - home, its AggieMap chat (handed back 5:25 PM Central, 25 October 2026, as the maintainer left the office; work held it from 4:45 PM that afternoon); GIS Day - work, its GIS Day chat (taken back at 9:58 AM Central, Monday 26 October 2026, at the maintainer's word; home is a listener; see Handover (gisday)); security and vulnerability work (#2112, #2118, #1146's security parts, Dependabot, CodeQL and secret-scanning alerts, committed secrets) - work, the chat titled "js.monorepo - Security - CSA 305 Desktop"** (maintainer, 23 October 2026). All three run on the work machine; each writes only its own batches and asks him only about its own, so a listener's batch heading (`gisday:`, `aggiemap:`, `security:`) says which chat wrote it and where its questions go. `package.json` and `package-lock.json` are shared: a chat says so before changing either, and security bumps are the security chat's.
 
 Each of the maintainer's machines runs a Claude Code session on this branch. **Each application has exactly one director at a
 time; every other session listens.** The maintainer talks to the directors; the two are kept apart so that each chat's context
@@ -465,6 +465,9 @@ layers and reported two columns as missing on production that were present. The 
 checks each filter against its own layer, which is why it can be sent to the GIS team.
 
 ## Handover (gisday)
+
+**26 October, 9:58 AM Central: the maintainer made `work` (its GIS Day chat) the GIS Day director again.** Home is a listener.
+The handover below, written for home on 25 October, is what work picks up from.
 
 Written by `work` (GIS Day chat) at 5:00 PM Central, Sunday 25 October 2026, as the maintainer left for home. **The GIS Day
 director is `home`** from when the maintainer speaks to it there; `work`'s GIS Day chat becomes a listener. (Home did not pick

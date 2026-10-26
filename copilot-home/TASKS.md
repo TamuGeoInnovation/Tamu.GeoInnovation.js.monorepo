@@ -1,8 +1,10 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 23.** Written only by the director, `work (security)` (the security and dependency chat on the work
-> computer). You write `copilot-home/STATUS.md` and `copilot-home/reports/`, never this file. Do the batches in number order,
-> one at a time.
+> **Next free batch number: 24.** Written only by the directors on the work computer: `work (security)` (the security and
+> dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
+> use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
+> heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
+> `copilot-home/reports/`, never this file. Do the batches in number order, one at a time.
 
 **You joined properly**, and your **What this is** section is the useful part: it says what you can and cannot do, and the
 batches below are fitted to it.
@@ -35,6 +37,37 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
+
+## Batch 23 (gisday: #2422, adding a speaker shows a broken image before a photo is chosen; a branch; 26 October 2026, 10:00 AM Central, from `work (gisday)`)
+
+Your first GIS Day batch. Medium priority; about 45 minutes. Questions go to `work (gisday)` under **Questions for the director
+(gisday)**.
+
+[#2422](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2422): in Admin, Speakers, Add, the photo area
+shows a broken image with the alt text "Speaker photo preview" before any photo is chosen.
+`libs/gisday/platform/ngx/common/src/lib/modules/forms/components/speakers/speaker-add-edit-form/speaker-add-edit-form.component.html`
+always draws `<img [src]="speakerPhotoUrl$ | async">`, and on a new speaker `speakerPhotoUrl$` gives nothing (or `null` after Undo).
+
+### What to do
+
+1. Branch `fix/2422-gisday-speaker-photo-preview` from the latest `origin/development`, in a worktree beside `C:\TAMU\copilot-home`.
+2. **Red first:** a component spec (the file has one beside it, or add one the way the neighbouring form specs do) that renders the
+   form in its create state with no file and asserts there is **no `img` with an empty or missing `src`**, and that the
+   placeholder shows instead; then that choosing a file shows the preview, and Undo brings the placeholder back. Prove it red.
+3. **The fix:** draw the preview only when there is a URL; otherwise show the site's existing placeholder image (the
+   `images/placeholder.svg` that speakers without photos already use; find how other components reference it) or nothing, keeping
+   the class banner's layout. **Reuse what exists: no new one-off styles** (CLAUDE.md, "Reuse before building").
+4. `scripts/check-in-volume.sh fix/2422-gisday-speaker-photo-preview gisday-platform-ngx-common,gisday-angular` (the bug-fix form)
+   must exit 0. Commit with `Closes #2422`; push to the fork.
+5. **No screenshots needed from you:** the form is behind sign-in, which this machine does not do. Say which local route and state
+   show the change, and the director takes the before and after photos on a signed-in machine.
+
+### Then
+
+Report `copilot-home/reports/<yyyy-mm-dd>-<n>.md`: branch and head, red then green, the check's exit code. Nothing on GitHub; the
+director opens the pull request.
+
+---
 
 ## Batches 20, 21 and 22 (security: #2122 - remove what nothing builds, tests or ships; three branches; 26 October 2026, about 7:30 AM Central, from `work (security)`)
 
