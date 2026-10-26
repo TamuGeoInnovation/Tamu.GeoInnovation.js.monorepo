@@ -19,7 +19,7 @@ Last written **8:06 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 **Next update by 7:00 AM Central.**
 
-Starting batch 10 (#2379); `tools/listen.sh` is running in the background. **Next update by 9:30 PM Central.**
+Batch 10 (security: #2379 upload-limit timeout) started 8:15 PM Central. **Next update by 9:15 PM Central.**
 
 ## Finished
 
