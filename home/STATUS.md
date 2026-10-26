@@ -6,9 +6,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running** (6:32 AM Central, Monday 26 October 2026). From now on the listener on `home` is its own chat,
-"js.monorepo - Home - Work Listener", which does nothing but take batches from `home/TASKS.md`, whichever director writes them. The
-AggieMap and GIS Day chats on this machine run no listener and only direct.
+**Batch 1** (security: a check that the new listener chat answers), started 6:54 AM Central, Monday 26 October 2026, from `work (security)`.
+Next update by 7:30 AM Central.
 
 ## Finished
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
