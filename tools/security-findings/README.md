@@ -75,7 +75,7 @@ Two kinds of entry are reported without failing. *Not installed any more* is an 
 at all: it allows nothing, and `npm install-scripts prune` removes it. *Installed, but no install script recorded* is an
 entry for a package the lock installs without `hasInstallScript`, and it **stays**: npm's `strict-allow-scripts` also
 counts a `binding.gyp` as `install: node-gyp rebuild`, even when the package sets `"gypfile": false`, and the lock does
-not record that. `better-sqlite3` 13 is one: it ships its own binaries, so it is denied (`false`), but removing the entry
+not record that. `better-sqlite3` 13 was one (the package is gone now): it shipped its own binaries, so it was denied (`false`), but removing the entry
 makes `npm ci` fail with `ESTRICTALLOWSCRIPTS` (#2326).
 
 **When it fails**, a dependency change brought a new install script, or a new copy of one. Read what the
@@ -94,7 +94,6 @@ a pinned `name@1.2.3` entry would make each new version need a review.
 
 | Package | Script | Allowed | Why |
 | --- | --- | --- | --- |
-| `better-sqlite3` | downloads its native binary (`prebuild-install`), or builds it | yes | the only one whose package cannot work without it. Used only by `ues-operations-nest` |
 | `esbuild`, `@swc/core`, `unrs-resolver`, `lmdb`, `msgpackr-extract`, `@parcel/watcher`, `fsevents` | check, or fall back to building, the native binary their platform package supplies | yes | each works without it on Linux x64, where the platform package is there; the script is the fallback where it is not |
 | `nx` | checks the Nx Cloud client | yes | the build tool's own |
 | `@vaadin/vaadin-usage-statistics` | swaps in a telemetry opt-out file when a project asks for it | **no** | this project does not ask |
