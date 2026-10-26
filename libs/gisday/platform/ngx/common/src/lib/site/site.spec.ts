@@ -50,8 +50,15 @@ describe('gisdaySite', () => {
     expect(gisdaySite(undefined, 'localhost').name).toBe('TxGIS Day');
   });
 
-  it("has every feature on Texas A&M's site and txgisday.org, and neither Texas A&M's content nor its links on UCGIS's", () => {
-    expect(gisdaySite('tamu').off).toEqual([]);
+  /** #2431. Only gisday.tamu.edu leaves out the links under Explore Events. */
+  it("leaves the homepage's links under Explore Events out of Texas A&M's site only", () => {
+    expect(gisdaySite('tamu').off).toContain('homeLinks');
+    expect(gisdaySite('txgisday').off).not.toContain('homeLinks');
+    expect(gisdaySite('ucgis').off).not.toContain('homeLinks');
+  });
+
+  it("has every other feature on Texas A&M's site and txgisday.org, and neither Texas A&M's content nor its links on UCGIS's", () => {
+    expect(gisdaySite('tamu').off).toEqual(['homeLinks']);
     expect(gisdaySite('txgisday').off).toEqual([]);
     expect(gisdaySite('ucgis').off).toEqual(expect.arrayContaining(['tamu', 'tamuLinks']));
   });
@@ -88,7 +95,7 @@ describe('SiteHasPipe', () => {
     setUp();
     const pipe = TestBed.runInInjectionContext(() => new SiteHasPipe());
 
-    for (const feature of ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu', 'tamuLinks'] as const) {
+    for (const feature of ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu', 'tamuLinks', 'homeLinks'] as const) {
       expect(pipe.transform(feature)).toBe(true);
     }
   });
