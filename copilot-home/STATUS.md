@@ -17,10 +17,11 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Batch 25 (gisday: remove 19 unused GIS Day files) started 12:35 PM Central, 26 October. Next update by 1:35 PM Central.
+Idle: batch 25 reported; nothing left in the queue.
 
 ## Finished
 
+- **Batch 25, gisday: remove 19 unused GIS Day files** (12:35 to about 1:25 PM Central, 26 October): branch `chore/gisday-remove-unused-files` at `ff19d196776ec77a9d72d9cd97e75a3d22191f99` on the fork; full check exit 0; public routes 11 passed on the local build. Report `copilot-home/reports/2026-10-26-25.md`.
 - **Batch 24, gisday: #2426 photo never larger** (11:55 AM to about 12:30 PM Central, 26 October): branch `fix/2426-gisday-photo-never-larger` at `2f56a66703a09225adaf050caacc9925fe85ddc5` on the fork; red (274,491 to 696,745 bytes) then green (141,556); check exit 0. Report `copilot-home/reports/2026-10-26-24.md`.
 - **Batch 23, gisday: #2422 speaker photo preview** (10:05 to about 10:35 AM Central, 26 October): branch `fix/2422-gisday-speaker-photo-preview` at `e9e95440db8ae0df4039f59c8844f6eb7ab010ad` on the fork; red (3 failed) then green (7 passed); check exit 0. Report `copilot-home/reports/2026-10-26-23.md`.
 
@@ -56,4 +57,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 23 (batch 6 reported later, out of order; 4 and 5 withdrawn)
+Last batch done: 25 (batch 6 reported later, out of order; 4 and 5 withdrawn)
