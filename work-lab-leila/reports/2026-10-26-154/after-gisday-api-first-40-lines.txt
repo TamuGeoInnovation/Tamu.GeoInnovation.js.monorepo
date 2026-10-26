@@ -1,0 +1,40 @@
+Auth {
+  jwt: {
+  },
+  management: {
+    disabled: undefined
+  }
+}
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [NestFactory] Starting Nest application...
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [ManagementService] Initializing Auth0 management client...
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [InstanceLoader] AppModule dependencies initialized +1ms
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [InstanceLoader] PassportModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [InstanceLoader] GisdayCompetitionsDataApiModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [InstanceLoader] BullModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [InstanceLoader] AuthorizationModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [InstanceLoader] DiscoveryModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [InstanceLoader] ContactModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [InstanceLoader] BullModule dependencies initialized +3ms
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [InstanceLoader] BullModule dependencies initialized +1ms
+[Nest] 1  - 10/26/2026, 12:33:48 PM     LOG [InstanceLoader] PermissionsModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmCoreModule dependencies initialized +56ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +1ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:33:49 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms

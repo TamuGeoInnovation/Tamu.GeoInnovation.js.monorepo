@@ -30,9 +30,6 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Batch 154, security: #2371 - the msal-node 7.1.0 override on `chore/override-msal`**, started 7:14 AM Central: the "before" on `origin/development` first, then the branch.
-
-
 **One more commit (`fec8a16ab`, Part of #2122):** `better-sqlite3`, `better-sqlite3-session-store`, `express-session` and `jwt-decode` removed, with better-sqlite3's `overrides` entry and its `false` `allowScripts` entry. Search: nothing imports any of them (the only mentions left are an example in `install-scripts.mjs`'s comment and its test data). The lock loses only their trees.
 
 **Full check exit 0:** clean `npm ci`, **1769 packages** (1804 before this, 1836 on `c20ec0779`); lint 102, test and build 99; the smoke tsc; install scripts 10 of 10; 1768 signatures verified.
@@ -51,6 +48,7 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
 
 ## Finished
 
+- **Batch 154, security: #2371 - the msal-node 7.1.0 override on `chore/override-msal` (`5dafc3215`) - everything starts and queries, as before** (7:13 to 7:35 AM, 26 October): the lock moves only msal-node 6.0.1 to 7.1.0 and its msal-common; the image's `@azure/identity` loads 7.1.0. Before (`be9581cdc`) and after, the same: full check exit 0; the GIS Day API starts (213 routes) and reads sessions, speakers and sponsors (the same bytes); `mailroom-nest` starts against SQL Server; no line names msal, identity or tedious. Report `work-lab-leila/reports/2026-10-26-154.md`.
 - **Batch 153, security: #2404 - Dependabot's PR 2401 (auth0 7.6.0, got 16.1.0) - passes** (6:22 to 6:26 AM, 26 October): merged cleanly onto `f3c55b83d` on a local scratch branch. The lock moves only `auth0` 7.4.0 to 7.6.0 and `got` 16.0.0 to 16.1.0 (plus seven flag-only lines from the merge, not the upgrade); both are 7 days old or more. Full check exit 0 (1769 packages); `common-nest-auth` 26 of 26, the three got specs 4, 4 and 6. Not pushed. Report `work-lab-leila/reports/2026-10-26-139.md`.
 - **Batch 152, aggiemap: the release tier on Release-494 (`392be39db`) - nothing new failed** (3:23 to 3:45 AM, 26 October): 750 tests, **676 passed, 12 failed, 3 flaky, 59 skipped**. The 12: #2209's eight, the indoor-track layer-order loads (#2209's missing team bus, #2350), and the raster-basemap test (#2351, fails on production too). None from this release; the same as batch 139's on `eab737da7`. Posted on #912. Report `work-lab-leila/reports/2026-10-26-138.md`.
 - **Batch 151, aggiemap: PR 2384's capture fixes against production - not run** (watched 7:46 PM to 2:39 AM, 25 to 26 October): the window passed without `completedAt`, but **the manifest's host, `visual-baselines.geoservices.tamu.edu`, does not resolve from this machine**, so the watcher never had an answer; my mistake not to check the fetch's status. Nothing captured. Report `work-lab-leila/reports/2026-10-26-137.md`.
@@ -376,4 +374,4 @@ Last written **1:03 PM Central, 25 October 2026**. A listener; job: testing.
   `NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-workspace-data` were added (#1955, #1626). A fix is on
   `fork/docs/aggiemap-dev-server-env`; no pull request is open yet.
 
-Last batch done: 153 (139, 141 to 153 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)
+Last batch done: 154 (139, 141 to 154 reported; 140 needs the maintainer; 151 not run, see report 137) (77 and 79 withdrawn) (42 and 39 stopped; 40 superseded)

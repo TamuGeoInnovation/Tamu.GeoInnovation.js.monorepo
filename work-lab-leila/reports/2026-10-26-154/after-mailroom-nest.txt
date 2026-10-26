@@ -1,0 +1,16 @@
+[Nest] 1  - 10/26/2026, 12:34:00 PM     LOG [NestFactory] Starting Nest application...
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [InstanceLoader] AppModule dependencies initialized +266ms
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [InstanceLoader] TypeOrmCoreModule dependencies initialized +47ms
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [InstanceLoader] EmailModule dependencies initialized +1ms
+Mailer service initialized. Using host smtp-relay.tamu.edu
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [RoutesResolver] EmailController {/}: +6ms
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [RouterExplorer] Mapped {/, GET} route +3ms
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [RouterExplorer] Mapped {/all, GET} route +0ms
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [RouterExplorer] Mapped {/:id, GET} route +1ms
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [RouterExplorer] Mapped {/:id, DELETE} route +0ms
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [RouterExplorer] Mapped {/, POST} route +0ms
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [RouterExplorer] Mapped {/form, POST} route +1ms
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG [NestApplication] Nest application successfully started +1ms
+[Nest] 1  - 10/26/2026, 12:34:01 PM     LOG 🚀 Application is running on: http://localhost:3333/
