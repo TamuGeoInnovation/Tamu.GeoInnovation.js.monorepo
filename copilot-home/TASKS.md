@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 24.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 26.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -37,6 +37,50 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
+
+## Batch 25 (gisday: remove the 19 GIS Day files nothing uses, after proving each; a branch; 26 October 2026, 11:20 AM Central, from `work (gisday)`)
+
+After batch 24. About an hour. **The maintainer decided (26 October): remove them in one pull request, once each is shown unused.**
+Your own batch 19 report (`copilot-home/reports/2026-10-26-19.md`) lists them: `gisday-platform-ngx-core` 15 (the check-in admin
+tree, landing, login, the unrouted not-found and admin route files), `gisday-platform-data-api` 3 (`GeoJsonInterceptor`,
+`BaseController` and the like), `gisday-competitions-data-api` 1 (the Wayback module and controller). `scripts/security-tables.sh`
+prints the current list.
+
+1. Branch `chore/gisday-remove-unused-files` from the latest `origin/development`.
+2. For **each** file, confirm before deleting: nothing imports it (search the whole repository, including `apps/gisday-*`, routes
+   built from strings, lazy `loadChildren`/`loadComponent`, `index.ts` exports used elsewhere, and specs); list the evidence per
+   file in the report. If any file is in doubt, leave it and say why.
+3. Delete them and any now-empty folders and index exports; nothing else.
+4. Prove nothing broke: `scripts/check-in-volume.sh chore/gisday-remove-unused-files` (the **full** affected check, since this is a
+   cleanup, not a bug fix) must exit 0, which includes the `gisday-angular` production build; and build `gisday-angular --configuration
+   local` and confirm in a headless browser that the public routes in `test/e2e/gisday/routes.ts` still load (no sign-in needed).
+5. Commit with `Part of #2122` (the director files a GIS Day issue for the pull request); push to the fork.
+
+Report: branch and head, the per-file evidence, anything kept and why, the check's exit code and the routes result. Nothing on GitHub.
+
+---
+
+## Batch 24 (gisday: #2426, a resized speaker photo must never be larger than the upload; a branch; 26 October 2026, 11:20 AM Central, from `work (gisday)`)
+
+After batch 23. Low priority; about 45 minutes. Questions to `work (gisday)`.
+
+[#2426](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2426): `fitImage` (from #2352, PR 2382) scaled a
+2400 x 1600 PNG of 386,977 bytes down to 1260 x 840 and stored **583,170 bytes** (`home/reports/2026-10-26-2.md`). It keeps the
+original bytes when smaller only for an image it does not scale.
+
+1. Branch `fix/2426-gisday-photo-never-larger` from the latest `origin/development`, beside `C:\TAMU\copilot-home`.
+2. **Red first:** a spec with a photographic PNG without transparency (generate one in the test, about 2400 x 1600) that is stored
+   larger than it was uploaded today; and one with transparency. Prove the first red.
+3. **The fix:** after scaling, encode JPEG at the chosen quality when the image has no transparency, PNG when it does, and keep
+   whichever of the candidates is smallest; if the original already fits the size bounds and is smaller than every candidate,
+   keep the original. `fit-speaker-photos` (the script for photos already stored) must follow the same rule, so a re-run never
+   grows a file (add a spec for that too). Keep the decompression-bomb guard first, unchanged.
+4. Green; the bug-fix check (`scripts/check-in-volume.sh fix/2426-gisday-photo-never-larger gisday-platform-data-api,gisday-nest`)
+   must exit 0. Commit with `Closes #2426`; push to the fork.
+
+Report: branch and head, red then green, before and after byte sizes for the test PNG, the check's exit code. Nothing on GitHub.
+
+---
 
 ## Batch 23 (gisday: #2422, adding a speaker shows a broken image before a photo is chosen; a branch; 26 October 2026, 10:00 AM Central, from `work (gisday)`)
 
