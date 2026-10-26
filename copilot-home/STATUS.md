@@ -19,10 +19,11 @@ Last written **8:06 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 **Next update by 7:00 AM Central.**
 
-Batch 11 (security: #2351 raster basemap test) started 8:55 PM Central. **Next update by 9:55 PM Central.**
+Batch 12 (security: second review of PR 2386) started 9:22 PM Central. **Next update by 10:20 PM Central.**
 
 ## Finished
 
+- **Batch 11, security: #2351 raster basemap test** (8:55 to 9:20 PM Central, 25 October): branch `fix/2351-raster-basemap-test` at `f9ed1dad36efd56ba78a618c5b75b4d4883e42bf` on the fork; red then green on production; check exit 0. Report `copilot-home/reports/2026-10-25-11.md`.
 - **Batch 10, security: #2379 upload-limit timeout** (8:15 to 8:50 PM Central, 25 October): branch `fix/2379-upload-limit-timeout` at `f16d98fed296856fe93d677f6e74dcf12da2a27f` on the fork; check exit 0; 10 runs under load max 134 ms. Report `copilot-home/reports/2026-10-25-10.md`.
 - **Batch 9, security: #2385 knip configuration** (7:50 to 8:05 PM Central, 25 October): branch `chore/2385-knip-config` at `4f5141b9100294d70252ba5ef6ba4b235dbdb505` on the fork; check exit 0; unused files 787 to 40. Report `copilot-home/reports/2026-10-25-9.md`.
 
@@ -34,7 +35,7 @@ Batch 11 (security: #2351 raster basemap test) started 8:55 PM Central. **Next u
 
 ## Queued
 
-Batches 11 to 16.
+Batches 12 to 16.
 
 ## Findings
 
@@ -44,4 +45,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 10
+Last batch done: 11
