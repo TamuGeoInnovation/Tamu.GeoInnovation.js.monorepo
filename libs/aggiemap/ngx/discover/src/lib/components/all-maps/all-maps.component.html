@@ -104,9 +104,10 @@
       Visit Maps tile are how these maps are reached.
     -->
     <p class="section-description">Single-basemap maps for TAMU campuses outside College Station.</p>
-    @if (campusApplications.length > 0) {
+    @let campuses = (visibleCampusApplications | async) ?? [];
+    @if (campuses.length > 0) {
     <div class="applications-list">
-      @for (app of campusApplications; track app) {
+      @for (app of campuses; track app) {
       <div class="application-card">
         <!-- The picture is the link, so the card shows what you are choosing between rather than
               leaving an empty area above a text link (#1245). The copy field stays: these maps are

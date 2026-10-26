@@ -1,4 +1,6 @@
 import { DCBushSchoolLayerSources } from './dc-bush-school.definitions';
+import { FortWorthLawLayerSources } from './fort-worth-law.definitions';
+import { HoustonSpaceInstituteLayerSources } from './houston-space-institute.definitions';
 import { GalvestonLayerSources } from './galveston.definitions';
 import { McAllenLayerSources } from './mcallen.definitions';
 
@@ -14,6 +16,8 @@ import { McAllenLayerSources } from './mcallen.definitions';
  */
 const CAMPUSES = {
   'DC / Bush School': DCBushSchoolLayerSources,
+  'Fort Worth Law School': FortWorthLawLayerSources,
+  'Houston Space Institute': HoustonSpaceInstituteLayerSources,
   Galveston: GalvestonLayerSources,
   McAllen: McAllenLayerSources
 };

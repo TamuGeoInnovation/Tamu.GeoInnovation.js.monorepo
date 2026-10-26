@@ -128,7 +128,13 @@ function createConnections(gisHost: string): IComposedConnections {
     mcallenBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/VectorTileServer',
     mcallenFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/FeatureServer',
     dcBushSchoolBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/DCBush/VectorTileServer',
-    dcBushSchoolFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/DCBush/FeatureServer'
+    dcBushSchoolFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/DCBush/FeatureServer',
+    fortWorthLawBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/FWLaw/VectorTileServer',
+    fortWorthLawFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/FWLaw/FeatureServer',
+    // The Houston Space Institute's portal item lives on `divops.tamu.edu`, but its services are on
+    // `gis.tamu.edu` like every other campus, so there is no second portal host here (#2438).
+    houstonSpaceInstituteBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSI/VectorTileServer',
+    houstonSpaceInstituteFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSI/FeatureServer'
   };
 }
 
@@ -256,4 +262,8 @@ export interface IComposedConnections {
   mcallenFeatureServerUrl: string;
   dcBushSchoolBasemapUrl: string;
   dcBushSchoolFeatureServerUrl: string;
+  fortWorthLawBasemapUrl: string;
+  fortWorthLawFeatureServerUrl: string;
+  houstonSpaceInstituteBasemapUrl: string;
+  houstonSpaceInstituteFeatureServerUrl: string;
 }
