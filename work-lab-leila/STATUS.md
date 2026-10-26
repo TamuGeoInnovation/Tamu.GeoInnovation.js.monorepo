@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:20 PM Central, 26 October 2026**. A listener; job: testing.
+Last written **6:26 PM Central, 26 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,7 @@ Last written **6:20 PM Central, 26 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Batch 157, aggiemap: the release tier on the production candidate `2a09a308c`**, started 6:00 PM Central, 26 October. **Running the release tier since 6:19 PM.** Dev took the build at 6:19 PM Central (`main-L6WY7DJR.js`; All Maps now lists Fort Worth Law School and Houston Space Institute). Then the three manual checks. (The batch's `aggiemap-dev.tamu.edu` does not resolve; dev is `dev.aggiemap.tamu.edu`.) Worktree `C:/TAMU/wt-rel157` at `2a09a308c`.
+**Batch 157, aggiemap: the release tier on the production candidate `2a09a308c`**, started 6:00 PM Central, 26 October. **Running the release tier since 6:19 PM.** Dev took the build at 6:19 PM Central (`main-L6WY7DJR.js`; All Maps now lists Fort Worth Law School and Houston Space Institute). The three manual checks are done (by 6:26 PM): searches find all four buildings on the two new campuses, the campuses are hidden from All Maps in production view, and the basemap comparison is captured. Details in the report. (The batch's `aggiemap-dev.tamu.edu` does not resolve; dev is `dev.aggiemap.tamu.edu`.) Worktree `C:/TAMU/wt-rel157` at `2a09a308c`.
 
 **Next update by 7:00 PM Central.**
 
