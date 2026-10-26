@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { BehaviorSubject, Observable, catchError, combineLatest, map, of, shareReplay } from 'rxjs';
 
@@ -66,5 +66,38 @@ export class AdminSubmissionsComponent implements OnInit {
 
   public show(view: AdminSubmissionsView): void {
     this.view$.next(view);
+  }
+
+  /** What the last "Publish to ArcGIS" did, for the page to say (#2433). */
+  public readonly arcgisResult = signal<string | undefined>(undefined);
+  public readonly publishing = signal(false);
+
+  /**
+   * Publishes the season's submissions to its ArcGIS Online layer again, after an outage or once publishing
+   * is switched on (#2433). Safe to repeat: points already published are updated.
+   */
+  public publishToArcgis(): void {
+    this.publishing.set(true);
+    this.arcgisResult.set('Publishing to ArcGIS Online…');
+
+    this.submissionService.publishToArcgis().subscribe({
+      next: ({ published, failed, configured }) => {
+        this.publishing.set(false);
+
+        if (configured === false) {
+          this.arcgisResult.set('Publishing to ArcGIS Online is not set up on this server.');
+          return;
+        }
+
+        this.arcgisResult.set(
+          `Published ${published} submission${published === 1 ? '' : 's'} to ArcGIS Online.` +
+            (failed > 0 ? ` ${failed} failed; the API log says why.` : '')
+        );
+      },
+      error: () => {
+        this.publishing.set(false);
+        this.arcgisResult.set('Could not publish to ArcGIS Online. Try again, or check the API log.');
+      }
+    });
   }
 }

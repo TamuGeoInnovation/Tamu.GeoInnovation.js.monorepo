@@ -47,6 +47,13 @@ export class SubmissionService {
     return this.http.get(`${this.resource}/${submissionGuid}/image`, { responseType: 'blob' });
   }
 
+  /**
+   * Publishes the active season's submissions to its ArcGIS Online layer again (#2433).
+   */
+  public publishToArcgis() {
+    return this.http.post<{ published: number; failed: number; configured?: false }>(`${this.resource}/arcgis/publish`, {});
+  }
+
   public validateSubmission(params: ValidateSubmissionDto) {
     return this.http.post(`${this.resource}/validate`, params);
   }

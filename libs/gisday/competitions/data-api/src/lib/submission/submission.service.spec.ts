@@ -207,7 +207,8 @@ describe('SubmissionService.getAdminSubmissions', () => {
       {} as never,
       { findOne: jest.fn(() => Promise.resolve({ guid: 'cs-2026', form })) } as never,
       { findOne: jest.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never,
-      { getUserMetadata: jest.fn(() => Promise.reject(new Error('offline'))) } as never
+      { getUserMetadata: jest.fn(() => Promise.reject(new Error('offline'))) } as never,
+      { publishInBackground: jest.fn() } as never
     );
   });
 

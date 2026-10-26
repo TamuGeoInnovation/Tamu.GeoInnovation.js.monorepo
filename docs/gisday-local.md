@@ -175,6 +175,8 @@ What does not, yet:
 - **Real people, logos and photographs.** The scrubbed copy has made-up speakers and one placeholder
   image for every upload; the real files are on the production site, not in the database.
 - **Email**, deliberately: every `MAILROOM_` value is blank.
+- **Publishing VGI submissions to ArcGIS Online** (#2433), deliberately: the `VGI_ARCGIS_` values are blank, so
+  nothing is sent, and the admin Submissions page's **Publish to ArcGIS** says publishing is not set up.
 - **Anything that needs a user's Auth0 profile, without `auth0-dev.local.env`.** The API then has no
   management credentials (#1759), so:
   - The admin Users page, and reading or saving a signed-in user's own profile (Account > My

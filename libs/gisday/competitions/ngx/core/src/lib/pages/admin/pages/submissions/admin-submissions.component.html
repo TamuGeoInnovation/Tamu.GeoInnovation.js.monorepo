@@ -7,6 +7,12 @@
     <button type="button" class="button" [class.secondary]="view !== 'needs-a-look'" [attr.aria-pressed]="view === 'needs-a-look'" (click)="show('needs-a-look')">Needs a look</button>
     <button type="button" class="button" [class.secondary]="view !== 'top-finishers'" [attr.aria-pressed]="view === 'top-finishers'" (click)="show('top-finishers')">Top finishers</button>
   </div>
+  <div class="flex flex-row wrap align-center views trailer-1">
+    <button type="button" class="button secondary" [disabled]="publishing()" (click)="publishToArcgis()">Publish to ArcGIS</button>
+    @if (arcgisResult()) {
+    <p role="status">{{ arcgisResult() }}</p>
+    }
+  </div>
   <tamu-gisc-submission-review-list
     [submissions$]="submissions$"
     [isAdmin]="true"

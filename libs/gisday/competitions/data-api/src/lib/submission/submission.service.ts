@@ -23,6 +23,7 @@ import {
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 import { AUTOMATIC_REVIEWER, automaticReviewReasons, COULD_NOT_REVIEW, ReviewedSubmission } from './automatic-review';
+import { VgiArcgisPublisher } from '../arcgis/vgi-arcgis-publisher.service';
 
 @Injectable()
 export class SubmissionService extends BaseService<CompetitionSubmission> {
@@ -33,7 +34,8 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>,
     @InjectRepository(CompetitionSeason) private compSeasonRepo: Repository<CompetitionSeason>,
     @InjectRepository(Season) private seasonRepo: Repository<Season>,
-    private readonly ms: ManagementService
+    private readonly ms: ManagementService,
+    private readonly arcgis: VgiArcgisPublisher
   ) {
     super(submissionRepo);
   }
@@ -77,7 +79,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
 
       // INSERT, never save(): save() updates a row whose guid already exists, and the app chooses the
       // guid (#1786). A duplicate fails on the primary key and rolls back its location and photographs.
-      return this.submissionRepo.manager.transaction(async (em) => {
+      const saved = await this.submissionRepo.manager.transaction(async (em) => {
         const validationStatus = await em.save(
           em.create(CompetitionSubmissionValidationStatus, {
             status: reasons.length === 0 ? COMPETITION_VALIDATION_STATUS.verified : COMPETITION_VALIDATION_STATUS.unverified,
@@ -97,6 +99,12 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
 
         return sub;
       });
+
+      // Then to the season's ArcGIS Online layer, without waiting: the upload succeeds whatever ArcGIS
+      // Online does (#2433).
+      this.arcgis?.publishInBackground(saved.guid);
+
+      return saved;
     } else {
       throw new BadRequestException('Incomplete submission.');
     }
@@ -130,6 +138,21 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     }
   }
 
+  /**
+   * Publishes every submission of the active competition season to its ArcGIS Online layer, for an admin
+   * after an outage or once publishing is switched on (#2433).
+   */
+  public async publishActiveSeasonToArcgis() {
+    const season = await this.seasonRepo.findOne({ where: { active: true } });
+    const compSeason = season ? await this.compSeasonRepo.findOne({ where: { season: { guid: season.guid } } }) : null;
+
+    if (!compSeason) {
+      throw new NotFoundException('No active competition season.');
+    }
+
+    return this.arcgis.publishSeason(compSeason.guid);
+  }
+
   public createSubmissionMedia(entity: DeepPartial<SubmissionMedia>) {
     return this.mediaRepo.create(entity);
   }
@@ -147,7 +170,12 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         submission.validationStatus.status = dto.status;
         submission.validationStatus.verifiedBy = dto.userGuid;
 
-        return submission.save();
+        const saved = await submission.save();
+
+        // The new status reaches the ArcGIS Online layer too (#2433).
+        this.arcgis?.publishInBackground(submission.guid);
+
+        return saved;
       } else {
         const validationStatus = this.validationStatusRepo.create({
           status: dto.status,
@@ -157,6 +185,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         try {
           submission.validationStatus = validationStatus;
           await submission.save();
+          this.arcgis?.publishInBackground(submission.guid);
 
           return submission;
         } catch (err) {

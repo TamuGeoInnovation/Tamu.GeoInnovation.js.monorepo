@@ -88,7 +88,10 @@ describe('VgiArcgisPublisher', () => {
         body = Object.fromEntries(init.body);
       } else if (init?.body instanceof FormData) {
         file = init.body.get('attachment') instanceof Blob;
-        body = Object.fromEntries([...init.body.entries()].filter(([, v]) => typeof v === 'string')) as Record<string, string>;
+        body = Object.fromEntries([...init.body.entries()].filter(([, v]) => typeof v === 'string')) as Record<
+          string,
+          string
+        >;
       }
 
       const call = { url, method: init?.method ?? 'GET', body, file };
@@ -120,11 +123,19 @@ describe('VgiArcgisPublisher', () => {
     expect(sent('/oauth2/token')).toEqual([
       expect.objectContaining({
         method: 'POST',
-        body: expect.objectContaining({ client_id: 'client-id', client_secret: 'client-secret', grant_type: 'client_credentials' })
+        body: expect.objectContaining({
+          client_id: 'client-id',
+          client_secret: 'client-secret',
+          grant_type: 'client_credentials'
+        })
       })
     ]);
     expect(sent('/query')[0].body).toEqual(
-      expect.objectContaining({ where: "submission_id = '0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11'", returnIdsOnly: 'true', token: 'token-1' })
+      expect.objectContaining({
+        where: "submission_id = '0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11'",
+        returnIdsOnly: 'true',
+        token: 'token-1'
+      })
     );
 
     const [added] = JSON.parse(sent('/addFeatures')[0].body.features);
@@ -169,7 +180,7 @@ describe('VgiArcgisPublisher', () => {
     expect(sent('/addAttachment')).toEqual([]);
   });
 
-  it("adds the photos of a point published without them, after an outage", async () => {
+  it('adds the photos of a point published without them, after an outage', async () => {
     existing = [7];
     attachments = 0;
 
