@@ -2,7 +2,7 @@ import { namesMatch, normalizeName } from './names-match';
 
 describe('normalizeName', () => {
   it('ignores case, accents, punctuation and spacing', () => {
-    expect(normalizeName('  José  O\'Brien-Smith, Jr. ')).toBe('jose o brien smith jr');
+    expect(normalizeName("  José  O'Brien-Smith, Jr. ")).toBe('jose o brien smith jr');
   });
 
   it('gives an empty string for nothing', () => {

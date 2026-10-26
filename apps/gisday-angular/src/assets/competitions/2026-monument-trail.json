@@ -9,9 +9,20 @@
         "type": "codedValue",
         "name": "memorial_type",
         "codedValues": [
-          { "name": "Monument", "code": "monument" },
-          { "name": "Memorial marker", "code": "memorial_marker" },
-          { "name": "Tree or bench memorial plaque", "code": "tree_bench_plaque" }
+          {
+            "name": "Monument",
+            "code": "monument",
+            "sameThingMetres": 15,
+            "earlier": { "values": ["statues_monuments"], "metres": 15 }
+          },
+          { "name": "Memorial marker", "code": "memorial_marker", "sameThingMetres": 15 },
+          {
+            "name": "Tree or bench memorial plaque",
+            "code": "tree_bench_plaque",
+            "sameThingMetres": 10,
+            "nameAttribute": "memorial_name",
+            "earlier": { "values": ["tree_bench_plaque"], "metres": 3 }
+          }
         ]
       }
     },

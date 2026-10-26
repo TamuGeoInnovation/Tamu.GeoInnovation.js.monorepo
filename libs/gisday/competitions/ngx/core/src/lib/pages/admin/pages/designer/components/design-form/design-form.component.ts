@@ -88,7 +88,11 @@ export class DesignFormComponent implements OnInit {
               field.domain && field.domain.codedValues !== null
                 ? this.fb.array(
                     field.domain.codedValues.map((cv) => {
-                      return this.fb.control({ name: cv.name, value: cv.code });
+                      // Keeps anything else the coded value carries, such as the type question's scoring
+                      // settings (sameThingMetres, nameAttribute, earlier; #2162).
+                      const { name, code, ...settings } = cv as esri.CodedValue & Record<string, unknown>;
+
+                      return this.fb.control({ ...settings, name, value: code });
                     })
                   )
                 : this.fb.array([]);

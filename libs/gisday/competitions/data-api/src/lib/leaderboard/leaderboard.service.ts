@@ -7,8 +7,15 @@ import { Repository } from 'typeorm';
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
 import { ManagementService } from '@tamu-gisc/common/nest/auth';
 import { distanceInMetres } from '@tamu-gisc/common/utils/geometry';
+import { namesMatch } from '@tamu-gisc/common/utils/string';
 
-import { CompetitionSeason, CompetitionSubmission, SubmissionLocation, SubmissionMedia } from '../entities/all.entities';
+import {
+  CompetitionSeason,
+  CompetitionSubmission,
+  ICompetitionSeasonFormOption,
+  SubmissionLocation,
+  SubmissionMedia
+} from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
@@ -24,8 +31,8 @@ export const ALREADY_SUBMITTED_POINTS = 1;
 
 /**
  * A submission this close to an earlier new find with the same type is taken to be of the same thing.
- * It allows for phone GPS error; two different things closer than this are scored as one. The same in
- * every season.
+ * It allows for phone GPS error; two different things closer than this are scored as one. A type can set
+ * its own distance in the form (`sameThingMetres`), as plaques do (#2162).
  */
 export const SAME_THING_DISTANCE_METRES = 15;
 
@@ -59,7 +66,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
 
     const competitionSeason = await this.compSeasonRepo.findOne({
       where: { season: { guid: activeSeason.guid } },
-      relations: { form: true }
+      relations: { form: true, season: true }
     });
 
     if (!competitionSeason) {
@@ -101,7 +108,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
   public async getLeaderBoardItemsForSeason(competitionSeasonGuid: string) {
     const competitionSeason = await this.compSeasonRepo.findOne({
       where: { guid: competitionSeasonGuid },
-      relations: { form: true }
+      relations: { form: true, season: true }
     });
 
     if (!competitionSeason) {
@@ -119,11 +126,19 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
    * decides). Only new finds are compared with, so a run of submissions a few metres apart does not
    * chain into one thing. Discarded submissions neither score nor count as earlier ones. A submission
    * with no usable location cannot be shown to be new, so it scores `ALREADY_SUBMITTED_POINTS`.
+   *
+   * The type's answer in the form can change that (#2162): its own distance (`sameThingMetres`); a name
+   * question (`nameAttribute`), so that finds within that distance are the same thing only when their
+   * names match; and the previous season's answers it continues (`earlier`), so that a thing found then,
+   * within `earlier.metres`, is already found now.
    */
   private async calculateLeaderboard(
     competitionSeason: CompetitionSeason
   ): Promise<Array<{ identity: string; guid: string; points: number }>> {
-    const typeAttribute = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true)?.attribute;
+    const typeQuestion = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true);
+    const typeAttribute = typeQuestion?.attribute;
+    const settingsFor = (type: unknown): ICompetitionSeasonFormOption | undefined =>
+      typeQuestion?.options?.find((option) => option.value === type);
 
     // Oldest first, so each submission is compared only with those made before it; the guid orders two
     // made in the same instant, so the same submissions always score the same.
@@ -135,29 +150,42 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       order: { created: 'ASC', guid: 'ASC' }
     });
 
-    const counted = submissions.filter(
-      (submission) =>
-        !submission.validationStatus ||
-        submission.validationStatus.status === COMPETITION_VALIDATION_STATUS.unverified ||
-        submission.validationStatus.status === COMPETITION_VALIDATION_STATUS.verified
-    );
-
-    const newFinds: Array<{ location: { latitude: number; longitude: number }; type: unknown }> = [];
+    const earlierFinds = await this.earlierSeasonFinds(competitionSeason);
+    const newFinds: Array<{ location: { latitude: number; longitude: number }; type: unknown; name: unknown }> = [];
     const userPointsMap = new Map<string, number>();
 
-    for (const submission of counted) {
+    for (const submission of submissions.filter(counts)) {
       const location = usableLocation(submission.location);
       const type = typeAttribute ? submission.value?.[typeAttribute] : undefined;
+      const settings = settingsFor(type);
+      const name = settings?.nameAttribute ? submission.value?.[settings.nameAttribute] : undefined;
+      const sameThingMetres = settings?.sameThingMetres ?? SAME_THING_DISTANCE_METRES;
       let points = ALREADY_SUBMITTED_POINTS;
 
-      if (
-        location &&
-        !newFinds.some(
-          (find) => find.type === type && distanceInMetres(find.location, location) <= SAME_THING_DISTANCE_METRES
-        )
-      ) {
+      const foundBefore =
+        location !== undefined &&
+        settings?.earlier !== undefined &&
+        earlierFinds.some(
+          (find) =>
+            settings.earlier.values.includes(find.type as string) &&
+            distanceInMetres(find.location, location) <= settings.earlier.metres
+        );
+
+      const foundThisSeason =
+        location !== undefined &&
+        newFinds.some(
+          (find) =>
+            find.type === type &&
+            distanceInMetres(find.location, location) <= sameThingMetres &&
+            (!settings?.nameAttribute ||
+              !hasName(name) ||
+              !hasName(find.name) ||
+              namesMatch(find.name as string, name as string))
+        );
+
+      if (location && !foundBefore && !foundThisSeason) {
         points = NEW_FIND_POINTS;
-        newFinds.push({ location, type });
+        newFinds.push({ location, type, name });
       }
 
       userPointsMap.set(submission.userGuid, (userPointsMap.get(submission.userGuid) || 0) + points);
@@ -173,6 +201,45 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       .sort((a, b) => b.points - a.points);
 
     return leaderboard;
+  }
+
+  /**
+   * The located, not discarded submissions of the competition season before this one, with their
+   * answer to that season's type question, when this season's form compares with it (`earlier`); none
+   * otherwise.
+   */
+  private async earlierSeasonFinds(
+    competitionSeason: CompetitionSeason
+  ): Promise<Array<{ location: { latitude: number; longitude: number }; type: unknown }>> {
+    const year = competitionSeason.season?.year;
+    const comparesWithEarlier = competitionSeason.form?.model?.some((q) => q.options?.some((option) => option.earlier));
+
+    if (!year || !comparesWithEarlier) {
+      return [];
+    }
+
+    const seasons = await this.compSeasonRepo.find({ relations: { season: true, form: true } });
+    const previous = seasons
+      .filter((candidate) => candidate.season?.year < year)
+      .sort((a, b) => b.season.year - a.season.year)[0];
+
+    if (!previous) {
+      return [];
+    }
+
+    const typeAttribute = previous.form?.model?.find((q) => q.isDiscriminator === true)?.attribute;
+    const submissions = await this.submissionRepo.find({
+      where: { season: { guid: previous.guid } },
+      relations: { validationStatus: true, location: true }
+    });
+
+    return submissions
+      .filter(counts)
+      .map((submission) => ({
+        location: usableLocation(submission.location),
+        type: typeAttribute ? submission.value?.[typeAttribute] : undefined
+      }))
+      .filter((find) => find.location !== undefined);
   }
 
   private async resolveIdentities(
@@ -194,6 +261,21 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
 
     return allResolvedUsers.toPromise();
   }
+}
+
+/**
+ * Whether a submission counts towards scoring: anything not discarded.
+ */
+function counts(submission: CompetitionSubmission): boolean {
+  return (
+    !submission.validationStatus ||
+    submission.validationStatus.status === COMPETITION_VALIDATION_STATUS.unverified ||
+    submission.validationStatus.status === COMPETITION_VALIDATION_STATUS.verified
+  );
+}
+
+function hasName(name: unknown): boolean {
+  return typeof name === 'string' && name.trim() !== '';
 }
 
 /**
