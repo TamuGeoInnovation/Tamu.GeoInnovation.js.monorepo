@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 26.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 27.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -37,6 +37,37 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
+
+## Batch 26 (gisday: #2431, remove the three links under Explore Events on gisday.tamu.edu; a branch with screenshots; 26 October 2026, 12:45 PM Central, from `work (gisday)`)
+
+After your other GIS Day batches. Low priority; about 40 minutes. Questions to `work (gisday)`.
+
+[#2431](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2431): the maintainer wants the three links under
+**Explore Events** gone from the **Texas A&M site only** (gisday.tamu.edu, tamu.txgisday.org): "Sign up for Career Cupid Speed
+Mentoring Events", "Nominate a TX GIS Hero" and "Watch the how to get started video". They are in
+`libs/gisday/platform/ngx/core/src/lib/pages/landing/landing.component.html` (the first two behind `'tamu' | siteHas`, the video
+always). **txgisday.org must keep all three**; UCGIS keeps its video.
+
+1. Branch `feat/2431-gisday-tamu-home-links` from the latest `origin/development`, beside `C:\TAMU\copilot-home`.
+2. **Take the "before" screenshot first:** build `gisday-angular --configuration local`, serve it as the Texas A&M site
+   (`scripts/gisday-local.sh web --static --site tamu`, which needs the local `db`, `restore` and `api` steps first; see
+   `docs/gisday-local.md`; no sign-in is needed for the home page) and photograph the home page around Explore Events, desktop
+   width, into `docs/screenshots/2431-gisday-tamu-home-links/before-tamu-home.png`, and txgisday.org's (port 4202) as
+   `before-txgisday-home.png`.
+3. **Red first:** a test that the `tamu` site's home page shows none of the three links and txgisday.org's shows all three (the
+   site specs in `libs/gisday/platform/ngx/common/src/lib/site/` and the landing component show how sites are set in tests).
+4. **The change:** a site feature (for example `homeLinks`) in `libs/gisday/common/src/lib/sites.ts`, left out by the `tamu` site
+   only, and the three links shown only where it is on (`siteHas`, no new styles).
+5. The "after" screenshots the same way (`after-tamu-home.png`, `after-txgisday-home.png`), and the release-notes entry
+   `docs/releases/unreleased/2431-gisday-tamu-home-links.md` with them and a What to test row; run
+   `node scripts/collate-release-notes.mjs --check`.
+6. `scripts/check-in-volume.sh feat/2431-gisday-tamu-home-links` must exit 0 (it includes the production build and its budgets;
+   take the screenshots **before** running it, because the production build overwrites the local dist). Commit with `Closes #2431`;
+   push to the fork.
+
+Report: branch and head, red then green, the four screenshots' paths, the check's exit code. Nothing on GitHub.
+
+---
 
 ## Batch 25 (gisday: #2427, remove the 19 GIS Day files nothing uses, after proving each; a branch; 26 October 2026, 11:20 AM Central, from `work (gisday)`)
 
