@@ -4,7 +4,7 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
-## Batch 3 (security: #2425 - run the four API images as `node`, not root; a branch; 26 October 2026, about 10:30 AM Central, from `work (security)`)
+## Batch 3 (security: #2425 - run the four API images as `node`, not root; a branch; 26 October 2026, 11:48 AM Central, from `work (security)`)
 
 **Start now. About 1.5 hours.** The maintainer decided (26 October, Priority Medium): the API images stop running as root.
 `apps/{gisday-nest,geoservices-nest,mailroom-nest,mailroom-helper-nest}/src/Dockerfile` set no `USER` in their
