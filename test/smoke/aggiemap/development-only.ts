@@ -97,14 +97,12 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   '/code-maroon/feed.xml': {
     reason: '#1289: the Code Maroon proof of concept',
     pages: ['/map', '/parking/visitor-parking', '/events/tailgating']
-  },
-  // The Women's Basketball map's new version: its service is stopped on the production GIS server until
-  // Transportation Services publish it there. Production draws the old version until then.
-  'TS/WomensBasketballParking/MapServer': {
-    reason: "#2001: the Women's Basketball map's new version, not yet published on the production GIS server",
-    pages: ['/events/womens-basketball'],
-    developmentGisServer: true
   }
+  // TS/WomensBasketballParking/MapServer was listed here for #2001, required of /events/womens-basketball on
+  // dev. #2143 (#2176) moved that map's development version to the hosted athletics view, reached through the
+  // ordinary womensBasketballUrl, so no page requests the MapServer any more and the entry could only fail
+  // (#2350). The development-only gate it matched went with it: nothing in the code reads
+  // womensBasketballParkingUrl now.
 };
 
 /** Whether the environment under test renders the development variant. */

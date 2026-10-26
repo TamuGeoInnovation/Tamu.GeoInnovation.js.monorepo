@@ -201,6 +201,11 @@ Google Analytics id it should report to, and the layers it is allowed to fail. T
 script both read that file, so a change there applies to scheduled, manual and local runs alike.
 Change expectations there, not in a command line.
 
+`allowedLayerFailures` tolerates a layer by title on every map. A layer known to fail on particular maps
+only goes under `allowedMapLayerFailures` instead, by map path and then by layer title, each with its issue,
+so the same layer failing on any other map still fails (#2350). `map-layers.spec.ts` records each one it
+suppresses, and says when one passes again so its entry can go.
+
 **A local run uses six workers; the workflow uses four** (#1426). Each test still gets a fresh browser
 context, but the ArcGIS SDK is downloaded once per worker and served from memory after that
 ([`fixtures.ts`](fixtures.ts)), so a spec that opens a page imports `test` and `expect` from
