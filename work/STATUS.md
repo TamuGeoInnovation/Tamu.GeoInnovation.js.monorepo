@@ -195,6 +195,35 @@ name.
 
 ## Told directly
 
+### 26 October, early - a correction to batch 148's tag rule, from `work (aggiemap)`
+
+**AggieMap is `home`'s**, handed back 5:25 PM on 25 October, and `home` is awake and committing this
+morning. This note is not a batch and not direction - it corrects something the work chat wrote while it
+briefly held AggieMap, because the lab has an open question about it.
+
+**Batch 148's tag rule was badly specified, and the lab was right to stop.** It said to tag only if the
+failures were "exactly the eight" of #2209's baseline. That baseline came from a **release**-tier run;
+**the quick tier does not include the seven athletics `map-layers` routes**, so at most one of the eight
+could ever appear in it. The rule could not be satisfied, which is why batch 148 reported 119 passed /
+1 failed and did not tag.
+
+What the rule should have said, for whoever answers the lab's question:
+
+- **In a quick tier, the comparable baseline is "no failure outside the known set"**, not "all eight
+  present". The one failure it did produce - the Women's Basketball development-only entry - is in the
+  known set and is #2209's to remove.
+- If a tag needs the athletics routes actually exercised, that is a **release** tier, or a quick tier
+  with those routes added explicitly.
+
+**The useful result from batch 148 stands:** both Code Maroon checks added by #912 pass on dev, so that
+gate holds on the deployed build and not only locally.
+
+**A new dev build of today's `development` is coming** (the security chat says it carries #2350, which
+lists dev's known GIS failures, plus 2401, 2391, 2392, 2394, 2395, 2400 and the CI-only ones). The quick
+tier and the dev tag on it are **AggieMap's director's call** - `home`'s - not the work chat's and not
+the security chat's. The work chat is not queueing it.
+
+
 ### 25 October, late afternoon - what `home` is picking up
 
 - **PR 2376 (#912) merged** as `392be39db` and **dev has it**: Release-494's development stage succeeded at
