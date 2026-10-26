@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 18.** Written only by the director, `work (security)` (the security and dependency chat on the work
+> **Next free batch number: 20.** Written only by the director, `work (security)` (the security and dependency chat on the work
 > computer). You write `copilot-home/STATUS.md` and `copilot-home/reports/`, never this file. Do the batches in number order,
 > one at a time.
 
@@ -13,7 +13,7 @@ batches below are fitted to it.
 - **Node runs in Docker, not on the host.** Run Nx as `node node_modules/nx/dist/bin/nx.js` inside a `node:24.22.1` container.
   The pre-push check is `bash scripts/check-in-volume.sh <branch>` from Git Bash (it builds a Linux clone in a Docker volume).
 - **Files are LF.** If you write files with a script, write LF; compare `git diff --stat` with `git diff --stat --ignore-all-space`.
-- **A dependency upgrade takes the latest version that is at least 14 days old**, not simply the latest (#2292), except a
+- **A dependency upgrade takes the latest version that is at least 7 days old**, not simply the latest (#2292, #2333), except a
   security fix.
 - **Every bug gets a test that fails first.** Anything visible gets before/after screenshots.
 - Never print or write a token or password, and never use the maintainer's Azure DevOps or other credentials.
@@ -25,8 +25,8 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 ---
 
 > **STOP: batches 4, 5 and 6 are WITHDRAWN - do not do them** (from `work (security)`, 26 October 2026, about 12:45 AM Central). Batch 6's chart.js 4 has merged
-> (PR 2332); 4 and 5 were withdrawn on 25 October. If you have started batch 6, stop, push a one-line status saying so, and end. **Batches 7 to 17 are all done:
-> nothing else is waiting until the director adds a new batch.** Thank you: 11 batches tonight, five of them now pull requests.
+> (PR 2332); 4 and 5 were withdrawn on 25 October. If you have started batch 6, stop, push a one-line status saying so, and end. **Batches 7 to 17 are all done.
+> Batches 18 and 19 are new (26 October, 7:10 AM Central): do them now.** Thank you: 11 batches tonight, five of them now pull requests.
 
 
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
@@ -35,6 +35,34 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
+
+## Batch 19 (security: #2122 - evidence for each file knip calls unused; read only; 26 October 2026, about 7:10 AM Central, from `work (security)`)
+
+Do this after batch 18. Knip, configured with each project's entry points in PR 2389, reports about 40 files as unused on
+`origin/development`. **Before anyone deletes them, each one needs evidence.**
+
+1. Worktree at the latest `origin/development`. Run knip as the repository configures it (PR 2389), in a `node:24.22.1`
+   container, and save its list of unused files.
+2. For each file, look for anything knip cannot see: a path string in a `project.json`, a jest or vite config, a lazy or
+   dynamic `import()`, a template or stylesheet reference, a script under `scripts/` or `.github/`, a `docs/` page that tells
+   people to run it.
+3. Report one table: file, project, **verdict** (`unused`, `used by <what>`, or `unsure: <why>`), and the evidence. Group by
+   project. End with which projects would lose every file (a hint the whole project may be dead) and **Questions for the
+   director (security)**.
+
+Read only: no branch, no pull request. Report `copilot-home/reports/2026-10-26-19.md`, then `copilot-home: batch 19 done - ...`.
+
+## Batch 18 (security: a check that the restarted agent-runner works; read only; 26 October 2026, about 7:10 AM Central, from `work (security)`)
+
+A short test, so the maintainer can see you running before he leaves for the day.
+
+1. Push `copilot-home: started batch 18` (and `tools/heartbeat.sh copilot-home "running batch 18" 30`).
+2. On the latest `origin/development`, in a `node:24.22.1` container, run `npm audit --package-lock-only --json` and
+   `npm audit --package-lock-only --omit=dev --json`; record the counts by severity for each.
+3. Run `npm view fast-uri time --json` and `npm view serialize-javascript time --json`; record the newest version of each and
+   when it was published, in US Central (convert with PowerShell, as CLAUDE.md says).
+4. Write `copilot-home/reports/2026-10-26-18.md` with the commit of `development` you used, the two tables and the two
+   versions, then push `copilot-home: batch 18 done - <counts>`. Then go straight on to batch 19.
 
 ## Batch 17 (security: #2122 - the cosmetic leftovers your batch 13 found after PRs 2383 and 2386; a branch; 25 October 2026, about 10:25 PM Central, from `work (security)`)
 
