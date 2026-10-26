@@ -316,15 +316,31 @@ const BASEMAP_DEFINITION = fs.readFileSync(
   'utf8'
 );
 
+/**
+ * The current campus raster basemap's URL. The definitions name it through this constant rather than
+ * writing it out (#1700), so it is read from where it is declared.
+ */
+const CAMPUS_BASEMAP_URL = fs
+  .readFileSync(
+    path.join(__dirname, '..', '..', '..', 'libs', 'common', 'datasets', 'geographic', 'src', 'lib', 'campus', 'campus-basemap.ts'),
+    'utf8'
+  )
+  .match(/TAMU_CAMPUS_BASEMAP_URL = '([^']+)'/)?.[1];
+
 /** Every ArcGIS service URL the basemap definitions name, by the constant that names it. */
 function basemapServices(): Array<[string, string]> {
   const found: Array<[string, string]> = [];
 
-  for (const match of BASEMAP_DEFINITION.matchAll(/export const (\w+): BaseMapProperties = \{([\s\S]*?)\n\};/g)) {
+  // A basemap is declared as `BaseMapProperties`, or as `BaseMapProperties & { id: string }` when it is typed with its id.
+  for (const match of BASEMAP_DEFINITION.matchAll(/export const (\w+): BaseMapProperties(?: & \{[^}]*\})? = \{([\s\S]*?)\n\};/g)) {
     const [, constant, block] = match;
 
     for (const url of block.matchAll(/https:\/\/[^'"`\s]+\/arcgis\/rest\/services\/[^'"`\s]+/g)) {
       found.push([constant, url[0]]);
+    }
+
+    if (CAMPUS_BASEMAP_URL && block.includes('TAMU_CAMPUS_BASEMAP_URL')) {
+      found.push([constant, CAMPUS_BASEMAP_URL]);
     }
   }
 
