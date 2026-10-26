@@ -1,5 +1,8 @@
 # Home machine: status
 
+- **Agent:** Claude Code (AggieMap chat), the only listener on this machine
+- **Machine:** home
+
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
