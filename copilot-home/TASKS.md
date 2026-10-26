@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 9.** Written only by the director, `work (security)` (the security and dependency chat on the work
+> **Next free batch number: 16.** Written only by the director, `work (security)` (the security and dependency chat on the work
 > computer). You write `copilot-home/STATUS.md` and `copilot-home/reports/`, never this file. Do the batches in number order,
 > one at a time.
 
@@ -30,6 +30,60 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
+
+## Batch 15 (security: #2341 - plan the move to PublishPipelineArtifact for release builds; read only; 25 October 2026, 7:47 PM Central, from `work (security)`)
+
+**Start after batch 14**, and keep going: **do the batches in number order without waiting to be asked**, pushing a report and a status line after each. **Expected: 45 minutes.** `templates/jobs/build.yml` publishes release builds with `PublishBuildArtifacts@1` (8 to 9 minutes for `development`); `PublishPipelineArtifact@1`
+is faster. Release definition 13 ("AggieMap") takes the build artifact `js-monorepo-<buildType>`. From Microsoft's documentation and this repository's
+pipeline files: what changes in `build.yml`, what the maintainer must change in the classic release's artifact source, how to switch without a gap (both
+for one build?), and how to check one release end to end on dev. A plan only; no edits, and no Azure DevOps calls.
+
+## Batch 14 (security: #1896 - Geoservices' response viewer and partner page: the evidence for removing them; read only; 25 October 2026, 7:47 PM Central, from `work (security)`)
+
+**Start after batch 13**, and keep going: **do the batches in number order without waiting to be asked**, pushing a report and a status line after each. **Expected: 45 minutes.** `ResponseViewerComponent` is used only inside commented-out blocks in four Geoservices API pages (address-processing,
+census-intersection, geocoding, reverse-geocoding), and the partner page and form are not routed (lab report 2026-10-25-135). For each: every reference,
+its history (`git log -S`), what it was for, and whether anything outside comments uses it. List exactly what a removal would delete. No edits; the decision
+is the maintainer's.
+
+## Batch 13 (security: a second review of PR 2383 (UES Operations API and openid-client deleted); read only; 25 October 2026, 7:47 PM Central, from `work (security)`)
+
+**Start after batch 12**, and keep going: **do the batches in number order without waiting to be asked**, pushing a report and a status line after each. **Expected: 30 minutes.** Review PR 2383 against `origin/development`: anything still importing from the deleted `libs/oidc`, `libs/ues/common/nest` or the
+removed `libs/ues/common/ngx` auth folders; `tsconfig.base.json` paths left pointing at deleted folders; workflow, `nx.json` or `azure-pipelines.yml` references
+to `ues-operations-nest`; and whether `ues-operations-angular` (which stays: it is deployed) still builds without what was removed. Report findings with file
+and line. No edits.
+
+## Batch 12 (security: a second review of PR 2386 (unused dependencies removed); read only; 25 October 2026, 7:47 PM Central, from `work (security)`)
+
+**Start after batch 11**, and keep going: **do the batches in number order without waiting to be asked**, pushing a report and a status line after each. **Expected: 30 minutes.** Review PR 2386 (`fork/chore/2122-remove-unused`) against `origin/development`: for each removed package, search the whole
+repository (code, configs, workflows, Dockerfiles, `project.json`, Jest and Vitest configs, ESLint configs) for anything that loads it by name, including
+`require`, dynamic `import()`, plugin strings and presets. The lab found one removal wrong (`@eslint/js`, needed by `@nx/eslint-plugin` without being declared);
+look for any other such case. Report each package: safe, or not and why. No edits.
+
+## Batch 11 (security: #2351 - the raster basemap view-limit test that fails everywhere; a branch; 25 October 2026, 7:47 PM Central, from `work (security)`)
+
+**Start after batch 10**, and keep going: **do the batches in number order without waiting to be asked**, pushing a report and a status line after each. **Expected: 60 minutes.** `test/smoke/aggiemap/services.spec.ts`, *campus basemap services › the view limit matches the raster basemap cache*, fails on
+production and dev alike: *the raster basemap service was not found in basemaps.definition.ts*. Find where the raster basemap is defined now (see #1700),
+and make the test read it from there; if the view limit no longer depends on it, say so and propose removing the check instead. Prove it with
+`bash test/smoke/aggiemap/run-local.sh production one "view limit matches"` (red before, green after) - this needs Docker and reaches the public production
+site, read only. Branch `fix/2351-raster-basemap-test`. Commit (`Closes #2351`, Co-Authored-By), push to `fork`. No PR.
+
+## Batch 10 (security: #2379 - the logo upload-limit test that times out under load; a branch; 25 October 2026, 7:47 PM Central, from `work (security)`)
+
+**Start after batch 9**, and keep going: **do the batches in number order without waiting to be asked**, pushing a report and a status line after each. **Expected: 45 minutes.** `libs/gisday/platform/data-api`'s *OrganizationController upload limits: answers 413 for an organization logo over the shared
+file-size limit* posts 5 MiB to a real local Nest server under Jest's 5-second default; under the full check's load it took 5,248 ms and failed. Branch
+`fix/2379-upload-limit-timeout` from `origin/development`: give that spec (and any sibling upload-limit specs) an explicit timeout that fits a 5 MiB upload,
+or make the oversized body cheaper (a stream that is cut off past the limit), so it cannot sit on the edge. Run the spec 10 times under load (for example
+alongside two other projects' tests) and report the times. `bash scripts/check-in-volume.sh fix/2379-upload-limit-timeout gisday-platform-data-api`. Commit
+(`Closes #2379`, Co-Authored-By as above), push to `fork`. No PR.
+
+## Batch 9 (security: #2385 - give knip a configuration with each project's entry points; a branch; 25 October 2026, 7:47 PM Central, from `work (security)`)
+
+**Start after batch 8**, and keep going: **do the batches in number order without waiting to be asked**, pushing a report and a status line after each. **Expected: 2 hours.** knip 6.42.0 (pinned; the newest release at least 7 days old) flags every app's `main.ts` as unused because it does not find the Nx projects'
+entry points (lab report 2026-10-25-135 on this branch). Branch `chore/2385-knip-config` from `origin/development`: a root `knip.json` naming each project's
+entries (apps' `main.ts`, the `project.json` targets' files, `tools/**`, `scripts/**`, Jest and Vitest configs), or knip's Nx plugin if it covers our executors.
+Prove it: rerun knip; sample 20 of what it still calls unused files and say for each whether it really is. **Change no package.json or lock** (no package
+removals here). `bash scripts/check-in-volume.sh chore/2385-knip-config`. Commit (`chore(workspace): Configure knip with each project's entry points`,
+`Part of #2385`, `Co-Authored-By: GitHub Copilot <noreply@github.com>`), push to `fork`. No PR.
 
 ## Batch 8 (security: #2335 - what every CI token can reach; read only, a report; 25 October 2026, 9:12 AM Central, from `work (security)`)
 
