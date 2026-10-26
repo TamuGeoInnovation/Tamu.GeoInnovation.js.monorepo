@@ -17,6 +17,29 @@
       "EV Charge Stations (Main + RELLIS)",
       "Single Occupancy Restroom Locations"
     ],
+    "allowedMapLayerFailures": {
+      "/parking/cross-country-parking": {
+        "Cross Country Event Parking Lots": "#2209: the development athletics view has no 'trackxc' field, which the layer's definition expression filters on"
+      },
+      "/parking/indoor-track-parking": {
+        "Accessible Parking Spaces": "#2209: the development athletics view has no 'event' field, which the layer's definition expression filters on"
+      },
+      "/parking/outdoor-track-parking": {
+        "Accessible Parking Spaces": "#2209: the development athletics view has no 'event' field, which the layer's definition expression filters on"
+      },
+      "/parking/soccer-parking": {
+        "Accessible Parking Spaces": "#2209: the development athletics view has no 'event' field, which the layer's definition expression filters on"
+      },
+      "/parking/softball-parking": {
+        "Accessible Parking Spaces": "#2209: the development athletics view has no 'event' field, which the layer's definition expression filters on"
+      },
+      "/parking/swimming-parking": {
+        "Accessible Parking Spaces": "#2209: the development athletics view has no 'event' field, which the layer's definition expression filters on"
+      },
+      "/parking/volleyball-parking": {
+        "Accessible Parking Spaces": "#2209: the development athletics view has no 'event' field, which the layer's definition expression filters on"
+      }
+    },
     "allowedServiceFailures": {
       "accessibleUrl": "#1005: the development GIS server does not serve this layer",
       "bikeMapUrl": "#1005: the development GIS server requires a token for this service",
