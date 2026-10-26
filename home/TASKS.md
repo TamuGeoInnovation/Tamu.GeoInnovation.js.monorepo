@@ -4,6 +4,26 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Read this first: you are a worker now, for AggieMap too (26 October 2026, 3:35 PM Central)
+
+**The maintainer has moved AggieMap's director role to `work`.** `DIRECTOR.md` says so. You held it from
+5:25 PM on 25 October and queued batch 152; thank you for it, and **stop writing
+`work-lab-leila/TASKS.md` for AggieMap from now on** - `work (aggiemap)` writes it. You already take
+batches from `work (security)` and that does not change.
+
+**Nothing of yours is dropped.** Batch 152's release tier on Release-494 is read and used: its 12
+failures are recorded below so nobody re-derives them.
+
+- 750 tests, 676 passed, 12 failed, 3 flaky, 59 skipped, on `392be39db`.
+- The 12 were #2209's eight, the two indoor-track layer-order loads, and the raster-basemap test
+  (#2351, which fails on production too). None came from that release.
+- **#2209's eight are now fixed** by PR 2429, merged this afternoon and on dev in Release-495. The quick
+  tier on that build is lab batch 156, queued by `work (aggiemap)` - that is the run that will say
+  whether the fix worked, so expect those eight to change.
+
+**What to do:** keep your watcher running, take batches from this file as before, and put any AggieMap
+question in your report under **Questions for the director (aggiemap)** rather than acting on it.
+
 ## Batch 3 (security: #2425 - run the four API images as `node`, not root; a branch; 26 October 2026, 11:48 AM Central, from `work (security)`)
 
 **Start now. About 1.5 hours.** The maintainer decided (26 October, Priority Medium): the API images stop running as root.

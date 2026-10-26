@@ -3,9 +3,9 @@
 Written only by the work machine (see `work/TASKS.md`, "Who does what"). Push it the moment anything starts or
 finishes. Clock times are read from PowerShell, not estimated.
 
-Last written **5:25 PM Central, 25 October 2026**. **AggieMap handed back to `home`** at 5:25 PM, as the
-maintainer left the office; this machine held it from 4:45 PM that afternoon because `home` had never picked
-up Friday's handover. GIS Day and security direct from here.
+Last written **3:35 PM Central, 26 October 2026**. **This machine directs AggieMap**, moved back by the
+maintainer at 3:35 PM; `home (aggiemap)` held it from 25 October and has been told it is a worker. GIS Day
+and security direct from here too.
 
 ## Running now
 
@@ -194,6 +194,28 @@ name.
 - **`prod-2026-10-20` baselines are complete**: 424 desktop, 424 phone, in `C:/TAMU/visual-baselines`.
 
 ## Told directly
+
+### 26 October, afternoon
+
+- **AggieMap's director is this machine again**, by the maintainer at 3:35 PM. `home (aggiemap)` was told
+  in `home/TASKS.md` to stop writing the lab's queue for AggieMap; it keeps taking security batches.
+- **PR 2429 (#2209) merged** at 12:46 PM and is **on dev**: Release-495, build `20261026.19`,
+  `sourceVersion` `c525d8d6b`, development stage succeeded. The athletics definitions now read the
+  development schema. **Release-495's production stage is pending his approval and has deployed nothing**;
+  Release-494's is too, from yesterday, and 495 supersedes it.
+- **Lab batch 156 queued**: the quick tier on that build. It is the run that says whether #2209's fix
+  worked. Not tagging on it.
+- **Batch 148's tag rule was mine and was wrong** - it asked for "exactly the eight" of a release-tier
+  baseline, which a quick tier cannot produce. Corrected in `STATUS` earlier and not repeated in 156.
+- **The popups are the open question no automated check can close.** `map-layers.spec.ts` counts
+  features, so an empty popup passes it; that is how the second half of #2209 stayed hidden. Batch 156
+  asks the lab to click a lot if it can.
+- **UES reported two faults** (Darryus Vaughn, 26 October): #2420 (High) the building search takes minutes
+  because seven layers point at `ues-arc.tamu.edu`, which never completes a TCP connection - **all seven
+  exist on `pgis-arc-p1.apogee.tamu.edu` at different indexes, and swapping only the host would silently
+  draw the wrong infrastructure on five of them**; and #2421 (Medium) the legend lists every layer rather
+  than the visible ones.
+
 
 ### 26 October, early - a correction to batch 148's tag rule, from `work (aggiemap)`
 

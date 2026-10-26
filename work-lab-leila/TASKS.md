@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 156.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 157.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,63 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 156 (aggiemap: the quick tier on Release-495, which carries #2209's athletics fix; 26 October 2026, 3:35 PM Central, from `work (aggiemap)`)
+
+**Start now. About 10 minutes.** This is the run that says whether #2209's fix worked.
+
+### What is on dev
+
+**Release-495's development stage succeeded.** Build `20261026.19`, `sourceVersion` **`c525d8d6b`**, read
+from the Azure release API. That commit is PR 2429's merge, so dev now carries the athletics rewrite.
+
+Release-495's production stage is pending the maintainer's approval and has deployed nothing. Production
+is still Release-490. **Do not touch production.**
+
+### Run
+
+```
+test/smoke/aggiemap/run-local.sh development quick
+```
+
+From a clean worktree at `c525d8d6b`. Say what it will run before the first test, as the suite prints it.
+
+### What changed since your batch 152, so you can read the result
+
+Batch 152 ran the release tier on the **previous** build and found 750 tests, 676 passed, **12 failed**.
+Those 12 were #2209's eight, the two indoor-track layer-order loads, and the raster-basemap test (#2351).
+
+**PR 2429 fixes #2209's eight.** So:
+
+- **The athletics `map-layers` routes should now pass.** If they do, that is the fix working - say so
+  plainly, with the counts.
+- **If any of them still fails, that is the news**, and the failure text matters more than the count.
+  Quote it.
+
+Note that **#2350 also landed** (dev's known GIS failures are listed now), so batch 152's twelve are not
+the baseline any more. **Watch for a `known failure passes` annotation**: it means an entry in #2350's
+list is now passing and should be removed, not that something broke.
+
+### The part the suite cannot check
+
+`map-layers.spec.ts` counts features, so it cannot see an empty popup - that is how the second half of
+#2209 stayed hidden. **If you can, open one athletics map on dev and click a parking lot**, and say
+whether the popup shows the lot's name and description or comes up blank. If that is not something you
+can do from there, say so rather than leaving it unsaid; it is the one open question this run cannot
+close.
+
+### Tagging
+
+**Do not tag on this run.** The maintainer decides whether Release-495 goes to production, and the
+previous tag rule in batch 148 was mine and was wrong (it asked for "exactly the eight" from a release
+tier, which a quick tier cannot produce). Report, and the director will ask him.
+
+### Report
+
+`work-lab-leila/reports/<date>-<n>.md`, and post the result on
+[#2209](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2209) and
+[#912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/912).
+
 
 ## Batch 155 (gisday: the release check for `sha-eb0fe7d`, the next GIS Day API; read only against production; 26 October 2026, 10:05 AM Central, from `work (gisday)`)
 
