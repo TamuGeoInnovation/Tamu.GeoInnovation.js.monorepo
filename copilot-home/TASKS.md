@@ -38,6 +38,28 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
 
+## Batch 27 (security: #2122 - the 10 dependencies knip calls unused: evidence for each; read only; 26 October 2026, about 5:30 PM Central, from `work (security)`)
+
+**Start now.** On the latest `origin/development`, `scripts/security-tables.sh` (table 3) lists 10 dependencies knip 6.42.0 calls
+unused: `@angular/language-service`, `@eslint/js`, `@nx/web`, `@oxc-project/runtime`, `@typescript-eslint/utils`,
+`angular-eslint`, `jest-environment-jsdom`, `jest-junit`, `prettier`, `typescript-eslint`. knip cannot see a package used by a
+config file it doesn't read, a CLI, a peer dependency, an Nx plugin, CI or an editor. On 25 October, `@eslint/js` was removed and
+CI broke, because `@nx/eslint-plugin` needed it without declaring it. So a removal is proved only by a full check.
+
+For each package:
+1. Find every use knip can't see: `git grep` the name in configs (`eslint.config.mjs` everywhere, `jest.preset.js`,
+   `jest.config.ts`, `vitest*`, `project.json` executors and options, `nx.json` plugins, `.prettierrc`, `.vscode/`, `.github/`,
+   `azure-pipelines.yml`, `templates/`, `scripts/`). Then `npm ls <name>` and `npm explain <name>`, to see who else needs it
+   (a peer dependency counts).
+2. **If it looks unused:** on a scratch branch, remove only it from `package.json`, run
+   `npm install --package-lock-only --ignore-scripts`, then `bash scripts/check-in-volume.sh <scratch> all`, and record the
+   exit code. Delete the scratch branch afterwards; don't push it.
+3. Report one table: package, verdict (`needed by <what>`, `removable: check exit 0`, or `unsure: <why>`), and the evidence.
+   Then **Questions for the director (security)**. Write it to `copilot-home/reports/2026-10-26-27.md`, then push
+   `copilot-home: batch 27 done - ...`.
+
+Read only on GitHub: no pushed branch, no pull request. The director turns the removable ones into one PR.
+
 ## Batch 26 (gisday: #2431, remove the three links under Explore Events on gisday.tamu.edu; a branch with screenshots; 26 October 2026, 12:45 PM Central, from `work (gisday)`)
 
 After your other GIS Day batches. Low priority; about 40 minutes. Questions to `work (gisday)`.
