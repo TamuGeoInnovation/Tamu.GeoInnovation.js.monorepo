@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **6:02 PM Central, 26 October 2026**. A listener; job: testing.
+Last written **6:03 PM Central, 26 October 2026**. A listener; job: testing.
 
 ## What this is
 
@@ -30,7 +30,7 @@ Last written **6:02 PM Central, 26 October 2026**. A listener; job: testing.
 
 ## Running now
 
-**Batch 157, aggiemap: the release tier on the production candidate `2a09a308c`**, started 6:00 PM Central, 26 October. First step: checking that dev serves that build (the two new campuses on All Maps). Worktree `C:/TAMU/wt-rel157` at `2a09a308c`.
+**Batch 157, aggiemap: the release tier on the production candidate `2a09a308c`**, started 6:00 PM Central, 26 October. **Waiting for the build:** at 6:03 PM dev still serves `main-2L6SSTUU.js`, with no Fort Worth or Houston campus in any of its 1591 bundles, so it has an older build and the tier is not started. A watcher crawls dev's bundles every 2 minutes and the tier starts when "Houston Space Institute" appears. (The batch's `aggiemap-dev.tamu.edu` does not resolve; dev is `dev.aggiemap.tamu.edu`, which the suite uses.) Production's All Maps, at 6:03 PM, lists neither new campus (`main-YTDVM4VX.js`). Worktree `C:/TAMU/wt-rel157` at `2a09a308c`.
 
 **Next update by 6:45 PM Central.**
 
