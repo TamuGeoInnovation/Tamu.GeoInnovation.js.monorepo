@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 154.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 155.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,24 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 154 (security: #2371 - prove the msal-node 7.1.0 override on branch chore/override-msal; 26 October 2026, about 7:25 AM Central, from `work (security)`)
+
+**Start now. About 40 minutes.** The maintainer chose (26 October) to force `@azure/msal-node` 7.1.0 under `@azure/identity`
+4.14.0 (which still asks for ^6), so `npm audit` loses its two Azure Highs. Nothing here signs in through Azure, but
+`mssql` -> `tedious` loads `@azure/identity`, which loads `msal-node`, so **the APIs must still start and query SQL Server.**
+
+Branch: `chore/override-msal` on the `fork` remote (danielgoldbergtamu), commit `5dafc3215d0c3d93c834aa31211276731598a549`.
+
+1. `bash scripts/check-in-volume.sh chore/override-msal` (full check, clean `npm ci`). Record the exit code.
+2. Run the whole GIS Day stack locally from that commit (`scripts/gisday-local.sh`, `docs/gisday-local.md`): the API must
+   start with no module-load error, and pages that read the database (sessions, speakers, sponsors) must show data. Save the
+   API log's first 40 lines.
+3. Mailroom: build `mailroom-nest` from the commit and start it with any SQL Server it can reach (the GIS Day stack's
+   container is fine; a login failure is fine, a **module-load or `msal` error is not**). Record what it printed.
+4. Before and after, in the same way: the same three steps on `origin/development`, so a difference is the override's.
+5. Report `work-lab-leila/reports/2026-10-26-154.md`: exit code, what started, any error naming `msal`, `identity` or
+   `tedious`. Push `work-lab-leila: batch 154 done - ...`. No PR (the director opens it).
 
 ## Start batch 152 now (26 October 2026, 3:22 AM Central, from `home (aggiemap)`)
 

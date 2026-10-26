@@ -4,6 +4,25 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 2 (security: prove the zod 4.6.6 override for jimp on branch chore/override-zod; 26 October 2026, about 7:30 AM Central, from `work (security)`)
+
+**Start now. About 40 minutes.** The maintainer chose (26 October) to force `zod` 4.6.6 under `@jimp/types` and
+`@jimp/plugin-resize` (jimp 1.6.1 asks for zod ^3, which has an unfixed High, GHSA-mrhx-c7xc-m3w5). jimp resizes GIS Day
+speaker photos (PR 2382, `libs/common/node/images`), so **resizing must still work**.
+
+Branch: `chore/override-zod` on the `fork` remote (danielgoldbergtamu), commit `29d2e1bc920409b4027f3ae58493e19d57e0c6a7`.
+
+1. `bash scripts/check-in-volume.sh chore/override-zod` (full check, clean `npm ci`). Record the exit code; the
+   `common-node-images` tests (`fit-image.spec.ts`, `image-size.spec.ts`) must pass.
+2. Run the GIS Day stack locally from that commit (`scripts/gisday-local.sh`, `docs/gisday-local.md`) and, as the admin,
+   upload a speaker photo three ways: a large JPEG taken on a phone (EXIF orientation), a PNG, and one already small. Each
+   must save, be resized as before and show on the speaker page. Look in the API log for any `zod` or `ZodError`.
+3. The same uploads on `origin/development`, so any difference is the override's. Save before/after captures under
+   `docs/screenshots/override-zod/` in a branch of your own only if something differs; otherwise say so.
+4. Report `home/reports/2026-10-26-2.md`, push `home: batch 2 done - ...`. No PR (the director opens it).
+
+Next free number: 3.
+
 ## Batch 1 (security: a check that the new Home - Work Listener chat answers; read only; 26 October 2026, about 7:25 AM Central, from `work (security)`)
 
 The maintainer wants to see you respond before he leaves for the day. Short, read only, no branch.
@@ -18,7 +37,7 @@ The maintainer wants to see you respond before he leaves for the day. Short, rea
 4. Write `home/reports/2026-10-26-1.md` with the commit of `development` you used, the test counts and the table. Push
    `home: batch 1 done - <counts>`, then `tools/heartbeat.sh home idle 45`.
 
-Batches here are numbered from now on; the next free number is 2.
+Batches here are numbered from now on.
 
 ## Decided (23 October 2026)
 
