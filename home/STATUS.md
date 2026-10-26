@@ -6,10 +6,10 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 1** (security: a check that the new listener chat answers), started 6:54 AM Central, Monday 26 October 2026, from `work (security)`.
-Next update by 7:30 AM Central.
+**`home`: a listener, nothing running.** Last batch done: 1 (7:00 AM Central, Monday 26 October 2026).
 
 ## Finished
+- **Batch 1** (security; report `home/reports/2026-10-26-1.md`): security-findings tests at `be9581cdc`, 18 pass, 0 fail; roster table without its private column; one question for the director.
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
 - **Batch 3** (report `home/reports/2026-10-19-4.md`): #1954 pushed, red-first tests, check exit 0.
 - **Batch 2: the release notes updated** (`docs/releases/2026-10-19.md`, branch `docs/release-2026-10-18`, commit
