@@ -22,7 +22,7 @@ services:
       - TYPEORM_SYNCHRONIZE=${TYPEORM_SYNCHRONIZE}
       - TYPEORM_DROP_SCHEMA=${TYPEORM_DROP_SCHEMA}
       - TYPEORM_LOGGING=${TYPEORM_LOGGING}
-      - 'TYPEORM_DRIVER_EXTRA={"options": {"enableArithAbort": true,"trustedConnection": true}}'
+      - 'TYPEORM_EXTRA={"options": {"enableArithAbort": true,"trustedConnection": true}}'
     restart: always
   database:
     image: ghcr.io/tamugeoinnovation/mssqldocker:latest

@@ -1,4 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+
+import { athleticsDevelopmentSource } from './common.definitions';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
@@ -91,11 +93,28 @@ export const CrossCountryParkingConfiguration: EventConfiguration = {
 
 export const CrossCountryParkingOptions: SpecialEventOptions = [];
 
+/**
+ * Cross country on the development server (#2209). Same indexes as production; the lots layer's
+ * `trackxc = 'EventParking'` becomes `type`, which is what the new schema carries.
+ */
+export const CrossCountryParking_DevelopmentLayerSources: LayerSource[] = [
+  athleticsDevelopmentSource({
+    id: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.id,
+    url: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.url
+  }),
+  athleticsDevelopmentSource({
+    id: CrossCountryParkingDefinitions.PARKING.id,
+    url: CrossCountryParkingDefinitions.PARKING.url,
+    onlyType: 'Event Parking'
+  })
+];
+
 export const CrossCountryParkingTs: AggiemapCustomMapConfiguration = {
   type: 'general-map',
   configuration: CrossCountryParkingConfiguration,
   options: CrossCountryParkingOptions,
   sources: CrossCountryParkingColdLayerSources,
+  developmentSources: CrossCountryParking_DevelopmentLayerSources,
   references: CROSS_COUNTRY_PARKING_LAYERS,
   discover: {
     id: CrossCountryParkingConfiguration.id,
