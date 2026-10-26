@@ -19,10 +19,11 @@ Last written **8:06 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 **Next update by 7:00 AM Central.**
 
-Batch 16 (security: #2388 workflow injection fix and actionlint) started 11:30 PM Central. **Next update by 12:30 AM Central.**
+Batch 17 (security: #2122 stale references) started 12:20 AM Central. **Next update by 1:00 AM Central.**
 
 ## Finished
 
+- **Batch 16, security: #2388 workflow injection and actionlint** (11:30 PM to 12:15 AM Central, 25 to 26 October): branch `ci/2388-workflow-injection` at `c713627a231f03909e4d0ef5e800b8a7a2756cc4` on the fork; actionlint red (exit 1) then green; check exit 0. Report `copilot-home/reports/2026-10-25-16.md`.
 - **Batch 15, security: #2341 PublishPipelineArtifact plan (read only)** (10:55 to 11:25 PM Central, 25 October): one-step change in build.yml, keep artifact name; release-side checks and a dev end-to-end test listed. Report `copilot-home/reports/2026-10-25-15.md`.
 - **Batch 14, security: #1896 evidence (read only)** (10:25 to 10:50 PM Central, 25 October): viewer's 12 uses are all in comments; partner page unrouted, form complete; removal = 10 files + 16 commented lines; options listed. Report `copilot-home/reports/2026-10-25-14.md`.
 - **Batch 13, security: second review of PR 2383 (read only)** (9:50 to 10:20 PM Central, 25 October): PR already merged (`9ea0d7a60`); one dead route that now throws, a stale nx.json glob, stale prose. Report `copilot-home/reports/2026-10-25-13.md`.
@@ -39,7 +40,7 @@ Batch 16 (security: #2388 workflow injection fix and actionlint) started 11:30 P
 
 ## Queued
 
-Batches 16 and 17.
+Batch 17.
 
 ## Findings
 
@@ -49,4 +50,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 15
+Last batch done: 16
