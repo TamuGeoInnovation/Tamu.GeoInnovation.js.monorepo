@@ -50,9 +50,9 @@ describe('automaticReviewReasons', () => {
 
   it("fails a plaque with no name, only spaces, or only a plaque's wording", () => {
     for (const memorial_name of [undefined, '  ', 'In loving memory']) {
-      expect(automaticReviewReasons(submission({ value: { memorial_type: 'tree_bench_plaque', memorial_name } }), [], form)).toEqual([
-        'No name'
-      ]);
+      expect(
+        automaticReviewReasons(submission({ value: { memorial_type: 'tree_bench_plaque', memorial_name } }), [], form)
+      ).toEqual(['No name']);
     }
   });
 
@@ -126,9 +126,13 @@ describe('automaticReviewReasons', () => {
   it('passes the same participant submitting another type at the spot, or the same type further away', () => {
     const earlier = [submission({ created: secondsBefore(600) })];
 
-    expect(automaticReviewReasons(submission({ value: { memorial_type: 'monument', memorial_name: 'John Smith' } }), earlier, form)).toEqual(
-      []
-    );
+    expect(
+      automaticReviewReasons(
+        submission({ value: { memorial_type: 'monument', memorial_name: 'John Smith' } }),
+        earlier,
+        form
+      )
+    ).toEqual([]);
     expect(automaticReviewReasons(submission({ location: { ...north(12), accuracy: 5 } }), earlier, form)).toEqual([]);
   });
 

@@ -22,7 +22,7 @@ import {
 } from '../dtos/dtos';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
-import { AUTOMATIC_REVIEWER, automaticReviewReasons, ReviewedSubmission } from './automatic-review';
+import { AUTOMATIC_REVIEWER, automaticReviewReasons, COULD_NOT_REVIEW, ReviewedSubmission } from './automatic-review';
 
 @Injectable()
 export class SubmissionService extends BaseService<CompetitionSubmission> {
@@ -70,20 +70,14 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         speed: 0.0
       };
 
+      // The app reviews every new submission (#2164): verified when it passes every check, otherwise left
+      // unverified for a person, who can always decide otherwise. Before the save, and never able to stop
+      // it: a review that fails leaves the submission unverified, saved (#2428 review).
+      const reasons = await this.reviewAutomatically(entity, truncated, blobs?.length ?? 0);
+
       // INSERT, never save(): save() updates a row whose guid already exists, and the app chooses the
       // guid (#1786). A duplicate fails on the primary key and rolls back its location and photographs.
       return this.submissionRepo.manager.transaction(async (em) => {
-        // The app reviews every new submission (#2164): verified when it passes every check, otherwise
-        // left unverified for a person, who can always decide otherwise.
-        const earlier = await em.find(CompetitionSubmission, {
-          where: { userGuid: entity.userGuid, season: { guid: entity.season.guid } },
-          relations: { location: true, validationStatus: true }
-        });
-        const reasons = automaticReviewReasons(
-          { created: new Date(), value: entity.value as never, location: truncated as never, photos: blobs?.length ?? 0 },
-          earlier.map((other) => toReviewed(other)),
-          (entity.season as CompetitionSeason).form?.model ?? []
-        );
         const validationStatus = await em.save(
           em.create(CompetitionSubmissionValidationStatus, {
             status: reasons.length === 0 ? COMPETITION_VALIDATION_STATUS.verified : COMPETITION_VALIDATION_STATUS.unverified,
@@ -105,6 +99,34 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       });
     } else {
       throw new BadRequestException('Incomplete submission.');
+    }
+  }
+
+  /**
+   * Why a new submission needs a person to look at it (`automaticReviewReasons`), compared with the
+   * participant's earlier submissions in the season. When the review itself fails, that is the reason, and
+   * the error is logged.
+   */
+  private async reviewAutomatically(
+    entity: DeepPartial<CompetitionSubmission>,
+    location: DeepPartial<SubmissionLocation>,
+    photos: number
+  ): Promise<Array<string>> {
+    try {
+      const earlier = await this.submissionRepo.find({
+        where: { userGuid: entity.userGuid, season: { guid: entity.season.guid } },
+        relations: { location: true, validationStatus: true }
+      });
+
+      return automaticReviewReasons(
+        { created: new Date(), value: entity.value as never, location: location as never, photos },
+        earlier.map((other) => toReviewed(other)),
+        (entity.season as CompetitionSeason).form?.model ?? []
+      );
+    } catch (err) {
+      Logger.error(`Could not review submission ${entity.guid} automatically: ${err?.message ?? err}`, 'SubmissionService');
+
+      return [COULD_NOT_REVIEW];
     }
   }
 
@@ -360,7 +382,9 @@ function withAutomaticReview(
   compSeason: CompetitionSeason
 ): SubmissionReviewDto {
   const model = compSeason.form?.model ?? [];
-  const nameAttribute = model.find((q) => q.isDiscriminator === true)?.options?.find((option) => option.nameAttribute)?.nameAttribute;
+  const typeQuestion = model.find((q) => q.isDiscriminator === true);
+  const type = typeQuestion ? submission.value?.[typeQuestion.attribute] : undefined;
+  const nameAttribute = typeQuestion?.options?.find((option) => option.value === type)?.nameAttribute;
   const name = nameAttribute ? submission.value?.[nameAttribute] : undefined;
   const status = submission.validationStatus?.status ?? COMPETITION_VALIDATION_STATUS.unverified;
   const created = new Date(submission.created).getTime();

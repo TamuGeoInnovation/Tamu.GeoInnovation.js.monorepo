@@ -3,6 +3,7 @@ import { Observable, take } from 'rxjs';
 
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 import { SubmissionDetailModalComponent } from '../submission-detail-modal/submission-detail-modal.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -34,6 +35,15 @@ export class SubmissionReviewListComponent implements OnInit {
     this.submissions$().subscribe((submissions) => {
       this.submissions.set(submissions);
     });
+  }
+
+  /**
+   * Whether the row was verified by the app and still is (#2164). Once a person discards or unverifies it
+   * in the detail modal, the row's status changes in place while the server's flag does not, and the
+   * decision is theirs, not the app's (#2428 review).
+   */
+  public verifiedByApp(row: SubmissionReviewDto): boolean {
+    return row.verifiedAutomatically === true && row.validationStatus === COMPETITION_VALIDATION_STATUS.verified;
   }
 
   public onRowClick(event: SwimlaneNgxDatatableActivateEvent) {
