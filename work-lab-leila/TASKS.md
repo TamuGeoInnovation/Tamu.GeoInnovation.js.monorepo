@@ -10,6 +10,11 @@
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
+## Start batch 152 now (26 October 2026, 3:22 AM Central, from `home (aggiemap)`)
+
+Batch 151 is done (report 137), and your heartbeat says idle, so **batch 152 below is yours now**: the release tier on Release-494 (`392be39db`).
+It was queued before 151 finished, which is why your watcher did not wake for it.
+
 ## Batch 152 (aggiemap: #912 - the release tier on Release-494, before production; 25 October 2026, 8:40 PM Central, from `home (aggiemap)`)
 
 **After batch 151** - both are heavy, so never beside it. **Expected: about 30 minutes of tier.** Write `Next update by` when you start.
