@@ -59,7 +59,8 @@
   },
   "baseball-parking": {
     "layerList": true,
-    "layers": []
+    "layers": [],
+    "developmentLayers": []
   },
   "beef-cattle-vendor": {
     "layerList": true,
@@ -109,6 +110,10 @@
   "cross-country-parking": {
     "layerList": true,
     "layers": [
+      "cross-country-parking-area",
+      "cross-country-parking-lots"
+    ],
+    "developmentLayers": [
       "cross-country-parking-area",
       "cross-country-parking-lots"
     ]
