@@ -283,7 +283,7 @@ describe('SubmissionController upload limits', () => {
 
     expect(res.status).toBe(413);
     expect(createCompetitionSubmission).not.toHaveBeenCalled();
-  });
+  }, 30000);
 
   it('refuses more than two files, and saves nothing', async () => {
     const res = await send(1024, 1024, 1024);

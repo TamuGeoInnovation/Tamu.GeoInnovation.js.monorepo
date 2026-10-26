@@ -7,6 +7,9 @@ import { DEFAULT_UPLOAD_LIMITS } from '@tamu-gisc/common/nest/services';
 import { OrganizationController } from './organization.controller';
 import { OrganizationService } from './organization.service';
 
+// A 5 MiB body to a real local server: 5,248 ms under load, so Jest's 5 s default sat on the edge (#2379).
+const UPLOAD_TEST_TIMEOUT_MS = 30000;
+
 describe('OrganizationController upload limits', () => {
   let app: INestApplication;
   let url: string;
@@ -49,5 +52,5 @@ describe('OrganizationController upload limits', () => {
 
     expect(response.status).toBe(413);
     expect(createOrganization).not.toHaveBeenCalled();
-  });
+  }, UPLOAD_TEST_TIMEOUT_MS);
 });
