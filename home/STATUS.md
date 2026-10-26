@@ -6,9 +6,10 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running.** Last batch done: 3.
+**`home`: a listener, nothing running.** Last batch done: 4.
 
 ## Finished
+- **Batch 4** (security; report `home/reports/2026-10-26-4.md`): #2425's clean branch pushed to the fork as `chore/2425-api-images-non-root-2` at `160f65e80`.
 - **Batch 3** (security; report `home/reports/2026-10-26-3.md`): #2425. All four images run as `node` and the check exits 0 (`160f65e80`, on this machine only: the force-push to the fork was refused; question 1). The GIS Day volume must be writable by uid 1000 before deploying.
 - **Batch 2** (security; report `home/reports/2026-10-26-2.md`): zod override on `chore/override-zod` (`29d2e1bc9`). Check exit 0, 13 image tests pass, resizing byte-identical to development on three photos. Admin-page upload not done (Auth0 sign-in); one question for the director.
 - **Batch 1** (security; report `home/reports/2026-10-26-1.md`): security-findings tests at `be9581cdc`, 18 pass, 0 fail; roster table without its private column; one question for the director.
