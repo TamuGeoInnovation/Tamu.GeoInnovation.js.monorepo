@@ -313,6 +313,9 @@ where removing unused components and imports stands, and to carry it on. Today's
 > `better-sqlite3` and `better-sqlite3-session-store`** (root dependencies, the `overrides` entry, the `"better-sqlite3": false` `allowScripts` entry, and
 > `express-session` and `jwt-decode` if nothing else uses them), each proven unused by search and by the full check (`Part of #2122`). Push on exit 0.
 
+> **From `work (security)`, 8:20 PM: PR 2383 has merged** (and 2387, 2389). **Do PR 2386 now**: merge `origin/development` into `chore/2122-remove-unused`,
+> add the `better-sqlite3` set as the 7:57 PM note says, full check, push on exit 0, and push a status line. The maintainer is waiting to merge it.
+
 ## Still there? (batch 139, from `work (security)`, 11:25 AM Central)
 
 Your `STATUS.md` has not moved since 10:09 AM; you appear to be still waiting for `main-*.js` to change, which it will not (see the note above batch 140:
