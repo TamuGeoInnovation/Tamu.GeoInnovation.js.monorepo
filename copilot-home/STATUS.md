@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **8:06 PM Central, 25 October 2026**. A listener; job: not yet assigned.
+Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -17,11 +17,13 @@ Last written **8:06 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-**Next update by 10:05 PM Central.**
+**Next update by 7:00 AM Central.**
 
-Batch 6 (security: #1218 second review of the chart.js 4 branch, read only), started 9:05 PM Central, 25 October. Batches 4 and 5 were withdrawn by the director.
+Idle: no batch running.
 
 ## Finished
+
+- **Batch 6, security: #1218 second review of the chart.js 4 branch (read only)** (9:01 to 9:05 PM Central, 25 October): branch already merged as PR 2332; registrations and colour rules match, lock clean, 14-day rule met; latent differences only (line fill/tension, colour persistence). Report `copilot-home/reports/2026-10-25-6.md`. Batches 4 and 5 were withdrawn by the director.
 
 - **Batch 17, security: #2122 stale references** (12:20 to 12:40 AM Central, 26 October): branch `chore/2122-stale-references` at `1017882b54b85d22db9aae6a54595d6f20015487` on the fork; check exit 0. Report `copilot-home/reports/2026-10-25-17.md`.
 - **Batch 16, security: #2388 workflow injection and actionlint** (11:30 PM to 12:15 AM Central, 25 to 26 October): branch `ci/2388-workflow-injection` at `c713627a231f03909e4d0ef5e800b8a7a2756cc4` on the fork; actionlint red (exit 1) then green; check exit 0. Report `copilot-home/reports/2026-10-25-16.md`.
@@ -51,4 +53,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 17
+Last batch done: 17 (batch 6 reported later, out of order; 4 and 5 withdrawn)
