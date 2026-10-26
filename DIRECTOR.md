@@ -261,6 +261,19 @@ deciding a production release. Contention does not look like contention in a rep
 The listener running the long job owns its machine until it finishes. The director plans around that rather than
 asking for something in the middle of it.
 
+## The coordinator, and who directs what (25 October 2026, evening)
+
+The maintainer decided: **one coordinator and project leads.** `PROJECTS.md` says who directs each project and who the coordinator is; it
+is the single answer to "who is doing what where", and a handover is a one-line change there in the same commit as the handover notes.
+
+- **The coordinator** owns what the projects share: the order of lab batches, the lock-file queue (one `package-lock.json` PR "next" at a
+  time), which listener gets which work, and **every question to the maintainer**, asked once as one numbered list across all projects.
+  It does no project work itself. Its start is `coordinator/START.md`.
+- **Project leads** (AggieMap, GIS Day, security, visual testing) do their project's work, write their batches and pull requests, ask the
+  coordinator for lab time and lock-queue slots, and send it their questions with options and a recommendation.
+- **Batch headings name project, issue and director**, always: `## Batch N (<project>: #<issue> - <what>; <date, time> Central, from `<director>`)`.
+  `tools/board.sh` reads them, with the listeners' own commit subjects, into one board of who is doing what.
+
 ## Checking in: who is up and can take work (25 October 2026)
 
 The maintainer asked that every machine, and every agent on it, check in regularly, so anyone can see at a glance
