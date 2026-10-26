@@ -19,10 +19,11 @@ Last written **8:06 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 **Next update by 7:00 AM Central.**
 
-Batch 13 (security: second review of PR 2383) started 9:50 PM Central. **Next update by 10:50 PM Central.**
+Batch 14 (security: #1896 response viewer and partner page evidence) started 10:25 PM Central. **Next update by 11:25 PM Central.**
 
 ## Finished
 
+- **Batch 13, security: second review of PR 2383 (read only)** (9:50 to 10:20 PM Central, 25 October): PR already merged (`9ea0d7a60`); one dead route that now throws, a stale nx.json glob, stale prose. Report `copilot-home/reports/2026-10-25-13.md`.
 - **Batch 12, security: second review of PR 2386 (read only)** (9:22 to 9:48 PM Central, 25 October): all 16 removed packages safe; PR was already merged (`100c1c4e9`). Report `copilot-home/reports/2026-10-25-12.md`.
 - **Batch 11, security: #2351 raster basemap test** (8:55 to 9:20 PM Central, 25 October): branch `fix/2351-raster-basemap-test` at `f9ed1dad36efd56ba78a618c5b75b4d4883e42bf` on the fork; red then green on production; check exit 0. Report `copilot-home/reports/2026-10-25-11.md`.
 - **Batch 10, security: #2379 upload-limit timeout** (8:15 to 8:50 PM Central, 25 October): branch `fix/2379-upload-limit-timeout` at `f16d98fed296856fe93d677f6e74dcf12da2a27f` on the fork; check exit 0; 10 runs under load max 134 ms. Report `copilot-home/reports/2026-10-25-10.md`.
@@ -36,7 +37,7 @@ Batch 13 (security: second review of PR 2383) started 9:50 PM Central. **Next up
 
 ## Queued
 
-Batches 13 to 16.
+Batches 14 to 16.
 
 ## Findings
 
@@ -46,4 +47,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 12
+Last batch done: 13
