@@ -9,15 +9,14 @@ import {
 import * as WebFont from 'webfontloader';
 import * as environment from './environments/environment';
 import { AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
-import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import { provideHighlightOptions } from 'ngx-highlightjs';
 import { env } from '@tamu-gisc/common/ngx/environment';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ViewportScroller } from '@angular/common';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { Angulartics2Module } from 'angulartics2';
 import { withInMemoryScrolling, provideRouter, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 import { AppComponent } from './app/app.component';
 
 const routes: Routes = [
@@ -59,7 +58,10 @@ bootstrapApplication(AppComponent, {
     // Every component still relies on Zone.js (ChangeDetectionStrategy.Eager); without this,
     // bootstrapApplication runs zoneless since Angular 21 (#1563, #1478).
     provideZoneChangeDetection(),
-    importProvidersFrom(BrowserModule, Angulartics2Module.forRoot(), BrowserAnimationsModule, HighlightPlusModule),
+    importProvidersFrom(BrowserModule, Angulartics2Module.forRoot(), BrowserAnimationsModule),
+    // The whole app's HttpClient, with the AuthInterceptor below. It used to arrive unannounced with ngx-highlightjs 6's
+    // HighlightPlusModule, which imported HttpClientModule; 14's does not.
+    provideHttpClient(withInterceptorsFromDi()),
     AuthService,
     provideAppInitializer(() => {
       // Start AuthService's login-state request at boot, as AppModule's constructor did.
@@ -67,14 +69,11 @@ bootstrapApplication(AppComponent, {
       // RouterModule.forRoot's scrollOffset option, which provideRouter has no counterpart for.
       inject(ViewportScroller).setOffset([0, 64]);
     }),
-    {
-      provide: HIGHLIGHT_OPTIONS,
-      useValue: {
-        coreLibraryLoader: () => import('highlight.js/lib/core'),
-        lineNumbersLoader: () => import('highlightjs-line-numbers.js'),
-        languages: getHighlightLanguages()
-      }
-    },
+    provideHighlightOptions({
+      coreLibraryLoader: () => import('highlight.js/lib/core'),
+      lineNumbersLoader: () => import('ngx-highlightjs/line-numbers'),
+      languages: getHighlightLanguages()
+    }),
     {
       provide: env,
       useValue: environment

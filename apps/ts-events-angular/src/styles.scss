@@ -1,4 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'libs/ts/sass/events_base';
 
-@import 'lightgallery/scss/lightgallery';
+// GLightbox's full-screen view for the popups' photos (PhotoCarouselComponent, libs/ui-kits/ngx/layout). Global: the
+// view is built at the end of <body>, and at 14 kB it would exceed a component's style budget.
+@import 'glightbox/dist/css/glightbox.min';
+

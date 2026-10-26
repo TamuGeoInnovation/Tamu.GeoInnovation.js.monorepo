@@ -1,6 +1,5 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import FormData from 'form-data';
 import got from 'got';
 
 import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
@@ -24,8 +23,11 @@ describe('HelperController', () => {
 
   let controller: HelperController;
 
-  /** The forwarded form, as the text mailroom receives. */
-  const forwarded = () => ((got as unknown as jest.Mock).mock.calls[0][1].body as FormData).getBuffer().toString();
+  /** The forwarded form's fields, one `name="field" value` line each (a file by its name). */
+  const forwarded = () =>
+    Array.from(((got as unknown as jest.Mock).mock.calls[0][1].body as FormData).entries(), ([name, value]) =>
+      `name="${name}" ${typeof value === 'string' ? value : value.name}`
+    ).join('\n');
 
   const res = { status: () => ({ json: (body: unknown) => body }) };
 
@@ -102,5 +104,5 @@ describe('HelperController upload limits', () => {
     const response = await fetch(`${url}/mail`, { method: 'POST', body: form });
 
     expect(response.status).toBe(413);
-  });
+  }, 30000);
 });

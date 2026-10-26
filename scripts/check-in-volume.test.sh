@@ -57,4 +57,50 @@ expect "a workflow with no list excludes nothing" "" "$(excluded_projects "$repo
 excluded_projects "$repo" HEAD test >/dev/null 2>&1
 expect "a missing workflow is an error" "1" "$?"
 
+# lint.yml's steps outside nx (#2286), in the shape of development on 24 October, plus the forms CI could grow.
+cat >"$repo/.github/workflows/lint.yml" <<'YML'
+jobs:
+  lint:
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Typecheck the AggieMap smoke suite
+        run: npx tsc -p test/smoke/aggiemap
+      - name: Lint Affected
+        run: npx nx affected:lint --configuration=production --base=${{ inputs.base }} --parallel=2
+YML
+git -C "$repo" add -A && git -C "$repo" -c user.name=t -c user.email=t@t commit -qm steps
+expect "runs the smoke typecheck, not nx or the install" "run npx tsc -p test/smoke/aggiemap" "$(lint_steps "$repo" HEAD)"
+
+cat >>"$repo/.github/workflows/lint.yml" <<'YML'
+      - run: 'node scripts/collate-release-notes.mjs --check'
+      - run: node node_modules/nx/dist/bin/nx.js format:check
+      - run: |
+          echo one
+          echo two
+      - run: echo ${{ github.sha }}
+YML
+git -C "$repo" add -A && git -C "$repo" -c user.name=t -c user.email=t@t commit -qm more
+expect "a quoted step is unquoted, nx.js is skipped, and a block or \${{ }} cannot be run" \
+  "run npx tsc -p test/smoke/aggiemap
+run node scripts/collate-release-notes.mjs --check
+cannot |
+cannot echo \${{ github.sha }}" "$(lint_steps "$repo" HEAD)"
+expect "lint.yml with no run: steps runs nothing" "" "$(lint_steps "$repo" HEAD~2)"
+git -C "$repo" rm -q .github/workflows/lint.yml
+git -C "$repo" -c user.name=t -c user.email=t@t commit -qm gone
+lint_steps "$repo" HEAD >/dev/null 2>&1
+expect "a missing lint.yml is an error" "1" "$?"
+
+# A project list is checked against `nx show projects` (#2291), here a fixture of it.
+printf '%s\n' common-ngx-pipes maps-esri aggiemap-angular gisday-nest >"$repo/projects.txt"
+expect "real projects pass" "" "$(unknown_projects common-ngx-pipes,aggiemap-angular "$repo/projects.txt")"
+expect "a misspelt project is named, with the nearest real one" "common-ngx-pipez (did you mean common-ngx-pipes?)" \
+  "$(unknown_projects common-ngx-pipez "$repo/projects.txt")"
+expect "a name nothing is close to is named alone, and each unknown one is listed" "maps-esri-x (did you mean maps-esri?)
+nothing-like-it" "$(unknown_projects maps-esri-x,gisday-nest,nothing-like-it "$repo/projects.txt")"
+expect "a trailing comma is not a project" "" "$(unknown_projects gisday-nest, "$repo/projects.txt")"
+
 exit "$failed"

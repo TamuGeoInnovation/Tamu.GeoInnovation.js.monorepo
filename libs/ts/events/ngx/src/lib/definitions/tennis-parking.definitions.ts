@@ -50,6 +50,27 @@ export const TennisParkingColdLayerSources: LayerSource[] = [
   }
 ];
 
+/**
+ * Tennis on the development GIS server (#2143).
+ *
+ * The development view holds the event lots alone - production's "Tennis Symbols" layer is not
+ * published there - so the lots move from index 1 to index 0. Derived from the production sources so
+ * the popups and draw order cannot drift from them.
+ */
+const tennisParkingDevelopmentIndex: Record<string, number> = {
+  [TennisParkingDefinitions.PARKING.id]: 0
+};
+
+export const TennisParking_DevelopmentLayerSources: LayerSource[] = TennisParkingColdLayerSources.filter(
+  (source) => (source as { id: string }).id in tennisParkingDevelopmentIndex
+).map(
+  (source) =>
+    ({
+      ...source,
+      url: `${eventUrl}/${tennisParkingDevelopmentIndex[(source as { id: string }).id]}`
+    }) as unknown as LayerSource
+);
+
 export const TennisParkingConfiguration: EventConfiguration = {
   id: 'tennis-parking',
   name: 'Tennis',
@@ -90,6 +111,7 @@ export const TennisParkingTs: AggiemapCustomMapConfiguration = {
   configuration: TennisParkingConfiguration,
   options: TennisParkingOptions,
   sources: TennisParkingColdLayerSources,
+  developmentSources: TennisParking_DevelopmentLayerSources,
   references: TENNIS_PARKING_LAYERS,
   discover: {
     id: TennisParkingConfiguration.id,

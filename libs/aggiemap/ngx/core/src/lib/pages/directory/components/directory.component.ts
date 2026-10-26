@@ -44,7 +44,7 @@ export class DirectoryComponent implements OnInit {
   public columns: TableColumn[] = [
     { name: 'Name', prop: 'BldgName', canAutoResize: true, width: 350 },
     { name: 'Number', prop: 'Bldg', canAutoResize: true },
-    { name: 'Abbreviation', prop: 'BldgAbbrev', canAutoResize: true }
+    { name: 'Abbreviation', prop: 'BldgAbbr', canAutoResize: true }
   ];
 
   public loadingIndicator = true;
@@ -92,7 +92,7 @@ export class DirectoryComponent implements OnInit {
         this.loadingIndicator = false;
         const table = this.table();
         if (table) {
-          table.offset = 0;
+          table.offset.set(0);
         }
       })
     );

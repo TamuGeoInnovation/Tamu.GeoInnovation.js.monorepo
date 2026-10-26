@@ -11,13 +11,21 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
-  OneToMany
+  OneToMany,
+  FindOptionsRelations
 } from 'typeorm';
-import { v4 as guid } from 'uuid';
 
-import { ValidObject } from '@tamu-gisc/oidc/common';
 
 // TODO:
+
+
+/**
+ * A flat object of primitive values, as a GeoJSON feature's `properties`. Lives here, beside its only users (this file and
+ * the GeoJSON interceptor), since it moved out of `libs/oidc/common` (#2155).
+ */
+export interface ValidObject {
+  [key: string]: boolean | string | number;
+}
 
 @Entity()
 export class OldCompetitionEntity extends BaseEntity {
@@ -123,7 +131,7 @@ export class GuidIdentity extends TimeStampEntity {
   @BeforeInsert()
   private generateGuid(): void {
     if (this.guid === undefined || this.guid === '' || this.guid === null) {
-      this.guid = guid();
+      this.guid = crypto.randomUUID();
     }
   }
 }
@@ -1044,8 +1052,17 @@ export class ManholeSubmission {
 export const EntityRelationsLUT = {
   // A speaker's organization and university are what a session's presenter list shows under and
   // after their name (#1768).
-  event: ['speakers', 'speakers.images', 'speakers.organization', 'speakers.university', 'tags', 'sponsors', 'location', 'location.place', 'broadcast', 'day'],
-  speaker: ['images', 'university', 'organization'],
+  // Object form, as typeorm 1 requires: it rejects a string array at run time, and getRelation()'s result is untyped, so
+  // the compiler cannot catch one here (#1218).
+  event: {
+    speakers: { images: true, organization: true, university: true },
+    tags: true,
+    sponsors: true,
+    location: { place: true },
+    broadcast: true,
+    day: true
+  } satisfies FindOptionsRelations<Event>,
+  speaker: { images: true, university: true, organization: true } satisfies FindOptionsRelations<Speaker>,
   getRelation: (entity?: string) => {
     if (!entity) {
       return undefined;

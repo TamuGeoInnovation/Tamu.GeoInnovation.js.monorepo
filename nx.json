@@ -44,12 +44,6 @@
     "@schematics/angular:service": {
       "type": "service"
     },
-    "@nx/angular:scam": {
-      "type": "component"
-    },
-    "@nx/angular:scam-directive": {
-      "type": "directive"
-    },
     "@schematics/angular:guard": {
       "typeSeparator": "."
     },
@@ -78,48 +72,64 @@
   "nxCloudId": "68bf66e05ea3cd1b684d15cb",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "targetDefaults": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"],
-      "cache": true
-    },
-    "@nx/jest:jest": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
-      "cache": true,
-      "options": {
-        "passWithNoTests": true
+    "build": [
+      {
+        "dependsOn": ["^build"],
+        "inputs": ["production", "^production"],
+        "cache": true
       },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
+      {
+        "filter": {
+          "plugin": "@nx/webpack/plugin"
+        },
+        "outputs": ["{projectRoot}/{options.outputPath}"]
+      }
+    ],
+    "test": [
+      {
+        "inputs": [
+          "default",
+          "^production",
+          {
+            "fileset": "{projectRoot}/tsconfig.spec.json",
+            "dependencies": true
+          },
+          "{workspaceRoot}/vitest.preset.mts",
+          "{workspaceRoot}/test/polyfills.ts",
+          "{workspaceRoot}/test/vitest-setup-angular.ts",
+          {
+            "externalDependencies": ["vitest"]
+          },
+          {
+            "env": "CI"
+          }
+        ],
+        "cache": true
+      },
+      {
+        "filter": {
+          "plugin": "@nx/jest/plugin"
+        },
+        "inputs": [
+          "default",
+          "^production",
+          "{workspaceRoot}/jest.preset.js",
+          "{workspaceRoot}/test/polyfills.ts",
+          {
+            "externalDependencies": ["jest", "ts-jest", "jest-preset-angular", "jest-junit"]
+          }
+        ],
+        "configurations": {
+          "ci": {
+            "ci": true,
+            "coverage": true
+          }
+        },
+        "options": {
+          "passWithNoTests": true
         }
       }
-    },
-    "test": {
-      "inputs": [
-        "default",
-        "^production",
-        {
-          "fileset": "{projectRoot}/tsconfig.spec.json",
-          "dependencies": true
-        },
-        "{workspaceRoot}/vitest.preset.mts",
-        "{workspaceRoot}/test/polyfills.ts",
-        "{workspaceRoot}/test/vitest-setup-angular.ts",
-        {
-          "externalDependencies": ["vitest"]
-        },
-        {
-          "env": "CI"
-        }
-      ],
-      "cache": true
-    },
-    "@nx/eslint:lint": {
-      "inputs": ["default", "^default", "{workspaceRoot}/eslint.config.mjs", "{workspaceRoot}/tools/eslint-rules/**/*"],
-      "cache": true
-    }
+    ]
   },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
@@ -144,6 +154,135 @@
         "testTargetName": "test",
         "testMode": "run"
       }
+    },
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      },
+      "include": [
+        "apps/aggiemap-angular/**/*",
+        "apps/geoservices-angular/**/*",
+        "apps/geoservices-nest/**/*",
+        "apps/gisday-angular/**/*",
+        "apps/gisday-competitions-angular/**/*",
+        "apps/gisday-competitions-nest/**/*",
+        "apps/gisday-nest/**/*",
+        "apps/mailroom-angular/**/*",
+        "apps/mailroom-helper-nest/**/*",
+        "apps/mailroom-nest/**/*",
+        "apps/signage-angular/**/*",
+        "apps/ts-events-angular/**/*",
+        "apps/ues-operations-angular/**/*",
+        "libs/aggiemap/ngx/common/**/*",
+        "libs/aggiemap/ngx/core/**/*",
+        "libs/aggiemap/ngx/discover/**/*",
+        "libs/aggiemap/ngx/popups/**/*",
+        "libs/aggiemap/ngx/ui/desktop/**/*",
+        "libs/aggiemap/ngx/ui/mobile/**/*",
+        "libs/aggiemap/ngx/ui/shared/**/*",
+        "libs/common/datasets/geographic/**/*",
+        "libs/common/nest/auth/**/*",
+        "libs/common/nest/environment/**/*",
+        "libs/common/nest/services/**/*",
+        "libs/common/ngx/auth/**/*",
+        "libs/common/ngx/environment/**/*",
+        "libs/common/ngx/local-store/**/*",
+        "libs/common/ngx/pipes/**/*",
+        "libs/common/ngx/router/**/*",
+        "libs/common/ngx/settings/**/*",
+        "libs/common/ngx/ui/notification/**/*",
+        "libs/common/ngx/ui/sidebar/**/*",
+        "libs/common/node/fs/**/*",
+        "libs/common/node/images/**/*",
+        "libs/common/types/**/*",
+        "libs/common/utils/collection/**/*",
+        "libs/common/utils/database/**/*",
+        "libs/common/utils/date/**/*",
+        "libs/common/utils/device/guards/**/*",
+        "libs/common/utils/device/**/*",
+        "libs/common/utils/geometry/esri/**/*",
+        "libs/common/utils/geometry/generic/**/*",
+        "libs/common/utils/geometry/**/*",
+        "libs/common/utils/number/**/*",
+        "libs/common/utils/object/**/*",
+        "libs/common/utils/routing/**/*",
+        "libs/common/utils/string/**/*",
+        "libs/common/utils/ui/**/*",
+        "libs/dev-tools/application-testing/**/*",
+        "libs/dev-tools/responsive/**/*",
+        "libs/geoprocessing/core/**/*",
+        "libs/geoprocessing/v4/**/*",
+        "libs/geoprocessing/v5/**/*",
+        "libs/geoservices/data-access/**/*",
+        "libs/geoservices/data-api/**/*",
+        "libs/geoservices/ngx/**/*",
+        "libs/gisday/common/**/*",
+        "libs/gisday/competitions/data-api/**/*",
+        "libs/gisday/competitions/ngx/common/**/*",
+        "libs/gisday/competitions/ngx/core/**/*",
+        "libs/gisday/competitions/ngx/data-access/**/*",
+        "libs/gisday/platform/data-api/**/*",
+        "libs/gisday/platform/ngx/common/**/*",
+        "libs/gisday/platform/ngx/core/**/*",
+        "libs/gisday/platform/ngx/data-access/**/*",
+        "libs/mailroom/common/**/*",
+        "libs/mailroom/data-access/**/*",
+        "libs/mailroom/data-api/**/*",
+        "libs/mailroom/ngx/**/*",
+        "libs/maps/esri/**/*",
+        "libs/maps/feature/accessibility/**/*",
+        "libs/maps/feature/basemap/**/*",
+        "libs/maps/feature/coordinates/**/*",
+        "libs/maps/feature/draw/**/*",
+        "libs/maps/feature/feature-highlight/**/*",
+        "libs/maps/feature/feature-selector/**/*",
+        "libs/maps/feature/layer-filter/**/*",
+        "libs/maps/feature/layer-list/**/*",
+        "libs/maps/feature/legend/**/*",
+        "libs/maps/feature/perspective/**/*",
+        "libs/maps/feature/popup/**/*",
+        "libs/maps/feature/trip-planner/**/*",
+        "libs/maps/mapbox/**/*",
+        "libs/signage/**/*",
+        "libs/ts/events/ngx/**/*",
+        "libs/ues/common/ngx/**/*",
+        "libs/ues/operations/ngx/**/*",
+        "libs/ui-kits/ngx/animations/**/*",
+        "libs/ui-kits/ngx/branding/**/*",
+        "libs/ui-kits/ngx/charts/**/*",
+        "libs/ui-kits/ngx/forms/**/*",
+        "libs/ui-kits/ngx/interactions/clipboard/**/*",
+        "libs/ui-kits/ngx/interactions/draggable/**/*",
+        "libs/ui-kits/ngx/interactions/keyboard/**/*",
+        "libs/ui-kits/ngx/interactions/scroll-to/**/*",
+        "libs/ui-kits/ngx/layout/code/**/*",
+        "libs/ui-kits/ngx/layout/modal/**/*",
+        "libs/ui-kits/ngx/layout/**/*",
+        "libs/ui-kits/ngx/navigation/mobile-tab/**/*",
+        "libs/ui-kits/ngx/navigation/mobile-tile/**/*",
+        "libs/ui-kits/ngx/navigation/triggers/**/*",
+        "libs/ui-kits/ngx/search/**/*"
+      ],
+      "exclude": ["apps/gisday-competitions-nest/src/**/*"]
+    },
+    {
+      "plugin": "@nx/jest/plugin",
+      "options": {
+        "targetName": "test"
+      }
+    },
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static",
+        "serveTargetName": "serve"
+      }
     }
-  ]
+  ],
+  "affected": {
+    "legacy": true
+  }
 }

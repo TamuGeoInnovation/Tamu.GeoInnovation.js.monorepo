@@ -1,7 +1,12 @@
 import { Component, forwardRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 
+import { ArcElement, DoughnutController, Chart } from 'chart.js';
+
 import { BaseChartComponent } from '../base/base.component';
 import { DoughnutChartConfiguration, ChartContainerComponent } from '../chart-container/chart-container.component';
+
+// What a doughnut chart draws, registered here so an app that never draws one does not bundle it.
+Chart.register(ArcElement, DoughnutController);
 
 @Component({
   selector: 'tamu-gisc-doughnut-chart',

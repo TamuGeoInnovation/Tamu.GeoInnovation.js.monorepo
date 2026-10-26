@@ -8,7 +8,10 @@ on:
         type: string
 
 env:
-  EXCLUDED_PROJECTS: 'gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-nest,oidc-admin-angular,oidc-admin-nest,oidc-provider-nest,signage-angular'
+  EXCLUDED_PROJECTS: 'gisday-competitions-angular,gisday-competitions-nest,signage-angular'
+
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -17,16 +20,16 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: '24.22.1'
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         id: npm-cache
         with:
           path: '**/node_modules'
@@ -38,7 +41,7 @@ jobs:
 
       # --coverage=false: jest.preset.js sets collectCoverage globally, but the report is neither
       # uploaded nor checked against a threshold, so instrumenting every run is pure overhead.
-      # Coverage is still available locally via `npm run coverage`.
+      # Coverage is still available locally: `npm run coverage` runs every project's tests with coverage, through Nx.
       #
       # No --ci: Vitest refuses options it does not know, and projects on Vitest get these flags too
       # (#1479). Jest turns its own `ci` mode on from the CI variable GitHub sets, so it loses nothing.
@@ -46,7 +49,8 @@ jobs:
         env:
           # Absolute, so every project writes into one place regardless of its depth.
           JEST_JUNIT_OUTPUT_DIR: ${{ github.workspace }}/test-results/junit
-        run: npx nx affected:test --configuration=production --exclude=${{ env.EXCLUDED_PROJECTS }} --base=${{ inputs.base }} --parallel=2 --coverage=false
+          BASE: ${{ inputs.base }}
+        run: npx nx affected:test --configuration=production --exclude="$EXCLUDED_PROJECTS" --base="$BASE" --parallel=2 --coverage=false
 
       # Everything below runs even when the tests fail. A failing run is the one whose results are
       # worth reading, and the default `success()` condition would skip exactly those.
@@ -126,7 +130,7 @@ jobs:
 
       - name: Upload test results
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: jest-junit-${{ github.run_id }}
           path: test-results/junit/

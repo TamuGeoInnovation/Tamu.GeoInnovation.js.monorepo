@@ -5,6 +5,7 @@ import { blockAnalytics } from './analytics';
 import { environmentIsDevelopment } from './gis-hosts';
 import {
   DEVELOPMENT_ONLY_CONTROLS,
+  DEVELOPMENT_ONLY_ALL_MAPS_TILES,
   DEVELOPMENT_ONLY_SECTIONS,
   DEVELOPMENT_ONLY_SERVICES,
   developmentSectionsVisible,
@@ -58,6 +59,36 @@ test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay 
           : `the ${section} tab is offered on an environment that should not have it`
       ).toBe(VISIBLE ? 1 : 0);
     });
+  }
+});
+
+/**
+ * Development-only tiles in the All Maps "Visit Maps" row stay off production (#912).
+ *
+ * Checked on `/all-maps`, and on a map-type page as well, because the row is rendered by
+ * `MapsPageHeaderComponent` on every Maps page now: a gate can hold on the page it was written for
+ * and still leak on the one that borrowed the component.
+ */
+test.describe(`development-only All Maps tiles ${VISIBLE ? 'are offered here' : 'stay off this environment'}`, () => {
+  for (const route of ['/all-maps', '/all-maps/parking']) {
+    for (const label of DEVELOPMENT_ONLY_ALL_MAPS_TILES) {
+      test(`${route}: the ${label} tile ${VISIBLE ? 'is offered' : 'is not offered'}`, async ({ page }) => {
+        await blockAnalytics(page);
+        await page.goto(route);
+
+        const row = page.locator('.visit-maps-row');
+        await expect(row, `the Visit Maps row should be rendered on ${route}`).toBeVisible();
+
+        const tile = row.locator('.visit-maps-tile', { hasText: label });
+
+        expect(
+          await tile.count(),
+          VISIBLE
+            ? `the ${label} tile should be offered on ${route} here`
+            : `the ${label} tile is offered on ${route} on an environment that should not have it`
+        ).toBe(VISIBLE ? 1 : 0);
+      });
+    }
   }
 });
 

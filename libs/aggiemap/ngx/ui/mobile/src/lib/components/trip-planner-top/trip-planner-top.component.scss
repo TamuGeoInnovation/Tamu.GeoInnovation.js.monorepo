@@ -1,6 +1,10 @@
 @import 'libs/sass/mixins';
+@import 'libs/sass/motion';
 
 :host > div:first-child {
+  // Slides up out of the way while the directions are dragged up (hide).
+  @include off-canvas-slide-up-from-top(off-canvas-hidden);
+
   width: 100%;
   padding: 1rem 0.5rem;
   padding-bottom: 0.25rem;
@@ -11,9 +15,6 @@
   border-bottom-left-radius: 0.5rem;
   @include flexbox();
   @include flex-direction(column);
-
-  // Set default start value for iOS
-  @include transform(translateY(100%));
 }
 
 #top {

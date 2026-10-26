@@ -141,7 +141,7 @@ describe('UserRsvpProvider', () => {
       await expect(provider.getUserRsvps('acct-1')).resolves.toEqual([{ guid: 'r-1' }]);
       expect(rsvpRepo.find).toHaveBeenCalledWith({
         where: { accountGuid: 'acct-1' },
-        relations: ['event']
+        relations: { event: true }
       });
     });
   });

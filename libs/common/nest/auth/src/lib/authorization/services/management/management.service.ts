@@ -8,9 +8,22 @@ import {
   UnprocessableEntityException
 } from '@nestjs/common';
 
-import { AppMetadata, ManagementClient, User, UserMetadata } from 'auth0';
+import { Management, ManagementClient } from 'auth0';
 
 export const MANAGEMENT_CONFIG = 'MANAGEMENT_CONFIG';
+
+/** The Management API's default page size, and the most pages getUsers reads (#2320). */
+const USERS_PER_PAGE = 50;
+const USERS_MAX_PAGES = 100;
+
+// auth0 4 and later no longer export these names. The user is the Management API's own type. The metadata stays as
+// auth0 3 typed it, any value under any key: 7 types it Record<string, unknown>, which would make every reader of a
+// nested property (a class roster's user_metadata.education.id) cast it.
+export type User = Management.UserResponseSchema;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AppMetadata = Record<string, any>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type UserMetadata = Record<string, any>;
 
 @Injectable()
 export class ManagementService {
@@ -68,7 +81,7 @@ export class ManagementService {
     const client = this.client;
 
     try {
-      const user = await client.getUser({ id: userId });
+      const user = await client.users.get(userId);
 
       if (!user) {
         throw new NotFoundException();
@@ -92,7 +105,7 @@ export class ManagementService {
    * @param {Auth0UserProfileFilters} filters Defines and limits which properties can be updated. This serves as a safety mechanism to prevent unwanted updates to other application metadata or user grouping properties.
    */
   public async updateUserMetadata(userId: string, info: Auth0UserProfile, filters: Auth0UserProfileFilters) {
-    const user = await this.client.getUser({ id: userId });
+    const user = await this.client.users.get(userId);
 
     if (!user) {
       throw new NotFoundException('User not found.');
@@ -123,7 +136,7 @@ export class ManagementService {
         }
       }
 
-      const updatedMetadata = await this.client.updateUser({ id: userId }, payload);
+      const updatedMetadata = await this.client.users.update(userId, payload);
 
       return this._composeMetadata(updatedMetadata, filters);
     } catch (err) {
@@ -132,10 +145,28 @@ export class ManagementService {
     }
   }
 
+  /**
+   * Every user, sorted by name: each page in turn, not only the first 50 (#2320). `per_page` is given so that a short
+   * page ends the walk; without it, auth0 7 asks for one more, empty page. Stops at USERS_MAX_PAGES, logged, so a
+   * misbehaving answer cannot loop for ever. The Management API itself pages through only the first 1,000 users.
+   */
   public async getUsers(filters?: Auth0UserProfileFilters) {
-    const users = await this.client.getUsers({
-      sort: 'name:1'
-    });
+    const users: User[] = [];
+    let page = await this.client.users.list({ sort: 'name:1', per_page: USERS_PER_PAGE });
+    let pages = 1;
+
+    users.push(...page.data);
+
+    while (page.hasNextPage()) {
+      if (pages >= USERS_MAX_PAGES) {
+        Logger.warn(`Stopped listing users after ${pages} pages (${users.length} users).`, 'ManagementService');
+        break;
+      }
+
+      page = await page.getNextPage();
+      pages++;
+      users.push(...page.data);
+    }
 
     return users.map((u) => this._composeMetadata(u, filters));
   }

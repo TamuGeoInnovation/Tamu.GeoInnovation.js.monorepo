@@ -7,53 +7,9 @@
   "tags": ["assets"],
   "targets": {
     "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/apps/gisday-nest",
-        "main": "apps/gisday-nest/src/main.ts",
-        "tsConfig": "apps/gisday-nest/tsconfig.app.json",
-        "assets": [
-          "apps/gisday-nest/src/assets",
-          "apps/gisday-nest/src/Dockerfile",
-          "apps/gisday-nest/src/docker-compose.yml",
-          {
-            "glob": "**/*",
-            "input": "./libs/assets/",
-            "output": "./assets"
-          }
-        ],
-        "target": "node",
-        "compiler": "tsc",
-        "sourceMap": true,
-        "devtool": "source-map",
-        "webpackConfig": "apps/gisday-nest/webpack.config.js"
-      },
       "configurations": {
-        "production": {
-          "optimization": true,
-          "extractLicenses": false,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/gisday-nest/src/environments/environment.ts",
-              "with": "apps/gisday-nest/src/environments/environment.prod.ts"
-            }
-          ],
-          "generatePackageJson": false
-        },
-        "development": {
-          "optimization": true,
-          "extractLicenses": false,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/gisday-nest/src/environments/environment.ts",
-              "with": "apps/gisday-nest/src/environments/environment.dev.ts"
-            }
-          ],
-          "generatePackageJson": false
-        }
+        "production": {},
+        "development": {}
       }
     },
     "image-build": {
@@ -126,17 +82,16 @@
         }
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint",
+    "fit-speaker-photos": {
+      "executor": "nx:run-commands",
       "options": {
-        "force": true
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/gisday-nest"],
-      "options": {
-        "jestConfig": "apps/gisday-nest/jest.config.ts"
+        "command": "node -r ts-node/register -r tsconfig-paths/register apps/gisday-nest/src/scripts/fit-speaker-photos.ts",
+        "env": {
+          "TS_NODE_PROJECT": "apps/gisday-nest/tsconfig.app.json",
+          "TS_NODE_BASEURL": "../..",
+          "TS_NODE_TRANSPILE_ONLY": "true",
+          "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\"}"
+        }
       }
     }
   }

@@ -1,7 +1,14 @@
+import { TAMU_CAMPUS_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
+
 import { actingAsProduction } from './acting-as-production';
 
 function createConnections(gisHost: string): IComposedConnections {
   const tsgisHost = getDefaultGisHosts().tsgisHost;
+  // The athletics event maps are hosted views on the development GIS server (#2143), and on the
+  // transportation host in production until the GIS team publish them there. Read from `gisHost`
+  // rather than from the browser's address, so that `Connections(host)` - which the smoke suite calls
+  // with an explicit host - resolves the same services the application would on that environment.
+  const athleticsHost = gisHost.includes('dev') ? 'gis.dev.tamu.edu' : tsgisHost;
   return {
     // The campus basemap, as data: layer 1 is the Buildings layer and the building search source,
     // layer 9 is Surface Lots. The October 2026 service it now names is published on the production
@@ -11,7 +18,7 @@ function createConnections(gisHost: string): IComposedConnections {
     // `basemaps.definition.ts` has always named it. Development therefore reads its buildings and
     // surface lots from the same service it already draws its basemap tiles from. Restore
     // `${gisHost}` once #1696 publishes it on the development server.
-    basemapUrl: `https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer`,
+    basemapUrl: TAMU_CAMPUS_BASEMAP_URL,
     inforUrl: `https://${gisHost}/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer`,
     accessibleUrl: `https://${gisHost}/arcgis/rest/services/FCOR/ADA_120717/MapServer/0`,
     // Lactation rooms, a hosted service from Facilities Analytics & Mapping that replaced layer 2 of
@@ -33,32 +40,40 @@ function createConnections(gisHost: string): IComposedConnections {
     poiUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer',
     diningLocationsUrl: `https://api.aggiemap.tamu.edu/dining/locations/geojson`,
     aggiePrintUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/TAMUPrinters/FeatureServer',
-    tsFootballUrl: `https://${gisHost}/arcgis/rest/services/TS/TSFootball/MapServer`,
-    footballGamedayShuttlesUrl: `https://${gisHost}/arcgis/rest/services/TS/Ftbl_Gameday_Shuttles/MapServer`,
     maroonWhiteGameUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Maroon_White_Game_view/FeatureServer`,
     accessibleParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/AccessibleParking_view/FeatureServer`,
     kickoff150thUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/150th_Kickoff/FeatureServer`,
     aggieFamilyParadeUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Aggie_Family_Parade_view/FeatureServer`,
     aggielandSaturdayUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/AggielandSaturday_view/FeatureServer`,
     avpParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/AnyValidPermitParking/MapServer`,
-    baseballParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/BaseballParking_view/FeatureServer`,
+    baseballParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/BaseballParking_view/FeatureServer`,
     bigEventUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Big_Event_view/FeatureServer`,
     breakSummerParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/SummerBreakParking/MapServer`,
     businessParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/BusinessParking/MapServer`,
     contractorParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/ContractorParking/MapServer`,
-    crossCountryParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/CrossCountryParking_view/FeatureServer`,
+    crossCountryParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/CrossCountryParking_view/FeatureServer`,
     familyWeekendUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Family_Weekend_view/FeatureServer`,
     freshmanParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/FreshmanSelectableParking/MapServer`,
     graduationParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer`,
     hsGraduationUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/HS_Graduation/MapServer`,
-    indoorTrackParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/IndoorTrackParking_view/FeatureServer`,
+    indoorTrackParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/IndoorTrackParking_view/FeatureServer`,
     loadingZonesUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/Loading_Zones/MapServer`,
     kickoffAtKyleUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Kickoff_at_Kyle/FeatureServer`,
     liveAtTheStationUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Live_at_the_Station/FeatureServer`,
     maintenanceParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MaintenanceParking/MapServer`,
     mediaParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MediaParking/MapServer`,
     // Moved to the production GIS server for the editor map (#1749); not on the transportation host, so named outright.
-    mensBasketballUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/MBskt_view/FeatureServer',
+    // The one athletics service whose **path** differs between environments as well as its host: production is
+    // `MBskt_view` on the production GIS server, where #1749 moved it so Transportation maintain it in their editor
+    // map; development is `MensBasketballParking_view` (#2143).
+    //
+    // #1749 pinned this to a single address because the copy left behind stopped being updated, and a map reading it
+    // showed last season's lots and closures with nothing to say they were stale. That is no longer the risk: the GIS
+    // team are publishing and maintaining a development copy of every service, so the development view is kept
+    // current rather than abandoned. `connections.spec.ts` now checks each environment reads its own.
+    mensBasketballUrl: gisHost.includes('dev')
+      ? `https://${athleticsHost}/arcgis/rest/services/Hosted/MensBasketballParking_view/FeatureServer`
+      : 'https://gis.tamu.edu/arcgis/rest/services/Hosted/MBskt_view/FeatureServer',
     motorcycleParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MotorcycleParking/MapServer`,
     motoristAssistanceUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MotoristAssistance/MapServer`,
     moveInParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/FallMoveInParking_view/FeatureServer`,
@@ -67,27 +82,27 @@ function createConnections(gisHost: string): IComposedConnections {
     musterUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Muster_view/FeatureServer`,
     nightWeekendParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/NightWeekendParking/MapServer`,
     nscParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/NewStudentConferenceParking/MapServer`,
-    outdoorTrackParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/OutdoorTrackParking_view/FeatureServer`,
+    outdoorTrackParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/OutdoorTrackParking_view/FeatureServer`,
     physicsFestUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/Physics_Fest/MapServer`,
     retireeParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/RetireeParking/MapServer`,
     ringDayUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Ring_Day_view/FeatureServer`,
     savannahBananasUrl: `https://${gisHost}/arcgis/rest/services/TS/SavannahBananas/MapServer`,
     secGroundsConferenceUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/SEC_Grounds_Conference/MapServer`,
-    soccerParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/SoccerParking_view/FeatureServer`,
-    softballParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/SoftballParking_view/FeatureServer`,
+    soccerParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/SoccerParking_view/FeatureServer`,
+    softballParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/SoftballParking_view/FeatureServer`,
     softballRegionalsUrl: `https://${gisHost}/arcgis/rest/services/TS/Softball_Regionals/MapServer`,
     spiritOf150WeekUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Spirit_of_150_Week/FeatureServer`,
     staffParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/StaffSelectableParking/MapServer`,
     studentParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/StudentSelectableParking/MapServer`,
     summerCommencementUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Summer_Commencement_view/FeatureServer`,
-    swimmingParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/SwimmingParking_view/FeatureServer`,
-    tennisParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/TennisParking_view/FeatureServer`,
+    swimmingParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/SwimmingParking_view/FeatureServer`,
+    tennisParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/TennisParking_view/FeatureServer`,
     timedParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/TimedParking/MapServer`,
     troubadourFestivalUrl: `https://${gisHost}/arcgis/rest/services/TS/Troubadour_Festival/MapServer`,
     vendorParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/VendorParking/MapServer`,
     visitorParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/VisitorParking/MapServer`,
-    volleyballParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/VolleyballParking_view/FeatureServer`,
-    womensBasketballUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/WomensBasketballParking_view/FeatureServer`,
+    volleyballParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/VolleyballParking_view/FeatureServer`,
+    womensBasketballUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/WomensBasketballParking_view/FeatureServer`,
     // The Women's Basketball map's new version, published so far only on the development GIS server: the
     // production server has the service, stopped. Drawn only where the development server is read
     // (`developmentSources`, #2001); `womensBasketballUrl` above serves production until it is published.
@@ -173,8 +188,6 @@ export interface IComposedConnections {
   poiUrl: string;
   diningLocationsUrl: string;
   aggiePrintUrl: string;
-  tsFootballUrl: string;
-  footballGamedayShuttlesUrl: string;
   maroonWhiteGameUrl: string;
   accessibleParkingUrl: string;
   kickoff150thUrl: string;

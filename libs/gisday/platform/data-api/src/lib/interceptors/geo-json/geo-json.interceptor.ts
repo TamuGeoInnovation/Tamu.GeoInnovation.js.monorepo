@@ -2,9 +2,7 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 
 import { map } from 'rxjs/operators';
 
-import { ValidObject } from '@tamu-gisc/oidc/common';
-
-import { OldCompetitionEntity } from '../../entities/all.entity';
+import { OldCompetitionEntity, ValidObject } from '../../entities/all.entity';
 
 @Injectable()
 export class GeoJsonInterceptor implements NestInterceptor {

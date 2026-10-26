@@ -142,7 +142,11 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
  * is published there. Then these replace them, and `womensBasketballUrl` and the entry in
  * `DEVELOPMENT_ONLY_SERVICES` go.
  */
-const parkingUrl = Connections.womensBasketballParkingUrl;
+// #2001 drew these from `womensBasketballParkingUrl`, a development-only service on the GIS server.
+// #2143 replaced it with a hosted view reached through the ordinary connection, which `athleticsHost`
+// resolves to the development host - and whose layer order happens to match, so only this line changed:
+// Accessible Parking Spaces is 0 and the event lots are 1 on both.
+const parkingUrl = Connections.womensBasketballUrl;
 
 export const WomensBasketball_DevelopmentLayerSources: LayerSource[] = [
   {

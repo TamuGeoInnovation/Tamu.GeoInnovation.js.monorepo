@@ -115,6 +115,35 @@ export const SoftballParkingColdLayerSources: LayerSource[] = [
   } as unknown as LayerSource
 ];
 
+/**
+ * Softball on the development GIS server (#2143).
+ *
+ * The GIS team republished this map as a hosted view with **two** layers, having removed the visitor
+ * kiosk and the crosswalk ("Safety First") layers and renamed the accessible one. Production still
+ * serves the four-layer version until they publish there, so this stands beside the sources above
+ * rather than replacing them; `event-settings.service.ts` chooses between them.
+ *
+ * **Derived from the production sources rather than written out again**, so the two cannot drift: the
+ * popups, definition expressions and draw order are the same objects, and only the layer index moves.
+ * `eventUrl` already resolves to the development host, because `athleticsHost` in `connections.ts` does.
+ *
+ * The view's own indexes: Accessible Parking Spaces is 0 here and 1 on production, the lots 1 here and 2.
+ */
+const softballParkingDevelopmentIndex: Record<string, number> = {
+  [SoftballParkingDefinitions.ACCESSIBLE_PARKING.id]: 0,
+  [SoftballParkingDefinitions.PARKING.id]: 1
+};
+
+export const SoftballParking_DevelopmentLayerSources: LayerSource[] = SoftballParkingColdLayerSources.filter(
+  (source) => (source as { id: string }).id in softballParkingDevelopmentIndex
+).map(
+  (source) =>
+    ({
+      ...source,
+      url: `${eventUrl}/${softballParkingDevelopmentIndex[(source as { id: string }).id]}`
+    }) as unknown as LayerSource
+);
+
 export const SoftballParkingConfiguration: EventConfiguration = {
   id: 'softball-parking',
   name: 'Softball',
@@ -151,6 +180,7 @@ export const SoftballParkingTs: AggiemapCustomMapConfiguration = {
   configuration: SoftballParkingConfiguration,
   options: SoftballParkingOptions,
   sources: SoftballParkingColdLayerSources,
+  developmentSources: SoftballParking_DevelopmentLayerSources,
   references: SOFTBALL_PARKING_LAYERS,
   discover: {
     id: SoftballParkingConfiguration.id,

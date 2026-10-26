@@ -4,15 +4,20 @@ import {
   UnprocessableEntityException,
   NotFoundException,
   InternalServerErrorException,
-  Logger
+  Logger,
+  BadRequestException,
+  PayloadTooLargeException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, DeleteResult, In, Repository } from 'typeorm';
+
+import { IMAGE_SIZE_LIMITS, exceedsImageSizeLimits, fitImage, readImageSize } from '@tamu-gisc/common/node/images';
 
 import { Speaker, EntityRelationsLUT, University, Organization, Event, Asset, Season } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
+import { SPEAKER_PHOTO_FIT } from './speaker-photo';
 
 @Injectable()
 export class SpeakerProvider extends BaseProvider<Speaker> {
@@ -60,7 +65,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: guid
       },
-      relations: ['organization', 'university', 'images', 'events', 'events.day'],
+      relations: { organization: true, university: true, images: true, events: { day: true } },
       order: {
         events: {
           day: {
@@ -124,7 +129,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: In(eventGuids)
       },
-      relations: ['speakers', 'speakers.images', 'speakers.organization', 'speakers.university'],
+      relations: { speakers: { images: true, organization: true, university: true } },
       order: {
         speakers: {
           firstName: 1,
@@ -162,7 +167,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
   public async getPresenters() {
     return this.speakerRepo.find({
-      relations: ['organization', 'university', 'images'],
+      relations: { organization: true, university: true, images: true },
       order: {
         lastName: 'ASC'
       }
@@ -175,7 +180,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         isOrganizer: true,
         season: { guid: seasonGuid }
       },
-      relations: ['organization', 'university', 'images'],
+      relations: { organization: true, university: true, images: true },
       order: {
         lastName: 'ASC'
       }
@@ -194,7 +199,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         isOrganizer: true,
         season: { guid: season.guid }
       },
-      relations: ['organization', 'university', 'images'],
+      relations: { organization: true, university: true, images: true },
       order: {
         lastName: 'ASC'
       }
@@ -206,7 +211,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         isOrganizer: true
       },
-      relations: ['organization', 'university', 'images'],
+      relations: { organization: true, university: true, images: true },
       order: {
         lastName: 'ASC'
       }
@@ -265,6 +270,10 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       isActive: (speaker.isActive as unknown as string) === 'true' // form data coerces boolean to string
     });
 
+    if (file?.buffer) {
+      this._refuseUnsafeImage(file);
+    }
+
     if (speakerEnt) {
       const savedEntity = await speakerEnt.save();
 
@@ -308,7 +317,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: In(existingEntityGuids)
       },
-      relations: ['images']
+      relations: { images: true }
     });
 
     if (!existingSpeakers || existingSpeakers.length === 0) {
@@ -474,23 +483,28 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   public override async deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
     const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
 
+    let images: Array<Asset> = [];
+
     try {
-      return this.speakerRepo.manager.transaction(async (manager) => {
+      // Awaited, so a failed delete lands in the catch below; the images go by guid and their files after commit (#2205).
+      const result = await this.speakerRepo.manager.transaction(async (manager) => {
         const speakers = await manager.find(Speaker, {
           where: {
             guid: In(guids)
           },
-          relations: ['images']
+          relations: { images: true }
         });
 
-        const images = speakers.map((speaker) => speaker.images).flat();
+        images = speakers.map((speaker) => speaker.images).flat();
 
-        if (images.length > 0) {
-          await manager.delete(Asset, images);
-        }
+        await this.assetService.deleteAssets(manager, images);
 
         return manager.delete(Speaker, guids);
       });
+
+      await this.assetService.deleteAssetFiles(images);
+
+      return result;
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
@@ -504,9 +518,38 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   private async _saveImage(file, guid: string) {
+    // Stored at the size the site shows it, not as uploaded: photos of 1 MB and more made Presenters download 9 MB for
+    // 255 px cards (#2352). The file keeps its name, so a JPEG stays a JPEG and anything not a JPEG or PNG is kept as it is.
+    if (file?.buffer) {
+      this._refuseUnsafeImage(file);
+
+      const fitted = await fitImage(file.buffer, SPEAKER_PHOTO_FIT);
+
+      file = { ...file, buffer: fitted.buffer, size: fitted.buffer.length };
+    }
+
     return this.assetService.saveAsset(this._resourcePath, file, 'speaker-image', {
       prefix: `${guid}-`
     });
+  }
+
+  /**
+   * Refuses a photo before anything decodes or stores it. The upload limit caps the file, not the image it decodes to: a few KB
+   * can declare 50,000 x 50,000 pixels and make the decoder allocate 10 GB, which takes the API down (#2352). Its size is read
+   * from the header alone. Anything that is not a PNG, JPEG, GIF or WebP is refused too, SVG included, which can carry script.
+   */
+  private _refuseUnsafeImage(file: { buffer: Buffer }) {
+    const size = readImageSize(file.buffer);
+
+    if (!size) {
+      throw new BadRequestException('The photo must be a PNG, JPEG, GIF or WebP image.');
+    }
+
+    if (exceedsImageSizeLimits(size)) {
+      throw new PayloadTooLargeException(
+        `The photo is too large in pixels: ${size.width} x ${size.height}. The most is ${IMAGE_SIZE_LIMITS.maxSide} a side and ${IMAGE_SIZE_LIMITS.maxPixels / 1_000_000} megapixels.`
+      );
+    }
   }
 }
 

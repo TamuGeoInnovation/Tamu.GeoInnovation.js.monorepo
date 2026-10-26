@@ -7,6 +7,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Affected
@@ -14,16 +17,16 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: '24.22.1'
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         id: npm-cache
         with:
           path: '**/node_modules'
@@ -38,5 +41,17 @@ jobs:
       - name: Typecheck the AggieMap smoke suite
         run: npx tsc -p test/smoke/aggiemap
 
+      # A new dependency with an install script must be reviewed into allowScripts first (#2293). .npmrc makes
+      # `npm ci` refuse one too, but the step above is skipped when the node_modules cache hits; this reads the lock.
+      - name: Check install scripts against allowScripts
+        run: node tools/security-findings/install-scripts.mjs
+
+      # Every registry package's signature, and its provenance where it has one, checked against the registry's
+      # keys (#2293). About 15 seconds; fails on a missing or invalid signature.
+      - name: Check registry signatures
+        run: npm audit signatures
+
       - name: Lint Affected
-        run: npx nx affected:lint --configuration=production --base=${{ inputs.base }} --parallel=2
+        env:
+          BASE: ${{ inputs.base }}
+        run: npx nx affected:lint --configuration=production --base="$BASE" --parallel=2

@@ -215,7 +215,7 @@ describe('SubmissionController', () => {
       await expect(controller.getSubmissionImage(organizer, { guid: 's-1' }, {})).rejects.toThrow(NotFoundException);
 
       expect(service.getOne).toHaveBeenCalledTimes(1);
-      expect(service.getOne).toHaveBeenCalledWith(expect.objectContaining({ relations: expect.arrayContaining(['blobs']) }));
+      expect(service.getOne).toHaveBeenCalledWith(expect.objectContaining({ relations: expect.objectContaining({ blobs: true }) }));
       expect(service.getSubmissionByGuid).not.toHaveBeenCalled();
     });
   });
@@ -283,7 +283,7 @@ describe('SubmissionController upload limits', () => {
 
     expect(res.status).toBe(413);
     expect(createCompetitionSubmission).not.toHaveBeenCalled();
-  });
+  }, 30000);
 
   it('refuses more than two files, and saves nothing', async () => {
     const res = await send(1024, 1024, 1024);

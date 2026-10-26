@@ -8,9 +8,12 @@ on:
         type: string
 
 env:
-  # ues-operations-nest cannot build here: it imports src/environments/secrets and oidc-client-config,
-  # configuration kept outside the repository. Its lint and tests run; ues-operations-angular builds (#1905).
-  EXCLUDED_PROJECTS: 'gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-nest,oidc-admin-angular,oidc-admin-nest,oidc-provider-nest,signage-angular,ues-operations-nest'
+  # ues-operations-angular builds (#1905). ues-operations-nest was excluded here because it needed
+  # configuration kept outside the repository; it was deleted with the retired API (#2380).
+  EXCLUDED_PROJECTS: 'gisday-competitions-angular,gisday-competitions-nest,signage-angular'
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -18,16 +21,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: '24.22.1'
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         id: npm-cache
         with:
           path: '**/node_modules'
@@ -38,6 +41,9 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          BASE: ${{ inputs.base }}
         run: |
           set -euo pipefail
 
@@ -49,7 +55,7 @@ jobs:
           #
           # Build every app that has a Dockerfile, derived rather than listed, so adding one is
           # all it takes for a new app to be built and published.
-          if [ "${{ github.ref_name }}" = "development" ] || [ "${{ github.ref_name }}" = "master" ]; then
+          if [ "$REF_NAME" = "development" ] || [ "$REF_NAME" = "master" ]; then
             PUBLISHABLE=$(find apps -name Dockerfile -not -path "*/node_modules/*" | cut -d/ -f2 | sort -u | paste -sd, -)
 
             if [ -z "$PUBLISHABLE" ]; then
@@ -61,7 +67,7 @@ jobs:
             npx nx run-many --target=build --projects="$PUBLISHABLE" --configuration=production --parallel=2
           else
             echo "Validation build: affected projects only."
-            npx nx affected:build --configuration=production --exclude=${{ env.EXCLUDED_PROJECTS }} --base=${{ inputs.base }} --parallel=2
+            npx nx affected:build --configuration=production --exclude="$EXCLUDED_PROJECTS" --base="$BASE" --parallel=2
           fi
 
       - name: Verify the artifact has something to publish
@@ -85,7 +91,7 @@ jobs:
           cp -r package.json package-lock.json dist/
 
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: ${{ github.sha }}
           path: dist/

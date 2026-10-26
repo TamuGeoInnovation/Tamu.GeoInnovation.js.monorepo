@@ -8,9 +8,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
-import { AppMetadata, UserMetadata } from 'auth0';
 
-import { Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest/auth';
+import { AppMetadata, Auth0UserProfile, ManagementService, UserMetadata } from '@tamu-gisc/common/nest/auth';
 
 import { Organization, University, UserInfo } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';

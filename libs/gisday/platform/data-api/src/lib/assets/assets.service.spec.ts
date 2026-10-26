@@ -4,12 +4,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
 
-import { ensureDirectoryExists, fileExists, writeFileToDisk } from '@tamu-gisc/common/node/fs';
+import { deleteFileFromDisk, ensureDirectoryExists, fileExists, writeFileToDisk } from '@tamu-gisc/common/node/fs';
 
 import { Asset } from '../entities/all.entity';
 import { AssetsService } from './assets.service';
 
 jest.mock('@tamu-gisc/common/node/fs', () => ({
+  deleteFileFromDisk: jest.fn(),
   ensureDirectoryExists: jest.fn(),
   fileExists: jest.fn(),
   writeFileToDisk: jest.fn()
@@ -28,7 +29,7 @@ describe('AssetsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AssetsService,
-        { provide: getRepositoryToken(Asset), useValue: { findOne: jest.fn(), create: jest.fn() } }
+        { provide: getRepositoryToken(Asset), useValue: { findOne: jest.fn(), create: jest.fn(), count: jest.fn().mockResolvedValue(0) } }
       ]
     }).compile();
 
@@ -133,6 +134,85 @@ describe('AssetsService', () => {
       );
       // A row pointing at a file that was never written would fail every later `findOne`.
       expect(assetRepo.create).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('.deleteAssets()', () => {
+    /**
+     * By guid, never by the rows themselves: handed whole rows, TypeORM matches on every column,
+     * timestamps included, and on SQL Server that matched no row at all (#2205).
+     */
+    it('deletes the rows by their guids, in the transaction it is given', async () => {
+      const manager = { delete: jest.fn().mockResolvedValue({ affected: 2 }) };
+      const assets = [
+        { guid: 'a-1', path: 'images/sponsors/one.png', created: new Date(), updated: new Date() },
+        { guid: 'a-2', path: 'images/sponsors/two.png', created: new Date(), updated: new Date() }
+      ] as Asset[];
+
+      await service.deleteAssets(manager as never, assets);
+
+      expect(manager.delete).toHaveBeenCalledWith(Asset, ['a-1', 'a-2']);
+    });
+
+    it('deletes nothing for an empty list', async () => {
+      const manager = { delete: jest.fn() };
+
+      await service.deleteAssets(manager as never, []);
+
+      // An empty list would be refused, or on some drivers match every row.
+      expect(manager.delete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('.deleteAssetFiles()', () => {
+    it('removes each asset\'s file under APP_DATA', async () => {
+      (deleteFileFromDisk as jest.Mock).mockResolvedValue(true);
+
+      await service.deleteAssetFiles([
+        { guid: 'a-1', path: 'images/sponsors/one.png' },
+        { guid: 'a-2', path: 'images/sponsors/two.png' }
+      ] as Asset[]);
+
+      expect(deleteFileFromDisk).toHaveBeenCalledWith(`${APP_DATA}/images/sponsors/one.png`);
+      expect(deleteFileFromDisk).toHaveBeenCalledWith(`${APP_DATA}/images/sponsors/two.png`);
+    });
+
+    /**
+     * Called after the rows are gone, so a file that cannot be removed must not undo a delete the
+     * caller has already been told succeeded: it is logged, and the rest are still removed.
+     */
+    it('carries on past a file it cannot remove', async () => {
+      (deleteFileFromDisk as jest.Mock).mockRejectedValueOnce(new Error('EACCES')).mockResolvedValueOnce(true);
+
+      await expect(
+        service.deleteAssetFiles([
+          { guid: 'a-1', path: 'images/sponsors/locked.png' },
+          { guid: 'a-2', path: 'images/sponsors/two.png' }
+        ] as Asset[])
+      ).resolves.toBeUndefined();
+
+      expect(deleteFileFromDisk).toHaveBeenCalledTimes(2);
+    });
+
+    // Files are stored under their upload name, so two sponsors' "logo.png" are one file, and every seeded speaker's photo is
+    // images/placeholder.svg: 930 rows on the seed. Removing a file another row still uses would break that one too.
+    it('keeps a file that another asset row still uses', async () => {
+      (assetRepo.count as jest.Mock).mockImplementation(async ({ where }) => (where.path === 'images/placeholder.svg' ? 930 : 0));
+      (deleteFileFromDisk as jest.Mock).mockResolvedValue(true);
+
+      await service.deleteAssetFiles([
+        { guid: 'a-1', path: 'images/placeholder.svg' },
+        { guid: 'a-2', path: 'images/sponsors/two.png' }
+      ] as Asset[]);
+
+      expect(deleteFileFromDisk).not.toHaveBeenCalledWith(`${APP_DATA}/images/placeholder.svg`);
+      expect(deleteFileFromDisk).toHaveBeenCalledWith(`${APP_DATA}/images/sponsors/two.png`);
+    });
+
+    it('skips an asset with no path', async () => {
+      await service.deleteAssetFiles([{ guid: 'a-1', path: null }] as Asset[]);
+
+      expect(deleteFileFromDisk).not.toHaveBeenCalled();
     });
   });
 });

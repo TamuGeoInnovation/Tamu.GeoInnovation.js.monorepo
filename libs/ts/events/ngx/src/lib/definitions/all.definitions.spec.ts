@@ -11,7 +11,7 @@ import { TailgatingConfiguration } from './tailgating.definitions';
  */
 describe('Event maps on production', () => {
   it('include Football Tailgating (#1814)', () => {
-    const ids = EventDefinitions.map((definition) => definition.configuration.id);
+    const ids = EventDefinitions.map((definition) => definition.configuration?.id);
 
     expect(ids).toContain('tailgating');
   });
@@ -21,9 +21,9 @@ describe('Event maps on production', () => {
   });
 
   it("raises Football Tailgating's game-day toast second, after the Football one (#1817)", () => {
-    const toasts = EventDefinitions.filter((definition) => definition.configuration.toast);
-    const football = toasts.findIndex((definition) => definition.configuration.id === FootballParkingConfiguration.id);
-    const tailgating = toasts.findIndex((definition) => definition.configuration.id === TailgatingConfiguration.id);
+    const toasts = EventDefinitions.filter((definition) => definition.configuration?.toast);
+    const football = toasts.findIndex((definition) => definition.configuration?.id === FootballParkingConfiguration.id);
+    const tailgating = toasts.findIndex((definition) => definition.configuration?.id === TailgatingConfiguration.id);
 
     expect(tailgating).toBe(football + 1);
     expect(TailgatingConfiguration.toast?.action).toEqual({ type: 'internal', value: '/events/tailgating' });
@@ -33,9 +33,9 @@ describe('Event maps on production', () => {
     // Women's Basketball carried '2026-01-1' for a season. It parsed by luck; a date that does not
     // parse makes a map's "has this event passed?" answer wrong without any error.
     const malformed = EventDefinitions.flatMap((definition) =>
-      definition.configuration.eventDates
+      definition.configuration?.eventDates
         .filter((date) => typeof date === 'string' && !/^\d{4}-\d{2}-\d{2}$/.test(date))
-        .map((date) => `${definition.configuration.id}: ${date}`)
+        .map((date) => `${definition.configuration?.id}: ${date}`)
     );
 
     expect(malformed).toEqual([]);

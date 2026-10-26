@@ -1,4 +1,5 @@
 @import 'libs/sass/mixins';
+@import 'libs/sass/motion';
 
 :host {
   z-index: 9;
@@ -14,11 +15,14 @@ tamu-gisc-search-mobile {
   z-index: 1;
   width: 95%;
 
-  // Set default start value for iOS
-  @include transform(translateY(100%));
+  // Slides up out of the way while the trip directions are dragged up (hideSearchBar).
+  @include off-canvas-slide-up-from-top(off-canvas-hidden);
 }
 
 tamu-gisc-backdrop {
   z-index: -1;
   top: 100% !important;
+
+  // Slides in from the bottom while the search has focus, and is gone otherwise.
+  @include off-canvas-slide-in-from-bottom(off-canvas-shown);
 }

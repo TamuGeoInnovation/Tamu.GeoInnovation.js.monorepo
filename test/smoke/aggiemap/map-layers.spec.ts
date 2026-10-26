@@ -65,6 +65,24 @@ const ALLOWED_LAYER_FAILURES = (process.env.AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURE
   .map((entry) => entry.trim())
   .filter((entry) => entry.length > 0);
 
+/**
+ * Layers this environment is allowed to fail on one map only, by map path and then by layer title or id, each
+ * with the issue that tracks it (environments.json `allowedMapLayerFailures`, #2350). Narrower than
+ * `ALLOWED_LAYER_FAILURES`, which tolerates a title on every map: the development athletics views lack fields
+ * that seven sports maps filter on (#2209), and tolerating "Accessible Parking Spaces" everywhere would hide the
+ * same layer failing on any other map. Read from environments.json by base URL, as `services.spec.ts` does.
+ */
+const ALLOWED_MAP_LAYER_FAILURES: Record<string, Record<string, string>> = (() => {
+  const environments: Record<string, { baseUrl: string; allowedMapLayerFailures?: Record<string, Record<string, string>> }> =
+    JSON.parse(fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8'));
+  const normalised = manifest.baseUrl.replace(/\/$/, '');
+
+  return (
+    Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === normalised)?.allowedMapLayerFailures ??
+    {}
+  );
+})();
+
 /** Features asked for at a time, and the most of one layer's given to its renderer. */
 const PAGE = 100;
 const MOST = 2_000;
@@ -313,7 +331,26 @@ for (const mapPath of manifest.maps) {
         .join('\n')
     });
 
-    const tolerated = (l: MapLayer) => ALLOWED_LAYER_FAILURES.includes(l.title) || ALLOWED_LAYER_FAILURES.includes(l.id);
+    const knownHere = ALLOWED_MAP_LAYER_FAILURES[mapPath] ?? {};
+    const knownOnThisMap = (l: MapLayer) => knownHere[l.title] ?? knownHere[l.id];
+    const tolerated = (l: MapLayer) =>
+      ALLOWED_LAYER_FAILURES.includes(l.title) || ALLOWED_LAYER_FAILURES.includes(l.id) || knownOnThisMap(l) !== undefined;
+
+    // A failure known on this map is suppressed, not hidden: recorded, and flagged once it stops failing.
+    for (const l of layers.filter((layer) => knownOnThisMap(layer) !== undefined)) {
+      const failing =
+        l.error !== null ||
+        l.queryError !== null ||
+        counted[l.id]?.error != null ||
+        ((l.checked ?? 0) > 0 && l.drawn === 0);
+
+      test.info().annotations.push({
+        type: failing ? 'known failure' : 'known failure passes',
+        description: failing
+          ? `${l.title || l.id}: ${knownOnThisMap(l)}`
+          : `${l.title || l.id} passes again on ${mapPath}; remove it from allowedMapLayerFailures (${knownOnThisMap(l)})`
+      });
+    }
 
     expect(layers.length, `${mapPath} has no layers at all: it is not a map this suite can check`).toBeGreaterThan(0);
 

@@ -3,6 +3,8 @@ import { Component, input } from '@angular/core';
 import { FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
 import { RouterLink } from '@angular/router';
 
+import { VisitMapsNavComponent } from '../visit-maps-nav/visit-maps-nav.component';
+
 /**
  * Shared header for the Maps sub-pages (Parking Maps, Campus Events, Athletics Events).
  *
@@ -18,18 +20,18 @@ import { RouterLink } from '@angular/router';
   selector: 'tamu-gisc-maps-page-header',
   templateUrl: './maps-page-header.component.html',
   styleUrls: ['./maps-page-header.component.scss'],
-  imports: [RouterLink]
+  imports: [RouterLink, VisitMapsNavComponent]
 })
 export class MapsPageHeaderComponent {
   /**
    * Page title and the label shown as the active breadcrumb.
    */
-  public readonly title = input<string>(undefined);
+  public readonly title = input.required<string>();
 
   /**
    * Optional intro paragraph rendered beneath the title.
    */
-  public readonly intro = input<string>(undefined);
+  public readonly intro = input<string>();
 
   /**
    * Whether to render the featured Campus Main Parking button. Defaults to `true`.

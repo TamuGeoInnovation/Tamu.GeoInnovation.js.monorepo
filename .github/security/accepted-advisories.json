@@ -5,256 +5,39 @@
     "publish gate fails on a critical not in it. An entry without an issue is rejected outright: an",
     "acceptance nobody is tracking is how a finding becomes permanent.",
     "Remove an entry when its issue is fixed - the scan prints the ones nothing finds any more.",
-    "Seeded 23 October 2026 from npm audit --omit=dev and Trivy 0.76.1 (#2118). Reseeded the same day from the scan's own run 39984219123, on sha-ee1a9e4: the 232 entries it no longer found were removed, the 30 it did were kept (the three tied to the closed #2112 now point at #2122), and its one new finding, node-jose, was added."
+    "Seeded 23 October 2026 from npm audit --omit=dev and Trivy 0.76.1 (#2118). Reseeded the same day from the scan's own run 39984219123, on sha-ee1a9e4: the 232 entries it no longer found were removed, the 30 it did were kept (the three tied to the closed #2112 now point at #2122), and its one new finding, node-jose, was added.",
+    "23 October 2026: the nodemailer entries were removed when nodemailer 10 merged (#2115, PR 2153).",
+    "23 October 2026: the entries for the retired IdP's packages (oidc-provider, node-jose, and @koa/cors and node-forge, which came only through them) were removed with the IdP (#2158).",
+    "23 October 2026: the four image findings under #2117 (brace-expansion twice, http-cache-semantics, undici) were removed with npm itself, which carried them, from the API images' runtime stage (#2172).",
+    "24 October 2026: @azure/msal-node 6.0.1 (CVE-2026-109461) accepted as unreachable, with @azure/identity, which npm reports through it (#2288).",
+    "25 October 2026: those two entries now point at #2371, which stays open until @azure/identity takes msal-node 7.1.0; #2288, which made the decision, is closed.",
+    "26 October 2026: zod 3.25.76 (GHSA-mrhx-c7xc-m3w5, CVE-2023-54404) accepted as unreachable, with the six @jimp packages npm reports through it; jimp arrived with PR 2382. Remove when jimp takes zod 4.6.6, or replace jimp if it has not by 9 November (#2408).",
+    "26 October 2026: the zod and @jimp entries were removed when zod 4.6.6 was forced under jimp with an npm override (#2408), which ends the finding rather than accepting it."
   ],
   "accepted": [
     {
-      "id": "1095223",
-      "package": "@koa/cors",
+      "id": "1243111",
+      "package": "@azure/msal-node",
       "severity": "HIGH",
       "source": "npm",
-      "reason": "Used only by the oidc apps, which CI does not build; whether they stay is #2122",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2122"
-    },
-    {
-      "id": "1240912",
-      "package": "node-forge",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Used only by the oidc apps, which CI does not build; whether they stay is #2122",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2122"
-    },
-    {
-      "id": "1109804",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1115470",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1116270",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1120795",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1120796",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1123478",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1158513",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1193741",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1193770",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1193778",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1193779",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1239931",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1240033",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1240114",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1241195",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
-    },
-    {
-      "id": "1242826",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Upgrading nodemailer to 10 is in flight",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2115"
+      "reason": "Unreachable here: the advisory is in MSAL's authorization-code flow (acquireTokenByCode), and nothing here runs it. @azure/msal-node comes only through mssql -> tedious -> @azure/identity; gisday-nest and mailroom-nest sign in to SQL Server with a SQL login (tedious type \"default\"), and none of tedious's Azure AD types uses the code flow: password, service principal, managed identity and DefaultAzureCredential, whose only interactive members need plugins not installed. No 6.x fix; 7.1.0 is a major @azure/identity 4.14.0 does not accept. Remove when @azure/identity takes @azure/msal-node 7.1.0 or later",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2371"
     },
     {
       "id": "transitive",
-      "package": "oidc-provider",
+      "package": "@azure/identity",
       "severity": "HIGH",
       "source": "npm",
-      "reason": "Used only by the oidc apps, which CI does not build; whether they stay is #2122",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2122"
+      "reason": "Reported only because it depends on @azure/msal-node 6.0.1; see that entry",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2371"
     },
     {
-      "id": "CVE-2023-49803",
-      "package": "@koa/cors",
+      "id": "CVE-2026-109461",
+      "package": "@azure/msal-node",
       "severity": "HIGH",
       "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "CVE-2026-102276",
-      "package": "brace-expansion",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "CVE-2026-102278",
-      "package": "brace-expansion",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "CVE-2026-93748",
-      "package": "http-cache-semantics",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "CVE-2026-85393",
-      "package": "node-forge",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "CVE-2025-14874",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "CVE-2026-82659",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "CVE-2026-82662",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "GHSA-2x7j-588g-ccc2",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "GHSA-v53p-9fqp-m79j",
-      "package": "nodemailer",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "CVE-2026-19534",
-      "package": "undici",
-      "severity": "HIGH",
-      "source": "trivy-lang",
-      "reason": "Shipped in an API image; the images install the whole workspace's dependencies rather than each API's own",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2117"
-    },
-    {
-      "id": "transitive",
-      "package": "node-jose",
-      "severity": "HIGH",
-      "source": "npm",
-      "reason": "Used only by the oidc apps, which CI does not build; whether they stay is #2122. First reported by the scan of 23 October (run 39984219123)",
-      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2122"
+      "reason": "The same advisory as npm 1243111, found by Trivy in gisday-nest and mailroom-nest; see that entry",
+      "issue": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2371"
     }
   ]
 }

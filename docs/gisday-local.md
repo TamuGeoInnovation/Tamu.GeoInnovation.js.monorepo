@@ -98,6 +98,9 @@ A backup carries the database user `gisday_app` but not the server login, so `re
 login with `GISDAY_APP_PASSWORD` and maps the user to it. `gisday_app` can read and write data
 (`db_datareader`, `db_datawriter`) and has `VIEW DEFINITION`, which TypeORM needs to compare the
 schema; it cannot change tables. The migrations table already records `InitialSchema` as applied.
+Then `restore` runs the migrations, as `migrate run` does, because a backup is only as new as the schema
+it was taken at: the scrubbed copy predates `AddCheckInZones` and `AddSponsorActive`, and without them
+the API answered 500 on the sponsors and on a season day's events (#2196).
 
 ## A copy with no personal data
 
@@ -233,3 +236,20 @@ credentials only, never a production secret.
   rebuilt) and start again. Nx also drops the first kind of record by itself after a day. See #1626.
 - The TypeORM CLI cannot find `@tamu-gisc/...` packages: do not run it by hand; use the
   `gisday-nest:migration-*` targets, which set what it needs ([gisday-migrations.md](gisday-migrations.md)).
+- A **production** `gisday-nest` image (`ghcr.io/tamugeoinnovation/gisday-nest:<tag>`), run locally on
+  `apps/gisday-nest/local.env.sample`, exits at once with `Error: Management service configuration is missing required
+  parameters.`, even though the sample sets `AUTH0_MANAGEMENT_DISABLED=true`. Only the local build reads that switch: its
+  start-up log shows `disabled: undefined` in a production image, whose configuration requires all three
+  `AUTH0_MANAGEMENT_*` values. It only checks that they are there; it makes no network call for them at start-up. So pass
+  placeholders, which are not credentials:
+
+  ```
+  AUTH0_MANAGEMENT_DOMAIN=placeholder.invalid
+  AUTH0_MANAGEMENT_CLIENT=placeholder
+  AUTH0_MANAGEMENT_SECRET=placeholder
+  ```
+
+  Anything that reads or changes Auth0 users then fails when it is used rather than at start-up. Run by hand rather than
+  through `scripts/gisday-local.sh`, the image also needs `TYPEORM_PASSWORD`, which the sample leaves blank for the
+  script to fill: without it, it stops even earlier, with `Missing db environment variables`
+  ([#2133](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2133)).

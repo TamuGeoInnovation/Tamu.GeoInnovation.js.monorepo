@@ -1,15 +1,35 @@
+# Instantiated twice per build type: lab: true runs on the lab's agents when Setup found one online, lab: false on
+# the hosted pool otherwise (#2212). Exactly one of the two runs; see azure-pipelines.yml.
 parameters:
-  buildType: ''
+  - name: buildType
+    type: string
+  - name: lab
+    type: boolean
+    default: false
 
 jobs:
-  - job: ${{ parameters.buildType}}
+  - job: ${{ format('{0}{1}', parameters.buildType, iif(parameters.lab, '_lab', '')) }}
+    displayName: ${{ format('{0}{1}', parameters.buildType, iif(parameters.lab, ' on lab', '')) }}
+    ${{ if parameters.lab }}:
+      pool:
+        name: Linux-Build
+      condition: and(succeeded(), eq(stageDependencies.Setup.Last_SHA.outputs['lab_pool.labOnline'], 'true'))
+    ${{ else }}:
+      condition: and(succeeded(), ne(stageDependencies.Setup.Last_SHA.outputs['lab_pool.labOnline'], 'true'))
     steps:
+      - ${{ if parameters.lab }}:
+          - checkout: none
+          - template: ../tasks/checkoutFromMirror.yml
       - template: ../tasks/cacheOrRestoreDependencies.yml
 
+      # The secure file is never given to a pull request from a fork (#2216): that code is anyone's, and it runs
+      # with the file on disk. Fork builds use the repository's own environment files instead, which build every
+      # project this pipeline builds. Only branch builds and pull requests from this repository download it.
       - task: DownloadSecureFile@1
         inputs:
           secureFile: 'app_configs.zip'
         displayName: 'Download application configuration files'
+        condition: and(succeeded(), ne(variables['System.PullRequest.IsFork'], 'True'))
 
       - task: ExtractFiles@1
         inputs:
@@ -17,6 +37,7 @@ jobs:
           cleanDestinationFolder: false
           destinationFolder: $(Agent.TempDirectory)
         displayName: 'Extracting'
+        condition: and(succeeded(), ne(variables['System.PullRequest.IsFork'], 'True'))
 
       - task: CopyFiles@2
         inputs:
@@ -24,6 +45,7 @@ jobs:
           Contents: '**'
           TargetFolder: $(System.DefaultWorkingDirectory)
         displayName: 'Copy secrets'
+        condition: and(succeeded(), ne(variables['System.PullRequest.IsFork'], 'True'))
 
       - bash: |
           set -e
@@ -54,6 +76,9 @@ jobs:
         displayName: 'Verify artifact contains applications'
         condition: and(succeeded(), eq(variables['IS_DEPLOYABLE'], 'True'))
 
+      # Only a deployable branch's build is ever released, so only it publishes an artifact. A pull request build
+      # cannot be deployed, and its upload was the longest step of the whole build: 8 to 9 minutes of a 16 to 21
+      # minute run, on the lab as on the hosted pool (#2340).
       - task: CopyFiles@2
         inputs:
           Contents: |
@@ -62,9 +87,11 @@ jobs:
             package-lock.json
           TargetFolder: '$(Build.ArtifactStagingDirectory)'
         displayName: 'Copy Distribution Files'
+        condition: and(succeeded(), eq(variables['IS_DEPLOYABLE'], 'True'))
 
       - task: PublishBuildArtifacts@1
         inputs:
           pathToPublish: $(Build.ArtifactStagingDirectory) # dist or build files
           artifactName: 'js-monorepo-${{parameters.buildType}}'
         displayName: 'Publish Artifacts'
+        condition: and(succeeded(), eq(variables['IS_DEPLOYABLE'], 'True'))

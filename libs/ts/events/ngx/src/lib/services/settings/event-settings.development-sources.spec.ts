@@ -39,7 +39,16 @@ describe("the Women's Basketball map's layers (#2001)", () => {
       WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING,
       WOMENS_BASKETBALL_LAYERS.PARKING_LOTS
     ]);
-    expect(sources.every((source) => source.url?.includes('/TS/WomensBasketballParking/MapServer/'))).toBe(true);
+    // #2001 drew these from `/TS/WomensBasketballParking/MapServer/`, a development-only service. #2143
+    // replaced it with a hosted view the ordinary connection resolves to on development, so the address
+    // moved; what this guards is unchanged - development reads its own service, not production's.
+    expect(
+      sources.every((source) => 'url' in source && source.url?.includes('/Hosted/WomensBasketballParking_view/FeatureServer/'))
+    ).toBe(true);
+    // Deliberately the path and not the host: `Connections` resolves its hosts once, when the module is
+    // first loaded, and in a Node test there is no address to read - so it bakes production's host
+    // whatever this test later says about the development server. The path is what distinguishes the
+    // two services, and it is host-independent. `connections.spec.ts` covers the host.
   });
 
   it('are drawn from only the references the new version has, so none is looked for and not found', () => {
@@ -60,6 +69,6 @@ describe("the Women's Basketball map's layers (#2001)", () => {
       WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,
       WOMENS_BASKETBALL_LAYERS.SAFETY_FIRST
     ]);
-    expect(sources.some((source) => source.url?.includes('/TS/WomensBasketballParking/'))).toBe(false);
+    expect(sources.some((source) => 'url' in source && source.url?.includes('/TS/WomensBasketballParking/'))).toBe(false);
   });
 });

@@ -31,7 +31,6 @@ import {
 } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
-import { v4 as guid } from 'uuid';
 import * as gju from 'geojson-utils';
 
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -1237,7 +1236,7 @@ export class TripPlannerService implements OnDestroy {
         );
       }
     } catch (err) {
-      throw new Error(err);
+      throw new Error(err, { cause: err });
     }
   }
 
@@ -1501,7 +1500,7 @@ export class TripPlannerService implements OnDestroy {
 
     // Route creation analytics tracking
     const label = {
-      guid: guid(),
+      guid: crypto.randomUUID(),
       date: Date.now(),
       travel_mode: result.params.travelMode.id,
       connection: result.connection.name,
@@ -1550,7 +1549,7 @@ export class TripPlannerService implements OnDestroy {
         // Both points are within the county
         // Route failure analytics tracking
         const label = {
-          guid: guid(),
+          guid: crypto.randomUUID(),
           date: Date.now(),
           http_status: tripResult.error.details?.httpStatus,
           message: tripResult.error.message,
@@ -1578,7 +1577,7 @@ export class TripPlannerService implements OnDestroy {
         // At least one point is outside the county
         // Route failure analytics tracking
         const label = {
-          guid: guid(),
+          guid: crypto.randomUUID(),
           date: Date.now(),
           http_status: tripResult.error.details?.httpStatus,
           message: tripResult.error.message,
@@ -1607,7 +1606,7 @@ export class TripPlannerService implements OnDestroy {
       const stops = tripResult.stopsToArray();
 
       const label = {
-        guid: guid(),
+        guid: crypto.randomUUID(),
         date: Date.now(),
         http_status: tripResult.error.details?.httpStatus,
         travel_mode: tripResult.params.travelMode.id,
@@ -2092,7 +2091,7 @@ export class TripPlannerService implements OnDestroy {
 
         modeSwitchFeatures.forEach((feature, index, features) => {
           // Generate a potential guid that will be assigned to route segments and written directions items.
-          const potentialGuid = guid();
+          const potentialGuid = crypto.randomUUID();
 
           if (index === 0 || index === features.length - 1) {
             feature.attributes.guid = potentialGuid;

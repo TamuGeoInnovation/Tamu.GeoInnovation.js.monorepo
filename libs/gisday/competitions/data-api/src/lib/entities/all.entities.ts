@@ -13,7 +13,6 @@ import {
   JoinColumn
 } from 'typeorm';
 
-import { v4 as guid } from 'uuid';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
 
@@ -34,7 +33,7 @@ export class GISDayCompetitionBaseEntity extends BaseEntity {
   @BeforeInsert()
   private generateGuid(): void {
     if (this.guid === undefined) {
-      this.guid = guid();
+      this.guid = crypto.randomUUID();
     }
   }
 }

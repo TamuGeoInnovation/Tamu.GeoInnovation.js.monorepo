@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { v4 as guid } from 'uuid';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +26,7 @@ export class DragService {
    */
   public register(classInstance?: object): string {
     const state = new UIDragState({
-      guid: classInstance ? classInstance.constructor.name : guid()
+      guid: classInstance ? classInstance.constructor.name : crypto.randomUUID()
     });
 
     // Store the new component registration

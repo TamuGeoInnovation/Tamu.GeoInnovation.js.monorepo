@@ -201,6 +201,11 @@ Google Analytics id it should report to, and the layers it is allowed to fail. T
 script both read that file, so a change there applies to scheduled, manual and local runs alike.
 Change expectations there, not in a command line.
 
+`allowedLayerFailures` tolerates a layer by title on every map. A layer known to fail on particular maps
+only goes under `allowedMapLayerFailures` instead, by map path and then by layer title, each with its issue,
+so the same layer failing on any other map still fails (#2350). `map-layers.spec.ts` records each one it
+suppresses, and says when one passes again so its entry can go.
+
 **A local run uses six workers; the workflow uses four** (#1426). Each test still gets a fresh browser
 context, but the ArcGIS SDK is downloaded once per worker and served from memory after that
 ([`fixtures.ts`](fixtures.ts)), so a spec that opens a page imports `test` and `expect` from
@@ -228,7 +233,7 @@ volume, so run the script once first; or drop that mount to use the checkout's o
 docker run --rm -v "$PWD:/work" -v tamu-js-smoke-nm:/work/node_modules -w /work \
   -e AGGIEMAP_SMOKE_BASE_URL=https://dev.aggiemap.tamu.edu \
   -e AGGIEMAP_EXPECTED_GTAG_ID=G-71VY0QZS5P \
-  mcr.microsoft.com/playwright:v1.63.0-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --config=playwright.aggiemap-smoke.config.ts
 ```
 
@@ -243,7 +248,7 @@ reaches it on `localhost`. The script's `local` environment does this for you:
 docker run --rm --network container:aggiemap-dev -v "$PWD:/work" -v tamu-js-smoke-nm:/work/node_modules -w /work \
   -e AGGIEMAP_SMOKE_BASE_URL=http://localhost:4200 \
   -e AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES="Dining Locations" \
-  mcr.microsoft.com/playwright:v1.63.0-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --config=playwright.aggiemap-smoke.config.ts
 ```
 

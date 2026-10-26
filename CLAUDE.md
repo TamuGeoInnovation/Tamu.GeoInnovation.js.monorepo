@@ -71,9 +71,11 @@ scripts/check-in-volume.sh <branch>
 From Git Bash, in the main checkout or any worktree. It runs `nx affected -t lint,test,build` against
 `origin/development` in a Linux clone of the branch kept in a Docker volume (`tamu-js-<issue>`), skips
 for each target the projects that target's own workflow excludes (lint from `lint.yml`, test from
-`test.yml`, build from `build.yml`, so it lints everything CI lints; #1475), writes a log, and exits
-with the check's exit code, which fails if any target failed. `bash scripts/check-in-volume.test.sh`
-tests how it reads those lists, and `bash scripts/run-times.test.sh` the run-time files it writes. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
+`test.yml`, build from `build.yml`, so it lints everything CI lints; #1475), then runs `lint.yml`'s
+steps outside Nx, today `npx tsc -p test/smoke/aggiemap` (#2286), writes a log, and exits with the
+check's exit code, which fails if any target or step failed. A `lint.yml` step it cannot run as CI does
+stops it before it starts. `bash scripts/check-in-volume.test.sh` tests how it reads those lists and
+steps, and `bash scripts/run-times.test.sh` the run-time files it writes. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
 of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
@@ -145,6 +147,13 @@ The id stays `Central Standard Time` all year; Windows handles the summer change
 containers run in UTC for the same reason, which is why a capture shows the wrong time unless
 `timezoneId: 'America/Chicago'` is passed to `newPage`. See #1423.
 
+**Take the latest version that is at least 7 days old, not simply the latest.** Most supply-chain attacks on npm are
+poisoned new releases that stay on the registry for hours or days before anyone notices, and this repository installs about
+1,600 packages. So an upgrade, ours or Dependabot's, waits until a release is a week old: pin with `~` or an exact version
+to stay below a newer release that is not, and say so in the pull request. Dependabot's `cooldown` in `.github/dependabot.yml`
+applies the same 7 days to every version update, so each pull request it opens can be merged once green (#2333). **A security fix is the exception**:
+take it at once, and record why. See #2292 and #2333.
+
 **After a dependency change, prove the lock file with a clean `npm ci` before pushing.** CI installs
 with `npm ci`, which installs only what `package-lock.json` records and refuses when it disagrees
 with `package.json`. A local `npm install` quietly adds what is missing to `node_modules` without
@@ -155,6 +164,13 @@ lock file`, a peer of the upgraded `ng2-dragula`. Sync the lock with
 proves it: whenever the committed `package.json` or `package-lock.json` changes, it runs `npm ci` from
 those files alone, as CI does. See #1347.
 
+**A dependency with an install script must be reviewed into `allowScripts` first.** `.npmrc` sets
+`strict-allow-scripts`, so `npm ci` refuses a package whose `preinstall`, `install` or `postinstall` script is not
+listed in `package.json`'s `allowScripts` (`ESTRICTALLOWSCRIPTS`), and `lint.yml` checks the lock for the same.
+Read the script, then `npm install-scripts approve --no-allow-scripts-pin <name>` or `deny <name>`:
+[`tools/security-findings/README.md`](tools/security-findings/README.md#install-scripts-and-registry-signatures)
+(#2293).
+
 **Regenerating a conflicted lock undoes lock-only updates, and every check still passes.** When
 `package-lock.json` conflicts in a merge, `npm install --package-lock-only` rebuilds it from `package.json`
 and keeps whatever versions are already locked. Anything a branch updated only in the lock (`npm update`,
@@ -164,6 +180,29 @@ the full check and CI both passed, because nothing was broken, only not updated 
 regenerating a lock, run the branch's lock-only update again (for example `npm audit fix --package-lock-only`)
 and compare the versions it was meant to change, or `npm audit --package-lock-only`, against the branch's
 own last commit before pushing.
+
+**Dependabot opens weekly grouped pull requests into `development`** (`.github/dependabot.yml`, Mondays at
+6 AM Central: one per family for npm, one for the API images, one for Actions; #2138). Each is a dependency
+change like any other: file its issue, run the full check with a clean `npm ci`, and follow the lock rules
+above. **A major-version pull request is the maintainer's decision**, not something merged on a green check
+alone.
+
+**How a Dependabot pull request is handled** (the maintainer, 23 October 2026, #2138):
+
+1. **Its issue first.** Dependabot's body has no `Closes #N`, so the linked-issue check fails until it has one. File
+   an issue for it (Task, `dependencies`, Priority **Low** unless it is a major), set the fields as for any issue, and
+   **start the issue's body with `Tracks PR #<number>`**: the check accepts that for a Dependabot pull request, and it
+   survives Dependabot's rebases, which rewrite the pull request's body. Also put `Closes #<issue>` at the top of the
+   pull request's body, so the issue closes on merge; if a rebase has removed it by then, close the issue by hand
+   after the merge.
+2. **Checked by a listener** (the lab), like any dependency change: the full check with a clean `npm ci`, the lock diff
+   against `development` (only the named packages and their own dependencies may move), and for an image or tool bump,
+   the thing actually run (an image started, the smoke suite on the new Playwright). The result goes on the pull request.
+3. **A major is brought to the maintainer** with a recommendation, never merged on a green check. Node majors and Nx
+   majors are held back in `dependabot.yml` until each is done as its own change.
+
+Never push to a Dependabot branch: it lives on `TamuGeoInnovation` and Dependabot rewrites it. A fix it needs (for
+example the READMEs that hard-code a Playwright image version) is its own small pull request.
 
 **Files are LF, and `.gitattributes` will not fix a mistake for you.** It sets `* -text`, which
 turns git's end-of-line normalization off for every file: git stores the bytes it is given, and

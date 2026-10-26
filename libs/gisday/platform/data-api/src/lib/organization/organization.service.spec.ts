@@ -38,7 +38,10 @@ describe('OrganizationService', () => {
           useValue: { find: jest.fn() }
         },
         { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } },
-        { provide: AssetsService, useValue: { saveAsset: jest.fn() } }
+        {
+          provide: AssetsService,
+          useValue: { saveAsset: jest.fn(), deleteAssets: jest.fn(), deleteAssetFiles: jest.fn() }
+        }
       ]
     }).compile();
 
@@ -66,7 +69,7 @@ describe('OrganizationService', () => {
       ]);
       expect(orgRepo.find).toHaveBeenCalledWith({
         where: { season: { guid: 'season-1' } },
-        relations: ['season', 'logos'],
+        relations: { season: true, logos: true },
         order: { name: 'ASC' }
       });
     });
@@ -122,7 +125,7 @@ describe('OrganizationService', () => {
       );
       expect(orgRepo.findOne).toHaveBeenCalledWith({
         where: { guid: 'o-1' },
-        relations: ['season', 'logos']
+        relations: { season: true, logos: true }
       });
     });
 
@@ -132,7 +135,7 @@ describe('OrganizationService', () => {
       await service.getOrganizations();
 
       expect(orgRepo.find).toHaveBeenCalledWith({
-        relations: ['season', 'logos'],
+        relations: { season: true, logos: true },
         order: { name: 'ASC' }
       });
     });
@@ -352,7 +355,9 @@ describe('OrganizationService', () => {
 
       await service.deleteEntities(['o-1']);
 
-      expect(manager.delete).toHaveBeenCalledWith(Asset, [logo]);
+      // Through AssetsService, which deletes the rows by guid and their files after commit (#2205).
+      expect(assetService.deleteAssets).toHaveBeenCalledWith(manager, [logo]);
+      expect(assetService.deleteAssetFiles).toHaveBeenCalledWith([logo]);
     });
   });
 });

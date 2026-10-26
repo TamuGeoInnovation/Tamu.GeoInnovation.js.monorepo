@@ -6,40 +6,8 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/apps/mailroom-helper-nest",
-        "main": "apps/mailroom-helper-nest/src/main.ts",
-        "tsConfig": "apps/mailroom-helper-nest/tsconfig.app.json",
-        "webpackConfig": "apps/mailroom-helper-nest/webpack.config.js",
-        "assets": [
-          "apps/mailroom-helper-nest/src/assets",
-          "apps/mailroom-helper-nest/src/Dockerfile",
-          "apps/mailroom-helper-nest/src/docker-compose.yml",
-          "apps/mailroom-helper-nest/src/.dockerignore",
-          {
-            "glob": "**/*",
-            "input": "./libs/assets/powershell",
-            "output": "./assets/powershell"
-          }
-        ],
-        "target": "node",
-        "compiler": "tsc"
-      },
       "configurations": {
-        "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false,
-          "generatePackageJson": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/mailroom-helper-nest/src/environments/environment.ts",
-              "with": "apps/mailroom-helper-nest/src/environments/environment.prod.ts"
-            }
-          ]
-        }
+        "production": {}
       }
     },
     "serve": {
@@ -47,17 +15,6 @@
       "options": {
         "buildTarget": "mailroom-helper-nest:build",
         "host": "0.0.0.0"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/mailroom-helper-nest"],
-      "options": {
-        "jestConfig": "apps/mailroom-helper-nest/jest.config.ts"
       }
     }
   }

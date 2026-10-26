@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { v4 as guid } from 'uuid';
 import { Angulartics2 } from 'angulartics2';
 
 import { NotificationService } from '../../services/notification.service';
@@ -48,7 +47,7 @@ export class NotificationContainerComponent implements OnInit {
   public action(event: Notification): void {
     if (this.analytics !== null) {
       const label = {
-        guid: guid(),
+        guid: crypto.randomUUID(),
         date: Date.now(),
         name: event.id
       };

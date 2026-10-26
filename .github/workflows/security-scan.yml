@@ -41,10 +41,10 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: '24.22.1'
 
@@ -75,7 +75,10 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Log in to the registry
-        run: echo '${{ github.token }}' | docker login ghcr.io -u '${{ github.actor }}' --password-stdin
+        env:
+          REGISTRY_USER: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ github.token }}
+        run: echo "$REGISTRY_TOKEN" | docker login ghcr.io -u "$REGISTRY_USER" --password-stdin
 
       # Each image scanned into its own file, named for the image, so a finding can be traced back
       # to where it lives. Every listed image must exist: `:stable` always does for an app that has
@@ -83,6 +86,10 @@ jobs:
       # the run look clean while checking less than it says.
       - name: Trivy
         id: trivy
+        env:
+          REGISTRY_USER: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ github.token }}
+          IMAGES: ${{ steps.images.outputs.list }}
         run: |
           mkdir -p scan
           args=()
@@ -95,11 +102,11 @@ jobs:
               continue
             fi
             docker run --rm -v "$PWD/scan:/out" \
-              -e TRIVY_USERNAME='${{ github.actor }}' -e TRIVY_PASSWORD='${{ github.token }}' \
+              -e TRIVY_USERNAME="$REGISTRY_USER" -e TRIVY_PASSWORD="$REGISTRY_TOKEN" \
               "aquasec/trivy:${TRIVY_VERSION}" image --scanners vuln --severity CRITICAL,HIGH \
               --format json --output "/out/${name}.json" --quiet "$image"
             args+=("--trivy" "scan/${name}.json=${image}")
-          done <<< '${{ steps.images.outputs.list }}'
+          done <<< "$IMAGES"
           printf '%s\n' "${args[@]}" > trivy-args.txt
           echo "scanned $(( ${#args[@]} / 2 )) image(s)"
           [ -z "${missing:-}" ]
@@ -129,7 +136,7 @@ jobs:
 
       - name: Keep the scan output
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: security-scan-${{ github.run_id }}
           path: |

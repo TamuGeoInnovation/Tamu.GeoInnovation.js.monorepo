@@ -5,10 +5,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+# Read-only for every job. Only `publish` writes packages, and it asks for that on its own job below.
 permissions:
   contents: read
-  pull-requests: read
-  packages: write
 
 # Optional but nice: one active run per branch/PR
 concurrency:
@@ -31,18 +30,24 @@ jobs:
     steps:
       - name: Set Base Reference
         id: set-base
+        # A branch name is chosen by whoever pushes it, and a fork's by whoever opened the pull request, so it
+        # reaches the script as an environment variable, never pasted into the script text (#2388).
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           # Determine the branch name for push or PR
-          BRANCH="${{ github.ref_name }}"
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BRANCH="${{ github.head_ref }}"
+          BRANCH="$REF_NAME"
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            BRANCH="$HEAD_REF"
           fi
 
           if [[ "$BRANCH" == "development" || "$BRANCH" == "master" ]]; then
-            echo "base=HEAD~1" >> $GITHUB_OUTPUT
+            echo "base=HEAD~1" >> "$GITHUB_OUTPUT"
           else
             # For feature branches (including forks), compare against base repo's development
-            echo "base=origin/development" >> $GITHUB_OUTPUT
+            echo "base=origin/development" >> "$GITHUB_OUTPUT"
           fi
 
   lint:
@@ -74,4 +79,7 @@ jobs:
     needs: [lint, test, build]
     # Usually you don't want to publish from fork PRs
     if: github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/publish.yml
