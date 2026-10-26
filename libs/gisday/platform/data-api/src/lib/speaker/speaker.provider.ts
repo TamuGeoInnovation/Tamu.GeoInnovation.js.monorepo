@@ -474,8 +474,11 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   public override async deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
     const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
 
+    let images: Array<Asset> = [];
+
     try {
-      return this.speakerRepo.manager.transaction(async (manager) => {
+      // Awaited, so a failed delete lands in the catch below; the images go by guid and their files after commit (#2205).
+      const result = await this.speakerRepo.manager.transaction(async (manager) => {
         const speakers = await manager.find(Speaker, {
           where: {
             guid: In(guids)
@@ -483,14 +486,16 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
           relations: { images: true }
         });
 
-        const images = speakers.map((speaker) => speaker.images).flat();
+        images = speakers.map((speaker) => speaker.images).flat();
 
-        if (images.length > 0) {
-          await manager.delete(Asset, images);
-        }
+        await this.assetService.deleteAssets(manager, images);
 
         return manager.delete(Speaker, guids);
       });
+
+      await this.assetService.deleteAssetFiles(images);
+
+      return result;
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".

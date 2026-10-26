@@ -38,7 +38,10 @@ describe('SpeakerProvider', () => {
         { provide: getRepositoryToken(University), useValue: repoMock() },
         { provide: getRepositoryToken(Season), useValue: repoMock() },
         { provide: getRepositoryToken(Asset), useValue: repoMock() },
-        { provide: AssetsService, useValue: { saveAsset: jest.fn() } },
+        {
+          provide: AssetsService,
+          useValue: { saveAsset: jest.fn(), deleteAssets: jest.fn(), deleteAssetFiles: jest.fn() }
+        },
         {
           provide: SeasonService,
           useValue: { findOne: jest.fn(), findOneActive: jest.fn(), findOneWithDaysAndEvents: jest.fn() }
@@ -391,7 +394,9 @@ describe('SpeakerProvider', () => {
 
       await provider.deleteEntities(['s-1']);
 
-      expect(manager.delete).toHaveBeenCalledWith(Asset, [image]);
+      // Through AssetsService, which deletes the rows by guid and their files after commit (#2205).
+      expect(assetService.deleteAssets).toHaveBeenCalledWith(manager, [image]);
+      expect(assetService.deleteAssetFiles).toHaveBeenCalledWith([image]);
     });
 
     it('does not attempt an image delete when there are none', async () => {
