@@ -148,3 +148,16 @@ test('an empty folder still gets a home page', () => {
   assert.equal(result.sets, 0);
   assert.match(fs.readFileSync(path.join(root, 'index.html'), 'utf8'), /None yet/);
 });
+
+test('shots taken before their map finished are counted on the home page and marked in the gallery', () => {
+  const root = folder();
+  const dir = addSet(root, 'production', 'prod-2026-10-20', { capturedAt: '2026-10-20 16:57:00 US Central' });
+  const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
+
+  manifest.unsettled = { 'desktop/events-big-event.png': 'it was still drawing after 60 s' };
+  fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify(manifest));
+  buildIndex(root, NO_STYLES);
+
+  assert.match(fs.readFileSync(path.join(root, 'index.html'), 'utf8'), /1 unfinished/);
+  assert.match(fs.readFileSync(path.join(dir, 'index.html'), 'utf8'), /title="it was still drawing after 60 s">unfinished/);
+});

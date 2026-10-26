@@ -273,11 +273,13 @@ export class OrganizationService extends BaseProvider<Organization> {
     return uniqueOrgs;
   }
 
-  public override deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
+  public override async deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
     const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
+    let logos: Array<Asset> = [];
 
     try {
-      return this.orgRepo.manager.transaction(async (manager) => {
+      // Awaited, so a failed delete lands in the catch below; the logos go by guid and their files after commit (#2205).
+      const result = await this.orgRepo.manager.transaction(async (manager) => {
         const orgs = await manager.find(Organization, {
           where: {
             guid: In(guids)
@@ -285,11 +287,9 @@ export class OrganizationService extends BaseProvider<Organization> {
           relations: { logos: true }
         });
 
-        const logos = orgs.map((org) => org.logos).flat();
+        logos = orgs.map((org) => org.logos).flat();
 
-        if (logos.length > 0) {
-          await manager.delete(Asset, logos);
-        }
+        await this.assetService.deleteAssets(manager, logos);
 
         const speakers = await manager.find(Speaker, {
           where: {
@@ -307,6 +307,10 @@ export class OrganizationService extends BaseProvider<Organization> {
 
         return manager.delete(Organization, guids);
       });
+
+      await this.assetService.deleteAssetFiles(logos);
+
+      return result;
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".

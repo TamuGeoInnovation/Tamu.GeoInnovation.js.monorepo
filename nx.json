@@ -174,7 +174,6 @@
         "apps/signage-angular/**/*",
         "apps/ts-events-angular/**/*",
         "apps/ues-operations-angular/**/*",
-        "apps/ues-operations-nest/**/*",
         "libs/aggiemap/ngx/common/**/*",
         "libs/aggiemap/ngx/core/**/*",
         "libs/aggiemap/ngx/discover/**/*",
@@ -195,6 +194,7 @@
         "libs/common/ngx/ui/notification/**/*",
         "libs/common/ngx/ui/sidebar/**/*",
         "libs/common/node/fs/**/*",
+        "libs/common/node/images/**/*",
         "libs/common/types/**/*",
         "libs/common/utils/collection/**/*",
         "libs/common/utils/database/**/*",
@@ -247,7 +247,6 @@
         "libs/oidc/client/**/*",
         "libs/signage/**/*",
         "libs/ts/events/ngx/**/*",
-        "libs/ues/common/nest/**/*",
         "libs/ues/common/ngx/**/*",
         "libs/ues/operations/ngx/**/*",
         "libs/ui-kits/ngx/animations/**/*",
@@ -266,7 +265,7 @@
         "libs/ui-kits/ngx/navigation/triggers/**/*",
         "libs/ui-kits/ngx/search/**/*"
       ],
-      "exclude": ["apps/gisday-competitions-nest/src/**/*", "apps/ues-operations-nest/src/**/*"]
+      "exclude": ["apps/gisday-competitions-nest/src/**/*"]
     },
     {
       "plugin": "@nx/jest/plugin",

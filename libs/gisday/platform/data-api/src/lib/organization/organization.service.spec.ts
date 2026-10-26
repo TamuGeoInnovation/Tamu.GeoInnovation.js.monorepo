@@ -38,7 +38,10 @@ describe('OrganizationService', () => {
           useValue: { find: jest.fn() }
         },
         { provide: SeasonService, useValue: { findOne: jest.fn(), findOneActive: jest.fn() } },
-        { provide: AssetsService, useValue: { saveAsset: jest.fn() } }
+        {
+          provide: AssetsService,
+          useValue: { saveAsset: jest.fn(), deleteAssets: jest.fn(), deleteAssetFiles: jest.fn() }
+        }
       ]
     }).compile();
 
@@ -352,7 +355,9 @@ describe('OrganizationService', () => {
 
       await service.deleteEntities(['o-1']);
 
-      expect(manager.delete).toHaveBeenCalledWith(Asset, [logo]);
+      // Through AssetsService, which deletes the rows by guid and their files after commit (#2205).
+      expect(assetService.deleteAssets).toHaveBeenCalledWith(manager, [logo]);
+      expect(assetService.deleteAssetFiles).toHaveBeenCalledWith([logo]);
     });
   });
 });

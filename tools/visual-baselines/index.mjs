@@ -161,6 +161,7 @@ function homePage(groups, comparisons, shared) {
     group.sets
       .map((set) => {
         const m = set.manifest;
+        const unfinished = Object.keys(set.manifest.unsettled || {}).length;
         const counts = shotCounts(set)
           .map((c) => `<span class="chip ${c.complete ? 'chip-label' : 'chip-external'}">${escape(c.viewport)} ${c.have}${c.expected === undefined ? '' : ' / ' + c.expected}</span>`)
           .join(' ');
@@ -170,7 +171,7 @@ function homePage(groups, comparisons, shared) {
           <td>${escape((m.capturedAt || '').replace(' US Central', ''))}</td>
           <td>${commitLink(m.releaseCommit)}</td>
           <td class="mono">${escape(m.build || '')}</td>
-          <td>${counts}</td>
+          <td>${counts}${unfinished ? ` <span class="chip chip-external">${unfinished} unfinished</span>` : ''}</td>
         </tr>`;
       })
       .join('\n');
@@ -293,7 +294,7 @@ function setPage(set, shared) {
 
           return `<figure class="shot" data-viewport="${escape(viewport)}" data-label="${escape(label.toLowerCase())}">
       <a href="${src}" target="_blank"><img loading="lazy" src="${src}" alt="${escape(label)}"${size(viewport)}></a>
-      <figcaption><span class="mono">${escape(label)}</span>${route && base ? ` <a href="${escape(base + route)}" target="_blank">live</a>` : ''}</figcaption>
+      <figcaption>${m.unsettled?.[`${viewport}/${file}`] ? `<span class="chip chip-external" title="${escape(m.unsettled[`${viewport}/${file}`])}">unfinished</span> ` : ''}<span class="mono">${escape(label)}</span>${route && base ? ` <a href="${escape(base + route)}" target="_blank">live</a>` : ''}</figcaption>
     </figure>`;
         })
         .join('\n')
