@@ -17,7 +17,7 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Idle: no batch running.
+Batch 24 (gisday: #2426 photo never larger) started 11:55 AM Central, 26 October. Next update by 12:55 PM Central.
 
 ## Finished
 
