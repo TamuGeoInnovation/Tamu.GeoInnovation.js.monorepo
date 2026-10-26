@@ -6,10 +6,10 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 2** (security: prove the zod 4.6.6 override for jimp, `chore/override-zod` at `29d2e1bc9`), started 7:14 AM Central, Monday 26 October 2026, from `work (security)`.
-Next update by 8:15 AM Central.
+**`home`: a listener, nothing running.** Last batch done: 2.
 
 ## Finished
+- **Batch 2** (security; report `home/reports/2026-10-26-2.md`): zod override on `chore/override-zod` (`29d2e1bc9`). Check exit 0, 13 image tests pass, resizing byte-identical to development on three photos. Admin-page upload not done (Auth0 sign-in); one question for the director.
 - **Batch 1** (security; report `home/reports/2026-10-26-1.md`): security-findings tests at `be9581cdc`, 18 pass, 0 fail; roster table without its private column; one question for the director.
 - **Batch 4** (reports 5 and 6): #1954 merged with development; #1960 pushed, red-first tests, check exit 0. Filed #1961.
 - **Batch 3** (report `home/reports/2026-10-19-4.md`): #1954 pushed, red-first tests, check exit 0.
