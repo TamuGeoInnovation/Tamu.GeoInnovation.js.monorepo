@@ -58,15 +58,38 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
   baseLayers: [
     {
       type: 'VectorTileLayer',
-      url: `https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase/VectorTileServer`,
+      url: `https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase3/VectorTileServer`,
       listMode: 'hide',
       visible: true,
       title: 'Base Map'
     }
   ],
   id: 'aggie_basemap',
-  // Dated like the raster versions beside it in the dev gallery (#1582): the cache was published on
-  // 30 September 2026. Name it plain "Aggieland" when it becomes production's basemap.
+  // Dated like the versions beside it in the dev gallery (#1582): `TAMU_BaseMap_20261026`, published
+  // on 26 October 2026 and given to us for development testing (#2436). Name it plain "Aggieland"
+  // when it becomes production's basemap.
+  title: 'Aggieland vector, October 2026',
+  thumbnailUrl: CAMPUS_BASEMAP_THUMBNAIL
+};
+
+/**
+ * The vector tile basemap development opened on until 26 October 2026, kept so the two can be
+ * compared side by side before either becomes production's (#2436).
+ *
+ * The newer cache is the one the map opens on; this one stays in the gallery under its own id, the
+ * way a replaced raster version does. It goes when the comparison is settled.
+ */
+export const AggiemapVectorBasemapSeptember2026: BaseMapProperties = {
+  baseLayers: [
+    {
+      type: 'VectorTileLayer',
+      url: `https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase/VectorTileServer`,
+      listMode: 'hide',
+      visible: true,
+      title: 'Base Map'
+    }
+  ],
+  id: 'aggie_basemap_vector_2026_09',
   title: 'Aggieland vector, September 2026',
   thumbnailUrl: CAMPUS_BASEMAP_THUMBNAIL
 };
@@ -144,7 +167,8 @@ export const AggiemapRasterBasemapMay2026: BaseMapProperties = {
  *
  * The first entry is the one the map opens on, and is always `aggiemapBasemap()`.
  *
- * When a raster version is republished, date the current one here and add the one it replaces.
+ * When a version is republished, raster or vector, date the current one here and add the one it
+ * replaces, so the two can be compared before one is chosen (#2436).
  */
 export function aggiemapGalleryBasemaps(isTesting: boolean): BaseMapProperties[] {
   if (!isTesting) {
@@ -153,6 +177,7 @@ export function aggiemapGalleryBasemaps(isTesting: boolean): BaseMapProperties[]
 
   return [
     aggiemapBasemap(isTesting),
+    AggiemapVectorBasemapSeptember2026,
     aggiemapRasterBasemap(isTesting),
     AggiemapRasterBasemapJune2026,
     AggiemapRasterBasemapMay2026
