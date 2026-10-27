@@ -199,11 +199,36 @@ export interface ICompetitionSeasonFormQuestion {
   instructions: string;
   enabled: boolean;
   isDiscriminator?: boolean;
-  options?: Array<{
-    name: string;
-    value: string | number | boolean;
-  }>;
+  options?: Array<ICompetitionSeasonFormOption>;
   type: string;
+}
+
+/**
+ * An answer to a question. On the type question, the optional settings say how leaderboard scoring
+ * tells one thing of this type from another (#2162); they come from the form schema's coded values.
+ */
+export interface ICompetitionSeasonFormOption {
+  name: string;
+  value: string | number | boolean;
+  /**
+   * How close an earlier new find of this type must be to count as the same thing. Without it,
+   * `SAME_THING_DISTANCE_METRES`.
+   */
+  sameThingMetres?: number;
+  /**
+   * The text question holding the thing's name. When set, two finds of this type within
+   * `sameThingMetres` are the same thing only if their names match, so neighbouring things with
+   * different names score as new. A find without a name is compared by distance alone.
+   */
+  nameAttribute?: string;
+  /**
+   * The answers in the previous competition season's type question that this type continues, and how
+   * close one of them must be to count as already found. Without it, nothing from that season counts.
+   */
+  earlier?: {
+    values: Array<string | number | boolean>;
+    metres: number;
+  };
 }
 
 export const GISDAY_COMPETITIONS_ENTITIES = [

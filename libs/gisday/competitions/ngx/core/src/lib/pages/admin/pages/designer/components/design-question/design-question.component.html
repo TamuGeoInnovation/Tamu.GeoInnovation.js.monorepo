@@ -46,7 +46,7 @@
       @if (control().get('type').value === 'select') {
       <div class="question-control">
         <p class="question-control-header">Type Question</p>
-        <p>Enable this to use this question's answer to tell kinds of thing apart for leaderboard scoring: a submission within 15 meters of an earlier new find counts as already submitted only when both gave the same answer here. Mark exactly one question per form.</p>
+        <p>Enable this to use this question's answer to tell kinds of thing apart for leaderboard scoring: a submission within 15 meters of an earlier new find counts as already submitted only when both gave the same answer here. An answer can set its own distance, a name question to tell neighbouring things apart, and the previous season's answers it continues, in the form schema's coded values. Mark exactly one question per form.</p>
         <tamu-gisc-checkbox formControlName="isDiscriminator" label="Use this question as the type question"></tamu-gisc-checkbox>
       </div>
       } @if (control().get('type').value === 'select') {
