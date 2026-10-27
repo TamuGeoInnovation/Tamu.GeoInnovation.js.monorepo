@@ -17,7 +17,7 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Idle.
+**Batch 30, aggiemap: #2476 HSC Dallas campus map** - started 2:57 PM Central, 27 October. Next update by 4:30 PM Central.
 
 ## Finished
 
