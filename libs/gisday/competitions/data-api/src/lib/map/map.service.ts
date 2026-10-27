@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
 
+import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
+
 import { CompetitionSeason, CompetitionSubmission } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
 
@@ -82,9 +84,11 @@ export class MapService extends BaseService<CompetitionSubmission> {
         const geoJsonPoints = submissions.map((submission) => {
           return {
             type: 'Feature',
+            // Only the submission and its review status: these endpoints answer anyone, so nothing of who
+            // reviewed it (`verifiedBy`, an organizer's account id) goes out (#1792).
             properties: {
-              ...submission.validationStatus,
               guid: submission.guid,
+              status: submission.validationStatus?.status ?? COMPETITION_VALIDATION_STATUS.unverified,
               created: submission.created,
               updated: submission.updated
             },

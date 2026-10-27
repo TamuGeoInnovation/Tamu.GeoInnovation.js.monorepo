@@ -56,8 +56,18 @@ describe('MapService, what the public map sends', () => {
     expect(JSON.stringify(collection)).not.toContain('reviewer-account-id');
     expect(JSON.stringify(collection)).not.toContain('verifiedBy');
     expect(collection.features.map((f) => f.properties)).toEqual([
-      { guid: 's-1', status: 'verified', created: new Date('2026-11-15T18:00:00Z'), updated: new Date('2026-11-15T19:00:00Z') },
-      { guid: 's-2', status: 'unverified', created: new Date('2026-11-15T18:00:00Z'), updated: new Date('2026-11-15T19:00:00Z') }
+      {
+        guid: 's-1',
+        status: 'verified',
+        created: new Date('2026-11-15T18:00:00Z'),
+        updated: new Date('2026-11-15T19:00:00Z')
+      },
+      {
+        guid: 's-2',
+        status: 'unverified',
+        created: new Date('2026-11-15T18:00:00Z'),
+        updated: new Date('2026-11-15T19:00:00Z')
+      }
     ]);
   });
 });
