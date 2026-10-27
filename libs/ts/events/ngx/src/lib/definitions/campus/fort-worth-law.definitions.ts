@@ -122,10 +122,8 @@ export const FortWorthLawTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'satellite-campus',
     mapType: 'satellite-campus',
-    // Development-only to begin with, as the other satellite campuses were until #1490 put them on
-    // production. All Maps lists a campus with `visible: false` on development alone, and the general
-    // map search excludes every satellite campus on both (#1482).
-    visible: false,
+    // Listed on production as well as development (#2473): every satellite campus is live. The general
+    // map search still excludes them all on both environments (#1482), which is deliberate.
     thumbnail: './assets/images/campus/fort-worth-law.jpg'
   }
 };
