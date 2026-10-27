@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 161.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 162.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,44 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 161 (gisday: the release check for `sha-9ea3ccd`, the next GIS Day site and API; read only against production; 27 October 2026, about 12:45 PM Central, from `work (gisday)`)
+
+After batches 159 and 160. About 45 minutes. **Batch 159 must have left the local stack on `origin/development`** before you
+start this.
+
+The maintainer merged five GIS Day pull requests on 27 October; `development` at **`9ea3ccd2f`** carries all of them:
+#2162 (score 2026 finds against 2025's, PR 2424), #2164 (automatic review of VGI submissions, PR 2428), #2431 (Texas A&M site
+drops three links, PR 2461), #2426 (a resized speaker photo is never larger than the upload, PR 2462) and #2427 (19 unused
+files removed, PR 2463). **No schema change** (the entity change is a TypeScript type only), so no migration. The publish run
+for `9ea3ccd2f` was still running at 12:45 PM; wait until **`gisday-nest:sha-9ea3ccd`** and **`gisday-angular:sha-9ea3ccd`**
+are on ghcr (`docker manifest inspect`). Production runs API `sha-eb0fe7d`.
+
+### What to do
+
+1. Your local stack (seed, migrated) with the **published `gisday-nest:sha-9ea3ccd`** as `gisday-api`, as in batch 155, and a
+   local site build of `9ea3ccd2f` on 4201 (`web --static`).
+2. `work/tools/gisday-release-check.cjs` and `gisday-release-check2.cjs`: every line should PASS, as in batch 155.
+3. **What this release adds:**
+   - **#2426:** upload, through Admin, Speakers, an opaque PNG photo over 840 px on its shorter side (a real photo saved as PNG,
+     a few hundred KB or more): the stored file must be **smaller than the upload**. Say both sizes and the stored pixel size.
+     Remove the test speaker afterwards.
+   - **#2164 / #2162:** Admin, VGI Competition, Submissions loads with no API error, and the leaderboard the public page uses
+     answers 200. The local data may have no 2026 submissions; say what it showed.
+   - **#2431:** `web --static --site tamu` on 4202: the home page has no links under Explore Events; txgisday.org on 4201 still
+     has all three.
+   - **#2427:** `test/e2e/gisday/public-routes.spec.ts` against 4201: all pass.
+4. `docker logs gisday-api`: count of `ERROR` lines during the run; quote anything new.
+5. `nx run gisday-nest:fit-speaker-photos` **dry run only** against your local uploads with this commit (#2426 changed how it
+   encodes): paste its summary, so the director can write the maintainer's production commands.
+6. Put the local stack back on `origin/development` with the site build, as you found it.
+
+### Then
+
+Report with every PASS or FAIL line, the results above, the API errors and the dry run's summary. Push `STATUS.md` when you
+start and finish. Nothing on GitHub, nothing against production.
+
+---
 
 ## Batch 160 (aggiemap: #2459 under-construction buildings draw as a solid block; 27 October 2026, about 12:12 PM Central, from `work (aggiemap)`)
 
