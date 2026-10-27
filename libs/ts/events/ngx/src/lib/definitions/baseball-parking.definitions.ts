@@ -14,7 +14,6 @@ export enum BASEBALL_PARKING_LAYERS {
   EVENT_SYMBOLS = 'baseball-event-symbols',
   ACCESSIBLE_SYMBOLS = 'baseball-accessible-symbols',
 
-  ACCESSIBLE_LOTS = 'baseball-accessible-lots',
   ACCESSIBLE_SHUTTLES = 'baseball-accessible-shuttles',
 
   EVENT_LOTS = 'baseball-event-lots',
@@ -28,116 +27,12 @@ enum BaseballMapMode {
 
 const eventUrl = Connections.baseballParkingUrl;
 
-export const BaseballParkingColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: BASEBALL_PARKING_LAYERS.EVENT_SYMBOLS,
-    title: 'Baseball Symbols',
-    url: `${eventUrl}/0`,
-    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
-    popupData: {
-      name: '{attributes.type}'
-    },
-    native: {
-      outFields: ['*'],
-      definitionExpression: `event = 'Baseball' AND type <> 'Accessible Shuttle Stop'`
-    }
-  } as unknown as LayerSource,
-
-  {
-    type: 'feature',
-    id: BASEBALL_PARKING_LAYERS.ACCESSIBLE_SYMBOLS,
-    title: 'Baseball Symbols',
-    url: `${eventUrl}/0`,
-    visible: false,
-    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
-    popupData: {
-      name: '{attributes.type}'
-    },
-    native: {
-      outFields: ['*'],
-      definitionExpression: `event = 'Baseball'`
-    }
-  } as unknown as LayerSource,
-
-  {
-    type: 'feature',
-    id: BASEBALL_PARKING_LAYERS.GATE_ROAD_CLOSURE,
-    title: 'Gate/Road Closure',
-    url: `${eventUrl}/2`,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    native: {
-      outFields: ['*'],
-      // The layer holds every sport's gates (90 features, 3 of them baseball's) and the view has no
-      // filter. Filter here so the map doesn't depend on the published unique-value renderer to hide
-      // the other sports' gates - a simple closure renderer would draw all of them.
-      definitionExpression: 'baseball = 1'
-    }
-  },
-  {
-    type: 'feature',
-    id: BASEBALL_PARKING_LAYERS.EVENT_LOTS,
-    title: 'Event Parking Lots',
-    url: `${eventUrl}/3`,
-    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
-    popupData: {
-      name: {
-        field: 'lotname',
-        collapsed: true
-      },
-      description: {
-        field: 'baseballn',
-        collapsed: true
-      }
-    },
-    native: {
-      outFields: ['*'],
-      definitionExpression: `baseball IN ('AnyValid','SeasonPass')`
-    }
-  },
-
-  {
-    type: 'feature',
-    id: BASEBALL_PARKING_LAYERS.ACCESSIBLE_LOTS,
-    title: 'Accessible Parking Lots',
-    url: `${eventUrl}/3`,
-    visible: false,
-    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
-    popupData: {
-      name: {
-        field: 'lotname',
-        collapsed: true
-      },
-      description: {
-        field: 'baseballn',
-        collapsed: true
-      }
-    },
-    native: {
-      outFields: ['*'],
-      definitionExpression: `baseball = 'Permit'`
-    }
-  },
-  {
-    type: 'feature',
-    id: BASEBALL_PARKING_LAYERS.ACCESSIBLE_SHUTTLES,
-    title: 'Accessible Shuttle',
-    url: `${eventUrl}/1`,
-    visible: false,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    native: {
-      outFields: ['*']
-    }
-  }
-];
-
 /**
  * Baseball on the development server (#2209). Its view's layers sit at the same indexes as
  * production's, so only the filters and the popup fields change - see `athleticsDevelopmentSource`.
  *
  * Since the republish (#2453) both maps draw the whole lots layer, `Reserved` lots such as 100j
- * included, so `ACCESSIBLE_LOTS` is not declared here: the map-mode option would turn it on over the
- * same lots and draw them twice. The symbols layer has nothing to split on, so each map's symbols
+ * included, so there is no second lots layer at all: one would draw the same lots a second time. The symbols layer has nothing to split on, so each map's symbols
  * layer reads all of it; the option shows one or the other. The shuttle is declared after the lots so
  * it draws over them.
  */
@@ -267,13 +162,6 @@ export const BaseballParkingOptions: SpecialEventOptions = [
           ]
         },
         {
-          layerId: BASEBALL_PARKING_LAYERS.ACCESSIBLE_LOTS,
-          conversions: [
-            { input: BaseballMapMode.EVENT, propOverrides: { visible: false } },
-            { input: BaseballMapMode.ACCESSIBLE, propOverrides: { visible: true } }
-          ]
-        },
-        {
           layerId: BASEBALL_PARKING_LAYERS.ACCESSIBLE_SHUTTLES,
           conversions: [
             { input: BaseballMapMode.EVENT, propOverrides: { visible: false } },
@@ -288,8 +176,10 @@ export const BaseballParkingOptions: SpecialEventOptions = [
 export const BaseballParkingTs: AggiemapCustomMapConfiguration = {
   configuration: BaseballParkingConfiguration,
   options: BaseballParkingOptions,
-  sources: BaseballParkingColdLayerSources,
-  developmentSources: BaseballParking_DevelopmentLayerSources,
+  // One schema everywhere (#2453, #2465). The athletics services are being republished so that
+  // production carries what development already does, and the old production columns are
+  // abandoned - so this map no longer keeps a production half filtering on `baseball` and `event`.
+  sources: BaseballParking_DevelopmentLayerSources,
   references: BASEBALL_PARKING_LAYERS,
   type: 'general-map',
   discover: {
