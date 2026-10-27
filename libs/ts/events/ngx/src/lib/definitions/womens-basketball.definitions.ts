@@ -11,128 +11,9 @@ import {
 import { EventPopups } from '../modules/popups/popups';
 
 export enum WOMENS_BASKETBALL_LAYERS {
-  VISITOR_KIOSK = 'womens-basketball-visitor-kiosk',
   ACCESSIBLE_PARKING = 'womens-basketball-accessible-parking',
-  PARKING_LOTS = 'womens-basketball-parking-lots',
-  SAFETY_FIRST = 'womens-basketball-safety-first'
+  PARKING_LOTS = 'womens-basketball-parking-lots'
 }
-
-const eventUrl = Connections.womensBasketballUrl;
-
-export const WomensBasketball_Definitions = {
-  VISITOR_KIOSK: {
-    id: WOMENS_BASKETBALL_LAYERS.VISITOR_KIOSK,
-    layerId: WOMENS_BASKETBALL_LAYERS.VISITOR_KIOSK,
-    name: 'Purchase Hourly Visitor Parking',
-    url: `${eventUrl}/0`
-  },
-  ACCESSIBLE_PARKING: {
-    id: WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING,
-    layerId: WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING,
-    name: 'Accessible Parking Spaces',
-    url: `${eventUrl}/1`
-  },
-  PARKING: {
-    id: WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,
-    layerId: WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,
-    name: "Women's Basketball Event Parking Lots",
-    url: `${eventUrl}/2`
-  },
-  SAFETY_FIRST: {
-    id: WOMENS_BASKETBALL_LAYERS.SAFETY_FIRST,
-    layerId: WOMENS_BASKETBALL_LAYERS.SAFETY_FIRST,
-    name: 'Crosswalks',
-    url: `${eventUrl}/3`
-  }
-};
-
-export const WomensBasketball_ColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: WomensBasketball_Definitions.VISITOR_KIOSK.id,
-    title: WomensBasketball_Definitions.VISITOR_KIOSK.name,
-    url: WomensBasketball_Definitions.VISITOR_KIOSK.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: 'Visitor Permit Kiosk',
-      description: 'Purchase your hourly parking permit here.'
-    },
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-
-  {
-    type: 'feature',
-    id: WomensBasketball_Definitions.ACCESSIBLE_PARKING.id,
-    title: WomensBasketball_Definitions.ACCESSIBLE_PARKING.name,
-    url: WomensBasketball_Definitions.ACCESSIBLE_PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.type}',
-      description: `**Event:** {attributes.event}`
-    },
-    visible: true,
-    listMode: 'show',
-    // Overridden (#1992): the service's renderer gives its wheelchair symbol only to `Disabled,Volleyball`
-    // and `Disabled,Basketball`, but the basketball spaces now say `Accessible,Basketball`, so it drew none
-    // of them and the legend entry was empty. Every space the expression below selects is drawn with the
-    // service's own symbol. Remove once the service's renderer names `Accessible`.
-    symbolFromServiceClass: 'Accessible Parking',
-    native: {
-      outFields: ['*'],
-      // The symbol table in the view is campus-wide and unfiltered; basketball accessible spaces
-      // are tagged as either `Accessible` or `Disabled` depending on when they were captured.
-      definitionExpression: `event = 'Basketball' AND type IN ('Accessible', 'Disabled')`
-    }
-  } as unknown as LayerSource,
-
-  {
-    type: 'feature',
-    id: WomensBasketball_Definitions.PARKING.id,
-    title: WomensBasketball_Definitions.PARKING.name,
-    url: WomensBasketball_Definitions.PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'lotname',
-        collapsed: true
-      },
-      description: {
-        field: 'wbasketballn',
-        collapsed: true
-      }
-    },
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*'],
-      // The view's own definition query (`WBasketballN <> '<Null>'`) never filters anything out,
-      // so all 140 campus lots come back without this.
-      definitionExpression: `wbasketball IS NOT NULL`
-    }
-  },
-
-  {
-    type: 'feature',
-    id: WomensBasketball_Definitions.SAFETY_FIRST.id,
-    title: WomensBasketball_Definitions.SAFETY_FIRST.name,
-    url: WomensBasketball_Definitions.SAFETY_FIRST.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: 'Crosswalk',
-      description: `**Location:** {attributes.location}`
-    },
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*'],
-      definitionExpression: "street_use = 'X-Walk'"
-    }
-  }
-];
 
 /**
  * The map's new version, published so far only on the development GIS server (#2001): Accessible Parking
@@ -140,9 +21,9 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
  * hourly visitor parking kiosks and the Safety First crosswalks from it. Titles, symbols and order are the
  * service's own.
  *
- * Drawn wherever the development GIS server is read; production draws the sources above until the service
- * is published there. Then these replace them, and `womensBasketballUrl` and the entry in
- * `DEVELOPMENT_ONLY_SERVICES` go.
+ * Drawn everywhere as of #2465: the production services are being republished to match, so these are the
+ * map's only sources and the hourly visitor parking kiosks and Safety First crosswalks go with the old
+ * ones.
  */
 // #2001 drew these from `womensBasketballParkingUrl`, a development-only service on the GIS server.
 // #2143 replaced it with a hosted view reached through the ordinary connection, which `athleticsHost`
@@ -197,8 +78,10 @@ export const WomensBasketball_Ts: AggiemapCustomMapConfiguration = {
   type: 'special-event',
   configuration: WomensBasketball_Configuration,
   options: WomensBasketball_Options,
-  sources: WomensBasketball_ColdLayerSources,
-  developmentSources: WomensBasketball_DevelopmentLayerSources,
+  // One schema everywhere (#2453, #2465). The athletics services are being republished so that
+  // production carries what development already does, and the old production columns are abandoned.
+  // This was the last of the ten sports still forked.
+  sources: WomensBasketball_DevelopmentLayerSources,
   references: WOMENS_BASKETBALL_LAYERS,
   discover: {
     id: WomensBasketball_Configuration.id,
