@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 30.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 31.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -37,6 +37,68 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
+
+## Batch 30 (aggiemap: #2476 the HSC Dallas campus map; 27 October 2026, about 2:50 PM Central, from `work (aggiemap)`)
+
+After batch 29, which you have finished and which is merged. **From `work (aggiemap)`.** The maintainer
+wants this in today's release: *"Since we are going to have to do a full rebuild anyway, build out the new
+dallas campus maps via a worker computer at the same time."* So it is wanted soon, but a full rebuild is
+happening regardless - do it properly rather than fast.
+
+[#2476](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2476) has everything
+read from the services already. **Do not re-derive it**; check it if you like, but it is right as of
+2:40 PM today:
+
+| | |
+| --- | --- |
+| Basemap | `https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCD/VectorTileServer` |
+| Companion | `https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCD/FeatureServer` |
+| Building layer | **`/4 Structures`** - note the plural, and the index: five campuses now, five different answers |
+| Fields | `bldgname`, `bldgabbr`, `number`, `address`, `city`, `zip` - the same names as Houston Space Institute, so its search source copies across |
+
+### The one thing that is different, and is already decided
+
+**This campus is two places.** `/4` holds six buildings: five together in downtown Dallas (the College of
+Dentistry, around `-96.7820, 32.7890`) and **Dr. M.C. Cooper Dental Clinic about 4 km south-east at
+`-96.74338, 32.76691`**. The published extent is about 60 km wide.
+
+**Build option A from the issue: one map, opening on the College of Dentistry**, with the clinic reachable
+by search and by `?bldg=3608`. That is consistent with every other campus and is what the director
+recommends. The maintainer is being asked whether he wants it framed to hold both (B) or split into two
+maps (C); if the answer changes it, it is a `mapCenter`/`zoom` edit or a second definitions file, and I
+will tell you. **Do not wait for it** - everything else is the same either way.
+
+Choose `zoom` by looking at the map, as Houston Space Institute did (it took 17, not 18, because at 18 its
+one building filled the view). Say what you chose and why.
+
+### The rest is the known pattern
+
+`libs/ts/events/ngx/src/lib/definitions/campus/houston-space-institute.definitions.ts`, exactly as in batch
+29: two URLs in `connections.ts`, a definitions file, the All Maps campus list and its thumbnail, and the
+`campus-thumbnails.spec.ts` and `campus-overlay.spec.ts` enumerations.
+
+**It is live on production, not development-only.** Every campus map is listed on production as of
+[#2473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2473), which merged
+half an hour ago. So **no `visible: false`**, and `campus-thumbnails.spec.ts`'s development-only list stays
+empty - it now expects `[]`, and adding a hidden campus would fail it, which is the point. Nothing goes in
+`DEVELOPMENT_ONLY_SERVICES` either; batch 29's report explains why and you were right about it.
+
+### What to do
+
+1. Branch `feat/2476-hsc-dallas` from `origin/development` - **fetch first**, it has moved a lot today.
+2. Red first, then green, on the two campus enumerations, as in batch 29.
+3. `scripts/check-in-volume.sh feat/2476-hsc-dallas ts-events-ngx,aggiemap-ngx-common,aggiemap-angular`.
+4. Screenshots of the map, and of `/all-maps/campus` showing ten campuses. There is no "before" for a map
+   that did not exist; say so.
+5. One release-note file, `docs/releases/unreleased/2476-hsc-dallas.md`, with its *What to test on dev* row.
+   **`dev.aggiemap.tamu.edu`, not `aggiemap-dev.tamu.edu`** - the second does not exist and the notes check
+   now rejects it. Then `node scripts/collate-release-notes.mjs --check`.
+6. `docs/testing.md`: no row, no number ([#2002](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2002)).
+7. Say **"branch ready: feat/2476-hsc-dallas"**. I open the pull request.
+
+### Don't touch
+
+`fix/2474-gallery-base-layer` and the athletics definitions - both are being changed here right now.
 
 ## Batch 29 (aggiemap: the four new satellite campuses, all on one branch; 27 October 2026, about 12:40 PM Central, from `work (aggiemap)`)
 
