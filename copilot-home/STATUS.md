@@ -17,7 +17,7 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Idle: batch 28 reported; nothing left in the queue.
+copilot-home: started batch 29 (aggiemap: four satellite campuses, one branch) at 12:21 PM Central, 27 October.
 
 ## Finished
 
