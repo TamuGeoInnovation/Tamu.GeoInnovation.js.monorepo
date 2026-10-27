@@ -279,58 +279,6 @@ export function browserSpriteOverrideDeps(): SpriteOverrideDeps {
 }
 
 /**
- * Where a layer's overrides wait until the view can show them.
- *
- * `setSpriteSource` has to be called **after the view has made the layer's layer view**, not when the
- * layer loads. Called at load time it resolves without error and is then thrown away: the layer view
- * reads the published sprite sheet when it is created, and whatever was set before that is lost. That
- * is exactly what happened on 27 October - the override ran, resolved, and the buildings stayed pink.
- *
- * So `makeBaseLayer` parks them here and `applyPendingSpriteOverrides` applies them once the view is
- * ready. A `WeakMap` rather than a property on the layer: the layer is Esri's object, and a key that
- * disappears with it cannot leak or collide with theirs.
- */
-const pending = new WeakMap<object, SpriteOverride[]>();
-
-/** Remembers a layer's sprite overrides for `applyPendingSpriteOverrides` to apply. */
-export function holdSpriteOverrides(layer: object, overrides: SpriteOverride[]): void {
-  if (overrides.length > 0) {
-    pending.set(layer, overrides);
-  }
-}
-
-/**
- * Applies the sprite overrides held for every base layer of the view's basemap, once each layer's layer
- * view exists. Safe to call again: a layer's overrides are applied once and then forgotten.
- */
-export async function applyPendingSpriteOverrides(
-  view: { map?: { basemap?: { baseLayers?: { toArray?: () => unknown[] } } }; whenLayerView: (layer: never) => Promise<unknown> },
-  deps: SpriteOverrideDeps = browserSpriteOverrideDeps()
-): Promise<void> {
-  const layers = view.map?.basemap?.baseLayers?.toArray?.() ?? [];
-
-  await Promise.all(
-    layers.map(async (layer) => {
-      const overrides = pending.get(layer as object);
-
-      if (overrides === undefined) {
-        return;
-      }
-
-      pending.delete(layer as object);
-
-      try {
-        await view.whenLayerView(layer as never);
-        await applySpriteOverrides(layer as esri.VectorTileLayer, overrides, deps);
-      } catch (error) {
-        // A wrong hatch is better than no map: this must never stop a basemap drawing.
-        console.warn(`Could not apply sprite overrides to a basemap layer.`, error);
-      }
-    })
-  );
-}
-
-/**
  * Replaces the named sprites in a vector tile layer's published sheet with hatch tiles drawn here.
  *
  * Call it once the layer has loaded, so `currentStyleInfo.spriteUrl` is known. It resolves when the
