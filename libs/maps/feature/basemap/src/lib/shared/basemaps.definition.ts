@@ -77,8 +77,11 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
           // replaces only the pattern. The checkering is the one the service already draws - what was
           // wrong with it was that it came packaged on an opaque white background, and in pink.
           //
-          // Orange is the campus convention for construction: the Construction Zones layer already
-          // uses rgb(230, 152, 0) for its projects.
+          // Orange is the maintainer's choice (27 October 2026). It is one of the colours the
+          // Construction Zones layer already uses - rgb(230, 152, 0) is its UES Projects class - but
+          // that layer has no single construction colour: SSC is green, TS light blue, TxDOT blue, and
+          // its default "Building Projects" class is red. So where a building under construction sits
+          // inside a Building Projects zone, this orange grid draws under a red diagonal cross.
           //
           // 64 is a power of two as Esri's picture-fill guidance asks, and 16 divides it, which is what
           // lets the lines meet across the tile's edges without a seam.
