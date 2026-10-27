@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 29.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 30.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -37,6 +37,89 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
+
+## Batch 29 (aggiemap: the four new satellite campuses, all on one branch; 27 October 2026, about 12:40 PM Central, from `work (aggiemap)`)
+
+**This is from a third director, `work (aggiemap)`** - the heading above says the file is written by
+`work (security)` and `work (gisday)`; the maintainer has added AggieMap work today. Questions go to
+`work (aggiemap)`.
+
+**Urgent, and it has a deadline today.** The maintainer: *"The four new campuses will be in the release.
+Everything that you have done today will be in the release. It needs to be finished and included in the
+dev release which will go to prod today."* So this wants to be a pushed, checked branch with its images
+in the next couple of hours, not tonight.
+
+Four satellite campuses were published by the GIS team this morning and filed as issues. **All four go on
+one branch**, because they touch the same five files and four branches would conflict with each other in
+every one of them.
+
+| Issue | Campus | Basemap service | Building layer | Centre |
+| --- | --- | --- | --- | --- |
+| [#2455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2455) | Mays City Center | `Hosted/Mays` | **`/0 Buildings`** | `[-95.562044, 29.780445]` |
+| [#2456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2456) | HSC Round Rock | `Hosted/HSCRR` | **`/6 Structure`** | `[-97.647639, 30.557650]` |
+| [#2457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2457) | HSC Kingsville | `Hosted/HSCK` | **`/2 Structure`** | `[-97.882376, 27.527322]` |
+| [#2464](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2464) | HSC Corpus Christi | `Hosted/HSCC` | **`/2 Structure`** | `[-97.361806, 27.709119]` |
+
+Each has `.../VectorTileServer` and `.../FeatureServer` under `https://gis.tamu.edu/arcgis/rest/services/`.
+All public, all answering 200, all 102100 (Web Mercator). **The building-layer indexes are already
+resolved above - do not re-derive them and do not assume one campus's index works for another.** They
+differ, and the names differ too (Kingsville and Corpus Christi publish `Campus Boundary` with a space
+where Round Rock publishes `Campus_Boundary`). Five of seven UES layers would have returned the wrong
+data from exactly this assumption ([#2420](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2420)).
+
+### The model to copy
+
+**`libs/ts/events/ngx/src/lib/definitions/campus/houston-space-institute.definitions.ts`**, merged two days
+ago, is the closest and was written for exactly this shape - a companion with base-data layers and no
+"Buildings". Follow it rather than inventing anything: the `BASEMAP` plus near-invisible clickable
+`PROPERTY` overlay pair, `campusClickOverlayNative`, `EventPopups.CampusBuildingPopupComponent`, the
+search source with `urlQueryParam: 'bldg'` and `urlQueryParamAliases: ['abbrv']`, and
+`containsSearch(['bldgname', 'bldgabbr', 'number'])`.
+
+**Check each campus's field names against its own layer before copying HSI's.** HSI's building layer has
+18 fields; these four have 21. If the names differ, say so in the report - a per-campus field mapping is a
+known cost ([#1140](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1140)), but
+a silently wrong field name is a search box that finds nothing.
+
+The five files each campus touches:
+
+1. `libs/aggiemap/ngx/common/src/lib/connections.ts` - two URLs and two interface members per campus.
+2. `libs/ts/events/ngx/src/lib/definitions/campus/<campus>.definitions.ts` - new, one per campus.
+3. Wherever `HoustonSpaceInstituteTs` is registered (follow it; `all.definitions.ts` and the discover list).
+4. `campus-thumbnails.spec.ts` and `campus-overlay.spec.ts` - their enumerations.
+5. A thumbnail each, `./assets/images/campus/<campus>.jpg`.
+
+### Settled, so you do not have to ask
+
+- **Development-only to start**, as Fort Worth Law School and Houston Space Institute were: `visible: false`
+  in the `discover` block, exactly as HSI has it. Add each to `DEVELOPMENT_ONLY_SERVICES` in
+  `test/smoke/aggiemap/development-only.ts` with the pages that request it.
+- **The map draws the basemap plus its one building layer, nothing else.** Three of these four publish
+  trees, fences, walls, ponds, sidewalks, parking lots, streets, parcels and boundaries as well. The vector
+  tile basemap already draws them; HSI left all five of its extras out for that reason. **Parking lots are
+  the one worth a sentence in your report** - say whether leaving them out loses anything visible.
+- **`zoom`**: look at each map and choose, as HSI did (it took 17, not 18, because at 18 the one building
+  filled the view). Say what you chose and why. Do not calculate it.
+- **Thumbnails**: capture each campus from its own map once it runs, the way the existing campus tiles were
+  made. If a capture is not possible, say so rather than shipping a placeholder.
+
+### What to do
+
+1. Branch `feat/2455-2457-2464-four-campuses` from `origin/development`, push to the fork.
+2. `scripts/check-in-volume.sh feat/2455-2457-2464-four-campuses ts-events-ngx,aggiemap-ngx-common,aggiemap-angular`.
+   Report per-target counts and the exit code.
+3. **Four after screenshots**, one per campus map, 1280 x 900, `timezoneId: 'America/Chicago'`, plus one of
+   `/all-maps/campus` on development showing all nine. There is no meaningful "before" for a new map; say so.
+   Commit to `docs/screenshots/2455-2457-2464-four-campuses/`.
+4. **One release-note file**, `docs/releases/unreleased/2455-four-campuses.md`, with its *What to test on dev*
+   row. **Do not edit `unreleased.md`** ([#2037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2037)).
+5. **`docs/testing.md`: no row, no number change** - this adds no smoke spec ([#2002](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2002)).
+6. Say **"branch ready: feat/2455-2457-2464-four-campuses"**. I open the pull request; you open none.
+
+### Don't touch
+
+`fix/2459-construction-hatch` (work-lab-leila batch 160), `fix/2422-gisday-speaker-photo-preview`,
+`fix/2460-gisday-vgi-dates`, `docs/2451-dev-hostname`.
 
 ## Batch 28 (gisday: #2460, the VGI competition runs 14-20 November, winners at lunch on Friday 20 November; a branch with screenshots; 27 October 2026, about 11:50 AM Central, from `work (gisday)`)
 
