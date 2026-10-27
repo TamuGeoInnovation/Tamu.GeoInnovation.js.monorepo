@@ -6,7 +6,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running.** Last batch done: 5.
+**Batch 6** (aggiemap: #2472, the dev server stalls at the dependency optimizer; an investigation), started 2:25 PM Central, Tuesday 27 October 2026, from `work (aggiemap)`.
+Next update by 3:30 PM Central.
 
 ## Finished
 - **Batch 5** (aggiemap; report `home/reports/2026-10-27-5.md`): #2453. branch ready: `fix/2453-baseball-republish` at `934da19f2` on the fork. Spec red then green, check exit 0, before/after committed. One question for the director.
