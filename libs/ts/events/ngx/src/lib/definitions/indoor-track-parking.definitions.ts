@@ -17,23 +17,14 @@ import { EventPopups } from '../modules/popups/popups';
 // the team bus area is the building's own footprint, so with the building above it the area is drawn and
 // then completely covered, and switching it on or off changes nothing on the map (#1993).
 export enum INDOOR_TRACK_PARKING_LAYERS {
-  VISITOR_KIOSK = 'indoor-track-parking-visitor-kiosk',
   ACCESSIBLE_PARKING = 'indoor-track-parking-accessible-parking',
   PARKING_LOTS = 'indoor-track-parking-lots',
-  TEAM_BUS_PARKING = 'indoor-track-parking-team-bus',
   BUILDING = 'indoor-track-parking-building',
-  SAFETY_FIRST = 'indoor-track-parking-safety-first'
 }
 
 const eventUrl = Connections.indoorTrackParkingUrl;
 
 export const IndoorTrackParkingDefinitions = {
-  VISITOR_KIOSK: {
-    id: INDOOR_TRACK_PARKING_LAYERS.VISITOR_KIOSK,
-    layerId: INDOOR_TRACK_PARKING_LAYERS.VISITOR_KIOSK,
-    name: 'Purchase Hourly Visitor Parking',
-    url: `${eventUrl}/0`
-  },
   ACCESSIBLE_PARKING: {
     id: INDOOR_TRACK_PARKING_LAYERS.ACCESSIBLE_PARKING,
     layerId: INDOOR_TRACK_PARKING_LAYERS.ACCESSIBLE_PARKING,
@@ -51,38 +42,10 @@ export const IndoorTrackParkingDefinitions = {
     layerId: INDOOR_TRACK_PARKING_LAYERS.BUILDING,
     name: 'Indoor Track Building',
     url: `${eventUrl}/3`
-  },
-  SAFETY_FIRST: {
-    id: INDOOR_TRACK_PARKING_LAYERS.SAFETY_FIRST,
-    layerId: INDOOR_TRACK_PARKING_LAYERS.SAFETY_FIRST,
-    name: 'Safety First',
-    url: `${eventUrl}/4`
-  },
-  TEAM_BUS_PARKING: {
-    id: INDOOR_TRACK_PARKING_LAYERS.TEAM_BUS_PARKING,
-    layerId: INDOOR_TRACK_PARKING_LAYERS.TEAM_BUS_PARKING,
-    name: 'Team Bus Parking',
-    url: `${eventUrl}/5`
   }
 };
 
 export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: IndoorTrackParkingDefinitions.VISITOR_KIOSK.id,
-    title: IndoorTrackParkingDefinitions.VISITOR_KIOSK.name,
-    url: IndoorTrackParkingDefinitions.VISITOR_KIOSK.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: 'Visitor Permit Kiosk',
-      description: 'Purchase your hourly parking permit here.'
-    },
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
   {
     type: 'feature',
     id: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.id,
@@ -142,39 +105,6 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
       outFields: ['*']
     }
   },
-  {
-    type: 'feature',
-    id: IndoorTrackParkingDefinitions.SAFETY_FIRST.id,
-    title: IndoorTrackParkingDefinitions.SAFETY_FIRST.name,
-    url: IndoorTrackParkingDefinitions.SAFETY_FIRST.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*'],
-      popupEnabled: false,
-      definitionExpression: `street_use = 'X-Walk'`
-    }
-  } as unknown as LayerSource,
-  {
-    type: 'feature',
-    id: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.id,
-    url: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.name,
-      description: '{attributes.sp_sh_notes}'
-    },
-    visible: true,
-    listMode: 'show',
-    // Overridden (#1993): the service's renderer has symbols for `Team Drop Off` and `Team Bus Parking`,
-    // but the layer's one area is type `SPORTS`, so it was not drawn. The layer is the team bus parking,
-    // so it is drawn with the service's `Team Bus Parking` symbol. A drop-off area added later would be
-    // drawn the same way. Remove once the service's renderer and data agree.
-    symbolFromServiceClass: 'Team Bus Parking',
-    native: {
-      outFields: ['*']
-    }
-  }
 ];
 
 /**
@@ -226,8 +156,11 @@ export const IndoorTrackParkingTs: AggiemapCustomMapConfiguration = {
   type: 'general-map',
   configuration: IndoorTrackParkingConfiguration,
   options: IndoorTrackParkingOptions,
-  sources: IndoorTrackParkingColdLayerSources,
-  developmentSources: IndoorTrackParking_DevelopmentLayerSources,
+  // One schema everywhere (#2453). The athletics services are being republished so that production
+  // carries what development already does, and the old production columns are abandoned - so the
+  // two-schema fork this map carried is gone and every environment reads these sources. The array
+  // the old production sources lived in stays only where these are derived from it.
+  sources: IndoorTrackParking_DevelopmentLayerSources,
   references: INDOOR_TRACK_PARKING_LAYERS,
   discover: {
     id: IndoorTrackParkingConfiguration.id,

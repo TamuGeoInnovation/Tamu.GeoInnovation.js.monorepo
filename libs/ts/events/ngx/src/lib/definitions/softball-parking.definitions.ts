@@ -13,21 +13,13 @@ import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 export enum SOFTBALL_PARKING_LAYERS {
-  VISITOR_KIOSK = 'softball-parking-visitor-kiosk',
   ACCESSIBLE_PARKING = 'softball-parking-accessible-parking',
   PARKING_LOTS = 'softball-parking-lots',
-  SAFETY_FIRST = 'softball-parking-safety-first'
 }
 
 const eventUrl = Connections.softballParkingUrl;
 
 export const SoftballParkingDefinitions = {
-  VISITOR_KIOSK: {
-    id: SOFTBALL_PARKING_LAYERS.VISITOR_KIOSK,
-    layerId: SOFTBALL_PARKING_LAYERS.VISITOR_KIOSK,
-    name: 'Purchase Hourly Visitor Parking',
-    url: `${eventUrl}/0`
-  },
   ACCESSIBLE_PARKING: {
     id: SOFTBALL_PARKING_LAYERS.ACCESSIBLE_PARKING,
     layerId: SOFTBALL_PARKING_LAYERS.ACCESSIBLE_PARKING,
@@ -39,32 +31,10 @@ export const SoftballParkingDefinitions = {
     layerId: SOFTBALL_PARKING_LAYERS.PARKING_LOTS,
     name: 'Softball Event Parking Lots',
     url: `${eventUrl}/2`
-  },
-  SAFETY_FIRST: {
-    id: SOFTBALL_PARKING_LAYERS.SAFETY_FIRST,
-    layerId: SOFTBALL_PARKING_LAYERS.SAFETY_FIRST,
-    name: 'Safety First',
-    url: `${eventUrl}/3`
   }
 };
 
 export const SoftballParkingColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: SoftballParkingDefinitions.VISITOR_KIOSK.id,
-    title: SoftballParkingDefinitions.VISITOR_KIOSK.name,
-    url: SoftballParkingDefinitions.VISITOR_KIOSK.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: 'Visitor Permit Kiosk'
-    },
-    visible: true,
-    listMode: 'show',
-    layerIndex: 62,
-    native: {
-      outFields: ['*']
-    }
-  },
   {
     type: 'feature',
     id: SoftballParkingDefinitions.ACCESSIBLE_PARKING.id,
@@ -101,20 +71,6 @@ export const SoftballParkingColdLayerSources: LayerSource[] = [
       outFields: ['*']
     }
   },
-  {
-    type: 'feature',
-    id: SoftballParkingDefinitions.SAFETY_FIRST.id,
-    title: SoftballParkingDefinitions.SAFETY_FIRST.name,
-    url: SoftballParkingDefinitions.SAFETY_FIRST.url,
-    visible: true,
-    listMode: 'show',
-    layerIndex: 0,
-    native: {
-      outFields: ['*'],
-      popupEnabled: false,
-      definitionExpression: `street_use = 'X-Walk'`
-    }
-  } as unknown as LayerSource
 ];
 
 /**
@@ -181,8 +137,11 @@ export const SoftballParkingTs: AggiemapCustomMapConfiguration = {
   type: 'general-map',
   configuration: SoftballParkingConfiguration,
   options: SoftballParkingOptions,
-  sources: SoftballParkingColdLayerSources,
-  developmentSources: SoftballParking_DevelopmentLayerSources,
+  // One schema everywhere (#2453). The athletics services are being republished so that production
+  // carries what development already does, and the old production columns are abandoned - so the
+  // two-schema fork this map carried is gone and every environment reads these sources. The array
+  // the old production sources lived in stays only where these are derived from it.
+  sources: SoftballParking_DevelopmentLayerSources,
   references: SOFTBALL_PARKING_LAYERS,
   discover: {
     id: SoftballParkingConfiguration.id,

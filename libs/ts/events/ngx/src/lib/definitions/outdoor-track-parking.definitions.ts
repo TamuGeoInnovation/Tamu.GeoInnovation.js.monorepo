@@ -13,21 +13,13 @@ import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 export enum OUTDOOR_TRACK_PARKING_LAYERS {
-  VISITOR_KIOSK = 'outdoor-track-parking-visitor-kiosk',
   ACCESSIBLE_PARKING = 'outdoor-track-parking-accessible-parking',
   PARKING_LOTS = 'outdoor-track-parking-lots',
-  SAFETY_FIRST = 'outdoor-track-parking-safety-first'
 }
 
 const eventUrl = Connections.outdoorTrackParkingUrl;
 
 export const OutdoorTrackParkingDefinitions = {
-  VISITOR_KIOSK: {
-    id: OUTDOOR_TRACK_PARKING_LAYERS.VISITOR_KIOSK,
-    layerId: OUTDOOR_TRACK_PARKING_LAYERS.VISITOR_KIOSK,
-    name: 'Purchase Hourly Visitor Parking',
-    url: `${eventUrl}/0`
-  },
   ACCESSIBLE_PARKING: {
     id: OUTDOOR_TRACK_PARKING_LAYERS.ACCESSIBLE_PARKING,
     layerId: OUTDOOR_TRACK_PARKING_LAYERS.ACCESSIBLE_PARKING,
@@ -39,32 +31,10 @@ export const OutdoorTrackParkingDefinitions = {
     layerId: OUTDOOR_TRACK_PARKING_LAYERS.PARKING_LOTS,
     name: 'Outdoor Track Event Parking Lots',
     url: `${eventUrl}/2`
-  },
-  SAFETY_FIRST: {
-    id: OUTDOOR_TRACK_PARKING_LAYERS.SAFETY_FIRST,
-    layerId: OUTDOOR_TRACK_PARKING_LAYERS.SAFETY_FIRST,
-    name: 'Safety First',
-    url: `${eventUrl}/3`
   }
 };
 
 export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: OutdoorTrackParkingDefinitions.VISITOR_KIOSK.id,
-    title: OutdoorTrackParkingDefinitions.VISITOR_KIOSK.name,
-    url: OutdoorTrackParkingDefinitions.VISITOR_KIOSK.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: 'Visitor Permit Kiosk'
-    },
-    visible: true,
-    listMode: 'show',
-    layerIndex: 23,
-    native: {
-      outFields: ['*']
-    }
-  },
   {
     type: 'feature',
     id: OutdoorTrackParkingDefinitions.ACCESSIBLE_PARKING.id,
@@ -104,20 +74,6 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
       outFields: ['*']
     }
   },
-  {
-    type: 'feature',
-    id: OutdoorTrackParkingDefinitions.SAFETY_FIRST.id,
-    title: OutdoorTrackParkingDefinitions.SAFETY_FIRST.name,
-    url: OutdoorTrackParkingDefinitions.SAFETY_FIRST.url,
-    visible: true,
-    listMode: 'show',
-    layerIndex: 20,
-    native: {
-      outFields: ['*'],
-      popupEnabled: false,
-      definitionExpression: `street_use = 'X-Walk'`
-    }
-  } as unknown as LayerSource
 ];
 
 /**
@@ -167,8 +123,11 @@ export const OutdoorTrackParkingTs: AggiemapCustomMapConfiguration = {
   type: 'general-map',
   configuration: OutdoorTrackParkingConfiguration,
   options: OutdoorTrackParkingOptions,
-  sources: OutdoorTrackParkingColdLayerSources,
-  developmentSources: OutdoorTrackParking_DevelopmentLayerSources,
+  // One schema everywhere (#2453). The athletics services are being republished so that production
+  // carries what development already does, and the old production columns are abandoned - so the
+  // two-schema fork this map carried is gone and every environment reads these sources. The array
+  // the old production sources lived in stays only where these are derived from it.
+  sources: OutdoorTrackParking_DevelopmentLayerSources,
   references: OUTDOOR_TRACK_PARKING_LAYERS,
   discover: {
     id: OutdoorTrackParkingConfiguration.id,

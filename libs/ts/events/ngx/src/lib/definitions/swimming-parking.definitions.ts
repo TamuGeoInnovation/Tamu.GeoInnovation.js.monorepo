@@ -13,21 +13,13 @@ import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 export enum SWIMMING_PARKING_LAYERS {
-  VISITOR_KIOSK = 'swimming-parking-visitor-kiosk',
   ACCESSIBLE_PARKING = 'swimming-parking-accessible-parking',
   PARKING_LOTS = 'swimming-parking-lots',
-  SAFETY_FIRST = 'swimming-parking-safety-first'
 }
 
 const eventUrl = Connections.swimmingParkingUrl;
 
 export const SwimmingParkingDefinitions = {
-  VISITOR_KIOSK: {
-    id: SWIMMING_PARKING_LAYERS.VISITOR_KIOSK,
-    layerId: SWIMMING_PARKING_LAYERS.VISITOR_KIOSK,
-    name: 'Purchase Hourly Visitor Parking',
-    url: `${eventUrl}/0`
-  },
   ACCESSIBLE_PARKING: {
     id: SWIMMING_PARKING_LAYERS.ACCESSIBLE_PARKING,
     layerId: SWIMMING_PARKING_LAYERS.ACCESSIBLE_PARKING,
@@ -39,33 +31,10 @@ export const SwimmingParkingDefinitions = {
     layerId: SWIMMING_PARKING_LAYERS.PARKING_LOTS,
     name: 'Swimming Event Parking Lots',
     url: `${eventUrl}/2`
-  },
-  SAFETY_FIRST: {
-    id: SWIMMING_PARKING_LAYERS.SAFETY_FIRST,
-    layerId: SWIMMING_PARKING_LAYERS.SAFETY_FIRST,
-    name: 'Safety First',
-    url: `${eventUrl}/3`
   }
 };
 
 export const SwimmingParkingColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: SwimmingParkingDefinitions.VISITOR_KIOSK.id,
-    title: SwimmingParkingDefinitions.VISITOR_KIOSK.name,
-    url: SwimmingParkingDefinitions.VISITOR_KIOSK.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: 'Visitor Permit Kiosk',
-      description: 'Purchase your hourly parking permit here.'
-    },
-    visible: true,
-    listMode: 'show',
-    layerIndex: 62,
-    native: {
-      outFields: ['*']
-    }
-  } as unknown as LayerSource,
   {
     type: 'feature',
     id: SwimmingParkingDefinitions.ACCESSIBLE_PARKING.id,
@@ -102,20 +71,6 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
       outFields: ['*']
     }
   } as unknown as LayerSource,
-  {
-    type: 'feature',
-    id: SwimmingParkingDefinitions.SAFETY_FIRST.id,
-    title: SwimmingParkingDefinitions.SAFETY_FIRST.name,
-    url: SwimmingParkingDefinitions.SAFETY_FIRST.url,
-    visible: true,
-    listMode: 'show',
-    layerIndex: 59,
-    native: {
-      outFields: ['*'],
-      popupEnabled: false,
-      definitionExpression: `street_use = 'X-Walk'`
-    }
-  } as unknown as LayerSource
 ];
 
 /**
@@ -165,8 +120,11 @@ export const SwimmingParkingTs: AggiemapCustomMapConfiguration = {
   type: 'general-map',
   configuration: SwimmingParkingConfiguration,
   options: SwimmingParkingOptions,
-  sources: SwimmingParkingColdLayerSources,
-  developmentSources: SwimmingParking_DevelopmentLayerSources,
+  // One schema everywhere (#2453). The athletics services are being republished so that production
+  // carries what development already does, and the old production columns are abandoned - so the
+  // two-schema fork this map carried is gone and every environment reads these sources. The array
+  // the old production sources lived in stays only where these are derived from it.
+  sources: SwimmingParking_DevelopmentLayerSources,
   references: SWIMMING_PARKING_LAYERS,
   discover: {
     id: SwimmingParkingConfiguration.id,

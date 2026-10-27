@@ -112,8 +112,11 @@ export const TennisParkingTs: AggiemapCustomMapConfiguration = {
   type: 'general-map',
   configuration: TennisParkingConfiguration,
   options: TennisParkingOptions,
-  sources: TennisParkingColdLayerSources,
-  developmentSources: TennisParking_DevelopmentLayerSources,
+  // One schema everywhere (#2453). The athletics services are being republished so that production
+  // carries what development already does, and the old production columns are abandoned - so the
+  // two-schema fork this map carried is gone and every environment reads these sources. The array
+  // the old production sources lived in stays only where these are derived from it.
+  sources: TennisParking_DevelopmentLayerSources,
   references: TENNIS_PARKING_LAYERS,
   discover: {
     id: TennisParkingConfiguration.id,

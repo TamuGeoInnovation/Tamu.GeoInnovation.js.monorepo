@@ -184,62 +184,12 @@ describe('EventService', () => {
   });
 });
 
-/**
- * Indoor Track Parking draws Team Bus Parking above the Indoor Track Building (#2059).
- *
- * The team bus area is the building's own footprint. `drawEvent` hands the map service a map's layers in
- * the reverse of its `references` order, and the map service adds each in turn, so each is drawn above
- * the ones before it. The definition's `layerIndex` values meant to put the area above the building, but
- * a `layerIndex` is a position in the map's layer list and the list held about a dozen layers when these
- * were added, so every one was simply added on top: the area went first and the building covered it.
+/*
+ * The Indoor Track draw-order test went with Team Bus Parking (#2453). The athletics services now
+ * carry one schema, the development one, and its Indoor Track view publishes three layers: the
+ * accessible spaces, the building and the event lots. Team Bus Parking is not among them, so the
+ * order it was drawn in is no longer a thing the map can get wrong.
  */
-describe('EventService, the order Indoor Track Parking draws its layers in', () => {
-  it('adds Team Bus Parking after the building, and at no fixed position, so it is drawn above it', async () => {
-    const loaded: LayerSource[] = [];
-
-    TestBed.resetTestingModule().configureTestingModule({
-      providers: [
-        { provide: EnvironmentService, useValue: {} },
-        { provide: EsriModuleProviderService, useValue: {} },
-        { provide: LayerSourcesService, useValue: {} },
-        {
-          provide: EsriMapService,
-          useValue: { store: NEVER, loadLayers: async (sources: LayerSource[]) => void loaded.push(...sources) }
-        },
-        {
-          provide: EventSettingsService,
-          useValue: {
-            eventConfiguration: () => IndoorTrackParkingTs,
-            eventOptions: () => IndoorTrackParkingTs.options,
-            settings: () => ({}),
-            getVisibleOptions: () => [],
-            eventLayerReferences: () => IndoorTrackParkingTs.references,
-            eventLayerSources: () => IndoorTrackParkingTs.sources
-          }
-        },
-        EventService
-      ]
-    });
-
-    const eventService = TestBed.inject(EventService);
-    Object.assign(eventService, {
-      applyExclusiveLayerVisibility: () => undefined,
-      selectFeatureFromUrl: async () => undefined,
-      applySelectedChoiceView: async () => undefined,
-      flashFocusFeature: async () => undefined
-    });
-    await eventService.drawEvent();
-
-    const ids = loaded.map((source) => source.id);
-
-    expect(ids).toContain(INDOOR_TRACK_PARKING_LAYERS.BUILDING);
-    expect(ids.indexOf(INDOOR_TRACK_PARKING_LAYERS.TEAM_BUS_PARKING)).toBeGreaterThan(
-      ids.indexOf(INDOOR_TRACK_PARKING_LAYERS.BUILDING)
-    );
-    // A fixed position would put a layer wherever the map's list happened to have room on that load.
-    expect(loaded.filter((source) => source.layerIndex !== undefined).map((source) => source.id)).toEqual([]);
-  });
-});
 
 /**
  * A link selects only a feature the map draws (#1954).
