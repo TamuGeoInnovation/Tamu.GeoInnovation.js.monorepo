@@ -24,6 +24,94 @@ failures are recorded below so nobody re-derives them.
 **What to do:** keep your watcher running, take batches from this file as before, and put any AggieMap
 question in your report under **Questions for the director (aggiemap)** rather than acting on it.
 
+## Batch 5 (aggiemap: #2453 Megan's baseball republish - the blocking issue for today's release; 27 October 2026, about 12:50 PM Central, from `work (aggiemap)`)
+
+**Urgent, and it blocks a production release today.** The maintainer abandoned the dev build now deployed
+because of this; the next dev build fixes it and goes to production today. Questions go to
+`work (aggiemap)`.
+
+[#2453](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2453), filed by
+`meganmcmullen-rgb` this morning: *"New republish of baseball threw off our maps for parking/accessible
+parking."* What she asks for, in her words:
+
+1. *"Baseball parking map should have all layers (and lots, right now 100j is missing) except the
+   accessible shuttle route"*
+2. *"Baseball accessible should have all layers, including the accessible shuttle route, which should be
+   on top of the parking lots"*
+
+and her symptoms: *"Accessible baseball parking is missing icons, has lots doubled, and the shuttle under
+the reserved 100j lot."*
+
+### The cause, already traced - do not re-derive it
+
+Everything is in **`libs/ts/events/ngx/src/lib/definitions/baseball-parking.definitions.ts`**, in
+`BaseballParking_DevelopmentLayerSources`. Measured against the live development service
+(`gis.dev.tamu.edu/.../Hosted/BaseballParking_view/FeatureServer`) at 12:45 PM Central today:
+
+- **`/3 Baseball Event Parking Lots` holds 10 lots**: 8 with `type = 'Event Parking'` and **2 with
+  `type = 'Reserved'` - Lot 100j and Lot 102**.
+- `EVENT_LOTS`'s development source passes `onlyType: 'Event Parking'`, so the parking map draws 8 of the
+  10. **That is Megan's missing 100j.**
+- **`/0 Baseball Symbols` has no `type` field and no `event` field** on development - it carries the generic
+  marker schema (`name`, `description`, `category_type` and so on). That is why the development source list
+  has only one symbols layer, and the file's comment says so.
+- But `BaseballParkingOptions` still names `ACCESSIBLE_SYMBOLS`, and it turns `EVENT_SYMBOLS` **off** in
+  accessible mode. So on development the accessible map hides the only symbols layer that exists and shows
+  one that does not. **That is Megan's missing icons.**
+- In `BaseballParking_DevelopmentLayerSources`, `ACCESSIBLE_SHUTTLES` is declared **before** `EVENT_LOTS`
+  and `ACCESSIBLE_LOTS`, so the lots draw over it. **That is Megan's shuttle under the 100j lot.**
+- `EVENT_LOTS` is visible in **both** modes while `ACCESSIBLE_LOTS` is visible in accessible mode. Once
+  `EVENT_LOTS` carries all ten, the two Reserved lots are drawn by both. **That is Megan's doubled lots,
+  and fixing the first point alone makes it worse.**
+
+### What to do
+
+Four changes in that one file, then prove them:
+
+1. `EVENT_LOTS`'s development source: **drop `onlyType`** so it draws all ten lots.
+2. **Add an `ACCESSIBLE_SYMBOLS` development source** from `/0`, unfiltered, the same as `EVENT_SYMBOLS` -
+   the layer has nothing to split on. Replace the file's comment that says the two "become one", because
+   that is what broke it.
+3. **Move `ACCESSIBLE_SHUTTLES` after both lots layers** in the array, so the shuttle draws on top.
+4. **Hide `ACCESSIBLE_LOTS` in both modes** on development, since `EVENT_LOTS` now carries every lot. Keep
+   the layer declared - production still uses it.
+
+**Say in the report whether the parking map now excludes the shuttle route** (Megan's point 1): the option
+already sets `ACCESSIBLE_SHUTTLES` invisible in event mode, so it should, but it needs looking at rather
+than assuming.
+
+### The thing to report and not act on
+
+**The production side of this file is a separate problem and it lands today.**
+`BaseballParkingColdLayerSources` filters on `baseball IN ('AnyValid','SeasonPass')`, `baseball = 'Permit'`
+and `event = 'Baseball' AND type <> 'Accessible Shuttle Stop'` - columns the republished development
+service does not have. Ten athletics definitions carry this fork. When the production services are
+republished to match development, **every one of those production filters stops matching**. Do not change
+them in this batch; say in your report what you see, so the director can put it to the maintainer.
+
+### Proving it
+
+- **Red first.** `libs/ts/events/ngx/src/lib/definitions/baseball-parking.lots.spec.ts` does not exist, but
+  `football-parking.lots.spec.ts` does and is the model. Write a spec that fails on the unfixed definitions
+  for the lot count and the accessible symbols source, then passes. Every bug gets a test (CLAUDE.md).
+- `scripts/check-in-volume.sh fix/2453-baseball-republish ts-events-ngx,aggiemap-angular`. Per-target counts
+  and the exit code.
+- **Before and after**, on the dev server against this branch, 1280 x 900, `timezoneId: 'America/Chicago'`:
+  the Baseball Event Map and the Accessible Baseball Map, each before and after. The after shots must show
+  Lot 100j on the parking map, icons on the accessible map, the shuttle drawn over the lots, and no doubled
+  lot. Commit to `docs/screenshots/2453-baseball-republish/`.
+- One release-note file `docs/releases/unreleased/2453-baseball-republish.md` with its *What to test on dev*
+  row. **Do not edit `unreleased.md`** ([#2037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2037)).
+- `docs/testing.md`: no row, no number change - this adds a unit spec, not a smoke spec.
+
+Branch `fix/2453-baseball-republish` from `origin/development`, push to the fork, and say
+**"branch ready: fix/2453-baseball-republish"**. I open the pull request.
+
+### Don't touch
+
+`fix/2459-construction-hatch` (work-lab-leila batch 160), `feat/2455-2457-2464-four-campuses` (copilot-home
+batch 29), and the other nine athletics definition files.
+
 ## Batch 4 (security: #2425 - push the clean branch under a new name; 26 October 2026, about 3:40 PM Central, from `work (security)`)
 
 **Start now. A few minutes.** Your batch 3 question 1: **the maintainer chose B** (26 October). Push your rewritten branch
