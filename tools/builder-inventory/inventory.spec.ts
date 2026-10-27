@@ -608,7 +608,7 @@ function renderMarkdown(maps: MapInventory[]): string {
     const captured = map.destinations.filter((d) => d.shareUrl).length;
 
     lines.push(
-      `${map.destinations.length} path(s), ${captured} with a share URL${map.truncated ? ' — **truncated by the safety cap**' : ''}.`,
+      `${map.destinations.length} path(s), ${captured} with a share URL${map.truncated ? ' - **truncated by the safety cap**' : ''}.`,
       '',
       '| Selection | Share URL | Layers | With features | Failures |',
       '| --- | --- | --- | --- | --- |'
@@ -620,7 +620,7 @@ function renderMarkdown(maps: MapInventory[]): string {
         ? `**${destination.error}**`
         : destination.layerFailures.length > 0
         ? destination.layerFailures.join('; ')
-        : '—';
+        : '-';
 
       const target = destination.shareTarget ?? destination.shareUrl;
 

@@ -65,7 +65,7 @@ export class AllMapsComponent implements OnInit {
   /**
    * Dev-only listing of "kiosk" (sidebar-free, preset-layer) maps, surfaced here with their full,
    * shareable URLs so the team embedding them (e.g. in a mobile app webview) can copy them. Never
-   * shown in prod and never searchable, even in dev — see `DiscoveryService.getKioskDiscoverApplications`.
+   * shown in prod and never searchable, even in dev - see `DiscoveryService.getKioskDiscoverApplications`.
    */
   public kioskApplications: Array<InternalDiscoverApplication & { url: string }> = [];
 

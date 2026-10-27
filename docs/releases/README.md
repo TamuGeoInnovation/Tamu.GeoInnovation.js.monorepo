@@ -8,13 +8,13 @@ A **dated** file lands on `development` when the release reaches production, not
 file named for a date reads as a record of something that shipped. It is *written* before, though -
 see [Cutting a release](#cutting-a-release).
 
-Work in progress lives in [`unreleased/`](unreleased/README.md) — **one file per change**, collated
+Work in progress lives in [`unreleased/`](unreleased/README.md) - **one file per change**, collated
 into `unreleased.md` at release. That file still holds everything written before the directory existed
 and is not migrated. The directory exists because entries added at the same line of one file conflict
 on every parallel pull request ([#2037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2037)).
 
 [`unreleased.md`](unreleased.md) collects what has merged since
-the last production release. It is not assembled from memory at the end — one release was
+the last production release. It is not assembled from memory at the end - one release was
 reconstructed afterwards and four changes were nearly missed, including a data-correctness fix that
 mattered more than the features around it.
 
@@ -75,7 +75,7 @@ users, so it is the file most likely to make a claim a reader cannot verify. If 
 dev, say so; if it has not been built anywhere yet, say that too.
 
 This repository is public, so every file here has a permanent URL that anyone can read
-without an account. That is the point — release notes are for the people who asked for the
+without an account. That is the point - release notes are for the people who asked for the
 work and the people who test it, not only for the people who wrote it. Sharing a link should
 never require the reader to sign in to anything.
 
@@ -102,7 +102,7 @@ deployable build existed the next morning until one was queued.
 **A pull request build is not deployable, and not only by convention.** `IS_DEPLOYABLE` in
 `azure-pipelines.yml` is true for `development` and `master` only, and those builds compile *every*
 non-excluded project. Other branches build only the projects Nx says are affected, so their artifact
-is genuinely incomplete — there is nothing to deploy, rather than a rule saying you may not.
+is genuinely incomplete - there is nothing to deploy, rather than a rule saying you may not.
 
 **One run produces both artifacts.** The Build stage calls the same template twice, with
 `buildType: development` and `buildType: production`, so `js-monorepo-development` and
@@ -121,13 +121,13 @@ Takes a build's artifact and puts it on a server. Stages:
 | `GIS-1P Production` | `aggiemap.tamu.edu` |
 | `Production (OLD)` | retired |
 
-Each stage is approved separately. **Create the release after its build has finished** — a release
+Each stage is approved separately. **Create the release after its build has finished** - a release
 created against a build still running is asking for an artifact that does not exist yet. **Promoting to
 production means approving the next stage of the same release**, not making a new build: the point is
 to ship the artifact that was tested.
 
 `G_TAG` is substituted **during the release, per stage**, by a step that rewrites `index.html`. Not in
-the build, and not at container start — `index.html` ships the literal `G_TAG` placeholder, which is
+the build, and not at container start - `index.html` ships the literal `G_TAG` placeholder, which is
 why a local dev server serves it unsubstituted. The values come from variable groups: **65
 `Aggiemap Prod`** and **58 `Aggiemap Dev`**.
 
@@ -150,7 +150,7 @@ why 57 production tests were failing. Both times the bundle was the thing that a
 
 | | |
 | --- | --- |
-| Queue builds, approve release stages | Daniel — Azure DevOps write access is deliberately not shared |
+| Queue builds, approve release stages | Daniel - Azure DevOps write access is deliberately not shared |
 | Verify, test, tag, write the record | whoever is running the release |
 
 ## Cutting a release
@@ -314,7 +314,7 @@ Every map, both viewports, written under the release tag:
 `<baselines>/production/prod-2026-10-06-2/`. Do the same for dev after step 3.
 
 **Capture after the deploy, not before.** A "before" set is only worth having if it was taken while
-it was still true, and the set that matters for the next release is this one — today's production, as
+it was still true, and the set that matters for the next release is this one - today's production, as
 shipped. Capturing ahead of a change photographs maps that are about to be restyled.
 
 The release tag is the key because that is the question people ask months later: what did this map
@@ -322,7 +322,7 @@ look like in that release. [`tools/visual-baselines`](../../tools/visual-baselin
 the layout, and why the manifest records the bundle hash as well as the tag.
 
 Baselines live outside the repository and are per machine. They are evidence for review, not a
-check that gates anything — nothing fails if a set is missing, and the suite is what gates a release.
+check that gates anything - nothing fails if a set is missing, and the suite is what gates a release.
 
 ### What the tags are for
 
@@ -405,7 +405,7 @@ it, what behaves differently, and what still needs a decision. Narrative, not te
 
 These are **release notes**, not a changelog. A changelog is a terse, developer-facing list of
 what changed between versions. If this repository ever wants one, it belongs in a
-`CHANGELOG.md` at the root and should stay separate — mixing the two audiences is what makes
+`CHANGELOG.md` at the root and should stay separate - mixing the two audiences is what makes
 both go stale.
 
 There is also an in-app changelog at

@@ -82,7 +82,7 @@ export const DCBushSchoolSearchSources: SearchSource[] = [
 export const DCBushSchoolConfiguration: EventConfiguration = {
   id: 'dc-bush-school',
   name: 'DC / Bush School',
-  applicationName: 'Aggie Map — DC / Bush School',
+  applicationName: 'Aggie Map - DC / Bush School',
   shortApplicationName: 'DC / Bush School',
   introductionText: 'Map of the Texas A&M Bush School of Government & Public Service campus in Washington, D.C.',
   eventDates: [],

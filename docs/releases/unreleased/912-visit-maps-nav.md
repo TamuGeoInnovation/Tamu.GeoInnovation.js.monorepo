@@ -7,8 +7,8 @@ testOnDev: |
 
 ### Every Maps page offers the Visit Maps row
 
-The Visit Maps row — the icon tiles for Parking, Athletics Events, Campus Events, Operations, Campus Maps and
-the Anniversary map — existed only on the All Maps page. Once you had opened one of those pages, there was no
+The Visit Maps row - the icon tiles for Parking, Athletics Events, Campus Events, Operations, Campus Maps and
+the Anniversary map - existed only on the All Maps page. Once you had opened one of those pages, there was no
 way to reach another map type without going back to All Maps first. The row is now rendered on every Maps page
 ([#912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/912)).
 

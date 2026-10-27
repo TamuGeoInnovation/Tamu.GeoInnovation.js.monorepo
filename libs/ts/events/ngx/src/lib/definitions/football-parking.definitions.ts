@@ -18,22 +18,22 @@ import { EventPopups } from '../modules/popups/popups';
  * `TSFootball_Cache`/`TSFootball_view` services and the Marcomm `Lots_view` service are no longer used.
  *
  * The vehicle modes come as a pair of direction-split views (`*_entry` / `*_exit`). A mode does not
- * have to use every sublayer its pair publishes — Pay/AVP deliberately omits its entry arrows — so the
+ * have to use every sublayer its pair publishes - Pay/AVP deliberately omits its entry arrows - so the
  * interface below lets a mode leave a sublayer out.
  *
- * The builder asks for the mode in up to three steps: a transportation type, then — for Personal
- * Vehicle only — which parking/arrival option within it, then Entry or Exit for the modes that publish
+ * The builder asks for the mode in up to three steps: a transportation type, then - for Personal
+ * Vehicle only - which parking/arrival option within it, then Entry or Exit for the modes that publish
  * both. "Personal Vehicle" is purely a grouping in the builder; it has no layers of its own.
  *
  * Three consequences of the per-mode services shape the code below:
  *
  * 1. **No client-side filtering.** Each view bakes in its own definition expression (the route
  *    layers, for example, publish as `Type = 'Vehicle' And Pre_Post = 'Pre-Game'`), so the layer
- *    sources carry no `expression` conversions — selecting a mode only toggles visibility.
+ *    sources carry no `expression` conversions - selecting a mode only toggles visibility.
  * 2. **The service renderer is the mode.** The lot polygons are the same 118 features in every
  *    vehicle-mode view; what differs is the authored renderer, which highlights that mode's lots and
  *    collapses the rest into a grey "Other Lots" category. The gameday parking points likewise carry
- *    per-mode categories with embedded icon `imageData`. Those renderers are used as-authored —
+ *    per-mode categories with embedded icon `imageData`. Those renderers are used as-authored -
  *    overriding them would erase the distinction between modes.
  * 3. **Two exceptions still need overriding.** The route layers publish as flat 15px solid green
  *    lines (the "green blob"), and the Street/Grass Areas layers publish solid fills where the
@@ -48,7 +48,7 @@ const HOSTED_ROOT = 'https://gis.tamu.edu/arcgis/rest/services/Hosted';
 
 /**
  * Sublayer indices shared by the four "vehicle" mode services (Pay/AVP, ParkMobile, 12th Man,
- * Presale). Each publishes the same sublayers at the same indices — the entry services carry Entry
+ * Presale). Each publishes the same sublayers at the same indices - the entry services carry Entry
  * Routes (1) and the exit services Exit Routes (2), while Gameday Parking, Street/Grass Areas and
  * Football Parking Lots are identical copies in both. The shared three are therefore sourced once
  * from the entry service and shown for both directions rather than duplicated per direction.
@@ -63,7 +63,7 @@ const VEHICLE_LAYER_INDEX = {
 
 /**
  * Declaration order here IS the top-to-bottom map draw order. `EventService` reads this enum,
- * reverses it, then adds each layer with `map.add()` (no index), so ArcGIS appends bottom→top — the
+ * reverses it, then adds each layer with `map.add()` (no index), so ArcGIS appends bottom→top - the
  * FIRST entry ends up drawn on top, the LAST at the bottom. Only one mode's layers are ever visible
  * at a time, so the ordering that matters is within each mode: points first, then lines, then the
  * polygons that must stay underneath them.
@@ -137,7 +137,7 @@ enum TransportType {
 }
 
 /**
- * The Personal Vehicle sub-choice (the second, conditional builder step) — how the driver is paying
+ * The Personal Vehicle sub-choice (the second, conditional builder step) - how the driver is paying
  * for or being dropped off at their spot. Only shown when Personal Vehicle is the selected mode.
  */
 enum VehicleType {
@@ -177,7 +177,7 @@ type FeatureLabelingInfo = NonNullable<FeatureNativeProps['labelingInfo']>;
 
 /**
  * Base `native` props every layer starts from: loaded but hidden until a mode turns it on. The cast
- * keeps the renderer/labelingInfo overrides assignable — spreading a shared object loses the
+ * keeps the renderer/labelingInfo overrides assignable - spreading a shared object loses the
  * contextual typing an inline literal would get from `LayerSource`'s discriminated union.
  */
 const hiddenNative = (overrides: Partial<FeatureNativeProps> = {}): FeatureNativeProps =>
@@ -327,7 +327,7 @@ const lotLabelSymbol: esri.TextSymbolProperties & { type: 'text' } = {
   }
 };
 
-/** White-on-black-halo label text for RV space numbers — smaller than the lot labels since the RNS
+/** White-on-black-halo label text for RV space numbers - smaller than the lot labels since the RNS
  * points are densely packed. */
 const rvSpaceLabelSymbol: esri.TextSymbolProperties & { type: 'text' } = {
   type: 'text',
@@ -425,7 +425,7 @@ const PIN_LEGEND: LayerSource['legend'] = {
  * services sharing the same five-sublayer shape. (Rideshare, the fifth Personal Vehicle option, is a
  * single-layer service and is defined inline below.)
  *
- * `layers.entryRoutes` is optional: omitting it drops the entry route layer for that mode entirely —
+ * `layers.entryRoutes` is optional: omitting it drops the entry route layer for that mode entirely -
  * it is neither created nor wired into the direction step, even though the service still publishes it.
  */
 interface VehicleMode {
@@ -822,7 +822,7 @@ const vehicleModeVehicleTypeEffects = (mode: VehicleMode) =>
  * the direction step only has to switch one off; the sublayers are already scoped to their phase, so
  * no expression is needed. These conversions are inert for the modes that never turn them on.
  *
- * A mode with no entry route layer contributes only the exit-side conversion — there is nothing to
+ * A mode with no entry route layer contributes only the exit-side conversion - there is nothing to
  * hide when the entry map has no arrows.
  */
 const vehicleModeDirectionEffects = (mode: VehicleMode) => {
@@ -875,7 +875,7 @@ export const FootballParkingOptions: SpecialEventOptions = [
     ],
     effects: {
       layers: [
-        // Personal Vehicle turns on no layers of its own — the Vehicle Type step that follows it does.
+        // Personal Vehicle turns on no layers of its own - the Vehicle Type step that follows it does.
         // Shuttle
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_SHUTTLE_STOPS,
@@ -927,7 +927,7 @@ export const FootballParkingOptions: SpecialEventOptions = [
           layerId: FOOTBALL_PARKING_LAYERS.FP_BIKE_VEO_GEOFENCE,
           conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
         },
-        // Pedestrian — departure only, so no direction step.
+        // Pedestrian - departure only, so no direction step.
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_PEDESTRIAN_EXIT_ROUTES,
           conversions: [{ input: TransportType.PEDESTRIAN, propOverrides: SHOW }]
@@ -972,7 +972,7 @@ export const FootballParkingOptions: SpecialEventOptions = [
       layers: [
         ...VEHICLE_MODES.flatMap(vehicleModeVehicleTypeEffects),
 
-        // Rideshare — drop-off/pick-up locations only, so no direction step.
+        // Rideshare - drop-off/pick-up locations only, so no direction step.
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_RIDESHARE_LOCATIONS,
           conversions: [{ input: VehicleType.RIDESHARE, propOverrides: SHOW }]

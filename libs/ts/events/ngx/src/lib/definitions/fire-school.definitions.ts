@@ -30,7 +30,7 @@ const ROAD_CLOSURE_LEGEND_SWATCH =
   'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMiIgaGVpZ2h0PSIyMiI+PGRlZnM+PHBhdHRlcm4gaWQ9InAiIHdpZHRoPSI1IiBoZWlnaHQ9IjUiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxsaW5lIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSI1IiBzdHJva2U9IiNlNjAwMDAiIHN0cm9rZS13aWR0aD0iMS4yIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB4PSIwLjUiIHk9IjAuNSIgd2lkdGg9IjIxIiBoZWlnaHQ9IjIxIiBmaWxsPSJ1cmwoI3ApIiBzdHJva2U9IiNlNjAwMDAiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==';
 
 export const FireSchoolColdLayerSources: LayerSource[] = [
-  // NOTE: this array's order does not determine z-order — map draw order is driven by the order of
+  // NOTE: this array's order does not determine z-order - map draw order is driven by the order of
   // `FireSchoolLayerReferences` below (see the comment there).
   {
     type: 'feature',
@@ -81,7 +81,7 @@ export const FireSchoolColdLayerSources: LayerSource[] = [
       description: { field: 'description' }
     },
     // Solid-fill unique-value renderer (Lot Restrictions / General Parking) is published correctly,
-    // so use it as-is — the legend swatches render fine.
+    // so use it as-is - the legend swatches render fine.
     native: {
       outFields: ['*']
     }

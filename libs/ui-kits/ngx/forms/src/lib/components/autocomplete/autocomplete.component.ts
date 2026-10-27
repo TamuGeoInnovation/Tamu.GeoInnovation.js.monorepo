@@ -50,7 +50,7 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy {
    * ```html
    * <tamu-gisc-autocomplete [control]="ctrl" [options]="items" (optionSelected)="onSelect($event)">
    *   <ng-template tamuGiscAutocompleteOption let-item>
-   *     <div class="my-custom-item">{{ item.name }} — {{ item.id }}</div>
+   *     <div class="my-custom-item">{{ item.name }} - {{ item.id }}</div>
    *   </ng-template>
    * </tamu-gisc-autocomplete>
    * ```

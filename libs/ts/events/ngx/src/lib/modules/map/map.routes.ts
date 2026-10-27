@@ -41,7 +41,7 @@ export const mapRoutes: Routes = [
         pathMatch: 'full',
         canActivate: [SidebarRedirectGuard],
         // Angular requires one of component/loadComponent/redirectTo/children/loadChildren on every
-        // route. This route never actually renders children — when `SidebarRedirectGuard` allows
+        // route. This route never actually renders children - when `SidebarRedirectGuard` allows
         // activation (kiosk maps), the outlet is simply left empty.
         children: []
       },

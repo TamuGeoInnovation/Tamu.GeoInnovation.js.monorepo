@@ -76,7 +76,7 @@ for (const map of maps) {
   };
 
   if (map.scheduleExpression) {
-    row.note = `scheduleUrl is ${map.scheduleExpression}, not a literal — cannot be read from the source`;
+    row.note = `scheduleUrl is ${map.scheduleExpression}, not a literal - cannot be read from the source`;
   } else if (map.schedules.length && map.schedules.every((page) => SCRAPEABLE.test(page))) {
     row.sharedWith = [...new Set(map.schedules.flatMap((page) => sharedSchedules.get(page)))].filter((id) => id !== map.id);
 

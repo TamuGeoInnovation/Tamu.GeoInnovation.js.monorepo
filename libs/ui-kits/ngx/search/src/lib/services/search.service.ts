@@ -248,7 +248,7 @@ export class SearchService {
         },
         (err) => {
           // Backstop for any error that slipped past the per-source `_safeRequest` guards. We
-          // intentionally do not re-throw — doing so tears down the active subscription and leaves
+          // intentionally do not re-throw - doing so tears down the active subscription and leaves
           // consumers without a SearchResult to render, which is how the search UI used to wedge
           // when a single upstream source went bad. Instead, log the failure and emit an empty
           // result so the store stays in a usable state.
@@ -297,8 +297,8 @@ export class SearchService {
    * Two failure shapes are normalized to an empty response object so that `forkJoin` resolves
    * successfully and the remaining sources still render:
    *
-   *   1. Transport-level errors (network failure, non-2xx status) — caught via `catchError`.
-   *   2. Application-level errors returned with a 2xx status — most notably ArcGIS REST envelopes
+   *   1. Transport-level errors (network failure, non-2xx status) - caught via `catchError`.
+   *   2. Application-level errors returned with a 2xx status - most notably ArcGIS REST envelopes
    *      of the form `{ error: { code, message, details } }`, which are emitted when a referenced
    *      layer has been deleted or renamed in the SDE.
    *

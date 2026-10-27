@@ -57,7 +57,7 @@ bootstrapApplication(AppComponent, {
       useValue: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.EventDefinitions)
     },
     // Supplies the bus map's stop/route popup at the application root (BusService lives in a low-level
-    // lib and cannot import the popup component directly — see BUS_STOP_POPUP_COMPONENT).
+    // lib and cannot import the popup component directly - see BUS_STOP_POPUP_COMPONENT).
     { provide: BUS_STOP_POPUP_COMPONENT, useValue: Popups.BusStopPopupComponent },
     provideHttpClient(withXhr(), withInterceptorsFromDi())
   ]

@@ -2,7 +2,7 @@
 
 Eleven AggieMap maps cannot be reached by URL. `/events/:eventId` redirects to
 `builder/accommodations`, and `/events/:eventId/map` redirects straight back until a selection has
-been made — so the smoke suite has nothing to test on them and times out.
+been made - so the smoke suite has nothing to test on them and times out.
 
 Each of those maps does offer a **share URL** once it loads, which encodes the chosen settings. This
 tool walks every combination of every builder and records where each one lands, so those share URLs
@@ -55,7 +55,7 @@ docker run --rm --network container:aggiemap-dev \
 
 `127.0.0.1` rather than a host gateway address, for two reasons that both cost an hour to find:
 
-1. **The Angular dev server rejects unknown `Host` headers** — and serves "Invalid Host header" with
+1. **The Angular dev server rejects unknown `Host` headers** - and serves "Invalid Host header" with
    status **200**, so a status check passes while the page contains no application at all.
 2. **The dining API's CORS allowlist names specific origins.** `http://127.0.0.1:4200` is on it; a
    Docker gateway address is not, so `Dining Locations` fails to fetch on every map. That layer is in
@@ -68,7 +68,7 @@ Sharing the network namespace satisfies both without touching the API's allowlis
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `AGGIEMAP_SMOKE_BASE_URL` | `https://aggiemap.tamu.edu` | environment to walk |
-| `BUILDER_INVENTORY_ONLY` | — | comma-separated routes, for iterating on one builder |
+| `BUILDER_INVENTORY_ONLY` | - | comma-separated routes, for iterating on one builder |
 | `BUILDER_INVENTORY_CONCURRENCY` | `4` | concurrent walks; each holds a browser context and an Esri map |
 | `BUILDER_INVENTORY_MAX` | `600` | per-map safety cap on destinations |
 

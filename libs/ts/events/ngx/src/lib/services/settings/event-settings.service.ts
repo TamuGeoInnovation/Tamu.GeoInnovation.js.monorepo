@@ -184,7 +184,7 @@ export class EventSettingsService implements EventSettingsQuery {
    *
    * Gating is transitive: a condition pointing at a setting whose own option is currently hidden never
    * matches. Settings persist per-key, so a step that has been branched away from still has its last
-   * selection in storage — without this, that stale value would keep a dependent step visible (for
+   * selection in storage - without this, that stale value would keep a dependent step visible (for
    * example, a `direction` step gated on a personal-vehicle sub-mode would survive a switch to Shuttle).
    *
    * @param visiting Internal cycle guard for the transitive check; not part of the public contract.

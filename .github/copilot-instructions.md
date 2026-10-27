@@ -211,7 +211,7 @@ Avoid relative imports across library boundaries.
 
 ### Commit Guidelines
 
-- Keep commits **atomic** — one logical change per commit
+- Keep commits **atomic** - one logical change per commit
 - First line under 72 characters, descriptive (not "fixes" or "fixed bug")
 - Use additional lines for details
 - Aim for a commit history that tells a story from start to finish

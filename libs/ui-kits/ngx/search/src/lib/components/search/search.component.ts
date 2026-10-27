@@ -101,7 +101,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Overrides the application-wide search sources (normally read from the `SearchSources`
    * environment value) with a specific set of sources for this search instance.
    *
-   * Used by maps that need search scoped to their own data — for example, a satellite-campus map
+   * Used by maps that need search scoped to their own data - for example, a satellite-campus map
    * whose search should only ever query that campus's own basemap, never the main College Station
    * search sources.
    *

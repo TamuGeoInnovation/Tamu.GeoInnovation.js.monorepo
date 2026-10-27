@@ -83,7 +83,7 @@ export const MaysCityCenterSearchSources: SearchSource[] = [
 export const MaysCityCenterConfiguration: EventConfiguration = {
   id: 'mays-city-center',
   name: 'Mays City Center',
-  applicationName: 'Aggie Map — Mays City Center',
+  applicationName: 'Aggie Map - Mays City Center',
   shortApplicationName: 'Mays City Center',
   introductionText: 'Map of the Texas A&M University Mays City Center campus.',
   eventDates: [],

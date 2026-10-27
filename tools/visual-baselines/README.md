@@ -4,7 +4,7 @@ A complete set of screenshots of every map AggieMap serves, for one environment,
 
 A change like [#1497][1497] or [#1508][1508] can move the symbology of every drawn map at once.
 Nothing in the pull request checks notices that, and two screenshots cannot answer it. The only
-honest way to see what moved is a complete before and after — which only exists if the "before" was
+honest way to see what moved is a complete before and after - which only exists if the "before" was
 captured when it was still true.
 
 ## Capturing a set
@@ -25,7 +25,7 @@ MSYS_NO_PATHCONV=1 docker run -d --name vb-<release> -m 8g \
 | `--only` | Comma-separated substrings, for asking a narrow question |
 | `--concurrency` | Pages at once (default 3) |
 | `--as production` | Open every page with `?as=production` (#1722): a development host then uses production's GIS services and hides its development-only features, so its set can be compared with production's. The "acting as production" control is hidden, since production has none. Kept apart, under `<environment>-as-production/` (#1885) |
-| `--force` | Overwrite a release whose bundle no longer matches — deliberate only |
+| `--force` | Overwrite a release whose bundle no longer matches - deliberate only |
 
 A run **resumes**: a shot already on disk is skipped, so an interrupted crawl costs only what it had
 not reached. A full set is about 850 shots and takes a couple of hours.
@@ -38,14 +38,14 @@ not reached. A full set is about 850 shots and takes a couple of hours.
 <out>/<environment>/<release>/phone/<slug>.png
 ```
 
-**The release is the key**, because that is the question people actually ask — what did Construction
-look like in the second 6 October release — and because a tag is shared between machines and outlives
+**The release is the key**, because that is the question people actually ask - what did Construction
+look like in the second 6 October release - and because a tag is shared between machines and outlives
 any one capture. Environment first, so the same release can be compared across environments.
 
 **A tag is a claim; the bundle hash is the proof.** Nothing in the browser says which commit an
 environment is serving: the build banner prints unsubstituted placeholders on dev and production,
 because token substitution runs only in the Dockerfile and those are served by IIS ([#1306][1306]).
-So the manifest records both — the release tag, the commit it names, and the bundle content hash
+So the manifest records both - the release tag, the commit it names, and the bundle content hash
 actually served. Re-capturing a release whose bundle has changed is **refused**: either the tag is
 wrong or the environment moved under it, and both matter more than the capture does.
 
@@ -174,7 +174,7 @@ visited last.
 
 **Wait for the right signal.** `probe.ready` means the layers have settled, about six seconds in.
 `probe.drawing === false` means the view has stopped painting, about twenty. Capturing on `ready`
-photographs a map fourteen seconds from finished — it produced a 45% "difference" between two builds
+photographs a map fourteen seconds from finished - it produced a 45% "difference" between two builds
 that was really one side caught mid-load, twice, before the tool waited for both.
 [`docs/testing-maps.md`](../../docs/testing-maps.md) has the full table.
 

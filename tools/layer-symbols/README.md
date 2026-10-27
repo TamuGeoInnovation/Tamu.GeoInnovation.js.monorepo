@@ -1,7 +1,7 @@
 # Published symbol sizes: declared against actual
 
 A service can declare a picture marker `25x25` while the image it ships is `32x40`. Esri draws the
-art squeezed into the declared box — on the map and in the legend swatch — so AggieMap carries
+art squeezed into the declared box - on the map and in the legend swatch - so AggieMap carries
 `legend: { width, height }` hints to re-render it at its true ratio.
 
 The hint is a workaround for a value that is wrong at the source. This tool finds every one of them.
@@ -31,6 +31,6 @@ finds the layers nobody has looked at too.
 ## How it decides
 
 The declared size comes from the renderer's symbol. The real size comes from the PNG's own IHDR
-header, which is read from the `imageData` the service publishes — so it is measured, not inferred.
+header, which is read from the `imageData` the service publishes - so it is measured, not inferred.
 A difference under 0.05 of a ratio point is ignored, which is roughly where a pin starts to look
 visibly squashed.

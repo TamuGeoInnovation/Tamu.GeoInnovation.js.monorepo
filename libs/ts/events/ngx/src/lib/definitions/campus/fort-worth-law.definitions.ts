@@ -82,7 +82,7 @@ export const FortWorthLawSearchSources: SearchSource[] = [
 export const FortWorthLawConfiguration: EventConfiguration = {
   id: 'fort-worth-law',
   name: 'Fort Worth Law School',
-  applicationName: 'Aggie Map — Fort Worth Law School',
+  applicationName: 'Aggie Map - Fort Worth Law School',
   shortApplicationName: 'Fort Worth Law School',
   introductionText: 'Map of the Texas A&M University School of Law campus in Fort Worth.',
   eventDates: [],

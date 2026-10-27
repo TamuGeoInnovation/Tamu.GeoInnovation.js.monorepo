@@ -3,7 +3,7 @@
 Loads every map in a deployed environment and checks that each layer actually resolves and returns
 data. It exists because nothing else notices when a map breaks *without* a release: the maps draw
 from hosted GIS services, so a layer can stop working because a service was republished or
-unpublished — no commit, no build, no signal.
+unpublished - no commit, no build, no signal.
 
 It found the Gameday Parking bike layers drawing the wrong data (#1036) within its first run.
 
@@ -15,7 +15,7 @@ which covers the eleven maps that cannot be reached by URL.
 Per map, generated from the routes the environment actually lists:
 
 1. The document is served and Angular renders.
-2. The map probe is present — its absence means the build predates it, reported separately from a
+2. The map probe is present - its absence means the build predates it, reported separately from a
    slow map so the two are not confused.
 3. Every layer settles, none reports a load error, and at least one returns features.
 4. No uncaught page errors and no 5xx responses.
@@ -254,7 +254,7 @@ docker run --rm --network container:aggiemap-dev -v "$PWD:/work" -v tamu-js-smok
 
 `localhost` rather than a Docker gateway address, for two reasons that each cost an hour to find:
 
-1. **The Angular dev server rejects unknown `Host` headers** — and serves "Invalid Host header" with
+1. **The Angular dev server rejects unknown `Host` headers** - and serves "Invalid Host header" with
    status **200**, so a status check passes on a page containing no application at all.
 2. **The dining API's CORS allowlist names specific origins.** `http://localhost:4200` is on it; a
    gateway address is not, so `Dining Locations` fails to fetch. That layer is in the shared main

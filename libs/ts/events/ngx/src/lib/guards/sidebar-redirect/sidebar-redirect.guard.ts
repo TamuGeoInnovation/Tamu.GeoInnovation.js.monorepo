@@ -7,7 +7,7 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 
 /**
  * Replaces the unconditional `redirectTo: 'd'` default child route of the event map. Most events
- * always want the desktop/mobile sidebar shell, so this guard reproduces that default behavior —
+ * always want the desktop/mobile sidebar shell, so this guard reproduces that default behavior -
  * except for events configured with `EventConfiguration.hideSidebar`, where it deliberately does
  * nothing, leaving the sidebar's router-outlet empty so no sidebar shell (and none of its overlay
  * buttons) ever mounts.
@@ -26,7 +26,7 @@ export class SidebarRedirectGuard {
     const hideSidebar = this.eventSettingsService.eventConfiguration()?.configuration?.hideSidebar === true;
 
     if (hideSidebar) {
-      // No navigation — the route resolves with nothing rendered in this outlet.
+      // No navigation - the route resolves with nothing rendered in this outlet.
       return true;
     }
 

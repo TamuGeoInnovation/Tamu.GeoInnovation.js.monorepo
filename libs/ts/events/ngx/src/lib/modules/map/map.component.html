@@ -75,7 +75,7 @@
 
 <!-- Kiosk maps (see `hideSidebar`) skip the sidebar/mobile routes entirely, so those routes' normal
 `<tamu-gisc-feature-popup>`/`<tamu-gisc-feature-mobile-popup>` instances never mount, and clicking
-a feature would otherwise show nothing. Render the same popup panel directly here instead — it's
+a feature would otherwise show nothing. Render the same popup panel directly here instead - it's
 self-contained (listens to the map's hit-test stream on its own) and independent of the rest of
 the sidebar UI (search, tabs, settings), so this alone restores feature-click details. -->
 @if (hideSidebar) { @if (isMobile()) {

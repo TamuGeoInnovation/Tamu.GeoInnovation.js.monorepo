@@ -10,7 +10,7 @@ production (#1289).
       so it is labelled where the label travels with the content.
       -->
   @if (current.sample) {
-  <p class="code-maroon-sample">SAMPLE DATA — this is a demonstration, not a real alert</p>
+  <p class="code-maroon-sample">SAMPLE DATA - this is a demonstration, not a real alert</p>
   } @switch (current.status) {
   <!-- An alert is running. -->
   @case ('active') { @for (alert of current.alerts; track alert) {

@@ -163,7 +163,7 @@ export class LegendElementComponent implements OnChanges {
         }
 
         // Per-layer opt-out: a layer can request its full renderer legend (every category) even when a
-        // definition expression is filtering what's drawn — used for reference color keys.
+        // definition expression is filtering what's drawn - used for reference color keys.
         if (this.legendOverride?.ignoreDefinitionExpression === true) {
           return of(info);
         }
@@ -233,7 +233,7 @@ export class LegendElementComponent implements OnChanges {
   }
 
   /**
-   * True when the override is active for the supplied info — i.e. it specifies a custom rendering
+   * True when the override is active for the supplied info - i.e. it specifies a custom rendering
    * mode or any sizing/fit hint. When false, the template falls back to existing default rendering.
    */
   public hasLegendOverrideForInfo(info: unknown): boolean {
@@ -258,7 +258,7 @@ export class LegendElementComponent implements OnChanges {
    *   the legend info's value (for unique-value renderers) or the single symbol (for simple renderers).
    * - `arcgis` (default): returns the info's own `src` or `preview` image URL if available.
    *
-   * Returns null when no URL can be resolved — the template should then fall through to default rendering.
+   * Returns null when no URL can be resolved - the template should then fall through to default rendering.
    */
   public resolveLegendIconSrc(info: unknown): string | null {
     const override = this.legendOverride;

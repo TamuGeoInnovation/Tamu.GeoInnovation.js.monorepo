@@ -83,7 +83,7 @@ export const HscRoundRockSearchSources: SearchSource[] = [
 export const HscRoundRockConfiguration: EventConfiguration = {
   id: 'hsc-round-rock',
   name: 'HSC Round Rock',
-  applicationName: 'Aggie Map — HSC Round Rock',
+  applicationName: 'Aggie Map - HSC Round Rock',
   shortApplicationName: 'HSC Round Rock',
   introductionText: 'Map of the Texas A&M University Health Science Center Round Rock campus.',
   eventDates: [],

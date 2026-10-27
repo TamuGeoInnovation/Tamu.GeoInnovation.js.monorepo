@@ -7,8 +7,8 @@ import { defineConfig, devices } from '@playwright/test';
  * and outside `test/smoke`, so no scheduled run ever executes it: it drives the builders, takes tens
  * of minutes, and writes files into the repository. It is run by hand when the builders change.
  *
- * One worker and no retries on purpose. The walk is stateful — settings are held per browser context
- * and the builder navigates as options are chosen — so a retry would restart a partially-completed
+ * One worker and no retries on purpose. The walk is stateful - settings are held per browser context
+ * and the builder navigates as options are chosen - so a retry would restart a partially-completed
  * walk and record a path nobody took.
  */
 export default defineConfig({
