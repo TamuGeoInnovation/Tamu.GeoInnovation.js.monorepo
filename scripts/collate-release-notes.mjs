@@ -24,6 +24,7 @@ import url from 'url';
 
 const HERE = path.dirname(url.fileURLToPath(import.meta.url));
 const RELEASES = path.join(HERE, '..', 'docs', 'releases');
+const SMOKE = path.join(HERE, '..', 'test', 'smoke', 'aggiemap');
 const ENTRIES = path.join(RELEASES, 'unreleased');
 
 const args = new Set(process.argv.slice(2));
@@ -62,6 +63,30 @@ function parseEntry(file, source) {
     if (/^https?:/.test(src)) continue;
     if (!fs.existsSync(path.resolve(RELEASES, src))) {
       problems.push(`image not found, resolved from docs/releases/: ${src}`);
+    }
+  }
+
+  // An AggieMap host an entry names has to be one the smoke suite actually uses, because the *What to
+  // test on dev* rows are links the team follows before a release, and a wrong host is only discovered
+  // by the person following it. `aggiemap-dev.tamu.edu` does not resolve - development is
+  // `dev.aggiemap.tamu.edu` - and four entries shipped with the wrong one (#2451).
+  //
+  // Only AggieMap's own hosts are checked. The repository's notes also name gisday.tamu.edu and
+  // others that this suite knows nothing about, and a check that fails on those would be turned off.
+  const known = new Set(
+    Object.values(JSON.parse(fs.readFileSync(path.join(SMOKE, 'environments.json'), 'utf8')))
+      .map((environment) => environment?.baseUrl)
+      .filter(Boolean)
+      .map((url) => new URL(url).hostname.toLowerCase())
+  );
+
+  for (const [, host] of (head + body).matchAll(/https?:\/\/([a-z0-9.-]*aggiemap[a-z0-9.-]*)/gi)) {
+    const hostname = host.toLowerCase();
+
+    if (!known.has(hostname)) {
+      problems.push(
+        `unknown AggieMap host ${hostname}: the suite uses ${[...known].sort().join(', ')}. A link the team cannot follow is worse than no link`
+      );
     }
   }
 
