@@ -519,7 +519,8 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
   private async _saveImage(file, guid: string) {
     // Stored at the size the site shows it, not as uploaded: photos of 1 MB and more made Presenters download 9 MB for
-    // 255 px cards (#2352). The file keeps its name, so a JPEG stays a JPEG and anything not a JPEG or PNG is kept as it is.
+    // 255 px cards (#2352). The file keeps its name; a PNG with no transparency may be stored as the smaller JPEG (#2426), and
+    // anything not a JPEG or PNG is kept as it is.
     if (file?.buffer) {
       this._refuseUnsafeImage(file);
 
