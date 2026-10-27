@@ -1,5 +1,7 @@
 import esri = __esri;
 
+import { applySpriteOverrides, browserSpriteOverrideDeps, SpriteOverride } from './vector-tile-sprites';
+
 /** The layer classes a basemap's base layers can be made from, keyed by the `type` a definition names. */
 export interface BaseLayerConstructors {
   TileLayer: typeof esri.TileLayer;
@@ -22,14 +24,31 @@ export function makeBaseLayer(
   }
 
   // Remove the type property because it conflicts as a read-only property when instantiating the class.
-  const { type, ...props } = layer;
+  // `spriteOverrides` is ours rather than Esri's and is applied below, so it comes out here too.
+  const { type, spriteOverrides, ...props } = layer as { type?: string; spriteOverrides?: SpriteOverride[] } & Record<
+    string,
+    unknown
+  >;
 
   if (type === `TileLayer`) {
     return new constructors.TileLayer(props);
   }
 
   if (type === `VectorTileLayer`) {
-    return new constructors.VectorTileLayer(props);
+    const vectorTileLayer = new constructors.VectorTileLayer(props);
+
+    // The sheet can only be patched once the style has loaded, and nothing waits on this: the basemap
+    // draws with the published sprites and swaps to the patched ones a moment later. A failure must not
+    // take the basemap down with it - a wrong hatch is better than no map (#2459).
+    if (spriteOverrides !== undefined && spriteOverrides.length > 0) {
+      vectorTileLayer
+        .when(() => applySpriteOverrides(vectorTileLayer, spriteOverrides, browserSpriteOverrideDeps()))
+        .catch((error: unknown) => {
+          console.warn(`Could not apply sprite overrides to ${props.url}.`, error);
+        });
+    }
+
+    return vectorTileLayer;
   }
 
   if (type === `WMSLayer`) {

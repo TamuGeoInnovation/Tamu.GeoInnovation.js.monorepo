@@ -53,6 +53,13 @@ export const AggiemapRasterBasemap: BaseMapProperties & { id: string } = {
  *
  * No `spatialReference` here: a VectorTileLayer takes it from the service's tiling scheme and the
  * property is read-only. No `minScale`/`maxScale` either, because the cache carries its own levels.
+ *
+ * `spriteOverrides` replaces the under-construction buildings' pattern, which the vector tile packager
+ * rasterized into a tile with no transparent pixels in it, so it paints each building as a solid block
+ * instead of a hatch over it. The maintainer settled the replacement on 27 October 2026: **hatched
+ * orange, no pink** - orange being what the Construction Zones layer already uses for its projects.
+ * This is an override of published symbology and comes out when the service carries the hatch itself.
+ * See #2459 and `docs/map-layers.md`.
  */
 export const AggiemapVectorBasemap: BaseMapProperties = {
   baseLayers: [
@@ -61,7 +68,31 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
       url: `https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase3/VectorTileServer`,
       listMode: 'hide',
       visible: true,
-      title: 'Base Map'
+      title: 'Base Map',
+      spriteOverrides: [
+        {
+          sprite: 'Campus Structures/Currently Under Construction/1',
+          // What the maintainer asked for on 27 October 2026: a black outline, a checkered hatch, and
+          // no fill of any kind. The outline is the style's own line layer and is left alone; this
+          // replaces only the pattern. The checkering is the one the service already draws - what was
+          // wrong with it was that it came packaged on an opaque white background, and in pink.
+          //
+          // Orange is the maintainer's choice (27 October 2026). It is one of the colours the
+          // Construction Zones layer already uses - rgb(230, 152, 0) is its UES Projects class - but
+          // that layer has no single construction colour: SSC is green, TS light blue, TxDOT blue, and
+          // its default "Building Projects" class is red. So where a building under construction sits
+          // inside a Building Projects zone, this orange grid draws under a red diagonal cross.
+          //
+          // 64 is a power of two as Esri's picture-fill guidance asks, and 16 divides it, which is what
+          // lets the lines meet across the tile's edges without a seam.
+          //
+          // The published tile drew its lines four pixels apart, and at that spacing a grid stops
+          // reading as lines and starts reading as a fill - which is half of what was wrong with it.
+          // Sixteen apart covers about a quarter of the tile, so the basemap is plainly visible
+          // through it.
+          hatch: { size: 64, spacing: 16, lineWidth: 2, color: 'rgb(230, 152, 0)', pattern: 'grid' }
+        }
+      ]
     }
   ],
   id: 'aggie_basemap',
@@ -78,6 +109,11 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
  *
  * The newer cache is the one the map opens on; this one stays in the gallery under its own id, the
  * way a replaced raster version does. It goes when the comparison is settled.
+ *
+ * Its under-construction buildings are wrong too, and differently: this cache has no construction
+ * sprite at all, and paints them with a solid `fill-color` of the authored pink. So the sprite
+ * override above would have nothing to replace here. It is left alone deliberately - this cache is on
+ * its way out, and a second override on something being deleted is a cost with no return (#2459).
  */
 export const AggiemapVectorBasemapSeptember2026: BaseMapProperties = {
   baseLayers: [

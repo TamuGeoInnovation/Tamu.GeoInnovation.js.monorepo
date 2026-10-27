@@ -5,6 +5,8 @@ import { Observable, BehaviorSubject, lastValueFrom } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
+
+import { SpriteOverride } from './vector-tile-sprites';
 import {
   AutocastableLayer,
   cleanPortalJSONLayer,
@@ -1234,6 +1236,8 @@ export interface BaseMapProperties extends Omit<esri.BasemapProperties, 'baseLay
 interface LayerProperties
   extends esri.LayerProperties, esri.TileLayerProperties, esri.VectorTileLayerProperties, esri.WMSLayerProperties {
   type: string;
+  /** Sprites to replace in a VectorTileLayer's published sheet once it loads (#2459). */
+  spriteOverrides?: SpriteOverride[];
 }
 
 /**
