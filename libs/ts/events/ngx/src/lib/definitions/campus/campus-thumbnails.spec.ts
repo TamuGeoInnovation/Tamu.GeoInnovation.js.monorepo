@@ -79,19 +79,17 @@ describe('satellite campus thumbnails', () => {
     // `visible: false` is what keeps a campus off production's All Maps page (#2437, #2438). Removing
     // it is how a campus the GIS team is still checking reaches the public, and nothing else in the
     // repository would notice, so the two lists are pinned against each other here.
+    //
+    // Every campus is live on production as of 27 October 2026 (#2473), so the list is empty - and an
+    // empty expectation is still the check: a campus added development-only in future fails here until
+    // it is named, which is the point. It is not "no campuses are gated"; it is "these are, and they
+    // were meant to be".
     const developmentOnly = campuses
       .filter(({ root }) => root.discover?.visible === false)
       .map(({ label }) => label)
       .sort();
 
-    expect(developmentOnly).toEqual([
-      'Fort Worth Law School',
-      'HSC Corpus Christi',
-      'HSC Kingsville',
-      'HSC Round Rock',
-      'Houston Space Institute',
-      'Mays City Center'
-    ]);
+    expect(developmentOnly).toEqual([]);
   });
 
   it.each(campuses)('$label thumbnail file exists', ({ root }) => {

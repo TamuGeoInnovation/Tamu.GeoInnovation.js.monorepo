@@ -116,8 +116,8 @@ export const MaysCityCenterTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'satellite-campus',
     mapType: 'satellite-campus',
-    // Development-only to begin with, as Fort Worth Law School and the Houston Space Institute were.
-    visible: false,
+    // Listed on production as well as development (#2473): every satellite campus is live. The general
+    // map search still excludes them all on both environments (#1482), which is deliberate.
     thumbnail: './assets/images/campus/mays-city-center.jpg'
   }
 };
