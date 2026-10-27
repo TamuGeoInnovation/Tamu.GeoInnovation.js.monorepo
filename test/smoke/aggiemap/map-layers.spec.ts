@@ -4,6 +4,7 @@ import * as path from 'path';
 import { expect, HEAVY, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
+import { loadBuilderTargets } from './builder-destinations';
 import { environmentIsDevelopment } from './gis-hosts';
 
 /**
@@ -42,8 +43,12 @@ import { environmentIsDevelopment } from './gis-hosts';
  *
  * A map that never finishes drawing fails, saying so, and so does one with no layers at all: a route the
  * application does not know still renders the shell, and must not pass as a map with nothing switched on.
- * Maps behind a builder are skipped; `tools/builder-inventory` covers them. Read-only, so safe against
- * production.
+ *
+ * A map behind a builder is checked at the destinations `tools/builder-inventory` recorded for it, one per
+ * distinct layer set, as `maps.spec.ts` loads them (`builder-destinations.ts`). Its own route only lands on
+ * the builder, so these maps were skipped until #2467, and the baseball maps lost their symbols that
+ * morning with every test on them passing (#2453). A builder map the inventory has no destination for, as on
+ * an environment it was not captured against, is still skipped. Read-only, so safe against production.
  */
 
 const manifest: MapManifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
@@ -139,13 +144,24 @@ interface LegendEntry {
  */
 const HEAVY_MAPS = new Set(['/parking/maintenance-parking', '/parking/service-loading']);
 
-for (const mapPath of manifest.maps) {
-  test(`${mapPath} lists, draws and keys every layer it shows`, HEAVY_MAPS.has(mapPath) ? HEAVY : {}, async ({ page }) => {
+const builderTargets = loadBuilderTargets(manifest);
+
+/** One case per map, or per recorded destination for a map behind a builder; `loadPath` is what is opened. */
+const cases = manifest.maps.flatMap((mapPath) => {
+  const targets = builderTargets.get(mapPath) ?? [];
+
+  return targets.length === 0
+    ? [{ mapPath, loadPath: mapPath, title: mapPath }]
+    : targets.map(({ target, label }) => ({ mapPath, loadPath: target, title: `${mapPath} (${label})` }));
+});
+
+for (const { mapPath, loadPath, title } of cases) {
+  test(`${title} lists, draws and keys every layer it shows`, HEAVY_MAPS.has(mapPath) ? HEAVY : {}, async ({ page }) => {
     test.setTimeout(330_000);
     await blockAnalytics(page);
-    await page.goto(mapPath, { waitUntil: 'domcontentloaded' });
+    await page.goto(loadPath, { waitUntil: 'domcontentloaded' });
 
-    // A builder-gated map never draws until a choice is made; tools/builder-inventory covers those.
+    // A builder-gated map never draws until a choice is made, so one with no recorded destination is skipped.
     const settled = await page
       .waitForFunction(
         () => {
@@ -166,7 +182,15 @@ for (const mapPath of manifest.maps) {
       .then(() => true)
       .catch(() => false);
 
-    test.skip(page.url().includes('/builder/'), `${mapPath} is behind a builder; tools/builder-inventory covers it`);
+    test.skip(
+      page.url().includes('/builder/') && loadPath === mapPath,
+      `${mapPath} is behind a builder and the inventory has no destination for it here, so none of its layers ` +
+        `can be checked. Re-run tools/builder-inventory against this environment.`
+    );
+    expect(
+      page.url().includes('/builder/'),
+      `${loadPath} went back to the builder, so its recorded destination no longer reaches the map`
+    ).toBe(false);
     if (!settled) {
       const state = await page.evaluate(() => {
         const probe = (window as unknown as Record<string, { ready?: boolean; drawing?: boolean } | undefined>)[
