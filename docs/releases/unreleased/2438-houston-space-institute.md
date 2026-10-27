@@ -2,7 +2,7 @@
 issue: 2438
 title: Houston Space Institute joins the satellite campus maps, on development
 testOnDev: |
-  | Houston Space Institute ([#2438](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2438)) | On dev: [All Maps](https://aggiemap-dev.tamu.edu/all-maps), then Campus Maps, then Houston Space Institute | The campus is listed with a picture of its own map, and opening it shows B500 on the campus basemap. Searching a building name in the map's own search finds it. **It must not appear on production**: these two campuses are development-only for now |
+  | Houston Space Institute ([#2438](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2438)) | On dev: [All Maps](https://dev.aggiemap.tamu.edu/all-maps), then Campus Maps, then Houston Space Institute | The campus is listed with a picture of its own map, and opening it shows B500 on the campus basemap. Searching a building name in the map's own search finds it. **It must not appear on production**: these two campuses are development-only for now |
 ---
 
 ### Houston Space Institute joins the satellite campus maps

@@ -2,7 +2,7 @@
 issue: 2437
 title: Fort Worth Law School joins the satellite campus maps, on development
 testOnDev: |
-  | Fort Worth Law School ([#2437](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2437)) | On dev: [All Maps](https://aggiemap-dev.tamu.edu/all-maps), then Campus Maps, then Fort Worth Law School | The campus is listed with a picture of its own map, and opening it shows LAWS, RIB-A and FWLE on the campus basemap. Searching a building name in the map's own search finds it. **It must not appear on production**: these two campuses are development-only for now |
+  | Fort Worth Law School ([#2437](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2437)) | On dev: [All Maps](https://dev.aggiemap.tamu.edu/all-maps), then Campus Maps, then Fort Worth Law School | The campus is listed with a picture of its own map, and opening it shows LAWS, RIB-A and FWLE on the campus basemap. Searching a building name in the map's own search finds it. **It must not appear on production**: these two campuses are development-only for now |
 ---
 
 ### Fort Worth Law School joins the satellite campus maps

@@ -2,7 +2,7 @@
 issue: 912
 title: Every Maps page offers the Visit Maps row, so you can move between map types without going back
 testOnDev: |
-  | All Maps: moving between map types ([#912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/912)) | [Parking Maps](https://aggiemap-dev.tamu.edu/all-maps/parking), then any other map type from the row | The Visit Maps row of icon tiles appears under the title on every map-type page, not only on All Maps, and each tile goes where it says. On a phone the row is two columns of icon-beside-label rows, as it already is on All Maps. On dev there is an extra **Code Maroon** tile; it must not appear on production |
+  | All Maps: moving between map types ([#912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/912)) | [Parking Maps](https://dev.aggiemap.tamu.edu/all-maps/parking), then any other map type from the row | The Visit Maps row of icon tiles appears under the title on every map-type page, not only on All Maps, and each tile goes where it says. On a phone the row is two columns of icon-beside-label rows, as it already is on All Maps. On dev there is an extra **Code Maroon** tile; it must not appear on production |
 ---
 
 ### Every Maps page offers the Visit Maps row
