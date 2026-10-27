@@ -56,20 +56,33 @@ read from the services already. **Do not re-derive it**; check it if you like, b
 | Building layer | **`/4 Structures`** - note the plural, and the index: five campuses now, five different answers |
 | Fields | `bldgname`, `bldgabbr`, `number`, `address`, `city`, `zip` - the same names as Houston Space Institute, so its search source copies across |
 
-### The one thing that is different, and is already decided
+### Decided: this is TWO campus maps from the one service
 
-**This campus is two places.** `/4` holds six buildings: five together in downtown Dallas (the College of
-Dentistry, around `-96.7820, 32.7890`) and **Dr. M.C. Cooper Dental Clinic about 4 km south-east at
-`-96.74338, 32.76691`**. The published extent is about 60 km wide.
+The maintainer, 27 October: **"Make these as two separate new campus maps from the same source layer
+instead of 1 single one."** So `Hosted/HSCD` backs two entries in the campus list, each with its own
+centre, zoom and `definitionExpression`. This is the first campus to need that; everything else is the
+usual pattern.
 
-**Build option A from the issue: one map, opening on the College of Dentistry**, with the clinic reachable
-by search and by `?bldg=3608`. That is consistent with every other campus and is what the director
-recommends. The maintainer is being asked whether he wants it framed to hold both (B) or split into two
-maps (C); if the answer changes it, it is a `mapCenter`/`zoom` edit or a second definitions file, and I
-will tell you. **Do not wait for it** - everything else is the same either way.
+**Split on the postcode, not on building numbers** - it is the field that actually distinguishes the two
+sites, and it survives a building being added:
 
-Choose `zoom` by looking at the map, as Houston Space Institute did (it took 17, not 18, because at 18 its
-one building filled the view). Say what you chose and why.
+| Site | `zip` | Buildings | Centre |
+| --- | --- | --- | --- |
+| **Northwest** | `75246` | 3600 Texas A&M College of Dentistry - BCD1, 3605 BCD Library, 3602 BCD Imaging Center - BCD3, 3601 BCD Parking Garage - BCD2, 3607 College of Dentistry Clinical Educ. Facility | about `[-96.7820, 32.7890]` |
+| **Southeast** | `75210` | 3608 Dr. M.C. Cooper Dental Clinic | about `[-96.74338, 32.76691]` |
+
+Both maps share the one vector tile basemap, which draws the whole published area; the
+`definitionExpression` applies to the `/4 Structures` property overlay and the search source, so each map
+searches only its own site.
+
+**The names are not settled yet.** The maintainer said northwest is *HSC Dallas Medicine* and southeast is
+*HSC Dallas Dentistry*, but every northwest building is named for the College of Dentistry and the
+southeast one is a dental clinic, so he is being asked whether the two are the other way round. **Build
+with ids and names you can change in one line** - put each map's display name in its `EventConfiguration`
+and `discover` block and nowhere else - and I will confirm them before the pull request. Do not wait.
+
+Pick each `zoom` by looking at it. The southeast map is a single building, so it will want the Houston
+Space Institute treatment: one notch out from what looks right, or it fills the frame.
 
 ### The rest is the known pattern
 
@@ -85,10 +98,10 @@ empty - it now expects `[]`, and adding a hidden campus would fail it, which is 
 
 ### What to do
 
-1. Branch `feat/2476-hsc-dallas` from `origin/development` - **fetch first**, it has moved a lot today.
+1. Branch `feat/2476-hsc-dallas` from `origin/development` - **fetch first**, it has moved a lot today. Both maps on the one branch.
 2. Red first, then green, on the two campus enumerations, as in batch 29.
 3. `scripts/check-in-volume.sh feat/2476-hsc-dallas ts-events-ngx,aggiemap-ngx-common,aggiemap-angular`.
-4. Screenshots of the map, and of `/all-maps/campus` showing ten campuses. There is no "before" for a map
+4. Screenshots of **both** maps, and of `/all-maps/campus` showing eleven campuses. There is no "before" for a map
    that did not exist; say so.
 5. One release-note file, `docs/releases/unreleased/2476-hsc-dallas.md`, with its *What to test on dev* row.
    **`dev.aggiemap.tamu.edu`, not `aggiemap-dev.tamu.edu`** - the second does not exist and the notes check
