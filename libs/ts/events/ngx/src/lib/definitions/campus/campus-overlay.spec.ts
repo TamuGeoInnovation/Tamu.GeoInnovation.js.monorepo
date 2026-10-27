@@ -5,6 +5,7 @@ import { MaysCityCenterLayerSources } from './mays-city-center.definitions';
 import { HscRoundRockLayerSources } from './hsc-round-rock.definitions';
 import { HscKingsvilleLayerSources } from './hsc-kingsville.definitions';
 import { HscCorpusChristiLayerSources } from './hsc-corpus-christi.definitions';
+import { HscDallasNorthwestLayerSources, HscDallasSoutheastLayerSources } from './hsc-dallas.definitions';
 import { GalvestonLayerSources } from './galveston.definitions';
 import { McAllenLayerSources } from './mcallen.definitions';
 
@@ -26,6 +27,8 @@ const CAMPUSES = {
   'HSC Round Rock': HscRoundRockLayerSources,
   'HSC Kingsville': HscKingsvilleLayerSources,
   'HSC Corpus Christi': HscCorpusChristiLayerSources,
+  'HSC Dallas Northwest': HscDallasNorthwestLayerSources,
+  'HSC Dallas Southeast': HscDallasSoutheastLayerSources,
   Galveston: GalvestonLayerSources,
   McAllen: McAllenLayerSources
 };

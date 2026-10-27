@@ -142,7 +142,9 @@ function createConnections(gisHost: string): IComposedConnections {
     hscKingsvilleBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCK/VectorTileServer',
     hscKingsvilleFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCK/FeatureServer',
     hscCorpusChristiBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCC/VectorTileServer',
-    hscCorpusChristiFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCC/FeatureServer'
+    hscCorpusChristiFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCC/FeatureServer',
+    hscDallasBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCD/VectorTileServer',
+    hscDallasFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCD/FeatureServer'
   };
 }
 
@@ -282,4 +284,6 @@ export interface IComposedConnections {
   hscKingsvilleFeatureServerUrl: string;
   hscCorpusChristiBasemapUrl: string;
   hscCorpusChristiFeatureServerUrl: string;
+  hscDallasBasemapUrl: string;
+  hscDallasFeatureServerUrl: string;
 }

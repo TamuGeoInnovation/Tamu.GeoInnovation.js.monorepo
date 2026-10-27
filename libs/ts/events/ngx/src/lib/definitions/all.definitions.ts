@@ -79,6 +79,7 @@ import { MaysCityCenterTs } from './campus/mays-city-center.definitions';
 import { HscRoundRockTs } from './campus/hsc-round-rock.definitions';
 import { HscKingsvilleTs } from './campus/hsc-kingsville.definitions';
 import { HscCorpusChristiTs } from './campus/hsc-corpus-christi.definitions';
+import { HscDallasNorthwestTs, HscDallasSoutheastTs } from './campus/hsc-dallas.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -160,6 +161,8 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   HscRoundRockTs,
   HscKingsvilleTs,
   HscCorpusChristiTs,
+  HscDallasNorthwestTs,
+  HscDallasSoutheastTs,
   DiningKioskTs,
   TailgatingKioskTs,
   KickoffAtKyleTs,

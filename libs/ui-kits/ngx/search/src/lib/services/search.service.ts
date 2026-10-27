@@ -381,11 +381,15 @@ export class SearchService {
         : Array(source.queryParams.where.keys.length).fill(options.values[srcIndex]);
 
       // Generate the SQL WHERE clause from defined keys, values, and operators.
-      const where = makeWhere(keys, values, operators, wildcards, transformations);
+      const typed = makeWhere(keys, values, operators, wildcards, transformations);
+
+      // The generated clause is an OR across keys, so it is parenthesised before the fixed condition is ANDed on.
+      const where = source.queryParams.fixedWhere ? `(${typed}) AND (${source.queryParams.fixedWhere})` : typed;
 
       // Make shallow copy of the source query params object and set the where value to be the stringified result
-      // from `makeWhere`
-      const config = { ...source.queryParams, where: where };
+      // from `makeWhere`. `fixedWhere` is already inside it, so it is not a service parameter of its own.
+      const { fixedWhere: _fixedWhere, ...rest } = source.queryParams;
+      const config = { ...rest, where: where };
 
       // Make URL param query from the config copy.
       const query = makeUrlParams(config, true, '/query');
@@ -672,6 +676,15 @@ export interface SearchSourceQueryParamsProperties {
    * of both queries are combined and scoring is performed to deliver more accurate search results.
    */
   scoringWhere?: SearchSourceWhereProperties;
+
+  /**
+   * A SQL condition every query for this source must also satisfy, whatever was typed: the generated
+   * `where` (and `scoringWhere`) clause is wrapped in parentheses and ANDed with it. For a source that
+   * covers only part of a shared layer, such as one site of a campus served from one service.
+   *
+   * Example: `"zip = '75246'"`
+   */
+  fixedWhere?: string;
 }
 
 /**
