@@ -10,7 +10,7 @@
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
-## Batch 161 (gisday: the release check for site `sha-9ea3ccd` and API `sha-4e60f38`, the next GIS Day release; read only against production; 27 October 2026, about 12:45 PM Central, from `work (gisday)`)
+## Batch 161 (gisday: the release check for site and API `sha-4e60f38`, the next GIS Day release; read only against production; 27 October 2026, about 12:45 PM Central, from `work (gisday)`)
 
 After batches 159 and 160. About 45 minutes. **Batch 159 must have left the local stack on `origin/development`** before you
 start this.
@@ -19,13 +19,13 @@ The maintainer merged five GIS Day pull requests on 27 October; `development` at
 #2162 (score 2026 finds against 2025's, PR 2424), #2164 (automatic review of VGI submissions, PR 2428), #2431 (Texas A&M site
 drops three links, PR 2461), #2426 (a resized speaker photo is never larger than the upload, PR 2462) and #2427 (19 unused
 files removed, PR 2463), then **#2425: the API images run as the `node` user, uid 1000** (PR 2441, merge `4e60f38a6`; production's
-volumes were given to uid 1000 by kubernetes-config PR 84). **No schema change** (the entity change is a TypeScript type only), so no migration. **The images:** site **`gisday-angular:sha-9ea3ccd`** (published); API **`gisday-nest:sha-4e60f38`**, whose publish run was
-still going at 12:50 PM: wait until it is on ghcr (`docker manifest inspect`). Its `gisday-nest:sha-9ea3ccd` was never published. Production runs API `sha-eb0fe7d`.
+volumes were given to uid 1000 by kubernetes-config PR 84). **No schema change** (the entity change is a TypeScript type only), so no migration. **The images:** **`gisday-angular:sha-4e60f38`** and **`gisday-nest:sha-4e60f38`**, both published (1:05 PM). `gisday-nest:sha-9ea3ccd`
+was never published; ignore it. Production runs API `sha-eb0fe7d`.
 
 ### What to do
 
 1. Your local stack (seed, migrated) with the **published `gisday-nest:sha-4e60f38`** as `gisday-api`, as in batch 155, and a
-   local site build of `9ea3ccd2f` on 4201 (`web --static`).
+   local site build of `4e60f38a6` on 4201 (`web --static`).
 2. `work/tools/gisday-release-check.cjs` and `gisday-release-check2.cjs`: every line should PASS, as in batch 155.
 3. **What this release adds:**
    - **#2426:** upload, through Admin, Speakers, an opaque PNG photo over 840 px on its shorter side (a real photo saved as PNG,
