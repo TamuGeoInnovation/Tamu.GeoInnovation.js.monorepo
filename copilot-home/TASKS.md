@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 28.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 29.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -37,6 +37,44 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
+
+## Batch 28 (gisday: #2460, the VGI competition runs 14-20 November, winners at lunch on Friday 20 November; a branch with screenshots; 27 October 2026, about 11:50 AM Central, from `work (gisday)`)
+
+High priority; about 40 minutes. Questions go to `work (gisday)` under **Questions for the director (gisday)**.
+
+[#2460](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2460) lists every place the pages give the old
+dates. The new wording, decided by the maintainer on 27 October:
+
+- The competition runs **Saturday, November 14 through Friday, November 20, 2026** (the weekend before Texas A&M GIS Day and the
+  week of it).
+- Submissions count until **11:00 AM Central on Friday, November 20**.
+- The final winners are announced **at the lunch session on Friday, November 20**.
+
+### What to do
+
+1. Branch `fix/2460-gisday-vgi-dates` from the latest `origin/development`, in a worktree beside `C:\TAMU\copilot-home`.
+2. **Red first:** a spec for each of `vgi.component` and `monuments.component` (in
+   `libs/gisday/platform/ngx/core/src/lib/pages/competitions/`; follow how neighbouring page specs render) that reads the rendered
+   text and asserts it contains `November 14`, `11:00 AM` and `Friday, November 20` and does not contain `November 9` or
+   `November 19`. Prove it red.
+3. **The fix:** change the four places the issue lists, and any other copy of the old dates you find with a search of
+   `libs/gisday` and `apps/gisday-angular` (say what you searched and what you found). Keep each sentence's existing markup; text
+   changes only.
+4. `scripts/check-in-volume.sh fix/2460-gisday-vgi-dates gisday-platform-ngx-core,gisday-angular` must exit 0. Commit with
+   `Closes #2460`; push to the fork.
+5. Before and after screenshots of `/competitions/vgi` and `/competitions/monuments` (public pages, no sign-in) from the local
+   build, into `docs/screenshots/2460-vgi-dates/`, and a release-notes file `docs/releases/unreleased/2460-vgi-dates.md` with its
+   *What to test on dev* row, as batch 26 did.
+
+Kaleb's open pull requests 2424 and 2428 also edit `monuments.component.html` (other lines). If `development` has moved by the time
+you finish, rebase and say so; do not touch their branches.
+
+### Then
+
+Report `copilot-home/reports/<yyyy-mm-dd>-<n>.md`: branch and head, red then green, the check's exit code, the screenshots. Nothing
+on GitHub; the director opens the pull request.
+
+---
 
 ## Batch 27 (security: #2122 - the 10 dependencies knip calls unused: evidence for each; read only; 26 October 2026, about 5:30 PM Central, from `work (security)`)
 
