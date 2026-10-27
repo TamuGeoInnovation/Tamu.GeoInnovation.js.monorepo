@@ -17,9 +17,11 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-copilot-home: started batch 29 (aggiemap: four satellite campuses, one branch) at 12:21 PM Central, 27 October.
+Idle.
 
 ## Finished
+
+- **Batch 29, aggiemap: four satellite campuses (#2455, #2456, #2457, #2464)** (12:21 PM to about 2:30 PM Central, 27 October): branch `feat/2455-2457-2464-four-campuses` at `d668b56c3f5850fdf7a7c1510a5f51c9a8e2663c` on the fork; red (5 failed) then green (57 passed); check exit 0; screenshots. Campuses not added to DEVELOPMENT_ONLY_SERVICES (production loads them on a direct URL); see report `copilot-home/reports/2026-10-27-29.md`.
 
 - **Batch 28, gisday: #2460 VGI competition dates** (11:50 AM to about 12:35 PM Central, 27 October): branch `fix/2460-gisday-vgi-dates` at `9260c265b68e26ea5ba75abce979398c0a6af0e1` on the fork; red (4 failed) then green (4 passed); check exit 0; before/after screenshots and release note. Report `copilot-home/reports/2026-10-27-28.md`.
 
@@ -62,4 +64,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 27 (batch 6 reported later, out of order; 4 and 5 withdrawn)
+Last batch done: 29 (batch 6 reported later, out of order; 4 and 5 withdrawn)
