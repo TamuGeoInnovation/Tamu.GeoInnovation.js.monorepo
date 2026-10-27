@@ -4,6 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
+import { of } from 'rxjs';
+
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { discoverRoutes } from '../../discover.routes';
 import { EventMapsComponent } from './event-maps.component';
 
@@ -22,7 +25,8 @@ describe('EventMapsComponent quick links', () => {
 
   const discoveryStub = {
     getQuickLinkApplications: () => quickLinkApps,
-    getVisibleInternalDiscoverApplications: () => []
+    getVisibleInternalDiscoverApplications: () => [],
+    getInternalDiscoverApplications: () => []
   };
 
   const render = async (data: Record<string, unknown>): Promise<ComponentFixture<EventMapsComponent>> => {
@@ -30,7 +34,8 @@ describe('EventMapsComponent quick links', () => {
       imports: [RouterTestingModule, EventMapsComponent],
       providers: [
         { provide: DiscoveryService, useValue: discoveryStub },
-        { provide: ActivatedRoute, useValue: { snapshot: { data } } }
+        { provide: ActivatedRoute, useValue: { snapshot: { data } } },
+        { provide: TestingService, useValue: { isTesting: false, get: () => of(false) } }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -73,6 +78,70 @@ describe('EventMapsComponent quick links', () => {
       'Visitor Parking'
     ]);
     expect(fixture.nativeElement.querySelector('tamu-gisc-quick-links')).not.toBeNull();
+  });
+});
+
+/**
+ * A category page lists the development-only maps of its type on development, and none of them on
+ * production (#2449).
+ *
+ * This page took `getVisibleInternalDiscoverApplications()`, which drops `visible: false` whatever the
+ * environment - so the two campuses added with that flag were listed nowhere, including the
+ * development site they were added for. Rendered rather than asserted on the field, because what was
+ * wrong was which list the component asked for.
+ */
+describe('EventMapsComponent development-only maps', () => {
+  const published = { name: 'Galveston', id: 'galveston', type: 'satellite-campus', mapTypes: ['campus'] };
+  const developmentOnly = {
+    name: 'Fort Worth Law School',
+    id: 'fort-worth-law',
+    type: 'satellite-campus',
+    mapTypes: ['campus'],
+    visible: false
+  };
+
+  const discoveryStub = {
+    getQuickLinkApplications: () => [],
+    getVisibleInternalDiscoverApplications: () => [published],
+    getInternalDiscoverApplications: () => [published, developmentOnly]
+  };
+
+  const listed = async (isTesting: boolean): Promise<string[]> => {
+    await TestBed.configureTestingModule({
+      imports: [RouterTestingModule, EventMapsComponent],
+      providers: [
+        { provide: DiscoveryService, useValue: discoveryStub },
+        { provide: ActivatedRoute, useValue: { snapshot: { data: { mapType: 'campus', title: 'Campus Maps' } } } },
+        { provide: TestingService, useValue: { isTesting, get: () => of(isTesting) } }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(EventMapsComponent);
+
+    fixture.detectChanges();
+
+    return (fixture.componentInstance.applications ?? []).map((app) => app.name);
+  };
+
+  afterEach(() => TestBed.resetTestingModule());
+
+  it('lists a development-only map on development', async () => {
+    expect(await listed(true)).toEqual(['Fort Worth Law School', 'Galveston']);
+  });
+
+  it('does not list it on production', async () => {
+    // Checked from both sides: a page that listed nothing would pass the test above on its own.
+    expect(await listed(false)).toEqual(['Galveston']);
+  });
+
+  it('takes its maps from the unfiltered list, so the environment decides and not the list', () => {
+    // The regression was asking the service for the already-filtered list. Asserted directly because a
+    // component that went back to it would still pass the test above on a development host.
+    const source = EventMapsComponent.prototype.ngOnInit.toString();
+
+    expect(source).toContain('getInternalDiscoverApplications');
+    expect(source).not.toContain('getVisibleInternalDiscoverApplications');
   });
 });
 

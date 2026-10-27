@@ -24,6 +24,34 @@ async function photo(width: number, height: number, mime: 'image/jpeg' | 'image/
   return mime === 'image/png' ? image.getBuffer('image/png') : image.getBuffer('image/jpeg', { quality: 95 });
 }
 
+// Large flat areas of a few colours (a graphic, a screenshot, a cut-out): a PNG stores it in few bytes, and scaling blends the
+// edges into many new colours, which is what made a resized photo larger than the upload (#2426).
+async function flatColours(width: number, height: number, alpha = 255) {
+  const image = new Jimp({ width, height, color: 0xffffffff });
+  const data = image.bitmap.data;
+  const palette = [
+    [120, 128, 124],
+    [126, 122, 130],
+    [132, 126, 120],
+    [124, 134, 128],
+    [118, 124, 134],
+    [130, 130, 126]
+  ];
+
+  for (let i = 0; i < data.length; i += 4) {
+    const p = i / 4;
+    const block = Math.floor((p % width) / 6) * 31 + Math.floor(Math.floor(p / width) / 6) * 17;
+    const [r, g, b] = palette[(block * block) % palette.length];
+
+    data[i] = r;
+    data[i + 1] = g;
+    data[i + 2] = b;
+    data[i + 3] = alpha;
+  }
+
+  return image.getBuffer('image/png', { deflateLevel: 9, colorType: alpha === 255 ? 2 : 6 });
+}
+
 const sizeOf = async (buffer: Buffer) => {
   const { width, height } = (await Jimp.fromBuffer(buffer)).bitmap;
 
@@ -61,12 +89,58 @@ describe('fitImage', () => {
     expect(await sizeOf(result.buffer)).toEqual({ width: 1260, height: 840 });
   }, SLOW);
 
-  it('keeps a PNG a PNG', async () => {
-    const result = await fitImage(await photo(1800, 1200, 'image/png'), { shortSide: 840 });
+  it('keeps a PNG with transparency a PNG, with its transparency', async () => {
+    const result = await fitImage(await flatColours(1800, 1200, 128), { shortSide: 840 });
 
     expect(result.mime).toBe('image/png');
     expect(result.buffer.subarray(1, 4).toString('latin1')).toBe('PNG');
     expect(await sizeOf(result.buffer)).toEqual({ width: 1260, height: 840 });
+    expect((await Jimp.fromBuffer(result.buffer)).bitmap.data[3]).toBe(128);
+  }, SLOW);
+
+  it('never stores a scaled photo larger than the upload (#2426)', async () => {
+    const input = await flatColours(2400, 1600);
+
+    const result = await fitImage(input, { shortSide: 840 });
+
+    expect(await sizeOf(result.buffer)).toEqual({ width: 1260, height: 840 });
+    expect(result.buffer.length).toBeLessThan(input.length);
+    expect(result.mime).toBe('image/jpeg');
+    expect(result.after.bytes).toBe(result.buffer.length);
+  }, SLOW);
+
+  it('reports the format it stored: an opaque PNG that is smaller as a JPEG comes back as a JPEG', async () => {
+    const result = await fitImage(await flatColours(2400, 1600), { shortSide: 840 });
+
+    expect(result.mime).toBe('image/jpeg');
+    expect(result.buffer.subarray(0, 2)).toEqual(Buffer.from([0xff, 0xd8]));
+  }, SLOW);
+
+  it('stores a PNG with transparency as a PNG even when scaling makes it larger, which it cannot avoid as a JPEG', async () => {
+    const input = await flatColours(2400, 1600, 128);
+
+    const result = await fitImage(input, { shortSide: 840 });
+
+    expect(result.mime).toBe('image/png');
+    expect(await sizeOf(result.buffer)).toEqual({ width: 1260, height: 840 });
+  }, SLOW);
+
+  it('keeps an image already within the size, with no metadata, when every re-encoding is larger', async () => {
+    const input = await flatColours(800, 600);
+
+    const result = await fitImage(input, { shortSide: 840, keepBelowBytes: 0 });
+
+    expect(result.changed).toBe(false);
+    expect(result.buffer).toBe(input);
+  }, SLOW);
+
+  it('never grows an image when it is run again on its own output', async () => {
+    for (const input of [await flatColours(2400, 1600), await flatColours(2400, 1600, 128), await photo(1800, 1200, 'image/png')]) {
+      const once = await fitImage(input, { shortSide: 840, keepBelowBytes: 0 });
+      const twice = await fitImage(once.buffer, { shortSide: 840, keepBelowBytes: 0 });
+
+      expect(twice.buffer.length).toBeLessThanOrEqual(once.buffer.length);
+    }
   }, SLOW);
 
   it('changes nothing the second time, so a re-run does not lose JPEG quality again', async () => {

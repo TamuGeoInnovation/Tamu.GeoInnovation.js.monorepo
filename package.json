@@ -40,7 +40,6 @@
     "@angular/forms": "22.2.3",
     "@angular/material": "22.2.3",
     "@angular/platform-browser": "22.2.3",
-    "@angular/platform-browser-dynamic": "22.2.3",
     "@angular/platform-server": "22.2.3",
     "@angular/router": "22.2.3",
     "@angular/service-worker": "22.2.3",
@@ -154,6 +153,9 @@
     "webpack-cli": "^7.0.0"
   },
   "overrides": {
+    "@azure/identity": {
+      "@azure/msal-node": "7.1.0"
+    },
     "@angular/build": {
       "vite": "8.3.4"
     },

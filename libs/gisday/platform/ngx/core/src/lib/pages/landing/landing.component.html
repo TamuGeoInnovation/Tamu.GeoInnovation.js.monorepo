@@ -44,6 +44,7 @@
 
           <a routerLink="/sessions" class="button snug leader-2 trailer-2">Explore Events</a>
 
+          @if ('homeLinks' | siteHas) {
           @if ('tamu' | siteHas) {
           <a href="https://tinyurl.com/GISDay2023SpeedMentoring" class="trailer-1">Sign up for Career Cupid Speed Mentoring Events</a>
 
@@ -51,6 +52,7 @@
           }
 
           <a href="https://www.youtube.com/watch?v=eigWXfjN9BU&feature=youtu.be">Watch the how to get started video</a>
+          }
         </div>
       </div>
     </div>

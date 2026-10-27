@@ -5,6 +5,7 @@ import { DiscoverMapType } from '@tamu-gisc/ts/events/ngx';
 
 import { InternalDiscoverApplication } from '../../interfaces/discover-application.interface';
 import { DiscoveryService } from '../../services/discovery/discovery.service';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import {
   buildMapColumnGroups,
   getApplicationRoute,
@@ -45,6 +46,7 @@ interface EventMapsRouteData {
 export class EventMapsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly discoveryService = inject(DiscoveryService);
+  private readonly testing = inject(TestingService);
 
   public title: string;
   public intro?: string;
@@ -69,8 +71,25 @@ export class EventMapsComponent implements OnInit {
           }));
 
     // Category pages are a navigation directory of every map of this type, not an upcoming-only list.
+    //
+    // A map with `visible: false` is development-only, so this page takes the unfiltered list and
+    // applies the environment test itself. Taking the visible-filtered list hid those maps on
+    // development too, which is the whole point of listing them there: the two new campuses were added
+    // with that flag and then appeared nowhere (#2449).
+    //
+    // `TestingService.isTesting`, the same test the All Maps page uses, so the two pages agree about
+    // which campuses exist - and `?as=production` hides them here as it does there. Deliberately not
+    // `readsDevelopmentGisServer()`, which answers a different question: that one governs which GIS
+    // server to read and treats localhost as production, so using it would have hidden these maps
+    // from anyone running the application locally.
+    const isTesting = this.testing.isTesting;
+
+    const forThisType = this.discoveryService
+      .getInternalDiscoverApplications()
+      .filter((app) => app.mapTypes.includes(data.mapType));
+
     this.applications = sortApplicationsByName(
-      this.discoveryService.getVisibleInternalDiscoverApplications().filter((app) => app.mapTypes.includes(data.mapType))
+      forThisType.filter((app) => isTesting || app.visible !== false)
     );
     this.applicationColumns = buildMapColumnGroups(this.applications, data.columns);
   }

@@ -22,7 +22,10 @@ import * as definitions from './basemaps.definition';
 
 const REPO_ROOT = path.join(__dirname, '..', '..', '..', '..', '..', '..', '..');
 const DEFINITION = path.join('libs', 'maps', 'feature', 'basemap', 'src', 'lib', 'shared', 'basemaps.definition.ts');
-const VECTOR_SERVICE = 'Hosted/VTBase/VectorTileServer';
+// The vector tile cache development opens on. It moves when a newer one is published (#2436 moved it
+// from VTBase to VTBase3); the point of the test below is that production does not draw a vector
+// basemap and development does, not which cache it is.
+const VECTOR_SERVICE = 'Hosted/VTBase3/VectorTileServer';
 
 /** Every TypeScript source file in libs/ and apps/, specs excluded, relative to the repository root. */
 function sources(): string[] {
@@ -70,6 +73,7 @@ describe('campus basemap', () => {
     // The map opens on the first entry, so it must be the one the view was built with.
     expect(dev[0]).toEqual(resolve(true));
     expect(dev.map((basemap) => basemap.title)).toEqual([
+      'Aggieland vector, October 2026',
       'Aggieland vector, September 2026',
       'Aggieland raster, October 2026',
       'Aggieland raster, June 2026',
@@ -79,8 +83,17 @@ describe('campus basemap', () => {
     // The gallery marks the active basemap, and restores a saved one, by id.
     expect(new Set(dev.map((basemap) => basemap.id)).size).toBe(dev.length);
 
-    // The raster basemap production shows is among them, so it can be seen drawn before a release.
-    expect(urlsOf(dev[1])).toEqual(urlsOf(resolve(false)));
+    // The raster basemap production shows is among them, so it can be seen drawn before a release. It
+    // is found by title rather than by position, so adding a version above it cannot quietly point
+    // this at something else (#2436 added the October vector cache at index 1).
+    const productionRaster = dev.find((basemap) => basemap.title === 'Aggieland raster, October 2026');
+
+    expect(productionRaster).toBeDefined();
+    expect(urlsOf(productionRaster as Basemap)).toEqual(urlsOf(resolve(false)));
+
+    // Both vector caches are offered, so the new one can be compared with the one it replaces.
+    expect(urlsOf(dev[0]).some((url) => url.includes('Hosted/VTBase3/VectorTileServer'))).toBe(true);
+    expect(urlsOf(dev[1]).some((url) => url.includes('Hosted/VTBase/VectorTileServer'))).toBe(true);
   });
 
   it('turns every id the gallery can save back into a basemap (#1726)', () => {

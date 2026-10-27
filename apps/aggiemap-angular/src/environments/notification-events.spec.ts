@@ -17,6 +17,13 @@ describe('NotificationEvents', () => {
 
   // Loaded the way the application loads them: the event definitions are not part of its first
   // download (#1454), so nothing in the application may import them statically.
+  //
+  // Sixty seconds rather than vitest's ten, because this one hook loads the whole events library and
+  // the default is not enough when the machine is running eight tasks at once: the hook lost the race
+  // on a full `check-in-volume.sh ... all`, and vitest then reported all three tests as **skipped**
+  // rather than failed, so the file asserted nothing and the summary looked clean (#2444). The limit
+  // is here rather than in the project's config so it covers the import that is actually slow instead
+  // of relaxing every test in the application.
   beforeAll(async () => {
     const { EventDefinitions } = await import('@tamu-gisc/ts/events/ngx');
 
@@ -26,7 +33,7 @@ describe('NotificationEvents', () => {
         const dates = c.eventDates.map(toTime);
         return { id: c.id, from: Math.min(...dates) - 7 * ONE_DAY, to: Math.max(...dates) + ONE_DAY };
       });
-  });
+  }, 60_000);
 
   it('finds the event toasts to compare against', () => {
     expect(toastWindows.length).toBeGreaterThan(0);

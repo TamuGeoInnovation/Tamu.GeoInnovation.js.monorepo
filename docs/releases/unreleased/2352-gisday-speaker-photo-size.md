@@ -9,8 +9,10 @@ testOnDev: |
 
 Speaker photos were stored and served exactly as uploaded, so Presenters downloaded 60 photos, 9.0 MB, to draw cards
 255 px wide, and five photos were over 500 KB. An uploaded photo is now scaled down until its shorter side is 840 px:
-twice the 420 px a presenter's own page draws it at, for sharp screens. It keeps its format, name and aspect ratio, is
-re-encoded (JPEG at quality 80), and loses its EXIF metadata, which can hold where a photo was taken, after its EXIF
+twice the 420 px a presenter's own page draws it at, for sharp screens. It keeps its name and aspect ratio, is
+re-encoded (JPEG at quality 80; a PNG with transparency stays a PNG, and an opaque PNG is stored as whichever of JPEG and
+PNG is smaller, so a photo is never stored larger than it was uploaded, [#2426](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2426)),
+and loses its EXIF metadata, which can hold where a photo was taken, after its EXIF
 orientation is applied. Small photos with no metadata are left exactly as they were. WebP, SVG and GIF photos are kept as
 they are.
 

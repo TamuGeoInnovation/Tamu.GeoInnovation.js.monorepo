@@ -11,6 +11,8 @@
  * - `tamu`: what only Texas A&M's site has: the Organizing Committee, Student Opportunities and Resume
  *   Bank on the About page, the High School Portal, the homepage's mentoring and TX GIS Hero links, and
  *   the Texas A&M wording on the homepage, About page and footer.
+ * - `homeLinks`: the links under Explore Events on the homepage: the how-to video and, where `tamu` is on, the
+ *   mentoring sign-up and the TX GIS Hero form. gisday.tamu.edu leaves them out (#2431); txgisday.org keeps them.
  * - `tamuLinks`: the university's and state's required links in the footer. Texas A&M runs txgisday.org
  *   as well as its own site, so both keep them (#2012).
  */
@@ -22,7 +24,8 @@ export type GisdayFeature =
   | 'checkIns'
   | 'pastYears'
   | 'tamu'
-  | 'tamuLinks';
+  | 'tamuLinks'
+  | 'homeLinks';
 
 /**
  * One deployment of the GIS Day site: its name, its images, and the features it leaves out.
@@ -95,7 +98,7 @@ export const GISDAY_SITES = {
     banner: 'assets/images/logo/TAM-LogoBox.svg',
     owner: 'GeoInnovation Service Center',
     favicon: 'assets/images/logo/TAM-LogoBox.svg',
-    off: [],
+    off: ['homeLinks'],
     contact: 'gis@tamu.edu',
     hosts: ['gisday.tamu.edu', 'tamu.txgisday.org'],
     brand: 'tamu',

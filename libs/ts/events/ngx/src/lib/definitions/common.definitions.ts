@@ -1,5 +1,7 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
+import { EventPopups } from '../modules/popups/popups';
+
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
 
@@ -44,3 +46,53 @@ export const commonSymbols = {
     }
   }
 };
+
+/**
+ * One layer of an athletics map as the **development** GIS server publishes it (#2209).
+ *
+ * The development views are the schema going forward: the GIS team confirmed on 26 October 2026 that
+ * production's services will be republished to match them. They differ from production's in two ways
+ * that every athletics definition has to account for, so the accounting lives here once rather than
+ * nine times over.
+ *
+ * **Each view already holds one sport.** `SoccerParking_view` carries only `event = 'Soccer'`, and so
+ * on. Production's per-sport filters - `baseball IN ('AnyValid','SeasonPass')`, `trackxc =
+ * 'EventParking'`, `wbasketball IS NOT NULL`, `event = '<Sport>'` - have nothing left to select and no
+ * column to read, so they are dropped rather than translated. Where production splits one service
+ * layer into two map layers, `type` carries that distinction instead: pass `onlyType`.
+ *
+ * **The attributes are a marker feed**: `name`, `description`, `type`, and `event` on the layers that
+ * carry it. Production's `lotname` and `<sport>n` do not exist here. A popup that reads them comes up
+ * empty while the layer still draws, which is why feature-count checks passed maps whose popups were
+ * blank - `map-layers.spec.ts` counts features and cannot see an empty popup.
+ *
+ * Women's Basketball was written this way by hand in #2176 and is the only athletics map whose
+ * development popups have ever worked; this generalises it.
+ */
+export function athleticsDevelopmentSource(source: {
+  id: string;
+  url: string;
+  title?: string;
+  layerIndex?: number;
+  /** The `type` value this layer shows, where production split one service layer into two. */
+  onlyType?: string;
+}): LayerSource {
+  return {
+    type: 'feature',
+    id: source.id,
+    url: source.url,
+    ...(source.title === undefined ? {} : { title: source.title }),
+    ...(source.layerIndex === undefined ? {} : { layerIndex: source.layerIndex }),
+    popupComponent: EventPopups.MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.name',
+      description: 'attributes.description'
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*'],
+      ...(source.onlyType === undefined ? {} : { definitionExpression: `type = '${source.onlyType}'` })
+    }
+  } as unknown as LayerSource;
+}

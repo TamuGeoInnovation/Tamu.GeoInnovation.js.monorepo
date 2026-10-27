@@ -26,4 +26,7 @@ WORKDIR /app
 # The APIs run node only; npm in the base image carried every remaining finding in these images (#2117).
 RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 COPY --from=builder /app .
+# Run as the base image's node user (uid 1000), not root (#2425). /app stays root's, so the API cannot change its own code.
+# Attachments are held in memory, never written to disk.
+USER node
 CMD ["node", "main.js"]

@@ -48,12 +48,14 @@ export interface FitImageResult {
 }
 
 /**
- * Scales an uploaded JPEG or PNG down to the size it is shown at, re-encodes it in its own format, and drops its
- * metadata (EXIF, including any location), after applying its EXIF orientation so it still shows the right way up.
+ * Scales an uploaded JPEG or PNG down to the size it is shown at and drops its metadata (EXIF, including any location), after
+ * applying its EXIF orientation so it still shows the right way up. It is re-encoded as a JPEG when it has no transparency and
+ * as a PNG when it has, and an opaque PNG is also tried as a PNG; the smallest is stored, so a scaled image is
+ * not larger than it needs to be (#2426). The stored file keeps its name, so a browser sniffs the format, as it does for any
+ * `<img>`; `mime` says what was stored.
  *
- * Anything else (WebP, SVG, GIF, ...) comes back as it was, because a stored file keeps its name and so its format. An image
- * that is already small, within `shortSide` and carries no metadata comes back untouched, and one that would only be
- * re-encoded keeps its original bytes if they were smaller.
+ * Anything else (WebP, SVG, GIF, ...) comes back as it was. An image that is already small, within `shortSide` and carries
+ * no metadata comes back untouched, and one that would only be re-encoded keeps its original bytes unless that saves a tenth.
  */
 export async function fitImage(input: Buffer, options: FitImageOptions): Promise<FitImageResult> {
   const { shortSide, keepBelowBytes = 300 * 1024, quality = 80 } = options;
@@ -89,10 +91,22 @@ export async function fitImage(input: Buffer, options: FitImageOptions): Promise
     image.resize({ w: Math.round(width * scale), h: Math.round(height * scale) });
   }
 
-  const data =
-    mime === 'image/png'
-      ? await image.getBuffer('image/png', { deflateLevel: 9, colorType: isOpaque(image.bitmap.data) ? 2 : 6 })
-      : await image.getBuffer('image/jpeg', { quality });
+  // Scaling blends edges into new colours, so a PNG of flat areas can come out several times larger as a PNG (#2426). An
+  // image with no transparency is therefore also tried as a JPEG, and the smallest result is stored; one with transparency
+  // can only be a PNG.
+  const opaque = isOpaque(image.bitmap.data);
+  const candidates: Array<{ mime: string; data: Buffer }> = [];
+
+  if (opaque) {
+    candidates.push({ mime: 'image/jpeg', data: await image.getBuffer('image/jpeg', { quality }) });
+  }
+
+  if (mime === 'image/png' || !opaque) {
+    candidates.push({ mime: 'image/png', data: await image.getBuffer('image/png', { deflateLevel: 9, colorType: opaque ? 2 : 6 }) });
+  }
+
+  const best = candidates.reduce((smallest, c) => (c.data.length < smallest.data.length ? c : smallest));
+  const data = best.data;
 
   // Re-encoding an image already within the size can make it larger, or save a few bytes at the cost of another
   // generation of JPEG loss, which a second run would then repeat. Keep the original unless it saves a tenth, or had to
@@ -104,10 +118,10 @@ export async function fitImage(input: Buffer, options: FitImageOptions): Promise
   return {
     buffer: data,
     changed: true,
+    mime: best.mime,
     reason: [tooLarge && `scaled to ${image.bitmap.width} x ${image.bitmap.height}`, hasMetadata && 'metadata removed', !tooLarge && 're-encoded']
       .filter(Boolean)
       .join(', '),
-    mime,
     before: { bytes: input.length, width, height },
     after: { bytes: data.length, width: image.bitmap.width, height: image.bitmap.height }
   };
