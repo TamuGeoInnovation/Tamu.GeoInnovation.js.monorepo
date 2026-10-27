@@ -9,6 +9,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 **Batch 6** (aggiemap: #2472, the dev server stalls at the dependency optimizer; an investigation), started 2:25 PM Central, Tuesday 27 October 2026, from `work (aggiemap)`.
 Next update by 4:15 PM Central.
 Progress (3:22 PM): reproduced twice. With --poll=2000 the optimizer never finishes (10 min), whether the Angular cache is on the bind mount or a volume. Without --poll it bundles in 37 s. Next: whether edits are seen without polling, and polling with a bigger thread pool or a longer interval.
+Progress (3:39 PM): with a warm dependency cache, --poll does not stall (loaded in 7-34 s). Rerunning the bigger-thread-pool and 10 s poll trials on an empty cache, which is what stalls.
 ## Finished
 - **Batch 5** (aggiemap; report `home/reports/2026-10-27-5.md`): #2453. branch ready: `fix/2453-baseball-republish` at `934da19f2` on the fork. Spec red then green, check exit 0, before/after committed. One question for the director.
 - **Batch 4** (security; report `home/reports/2026-10-26-4.md`): #2425's clean branch pushed to the fork as `chore/2425-api-images-non-root-2` at `160f65e80`.
