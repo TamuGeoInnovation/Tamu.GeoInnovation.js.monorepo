@@ -17,7 +17,7 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Idle: batch 27 reported; nothing left in the queue.
+Batch 28 (gisday: #2460 VGI dates) running since 11:50 AM Central, 27 October.
 
 ## Finished
 
