@@ -1,6 +1,10 @@
 import { DCBushSchoolLayerSources } from './dc-bush-school.definitions';
 import { FortWorthLawLayerSources } from './fort-worth-law.definitions';
 import { HoustonSpaceInstituteLayerSources } from './houston-space-institute.definitions';
+import { MaysCityCenterLayerSources } from './mays-city-center.definitions';
+import { HscRoundRockLayerSources } from './hsc-round-rock.definitions';
+import { HscKingsvilleLayerSources } from './hsc-kingsville.definitions';
+import { HscCorpusChristiLayerSources } from './hsc-corpus-christi.definitions';
 import { GalvestonLayerSources } from './galveston.definitions';
 import { McAllenLayerSources } from './mcallen.definitions';
 
@@ -18,6 +22,10 @@ const CAMPUSES = {
   'DC / Bush School': DCBushSchoolLayerSources,
   'Fort Worth Law School': FortWorthLawLayerSources,
   'Houston Space Institute': HoustonSpaceInstituteLayerSources,
+  'Mays City Center': MaysCityCenterLayerSources,
+  'HSC Round Rock': HscRoundRockLayerSources,
+  'HSC Kingsville': HscKingsvilleLayerSources,
+  'HSC Corpus Christi': HscCorpusChristiLayerSources,
   Galveston: GalvestonLayerSources,
   McAllen: McAllenLayerSources
 };

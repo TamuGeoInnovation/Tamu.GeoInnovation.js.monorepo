@@ -4,6 +4,10 @@ import * as path from 'path';
 import { DCBushSchoolTs } from './dc-bush-school.definitions';
 import { FortWorthLawTs } from './fort-worth-law.definitions';
 import { HoustonSpaceInstituteTs } from './houston-space-institute.definitions';
+import { MaysCityCenterTs } from './mays-city-center.definitions';
+import { HscRoundRockTs } from './hsc-round-rock.definitions';
+import { HscKingsvilleTs } from './hsc-kingsville.definitions';
+import { HscCorpusChristiTs } from './hsc-corpus-christi.definitions';
 import { GalvestonTs } from './galveston.definitions';
 import { McAllenTs } from './mcallen.definitions';
 
@@ -43,13 +47,17 @@ const campuses = [
   { label: 'McAllen', root: McAllenTs },
   { label: 'DC / Bush School', root: DCBushSchoolTs },
   { label: 'Fort Worth Law School', root: FortWorthLawTs },
-  { label: 'Houston Space Institute', root: HoustonSpaceInstituteTs }
+  { label: 'Houston Space Institute', root: HoustonSpaceInstituteTs },
+  { label: 'Mays City Center', root: MaysCityCenterTs },
+  { label: 'HSC Round Rock', root: HscRoundRockTs },
+  { label: 'HSC Kingsville', root: HscKingsvilleTs },
+  { label: 'HSC Corpus Christi', root: HscCorpusChristiTs }
 ];
 
 describe('satellite campus thumbnails', () => {
   it('covers every campus the definitions declare', () => {
     // A campus added without being added here would otherwise be silently unchecked.
-    expect(campuses.length).toBe(5);
+    expect(campuses.length).toBe(9);
   });
 
   it.each(campuses)('$label is listed as a satellite campus', ({ root }) => {
@@ -76,7 +84,14 @@ describe('satellite campus thumbnails', () => {
       .map(({ label }) => label)
       .sort();
 
-    expect(developmentOnly).toEqual(['Fort Worth Law School', 'Houston Space Institute']);
+    expect(developmentOnly).toEqual([
+      'Fort Worth Law School',
+      'HSC Corpus Christi',
+      'HSC Kingsville',
+      'HSC Round Rock',
+      'Houston Space Institute',
+      'Mays City Center'
+    ]);
   });
 
   it.each(campuses)('$label thumbnail file exists', ({ root }) => {

@@ -134,7 +134,15 @@ function createConnections(gisHost: string): IComposedConnections {
     // The Houston Space Institute's portal item lives on `divops.tamu.edu`, but its services are on
     // `gis.tamu.edu` like every other campus, so there is no second portal host here (#2438).
     houstonSpaceInstituteBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSI/VectorTileServer',
-    houstonSpaceInstituteFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSI/FeatureServer'
+    houstonSpaceInstituteFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSI/FeatureServer',
+    maysCityCenterBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/Mays/VectorTileServer',
+    maysCityCenterFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/Mays/FeatureServer',
+    hscRoundRockBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCRR/VectorTileServer',
+    hscRoundRockFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCRR/FeatureServer',
+    hscKingsvilleBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCK/VectorTileServer',
+    hscKingsvilleFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCK/FeatureServer',
+    hscCorpusChristiBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCC/VectorTileServer',
+    hscCorpusChristiFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HSCC/FeatureServer'
   };
 }
 
@@ -266,4 +274,12 @@ export interface IComposedConnections {
   fortWorthLawFeatureServerUrl: string;
   houstonSpaceInstituteBasemapUrl: string;
   houstonSpaceInstituteFeatureServerUrl: string;
+  maysCityCenterBasemapUrl: string;
+  maysCityCenterFeatureServerUrl: string;
+  hscRoundRockBasemapUrl: string;
+  hscRoundRockFeatureServerUrl: string;
+  hscKingsvilleBasemapUrl: string;
+  hscKingsvilleFeatureServerUrl: string;
+  hscCorpusChristiBasemapUrl: string;
+  hscCorpusChristiFeatureServerUrl: string;
 }

@@ -75,6 +75,10 @@ import { McAllenTs } from './campus/mcallen.definitions';
 import { DCBushSchoolTs } from './campus/dc-bush-school.definitions';
 import { FortWorthLawTs } from './campus/fort-worth-law.definitions';
 import { HoustonSpaceInstituteTs } from './campus/houston-space-institute.definitions';
+import { MaysCityCenterTs } from './campus/mays-city-center.definitions';
+import { HscRoundRockTs } from './campus/hsc-round-rock.definitions';
+import { HscKingsvilleTs } from './campus/hsc-kingsville.definitions';
+import { HscCorpusChristiTs } from './campus/hsc-corpus-christi.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -152,6 +156,10 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   DCBushSchoolTs,
   FortWorthLawTs,
   HoustonSpaceInstituteTs,
+  MaysCityCenterTs,
+  HscRoundRockTs,
+  HscKingsvilleTs,
+  HscCorpusChristiTs,
   DiningKioskTs,
   TailgatingKioskTs,
   KickoffAtKyleTs,
