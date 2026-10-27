@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 158.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 159.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,67 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 158 (aggiemap: the release tier again, on the commit that actually ships; 27 October 2026, from `work (aggiemap)`)
+
+**This supersedes batch 157.** That tier ran on `2a09a308c`; the production candidate is now
+**`d32f74d57`**, which adds one fix - and it is a fix to something batch 157 itself could not see.
+
+### Why it is being run again
+
+Batch 157 reported both new campuses present on `/all-maps` and absent with `?as=production`, which was
+true. But **`/all-maps/campus`, the Campus Maps page, listed neither of them** - a different component,
+taking the already-filtered application list, so `visible: false` hid them on development as well.
+Nobody noticed because nothing asserted what a category page lists. #2449 fixed it; `d32f74d57` is the
+first build that carries the fix.
+
+### Wait for the right build
+
+> **`https://dev.aggiemap.tamu.edu/all-maps/campus` lists five campuses**: DC / Bush School, Galveston,
+> McAllen, **Fort Worth Law School** and **Houston Space Institute**.
+
+That page listing three is the old build. **Note the host**: `dev.aggiemap.tamu.edu`. Batch 157 carried
+`aggiemap-dev.tamu.edu`, which does not resolve - my error, and you found it (#2451).
+
+### Run
+
+```
+test/smoke/aggiemap/run-local.sh development release
+```
+
+From a clean worktree at `d32f74d57`.
+
+### Compare against batch 157
+
+Its result was **768 tests, 696 passed, 3 failed, 2 flaky, 67 skipped**, and all three failures were
+development-only:
+
+| | |
+| --- | --- |
+| `womensBasketballParkingUrl` 499 | the dev GIS server made that unused service non-public; not ours |
+| 3D test picks the September vector basemap | a test fault - the panel rightly marks that basemap 2D only |
+| `?bldg=0468` opens several levels too close | real, dev-only, caused by the new vector basemap, **cause not established** |
+
+**Anything beyond those three is new and comes from `d32f74d57`.**
+
+### The manual checks, again, plus one
+
+1. **`/all-maps/campus` lists five campuses.** This is the one the last build got wrong.
+2. **Both new campuses are still absent on production, and with `?as=production`.** The fix changed
+   which list that page reads, so the production side is worth re-proving rather than assumed.
+3. **Search a building on each new campus** - LAWS, RIB-A, FWLE; B500.
+4. **If you have time: the `?bldg=0468` zoom.** The GIS team will be looking at the new basemap in the
+   morning and will likely notice it. Any detail on why would help.
+
+### Tagging
+
+**Do not tag.** The maintainer decides. Report and stop.
+
+### Report
+
+`work-lab-leila/reports/<date>-<n>.md`, and post on
+[#912](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/912).
+
 
 ## Batch 157 (aggiemap: the RELEASE tier on tonight's dev build - this one is the production candidate; 26 October 2026, from `work (aggiemap)`)
 
