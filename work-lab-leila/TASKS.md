@@ -10,7 +10,7 @@
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
-## Batch 161 (gisday: the release check for `sha-9ea3ccd`, the next GIS Day site and API; read only against production; 27 October 2026, about 12:45 PM Central, from `work (gisday)`)
+## Batch 161 (gisday: the release check for site `sha-9ea3ccd` and API `sha-4e60f38`, the next GIS Day release; read only against production; 27 October 2026, about 12:45 PM Central, from `work (gisday)`)
 
 After batches 159 and 160. About 45 minutes. **Batch 159 must have left the local stack on `origin/development`** before you
 start this.
@@ -18,13 +18,13 @@ start this.
 The maintainer merged five GIS Day pull requests on 27 October; `development` at **`9ea3ccd2f`** carries all of them:
 #2162 (score 2026 finds against 2025's, PR 2424), #2164 (automatic review of VGI submissions, PR 2428), #2431 (Texas A&M site
 drops three links, PR 2461), #2426 (a resized speaker photo is never larger than the upload, PR 2462) and #2427 (19 unused
-files removed, PR 2463). **No schema change** (the entity change is a TypeScript type only), so no migration. The publish run
-for `9ea3ccd2f` was still running at 12:45 PM; wait until **`gisday-nest:sha-9ea3ccd`** and **`gisday-angular:sha-9ea3ccd`**
-are on ghcr (`docker manifest inspect`). Production runs API `sha-eb0fe7d`.
+files removed, PR 2463), then **#2425: the API images run as the `node` user, uid 1000** (PR 2441, merge `4e60f38a6`; production's
+volumes were given to uid 1000 by kubernetes-config PR 84). **No schema change** (the entity change is a TypeScript type only), so no migration. **The images:** site **`gisday-angular:sha-9ea3ccd`** (published); API **`gisday-nest:sha-4e60f38`**, whose publish run was
+still going at 12:50 PM: wait until it is on ghcr (`docker manifest inspect`). Its `gisday-nest:sha-9ea3ccd` was never published. Production runs API `sha-eb0fe7d`.
 
 ### What to do
 
-1. Your local stack (seed, migrated) with the **published `gisday-nest:sha-9ea3ccd`** as `gisday-api`, as in batch 155, and a
+1. Your local stack (seed, migrated) with the **published `gisday-nest:sha-4e60f38`** as `gisday-api`, as in batch 155, and a
    local site build of `9ea3ccd2f` on 4201 (`web --static`).
 2. `work/tools/gisday-release-check.cjs` and `gisday-release-check2.cjs`: every line should PASS, as in batch 155.
 3. **What this release adds:**
@@ -36,6 +36,8 @@ are on ghcr (`docker manifest inspect`). Production runs API `sha-eb0fe7d`.
    - **#2431:** `web --static --site tamu` on 4202: the home page has no links under Explore Events; txgisday.org on 4201 still
      has all three.
    - **#2427:** `test/e2e/gisday/public-routes.spec.ts` against 4201: all pass.
+   - **#2425:** `docker exec gisday-api id` shows uid 1000 (node), and the speaker upload above saved; if your local uploads
+     folder is owned by root, say so and give it to 1000 first, as production's was.
 4. `docker logs gisday-api`: count of `ERROR` lines during the run; quote anything new.
 5. `nx run gisday-nest:fit-speaker-photos` **dry run only** against your local uploads with this commit (#2426 changed how it
    encodes): paste its summary, so the director can write the maintainer's production commands.
