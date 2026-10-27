@@ -1,0 +1,131 @@
+import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
+import { SearchSource, containsSearch } from '@tamu-gisc/ui-kits/ngx/search';
+
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../../interfaces/special-event.interface';
+import { campusClickOverlayNative } from './campus-overlay.definitions';
+import { EventPopups } from '../../modules/popups/popups';
+
+/**
+ * Layer ids used by the Fort Worth Law School satellite-campus map. `BASEMAP` is the visual vector-tile
+ * basemap. `PROPERTY` is a near-invisible, click-queryable `FeatureLayer` overlay backed by the
+ * companion `FeatureServer` -- vector-tile layers aren't queryable via `view.hitTest()`, so without
+ * this overlay clicking on a building would not show a popup (search-selected results still work
+ * since those bypass `hitTest()` entirely).
+ */
+export enum FORT_WORTH_LAW_LAYERS {
+  BASEMAP = 'fort-worth-law-basemap-layer',
+  PROPERTY = 'fort-worth-law-property-layer'
+}
+
+export const FortWorthLawLayerSources: LayerSource[] = [
+  {
+    type: 'vector-tile',
+    id: FORT_WORTH_LAW_LAYERS.BASEMAP,
+    title: 'Fort Worth Law School Basemap',
+    url: Connections.fortWorthLawBasemapUrl,
+    listMode: 'hide',
+    visible: true,
+    essential: true
+  },
+  {
+    type: 'feature',
+    id: FORT_WORTH_LAW_LAYERS.PROPERTY,
+    title: 'Property',
+    url: `${Connections.fortWorthLawFeatureServerUrl}/0`,
+    popupComponent: EventPopups.CampusBuildingPopupComponent,
+    listMode: 'hide',
+    visible: true,
+    essential: true,
+    native: campusClickOverlayNative
+  }
+];
+
+/**
+ * Property search source for the Fort Worth Law School campus, backed by the `FeatureServer` companion to the
+ * vector-tile basemap (layer `0`, "Law School Buildings").
+ *
+ * The layer carries the same building fields as the other satellite campuses - `bldgname`, `bldgabbr`,
+ * `number`, `address`, `city`, `zip` - so the search and popup are declared the same way they are there.
+ */
+export const FortWorthLawSearchSources: SearchSource[] = [
+  {
+    source: 'fort-worth-law-property',
+    // `?bldg=1234`, and `?abbrv=XYZ` for a building with no number (#1481). The popup's copy link
+    // reads these same two names, so one declaration decides what a shared link says and what
+    // `EventService.selectFeatureByConfiguredParam` accepts when it is opened.
+    urlQueryParam: 'bldg',
+    urlQueryParamAliases: ['abbrv'],
+    name: 'Property',
+    url: `${Connections.fortWorthLawFeatureServerUrl}/0`,
+    queryParams: {
+      ...containsSearch(['bldgname', 'bldgabbr', 'number']),
+      scoringWhere: {
+        keys: ['bldgname', 'bldgabbr'],
+        operators: ['LIKE', 'LIKE'],
+        wildcards: ['startsWith', 'startsWith'],
+        transformations: ['UPPER', 'UPPER']
+      }
+    },
+    scoringKeys: ['attributes.bldgabbr', 'attributes.number', 'attributes.bldgname'],
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.bldgname} ({attributes.number})',
+    popupComponent: EventPopups.CampusBuildingPopupComponent,
+    searchActive: true
+  }
+];
+
+export const FortWorthLawConfiguration: EventConfiguration = {
+  id: 'fort-worth-law',
+  name: 'Fort Worth Law School',
+  applicationName: 'Aggie Map — Fort Worth Law School',
+  shortApplicationName: 'Fort Worth Law School',
+  introductionText: 'Map of the Texas A&M University School of Law campus in Fort Worth.',
+  eventDates: [],
+  // Centred on the three TAMU buildings - the Law School (LAWS), the Law & Education building (FWLE)
+  // and Research & Innovation A (RIB-A) - which sit together around 3800-3901 on the east side.
+  //
+  // Deliberately NOT the layer's published extent centre, which is about a kilometre north-west of
+  // them: the layer's fourth feature is "Tarrant County" (DS04) at -97.3353, 32.7551, and it stretches
+  // the extent across 1310 m. A map opened on that centre shows downtown Fort Worth with the campus at
+  // the edge of the frame.
+  mapCenter: [-97.324918, 32.748586],
+  zoom: 17,
+  hideLayerToggle: true,
+  sidebarTabs: ['features'],
+  buildingPopup: {
+    layerId: FORT_WORTH_LAW_LAYERS.PROPERTY,
+    title: ['bldgname', 'bldgabbr'],
+    number: 'number',
+    abbreviation: 'bldgabbr',
+    address: { street: 'address', city: 'city', zip: 'zip', state: 'TX' }
+  },
+  searchSources: FortWorthLawSearchSources
+};
+
+export const FortWorthLawOptions: SpecialEventOptions = [];
+
+export const FortWorthLawTs: AggiemapCustomMapConfiguration = {
+  configuration: FortWorthLawConfiguration,
+  options: FortWorthLawOptions,
+  sources: FortWorthLawLayerSources,
+  references: FORT_WORTH_LAW_LAYERS,
+  type: 'general-map',
+  discover: {
+    id: FortWorthLawConfiguration.id,
+    name: FortWorthLawConfiguration.name,
+    description: 'Map of the Texas A&M University School of Law campus in Fort Worth.',
+    source: 'internal',
+    type: 'satellite-campus',
+    mapType: 'satellite-campus',
+    // Development-only to begin with, as the other satellite campuses were until #1490 put them on
+    // production. All Maps lists a campus with `visible: false` on development alone, and the general
+    // map search excludes every satellite campus on both (#1482).
+    visible: false,
+    thumbnail: './assets/images/campus/fort-worth-law.jpg'
+  }
+};

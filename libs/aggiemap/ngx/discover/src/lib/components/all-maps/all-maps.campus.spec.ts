@@ -35,6 +35,23 @@ describe('AllMapsComponent campus maps', () => {
     configuration: { id: 'galveston', eventDates: [] }
   };
 
+  // A campus still being checked, listed on development alone (#2437, #2438). The component's filter
+  // is what this exercises; that the real Fort Worth Law School and Houston Space Institute carry
+  // `visible: false` is asserted where their definitions are imported.
+  const developmentOnlyCampus = {
+    ...{
+      name: 'Fort Worth Law School',
+      id: 'fort-worth-law',
+      source: 'internal',
+      type: 'satellite-campus',
+      mapTypes: ['campus'],
+      thumbnail: './assets/images/campus/fort-worth-law.jpg',
+      description: 'Map of the Texas A&M University School of Law campus in Fort Worth.',
+      configuration: { id: 'fort-worth-law', eventDates: [] }
+    },
+    visible: false
+  };
+
   const kiosk = {
     name: 'Dining',
     id: 'dining',
@@ -45,10 +62,10 @@ describe('AllMapsComponent campus maps', () => {
   };
 
   const discoveryStub = {
-    getInternalDiscoverApplications: () => [campus],
+    getInternalDiscoverApplications: () => [campus, developmentOnlyCampus],
     getVisibleInternalDiscoverApplications: () => [],
     getExternalDiscoverApplications: () => [],
-    getAllDiscoverApplications: () => [campus],
+    getAllDiscoverApplications: () => [campus, developmentOnlyCampus],
     getKioskDiscoverApplications: () => [kiosk],
     getQuickLinkApplications: () => [],
     getParkingApplicationsByCategory: () => []
@@ -93,6 +110,37 @@ describe('AllMapsComponent campus maps', () => {
     );
 
     expect(tile).toBeDefined();
+  });
+
+  // Fort Worth Law School and the Houston Space Institute carry `visible: false` while the GIS team's
+  // data is still being checked (#2437, #2438). The gate is one filter in the component, which is
+  // exactly the kind of thing a later edit removes without anyone noticing, so it is pinned here -
+  // from both sides, because a check that only ran on production would pass just as well if the
+  // campuses had been deleted outright.
+  const DEVELOPMENT_ONLY_CAMPUSES = [developmentOnlyCampus.name];
+
+  const campusNames = (element: HTMLElement): string[] =>
+    Array.from(element.querySelectorAll('.campus-tile-label')).map((label) => (label.textContent ?? '').trim());
+
+  it('does not list a development-only campus on production', async () => {
+    const listed = campusNames(await renderAs(false));
+
+    for (const campus of DEVELOPMENT_ONLY_CAMPUSES) {
+      expect(listed, `${campus} is listed on an environment that should not have it`).not.toContain(campus);
+    }
+
+    // A campus that is on production stays there, so the gate hides only what it should.
+    expect(listed).toContain('Galveston');
+  });
+
+  it('lists a development-only campus on development', async () => {
+    const listed = campusNames(await renderAs(true));
+
+    for (const campus of DEVELOPMENT_ONLY_CAMPUSES) {
+      expect(listed, `${campus} should be listed on development`).toContain(campus);
+    }
+
+    expect(listed).toContain('Galveston');
   });
 
   it('keeps each campus card copyable, since the map search does not reach them', async () => {
