@@ -6,7 +6,7 @@ import { filter } from 'rxjs/operators';
 
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { SpriteOverride } from './vector-tile-sprites';
+import { applyPendingSpriteOverrides, SpriteOverride } from './vector-tile-sprites';
 import {
   AutocastableLayer,
   cleanPortalJSONLayer,
@@ -134,6 +134,12 @@ export class EsriMapService {
   public async useView(view: esri.MapView, host: MapHost): Promise<void> {
     this._host = host;
     this._modules.view = view;
+
+    // A basemap definition's `spriteOverrides` are applied here rather than when its layer is built,
+    // because the layer view reads the published sprite sheet when it is created and discards anything
+    // set before that (#2459, #2477). Not awaited: the basemap draws with the published sprites and
+    // swaps to the corrected ones a moment later, and a failure must never stop the map.
+    void applyPendingSpriteOverrides(view as unknown as Parameters<typeof applyPendingSpriteOverrides>[0]);
 
     // Set the value of the async subject
     this._store.next({
