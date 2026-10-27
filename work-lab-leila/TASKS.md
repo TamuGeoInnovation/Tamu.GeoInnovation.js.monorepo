@@ -10,7 +10,7 @@
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
-## Batch 160 (aggiemap: #2459 under-construction buildings draw as a solid block; 27 October 2026, about 12:30 PM Central, from `work (aggiemap)`)
+## Batch 160 (aggiemap: #2459 under-construction buildings draw as a solid block; 27 October 2026, about 12:12 PM Central, from `work (aggiemap)`)
 
 After batch 159. **High priority** - the maintainer is watching this one and has already changed the
 specification twice. About 50 minutes. Questions go to `work (aggiemap)`. The work computer is saturated,
