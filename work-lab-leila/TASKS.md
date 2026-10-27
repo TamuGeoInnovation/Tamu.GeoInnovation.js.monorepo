@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 160.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 161.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,85 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 160 (aggiemap: #2459 under-construction buildings draw as a solid block; 27 October 2026, about 12:30 PM Central, from `work (aggiemap)`)
+
+After batch 159. **High priority** - the maintainer is watching this one and has already changed the
+specification twice. About 50 minutes. Questions go to `work (aggiemap)`. The work computer is saturated,
+which is why this comes to you.
+
+[#2459](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2459): on the October 2026
+vector basemap, buildings under construction draw as a **solid block** instead of a hatch over the building.
+The cause, measured from the service: the vector tile packager rasterized the authored hatch into a 30 x 27
+sprite with **no transparent pixels at all** (42% of it opaque white), and the style uses it as a
+`fill-pattern`.
+
+The fix is written and pushed: branch **`fix/2459-construction-hatch`** on the fork (`danielgoldbergtamu`),
+head **`75acf7ad6`**. It fetches the sheet the service publishes, draws one replacement tile into a copy of
+it, and hands that back with `VectorTileLayer.setSpriteSource()`, so every other sprite stays exactly as
+published. **No pull request is open**; it needs your checks and its images first, and I open it when you
+report.
+
+**What the maintainer settled, in his words**, because it moved and the final wording is what counts:
+
+- *"The construction shapes should show as hatched orange, no pink."*
+- *"The footprints of the buildings under construction should be solid black outline, with checkered hatch,
+  with no fill."*
+- *"neither the construction area nor the buildings under construction symbology should have a fill. vector
+  lines only."*
+
+So: black outline (the style's own line layer, untouched), a checkered orange grid, **nothing filled**.
+
+### What to do
+
+1. **The check.** `scripts/check-in-volume.sh fix/2459-construction-hatch maps-esri,maps-feature-basemap,aggiemap-angular`.
+   Report the per-target counts and the exit code, not just pass or fail. 18 unit tests were added in
+   `libs/maps/esri/src/lib/services/map/vector-tile-sprites.spec.ts` and passed here before the last two
+   specification changes; **they have not been re-run since the grid replaced the diagonal cross**, so treat
+   a failure there as expected work rather than a surprise.
+
+2. **Before and after on the real basemap.** The dev server, mounted on a worktree of this branch
+   (`CLAUDE.md`, *Fixing a bug quickly*, including `UV_THREADPOOL_SIZE` and `NX_WORKSPACE_DATA_DIRECTORY`).
+   **Before** comes from `origin/development`, after from `75acf7ad6` - the same view of the same building,
+   both at 1280 x 900 with `timezoneId: 'America/Chicago'`.
+
+   Eight buildings carry `Type = 'CONSTRUCTION'`. **Aplin Center, building 1524**, is the one the maintainer
+   has been looking at: `/map/m?bldg=1524`. **Do not leave the building selected in the capture** - the
+   selection highlight is yellow and sits on top of the thing being photographed. Open `?bldg=1526` (the BBQ
+   Pavilion, next door) instead, or clear the selection, so 1524 shows its own symbology. Zoom so the whole
+   footprint is in frame.
+
+   What the after must show, and say so in the report in these terms: **the grass and the trees are visible
+   through the hatch**, the lines are orange, and there is no tint of any kind between them. If it reads as a
+   wash of orange rather than lines, the spacing is too tight - say so with the picture rather than adjusting
+   it yourself.
+
+   Commit both to `docs/screenshots/2459-construction-hatch/`.
+
+3. **The release-note file**: one new file `docs/releases/unreleased/2459-construction-hatch.md`, with its
+   *What to test on dev* row, images linked as `../screenshots/2459-construction-hatch/<file>.png`. Then
+   `node scripts/collate-release-notes.mjs --check`. **Do not edit `unreleased.md`** ([#2037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2037)).
+
+4. **`docs/testing.md`: no row and no number** - this adds unit tests, not a smoke spec ([#2002](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2002)).
+
+5. Push to the same branch on the fork and say **"branch ready: fix/2459-construction-hatch"**.
+
+### Two things to check and report on, not act on
+
+- **The September cache.** `Hosted/VTBase/VectorTileServer` (the *Aggieland vector, September 2026* entry in
+  the dev gallery) has **no construction sprite at all** - it paints the buildings with a solid
+  `fill-color: #BD1A8D`. The fix does not touch it, deliberately: that cache is on its way out. Worth a
+  sentence confirming it still looks wrong there, so nobody reports it as a regression.
+- **The Construction Zones layer.** The maintainer's third message says *neither* should have a fill. That
+  layer draws its service's own `esriSFSDiagonalCross`, which is lines only, and this repository does not
+  override its renderer - so there should be nothing to change. **Turn the layer on in your after capture and
+  confirm it**, because the claim is mine and it is worth one picture. If it does carry a fill, that is a
+  separate finding and a service-side one.
+
+### Don't touch
+
+`fix/2450-campus-directory-dev`, `docs/2451-dev-hostname`, `feat/2437-2438-campuses`, and anything under
+`fix/2422-gisday-speaker-photo-preview` (batch 159).
 
 ## Batch 159 (gisday: #2422 speaker photo preview - before and after screenshots, signed in; 27 October 2026, about 12:10 PM Central, from `work (gisday)`)
 
