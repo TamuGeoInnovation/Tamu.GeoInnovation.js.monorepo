@@ -6,7 +6,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running.** Last batch done: 4.
+**Batch 5** (aggiemap: #2453, the baseball republish, branch `fix/2453-baseball-republish`), started 12:23 PM Central, Tuesday 27 October 2026, from `work (aggiemap)`.
+Next update by 1:45 PM Central.
 
 ## Finished
 - **Batch 4** (security; report `home/reports/2026-10-26-4.md`): #2425's clean branch pushed to the fork as `chore/2425-api-images-non-root-2` at `160f65e80`.
