@@ -135,9 +135,11 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
  * Baseball on the development server (#2209). Its view's layers sit at the same indexes as
  * production's, so only the filters and the popup fields change - see `athleticsDevelopmentSource`.
  *
- * Production splits the one lots layer in two by `baseball`; `type` carries that here. It splits the
- * one symbols layer in two by `type`, which the development symbols layer does not have, so the two
- * become one: the map shows its symbols once rather than twice.
+ * Since the republish (#2453) both maps draw the whole lots layer, `Reserved` lots such as 100j
+ * included, so `ACCESSIBLE_LOTS` is not declared here: the map-mode option would turn it on over the
+ * same lots and draw them twice. The symbols layer has nothing to split on, so each map's symbols
+ * layer reads all of it; the option shows one or the other. The shuttle is declared after the lots so
+ * it draws over them.
  */
 export const BaseballParking_DevelopmentLayerSources: LayerSource[] = [
   athleticsDevelopmentSource({
@@ -145,8 +147,8 @@ export const BaseballParking_DevelopmentLayerSources: LayerSource[] = [
     url: `${eventUrl}/0`
   }),
   athleticsDevelopmentSource({
-    id: BASEBALL_PARKING_LAYERS.ACCESSIBLE_SHUTTLES,
-    url: `${eventUrl}/1`
+    id: BASEBALL_PARKING_LAYERS.ACCESSIBLE_SYMBOLS,
+    url: `${eventUrl}/0`
   }),
   athleticsDevelopmentSource({
     id: BASEBALL_PARKING_LAYERS.GATE_ROAD_CLOSURE,
@@ -154,13 +156,11 @@ export const BaseballParking_DevelopmentLayerSources: LayerSource[] = [
   }),
   athleticsDevelopmentSource({
     id: BASEBALL_PARKING_LAYERS.EVENT_LOTS,
-    url: `${eventUrl}/3`,
-    onlyType: 'Event Parking'
+    url: `${eventUrl}/3`
   }),
   athleticsDevelopmentSource({
-    id: BASEBALL_PARKING_LAYERS.ACCESSIBLE_LOTS,
-    url: `${eventUrl}/3`,
-    onlyType: 'Reserved'
+    id: BASEBALL_PARKING_LAYERS.ACCESSIBLE_SHUTTLES,
+    url: `${eventUrl}/1`
   })
 ];
 
