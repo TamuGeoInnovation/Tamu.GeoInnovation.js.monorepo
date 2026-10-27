@@ -3,6 +3,24 @@
 Written by `work (security)` at 11:15 PM Central, Friday 23 October 2026, for whichever machine directs the security and
 dependency work next (the home machine, this weekend). The maintainer keeps the merge button; nothing here merges itself.
 
+## State at 27 October 2026, about 1 PM Central (newest first; older sections below are history)
+
+- **npm audit on development: 0 vulnerabilities of every severity**, and `.github/security/accepted-advisories.json` lists
+  nothing. fast-uri and serialize-javascript (PR 2411, before their 7 days, at the maintainer's word), zod forced to 4.6.6
+  under jimp (PR 2418, #2417), msal-node forced to 7.1.0 under @azure/identity (PR 2419, #2371). Images built before
+  those still carry msal-node 6.0.1 until each app's next build.
+- **The tables:** `scripts/security-tables.sh` (PR 2416, #2412) prints all three; the README in tools/security-findings
+  says how to read them. Add the status column by hand.
+- **Unused:** signage-angular, the gisday-competitions apps and geoprocessing-v4/feature-highlight are deleted (PRs 2442,
+  2446, 2447); CI's build and test exclusion lists are now empty. copilot-home batch 27 is gathering evidence on knip's
+  10 unused dependencies; turn the removable ones into one PR.
+- **The API images run as `node`** (PR 2441, #2425). GIS Day's cluster side was applied 27 October (kubernetes-config
+  PR 84): both upload volumes chowned to 1000, both deployments runAsUser 1000, write check passed on both sites.
+  Mailroom writes nothing to disk; geoservices-nest mounts nothing. A real upload on each GIS Day site is still to be done
+  by someone who can sign in.
+- **Waiting on others:** Kaleb's PR 2434 (VGI to ArcGIS Online) sends the access token in GET query strings; the GIS Day
+  chat asked for a header. Its client secret must go in the gisday-nest Secret, never the configmap.
+
 ## Update, 7:25 AM Central, 24 October
 
 **Merged since the morning:** 2187, 2191 (overnight), 2195, 2230, 2231, 2235, 2236, 2238, 2240, 2245, 2249, 2252, 2253 (GLightbox), 2255,
