@@ -39,7 +39,8 @@ import { environmentIsDevelopment } from './gis-hosts';
  *
  * A map with a version published only on the development GIS server is checked against that version where
  * the server is read, and there its Layers list must show nothing else: a layer the new version drops is
- * one the map owner removed, and must be seen to be gone (#2001).
+ * one the map owner removed, and must be seen to be gone (#2001). Not at a builder destination, whose
+ * declared layers leave out every one a choice switches.
  *
  * A map that never finishes drawing fails, saying so, and so does one with no layers at all: a route the
  * application does not know still renders the shell, and must not pass as a map with nothing switched on.
@@ -405,7 +406,9 @@ for (const { mapPath, loadPath, title } of cases) {
         )
         .toEqual([]);
 
-      if (development) {
+      // Not at a builder destination: the declared lists leave out every layer a choice switches, which on a
+      // builder map can be all of them (Baseball's are `[]`), so there they are a floor, not the whole list.
+      if (development && loadPath === mapPath) {
         const kept = layers.filter((l) => development.includes(l.id));
 
         expect
