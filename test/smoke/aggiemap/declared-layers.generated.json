@@ -249,6 +249,18 @@
       "hs-graduation-departure-group"
     ]
   },
+  "hsc-corpus-christi": {
+    "layerList": false,
+    "layers": []
+  },
+  "hsc-kingsville": {
+    "layerList": false,
+    "layers": []
+  },
+  "hsc-round-rock": {
+    "layerList": false,
+    "layers": []
+  },
   "indoor-track-parking": {
     "layerList": true,
     "layers": [
@@ -290,6 +302,10 @@
       "maroon-white-game-event-parking-lots",
       "maroon-white-game-accessible-prepaid-parking"
     ]
+  },
+  "mays-city-center": {
+    "layerList": false,
+    "layers": []
   },
   "mcallen": {
     "layerList": false,
