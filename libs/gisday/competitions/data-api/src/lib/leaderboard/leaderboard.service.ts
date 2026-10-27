@@ -177,7 +177,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       order: { created: 'ASC', guid: 'ASC' }
     });
 
-    const earlierFinds = await this.earlierSeasonFinds(competitionSeason);
+    const { finds: earlierFinds } = await previousSeasonFinds(this.compSeasonRepo, this.submissionRepo, competitionSeason);
     const newFinds: Array<{ location: { latitude: number; longitude: number }; type: unknown; name: unknown }> = [];
     const submittedBy = new Map<string, Array<{ location: { latitude: number; longitude: number }; type: unknown }>>();
     const userPointsMap = new Map<string, number>();
@@ -233,68 +233,6 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     return leaderboard;
   }
 
-  /**
-   * The located, not discarded submissions of the competition season before this one, with their
-   * answer to that season's type question, when this season's form compares with it (`earlier`); none
-   * otherwise.
-   */
-  private async earlierSeasonFinds(
-    competitionSeason: CompetitionSeason
-  ): Promise<Array<{ location: { latitude: number; longitude: number }; type: unknown }>> {
-    const year = competitionSeason.season?.year;
-    const comparesWithEarlier = competitionSeason.form?.model?.some((q) => q.options?.some((option) => option.earlier));
-
-    if (!year || !comparesWithEarlier) {
-      return [];
-    }
-
-    const seasons = await this.compSeasonRepo.find({ relations: { season: true, form: true } });
-    const withoutYear = seasons.filter((candidate) => !candidate.season?.year).length;
-
-    if (withoutYear > 0) {
-      Logger.warn(
-        `${withoutYear} competition season(s) have no season year, so cannot be the one before ${year}.`,
-        'LeaderboardService'
-      );
-    }
-    const previous = seasons
-      .filter((candidate) => candidate.season?.year < year)
-      .sort((a, b) => b.season.year - a.season.year)[0];
-
-    // Without the previous season, every find it had scores as new: say so, so the gap is noticed.
-    if (!previous) {
-      Logger.warn(
-        `Competition season ${competitionSeason.guid} (${year}) continues an earlier season, but no competition season with an earlier year was found. Nothing found then counts as already found.`,
-        'LeaderboardService'
-      );
-
-      return [];
-    }
-
-    const typeAttribute = previous.form?.model?.find((q) => q.isDiscriminator === true)?.attribute;
-
-    if (!typeAttribute) {
-      Logger.warn(
-        `The ${previous.season.year} competition season's form has no type question, so none of its finds can count as already found in ${year}.`,
-        'LeaderboardService'
-      );
-
-      return [];
-    }
-    const submissions = await this.submissionRepo.find({
-      where: { season: { guid: previous.guid } },
-      relations: { validationStatus: true, location: true }
-    });
-
-    return submissions
-      .filter(counts)
-      .map((submission) => ({
-        location: usableLocation(submission.location),
-        type: submission.value?.[typeAttribute]
-      }))
-      .filter((find) => find.location !== undefined);
-  }
-
   private async resolveIdentities(
     leaderboardData: Array<{ identity: string; guid: string; points: number }>
   ): Promise<Array<{ identity: string; guid: string; points: number }>> {
@@ -314,6 +252,75 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
 
     return allResolvedUsers.toPromise();
   }
+}
+
+/**
+ * The located, not discarded submissions of the competition season before this one, with their answer
+ * to that season's type question and that season's year, when this season's form continues it
+ * (`earlier`, #2162); none otherwise. Scoring counts them as already found, and the competition map
+ * shows them (#2166).
+ */
+export async function previousSeasonFinds(
+  compSeasonRepo: Repository<CompetitionSeason>,
+  submissionRepo: Repository<CompetitionSubmission>,
+  competitionSeason: CompetitionSeason
+): Promise<{ year?: number; finds: Array<{ location: { latitude: number; longitude: number }; type: unknown }> }> {
+  const year = competitionSeason.season?.year;
+  const comparesWithEarlier = competitionSeason.form?.model?.some((q) => q.options?.some((option) => option.earlier));
+
+  if (!year || !comparesWithEarlier) {
+    return { finds: [] };
+  }
+
+  const seasons = await compSeasonRepo.find({ relations: { season: true, form: true } });
+  const withoutYear = seasons.filter((candidate) => !candidate.season?.year).length;
+
+  if (withoutYear > 0) {
+    Logger.warn(
+      `${withoutYear} competition season(s) have no season year, so cannot be the one before ${year}.`,
+      'LeaderboardService'
+    );
+  }
+
+  const previous = seasons
+    .filter((candidate) => candidate.season?.year < year)
+    .sort((a, b) => b.season.year - a.season.year)[0];
+
+  // Without the previous season, every find it had scores as new: say so, so the gap is noticed (#2424 review).
+  if (!previous) {
+    Logger.warn(
+      `Competition season ${competitionSeason.guid} (${year}) continues an earlier season, but no competition season with an earlier year was found. Nothing found then counts as already found.`,
+      'LeaderboardService'
+    );
+
+    return { finds: [] };
+  }
+
+  const typeAttribute = previous.form?.model?.find((q) => q.isDiscriminator === true)?.attribute;
+
+  if (!typeAttribute) {
+    Logger.warn(
+      `The ${previous.season.year} competition season's form has no type question, so none of its finds can count as already found in ${year}.`,
+      'LeaderboardService'
+    );
+
+    return { finds: [] };
+  }
+  const submissions = await submissionRepo.find({
+    where: { season: { guid: previous.guid } },
+    relations: { validationStatus: true, location: true }
+  });
+
+  return {
+    year: previous.season.year,
+    finds: submissions
+      .filter(counts)
+      .map((submission) => ({
+        location: usableLocation(submission.location),
+        type: typeAttribute ? submission.value?.[typeAttribute] : undefined
+      }))
+      .filter((find) => find.location !== undefined)
+  };
 }
 
 /**
