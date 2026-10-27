@@ -1,6 +1,6 @@
 import esri = __esri;
 
-import { applySpriteOverrides, browserSpriteOverrideDeps, SpriteOverride } from './vector-tile-sprites';
+import { holdSpriteOverrides, SpriteOverride } from './vector-tile-sprites';
 
 /** The layer classes a basemap's base layers can be made from, keyed by the `type` a definition names. */
 export interface BaseLayerConstructors {
@@ -37,15 +37,12 @@ export function makeBaseLayer(
   if (type === `VectorTileLayer`) {
     const vectorTileLayer = new constructors.VectorTileLayer(props);
 
-    // The sheet can only be patched once the style has loaded, and nothing waits on this: the basemap
-    // draws with the published sprites and swaps to the patched ones a moment later. A failure must not
-    // take the basemap down with it - a wrong hatch is better than no map (#2459).
-    if (spriteOverrides !== undefined && spriteOverrides.length > 0) {
-      vectorTileLayer
-        .when(() => applySpriteOverrides(vectorTileLayer, spriteOverrides, browserSpriteOverrideDeps()))
-        .catch((error: unknown) => {
-          console.warn(`Could not apply sprite overrides to ${props.url}.`, error);
-        });
+    // Held, not applied. `setSpriteSource` has to happen after the view has made this layer's layer
+    // view; called when the layer loads it resolves and is then thrown away, which is how the hatch
+    // reached dev looking unfixed twice on 27 October (#2459, #2477). `EsriMapService.useView` applies
+    // them once the view is ready.
+    if (spriteOverrides !== undefined) {
+      holdSpriteOverrides(vectorTileLayer, spriteOverrides);
     }
 
     return vectorTileLayer;
