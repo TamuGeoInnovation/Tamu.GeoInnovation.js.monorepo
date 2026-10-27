@@ -56,33 +56,41 @@ read from the services already. **Do not re-derive it**; check it if you like, b
 | Building layer | **`/4 Structures`** - note the plural, and the index: five campuses now, five different answers |
 | Fields | `bldgname`, `bldgabbr`, `number`, `address`, `city`, `zip` - the same names as Houston Space Institute, so its search source copies across |
 
-### Decided: this is TWO campus maps from the one service
+### CHANGED at 3:05 PM - read this even if you started: ONE map, the northwest site only
 
-The maintainer, 27 October: **"Make these as two separate new campus maps from the same source layer
-instead of 1 single one."** So `Hosted/HSCD` backs two entries in the campus list, each with its own
-centre, zoom and `definitionExpression`. This is the first campus to need that; everything else is the
-usual pattern.
+This batch said two maps. **It is one.** Eric Irwin answered the question about which site is which, and
+the maintainer relayed it: *"For now, just the northwest can be HSC College of Dentistry. Don't do the
+southeast yet."*
 
-**Split on the postcode, not on building numbers** - it is the field that actually distinguishes the two
-sites, and it survives a building being added:
+So:
 
-| Site | `zip` | Buildings | Centre |
-| --- | --- | --- | --- |
-| **Northwest** | `75246` | 3600 Texas A&M College of Dentistry - BCD1, 3605 BCD Library, 3602 BCD Imaging Center - BCD3, 3601 BCD Parking Garage - BCD2, 3607 College of Dentistry Clinical Educ. Facility | about `[-96.7820, 32.7890]` |
-| **Southeast** | `75210` | 3608 Dr. M.C. Cooper Dental Clinic | about `[-96.74338, 32.76691]` |
+| | |
+| --- | --- |
+| **Build** | the **northwest** site only, `zip = '75246'` |
+| **Name it** | **HSC College of Dentistry** - not "HSC Dallas", not "HSC Dallas Medicine" |
+| **Leave** | the southeast site (`zip = '75210'`, Dr. M.C. Cooper Dental Clinic) **out entirely**. No second map, no second definitions file |
 
-Both maps share the one vector tile basemap, which draws the whole published area; the
-`definitionExpression` applies to the `/4 Structures` property overlay and the search source, so each map
-searches only its own site.
+The five buildings in scope, all `zip = '75246'`:
 
-**The names are not settled yet.** The maintainer said northwest is *HSC Dallas Medicine* and southeast is
-*HSC Dallas Dentistry*, but every northwest building is named for the College of Dentistry and the
-southeast one is a dental clinic, so he is being asked whether the two are the other way round. **Build
-with ids and names you can change in one line** - put each map's display name in its `EventConfiguration`
-and `discover` block and nowhere else - and I will confirm them before the pull request. Do not wait.
+| Number | Building |
+| --- | --- |
+| 3600 | Texas A&M College of Dentistry - BCD1 |
+| 3605 | BCD Library |
+| 3602 | BCD Imaging Center - BCD3 |
+| 3601 | BCD Parking Garage - BCD2 |
+| 3607 | College of Dentistry Clinical Educ. Facility |
 
-Pick each `zoom` by looking at it. The southeast map is a single building, so it will want the Houston
-Space Institute treatment: one notch out from what looks right, or it fills the frame.
+Centre about `[-96.7820, 32.7890]`.
+
+**Filter on the postcode**, `zip = '75246'`, rather than listing the five building numbers: it is the field
+that distinguishes the two sites and it survives a building being added. The `definitionExpression` goes on
+the `/4 Structures` property overlay **and** the search source, so the map neither draws nor finds the
+Cooper clinic - which is the whole point of leaving it out.
+
+The one vector tile basemap draws the published area for both sites; that is expected and is not something
+to work around. The southeast site will get its own map later, from this same service.
+
+Pick `zoom` by looking at it, as Houston Space Institute did.
 
 ### The rest is the known pattern
 
@@ -98,10 +106,10 @@ empty - it now expects `[]`, and adding a hidden campus would fail it, which is 
 
 ### What to do
 
-1. Branch `feat/2476-hsc-dallas` from `origin/development` - **fetch first**, it has moved a lot today. Both maps on the one branch.
+1. Branch `feat/2476-hsc-dallas` from `origin/development` - **fetch first**, it has moved a lot today.
 2. Red first, then green, on the two campus enumerations, as in batch 29.
 3. `scripts/check-in-volume.sh feat/2476-hsc-dallas ts-events-ngx,aggiemap-ngx-common,aggiemap-angular`.
-4. Screenshots of **both** maps, and of `/all-maps/campus` showing eleven campuses. There is no "before" for a map
+4. Screenshots of the map, and of `/all-maps/campus` showing ten campuses. There is no "before" for a map
    that did not exist; say so.
 5. One release-note file, `docs/releases/unreleased/2476-hsc-dallas.md`, with its *What to test on dev* row.
    **`dev.aggiemap.tamu.edu`, not `aggiemap-dev.tamu.edu`** - the second does not exist and the notes check
