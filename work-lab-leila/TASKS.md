@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 159.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 160.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,41 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 159 (gisday: #2422 speaker photo preview - before and after screenshots, signed in; 27 October 2026, about 12:10 PM Central, from `work (gisday)`)
+
+After batch 158. Medium priority; about 40 minutes. Questions go to `work (gisday)`. The work computer is saturated,
+so this comes to you.
+
+[#2422](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2422): Admin, Speakers, Add showed
+a broken image ("Speaker photo preview") before a photo was chosen. The fix is done and checked (copilot-home batch 23,
+report `copilot-home/reports/2026-10-26-23.md`): branch `fix/2422-gisday-speaker-photo-preview` on the fork
+(`danielgoldbergtamu`), head `e9e95440db8ae0df4039f59c8844f6eb7ab010ad`, check exit 0. Only the screenshots are missing,
+and they need a signed-in admin, which you have (the dev tenant's test admin, as in the release check; never print it).
+
+### What to do
+
+1. **Before**, from `origin/development`: `scripts/gisday-local.sh web --static` (with `api` running), sign in on
+   `http://localhost:4201` as the test admin, open `/admin/speakers/add`, and capture the page around the photo area
+   (1280 x 900, `timezoneId: 'America/Chicago'`). Expected: the broken image with its alt text. The sign-in helper in
+   `work/tools/gisday-release-check2.cjs` (`throughSignIn`) does the sign-in.
+2. **After**, from a worktree at `e9e95440d`: `web --static` again, then capture the same page three times: on arrival
+   (the placeholder image), after choosing a photo with the file input (the preview shows it), and after **Undo** (the
+   placeholder is back). Use any small JPEG.
+3. On the branch, commit the four captures to `docs/screenshots/2422-speaker-photo-preview/` (`before-add.png`,
+   `after-add.png`, `after-chosen.png`, `after-undo.png`) and a release-notes file
+   `docs/releases/unreleased/2422-speaker-photo-preview.md` in the format the other files in that folder use, with its
+   *What to test on dev* row (GIS Day has no dev site, #1525; say how to check it on production after release, as an
+   admin). `node scripts/collate-release-notes.mjs --check` must pass. Push to the fork branch (the same branch; a new
+   commit, no force).
+4. Run `web --static` from `origin/development` again at the end, so the local stack is left as it was.
+
+### Then
+
+Report `work-lab-leila/reports/<yyyy-mm-dd>-<n>.md`: the new head, the four file names, and anything that looked wrong.
+The director opens the pull request.
+
+---
 
 ## Batch 158 (aggiemap: the release tier again, on the commit that actually ships; 27 October 2026, from `work (aggiemap)`)
 
