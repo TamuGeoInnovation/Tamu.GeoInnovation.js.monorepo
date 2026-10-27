@@ -15,7 +15,13 @@ describe('FormService, saving the scoring window', () => {
   let service: FormService;
 
   beforeEach(() => {
-    competitionSeason = { guid: 'cs-2026', form: { guid: 'f-1' }, save: jest.fn(function () { return Promise.resolve(this); }) };
+    competitionSeason = {
+      guid: 'cs-2026',
+      form: { guid: 'f-1' },
+      save: jest.fn(function () {
+        return Promise.resolve(this);
+      })
+    };
     create = jest.fn((values) => ({ ...values, save: jest.fn(() => Promise.resolve(values)) }));
 
     service = new FormService(
@@ -29,11 +35,15 @@ describe('FormService, saving the scoring window', () => {
   });
 
   it('saves both moments with the form', async () => {
-    await service.updateForm('f-1', { source: 's', model } as never, {
-      allowSubmissions: true,
-      scoringOpensAt: opens,
-      scoringClosesAt: closes
-    } as never);
+    await service.updateForm(
+      'f-1',
+      { source: 's', model } as never,
+      {
+        allowSubmissions: true,
+        scoringOpensAt: opens,
+        scoringClosesAt: closes
+      } as never
+    );
 
     expect(competitionSeason.save).toHaveBeenCalled();
     expect(competitionSeason.scoringOpensAt).toEqual(new Date(opens));
@@ -43,11 +53,15 @@ describe('FormService, saving the scoring window', () => {
   it('clears a moment left empty, so that side has no limit', async () => {
     competitionSeason.scoringOpensAt = new Date(opens);
 
-    await service.updateForm('f-1', { source: 's', model } as never, {
-      allowSubmissions: true,
-      scoringOpensAt: null,
-      scoringClosesAt: ''
-    } as never);
+    await service.updateForm(
+      'f-1',
+      { source: 's', model } as never,
+      {
+        allowSubmissions: true,
+        scoringOpensAt: null,
+        scoringClosesAt: ''
+      } as never
+    );
 
     expect(competitionSeason.scoringOpensAt).toBeNull();
     expect(competitionSeason.scoringClosesAt).toBeNull();
@@ -64,11 +78,14 @@ describe('FormService, saving the scoring window', () => {
   });
 
   it('saves both moments when the season is created', async () => {
-    await service.createFormForActiveSeason({ source: 's', model } as never, {
-      allowSubmissions: true,
-      scoringOpensAt: opens,
-      scoringClosesAt: closes
-    } as never);
+    await service.createFormForActiveSeason(
+      { source: 's', model } as never,
+      {
+        allowSubmissions: true,
+        scoringOpensAt: opens,
+        scoringClosesAt: closes
+      } as never
+    );
 
     expect(create).toHaveBeenCalledWith(
       expect.objectContaining({ scoringOpensAt: new Date(opens), scoringClosesAt: new Date(closes) })

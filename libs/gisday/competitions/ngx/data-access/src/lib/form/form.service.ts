@@ -50,7 +50,7 @@ export class FormService {
     );
   }
 
-  public updateForm(formGuid: string, data: { form: Partial<CompetitionForm>; season: Partial<CompetitionSeason> }) {
+  public updateForm(formGuid: string, data: { form: Partial<CompetitionForm>; season: SeasonSettings }) {
     return this.http.patch(`${this.resource}/${formGuid}`, data).pipe(
       tap(() => {
         this.ns.toast({
@@ -71,7 +71,7 @@ export class FormService {
     );
   }
 
-  public createFormModelForActiveSeason(data: { form: Partial<CompetitionForm>; season: Partial<CompetitionSeason> }) {
+  public createFormModelForActiveSeason(data: { form: Partial<CompetitionForm>; season: SeasonSettings }) {
     return this.http.post(`${this.resource}/active`, data).pipe(
       tap(() => {
         this.ns.toast({
@@ -92,3 +92,12 @@ export class FormService {
     );
   }
 }
+
+/**
+ * A competition season's settings as the Designer sends them: the scoring window's moments as ISO text, or
+ * `null` for no limit on that side (#2474).
+ */
+export type SeasonSettings = Omit<Partial<CompetitionSeason>, 'scoringOpensAt' | 'scoringClosesAt'> & {
+  scoringOpensAt?: string | null;
+  scoringClosesAt?: string | null;
+};

@@ -182,7 +182,12 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     const submittedBy = new Map<string, Array<{ location: { latitude: number; longitude: number }; type: unknown }>>();
     const userPointsMap = new Map<string, number>();
 
-    for (const submission of submissions.filter(counts)) {
+    // Only submissions made inside the season's scoring window count, and the rest are not earlier finds
+    // either (#2474).
+    const inWindow = (submission: CompetitionSubmission) =>
+      isInScoringWindow(submission.created, competitionSeason.scoringOpensAt, competitionSeason.scoringClosesAt);
+
+    for (const submission of submissions.filter(counts).filter(inWindow)) {
       const location = usableLocation(submission.location);
       const type = typeAttribute ? submission.value?.[typeAttribute] : undefined;
       const settings = settingsFor(type);
@@ -346,6 +351,21 @@ export function isOwnRepeat(
   settings?: ICompetitionSeasonFormOption
 ): boolean {
   return distanceInMetres(earlier.location, later.location) <= (settings?.sameThingMetres ?? SAME_THING_DISTANCE_METRES);
+}
+
+/**
+ * Whether a submission made at `created` counts for a season whose scoring window is `opensAt` to
+ * `closesAt` (#2474): at or after the opening, and before the closing. An empty side has no limit. The
+ * database returns the moments as text or as dates.
+ */
+export function isInScoringWindow(
+  created: Date | string,
+  opensAt?: Date | string | null,
+  closesAt?: Date | string | null
+): boolean {
+  const made = new Date(created).getTime();
+
+  return (!opensAt || made >= new Date(opensAt).getTime()) && (!closesAt || made < new Date(closesAt).getTime());
 }
 
 /**

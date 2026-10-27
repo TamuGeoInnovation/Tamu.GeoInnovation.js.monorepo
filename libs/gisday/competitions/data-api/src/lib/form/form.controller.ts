@@ -35,7 +35,9 @@ export class FormController {
         model: form.model
       },
       {
-        allowSubmissions: season.allowSubmissions
+        allowSubmissions: season.allowSubmissions,
+        scoringOpensAt: season.scoringOpensAt,
+        scoringClosesAt: season.scoringClosesAt
       }
     );
   }
@@ -50,7 +52,9 @@ export class FormController {
         model: form.model
       },
       {
-        allowSubmissions: season.allowSubmissions
+        allowSubmissions: season.allowSubmissions,
+        scoringOpensAt: season.scoringOpensAt,
+        scoringClosesAt: season.scoringClosesAt
       }
     );
   }
