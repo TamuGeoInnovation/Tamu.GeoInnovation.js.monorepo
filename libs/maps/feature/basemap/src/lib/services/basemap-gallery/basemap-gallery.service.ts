@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { combineLatest, firstValueFrom, from, map, switchMap } from 'rxjs';
 
-import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService, MapServiceInstance, makeBaseLayer } from '@tamu-gisc/maps/esri';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { aggiemapBasemap, aggiemapGalleryBasemaps, NearmapCSBasemap } from '../../shared/basemaps.definition';
@@ -173,11 +173,12 @@ export class BasemapGalleryService {
               // Vector tiles on dev, raster on production, until the vector tiles are published there (#1229).
               // Dev also offers every published raster version, to compare them (#1582).
               const campusBasemaps = aggiemapGalleryBasemaps(this.ts.isTesting).map((campusBasemap) => {
-                // Clone the base layer JSON object, without its type: assigning it is a read-only property error.
-                const { type, ...baseLayerJSON } = JSON.parse(JSON.stringify(campusBasemap.baseLayers[0]));
-
-                const baseLayer =
-                  type === 'VectorTileLayer' ? new VectorTileLayer({ ...baseLayerJSON }) : new TileLayer({ ...baseLayerJSON });
+                // `makeBaseLayer`, not a `new VectorTileLayer` here: it is the one place a base layer is
+                // built from its definition, and it is where a definition's `spriteOverrides` are applied.
+                // This built its own and so drew the published sprites, which is how the construction hatch
+                // reached dev unfixed on 27 October even though the fix had merged (#2477).
+                const baseLayerJSON = JSON.parse(JSON.stringify(campusBasemap.baseLayers[0]));
+                const baseLayer = makeBaseLayer(baseLayerJSON, { TileLayer, VectorTileLayer, WMSLayer });
 
                 return new Basemap({ ...campusBasemap, baseLayers: [baseLayer] });
               });
