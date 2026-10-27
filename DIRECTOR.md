@@ -301,6 +301,26 @@ from](#saying-when-you-will-next-be-heard-from)); a heartbeat that each one sets
   once in its own PowerShell window on the agent's machine, watches `work-mailbox`, starts the agent non-interactively for each new commit to its `TASKS.md`
   or this file (Copilot with `copilot -p … --allow-all-tools` and the deny list; Codex with `codex exec --full-auto`), re-runs it while batches are left,
   and checks in for it. Its logs are in `%LOCALAPPDATA%\tamu-agent-runner\logs\`. The machine must not sleep while plugged in.
+- **Progress every 15 minutes while a batch runs, not just an estimate at the start** (the maintainer, 27 October
+  2026). `tools/heartbeat.sh <name> "running batch <n>" <minutes>` takes the batch's *expected length*, so a long
+  batch said "next update by 4:30 PM" an hour and a half ahead and meant only "I expect to finish by then". The
+  maintainer read it as how often he would hear anything, and he wants to hear a great deal more often than that.
+
+  So **while a batch is running, push a line to your own `STATUS.md` at least every 15 minutes**, saying what you
+  are doing now and what has finished - not what you expect. A one-line push is enough:
+
+  ```
+  Progress (3:12 PM): check running since 3:04; red-first spec written and failing as intended.
+  ```
+
+  Keep the expected-finish estimate as well; it is useful. The two answer different questions, and only the
+  progress line tells anyone whether a batch is moving. The roster's *stuck?* flag at 60 minutes is the backstop,
+  not the target: by then four progress lines are already missing.
+
+  **A listener driven by `tools/agent-runner.ps1`** (Copilot CLI, Codex CLI) runs non-interactively and cannot be
+  woken mid-run, but it can still push as it goes: write the progress line whenever you finish a step, rather than
+  gathering everything for the final report.
+
 - **A heartbeat proves only that the session's background task is alive.** On 25 October the lab's ran every 30 minutes for
   three hours while the session sat in a wait that could never end, and read no note in that time. So the roster also shows
   **Last real push** (its `STATUS.md` or a report) and flags *stuck?* when a participant says it is running a batch and has
