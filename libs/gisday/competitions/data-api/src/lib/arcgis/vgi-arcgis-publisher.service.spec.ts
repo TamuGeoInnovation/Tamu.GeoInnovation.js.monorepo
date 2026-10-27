@@ -29,10 +29,18 @@ describe('VgiArcgisPublisher', () => {
     ...overrides
   });
 
-  type Call = { url: string; method: string; body: Record<string, string>; file?: boolean };
+  type Call = {
+    url: string;
+    address: string;
+    method: string;
+    body: Record<string, string>;
+    headers: Record<string, string>;
+    file?: string;
+    timed: boolean;
+  };
   let calls: Array<Call>;
   let existing: Array<number>;
-  let attachments: number;
+  let attachments: Array<string>;
   let arcgisError: string | undefined;
   let findOne: jest.Mock;
   let find: jest.Mock;
@@ -57,7 +65,7 @@ describe('VgiArcgisPublisher', () => {
       return { updateResults: [{ objectId: existing[0], success: true }] };
     }
     if (call.url.endsWith('/attachments')) {
-      return { attachmentInfos: Array.from({ length: attachments }, (_, i) => ({ id: i + 1 })) };
+      return { attachmentInfos: attachments.map((name, i) => ({ id: i + 1, name })) };
     }
     if (call.url.endsWith('/addAttachment')) {
       return { addAttachmentResult: { objectId: 1, success: true } };
@@ -71,7 +79,7 @@ describe('VgiArcgisPublisher', () => {
   beforeEach(() => {
     calls = [];
     existing = [];
-    attachments = 0;
+    attachments = [];
     arcgisError = undefined;
 
     process.env.VGI_ARCGIS_LAYER_URL = layer;
@@ -82,19 +90,28 @@ describe('VgiArcgisPublisher', () => {
       const url = String(input).split('?')[0];
       const query = Object.fromEntries(new URL(String(input)).searchParams);
       let body: Record<string, string> = query;
-      let file = false;
+      let file: string | undefined;
 
       if (init?.body instanceof URLSearchParams) {
         body = Object.fromEntries(init.body);
       } else if (init?.body instanceof FormData) {
-        file = init.body.get('attachment') instanceof Blob;
+        const attachment = init.body.get('attachment');
+        file = attachment instanceof File ? attachment.name : undefined;
         body = Object.fromEntries([...init.body.entries()].filter(([, v]) => typeof v === 'string')) as Record<
           string,
           string
         >;
       }
 
-      const call = { url, method: init?.method ?? 'GET', body, file };
+      const call = {
+        url,
+        address: String(input),
+        method: init?.method ?? 'GET',
+        body,
+        headers: Object.fromEntries(new Headers(init?.headers)),
+        file,
+        timed: init?.signal instanceof AbortSignal
+      };
       calls.push(call);
 
       return new Response(JSON.stringify(respond(call)), { status: 200 });
@@ -133,8 +150,7 @@ describe('VgiArcgisPublisher', () => {
     expect(sent('/query')[0].body).toEqual(
       expect.objectContaining({
         where: "submission_id = '0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11'",
-        returnIdsOnly: 'true',
-        token: 'token-1'
+        returnIdsOnly: 'true'
       })
     );
 
@@ -151,7 +167,34 @@ describe('VgiArcgisPublisher', () => {
         participant: expect.stringMatching(/^[0-9a-f]{16}$/)
       }
     });
-    expect(sent('/addAttachment')).toEqual([expect.objectContaining({ url: `${layer}/41/addAttachment`, file: true })]);
+    expect(sent('/addAttachment')).toEqual([
+      expect.objectContaining({ url: `${layer}/41/addAttachment`, file: 'head1.jpeg' })
+    ]);
+  });
+
+  // #2434 review: addresses end up in proxy and server logs, so the token never goes in one.
+  it('sends the access token in a header on every call, never in an address or a form', async () => {
+    existing = [7];
+    await publisher.publish('0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11');
+    existing = [];
+    await publisher.publish('0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11');
+
+    const layerCalls = calls.filter((c) => !c.url.endsWith('/oauth2/token'));
+
+    expect(layerCalls.map((c) => c.url)).toEqual(
+      expect.arrayContaining([`${layer}/query`, `${layer}/updateFeatures`, `${layer}/7/attachments`, `${layer}/addFeatures`])
+    );
+    expect(calls.filter((c) => c.address.includes('token-1'))).toEqual([]);
+    expect(calls.filter((c) => JSON.stringify(c.body).includes('token-1'))).toEqual([]);
+    expect(layerCalls.every((c) => c.headers['x-esri-authorization'] === 'Bearer token-1')).toBe(true);
+  });
+
+  // #2434 review: a hung call must not leave a publish pending for good.
+  it('gives every call to ArcGIS Online a timeout', async () => {
+    await publisher.publish('0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11');
+
+    expect(calls.length).toBeGreaterThan(3);
+    expect(calls.every((c) => c.timed)).toBe(true);
   });
 
   it('never sends who the participant is, only an id that is the same for each of their submissions', async () => {
@@ -169,7 +212,7 @@ describe('VgiArcgisPublisher', () => {
 
   it('updates the point already published for a submission, and does not add its photos twice', async () => {
     existing = [7];
-    attachments = 1;
+    attachments = ['head1.jpeg'];
     findOne.mockResolvedValue(saved({ validationStatus: { status: 'discarded', verifiedBy: 'auth0|reviewer' } }));
 
     await expect(publisher.publish('0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11')).resolves.toBe('updated');
@@ -182,11 +225,29 @@ describe('VgiArcgisPublisher', () => {
 
   it('adds the photos of a point published without them, after an outage', async () => {
     existing = [7];
-    attachments = 0;
+    attachments = [];
 
     await publisher.publish('0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11');
 
     expect(sent('/addAttachment')).toEqual([expect.objectContaining({ url: `${layer}/7/addAttachment` })]);
+  });
+
+  // #2434 review: one of several photo uploads failing must not leave the point short of it for good.
+  it('adds only the photos the point is missing, by name', async () => {
+    existing = [7];
+    attachments = ['head1.jpeg'];
+    findOne.mockResolvedValue(
+      saved({
+        blobs: [
+          { blob: Buffer.from('jpeg-1'), mimeType: 'image/jpeg', fieldName: 'head1' },
+          { blob: Buffer.from('jpeg-2'), mimeType: 'image/jpeg', fieldName: 'head2' }
+        ]
+      })
+    );
+
+    await publisher.publish('0b8e2f0e-6a0e-4b8a-9d8a-0f6f3b9e2c11');
+
+    expect(sent('/addAttachment').map((c) => c.file)).toEqual(['head2.jpeg']);
   });
 
   it('publishes a submission with no review status yet as unverified', async () => {
@@ -202,6 +263,22 @@ describe('VgiArcgisPublisher', () => {
     await publisher.publish('b');
 
     expect(sent('/oauth2/token')).toHaveLength(1);
+  });
+
+  // #2434 review: several saves at once share one sign-in.
+  it('shares one sign-in between publishes that start together', async () => {
+    await Promise.all([publisher.publish('a'), publisher.publish('b'), publisher.publish('c')]);
+
+    expect(sent('/oauth2/token')).toHaveLength(1);
+  });
+
+  it('signs in again after a sign-in fails', async () => {
+    arcgisError = 'Unavailable.';
+    await expect(publisher.publish('a')).rejects.toThrow();
+
+    arcgisError = undefined;
+    await expect(publisher.publish('a')).resolves.toBe('added');
+    expect(sent('/oauth2/token')).toHaveLength(2);
   });
 
   it('fails when ArcGIS Online answers with an error, as it does with status 200', async () => {
@@ -225,5 +302,31 @@ describe('VgiArcgisPublisher', () => {
 
     await expect(publisher.publishSeason('cs-2026')).resolves.toEqual({ published: 1, failed: 1 });
     expect(find).toHaveBeenCalledWith(expect.objectContaining({ where: { season: { guid: 'cs-2026' } } }));
+  });
+
+  // #2434 review: a season of a few hundred submissions takes minutes, longer than a request may.
+  it('starts publishing a season in the background, and answers at once with how many', async () => {
+    find.mockResolvedValue([saved({ guid: 'a' }), saved({ guid: 'b' })]);
+    const waiting: Array<() => void> = [];
+    findOne.mockImplementation(
+      ({ where }) => new Promise((resolve) => waiting.push(() => resolve(saved({ guid: where.guid }))))
+    );
+
+    await expect(publisher.publishSeasonInBackground('cs-2026')).resolves.toEqual({ queued: 2 });
+    expect(sent('/addFeatures')).toEqual([]);
+
+    await expect(publisher.publishSeasonInBackground('cs-2026')).resolves.toEqual({ queued: 0, alreadyRunning: true });
+
+    while (waiting.length) {
+      waiting.shift()();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+  });
+
+  it('says publishing is not set up instead of starting', async () => {
+    delete process.env.VGI_ARCGIS_CLIENT_SECRET;
+
+    await expect(publisher.publishSeasonInBackground('cs-2026')).resolves.toEqual({ queued: 0, configured: false });
+    expect(find).not.toHaveBeenCalled();
   });
 });
