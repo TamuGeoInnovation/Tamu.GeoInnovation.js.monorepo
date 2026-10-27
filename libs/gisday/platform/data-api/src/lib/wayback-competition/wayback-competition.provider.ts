@@ -15,10 +15,10 @@ import {
  *
  * This provider could not compile as written: it imported from `../../entities/all.entity`, a path
  * that does not exist, and named four symbols -- `SignageSubmissionRepo` and friends -- that appear
- * nowhere in the repository. It went unnoticed because `WaybackCompetitionModule` is not imported
- * by the application module, so nothing ever pulled the file into a build.
+ * nowhere in the repository. It went unnoticed because no module imported it (its module and controller were removed in
+ * #2122, never having been imported by the application module), so nothing ever pulled the file into a build.
  *
- * The entities and the repository registration the module already declares are what it needed.
+ * It needs the four submission entities' repositories registered with `TypeOrmModule.forFeature` by whatever module uses it.
  */
 @Injectable()
 export class WaybackCompetitionProvider {
