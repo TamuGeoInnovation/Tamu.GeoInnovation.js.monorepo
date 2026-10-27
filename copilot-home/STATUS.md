@@ -17,9 +17,11 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Batch 28 (gisday: #2460 VGI dates) running since 11:50 AM Central, 27 October.
+Idle: batch 28 reported; nothing left in the queue.
 
 ## Finished
+
+- **Batch 28, gisday: #2460 VGI competition dates** (11:50 AM to about 12:35 PM Central, 27 October): branch `fix/2460-gisday-vgi-dates` at `9260c265b68e26ea5ba75abce979398c0a6af0e1` on the fork; red (4 failed) then green (4 passed); check exit 0; before/after screenshots and release note. Report `copilot-home/reports/2026-10-27-28.md`.
 
 - **Batch 27, security: #2122 the 10 dependencies knip calls unused (read only)** (5:35 to about 6:30 PM Central, 26 October): 3 removable (@angular/language-service, @nx/web, @oxc-project/runtime; full check exit 0 without them), 7 needed (jest-environment-jsdom removal failed 16 test targets). Nothing pushed but this report copilot-home/reports/2026-10-26-27.md.
 
