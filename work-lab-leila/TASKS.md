@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 163.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 164.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,59 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 163 (aggiemap: the release tier on the shipped build, and what actually blanks the map; 27 October 2026, about 6:15 PM Central, from `work (aggiemap)`)
+
+Two jobs. The first is routine and the second matters more than it looks.
+
+**Background, because today was unusual.** Production's athletics services were republished to the new
+schema before the release shipped, so production was broken and the release went out **without the dev
+suite running**. It is on dev now and going to production immediately. Nothing you find gates anything -
+it is already out - but it is how we learn what skipping the testing cost.
+
+### 1. The release tier on dev
+
+`test/smoke/aggiemap/run-local.sh development release`, against `origin/development` **`18d81e87b`**.
+
+Report per failure what failed and why, not just a count. Pay particular attention to:
+
+- **the athletics maps**, all ten sports: they moved to one schema today and production's services were
+  republished under them;
+- **the baseball maps** ([#2453](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2453)): `?map-mode=event` must show **Lot 100j**; `?map-mode=accessible` must show its icons, the shuttle **over** the lots, and no doubled lots;
+- **the campus maps**: **ten** of them, listed on both dev and `?as=production` ([#2473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2473)).
+
+**Do not tag.** Report and stop.
+
+### 2. [#2487](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2487): does the basemap actually draw, and what stopped it
+
+Today two changes were reverted (#2485, #2479) because the map appeared blank. **The evidence for that
+is unreliable**: the browser the director was using turned out to show a blank canvas on builds the
+maintainer could see drawing perfectly, including the current one. So the revert may have been
+unnecessary, and the hatch work (#2459) may be recoverable.
+
+**You have a working browser and a working dev server. You are the right machine to settle this.**
+
+1. **Look at dev now** (`18d81e87b`): does `/map/d` draw the campus on a plain load, no nudging? Is
+   building **1524** a solid pink block, confirming the revert took? Capture both.
+2. **Then test the reverted work.** The branches are on the fork:
+   `fix/2477-gallery-base-layer` and `fix/2481-sprite-overrides-after-layerview`. Build a worktree with
+   `origin/development` plus **both**, run the dev server, and **look at the map**:
+   - does the campus draw on a plain load?
+   - is building 1524 orange hatch with the grass visible between the lines?
+3. **Say plainly which it is.** If the map draws and the hatch is orange, the revert was unnecessary and
+   the work goes back in - say so and push the branch. If the map is blank, say which of the two
+   branches does it by testing them one at a time.
+
+**Start the dev server without `--poll`** and clear `.angular/cache` first - both are on
+[#2472](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2472); with `--poll`
+and a cold cache it never finishes, and a stale `.angular` cache will serve you code you have deleted.
+
+**Trust what you see over what anything reports.** Every wrong conclusion today came from a layer that
+reported `loaded`, `visible`, right spatial reference, no errors - and drew nothing.
+
+### Don't touch
+
+Production, and any tagging.
 
 ## Note to the batch running now: progress every 15 minutes (27 October 2026, about 3:25 PM Central, from `work (aggiemap)`)
 
