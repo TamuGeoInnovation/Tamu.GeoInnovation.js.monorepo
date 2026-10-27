@@ -48,10 +48,14 @@ export class SubmissionService {
   }
 
   /**
-   * Publishes the active season's submissions to its ArcGIS Online layer again (#2433).
+   * Starts publishing the active season's submissions to its ArcGIS Online layer again, on the server
+   * (#2433, #2434 review).
    */
   public publishToArcgis() {
-    return this.http.post<{ published: number; failed: number; configured?: false }>(`${this.resource}/arcgis/publish`, {});
+    return this.http.post<{ queued: number; configured?: false; alreadyRunning?: true }>(
+      `${this.resource}/arcgis/publish`,
+      {}
+    );
   }
 
   public validateSubmission(params: ValidateSubmissionDto) {

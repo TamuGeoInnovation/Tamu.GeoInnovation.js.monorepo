@@ -57,6 +57,10 @@ export function vgiArcgisSettings(env: NodeJS.ProcessEnv = process.env) {
 @Injectable()
 export class VgiArcgisPublisher {
   private token?: { value: string; expires: number };
+  /** A sign-in under way, shared by every publish that needs a token meanwhile (#2434 review). */
+  private signingIn?: Promise<string>;
+  /** The season being published by `publishSeasonInBackground`, if one is. */
+  private publishingSeason?: Promise<unknown>;
 
   constructor(@InjectRepository(CompetitionSubmission) private readonly submissionRepo: Repository<CompetitionSubmission>) {}
 
@@ -75,8 +79,8 @@ export class VgiArcgisPublisher {
   }
 
   /**
-   * Adds the submission's point, or updates it when it is already published, and adds its photos when the
-   * point has none.
+   * Adds the submission's point, or updates it when it is already published, and adds whichever of its photos
+   * the point does not have yet, by name.
    */
   public async publish(submissionGuid: string): Promise<'added' | 'updated' | 'not configured'> {
     const settings = vgiArcgisSettings();
@@ -111,7 +115,7 @@ export class VgiArcgisPublisher {
         throw new Error(result?.error?.description ?? 'ArcGIS Online did not add the point.');
       }
 
-      await this.addPhotos(settings.layerUrl, token, result.objectId, submission);
+      await this.addPhotos(settings.layerUrl, token, result.objectId, submission, new Set());
 
       return 'added';
     }
@@ -127,13 +131,44 @@ export class VgiArcgisPublisher {
       throw new Error(updated.updateResults?.[0]?.error?.description ?? 'ArcGIS Online did not update the point.');
     }
 
+    // Compared by name, so a photo whose upload failed before is added now (#2434 review).
     const existing = await arcgis(`${settings.layerUrl}/${objectId}/attachments`, token, {});
+    const names = new Set<string>((existing.attachmentInfos ?? []).map((info) => info.name));
 
-    if (!existing.attachmentInfos?.length) {
-      await this.addPhotos(settings.layerUrl, token, objectId, submission);
-    }
+    await this.addPhotos(settings.layerUrl, token, objectId, submission, names);
 
     return 'updated';
+  }
+
+  /**
+   * Starts publishing every submission of a competition season and answers at once with how many, because a
+   * season of a few hundred submissions with their photos takes minutes, longer than a request may (#2434
+   * review). When it finishes, the log says how many were published and how many failed. Only one season
+   * publishes at a time.
+   */
+  public async publishSeasonInBackground(
+    competitionSeasonGuid: string
+  ): Promise<{ queued: number; configured?: false; alreadyRunning?: true }> {
+    if (!vgiArcgisSettings()) {
+      return { queued: 0, configured: false };
+    }
+
+    if (this.publishingSeason) {
+      return { queued: 0, alreadyRunning: true };
+    }
+
+    const guids = await this.seasonSubmissionGuids(competitionSeasonGuid);
+
+    this.publishingSeason = this.publishAll(guids)
+      .then(({ published, failed }) =>
+        Logger.log(`Published ${published} submissions to ArcGIS Online; ${failed} failed.`, 'VgiArcgisPublisher')
+      )
+      .catch((err) =>
+        Logger.error(`Publishing the season to ArcGIS Online stopped: ${err?.message ?? err}`, 'VgiArcgisPublisher')
+      )
+      .finally(() => (this.publishingSeason = undefined));
+
+    return { queued: guids.length };
   }
 
   /**
@@ -147,14 +182,23 @@ export class VgiArcgisPublisher {
       return { published: 0, failed: 0, configured: false };
     }
 
+    return this.publishAll(await this.seasonSubmissionGuids(competitionSeasonGuid));
+  }
+
+  private async seasonSubmissionGuids(competitionSeasonGuid: string): Promise<Array<string>> {
     const submissions = await this.submissionRepo.find({
       where: { season: { guid: competitionSeasonGuid } },
       select: { guid: true }
     });
+
+    return submissions.map((submission) => submission.guid);
+  }
+
+  private async publishAll(guids: Array<string>): Promise<{ published: number; failed: number }> {
     let published = 0;
     let failed = 0;
 
-    for (const { guid } of submissions) {
+    for (const guid of guids) {
       try {
         await this.publish(guid);
         published++;
@@ -167,47 +211,65 @@ export class VgiArcgisPublisher {
     return { published, failed };
   }
 
-  private async addPhotos(layerUrl: string, token: string, objectId: number, submission: CompetitionSubmission) {
+  /**
+   * Adds each of the submission's photos whose name is not among `existing`, the names the point's
+   * attachments already have.
+   */
+  private async addPhotos(
+    layerUrl: string,
+    token: string,
+    objectId: number,
+    submission: CompetitionSubmission,
+    existing: Set<string>
+  ) {
     for (const [i, photo] of (submission.blobs ?? []).entries()) {
-      const form = new FormData();
       const type = photo.mimeType || 'image/jpeg';
+      const name = `${photo.fieldName || `photo-${i + 1}`}.${type.split('/')[1] || 'jpg'}`;
 
-      form.append(
-        'attachment',
-        new Blob([Uint8Array.from(photo.blob as unknown as Uint8Array)], { type }),
-        `${photo.fieldName || `photo-${i + 1}`}.${type.split('/')[1] || 'jpg'}`
-      );
+      if (existing.has(name)) {
+        continue;
+      }
+
+      const form = new FormData();
+
+      form.append('attachment', new Blob([Uint8Array.from(photo.blob as unknown as Uint8Array)], { type }), name);
       form.append('f', 'json');
-      form.append('token', token);
 
-      await answer(await fetch(`${layerUrl}/${objectId}/addAttachment`, { method: 'POST', body: form }));
+      await answer(
+        await fetch(`${layerUrl}/${objectId}/addAttachment`, { method: 'POST', body: form, ...withToken(token) })
+      );
     }
   }
 
   /**
-   * A token for the application, reused until five minutes before it expires.
+   * A token for the application, reused until five minutes before it expires. Publishes that need one while a
+   * sign-in is under way wait for that sign-in rather than starting their own (#2434 review).
    */
-  private async signIn(settings: NonNullable<ReturnType<typeof vgiArcgisSettings>>): Promise<string> {
+  private signIn(settings: NonNullable<ReturnType<typeof vgiArcgisSettings>>): Promise<string> {
     if (this.token && this.token.expires > Date.now()) {
-      return this.token.value;
+      return Promise.resolve(this.token.value);
     }
 
-    const response = await answer(
-      await fetch(`${settings.portalUrl}/sharing/rest/oauth2/token`, {
-        method: 'POST',
-        body: new URLSearchParams({
-          client_id: settings.clientId,
-          client_secret: settings.clientSecret,
-          grant_type: 'client_credentials',
-          expiration: '120',
-          f: 'json'
-        })
+    this.signingIn ??= fetch(`${settings.portalUrl}/sharing/rest/oauth2/token`, {
+      method: 'POST',
+      body: new URLSearchParams({
+        client_id: settings.clientId,
+        client_secret: settings.clientSecret,
+        grant_type: 'client_credentials',
+        expiration: '120',
+        f: 'json'
+      }),
+      signal: AbortSignal.timeout(ARCGIS_TIMEOUT_MS)
+    })
+      .then(answer)
+      .then((response) => {
+        this.token = { value: response.access_token, expires: Date.now() + (Number(response.expires_in) - 300) * 1000 };
+
+        return this.token.value;
       })
-    );
+      .finally(() => (this.signingIn = undefined));
 
-    this.token = { value: response.access_token, expires: Date.now() + (Number(response.expires_in) - 300) * 1000 };
-
-    return this.token.value;
+    return this.signingIn;
   }
 }
 
@@ -247,12 +309,30 @@ function participantId(userGuid: string): string {
 }
 
 /**
- * Calls a layer endpoint with the token: a GET with its parameters in the address, or a form POST.
+ * How long any one call to ArcGIS Online may take, so a hung call fails instead of leaving a publish, or a
+ * whole season, waiting for good (#2434 review).
+ */
+export const ARCGIS_TIMEOUT_MS = 30000;
+
+/**
+ * The token goes in a header, never in an address or a form: addresses end up in proxy and server logs
+ * (#2434 review). Each call also gets `ARCGIS_TIMEOUT_MS`.
+ */
+function withToken(token: string): RequestInit {
+  return { headers: { 'X-Esri-Authorization': `Bearer ${token}` }, signal: AbortSignal.timeout(ARCGIS_TIMEOUT_MS) };
+}
+
+/**
+ * Calls a layer endpoint: a GET with its parameters in the address, or a form POST, the token in a header.
  */
 async function arcgis(url: string, token: string, params: Record<string, string>, method: 'GET' | 'POST' = 'GET') {
-  const all = new URLSearchParams({ ...params, f: 'json', token });
+  const all = new URLSearchParams({ ...params, f: 'json' });
 
-  return answer(method === 'GET' ? await fetch(`${url}?${all}`) : await fetch(url, { method, body: all }));
+  return answer(
+    method === 'GET'
+      ? await fetch(`${url}?${all}`, withToken(token))
+      : await fetch(url, { method, body: all, ...withToken(token) })
+  );
 }
 
 /**

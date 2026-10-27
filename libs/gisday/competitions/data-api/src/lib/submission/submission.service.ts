@@ -139,8 +139,8 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
   }
 
   /**
-   * Publishes every submission of the active competition season to its ArcGIS Online layer, for an admin
-   * after an outage or once publishing is switched on (#2433).
+   * Starts publishing every submission of the active competition season to its ArcGIS Online layer, for an
+   * admin after an outage or once publishing is switched on (#2433), and answers at once (#2434 review).
    */
   public async publishActiveSeasonToArcgis() {
     const season = await this.seasonRepo.findOne({ where: { active: true } });
@@ -150,7 +150,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       throw new NotFoundException('No active competition season.');
     }
 
-    return this.arcgis.publishSeason(compSeason.guid);
+    return this.arcgis.publishSeasonInBackground(compSeason.guid);
   }
 
   public createSubmissionMedia(entity: DeepPartial<SubmissionMedia>) {

@@ -14,8 +14,10 @@ an email or a name), with its photos as attachments. When the app or a person re
 changes too. A discarded submission stays in the layer, marked discarded, so the layer matches the admin page.
 
 Publishing happens after the save, so a participant's upload succeeds whatever ArcGIS Online does. **Publish to
-ArcGIS** on the admin Submissions page sends the whole season again, after an outage or once publishing is
-switched on, and says how many it published and how many failed. It is safe to run any number of times.
+ArcGIS** on the admin Submissions page starts sending the whole season again, after an outage or once publishing
+is switched on, and says how many it will send; it runs on the server in the background, and is safe to run any
+number of times. The layer is shared with the organization only, never the public, because its points carry
+participants' photos and the names they typed.
 
 Publishing is off until the API has the 2026 layer's address and an ArcGIS Online application's client id and
 secret (`VGI_ARCGIS_LAYER_URL`, `VGI_ARCGIS_CLIENT_ID`, `VGI_ARCGIS_CLIENT_SECRET`). The issue lists the layer's

@@ -78,10 +78,10 @@ export class AdminSubmissionsComponent implements OnInit {
    */
   public publishToArcgis(): void {
     this.publishing.set(true);
-    this.arcgisResult.set('Publishing to ArcGIS Online…');
+    this.arcgisResult.set('Starting to publish to ArcGIS Online…');
 
     this.submissionService.publishToArcgis().subscribe({
-      next: ({ published, failed, configured }) => {
+      next: ({ queued, configured, alreadyRunning }) => {
         this.publishing.set(false);
 
         if (configured === false) {
@@ -89,9 +89,15 @@ export class AdminSubmissionsComponent implements OnInit {
           return;
         }
 
+        if (alreadyRunning) {
+          this.arcgisResult.set('Already publishing to ArcGIS Online. Try again once it has finished.');
+          return;
+        }
+
+        // It runs on the server, in the background, and takes minutes for a whole season (#2434 review).
         this.arcgisResult.set(
-          `Published ${published} submission${published === 1 ? '' : 's'} to ArcGIS Online.` +
-            (failed > 0 ? ` ${failed} failed; the API log says why.` : '')
+          `Publishing ${queued} submission${queued === 1 ? '' : 's'} to ArcGIS Online in the background. ` +
+            'Each failure is in the API log; running it again is safe.'
         );
       },
       error: () => {
