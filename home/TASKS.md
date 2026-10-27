@@ -24,6 +24,48 @@ failures are recorded below so nobody re-derives them.
 **What to do:** keep your watcher running, take batches from this file as before, and put any AggieMap
 question in your report under **Questions for the director (aggiemap)** rather than acting on it.
 
+## Batch 6 (aggiemap: #2472 the dev server stalls at the dependency optimizer; 27 October 2026, about 1:50 PM Central, from `work (aggiemap)`)
+
+**Not critical**, and an investigation rather than a fix. The maintainer: *"If they can make it in by the time
+we finish with the campus maps, they can be included for the dev release. If not, we do later."* An answer is
+worth more here than a rushed patch. Questions go to `work (aggiemap)`.
+
+[#2472](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2472), from your own batch 5
+report and copilot-home's batch 29: the AggieMap dev server answers on 4200, the log stops at
+`[optimizer] bundling dependencies...`, and it makes no progress for over ten minutes at about 100% CPU -
+**with `UV_THREADPOOL_SIZE=64` set and a fresh `node_modules` volume**. That is the symptom
+[#1955](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1955) closed, with its fix
+already applied, so either the fix is incomplete or there is a second cause wearing the same face.
+
+It cost two machines their before/after captures today; both fell back to a production build served by
+`serve-dist.js`. CLAUDE.md budgets fifteen minutes from cause to pull request for a bug fix, and this breaks
+that budget every time it happens.
+
+### What is wanted
+
+**An answer, not necessarily a fix.** Does it reproduce on demand, and what makes the difference? Things worth
+varying, in rough order of suspicion:
+
+1. **`--poll=2000`.** #1955's cause was polling starving the thread pool. Does the stall go away without
+   polling, and does the server still see edits from Windows if it does?
+2. **The second volume.** Both machines were using a volume other than `tamu-js-dev-nm` (`tamu-js-b159-nm`,
+   `tamu-js-2453-nm`), because the shared one was stale and `gisday-api` holds it. Whether that matters is
+   unknown and worth one controlled run either way.
+3. **`UV_THREADPOOL_SIZE` higher still**, and whether the number that works depends on the machine's CPU count -
+   you and the lab have very different machines, which is useful here rather than a nuisance.
+4. **Which dependency it is stuck on.** The optimizer names what it is bundling at higher log levels; a single
+   package would turn this from a mystery into a pin.
+
+Report what reproduces it and what does not, with the commands. If a one-line fix falls out, take it, with a
+red-first demonstration that the stall happens without it - but do not invent one to close the issue.
+
+Nothing to push unless there is a fix. Say **"report ready: &lt;file&gt;"** either way.
+
+### Don't touch
+
+`check/2026-10-27-batch`, and anything campus-related: a change making every campus map visible on production is
+being written now.
+
 ## Batch 5 (aggiemap: #2453 Megan's baseball republish - the blocking issue for today's release; 27 October 2026, about 12:50 PM Central, from `work (aggiemap)`)
 
 **Urgent, and it blocks a production release today.** The maintainer abandoned the dev build now deployed

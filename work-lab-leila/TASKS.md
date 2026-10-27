@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 162.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 163.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,59 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 162 (aggiemap: #2467 give the builder-gated maps a layer check; 27 October 2026, about 1:50 PM Central, from `work (aggiemap)`)
+
+After batch 161 if one is queued, otherwise now. **Not critical.** The maintainer: *"If they can make it in
+by the time we finish with the campus maps, they can be included for the dev release. If not, we do later.
+Neither are critical."* So: do it properly, and if it is not ready when the campus work is, it waits for the
+next release. Do not cut corners to make a deadline that does not exist.
+
+[#2467](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2467): `map-layers.spec.ts`
+is the check that every layer a map lists also draws and keys. It skips any map that lands on a builder:
+
+```ts
+test.skip(page.url().includes('/builder/'), `${mapPath} is behind a builder; tools/builder-inventory covers it`);
+```
+
+Eleven maps are behind a builder, Baseball among them, so none of them has ever had its layers checked. That
+is why [#2453](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2453) - the
+republish that broke both baseball maps this morning - went unnoticed. Measured at 1:20 PM today:
+
+```
+test/smoke/aggiemap/run-local.sh development one baseball
+  4 passed, 1 skipped
+```
+
+The one skipped is the layer check. The four that passed cannot see the fault.
+
+**The skip message is also wrong**, which is probably why nobody noticed: `tools/builder-inventory` records
+where each combination of choices *lands*, with a shareable link. It does not ask whether the layers at that
+destination draw.
+
+### What to do
+
+1. **Give the spec the destinations rather than the builder's own URL.** The builder maps are reachable once
+   a choice is made, and `tools/builder-inventory` already enumerates every destination, including the direct
+   link. Baseball's two are `?map-mode=event` and `?map-mode=accessible`; `framing.spec.ts` already opens
+   `/parking/baseball-parking/map/d?map-mode=accessible` directly, so the pattern exists in the suite.
+2. **Prove it red first.** Against **`ca2ad502d`** on `origin/development` - the commit *before* #2469 merged -
+   the baseball accessible destination should fail for the missing symbols. Then against current
+   `origin/development`, which carries the fix, it should pass. That is the whole value of this change, so it
+   is worth the extra run.
+3. **Say what it costs.** Eleven maps with several destinations each is real time added to every tier. Report
+   the added wall-clock for `release`, and if it is large, say so rather than quietly making the suite slower -
+   there may be a case for the destinations only in `full`.
+4. **`docs/testing.md`: add nothing and change no number** ([#2002](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2002)).
+   If the spec count changes, that is a measurement taken at release, not a tally kept by hand.
+
+Branch `test/2467-builder-map-layers` from `origin/development`, push to the fork, say
+**"branch ready: test/2467-builder-map-layers"**. I open the pull request.
+
+### Don't touch
+
+`check/2026-10-27-batch` (a checking branch, not for merging) and anything campus-related: a change making
+every campus map visible on production is being written now.
 
 ## Batch 161 (gisday: the release check for site and API `sha-4e60f38`, the next GIS Day release; read only against production; 27 October 2026, about 12:45 PM Central, from `work (gisday)`)
 
