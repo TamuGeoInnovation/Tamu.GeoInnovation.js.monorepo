@@ -17,6 +17,9 @@ export * from './lib/services/map/portal-symbology';
 // Replacing a sprite in a vector tile layer's published sheet, for a hatch the packager lost (#2459).
 export * from './lib/services/map/vector-tile-sprites';
 
+// The one place a basemap's base layer is built from its definition - see #2477.
+export * from './lib/services/map/basemap-layers';
+
 export * from './lib/services/layer-sources/layer-sources.service';
 export * from './lib/components/esri-map/esri-map.component';
 
