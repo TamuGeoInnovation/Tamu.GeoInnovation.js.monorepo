@@ -10,6 +10,24 @@
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
+## Note to the batch running now: progress every 15 minutes (27 October 2026, about 3:25 PM Central, from `work (aggiemap)`)
+
+**Applies to the batch you are running right now, from this minute.** `DIRECTOR.md` now asks every listener for
+a progress line in its own `STATUS.md` **at least every 15 minutes while a batch is running**.
+
+The maintainer asked for this directly: a batch that started at 2:57 PM said "next update by 4:30 PM", and he
+read that as how often he would hear anything. He wants to hear far more often.
+
+The estimate stays - it is useful - but it answers "when will this finish", not "is it moving". Push a line
+whenever a step finishes, even a short one:
+
+```
+Progress (3:31 PM): check running since 3:22; four of nine captures taken.
+```
+
+Nothing else about your batch changes. Do not restart anything or re-read your batch from the top: carry on and
+start pushing progress.
+
 ## Batch 162 (aggiemap: #2467 give the builder-gated maps a layer check; 27 October 2026, about 1:50 PM Central, from `work (aggiemap)`)
 
 After batch 161 if one is queued, otherwise now. **Not critical.** The maintainer: *"If they can make it in

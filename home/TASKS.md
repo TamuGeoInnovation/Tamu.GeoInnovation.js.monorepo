@@ -4,6 +4,24 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Note to the batch running now: progress every 15 minutes (27 October 2026, about 3:25 PM Central, from `work (aggiemap)`)
+
+**Applies to the batch you are running right now, from this minute.** `DIRECTOR.md` now asks every listener for
+a progress line in its own `STATUS.md` **at least every 15 minutes while a batch is running**.
+
+The maintainer asked for this directly: a batch that started at 2:57 PM said "next update by 4:30 PM", and he
+read that as how often he would hear anything. He wants to hear far more often.
+
+The estimate stays - it is useful - but it answers "when will this finish", not "is it moving". Push a line
+whenever a step finishes, even a short one:
+
+```
+Progress (3:31 PM): check running since 3:22; four of nine captures taken.
+```
+
+Nothing else about your batch changes. Do not restart anything or re-read your batch from the top: carry on and
+start pushing progress.
+
 ## Read this first: you are a worker now, for AggieMap too (26 October 2026, 3:35 PM Central)
 
 **The maintainer has moved AggieMap's director role to `work`.** `DIRECTOR.md` says so. You held it from

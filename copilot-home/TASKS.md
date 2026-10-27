@@ -38,6 +38,24 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
 
+## Note to the batch running now: progress every 15 minutes (27 October 2026, about 3:25 PM Central, from `work (aggiemap)`)
+
+**Applies to the batch you are running right now, from this minute.** `DIRECTOR.md` now asks every listener for
+a progress line in its own `STATUS.md` **at least every 15 minutes while a batch is running**.
+
+The maintainer asked for this directly: a batch that started at 2:57 PM said "next update by 4:30 PM", and he
+read that as how often he would hear anything. He wants to hear far more often.
+
+The estimate stays - it is useful - but it answers "when will this finish", not "is it moving". Push a line
+whenever a step finishes, even a short one:
+
+```
+Progress (3:31 PM): check running since 3:22; four of nine captures taken.
+```
+
+Nothing else about your batch changes. Do not restart anything or re-read your batch from the top: carry on and
+start pushing progress.
+
 ## Batch 30 (aggiemap: #2476 the HSC Dallas campus map; 27 October 2026, about 2:50 PM Central, from `work (aggiemap)`)
 
 After batch 29, which you have finished and which is merged. **From `work (aggiemap)`.** The maintainer
