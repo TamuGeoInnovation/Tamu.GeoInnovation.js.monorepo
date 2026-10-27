@@ -18,7 +18,8 @@ import { environmentIsDevelopment } from './gis-hosts';
  *    `declared-layers.generated.json`, which `declared-layers.spec.ts` in `ts-events-ngx` keeps equal to
  *    them. Each is found on the map by id, then in the list by the title it has there, so a layer that
  *    never reaches the map is caught too. The main map has no definition there, so every layer its view
- *    holds that is not hidden from the list must be in it instead. No title is listed twice (#2453).
+ *    holds that is not hidden from the list must be in it instead. Not at a builder destination, where
+ *    neither says what the choices leave listed. No title is listed twice in one group (#2453).
  * 2. **Drawn.** Every layer that holds features in the current extent draws at least one of them: the
  *    features are given to the layer's own renderer until one comes back with a symbol. A layer that is
  *    on is asked through its layer view, what the map holds; one that is off, as every layer on the main
@@ -35,7 +36,8 @@ import { environmentIsDevelopment } from './gis-hosts';
  *    holds an `img`, `canvas`, `svg` or an element with a background image. Freshman Selectable Parking
  *    listed both its layers in the legend by name with no symbol under either on production (#1987).
  *    A layer that failed to load or serves no features at all is left to `maps.spec.ts`. An entry is
- *    found by its title, or, where the legend gives it none, by a row labelled with the layer's title.
+ *    found by its title, or, where the legend gives it none, by a row labelled with the layer's title; a
+ *    layer in a group, by its own entry inside the group's.
  *
  * A map with a version published only on the development GIS server is checked against that version where
  * the server is read, and there its Layers list must show nothing else: a layer the new version drops is
@@ -389,8 +391,13 @@ for (const { mapPath, loadPath, title } of cases) {
         text.trim()
       );
       const development = DEVELOPMENT_GIS ? definition?.developmentLayers : undefined;
+      // Not at a builder destination, where nothing says what the list should hold: the declared lists hold
+      // every choice's layers (Gameday's) or none of the ones a choice switches (Baseball's are `[]`), and the
+      // view also holds the main map's layers, which an event map leaves out of its list by design.
       const ids =
-        development ?? definition?.layers ?? layers.filter((l) => l.topLevel && l.listMode !== 'hide').map((l) => l.id);
+        loadPath !== mapPath
+          ? []
+          : (development ?? definition?.layers ?? layers.filter((l) => l.topLevel && l.listMode !== 'hide').map((l) => l.id));
       const missing = ids
         .filter((id) => !ALLOWED_LAYER_FAILURES.includes(id))
         .map((id) => ({ id, layer: layers.find((l) => l.id === id) }))
@@ -406,15 +413,22 @@ for (const { mapPath, loadPath, title } of cases) {
         )
         .toEqual([]);
 
-      // Each listed once: two of one title is one service layer added twice, which draws it twice. The
-      // Accessible Baseball Map listed "Baseball Event Parking Lots" twice after its service was republished
-      // (#2453), with every other check here passing.
-      expect
-        .soft(
-          listed.filter((item, index) => listed.indexOf(item) !== index),
-          `${mapPath}: layers the Layers list shows more than once`
-        )
-        .toEqual([]);
+      // Each listed once among its siblings: two of one title is one service layer added twice, which draws
+      // it twice. The Accessible Baseball Map listed "Baseball Event Parking Lots" twice after its service was
+      // republished (#2453), with every other check here passing. Not across groups: Move-In lists "No
+      // Roadside Parking" under both its streets and its points of interest, two layers by design.
+      const repeated = await page.evaluate(() =>
+        Array.from(new Set(Array.from(document.querySelectorAll('tamu-gisc-layer-list-item')).map((i) => i.parentElement)))
+          .flatMap((parent) => {
+            const titles = Array.from(parent?.children ?? [])
+              .filter((child) => child.matches('tamu-gisc-layer-list-item'))
+              .map((child) => child.querySelector(':scope > .layer-item > p')?.textContent?.trim() ?? '');
+
+            return titles.filter((title, index) => title !== '' && titles.indexOf(title) !== index);
+          })
+      );
+
+      expect.soft(repeated, `${mapPath}: layers the Layers list shows more than once`).toEqual([]);
 
       // Not at a builder destination: the declared lists leave out every layer a choice switches, which on a
       // builder map can be all of them (Baseball's are `[]`), so there they are a floor, not the whole list.
@@ -489,8 +503,10 @@ for (const { mapPath, loadPath, title } of cases) {
             });
           const text = (el: Element | null) => el?.textContent?.trim().replace(/\s+/g, ' ') ?? '';
 
+          // Every collection, a group's nested ones included: a layer in a group (Move-In's) has its entry
+          // inside the group's, under its own title.
           return Array.from(
-            document.querySelectorAll('tamu-gisc-legend .sidebar-component-content-container > tamu-gisc-legend-collection')
+            document.querySelectorAll('tamu-gisc-legend .sidebar-component-content-container tamu-gisc-legend-collection')
           ).map((collection) => {
             const title = text(
               collection.querySelector(':scope > .legend-collection > .collection-group-title .collection-group-title-text')
