@@ -8,7 +8,7 @@ import { MaysCityCenterTs } from './mays-city-center.definitions';
 import { HscRoundRockTs } from './hsc-round-rock.definitions';
 import { HscKingsvilleTs } from './hsc-kingsville.definitions';
 import { HscCorpusChristiTs } from './hsc-corpus-christi.definitions';
-import { HscDallasNorthwestTs, HscDallasSoutheastTs } from './hsc-dallas.definitions';
+import { HscCollegeOfDentistryTs } from './hsc-college-of-dentistry.definitions';
 import { GalvestonTs } from './galveston.definitions';
 import { McAllenTs } from './mcallen.definitions';
 
@@ -53,14 +53,13 @@ const campuses = [
   { label: 'HSC Round Rock', root: HscRoundRockTs },
   { label: 'HSC Kingsville', root: HscKingsvilleTs },
   { label: 'HSC Corpus Christi', root: HscCorpusChristiTs },
-  { label: 'HSC Dallas Northwest', root: HscDallasNorthwestTs },
-  { label: 'HSC Dallas Southeast', root: HscDallasSoutheastTs }
+  { label: 'HSC College of Dentistry', root: HscCollegeOfDentistryTs }
 ];
 
 describe('satellite campus thumbnails', () => {
   it('covers every campus the definitions declare', () => {
     // A campus added without being added here would otherwise be silently unchecked.
-    expect(campuses.length).toBe(11);
+    expect(campuses.length).toBe(10);
   });
 
   it.each(campuses)('$label is listed as a satellite campus', ({ root }) => {

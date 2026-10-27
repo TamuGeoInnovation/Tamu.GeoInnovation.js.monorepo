@@ -17,21 +17,23 @@ import { EventPopups } from '../../modules/popups/popups';
  * this overlay clicking on a building would not show a popup (search-selected results still work
  * since those bypass `hitTest()` entirely).
  */
-export enum HSC_DALLAS_NORTHWEST_LAYERS {
-  BASEMAP = 'hsc-dallas-northwest-basemap-layer',
-  PROPERTY = 'hsc-dallas-northwest-property-layer'
+export enum HSC_COLLEGE_OF_DENTISTRY_LAYERS {
+  BASEMAP = 'hsc-college-of-dentistry-basemap-layer',
+  PROPERTY = 'hsc-college-of-dentistry-property-layer'
 }
 
-export enum HSC_DALLAS_SOUTHEAST_LAYERS {
-  BASEMAP = 'hsc-dallas-southeast-basemap-layer',
-  PROPERTY = 'hsc-dallas-southeast-property-layer'
-}
 
 /**
- * HSC Dallas is one published service (`Hosted/HSCD`) that is two campus maps (#2476): six buildings in
- * two places about 4 km apart, and a basemap whose extent is about 60 km wide. Each map shares the one
- * basemap, which draws the whole published area, and is told apart from the other by what it shows of
- * the `/4 Structures` layer, so it opens on its own site and searches only its own buildings.
+ * The HSC College of Dentistry, from the published `Hosted/HSCD` service (#2476).
+ *
+ * That service holds six buildings in two places about 4 km apart, under a basemap whose extent is about
+ * 60 km wide. **Only the north-western site is a map for now** - the five buildings round the College of
+ * Dentistry - which is what the GIS team asked for on 27 October: the south-eastern one, Dr. M.C. Cooper
+ * Dental Clinic, comes later as its own map from this same service.
+ *
+ * So the map is told apart from the rest of the service by what it shows of the `/4 Structures` layer: it
+ * opens on its own site and searches only its own buildings, and the basemap draws the whole published
+ * area underneath, which is expected.
  *
  * The split is on `zip` rather than on building numbers: the postcode is what actually distinguishes the
  * two sites, and it stays true when a building is added to either.
@@ -40,10 +42,9 @@ export enum HSC_DALLAS_SOUTHEAST_LAYERS {
  * is the College of Dentistry; the southeast one is a dental clinic). Each is written once, here, and
  * every other name on the map is built from it.
  */
-const NORTHWEST_NAME = 'HSC Dallas Medicine';
-const SOUTHEAST_NAME = 'HSC Dallas Dentistry';
+const NAME = 'HSC College of Dentistry';
 
-interface DallasSite {
+interface DentistrySite {
   id: string;
   name: string;
   zip: string;
@@ -55,7 +56,7 @@ interface DallasSite {
 
 const STRUCTURES_URL = `${Connections.hscDallasFeatureServerUrl}/4`;
 
-function layerSources(site: DallasSite): LayerSource[] {
+function layerSources(site: DentistrySite): LayerSource[] {
   return [
     {
       type: 'vector-tile',
@@ -85,7 +86,7 @@ function layerSources(site: DallasSite): LayerSource[] {
  * basemap (layer `4`, "Structures" - plural, and not the index the other campuses use). Its fields are the
  * same as Houston Space Institute's, so the search is too; `fixedWhere` keeps a search to this site.
  */
-function searchSources(site: DallasSite): SearchSource[] {
+function searchSources(site: DentistrySite): SearchSource[] {
   return [
     {
       source: `${site.id}-property`,
@@ -116,7 +117,7 @@ function searchSources(site: DallasSite): SearchSource[] {
   ];
 }
 
-function configuration(site: DallasSite, search: SearchSource[]): EventConfiguration {
+function configuration(site: DentistrySite, search: SearchSource[]): EventConfiguration {
   return {
     id: site.id,
     name: site.name,
@@ -139,7 +140,7 @@ function configuration(site: DallasSite, search: SearchSource[]): EventConfigura
   };
 }
 
-function definition(site: DallasSite, sources: LayerSource[], search: SearchSource[]): AggiemapCustomMapConfiguration {
+function definition(site: DentistrySite, sources: LayerSource[], search: SearchSource[]): AggiemapCustomMapConfiguration {
   const options: SpecialEventOptions = [];
   const config = configuration(site, search);
 
@@ -163,43 +164,25 @@ function definition(site: DallasSite, sources: LayerSource[], search: SearchSour
   };
 }
 
-const NORTHWEST: DallasSite = {
-  id: 'hsc-dallas-northwest',
-  name: NORTHWEST_NAME,
+const COLLEGE_OF_DENTISTRY: DentistrySite = {
+  id: 'hsc-college-of-dentistry',
+  name: NAME,
   zip: '75246',
-  layers: HSC_DALLAS_NORTHWEST_LAYERS,
+  layers: HSC_COLLEGE_OF_DENTISTRY_LAYERS,
   // The middle of the five buildings round the College of Dentistry. They span about 600 m, so at 17 all five are in frame
   // with the map's sidebar open; at 16 they are a cluster of small shapes in the lower right.
   center: [-96.78215, 32.789],
   zoom: 17,
-  thumbnail: './assets/images/campus/hsc-dallas-northwest.jpg'
+  thumbnail: './assets/images/campus/hsc-college-of-dentistry.jpg'
 };
 
-const SOUTHEAST: DallasSite = {
-  id: 'hsc-dallas-southeast',
-  name: SOUTHEAST_NAME,
-  zip: '75210',
-  layers: HSC_DALLAS_SOUTHEAST_LAYERS,
-  // Dr. M.C. Cooper Dental Clinic (3608), from its own `longitude`/`latitude` fields. It is the only building
-  // here, so it is framed as the Houston Space Institute's is: 17, not 18, which would fill the view with it.
-  center: [-96.74338, 32.76691],
-  zoom: 17,
-  thumbnail: './assets/images/campus/hsc-dallas-southeast.jpg'
-};
 
-export const HscDallasNorthwestLayerSources: LayerSource[] = layerSources(NORTHWEST);
-export const HscDallasSoutheastLayerSources: LayerSource[] = layerSources(SOUTHEAST);
+export const HscCollegeOfDentistryLayerSources: LayerSource[] = layerSources(COLLEGE_OF_DENTISTRY);
 
-export const HscDallasNorthwestSearchSources: SearchSource[] = searchSources(NORTHWEST);
-export const HscDallasSoutheastSearchSources: SearchSource[] = searchSources(SOUTHEAST);
+export const HscCollegeOfDentistrySearchSources: SearchSource[] = searchSources(COLLEGE_OF_DENTISTRY);
 
-export const HscDallasNorthwestTs: AggiemapCustomMapConfiguration = definition(
-  NORTHWEST,
-  HscDallasNorthwestLayerSources,
-  HscDallasNorthwestSearchSources
-);
-export const HscDallasSoutheastTs: AggiemapCustomMapConfiguration = definition(
-  SOUTHEAST,
-  HscDallasSoutheastLayerSources,
-  HscDallasSoutheastSearchSources
+export const HscCollegeOfDentistryTs: AggiemapCustomMapConfiguration = definition(
+  COLLEGE_OF_DENTISTRY,
+  HscCollegeOfDentistryLayerSources,
+  HscCollegeOfDentistrySearchSources
 );

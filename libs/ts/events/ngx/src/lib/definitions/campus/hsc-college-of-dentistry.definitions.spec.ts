@@ -1,19 +1,16 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import {
-  HscDallasNorthwestLayerSources,
-  HscDallasNorthwestTs,
-  HscDallasSoutheastLayerSources,
-  HscDallasSoutheastTs
-} from './hsc-dallas.definitions';
+  HscCollegeOfDentistryLayerSources,
+  HscCollegeOfDentistryTs,
+} from './hsc-college-of-dentistry.definitions';
 
 /**
  * HSC Dallas is one service published as two maps (#2476), told apart by postcode. Each must open on its
  * own site and show and search only its own buildings; a map that lost its filter would show all six.
  */
 const sites = [
-  { label: 'northwest', zip: '75246', root: HscDallasNorthwestTs, sources: HscDallasNorthwestLayerSources },
-  { label: 'southeast', zip: '75210', root: HscDallasSoutheastTs, sources: HscDallasSoutheastLayerSources }
+  { label: 'college of dentistry', zip: '75246', root: HscCollegeOfDentistryTs, sources: HscCollegeOfDentistryLayerSources }
 ];
 
 const overlay = (sources: LayerSource[]) => sources.find((source) => source.type === 'feature');

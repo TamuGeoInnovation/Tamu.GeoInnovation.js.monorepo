@@ -245,15 +245,11 @@
       "hs-graduation-departure-group"
     ]
   },
+  "hsc-college-of-dentistry": {
+    "layerList": false,
+    "layers": []
+  },
   "hsc-corpus-christi": {
-    "layerList": false,
-    "layers": []
-  },
-  "hsc-dallas-northwest": {
-    "layerList": false,
-    "layers": []
-  },
-  "hsc-dallas-southeast": {
     "layerList": false,
     "layers": []
   },

@@ -1,27 +1,28 @@
 ---
 issue: 2476
-title: HSC Dallas joins the campus maps as two maps, one for each of its sites
+title: The HSC College of Dentistry joins the campus maps
 testOnDev: |
-  | HSC Dallas ([#2476](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2476)) | On dev: [all campus maps](https://dev.aggiemap.tamu.edu/all-maps/campus), then each of the two HSC Dallas maps | **Eleven campuses are listed.** The two new ones each show a picture of their own map. HSC Dallas Medicine opens on the five buildings round the College of Dentistry (3600, 3601, 3605, 3607 and the imaging centre) and nothing else; HSC Dallas Dentistry opens on Dr. M.C. Cooper Dental Clinic (3608) alone. In each, click a building for its popup; search `den` in the map's own search and check it finds only that site's buildings (the other site's never appear); open `?bldg=3608` on the Dentistry map and `?bldg=3600` on the Medicine map and check each selects its building |
+  | HSC College of Dentistry ([#2476](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2476)) | On dev: [all campus maps](https://dev.aggiemap.tamu.edu/all-maps/campus), then the new HSC College of Dentistry map | **Ten campuses are listed**, the new one showing a picture of its own map. It opens on the five buildings round the College of Dentistry - 3600, 3601, 3605, 3607 and the imaging centre - and shows no others. Click a building for its popup. Search `den` in the map's own search and check it finds only those five: **Dr. M.C. Cooper Dental Clinic (3608) must not appear**, because it belongs to the site that is not mapped yet. Open `?bldg=3600` and check it selects that building |
 ---
 
-### HSC Dallas joins the campus maps as two maps
+### The HSC College of Dentistry joins the campus maps
 
-The GIS team published HSC Dallas as one service with six buildings in two places about 4 km apart: five in
-downtown Dallas round the College of Dentistry, and Dr. M.C. Cooper Dental Clinic to the south-east. Each place is
-its own campus map, built from the same service and told apart by postcode (75246 and 75210), so a building added to
-either site lands on the right map:
+The GIS team published HSC Dallas as one service holding six buildings in two places about 4 km apart: five
+in downtown Dallas round the College of Dentistry, and Dr. M.C. Cooper Dental Clinic to the south-east.
 
-- **HSC Dallas Medicine** - the northwest site ([#2476](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2476))
-- **HSC Dallas Dentistry** - the southeast site
+**The College of Dentistry is a map now; the clinic is not yet.** That is what the GIS team asked for on
+27 October - the clinic gets its own map from this same service when they are ready. That is also why the
+map is told apart from the rest of the service by postcode (`75246`) rather than by listing its five
+buildings: a building added to this site appears on it without a code change, and one added to the other
+site does not appear by mistake.
 
-**The two names are provisional.** Every northwest building is named for the College of Dentistry and the southeast
-one is a dental clinic, so the names may swap; each is written in one place in the code.
+The basemap draws the whole published area, including the ground around the clinic. That is expected: one
+published basemap serves both sites.
 
-Both are listed on production as well as development, like every other campus.
+A search source can now carry a `fixedWhere` condition that every search for it must also satisfy, which is
+how this map searches only its own site.
 
-A search source can now carry a `fixedWhere` condition that every search for it must also satisfy; the two Dallas maps
-use it to search only their own site.
+Ten campus maps are listed now, all of them on production.
 
-![HSC Dallas Medicine](../screenshots/2476-hsc-dallas/hsc-dallas-northwest.png)
-![HSC Dallas Dentistry](../screenshots/2476-hsc-dallas/hsc-dallas-southeast.png)
+![The HSC College of Dentistry map](../screenshots/2476-hsc-dallas/hsc-college-of-dentistry.png)
+![Ten campus maps listed](../screenshots/2476-hsc-dallas/all-maps-campus.png)
