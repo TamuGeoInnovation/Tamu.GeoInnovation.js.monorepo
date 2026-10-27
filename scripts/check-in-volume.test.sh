@@ -24,7 +24,7 @@ env:
 YML
 cat >"$repo/.github/workflows/test.yml" <<'YML'
 env:
-  EXCLUDED_PROJECTS: 'app-e2e,oidc-provider-nest,signage-angular'
+  EXCLUDED_PROJECTS: 'app-e2e,oidc-provider-nest,geoservices-nest'
 YML
 cat >"$repo/.github/workflows/build.yml" <<'YML'
 env:
@@ -48,7 +48,7 @@ expect() { # <description> <expected> <actual>
 }
 
 expect "lint uses lint.yml's list" "app-e2e" "$(excluded_projects "$repo" HEAD~1 lint)"
-expect "test uses test.yml's list" "app-e2e,oidc-provider-nest,signage-angular" "$(excluded_projects "$repo" HEAD~1 test)"
+expect "test uses test.yml's list" "app-e2e,oidc-provider-nest,geoservices-nest" "$(excluded_projects "$repo" HEAD~1 test)"
 expect "build uses build.yml's list, double-quoted" "app-e2e,oidc-provider-nest" "$(excluded_projects "$repo" HEAD~1 build)"
 # The script names the branch as refs/heads/<branch>; Git Bash once rewrote that <rev>:<path>
 # argument into a Windows path list.

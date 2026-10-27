@@ -59,7 +59,8 @@
   },
   "baseball-parking": {
     "layerList": true,
-    "layers": []
+    "layers": [],
+    "developmentLayers": []
   },
   "beef-cattle-vendor": {
     "layerList": true,
@@ -111,6 +112,10 @@
     "layers": [
       "cross-country-parking-area",
       "cross-country-parking-lots"
+    ],
+    "developmentLayers": [
+      "cross-country-parking-area",
+      "cross-country-parking-lots"
     ]
   },
   "dc-bush-school": {
@@ -147,6 +152,10 @@
     ]
   },
   "football-tailgating": {
+    "layerList": false,
+    "layers": []
+  },
+  "fort-worth-law": {
     "layerList": false,
     "layers": []
   },
@@ -227,6 +236,10 @@
   },
   "graduation-summer": {
     "layerList": true,
+    "layers": []
+  },
+  "houston-space-institute": {
+    "layerList": false,
     "layers": []
   },
   "hs-graduation-2026": {

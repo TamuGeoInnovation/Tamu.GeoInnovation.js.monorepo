@@ -10,7 +10,7 @@ on:
 env:
   # ues-operations-angular builds (#1905). ues-operations-nest was excluded here because it needed
   # configuration kept outside the repository; it was deleted with the retired API (#2380).
-  EXCLUDED_PROJECTS: 'gisday-competitions-angular,gisday-competitions-nest,signage-angular'
+  EXCLUDED_PROJECTS: ''
 
 permissions:
   contents: read

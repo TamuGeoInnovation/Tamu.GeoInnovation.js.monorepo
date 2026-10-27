@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { DCBushSchoolTs } from './dc-bush-school.definitions';
+import { FortWorthLawTs } from './fort-worth-law.definitions';
+import { HoustonSpaceInstituteTs } from './houston-space-institute.definitions';
 import { GalvestonTs } from './galveston.definitions';
 import { McAllenTs } from './mcallen.definitions';
 
@@ -39,13 +41,15 @@ const ASSETS_ROOT = path.join(REPO_ROOT, 'apps', 'aggiemap-angular', 'src');
 const campuses = [
   { label: 'Galveston', root: GalvestonTs },
   { label: 'McAllen', root: McAllenTs },
-  { label: 'DC / Bush School', root: DCBushSchoolTs }
+  { label: 'DC / Bush School', root: DCBushSchoolTs },
+  { label: 'Fort Worth Law School', root: FortWorthLawTs },
+  { label: 'Houston Space Institute', root: HoustonSpaceInstituteTs }
 ];
 
 describe('satellite campus thumbnails', () => {
   it('covers every campus the definitions declare', () => {
     // A campus added without being added here would otherwise be silently unchecked.
-    expect(campuses.length).toBe(3);
+    expect(campuses.length).toBe(5);
   });
 
   it.each(campuses)('$label is listed as a satellite campus', ({ root }) => {
@@ -61,6 +65,18 @@ describe('satellite campus thumbnails', () => {
   it.each(campuses)('$label thumbnail is served from the application assets', ({ root }) => {
     // `./assets/...` is what the application requests at runtime; anything else would not resolve.
     expect(root.discover?.thumbnail?.startsWith('./assets/')).toBe(true);
+  });
+
+  it('lists which campuses are development-only, so one cannot go public unnoticed', () => {
+    // `visible: false` is what keeps a campus off production's All Maps page (#2437, #2438). Removing
+    // it is how a campus the GIS team is still checking reaches the public, and nothing else in the
+    // repository would notice, so the two lists are pinned against each other here.
+    const developmentOnly = campuses
+      .filter(({ root }) => root.discover?.visible === false)
+      .map(({ label }) => label)
+      .sort();
+
+    expect(developmentOnly).toEqual(['Fort Worth Law School', 'Houston Space Institute']);
   });
 
   it.each(campuses)('$label thumbnail file exists', ({ root }) => {

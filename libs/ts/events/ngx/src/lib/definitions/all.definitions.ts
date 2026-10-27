@@ -73,6 +73,8 @@ import { Kickoff150thTs } from './150th-kickoff.definitions';
 import { GalvestonTs } from './campus/galveston.definitions';
 import { McAllenTs } from './campus/mcallen.definitions';
 import { DCBushSchoolTs } from './campus/dc-bush-school.definitions';
+import { FortWorthLawTs } from './campus/fort-worth-law.definitions';
+import { HoustonSpaceInstituteTs } from './campus/houston-space-institute.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -148,6 +150,8 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   GalvestonTs,
   McAllenTs,
   DCBushSchoolTs,
+  FortWorthLawTs,
+  HoustonSpaceInstituteTs,
   DiningKioskTs,
   TailgatingKioskTs,
   KickoffAtKyleTs,
