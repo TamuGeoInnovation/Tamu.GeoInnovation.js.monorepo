@@ -22,6 +22,8 @@ import {
 } from '../dtos/dtos';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
+import { AUTOMATIC_REVIEWER, automaticReviewReasons, COULD_NOT_REVIEW, ReviewedSubmission } from './automatic-review';
+
 @Injectable()
 export class SubmissionService extends BaseService<CompetitionSubmission> {
   constructor(
@@ -68,11 +70,23 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         speed: 0.0
       };
 
+      // The app reviews every new submission (#2164): verified when it passes every check, otherwise left
+      // unverified for a person, who can always decide otherwise. Before the save, and never able to stop
+      // it: a review that fails leaves the submission unverified, saved (#2428 review).
+      const reasons = await this.reviewAutomatically(entity, truncated, blobs?.length ?? 0);
+
       // INSERT, never save(): save() updates a row whose guid already exists, and the app chooses the
       // guid (#1786). A duplicate fails on the primary key and rolls back its location and photographs.
       return this.submissionRepo.manager.transaction(async (em) => {
+        const validationStatus = await em.save(
+          em.create(CompetitionSubmissionValidationStatus, {
+            status: reasons.length === 0 ? COMPETITION_VALIDATION_STATUS.verified : COMPETITION_VALIDATION_STATUS.unverified,
+            verifiedBy: AUTOMATIC_REVIEWER
+          })
+        );
+
         const location = await em.save(em.create(SubmissionLocation, truncated));
-        const sub = em.create(CompetitionSubmission, { ...entity, location });
+        const sub = em.create(CompetitionSubmission, { ...entity, location, validationStatus });
 
         await em.insert(CompetitionSubmission, sub);
 
@@ -85,6 +99,34 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       });
     } else {
       throw new BadRequestException('Incomplete submission.');
+    }
+  }
+
+  /**
+   * Why a new submission needs a person to look at it (`automaticReviewReasons`), compared with the
+   * participant's earlier submissions in the season. When the review itself fails, that is the reason, and
+   * the error is logged.
+   */
+  private async reviewAutomatically(
+    entity: DeepPartial<CompetitionSubmission>,
+    location: DeepPartial<SubmissionLocation>,
+    photos: number
+  ): Promise<Array<string>> {
+    try {
+      const earlier = await this.submissionRepo.find({
+        where: { userGuid: entity.userGuid, season: { guid: entity.season.guid } },
+        relations: { location: true, validationStatus: true }
+      });
+
+      return automaticReviewReasons(
+        { created: new Date(), value: entity.value as never, location: location as never, photos },
+        earlier.map((other) => toReviewed(other)),
+        (entity.season as CompetitionSeason).form?.model ?? []
+      );
+    } catch (err) {
+      Logger.error(`Could not review submission ${entity.guid} automatically: ${err?.message ?? err}`, 'SubmissionService');
+
+      return [COULD_NOT_REVIEW];
     }
   }
 
@@ -199,10 +241,12 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         userGuid: true,
         location: {
           latitude: true,
-          longitude: true
+          longitude: true,
+          accuracy: true
         },
         validationStatus: {
-          status: true
+          status: true,
+          verifiedBy: true
         },
         blobs: {
           guid: true,
@@ -214,7 +258,9 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       }
     });
 
-    const mapped = this.mapSubmissionsToReviewDto(submissions, compSeason);
+    const mapped = this.mapSubmissionsToReviewDto(submissions, compSeason).map((dto, i) =>
+      withAutomaticReview(dto, submissions[i], submissions, compSeason)
+    );
     return this.resolveIdentities(mapped);
   }
 
@@ -309,6 +355,58 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         : undefined
     }));
   }
+}
+
+/**
+ * A saved submission as the automatic review reads it (#2164).
+ */
+function toReviewed(submission: CompetitionSubmission): ReviewedSubmission {
+  return {
+    created: new Date(submission.created),
+    value: submission.value as never,
+    location: submission.location,
+    photos: submission.blobs?.length ?? 0,
+    discarded: submission.validationStatus?.status === COMPETITION_VALIDATION_STATUS.discarded
+  };
+}
+
+/**
+ * A submission in the admin list with the name typed on it, whether the app verified it, and, while no
+ * one has verified or discarded it, why it needs a person to look (#2164). The reasons are worked out
+ * again from the season's submissions, so they follow the checks as they are now.
+ */
+function withAutomaticReview(
+  dto: SubmissionReviewDto,
+  submission: CompetitionSubmission,
+  all: Array<CompetitionSubmission>,
+  compSeason: CompetitionSeason
+): SubmissionReviewDto {
+  const model = compSeason.form?.model ?? [];
+  const typeQuestion = model.find((q) => q.isDiscriminator === true);
+  const type = typeQuestion ? submission.value?.[typeQuestion.attribute] : undefined;
+  const nameAttribute = typeQuestion?.options?.find((option) => option.value === type)?.nameAttribute;
+  const name = nameAttribute ? submission.value?.[nameAttribute] : undefined;
+  const status = submission.validationStatus?.status ?? COMPETITION_VALIDATION_STATUS.unverified;
+  const created = new Date(submission.created).getTime();
+
+  const reviewReasons =
+    status === COMPETITION_VALIDATION_STATUS.unverified
+      ? automaticReviewReasons(
+          toReviewed(submission),
+          all
+            .filter((other) => other.userGuid === submission.userGuid && new Date(other.created).getTime() < created)
+            .map((other) => toReviewed(other)),
+          model
+        )
+      : [];
+
+  return {
+    ...dto,
+    name: typeof name === 'string' ? name : undefined,
+    reviewReasons,
+    verifiedAutomatically:
+      status === COMPETITION_VALIDATION_STATUS.verified && submission.validationStatus?.verifiedBy === AUTOMATIC_REVIEWER
+  };
 }
 
 /**

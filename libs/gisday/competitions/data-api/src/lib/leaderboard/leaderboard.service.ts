@@ -187,7 +187,6 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       const type = typeAttribute ? submission.value?.[typeAttribute] : undefined;
       const settings = settingsFor(type);
       const name = settings?.nameAttribute ? submission.value?.[settings.nameAttribute] : undefined;
-      const sameThingMetres = settings?.sameThingMetres ?? SAME_THING_DISTANCE_METRES;
       let points = ALREADY_SUBMITTED_POINTS;
 
       const foundBefore =
@@ -201,21 +200,13 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
 
       const foundThisSeason =
         location !== undefined &&
-        newFinds.some(
-          (find) =>
-            find.type === type &&
-            distanceInMetres(find.location, location) <= sameThingMetres &&
-            (!settings?.nameAttribute ||
-              !hasNameWords(name, MEMORIAL_NAME_WORDING) ||
-              !hasNameWords(find.name, MEMORIAL_NAME_WORDING) ||
-              namesMatch(find.name as string, name as string, MEMORIAL_NAME_WORDING))
-        );
+        newFinds.some((find) => find.type === type && isSameThing(find, { location, name }, settings));
 
       // The participant's own earlier submission of this type nearby, whatever name either gave (#2424).
       const ownRepeat =
         location !== undefined &&
         (submittedBy.get(submission.userGuid) ?? []).some(
-          (earlier) => earlier.type === type && distanceInMetres(earlier.location, location) <= sameThingMetres
+          (earlier) => earlier.type === type && isOwnRepeat(earlier, { location }, settings)
         );
 
       if (location && !foundBefore && !foundThisSeason && !ownRepeat) {
@@ -326,9 +317,41 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
 }
 
 /**
+ * Whether a later find of a type is of the same thing as an earlier find of that type: within the
+ * type's `sameThingMetres` (`SAME_THING_DISTANCE_METRES` without it) and, when the type has a name
+ * question and both finds have a name, with matching names (#2162).
+ */
+export function isSameThing(
+  earlier: { location: { latitude: number; longitude: number }; name?: unknown },
+  later: { location: { latitude: number; longitude: number }; name?: unknown },
+  settings?: ICompetitionSeasonFormOption
+): boolean {
+  return (
+    distanceInMetres(earlier.location, later.location) <= (settings?.sameThingMetres ?? SAME_THING_DISTANCE_METRES) &&
+    (!settings?.nameAttribute ||
+      !hasName(earlier.name) ||
+      !hasName(later.name) ||
+      namesMatch(earlier.name as string, later.name as string, MEMORIAL_NAME_WORDING))
+  );
+}
+
+/**
+ * Whether a participant's later submission of a type repeats their own earlier one of that type: within the
+ * type's `sameThingMetres`, whatever names either gave, as Dan decided on 26 October (#2424). Scoring gives it
+ * `ALREADY_SUBMITTED_POINTS`, and the automatic review leaves it for a person (#2164).
+ */
+export function isOwnRepeat(
+  earlier: { location: { latitude: number; longitude: number } },
+  later: { location: { latitude: number; longitude: number } },
+  settings?: ICompetitionSeasonFormOption
+): boolean {
+  return distanceInMetres(earlier.location, later.location) <= (settings?.sameThingMetres ?? SAME_THING_DISTANCE_METRES);
+}
+
+/**
  * Whether a submission counts towards scoring: anything not discarded.
  */
-function counts(submission: CompetitionSubmission): boolean {
+export function counts(submission: Pick<CompetitionSubmission, 'validationStatus'>): boolean {
   return (
     !submission.validationStatus ||
     submission.validationStatus.status === COMPETITION_VALIDATION_STATUS.unverified ||
@@ -337,10 +360,20 @@ function counts(submission: CompetitionSubmission): boolean {
 }
 
 /**
+ * Whether a typed name is a name: it has words left once a plaque's wording is set aside, as
+ * `namesMatch` compares them (#2424). Scoring and the automatic review's name check both use it.
+ */
+export function hasName(name: unknown): boolean {
+  return hasNameWords(name, MEMORIAL_NAME_WORDING);
+}
+
+/**
  * A submission's latitude and longitude as numbers, or `undefined` when it has none. The database
  * returns decimals as text, and a submission sent with no location was saved at 0, 0.
  */
-function usableLocation(location: SubmissionLocation): { latitude: number; longitude: number } | undefined {
+export function usableLocation(
+  location: Pick<SubmissionLocation, 'latitude' | 'longitude'> | undefined | null
+): { latitude: number; longitude: number } | undefined {
   const latitude = Number(location?.latitude);
   const longitude = Number(location?.longitude);
 

@@ -45,4 +45,17 @@ describe('SubmissionReviewListComponent', () => {
 
     expect(mockModalService.open).toHaveBeenCalled();
   });
+
+  /**
+   * #2428 review: after an admin discards or unverifies a row the app verified, the row must not credit
+   * the app with that decision.
+   */
+  it('says "by app" only while a row the app verified is still verified', () => {
+    const row = (validationStatus: string, verifiedAutomatically: boolean) => ({ validationStatus, verifiedAutomatically }) as never;
+
+    expect(component.verifiedByApp(row('verified', true))).toBe(true);
+    expect(component.verifiedByApp(row('discarded', true))).toBe(false);
+    expect(component.verifiedByApp(row('unverified', true))).toBe(false);
+    expect(component.verifiedByApp(row('verified', false))).toBe(false);
+  });
 });
