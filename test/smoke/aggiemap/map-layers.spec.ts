@@ -18,7 +18,7 @@ import { environmentIsDevelopment } from './gis-hosts';
  *    `declared-layers.generated.json`, which `declared-layers.spec.ts` in `ts-events-ngx` keeps equal to
  *    them. Each is found on the map by id, then in the list by the title it has there, so a layer that
  *    never reaches the map is caught too. The main map has no definition there, so every layer its view
- *    holds that is not hidden from the list must be in it instead.
+ *    holds that is not hidden from the list must be in it instead. No title is listed twice (#2453).
  * 2. **Drawn.** Every layer that holds features in the current extent draws at least one of them: the
  *    features are given to the layer's own renderer until one comes back with a symbol. A layer that is
  *    on is asked through its layer view, what the map holds; one that is off, as every layer on the main
@@ -403,6 +403,16 @@ for (const { mapPath, loadPath, title } of cases) {
         .soft(
           missing,
           `${mapPath}: layers ${definition ? 'its definition lists' : 'the map holds'} that the Layers list does not`
+        )
+        .toEqual([]);
+
+      // Each listed once: two of one title is one service layer added twice, which draws it twice. The
+      // Accessible Baseball Map listed "Baseball Event Parking Lots" twice after its service was republished
+      // (#2453), with every other check here passing.
+      expect
+        .soft(
+          listed.filter((item, index) => listed.indexOf(item) !== index),
+          `${mapPath}: layers the Layers list shows more than once`
         )
         .toEqual([]);
 
