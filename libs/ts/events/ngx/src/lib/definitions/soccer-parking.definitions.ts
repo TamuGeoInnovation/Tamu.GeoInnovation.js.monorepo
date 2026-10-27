@@ -12,21 +12,13 @@ import { EventPopups } from '../modules/popups/popups';
 import { athleticsDevelopmentSource } from './common.definitions';
 
 export enum SOCCER_PARKING_LAYERS {
-  VISITOR_KIOSK = 'soccer-parking-visitor-kiosk',
   ACCESSIBLE_PARKING = 'soccer-parking-accessible-parking',
   PARKING_LOTS = 'soccer-parking-lots',
-  SAFETY_FIRST = 'soccer-parking-safety-first'
 }
 
 const eventUrl = Connections.soccerParkingUrl;
 
 export const SoccerParkingDefinitions = {
-  VISITOR_KIOSK: {
-    id: SOCCER_PARKING_LAYERS.VISITOR_KIOSK,
-    layerId: SOCCER_PARKING_LAYERS.VISITOR_KIOSK,
-    name: 'Purchase Hourly Visitor Parking',
-    url: `${eventUrl}/0`
-  },
   PARKING: {
     id: SOCCER_PARKING_LAYERS.PARKING_LOTS,
     layerId: SOCCER_PARKING_LAYERS.PARKING_LOTS,
@@ -38,33 +30,10 @@ export const SoccerParkingDefinitions = {
     layerId: SOCCER_PARKING_LAYERS.ACCESSIBLE_PARKING,
     name: 'Accessible Parking Spaces',
     url: `${eventUrl}/1`
-  },
-  SAFETY_FIRST: {
-    id: SOCCER_PARKING_LAYERS.SAFETY_FIRST,
-    layerId: SOCCER_PARKING_LAYERS.SAFETY_FIRST,
-    name: 'Safety First',
-    url: `${eventUrl}/3`
   }
 };
 
 export const SoccerParkingColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: SoccerParkingDefinitions.VISITOR_KIOSK.id,
-    title: SoccerParkingDefinitions.VISITOR_KIOSK.name,
-    url: SoccerParkingDefinitions.VISITOR_KIOSK.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: 'Visitor Permit Kiosk',
-      description: 'Purchase your hourly parking permit here.'
-    },
-    visible: true,
-    listMode: 'show',
-    layerIndex: 12,
-    native: {
-      outFields: ['*']
-    }
-  } as unknown as LayerSource,
   {
     type: 'feature',
     id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
@@ -101,20 +70,6 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
       outFields: ['*']
     }
   } as unknown as LayerSource,
-  {
-    type: 'feature',
-    id: SoccerParkingDefinitions.SAFETY_FIRST.id,
-    title: SoccerParkingDefinitions.SAFETY_FIRST.name,
-    url: SoccerParkingDefinitions.SAFETY_FIRST.url,
-    visible: true,
-    listMode: 'show',
-    layerIndex: 9,
-    native: {
-      outFields: ['*'],
-      popupEnabled: false,
-      definitionExpression: `street_use = 'X-Walk'`
-    }
-  } as unknown as LayerSource
 ];
 
 /**
@@ -173,18 +128,19 @@ export const SoccerParkingConfiguration: EventConfiguration = {
 export const SoccerParkingOptions: SpecialEventOptions = [];
 
 const SoccerParkingLayerReferences: Record<string, string> = {
-  VISITOR_KIOSK: SOCCER_PARKING_LAYERS.VISITOR_KIOSK,
   ACCESSIBLE_PARKING: SOCCER_PARKING_LAYERS.ACCESSIBLE_PARKING,
-  PARKING_LOTS: SOCCER_PARKING_LAYERS.PARKING_LOTS,
-  SAFETY_FIRST: SOCCER_PARKING_LAYERS.SAFETY_FIRST
+  PARKING_LOTS: SOCCER_PARKING_LAYERS.PARKING_LOTS
 };
 
 export const SoccerParkingTs: AggiemapCustomMapConfiguration = {
   type: 'general-map',
   configuration: SoccerParkingConfiguration,
   options: SoccerParkingOptions,
-  sources: SoccerParkingColdLayerSources,
-  developmentSources: SoccerParking_DevelopmentLayerSources,
+  // One schema everywhere (#2453). The athletics services are being republished so that production
+  // carries what development already does, and the old production columns are abandoned - so the
+  // two-schema fork this map carried is gone and every environment reads these sources. The array
+  // the old production sources lived in stays only where these are derived from it.
+  sources: SoccerParking_DevelopmentLayerSources,
   references: SoccerParkingLayerReferences,
   discover: {
     id: SoccerParkingConfiguration.id,

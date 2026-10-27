@@ -13,21 +13,13 @@ import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 export enum VOLLEYBALL_PARKING_LAYERS {
-  VISITOR_KIOSK = 'volleyball-parking-visitor-kiosk',
   ACCESSIBLE_PARKING = 'volleyball-parking-accessible-parking',
   PARKING_LOTS = 'volleyball-parking-lots',
-  SAFETY_FIRST = 'volleyball-parking-safety-first'
 }
 
 const eventUrl = Connections.volleyballParkingUrl;
 
 export const VolleyballParkingDefinitions = {
-  VISITOR_KIOSK: {
-    id: VOLLEYBALL_PARKING_LAYERS.VISITOR_KIOSK,
-    layerId: VOLLEYBALL_PARKING_LAYERS.VISITOR_KIOSK,
-    name: 'Purchase Hourly Visitor Parking',
-    url: `${eventUrl}/0`
-  },
   ACCESSIBLE_PARKING: {
     id: VOLLEYBALL_PARKING_LAYERS.ACCESSIBLE_PARKING,
     layerId: VOLLEYBALL_PARKING_LAYERS.ACCESSIBLE_PARKING,
@@ -39,33 +31,10 @@ export const VolleyballParkingDefinitions = {
     layerId: VOLLEYBALL_PARKING_LAYERS.PARKING_LOTS,
     name: 'Volleyball Event Parking Lots',
     url: `${eventUrl}/2`
-  },
-  SAFETY_FIRST: {
-    id: VOLLEYBALL_PARKING_LAYERS.SAFETY_FIRST,
-    layerId: VOLLEYBALL_PARKING_LAYERS.SAFETY_FIRST,
-    name: 'Safety First',
-    url: `${eventUrl}/3`
   }
 };
 
 export const VolleyballParkingColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: VolleyballParkingDefinitions.VISITOR_KIOSK.id,
-    title: VolleyballParkingDefinitions.VISITOR_KIOSK.name,
-    url: VolleyballParkingDefinitions.VISITOR_KIOSK.url,
-    popupComponent: EventPopups.MarkdownPopupComponent,
-    popupData: {
-      name: 'Visitor Permit Kiosk',
-      description: 'Purchase your hourly parking permit here.'
-    },
-    visible: true,
-    listMode: 'show',
-    layerIndex: 62,
-    native: {
-      outFields: ['*']
-    }
-  } as unknown as LayerSource,
   {
     type: 'feature',
     id: VolleyballParkingDefinitions.ACCESSIBLE_PARKING.id,
@@ -102,20 +71,6 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
       outFields: ['*']
     }
   } as unknown as LayerSource,
-  {
-    type: 'feature',
-    id: VolleyballParkingDefinitions.SAFETY_FIRST.id,
-    title: VolleyballParkingDefinitions.SAFETY_FIRST.name,
-    url: VolleyballParkingDefinitions.SAFETY_FIRST.url,
-    visible: true,
-    listMode: 'show',
-    layerIndex: 59,
-    native: {
-      outFields: ['*'],
-      popupEnabled: false,
-      definitionExpression: `street_use = 'X-Walk'`
-    }
-  } as unknown as LayerSource
 ];
 
 /**
@@ -177,18 +132,19 @@ export const VolleyballParkingConfiguration: EventConfiguration = {
 export const VolleyballParkingOptions: SpecialEventOptions = [];
 
 const VolleyballParkingLayerReferences: Record<string, string> = {
-  VISITOR_KIOSK: VOLLEYBALL_PARKING_LAYERS.VISITOR_KIOSK,
   ACCESSIBLE_PARKING: VOLLEYBALL_PARKING_LAYERS.ACCESSIBLE_PARKING,
-  PARKING_LOTS: VOLLEYBALL_PARKING_LAYERS.PARKING_LOTS,
-  SAFETY_FIRST: VOLLEYBALL_PARKING_LAYERS.SAFETY_FIRST
+  PARKING_LOTS: VOLLEYBALL_PARKING_LAYERS.PARKING_LOTS
 };
 
 export const VolleyballParkingTs: AggiemapCustomMapConfiguration = {
   type: 'general-map',
   configuration: VolleyballParkingConfiguration,
   options: VolleyballParkingOptions,
-  sources: VolleyballParkingColdLayerSources,
-  developmentSources: VolleyballParking_DevelopmentLayerSources,
+  // One schema everywhere (#2453). The athletics services are being republished so that production
+  // carries what development already does, and the old production columns are abandoned - so the
+  // two-schema fork this map carried is gone and every environment reads these sources. The array
+  // the old production sources lived in stays only where these are derived from it.
+  sources: VolleyballParking_DevelopmentLayerSources,
   references: VolleyballParkingLayerReferences,
   discover: {
     id: VolleyballParkingConfiguration.id,
