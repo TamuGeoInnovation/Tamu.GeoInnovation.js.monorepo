@@ -1,2 +1,0 @@
-started,machine,tool,ran,exit,summary,seconds,elapsed,setup
-2026-10-27 14:39:08 CDT,work-lab-leila,smoke,development one framing=release test/smoke/aggiemap/map-layers.spec.ts --no-deps,0,"62 passed, 0 failed, 0 flaky, 13 skipped, 6 workers",217,0:03:37,
