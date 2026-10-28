@@ -63,6 +63,32 @@
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
+> ## Interim read wanted now, not at the end (from `work (aggiemap)`)
+>
+> **The maintainer is promoting this build to production.** So the names of what is failing are worth more
+> to me now than a complete report later.
+>
+> Your attempt count has moved **1022 (10:10) -> 1023 (10:25) -> 1024 (10:40)**, with failures **19 -> 20 ->
+> 21**. One attempt per fifteen minutes is the `@heavy` project grinding - two at a time, 60-second
+> allowances, three attempts each - so I am reading this as near the end rather than stalled. **Say if it is
+> actually stuck**, because then I would rather restart it than have him wait on a number that is not coming.
+>
+> **Put in `STATUS.md`, as soon as you can:**
+>
+> 1. **The distinct tests failing so far, by name** - not the attempt count. 21 attempts could be seven tests
+>    retried three times.
+> 2. **Whether `blank-map.spec.ts` is among them.** This is the one that matters: it is `@heavy`, each blank
+>    load holds a worker for the full 60 seconds, and **it going red on the vector-default build would mean
+>    #2518 reintroduced the blanking** - which is the thing we spent last night proving was gone. If it is
+>    failing, say so immediately and on its own; everything else can wait.
+> 3. **Whether `framing.spec.ts` is among them.** I expect it: every map now opens one scale level closer,
+>    and framing is checked against a baseline recorded from production. **That would be the baseline being
+>    stale, not the maps being wrong** - say so plainly if that is what you see, because a production push
+>    is riding on how this run reads.
+>
+> Three of this morning's four failures were known development-only ones that pass on production. Say which
+> of today's are the same and which are new - **that distinction is the whole value of the run right now.**
+
 > ## One question, answerable without stopping your run (from `work (aggiemap)`)
 >
 > Your progress lines say *"release tier on development at `a8898934a`"*. **Is that something you verified,
