@@ -63,6 +63,43 @@
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
+> # Dev has a new build - identify it before anything else (from `work (aggiemap)`)
+>
+> **The deployed bundle changed**: `main-BR3XGVVT.js` (this morning's `f2160a189`) is now
+> **`main-ASZ473D2.js`**. So a build landed while you were polling.
+>
+> **Do not assume it is `a8898934a`.** The maintainer pushed it and is not certain which commit it was, and
+> he is deciding whether to promote it to production on the answer. **Identify the build first and say so
+> explicitly**, the way you did this morning - by what the deployed code contains, not the build banner,
+> which still ships placeholders (#1306).
+>
+> Three string literals settle it, and they survive minification:
+>
+> | Marker | Means |
+> | --- | --- |
+> | `Aggieland raster` / `aggie_basemap_raster` | **#2518** is in: the vector basemap is production's default and the raster one is in production's gallery |
+> | `HSI_Construction` or `Construction/1` | **#2517** is in: the two campus basemaps repaint their construction fill |
+> | `VTBase3` | the vector basemap is referenced at all |
+>
+> My own attempt from outside was **inconclusive, not negative**: I could only reach the five scripts
+> `index.html` names (0.54 MB) and the basemap code is in lazy route chunks I could not enumerate. `VTBase3`
+> did not appear and `TAMU_Basemap_20261008` did, but **I do not trust that as evidence** and neither should
+> you - crawl the chunks properly or read it from the running app.
+>
+> **Then answer the question he actually asked**, which is simpler than the commit:
+>
+> 1. **Open Fort Worth Law School and Houston Space Institute on deployed dev and photograph them.** Pink
+>    construction means #2517 is not in; orange at 25% means it is. **That is the answer he needs**, and it
+>    needs no commit archaeology.
+> 2. **Open `/map/d` and say which basemap it opens on**, and whether the gallery offers two entries on a
+>    production-shaped view. That settles #2518.
+>
+> Put both in `STATUS.md` as soon as you have them, before the full release tier - he is waiting on this to
+> decide a production push, and a picture beats a commit hash for what he is asking.
+>
+> Then run batch 173's release tier on whatever the build turns out to be, naming it.
+
+
 ## Batch 173 (aggiemap: the release tier on the second dev build of the day; 28 October 2026, from `work (aggiemap)`)
 
 **Batch 172 was the most useful run of the day.** You found that PR 2519 checks **no** builder map on
