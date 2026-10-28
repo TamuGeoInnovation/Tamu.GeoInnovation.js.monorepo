@@ -17,9 +17,11 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Batch 32 (gisday: #2497, renumbered from 31): started 8:06 PM Central; already done under the number 31, writing the report.
+Idle.
 
 ## Finished
+
+- **Batch 32, gisday: #2497** (= the work reported as batch 31, renumbered): branch `fix/2497-gisday-eligibility-dates` at `b763e3ac210d7a190e9e5768b2300500e9c11544` on the fork. Report `copilot-home/reports/2026-10-27-32.md`.
 
 - **Batch 31, gisday: #2497 eligibility dates** (about 7:57 to 8:20 PM Central, 27 October): branch `fix/2497-gisday-eligibility-dates` at `b763e3ac210d7a190e9e5768b2300500e9c11544` on the fork, from `fix/2460-gisday-vgi-dates` because PR 2495 had not merged; red (1 failed) then green; check exit 0; before/after screenshots. Report `copilot-home/reports/2026-10-27-31.md`.
 - **Batch 30, aggiemap: #2476 HSC Dallas as two campus maps** (2:57 to about 3:50 PM Central, 27 October): branch `feat/2476-hsc-dallas` at `15978cf844c7edb353eb685c4a6a15a08b5185ff` on the fork; red then green (search lib 2 failed, campus specs 3 failed); check exit 0 (4 projects, adding ui-kits-ngx-search for the new `fixedWhere`); screenshots of both maps and eleven campuses. Report `copilot-home/reports/2026-10-27-30.md`.
@@ -67,4 +69,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 31 (batch 6 reported later, out of order; 4 and 5 withdrawn)
+Last batch done: 32 (batch 6 reported later, out of order; 4 and 5 withdrawn)
