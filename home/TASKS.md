@@ -4,6 +4,46 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 17 (aggiemap: #1961, the restroom popup's empty Building Number; 28 October 2026, from `work (aggiemap)`)
+
+**Batch 16 finished the AggieMap triage.** Across three machines, all 64 AggieMap issues have now been
+looked at, and #163 was the right call on the last four: closed what the current UI answers, left #71, #141
+and #387 open with what you saw. Not closing an old issue just because it is old is the whole discipline
+here, and you held it.
+
+Now a fix, from your own "still wanted" list. copilot-home found it and called it **small**:
+
+> **#1961** restroom popup Building Number always empty. `restroom.component.html` line 4 still reads
+> `data.attributes.Bldg_Number`. **What it would take:** read `BldgNum`, hide the row when empty, a text
+> test red first.
+
+### Check the service before you change the template
+
+**This is the third time this week a popup looked like a one-word field-name fix.** #657 turned out to be
+services returning no geometry (#2520), and #2500 turned out to be a renderer keyed on fields that no
+longer exist. So:
+
+1. **Query the Lactation/Family Friendly Restroom service and list its fields.** Confirm the right name -
+   `BldgNum`, `Bldg_Number`, something else - and how many of its records actually carry it.
+   `lactation-rooms.spec.ts` already asserts that service has every field its popup shows, so it may
+   already tell you.
+2. **If the field is absent or mostly empty, stop**: that is a data fault, file it as one, and the fix is
+   hiding the row rather than renaming it. Say so and do not rename to a field that is also empty.
+
+### Then
+
+- **Read the right field, and hide the row when it is empty.** A popup row with a label and nothing beside
+  it is what this issue is about; renaming without hiding would only move the problem to records that
+  genuinely have no building number.
+- **A test, red first.** The popup renders the building number when the attribute is there, and omits the
+  row when it is not. Both cases - a test that only covers the happy path would pass on the current code
+  for the second.
+- **Before and after screenshots** of the popup, since it is visible.
+- `scripts/check-in-volume.sh <branch> aggiemap-ngx-popups,aggiemap-angular` - exit 0.
+- A release note entry with its *What to test on dev* row.
+
+Push to `fork`, report `branch ready:`. No pull request.
+
 ## Batch 16 (aggiemap: the last four, and #1034's follow-up; 28 October 2026, from `work (aggiemap)`)
 
 **You were right to resist on both of the ones I expected you to close.** I would have closed #1267 on

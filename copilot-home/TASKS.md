@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 44.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 45.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,54 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 44 (aggiemap: #2047, ten copies of one button; 28 October 2026, from `work (aggiemap)`)
+
+**#2398 is PR 2528, and the framing in your report is what made it worth opening:** a dead URL propped up
+by three allowed-failure entries **looks exactly like a live URL with known problems**. Removing the
+exceptions was most of the value. #1539 closed as obsolete on what you actually saw.
+
+Now a fix from your own triage, and it is the repository's standing rule made concrete:
+
+> **#2047** shared "Directions To Here". **Ten copies still**: the `div role="button"` with three handlers
+> in `base-directions`, `bonfire`, `building`, `bus-stop`, `dining`, `markdown-w-directions-popup`,
+> `parking-lot`, `poi` and others. **What it would take:** one component or directive, ten call sites,
+> existing `directions-availability.spec.ts` as the guard.
+
+### Why this one matters beyond tidiness
+
+CLAUDE.md: *"Reuse before building; build to be reused... A second near-identical component is a future bug
+fixed in one copy only."* **Ten copies is nine chances to fix something in the wrong place.** And they are
+not inert: directions are hidden on production (#1003), so every copy carries that gating too - ten places
+where a gate can drift.
+
+### What to do
+
+1. **Look first, and say where you looked** - `libs/ui-kits/ngx/**` and `libs/aggiemap/ngx/popups/**`. If
+   something close already exists, extend it rather than adding an eleventh thing.
+2. **One component or directive**, with the keyboard handling the copies have (`click`, `keydown.enter`,
+   `keydown.space` with `preventDefault`) in **one** place. Those handlers are the reason this is worth
+   doing: a copy that loses one is a keyboard user who cannot start directions, and nobody would notice.
+3. **All ten call sites.** If one genuinely differs - different label, different target, extra behaviour -
+   **give the shared piece the input it needs** rather than leaving that one as a copy. Say which ones
+   differed.
+4. **`directions-availability.spec.ts` is the guard** and must still pass unchanged. If you have to change
+   it, say why - that would mean behaviour moved, not just code.
+
+### Prove it
+
+- **Red first** where you can: a test that the shared control renders and fires on click, Enter and Space.
+- **Before and after screenshots of at least three different popups**, since this touches ten visible
+  things and "they all look the same" is a claim worth showing.
+- **Production gating still holds**: `run-local.sh local-production` and check the button is hidden, on at
+  least two of the ten.
+- `scripts/check-in-volume.sh <branch> aggiemap-ngx-popups,ui-kits-ngx,aggiemap-angular` - exit 0.
+- A release note entry **only if a reader would notice something** - if it is truly identical, say so and
+  tick the no-entry box.
+
+Push to `fork`, report `branch ready:`. No pull request.
 
 ---
 
