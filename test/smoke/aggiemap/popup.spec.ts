@@ -86,7 +86,10 @@ async function clickPoint(page: Page, clickAt: PopupCase['clickAt'], width: numb
 
   // A point in the view's own spatial reference, made from its centre so `toScreen` accepts it.
   return await page.evaluate(({ longitude, latitude }) => {
-    const view = (document.querySelector('arcgis-map') as unknown as { view: __esri.MapView }).view;
+    // The suite does not load Esri's types; this is the little of a MapView it uses.
+    type Point = { longitude: number; latitude: number };
+    type View = { center: { clone(): Point }; toScreen(point: Point): { x: number; y: number } | null };
+    const view = (document.querySelector('arcgis-map') as unknown as { view: View }).view;
     const point = view.center.clone();
 
     point.longitude = longitude;
