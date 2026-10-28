@@ -105,7 +105,7 @@
       &::before {
         // Literal characters rather than the Sass escapes 2039 and 00a0: passed through Sass those
         // rendered as visible text, once as a stray digit and once as "a0".
-        content: '‹ Back';
+        content: 'â€¹Â Back';
         font-size: 0.9rem;
       }
     }
@@ -416,5 +416,19 @@
   &:hover .map-entry-thumbnail,
   &:focus-visible .map-entry-thumbnail {
     border-color: #500000;
+  }
+}
+
+// A pictured entry in a listing (the Campus Maps page) is picture, then name, then the next entry's
+// picture with only the `.map-entry` padding between them: about 5px below a name against the 8px
+// above it, so on a phone, where the entries stack in one column, a name sat closer to the next
+// map's picture than to its own. 1rem below puts the gap at twice the gap above, so each name reads
+// with the picture over it. The 1rem is the `trailer-1` step; a utility class cannot be limited to a
+// breakpoint, so the value is written here. Scoped to entries inside a list item, so a glyph entry
+// (the one-line rows on the parking lists) and the All Maps cards, which have their own spacing,
+// are unchanged; the multi-column layout above 768px is not touched.
+@media (max-width: 768px) {
+  .map-entry-item > .map-entry--pictured {
+    margin-bottom: 1rem;
   }
 }

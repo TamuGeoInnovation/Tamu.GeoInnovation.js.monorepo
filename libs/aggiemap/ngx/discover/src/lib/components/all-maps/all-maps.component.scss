@@ -165,3 +165,14 @@
   font-weight: 600;
   line-height: 1.2;
 }
+
+// Stacked in one column, a name has to read as belonging to its own picture above it and not to the
+// description below it. Both gaps were close (0.5rem above, 0.75rem below), so the space under the
+// tile takes the `trailer-1` step (1rem) and the 0.5rem above is left as it is. The utility classes
+// cannot be limited to a breakpoint, and the multi-column desktop grid is not to move, so the step
+// is written here, after the base rule it overrides.
+@media (max-width: 768px) {
+  .campus-tile {
+    margin-bottom: 1rem;
+  }
+}
