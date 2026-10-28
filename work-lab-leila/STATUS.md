@@ -32,6 +32,8 @@ Last written **2:40 PM Central, 27 October 2026**. A listener; job: testing.
 
 **Batch 165, aggiemap: the release tier on what shipped, production first**, started 10:03 PM Central, 27 October. Release tier on **production** from a worktree at `dad215775` (read only), then on development. Progress every 15 minutes. Expected finish about 11:00 PM Central.
 
+Progress (10:21 PM): **production release tier done: 689 passed, 3 failed, 81 skipped, 17 min.** The 3 are the stale Indoor Track layer-order test (its team-bus layer went in #2468). So the suite passes production while baseball draws nothing: its layer check skips builder-gated maps. Nine other athletics maps checked and draw. Ten campus maps listed. Now the release tier on development, since 10:21 PM.
+
 Progress (10:18 PM): release tier on production running since 10:03 PM; 556 test attempts finished, 9 of them failed (retries included). Expected finish about 12:30 AM Central.
 
 Progress (10:07 PM): **baseball on production draws no lots and no icons**, in either mode (only the shuttle line, in accessible). Production serves the new build; the layers take their symbology from the portal, and those portal renderers key on the old schema (lots on `baseball` = AnyValid/Permit/SeasonPass, closures on `baseball = 1`, symbols on `type,event`), fields the republished service no longer has, with no default symbol. The legend still lists the classes and the probe counts 10 lots and 21 symbols. Pictures and details in the report. Release tier on production still running since 10:03 PM; expected finish about 12:30 AM Central.
