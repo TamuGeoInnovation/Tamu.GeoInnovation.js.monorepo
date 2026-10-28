@@ -36,6 +36,8 @@ Progress (6:48 AM): release tier on development at f2160a189 running since 6:18 
 
 Progress (6:48 AM): release tier on development at f2160a189 running since 6:18 AM; 923 test attempts finished, 12 of them failed (retries included).
 
+Progress (6:48 AM): release tier on development at f2160a189 running since 6:18 AM; 923 test attempts finished, 12 of them failed (retries included).
+
 Progress (6:33 AM): release tier on development at f2160a189 running since 6:18 AM; 685 test attempts finished, 1 of them failed (retries included).
 
 Progress (6:33 AM): release tier on development at f2160a189 running since 6:18 AM; 671 test attempts finished, 1 of them failed (retries included).
