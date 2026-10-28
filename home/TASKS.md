@@ -4,6 +4,59 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 12 (aggiemap: #2515, the vector basemap becomes production's default; 28 October 2026, from `work (aggiemap)`)
+
+**Your #2506 pictures decided it**: the maintainer picked orange at 25%, and the director is rebasing that
+branch and opening its pull request - nothing for you to do there.
+
+This is the next release's headline change, and it is yours because you have been in this file all night.
+Read [#2515](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2515) in full; it
+has the measurements.
+
+### Decided, so do not ask
+
+**The maintainer chose option A for the gallery:** production offers the **vector basemap first and keeps
+the raster one available**. Today `aggiemapGalleryBasemaps(isTesting)` returns `[aggiemapBasemap(isTesting)]`
+on production - one entry - so production needs a branch of its own returning the vector basemap and then
+the plain `AggiemapRasterBasemap` (**not** the dated development variant).
+
+The reason, worth keeping in the code comment: if something is wrong with the vector basemap on production,
+one entry leaves a visitor no way out and us no mitigation short of another release.
+
+### The four things that go with the one-line switch
+
+1. **`aggiemapBasemap(isTesting)`** returns the vector basemap in both environments. Its comment currently
+   explains why production is the safe default; rewrite it rather than leaving it contradicting the code.
+2. **`DEVELOPMENT_ONLY_SERVICES` must drop `Hosted/VTBase3/VectorTileServer`, in this same pull request.**
+   That list exists to **fail** when production requests a listed service (#1229), so leaving it turns the
+   production run red for precisely the thing we intend. **`Hosted/VTBase/VectorTileServer` stays** - the
+   September cache is still development-only.
+3. **The view limit.** `AGGIEMAP_BASEMAP_MAX_SCALE = 282` comes from the raster cache, which stops at level
+   21. **The vector basemap caches to level 22, scale 70.53** - two levels deeper. Left alone, every view
+   still stops at 282 and nobody can zoom to the detail the new default actually has. Raise it, **and make
+   `services.spec.ts`'s view-limit test follow the default basemap rather than the raster service**, or it
+   keeps passing while asserting about the wrong one.
+   - Before changing the number, **look at what the deeper levels actually draw**. If the vector basemap
+     turns to mush past 282, say so with a picture and leave the limit where it is - that is a finding, not
+     a failure.
+4. **A release note entry** with a *What to test on dev* row. This one matters more than most: it is the
+   largest visual change production has had in a long time, and the row is what the team works from.
+
+### Prove it
+
+- **Red first** on the gating and gallery: a test that production's gallery offers the vector basemap and
+  the raster one, and that `DEVELOPMENT_ONLY_SERVICES` no longer lists VTBase3. Both fail before the change.
+- **Pictures, production-shaped**: `run-local.sh local-production` serves the dev server as production would
+  behave. Capture the main map before and after, and the gallery panel showing both entries.
+- `scripts/check-in-volume.sh <branch> maps-feature-basemap,aggiemap-angular,ts-events-ngx` - exit 0.
+- Say explicitly in your report **whether anything other than the basemap changes on a production-shaped
+  build**. Nothing should; if something does, that is the thing to report first.
+
+Branch from the latest `development`, which now has #2508. **Do not build on `feat/2506-campus-construction`** -
+the director is rebasing it separately and the two must not tangle.
+
+Push to `fork`, report `branch ready:`. No pull request.
+
 ## Batch 11 (aggiemap: #2506, the two campus basemaps - two options, as pictures; 28 October 2026, 2:25 AM Central, from `work (aggiemap)`)
 
 **Batch 10 is PR 2508 and the outline reads perfectly.** Your three-way label picture was the right way to
