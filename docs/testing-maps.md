@@ -8,6 +8,11 @@ This page says which signal answers which question. It exists because the captur
 `tools/visual-baselines` was written twice against the wrong one and produced a 45% "difference"
 between two builds that was really one side photographed before its basemap had drawn.
 
+**None of the probe's signals (`ready`, `drawing`, `snapshot()`) can see a blank map.** A map can report `ready`, every layer loaded and every
+layer drawable while the canvas is pure white. Only sampling the pixels measures that, and measuring it
+when it happens on some loads and not others has its own rules: see
+[Measuring a map that is blank only sometimes](#measuring-a-map-that-is-blank-only-sometimes).
+
 ## The two questions
 
 | You want to | Wait for | Means |
@@ -79,6 +84,7 @@ spurious layer failures.
 Reading layer state?            await probe.ready
 Taking a screenshot?            await probe.ready, then probe.drawing === false
 Asserting the map drew?         waitForPaint()
+Deciding a change fixed an intermittent blank map?   interleaved pixel-sampled blocks, with a control
 Asserting where it is looking?  waitForSettledFraming()
 Nothing to do with a map?       none of the above - a page with no probe needs no wait
 ```
@@ -86,6 +92,44 @@ Nothing to do with a map?       none of the above - a page with no probe needs n
 A fixed `waitForTimeout` is not on that list. It is what both failed versions of the capture tool
 used, and the length that works on an idle machine is not the length that works while a suite is
 running - which is the same reason the release gate disagrees with itself under load (#1512).
+
+## Measuring a map that is blank only sometimes
+
+`ready`, `drawing` and `snapshot()` are all things the application says about
+itself. A basemap change blanked the map on some loads, shipped three times in one day, and passed every
+one of them: the probe reported ready, every layer loaded and drawable, and the canvas was white
+([#2459](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2459)). **Pixel
+sampling is the only trustworthy measure of whether a map drew.**
+
+`test/smoke/aggiemap/blank-map.spec.ts` is the automated half: it fails a plain load that does not draw,
+using the sampling in `paint.ts`, which this page does not restate. This section is the half a person
+needs when deciding whether a change *fixed* something, which the automated check cannot say.
+
+### The method
+
+- Headless Chromium, **a fresh browser context for every load**, so no cache or service worker carries
+  over.
+- One warm-up load, discarded.
+- Then N plain loads: the map's URL with no deep link and no nudging.
+- After the probe reports `ready`, sample the map area for **30 seconds**. A load is **blank** if the
+  area is pure white throughout.
+
+### The rules that make a result mean something
+
+1. **A single run proves nothing.** The fault is intermittent. The same build measured anywhere from 0 to
+   4 blank loads in 15, depending on nothing anyone could identify.
+2. **A clean result needs a control that reproduced beside it, in the same session.** Measure the known-bad
+   build as well. One machine measured a candidate at 0 of 15 and believed it, then measured the known-bad
+   build at 0 of 15 on the same rig. At a 13% blank rate a 15-load control comes back clean about one time
+   in eight by chance (0.87^15 is about 0.12), so *a clean candidate beside a clean control is not a
+   result.* It is a measurement that could not have found the fault.
+3. **So blocks are big and interleaved.** Alternate candidate and control load by load, on one machine in
+   one session, so that whatever drifts (load, network, the machine's mood) drifts for both. What settled
+   #2459 was 45 loads of the candidate against 60 of the control: **0 of 45 against 9 of 60**, about a
+   0.07% coincidence at the control's rate.
+4. **Machines differ.** One machine could not reproduce the fault at all, so its numbers could never have
+   cleared anything. If the control comes back clean, the machine has told you nothing about the
+   candidate. Use another, or more loads.
 
 ## If you are capturing images
 
