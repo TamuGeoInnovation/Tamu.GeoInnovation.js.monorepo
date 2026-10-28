@@ -60,13 +60,16 @@ export class FormService extends BaseService<CompetitionForm> {
         throw new BadRequestException('Form must have exactly one discriminator question');
       }
 
+      const window = scoringWindow(season);
+
       try {
         const _form = this.formRepo.create({ ...form });
 
         const compSeason = this.competitionSeasonRepo.create({
           season: activeSeason,
           form: _form,
-          allowSubmissions: season?.allowSubmissions === true
+          allowSubmissions: season?.allowSubmissions === true,
+          ...window
         });
 
         return compSeason.save();
@@ -98,10 +101,14 @@ export class FormService extends BaseService<CompetitionForm> {
       throw new BadRequestException('Form must have exactly one discriminator question');
     }
 
+    const window = scoringWindow(season);
+
     try {
       competitionSeason.form.model = form.model;
       competitionSeason.form.source = form.source;
       competitionSeason.allowSubmissions = season?.allowSubmissions === true;
+      competitionSeason.scoringOpensAt = window.scoringOpensAt;
+      competitionSeason.scoringClosesAt = window.scoringClosesAt;
 
       return competitionSeason.save();
     } catch (err) {
@@ -122,4 +129,33 @@ export class FormService extends BaseService<CompetitionForm> {
 
     return activeSeason;
   }
+}
+
+/**
+ * The season's scoring window as the Designer sent it (#2474): each moment as a date, or `null` for no limit
+ * on that side. Refuses a moment that is not a date, and a window that closes at or before it opens.
+ */
+function scoringWindow(season?: { scoringOpensAt?: unknown; scoringClosesAt?: unknown }) {
+  const moment = (value: unknown, which: string): Date | null => {
+    if (value === undefined || value === null || value === '') {
+      return null;
+    }
+
+    const date = new Date(value as string);
+
+    if (isNaN(date.getTime())) {
+      throw new BadRequestException(`When scoring ${which} is not a date.`);
+    }
+
+    return date;
+  };
+
+  const scoringOpensAt = moment(season?.scoringOpensAt, 'opens');
+  const scoringClosesAt = moment(season?.scoringClosesAt, 'closes');
+
+  if (scoringOpensAt && scoringClosesAt && scoringClosesAt.getTime() <= scoringOpensAt.getTime()) {
+    throw new BadRequestException('Scoring must close after it opens.');
+  }
+
+  return { scoringOpensAt, scoringClosesAt };
 }

@@ -82,6 +82,18 @@ export class CompetitionSeason extends GISDayCompetitionBaseEntity implements IC
   @Column({ default: false })
   public allowSubmissions: boolean;
 
+  /**
+   * When the season's submissions start counting for scoring (#2474). Empty for no limit on that side.
+   */
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public scoringOpensAt?: Date | null;
+
+  /**
+   * When they stop: a submission made at this moment or later does not count (#2474). Empty for no limit.
+   */
+  @Column({ type: 'datetimeoffset', nullable: true })
+  public scoringClosesAt?: Date | null;
+
   @OneToOne(() => Season, { cascade: true, nullable: true, orphanedRowAction: 'nullify', onDelete: 'SET NULL' })
   @JoinColumn()
   public season: Season;

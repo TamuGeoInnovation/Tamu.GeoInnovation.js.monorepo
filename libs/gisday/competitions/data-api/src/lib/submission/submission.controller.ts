@@ -115,10 +115,22 @@ export class SubmissionController {
     return this.service.getAdminSubmissions({ seasonGuid });
   }
 
+  /**
+   * One submission, to the participant who made it or to an organizer. Only an organizer sees who reviewed it
+   * (#1792).
+   */
   @UseGuards(JwtGuard)
   @Get(':guid')
   public async getSubmission(@Req() req, @Param() params: GetSubmissionDto) {
-    return this._assertCanRead(req, params.guid);
+    const submission = await this._assertCanRead(req, params.guid);
+
+    if (isOwnerOrPermitted(req?.user, null, READ_ALL_SUBMISSIONS) || !submission.validationStatus) {
+      return submission;
+    }
+
+    const { verifiedBy, ...status } = submission.validationStatus;
+
+    return { ...submission, validationStatus: status };
   }
 
   @Permissions([READ_ALL_SUBMISSIONS])
@@ -128,6 +140,16 @@ export class SubmissionController {
     return this.service.getMany({
       relations: { location: true, season: { form: true } }
     });
+  }
+
+  /**
+   * Publishes the active season's submissions to its ArcGIS Online layer again (#2433).
+   */
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('arcgis/publish')
+  public async publishToArcgis() {
+    return this.service.publishActiveSeasonToArcgis();
   }
 
   @Permissions(['update:competitions'])

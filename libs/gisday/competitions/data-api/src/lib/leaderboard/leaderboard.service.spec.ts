@@ -356,6 +356,58 @@ describe('LeaderboardService', () => {
     });
   });
 
+  /**
+   * #2474: only submissions made inside the season's scoring window count. The 2026 window opens at
+   * 00:00 Central on 14 November and closes at 11:00 Central on 20 November.
+   */
+  describe('with a scoring window', () => {
+    const opens = new Date('2026-11-14T06:00:00Z');
+    const closes = new Date('2026-11-20T17:00:00Z');
+    const at = (when: Date, user: string, location = monument) => ({ ...submission(user, location), created: when });
+    const ms = (date: Date, offset: number) => new Date(date.getTime() + offset);
+
+    beforeEach(() => {
+      findCompetitionSeason.mockResolvedValue({ guid: 'cs-1', form: seasonForm, scoringOpensAt: opens, scoringClosesAt: closes });
+    });
+
+    it('counts a submission made at the moment the window opens, and not one a millisecond before', async () => {
+      submissions = [at(ms(opens, -1), 'ann', north(100)), at(opens, 'bob', north(200))];
+
+      expect(await scores()).toEqual({ bob: 2 });
+    });
+
+    it('counts a submission made a millisecond before the window closes, and not one at the moment it closes', async () => {
+      submissions = [at(ms(closes, -1), 'ann', north(100)), at(closes, 'bob', north(200))];
+
+      expect(await scores()).toEqual({ ann: 2 });
+    });
+
+    it('does not let a submission made before the window opens make a later one already found', async () => {
+      submissions = [at(ms(opens, -60000), 'ann'), at(ms(opens, 60000), 'bob', north(3))];
+
+      expect(await scores()).toEqual({ bob: 2 });
+    });
+
+    it('reads dates the database returns as text', async () => {
+      findCompetitionSeason.mockResolvedValue({
+        guid: 'cs-1',
+        form: seasonForm,
+        scoringOpensAt: opens.toISOString(),
+        scoringClosesAt: closes.toISOString()
+      });
+      submissions = [{ ...at(ms(closes, 1), 'ann'), created: ms(closes, 1).toISOString() }, at(ms(opens, 1), 'bob', north(100))];
+
+      expect(await scores()).toEqual({ bob: 2 });
+    });
+
+    it('has no limit on a side whose setting is empty, so earlier seasons score as before', async () => {
+      findCompetitionSeason.mockResolvedValue({ guid: 'cs-1', form: seasonForm, scoringOpensAt: null, scoringClosesAt: closes });
+      submissions = [at(new Date('2020-01-01T00:00:00Z'), 'ann'), at(closes, 'bob', north(100))];
+
+      expect(await scores()).toEqual({ ann: 2 });
+    });
+  });
+
   it('scores a season named by its guid the same way as the active one', async () => {
     submissions = [submission('ann', monument), submission('bob', north(5)), submission('bob', north(40))];
 

@@ -193,6 +193,25 @@ describe('SubmissionController', () => {
       await expect(controller.getSubmission(organizer, { guid: 's-1' })).resolves.toMatchObject({ guid: 's-1' });
     });
 
+    // #1792: a participant opening their own submission does not learn which organizer reviewed it;
+    // organizers still see it.
+    it('shows the participant their submission without the reviewer, and an organizer with it', async () => {
+      service.getSubmissionByGuid.mockImplementation((guid) =>
+        Promise.resolve({
+          guid,
+          userGuid: 'auth0|ann',
+          validationStatus: { status: 'verified', verifiedBy: 'google-oauth2|reviewer-account-id' }
+        })
+      );
+
+      const own = await controller.getSubmission(ann, { guid: 's-1' });
+      const asOrganizer = await controller.getSubmission(organizer, { guid: 's-1' });
+
+      expect(own).toMatchObject({ guid: 's-1', validationStatus: { status: 'verified' } });
+      expect(JSON.stringify(own)).not.toContain('reviewer-account-id');
+      expect(asOrganizer).toMatchObject({ validationStatus: { verifiedBy: 'google-oauth2|reviewer-account-id' } });
+    });
+
     it("refuses someone else's photographs", async () => {
       await expect(controller.getSubmissionImages(bob, { guid: 's-1' })).rejects.toThrow(ForbiddenException);
       await expect(controller.getSubmissionImage(bob, { guid: 's-1' }, {})).rejects.toThrow(ForbiddenException);

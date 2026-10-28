@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { BehaviorSubject, Observable, catchError, combineLatest, map, of, shareReplay } from 'rxjs';
 
@@ -66,5 +66,44 @@ export class AdminSubmissionsComponent implements OnInit {
 
   public show(view: AdminSubmissionsView): void {
     this.view$.next(view);
+  }
+
+  /** What the last "Publish to ArcGIS" did, for the page to say (#2433). */
+  public readonly arcgisResult = signal<string | undefined>(undefined);
+  public readonly publishing = signal(false);
+
+  /**
+   * Publishes the season's submissions to its ArcGIS Online layer again, after an outage or once publishing
+   * is switched on (#2433). Safe to repeat: points already published are updated.
+   */
+  public publishToArcgis(): void {
+    this.publishing.set(true);
+    this.arcgisResult.set('Starting to publish to ArcGIS Online…');
+
+    this.submissionService.publishToArcgis().subscribe({
+      next: ({ queued, configured, alreadyRunning }) => {
+        this.publishing.set(false);
+
+        if (configured === false) {
+          this.arcgisResult.set('Publishing to ArcGIS Online is not set up on this server.');
+          return;
+        }
+
+        if (alreadyRunning) {
+          this.arcgisResult.set('Already publishing to ArcGIS Online. Try again once it has finished.');
+          return;
+        }
+
+        // It runs on the server, in the background, and takes minutes for a whole season (#2434 review).
+        this.arcgisResult.set(
+          `Publishing ${queued} submission${queued === 1 ? '' : 's'} to ArcGIS Online in the background. ` +
+            'Each failure is in the API log; running it again is safe.'
+        );
+      },
+      error: () => {
+        this.publishing.set(false);
+        this.arcgisResult.set('Could not publish to ArcGIS Online. Try again, or check the API log.');
+      }
+    });
   }
 }

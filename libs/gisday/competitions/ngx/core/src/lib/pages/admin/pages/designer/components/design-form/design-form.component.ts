@@ -1,6 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { catchError, map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
@@ -9,6 +16,7 @@ import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
+import { DateTimePickerComponent } from '@tamu-gisc/ui-kits/ngx/forms/date-time-picker';
 import { DesignQuestionComponent } from '../design-question/design-question.component';
 
 import esri = __esri;
@@ -17,7 +25,15 @@ import esri = __esri;
   selector: 'tamu-gisc-design-form',
   templateUrl: './design-form.component.html',
   styleUrls: ['./design-form.component.scss'],
-  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, ButtonComponent, CheckboxComponent, DesignQuestionComponent]
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TextboxComponent,
+    ButtonComponent,
+    CheckboxComponent,
+    DateTimePickerComponent,
+    DesignQuestionComponent
+  ]
 })
 export class DesignFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
@@ -42,7 +58,9 @@ export class DesignFormComponent implements OnInit {
     this.formModel.set(
       this.fb.group({
         fields: this.fb.array([]),
-        allowSubmissions: [false]
+        allowSubmissions: [false],
+        scoringOpensAt: [null],
+        scoringClosesAt: [null]
       })
     );
 
@@ -62,6 +80,8 @@ export class DesignFormComponent implements OnInit {
         this.formModel.set(
           this.fb.group({
             allowSubmissions: [res.allowSubmissions],
+            scoringOpensAt: [asDate(res.scoringOpensAt)],
+            scoringClosesAt: [asDate(res.scoringClosesAt)],
             fields: this.fb.array(
               res.form.model.map((q) => {
                 return this.fb.group({ ...q, options: q.options.length > 0 ? this.fb.array(q.options) : this.fb.array([]) });
@@ -123,6 +143,36 @@ export class DesignFormComponent implements OnInit {
       });
   }
 
+  /**
+   * A moment of the scoring window as GIS Day's own clock reads it, so an admin sees the Central time saved
+   * whatever their computer is set to (#2474). "No limit" when it is empty.
+   */
+  public inCentralTime(value: Date | string | null | undefined): string {
+    const date = asDate(value);
+
+    if (!date) {
+      return 'No limit';
+    }
+
+    const text = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Chicago',
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    }).format(date);
+
+    // Newer ICU puts a narrow no-break space before AM and PM.
+    return `${text.replace(/\u202f/g, ' ')} Central`;
+  }
+
+  /** Empties one side of the scoring window: no limit on that side. */
+  public clearScoringMoment(control: 'scoringOpensAt' | 'scoringClosesAt'): void {
+    this.formModel().get(control).setValue(null);
+  }
+
   public removeQuestion(index: number) {
     const fieldsArray = this.formModel().get('fields') as UntypedFormArray;
     fieldsArray.removeAt(index);
@@ -140,7 +190,9 @@ export class DesignFormComponent implements OnInit {
         model: [...fields]
       },
       season: {
-        allowSubmissions: modelForm.allowSubmissions
+        allowSubmissions: modelForm.allowSubmissions,
+        scoringOpensAt: asDate(modelForm.scoringOpensAt)?.toISOString() ?? null,
+        scoringClosesAt: asDate(modelForm.scoringClosesAt)?.toISOString() ?? null
       }
     };
 
@@ -168,4 +220,17 @@ interface IEsriRestLayerSchema {
 
 export interface Field extends esri.Field {
   domain: esri.CodedValueDomain;
+}
+
+/**
+ * A moment as a date, from a date or the text the API sends, or `null` for none or an unreadable one.
+ */
+function asDate(value: unknown): Date | null {
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+
+  const date = value instanceof Date ? value : new Date(value as string);
+
+  return isNaN(date.getTime()) ? null : date;
 }

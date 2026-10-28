@@ -28,7 +28,8 @@ describe('AdminSubmissionsComponent', () => {
 
   beforeEach(async () => {
     mockSubmissionService = {
-      getAdminSubmissions: jest.fn().mockReturnValue(of(rows))
+      getAdminSubmissions: jest.fn().mockReturnValue(of(rows)),
+      publishToArcgis: jest.fn().mockReturnValue(of({ queued: 5 }))
     } as unknown as jest.Mocked<SubmissionService>;
 
     // Ann leads; Bob and Dan tie for second; Eve is fourth.
@@ -86,5 +87,37 @@ describe('AdminSubmissionsComponent', () => {
     component.show('top-finishers');
 
     expect(await shown()).toEqual(['ann-1', 'ann-2', 'bob-1', 'dan-1']);
+  });
+
+  /**
+   * #2433: an admin can send everything to ArcGIS Online again, after an outage or once publishing is
+   * switched on. It runs in the background on the server, so the page says it has started (#2434 review).
+   */
+  it('starts publishing the season to ArcGIS Online and says how many', async () => {
+    component.ngOnInit();
+    component.publishToArcgis();
+
+    expect(mockSubmissionService.publishToArcgis).toHaveBeenCalled();
+    expect(component.arcgisResult()).toBe(
+      'Publishing 5 submissions to ArcGIS Online in the background. Each failure is in the API log; running it again is safe.'
+    );
+  });
+
+  it('says so when publishing is already running', async () => {
+    mockSubmissionService.publishToArcgis.mockReturnValue(of({ queued: 0, alreadyRunning: true }) as never);
+
+    component.ngOnInit();
+    component.publishToArcgis();
+
+    expect(component.arcgisResult()).toBe('Already publishing to ArcGIS Online. Try again once it has finished.');
+  });
+
+  it('says so when publishing is not set up', async () => {
+    mockSubmissionService.publishToArcgis.mockReturnValue(of({ queued: 0, configured: false }) as never);
+
+    component.ngOnInit();
+    component.publishToArcgis();
+
+    expect(component.arcgisResult()).toBe('Publishing to ArcGIS Online is not set up on this server.');
   });
 });

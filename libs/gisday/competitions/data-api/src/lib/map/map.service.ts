@@ -4,8 +4,11 @@ import { Repository } from 'typeorm';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
 
+import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
+
 import { CompetitionSeason, CompetitionSubmission } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
+import { previousSeasonFinds } from '../leaderboard/leaderboard.service';
 
 @Injectable()
 export class MapService extends BaseService<CompetitionSubmission> {
@@ -54,20 +57,54 @@ export class MapService extends BaseService<CompetitionSubmission> {
     return this.getLocationsForSeasonId(competitionSeason.guid, format);
   }
 
+  /**
+   * Where things were already found in the previous competition season, as this season's types: the
+   * baseline scoring counts as already found (#2162), shown on the map so participants look elsewhere
+   * (#2166). Position, type and year only: nothing about who found them or how they were reviewed.
+   * Empty when this season's form does not continue an earlier one.
+   */
+  public async getAlreadyFoundForActiveSeason(format: ResponseFormat = 'json') {
+    const competitionSeason = await this._getActiveCompetitionSeason({ form: true, season: true });
+    const typeQuestion = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true);
+    const { year, finds } = await previousSeasonFinds(this.compSeasonRepo, this.submissionRepo, competitionSeason);
+
+    const points = finds.flatMap((find) => {
+      const option = typeQuestion?.options?.find((candidate) => candidate.earlier?.values.includes(find.type as string));
+
+      return option ? [{ ...find.location, type: option.value, typeName: option.name, year }] : [];
+    });
+
+    if (format === 'geojson') {
+      return {
+        type: 'FeatureCollection',
+        features: points.map(({ latitude, longitude, ...properties }) => ({
+          type: 'Feature',
+          properties,
+          geometry: { type: 'Point', coordinates: [longitude, latitude] }
+        }))
+      };
+    }
+
+    return points;
+  }
+
   public async getUserLocationsForActiveSeason(userGuid: string, format: ResponseFormat) {
     const competitionSeason = await this._getActiveCompetitionSeason();
 
     return this.getLocationsForUserSeason(competitionSeason.guid, userGuid, format);
   }
 
-  private async _getActiveCompetitionSeason() {
+  private async _getActiveCompetitionSeason(relations?: { form?: boolean; season?: boolean }) {
     const activeSeason = await this.seasonRepo.findOne({ where: { active: true } });
 
     if (!activeSeason) {
       throw new NotFoundException('No active season found.');
     }
 
-    const competitionSeason = await this.compSeasonRepo.findOne({ where: { season: { guid: activeSeason.guid } } });
+    const competitionSeason = await this.compSeasonRepo.findOne({
+      where: { season: { guid: activeSeason.guid } },
+      relations
+    });
 
     if (!competitionSeason) {
       throw new NotFoundException('No competition season found.');
@@ -82,9 +119,11 @@ export class MapService extends BaseService<CompetitionSubmission> {
         const geoJsonPoints = submissions.map((submission) => {
           return {
             type: 'Feature',
+            // Only the submission and its review status: these endpoints answer anyone, so nothing of who
+            // reviewed it (`verifiedBy`, an organizer's account id) goes out (#1792).
             properties: {
-              ...submission.validationStatus,
               guid: submission.guid,
+              status: submission.validationStatus?.status ?? COMPETITION_VALIDATION_STATUS.unverified,
               created: submission.created,
               updated: submission.updated
             },
