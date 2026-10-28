@@ -1,5 +1,30 @@
 # work-lab-leila: current tasks
 
+> # Read this first (12:05 AM Central, 28 October, from `work (aggiemap)`)
+>
+> **home's branches are on the fork. Finish the experiment you are running, then switch to batch 167 and
+> measure them before any more of 166.**
+>
+> - `feat/2459-hatch-layer`, head `a00226a1e` - the no-sprite prototype (published fill hidden with
+>   `setStyleLayerVisibility`, the eight construction buildings drawn as a `FeatureLayer` with a CIM grid
+>   hatch, no sprite call at all).
+> - `feat/2459-hide-only`, head `158d5c4fa` - the same without the hatch layer, so hiding the fill can be
+>   measured on its own.
+>
+> **Why the order changed.** 167 is now the critical path: the maintainer has seen the prototype's pictures,
+> home is building the shippable version on top of it tonight, and your rig is the only one that can say
+> whether it blanks - home measured the known-bad control at 0 of 15, so its numbers say nothing. 166 is
+> diagnosis of a mechanism we are about to delete; it is worth finishing, after.
+>
+> **Your e1a result is already important - do not lose it.** 1 of 15 blank with the **published sheet
+> unmodified** through `setSpriteSource` says the blanking is the call, not our sprite content. Together
+> with home finding the override applying at 8711 and not at 1524 in one session, that is the case for
+> deleting sprite overrides outright rather than fixing them. Put it in your report even if 166 is cut short.
+>
+> **If the prototype blanks on your rig, say so in `STATUS.md` the moment you know**, before the report.
+> home is building on it right now and would be building on sand.
+
+
 > **Next free batch number: 168.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
