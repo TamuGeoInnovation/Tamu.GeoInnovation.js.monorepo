@@ -4,6 +4,7 @@ import * as path from 'path';
 import { expect, HEAVY, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
+import { loadBuilderTargets } from './builder-destinations';
 import { environmentIsDevelopment } from './gis-hosts';
 
 /**
@@ -17,7 +18,8 @@ import { environmentIsDevelopment } from './gis-hosts';
  *    `declared-layers.generated.json`, which `declared-layers.spec.ts` in `ts-events-ngx` keeps equal to
  *    them. Each is found on the map by id, then in the list by the title it has there, so a layer that
  *    never reaches the map is caught too. The main map has no definition there, so every layer its view
- *    holds that is not hidden from the list must be in it instead.
+ *    holds that is not hidden from the list must be in it instead. Not at a builder destination, where
+ *    neither says what the choices leave listed. No title is listed twice in one group (#2453).
  * 2. **Drawn.** Every layer that holds features in the current extent draws at least one of them: the
  *    features are given to the layer's own renderer until one comes back with a symbol. A layer that is
  *    on is asked through its layer view, what the map holds; one that is off, as every layer on the main
@@ -34,16 +36,22 @@ import { environmentIsDevelopment } from './gis-hosts';
  *    holds an `img`, `canvas`, `svg` or an element with a background image. Freshman Selectable Parking
  *    listed both its layers in the legend by name with no symbol under either on production (#1987).
  *    A layer that failed to load or serves no features at all is left to `maps.spec.ts`. An entry is
- *    found by its title, or, where the legend gives it none, by a row labelled with the layer's title.
+ *    found by its title, or, where the legend gives it none, by a row labelled with the layer's title; a
+ *    layer in a group, by its own entry inside the group's.
  *
  * A map with a version published only on the development GIS server is checked against that version where
  * the server is read, and there its Layers list must show nothing else: a layer the new version drops is
- * one the map owner removed, and must be seen to be gone (#2001).
+ * one the map owner removed, and must be seen to be gone (#2001). Not at a builder destination, whose
+ * declared layers leave out every one a choice switches.
  *
  * A map that never finishes drawing fails, saying so, and so does one with no layers at all: a route the
  * application does not know still renders the shell, and must not pass as a map with nothing switched on.
- * Maps behind a builder are skipped; `tools/builder-inventory` covers them. Read-only, so safe against
- * production.
+ *
+ * A map behind a builder is checked at the destinations `tools/builder-inventory` recorded for it, one per
+ * distinct layer set, as `maps.spec.ts` loads them (`builder-destinations.ts`). Its own route only lands on
+ * the builder, so these maps were skipped until #2467, and the baseball maps lost their symbols that
+ * morning with every test on them passing (#2453). A builder map the inventory has no destination for, as on
+ * an environment it was not captured against, is still skipped. Read-only, so safe against production.
  */
 
 const manifest: MapManifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
@@ -139,13 +147,24 @@ interface LegendEntry {
  */
 const HEAVY_MAPS = new Set(['/parking/maintenance-parking', '/parking/service-loading']);
 
-for (const mapPath of manifest.maps) {
-  test(`${mapPath} lists, draws and keys every layer it shows`, HEAVY_MAPS.has(mapPath) ? HEAVY : {}, async ({ page }) => {
+const builderTargets = loadBuilderTargets(manifest);
+
+/** One case per map, or per recorded destination for a map behind a builder; `loadPath` is what is opened. */
+const cases = manifest.maps.flatMap((mapPath) => {
+  const targets = builderTargets.get(mapPath) ?? [];
+
+  return targets.length === 0
+    ? [{ mapPath, loadPath: mapPath, title: mapPath }]
+    : targets.map(({ target, label }) => ({ mapPath, loadPath: target, title: `${mapPath} (${label})` }));
+});
+
+for (const { mapPath, loadPath, title } of cases) {
+  test(`${title} lists, draws and keys every layer it shows`, HEAVY_MAPS.has(mapPath) ? HEAVY : {}, async ({ page }) => {
     test.setTimeout(330_000);
     await blockAnalytics(page);
-    await page.goto(mapPath, { waitUntil: 'domcontentloaded' });
+    await page.goto(loadPath, { waitUntil: 'domcontentloaded' });
 
-    // A builder-gated map never draws until a choice is made; tools/builder-inventory covers those.
+    // A builder-gated map never draws until a choice is made, so one with no recorded destination is skipped.
     const settled = await page
       .waitForFunction(
         () => {
@@ -166,7 +185,15 @@ for (const mapPath of manifest.maps) {
       .then(() => true)
       .catch(() => false);
 
-    test.skip(page.url().includes('/builder/'), `${mapPath} is behind a builder; tools/builder-inventory covers it`);
+    test.skip(
+      page.url().includes('/builder/') && loadPath === mapPath,
+      `${mapPath} is behind a builder and the inventory has no destination for it here, so none of its layers ` +
+        `can be checked. Re-run tools/builder-inventory against this environment.`
+    );
+    expect(
+      page.url().includes('/builder/'),
+      `${loadPath} went back to the builder, so its recorded destination no longer reaches the map`
+    ).toBe(false);
     if (!settled) {
       const state = await page.evaluate(() => {
         const probe = (window as unknown as Record<string, { ready?: boolean; drawing?: boolean } | undefined>)[
@@ -364,8 +391,13 @@ for (const mapPath of manifest.maps) {
         text.trim()
       );
       const development = DEVELOPMENT_GIS ? definition?.developmentLayers : undefined;
+      // Not at a builder destination, where nothing says what the list should hold: the declared lists hold
+      // every choice's layers (Gameday's) or none of the ones a choice switches (Baseball's are `[]`), and the
+      // view also holds the main map's layers, which an event map leaves out of its list by design.
       const ids =
-        development ?? definition?.layers ?? layers.filter((l) => l.topLevel && l.listMode !== 'hide').map((l) => l.id);
+        loadPath !== mapPath
+          ? []
+          : (development ?? definition?.layers ?? layers.filter((l) => l.topLevel && l.listMode !== 'hide').map((l) => l.id));
       const missing = ids
         .filter((id) => !ALLOWED_LAYER_FAILURES.includes(id))
         .map((id) => ({ id, layer: layers.find((l) => l.id === id) }))
@@ -381,7 +413,26 @@ for (const mapPath of manifest.maps) {
         )
         .toEqual([]);
 
-      if (development) {
+      // Each listed once among its siblings: two of one title is one service layer added twice, which draws
+      // it twice. The Accessible Baseball Map listed "Baseball Event Parking Lots" twice after its service was
+      // republished (#2453), with every other check here passing. Not across groups: Move-In lists "No
+      // Roadside Parking" under both its streets and its points of interest, two layers by design.
+      const repeated = await page.evaluate(() =>
+        Array.from(new Set(Array.from(document.querySelectorAll('tamu-gisc-layer-list-item')).map((i) => i.parentElement)))
+          .flatMap((parent) => {
+            const titles = Array.from(parent?.children ?? [])
+              .filter((child) => child.matches('tamu-gisc-layer-list-item'))
+              .map((child) => child.querySelector(':scope > .layer-item > p')?.textContent?.trim() ?? '');
+
+            return titles.filter((title, index) => title !== '' && titles.indexOf(title) !== index);
+          })
+      );
+
+      expect.soft(repeated, `${mapPath}: layers the Layers list shows more than once`).toEqual([]);
+
+      // Not at a builder destination: the declared lists leave out every layer a choice switches, which on a
+      // builder map can be all of them (Baseball's are `[]`), so there they are a floor, not the whole list.
+      if (development && loadPath === mapPath) {
         const kept = layers.filter((l) => development.includes(l.id));
 
         expect
@@ -452,8 +503,10 @@ for (const mapPath of manifest.maps) {
             });
           const text = (el: Element | null) => el?.textContent?.trim().replace(/\s+/g, ' ') ?? '';
 
+          // Every collection, a group's nested ones included: a layer in a group (Move-In's) has its entry
+          // inside the group's, under its own title.
           return Array.from(
-            document.querySelectorAll('tamu-gisc-legend .sidebar-component-content-container > tamu-gisc-legend-collection')
+            document.querySelectorAll('tamu-gisc-legend .sidebar-component-content-container tamu-gisc-legend-collection')
           ).map((collection) => {
             const title = text(
               collection.querySelector(':scope > .legend-collection > .collection-group-title .collection-group-title-text')
