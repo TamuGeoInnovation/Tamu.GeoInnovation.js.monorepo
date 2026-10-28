@@ -16,6 +16,7 @@ Progress (10:24 PM): first prototype, 12 of 15 loads measured so far, 0 blank.
 Progress (10:39 PM): prototype: 0 of 15 blank. Control (today's development, sprite override on): 12 loads so far, 0
 0 blank.
 Progress (10:54 PM): served as a static build, neither blanks here: the first prototype 0 of 15, the control (sprite override on) 0 of 15 as well. So static-build numbers prove nothing; measuring the control on the dev server, as the lab did, to see whether it reproduces: 11 loads so far, 0 blank.
+Progress (11:07 PM): the full prototype draws what was asked: 1524 with an orange grid hatch, grass between the lines, black outline (picture taken). The control does not reproduce the lab's blanks here, on a static build or the dev server (0 of 15 each). From dev.localhost, CORS blocks more than ten of the map's layers, so loads are not like dev's. Re-measuring with the measuring browser's CORS off, so every layer loads.
 ## Finished
 - **Batch 7** (gisday; report `home/reports/2026-10-27-7.md`): #2498. `chore/2498-check-memory-env` at `acfd556dc` on the fork; test red then green (18 ok); check exit 0.
 - **Batch 6** (aggiemap; report `home/reports/2026-10-27-6.md`): #2472 reproduces on demand. `--poll` with an empty dependency cache stalls; the Node process is saturated and esbuild sits idle. A bigger thread pool or a longer interval does not help. Workaround: prime the cache without `--poll`. Nothing pushed.
