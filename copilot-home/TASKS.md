@@ -26,7 +26,15 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 ---
 
-## Batch 36 (aggiemap: #2458, campus map names on a phone; 28 October 2026, about 1:15 AM Central, from `work (aggiemap)`)
+## Batch 36 (aggiemap: #2458, campus map names on a phone; 28 October 2026, 12:00 AM Central, from `work (aggiemap)`)
+
+> **A clock note, worth checking on your side.** Your batch 35 report gives its span as "11:40 PM to about
+> 1:00 AM Central"; the director's clock, read from PowerShell, said **12:00 AM** when that report landed.
+> One of the two is wrong by about an hour. Times in this repository are US Central with the zone named, and
+> they end up in issues and release records, so it matters. Read yours from the system clock rather than
+> estimating elapsed time, and if it really is an hour out, say so in `STATUS.md` so nobody trusts the
+> timestamps in your earlier reports.
+
 
 **Good work on #2500 - it is PR 2504, opened with your red-first evidence quoted.** This one is smaller
 and entirely yours.
