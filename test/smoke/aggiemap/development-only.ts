@@ -84,14 +84,8 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   string,
   { reason: string; pages: string[]; developmentGisServer?: true }
 > = {
-  // The main map draws it by default; an event map draws it for a visitor who has saved Aggieland as
-  // their basemap, which the spec sets up on Visitor Parking.
-  'Hosted/VTBase3/VectorTileServer': {
-    reason: '#1229, #2436: the vector tile campus basemap development opens on',
-    pages: ['/map', '/parking/visitor-parking']
-  },
-  // The September cache, still offered in the development gallery so it can be compared with the one
-  // above (#2436). No page requests it until a visitor picks it, so it lists no pages: the check that
+  // The September cache, still offered in the development gallery so it can be compared with the October one
+  // (#2436), which became production's default with #2515 and is no longer listed here. No page requests it until a visitor picks it, so it lists no pages: the check that
   // production never requests it still applies, and the dev side is covered by the gallery's own spec.
   'Hosted/VTBase/VectorTileServer': {
     reason: '#1229, #2436: the previous vector tile campus basemap, kept for comparison',

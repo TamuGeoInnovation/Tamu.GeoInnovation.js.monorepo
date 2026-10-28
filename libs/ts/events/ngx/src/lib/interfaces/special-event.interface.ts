@@ -197,8 +197,8 @@ export interface EventConfiguration {
   referenceLayerListOrder?: 'title' | 'source';
 
   /**
-   * `campus` opens the map on the campus basemap every time - the vector tiles on development, the
-   * raster basemap on production, as `aggiemapBasemap()` gives them - rather than on the basemap the
+   * `campus` opens the map on the campus basemap every time - the vector tiles, as `aggiemapBasemap()`
+   * gives them (#2515) - rather than on the basemap the
    * visitor last chose on any map. An explicit `?basemap=` in the link still wins.
    *
    * For a map that is read against campus itself, such as tailgating's tents and zones. Defaults to the

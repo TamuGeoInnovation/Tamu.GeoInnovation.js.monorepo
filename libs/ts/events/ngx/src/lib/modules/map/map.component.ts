@@ -218,7 +218,7 @@ export class MapComponent implements OnInit, OnDestroy {
         : isSatelliteCampus
           ? 'topo-vector'
           : root?.configuration?.basemap === 'campus'
-            ? aggiemapBasemap(this.ts.isTesting)
+            ? aggiemapBasemap()
             : root?.configuration?.basemap === 'campus-raster'
               ? aggiemapRasterBasemap(this.ts.isTesting)
               : settings && settings.basemap

@@ -5,7 +5,7 @@ import { combineLatest, firstValueFrom, from, map, switchMap } from 'rxjs';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
-import { aggiemapBasemap, aggiemapGalleryBasemaps, NearmapCSBasemap } from '../../shared/basemaps.definition';
+import { aggiemapGalleryBasemaps, aggiemapRasterBasemap, NearmapCSBasemap } from '../../shared/basemaps.definition';
 
 import esri = __esri;
 
@@ -305,7 +305,7 @@ export class BasemapGalleryService {
    * The basemap a scene shows in place of one it cannot draw: the raster campus basemap, which every
    * environment has in Web Mercator. Taken from the list the panel is built from, under its own id,
    * so the panel marks it as the basemap on screen, which it is: the first campus basemap offered
-   * here that is not vector tiles, or production's where none is.
+   * here that is not vector tiles, or the raster one where none is.
    */
   private async standIn(): Promise<esri.Basemap> {
     const [Basemap, TileLayer] = (await this.mp.require(['Basemap', 'TileLayer'])) as [
@@ -314,7 +314,7 @@ export class BasemapGalleryService {
     ];
     const raster =
       aggiemapGalleryBasemaps(this.ts.isTesting).find((basemap) => basemap.baseLayers[0].type !== 'VectorTileLayer') ??
-      aggiemapBasemap(false);
+      aggiemapRasterBasemap(this.ts.isTesting);
     const { type, ...layer } = JSON.parse(JSON.stringify(raster.baseLayers[0]));
 
     return new Basemap({ ...raster, baseLayers: [new TileLayer({ ...layer })] });

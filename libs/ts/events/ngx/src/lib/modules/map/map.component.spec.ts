@@ -118,12 +118,12 @@ describe('MapComponent (opening basemap)', () => {
 
   it('opens a campus map on the campus basemap, even after Aerial Imagery was last chosen', () => {
     expect(openingBasemap({ configuration: { basemap: 'campus' }, saved: 'nearmap_cs_basemap' })).toEqual(
-      aggiemapBasemap(true)
+      aggiemapBasemap()
     );
   });
 
   it('opens a campus map on the campus basemap when nothing was saved', () => {
-    expect(openingBasemap({ configuration: { basemap: 'campus' } })).toEqual(aggiemapBasemap(true));
+    expect(openingBasemap({ configuration: { basemap: 'campus' } })).toEqual(aggiemapBasemap());
   });
 
   it('still opens a campus map on a basemap named in its link', () => {

@@ -398,41 +398,52 @@ test.describe('campus basemap services', () => {
   }
 
   /**
-   * `AGGIEMAP_BASEMAP_MAX_SCALE` still matches the basemap it is derived from (#1577, #1695).
+   * `AGGIEMAP_BASEMAP_MAX_SCALE` is as deep as the campus basemaps production offers allow, and no deeper (#1577,
+   * #1695, #2515).
    *
-   * Every AggieMap view stops at that scale because the raster cache has no tiles past level 21, and
-   * a view allowed deeper draws white under its layers. The number is hard-coded, with a comment
-   * asking whoever republishes the basemap to raise it to the new service's `maxScale` - and nothing
-   * made that happen. This change republished the basemap and the number was right by luck: the
-   * October 2026 cache stops at the same level the June one did.
+   * Every AggieMap view stops at that scale, and a view allowed deeper than a basemap's cache draws white under its
+   * layers. Production offers the vector basemap, which it opens on, and the raster one (#2515). The vector cache
+   * goes two levels deeper than the raster one, so the limit is the raster cache's: deeper, and a visitor who
+   * switches to raster zooms into white.
    *
-   * Asked of the service rather than of a second copy of the number, so a deeper or shallower cache
-   * is caught the day it is pointed at, not the first time somebody zooms in.
+   * Asked of the services rather than of a second copy of the number, so a republished cache that is deeper or
+   * shallower is caught the day it is pointed at, not the first time somebody zooms in. This used to ask the raster
+   * service alone, which would have kept passing with the vector basemap as the default, about the wrong basemap.
    */
-  test('the view limit matches the raster basemap cache', async ({ request }) => {
+  test('the view limit is no deeper than any campus basemap production offers', async ({ request }) => {
     const declared = BASEMAP_DEFINITION.match(/AGGIEMAP_BASEMAP_MAX_SCALE = ([\d.]+)/);
 
     expect(declared, 'AGGIEMAP_BASEMAP_MAX_SCALE was not found in basemaps.definition.ts').not.toBeNull();
 
-    const raster = basemapRoots.find(([, constant]) => constant === 'AggiemapRasterBasemap');
-
-    expect(raster, 'the raster basemap service was not found in basemaps.definition.ts').toBeDefined();
-
-    const response = await request.get(`${raster?.[0]}?f=json`, { timeout: 30_000, failOnStatusCode: false });
-    const service: { maxScale?: number } = await response.json();
-
-    expect(service.maxScale, `${raster?.[0]} did not report a maxScale`).toBeGreaterThan(0);
-
-    // The constant sits just below the service's own value on purpose: at exactly level 21's scale
-    // the view stopped a level early. A whole scale level is a factor of two, so anything within ten
-    // per cent is the same level, and a republished cache one level deeper is not.
     const limit = Number(declared?.[1]);
+    const offered = ['AggiemapVectorBasemap', 'AggiemapRasterBasemap'];
+    const scales: Array<[string, number]> = [];
+
+    for (const constant of offered) {
+      // The first service a basemap names is its tiles. Looked up in the full list, not `basemapRoots`: that keeps one
+      // name per service, and the vector basemap names the raster basemap's service too, for its construction layer.
+      const url = basemaps.find(([name]) => name === constant)?.[1];
+      const root = url === undefined ? undefined : serviceRoot(url);
+
+      expect(root, `${constant}'s service was not found in basemaps.definition.ts`).toBeDefined();
+
+      const response = await request.get(`${root}?f=json`, { timeout: 30_000, failOnStatusCode: false });
+      const service: { maxScale?: number } = await response.json();
+
+      expect(service.maxScale, `${root} did not report a maxScale`).toBeGreaterThan(0);
+      scales.push([root as string, service.maxScale as number]);
+    }
+
+    // The shallowest cache sets the limit. The constant sits just below that level's scale on purpose: at exactly
+    // level 21's scale the view stopped a level early. A whole scale level is a factor of two, so anything within ten
+    // per cent is the same level, and a cache one level deeper or shallower is not.
+    const [shallowestRoot, shallowest] = scales.reduce((a, b) => (b[1] > a[1] ? b : a));
 
     expect(
-      Math.abs(limit - (service.maxScale as number)) / (service.maxScale as number),
-      `AGGIEMAP_BASEMAP_MAX_SCALE is ${limit}, but ${raster?.[0]} caches down to ${service.maxScale}. ` +
-        `Raise or lower the constant to match the cache, or the view will allow levels the basemap ` +
-        `has no tiles for.`
+      Math.abs(limit - shallowest) / shallowest,
+      `AGGIEMAP_BASEMAP_MAX_SCALE is ${limit}, but the shallowest campus basemap production offers, ${shallowestRoot}, ` +
+        `caches down to ${shallowest} (${scales.map(([root, scale]) => `${root}: ${scale}`).join('; ')}). Set the ` +
+        `constant to that cache's depth, or the view will allow levels a basemap has no tiles for.`
     ).toBeLessThan(0.1);
   });
 });
