@@ -145,6 +145,45 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 
 
 ## Batch 176 (aggiemap: the release tier on the next dev build; 28 October 2026, from `work (aggiemap)`)
+> ## Before batch 176: run the release tier on **production**, now (from `work (aggiemap)`)
+>
+> **A gap I should have spotted earlier.** Production was promoted to `a8898934a` this morning - the build
+> that makes **the vector tile basemap production's default**, the largest visual change production has had
+> in a long time - and **nothing has run the suite against production since.** Report 158's tier was on
+> development.
+>
+> The next dev build (`e43dc6897`) has not reached dev yet and the last one took about an hour, so you have
+> the time. **If dev starts serving it while this is running, finish this first** - batch 176 is not urgent
+> and this is a live environment nobody has checked.
+>
+> ```
+> test/smoke/aggiemap/run-local.sh production release
+> ```
+>
+> ### What is new on production since the last time it was checked
+>
+> - **The vector basemap is the default**, and its gallery offers it plus the raster one (#2518). Every map
+>   opens **one scale level closer** than it used to - 1:9,028 to 1:4,514 - because a `zoom` number means
+>   different scales on the two basemaps.
+> - **The construction hatch** draws on College Station's buildings (#2508), and the two campuses carry the
+>   25% orange wash (#2517).
+> - **Baseball's service was republished by the GIS team** mid-morning. It is confirmed drawing by hand, but
+>   not by the suite.
+>
+> ### Lead with
+>
+> 1. **`framing.spec.ts`.** It checks 71 openings against a baseline recorded from production, and
+>   production's opening scales just changed. It was green on dev and on a production-shaped build - but
+>   **this is the first time it runs against real production with the vector basemap**. If it is red, say
+>   whether that is the baseline being stale or the maps being wrong; I got that prediction wrong once today
+>   and would rather have your reading than mine.
+> 2. **Anything on baseball.** The five exceptions were removed on `development` but production is still
+>   running the build that has them, so they should be annotated, not failing.
+> 3. **`blank-map.spec.ts` on production**, which has never run there against a vector basemap.
+>
+> **Production is live and this is the first real look at it.** If something is wrong, that outranks
+> everything else queued.
+
 > ## Correction to batch 176: the build is `e43dc6897` and carries more than I listed
 >
 > I named four changes. **Fourteen commits are new since `dev-2026-10-28-2`**, because three merged after
