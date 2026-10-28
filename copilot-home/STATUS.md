@@ -17,8 +17,7 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Idle.
-
+Batch 34 (aggiemap: #2487 blank-map smoke check), started 10:30 PM Central, 27 October 2026.
 ## Finished
 
 - **Batch 33, aggiemap: #2494**: branch `fix/2494-sort-campus-list` at `af0c384705ad4cffbbe8e0bf4b5b63e30885db28` on the fork. Report `copilot-home/reports/2026-10-27-33.md`.
