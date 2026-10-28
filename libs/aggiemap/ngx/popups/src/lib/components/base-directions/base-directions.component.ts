@@ -12,6 +12,7 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { BasePopupComponent } from '../base/base.popup.component';
 import { AsyncPipe, KeyValuePipe } from '@angular/common';
+import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 
 import esri = __esri;
 
@@ -19,7 +20,7 @@ import esri = __esri;
   selector: 'tamu-gisc-base-directions',
   templateUrl: './base-directions.component.html',
   styleUrls: ['./base-directions.component.scss'],
-  imports: [AsyncPipe, KeyValuePipe]
+  imports: [AsyncPipe, KeyValuePipe, ActivateDirective]
 })
 export class BaseDirectionsComponent extends BasePopupComponent implements OnInit, OnDestroy {
   private router = inject(Router);

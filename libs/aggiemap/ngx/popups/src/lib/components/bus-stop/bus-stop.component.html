@@ -12,7 +12,7 @@
   <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
   <!-- Development-only while routing is unpublished, like every other directions entry point (#1003). -->
   @if (directionsAvailable | async) {
-  <div class="button" tabindex="0" role="button" (click)="startDirections('Bus stop ' + (data.attributes.StopName || ''))" (keydown.enter)="startDirections('Bus stop ' + (data.attributes.StopName || ''))" (keydown.space)="startDirections('Bus stop ' + (data.attributes.StopName || '')); $event.preventDefault()">Directions To Here</div>
+  <div class="button" (tamuGiscActivate)="startDirections('Bus stop ' + (data.attributes.StopName || ''))">Directions To Here</div>
   }
   <!--
     The shared `.button` rather than plain text: with the directions button gone this is the

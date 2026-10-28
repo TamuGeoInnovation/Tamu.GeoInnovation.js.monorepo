@@ -3,12 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { AsyncPipe } from '@angular/common';
+import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 
 @Component({
   selector: 'tamu-gisc-markdown-w-directions-popup',
   templateUrl: './markdown-w-directions-popup.component.html',
   styleUrls: ['./markdown-w-directions-popup.component.scss'],
-  imports: [CopyComponent, AsyncPipe]
+  imports: [CopyComponent, AsyncPipe, ActivateDirective]
 })
 export class MarkdownWDirectionsPopupComponent extends BaseEventPopupComponent implements OnInit {
   public title: string;

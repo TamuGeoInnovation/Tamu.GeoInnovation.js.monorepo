@@ -3,12 +3,13 @@ import { Component } from '@angular/core';
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { AsyncPipe } from '@angular/common';
+import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 
 @Component({
   selector: 'tamu-gisc-parking-lot-popup-component',
   templateUrl: './parking-lot.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  imports: [CopyComponent, AsyncPipe]
+  imports: [CopyComponent, AsyncPipe, ActivateDirective]
 })
 export class ParkingLotPopupComponent extends BaseDirectionsComponent {
   private get lotIdentifier(): string | number | null {
