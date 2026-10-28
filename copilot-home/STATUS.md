@@ -17,12 +17,13 @@ Last written **12:37 AM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-Batch 41 (aggiemap): label above on desktop too. Started 28 October 2026; the work was already done in batch 40, so this is the check against batch 41 item by item.
+Idle. Nothing queued after batch 41.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
 
+- **Batch 41, aggiemap: the label goes above on desktop too** (8:53 AM Central, 28 October): no new commit; batch 40's redo already did it. Branch `fix/2458-campus-labels-above` at `f31551ae86bece781eb0593a631e8778c78b8c47` on the fork; desktop re-measured (campus page row pitch 218 to 250 px, above-the-fold count unchanged at 6). Report `copilot-home/reports/2026-10-28-41.md`.
 - **Batch 40, aggiemap: #2458 campus names above their pictures at every width** (about 8:36 to 8:52 AM Central, 28 October; redone after the director's 8:43 note): branch `fix/2458-campus-labels-above` at `f31551ae86bece781eb0593a631e8778c78b8c47` on the fork; name first in the markup, above its picture on both pages at every width; campus page desktop rows 218 to 250 px pitch, picture to next name 4.8 to 36.8 px, cards on /all-maps 16 to 32 px on a phone; red (2 failed) then green; check exit 0; release note rewritten. Report `copilot-home/reports/2026-10-28-40.md`.
 - **Batch 39, aggiemap: #2514 measuring a map that is blank only sometimes** (about 7:30 to 7:45 AM Central, 28 October): branch `docs/2514-measuring-blank-maps` at `a55d6bed7d616d03efe8132c79301a227a1caca8` on the fork; new section and callout in `docs/testing-maps.md`; release-notes check exit 0; LF. Report `copilot-home/reports/2026-10-28-39.md`.
 - **Batch 38, aggiemap: #2511 services that describe themselves inconsistently** (about 2:30 to 2:49 AM Central, 28 October): branch `test/2511-service-self-consistency` at `a95506a82e718f73892b99d220235db77ce4d626` on the fork (stacked on PR 2504's branch); new `service-metadata.spec.ts` (objectIdField, displayField, count query); #2510 is a tracked known failure; production reports exactly `baseballParkingUrl/2`, development clean; check exit 0. Report `copilot-home/reports/2026-10-28-38.md`.
@@ -79,4 +80,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 40
+Last batch done: 41
