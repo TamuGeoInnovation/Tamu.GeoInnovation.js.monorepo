@@ -32,6 +32,8 @@ Last written **2:40 PM Central, 27 October 2026**. A listener; job: testing.
 
 **Batch 163, aggiemap: the release tier on the shipped build, and #2487 (does the basemap draw)**, started 5:57 PM Central, 27 October. Doing #2487 first (dev now, then a dev server with both reverted branches), then the release tier on dev at `18d81e87b`, so the two do not compete for this machine. Progress every 15 minutes. Expected finish about 7:45 PM Central.
 
+Progress (7:14 PM): release tier on dev from `18d81e87b` running since 6:59 PM; 498 test attempts finished, 9 of them failed (retries included).
+
 Progress (6:59 PM): #2487 settled. 15 plain loads each on the same dev server: branch `fix/2477-gallery-base-layer` alone blank **4 of 15** (same as the reverted build); `fix/2481-sprite-overrides-after-layerview` alone blank **15 of 15**; the reverted build with the sprite override switched off blank **0 of 15**. So the override itself blanks the map, always when applied after the layer view, about a quarter of the time as it is on dev now. Release tier on dev from `18d81e87b` running since 6:59 PM.
 
 Progress (6:29 PM): same dev server, 15 plain loads each: `18d81e87b` (reverted) blank in **4 of 15**; `development` plus **both** reverted branches blank in **15 of 15** (1524 orange hatch when it does draw, after a `?bldg=` load). So the revert was warranted, and something else blanks some loads even without them. Now testing each branch alone.
