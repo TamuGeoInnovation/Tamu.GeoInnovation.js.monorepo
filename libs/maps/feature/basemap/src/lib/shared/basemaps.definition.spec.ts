@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { CONSTRUCTION_HATCH_RENDERER } from '@tamu-gisc/maps/esri';
+
 import * as definitions from './basemaps.definition';
 
 /**
@@ -231,6 +233,10 @@ describe('the vector basemap draws its buildings under construction itself (#245
     expect(construction?.['url']).toMatch(/\/FCOR\/TAMU_Basemap_\d+\/MapServer\/2$/);
     expect(construction?.['definitionExpression']).toBe("Type = 'CONSTRUCTION'");
     expect(JSON.stringify(construction?.['renderer'])).toContain('CIMHatchFill');
+  });
+
+  it('draws it with the hatch every campus shares (#2532)', () => {
+    expect(construction?.['renderer']).toBe(CONSTRUCTION_HATCH_RENDERER);
   });
 
   it('patches no sprite sheet', () => {
