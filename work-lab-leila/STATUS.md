@@ -32,6 +32,8 @@ Last written **2:40 PM Central, 27 October 2026**. A listener; job: testing.
 
 **Batches 167 then 166, aggiemap: #2487, the no-sprite hatch and why the sprite override blanks the map**, started 11:27 PM Central, 27 October. **Waiting for home's prototype branch:** it is not on the fork yet and `home/STATUS.md` names none (home's batch 8 is still measuring). Meanwhile: the same-session control (today's `development`, override on, 15 plain loads on a local dev server), then 166's experiments on the same rig. Progress every 15 minutes.
 
+Progress (12:37 AM): 166's experiments, 15 plain loads each: e1a running;e1a blank: 1 of 15;e1b running;e1b blank: 0 of 15;e2 running;e2 blank: 0 of 15 (45 loads measured so far).
+
 Progress (12:23 AM): 167 then 166, 15 plain loads per block (home's prototype, control, the before-the-map ordering, control, the ordering): home running;home blank: 0 of 15;== ctlB (810261679 fix(gisday-angular): The VGI competition runs 14-20 November) http 200 (15 loads measured so far).
 
 Progress (12:22 AM): 166's experiments, 15 plain loads each: e1a running;e1a blank: 1 of 15;e1b running;e1b blank: 0 of 15;e2 running;e2 blank: 0 of 15 (45 loads measured so far).
