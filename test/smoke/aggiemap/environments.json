@@ -76,9 +76,7 @@
     "directionsAvailable": false,
     "developmentSectionsVisible": false,
     "allowedLayerFailures": [],
-    "allowedServiceFailures": {
-      "womensBasketballParkingUrl": "#2001: the Women's Basketball map's new version is stopped on the production GIS server until Transportation Services publish it; production draws womensBasketballUrl until then"
-    },
+    "allowedServiceFailures": {},
     "allowedPortalRendererFailures": {
       "baseballParkingUrl/0": "#2500: the production portal item's Baseball Symbols renderer keys on type and event, which the republished layer lacks",
       "baseballParkingUrl/2": "#2500: the production portal item's Gate/Road Closure renderer keys on baseball, which the republished layer lacks",
@@ -109,9 +107,7 @@
     "allowedLayerFailures": [
       "Dining Locations"
     ],
-    "allowedServiceFailures": {
-      "womensBasketballParkingUrl": "#2001: the Women's Basketball map's new version is stopped on the production GIS server until Transportation Services publish it; production draws womensBasketballUrl until then"
-    },
+    "allowedServiceFailures": {},
     "allowedSearchSourceFailures": {
       "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
     },
@@ -140,9 +136,7 @@
     "directionsAvailable": false,
     "developmentSectionsVisible": false,
     "allowedLayerFailures": [],
-    "allowedServiceFailures": {
-      "womensBasketballParkingUrl": "#2001: the Women's Basketball map's new version is stopped on the production GIS server until Transportation Services publish it; production draws womensBasketballUrl until then"
-    },
+    "allowedServiceFailures": {},
     "allowedSearchSourceFailures": {
       "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
     },

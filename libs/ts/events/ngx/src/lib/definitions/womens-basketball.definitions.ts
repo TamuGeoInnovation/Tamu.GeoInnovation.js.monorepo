@@ -25,10 +25,8 @@ export enum WOMENS_BASKETBALL_LAYERS {
  * map's only sources and the hourly visitor parking kiosks and Safety First crosswalks go with the old
  * ones.
  */
-// #2001 drew these from `womensBasketballParkingUrl`, a development-only service on the GIS server.
-// #2143 replaced it with a hosted view reached through the ordinary connection, which `athleticsHost`
-// resolves to the development host - and whose layer order happens to match, so only this line changed:
-// Accessible Parking Spaces is 0 and the event lots are 1 on both.
+// The hosted view is reached through the ordinary connection, which `athleticsHost` resolves to the
+// development host; Accessible Parking Spaces is 0 and the event lots are 1 on both.
 const parkingUrl = Connections.womensBasketballUrl;
 
 export const WomensBasketball_DevelopmentLayerSources: LayerSource[] = [
