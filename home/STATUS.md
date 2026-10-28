@@ -6,7 +6,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running.** Last batch done: 10.
+**Batch 11** (aggiemap: #2506, Fort Worth Law and Houston Space Institute's construction fill; options A and B as pictures), started 2:10 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
+Next update by 2:25 AM Central (progress every 15 minutes).
 
 ## Finished
 - **Batch 10** (aggiemap; report `home/reports/2026-10-28-10.md`): #2459 branch ready: `feat/2459-hatch-layer` at `e081cc7ed` on the fork. Our own black outline over the hatch; 2x crop continuous; tests red then green; check exit 0. The lab measured 0 of 45 on `337047b1e`, not this head.
