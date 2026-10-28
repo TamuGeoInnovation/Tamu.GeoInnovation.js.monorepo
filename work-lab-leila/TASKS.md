@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 169.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 170.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -62,6 +62,56 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 169 (aggiemap: the seven open pull requests, merged together; 28 October 2026, 2:30 AM Central, from `work (aggiemap)`)
+
+**Report 153 closed the hatch out.** Your `e081cc7ed` block - 0 of 15 against a control of 5 of 15 - is
+posted on PR 2508 and the caveat in its description is discharged. #2507 is PR 2509; I set its type,
+priority and project, since your token has no project scope.
+
+### Why this batch exists
+
+CLAUDE.md: *"Before a batch is merged, check all of its PRs merged together: two PRs can each pass CI and
+still fail together."* Seven are open and green, and **three of them touch the same two files**, which is
+exactly the case that rule was written for:
+
+| PR | Branch | Touches |
+| --- | --- | --- |
+| 2508 | `feat/2459-hatch-layer` | `basemap-layers.ts`, `map.service.ts`, the basemap definition; **deletes** `vector-tile-sprites.ts` |
+| 2504 | `fix/2500-portal-renderer-fields` | `portal-symbology.ts`, `map.service.ts` |
+| 2502 | `test/2487-blank-map-smoke` | the smoke suite, `paint.ts`, `scope.ts` |
+| 2509 | `test/2507-indoor-track-layer-order` | `layer-order.spec.ts` |
+| 2505 | `fix/2458-campus-name-spacing` | `discover-shared.scss`, `all-maps.component.scss` |
+| 2501 | `fix/2494-sort-campus-list` | `all-maps.component.ts` |
+| 2503 | `docs/2493-drop-reverted-hatch-note` | a release note |
+
+**2508 and 2504 both edit `map.service.ts`.** Each passed CI against `development`, neither against the
+other. And 2502's blank-map check is the first thing that would notice if the pair broke drawing - which is
+the whole reason it exists.
+
+### What to do
+
+1. **Merge all seven into one branch** off the latest `development`, in a worktree. Resolve any conflict
+   and **say exactly what conflicted and how you resolved it** - a `map.service.ts` conflict between the
+   hatch and the portal fix is the one to describe carefully, because both are changing how a layer is set
+   up and a wrong resolution would pass every test.
+2. **`scripts/check-in-volume.sh <branch> affected`** - the full affected check, not a project list. This is
+   the combined case, so the narrow form is not enough.
+3. **A dev server on the combined branch, and your blank-load rig**: 15 plain loads with a control beside
+   it. 2508 is the change that blanked maps twice; the combined tree is the one that will actually ship.
+4. **2502's own check against the combined build** - `run-local.sh local one blank-map.spec.ts` or the
+   equivalent for a local server. It should be green. If it is red on the combined tree while 2508 alone
+   was clean, that is the finding of the night and you stop and say so immediately in `STATUS.md`.
+5. **`portal-renderers.spec.ts` (2504's) against production**, read only, to confirm it still reports the
+   three baseball layers and nothing else once 2508's changes are alongside it.
+
+### What a good report says
+
+Per item: conflicted or not, how resolved, and the measured result. **Do not push the combined branch** -
+it exists to be tested, not merged; the maintainer merges the seven individually.
+
+**If it is all clean, say so in one line at the top**, because that is the sentence that lets seven pull
+requests be merged in the morning without wondering.
 
 ## Batch 168 (aggiemap: the permanently red test, then stand by for the hatch; 28 October 2026, 1:55 AM Central, from `work (aggiemap)`)
 
