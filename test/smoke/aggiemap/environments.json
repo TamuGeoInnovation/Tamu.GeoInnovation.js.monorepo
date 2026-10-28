@@ -62,6 +62,10 @@
     "allowedUndatedEventMaps": {
       "/events/move-out": "#1704: discover.visible: false hides it on production only, so a development host still lists it and it still has no dates",
       "/events/nsc-parking": "#1691: eventDates is empty; the conference spans sessions all summer"
+    },
+    "allowedPopupFailures": {
+      "/events/nsc-parking": "#2520: the service returns its lots without geometry, so a click never reaches this layer",
+      "/events/break-summer": "#2520: the service returns its lots without geometry, so a click never reaches this layer"
     }
   },
   "production": {
@@ -86,6 +90,10 @@
     },
     "allowedUndatedEventMaps": {
       "/events/nsc-parking": "#1691: eventDates is empty; the conference spans sessions all summer"
+    },
+    "allowedPopupFailures": {
+      "/events/nsc-parking": "#2520: the service returns its lots without geometry, so a click never reaches this layer",
+      "/events/break-summer": "#2520: the service returns its lots without geometry, so a click never reaches this layer"
     }
   },
   "local": {
@@ -115,6 +123,10 @@
     "allowedUndatedEventMaps": {
       "/events/move-out": "#1704: discover.visible: false hides it on production only, so a development host still lists it and it still has no dates",
       "/events/nsc-parking": "#1691: eventDates is empty; the conference spans sessions all summer"
+    },
+    "allowedPopupFailures": {
+      "/events/nsc-parking": "#2520: the service returns its lots without geometry, so a click never reaches this layer",
+      "/events/break-summer": "#2520: the service returns its lots without geometry, so a click never reaches this layer"
     }
   },
   "local-production": {
@@ -141,6 +153,10 @@
     },
     "allowedUndatedEventMaps": {
       "/events/nsc-parking": "#1691: eventDates is empty; the conference spans sessions all summer"
+    },
+    "allowedPopupFailures": {
+      "/events/nsc-parking": "#2520: the service returns its lots without geometry, so a click never reaches this layer",
+      "/events/break-summer": "#2520: the service returns its lots without geometry, so a click never reaches this layer"
     }
   }
 }
