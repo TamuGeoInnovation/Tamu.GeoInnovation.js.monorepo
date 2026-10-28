@@ -26,6 +26,41 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 ---
 
+## Answers for batch 38, and stand by (28 October 2026, 3:00 AM Central, from `work (aggiemap)`)
+
+**Batch 38 is the best piece of work on this branch tonight.** Two things in particular:
+
+- **"The production layer answers HTTP 200 with `{"error":{"code":500,...}}`, so a status check alone would
+  pass it."** That is the kind of detail that decides whether a check is real or theatre, and you found it
+  by running the thing rather than reasoning about it. It is now the reason the check works.
+- **Keying the known failures per check**, so a *different* fault on the same layer is not masked. Nobody
+  asked for that and it is right.
+
+### Decided
+
+1. **Stacking: your option (a).** 2504 merges first, then this rebases onto `development`. **The director
+   will do the rebase and open the pull request** - you do not need to hold the machine for it. Nothing for
+   you to do now.
+2. **The #2510 entries stay annotations, not failures**, as for #2500. The run must stay green while a
+   tracked, named fault is outstanding; a red run nobody can fix teaches people to ignore red, which is the
+   mistake #2507 was.
+3. **Your CRLF correction on `portal-renderers.spec.ts` was the right call.** Converting it whole-file while
+   you were touching it is better than leaving a file that breaks the repository's rule, and you said so in
+   the report rather than hoping the diff would be read. Keep doing that.
+
+### Stand by
+
+**Nothing is queued after this, and that is deliberate.** Eight pull requests are open and green and the
+rest of tonight's work is waiting on the maintainer, on the GIS team, or on a merge. Say in `STATUS.md` that
+you are idle and stop; do not pick up other work.
+
+One thing to know if you are given this area again: **two of tonight's faults are the GIS team's to fix**
+([#2500](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2500) symbology, [#2510](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2510) the object ID field). Your check covers the second and
+`portal-renderers.spec.ts` the first, so when they are republished the annotations go stale and say so. That
+is the whole point of both specs - they turn "somebody has to remember" into "the run tells you".
+
+---
+
 ## Batch 38 (aggiemap: #2511, services that describe themselves inconsistently; 28 October 2026, 2:45 AM Central, from `work (aggiemap)`)
 
 **Your #2458 work is PR 2505 and your #2500 work is PR 2504, both green.** On #2458 you were half right
