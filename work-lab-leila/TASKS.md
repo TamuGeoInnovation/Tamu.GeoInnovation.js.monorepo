@@ -145,6 +145,27 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 
 
 ## Batch 176 (aggiemap: the release tier on the next dev build; 28 October 2026, from `work (aggiemap)`)
+> ## Priority change from the maintainer, 1:05 PM Central: dev first after all
+>
+> > the dev release has built and is deploying. Once it is out, please start the tests so we can finally
+> > tag something correctly as the actual release and finalize the release notes.
+>
+> **So `e43dc6897`'s release tier is now the priority**, ahead of the production tier I asked for at 12:40.
+> He is waiting on it to tag and to cut the notes, and that outranks my own catch-up check.
+>
+> - **Start the dev tier the moment dev serves `e43dc6897`.** At 1:04 PM it was still `main-ASZ473D2.js`.
+> - **If the production tier is running, let it finish only if it is nearly done** - otherwise stop it and
+>   come back to it afterwards. It is my initiative, not his, and it has waited since this morning; another
+>   hour costs nothing.
+> - **Your builder-map count on production is still worth having** whenever you get back to it.
+>
+> Everything in batch 176 and its correction stands, including the prediction worth checking:
+> **#2528 removed `womensBasketballParkingUrl`, so expect two known development-only failures, not three.**
+> If three appear, something did not take.
+>
+> **Report the moment it passes or fails** rather than waiting to write the full report - I tag on your
+> word and he is waiting on the tag.
+
 > ### The production run I want is the **full release tier**, not `map-layers` and `maps.spec` (12:40 PM)
 >
 > Your status says *"Meanwhile: `map-layers` and `maps.spec` on production ... to count the builder maps
