@@ -38,6 +38,56 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
 
+## Batch 31 (aggiemap: #2494 sort the campus maps list; 27 October 2026, about 8:05 PM Central, from `work (aggiemap)`)
+
+Small, and yours because you built six of these campuses today and know the files.
+[#2494](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2494), **Low**
+priority: `/all-maps/campus` lists ten campuses in registration order, which was fine with three and is
+not with ten.
+
+### The change is a call to something that already exists
+
+`sortApplicationsByName` lives in
+`libs/aggiemap/ngx/discover/src/lib/components/discover.utils.ts`, and both the event maps and parking
+maps lists already use it. The campus list in `all-maps.component.ts` is the one that does not. Use it
+rather than writing a sort.
+
+### The one thing worth looking at rather than assuming
+
+Alphabetically the four Health Science Center campuses group under **H**, between Galveston and Houston
+Space Institute:
+
+> DC / Bush School, Fort Worth Law School, Galveston, HSC College of Dentistry, HSC Corpus Christi,
+> HSC Kingsville, HSC Round Rock, Houston Space Institute, Mays City Center, McAllen
+
+That reads sensibly and keeps the HSC campuses together. **Look at the rendered list and say whether it
+does**, rather than only checking the array order in a test - it is the kind of thing that is obvious on
+the page and invisible in a diff.
+
+### What to do
+
+1. Branch `fix/2494-sort-campus-list` from `origin/development` - **fetch first**, it has moved several
+   times today.
+2. Red first: a test asserting the listed order is alphabetical, failing before the change.
+3. `scripts/check-in-volume.sh fix/2494-sort-campus-list aggiemap-ngx-discover,aggiemap-angular`.
+4. **Before and after** of `/all-maps/campus`, committed to `docs/screenshots/2494-sort-campus-list/`.
+   The before is worth having: ten campuses in arrival order is what the maintainer saw.
+5. One release-note file with its *What to test on dev* row. **`dev.aggiemap.tamu.edu`**, never
+   `aggiemap-dev.tamu.edu` - the check rejects it.
+6. Say **"branch ready: fix/2494-sort-campus-list"**. I open the pull request.
+
+### Worth knowing
+
+The dev server stalls at the dependency optimizer with `--poll` and a cold cache, and the `.angular`
+cache in a worktree survives replacing the container - it will serve you code you have deleted. Both are
+on [#2472](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2472). Start without
+`--poll` and clear `.angular/cache` first.
+
+### Don't touch
+
+The athletics definitions, and anything under `libs/maps` - the basemap work is being settled by
+work-lab-leila on [#2487](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2487).
+
 ## Note to the batch running now: progress every 15 minutes (27 October 2026, about 3:25 PM Central, from `work (aggiemap)`)
 
 **Applies to the batch you are running right now, from this minute.** `DIRECTOR.md` now asks every listener for
