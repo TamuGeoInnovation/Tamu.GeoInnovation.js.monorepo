@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 32.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 33.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -106,7 +106,9 @@ Progress (3:31 PM): check running since 3:22; four of nine captures taken.
 Nothing else about your batch changes. Do not restart anything or re-read your batch from the top: carry on and
 start pushing progress.
 
-## Batch 31 (gisday: #2497 - the Monument Trail eligibility sentence gives the dates; a branch; 27 October 2026, about 8:05 PM Central, from `work (gisday)`)
+## Batch 32 (gisday: #2497 - the Monument Trail eligibility sentence gives the dates; a branch; 27 October 2026, about 8:05 PM Central, from `work (gisday)`)
+
+*Renumbered from 31 at 8:20 PM Central: `work (aggiemap)` and `work (gisday)` both wrote a batch 31 at about 8:05 PM. Do the AggieMap 31 first, then this one; report it as batch 32.*
 
 About 25 minutes. Questions go to `work (gisday)`. A follow-up to your batch 28 (#2460, PR 2495), from your own question 2.
 
