@@ -54,6 +54,17 @@ Checked across every athletics service on production: **three broken layers, all
 `IndoorTrackParking` `/1` `/2` and `MensBasketballParking` `/0` `/1` `/2` key on `type` and `name`, which
 still exist; the other eight services have no `uniqueValue` portal override. So do not go looking for more.
 
+> **Added 11:58 PM Central, after the batch was written.** Production's own service renderers are `simple`,
+> where development's are `uniqueValue` on the new fields - `/3` on `type` (Event Parking blue, Reserved
+> orange) and `/0` on `name`. So **your fix stops the layers being invisible; it does not make them correct
+> on production.** With the stale portal renderer discarded, production falls back to one pale blue fill for
+> every lot and a black dot for every icon.
+>
+> That does not change the work. It changes what you may claim: say in your report that the layers draw, and
+> say plainly that on production they draw the wrong symbology until the GIS team gives that service the
+> symbology development's already has. **Do not write that production is fixed.** See the comment on #2500.
+
+
 ### Task 1: the front end stops trusting a renderer it can see is wrong
 
 In [`libs/maps/esri/src/lib/services/map/portal-symbology.ts`](libs/maps/esri/src/lib/services/map/portal-symbology.ts),
