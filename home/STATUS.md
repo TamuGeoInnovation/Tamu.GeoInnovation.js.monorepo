@@ -6,7 +6,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running.** Last batch done: 13.
+**Batch 14** (aggiemap: #657, the NSC popup, with the popup smoke check as the deliverable), started 8:15 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
+Next update by 8:30 AM Central (progress every 15 minutes).
 
 ## Finished
 - **Batch 13** (aggiemap; report `home/reports/2026-10-28-13.md`): 30 issues triaged. Closed 8 with evidence (#458, #463, #552, #594, #656, #827, #881, #916); 16 still wanted, with a line each; 6 left for the maintainer (#497, #543, #546, #602, #867, #885). #659 is a live server-side defect.
