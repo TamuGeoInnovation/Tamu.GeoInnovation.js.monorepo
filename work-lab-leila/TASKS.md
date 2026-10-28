@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 171.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 172.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -62,6 +62,57 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 171 (aggiemap: triage the open `testing` issues; 28 October 2026, from `work (aggiemap)`)
+
+**Batch 170's report is exactly what was needed** - the three numbers I asked you to lead with, and you
+caught that the new failure is ours rather than the product's. The build is tagged `dev-2026-10-28` on
+`f2160a189`. The view-limit check is already being rewritten by home as part of #2515; **do not touch it.**
+
+### The task
+
+The maintainer wants the 336 open issues worked through and closed one way or another. **The 23 labelled
+`testing` are yours**, because deciding whether a testing issue is already satisfied means knowing what the
+suite actually does - which nobody knows better than this machine.
+
+```
+#1091 #1134 #1137 #1159 #1160 #1161 #1173 #1243 #1400 #1421 #1442 #1512
+#1719 #1849 #2111 #2122 #2212 #2215 #2241 #2263 #2363 #2467 #2511
+```
+
+For each, decide **one** of:
+
+- **Done** - the suite already does this. **Close it**, with a comment naming the spec file and what it
+  asserts. `gh issue close <n> --reason completed --comment "..."`. You have the scope for this.
+- **Obsolete** - it describes something that no longer exists or no longer matters. **Close it**, saying
+  what changed and why it cannot be acted on.
+- **Still wanted** - leave it open, and **say in your report, in one line, what it would take**. That line
+  is the useful output: it turns a stale wish into something somebody can pick up.
+- **Needs the maintainer** - leave it open and list it separately. #1421 (whether the dev gate is the local
+  suite or the GitHub workflow) and #2263 (whether spec tsconfigs are typechecked) read like decisions, not
+  work. **Do not ask him; just list them.**
+
+### How to do it well
+
+- **Read the issue and then check the code**, in that order, and say which spec you checked. A close that
+  says "this is covered by `maps.spec.ts`" and names the assertion is useful; one that says "looks done" is
+  worse than leaving it open.
+- **#2511 is already built** - it is PR 2516, open and green. Close nothing there; the pull request closes
+  it on merge.
+- **#2467 is the one with teeth**: the eleven builder-gated maps have no layer check, and that is why
+  #2453 and #2500 were both missed. If it is still true, **say so plainly and leave it open** - it is the
+  most valuable thing on this list.
+- **Several are not AggieMap testing at all** (#2111, #2122, #2212, #2215, #2241, #2263, #2363 are
+  workspace, CI, ops or GIS Day). **Leave those alone entirely** - say in your report that you skipped them
+  and why. Another director owns that work and closing their issues from here would be wrong.
+
+So the real list is: **#1091 #1134 #1137 #1159 #1160 #1161 #1173 #1243 #1400 #1421 #1442 #1512 #1719 #1849
+#2467**.
+
+### Report
+
+A table: issue, verdict, the spec you checked, and the one-line "what it would take" for anything left
+open. Then the count closed. **Nothing pushed, no branches** - this batch changes no code.
 
 ## Batch 170 (aggiemap: the release tier on the dev build going to production; 28 October 2026, from `work (aggiemap)`)
 
