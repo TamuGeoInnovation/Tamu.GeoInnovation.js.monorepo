@@ -63,7 +63,12 @@ export const CORE_TITLES = ['lists at least'];
 const FEATURES: { paths: RegExp; specs: string[] }[] = [
   {
     paths: /^libs\/maps\/feature\/basemap\//,
-    specs: ['services.spec.ts', 'basemap-zoom.spec.ts', 'campus-basemap.spec.ts', 'basemap-gallery.spec.ts']
+    specs: ['services.spec.ts', 'basemap-zoom.spec.ts', 'campus-basemap.spec.ts', 'basemap-gallery.spec.ts', 'blank-map.spec.ts']
+  },
+  {
+    // Where the vector tile basemap is made and its sprite override applied (#2487).
+    paths: /^libs\/maps\/esri\/src\/lib\/services\/map\/(basemap-layers|vector-tile-sprites|map\.service)\.ts$/,
+    specs: ['blank-map.spec.ts', 'basemap-zoom.spec.ts']
   },
   {
     paths: /^libs\/(maps\/feature\/popup|aggiemap\/ngx\/popups|ts\/events\/ngx\/src\/lib\/modules\/popups)\//,

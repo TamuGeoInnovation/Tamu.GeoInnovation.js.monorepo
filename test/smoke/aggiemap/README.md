@@ -62,6 +62,12 @@ required only where that server is read: dev, but not `local`, since localhost r
 server. A service with no production counterpart goes on that list. It comes off only when it is
 published for production, together with the code's gate.
 
+`blank-map.spec.ts` loads `/map/d` plainly, six times, each in its own test with retries off, and fails
+each load whose map canvas stays blank (#2487). The probe reports a blank map as ready with every layer
+drawable, so only the picture shows it, and a fault that blanks one load in four would otherwise look like a
+flaky test and be retried into a pass. Each load is read for three good frames and once more five seconds
+later, so a map that draws and then empties fails too. `AGGIEMAP_SMOKE_BLANK_LOADS` sets how many loads.
+
 `bus.spec.ts` checks every bus route the bus panel lists draws its line and one stop marker for each
 stop it lists, and that choosing a route expands it and draws its stops (#1175, for #1174). It reads
 what the bus layer drew from the map probe's `graphicTypes`. Routes known to fail are listed per
@@ -273,6 +279,7 @@ and a local run skips them while still passing (#1114).
 | `AGGIEMAP_EXPECTED_GTAG_ID` | unset | asserts the environment reports to its own analytics property; skipped when unset |
 | `AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES` | none | layer titles whose failure is expected here; still reported in annotations |
 | `AGGIEMAP_SMOKE_MIN_MAPS` | `55` | floor below which discovery is treated as broken |
+| `AGGIEMAP_SMOKE_BLANK_LOADS` | `6` | how many plain loads of `/map/d` `blank-map.spec.ts` makes |
 | `AGGIEMAP_SMOKE_ANALYTICS` | `block` | `allow` lets analytics requests through for a deliberate run |
 | `UPDATE_FRAMING_BASELINE` | unset | `1` makes `framing.spec.ts` record `framing-baseline.json` instead of comparing; production only |
 | `AGGIEMAP_SMOKE_FRAMING` | `full` (`release` from `run-local.sh`) | `release` makes `framing.spec.ts` open one route per map; ignored when refreshing the baseline |

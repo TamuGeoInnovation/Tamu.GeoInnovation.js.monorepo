@@ -169,6 +169,41 @@ export async function waitForPaint(page: Page, timeoutMs = PAINT_TIMEOUT_MS): Pr
   return { ...last, paintedAfterMs: null, steadyReadings: consecutive, readings };
 }
 
+/** How long a map that has drawn is watched for emptying again, in `waitForPaintAndHold`. */
+export const HOLD_MS = 5_000;
+
+/**
+ * `waitForPaint`, then one more reading after `HOLD_MS`, so a map that draws and then goes white is
+ * not counted as drawn. The sprite override that blanks the map (#2487) can land after the first
+ * frames. The hold is the second reading only: a map that has stayed drawn for the stable readings
+ * and a further five seconds is not going to be one that blanks later.
+ */
+export async function waitForPaintAndHold(page: Page, timeoutMs = PAINT_TIMEOUT_MS): Promise<PaintResult> {
+  const paint = await waitForPaint(page, timeoutMs);
+
+  if (paint.paintedAfterMs === null) {
+    return paint;
+  }
+
+  await page.waitForTimeout(HOLD_MS);
+
+  const canvas: Locator = page.locator('.esri-view-surface').first();
+  const target: Locator = (await canvas.count()) > 0 ? canvas : page.locator('canvas').first();
+
+  try {
+    const held = dominance(await target.screenshot({ type: 'png' }));
+
+    if (held.share >= BLANK_ABOVE) {
+      return { ...held, paintedAfterMs: null, steadyReadings: 0, readings: paint.readings + 1 };
+    }
+
+    return { ...paint, ...held, readings: paint.readings + 1 };
+  } catch {
+    // A canvas that cannot be read after it drew is not evidence either way; the earlier readings stand.
+    return paint;
+  }
+}
+
 /**
  * Says what a result means, so a failure message matches what was measured.
  *
