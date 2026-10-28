@@ -42,6 +42,27 @@ failures are recorded below so nobody re-derives them.
 **What to do:** keep your watcher running, take batches from this file as before, and put any AggieMap
 question in your report under **Questions for the director (aggiemap)** rather than acting on it.
 
+## Batch 7 (workspace: #2498 - check-in-volume.sh takes its memory and parallel limits from the environment; a branch; 27 October 2026, about 8:05 PM Central, from `work (gisday)`)
+
+After batch 6. About 40 minutes. Questions go to `work (gisday)`. The maintainer chose this machine for it (not copilot-home, whose
+memory problem it is about).
+
+[#2498](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2498) says what and why.
+
+1. Branch `chore/2498-check-memory-env` from the latest `origin/development`.
+2. `scripts/check-in-volume.sh`: read `CHECK_MEMORY` (default `16g`) for the container's `-m` and `CHECK_PARALLEL` (default `8`)
+   for Nx's `--parallel`; print both near the top of the log. Nothing else changes.
+3. **Red first:** extend `scripts/check-in-volume.test.sh` (defaults used when unset; an override honoured; a non-number
+   `CHECK_PARALLEL` refused with a clear message). Prove it red, then green: `bash scripts/check-in-volume.test.sh`.
+4. CLAUDE.md, where the script is described: one sentence naming both variables and their defaults.
+5. `scripts/check-in-volume.sh chore/2498-check-memory-env` (the stock defaults) must exit 0, and say so. Commit with
+   `Closes #2498`; push to the fork (`danielgoldbergtamu`).
+
+Report `home/reports/<yyyy-mm-dd>-<n>.md`: branch and head, red then green, the check's exit code. The director opens the pull
+request.
+
+---
+
 ## Batch 6 (aggiemap: #2472 the dev server stalls at the dependency optimizer; 27 October 2026, about 1:50 PM Central, from `work (aggiemap)`)
 
 **Not critical**, and an investigation rather than a fix. The maintainer: *"If they can make it in by the time

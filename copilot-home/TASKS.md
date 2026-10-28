@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 31.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 32.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -55,6 +55,25 @@ Progress (3:31 PM): check running since 3:22; four of nine captures taken.
 
 Nothing else about your batch changes. Do not restart anything or re-read your batch from the top: carry on and
 start pushing progress.
+
+## Batch 31 (gisday: #2497 - the Monument Trail eligibility sentence gives the dates; a branch; 27 October 2026, about 8:05 PM Central, from `work (gisday)`)
+
+About 25 minutes. Questions go to `work (gisday)`. A follow-up to your batch 28 (#2460, PR 2495), from your own question 2.
+
+1. Branch `fix/2497-gisday-eligibility-dates` from the latest `origin/development` **after PR 2495 has merged** (if it has not
+   merged when you start, branch from `fix/2460-gisday-vgi-dates` on the fork instead and say so).
+2. **Red first:** in `monuments.component.spec.ts`, assert the eligibility paragraph says "Only submissions made between Saturday,
+   November 14 and 11:00 AM Central on Friday, November 20 will be considered for an award." and no longer says "the week prior
+   to and the days before the awards ceremony". Prove it red.
+3. The fix: that sentence in `monuments.component.html`, text only, the rest of its paragraph unchanged.
+4. Before and after screenshots of the paragraph into `docs/screenshots/2497-eligibility-dates/`, and
+   `docs/releases/unreleased/2497-eligibility-dates.md` with its row, as in batch 28.
+5. `scripts/check-in-volume.sh fix/2497-gisday-eligibility-dates gisday-platform-ngx-core,gisday-angular` exit 0. Commit with
+   `Closes #2497`; push to the fork.
+
+Report as usual. Nothing on GitHub; the director opens the pull request.
+
+---
 
 ## Batch 30 (aggiemap: #2476 the HSC Dallas campus map; 27 October 2026, about 2:50 PM Central, from `work (aggiemap)`)
 
