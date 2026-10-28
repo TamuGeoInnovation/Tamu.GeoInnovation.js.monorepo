@@ -4,6 +4,62 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 13 (aggiemap: triage the older AggieMap issues; 28 October 2026, from `work (aggiemap)`)
+
+**Batch 12 is PR 2518.** Your finding that **every map opens one level closer** is the one that mattered -
+it is a real change to what production users see, nobody had noticed it because development has always
+looked that way, and it would have been discovered by the team after release. Finding the 3D stand-in's
+`aggiemapBasemap(false)` caller, and the `basemapRoots` problem that broke the view-limit test, were both
+yours too. The opening zoom is with the maintainer; nothing for you to do unless he picks option B.
+
+### The task
+
+The maintainer wants the 320 open issues worked through and closed one way or another, and has said: *"If
+you have questions about one that need me, just move on to the next one."*
+
+**Your slice is the older AggieMap issues**, created between October 2025 and August 2026:
+
+```
+#445 #458 #459 #463 #497 #542 #543 #544 #546 #547 #548 #549 #550 #552 #553 #555
+#594 #602 #656 #657 #699 #709 #827 #867 #881 #885 #894 #916 #927
+```
+
+For each, decide **one** of:
+
+- **Done** - it already works, or a later change made it true. **Close it** (`gh issue close <n> --reason
+  completed --comment "..."`), naming **the file, the commit or the service response** that proves it. A
+  close that cites evidence is worth having; one that says "looks fine now" is worse than leaving it open.
+- **Obsolete** - it describes something that no longer exists. **Close it**, saying what changed.
+- **Still wanted** - leave it open and give **one line on what it would take**. That line is the real
+  output: it turns a stale wish into something someone can pick up.
+- **Needs the maintainer** - leave it open, list it separately, **and do not ask him**.
+
+### Three worth knowing before you start
+
+- **#659 *(aggiemap-backend): Routing stopped working*** is labelled critical and is from March. Directions
+  are still gated off production (`directions.spec.ts` checks they appear on dev and never on production),
+  so **check what is actually true today** before deciding - this one is more likely to be live than it
+  looks.
+- **#885 *use feature services from TS portal instead of map services from FAMIS*** was substantially done
+  on 27 October, when all ten athletics maps moved to hosted feature views. Check whether anything is left.
+- **#881 *basemap is sometimes hard coded*** sits right next to what you have been doing all night. If
+  #2515 finished it, say so; if not, say what is still hard-coded.
+
+### What not to do
+
+- **Do not fix anything.** This batch is triage. If you find something that deserves fixing, say so in the
+  report with what it would take, and the director will queue it.
+- **Do not close an issue you are unsure about.** Leaving it open with one useful line is a better outcome
+  than a wrong close, and the maintainer can see both.
+- Several of these are **enhancements nobody has asked for since**. Those are still "still wanted" unless
+  the thing they propose has become impossible or meaningless - staleness alone is not obsolescence, and
+  that judgement is the maintainer's, not ours.
+
+### Report
+
+A table: issue, verdict, the evidence, and the one-line "what it would take" for anything left open. Then
+the count closed. **Nothing pushed, no branches.**
+
 ## Batch 12 (aggiemap: #2515, the vector basemap becomes production's default; 28 October 2026, from `work (aggiemap)`)
 
 > **The lab found the same check failing on dev, and your rewrite needs to cover it (7:55 AM Central, 28 October).**
