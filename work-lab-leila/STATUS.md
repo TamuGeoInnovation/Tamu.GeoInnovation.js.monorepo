@@ -32,6 +32,8 @@ Last written **2:40 PM Central, 27 October 2026**. A listener; job: testing.
 
 **Batch 163, aggiemap: the release tier on the shipped build, and #2487 (does the basemap draw)**, started 5:57 PM Central, 27 October. Doing #2487 first (dev now, then a dev server with both reverted branches), then the release tier on dev at `18d81e87b`, so the two do not compete for this machine. Progress every 15 minutes. Expected finish about 7:45 PM Central.
 
+Progress (7:59 PM): release tier on dev from `18d81e87b` running since 6:59 PM; 829 test attempts finished, 17 of them failed (retries included).
+
 Progress (7:44 PM): release tier on dev from `18d81e87b` running since 6:59 PM; 828 test attempts finished, 16 of them failed (retries included).
 
 Progress (7:29 PM): release tier on dev from `18d81e87b` running since 6:59 PM; 827 test attempts finished, 15 of them failed (retries included).
