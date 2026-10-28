@@ -57,9 +57,11 @@ export const AggiemapRasterBasemap: BaseMapProperties & { id: string } = {
  * The buildings under construction are drawn by us, not by the tiles (#2459). The published style fills them
  * with a sprite pattern the vector tile packager rasterized onto an opaque tile, so each draws as a solid pink
  * block. Its fill layer is hidden and a layer from the campus buildings service draws them instead, with the
- * hatch the maintainer settled on 27 October 2026: **an orange grid, no fill**. The style's own black outline
- * stays. This replaces published symbology; see `docs/map-layers.md`. Replacing the pattern in the sprite
- * sheet instead (`setSpriteSource`) left the map blank on about one load in four, so that was deleted.
+ * hatch the maintainer settled on 27 October 2026: **an orange grid, no fill, a black outline**. The outline is
+ * ours too: anything added to a vector tile basemap draws above all of it, so the style's own outline would sit
+ * under our grid and read as a dashed line. This replaces published symbology; see `docs/map-layers.md`.
+ * Replacing the pattern in the sprite sheet instead (`setSpriteSource`) left the map blank on about one load
+ * in four, so that was deleted.
  */
 export const AggiemapVectorBasemap: BaseMapProperties = {
   baseLayers: [
@@ -69,12 +71,18 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
       listMode: 'hide',
       visible: true,
       title: 'Base Map',
-      // The construction fill (`fill-pattern`, the rasterized pink) is hidden; the layer below draws these
-      // buildings instead. `.../Currently Under Construction/0` is their black outline, a plain line: wanted,
-      // so it stays.
-      hiddenStyleLayers: ['Campus Structures/Currently Under Construction/1']
+      // The construction fill (`/1`, a `fill-pattern` of the rasterized pink) and its black outline (`/0`, a
+      // line) are hidden; the layer below draws both instead. The outline has to move with the fill: a layer
+      // added to a vector tile basemap can only draw above the whole of it, so the style's outline would sit
+      // under the grid and be broken by every line crossing it.
+      hiddenStyleLayers: [
+        'Campus Structures/Currently Under Construction/1',
+        'Campus Structures/Currently Under Construction/0'
+      ]
     },
-    // The buildings under construction, drawn over the tiles as an orange grid: two CIM hatches, 0 and 90
+    // The buildings under construction, drawn over the tiles as an orange grid with a black outline. The
+    // outline is the first symbol layer, because CIM draws the first on top, so it stays one continuous line
+    // over the grid; black, 1 pt (1.33 px), as the style drew it. The grid is two CIM hatches, 0 and 90
     // degrees, lines 12 pt (16 px) apart and 1.5 pt (2 px) wide, so about a quarter of each building is covered
     // and the ground shows through. The spacing is in screen points, so the grid is the same at every zoom.
     // Orange, rgb(230, 152, 0), is the maintainer's choice (27 October 2026) and the Construction Zones layer's
@@ -96,16 +104,21 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
             type: 'CIMSymbolReference',
             symbol: {
               type: 'CIMPolygonSymbol',
-              symbolLayers: [0, 90].map((rotation) => ({
-                type: 'CIMHatchFill',
-                enable: true,
-                rotation,
-                separation: 12,
-                lineSymbol: {
-                  type: 'CIMLineSymbol',
-                  symbolLayers: [{ type: 'CIMSolidStroke', enable: true, width: 1.5, color: [230, 152, 0, 255] }]
-                }
-              }))
+              symbolLayers: [
+                { type: 'CIMSolidStroke', enable: true, width: 1, color: [0, 0, 0, 255] },
+                ...[0, 90].map(
+                  (rotation): __esri.CIMHatchFill => ({
+                    type: 'CIMHatchFill',
+                    enable: true,
+                    rotation,
+                    separation: 12,
+                    lineSymbol: {
+                      type: 'CIMLineSymbol',
+                      symbolLayers: [{ type: 'CIMSolidStroke', enable: true, width: 1.5, color: [230, 152, 0, 255] }]
+                    }
+                  })
+                )
+              ]
             }
           }
         }
