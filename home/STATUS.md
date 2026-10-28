@@ -6,7 +6,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running.** Last batch done: 8.
+**Batch 9** (aggiemap: #2459, make the no-sprite hatch shippable; density at zooms 15-18 first), started 11:45 PM Central, Tuesday 27 October 2026, from `work (aggiemap)`.
+Next update by midnight Central (progress every 15 minutes).
 
 ## Finished
 - **Batch 8** (aggiemap; report `home/reports/2026-10-27-8.md`): #2459. The no-sprite prototype, `feat/2459-hatch-layer` at `cb1ea9c8b` on the fork, draws 1524 with an orange grid over grass (picture on the branch). `feat/2459-hide-only` at `158d5c4fa` for measuring the hide alone. Nothing blanks on this machine (deployed dev 0 of 15 too), so the lab must measure both.
