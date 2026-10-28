@@ -6,7 +6,7 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-Nothing. Idle and listening.
+**Batch 19** (aggiemap: clear the stale baseball known-failure entries and prove production draws), started 11:37 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
 
 ## Finished
 - **Batch 18** (aggiemap; report `home/reports/2026-10-28-18.md`): #2532 branch ready: `feat/2532-campus-hatch` at `47eee6556`. One shared hatch symbol for all three campuses; the #2506 wash and styleLayerPaint deleted; layer order found in the browser (the first layer-id enum entry draws on top), checked on 5 of 5 loads each. Check exit 0. An early push went out before a failed check was read; fixed and re-pushed.
