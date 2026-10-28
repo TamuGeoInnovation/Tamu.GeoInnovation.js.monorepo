@@ -32,7 +32,7 @@ import {
   rendererForLayer,
   serviceClassRenderer
 } from './portal-symbology';
-import { BaseLayerConstructors, makeBaseLayer } from './basemap-layers';
+import { applyStyleLayerChanges, BaseLayerConstructors, makeBaseLayer, StyleLayerChanges } from './basemap-layers';
 
 import esri = __esri;
 
@@ -415,11 +415,14 @@ export class EsriMapService {
       return this.moduleProvider
         .require(['VectorTileLayer'])
         .then(([VectorTileLayer]: [typeof esri.VectorTileLayer]) => {
-          // Delete the type property as it cannot be set on layer creation.
+          // Delete the type property as it cannot be set on layer creation, and take out the changes to the
+          // layer's own style, which are ours rather than Esri's (#2506).
           delete props.type;
+          const { hiddenStyleLayers, styleLayerPaint, ...rest } = props as StyleLayerChanges & Record<string, unknown>;
 
-          // Create and return new vector tile layer
-          return new VectorTileLayer(props as esri.VectorTileLayerProperties);
+          const layer = new VectorTileLayer(rest as esri.VectorTileLayerProperties);
+          applyStyleLayerChanges(layer, { hiddenStyleLayers, styleLayerPaint });
+          return layer;
         });
     } else if (source.type === 'csv') {
       return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [typeof esri.CSVLayer]) => {
@@ -1250,7 +1253,9 @@ interface LayerProperties
   extends esri.LayerProperties, esri.TileLayerProperties, esri.VectorTileLayerProperties, esri.WMSLayerProperties {
   type: string;
   /** A VectorTileLayer's style layers to turn off once its style loads, by id (#2459). */
-  hiddenStyleLayers?: string[];
+  hiddenStyleLayers?: StyleLayerChanges['hiddenStyleLayers'];
+  /** Paint to give a VectorTileLayer's style layers in place of the published paint, by id (#2506). */
+  styleLayerPaint?: StyleLayerChanges['styleLayerPaint'];
   /** A FeatureLayer's, for one drawn as part of a basemap (#2459). */
   definitionExpression?: esri.FeatureLayerProperties['definitionExpression'];
   renderer?: esri.FeatureLayerProperties['renderer'];

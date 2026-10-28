@@ -8,6 +8,40 @@ export interface BaseLayerConstructors {
   WMSLayer: typeof esri.WMSLayer;
 }
 
+/** Changes to a vector tile layer's own style, by style layer id, made once the style has loaded. */
+export interface StyleLayerChanges {
+  /** Style layers to turn off (#2459). */
+  hiddenStyleLayers?: string[];
+  /**
+   * Paint to give style layers in place of the published paint (#2506). It replaces the layer's paint, so a
+   * `fill-pattern` can become a `fill-color`.
+   */
+  styleLayerPaint?: Record<string, Record<string, unknown>>;
+}
+
+/**
+ * Makes the changes once the style has loaded. These are style calls only: nothing here touches the sprite sheet.
+ * Replacing the sheet with `setSpriteSource` left the map blank on about one load in four, and patched some tiles
+ * and not others in the same session (#2459). A failure must not take the basemap down with it.
+ */
+export function applyStyleLayerChanges(layer: esri.VectorTileLayer, changes: StyleLayerChanges): void {
+  const hidden = changes.hiddenStyleLayers ?? [];
+  const paint = Object.entries(changes.styleLayerPaint ?? {});
+
+  if (hidden.length === 0 && paint.length === 0) {
+    return;
+  }
+
+  layer
+    .when(() => {
+      hidden.forEach((id) => layer.setStyleLayerVisibility(id, 'none'));
+      paint.forEach(([id, properties]) => layer.setPaintProperties(id, properties));
+    })
+    .catch((error: unknown) => {
+      console.warn(`Could not change the style of ${layer.url}.`, error);
+    });
+}
+
 /**
  * Makes one base layer from a basemap definition's plain description of it, `{ type, ...properties }`.
  *
@@ -26,11 +60,12 @@ export function makeBaseLayer(
   }
 
   // Remove the type property because it conflicts as a read-only property when instantiating the class.
-  // `hiddenStyleLayers` is ours rather than Esri's and is applied below, so it comes out here too.
-  const { type, hiddenStyleLayers, ...props } = layer as { type?: string; hiddenStyleLayers?: string[] } & Record<
-    string,
-    unknown
-  >;
+  // `hiddenStyleLayers` and `styleLayerPaint` are ours rather than Esri's and are applied below, so they come out
+  // here too.
+  const { type, hiddenStyleLayers, styleLayerPaint, ...props } = layer as {
+    type?: string;
+  } & StyleLayerChanges &
+    Record<string, unknown>;
 
   if (type === `TileLayer`) {
     return new constructors.TileLayer(props);
@@ -39,17 +74,7 @@ export function makeBaseLayer(
   if (type === `VectorTileLayer`) {
     const vectorTileLayer = new constructors.VectorTileLayer(props);
 
-    // Style layers turned off once the style has loaded, so a layer drawn over the basemap can stand in for
-    // them (#2459). A style call only: nothing here touches the sprite sheet. Replacing the sheet with
-    // `setSpriteSource` left the map blank on about one load in four, and patched some tiles and not others in
-    // the same session. A failure must not take the basemap down with it.
-    if (hiddenStyleLayers !== undefined && hiddenStyleLayers.length > 0) {
-      vectorTileLayer
-        .when(() => hiddenStyleLayers.forEach((id) => vectorTileLayer.setStyleLayerVisibility(id, 'none')))
-        .catch((error: unknown) => {
-          console.warn(`Could not hide style layers in ${props.url}.`, error);
-        });
-    }
+    applyStyleLayerChanges(vectorTileLayer, { hiddenStyleLayers, styleLayerPaint });
 
     return vectorTileLayer;
   }

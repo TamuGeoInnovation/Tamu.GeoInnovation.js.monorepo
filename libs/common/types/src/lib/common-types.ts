@@ -202,6 +202,15 @@ export interface VectorTileLayerSourceProperties extends IRemoteLayerService {
   type: 'vector-tile';
 
   native?: esri.VectorTileLayerProperties;
+
+  /** Style layers to turn off once the style loads, by id (#2459). */
+  hiddenStyleLayers?: string[];
+
+  /**
+   * Paint to give style layers in place of the published paint, by id, once the style loads (#2506). It replaces
+   * the layer's paint, so a `fill-pattern` can become a `fill-color`.
+   */
+  styleLayerPaint?: Record<string, Record<string, unknown>>;
 }
 
 export interface CSVLayerSourceProperties extends IRemoteLayerService {
