@@ -17,11 +17,13 @@ Last written **12:50 PM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-Batch 48 (aggiemap: #2034, a linked feature showing its template text), started 12:50 PM Central, 28 October. Expected about 60 minutes.
+Idle. Nothing queued after batch 48.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
+
+- **Batch 48, aggiemap: #2034 linked feature showing its template text** (12:48 to about 1:10 PM Central, 28 October): does not reproduce on a local production build of `development`, dev or production, for the building, lots and accessible layers and `?lot=`; the Team Bus layer was removed in #2468 and the `sp_sh_notes` template is dead code. Nothing pushed, nothing closed. Report `copilot-home/reports/2026-10-28-48.md`.
 
 - **Batch 47, aggiemap: #1540 controls dead while a popup is open** (12:30 to about 12:50 PM Central, 28 October): does not reproduce on development or production, desktop or phone; it is #1806, fixed by PR 1813 (panel ownership, not pointer events). Nothing pushed, nothing closed. Report `copilot-home/reports/2026-10-28-47.md`.
 
