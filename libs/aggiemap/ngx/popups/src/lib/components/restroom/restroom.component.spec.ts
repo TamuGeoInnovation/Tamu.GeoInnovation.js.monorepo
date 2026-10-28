@@ -16,7 +16,8 @@ import { RestroomPopupComponent } from './restroom.component';
  *
  * The service names the building number `BldgNum`; the popup read `Bldg_Number`, which it does not
  * have, so "Building Number:" was always empty. The restroom below is one of the service's own, as it
- * answered on 28 October 2026. Its `Notes` are written with <br>, so they are rendered as HTML.
+ * answered on 28 October 2026. Its `Notes` are written with <br>, so they are rendered as HTML. Its building
+ * number is wrong in the service (the building is 1546, #2529); the popup shows what the service holds.
  */
 const RESTROOM = {
   OBJECTID: 407,
