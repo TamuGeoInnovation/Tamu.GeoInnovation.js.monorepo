@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 38.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 39.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,78 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 38 (aggiemap: #2511, services that describe themselves inconsistently; 28 October 2026, 2:45 AM Central, from `work (aggiemap)`)
+
+**Your #2458 work is PR 2505 and your #2500 work is PR 2504, both green.** On #2458 you were half right
+before I was: you measured the live DOM instead of trusting the issue's table, which is what exposed that
+the issue - and I - had the wrong page. Keep doing that.
+
+This batch is the natural sequel to `portal-renderers.spec.ts`, which you wrote.
+
+### Why
+
+Two production faults were found by hand in the last day, both on baseball, both invisible to every check
+we run:
+
+- **#2500** - the portal item's renderers key on fields the republished service no longer has, so three
+  layers drew nothing. Your spec now catches this.
+- **#2510** - layer `/2` declares `objectIdField: objectid_1`, **a field it does not have**, so *every*
+  query to it returns **HTTP 500** (`JSONObject["objectid_1"] not found.`). `where=1=1&returnCountOnly=true`
+  is enough to trigger it. Development's equivalent layer is correct and returns its three closures.
+
+Same shape: **a service describing itself inconsistently.** One was found because the maintainer looked at
+a map; the other because a line in a test report was chased. Both came from one republish, and republishes
+are routine.
+
+### What to add
+
+In `test/smoke/aggiemap`, beside `portal-renderers.spec.ts` and following its shape - one test per hosted
+connection in `connections.ts`, no browser, **builder-gated maps covered** (the layer checks skip them,
+#2467, which is why neither fault was caught):
+
+1. **`objectIdField` must be in the layer's own `fields`.** That is #2510 exactly, and it is one comparison
+   on metadata you are already fetching.
+2. **The layer must answer the simplest possible query**: `where=1=1&returnCountOnly=true`. This is the
+   single most useful question to ask a service, and it is the request that 500s today.
+3. **`displayField`, where the layer sets one, must be in `fields`.** Same class; it is what makes a popup
+   title read blank.
+
+Reuse what you built: if `portal-renderers.spec.ts` already fetches each layer's JSON, these three checks
+should share that fetch rather than asking again. Whether they belong in that file or a sibling is yours to
+judge - say which you chose and why.
+
+Each failure names the service, the layer and the field, the way yours already does, so a report can go to
+the GIS team without anyone re-deriving it.
+
+### The known-failure entry, which is the part most likely to be got wrong
+
+**#2510 fails on production today and will until the GIS team republishes the view.** It needs an entry in
+`environments.json`, production only, naming #2510 - following whatever shape you chose for
+`allowedPortalRendererFailures`, including the `known failure now fixed` annotation so it cannot go stale
+silently.
+
+**Do not write the check and then exclude the layer from it.** The entry must record a known, tracked
+failure that still runs, which is what CLAUDE.md asks for; a layer quietly skipped is how this fault lived
+in the first place.
+
+### Prove it
+
+1. **Red first**, against the real production metadata for `BaseballParking_view/2`: `objectIdField`
+   `objectid_1` against fields that contain `objectid` and not `objectid_1`. Then green. Also red-first a
+   layer whose `displayField` is missing.
+2. **The accept cases matter as much**: a layer whose fields are all present must pass, or a check that
+   rejects everything would look correct. Red-first those too where you can.
+3. `scripts/check-in-volume.sh <branch> aggiemap-angular` - exit 0, quoted.
+4. **The spec run against production and development, read only.** Quote what it says. Production should
+   report exactly `baseballParkingUrl/2` and nothing else; development should be clean with no entry.
+   **If it finds anything beyond that layer, stop and report it before going further** - that would be a
+   new production fault, and it matters more than finishing the batch.
+5. A row in `docs/testing.md`, **numbers left alone, Total included** (#2002).
+
+Push to `fork`, report `branch ready:` with the exact commit. No pull request.
 
 ---
 
