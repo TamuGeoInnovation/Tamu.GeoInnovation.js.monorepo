@@ -7,6 +7,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
 **Batch 17** (aggiemap: #1961, the restroom popup's empty Building Number), started 9:32 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
+Progress (9:43 AM Central): the service checked (BldgNum filled on 116 of 116); the popup the issue names turned out to be unused since #418, so the layer is pointed at it. Tests red, then green; fix committed. Building for the after picture.
 
 ## Finished
 - **Batch 16** (aggiemap; report `home/reports/2026-10-28-16.md`): decisions carried out (#1267 closing condition, #1034 closed and #2527 filed, #1005 Medium, #1204 Low). Last four looked at on dev: #163 closed; #71, #141 and #387 commented and left open. Nothing pushed.
