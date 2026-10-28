@@ -4,6 +4,7 @@ import { ReplaySubject } from 'rxjs';
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 import { PhotoCarouselComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AsyncPipe } from '@angular/common';
+import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
@@ -11,7 +12,7 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-bonfire',
   templateUrl: './bonfire.component.html',
   styleUrls: ['./bonfire.component.scss'],
-  imports: [PhotoCarouselComponent, AsyncPipe, MarkdownParsePipe]
+  imports: [PhotoCarouselComponent, AsyncPipe, MarkdownParsePipe, ActivateDirective]
 })
 export class BonfirePopupComponent extends BaseDirectionsComponent implements OnInit {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);

@@ -15,6 +15,6 @@
   <div [innerHTML]="$safeNavigationMigration(data?.attributes?.Description)  | markdownParse" class="trailer-2"></div>
 
   @if (directionsAvailable | async) {
-  <div class="button" tabindex="0" role="button" (click)="startDirections()" (keydown.enter)="startDirections()" (keydown.space)="startDirections(); $event.preventDefault()">Directions To Here</div>
+  <div class="button" (tamuGiscActivate)="startDirections()">Directions To Here</div>
   }
 </div>

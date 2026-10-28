@@ -5,6 +5,7 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { PhotoCarouselComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AsyncPipe } from '@angular/common';
+import { ActivateDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 
@@ -12,7 +13,7 @@ import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
   selector: 'tamu-gisc-poi-popup-component',
   templateUrl: './poi.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
-  imports: [CopyComponent, PhotoCarouselComponent, AsyncPipe, MarkdownParsePipe]
+  imports: [CopyComponent, PhotoCarouselComponent, AsyncPipe, MarkdownParsePipe, ActivateDirective]
 })
 export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);
