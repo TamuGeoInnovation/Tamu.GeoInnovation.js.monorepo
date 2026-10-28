@@ -408,9 +408,8 @@
  */
 .map-entry--pictured {
   display: flex;
-  // The name comes first in the markup so it is read first; on a wide screen it is shown below the
-  // picture as a caption, and the phone layout below puts it above (#2458).
-  flex-direction: column-reverse;
+  // The name is first in the markup and shown above its picture at every width (#2458).
+  flex-direction: column;
   align-items: stretch;
   gap: 0.5rem;
   width: 100%;
@@ -421,19 +420,11 @@
   }
 }
 
-// On a phone the entries of a listing (the Campus Maps page) stack in one column, and a name below its
-// picture sat nearer the next entry's picture than its own. The name is shown above its picture
-// instead, 0.5rem from it, and the space under each entry is `trailer-2` (2rem, about 34px with the
-// link's padding) so the entries read as separate panels with a name clearly belonging to the picture
-// beneath it. A utility class cannot be limited to a breakpoint, so the value is written here. Scoped
-// to entries inside a list item, so a glyph entry (the one-line rows on the parking lists) and the All
-// Maps cards, which have their own rules, are unchanged; the layout above 768px is not touched.
-@media (max-width: 768px) {
-  .map-entry--pictured {
-    flex-direction: column;
-  }
-
-  .map-entry-item > .map-entry--pictured {
-    margin-bottom: 2rem;
-  }
+// The entries of a listing (the Campus Maps page) stack one under another, and a name has to read as
+// belonging to the picture beneath it, not to the one above. The name is 0.5rem over its own picture,
+// and the space under each entry is `trailer-2` (2rem, about 34px with the link's padding), so the
+// entries read as separate panels. Scoped to entries inside a list item, so a glyph entry (the one-line
+// rows on the parking lists) and the All Maps cards, which have their own rules, are unchanged.
+.map-entry-item > .map-entry--pictured {
+  margin-bottom: 2rem;
 }

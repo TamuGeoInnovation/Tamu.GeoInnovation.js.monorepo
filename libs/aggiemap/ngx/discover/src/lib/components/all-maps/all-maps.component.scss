@@ -154,9 +154,8 @@
 // and does not stretch to a landscape screenshot, so this extends the card instead of fighting that.
 .campus-tile {
   display: flex;
-  // The name comes first in the markup so it is read first. Here, on a wide screen, it is shown below
-  // the picture as it always was; the phone layout below puts it above.
-  flex-direction: column-reverse;
+  // The name is first in the markup and shown above its picture at every width (#2458).
+  flex-direction: column;
   // The shared pictured-entry rule's gap would add to the label's own margin.
   gap: 0;
   text-decoration: none;
@@ -166,29 +165,21 @@
 
 .campus-tile-label {
   display: block;
-  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   font-weight: 600;
   line-height: 1.2;
 }
 
-// On a phone the cards stack in one column, and a name below its picture sat nearer the next card's
-// picture than its own. Shown above the picture instead, the name cannot be taken for the next
-// card's, and the cards are given more room between them than a name has to its own picture.
-// The utility classes cannot be limited to a breakpoint, and the multi-column desktop grid is not to
-// move, so the values are written here, after the base rules they override.
+// On a phone the cards stack in one column, so the space between them is given the `trailer-2` step
+// (2rem), well over the 0.5rem between a name and its own picture, and the space under the picture
+// the `trailer-1` step (1rem). The utility classes cannot be limited to a breakpoint, so the values
+// are written here, after the base rules they override.
 @media (max-width: 768px) {
   .campus-tile {
-    flex-direction: column;
     margin-bottom: 1rem;
   }
 
-  .campus-tile-label {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-  }
-
   .campus-maps-section .applications-list {
-    // `trailer-2`, twice the 1rem between the card's own parts.
     gap: 2rem;
   }
 }

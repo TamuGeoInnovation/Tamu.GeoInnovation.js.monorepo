@@ -76,8 +76,8 @@ describe('MapColumnsComponent pictures', () => {
   });
 
   it('puts the name before the picture, so a name is read before the map it belongs to', () => {
-    // Phones show the name above its picture and wide screens below it; the order in the markup is the
-    // reading order for everyone, so it is name first and only the layout changes by breakpoint.
+    // The name is first in the markup, so reading order matches what is seen at every width; the
+    // stylesheet no longer reorders anything.
     const element = render([application({ thumbnail: './assets/images/campus/galveston.jpg' })]);
     const label = element.querySelector('.map-entry--pictured .map-entry-label') as HTMLElement;
     const image = element.querySelector('.map-entry--pictured img.map-entry-thumbnail') as HTMLElement;
