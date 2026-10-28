@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 36.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 37.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,55 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 36 (aggiemap: #2458, campus map names on a phone; 28 October 2026, about 1:15 AM Central, from `work (aggiemap)`)
+
+**Good work on #2500 - it is PR 2504, opened with your red-first evidence quoted.** This one is smaller
+and entirely yours.
+
+Tad Fifer reported it on 27 October: on a phone the campus map cards stack into one column and each map's
+name sits almost as close to the **previous** card's picture as to its own, so it is not obvious which name
+belongs to which link.
+
+#2458 already contains the diagnosis, and it is right - read it rather than re-deriving it:
+`.campus-tile` has `margin: -0.25rem 0 0.75rem` and `.campus-tile-label` has `margin-top: 0.5rem`, so a
+name is 0.5rem below its own picture and 0.75rem below the card above. At desktop width the next card is
+beside it, so the ambiguity never arises; under `@media (max-width: 768px)` it does.
+
+### What to do
+
+Make the gap above a name **clearly** smaller than the gap between cards, so proximity does the work.
+Judge the numbers by looking at it on a phone-width page, not by picking a ratio that sounds right.
+
+**The repository's standing rule applies and is the main thing to get right here** (CLAUDE.md, *Reuse
+before building*): look in `libs/sass/` and the app's global `styles.scss` for the spacing scale or
+utilities that already exist, and say in your report where you looked. Purpose-built CSS is unwanted, and
+two hand-picked rem values in a component stylesheet are exactly what that rule is about. If a shared
+spacing step fits, use it; if the right fix is to add one, say so and why.
+
+Change only what the phone layout needs. The desktop grid is not reported as wrong and must not move.
+
+### Prove it
+
+1. **Screenshots at phone width, before and after**, committed to `docs/screenshots/2458-campus-name-spacing/`
+   - and because the whole point is which name goes with which picture, the shot must show **at least two
+   stacked cards**, not one. A single card proves nothing about the ambiguity.
+2. Desktop width before and after too, as evidence the grid did not move.
+3. A test if there is an honest one to write. A component spec asserting a margin value is not obviously
+   worth having; if you conclude there isn't one, **say so in the report and why** - CLAUDE.md allows that,
+   and it is a better answer than a test that asserts the stylesheet says what the stylesheet says.
+4. `scripts/check-in-volume.sh <branch> aggiemap-ngx-discover,aggiemap-angular` - exit 0, quoted.
+5. A release note entry with its *What to test on dev* row. It is a visible change, so it needs one.
+
+Push to `fork`, report `branch ready: <name>` with the exact commit. Do not open the pull request.
+
+### Note
+
+This is the last queued batch. **If you finish it and nothing new is here, say so in `STATUS.md` and
+stop** - do not pick up other work. The overnight priority is the construction hatch, and the lab and home
+are both on it; a third machine joining would duplicate them rather than help.
 
 ---
 
