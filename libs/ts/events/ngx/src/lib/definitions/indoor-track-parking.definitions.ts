@@ -13,9 +13,9 @@ import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
 // The order the map draws its layers in, top first (#2059): `EventService` adds them to the map in the
-// reverse of this order, each above the last. Team Bus Parking comes before Indoor Track Building because
-// the team bus area is the building's own footprint, so with the building above it the area is drawn and
-// then completely covered, and switching it on or off changes nothing on the map (#1993).
+// reverse of this order, each above the last. Accessible Parking comes before the lots because both accessible
+// spaces sit inside lots (100g and 100j), so with the lots above them their fill would cover the wheelchair
+// symbols. `layer-order.spec.ts` checks it on the live map (#2507).
 export enum INDOOR_TRACK_PARKING_LAYERS {
   ACCESSIBLE_PARKING = 'indoor-track-parking-accessible-parking',
   PARKING_LOTS = 'indoor-track-parking-lots',
