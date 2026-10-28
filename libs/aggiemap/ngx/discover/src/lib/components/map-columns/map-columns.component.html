@@ -22,11 +22,14 @@
                 -->
         <a class="map-entry" [class.map-entry--pictured]="app.thumbnail" [routerLink]="getApplicationRoute()(app)">
           @if (app.thumbnail) {
+          <!-- Name first: it is what is being chosen, so it is read first. The stylesheet puts it above the
+                picture on a phone and below it on a wider screen (#2458). -->
+          <span class="map-entry-label">{{ app.name }}</span>
           <img class="map-entry-thumbnail" [src]="app.thumbnail" [alt]="app.name + ' map'" loading="lazy" />
           } @else {
           <span class="map-entry-icon" aria-hidden="true"></span>
-          }
           <span class="map-entry-label">{{ app.name }}</span>
+          }
         </a>
       </li>
       }
