@@ -25,8 +25,23 @@ export enum HOUSTON_SPACE_INSTITUTE_LAYERS {
 }
 
 export const HoustonSpaceInstituteLayerSources: LayerSource[] = [
+  {
+    type: 'vector-tile',
+    id: HOUSTON_SPACE_INSTITUTE_LAYERS.BASEMAP,
+    title: 'Houston Space Institute Basemap',
+    url: Connections.houstonSpaceInstituteBasemapUrl,
+    listMode: 'hide',
+    visible: true,
+    essential: true,
+    // At the bottom of the map's layers, whenever it finishes loading, so the construction is drawn over it. Layers
+    // are added as each is made, so without this the tiles could land on top (#2532).
+    layerIndex: 0,
+    // The tiles' construction fill (`/1`, a sprite pattern the packager rasterized onto an opaque tile, pink on
+    // production) and its outline (`/0`) are hidden; the layer above draws both instead (#2532).
+    hiddenStyleLayers: ['GIS.FCOR.HSI_Construction/1', 'GIS.FCOR.HSI_Construction/0']
+  },
   // The construction, drawn over the tiles as every campus draws it: an orange grid with our own black outline
-  // (#2532). Listed first because an event map draws its first source on top.
+  // (#2532). It lands above the tiles because they are pinned to the bottom.
   {
     type: 'feature',
     id: HOUSTON_SPACE_INSTITUTE_LAYERS.CONSTRUCTION,
@@ -39,18 +54,6 @@ export const HoustonSpaceInstituteLayerSources: LayerSource[] = [
       popupEnabled: false,
       renderer: CONSTRUCTION_HATCH_RENDERER
     }
-  },
-  {
-    type: 'vector-tile',
-    id: HOUSTON_SPACE_INSTITUTE_LAYERS.BASEMAP,
-    title: 'Houston Space Institute Basemap',
-    url: Connections.houstonSpaceInstituteBasemapUrl,
-    listMode: 'hide',
-    visible: true,
-    essential: true,
-    // The tiles' construction fill (`/1`, a sprite pattern the packager rasterized onto an opaque tile, pink on
-    // production) and its outline (`/0`) are hidden; the layer above draws both instead (#2532).
-    hiddenStyleLayers: ['GIS.FCOR.HSI_Construction/1', 'GIS.FCOR.HSI_Construction/0']
   },
   {
     type: 'feature',
