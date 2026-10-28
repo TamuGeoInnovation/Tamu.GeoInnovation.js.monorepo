@@ -1,7 +1,7 @@
 name: copilot-home
 agent: GitHub Copilot CLI (Claude Sonnet 5.5). Named `copilot-home`
 machine: the maintainer's home computer (Windows), working in `C:\TAM
-state: running (agent-runner)
-accepting: no
-seen_utc: 2026-10-28T15:35:26Z
-next_utc: 2026-10-28T17:35:26Z
+state: idle
+accepting: yes
+seen_utc: 2026-10-28T15:40:19Z
+next_utc: 2026-10-28T16:25:19Z
