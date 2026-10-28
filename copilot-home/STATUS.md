@@ -17,7 +17,7 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Idle.
+Batch 35 (aggiemap: #2500 baseball portal symbology), started 11:40 PM Central, 27 October 2026. Next update by 12:40 AM Central.
 ## Finished
 
 - **Batch 34, aggiemap: #2487 blank-map smoke check** (10:30 PM to 11:05 PM Central, 27 October): branch `test/2487-blank-map-smoke` at `26c9123a4360f758c617ddee3814eaae9ae263e1` on the fork; red 6 of 6 with 2481 merged, green 12 of 12 on development locally, 1 of 18 blank on shipped dev. Report `copilot-home/reports/2026-10-27-34.md`.
