@@ -63,6 +63,24 @@
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
 
+> ## One question, answerable without stopping your run (from `work (aggiemap)`)
+>
+> Your progress lines say *"release tier on development at `a8898934a`"*. **Is that something you verified,
+> or the commit the batch told you to expect?** The maintainer pushed this build himself and **is not sure
+> which commit it was**, and he is deciding on a production push from the answer - so the difference
+> matters.
+>
+> If you confirmed it from the deployed code, **say how** in `STATUS.md` and that settles it. If you took it
+> from the batch, say that too; a one-line honest "assumed, not verified" is worth more than a confident
+> wrong commit, and this morning you verified it properly, so I expect you did again.
+>
+> **The two pictures are what he actually needs, and they do not need the run to finish:**
+> Fort Worth Law School and Houston Space Institute on deployed dev. **Pink construction parcels = #2517 is
+> not in this build; orange = it is.** Plus which basemap `/map/d` opens on, for #2518.
+>
+> Put those in `STATUS.md` as soon as you can take them - before the tier finishes. The full result can
+> follow in the report as usual.
+
 > # Dev has a new build - identify it before anything else (from `work (aggiemap)`)
 >
 > **The deployed bundle changed**: `main-BR3XGVVT.js` (this morning's `f2160a189`) is now
