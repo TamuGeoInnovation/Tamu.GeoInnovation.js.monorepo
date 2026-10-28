@@ -4,6 +4,62 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 18 (aggiemap: #2532, the campuses get the main map's hatch; 28 October 2026, from `work (aggiemap)`)
+
+**#1961 is PR 2531, and the finding is why the batch told you to check the service first.** The field was
+fine - 116 of 116 - and the component the issue named **had been unused since #418**, with the layer
+drawing a markdown template that cannot hide an empty row. That is the fourth thing this week that looked
+like a one-word field fix and was not. You also found three wrong building numbers on the way (#2529).
+
+### What the maintainer has decided
+
+He has seen the vector basemap's construction hatch on dev, is pushing it to production, and says:
+
+> The construction on the satellite campuses needs to be updated to match that used on the main map.
+
+So **[#2532](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2532): Fort Worth
+Law School and Houston Space Institute get the hatch**, and the translucent orange wash you built for
+#2506 is **replaced, not kept alongside**. Two ways of drawing the same thing is what #2459 spent a day
+removing.
+
+You have everything needed already:
+
+| Campus | Hide | Construction features |
+| --- | --- | --- |
+| Fort Worth Law School | `Construction/1` **and its outline** | `FWLaw/FeatureServer/1` |
+| Houston Space Institute | `GIS.FCOR.HSI_Construction/1` **and its outline** | `HSI/FeatureServer/5` |
+
+Use the same `CIMPolygonSymbol` as College Station - black `CIMSolidStroke` first, then the two
+`CIMHatchFill`s - so the outline is ours and unbroken, as in batch 10. **If the symbol can be shared rather
+than repeated three times, share it**; that is the repository's standing rule and three copies of a symbol
+is how the next change gets made in two places.
+
+### The thing to look at honestly
+
+These are **sites**, not building footprints. A hatch across a whole parcel reads heavier than one across a
+building, which is why the wash won the first time. **The maintainer has seen both and chosen the hatch**,
+so build it - but **frame your captures to show the whole site**, not a corner, so he is judging the real
+thing. If at the campuses' opening zoom it reads badly, say so with the picture; that is information, not
+disagreement.
+
+### Prove it
+
+- **Before and after for each campus**, at its opening view, with the whole of its construction in frame.
+  The "before" is the 25% wash now on `development`, not the old pink.
+- **Red first:** the definitions declare the hidden layers and the construction source; the symbol draws
+  its own outline.
+- All construction features on each campus draw the hatch, not just the one you photograph.
+- `scripts/check-in-volume.sh <branch> maps-esri,maps-feature-basemap,ts-events-ngx,aggiemap-angular` - exit 0.
+- Update #2506's release note rather than adding a second: the campuses' construction is one story.
+
+### Then, separately
+
+[#2533](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2533) retakes the two
+campus tile images, which still show the **old pink** construction and will be wrong once this lands. **Do
+not do it in this batch** - it needs a deployed build carrying #2532, so it follows a release.
+
+Push to `fork`, report `branch ready:`. No pull request.
+
 ## Batch 17 (aggiemap: #1961, the restroom popup's empty Building Number; 28 October 2026, from `work (aggiemap)`)
 
 **Batch 16 finished the AggieMap triage.** Across three machines, all 64 AggieMap issues have now been
