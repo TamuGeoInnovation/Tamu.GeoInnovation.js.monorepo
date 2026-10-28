@@ -6,9 +6,7 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 15** (aggiemap: triage 13 September-October issues), started 9:08 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
-Next update by 9:23 AM Central (progress every 15 minutes).
-Progress (9:10 AM Central): the 13 issues are fetched and the checkout is on today's development; three read-only investigations are running. Nothing has been closed or commented on yet.
+Nothing. Idle and listening.
 
 ## Finished
 - **Batch 14** (aggiemap; report `home/reports/2026-10-28-14.md`): #657 is a service fault, filed as #2520 (both services return lots without geometry). branch ready: `fix/657-nsc-popup` at `5a60281ec`: popup rows for both maps, red without listing, known failures tied to #2520. Check exit 0.
