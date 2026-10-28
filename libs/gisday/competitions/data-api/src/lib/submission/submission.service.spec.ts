@@ -30,6 +30,7 @@ describe('clampAccuracy', () => {
 describe('SubmissionService.createCompetitionSubmission', () => {
   let em: { create: jest.Mock; save: jest.Mock; insert: jest.Mock; find: jest.Mock };
   let service: SubmissionService;
+  let publishInBackground: jest.Mock;
 
   const entity: DeepPartial<CompetitionSubmission> = {
     guid: '7f1c5a52-3b0e-4d36-9a55-2f8e8f4c1b6a',
@@ -53,7 +54,16 @@ describe('SubmissionService.createCompetitionSubmission', () => {
     // The participant's earlier submissions are read before the save, outside its transaction (#2428 review).
     const submissionRepo = { manager: { transaction: (work) => work(em) }, find: (options) => em.find(options) };
 
-    service = new SubmissionService(submissionRepo as never, {} as never, {} as never, {} as never, {} as never, {} as never);
+    publishInBackground = jest.fn();
+    service = new SubmissionService(
+      submissionRepo as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      { publishInBackground } as never
+    );
   });
 
   it('inserts the submission under its own guid, and its photographs with it', async () => {
@@ -67,12 +77,20 @@ describe('SubmissionService.createCompetitionSubmission', () => {
     expect(em.save.mock.calls.some(([value]) => value instanceof CompetitionSubmission)).toBe(false);
   });
 
+  // #2433: published to the season's ArcGIS Online layer once saved, never as part of the save.
+  it('publishes the submission to ArcGIS Online once it is saved', async () => {
+    const sub = await service.createCompetitionSubmission(entity, blobs);
+
+    expect(publishInBackground).toHaveBeenCalledWith(sub.guid);
+  });
+
   it('when the guid is already saved, fails on the duplicate and inserts no photographs', async () => {
     const duplicate = { driverError: { number: 2627 } };
     em.insert.mockImplementation((type) => (type === CompetitionSubmission ? Promise.reject(duplicate) : Promise.resolve({})));
 
     await expect(service.createCompetitionSubmission(entity, blobs)).rejects.toBe(duplicate);
     expect(inserted(SubmissionMedia)).toEqual([]);
+    expect(publishInBackground).not.toHaveBeenCalled();
   });
 
   /**
@@ -189,7 +207,8 @@ describe('SubmissionService.getAdminSubmissions', () => {
       {} as never,
       { findOne: jest.fn(() => Promise.resolve({ guid: 'cs-2026', form })) } as never,
       { findOne: jest.fn(() => Promise.resolve({ guid: 's-2026', active: true })) } as never,
-      { getUserMetadata: jest.fn(() => Promise.reject(new Error('offline'))) } as never
+      { getUserMetadata: jest.fn(() => Promise.reject(new Error('offline'))) } as never,
+      { publishInBackground: jest.fn() } as never
     );
   });
 
@@ -223,5 +242,30 @@ describe('SubmissionService.getAdminSubmissions', () => {
     const [decided] = await service.getAdminSubmissions({});
 
     expect(decided).toEqual(expect.objectContaining({ reviewReasons: [], verifiedAutomatically: false }));
+  });
+});
+
+/**
+ * #2433: a person's review changes the submission's status in ArcGIS Online too.
+ */
+describe('SubmissionService.validateSubmission', () => {
+  it("publishes the submission's new status to ArcGIS Online", async () => {
+    const save = jest.fn(() => Promise.resolve());
+    const submission = { guid: 's-1', validationStatus: { status: 'verified', verifiedBy: 'automatic' }, save };
+    const publishInBackground = jest.fn();
+    const service = new SubmissionService(
+      { findOne: jest.fn(() => Promise.resolve(submission)) } as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      { publishInBackground } as never
+    );
+
+    await service.validateSubmission({ guid: 's-1', status: 'discarded' as never, userGuid: 'auth0|reviewer' });
+
+    expect(save).toHaveBeenCalled();
+    expect(publishInBackground).toHaveBeenCalledWith('s-1');
   });
 });

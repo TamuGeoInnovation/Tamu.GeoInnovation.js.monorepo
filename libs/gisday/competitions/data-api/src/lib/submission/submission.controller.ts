@@ -142,6 +142,16 @@ export class SubmissionController {
     });
   }
 
+  /**
+   * Publishes the active season's submissions to its ArcGIS Online layer again (#2433).
+   */
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('arcgis/publish')
+  public async publishToArcgis() {
+    return this.service.publishActiveSeasonToArcgis();
+  }
+
   @Permissions(['update:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('validate')

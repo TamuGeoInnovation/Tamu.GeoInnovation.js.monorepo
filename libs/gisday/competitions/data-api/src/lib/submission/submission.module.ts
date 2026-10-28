@@ -14,6 +14,7 @@ import {
 import { SubmissionController } from './submission.controller';
 import { SubmissionService } from './submission.service';
 import { FormService } from '../form/form.service';
+import { VgiArcgisPublisher } from '../arcgis/vgi-arcgis-publisher.service';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { FormService } from '../form/form.service';
     ])
   ],
   controllers: [SubmissionController],
-  providers: [SubmissionService, FormService],
+  providers: [SubmissionService, FormService, VgiArcgisPublisher],
   exports: [SubmissionService]
 })
 export class SubmissionModule {}

@@ -47,6 +47,17 @@ export class SubmissionService {
     return this.http.get(`${this.resource}/${submissionGuid}/image`, { responseType: 'blob' });
   }
 
+  /**
+   * Starts publishing the active season's submissions to its ArcGIS Online layer again, on the server
+   * (#2433, #2434 review).
+   */
+  public publishToArcgis() {
+    return this.http.post<{ queued: number; configured?: false; alreadyRunning?: true }>(
+      `${this.resource}/arcgis/publish`,
+      {}
+    );
+  }
+
   public validateSubmission(params: ValidateSubmissionDto) {
     return this.http.post(`${this.resource}/validate`, params);
   }
