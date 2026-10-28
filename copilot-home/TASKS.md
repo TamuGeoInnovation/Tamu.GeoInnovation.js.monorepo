@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 45.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 46.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,60 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 45 (aggiemap: find the other controls a keyboard cannot reach; 28 October 2026, from `work (aggiemap)`)
+
+**#2047 is PR 2534, and two choices in it were better than the batch asked for.**
+
+- **A directive, not a component**, so the label and the `@if (directionsAvailable | async)` gate stay at
+  each call site and `directions-availability.spec.ts` keeps meaning something. A component would have
+  hidden both from the guard. That reasoning is in the pull request.
+- **Byte-identical popup captures**, SHA-256 equal on all four - then you drove click, Enter and Space in a
+  real browser anyway, because the hash proves the pixels and only driving it proves the handlers. That is
+  the right pair of checks for a refactor.
+
+You also corrected the issue: **nine templates, not ten**, because `parking-garage` renders `parking-lot`'s.
+
+### Decided, from your questions
+
+1. **Your option (b): yes, do the triage.** That is this batch.
+2. **The `nx serve` stall: not now.** You proved the same thing with a real `nx build` served statically,
+   and the gate is by host, so nothing was lost. It is recorded in PR 2534 for whoever hits it next. If
+   `local` runs from that machine become routine, it comes back as its own batch.
+
+### The task, read only
+
+> the same bug (a keyboard user who cannot act) probably exists elsewhere
+
+**Find every interactive element that a keyboard cannot reach or activate**, across `libs` and `apps`.
+What to look for:
+
+- `div` or `span` with a `(click)` and **no** `keydown.enter` / `keydown.space`;
+- anything with `role="button"` and no `tabindex`, or `tabindex` and no key handlers;
+- `(mouseenter)` / `(mouseover)` driving something with no keyboard or focus equivalent;
+- a `click` on a non-interactive element where a `<button>` would have done the job for free.
+
+**The accessibility lint rules are on since #2046**, including `click-events-have-key-events` and
+`interactive-supports-focus` - so **anything still there either passes those rules or is suppressed**. Say
+which: a rule that cannot see the problem is itself a finding, and more useful than a list.
+
+### What I want out of it
+
+- **A table**: file, element, what a keyboard user cannot do, and whether lint sees it.
+- **Grouped by whether `[tamuGiscActivate]` would fix it** - that directive now exists, so some of this may
+  be a one-line change each.
+- **Your judgement on which actually matter.** A decorative div with a click that duplicates a nearby real
+  button is not the same as the only way to start directions. **Say which are real and which are noise**;
+  a list of 80 findings nobody triages is worth less than six that matter.
+- **File one issue** with the real ones (Task, `bug` if any is genuinely unreachable, Priority **Medium** -
+  say so and the director will confirm). **Do not file one per finding.**
+
+**Do not fix anything in this batch**, including the easy ones. I want the shape of the problem before we
+decide how much of it to take on.
+
+Nothing pushed but your report.
 
 ---
 
