@@ -6,21 +6,10 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 8** (aggiemap: #2459, the construction hatch as a layer instead of a sprite; a prototype), started 10:10 PM Central, Tuesday 27 October 2026, from `work (aggiemap)`.
-Next update by 10:25 PM Central (progress every 15 minutes).
+**`home`: a listener, nothing running.** Last batch done: 8.
 
-Progress (10:11 PM): prototype built (the hatch as a FeatureLayer with a CIM grid hatch in the vector basemap, 8 buildings from TAMU_Basemap_20261008/2; the sprite override not applied). The control build of today's development is compiling; then 15 plain loads of each, as the lab measured.
-Progress (10:11 PM): control build still compiling; measurement script written (lab's method: warm-up, then 15 loads, 30 s of 700 x 700 samples after ready).
-Progress (10:15 PM): read the 10:35 PM note. Measuring now: the first prototype (hatch layer over the published fill; its layer loads 8 buildings), then the control. Added the fill-hiding half (setStyleLayerVisibility on .../Currently Under Construction/1, the outline /0 kept); 'hide only' and 'hide + hatch' are built and measured next.
-Progress (10:24 PM): first prototype, 12 of 15 loads measured so far, 0 blank.
-Progress (10:39 PM): prototype: 0 of 15 blank. Control (today's development, sprite override on): 12 loads so far, 0
-0 blank.
-Progress (10:54 PM): served as a static build, neither blanks here: the first prototype 0 of 15, the control (sprite override on) 0 of 15 as well. So static-build numbers prove nothing; measuring the control on the dev server, as the lab did, to see whether it reproduces: 11 loads so far, 0 blank.
-Progress (11:07 PM): the full prototype draws what was asked: 1524 with an orange grid hatch, grass between the lines, black outline (picture taken). The control does not reproduce the lab's blanks here, on a static build or the dev server (0 of 15 each). From dev.localhost, CORS blocks more than ten of the map's layers, so loads are not like dev's. Re-measuring with the measuring browser's CORS off, so every layer loads.
-Progress (11:09 PM): control with every layer loading: 1 of 15 loads so far, 0 blank.
-Progress (11:24 PM): control with every layer loading: 0 of 15 blank. Now measuring deployed dev from this machine, to tell this machine from the local setup: 5 loads so far, 0 blank. Then: do the two datasets agree, building by building.
-Progress (11:38 PM): **pushed: `feat/2459-hatch-layer` on the fork at `6ce2722d4`** (prototype `6a24e887b`, pictures `6ce2722d4`). Build it like any branch; it needs no config. The picture is `docs/screenshots/2459-construction-hatch/prototype-1524.png` on the branch: 1524 with an orange grid hatch, grass between the lines, black outline. Beside it `hide-only-1524.png` (fill hidden, no hatch) and `control-1524.png` (today's development, pink). Here nothing blanks: deployed dev 0 of 15, the control 0 of 15, the prototype 0 of 15; this machine does not reproduce it. Report to follow.
 ## Finished
+- **Batch 8** (aggiemap; report `home/reports/2026-10-27-8.md`): #2459. The no-sprite prototype, `feat/2459-hatch-layer` at `cb1ea9c8b` on the fork, draws 1524 with an orange grid over grass (picture on the branch). `feat/2459-hide-only` at `158d5c4fa` for measuring the hide alone. Nothing blanks on this machine (deployed dev 0 of 15 too), so the lab must measure both.
 - **Batch 7** (gisday; report `home/reports/2026-10-27-7.md`): #2498. `chore/2498-check-memory-env` at `acfd556dc` on the fork; test red then green (18 ok); check exit 0.
 - **Batch 6** (aggiemap; report `home/reports/2026-10-27-6.md`): #2472 reproduces on demand. `--poll` with an empty dependency cache stalls; the Node process is saturated and esbuild sits idle. A bigger thread pool or a longer interval does not help. Workaround: prime the cache without `--poll`. Nothing pushed.
 - **Batch 5** (aggiemap; report `home/reports/2026-10-27-5.md`): #2453. branch ready: `fix/2453-baseball-republish` at `934da19f2` on the fork. Spec red then green, check exit 0, before/after committed. One question for the director.
