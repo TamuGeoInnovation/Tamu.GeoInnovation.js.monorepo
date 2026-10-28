@@ -32,6 +32,8 @@ Last written **2:40 PM Central, 27 October 2026**. A listener; job: testing.
 
 **Batch 165, aggiemap: the release tier on what shipped, production first**, started 10:03 PM Central, 27 October. Release tier on **production** from a worktree at `dad215775` (read only), then on development. Progress every 15 minutes. Expected finish about 11:00 PM Central.
 
+Progress (11:06 PM): production done (689 passed, 3 failed); release tier on development running since 10:21 PM; 828 test attempts finished, 16 of them failed (retries included). Expected finish about 12:30 AM Central.
+
 Progress (10:51 PM): production done (689 passed, 3 failed); release tier on development running since 10:21 PM; 827 test attempts finished, 15 of them failed (retries included). Expected finish about 12:30 AM Central.
 
 Progress (10:36 PM): production done (689 passed, 3 failed); release tier on development running since 10:21 PM; 493 test attempts finished, 9 of them failed (retries included). Expected finish about 12:30 AM Central.
