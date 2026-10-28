@@ -58,14 +58,51 @@ describe('ClassProvider', () => {
   });
 
   describe('.getClassesForSeason()', () => {
-    it('scopes to the season and orders by title', async () => {
+    it('scopes to the season', async () => {
       jest.spyOn(classRepo, 'find').mockResolvedValue([{ guid: 'c-1' } as Class]);
 
       await expect(provider.getClassesForSeason('season-1')).resolves.toEqual([{ guid: 'c-1' }]);
-      expect(classRepo.find).toHaveBeenCalledWith({
-        where: { season: { guid: 'season-1' } },
-        order: { title: 'ASC' }
-      });
+      expect((classRepo.find as jest.Mock).mock.calls[0][0].where).toEqual({ season: { guid: 'season-1' } });
+    });
+
+    /**
+     * Both class tables (Admin, Classes and the student's My Classes) list what this returns. They were in title
+     * order, so GEOG 205 came before GEOG 201 and sections of one class were out of order.
+     */
+    it('lists classes by code, then section, then professor, comparing numbers as numbers', async () => {
+      const row = (code: string, number: string, section: string, professorName: string) =>
+        ({ code, number, section, professorName, title: `${code} ${number}` }) as Class;
+      jest
+        .spyOn(classRepo, 'find')
+        .mockResolvedValue([
+          row('GEOG', '205', '599', 'Jean'),
+          row('GEOG', '205', '500', 'Jean'),
+          row('GEOG', '201', '501', 'Breyer'),
+          row('GEOG', '201', '502', 'Breyer'),
+          row('GEOG', '201', '500', 'Breyer'),
+          row('GEOG', '203', '599', 'Jean'),
+          row('GEOG', '203', '503', 'Lafon'),
+          row('GEOG', '1000', '500', 'Zed'),
+          row('ATMO', '201', '500', 'Breyer'),
+          row('GEOG', '203', '503', 'Adams')
+        ]);
+
+      const listed = (await provider.getClassesForSeason('season-1')).map(
+        (c) => `${c.code} ${c.number} ${c.section} ${c.professorName}`
+      );
+
+      expect(listed).toEqual([
+        'ATMO 201 500 Breyer',
+        'GEOG 201 500 Breyer',
+        'GEOG 201 501 Breyer',
+        'GEOG 201 502 Breyer',
+        'GEOG 203 503 Adams',
+        'GEOG 203 503 Lafon',
+        'GEOG 203 599 Jean',
+        'GEOG 205 500 Jean',
+        'GEOG 205 599 Jean',
+        'GEOG 1000 500 Zed'
+      ]);
     });
   });
 
