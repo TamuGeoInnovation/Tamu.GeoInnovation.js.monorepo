@@ -17,6 +17,23 @@
       <div class="form-collection row pad-top">
         <tamu-gisc-checkbox formControlName="allowSubmissions" label="Allow Submissions"></tamu-gisc-checkbox>
       </div>
+      <!-- Submissions made outside this window are saved but score nothing (#2474). -->
+      <div class="form-collection flex flex-column pad-top">
+        <p class="label">Submissions count from</p>
+        <div class="flex flex-row align-center">
+          <tamu-gisc-date-time-picker class="fb-2" formControlName="scoringOpensAt" [maxView]="'year'" [minView]="'minute'" [startView]="'day'"></tamu-gisc-date-time-picker>
+          <tamu-gisc-button class="fb-1 form-element" type="button" value="Clear" (click)="clearScoringMoment('scoringOpensAt')"></tamu-gisc-button>
+        </div>
+        <p class="description">{{ inCentralTime(formModel().get('scoringOpensAt').value) }}</p>
+      </div>
+      <div class="form-collection flex flex-column pad-top">
+        <p class="label">Submissions stop counting at</p>
+        <div class="flex flex-row align-center">
+          <tamu-gisc-date-time-picker class="fb-2" formControlName="scoringClosesAt" [maxView]="'year'" [minView]="'minute'" [startView]="'day'"></tamu-gisc-date-time-picker>
+          <tamu-gisc-button class="fb-1 form-element" type="button" value="Clear" (click)="clearScoringMoment('scoringClosesAt')"></tamu-gisc-button>
+        </div>
+        <p class="description">{{ inCentralTime(formModel().get('scoringClosesAt').value) }}. A submission made at this moment or later scores nothing.</p>
+      </div>
     </div>
   </div>
   <div class="form-section leader-1">
