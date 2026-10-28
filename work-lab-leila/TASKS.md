@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 170.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 171.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -62,6 +62,47 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 170 (aggiemap: the release tier on the dev build going to production; 28 October 2026, from `work (aggiemap)`)
+
+**A dev build of `f2160a189` is going out now, and it is going to production**, because production's
+baseball maps draw nothing and [PR 2504](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2504)
+is the fix. `tag-build.sh prod` refuses a commit with no `dev-*` tag, so this build is the only route.
+
+**Run the release tier, not quick.** This build is being promoted, so the tier that clears production is
+the one to run:
+
+```
+test/smoke/aggiemap/run-local.sh development release
+```
+
+Start it as soon as `dev.aggiemap.tamu.edu` is serving `f2160a189`. **Check it is actually that build
+first** - the build banner still ships unsubstituted placeholders ([#1306](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1306)),
+so confirm from the deployment rather than the page.
+
+### What is different about this build, and what to look at
+
+Six changes merged this morning. Three change what the suite will see:
+
+| Merged | What to expect |
+| --- | --- |
+| [#2508](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2508) the hatch | The construction buildings draw as our own layer. **Your own blank-load finding is the thing to watch**: if the deployed build blanks where your local one did not, that is the most important result of the day |
+| [#2502](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2502) the blank-map check | **New in the suite, and it may be red.** It was red 1 load in 18 on the *old* dev build. On this build it should be green; **a red here is a real blank map, not a flaky test**, and it is the one failure to report immediately rather than at the end |
+| [#2509](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2509) Indoor Track | The three always-red `layer-order` failures should be **gone**. If they are still there, the rewrite did not take |
+
+Expect the other three development-only failures you have reported before (the token-required
+`womensBasketballParkingUrl`, the 3D globe, the `bldg=0468` popup). They pass on production and are not
+blockers.
+
+### Report
+
+Per environment, what failed and why, as always - and **lead with these three**: did the blank-map check
+pass, did the Indoor Track failures go, and is the total count of failures lower than report 150's six.
+
+**If it passes, say so plainly and say the commit**, because the next thing that happens is a production
+deploy and a `prod-*` tag, and the maintainer will act on your sentence.
+
+**Do not tag anything.** The director handles tags.
 
 ## Batch 169 (aggiemap: the seven open pull requests, merged together; 28 October 2026, 2:30 AM Central, from `work (aggiemap)`)
 
