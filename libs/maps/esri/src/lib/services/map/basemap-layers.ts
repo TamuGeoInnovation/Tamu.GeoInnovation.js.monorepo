@@ -10,13 +10,8 @@ export interface BaseLayerConstructors {
 
 /** Changes to a vector tile layer's own style, by style layer id, made once the style has loaded. */
 export interface StyleLayerChanges {
-  /** Style layers to turn off (#2459). */
+  /** Style layers to turn off (#2459, #2532). */
   hiddenStyleLayers?: string[];
-  /**
-   * Paint to give style layers in place of the published paint (#2506). It replaces the layer's paint, so a
-   * `fill-pattern` can become a `fill-color`.
-   */
-  styleLayerPaint?: Record<string, Record<string, unknown>>;
 }
 
 /**
@@ -26,16 +21,14 @@ export interface StyleLayerChanges {
  */
 export function applyStyleLayerChanges(layer: esri.VectorTileLayer, changes: StyleLayerChanges): void {
   const hidden = changes.hiddenStyleLayers ?? [];
-  const paint = Object.entries(changes.styleLayerPaint ?? {});
 
-  if (hidden.length === 0 && paint.length === 0) {
+  if (hidden.length === 0) {
     return;
   }
 
   layer
     .when(() => {
       hidden.forEach((id) => layer.setStyleLayerVisibility(id, 'none'));
-      paint.forEach(([id, properties]) => layer.setPaintProperties(id, properties));
     })
     .catch((error: unknown) => {
       console.warn(`Could not change the style of ${layer.url}.`, error);
@@ -60,9 +53,8 @@ export function makeBaseLayer(
   }
 
   // Remove the type property because it conflicts as a read-only property when instantiating the class.
-  // `hiddenStyleLayers` and `styleLayerPaint` are ours rather than Esri's and are applied below, so they come out
-  // here too.
-  const { type, hiddenStyleLayers, styleLayerPaint, ...props } = layer as {
+  // `hiddenStyleLayers` is ours rather than Esri's and is applied below, so it comes out here too.
+  const { type, hiddenStyleLayers, ...props } = layer as {
     type?: string;
   } & StyleLayerChanges &
     Record<string, unknown>;
@@ -74,7 +66,7 @@ export function makeBaseLayer(
   if (type === `VectorTileLayer`) {
     const vectorTileLayer = new constructors.VectorTileLayer(props);
 
-    applyStyleLayerChanges(vectorTileLayer, { hiddenStyleLayers, styleLayerPaint });
+    applyStyleLayerChanges(vectorTileLayer, { hiddenStyleLayers });
 
     return vectorTileLayer;
   }
