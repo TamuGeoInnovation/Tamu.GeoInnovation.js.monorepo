@@ -6,7 +6,7 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-Nothing. Idle and listening.
+**Batch 20** (aggiemap: #2061, the layerIndex values that order nothing), started 12:24 PM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
 
 ## Finished
 - **Batch 19** (aggiemap; report `home/reports/2026-10-28-19.md`): branch ready: `chore/2510-clear-baseball-exceptions` at `e9ab841e1`. All five production baseball entries were stale; with them removed both specs pass on production. Production draws both modes: lots in two colours, symbols, 3 closures, no errors. Check exit 0.
