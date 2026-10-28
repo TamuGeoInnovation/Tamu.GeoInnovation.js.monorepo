@@ -4,6 +4,70 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 9 (aggiemap: #2459, make the no-sprite hatch shippable, and show it at real zooms; 27 October 2026, 11:50 PM Central, from `work (aggiemap)`)
+
+**Your prototype is the answer and it is going to ship.** The maintainer has seen `prototype-1524` and
+`control-1524` side by side. This batch turns the prototype into a pull request and answers the one
+question the picture cannot: whether the hatch is the right density at the zooms people actually use.
+
+Do not wait for the lab. They are measuring `feat/2459-hatch-layer` and `feat/2459-hide-only` on the rig
+that reproduces the blanking; if they find something, it changes the mechanism, not the work below. Build
+on `cb1ea9c8b`.
+
+### Task 1, first and quickest: the density, at the zooms people use
+
+**Capture building 1524 and 8711 at zoom 15, 16, 17 and 18**, prototype only, and commit them to
+`docs/screenshots/2459-construction-hatch/` with obvious names. Then **say in your report which density you
+would ship and why.**
+
+This is the maintainer's open question and it is worth more to him tonight than the pull request. The
+current symbol is two `CIMHatchFill`s 12 pt apart with 1.5 pt strokes, chosen to match the sprite's grid.
+At the zoom the pictures were taken the grid reads fine; at zoom 15 it may read as a wash, which is the
+whole complaint being fixed. **Push these and name them in `STATUS.md` as soon as they exist**, before
+starting task 2 - the maintainer may be looking.
+
+If one density cannot serve every zoom, say so plainly and propose what should happen instead; a
+scale-dependent symbol is a real option and naming it is better than shipping a compromise silently.
+
+### Task 2: the change itself
+
+Take the three `PROTOTYPE (#2459)` changes to something reviewable:
+
+- **`hiddenStyleLayers` on `makeBaseLayer`** stays - it is a style call, it never touches the sprite sheet,
+  and it is the half that removes the pink. Document in the code *why* `.../1` is hidden and `.../0` is not.
+- **The construction feature layer** stays, with its CIM hatch. It is a base layer of the vector basemap, so
+  it draws only where that basemap does, which is right.
+- **The sprite override goes.** Do not leave `SPRITE_OVERRIDES_ENABLED = false` behind as a dead switch.
+  Delete `vector-tile-sprites.ts`, its `spriteOverrides` definition entry and its call site, and say in the
+  pull request that it is deleted rather than disabled. It blanks the map about one load in four, and your
+  own report found it applying at 8711 and not at 1524 **in the same session** - it is a race, not a feature
+  anyone should be able to switch back on by accident. Keep its unit tests only if they still test something
+  that exists.
+- `BaseMapProperties.baseLayers` becoming an array is a real interface change; make sure every caller and
+  every definition still typechecks, and note it in the pull request so a reviewer looks at it.
+
+### Prove it
+
+1. **A test that fails first.** The honest one: the basemap definition declares a construction layer and
+   names `Campus Structures/Currently Under Construction/1` as hidden, and `makeBaseLayer` hides what it is
+   given and builds a `FeatureLayer` when asked. Red against the unmodified code, then green.
+2. `scripts/check-in-volume.sh <branch> maps-esri,maps-feature-basemap,aggiemap-angular` - exit 0, quoted.
+3. **All eight construction buildings draw the hatch**, not only the two you photographed. A query against
+   `FCOR/TAMU_Basemap_20261008/MapServer/2` for `Type = 'CONSTRUCTION'` gives the list; checking them is
+   cheap and a renderer that works on two is not evidence.
+4. **Before and after at the same view**, committed, for the pull request and the release note. You have
+   `control-1524`; the before must be today's `development` as served, pink.
+5. A release note entry, `docs/releases/unreleased/2459-construction-hatch.md`. **It was deleted tonight by
+   PR 2503** because it described something that had been reverted - so write it fresh, and have it describe
+   what this change actually does.
+
+Push to `fork`, report `branch ready: <name>` with the exact commit. **Do not open the pull request**; the
+director does that once the lab's measurement is in.
+
+### Questions
+
+End of the report, with options and a recommendation, and keep working. Do not wait on any of them.
+
 ## Batch 8 (aggiemap: #2459 the hatch as a layer instead of a sprite; 27 October 2026, about 10:10 PM Central, from `work (aggiemap)`)
 
 > **Note from `work (aggiemap)`, 11:34 PM Central, 27 October.** **Push the prototype branch to the fork now,
