@@ -618,6 +618,73 @@ Nothing below has merged, so it is not part of a release yet. This section exist
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
 file would say the work had stopped.
 
+### AggieMap on 28 October: what another machine most needs to know
+
+Two faults on production need the GIS team and **no code change will fix either**. Both are on the baseball
+maps, both arrived with the 27 October republish of the athletics services, and both were found by hand
+rather than by a check.
+
+| Fault | What is wrong | What fixes it |
+| --- | --- | --- |
+| [#2500](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2500) | The **portal item's** renderers key on fields the republished service no longer has (`baseball`, `type,event`), and none has a default symbol, so layers `/0`, `/2` and `/3` draw nothing | [PR 2504](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2504) stops the front end trusting them, so the layers keep their service symbology. **But production's service renderers are `simple` where development's are `uniqueValue`**, so production draws uniform pale blue lots until the GIS team gives that service development's symbology |
+| [#2510](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2510) | `/2 Gate/Road Closure` declares `objectIdField: objectid_1`, **a field it does not have**, so every query to it returns **HTTP 500** | Nothing here. The view must be republished with `objectid`, as development's already is. After #2500 is fixed this layer is still empty |
+
+**Do not read a green merge of PR 2504 as "baseball is fixed on production".** It is made safe, not correct,
+and the closure layer is not fixed at all. Every layer of all eleven athletics services was checked for both
+faults: three broken layers for #2500 and one for #2510, **all baseball**, nothing else.
+
+[#2511](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2511) adds the check that would have caught both - a layer's `objectIdField` and `displayField`
+must exist in its own fields, and it must answer `where=1=1`. Neither fault was visible to anything we run,
+because the layer checks skip builder-gated maps ([#2467](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2467)).
+
+#### The athletics and campus maps moved on 27 October
+
+- **All ten sports read one schema, the development one** ([#2468](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2468), [#2478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2478),
+  [#2489](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2489)), after the GIS team republished the production services to match. Layers the
+  development views do not carry were removed from the definitions: accessible lots on baseball, and the
+  visitor kiosk, safety-first and team bus layers across the others. **A smoke test outlived one of them**
+  and was always red until [PR 2509](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2509).
+- **Ten campus maps are listed, all on production** ([#2470](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2470), [#2475](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2475), [#2480](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2480)),
+  the newest being HSC College of Dentistry. Only the north-western Dallas site is mapped; the Cooper
+  Dental Clinic gets its own map from the same service when the GIS team is ready.
+
+#### The construction symbology: fixed by drawing it ourselves, and sprites are gone
+
+The published sprite is **an opaque tile, not a hatch** - 0 transparent pixels of 810, about half pure
+white - so it paints out the ground beneath. That, rather than line spacing, is why it read as a solid
+block ([#2459](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2459)).
+
+Three attempts replaced the sprite and each shipped a map that sometimes drew nothing. **`setSpriteSource`
+blanks the map when it lands while the view is still building**, measured even with the published sheet
+handed back unmodified ([#2487](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2487)). So [PR 2508](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2508) hides the basemap's construction layers
+and draws the buildings itself with a CIM hatch, and **deletes the sprite-override mechanism rather than
+leaving it behind a flag**. Measured 0 blank loads in 60 across two sessions against a control that blanked
+14 of 75.
+
+Its outline is ours too: a vector tile basemap is one layer, so anything added draws entirely above it, and
+the hatch broke the building edge until the symbol drew its own.
+
+**Two campus maps still show the pink tile on production** - Fort Worth Law School and Houston Space
+Institute ([#2506](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2506)). Their basemaps are not gated by `isTesting`, each names its construction layer
+differently, and PR 2508 does not reach them. **"The construction symbology is fixed" is not true until
+#2506 is done.**
+
+#### No build tags for either of 27 October's production releases
+
+`scripts/tag-build.sh` was not run, so the newest tags are `dev-2026-10-25` and `prod-2026-10-22`. **The
+repository's record says production is on a 22 October commit and it is not.** The build banner cannot
+settle it either: it still ships unsubstituted placeholders on both environments, because IIS serves these
+and `tokenSubstitute.sh` never runs ([#1306](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1306)). So the commit has to come from the maintainer
+before the tags can be pushed.
+
+#### Seven pull requests open and green, checked together
+
+[2501](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2501) campus list sorted, [2502](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2502) a check that fails when the map does not draw,
+[2503](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2503) the release note for the reverted hatch removed, [2504](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2504) portal renderers,
+[2505](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2505) campus names on a phone, [2508](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2508) the construction hatch, [2509](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2509) the
+Indoor Track test. 2504 and 2508 both edit `map.service.ts` and were only ever tested apart, so **all seven
+were merged into one branch and checked together**: one release-note conflict, full affected check exit 0.
+
 ### Security and vulnerability work has one owner, 23 October
 
 One Claude Code session, on one of the maintainer's machines, does all of the security and vulnerability
