@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 175.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 176.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,31 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 175 (gisday: #2538 - before and after screenshots of adding a second class section; a branch; 28 October 2026, about 12:40 PM Central, from `work (gisday)`)
+
+After the batch you are on. About 30 minutes. Questions go to `work (gisday)`.
+
+The fix for [#2538](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2538) (PR 2540) is merged and on
+production (`sha-97455f2`), and the maintainer confirmed it there. It went out without screenshots, at his choice, so they follow
+in a small pull request.
+
+1. Branch `docs/2538-class-sections-screenshots` from the latest `origin/development`.
+2. **Before**, on a throwaway stack as in batch 164, with the published API **`gisday-nest:sha-8102616`** and a site build of
+   `810261679`, signed in as the test admin, in Admin, Classes, season 2026: add GEOG 201, section 500, Breyer, "Introduction to
+   Human Geography"; then add the same with section **501**. Capture the toast ("Class was successfully created.") and the list,
+   which still shows only section 500: `before-second-section.png`.
+3. **After**, the same stack with the published **`gisday-nest:sha-97455f2`** and a site build of `97455f2f8`: add section 501:
+   the list shows both (`after-second-section.png`); then add an exact copy of section 500: the error toast says it is already in
+   this season and nothing is added (`after-duplicate.png`).
+4. Commit the three into `docs/screenshots/2538-class-sections/`, and link them from
+   `docs/releases/unreleased/2538-gisday-class-sections.md` (it has no images yet), as the other entries do.
+   `node scripts/collate-release-notes.mjs --check` must pass. Commit with `Refs #2538` (the issue is closed); push to the fork.
+5. Leave the local stack as you found it.
+
+Report as usual: branch, head, the three files. The director opens the pull request.
+
+---
 
 ## Batch 174 (aggiemap: #1134, make the builder-map check work on production; 28 October 2026, from `work (aggiemap)`)
 
