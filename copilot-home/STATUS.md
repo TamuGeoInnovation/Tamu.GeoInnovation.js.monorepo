@@ -17,7 +17,7 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Idle.
+- **Batch 31, gisday: #2497 eligibility dates** (started 7:57 PM Central, 27 October). About 25 minutes.
 
 ## Finished
 
