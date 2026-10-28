@@ -6,7 +6,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running.** Last batch done: 7.
+**Batch 8** (aggiemap: #2459, the construction hatch as a layer instead of a sprite; a prototype), started 10:10 PM Central, Tuesday 27 October 2026, from `work (aggiemap)`.
+Next update by 10:25 PM Central (progress every 15 minutes).
 
 ## Finished
 - **Batch 7** (gisday; report `home/reports/2026-10-27-7.md`): #2498. `chore/2498-check-memory-env` at `acfd556dc` on the fork; test red then green (18 ok); check exit 0.
