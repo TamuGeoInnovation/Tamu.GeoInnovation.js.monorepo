@@ -17,12 +17,13 @@ Last written **12:37 AM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-copilot-home: started - batch 38 (aggiemap: #2511, services that describe themselves inconsistently), 2:35 AM Central, 28 October 2026.
+Idle. Nothing queued after batch 38.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
 
+- **Batch 38, aggiemap: #2511 services that describe themselves inconsistently** (about 2:30 to 2:49 AM Central, 28 October): branch `test/2511-service-self-consistency` at `a95506a82e718f73892b99d220235db77ce4d626` on the fork (stacked on PR 2504's branch); new `service-metadata.spec.ts` (objectIdField, displayField, count query); #2510 is a tracked known failure; production reports exactly `baseballParkingUrl/2`, development clean; check exit 0. Report `copilot-home/reports/2026-10-28-38.md`.
 - **Batch 37, aggiemap: #2458 the right page (/all-maps/campus)** (12:23 AM to 12:37 AM Central, 28 October): branch `fix/2458-campus-name-spacing` at `125b14169f424ad05baf6df8acd7bcbd90495890` on the fork; name-to-next-picture 5 px to 21 px on a phone, desktop geometry identical; check exit 0; no test, with the reason. Report `copilot-home/reports/2026-10-28-37.md`.
 - **Batch 36, aggiemap: #2458 campus map name spacing on a phone** (12:05 AM to 12:18 AM Central, 28 October): branch `fix/2458-campus-name-spacing` at `d18d8dcaea400d916266aae749e800991d8e4818` on the fork; check exit 0; before/after screenshots at phone and desktop width (desktop identical to the pixel); no test, with the reason. The issue's diagnosis was slightly off (the 12 px is to the description, not the previous card). Report `copilot-home/reports/2026-10-28-36.md`.
 - **Batch 35, aggiemap: #2500 baseball portal renderers** (11:40 PM to about 1:00 AM Central, 27 to 28 October): branch `fix/2500-portal-renderer-fields` at `458864a3290f3e8893910953a3367cc73484de1e` on the fork; red (5 failed) then green; check exit 0; smoke spec on production 81 passed, fails on exactly the three baseball layers with the allow-list removed; development 81 passed. Report `copilot-home/reports/2026-10-27-35.md`.
@@ -76,4 +77,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 35
+Last batch done: 38
