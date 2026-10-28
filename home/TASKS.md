@@ -4,6 +4,75 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 11 (aggiemap: #2506, the two campus basemaps - two options, as pictures; 28 October 2026, 2:25 AM Central, from `work (aggiemap)`)
+
+**Batch 10 is PR 2508 and the outline reads perfectly.** Your three-way label picture was the right way to
+put that question - it turned a judgement call into a one-look decision, and this batch asks for the same
+thing again.
+
+**Decided, from batch 10's question:** the label goes to the maintainer as your three variants, with the
+director recommending **60% opacity** rather than as-built - it reads cleanly and changes only the opacity,
+not the density he chose, which was what your recommendation was protecting. Nothing for you to do unless
+he picks it.
+
+### The problem
+
+[#2506](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2506): **Fort Worth Law
+School and Houston Space Institute carry the same opaque pink construction tile, on production today.**
+Their basemaps are not gated by `isTesting`. Measured from the published sprite sheets:
+
+| Basemap | Construction fill layer | Sprite | Transparent pixels |
+| --- | --- | --- | --- |
+| `FWLaw` | `Construction/1` | 51 x 47 | **0 of 2397** |
+| `HSI` | `GIS.FCOR.HSI_Construction/1` | 44 x 40 | **0 of 1760** |
+
+Same pink, same opaque white ground, as College Station's. The other eight campus basemaps have no
+construction fill at all.
+
+### What to build: two options, photographed, not argued
+
+The maintainer decides this from pictures. Build both on one branch, behind nothing clever - whichever he
+picks, the other is deleted before the pull request.
+
+**Option A: hide the fill, draw nothing.** Add each basemap's construction fill layer to its
+`hiddenStyleLayers`. The building keeps the basemap's own outline and shows the ground beneath. Your
+`feat/2459-hide-only` already showed what this looks like on College Station.
+
+**Option B: replace the pattern with a translucent fill, in the basemap's own style.** `setPaintProperties`
+on the construction fill layer, swapping `fill-pattern` for a semi-transparent orange `fill-color`.
+
+**Option B is the one I most want to see, and it may be better than what we built for College Station.**
+Three reasons it is worth real attention rather than a token try:
+
+- **`setPaintProperties` is proven not to blank.** It was tested on dev earlier today and is a different
+  call from `setSpriteSource`, which is the one that races.
+- **It lives inside the basemap's own style**, so it draws *under* the outline, the labels and the trees -
+  no added layer, and therefore **none of the outline-breaking problem batch 10 had to solve.**
+- **It needs no feature source.** Each campus's construction features would otherwise have to be found
+  first, which is the expensive part of doing a hatch there.
+
+Its cost is that it is a flat wash rather than a hatch. For a satellite campus that may be entirely fine -
+but that is the maintainer's call, from a picture, not ours.
+
+### Prove it
+
+1. **One picture per option, per campus** - four in all - at a zoom where a construction building fills a
+   good part of the view, committed to `docs/screenshots/2506-campus-construction/`. Plus a **before** of
+   each campus as it is today, so there are six.
+2. **A side-by-side for each campus**, the way you built `label-1524-zoom18-variants.png`: before, A, B.
+   That image is the deliverable; the rest is supporting.
+3. For option B, try **two opacities** and say which you would ship.
+4. `scripts/check-in-volume.sh <branch> maps-esri,maps-feature-basemap,aggiemap-angular` - exit 0.
+5. **Do not open a pull request, and do not merge either option into the #2459 branch.** PR 2508 is open and
+   must not move under the maintainer while he is looking at it.
+
+### Watch for
+
+The two campuses are **on production**, so whatever ships here is publicly visible immediately - unlike
+#2459, which is development-only. Say in your report whether either option could look *worse* than the pink
+to someone who does not know what a construction site is. An outline on grass where a building should be is
+the risk with A, and it is worth naming rather than discovering.
+
 ## Batch 10 (aggiemap: #2459, the broken outline; 28 October 2026, 1:40 AM Central, from `work (aggiemap)`)
 
 **Your prototype is proven.** The lab measured `feat/2459-hatch-layer` at **0 of 45 blank** against a control
