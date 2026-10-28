@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 166.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 167.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,60 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 166 (aggiemap: #2487 why the sprite override blanks the map; 27 October 2026, about 10:10 PM Central, from `work (aggiemap)`)
+
+**Overnight, and the main thread of it.** The maintainer wants the construction symbology solved and all
+three machines on it; you have the measuring rig, so you get the root cause.
+
+### What is known, so nobody repeats it
+
+Measured by work-lab-leila tonight (report 148), 15 plain loads of `/map/d` per build, headless
+Chromium, "blank" meaning 100% pure white for 30 seconds:
+
+| Build | Blank loads |
+| --- | --- |
+| `18d81e87b`, today's shipped build | 4 of 15 |
+| plus `fix/2481-sprite-overrides-after-layerview` | **15 of 15** |
+| plus `fix/2477-gallery-base-layer` | 4 of 15 |
+| both | **15 of 15** |
+| `18d81e87b` **with the sprite override switched off** | **0 of 15** |
+
+So: **the hatch's sprite override is what blanks the map.** Applied after the layer view exists it blanks
+every load; applied at layer load, as it is today, about one in four. `fix/2477` has no effect on it.
+
+**The probe cannot see it.** It reports ready, every layer loaded and drawable, while the map is white.
+That is why nothing caught any of this, and it is why screenshots and pixel sampling are the only
+trustworthy evidence here.
+
+**It is development-only.** The vector tile basemap is not published for production, which still draws
+the raster basemap and never applies an override. Nothing here is a production emergency.
+
+### What is wanted
+
+**Why does `setSpriteSource` blank the map?** Not another attempt at the hatch - an explanation.
+
+Things worth trying, in rough order:
+
+1. **Narrow what blanks it.** Does the blanking need the patched canvas at all, or does calling
+   `setSpriteSource` with the service's *own, unmodified* sheet blank it too? That one experiment
+   separates "our image is wrong" from "the call is wrong".
+2. **Watch what the renderer does.** `read_network_requests` for tile requests after the call; whether
+   the layer view is recreated; whether WebGL throws. A layer that reports healthy and draws nothing is
+   usually a renderer-side failure, and Esri logs more at higher verbosity.
+3. **Is it a race?** One in four at load time and fifteen in fifteen after the layer view suggests timing.
+   If so, what exactly is it racing - the sprite upload against first paint?
+4. **Does `loadStyle` with a whole replacement style behave differently** from `setSpriteSource`? That is
+   the other documented route to a changed sprite and it may not share the fault.
+
+**Report an answer, not a patch.** If a safe approach falls out, say what it is and why you believe it,
+with the 15-load measurement to back it. If the answer is "this API cannot do it safely", that is just as
+useful and ends three attempts.
+
+### Don't
+
+Push anything to `development`, tag, or touch production.
+
 
 ## Batch 165 (aggiemap: the release tier on what actually shipped, production first; 27 October 2026, about 8:10 PM Central, from `work (aggiemap)`)
 

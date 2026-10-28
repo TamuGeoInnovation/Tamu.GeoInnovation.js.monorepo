@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 34.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 35.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -37,6 +37,62 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
+
+## Batch 34 (aggiemap: #2487 a check that fails when the map does not draw; 27 October 2026, about 10:10 PM Central, from `work (aggiemap)`)
+
+**Overnight.** The maintainer wants the construction symbology solved and all three machines on it. Yours
+is the part that stops this happening again.
+
+### What is known, so nobody repeats it
+
+Measured by work-lab-leila tonight (report 148), 15 plain loads of `/map/d` per build, headless
+Chromium, "blank" meaning 100% pure white for 30 seconds:
+
+| Build | Blank loads |
+| --- | --- |
+| `18d81e87b`, today's shipped build | 4 of 15 |
+| plus `fix/2481-sprite-overrides-after-layerview` | **15 of 15** |
+| plus `fix/2477-gallery-base-layer` | 4 of 15 |
+| both | **15 of 15** |
+| `18d81e87b` **with the sprite override switched off** | **0 of 15** |
+
+So: **the hatch's sprite override is what blanks the map.** Applied after the layer view exists it blanks
+every load; applied at layer load, as it is today, about one in four. `fix/2477` has no effect on it.
+
+**The probe cannot see it.** It reports ready, every layer loaded and drawable, while the map is white.
+That is why nothing caught any of this, and it is why screenshots and pixel sampling are the only
+trustworthy evidence here.
+
+**It is development-only.** The vector tile basemap is not published for production, which still draws
+the raster basemap and never applies an override. Nothing here is a production emergency.
+
+### What is wanted
+
+**A check that fails when the map does not draw.**
+
+Today a change that blanks the map passed unit tests, passed `check-in-volume.sh`, passed CI, and reached
+dev - twice. The smoke suite did not catch it either, because its probe reports the map ready while the
+canvas is white.
+
+Build the check the lab used into the suite:
+
+1. **Sample the rendered map**, as report 148 describes: a pixel sample of the map area, repeated for
+   some seconds; blank means essentially pure white throughout, a drawn map is 0 to 1% white.
+2. **Add it as a smoke spec** that loads `/map/d` plainly - no deep link, no nudging, because the bug only
+   shows on a plain load - and fails when the map does not draw.
+3. **Prove it red**: against a worktree with `fix/2481-sprite-overrides-after-layerview` merged in, it must
+   fail. Against `origin/development` it should pass - though note the shipped build blanks about 1 in 4,
+   so say what you see and whether the check needs several loads to be reliable rather than flaky.
+4. **Say what it costs** in wall-clock on the release tier.
+
+**Flakiness is the whole difficulty here.** A check that fails 1 in 4 runs for a real reason looks exactly
+like a flaky test, and the suite's retries may hide it. Say how you handled that; it matters more than the
+sampling code.
+
+### Don't
+
+Change `docs/testing.md` numbers (#2002), and do not touch `libs/maps`.
+
 
 ## Batch 33 (aggiemap: #2494 sort the campus maps list; 27 October 2026, about 8:05 PM Central, from `work (aggiemap)`)
 

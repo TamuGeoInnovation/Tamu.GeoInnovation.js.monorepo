@@ -4,6 +4,59 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 8 (aggiemap: #2459 the hatch as a layer instead of a sprite; 27 October 2026, about 10:10 PM Central, from `work (aggiemap)`)
+
+**Overnight.** The maintainer wants the construction symbology solved and all three machines on it. Yours
+is the alternative that does not touch sprites at all.
+
+### What is known, so nobody repeats it
+
+Measured by work-lab-leila tonight (report 148), 15 plain loads of `/map/d` per build, headless
+Chromium, "blank" meaning 100% pure white for 30 seconds:
+
+| Build | Blank loads |
+| --- | --- |
+| `18d81e87b`, today's shipped build | 4 of 15 |
+| plus `fix/2481-sprite-overrides-after-layerview` | **15 of 15** |
+| plus `fix/2477-gallery-base-layer` | 4 of 15 |
+| both | **15 of 15** |
+| `18d81e87b` **with the sprite override switched off** | **0 of 15** |
+
+So: **the hatch's sprite override is what blanks the map.** Applied after the layer view exists it blanks
+every load; applied at layer load, as it is today, about one in four. `fix/2477` has no effect on it.
+
+**The probe cannot see it.** It reports ready, every layer loaded and drawable, while the map is white.
+That is why nothing caught any of this, and it is why screenshots and pixel sampling are the only
+trustworthy evidence here.
+
+**It is development-only.** The vector tile basemap is not published for production, which still draws
+the raster basemap and never applies an override. Nothing here is a production emergency.
+
+### What is wanted
+
+**Draw the hatch as a layer instead of a sprite, and see whether it blanks anything.**
+
+#2459 listed this as option D and it was never tried. The under-construction buildings are queryable:
+`FCOR/TAMU_Basemap_20261008/MapServer/2`, `Type = 'CONSTRUCTION'`, which supports `Query`. A `FeatureLayer`
+with a `CIMSymbol` using `CIMHatchFill` draws a real hatch - rotation, spacing and colour as wanted - with
+no sprite sheet, no `setSpriteSource`, and nothing touching the basemap's own rendering.
+
+1. **Prototype it** on a branch: the layer, the CIM hatch in orange, drawn over the vector basemap, with
+   the basemap's own construction fill left exactly as published.
+2. **Measure it the same way the lab did** - 15 plain loads of `/map/d`, blank meaning 100% white for 30
+   seconds - so the number is comparable. If it blanks 0 of 15 and draws the hatch, that is the answer.
+3. **Say what it costs**: an extra service query on every map load, a production-server layer under a
+   development-only basemap, and whether the two datasets agree about which buildings are under
+   construction.
+
+A prototype that works is worth more tonight than a tidy one. If it blanks too, say so - that would mean
+the fault is not in sprites at all, which changes everything.
+
+### Don't
+
+Merge anything, or change the basemap definition's existing `spriteOverrides`.
+
+
 ## Note to the batch running now: progress every 15 minutes (27 October 2026, about 3:25 PM Central, from `work (aggiemap)`)
 
 **Applies to the batch you are running right now, from this minute.** `DIRECTOR.md` now asks every listener for
