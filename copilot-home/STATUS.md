@@ -17,10 +17,11 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Batch 33 (aggiemap: #2494 sort campus list), started 10:04 PM Central, 27 October.
+Idle.
 
 ## Finished
 
+- **Batch 33, aggiemap: #2494**: branch `fix/2494-sort-campus-list` at `af0c384705ad4cffbbe8e0bf4b5b63e30885db28` on the fork. Report `copilot-home/reports/2026-10-27-33.md`.
 - **Batch 32, gisday: #2497** (= the work reported as batch 31, renumbered): branch `fix/2497-gisday-eligibility-dates` at `b763e3ac210d7a190e9e5768b2300500e9c11544` on the fork. Report `copilot-home/reports/2026-10-27-32.md`.
 
 - **Batch 31, gisday: #2497 eligibility dates** (about 7:57 to 8:20 PM Central, 27 October): branch `fix/2497-gisday-eligibility-dates` at `b763e3ac210d7a190e9e5768b2300500e9c11544` on the fork, from `fix/2460-gisday-vgi-dates` because PR 2495 had not merged; red (1 failed) then green; check exit 0; before/after screenshots. Report `copilot-home/reports/2026-10-27-31.md`.
@@ -69,4 +70,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 32 (batch 6 reported later, out of order; 4 and 5 withdrawn)
+Last batch done: 33 (batch 6 reported later, out of order; 4 and 5 withdrawn)
