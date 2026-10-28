@@ -9,6 +9,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 **Batch 10** (aggiemap: #2459, the hatch breaks the building outline; draw our own outline above it), started 1:30 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
 Next update by 1:45 AM Central (progress every 15 minutes).
 
+Progress (1:42 AM): the outline is ours now: `.../0` hidden with the fill, a black 1 pt stroke as the symbol's first (topmost) layer. The 2x crop shows one continuous line where it was dashed. Tests red then green. Label at zoom 17/18 still readable, crossed; two alternatives shown in a picture, not applied. Committed; the check is running.
 ## Finished
 - **Batch 9** (aggiemap; report `home/reports/2026-10-28-9.md`): #2459 branch ready: `feat/2459-hatch-layer` at `f1aa31ca9` on the fork (#2506 caveat in the release note). Sprite override deleted; tests red then green; check exit 0; all eight buildings hatched; release note; density recommendation: ship as is.
 - **Batch 8** (aggiemap; report `home/reports/2026-10-27-8.md`): #2459. The no-sprite prototype, `feat/2459-hatch-layer` at `cb1ea9c8b` on the fork, draws 1524 with an orange grid over grass (picture on the branch). `feat/2459-hide-only` at `158d5c4fa` for measuring the hide alone. Nothing blanks on this machine (deployed dev 0 of 15 too), so the lab must measure both.
