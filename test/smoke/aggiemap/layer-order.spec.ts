@@ -59,9 +59,10 @@ const ORDERS = [
     above: 'muster-accessible-parking',
     below: 'muster-parking'
   },
-  // The road closures cross the lots' edges; below the lots, the lots' fill covers them (#2061).
+  // The road closures cross the lots' edges; below the lots, the lots' fill covers them (#2061). The map draws them
+  // only for a chosen day, so the route is the builder's link for one.
   {
-    route: '/events/graduation-spring/map/d',
+    route: '/events/graduation-spring/map/d?date=2026-05-06T05%3A00%3A00.000Z',
     above: 'graduation-road-closed',
     below: 'graduation-event-parking-lots'
   }
