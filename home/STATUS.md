@@ -6,7 +6,7 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-Nothing. Idle and listening.
+**Batch 18** (aggiemap: #2532, the campuses get the main map's hatch), started 10:33 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
 
 ## Finished
 - **Batch 17** (aggiemap; report `home/reports/2026-10-28-17.md`): #1961 branch ready: `fix/1961-restroom-building-number` at `0ccf5b7fd`. The named popup was unused since #418; the layer now opens it, reading BldgNum and hiding empty rows. Tests red then green; check exit 0. Filed #2529 (wrong building numbers in the service).
