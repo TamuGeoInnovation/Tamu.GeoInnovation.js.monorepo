@@ -6,12 +6,10 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 18** (aggiemap: #2532, the campuses get the main map's hatch), started 10:33 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
-Progress (10:51 AM Central): before pictures taken on today's development; tests red, then the change: one shared hatch symbol for all three campuses, the #2506 wash and its styleLayerPaint mechanism deleted, and a type fix so a CIM renderer needs no cast. Branch built; taking the after pictures.
-Progress (11:18 AM Central): after pictures taken. Two layer-order problems found in the browser and fixed: the construction drew under the tiles (an event map orders its layers by its layer-id enum, not the list), and pinning the tiles to the bottom hid their building labels. Now correct on 5 of 5 loads per campus. Release note and check next.
-Progress (11:20 AM Central): release note updated (the #2459 construction entry now covers both campuses, with pictures); pre-push check running on maps-esri, maps-feature-basemap, ts-events-ngx, aggiemap-angular and common-types.
+Nothing. Idle and listening.
 
 ## Finished
+- **Batch 18** (aggiemap; report `home/reports/2026-10-28-18.md`): #2532 branch ready: `feat/2532-campus-hatch` at `47eee6556`. One shared hatch symbol for all three campuses; the #2506 wash and styleLayerPaint deleted; layer order found in the browser (the first layer-id enum entry draws on top), checked on 5 of 5 loads each. Check exit 0. An early push went out before a failed check was read; fixed and re-pushed.
 - **Batch 17** (aggiemap; report `home/reports/2026-10-28-17.md`): #1961 branch ready: `fix/1961-restroom-building-number` at `0ccf5b7fd`. The named popup was unused since #418; the layer now opens it, reading BldgNum and hiding empty rows. Tests red then green; check exit 0. Filed #2529 (wrong building numbers in the service).
 - **Batch 16** (aggiemap; report `home/reports/2026-10-28-16.md`): decisions carried out (#1267 closing condition, #1034 closed and #2527 filed, #1005 Medium, #1204 Low). Last four looked at on dev: #163 closed; #71, #141 and #387 commented and left open. Nothing pushed.
 - **Batch 15** (aggiemap; report `home/reports/2026-10-28-15.md`): 13 issues triaged. Closed 5 with evidence (#967, #1006, #1027, #1036, #1202); 5 still wanted, commented (#954, #1005, #1034, #1204, #1267); 3 left for the maintainer (#959, #960, #962). Nothing pushed.
