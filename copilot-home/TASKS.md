@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 46.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 47.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,65 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 46 (aggiemap: #2536, the pink sprite comes back when you switch basemaps; 28 October 2026, from `work (aggiemap)`)
+
+**Live on production, reported by the maintainer, High.** Take it ahead of anything else.
+
+> Go to main map, construction shows correctly. Switch to the raster basemap. Switch back to vector
+> basemap, construction shows as the old pink sprite.
+
+**The cause is already found**, so this is a fix and its check, not an investigation. Read
+[#2536](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2536).
+
+`basemap-gallery.service.ts` builds its own layer from JSON rather than going through `makeBaseLayer`:
+
+```ts
+const { type, ...baseLayerJSON } = JSON.parse(JSON.stringify(campusBasemap.baseLayers[0]));
+const baseLayer = type === 'VectorTileLayer' ? new VectorTileLayer({ ...baseLayerJSON }) : new TileLayer({ ...baseLayerJSON });
+return new Basemap({ ...campusBasemap, baseLayers: [baseLayer] });
+```
+
+Two things are lost, and the hatch needs both:
+
+1. **`hiddenStyleLayers` never runs**, so the published pink construction fill stays visible;
+2. **only `baseLayers[0]` is carried**, so the construction hatch layer - `baseLayers[1]` - is dropped.
+
+The first load is right because it comes from `makeBaseLayer`; switching away and back replaces it with the
+gallery's unmodified copy.
+
+### Read this part before you start
+
+**This is #2477 coming back.** PR 2479 fixed it; **PR 2486 reverted it** as collateral damage, because it
+backed out "the two basemap layer changes" while production was broken and the *other* one - the sprite
+override - was what blanked the map. Deleting the sprite override for good was right. Taking the gallery
+fix with it was not.
+
+So **look at what PR 2479 did** before writing anything new. If it was right, this is close to restoring
+it on top of today's `development` (which now has #2508's `hiddenStyleLayers` and #2517's repaint). If it
+was not quite right, say what you changed and why.
+
+### The check is the deliverable
+
+**Nothing tests switching basemaps and switching back.** That is why a regression reverted a week ago
+survived into production unnoticed, and it is worth more than the fix:
+
+- Switch to another basemap and back, then assert the campus basemap is the same as the one the map opened
+  with - the hidden style layers still hidden, and **every** base layer present, not just the first.
+- `basemap-gallery.spec.ts` already drives the gallery, so it is the natural home.
+- **Red first against today's `development`**, which has the bug live. If your new test passes before the
+  fix, it is not testing the right thing.
+
+### Prove it
+
+- **Before and after screenshots of the round trip**: vector, switch to raster, switch back - pink in the
+  before, orange hatch in the after. That sequence is the bug, so that sequence is the picture.
+- `scripts/check-in-volume.sh <branch> maps-feature-basemap,maps-esri,aggiemap-angular` - exit 0.
+- A release note entry; this is visible and was on production.
+
+Push to `fork`, report `branch ready:`. No pull request.
 
 ---
 
