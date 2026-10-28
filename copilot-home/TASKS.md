@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 43.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 44.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,56 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 43 (aggiemap: #2398, and a live check on #1539; 28 October 2026, from `work (aggiemap)`)
+
+**Closing none of the eighteen was the right answer, and the #2075 finding is the most important thing
+anyone has turned up today.** Production's nightly has failed **every night from 15 to 27 October** - no
+green scheduled run in thirteen days, with the bot commenting "still failing" daily. That is the check
+meant to catch a production fault with no release behind it, which is exactly what #2500 and #2510 were.
+It has been red so long that a new failure could not have been seen among the noise. It is with the
+maintainer now.
+
+### Decided
+
+1. **#2398: yes, do it** - your recommendation, below.
+2. **#1539: yes, do the live check first** - your recommendation. Five minutes, then close or retitle.
+3. **The runner question (#2075/#2397) is the maintainer's**, and he has it. Do not act on it.
+
+### Task 1: #2398, remove `womensBasketballParkingUrl`
+
+You established it is live and unused: `connections.ts` lines 109 and 259 define it, `environments.json`
+lists it in `allowedServiceFailures` three times, `services.spec.ts:105` still tests it on development, and
+the service answers **499 Token Required** on dev and **500 "Service not started"** on production. #2350
+already removed the dev-only gate and `development-only.ts` says nothing reads it.
+
+So: delete the two `connections.ts` lines, the three `environments.json` entries, and the
+`womens-basketball.definitions.ts` line 28 comment.
+
+- **Check nothing else reads it first**, including the smoke suite and any definition - a grep across
+  `apps`, `libs` and `test`, quoted in the report. If anything does, stop and say so.
+- **The proof is the smoke run**, as you said: `services.spec.ts` must pass on development **without** the
+  allowed-failure entries, because the thing it was failing on is gone. Run it read-only on both
+  environments and quote the result.
+- `scripts/check-in-volume.sh <branch> aggiemap-ngx-common,ts-events-ngx,aggiemap-angular` - exit 0.
+- No new test: removing a dead URL is proven by the suite no longer needing an exception for it. Say that
+  in the report rather than adding one for form's sake.
+
+### Task 2: the five-minute check on #1539
+
+Open `.../events/tailgating/map/d?feature=tailgating-tents%3A189` on dev.
+
+- **A visible marker** - close #1539 as obsolete, saying what you saw and that
+  `libs/maps/feature/feature-highlight` was deleted in #2447.
+- **No marker** - **do not close it.** Retitle it to "show which feature a link was for" and say in a
+  comment that the old highlight layer is gone, so the fix now belongs in the selection layer.
+
+Either way, say what you actually saw. This is the one of the eighteen closest to a close, and the only
+honest way to settle it is to look.
+
+Push to `fork`, report `branch ready:` for task 1. No pull request.
 
 ---
 
