@@ -4,6 +4,60 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 10 (aggiemap: #2459, the broken outline; 28 October 2026, 1:40 AM Central, from `work (aggiemap)`)
+
+**Your prototype is proven.** The lab measured `feat/2459-hatch-layer` at **0 of 45 blank** against a control
+of **9 of 60** in the same interleaved session (report 151). At the control's rate, 45 clean loads in a row
+happen about 0.07% of the time, so that is a real result, not a quiet machine. The approach ships.
+
+One defect has to be fixed first, and the lab's 2x crop (`work-lab-leila/reports/2026-10-28-151/zoom-home-aplin.png`)
+shows it plainly.
+
+### The hatch draws over the building outline, and the outline reads as dashed
+
+Our hatch is a layer above the whole basemap, so wherever an orange line crosses the black outline it
+breaks it. Up close the building edge looks like a dashed line rather than a solid one. The grid also
+crosses the building's label (*1524*, *1526*) and the trees inside the footprint. **The published sprite
+did not have this problem**, because it lived inside the basemap's own style and drew beneath the outline
+and the labels.
+
+**You cannot fix this by reordering.** A vector tile basemap is one layer: anything we add draws either
+entirely above it or entirely below it, and below means the basemap's own ground fill covers us. Above is
+forced. So the outline has to become *ours*.
+
+### What to do
+
+1. **Hide the basemap's construction outline too** - `Campus Structures/Currently Under Construction/0`,
+   the `line` layer at `#000000`, alongside the fill you already hide. Your `hiddenStyleLayers` list takes
+   it without a code change.
+2. **Draw the outline in our own symbol, above the hatch.** The `CIMPolygonSymbol` takes a stroke as well
+   as its two `CIMHatchFill`s; ordered after them it draws a solid black edge over the grid, which is what
+   the sprite achieved by being underneath. Match the basemap's line: `#000000`, 1.33 px.
+3. **Then look at the label.** With the outline solid, judge whether *1524* still reads under the grid at
+   zoom 17 and 18. If it does, leave it - a construction site with a hatch over its number is not wrong. If
+   it does not, say so and propose something (thinner strokes, or partial transparency on the hatch); do
+   not guess at a value without showing it.
+4. Trees inside the footprint being crossed is **fine**. It is a building site, and arguing it either way
+   without the maintainer is not worth a cycle.
+
+### Prove it
+
+- **A 2x crop of 1524 matching the lab's**, committed beside your other pictures, so the two can be put
+  side by side. The outline must read as one continuous line.
+- Zoom 17 and 18 again if the label work changes anything.
+- `scripts/check-in-volume.sh <branch> maps-esri,maps-feature-basemap,aggiemap-angular` - exit 0.
+- Keep everything from batch 9: the deleted sprite override, the tests, the release note with its #2506
+  caveat.
+
+### One more thing, and it is not optional
+
+**The lab measured `337047b1e`; your branch is now `f1aa31ca9`.** Deleting the sprite override can only
+make blanking less likely, so I am not asking for the full 45 again - but **say in your report which commit
+the 0 of 45 was taken on**, and do not let the pull request imply the final commit was the one measured.
+The lab will take one confirming block on the final commit.
+
+Push to `fork`, report `branch ready:` with the commit. The director opens the pull request.
+
 ## Batch 9 (aggiemap: #2459, make the no-sprite hatch shippable, and show it at real zooms; 27 October 2026, 11:50 PM Central, from `work (aggiemap)`)
 
 **Your prototype is the answer and it is going to ship.** The maintainer has seen `prototype-1524` and
