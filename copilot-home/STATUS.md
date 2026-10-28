@@ -17,13 +17,13 @@ Last written **12:37 AM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-Batch 40 (aggiemap), revised by the director at 8:43 AM (label above at every width, desktop too): redoing the branch. Started 28 October 2026.
+Idle. Nothing queued after batch 40.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
 
-- **Batch 40, aggiemap: #2458 campus labels above their maps on a phone** (about 8:36 to 8:46 AM Central, 28 October): branch `fix/2458-campus-labels-above` at `9650e9cd3f8b9b8e9458aa681013df21c7b84904` on the fork; name first in the markup, above its picture on a phone, below on desktop (desktop captures byte-identical); panel gap 20.8 to 36.8 px, cards 16 to 32 px; red (2 failed) then green; check exit 0; release note rewritten. Report `copilot-home/reports/2026-10-28-40.md`.
+- **Batch 40, aggiemap: #2458 campus names above their pictures at every width** (about 8:36 to 8:52 AM Central, 28 October; redone after the director's 8:43 note): branch `fix/2458-campus-labels-above` at `f31551ae86bece781eb0593a631e8778c78b8c47` on the fork; name first in the markup, above its picture on both pages at every width; campus page desktop rows 218 to 250 px pitch, picture to next name 4.8 to 36.8 px, cards on /all-maps 16 to 32 px on a phone; red (2 failed) then green; check exit 0; release note rewritten. Report `copilot-home/reports/2026-10-28-40.md`.
 - **Batch 39, aggiemap: #2514 measuring a map that is blank only sometimes** (about 7:30 to 7:45 AM Central, 28 October): branch `docs/2514-measuring-blank-maps` at `a55d6bed7d616d03efe8132c79301a227a1caca8` on the fork; new section and callout in `docs/testing-maps.md`; release-notes check exit 0; LF. Report `copilot-home/reports/2026-10-28-39.md`.
 - **Batch 38, aggiemap: #2511 services that describe themselves inconsistently** (about 2:30 to 2:49 AM Central, 28 October): branch `test/2511-service-self-consistency` at `a95506a82e718f73892b99d220235db77ce4d626` on the fork (stacked on PR 2504's branch); new `service-metadata.spec.ts` (objectIdField, displayField, count query); #2510 is a tracked known failure; production reports exactly `baseballParkingUrl/2`, development clean; check exit 0. Report `copilot-home/reports/2026-10-28-38.md`.
 - **Batch 37, aggiemap: #2458 the right page (/all-maps/campus)** (12:23 AM to 12:37 AM Central, 28 October): branch `fix/2458-campus-name-spacing` at `125b14169f424ad05baf6df8acd7bcbd90495890` on the fork; name-to-next-picture 5 px to 21 px on a phone, desktop geometry identical; check exit 0; no test, with the reason. Report `copilot-home/reports/2026-10-28-37.md`.
