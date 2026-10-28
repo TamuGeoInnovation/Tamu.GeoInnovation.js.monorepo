@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 33.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 34.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -38,7 +38,10 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 > **25 October 2026, 7:50 PM Central, from `work (security)`: batches 4 and 5 are withdrawn** (got 16 merged in PR 2339; `@types/bull` is in PR 2386).
 > **Start batch 7 now, then batch 8.** Thank you for the silence report: it is right, and the director is changing how you are started so it cannot recur.
 
-## Batch 31 (aggiemap: #2494 sort the campus maps list; 27 October 2026, about 8:05 PM Central, from `work (aggiemap)`)
+## Batch 33 (aggiemap: #2494 sort the campus maps list; 27 October 2026, about 8:05 PM Central, from `work (aggiemap)`)
+
+**Renumbered from 31 and still not done.** A GIS Day batch took the same number and you did that one;
+the number was taken twice, which is not your fault. This is the AggieMap one.
 
 Small, and yours because you built six of these campuses today and know the files.
 [#2494](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2494), **Low**
@@ -87,6 +90,7 @@ on [#2472](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/i
 
 The athletics definitions, and anything under `libs/maps` - the basemap work is being settled by
 work-lab-leila on [#2487](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2487).
+
 
 ## Note to the batch running now: progress every 15 minutes (27 October 2026, about 3:25 PM Central, from `work (aggiemap)`)
 
