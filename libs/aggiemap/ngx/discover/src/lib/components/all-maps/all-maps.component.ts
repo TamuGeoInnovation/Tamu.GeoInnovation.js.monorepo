@@ -14,7 +14,7 @@ import {
 } from '../../interfaces/discover-application.interface';
 import { DiscoveryService, FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/common';
-import { getApplicationRoute, getNextEventDate } from '../discover.utils';
+import { getApplicationRoute, getNextEventDate, sortApplicationsByName } from '../discover.utils';
 import { QuickLinkItem, QuickLinksComponent } from '../quick-links/quick-links.component';
 import { VisitMapsNavComponent } from '../visit-maps-nav/visit-maps-nav.component';
 import { AutocompleteComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -138,9 +138,9 @@ export class AllMapsComponent implements OnInit {
     // #2438). The unfiltered list is used because this page is the campuses' only listing, so the
     // gate is applied here against `isTesting` rather than by taking the visible-filtered list, which
     // would hide them on development too.
-    this.campusApplications = this.internalApplications
-      .filter((app) => app.type === 'satellite-campus')
-      .map((app) => ({ ...app, url: `${window.location.origin}${getApplicationRoute(app).join('/')}` }));
+    this.campusApplications = sortApplicationsByName(
+      this.internalApplications.filter((app) => app.type === 'satellite-campus')
+    ).map((app) => ({ ...app, url: `${window.location.origin}${getApplicationRoute(app).join('/')}` }));
     this.visibleCampusApplications = this.isDev.pipe(
       map((isDev) => this.campusApplications.filter((app) => isDev || app.visible !== false)),
       shareReplay(1)
