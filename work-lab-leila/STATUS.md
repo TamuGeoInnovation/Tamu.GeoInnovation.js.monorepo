@@ -32,6 +32,8 @@ Last written **2:40 PM Central, 27 October 2026**. A listener; job: testing.
 
 **Batch 173, aggiemap: the release tier on `a8898934a`, the vector-default build**, started 8:40 AM Central, 28 October. **Waiting for dev to serve it:** at 8:40 AM dev still serves this morning's `main-BR3XGVVT.js` (none of #2517's code), and Azure's `Monorepo` build for `a8898934a` is running. A watcher checks the deployed bundle every 2 minutes and starts the release tier the moment #2517's fill colour appears. Then the Fort Worth Law and Houston Space Institute pictures. Progress every 15 minutes.
 
+Progress (10:47 AM): dev served `a8898934a` (`main-ASZ473D2.js`, with #2517's fill colour) from about 9:38 AM. **Release tier on development: 910 passed, 3 failed, 9 flaky, 84 skipped, 1 h 6 min.** The 3 are the known dev-only ones (Women's Basketball's old URL, 3D globe, `bldg=0468` popup). Framing 63 passed, 0 failed; the view-limit test passed; `development-only` 11 of 11; `service-metadata` 84 passed, AVP flaky once. Fort Worth Law and Houston Space Institute photographed on deployed dev: orange at 25%, no pink. **Dev already drew the vector basemap, so this run can't show #2518's production framing change.** Now running `framing.spec.ts` against a production-shaped local build of `a8898934a`.
+
 Progress (10:40 AM): release tier on development at a8898934a running; 1024 test attempts finished, 21 of them failed (retries included).
 
 Progress (10:25 AM): release tier on development at a8898934a running; 1023 test attempts finished, 20 of them failed (retries included).
