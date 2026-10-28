@@ -113,10 +113,12 @@
               leaving an empty area above a text link (#1245). The copy field stays: these maps are
               left out of the map search, so a copied URL is how one gets passed on. -->
         <a class="campus-tile map-entry--pictured" [routerLink]="getApplicationRoute(app)" [attr.aria-label]="'Open the ' + app.name + ' map'">
+          <!-- Name first, above its picture at every width: it is what is being chosen, so it is read and
+                seen first (#2458). -->
+          <span class="campus-tile-label">{{ app.name }}</span>
           @if (app.thumbnail) {
           <img class="map-entry-thumbnail" [src]="app.thumbnail" [alt]="app.name + ' campus map'" loading="lazy" />
           }
-          <span class="campus-tile-label">{{ app.name }}</span>
         </a>
         <div class="application-card-content">
           @if (app.description) {

@@ -153,7 +153,11 @@
 // `visit-maps-tile` pattern, now in `VisitMapsNavComponent`, is a 6rem column around a square icon
 // and does not stretch to a landscape screenshot, so this extends the card instead of fighting that.
 .campus-tile {
-  display: block;
+  display: flex;
+  // The name is first in the markup and shown above its picture at every width (#2458).
+  flex-direction: column;
+  // The shared pictured-entry rule's gap would add to the label's own margin.
+  gap: 0;
   text-decoration: none;
   color: #500000;
   margin: -0.25rem 0 0.75rem;
@@ -161,18 +165,21 @@
 
 .campus-tile-label {
   display: block;
-  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   font-weight: 600;
   line-height: 1.2;
 }
 
-// Stacked in one column, a name has to read as belonging to its own picture above it and not to the
-// description below it. Both gaps were close (0.5rem above, 0.75rem below), so the space under the
-// tile takes the `trailer-1` step (1rem) and the 0.5rem above is left as it is. The utility classes
-// cannot be limited to a breakpoint, and the multi-column desktop grid is not to move, so the step
-// is written here, after the base rule it overrides.
+// On a phone the cards stack in one column, so the space between them is given the `trailer-2` step
+// (2rem), well over the 0.5rem between a name and its own picture, and the space under the picture
+// the `trailer-1` step (1rem). The utility classes cannot be limited to a breakpoint, so the values
+// are written here, after the base rules they override.
 @media (max-width: 768px) {
   .campus-tile {
     margin-bottom: 1rem;
+  }
+
+  .campus-maps-section .applications-list {
+    gap: 2rem;
   }
 }

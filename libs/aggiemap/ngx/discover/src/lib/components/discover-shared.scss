@@ -408,6 +408,7 @@
  */
 .map-entry--pictured {
   display: flex;
+  // The name is first in the markup and shown above its picture at every width (#2458).
   flex-direction: column;
   align-items: stretch;
   gap: 0.5rem;
@@ -419,16 +420,11 @@
   }
 }
 
-// A pictured entry in a listing (the Campus Maps page) is picture, then name, then the next entry's
-// picture with only the `.map-entry` padding between them: about 5px below a name against the 8px
-// above it, so on a phone, where the entries stack in one column, a name sat closer to the next
-// map's picture than to its own. 1rem below puts the gap at twice the gap above, so each name reads
-// with the picture over it. The 1rem is the `trailer-1` step; a utility class cannot be limited to a
-// breakpoint, so the value is written here. Scoped to entries inside a list item, so a glyph entry
-// (the one-line rows on the parking lists) and the All Maps cards, which have their own spacing,
-// are unchanged; the multi-column layout above 768px is not touched.
-@media (max-width: 768px) {
-  .map-entry-item > .map-entry--pictured {
-    margin-bottom: 1rem;
-  }
+// The entries of a listing (the Campus Maps page) stack one under another, and a name has to read as
+// belonging to the picture beneath it, not to the one above. The name is 0.5rem over its own picture,
+// and the space under each entry is `trailer-2` (2rem, about 34px with the link's padding), so the
+// entries read as separate panels. Scoped to entries inside a list item, so a glyph entry (the one-line
+// rows on the parking lists) and the All Maps cards, which have their own rules, are unchanged.
+.map-entry-item > .map-entry--pictured {
+  margin-bottom: 2rem;
 }
