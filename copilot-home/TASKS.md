@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 48.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 49.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,50 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 48 (aggiemap: #2034, a linked feature showing its template text; 28 October 2026, from `work (aggiemap)`)
+
+**Batch 47 is the right kind of answer.** You reproduced before fixing, found nothing to fix, **did not
+close it yourself**, and answered the question the issue actually posed - *panel ownership, not pointer
+events*: the tab changed the route **under** the popup, so the URL said `/settings` while the details
+stayed in front. You also found it was #1806 all along, fixed by PR 1813, and that the issue's file paths
+were stale, which is probably why it read as unfixed.
+
+**I have closed #1540** with your evidence, including the two things you did **not** test - the locate
+button and an events-map popup - rather than letting the close imply more than you checked.
+
+### The task
+
+[#2034](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2034): *a feature opened
+from a link shows its popup template text instead of its data* - literally `{attributes.sp_sh_notes}` on
+screen.
+
+Your own triage said: *"`selection-layer` still has `popupComponent: BUILDINGS.popupComponent` in
+`main.definitions.ts` line 385; no commit mentions #2034. I did not load the URL."*
+
+**So load the URL first.** Same discipline as batch 47:
+
+1. **Reproduce on a current build** - the issue has the URL. If it does not reproduce, **say so and stop**;
+   I will take the close.
+2. If it does: the shape is that a feature opened by link is drawn by the **selection layer**, which
+   carries the *buildings* popup component rather than the one belonging to the layer the feature came
+   from. So a tent, a lot or a stop gets the buildings template and its placeholders never resolve.
+3. **The fix is to carry the source layer's popup through the selection**, not to special-case the symptom.
+   If that turns out to be harder than it sounds, say what is in the way rather than papering over it with
+   a template guard.
+
+### Watch for
+
+- **This is the fifth popup issue this week and four were not what they looked like** - #657 (no geometry),
+  #1961 (a component unused since #418), #2536 (a round trip, and the existing test was blind to it),
+  #1540 (already fixed, stale paths). **Check what is actually drawn before concluding anything.**
+- A test, red first, that a feature opened by link shows its own layer's popup.
+- Before and after screenshots: the template text on screen is exactly the sort of thing a picture settles.
+- `scripts/check-in-volume.sh <branch> ts-events-ngx,aggiemap-ngx-popups,aggiemap-angular` - exit 0.
+
+Push to `fork`, report `branch ready:`. **If it does not reproduce, report that and close nothing.**
 
 ---
 
