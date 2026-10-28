@@ -93,7 +93,7 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
   { paths: /^libs\/aggiemap\/ngx\/core\/src\/lib\/pages\/map\//, specs: ['isolation.spec.ts', 'directions.spec.ts'] },
   {
     paths: /^libs\/aggiemap\/ngx\/common\/src\/lib\/connections\.ts$/,
-    specs: ['portal-renderers.spec.ts']
+    specs: ['portal-renderers.spec.ts', 'service-metadata.spec.ts']
   },
   { paths: /^libs\/maps\/esri\/src\/lib\/services\/map\/portal-symbology\.ts$/, specs: ['portal-renderers.spec.ts'] },
   { paths: /^libs\/ts\/events\/ngx\/src\/lib\/modules\/map\//, specs: ['isolation.spec.ts'] },
