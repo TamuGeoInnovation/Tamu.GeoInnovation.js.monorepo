@@ -32,6 +32,8 @@ Last written **2:40 PM Central, 27 October 2026**. A listener; job: testing.
 
 **Batch 173, aggiemap: the release tier on `a8898934a`, the vector-default build**, started 8:40 AM Central, 28 October. **Waiting for dev to serve it:** at 8:40 AM dev still serves this morning's `main-BR3XGVVT.js` (none of #2517's code), and Azure's `Monorepo` build for `a8898934a` is running. A watcher checks the deployed bundle every 2 minutes and starts the release tier the moment #2517's fill colour appears. Then the Fort Worth Law and Houston Space Institute pictures. Progress every 15 minutes.
 
+Progress (10:25 AM): release tier on development at a8898934a running; 1023 test attempts finished, 20 of them failed (retries included).
+
 Progress (10:10 AM): release tier on development at a8898934a running; 1022 test attempts finished, 19 of them failed (retries included).
 
 Progress (9:55 AM): release tier on development at a8898934a running; 700 test attempts finished, 9 of them failed (retries included).
