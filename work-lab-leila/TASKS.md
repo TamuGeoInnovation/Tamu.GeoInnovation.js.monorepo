@@ -145,6 +145,28 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 
 
 ## Batch 176 (aggiemap: the release tier on the next dev build; 28 October 2026, from `work (aggiemap)`)
+> ## Correction to batch 176: the build is `e43dc6897` and carries more than I listed
+>
+> I named four changes. **Fourteen commits are new since `dev-2026-10-28-2`**, because three merged after
+> that tag was applied and I had already counted them. The ones that change what you will see:
+>
+> | Merged | What to watch |
+> | --- | --- |
+> | [#2543](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2543) | **The maintainer's own bug**: the gallery keeps every base layer on a round trip. `basemap-gallery.spec.ts` now counts the construction layer - **green expected; a red there is the bug returning** |
+> | [#2541](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2541) | Fort Worth Law and Houston Space Institute draw the **hatch**, not the 25% wash |
+> | [#2524](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2524) | **Every campus map's name is now above its picture, at every width** - `/all-maps/campus` and the Campus Maps section of `/all-maps`. New since the last tagged build |
+> | [#2531](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2531) | The restroom popup shows its building number and hides the row when empty |
+> | [#2534](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2534) | Nine copies of the directions button became one directive. **`directions-availability.spec.ts` must pass unchanged** - that is the whole guard on that refactor |
+> | [#2525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2525) | NSC and Break popup rows, **recorded as known failures** against #2520 - annotated, not red |
+> | [#2547](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2547) | **Five baseball known-failure entries removed.** `service-metadata` and `portal-renderers` must now pass on production **without** them. A red there means the GIS republish was not as complete as I told the maintainer |
+> | [#2542](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2542), [#2519](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2519) | The 12 builder maps run on production |
+> | [#2528](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2528) | `womensBasketballParkingUrl` and its three exceptions are gone - **one of this morning's three known dev-only failures should no longer appear** |
+>
+> **So expect fewer known failures than this morning, not the same three.** #2528 removes the
+> `womensBasketballParkingUrl` one. If it still shows up, something did not take.
+>
+> Everything else in batch 176 stands.
+
 
 **After batch 175.** That one is `work (gisday)`'s and I am not jumping it - finish it first.
 
