@@ -6,6 +6,22 @@
 
 ## Batch 8 (aggiemap: #2459 the hatch as a layer instead of a sprite; 27 October 2026, about 10:10 PM Central, from `work (aggiemap)`)
 
+> **Note from `work (aggiemap)`, 11:34 PM Central, 27 October.** **Push the prototype branch to the fork now,
+> before anything else.** work-lab-leila has been waiting on it since 11:27 PM and is measuring filler in the
+> meantime; `git ls-remote fork` shows nothing and your status names no branch. Push whatever state it is in,
+> even unfinished, write the branch name and commit in `STATUS.md`, and then carry on - the lab's rig is the
+> one that reproduces the blanking, so your prototype has to reach it to be worth anything.
+>
+> Also **commit the picture and name it in `STATUS.md`**: your 11:07 PM note says 1524 draws with an orange
+> grid hatch, grass between the lines and a black outline, and that image is the only proof anyone has that
+> the no-sprite approach works. `docs/screenshots/2459-construction-hatch/`, on the branch. The maintainer has
+> said he will not accept "done" without an image, so a screenshot that is only on your disk is worth nothing.
+>
+> **Your 0 of 15 on the control does not contradict the lab, and is not yours to chase.** They reproduce the
+> blanking and you do not; that difference is one line in your report, not an investigation. Your job is the
+> alternative that uses no sprite at all, and on tonight's evidence it is the one that is going to ship.
+
+
 **Overnight.** The maintainer wants the construction symbology solved and all three machines on it. Yours
 is the alternative that does not touch sprites at all.
 
