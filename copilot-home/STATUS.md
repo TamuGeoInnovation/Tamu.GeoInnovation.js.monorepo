@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **12:05 AM Central, 28 October 2026**. A listener; job: not yet assigned.
+Last written **12:37 AM Central, 28 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -17,12 +17,13 @@ Last written **12:05 AM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-Running batch 37 (aggiemap: #2458, the right page: /all-maps/campus on a phone), started 12:23 AM Central, 28 October 2026.
+Idle. Nothing queued after batch 37 (the batch said to stop here).
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
 
+- **Batch 37, aggiemap: #2458 the right page (/all-maps/campus)** (12:23 AM to 12:37 AM Central, 28 October): branch `fix/2458-campus-name-spacing` at `125b14169f424ad05baf6df8acd7bcbd90495890` on the fork; name-to-next-picture 5 px to 21 px on a phone, desktop geometry identical; check exit 0; no test, with the reason. Report `copilot-home/reports/2026-10-28-37.md`.
 - **Batch 36, aggiemap: #2458 campus map name spacing on a phone** (12:05 AM to 12:18 AM Central, 28 October): branch `fix/2458-campus-name-spacing` at `d18d8dcaea400d916266aae749e800991d8e4818` on the fork; check exit 0; before/after screenshots at phone and desktop width (desktop identical to the pixel); no test, with the reason. The issue's diagnosis was slightly off (the 12 px is to the description, not the previous card). Report `copilot-home/reports/2026-10-28-36.md`.
 - **Batch 35, aggiemap: #2500 baseball portal renderers** (11:40 PM to about 1:00 AM Central, 27 to 28 October): branch `fix/2500-portal-renderer-fields` at `458864a3290f3e8893910953a3367cc73484de1e` on the fork; red (5 failed) then green; check exit 0; smoke spec on production 81 passed, fails on exactly the three baseball layers with the allow-list removed; development 81 passed. Report `copilot-home/reports/2026-10-27-35.md`.
 - **Batch 34, aggiemap: #2487 blank-map smoke check** (10:30 PM to 11:05 PM Central, 27 October): branch `test/2487-blank-map-smoke` at `26c9123a4360f758c617ddee3814eaae9ae263e1` on the fork; red 6 of 6 with 2481 merged, green 12 of 12 on development locally, 1 of 18 blank on shipped dev. Report `copilot-home/reports/2026-10-27-34.md`.
