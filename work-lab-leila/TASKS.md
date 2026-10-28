@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 164.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 165.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,47 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 164 (gisday: the release check for `sha-8102616`, with this release's database migration; read only against production; 27 October 2026, about 8:25 PM Central, from `work (gisday)`)
+
+**After batch 163, before anything else for GIS Day.** About 35 minutes. Your batch 161 cleared `sha-4e60f38`. Five more pull
+requests merged after it, so production gets **`gisday-nest:sha-8102616`** and **`gisday-angular:sha-8102616`** instead (merge
+`810261679`; the publish run was still going at 8:25 PM, so check `docker manifest inspect` first):
+
+- **PR 2481 (#2474): the VGI scoring window. It has this release's one migration**, `AddCompetitionScoringWindow1793130952432`: two
+  nullable `datetimeoffset` columns on `vgi_seasons`, `scoringOpensAt` and `scoringClosesAt`, plus Designer fields to set them.
+- PR 2482 (#2166): the competition map shows where things were already found last season (`GET .../seasons/active/already-found`).
+- PR 2484 (#1792): the public VGI map and a participant's own submission no longer carry the reviewer's id.
+- PR 2434 (#2433): publishing VGI submissions to ArcGIS Online. **Off without its `VGI_ARCGIS_` settings; leave them unset.**
+- PR 2495 (#2460): the VGI and Monument Trail pages give 14-20 November and the Friday 11:00 AM cutoff.
+
+### What to do
+
+1. A throwaway stack as in batch 161, but **migrated by `810261679`'s own code**: `migrate show` must list
+   `AddCompetitionScoringWindow1793130952432` as pending; `migrate run`; `migrate show` again (applied). Then
+   `migrate revert` and `migrate run` once more, to prove `down` works. Say what each printed.
+2. **The old API on the new schema:** start the published `gisday-nest:sha-4e60f38` on that migrated database and load the competition
+   pages and the VGI leaderboard: they must answer 200. This is what production runs between the migration and the new API.
+3. The published **`gisday-nest:sha-8102616`** and a local site build of `810261679` on 4201. `gisday-release-check.cjs` and
+   `gisday-release-check2.cjs`: every line PASS.
+4. **What this release adds:**
+   - **#2474:** in Admin, Competitions, Designer, set scoring to open 14 November 2026 00:00 and close 20 November 2026 11:00 (US
+     Central) and save; reload: both kept, and the API stores them with the -06:00 offset (say what `vgi_seasons` holds). A close
+     before the open is refused with a 400. Clear them again afterwards.
+   - **#2166:** `GET .../seasons/active/already-found` answers 200 (a list, possibly empty on the seed; `?format=geojson` a
+     FeatureCollection), with no user or submission ids in it.
+   - **#1792:** a submission read as its owner (or the public map's JSON) has no `verifiedBy`.
+   - **#2433:** with no `VGI_ARCGIS_` settings, **Publish to ArcGIS** says publishing is not set up, and the API log shows no call to
+     arcgis.com.
+   - **#2460:** `/competitions/vgi` and `/competitions/monuments` say November 14 and Friday, November 20, and not November 9 or 19.
+5. `docker logs` of both APIs: count of `ERROR` lines; quote anything new.
+
+### Then
+
+Report with every PASS or FAIL line and the results above. Push `STATUS.md` when you start and finish. Nothing on GitHub, nothing
+against production.
+
+---
 
 ## Batch 163 (aggiemap: the release tier on the shipped build, and what actually blanks the map; 27 October 2026, about 6:15 PM Central, from `work (aggiemap)`)
 
