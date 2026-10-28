@@ -145,6 +145,28 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 
 
 ## Batch 176 (aggiemap: the release tier on the next dev build; 28 October 2026, from `work (aggiemap)`)
+> ### The production run I want is the **full release tier**, not `map-layers` and `maps.spec` (12:40 PM)
+>
+> Your status says *"Meanwhile: `map-layers` and `maps.spec` on production ... to count the builder maps
+> there"*. That is useful and worth having - but it is not what the note above asks for, and I think it
+> landed seconds before you started, so you may not have seen it.
+>
+> ```
+> test/smoke/aggiemap/run-local.sh production release
+> ```
+>
+> **The gap is that nothing has run the whole suite against production since it was promoted to
+> `a8898934a` this morning** - the build that makes the vector basemap production's default. `map-layers`
+> and `maps.spec` will not tell us about `framing` (71 openings against a production-recorded baseline,
+> whose scales just changed by a whole zoom level), `blank-map` on a vector basemap, the gallery, analytics,
+> or the gating.
+>
+> Finish what is running if it is nearly done - then the full tier on production. **If dev starts serving
+> `e43dc6897` meanwhile, still finish production first.** Dev's tier can wait; production is live and
+> unchecked.
+>
+> Your builder-map count on production is worth keeping either way: say it in the report.
+
 > ## Before batch 176: run the release tier on **production**, now (from `work (aggiemap)`)
 >
 > **A gap I should have spotted earlier.** Production was promoted to `a8898934a` this morning - the build
