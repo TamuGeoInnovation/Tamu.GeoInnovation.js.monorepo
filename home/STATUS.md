@@ -9,6 +9,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 **Batch 9** (aggiemap: #2459, make the no-sprite hatch shippable; density at zooms 15-18 first), started 11:45 PM Central, Tuesday 27 October 2026, from `work (aggiemap)`.
 Next update by midnight Central (progress every 15 minutes).
 
+Progress (11:46 PM): **task 1 pushed: the density at zoom 15-18**, `feat/2459-hatch-layer` at `a00226a1e`, `docs/screenshots/2459-construction-hatch/prototype-1524-zoom15.png` ... `zoom18.png` and the same for 8711 (zooms set by their Web Mercator scales, 1:18,056 to 1:2,257, because the basemap is State Plane). The hatch's spacing is in screen points, so the grid is 16 px apart at every zoom and never closes into a wash. At 15 a building shows a few orange lines inside its outline; 16-18 read as a clear open grid. Recommendation: ship this density as it is; no scale-dependent symbol is needed. Starting task 2.
 ## Finished
 - **Batch 8** (aggiemap; report `home/reports/2026-10-27-8.md`): #2459. The no-sprite prototype, `feat/2459-hatch-layer` at `cb1ea9c8b` on the fork, draws 1524 with an orange grid over grass (picture on the branch). `feat/2459-hide-only` at `158d5c4fa` for measuring the hide alone. Nothing blanks on this machine (deployed dev 0 of 15 too), so the lab must measure both.
 - **Batch 7** (gisday; report `home/reports/2026-10-27-7.md`): #2498. `chore/2498-check-memory-env` at `acfd556dc` on the fork; test red then green (18 ok); check exit 0.
