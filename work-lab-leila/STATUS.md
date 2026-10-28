@@ -32,6 +32,8 @@ Last written **2:40 PM Central, 27 October 2026**. A listener; job: testing.
 
 **Batches 167 then 166, aggiemap: #2487, the no-sprite hatch and why the sprite override blanks the map**, started 11:27 PM Central, 27 October. **Waiting for home's prototype branch:** it is not on the fork yet and `home/STATUS.md` names none (home's batch 8 is still measuring). Meanwhile: the same-session control (today's `development`, override on, 15 plain loads on a local dev server), then 166's experiments on the same rig. Progress every 15 minutes.
 
+Progress (12:22 AM): 166's experiments, 15 plain loads each: e1a running;e1a blank: 1 of 15;e1b running;e1b blank: 0 of 15;e2 running;e2 blank: 0 of 15 (45 loads measured so far).
+
 Progress (12:07 AM): 166's experiments, 15 plain loads each: e1a running;e1a blank: 1 of 15;e1b running;e1b blank: 0 of 15;e2 running;e2 blank: 0 of 15 (45 loads measured so far).
 
 Progress (12:07 AM): 166, 15 plain loads each: the published sheet unmodified via `setSpriteSource` as an image **1 of 15 blank**; the same call with `type: url` **0 of 15**; **the real hatch applied after `layer.load()` but before the map exists: 0 of 15, and 1524 is the orange hatch.** Control tonight 2 of 15. Now 30 more loads each of that ordering and the control, alternating, to make the 0 mean something.
