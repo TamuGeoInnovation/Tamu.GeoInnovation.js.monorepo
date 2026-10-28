@@ -86,6 +86,60 @@ export function serviceClassRenderer(renderer: unknown, label: string): object |
 }
 
 /**
+ * Whether every field a renderer keys on exists on the layer it would draw (#2500).
+ *
+ * A portal item is not republished when its service is. On 27 October 2026 the GIS team replaced the
+ * baseball views' schema and the production item kept renderers keyed on `baseball`, `type` and `event`
+ * for layers that no longer have those fields: no feature matches any class, so nothing draws.
+ *
+ * Only a `uniqueValue` (`field1` to `field3`) or `classBreaks` (`field`) renderer is judged, and one
+ * with an Arcade `valueExpression` keys on no field. Anything else passes: this rejects one proven
+ * fault, it does not vet renderers. Names are compared without regard to case, as ArcGIS compares them.
+ */
+export function rendererFieldsPresent(renderer: unknown, fieldNames: string[]): boolean {
+  return missingRendererFields(renderer, fieldNames).length === 0;
+}
+
+/** The fields `renderer` keys on that are not in `fieldNames`, as the renderer names them; see `rendererFieldsPresent`. */
+export function missingRendererFields(renderer: unknown, fieldNames: string[]): string[] {
+  const present = new Set(fieldNames.map((name) => name.toLowerCase()));
+
+  const keyed = (node: unknown): string[] => {
+    const candidate = node as
+      | {
+          type?: string;
+          valueExpression?: string;
+          field?: unknown;
+          field1?: unknown;
+          field2?: unknown;
+          field3?: unknown;
+          uniqueValueInfos?: unknown[];
+        }
+      | null
+      | undefined;
+
+    if (!candidate || typeof candidate !== 'object' || candidate.valueExpression) {
+      return [];
+    }
+
+    const names =
+      candidate.type === 'uniqueValue'
+        ? [candidate.field1, candidate.field2, candidate.field3]
+        : candidate.type === 'classBreaks'
+          ? [candidate.field]
+          : [];
+
+    const nested = Array.isArray(candidate.uniqueValueInfos)
+      ? candidate.uniqueValueInfos.flatMap((info) => keyed((info as { renderer?: unknown } | null)?.renderer))
+      : [];
+
+    return [...names.filter((name): name is string => typeof name === 'string' && name.length > 0), ...nested];
+  };
+
+  return [...new Set(keyed(renderer))].filter((name) => !present.has(name.toLowerCase()));
+}
+
+/**
  * Whether a layer source has already decided how it draws.
  *
  * A map that sets its own renderer means it: the Construction layer deliberately replaces the

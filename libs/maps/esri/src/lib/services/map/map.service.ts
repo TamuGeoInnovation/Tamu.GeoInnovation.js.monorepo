@@ -26,8 +26,10 @@ import { PopupComponentReference } from '../../popup-reference';
 import {
   declaresOwnRenderer,
   PortalItemData,
+  missingRendererFields,
   portalItemDataUrl,
   recordSymbologySource,
+  rendererFieldsPresent,
   rendererForLayer,
   serviceClassRenderer
 } from './portal-symbology';
@@ -646,7 +648,17 @@ export class EsriMapService {
         const itemId = (layer as unknown as { sourceJSON?: { serviceItemId?: string } }).sourceJSON?.serviceItemId;
         const url = itemId ? portalItemDataUrl(layer.url ?? '', itemId) : null;
 
-        const portal = url && itemId ? rendererForLayer(await this.portalItemData(itemId, url), layer.layerId) : null;
+        const itemRenderer = url && itemId ? rendererForLayer(await this.portalItemData(itemId, url), layer.layerId) : null;
+
+        // An item is not republished with its service, so its renderer can key on fields the layer has lost (#2500).
+        const fieldNames = (layer.fields ?? []).map((field) => field.name);
+        const portal = itemRenderer && rendererFieldsPresent(itemRenderer, fieldNames) ? itemRenderer : null;
+
+        if (itemRenderer && !portal) {
+          console.warn(
+            `Layer '${layer.title}' keeps its service's symbology: its portal item's renderer keys on fields the layer does not have (${missingRendererFields(itemRenderer, fieldNames).join(', ')}).`
+          );
+        }
 
         // A class named by the definition draws every feature, because the renderer's values are stale.
         const serviceClass = (source as LayerSource).symbolFromServiceClass;

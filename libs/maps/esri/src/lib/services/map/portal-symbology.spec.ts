@@ -3,6 +3,7 @@ import {
   portalItemDataUrl,
   publishesDefaultSymbology,
   recordSymbologySource,
+  rendererFieldsPresent,
   rendererForLayer,
   serviceClassRenderer,
   symbologySourceOf
@@ -168,5 +169,92 @@ describe('one class of a service renderer', () => {
     expect(serviceClassRenderer({ type: 'simple', symbol: wheelchair }, 'Accessible Parking')).toBeNull();
     expect(serviceClassRenderer(null, 'Accessible Parking')).toBeNull();
     expect(serviceClassRenderer(undefined, 'Accessible Parking')).toBeNull();
+  });
+});
+
+/**
+ * A portal renderer keyed on fields its layer no longer has draws nothing (#2500). The three baseball
+ * renderers below are the production item's on 27 October 2026, against the republished layers' fields.
+ */
+describe('rendererFieldsPresent', () => {
+  const symbol = { tag: 'any' };
+  const republished = ['objectid', 'globalid', 'type', 'event', 'name'];
+
+  const baseballSymbols = {
+    type: 'uniqueValue',
+    field1: 'type',
+    field2: 'event',
+    uniqueValueInfos: [{ value: 'Parking, Baseball', symbol }]
+  };
+  const gateRoadClosure = {
+    type: 'uniqueValue',
+    field1: 'baseball',
+    uniqueValueInfos: [{ value: 'Gate', symbol }]
+  };
+  const lots = {
+    type: 'uniqueValue',
+    field1: 'baseball',
+    uniqueValueInfos: [
+      { value: 'AnyValid', symbol },
+      { value: 'Permit', symbol },
+      { value: 'SeasonPass', symbol }
+    ]
+  };
+
+  it('rejects the renderer keyed on a field the republished layer lacks', () => {
+    expect(rendererFieldsPresent(gateRoadClosure, ['objectid', 'type', 'event'])).toBe(false);
+    expect(rendererFieldsPresent(lots, ['objectid', 'type'])).toBe(false);
+  });
+
+  it('rejects a renderer when any one of its fields is missing', () => {
+    expect(rendererFieldsPresent(baseballSymbols, ['objectid', 'name'])).toBe(false);
+    expect(rendererFieldsPresent({ ...baseballSymbols, field3: 'owner' }, republished)).toBe(false);
+  });
+
+  it('accepts a renderer whose fields are all on the layer', () => {
+    expect(rendererFieldsPresent(baseballSymbols, republished)).toBe(true);
+    expect(rendererFieldsPresent(gateRoadClosure, [...republished, 'baseball'])).toBe(true);
+  });
+
+  it('compares field names without regard to case', () => {
+    expect(rendererFieldsPresent(gateRoadClosure, ['OBJECTID', 'BASEBALL'])).toBe(true);
+    expect(rendererFieldsPresent({ type: 'classBreaks', field: 'Spaces' }, ['SPACES'])).toBe(true);
+  });
+
+  it('judges a class breaks renderer by its field', () => {
+    expect(rendererFieldsPresent({ type: 'classBreaks', field: 'spaces' }, republished)).toBe(false);
+    expect(rendererFieldsPresent({ type: 'classBreaks', field: 'name' }, republished)).toBe(true);
+  });
+
+  it('ignores empty field names', () => {
+    expect(rendererFieldsPresent({ type: 'uniqueValue', field1: 'type', field2: '', field3: '' }, republished)).toBe(true);
+  });
+
+  it('judges a nested renderer by its own fields too', () => {
+    const nested = {
+      type: 'uniqueValue',
+      field1: 'type',
+      uniqueValueInfos: [{ value: 'Reserved', renderer: { type: 'uniqueValue', field1: 'baseball' } }]
+    };
+
+    expect(rendererFieldsPresent(nested, republished)).toBe(false);
+    expect(rendererFieldsPresent(nested, [...republished, 'baseball'])).toBe(true);
+  });
+
+  it('passes an Arcade renderer, which keys on no field, whatever field1 says', () => {
+    expect(rendererFieldsPresent({ type: 'uniqueValue', field1: 'baseball', valueExpression: '$feature.type' }, republished)).toBe(
+      true
+    );
+    expect(rendererFieldsPresent({ type: 'classBreaks', field: 'spaces', valueExpression: '$feature.n' }, republished)).toBe(true);
+  });
+
+  it('passes renderers that key on no field, and shapes it does not know', () => {
+    expect(rendererFieldsPresent({ type: 'simple', symbol, field1: 'baseball' }, republished)).toBe(true);
+    expect(rendererFieldsPresent({ type: 'heatmap' }, republished)).toBe(true);
+    expect(rendererFieldsPresent({ type: 'dotDensity', fields: [{ name: 'baseball' }] }, republished)).toBe(true);
+    expect(rendererFieldsPresent({ type: 'somethingNew', field: 'baseball' }, republished)).toBe(true);
+    expect(rendererFieldsPresent(null, republished)).toBe(true);
+    expect(rendererFieldsPresent(undefined, republished)).toBe(true);
+    expect(rendererFieldsPresent('not a renderer', republished)).toBe(true);
   });
 });

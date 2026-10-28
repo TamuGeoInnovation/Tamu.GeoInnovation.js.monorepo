@@ -123,6 +123,15 @@ test.describe('choosing the quick set for a change', () => {
     );
   });
 
+  test('checks the portal renderers when the code that reads them, or the services, change', () => {
+    for (const file of [
+      'libs/maps/esri/src/lib/services/map/portal-symbology.ts',
+      'libs/aggiemap/ngx/common/src/lib/connections.ts'
+    ]) {
+      expect(quickSetFor([file], read).specs).toContain('portal-renderers.spec.ts');
+    }
+  });
+
   test('runs a changed smoke spec whole', () => {
     const set = quickSetFor(['test/smoke/aggiemap/bus.spec.ts', 'test/smoke/aggiemap/environments.json'], read);
 
