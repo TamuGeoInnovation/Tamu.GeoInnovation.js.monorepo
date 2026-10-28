@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assigned.
+Last written **12:05 AM Central, 28 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -17,7 +17,9 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Idle.
+**Batch 36, aggiemap: #2458 campus map name spacing on a phone**, started 12:05 AM Central, 28 October (read from the system clock).
+
+**Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 ## Finished
 
 - **Batch 35, aggiemap: #2500 baseball portal renderers** (11:40 PM to about 1:00 AM Central, 27 to 28 October): branch `fix/2500-portal-renderer-fields` at `458864a3290f3e8893910953a3367cc73484de1e` on the fork; red (5 failed) then green; check exit 0; smoke spec on production 81 passed, fails on exactly the three baseball layers with the allow-list removed; development 81 passed. Report `copilot-home/reports/2026-10-27-35.md`.
