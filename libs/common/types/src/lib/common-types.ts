@@ -13,9 +13,7 @@ export interface Point {
 //
 // Base Symbol Typings
 //
-interface CIMSymbol {
-  type: 'cim' & esri.CIMSymbolProperties;
-}
+type CIMSymbol = { type: 'cim' } & esri.CIMSymbolProperties;
 
 type SimpleFillSymbol = { type: 'simple-fill' } & esri.SimpleFillSymbolProperties;
 
@@ -74,8 +72,14 @@ interface WebStyleSymbolAutoCastOptions {
   symbol: WebStyleSymbol & esri.WebStyleSymbolProperties;
 }
 
+// A renderer's CIM symbol, as the others are wrapped. The union named the bare symbol, so a simple renderer with a
+// CIM symbol could not be declared without a cast (#2532).
+interface CIMSymbolAutoCastOptions {
+  symbol: CIMSymbol;
+}
+
 type AutoCastSymbols =
-  | CIMSymbol
+  | CIMSymbolAutoCastOptions
   | FillSymbolAutoCastOptions
   | LineSymbolAutoCastOptions
   | MarkerSymbolAutoCastOptions
