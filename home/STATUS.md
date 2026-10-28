@@ -6,11 +6,10 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 7** (workspace: #2498, check-in-volume.sh's memory and parallel limits from the environment; branch `chore/2498-check-memory-env`), started 8:00 PM Central, Tuesday 27 October 2026, from `work (gisday)`.
-Next update by 8:15 PM Central (progress every 15 minutes).
+**`home`: a listener, nothing running.** Last batch done: 7.
 
-Progress (8:00 PM): test extended and proven red (4 new cases fail), script changed, test green (18 ok), CLAUDE.md sentence added, committed. Full check running.
 ## Finished
+- **Batch 7** (gisday; report `home/reports/2026-10-27-7.md`): #2498. `chore/2498-check-memory-env` at `acfd556dc` on the fork; test red then green (18 ok); check exit 0.
 - **Batch 6** (aggiemap; report `home/reports/2026-10-27-6.md`): #2472 reproduces on demand. `--poll` with an empty dependency cache stalls; the Node process is saturated and esbuild sits idle. A bigger thread pool or a longer interval does not help. Workaround: prime the cache without `--poll`. Nothing pushed.
 - **Batch 5** (aggiemap; report `home/reports/2026-10-27-5.md`): #2453. branch ready: `fix/2453-baseball-republish` at `934da19f2` on the fork. Spec red then green, check exit 0, before/after committed. One question for the director.
 - **Batch 4** (security; report `home/reports/2026-10-26-4.md`): #2425's clean branch pushed to the fork as `chore/2425-api-images-non-root-2` at `160f65e80`.
