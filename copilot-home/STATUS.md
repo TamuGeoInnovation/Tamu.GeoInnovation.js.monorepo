@@ -17,11 +17,13 @@ Last written **12:37 AM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-Batch 42 (aggiemap: triage the October issues) started 9:09 AM Central, 28 October. Next update by 9:24 AM Central.
+Idle. Nothing queued after batch 42.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
+
+- **Batch 42, aggiemap: triage the October issues (read only)** (9:13 AM Central, 28 October): 18 issues checked, none closed (the count was 0 on purpose); #2075 is not clean (production nightly red every night since 15 Oct) and #2398 is still live; needs-maintainer: #2039, #2275, #1600. Nothing pushed but the report `copilot-home/reports/2026-10-28-42.md`.
 
 - **Batch 41, aggiemap: the label goes above on desktop too** (8:53 AM Central, 28 October): no new commit; batch 40's redo already did it. Branch `fix/2458-campus-labels-above` at `f31551ae86bece781eb0593a631e8778c78b8c47` on the fork; desktop re-measured (campus page row pitch 218 to 250 px, above-the-fold count unchanged at 6). Report `copilot-home/reports/2026-10-28-41.md`.
 - **Batch 40, aggiemap: #2458 campus names above their pictures at every width** (about 8:36 to 8:52 AM Central, 28 October; redone after the director's 8:43 note): branch `fix/2458-campus-labels-above` at `f31551ae86bece781eb0593a631e8778c78b8c47` on the fork; name first in the markup, above its picture on both pages at every width; campus page desktop rows 218 to 250 px pitch, picture to next name 4.8 to 36.8 px, cards on /all-maps 16 to 32 px on a phone; red (2 failed) then green; check exit 0; release note rewritten. Report `copilot-home/reports/2026-10-28-40.md`.
