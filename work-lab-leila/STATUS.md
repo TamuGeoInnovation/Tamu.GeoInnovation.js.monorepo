@@ -32,6 +32,8 @@ Last written **2:40 PM Central, 27 October 2026**. A listener; job: testing.
 
 **Batch 176, aggiemap: the release tier on `e43dc6897`**, started 12:32 PM Central, 28 October. At 12:32 PM dev still serves `a8898934a` (`main-ASZ473D2.js`, without #2541's `fort-worth-law-construction-layer`). Meanwhile: `map-layers` and `maps.spec` on **production** from `e43dc6897`, to count the builder maps there. Then a watcher waits for dev to serve the build, photographs both campuses, and runs the release tier. Progress every 15 minutes.
 
+Progress (1:17 PM): release tier on development at e43dc6897 running; 354 test attempts finished, 0 of them failed (retries included).
+
 Progress (1:02 PM): production builder specs done; waiting for dev to serve e43dc6897.
 
 Progress (12:47 PM): production builder specs done; waiting for dev to serve e43dc6897.
