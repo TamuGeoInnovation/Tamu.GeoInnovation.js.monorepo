@@ -59,6 +59,45 @@ Things worth trying, in rough order:
 with the 15-load measurement to back it. If the answer is "this API cannot do it safely", that is just as
 useful and ends three attempts.
 
+### Added 10:25 PM: the ordering nobody has tried, and the maintainer's position
+
+**The front end has to fix this.** The GIS team cannot change the published sprite, and the team has
+promised a front-end fix, so "ask them to republish it" is off the table. The hatch is also the last
+thing holding the vector tile basemap back from production, so this is the critical path.
+
+**And the hatch itself already works.** On today's dev build, when the map draws, building 1524 is the
+orange hatch - you measured that yourself. The override is not broken; it blanks the map on some loads.
+That is the only remaining problem, and it is narrower than it has looked all day.
+
+**Both attempts so far applied the sprite while a renderer existed:**
+
+| When the override is applied | Blank loads |
+| --- | --- |
+| After `view.whenLayerView()` - a layer view already exists | 15 of 15 |
+| On `layer.when()` - loaded, being added to a map | 4 of 15 |
+| Never | 0 of 15 |
+
+The later the call, the worse it is. **Nobody has tried applying it before any renderer exists at all.**
+
+A `VectorTileLayer` can be loaded on its own, without being in a map: `await layer.load()` populates
+`currentStyleInfo`, which is all `setSpriteSource` needs. So the order could be
+
+1. construct the layer,
+2. `await layer.load()`,
+3. `await layer.setSpriteSource(...)` - **no map, no view, no layer view yet**,
+4. only then put it in the `Basemap` and hand that to the map.
+
+The layer view is then created *after* the sprite source is already in place and never has to be
+disturbed. If the fault is the renderer being changed under itself, this avoids it entirely; if it blanks
+anyway, that is a strong result too, because it rules out timing and points at the sheet.
+
+**This needs `makeBasemap` to become asynchronous** - it builds layers synchronously today - which is a
+real change but a contained one, and `makeMap` that calls it is already `async`.
+
+**Try this first**, before the broader investigation in the batch above: it is specific, it is quick to
+measure with your 15-load rig, and it is the only untried point in the sequence. Report the number either
+way, and the picture of 1524 if it draws.
+
 ### Don't
 
 Push anything to `development`, tag, or touch production.
