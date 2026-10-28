@@ -163,7 +163,7 @@ describe('EsriMapService portal item renderers', () => {
 
   it('keeps the service symbology, and says why, when the item keys on a field the layer lacks', async () => {
     itemRenderer = { type: 'uniqueValue', field1: 'baseball', uniqueValueInfos: [{ value: 'Permit' }] };
-    const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
     const layer = await loaded();
 
