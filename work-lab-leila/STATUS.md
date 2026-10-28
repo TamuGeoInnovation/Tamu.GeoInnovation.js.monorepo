@@ -32,6 +32,8 @@ Last written **2:40 PM Central, 27 October 2026**. A listener; job: testing.
 
 **Batch 170, aggiemap: the release tier on `f2160a189`, the dev build going to production**, started 6:18 AM Central, 28 October. Dev serves it: the deployed bundle (`main-BR3XGVVT.js`) has #2504's warning and #2508's hidden style layers with no sprite override, and the campus list is alphabetical (#2501); the only later commit is docs. Release tier on development from a worktree at `f2160a189` running since 6:18 AM. Progress every 15 minutes; expected finish about an hour from now.
 
+Progress (7:03 AM): release tier on development at f2160a189 running since 6:18 AM; 924 test attempts finished, 13 of them failed (retries included).
+
 Progress (6:48 AM): release tier on development at f2160a189 running since 6:18 AM; 923 test attempts finished, 12 of them failed (retries included).
 
 Progress (6:48 AM): release tier on development at f2160a189 running since 6:18 AM; 923 test attempts finished, 12 of them failed (retries included).
