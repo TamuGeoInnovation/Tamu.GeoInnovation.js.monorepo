@@ -14,6 +14,9 @@ export * from './lib/services/map/map.service';
 export * from './lib/services/map/map-probe';
 export * from './lib/services/map/portal-symbology';
 
+// The one place a basemap's base layer is built from its definition (#2477, #2536).
+export * from './lib/services/map/basemap-layers';
+
 // Replacing a sprite in a vector tile layer's published sheet, for a hatch the packager lost (#2459).
 
 export * from './lib/services/layer-sources/layer-sources.service';

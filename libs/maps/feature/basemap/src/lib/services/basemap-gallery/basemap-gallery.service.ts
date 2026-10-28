@@ -6,6 +6,7 @@ import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { aggiemapGalleryBasemaps, aggiemapRasterBasemap, NearmapCSBasemap } from '../../shared/basemaps.definition';
+import { makeGalleryBasemap } from '../../shared/gallery-basemaps';
 
 import esri = __esri;
 
@@ -138,13 +139,23 @@ export class BasemapGalleryService {
         'TileLayer',
         'VectorTileLayer',
         'WMSLayer',
+        'FeatureLayer',
         'projectOperator'
       ]),
       this.ms.store
     ]).pipe(
       switchMap(
         ([
-          [BasemapGalleryViewModel, LocalBasemapsSource, Basemap, TileLayer, VectorTileLayer, WMSLayer, projectOperator],
+          [
+            BasemapGalleryViewModel,
+            LocalBasemapsSource,
+            Basemap,
+            TileLayer,
+            VectorTileLayer,
+            WMSLayer,
+            FeatureLayer,
+            projectOperator
+          ],
           instances
         ]: [
           [
@@ -154,6 +165,7 @@ export class BasemapGalleryService {
             typeof esri.TileLayer,
             typeof esri.VectorTileLayer,
             typeof esri.WMSLayer,
+            typeof esri.FeatureLayer,
             esri.projectOperator
           ],
           MapServiceInstance
@@ -172,15 +184,9 @@ export class BasemapGalleryService {
 
               // Vector tiles on dev, raster on production, until the vector tiles are published there (#1229).
               // Dev also offers every published raster version, to compare them (#1582).
-              const campusBasemaps = aggiemapGalleryBasemaps(this.ts.isTesting).map((campusBasemap) => {
-                // Clone the base layer JSON object, without its type: assigning it is a read-only property error.
-                const { type, ...baseLayerJSON } = JSON.parse(JSON.stringify(campusBasemap.baseLayers[0]));
-
-                const baseLayer =
-                  type === 'VectorTileLayer' ? new VectorTileLayer({ ...baseLayerJSON }) : new TileLayer({ ...baseLayerJSON });
-
-                return new Basemap({ ...campusBasemap, baseLayers: [baseLayer] });
-              });
+              const campusBasemaps = aggiemapGalleryBasemaps(this.ts.isTesting).map((campusBasemap) =>
+                makeGalleryBasemap(campusBasemap, Basemap, { TileLayer, VectorTileLayer, WMSLayer, FeatureLayer })
+              );
 
               // Which of them a 3D scene cannot draw is known only once each has read its service.
               for (const basemap of campusBasemaps) {
