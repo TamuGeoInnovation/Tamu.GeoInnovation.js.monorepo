@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **9:36 AM Central, 28 October 2026**. A listener; job: not yet assigned.
+Last written **10:55 AM Central, 28 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -17,7 +17,7 @@ Last written **9:36 AM Central, 28 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Running batch 44 (#2047, shared Directions To Here control); started 9:40 AM Central.
+Idle. Nothing queued after batch 44.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
@@ -84,4 +84,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 43
+Last batch done: 44
