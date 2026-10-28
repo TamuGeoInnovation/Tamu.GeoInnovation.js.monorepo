@@ -14,7 +14,8 @@ export * from './lib/services/map/map.service';
 export * from './lib/services/map/map-probe';
 export * from './lib/services/map/portal-symbology';
 
-// Replacing a sprite in a vector tile layer's published sheet, for a hatch the packager lost (#2459).
+// The construction hatch every campus basemap draws, in place of the one its tiles lost (#2459, #2532).
+export * from './lib/services/map/construction-hatch';
 
 export * from './lib/services/layer-sources/layer-sources.service';
 export * from './lib/components/esri-map/esri-map.component';

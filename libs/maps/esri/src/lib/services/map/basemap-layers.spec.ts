@@ -97,30 +97,28 @@ describe('a base layer that draws over the tiles (#2459)', () => {
 });
 
 /**
- * Changes to a vector tile layer's own style (#2506): the satellite campuses' construction fill is the same
- * opaque pink tile as College Station's, and is repainted inside the style rather than covered by a layer.
+ * Hiding a vector tile layer's own style layers (#2459, #2532): the campuses' construction fill and outline are
+ * hidden, and a layer above the tiles draws them instead.
  */
-describe("changing a vector tile layer's own style (#2506)", () => {
+describe("hiding a vector tile layer's own style layers", () => {
   function layer() {
     return {
       when: (callback: () => void) => Promise.resolve().then(callback),
-      setStyleLayerVisibility: vi.fn(),
-      setPaintProperties: vi.fn()
+      setStyleLayerVisibility: vi.fn()
     };
   }
 
-  it('repaints the style layers it is given, and hides the ones it is told to, once the style has loaded', async () => {
+  it('hides the style layers it is told to, once the style has loaded', async () => {
     const target = layer();
 
-    applyStyleLayerChanges(target as unknown as __esri.VectorTileLayer, {
-      hiddenStyleLayers: ['a/0'],
-      styleLayerPaint: { 'b/1': { 'fill-color': 'rgba(230, 152, 0, 0.25)' } }
-    });
+    applyStyleLayerChanges(target as unknown as __esri.VectorTileLayer, { hiddenStyleLayers: ['a/1', 'a/0'] });
     await Promise.resolve();
     await Promise.resolve();
 
-    expect(target.setStyleLayerVisibility.mock.calls).toEqual([['a/0', 'none']]);
-    expect(target.setPaintProperties.mock.calls).toEqual([['b/1', { 'fill-color': 'rgba(230, 152, 0, 0.25)' }]]);
+    expect(target.setStyleLayerVisibility.mock.calls).toEqual([
+      ['a/1', 'none'],
+      ['a/0', 'none']
+    ]);
   });
 
   it('touches nothing when there is nothing to change', async () => {
@@ -131,6 +129,5 @@ describe("changing a vector tile layer's own style (#2506)", () => {
     await Promise.resolve();
 
     expect(target.setStyleLayerVisibility).not.toHaveBeenCalled();
-    expect(target.setPaintProperties).not.toHaveBeenCalled();
   });
 });
