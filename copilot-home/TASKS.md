@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 42.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 43.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,60 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 42 (aggiemap: triage the October issues; 28 October 2026, from `work (aggiemap)`)
+
+**Batch 41 needed no new work, because you had already seen the maintainer's change mid-flight and redone
+batch 40 for every width before reporting.** That is the right instinct and it saved a rebuild. It is
+**PR 2524**, and the desktop cost you measured - 32 px taller per row, the same six entries above the fold
+- is in its description, where the maintainer can see what he asked for cost.
+
+### The task
+
+The maintainer wants the open issues worked through and closed one way or another, and has said: *"If you
+have questions about one that need me, just move on to the next one."* The lab and home have each taken a
+slice. **Yours is the October AggieMap issues:**
+
+```
+#1454 #1523 #1539 #1540 #1600 #1920 #1961 #2007 #2034 #2039
+#2047 #2054 #2061 #2075 #2275 #2369 #2397 #2398
+```
+
+For each, decide **one** of:
+
+- **Done** - **close it**, naming the file, commit or live response that proves it.
+- **Obsolete** - **close it**, saying what changed.
+- **Still wanted** - leave it open with **one line on what it would take**. That line is the real output.
+- **Needs the maintainer** - leave it open, list it separately, **and do not ask him**.
+
+### Five worth knowing
+
+- **#2075 *AggieMap smoke failing on production*** is from 20 October and production has had many clean
+  release-tier runs since, including this morning's. **Check what it was and whether it recurs**; if it was
+  a specific failure that is now green, that is a clean close.
+- **#2397 *Production's nightly smoke times out drawing several parking maps*** - check the recent nightly
+  runs rather than reasoning about it.
+- **#2398 *Remove the unused `womensBasketballParkingUrl`*** - that URL is still in `connections.ts`, and
+  its dev service failing with `499 Token Required` is one of the three known development-only smoke
+  failures. So this one is **probably still live and worth doing**, not closing. Say so if you agree.
+- **#2039 *Twelve campus event maps have only past dates; the team to supply new ones*** - this is waiting
+  on people, not code. That is "needs the maintainer", not "still wanted".
+- **#2084** is GIS Day's, and **#1523** is a list of layer overrides that may well still be accurate.
+  Leave anything you are not sure of open with a line rather than guessing.
+
+### How to do it well
+
+**Read the issue, then check the code or the service, then decide - in that order.** Your #2458 work was
+right because you measured the live DOM instead of trusting the issue's table, and that is what caught the
+issue describing the wrong page. Apply the same suspicion here: **several of these will describe behaviour
+that has since changed, and the issue text will not know it.**
+
+Do not fix anything. If something deserves fixing, say so with what it would take.
+
+Report: a table of issue, verdict, evidence, and the one-line "what it would take". Then the count closed.
+Nothing pushed, no branches.
 
 ---
 
