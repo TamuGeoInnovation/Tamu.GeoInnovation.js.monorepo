@@ -6,7 +6,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running.** Last batch done: 12.
+**Batch 13** (aggiemap: triage the 29 older AggieMap issues), started 8:10 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
+Next update by 8:25 AM Central (progress every 15 minutes).
 
 ## Finished
 - **Batch 12** (aggiemap; report `home/reports/2026-10-28-12.md`): #2515 branch ready: `feat/2515-vector-basemap-production` at `5d747fdfd`. Vector default everywhere, production gallery = vector + raster, VTBase3 off the dev-only list, view limit kept at 1:282 with the smoke check following every offered basemap. Maps open one level closer (1:9,028 to 1:4,514): question 1. Check exit 0.
