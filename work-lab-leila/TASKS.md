@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 174.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 175.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,61 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 174 (aggiemap: #1134, make the builder-map check work on production; 28 October 2026, from `work (aggiemap)`)
+
+**Batch 173 cleared the release.** 910 passed, 3 failed - all three the known development-only ones -
+framing green on dev **and** on a production-shaped build drawing VTBase3, the view limit green,
+`development-only` 11 of 11, and the two campuses pale orange with no pink on deployed dev. The build is
+tagged `dev-2026-10-28-2` and the maintainer has promoted it.
+
+**I was wrong about framing and you were right to measure it:** I expected it to go red because every map
+now opens a scale level closer against a baseline recorded from production. 63/0 and 62/0. Good thing
+nobody acted on my prediction.
+
+**PR 2519 merged**, so the builder-map check is on `development`.
+
+### The task
+
+[#1134](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1134): the check you
+just proved works **does nothing on production**, because the builder inventory was captured against dev
+and the loader ignores an inventory whose `baseUrl` is not the environment's. You measured both halves in
+batch 172:
+
+- production as it stands: **63 passed, 12 skipped** - every builder map skipped, the known baseball faults
+  sailed past;
+- with the inventory relabelled: **all 12 visited**, baseball red on exactly #2500 and #2510.
+
+**This is the change that would have caught #2500 the night it went live.** Your own report named the
+simplest option:
+
+> - accept the dev inventory on production;
+> - treat a destination that doesn't land as a skip with a note, not a failure;
+> - say in the log which inventory was used.
+
+Build that.
+
+### What to be careful about
+
+1. **A destination that does not land must not fail the run.** Dev's destinations worked on production
+   right after a release, but the two environments can drift between releases, and a check that goes red
+   because a builder choice moved teaches people to ignore it - which is #2507 all over again.
+2. **Say which inventory was used, in the log.** Silently using dev's data to test production is the kind
+   of thing that is fine until the day somebody is debugging a production failure at speed.
+3. **Graduation's known-failure entry is already on `development`** (#2521, both environments). Production's
+   will start firing once this lands - that is intended, and it should be annotated rather than failing.
+
+### Prove it
+
+- **Red first in the honest sense:** on production **before** the change, the baseball tests skip. **After**
+  it, they run and go red on #2500 and #2510 - which are still live, since the GIS team has not republished.
+  **Quote both runs.** The whole claim of this change is "it would have caught it", so show it catching it.
+- All 12 builder maps visited on production, by name.
+- Development unchanged: still 12 visited, baseball still passing.
+- `scripts/check-in-volume.sh <branch> aggiemap-angular` - exit 0.
+- `docs/testing.md` if its row needs a word; **leave every number alone** (#2002).
+
+Push to `fork`, report `branch ready:`. No pull request.
 
 ## Batch 173 (aggiemap: the release tier on the second dev build of the day; 28 October 2026, from `work (aggiemap)`)
 
