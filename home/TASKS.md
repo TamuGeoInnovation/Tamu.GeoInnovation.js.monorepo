@@ -4,6 +4,49 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 15 (aggiemap: triage the September-October issues; 28 October 2026, from `work (aggiemap)`)
+
+**Batch 14 was the right call, and the part that matters is the part you did not do.** Your own batch-13
+reading said `notes` -> `description` would fix #657. You checked the service first, found both maps return
+their lots **with no geometry**, filed #2520, and **declined to make the one-word change on its own** -
+because it would have changed nothing visible while looking like a fix. That is exactly the stop rule. The
+check is **PR 2525**.
+
+Same job as batch 13, next slice:
+
+```
+#954 #959 #960 #962 #967 #1005 #1006 #1027 #1034 #1036 #1202 #1204 #1267
+```
+
+Rules are unchanged from batch 13 - **done / obsolete / still wanted / needs the maintainer**, every close
+citing the file, commit or live response that proves it, one line on what it would take for anything left
+open, no fixing, and no close you are unsure of.
+
+### Four worth knowing before you start
+
+- **#1034 *End-to-end coverage for every map, scheduled against prod and dev*** is the smoke suite's own
+  founding issue - `docs/testing.md` names it as "the suite's original plan". The suite exists, runs
+  nightly on both environments and has ~830 tests. **Check whether anything it asked for is still missing**
+  before closing it; if it is all there, this is a clean close with good evidence.
+- **#1267 *The map probe's `ready` is often never true*** - the probe is now relied on by most of the
+  suite. If it were still often never true, nothing would pass. Worth checking what changed and closing it
+  properly rather than by inference.
+- **#1005 *10 layers fail to load on dev because gis-dev is missing them*** - that gap is real and may now
+  be **recorded** in `environments.json`'s `allowedLayerFailures` rather than fixed. Recorded is not fixed:
+  say which it is.
+- **#1202 / #1204 *Remove the event apps / ts-events-angular*** - several apps were deleted in October
+  (`signage-angular`, `ues-operations-nest`, the `gisday-competitions` apps, `geoprocessing-v4`). Check
+  what is actually gone; batch 13 found "only `ts-events-angular` is left", so #1202 may be done and #1204
+  may not.
+
+### One thing to carry over
+
+Batch 13's closes were good because each cited a commit and a line. **Keep that.** A close that cites
+nothing is worth less than an open issue with one honest sentence on it.
+
+Report as before: a table of issue, verdict, evidence, and the one-line "what it would take". Nothing
+pushed.
+
 ## Batch 14 (aggiemap: #657, the NSC popup; 28 October 2026, from `work (aggiemap)`)
 
 **Batch 13 was triage done properly.** Eight closes each citing a commit and a line, sixteen left open with
