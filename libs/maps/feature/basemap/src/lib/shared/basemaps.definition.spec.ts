@@ -4,20 +4,16 @@ import * as path from 'path';
 import * as definitions from './basemaps.definition';
 
 /**
- * The vector tile campus basemap stays off production until it is published there (#1229).
+ * The campus basemap every map opens on, and what each environment offers (#1229, #2515).
  *
- * `Hosted/VTBase/VectorTileServer` has no production service. A service without one must never be
- * visible on production unless that is explicitly allowed - the rule that keeps bus routes off
- * production - and #1227 put this one on every environment.
+ * The vector tile basemap stayed off production until the maintainer made it production's default (#2515). Production
+ * keeps the raster basemap in its gallery as a way back.
  *
- * - **The resolver.** `aggiemapBasemap(isTesting)` gives dev the vector tiles and production the raster
- *   basemap.
+ * - **The resolver.** `aggiemapBasemap()` gives every environment the vector tiles.
  * - **Nothing goes around it.** Outside the definition file, no code may name the vector tile service
- *   or either fixed campus basemap. A map that imported one directly would show it on every
- *   environment, as the main map, the gallery and both event maps did.
- *
- * When the vector tiles are published for production, make `aggiemapBasemap` return them everywhere
- * and change this test with it.
+ *   or either fixed campus basemap, so the next version can be gated by environment in one place, as this
+ *   one was (#1227 put it on every environment by a direct import, and the main map, the gallery and both
+ *   event maps showed it).
  */
 
 const REPO_ROOT = path.join(__dirname, '..', '..', '..', '..', '..', '..', '..');
@@ -44,7 +40,7 @@ interface Basemap {
 const urlsOf = (basemap: Basemap) => basemap.baseLayers.map((layer) => layer.url ?? '');
 
 describe('campus basemap', () => {
-  it('resolves to the raster basemap on production and the vector tiles on dev', () => {
+  it('resolves to the vector tiles on production and on dev (#2515)', () => {
     const resolve = (definitions as unknown as Record<string, unknown>)['aggiemapBasemap'] as
       ((isTesting: boolean) => Basemap) | undefined;
 
@@ -52,11 +48,11 @@ describe('campus basemap', () => {
     // The expect above fails the test; this tells TypeScript what it established.
     if (!resolve) return;
 
-    expect(urlsOf(resolve(false)).some((url) => url.includes(VECTOR_SERVICE))).toBe(false);
+    expect(urlsOf(resolve(false)).some((url) => url.includes(VECTOR_SERVICE))).toBe(true);
     expect(urlsOf(resolve(true)).some((url) => url.includes(VECTOR_SERVICE))).toBe(true);
   });
 
-  it('offers production one campus basemap, and development every published version (#1582)', () => {
+  it('offers production the vector basemap and the raster one, and development every published version (#1582, #2515)', () => {
     const gallery = (definitions as unknown as Record<string, unknown>)['aggiemapGalleryBasemaps'] as
       ((isTesting: boolean) => Array<Basemap & { id: string; title: string }>) | undefined;
     const resolve = (definitions as unknown as Record<string, (isTesting: boolean) => Basemap>)['aggiemapBasemap'];
@@ -64,16 +60,23 @@ describe('campus basemap', () => {
     expect(gallery).toBeInstanceOf(Function);
     if (!gallery) return;
 
-    // Production: the one basemap it has always had, and nothing dated or development-only.
-    expect(gallery(false)).toEqual([resolve(false)]);
-    expect(gallery(false).map((basemap) => basemap.title)).toEqual(['Aggieland']);
+    // Production: the vector basemap first, which the map opens on, and the raster one it showed until #2515, so a
+    // visitor who finds the new one harder to read has a way back, and a problem with it can be worked around without a
+    // release. Nothing dated or development-only.
+    const production = gallery(false);
+
+    expect(production[0]).toEqual(resolve(false));
+    expect(production.map((basemap) => basemap.title)).toEqual(['Aggieland', 'Aggieland raster']);
+    expect(urlsOf(production[0]).some((url) => url.includes(VECTOR_SERVICE))).toBe(true);
+    expect(urlsOf(production[1])).toEqual(urlsOf(definitions.AggiemapRasterBasemap as unknown as Basemap));
+    expect(new Set(production.map((basemap) => basemap.id)).size).toBe(production.length);
 
     const dev = gallery(true);
 
     // The map opens on the first entry, so it must be the one the view was built with.
     expect(dev[0]).toEqual(resolve(true));
     expect(dev.map((basemap) => basemap.title)).toEqual([
-      'Aggieland vector, October 2026',
+      'Aggieland',
       'Aggieland vector, September 2026',
       'Aggieland raster, October 2026',
       'Aggieland raster, June 2026',
@@ -89,7 +92,7 @@ describe('campus basemap', () => {
     const productionRaster = dev.find((basemap) => basemap.title === 'Aggieland raster, October 2026');
 
     expect(productionRaster).toBeDefined();
-    expect(urlsOf(productionRaster as Basemap)).toEqual(urlsOf(resolve(false)));
+    expect(urlsOf(productionRaster as Basemap)).toEqual(urlsOf(production[1]));
 
     // Both vector caches are offered, so the new one can be compared with the one it replaces.
     expect(urlsOf(dev[0]).some((url) => url.includes('Hosted/VTBase3/VectorTileServer'))).toBe(true);
@@ -130,8 +133,9 @@ describe('campus basemap', () => {
     expect(raster(true).title).toBe('Aggieland raster, October 2026');
     expect(gallery(true)).toContainEqual(raster(true));
 
-    // Production has one campus basemap, and it is this raster one.
-    expect(raster(false)).toEqual(exported['AggiemapRasterBasemap']);
+    // On production it is the gallery's raster entry, so the panel marks it there too (#2515).
+    expect(gallery(false)).toContainEqual(raster(false));
+    expect(urlsOf(raster(false))).toEqual(urlsOf(exported['AggiemapRasterBasemap'] as Basemap));
   });
   it('turns a saved Aerial Imagery choice back into the Nearmap basemap, on every environment (#1692)', () => {
     const exported = definitions as unknown as Record<string, unknown>;
@@ -231,5 +235,22 @@ describe('the vector basemap draws its buildings under construction itself (#245
 
   it('patches no sprite sheet', () => {
     expect(JSON.stringify(layers)).not.toContain('spriteOverrides');
+  });
+});
+
+/**
+ * The vector basemap is production's default (#2515), so the smoke suite's list of services production must never request
+ * cannot list it any more: that list fails the production run when a listed service is requested (#1229). The September
+ * cache, still development-only, stays on it.
+ */
+describe('the smoke suite allows production the vector basemap (#2515)', () => {
+  const developmentOnly = fs.readFileSync(path.join(REPO_ROOT, 'test', 'smoke', 'aggiemap', 'development-only.ts'), 'utf8');
+
+  it('no longer lists the default vector basemap as development-only', () => {
+    expect(developmentOnly).not.toContain(`'${VECTOR_SERVICE}'`);
+  });
+
+  it('still lists the September vector cache', () => {
+    expect(developmentOnly).toContain("'Hosted/VTBase/VectorTileServer'");
   });
 });

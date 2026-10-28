@@ -126,10 +126,9 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
     }
   ],
   id: 'aggie_basemap',
-  // Dated like the versions beside it in the dev gallery (#1582): `TAMU_BaseMap_20261026`, published
-  // on 26 October 2026 and given to us for development testing (#2436). Name it plain "Aggieland"
-  // when it becomes production's basemap.
-  title: 'Aggieland vector, October 2026',
+  // The default on every environment since #2515, so plain "Aggieland", as the raster one was. The cache is
+  // `TAMU_BaseMap_20261026`, published on 26 October 2026 (#2436).
+  title: 'Aggieland',
   thumbnailUrl: CAMPUS_BASEMAP_THUMBNAIL
 };
 
@@ -161,43 +160,51 @@ export const AggiemapVectorBasemapSeptember2026: BaseMapProperties = {
 };
 
 /**
- * The campus basemap for this environment: vector tiles where `TestingService` reports `isTesting`
- * (dev and localhost), raster tiles everywhere else.
- *
- * A service without a production counterpart must never be visible on production unless that is
- * explicitly allowed - the rule that keeps bus routes off production. Production is the default here,
- * so a caller that cannot tell which environment it is in gets the published basemap.
- */
-/**
- * The deepest scale the campus basemap has tiles for: level 21, 1:282 (#1577).
+ * The deepest scale every campus basemap a view can show has tiles for: level 21, 1:282 (#1577).
  *
  * `TAMU_Basemap_20261008`'s tiling scheme lists 24 levels, down to 1:70, but its cache stops at level 21
  * and the service says so in its own `maxScale`. A view allowed past it zooms into levels with no tiles,
  * and the map goes white under the layers. Every AggieMap view stops here: use this as
  * `constraints.maxScale`, never `0`.
  *
+ * The vector basemap, production's default since #2515, caches two levels deeper, to 1:70.5. The limit stays
+ * at the raster cache's depth because production still offers the raster basemap and some maps open on it:
+ * a view allowed to 1:70.5 would go white there. The vector levels below 1:282 were looked at on 28 October
+ * and draw nothing new - the same paths and grass, and the trees shrink to nothing.
+ *
  * Set just below level 21's 282.124294 rather than equal to it: at exactly that value the view stopped a
  * level early, at 20.
  *
  * This asked whoever republished the basemap to raise the number to the new service's `maxScale`, and
  * when one was (#1695) the number was right only because the October 2026 cache happens to stop at the
- * same level the June one did. A comment cannot be relied on to be read, so `services.spec.ts` now asks
- * the named service for its `maxScale` and fails when this disagrees with it.
+ * same level the June one did. A comment cannot be relied on to be read, so `services.spec.ts` asks each
+ * campus basemap service production offers for its `maxScale`, and fails when this is deeper than any of them
+ * or no longer the shallowest.
  */
 export const AGGIEMAP_BASEMAP_MAX_SCALE = 282;
 
-export function aggiemapBasemap(isTesting: boolean): BaseMapProperties {
-  return isTesting ? AggiemapVectorBasemap : AggiemapRasterBasemap;
+/**
+ * The campus basemap a map opens on: the vector tiles, on every environment since #2515.
+ *
+ * It was the raster basemap on production until then, because the vector service had no production counterpart and a
+ * service without one must never be visible on production unless that is explicitly allowed (#1229). It is now, so the
+ * smoke suite's development-only list no longer names it. Every map still takes its campus basemap from here, so the
+ * next version can be gated by environment in one place.
+ */
+export function aggiemapBasemap(): BaseMapProperties {
+  return AggiemapVectorBasemap;
 }
 
 /**
- * The raster campus basemap, Aggieland raster, October 2026, for a map that opens on it in every
- * environment. On development it is the gallery's dated entry, so the panel marks it as the one showing.
+ * The raster campus basemap, for a map that opens on it, and the gallery's way back to it. On development it is the
+ * gallery's dated entry, Aggieland raster, October 2026; on production, Aggieland raster. Either way the panel marks it
+ * as the one showing. Its id is its own on production too: the vector basemap took `aggie_basemap` with #2515, and the
+ * gallery tells basemaps apart by id.
  */
 export function aggiemapRasterBasemap(isTesting: boolean): BaseMapProperties {
   return isTesting
     ? { ...AggiemapRasterBasemap, id: 'aggie_basemap_raster_2026_10', title: 'Aggieland raster, October 2026' }
-    : AggiemapRasterBasemap;
+    : { ...AggiemapRasterBasemap, id: 'aggie_basemap_raster', title: 'Aggieland raster' };
 }
 
 /** An earlier raster campus basemap, drawn exactly as the current one is. */
@@ -225,11 +232,13 @@ export const AggiemapRasterBasemapMay2026: BaseMapProperties = {
 /**
  * The campus basemaps the gallery offers in this environment (#1582).
  *
- * Production offers one, the raster basemap, as `aggiemapBasemap()` gives it. Development opens on the
- * vector tiles and could not show the raster basemap at all, so a new raster cache went to production
- * without anyone having seen it drawn on dev (#1695). Development therefore also offers the raster
- * basemap production shows, under its own id and dated, and the earlier versions still published, so
- * they can be compared before one is chosen.
+ * Production offers two (#2515): the vector basemap it opens on, and the raster one it showed until then. If something
+ * is wrong with the vector basemap on production, a single entry would leave a visitor no way out and us no mitigation
+ * short of another release; the raster entry is that way out.
+ *
+ * Development opened on the vector tiles and could not show the raster basemap at all, so a new raster cache went to
+ * production without anyone having seen it drawn on dev (#1695). Development therefore also offers the raster basemap,
+ * under its own id and dated, and the earlier versions still published, so they can be compared before one is chosen.
  *
  * The first entry is the one the map opens on, and is always `aggiemapBasemap()`.
  *
@@ -238,11 +247,11 @@ export const AggiemapRasterBasemapMay2026: BaseMapProperties = {
  */
 export function aggiemapGalleryBasemaps(isTesting: boolean): BaseMapProperties[] {
   if (!isTesting) {
-    return [aggiemapBasemap(isTesting)];
+    return [aggiemapBasemap(), aggiemapRasterBasemap(isTesting)];
   }
 
   return [
-    aggiemapBasemap(isTesting),
+    aggiemapBasemap(),
     AggiemapVectorBasemapSeptember2026,
     aggiemapRasterBasemap(isTesting),
     AggiemapRasterBasemapJune2026,
@@ -276,7 +285,7 @@ export function basemapForSavedId(id: string, isTesting: boolean): BaseMapProper
     return NearmapCSBasemap;
   }
 
-  return id.startsWith(AggiemapRasterBasemap.id) ? aggiemapBasemap(isTesting) : id;
+  return id.startsWith(AggiemapRasterBasemap.id) ? aggiemapBasemap() : id;
 }
 
 export const NearmapCSBasemap: BaseMapProperties = {

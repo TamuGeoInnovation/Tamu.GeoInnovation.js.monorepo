@@ -83,7 +83,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
       this.config.next({
         basemap: {
-          basemap: aggiemapBasemap(this.ts.isTesting)
+          basemap: aggiemapBasemap()
         },
         view: {
           properties: {
