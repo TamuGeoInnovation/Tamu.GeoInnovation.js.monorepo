@@ -912,6 +912,18 @@ footer .logo-container {
       }
     }
   }
+
+  // Copies the question's address (#2548): an icon, not a button-shaped control, so it sits quietly beside the question.
+  .faq-link {
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+    padding: 0.25rem;
+    border: none;
+    background: none;
+    color: $gisday-blue-support;
+    font-size: 1.25rem;
+    cursor: pointer;
+  }
 }
 
 .fine-print {

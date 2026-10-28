@@ -10,35 +10,50 @@
     <div class="column10">
       <div>
         <div class="trailer-2 faq-item" id="account-identity">
-          <p (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">Should I use my University account username and password to log into the website?</p>
+          <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
+            <span>Should I use my University account username and password to log into the website?</span>
+            <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'account-identity' }"></ng-container>
+          </p>
           <div>
             <p>No. The TxGIS Day website is completely separate from Texas A&M's Howdy system. If you have never signed up before on the TxGIS Day website, you should <a [routerLink]="['/signup']">create an account.</a></p>
           </div>
         </div>
 
         <div class="trailer-2 faq-item" id="event-cost">
-          <p (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">Are all of the TxGIS Day events free?</p>
+          <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
+            <span>Are all of the TxGIS Day events free?</span>
+            <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'event-cost' }"></ng-container>
+          </p>
           <div>
             <p>Yes. There is no cost to attend any of the TxGIS Day events.</p>
           </div>
         </div>
 
         <div class="trailer-2 faq-item" id="event-eligibility">
-          <p (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">I am not a student, faculty, or staff member at a university or college - can I come to TxGIS Day?</p>
+          <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
+            <span>I am not a student, faculty, or staff member at a university or college - can I come to TxGIS Day?</span>
+            <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'event-eligibility' }"></ng-container>
+          </p>
           <div>
             <p>Yes. We strongly encourage members of the community, colleagues and students from other universities, people from industry, and folks from local, state, and federal agencies to attend.</p>
           </div>
         </div>
 
         <div class="trailer-2 faq-item" id="event-cost-2">
-          <p (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">I am not a student, faculty, or staff member at a university or college - are all the events really free?</p>
+          <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
+            <span>I am not a student, faculty, or staff member at a university or college - are all the events really free?</span>
+            <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'event-cost-2' }"></ng-container>
+          </p>
           <div>
             <p>Yes. Even if you are not a faculty, staff, or student at a college or university, all TxGIS Day events are free.</p>
           </div>
         </div>
 
-        <div class="trailer-2 faq-item" id="competition-eligibiilty">
-          <p (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">Who is allowed to participate in the competitions? Students, Faculty, Staff, Non-Academic people?</p>
+        <div class="trailer-2 faq-item" id="competition-eligibility">
+          <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
+            <span>Who is allowed to participate in the competitions? Students, Faculty, Staff, Non-Academic people?</span>
+            <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'competition-eligibility' }"></ng-container>
+          </p>
           <div>
             <ul>
               <li>The presentation and poster competitions are only open to public (for some prizes) and to TAMU graduate and undergraduate students (for other prizes).</li>
@@ -48,7 +63,10 @@
         </div>
 
         <div class="trailer-2 faq-item" id="website-checkin">
-          <p (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">How do I check-in using the TxGIS Day Website?</p>
+          <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
+            <span>How do I check-in using the TxGIS Day Website?</span>
+            <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'website-checkin' }"></ng-container>
+          </p>
           <div>
             <p>You can complete the check-in process for any event using the TxGIS Day website while that event is on-going. Follow these simple steps:</p>
 
@@ -62,7 +80,10 @@
         </div>
 
         <div class="trailer-2 faq-item" id="attendance-certification-website">
-          <p (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">How do I certify my attendance using the GIS Day Website?</p>
+          <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
+            <span>How do I certify my attendance using the GIS Day Website?</span>
+            <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'attendance-certification-website' }"></ng-container>
+          </p>
           <div>
             <p>You can certify your attendance at any of the TxGIS Day events using the TxGIS Day website. Follow these simple steps:</p>
             <ul class="numbered">
@@ -74,16 +95,22 @@
           </div>
         </div>
 
-        <div class="trailer-2 faq-item" id="app-checkin">
-          <p (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">Is there a TxGIS Day App for Android or iOS?</p>
+        <div class="trailer-2 faq-item" id="mobile-app">
+          <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
+            <span>Is there a TxGIS Day App for Android or iOS?</span>
+            <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'mobile-app' }"></ng-container>
+          </p>
           <div>
             <p>There are no longer apps for TxGIS Day in the Google Play or Apple App stores. They are no longer needed, since all functions of the site work on mobile devices, including the check-in process and the data collection competition.</p>
             <p>If you have previously installed a version of the TxGIS Day app for Android or iOS, you can safely uninstall it.</p>
           </div>
         </div>
 
-        <div class="trailer-2 faq-item" id="app-checkin">
-          <p (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">Where do I find the Zoom link for the events?</p>
+        <div class="trailer-2 faq-item" id="zoom-link">
+          <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
+            <span>Where do I find the Zoom link for the events?</span>
+            <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'zoom-link' }"></ng-container>
+          </p>
           <div>
             <p>The Zoom information for each session is available on each event's details page. Follow these simple steps:</p>
             <ul class="numbered">
@@ -95,8 +122,11 @@
           </div>
         </div>
 
-        <div class="trailer-2 faq-item" id="app-checkin">
-          <p (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">Will the videos be available after the event?</p>
+        <div class="trailer-2 faq-item" id="event-videos">
+          <p class="flex flex-row justify-between align-center" (click)="onFaqItemClick($event)" tabindex="0" role="button" (keydown.enter)="onFaqItemClick($event)" (keydown.space)="onFaqItemClick($event); $event.preventDefault()">
+            <span>Will the videos be available after the event?</span>
+            <ng-container *ngTemplateOutlet="copyLink; context: { $implicit: 'event-videos' }"></ng-container>
+          </p>
           <div>
             <p>Some videos will be available at the <a href="https://www.youtube.com/channel/UC6YUiZwc91mc7dKss2Lv3zA/featured">TxGIS Day YouTube channel.</a></p>
           </div>
@@ -110,3 +140,8 @@
     </div>
   </div>
 </section>
+
+<ng-template #copyLink let-id>
+  <!-- Copies this question's address (#2548). Its click does not also open or close the question. -->
+  <button type="button" class="material-icons faq-link" clipboard-copy [text]="linkTo(id)" [attr.aria-label]="copied() === id ? 'Link copied' : 'Copy a link to this question'" [title]="copied() === id ? 'Link copied' : 'Copy a link to this question'" (click)="onCopyLink($event, id)" (keydown.enter)="$event.stopPropagation()" (keydown.space)="$event.stopPropagation()">{{ copied() === id ? 'check' : 'link' }}</button>
+</ng-template>
