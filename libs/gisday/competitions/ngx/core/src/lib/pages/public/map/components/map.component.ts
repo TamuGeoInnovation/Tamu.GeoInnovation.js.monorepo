@@ -65,6 +65,35 @@ export class MapComponent implements OnInit {
 
     forkJoin([url.pipe(take(1)), this.ms.store.pipe(take(1))]).subscribe(([url]) => {
       this.ms.loadLayers([
+        // Where things were already found last season (#2166), so participants look elsewhere. Listed
+        // first, so this season's submissions draw on top. GIS Day's API publishes no symbology, so the
+        // definition is the only source: an open maroon ring, apart from this season's grey dots, and not
+        // clustered, because the point is to see each one.
+        {
+          type: 'geojson',
+          id: 'already-found-layer',
+          title: 'Already found last year',
+          url: `${this.env.value('api_url')}/competitions/maps/seasons/active/already-found?format=geojson`,
+          listMode: 'show',
+          loadOnInit: true,
+          visible: true,
+          native: {
+            renderer: {
+              type: 'simple',
+              symbol: {
+                type: 'simple-marker',
+                style: 'circle',
+                size: 9,
+                color: [0, 0, 0, 0],
+                outline: { color: '#500000', width: 2 }
+              }
+            },
+            popupTemplate: {
+              title: 'Already found in {year}',
+              content: '{typeName}'
+            }
+          }
+        },
         {
           type: 'geojson',
           id: 'submissions-layer',

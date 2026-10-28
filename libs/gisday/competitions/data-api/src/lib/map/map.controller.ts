@@ -11,6 +11,14 @@ export class MapController {
     return this.service.getUserLocationsForActiveSeason(guid, format);
   }
 
+  /**
+   * Where things were already found in the previous season (#2166).
+   */
+  @Get('seasons/active/already-found')
+  public getAlreadyFoundForActiveSeason(@Query('format') format) {
+    return this.service.getAlreadyFoundForActiveSeason(format);
+  }
+
   @Get('seasons/active')
   public getFeatureCollectionForActiveSeason(@Query('format') format) {
     return this.service.getLocationsForActiveSeason(format);
