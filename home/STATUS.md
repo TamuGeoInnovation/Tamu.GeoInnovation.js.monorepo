@@ -6,7 +6,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running.** Last batch done: 9.
+**Batch 10** (aggiemap: #2459, the hatch breaks the building outline; draw our own outline above it), started 1:30 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
+Next update by 1:45 AM Central (progress every 15 minutes).
 
 ## Finished
 - **Batch 9** (aggiemap; report `home/reports/2026-10-28-9.md`): #2459 branch ready: `feat/2459-hatch-layer` at `f1aa31ca9` on the fork (#2506 caveat in the release note). Sprite override deleted; tests red then green; check exit 0; all eight buildings hatched; release note; density recommendation: ship as is.
