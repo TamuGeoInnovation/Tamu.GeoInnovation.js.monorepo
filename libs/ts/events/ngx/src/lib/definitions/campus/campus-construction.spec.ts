@@ -52,6 +52,7 @@ describe.each(cases)('%s construction (#2532)', (_, sources, basemapId, styleLay
   it("draws the construction from the campus's feature service with the shared hatch, over the tiles", () => {
     expect(construction).toBeDefined();
     expect(construction?.native?.renderer).toBe(CONSTRUCTION_HATCH_RENDERER);
-    expect(sources.indexOf(construction as LayerSource)).toBeGreaterThan(sources.indexOf(basemap));
+    // An event map adds its sources so that the first draws on top.
+    expect(sources.indexOf(construction as LayerSource)).toBeLessThan(sources.indexOf(basemap));
   });
 });
