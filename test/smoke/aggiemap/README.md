@@ -85,6 +85,13 @@ in only one of the baseline and the environment is reported in the output and an
 failed. Framing is read from the map probe's `framing`, or on builds whose probe predates it, from
 Esri's own list of views.
 
+**The maps behind a builder are checked at the destinations `tools/builder-inventory` recorded**, by
+`maps.spec.ts` and `map-layers.spec.ts`, one per distinct layer set (`builder-destinations.ts`, #2467). The
+inventory is crawled on dev. **On any other environment it is borrowed, not ignored** (#1134): its destinations
+are paths, which reach the same maps on production once a release is there. The log names the inventory used,
+with where and when it was crawled, and a borrowed destination that does not reach its map is skipped with a
+note rather than failed, since builder choices can differ between environments between releases.
+
 **A release check opens one route per map** (#1426): every listed map, and for a map behind a builder
 its first recorded destination only, about 70 routes on dev instead of about 420. The rest are the same
 maps opened with different builder choices, and the scheduled run on GitHub still opens every one of
