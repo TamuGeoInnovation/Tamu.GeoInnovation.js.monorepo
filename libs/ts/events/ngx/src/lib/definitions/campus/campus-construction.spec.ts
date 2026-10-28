@@ -52,9 +52,12 @@ describe.each(cases)('%s construction (#2532)', (_, sources, basemapId, styleLay
   it("draws the construction from the campus's feature service with the shared hatch, over the tiles", () => {
     expect(construction).toBeDefined();
     expect(construction?.native?.renderer).toBe(CONSTRUCTION_HATCH_RENDERER);
-    // Layers go on the map as each is made, so the order they are listed in decides nothing; the basemap is
-    // pinned to the bottom instead, and the construction, added after it at any time, lands above it.
-    expect(basemap.layerIndex).toBe(0);
-    expect(construction?.layerIndex).toBeUndefined();
+    // An event map adds its layers one at a time with the first listed on top, but `essential` layers are made at
+    // start-up as each one loads, in no fixed order. So the construction is listed first and is not essential: it
+    // is added after the tiles, every time. Pinning the tiles to the bottom instead put the click overlay above
+    // them, which hid the tiles' building labels.
+    expect(sources.indexOf(construction as LayerSource)).toBeLessThan(sources.indexOf(basemap));
+    expect(construction?.essential).toBeFalsy();
+    expect(basemap.layerIndex).toBeUndefined();
   });
 });
