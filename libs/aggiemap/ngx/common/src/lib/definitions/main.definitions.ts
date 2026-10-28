@@ -172,7 +172,7 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       layerId: MAIN_MAP_LAYERS.SINGLE_OCCUPANCY_RESTROOMS,
       name: 'Single Occupancy Restroom Locations',
       url: `${connections.inforUrl}/1`,
-      popupComponent: Popups.MarkdownWDirectionsPopupComponent
+      popupComponent: Popups.RestroomPopupComponent
     },
     BIKE_DISMOUNT_ZONES: {
       id: 'bike-dismount-zones',
@@ -624,10 +624,6 @@ export function MainMapLayerSources(
       popupComponent: definitions.SINGLE_OCCUPANCY_RESTROOMS.popupComponent,
       listMode: 'show',
       visible: false,
-      popupData: {
-        description:
-          '<strong>Building</strong>: {attributes.Name}\n' + '<strong>Restroom Location(s)</strong>: {attributes.Notes}'
-      },
       native: {
         ...commonLayerProps,
         definitionExpression: "showOnAggieMap = 'Y'"
