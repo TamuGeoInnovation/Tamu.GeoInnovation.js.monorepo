@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 40.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 41.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,68 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 40 (aggiemap: the maintainer wants campus labels ABOVE their maps on mobile; 28 October 2026, from `work (aggiemap)`)
+
+**From the maintainer, just now, after looking at it himself:**
+
+> On mobile, the labels for the maps seem to be below the maps, which is the confusion + the spacing. Make
+> them be above and increase the spacing between the panels.
+
+This is your #2458 work again, taken further. **PR 2505 merged**, so the spacing fix (8 px above a name,
+21 px below) is on `development` - and he has decided that binding the name upward is not enough: he wants
+**the name above its own map**, where it cannot be misread at all, **and more space between panels**.
+
+### Both pages
+
+- **`/all-maps/campus`** - `MapColumnsComponent`, `.map-entry--pictured` in `discover-shared.scss`. This is
+  the page he was looking at and the one Tad reported.
+- **The Campus Maps section of `/all-maps`** - `AllMapsComponent`, `.campus-tile`. Same treatment, so the
+  two pages do not disagree.
+
+**Mobile only.** He said "on mobile", the desktop grid is not reported as wrong, and a label above a
+picture is a bigger change than it looks. **The desktop layout must not move** - prove it the way you did
+before, with before/after captures at 1280 px.
+
+### The one thing to think about rather than just do
+
+Moving the label visually above the image, with `flex-direction: column-reverse`, **leaves the DOM order
+unchanged** - so a screen reader still hears the image's alt text before the name, while a sighted user
+reads the name first. That mismatch is the sort of thing the template accessibility rules were turned back
+on for (#2046).
+
+The alternative is to put the label **first in the DOM** and use `column-reverse` on desktop to keep it
+below there. Then the reading order is name-then-image everywhere, and only the visual order changes by
+breakpoint.
+
+**Choose, and say why in your report.** I lean to the second, because the name is the thing being chosen
+and reading it first is right - but you have the markup in front of you and I do not. If the anchor's
+`aria-label` or the image's `alt` makes one of these redundant or worse, say so; the image's alt is already
+`<name> campus map`, so a reader may hear the name twice either way.
+
+### Spacing
+
+"Increase the spacing between the panels" - judge it by looking, not by picking a ratio. The gap between
+one card and the next must be clearly larger than the gap between a name and its own map, which is now the
+thing that binds them. Use the spacing scale (`libs/sass/_spacing.scss`) and say where you looked.
+
+### Prove it
+
+1. **Phone-width before and after of `/all-maps/campus`**, at least **three** stacked entries with pictures
+   loaded, committed to `docs/screenshots/2458-campus-name-spacing/` with new names. The point of the shot
+   is that each name sits above its own map, so frame it to show that.
+2. The same for the `/all-maps` Campus Maps section.
+3. **Desktop before and after of both**, as evidence nothing moved there.
+4. Measure it: name-to-its-own-map and panel-to-panel, before and after, both pages.
+5. `scripts/check-in-volume.sh <branch> aggiemap-ngx-discover,aggiemap-angular` - exit 0.
+6. Update the release note for #2458 rather than adding a second one: it already describes this area, and
+   one entry telling the whole story is better than two half-stories. Its *What to test on dev* row should
+   now say the name is above its map.
+
+**Branch from the latest `development`** (which has 2505). Push to `fork`, report `branch ready:`.
+No pull request.
 
 ---
 
