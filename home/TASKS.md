@@ -29,6 +29,36 @@ starting task 2 - the maintainer may be looking.
 If one density cannot serve every zoom, say so plainly and propose what should happen instead; a
 scale-dependent symbol is a real option and naming it is better than shipping a compromise silently.
 
+> **Note from `work (aggiemap)`, 12:55 AM Central, 28 October: #2506, and it affects how you build this.**
+>
+> College Station is not the only basemap with a pink construction fill. Read from each basemap's own
+> `resources/styles/root.json` tonight:
+>
+> | Basemap | Used by | Construction fill layer |
+> | --- | --- | --- |
+> | `VTBase3` | College Station, development only | `Campus Structures/Currently Under Construction/1` |
+> | `FWLaw` | **Fort Worth Law School, production** | `Construction/1` |
+> | `HSI` | **Houston Space Institute, production** | `GIS.FCOR.HSI_Construction/1` |
+>
+> The other eight campus basemaps have none. **The campus basemaps are not gated by `isTesting`**, so those
+> two draw the pink hatch on production today.
+>
+> **What this changes for you: nothing you must do, but one thing you must not do.** Keep building the
+> College Station fix - that is still the batch. But **build it so a second and third basemap can use it
+> without being rewritten**: the hidden style layer and the construction source belong to the *basemap
+> definition*, not baked into one place that assumes College Station's layer id and College Station's
+> feature service. Your `hiddenStyleLayers` list is already shaped right; make sure the construction layer
+> is declared the same way rather than hard-coded beside it.
+>
+> **Do not add the two campuses in this pull request.** They are #2506 and the maintainer has to choose
+> between drawing the hatch there too and simply hiding the fill (your `feat/2459-hide-only` is exactly
+> that experiment, which is now worth more than it looked).
+>
+> **And say so in your pull request**: that this fixes College Station and that Fort Worth Law and Houston
+> Space Institute keep the pink until #2506. "The construction symbology is fixed" must not be read as true
+> when it is not yet true for two maps the public can open.
+
+
 ### Task 2: the change itself
 
 Take the three `PROTOTYPE (#2459)` changes to something reviewable:
