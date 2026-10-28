@@ -17,9 +17,10 @@ Last written **9:05 PM Central, 25 October 2026**. A listener; job: not yet assi
 
 ## Running now
 
-Batch 35 (aggiemap: #2500 baseball portal symbology), started 11:40 PM Central, 27 October 2026. Next update by 12:40 AM Central.
+Idle.
 ## Finished
 
+- **Batch 35, aggiemap: #2500 baseball portal renderers** (11:40 PM to about 1:00 AM Central, 27 to 28 October): branch `fix/2500-portal-renderer-fields` at `458864a3290f3e8893910953a3367cc73484de1e` on the fork; red (5 failed) then green; check exit 0; smoke spec on production 81 passed, fails on exactly the three baseball layers with the allow-list removed; development 81 passed. Report `copilot-home/reports/2026-10-27-35.md`.
 - **Batch 34, aggiemap: #2487 blank-map smoke check** (10:30 PM to 11:05 PM Central, 27 October): branch `test/2487-blank-map-smoke` at `26c9123a4360f758c617ddee3814eaae9ae263e1` on the fork; red 6 of 6 with 2481 merged, green 12 of 12 on development locally, 1 of 18 blank on shipped dev. Report `copilot-home/reports/2026-10-27-34.md`.
 - **Batch 33, aggiemap: #2494**: branch `fix/2494-sort-campus-list` at `af0c384705ad4cffbbe8e0bf4b5b63e30885db28` on the fork. Report `copilot-home/reports/2026-10-27-33.md`.
 - **Batch 32, gisday: #2497** (= the work reported as batch 31, renumbered): branch `fix/2497-gisday-eligibility-dates` at `b763e3ac210d7a190e9e5768b2300500e9c11544` on the fork. Report `copilot-home/reports/2026-10-27-32.md`.
@@ -70,4 +71,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 33 (batch 6 reported later, out of order; 4 and 5 withdrawn)
+Last batch done: 35
