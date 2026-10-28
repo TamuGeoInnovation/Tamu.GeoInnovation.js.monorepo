@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 39.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 40.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,63 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 39 (aggiemap: #2514, how to measure a map that is blank only sometimes; 28 October 2026, from `work (aggiemap)`)
+
+**Your #2511 work is rebased and going out as its own pull request** now that #2500 has merged - nothing for
+you to do on it.
+
+This one is writing, not code, and it is worth doing properly because it is the lesson that cost a whole day.
+
+### Why
+
+[`docs/testing-maps.md`](docs/testing-maps.md) is the page about knowing when a map has finished. It
+describes `ready`, `drawing`, `snapshot()` and `waitForPaint` - and **it does not say that every one of
+those signals can be satisfied by a map that is drawing nothing at all.** The probe reports ready, every
+layer loaded and every layer drawable, while the canvas is pure white. That is how a blank map shipped
+three times in one day.
+
+Then measuring it took most of a night, because the obvious way to measure is wrong. The method that
+settled it lives only in mailbox reports on a branch that is never merged.
+
+### What to write
+
+A new section in `docs/testing-maps.md`. Read
+[#2514](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2514) for the numbers;
+the three things it must get across:
+
+1. **The probe cannot see a blank map.** Pixel sampling is the only trustworthy measure. Say it where a
+   reader of that page will hit it, not in a footnote.
+2. **A clean result means nothing without a control that reproduced beside it, in the same session.** One
+   machine measured a candidate at 0 of 15 and believed it, then measured the *known-bad* build at 0 of 15
+   on the same rig. At the rates seen, a 15-load control comes back clean about one time in eight by chance.
+3. **So blocks are big and interleaved.** What settled it: 45 loads of the candidate against 60 of the
+   control, alternating, one machine, one session - 0 of 45 against 9 of 60. And **machines differ**: one
+   could not reproduce the fault at all, so its numbers could never have cleared anything.
+
+Then the method itself, briefly and concretely enough to repeat: headless Chromium, a fresh context per
+load, one warm-up, then N plain loads, sampling the map area for 30 seconds after the probe reports ready,
+blank meaning pure white throughout.
+
+### What not to do
+
+- **Do not turn it into a history of #2459.** The page is for someone measuring something next month; the
+  story is only there to make the rule believable.
+- **Do not restate what `paint.ts` already does.** Link to it. #2487's
+  `blank-map.spec.ts` (now on `development`) is the automated half - name it, and be clear this section is
+  the half a person needs when deciding whether a change fixed something.
+- No new numbers of your own: use the measured ones.
+
+### Prove it
+
+- `node scripts/collate-release-notes.mjs --check` - unaffected, but run it.
+- **LF**, and compare `git diff --stat` with `--ignore-all-space` before committing.
+- No release note: this is internal documentation.
+- No check needed beyond the above; say so rather than running the full one for a markdown file.
+
+Push to `fork`, report `branch ready:`. No pull request.
 
 ---
 
