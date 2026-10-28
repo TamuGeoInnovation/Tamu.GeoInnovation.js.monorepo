@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
@@ -9,6 +10,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { EsriModuleProviderService } from '../module-provider/module-provider.service';
 import { LayerSourcesService } from '../layer-sources/layer-sources.service';
 import { EsriMapService } from './map.service';
+import { symbologySourceOf } from './portal-symbology';
 
 /**
  * What a feature layer is called when its definition does not name it (#1802).
@@ -88,6 +90,106 @@ describe('EsriMapService feature layer titles', () => {
     const layer = await loaded({ type: 'feature', id: 'route', title: 'Parade', url });
 
     expect(layer.title).toBe('Parade');
+  });
+});
+
+/**
+ * A portal renderer keyed on fields its layer lacks is not applied (#2500).
+ *
+ * The production item for the baseball parking views was not republished with the service, so its
+ * renderers key on `baseball` for layers that now have `type` and `event`: no feature matches a class and
+ * nothing draws. The layer keeps the service's own symbology, which is what development draws.
+ */
+describe('EsriMapService portal item renderers', () => {
+  const itemId = 'item1';
+  const serviceRenderer = { type: 'service' };
+
+  class PortalFeatureLayer {
+    public layerId = 3;
+    public title = 'Baseball Event Parking Lots';
+    public renderer: { toJSON: () => unknown } | { restored: unknown } = { toJSON: () => serviceRenderer };
+    public sourceJSON = { serviceItemId: itemId };
+    public url = 'https://example.test/arcgis/rest/services/Hosted/BaseballParking_view/FeatureServer/3';
+    public fields: Array<{ name: string }> = [{ name: 'objectid' }, { name: 'type' }];
+
+    constructor(props: object) {
+      Object.assign(this, props);
+    }
+
+    public when(): Promise<this> {
+      return Promise.resolve(this);
+    }
+  }
+
+  const rendererJsonUtils = { fromJSON: (json: unknown) => ({ restored: json }) };
+
+  let service: EsriMapService;
+  let itemRenderer: unknown;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: EsriModuleProviderService,
+          useValue: {
+            require: (names: string[]) =>
+              Promise.resolve(names.map((name) => (name === 'rendererJsonUtils' ? rendererJsonUtils : PortalFeatureLayer)))
+          }
+        },
+        { provide: Router, useValue: {} },
+        { provide: ActivatedRoute, useValue: {} },
+        { provide: SearchService, useValue: {} },
+        { provide: EnvironmentService, useValue: { value: () => undefined } },
+        { provide: HttpClient, useValue: { get: () => of({ layers: [{ id: 3, layerDefinition: { drawingInfo: { renderer: itemRenderer } } }] }) } },
+        { provide: LayerSourcesService, useValue: {} }
+      ]
+    });
+
+    service = TestBed.inject(EsriMapService);
+  });
+
+  async function loaded(): Promise<PortalFeatureLayer> {
+    const layer = (await service.generateLayer({ type: 'feature', id: 'lots', url: 'u' })) as unknown as PortalFeatureLayer;
+
+    await layer.when();
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
+    return layer;
+  }
+
+  it('keeps the service symbology, and says why, when the item keys on a field the layer lacks', async () => {
+    itemRenderer = { type: 'uniqueValue', field1: 'baseball', uniqueValueInfos: [{ value: 'Permit' }] };
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    const layer = await loaded();
+
+    expect(layer.renderer).not.toHaveProperty('restored');
+    expect(symbologySourceOf(layer)).toBe('service');
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('baseball'));
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('Baseball Event Parking Lots'));
+
+    warn.mockRestore();
+  });
+
+  it('applies the item renderer when every field it keys on is on the layer', async () => {
+    itemRenderer = { type: 'uniqueValue', field1: 'type', uniqueValueInfos: [{ value: 'Reserved' }] };
+
+    const layer = await loaded();
+
+    expect(layer.renderer).toEqual({ restored: itemRenderer });
+    expect(symbologySourceOf(layer)).toBe('portal');
+  });
+
+  it('applies an Arcade renderer whatever fields the layer has', async () => {
+    itemRenderer = { type: 'uniqueValue', field1: 'baseball', valueExpression: '$feature.type' };
+
+    expect((await loaded()).renderer).toEqual({ restored: itemRenderer });
+  });
+
+  it('applies a simple renderer whatever fields the layer has', async () => {
+    itemRenderer = { type: 'simple', symbol: {} };
+
+    expect((await loaded()).renderer).toEqual({ restored: itemRenderer });
   });
 });
 

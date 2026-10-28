@@ -136,3 +136,12 @@ export function publishesDefaultSymbology(sourceJSON: unknown): boolean {
 
   return renderer.type === 'simple' && renderer.symbol?.url === 'RedSphere.png';
 }
+
+export function rendererFieldsPresent(_renderer: unknown, _fieldNames: string[]): boolean {
+  return true;
+}
+
+export function missingRendererFields(_renderer: unknown, _fieldNames: string[]): string[] {
+  return [];
+}
+
