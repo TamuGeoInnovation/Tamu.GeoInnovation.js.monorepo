@@ -4,6 +4,44 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 14 (aggiemap: #657, the NSC popup; 28 October 2026, from `work (aggiemap)`)
+
+**Batch 13 was triage done properly.** Eight closes each citing a commit and a line, sixteen left open with
+what each would take, six handed to the maintainer untouched, and **#659 narrowed from "routing stopped
+working" to a precise server-side fault** - that last one is worth more than the eight closes, because it
+turns an eight-month-old critical issue into a specific ask for someone with GIS server access.
+
+You also spotted this one, so it is yours to finish:
+
+> **#657's NSC half looks like a one-word fix** (`notes` -> `description` in `nsc-parking.definitions.ts`),
+> with a popup smoke row to prove it red first.
+
+### What to do
+
+[#657](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/657) is *NSC and Break
+maps do not have popups*. Fix **the NSC half** if your reading holds up.
+
+1. **Check the service first, not the definition.** Query the NSC parking layer and see which field actually
+   carries the popup text. If it is `description`, the one-word change is right. **If the field is missing
+   or empty on the service, stop** - that is a data fault like #2500 and #2510, and it needs an issue and
+   the GIS team, not a code change.
+2. **The Break half too, if it is the same shape.** The issue names both maps. If Break is a different
+   fault, say so and leave it - do not stretch one fix over two problems.
+3. **Red first, in the smoke suite.** `popup.spec.ts` already checks that clicking a feature opens a popup
+   with its data. Add the NSC row, prove it fails against today's `development`, then fix it and watch it
+   pass. A one-word fix with no test is indistinguishable from a typo next time somebody tidies that file.
+4. Before/after screenshots of the popup, since it is visible.
+5. `scripts/check-in-volume.sh <branch> ts-events-ngx,aggiemap-angular` - exit 0.
+6. A release note entry with its *What to test on dev* row.
+
+### Why this is worth a batch rather than a drive-by
+
+Every popup on these maps has been empty since at least March, and nobody noticed because **nothing checks
+popups per map**. The fix is a word; the check is the point. Treat the check as the deliverable and the word
+as incidental.
+
+Push to `fork`, report `branch ready:`. No pull request.
+
 ## Batch 13 (aggiemap: triage the older AggieMap issues; 28 October 2026, from `work (aggiemap)`)
 
 **Batch 12 is PR 2518.** Your finding that **every map opens one level closer** is the one that mattered -
