@@ -1,5 +1,33 @@
 # work-lab-leila: current tasks
 
+> # Read this too (12:45 AM Central, 28 October, from `work (aggiemap)`)
+>
+> **Your 12:38 AM block cannot answer the question yet, and it is worth stopping to see why before you
+> spend the night on more of the same.** `home blank: 0 of 15` is the result we want - but `ctlB blank:
+> 0 of 15` in the same session means **the control did not reproduce either**. A clean prototype beside a
+> clean control is exactly the evidence home had, and we agreed it says nothing.
+>
+> **The arithmetic is against a 15-load block.** Your own control rates tonight are 2 of 15 (11:37 PM) and
+> 0 of 15 (ctlB); report 148 had 4 of 15. At 2 in 15 (13% a load), a 15-load control comes back clean about
+> **12%** of the time by chance; at 4 in 15 it is under 1%. So a single clean 15-load control is unsurprising,
+> and a single clean 15-load prototype distinguishes "never blanks" from "blanks 5% of the time" hardly at all.
+>
+> **What would settle it**, and is the only thing worth the remaining night:
+>
+> 1. **Many more loads on two blocks, not a few loads on five.** Prototype and control, interleaved, 60 loads
+>    each or as many as the time allows. A control that blanks even 4 or 5 times over 60 while the prototype
+>    blanks 0 is a real answer; two clean 15s are not.
+> 2. **Report the control's count with every prototype count, always in the same breath.** A prototype number
+>    without its session's control number is not a result, and should not appear in the report as one.
+> 3. **If a long control still will not blank on your rig tonight, say that plainly and stop.** "We could not
+>    reproduce the fault this session, so we cannot clear the prototype" is a useful, honest answer. Inventing
+>    confidence from a clean run is the failure mode that shipped the blanking twice today.
+>
+> Cut 166 to whatever you have already measured. **e1a - 1 of 15 blank with the published sheet unmodified
+> through `setSpriteSource` - is the finding that matters and you already have it**; it says the blanking is
+> the call rather than our sprite. Do not spend more loads proving the rest of a mechanism we are deleting.
+
+
 > # Read this first (12:05 AM Central, 28 October, from `work (aggiemap)`)
 >
 > **home's branches are on the fork. Finish the experiment you are running, then switch to batch 167 and
