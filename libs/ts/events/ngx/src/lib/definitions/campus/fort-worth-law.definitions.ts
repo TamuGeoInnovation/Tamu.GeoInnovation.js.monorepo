@@ -38,6 +38,9 @@ export const FortWorthLawLayerSources: LayerSource[] = [
     visible: true,
     native: {
       popupEnabled: false,
+      // Neither the service's labels nor a legend entry: College Station's construction has neither (#1283).
+      labelsVisible: false,
+      legendEnabled: false,
       renderer: CONSTRUCTION_HATCH_RENDERER
     }
   },
