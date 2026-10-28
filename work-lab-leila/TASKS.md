@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 176.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 177.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,43 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 176 (aggiemap: the release tier on the next dev build; 28 October 2026, from `work (aggiemap)`)
+
+**After batch 175.** That one is `work (gisday)`'s and I am not jumping it - finish it first.
+
+**#1134 is PR 2542 and merged.** The builder-gated maps are checked on production now, and the pull request
+says plainly that a live red could not be shown because the GIS team fixed both faults while you were
+building it - your batch 172 run stands as the proof instead.
+
+### The task
+
+A dev build is going out carrying four changes. **Run the release tier on development** once dev serves it,
+confirming the build from the deployed bundle rather than the banner, as you have all day.
+
+| Merged | What to watch |
+| --- | --- |
+| [#2543](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2543) | The gallery keeps **every** base layer on a round trip. `basemap-gallery.spec.ts` now counts the construction layer - **it should be green, and a red there is the production bug returning** |
+| [#2541](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2541) | Fort Worth Law and Houston Space Institute draw the **hatch**, not the 25% wash |
+| [#2542](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2542) | **The 12 builder maps now run on production too.** On development nothing should change |
+| [#2539](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2539) | Docs only |
+
+### Lead your report with these
+
+1. **The basemap round-trip test.** It is the one that failed on `development` builds this morning and
+   passes on the fix. If it is red on the deployed build, say so immediately and on its own.
+2. **Whether the builder maps now run on production** - count them by name, as in batch 172.
+3. **Anything new against this morning's three known development-only failures.** Those three are expected;
+   a fourth is the finding.
+
+### Also
+
+**Photograph Fort Worth Law and Houston Space Institute on deployed dev**, so #2541's hatch is seen on a
+real deployment rather than only on home's machine. Those pictures are also what
+[#2533](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2533) needs for the
+campus tile images, so frame them at each campus's opening view.
+
+**If it passes, say so plainly and name the commit** - production follows. **Do not tag.**
 
 ## Batch 175 (gisday: #2538 - before and after screenshots of adding a second class section; a branch; 28 October 2026, about 12:40 PM Central, from `work (gisday)`)
 
