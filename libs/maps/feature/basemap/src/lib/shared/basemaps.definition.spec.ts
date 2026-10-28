@@ -192,3 +192,31 @@ describe('campus basemap', () => {
     expect(offenders).toEqual([]);
   });
 });
+
+/**
+ * The buildings under construction on the vector basemap (#2459). The tiles fill them with a sprite pattern that
+ * was rasterized onto an opaque tile, so each draws as a solid pink block. The fill is hidden and the buildings are
+ * drawn from the campus buildings service with an orange grid hatch; the tiles' black outline stays. Replacing the
+ * pattern in the sprite sheet instead blanked the map on about one load in four, and is gone.
+ */
+describe('the vector basemap draws its buildings under construction itself (#2459)', () => {
+  const layers = (definitions.AggiemapVectorBasemap as unknown as {
+    baseLayers: Array<Record<string, unknown>>;
+  }).baseLayers;
+  const tiles = layers.find((layer) => layer['type'] === 'VectorTileLayer');
+  const construction = layers.find((layer) => layer['type'] === 'FeatureLayer');
+
+  it("hides the tiles' construction fill and keeps their outline", () => {
+    expect(tiles?.['hiddenStyleLayers']).toEqual(['Campus Structures/Currently Under Construction/1']);
+  });
+
+  it('draws the buildings under construction from the buildings service, with a CIM hatch', () => {
+    expect(construction?.['url']).toMatch(/\/FCOR\/TAMU_Basemap_\d+\/MapServer\/2$/);
+    expect(construction?.['definitionExpression']).toBe("Type = 'CONSTRUCTION'");
+    expect(JSON.stringify(construction?.['renderer'])).toContain('CIMHatchFill');
+  });
+
+  it('patches no sprite sheet', () => {
+    expect(JSON.stringify(layers)).not.toContain('spriteOverrides');
+  });
+});

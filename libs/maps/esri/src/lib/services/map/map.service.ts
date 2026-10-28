@@ -6,7 +6,6 @@ import { filter } from 'rxjs/operators';
 
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { SpriteOverride } from './vector-tile-sprites';
 import {
   AutocastableLayer,
   cleanPortalJSONLayer,
@@ -1231,20 +1230,19 @@ interface MapProperties extends Omit<esri.MapProperties, 'basemap'> {
 }
 
 export interface BaseMapProperties extends Omit<esri.BasemapProperties, 'baseLayers'> {
+  /** More than one where a basemap draws something over its tiles (#2459). It was a one-element tuple. */
   baseLayers: Array<LayerProperties>;
 }
 
 interface LayerProperties
   extends esri.LayerProperties, esri.TileLayerProperties, esri.VectorTileLayerProperties, esri.WMSLayerProperties {
   type: string;
-  /** Sprites to replace in a VectorTileLayer's published sheet once it loads (#2459). */
-  spriteOverrides?: SpriteOverride[];
-  /** PROTOTYPE (#2459): style layers of a VectorTileLayer to turn off once its style loads. */
+  /** A VectorTileLayer's style layers to turn off once its style loads, by id (#2459). */
   hiddenStyleLayers?: string[];
-  /** PROTOTYPE (#2459): a FeatureLayer in a basemap, drawing the construction hatch. */
-  definitionExpression?: string;
-  renderer?: unknown;
-  popupEnabled?: boolean;
+  /** A FeatureLayer's, for one drawn as part of a basemap (#2459). */
+  definitionExpression?: esri.FeatureLayerProperties['definitionExpression'];
+  renderer?: esri.FeatureLayerProperties['renderer'];
+  popupEnabled?: esri.FeatureLayerProperties['popupEnabled'];
 }
 
 /**

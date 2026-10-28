@@ -54,12 +54,12 @@ export const AggiemapRasterBasemap: BaseMapProperties & { id: string } = {
  * No `spatialReference` here: a VectorTileLayer takes it from the service's tiling scheme and the
  * property is read-only. No `minScale`/`maxScale` either, because the cache carries its own levels.
  *
- * `spriteOverrides` replaces the under-construction buildings' pattern, which the vector tile packager
- * rasterized into a tile with no transparent pixels in it, so it paints each building as a solid block
- * instead of a hatch over it. The maintainer settled the replacement on 27 October 2026: **hatched
- * orange, no pink** - orange being what the Construction Zones layer already uses for its projects.
- * This is an override of published symbology and comes out when the service carries the hatch itself.
- * See #2459 and `docs/map-layers.md`.
+ * The buildings under construction are drawn by us, not by the tiles (#2459). The published style fills them
+ * with a sprite pattern the vector tile packager rasterized onto an opaque tile, so each draws as a solid pink
+ * block. Its fill layer is hidden and a layer from the campus buildings service draws them instead, with the
+ * hatch the maintainer settled on 27 October 2026: **an orange grid, no fill**. The style's own black outline
+ * stays. This replaces published symbology; see `docs/map-layers.md`. Replacing the pattern in the sprite
+ * sheet instead (`setSpriteSource`) left the map blank on about one load in four, so that was deleted.
  */
 export const AggiemapVectorBasemap: BaseMapProperties = {
   baseLayers: [
@@ -69,41 +69,21 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
       listMode: 'hide',
       visible: true,
       title: 'Base Map',
-      // PROTOTYPE (#2459, option D): the published construction fill is turned off and the layer below draws
-      // the hatch instead. The outline, `.../Currently Under Construction/0`, stays.
-      hiddenStyleLayers: ['Campus Structures/Currently Under Construction/1'],
-      spriteOverrides: [
-        {
-          sprite: 'Campus Structures/Currently Under Construction/1',
-          // What the maintainer asked for on 27 October 2026: a black outline, a checkered hatch, and
-          // no fill of any kind. The outline is the style's own line layer and is left alone; this
-          // replaces only the pattern. The checkering is the one the service already draws - what was
-          // wrong with it was that it came packaged on an opaque white background, and in pink.
-          //
-          // Orange is the maintainer's choice (27 October 2026). It is one of the colours the
-          // Construction Zones layer already uses - rgb(230, 152, 0) is its UES Projects class - but
-          // that layer has no single construction colour: SSC is green, TS light blue, TxDOT blue, and
-          // its default "Building Projects" class is red. So where a building under construction sits
-          // inside a Building Projects zone, this orange grid draws under a red diagonal cross.
-          //
-          // 64 is a power of two as Esri's picture-fill guidance asks, and 16 divides it, which is what
-          // lets the lines meet across the tile's edges without a seam.
-          //
-          // The published tile drew its lines four pixels apart, and at that spacing a grid stops
-          // reading as lines and starts reading as a fill - which is half of what was wrong with it.
-          // Sixteen apart covers about a quarter of the tile, so the basemap is plainly visible
-          // through it.
-          hatch: { size: 64, spacing: 16, lineWidth: 2, color: 'rgb(230, 152, 0)', pattern: 'grid' }
-        }
-      ]
+      // The construction fill (`fill-pattern`, the rasterized pink) is hidden; the layer below draws these
+      // buildings instead. `.../Currently Under Construction/0` is their black outline, a plain line: wanted,
+      // so it stays.
+      hiddenStyleLayers: ['Campus Structures/Currently Under Construction/1']
     },
-    // PROTOTYPE (#2459, option D): the hatch as a layer, not a sprite. The buildings under construction,
-    // from the campus buildings service, drawn as an orange grid with a CIM hatch: lines 16 px (12 pt)
-    // apart and 2 px (1.5 pt) wide, like the sprite override above, over the basemap's own published fill.
-    // Part of this basemap, so it shows only where the vector basemap does.
+    // The buildings under construction, drawn over the tiles as an orange grid: two CIM hatches, 0 and 90
+    // degrees, lines 12 pt (16 px) apart and 1.5 pt (2 px) wide, so about a quarter of each building is covered
+    // and the ground shows through. The spacing is in screen points, so the grid is the same at every zoom.
+    // Orange, rgb(230, 152, 0), is the maintainer's choice (27 October 2026) and the Construction Zones layer's
+    // UES Projects class; that layer's default Building Projects class is red, so where a building under
+    // construction sits inside one, a red diagonal cross draws over this grid. Part of this basemap, so it shows
+    // only where the vector basemap does. The service and the tiles agreed on all eight buildings on 27 October.
     {
       type: 'FeatureLayer',
-      url: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer/2',
+      url: `${TAMU_CAMPUS_BASEMAP_URL}/2`,
       definitionExpression: "Type = 'CONSTRUCTION'",
       title: 'Buildings under construction',
       listMode: 'hide',
