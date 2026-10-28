@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 41.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 42.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,51 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 41 (aggiemap: the label goes above on desktop too; 28 October 2026, from `work (aggiemap)`)
+
+**You finished batch 40 just before my amendment landed - that is my timing, not your mistake.** The
+maintainer changed it while you were working:
+
+> For the other campus maps tile, always put the label above the map tile, not just on mobile - desktop too.
+
+**And the choice you made is what makes this easy.** You put the name first in the DOM on both pages and
+used `column-reverse` to keep it below on desktop. Remove that reverse and the label is above everywhere,
+with reading order already matching visual order at every width. If you had gone the other way this would
+have been a rewrite.
+
+### What to change, on the same branch
+
+`fix/2458-campus-labels-above` at `9650e9cd3`.
+
+1. **`.map-entry--pictured`** in `discover-shared.scss`: `column` at every width. The phone-only override
+   that set `column` becomes unnecessary - delete it rather than leaving a rule that now says what the
+   default already says.
+2. **`.campus-tile`** in `all-maps.component.scss`: the same. Its phone-only block currently flips the
+   direction and moves the label's margin from top to bottom; with `column` everywhere, the margin belongs
+   below the label at every width, so fold that into the base rule.
+3. **The panel spacing stays as you set it**: 2rem on a phone. **Decide whether desktop needs more too**
+   and say why. On a phone the panels stack, so the gap does the separating; on desktop they sit in a grid
+   with whitespace on both sides, so the old 1rem may still read fine. **Look at it rather than making it
+   symmetrical for tidiness.**
+4. Your `aria-label` reasoning holds and needs no change. Leave the image `alt` alone, as you said.
+
+### Prove it
+
+- **Desktop before and after of both pages at 1280 px** - and this time desktop is **a change to show**,
+  not a thing to prove unmoved. Your batch-40 captures showed desktop geometry identical; that measurement
+  is now expected to differ, so re-measure rather than reusing it.
+- Phone captures can be reused if nothing about them changed; say so if you reuse them.
+- **The one thing to report rather than smooth over:** on desktop the tiles are in a grid, so a label above
+  each picture makes every row taller and may change how many campuses fit above the fold. **If that looks
+  bad, say so and show it.** The maintainer asked for a specific thing and should see what it costs.
+- Update the tests you added in `8deed671` so they assert the order at both widths, not only on a phone.
+- `scripts/check-in-volume.sh <branch> aggiemap-ngx-discover,aggiemap-angular` - exit 0.
+- Update the release note's *What to test on dev* row: it should no longer say "on a phone".
+
+Push to `fork`, report `branch ready:` with the new commit. No pull request.
 
 ---
 
