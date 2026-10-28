@@ -133,7 +133,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
   /**
    * Builds the status badge from the layer feature attributes.
    *
-   * `message` arrives pre-composed as `"<state>. <detail>"` — e.g. `"Closed. Opens tomorrow at 7:30am."` — so the
+   * `message` arrives pre-composed as `"<state>. <detail>"` - e.g. `"Closed. Opens tomorrow at 7:30am."` - so the
    * leading state is dropped in favour of `label`, which the map pin renderer also keys on, and the remainder becomes
    * the detail line.
    */

@@ -24,7 +24,7 @@
         @if (row.sha256Hashes && row.sha256Hashes.length > 0) {
         <span [title]="row.sha256Hashes.join(', ')"> {{ row.sha256Hashes.length }} hash{{ row.sha256Hashes.length > 1 ? 'es' : '' }} </span>
         } @if (!row.sha256Hashes || row.sha256Hashes.length === 0) {
-        <span>—</span>
+        <span>-</span>
         }
       </ng-template>
     </ngx-datatable-column>

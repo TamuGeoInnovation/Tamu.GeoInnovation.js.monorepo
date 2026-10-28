@@ -158,7 +158,7 @@ export interface EventConfiguration {
   /**
    * Optional layer id whose features are briefly flashed (highlighted) once the event map finishes
    * loading and framing. Use it to draw the user's eye to a focal feature tied to a builder
-   * selection — for example, the residence hall the user chose.
+   * selection - for example, the residence hall the user chose.
    *
    * Generic and opt-in: omit to disable. The layer's active definition expression is honored, so
    * only the currently-shown features flash.
@@ -168,7 +168,7 @@ export interface EventConfiguration {
   /**
    * Optional informational panel rendered in the right-hand sidebar above the layer list and legend.
    *
-   * Used to surface reference content that lives outside of the map data — for example, the
+   * Used to surface reference content that lives outside of the map data - for example, the
    * Break / Summer Parking dates that Transportation Services enforcement relies on.
    */
   sidebarInfo?: SidebarInfoPanel;
@@ -627,7 +627,7 @@ export type AggiemapCustomMapConfiguration = ISpecialEventRoot | IGeneralMapRoot
  * High-level discover grouping used by the tabbed Discover page UI.
  *
  * `kiosk` maps are intentionally excluded from every generic discover grouping (search, "All
- * Events", parking columns, quick links) — they are only ever surfaced in the dedicated,
+ * Events", parking columns, quick links) - they are only ever surfaced in the dedicated,
  * development-only "Kiosk Maps" section. See `DiscoveryService.getKioskDiscoverApplications`.
  */
 export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations' | 'satellite-campus' | 'kiosk' | '150';

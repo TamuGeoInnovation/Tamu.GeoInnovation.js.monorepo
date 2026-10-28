@@ -10,7 +10,7 @@ import { AsyncPipe } from '@angular/common';
 
 /**
  * Popup for the AggieSpirit bus map. Rendered when a user clicks a graphic drawn by `BusService` on the
- * `bus-route-layer` — either a bus stop (`type !== 'route'`) or the route line (`type === 'route'`) —
+ * `bus-route-layer` - either a bus stop (`type !== 'route'`) or the route line (`type === 'route'`) -
  * or when a shared `?busstop=<OBJECTID>` deep-link resolves a stop feature.
  *
  * Extends `BaseDirectionsComponent` for the shared "Directions To Here" + copy-link behavior.
@@ -25,13 +25,13 @@ export class BusStopPopupComponent extends BaseDirectionsComponent implements On
   private busService = inject(BusService);
 
   /**
-   * Transportation Services bus schedules — the AggieSpirit per-stop schedule page requires a stopCode
+   * Transportation Services bus schedules - the AggieSpirit per-stop schedule page requires a stopCode
    * and directionName that the TS/Bus_Routes source does not provide, so this links to the general page.
    */
   public readonly transportUrl = 'https://transport.tamu.edu/busroutes/?utm_source=aggiemap';
 
   /**
-   * Router path of the desktop bus map. The share link targets this — rather than the site root —
+   * Router path of the desktop bus map. The share link targets this - rather than the site root -
    * so an opened `?busstop=` link lands on the bus route-list panel instead of the default map's
    * Layers panel. The app's base href is `/` and `map` is a route segment, so this resolves on both
    * localhost and prod; the `DesktopGuard` rewrites `d`→`m` (preserving the query param) for mobile.
@@ -64,7 +64,7 @@ export class BusStopPopupComponent extends BaseDirectionsComponent implements On
   /**
    * When opened from a shared `?busstop=` deep-link, the route serving the stop is not on the map yet
    * (client-drawn stop graphics carry a `type` attribute; a deep-link-resolved feature does not). Draw
-   * the first serving route for context — waiting for the bus layer to exist and preserving the stop's
+   * the first serving route for context - waiting for the bus layer to exist and preserving the stop's
    * zoom (`zoomToRoute: false`).
    */
   private drawServingRouteForDeepLink(): void {

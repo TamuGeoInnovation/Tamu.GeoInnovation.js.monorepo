@@ -7,7 +7,7 @@ import { expect, Page, test } from '@playwright/test';
  * a CSS mixin swaps the breadcrumb trail for a "< Back" link below 768px. The desktop rendering is
  * the one that went unnoticed in #1066, so capturing only one width would have missed it.
  *
- * What this catches that the smoke suite does not: the duplicated 150th Anniversary tile (#1055) —
+ * What this catches that the smoke suite does not: the duplicated 150th Anniversary tile (#1055) -
  * two identical tiles side by side, which every layer check passed happily because nothing had failed
  * to load. A picture makes it obvious; a diff of the template does not, because each copy is
  * individually correct.
@@ -21,7 +21,7 @@ const PROBE_GLOBAL = '__tamuGiscMapProbe';
 /**
  * Content that changes without anyone touching the code, and would otherwise fail every run.
  *
- * Masked rather than excluded, so the space it occupies is still compared — if the events list moved
+ * Masked rather than excluded, so the space it occupies is still compared - if the events list moved
  * or changed size, that is a layout change worth seeing, even though its text is not.
  */
 const VOLATILE = ['.upcoming-events', '[class*="upcoming"]', '[class*="event-date"]'];

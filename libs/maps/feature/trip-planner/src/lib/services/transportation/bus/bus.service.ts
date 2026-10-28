@@ -49,7 +49,7 @@ export class BusService {
   // (polyline, with a uniqueValue renderer on RouteNum that supplies per-route colors).
   //
   // NOTE: TS/Bus_Routes is currently published only to the dev GIS host. It is pinned here (rather than
-  // host-derived) so it also resolves on localhost — a host-from-hostname helper returns the prod host
+  // host-derived) so it also resolves on localhost - a host-from-hostname helper returns the prod host
   // for `localhost`, which 404s for this dev-only service. It will 404 on production until TS publishes
   // the service there; at that point switch this to the host-derived (prod) URL.
   // TODO: un-pin to `gis.it.tamu.edu` once TS/Bus_Routes is published to production.

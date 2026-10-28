@@ -83,7 +83,7 @@ export const HscKingsvilleSearchSources: SearchSource[] = [
 export const HscKingsvilleConfiguration: EventConfiguration = {
   id: 'hsc-kingsville',
   name: 'HSC Kingsville',
-  applicationName: 'Aggie Map — HSC Kingsville',
+  applicationName: 'Aggie Map - HSC Kingsville',
   shortApplicationName: 'HSC Kingsville',
   introductionText: 'Map of the Texas A&M University Health Science Center Kingsville campus.',
   eventDates: [],

@@ -1,6 +1,6 @@
 # Layer list order: ours against the publisher's
 
-A map's layer list is ordered one of two ways — alphabetically by title, or by the declaration order
+A map's layer list is ordered one of two ways - alphabetically by title, or by the declaration order
 of its `references` when `referenceLayerListOrder: 'source'` is set. Neither is the publisher's.
 
 This tool works out what each map shows today, what the order would be if it followed the service
@@ -19,8 +19,8 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "C:/TAMU/<checkout>:/repo:ro" -w /repo nod
 Eleven maps have an ordered reference list. **None can take the publisher's order without the list
 moving:**
 
-- **two are comparable and both would move** — `soccer-parking` and `volleyball-parking`
-- **nine are not comparable** — their references are group layers, or they draw from more than one
+- **two are comparable and both would move** - `soccer-parking` and `volleyball-parking`
+- **nine are not comparable** - their references are group layers, or they draw from more than one
   service. A group is this repository's construct; the service knows nothing about it, so there is
   no published order to defer to.
 - `football-parking` and `tailgating` pass their layer enum straight to `references` and draw from

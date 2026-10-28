@@ -32,7 +32,7 @@ const fishCampUrl = Connections.fishCampUrl;
 // `StartDate`, hence the two field variants below.
 //
 // Which session letters meet at which location is regrouped year to year, so it is carried only by
-// the choice labels below — never by this filter.
+// the choice labels below - never by this filter.
 const SESSION_SPLIT_DATE = "DATE '2026-08-01'";
 
 enum FishCampBuilderOptions {
@@ -160,7 +160,7 @@ function buildPhaseChildren(
       ...popup,
       // The published picture-marker icons are pin-shaped (natural 32x40, ~0.8 ratio) but the
       // renderer forces them to a square (25x25 / 30x30), which stretches them. Re-render at a
-      // matching 0.8 ratio (24x30) to remove the distortion — these sizing hints are applied to both
+      // matching 0.8 ratio (24x30) to remove the distortion - these sizing hints are applied to both
       // the legend swatches and the on-map symbols.
       legend: {
         mode: 'renderer-symbol',

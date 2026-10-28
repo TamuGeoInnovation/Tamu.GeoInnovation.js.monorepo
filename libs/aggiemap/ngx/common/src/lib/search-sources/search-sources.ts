@@ -206,18 +206,18 @@ export function SearchSources(
       urlQueryParam: 'garage',
       urlQueryParamAliases: ['Garage']
     },
-    // A single parking facility is stored as several polygons — the lot proper plus its loading,
-    // restricted, and visitor sub-areas — all sharing a `FAC_CODE` and, often, a `LotName`. They are
+    // A single parking facility is stored as several polygons - the lot proper plus its loading,
+    // restricted, and visitor sub-areas - all sharing a `FAC_CODE` and, often, a `LotName`. They are
     // told apart by `CIT_CODE` (the facility code plus a two-digit sub-code, where `00` is the lot
     // itself; this is the identifier TS parking map links use, e.g. `?cit=07700`).
     //
     // `?lot=` deep links resolve to `features[0]`, so an ambiguous match has to be ordered rather
-    // than left in the service's default `OBJECTID` order — otherwise the sub-area that happens to
+    // than left in the service's default `OBJECTID` order - otherwise the sub-area that happens to
     // have been digitized first wins. `?lot=077` landed on the Lot 77 loading zone and `?lot=097`
     // on the Lot 97 visitor section for exactly this reason.
     //
     // `AggieMap DESC` drops the sub-areas flagged as not shown on this map below the ones that are,
-    // and `CIT_CODE ASC` then prefers the lot itself over its sub-areas — together resolving a bare
+    // and `CIT_CODE ASC` then prefers the lot itself over its sub-areas - together resolving a bare
     // lot number to the same polygon the TS parking map's `?cit=<lot>00` link points at.
     PARKING_LOT: {
       source: 'parking-lot',

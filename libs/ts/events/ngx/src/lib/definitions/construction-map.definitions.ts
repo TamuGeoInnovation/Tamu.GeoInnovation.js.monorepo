@@ -18,13 +18,13 @@ export enum CONSTRUCTION_MAP_LAYERS {
  *   Sublayer 0 (current) and sublayer 1 (planned). Both sublayers use a
  *   `esriSFSDiagonalCross` fill (a style natively supported by the ArcGIS JS API's
  *   SimpleFillSymbol), so the two visible FeatureLayers render the cross-hatched fills
- *   directly from the service's own renderer — no proxy MapImageLayer is needed, and
+ *   directly from the service's own renderer - no proxy MapImageLayer is needed, and
  *   toggling each FeatureLayer's visibility (TOC or legend) directly controls what's drawn.
  *   This hosted service replaces the previous TS_Events/TSConstruction MapServer, whose
  *   queries stopped returning geometry (confirmed via direct REST query testing) even
- *   though attribute data still resolved — nothing would draw on the map as a result.
+ *   though attribute data still resolved - nothing would draw on the map as a result.
  *   Both sublayers expose a lowercase field schema (objectid, name, number, startdate,
- *   enddate, owner, description, notes, link, contactname, contactinfo — sublayer 1 adds
+ *   enddate, owner, description, notes, link, contactname, contactinfo - sublayer 1 adds
  *   utilitytype), so both current and planned popups can be sourced directly from this
  *   service. The legacy FCOR/Construction_2018/MapServer popup workaround is no longer
  *   needed since this service's sublayer 0 already exposes a description field.
@@ -111,7 +111,7 @@ export const ConstructionMapDefinitions = {
  *   or legend directly shows/hides the rendered areas.
  *
  *   Two more invisible FeatureLayers (opacity 0) sit above them purely to intercept popup
- *   clicks. They are added last so they end up at the top of the layers collection — ESRI's
+ *   clicks. They are added last so they end up at the top of the layers collection - ESRI's
  *   Map.add() clamps high `layerIndex` values to the current collection size, so relying on
  *   `layerIndex` alone is not enough to guarantee a layer ends up on top. Order of insertion
  *   is what determines the final z-position.

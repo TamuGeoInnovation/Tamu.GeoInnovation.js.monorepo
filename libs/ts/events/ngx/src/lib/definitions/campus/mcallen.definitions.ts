@@ -80,7 +80,7 @@ export const McAllenSearchSources: SearchSource[] = [
 export const McAllenConfiguration: EventConfiguration = {
   id: 'mcallen',
   name: 'McAllen',
-  applicationName: 'Aggie Map — McAllen',
+  applicationName: 'Aggie Map - McAllen',
   shortApplicationName: 'McAllen',
   introductionText: 'Map of the Texas A&M Higher Education Center at McAllen campus.',
   eventDates: [],

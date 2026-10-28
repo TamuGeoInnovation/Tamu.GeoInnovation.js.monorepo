@@ -128,7 +128,7 @@ export const GamesOfTexasConfiguration: EventConfiguration = {
 export const GamesOfTexasOptions: SpecialEventOptions = [];
 
 // Draw order is driven by the order of keys here (first key = topmost). Points of Interest on top,
-// Parking at the bottom — matching the published map.
+// Parking at the bottom - matching the published map.
 const GamesOfTexasLayerReferences: Record<string, string> = {
   POINTS_OF_INTEREST: GAMES_OF_TEXAS_LAYERS.POINTS_OF_INTEREST,
   ROUTES: GAMES_OF_TEXAS_LAYERS.ROUTES,

@@ -133,7 +133,7 @@ export class DiscoveryService {
    * Development-only listing of "kiosk" maps (sidebar-free, preset-layer maps meant to be embedded
    * elsewhere, e.g. in a mobile app webview). These are intentionally excluded from
    * `getInternalDiscoverApplications()` and therefore never appear in search, "All Events", parking
-   * columns, or quick links — this is the only place they are surfaced, so their URLs can be shared
+   * columns, or quick links - this is the only place they are surfaced, so their URLs can be shared
    * with the team embedding them.
    */
   public getKioskDiscoverApplications(): InternalDiscoverApplication[] {

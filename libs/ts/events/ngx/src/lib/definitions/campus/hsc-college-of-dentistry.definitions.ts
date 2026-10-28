@@ -121,7 +121,7 @@ function configuration(site: DentistrySite, search: SearchSource[]): EventConfig
   return {
     id: site.id,
     name: site.name,
-    applicationName: `Aggie Map â€” ${site.name}`,
+    applicationName: `Aggie Map - ${site.name}`,
     shortApplicationName: site.name,
     introductionText: `Map of the Texas A&M University ${site.name} campus.`,
     eventDates: [],
@@ -172,7 +172,10 @@ const COLLEGE_OF_DENTISTRY: DentistrySite = {
   // The middle of the five buildings round the College of Dentistry. They span about 600 m, so at 17 all five are in frame
   // with the map's sidebar open; at 16 they are a cluster of small shapes in the lower right.
   center: [-96.78215, 32.789],
-  zoom: 17,
+  //
+  // 18 rather than 17 (#2488): 17 fits all five buildings but leaves them small in a wide view of
+  // downtown Dallas, which reads as the wrong place rather than as the campus.
+  zoom: 18,
   thumbnail: './assets/images/campus/hsc-college-of-dentistry.jpg'
 };
 

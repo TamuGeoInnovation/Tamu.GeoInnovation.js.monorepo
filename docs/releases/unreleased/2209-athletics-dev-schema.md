@@ -8,7 +8,7 @@ testOnDev: |
 ### The athletics maps read the development services as the schema they actually are
 
 The GIS team republished the eleven athletics services on the development server with a new schema,
-and confirmed on 26 October that it is the intended final form — production's services will be
+and confirmed on 26 October that it is the intended final form - production's services will be
 republished to match. The maps' development definitions still described the old one, so on dev
 **eight of the eleven listed a layer that drew nothing**, and on three more the layers drew but their
 popups came up empty.
@@ -26,5 +26,5 @@ change has to be in production before that happens.
 Measured against the live development services: **all 24 layers across the ten maps return features**,
 including the eight that returned none. Baseball's lots split correctly into 8 event and 2 reserved.
 
-The behaviour the maps show is unchanged — the same layers, the same split between event and reserved
+The behaviour the maps show is unchanged - the same layers, the same split between event and reserved
 parking, the same popups. They are read from the columns that exist.

@@ -227,7 +227,7 @@ describe('SearchSources', () => {
 
     // Multiple polygons share a lot's name and facility code. Without an explicit ordering the
     // service answers in OBJECTID order and `features[0]` lands on whichever loading, restricted,
-    // or visitor sub-area was digitized first — the Lot 77 and Lot 97 deep link defect.
+    // or visitor sub-area was digitized first - the Lot 77 and Lot 97 deep link defect.
     expect(parkingLot?.queryParams?.orderByFields).toBe('AggieMap DESC, CIT_CODE ASC');
     expect(parkingLot?.scoringKeys).toEqual(['attributes.Name', 'attributes.FAC_CODE', 'attributes.LotName']);
   });

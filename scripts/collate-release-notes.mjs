@@ -4,7 +4,7 @@
  * Entries used to go into the top of `docs/releases/unreleased.md`, and their *What to test on dev*
  * row into the top of its table. Two pull requests adding at the same line conflict every time: on
  * 20 October 2026 six in one day each had to be resolved by hand, always in the same two places and
- * always "keep both". One file per change removes that by construction — a new file cannot conflict
+ * always "keep both". One file per change removes that by construction - a new file cannot conflict
  * with another new file.
  *
  *   node scripts/collate-release-notes.mjs --check     validate every entry, change nothing
@@ -141,8 +141,8 @@ if (!write) {
  * `--write` merges into the two sections `unreleased.md` already has, rather than pasting a second
  * copy of them into the middle of it.
  *
- * Entries written before this directory existed are **not** migrated — rewriting 55 of them is churn
- * for no benefit — so both have to survive a release, and the collated entries go above them in the
+ * Entries written before this directory existed are **not** migrated - rewriting 55 of them is churn
+ * for no benefit - so both have to survive a release, and the collated entries go above them in the
  * same `## Summary`, with the collated rows going into the existing table under its header.
  */
 const target = path.join(RELEASES, 'unreleased.md');

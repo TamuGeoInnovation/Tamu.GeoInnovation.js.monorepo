@@ -2,7 +2,7 @@
 
 **The map owner sets the cartography. We render it.**
 
-A layer's appearance — its symbology, its name, and where it sits in the layer list — is the decision
+A layer's appearance - its symbology, its name, and where it sits in the layer list - is the decision
 of whoever publishes the service. Transportation chose those colours; we display them. Our job is to
 be sure we are not breaking what they published, not to improve on it.
 
@@ -16,7 +16,7 @@ practice as well as in principle. An override is now the exception, and an excep
 is one that gets reinvented badly.
 
 The other half of this is a service that changes under us. When the owner republishes a layer with
-different columns, nothing overrides anything and the map simply draws nothing — the legend still
+different columns, nothing overrides anything and the map simply draws nothing - the legend still
 lists the layer. [`athletics-dev-views.md`](athletics-dev-views.md) records what the development
 athletics views carry against production's, after the October 2026 republish left eight of the
 eleven athletics maps with an empty layer ([#2209][2209]).
@@ -27,9 +27,9 @@ Three places, in this order. The first one that supplies a value wins.
 
 | Order | Source | What it gives |
 | --- | --- | --- |
-| 1 | **The definition** — `native.renderer`, `title`, declaration order | Whatever a map chooses to set |
-| 2 | **The portal item** — the symbol drawn in ArcGIS Pro | The authored CIM symbology |
-| 3 | **The service definition** — `drawingInfo` on the REST layer | A flattened approximation |
+| 1 | **The definition** - `native.renderer`, `title`, declaration order | Whatever a map chooses to set |
+| 2 | **The portal item** - the symbol drawn in ArcGIS Pro | The authored CIM symbology |
+| 3 | **The service definition** - `drawingInfo` on the REST layer | A flattened approximation |
 
 Most of the time 1 is empty and 2 answers. The gap between 2 and 3 is the whole of [#1497][1497]: of
 128 hosted layers surveyed on 6 October 2026, **128 publish CIM symbology on their portal item and 0
@@ -73,7 +73,7 @@ Set `renderer` inside a layer source's `native` block:
 ```
 
 `declaresOwnRenderer` in `libs/maps/esri/src/lib/services/map/portal-symbology.ts` sees that and
-leaves the layer alone — the portal item is not consulted at all for it.
+leaves the layer alone - the portal item is not consulted at all for it.
 
 ### When it is right
 
@@ -111,7 +111,7 @@ matching an authored symbol by eye because the service would not hand it over. T
 portal item, not to keep a better copy.
 
 A renderer in a definition is a silent dependency on somebody's memory. It works until the data
-changes and someone reasonably expects the map to follow, and then it fails quietly — nothing errors,
+changes and someone reasonably expects the map to follow, and then it fails quietly - nothing errors,
 the map just shows something that stopped being true. That is [#1028][1028].
 
 ---
@@ -183,7 +183,7 @@ while the legend immediately below read the same three the other way round ([#99
 
 ### When it is right
 
-**When the order means something** — a route and then where it ends, a parking area and then how to
+**When the order means something** - a route and then where it ends, a parking area and then how to
 reach it. Alphabetical is a reasonable default for a list of unrelated layers and actively unhelpful
 for a sequence.
 
@@ -193,7 +193,7 @@ Three maps use `source` today: Fish Camp, Tailgating and Football.
 
 `framing.spec.ts` compares where every map opens against `framing-baseline.json`, and the legend and
 layer list are two surfaces that have to agree. Changing order means refreshing the baseline in the
-same pull request, or the check starts failing for a correct change — see [#1501][1501].
+same pull request, or the check starts failing for a correct change - see [#1501][1501].
 
 ---
 
@@ -222,7 +222,7 @@ team bus parking is, has to be above it or it cannot be seen at all. Say so besi
 You are recording a defect, so write it down as one. In the definition, next to the override:
 
 - what the service or portal item could not supply, or what the map means differently;
-- what would let the override be removed — a republished service, a fixed image endpoint;
+- what would let the override be removed - a republished service, a fixed image endpoint;
 - the issue, if there is one.
 
 The 150th marker's comment is the model: it says the image endpoint returns 400, that the copy goes
@@ -230,7 +230,7 @@ stale whenever the source symbol changes, and the date it was last synced by han
 later knows exactly what to check.
 
 An override with no comment is indistinguishable from an oversight, and the next person has to
-rediscover the reason — or, more likely, leave it alone because they cannot tell whether it matters.
+rediscover the reason - or, more likely, leave it alone because they cannot tell whether it matters.
 
 [996]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/996
 [1028]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1028

@@ -111,7 +111,7 @@ export const DiningKioskLayerSources: LayerSource[] = [
 export const DiningKioskConfiguration: EventConfiguration = {
   id: 'dining',
   name: 'Dining',
-  applicationName: 'Aggie Map — Dining',
+  applicationName: 'Aggie Map - Dining',
   shortApplicationName: 'Dining',
   introductionText: 'Campus dining locations.',
   eventDates: [],

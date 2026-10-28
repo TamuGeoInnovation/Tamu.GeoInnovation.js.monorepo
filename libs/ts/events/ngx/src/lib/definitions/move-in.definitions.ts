@@ -51,7 +51,7 @@ const AREA_GROUP_LABEL: Record<CampusArea, string> = {
 
 // Per-area framing applied once a hall in that area is selected (Issue 2). Centers are the centroids
 // of each CampusArea's parking footprint on the published service; tune center/zoom here to adjust.
-// Zoom 17 frames a whole area (~900 m) with margin — the tightest level that still fits an area, so
+// Zoom 17 frames a whole area (~900 m) with margin - the tightest level that still fits an area, so
 // the selected (flashed) hall is always on-screen.
 const AREA_VIEW: Record<CampusArea, { center: [number, number]; zoom: number }> = {
   Northside: { center: [-96.34318, 30.61689], zoom: 17 },
@@ -217,7 +217,7 @@ export const MoveInColdLayerSources: LayerSource[] = [
     sources: [
       lotLayer(MOVE_IN_LAYERS.LOTS_AVAILABLE, `Type NOT IN ('NoParking', 'Disabled')`, 'Available Lots', true),
       // Accessible parking: hidden until the accessible-parking step opts in (Issues 5 & 6). Left
-      // builder-controlled — the YES/NO step overrides this default, so Issue #887 doesn't touch it.
+      // builder-controlled - the YES/NO step overrides this default, so Issue #887 doesn't touch it.
       lotLayer(MOVE_IN_LAYERS.LOTS_ACCESSIBLE, `Type = 'Disabled'`, 'Accessible Parking', false),
       // Lot closures: on by default (Issue #887), still independently toggleable.
       lotLayer(MOVE_IN_LAYERS.LOTS_CLOSURES, `Type = 'NoParking'`, 'Lot Closures', true)
@@ -354,7 +354,7 @@ const AREA_ISOLATED_LAYER_IDS: MOVE_IN_LAYERS[] = [
 ];
 
 // Layers whose visible features depend on the selected move-in day (Issue 1). POI are intentionally
-// excluded — they are not date-bound and stay on regardless of the selected day.
+// excluded - they are not date-bound and stay on regardless of the selected day.
 const DATE_FILTERED_LAYER_IDS: MOVE_IN_LAYERS[] = [
   MOVE_IN_LAYERS.STREETS_DROPOFF,
   MOVE_IN_LAYERS.STREETS_CLOSURES,

@@ -17,7 +17,7 @@ on 20 October 2026 **six pull requests in one day each had to be resolved by han
 two places, always "keep both". With one machine that was rare; with four working in parallel it was
 every single one.
 
-A new file cannot conflict with another new file. That is the whole idea — the problem goes by
+A new file cannot conflict with another new file. That is the whole idea - the problem goes by
 construction rather than being managed.
 
 It is also safer. A release-notes conflict resolved at speed is how an entry silently disappears, and
@@ -51,7 +51,7 @@ layers in the service's colours.
 - **`title`** is only for the collation summary; the `###` heading in the body is what readers see.
 - **`testOnDev`** is the row, or rows, for *What to test on dev*. Omit it only when the change cannot
   be checked on dev, and say why in the entry.
-- **Image paths are relative to `docs/releases/`**, not to this directory — `../screenshots/...` —
+- **Image paths are relative to `docs/releases/`**, not to this directory - `../screenshots/...` -
   because that is where the collated file ends up. `collate-release-notes.mjs --check` verifies every
   image path resolves, so a wrong one fails before release rather than rendering as a broken image in
   the notes everybody reads.

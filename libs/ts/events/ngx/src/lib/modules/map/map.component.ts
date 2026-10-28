@@ -120,8 +120,8 @@ export class MapComponent implements OnInit, OnDestroy {
 
   /**
    * When `true` (see `EventConfiguration.hideSidebar`), the map hides its sidebar entirely (already
-   * enforced by `SidebarRedirectGuard`) as well as every overlay control tied to it — settings,
-   * share URL, legend, layers, and basemap gallery — leaving only the bare map.
+   * enforced by `SidebarRedirectGuard`) as well as every overlay control tied to it - settings,
+   * share URL, legend, layers, and basemap gallery - leaving only the bare map.
    */
   public hideSidebar: boolean;
 

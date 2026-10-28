@@ -32,7 +32,7 @@ export const TAILGATING_KIOSK_LAYERS = {
 export const TailgatingKioskConfiguration: EventConfiguration = {
   id: 'football-tailgating',
   name: 'Football Tailgating',
-  applicationName: 'Aggie Map — Football Tailgating',
+  applicationName: 'Aggie Map - Football Tailgating',
   shortApplicationName: TailgatingConfiguration.shortApplicationName,
   introductionText: 'Tailgating zones and tents at Aggie Park and West Campus.',
   // No dates, and so no "Football season is over" window and no game-day toast: nobody at a kiosk

@@ -83,14 +83,17 @@ export const HscCorpusChristiSearchSources: SearchSource[] = [
 export const HscCorpusChristiConfiguration: EventConfiguration = {
   id: 'hsc-corpus-christi',
   name: 'HSC Corpus Christi',
-  applicationName: 'Aggie Map — HSC Corpus Christi',
+  applicationName: 'Aggie Map - HSC Corpus Christi',
   shortApplicationName: 'HSC Corpus Christi',
   introductionText: 'Map of the Texas A&M University Health Science Center Corpus Christi campus.',
   eventDates: [],
   // Centred on the campus's building, from its own `longitude`/`latitude` fields. The centre in the GIS team's
   // announcement, [-97.361806, 27.709119], is 2.3 km south-east of it and opens on Sunrise Mall (#2464).
   mapCenter: [-97.37815, 27.723583],
-  zoom: 17,
+  //
+  // 18 rather than 17 (#2488): at 17 the one building is a small shape in a wide view of the
+  // surrounding streets, which is not what someone opening a campus map is looking for.
+  zoom: 18,
   hideLayerToggle: true,
   sidebarTabs: ['features'],
   buildingPopup: {

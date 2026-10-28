@@ -49,7 +49,7 @@ First run needs the browser once:
 npx playwright install chromium
 ```
 
-To run the GIS Day suite against a server you already have up, set `E2E_BASE_URL` — the config then
+To run the GIS Day suite against a server you already have up, set `E2E_BASE_URL` - the config then
 skips starting one:
 
 ```bash
@@ -73,7 +73,7 @@ means *this change* broke something. They can block a merge.
 
 **`test/smoke`** talks to a deployed environment. A failure means the deployment is unhealthy,
 which may have nothing to do with any commit, so it must never gate a PR. It is read-only and must
-stay that way — it runs against production on a schedule.
+stay that way - it runs against production on a schedule.
 
 ## CI
 
@@ -98,7 +98,7 @@ token, so a reporting step inside the test job could not create a check on the P
 comment at the top of that file explains why it must never check out PR code.
 
 `e2e.yml` is path-filtered rather than driven by `nx affected`, because Playwright is set up
-standalone here — see the comment in `playwright.config.ts` for why, and what it would take to
+standalone here - see the comment in `playwright.config.ts` for why, and what it would take to
 change that.
 
 The visual suite is not in CI yet: a first run against a changed environment finds differences that
@@ -115,4 +115,4 @@ are not regressions, and that should not block anyone while the set is tuned ([#
   locally served build treats the literal placeholder as a hostname and the Auth0 hand-off dies
   with ERR_NAME_NOT_RESOLVED. The guard spec works around this by asserting only that the visitor
   left the guarded route. Covering anything past the login redirect needs real or mocked Auth0
-  config — a decision to make before building it.
+  config - a decision to make before building it.

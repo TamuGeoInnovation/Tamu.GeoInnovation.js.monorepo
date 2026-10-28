@@ -110,7 +110,7 @@ function createConnections(gisHost: string): IComposedConnections {
     fourHRoundupUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer`,
     gisDayUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
     argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
-    // NOTE: TS/Bus_Routes is only published publicly on the dev GIS host — the prod host answers
+    // NOTE: TS/Bus_Routes is only published publicly on the dev GIS host - the prod host answers
     // 499 "Token Required". It is pinned here (rather than host-derived) so bus-stop deep-links also
     // resolve on localhost, whose host-derived value is the prod host. This mirrors the pin in
     // BusService, which keeps its own copy of the URL because it lives in a low-level lib that cannot

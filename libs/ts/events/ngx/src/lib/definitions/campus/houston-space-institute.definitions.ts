@@ -85,7 +85,7 @@ export const HoustonSpaceInstituteSearchSources: SearchSource[] = [
 export const HoustonSpaceInstituteConfiguration: EventConfiguration = {
   id: 'houston-space-institute',
   name: 'Houston Space Institute',
-  applicationName: 'Aggie Map — Houston Space Institute',
+  applicationName: 'Aggie Map - Houston Space Institute',
   shortApplicationName: 'Houston Space Institute',
   introductionText: 'Map of the Texas A&M University Houston Space Institute campus.',
   eventDates: [],

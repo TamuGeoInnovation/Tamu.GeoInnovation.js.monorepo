@@ -336,7 +336,7 @@ export class EsriMapService {
       props = { ...source };
     }
 
-    // Capture the legend override before it gets stripped — the same sizing hints are applied
+    // Capture the legend override before it gets stripped - the same sizing hints are applied
     // to the on-map picture-marker symbols once the layer loads.
     const legendOverride = (source as LayerSource).legend;
 
@@ -609,7 +609,7 @@ export class EsriMapService {
   /**
    * Applies the `legend` override's sizing hints (`width` / `height`) to the on-map picture-marker
    * symbols of the supplied layer once it has loaded. This keeps the map icon and the legend
-   * swatch visually consistent — without this, a `legend.width` of 24 would only shrink the legend
+   * swatch visually consistent - without this, a `legend.width` of 24 would only shrink the legend
    * swatch while the map would keep the larger service-defined dimensions.
    *
    * Only picture-marker symbols are touched; non-image symbols (simple-fill, simple-line, …) are

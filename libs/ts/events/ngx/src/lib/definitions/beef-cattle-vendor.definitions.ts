@@ -19,7 +19,7 @@ const beefCattleUrl = Connections.beefCattleUrl;
 
 // Routes are directional, so each is rendered with an arrowhead at the end of the line to show the
 // direction of travel. The published service distinguishes two route destinations on the `edited`
-// field — keep both colors (green = routes to the Outside Exhibits, blue = routes to the
+// field - keep both colors (green = routes to the Outside Exhibits, blue = routes to the
 // Loading/Unloading Zones). The symbol field is an AutoCastSymbols intersection, so the whole native
 // object is cast rather than the individual symbols.
 const routesNative = {
@@ -40,7 +40,7 @@ const NO_PARKING_LEGEND_SWATCH =
   'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMiIgaGVpZ2h0PSIyMiI+PGRlZnM+PHBhdHRlcm4gaWQ9InAiIHdpZHRoPSI1IiBoZWlnaHQ9IjUiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxsaW5lIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSI1IiBzdHJva2U9IiNlNjAwMDAiIHN0cm9rZS13aWR0aD0iMS4yIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB4PSIwLjUiIHk9IjAuNSIgd2lkdGg9IjIxIiBoZWlnaHQ9IjIxIiBmaWxsPSJ1cmwoI3ApIiBzdHJva2U9IiNlNjAwMDAiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==';
 
 export const BeefCattleColdLayerSources: LayerSource[] = [
-  // NOTE: this array's order does not determine z-order — map draw order is driven by the order of
+  // NOTE: this array's order does not determine z-order - map draw order is driven by the order of
   // `BeefCattleLayerReferences` below (see the comment there).
   {
     type: 'feature',

@@ -223,7 +223,7 @@ export class EventService {
    *
    * Both the sidebar Layers (TOC) list and the legend toggle `layer.visible` directly on the map's
    * layer instances, so watching that single property covers user interaction from either surface.
-   * Turning the active layer off is left alone — the set is allowed to be entirely off.
+   * Turning the active layer off is left alone - the set is allowed to be entirely off.
    *
    * Opt-in: a no-op unless at least two of the configured ids resolve to layers on the map.
    */
@@ -285,7 +285,7 @@ export class EventService {
    * Unlike top-level sources (handled inline in `drawEvent`), group children are not direct effect
    * targets in the reference list, so their definition expressions must be resolved by walking the
    * tree. The resolved expression is written to the child's `native.definitionExpression` because
-   * `EsriMapService.generateLayer` spreads `native` last — any expression set elsewhere would be
+   * `EsriMapService.generateLayer` spreads `native` last - any expression set elsewhere would be
    * overridden by it.
    */
   private applyEffectsToGroupChildren(source: LayerSource): void {
