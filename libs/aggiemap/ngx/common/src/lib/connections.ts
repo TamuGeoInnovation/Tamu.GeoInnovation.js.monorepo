@@ -103,10 +103,6 @@ function createConnections(gisHost: string): IComposedConnections {
     visitorParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/VisitorParking/MapServer`,
     volleyballParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/VolleyballParking_view/FeatureServer`,
     womensBasketballUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/WomensBasketballParking_view/FeatureServer`,
-    // The Women's Basketball map's new version, published so far only on the development GIS server: the
-    // production server has the service, stopped. Drawn only where the development server is read
-    // (`developmentSources`, #2001); `womensBasketballUrl` above serves production until it is published.
-    womensBasketballParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/WomensBasketballParking/MapServer`,
     fourHRoundupUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer`,
     gisDayUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
     argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
@@ -256,7 +252,6 @@ export interface IComposedConnections {
   visitorParkingUrl: string;
   volleyballParkingUrl: string;
   womensBasketballUrl: string;
-  womensBasketballParkingUrl: string;
   fourHRoundupUrl: string;
   gisDayUrl: string;
   argentinaVsHondurasUrl: string;
