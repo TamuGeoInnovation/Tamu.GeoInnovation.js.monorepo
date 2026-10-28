@@ -6,7 +6,7 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-Nothing. Idle and listening.
+**Batch 16** (aggiemap: the last four issues, and #1034's follow-up), started 9:19 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
 
 ## Finished
 - **Batch 15** (aggiemap; report `home/reports/2026-10-28-15.md`): 13 issues triaged. Closed 5 with evidence (#967, #1006, #1027, #1036, #1202); 5 still wanted, commented (#954, #1005, #1034, #1204, #1267); 3 left for the maintainer (#959, #960, #962). Nothing pushed.
