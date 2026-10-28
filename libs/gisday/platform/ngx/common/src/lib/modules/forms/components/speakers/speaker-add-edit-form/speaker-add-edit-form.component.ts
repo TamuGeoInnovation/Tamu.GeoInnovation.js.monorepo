@@ -58,6 +58,9 @@ export class SpeakerAddEditFormComponent implements OnInit {
   public organizations$: Observable<Array<Partial<Organization>>>;
   public speakerPhotoUrl$: Observable<SafeUrl>;
 
+  // What speakers without a photograph show on the site, so the preview is never an image with no source (#2422).
+  public readonly placeholderUrl$ = this.as.getAssetUrl('images/placeholder.svg');
+
   /**
    * The speaker as the banner on the photograph sees it: the university chosen in the form and the year
    * typed into it, so the banner shows what the public pages will once the form is saved.

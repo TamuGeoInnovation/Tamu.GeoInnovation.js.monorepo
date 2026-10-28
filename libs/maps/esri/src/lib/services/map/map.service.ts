@@ -415,13 +415,13 @@ export class EsriMapService {
       return this.moduleProvider
         .require(['VectorTileLayer'])
         .then(([VectorTileLayer]: [typeof esri.VectorTileLayer]) => {
-          // Delete the type property as it cannot be set on layer creation, and take out the changes to the
-          // layer's own style, which are ours rather than Esri's (#2506).
+          // Delete the type property as it cannot be set on layer creation, and take out the style layers to
+          // hide, which are ours rather than Esri's (#2459).
           delete props.type;
-          const { hiddenStyleLayers, styleLayerPaint, ...rest } = props as StyleLayerChanges & Record<string, unknown>;
+          const { hiddenStyleLayers, ...rest } = props as StyleLayerChanges & Record<string, unknown>;
 
           const layer = new VectorTileLayer(rest as esri.VectorTileLayerProperties);
-          applyStyleLayerChanges(layer, { hiddenStyleLayers, styleLayerPaint });
+          applyStyleLayerChanges(layer, { hiddenStyleLayers });
           return layer;
         });
     } else if (source.type === 'csv') {
@@ -1254,8 +1254,6 @@ interface LayerProperties
   type: string;
   /** A VectorTileLayer's style layers to turn off once its style loads, by id (#2459). */
   hiddenStyleLayers?: StyleLayerChanges['hiddenStyleLayers'];
-  /** Paint to give a VectorTileLayer's style layers in place of the published paint, by id (#2506). */
-  styleLayerPaint?: StyleLayerChanges['styleLayerPaint'];
   /** A FeatureLayer's, for one drawn as part of a basemap (#2459). */
   definitionExpression?: esri.FeatureLayerProperties['definitionExpression'];
   renderer?: esri.FeatureLayerProperties['renderer'];

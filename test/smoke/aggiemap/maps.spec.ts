@@ -116,7 +116,7 @@ test.describe('discovery', () => {
  * `loadPath` is what the test actually navigates to: the map's own route normally, or a recorded
  * builder destination for a map that has no reachable URL of its own.
  */
-const cases: { mapPath: string; loadPath: string; title: string }[] = [];
+const cases: { mapPath: string; loadPath: string; title: string; borrowedFrom?: string }[] = [];
 
 for (const mapPath of manifest.maps) {
   const targets = builderTargets.get(mapPath);
@@ -126,16 +126,17 @@ for (const mapPath of manifest.maps) {
     continue;
   }
 
-  for (const { target, label } of targets) {
+  for (const { target, label, borrowedFrom } of targets) {
     cases.push({
       mapPath,
       loadPath: target,
-      title: `${mapPath} (${label}) loads and serves its layers`
+      title: `${mapPath} (${label}) loads and serves its layers`,
+      borrowedFrom
     });
   }
 }
 
-for (const { mapPath, loadPath, title } of cases) {
+for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
   test(title, async ({ page }) => {
     // This suite loads every map on a schedule. Left unblocked that is synthetic traffic in the
     // analytics property every day, indistinguishable from real visitors. `analytics.spec.ts` is the
@@ -211,6 +212,13 @@ for (const { mapPath, loadPath, title } of cases) {
       !probePresent && inBuilder && loadPath === mapPath,
       `${mapPath} is gated behind a builder and the inventory has no destination for it, so there is ` +
         `nothing to load. Re-run tools/builder-inventory against this environment.`
+    );
+
+    // A destination borrowed from another environment that does not land here: a difference between the
+    // environments, not a fault, so it is skipped with a note (#1134).
+    test.skip(
+      !probePresent && inBuilder && borrowedFrom !== undefined,
+      `${loadPath} was recorded on ${borrowedFrom} and does not reach the map here; skipped rather than failed (#1134)`
     );
 
     expect(

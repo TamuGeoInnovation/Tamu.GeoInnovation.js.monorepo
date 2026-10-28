@@ -1,5 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
+import { CONSTRUCTION_HATCH_RENDERER } from '@tamu-gisc/maps/esri';
 import { SearchSource, containsSearch } from '@tamu-gisc/ui-kits/ngx/search';
 
 import {
@@ -18,11 +19,31 @@ import { EventPopups } from '../../modules/popups/popups';
  * since those bypass `hitTest()` entirely).
  */
 export enum HOUSTON_SPACE_INSTITUTE_LAYERS {
+  // The map adds these in reverse, so the first draws on top: the construction over the tiles (#2532).
+  CONSTRUCTION = 'houston-space-institute-construction-layer',
   BASEMAP = 'houston-space-institute-basemap-layer',
   PROPERTY = 'houston-space-institute-property-layer'
 }
 
 export const HoustonSpaceInstituteLayerSources: LayerSource[] = [
+  // The construction, drawn over the tiles as every campus draws it: an orange grid with our own black outline
+  // (#2532). It is first in the layer ids above, which is what puts it on top, and is not essential: essential
+  // layers are made at start-up in no fixed order.
+  {
+    type: 'feature',
+    id: HOUSTON_SPACE_INSTITUTE_LAYERS.CONSTRUCTION,
+    title: 'Construction',
+    url: `${Connections.houstonSpaceInstituteFeatureServerUrl}/5`,
+    listMode: 'hide',
+    visible: true,
+    native: {
+      popupEnabled: false,
+      // Neither the service's labels nor a legend entry: College Station's construction has neither (#1283).
+      labelsVisible: false,
+      legendEnabled: false,
+      renderer: CONSTRUCTION_HATCH_RENDERER
+    }
+  },
   {
     type: 'vector-tile',
     id: HOUSTON_SPACE_INSTITUTE_LAYERS.BASEMAP,
@@ -31,12 +52,9 @@ export const HoustonSpaceInstituteLayerSources: LayerSource[] = [
     listMode: 'hide',
     visible: true,
     essential: true,
-    // The published style fills the buildings under construction with a sprite pattern the vector tile packager
-    // rasterized onto an opaque tile: a pink grid on solid white (#2506, as College Station's was in #2459). It is
-    // repainted here, inside the basemap's own style, as orange at 25%, so it draws under the basemap's outline,
-    // labels and buildings. A paint call, not a sprite: `setSpriteSource` blanked the map. Option A of #2506 was to
-    // hide it instead, `hiddenStyleLayers: ['GIS.FCOR.HSI_Construction/1']`, which leaves an empty outline on the map.
-    styleLayerPaint: { 'GIS.FCOR.HSI_Construction/1': { 'fill-color': 'rgba(230, 152, 0, 0.25)' } },
+    // The tiles' construction fill (`/1`, a sprite pattern the packager rasterized onto an opaque tile, pink on
+    // production) and its outline (`/0`) are hidden; the layer above draws both instead (#2532).
+    hiddenStyleLayers: ['GIS.FCOR.HSI_Construction/1', 'GIS.FCOR.HSI_Construction/0']
   },
   {
     type: 'feature',

@@ -1,9 +1,9 @@
-import { UnprocessableEntityException } from '@nestjs/common';
+import { ConflictException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { firstValueFrom, isObservable } from 'rxjs';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 
 import { ManagementService } from '@tamu-gisc/common/nest/auth';
 
@@ -71,31 +71,86 @@ describe('ClassProvider', () => {
 
   describe('.createClass()', () => {
     /**
-     * A class is identified by code, number and professor rather than by guid, so creating one
-     * that already exists returns the existing row instead of a duplicate. That makes the endpoint
-     * idempotent, which matters because students self-register against a class that may already
-     * have been created by someone else.
+     * A class is identified by code, number, section, professor and season rather than by guid. Creating one that
+     * already exists is refused with 409 and creates nothing: answering with the existing row made the admin form
+     * report "successfully created" for a class it had not added (#2538). Only admins create classes; students
+     * register against existing ones through user-classes.
      */
-    it('returns the existing class rather than creating a duplicate', async () => {
+    it('refuses an exact duplicate with 409 and creates nothing (#2538)', async () => {
       const existing = { guid: 'c-existing', code: 'GEOG', number: '476' } as unknown as Class;
       jest.spyOn(classRepo, 'findOne').mockResolvedValue(existing);
       const create = jest.spyOn(classRepo, 'create');
 
       await expect(
         provider.createClass({ code: 'GEOG', number: '476', professorName: 'Goldberg' } as Class)
-      ).resolves.toBe(existing);
+      ).rejects.toThrow(ConflictException);
       expect(create).not.toHaveBeenCalled();
     });
 
-    it('matches on code, number and professor together', async () => {
+    it('matches on code, number, section, professor and season together', async () => {
       jest.spyOn(classRepo, 'findOne').mockResolvedValue(null);
       jest.spyOn(classRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
 
-      await provider.createClass({ code: 'GEOG', number: '476', professorName: 'Goldberg' } as Class);
+      await provider.createClass({
+        code: 'GEOG',
+        number: '201',
+        section: '500',
+        professorName: 'Breyer',
+        season: 'season-2026'
+      } as unknown as Class);
 
       expect(classRepo.findOne).toHaveBeenCalledWith({
-        where: { code: 'GEOG', number: '476', professorName: 'Goldberg' }
+        where: { code: 'GEOG', number: '201', section: '500', professorName: 'Breyer', season: { guid: 'season-2026' } }
       });
+    });
+
+    /**
+     * #2538: the lookup ignored the section, so a second section of a professor's class was answered with the first
+     * section and never saved. It ignored the season too, so last season's class blocked this season's.
+     */
+    it('creates a second section of a class that already has one (#2538)', async () => {
+      const section500 = { guid: 'c-500', code: 'GEOG', number: '201', section: '500', professorName: 'Breyer' };
+      const saved = { guid: 'c-501' };
+      // A database that holds section 500 only: it answers a lookup only when every condition matches.
+      jest.spyOn(classRepo, 'findOne').mockImplementation(async ({ where }: never) =>
+        Object.entries(where as Record<string, unknown>).every(
+          ([key, value]) => key === 'season' || section500[key as keyof typeof section500] === value
+        )
+          ? (section500 as unknown as Class)
+          : null
+      );
+      jest.spyOn(classRepo, 'create').mockReturnValue({ save: jest.fn().mockResolvedValue(saved) } as never);
+
+      await expect(
+        provider.createClass({
+          code: 'GEOG',
+          number: '201',
+          section: '501',
+          professorName: 'Breyer',
+          season: 'season-2026'
+        } as unknown as Class)
+      ).resolves.toBe(saved);
+      expect(classRepo.create).toHaveBeenCalledTimes(1);
+    });
+
+    it('scopes the lookup to the season given as an object too', async () => {
+      jest.spyOn(classRepo, 'findOne').mockResolvedValue(null);
+      jest.spyOn(classRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
+
+      await provider.createClass({ code: 'GEOG', section: '500', season: { guid: 'season-2026' } } as unknown as Class);
+
+      expect((classRepo.findOne as jest.Mock).mock.calls[0][0].where.season).toEqual({ guid: 'season-2026' });
+    });
+
+    it('matches an empty section or season as empty, not as anything', async () => {
+      jest.spyOn(classRepo, 'findOne').mockResolvedValue(null);
+      jest.spyOn(classRepo, 'create').mockReturnValue({ save: jest.fn() } as never);
+
+      await provider.createClass({ code: 'GEOG', number: '201', professorName: 'Breyer' } as Class);
+
+      const where = (classRepo.findOne as jest.Mock).mock.calls[0][0].where;
+      expect(where.section).toEqual(IsNull());
+      expect(where.season).toEqual(IsNull());
     });
 
     it('drops a caller-supplied guid when creating', async () => {

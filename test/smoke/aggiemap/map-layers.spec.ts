@@ -150,15 +150,20 @@ const HEAVY_MAPS = new Set(['/parking/maintenance-parking', '/parking/service-lo
 const builderTargets = loadBuilderTargets(manifest);
 
 /** One case per map, or per recorded destination for a map behind a builder; `loadPath` is what is opened. */
-const cases = manifest.maps.flatMap((mapPath) => {
+const cases = manifest.maps.flatMap((mapPath): { mapPath: string; loadPath: string; title: string; borrowedFrom?: string }[] => {
   const targets = builderTargets.get(mapPath) ?? [];
 
   return targets.length === 0
     ? [{ mapPath, loadPath: mapPath, title: mapPath }]
-    : targets.map(({ target, label }) => ({ mapPath, loadPath: target, title: `${mapPath} (${label})` }));
+    : targets.map(({ target, label, borrowedFrom }) => ({
+        mapPath,
+        loadPath: target,
+        title: `${mapPath} (${label})`,
+        borrowedFrom
+      }));
 });
 
-for (const { mapPath, loadPath, title } of cases) {
+for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
   test(`${title} lists, draws and keys every layer it shows`, HEAVY_MAPS.has(mapPath) ? HEAVY : {}, async ({ page }) => {
     test.setTimeout(330_000);
     await blockAnalytics(page);
@@ -189,6 +194,14 @@ for (const { mapPath, loadPath, title } of cases) {
       page.url().includes('/builder/') && loadPath === mapPath,
       `${mapPath} is behind a builder and the inventory has no destination for it here, so none of its layers ` +
         `can be checked. Re-run tools/builder-inventory against this environment.`
+    );
+    if (borrowedFrom !== undefined) {
+      test.info().annotations.push({ type: 'builder inventory', description: `destination recorded on ${borrowedFrom} (#1134)` });
+    }
+    // A borrowed destination that does not land here is a difference between environments, not a fault.
+    test.skip(
+      borrowedFrom !== undefined && page.url().includes('/builder/'),
+      `${loadPath} was recorded on ${borrowedFrom} and does not reach the map here; skipped rather than failed (#1134)`
     );
     expect(
       page.url().includes('/builder/'),

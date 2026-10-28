@@ -1,4 +1,4 @@
-import { BaseMapProperties } from '@tamu-gisc/maps/esri';
+import { BaseMapProperties, CONSTRUCTION_HATCH_RENDERER } from '@tamu-gisc/maps/esri';
 import { TAMU_CAMPUS_BASEMAP_URL } from '@tamu-gisc/common/datasets/geographic';
 
 /**
@@ -80,15 +80,11 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
         'Campus Structures/Currently Under Construction/0'
       ]
     },
-    // The buildings under construction, drawn over the tiles as an orange grid with a black outline. The
-    // outline is the first symbol layer, because CIM draws the first on top, so it stays one continuous line
-    // over the grid; black, 1 pt (1.33 px), as the style drew it. The grid is two CIM hatches, 0 and 90
-    // degrees, lines 12 pt (16 px) apart and 1.5 pt (2 px) wide, so about a quarter of each building is covered
-    // and the ground shows through. The spacing is in screen points, so the grid is the same at every zoom.
-    // Orange, rgb(230, 152, 0), is the maintainer's choice (27 October 2026) and the Construction Zones layer's
-    // UES Projects class; that layer's default Building Projects class is red, so where a building under
-    // construction sits inside one, a red diagonal cross draws over this grid. Part of this basemap, so it shows
-    // only where the vector basemap does. The service and the tiles agreed on all eight buildings on 27 October.
+    // The buildings under construction, drawn over the tiles with the hatch every campus shares
+    // (`CONSTRUCTION_HATCH_RENDERER`, #2532). The Construction Zones layer's default Building Projects class is red, so
+    // where a building under construction sits inside one, a red diagonal cross draws over this grid. Part of this
+    // basemap, so it shows only where the vector basemap does. The service and the tiles agreed on all eight buildings
+    // on 27 October.
     {
       type: 'FeatureLayer',
       url: `${TAMU_CAMPUS_BASEMAP_URL}/2`,
@@ -96,33 +92,7 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
       title: 'Buildings under construction',
       listMode: 'hide',
       popupEnabled: false,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'cim',
-          data: {
-            type: 'CIMSymbolReference',
-            symbol: {
-              type: 'CIMPolygonSymbol',
-              symbolLayers: [
-                { type: 'CIMSolidStroke', enable: true, width: 1, color: [0, 0, 0, 255] },
-                ...[0, 90].map(
-                  (rotation): __esri.CIMHatchFill => ({
-                    type: 'CIMHatchFill',
-                    enable: true,
-                    rotation,
-                    separation: 12,
-                    lineSymbol: {
-                      type: 'CIMLineSymbol',
-                      symbolLayers: [{ type: 'CIMSolidStroke', enable: true, width: 1.5, color: [230, 152, 0, 255] }]
-                    }
-                  })
-                )
-              ]
-            }
-          }
-        }
-      }
+      renderer: CONSTRUCTION_HATCH_RENDERER
     }
   ],
   id: 'aggie_basemap',
