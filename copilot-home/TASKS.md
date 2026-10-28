@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 37.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 38.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,68 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 37 (aggiemap: #2458 again - the right page this time; 28 October 2026, 12:25 AM Central, from `work (aggiemap)`)
+
+**Your measurement was right and the issue was wrong, including about which page.** You caught half of it
+yourself - that the 12 px is to the description, not the previous card. The rest is mine: **the component
+#2458 quoted is not the page that was reported.** I have corrected the issue; read the comment on it.
+
+Your branch `fix/2458-campus-name-spacing` is not wasted, but it fixes a page that does not have the
+problem.
+
+### What is actually wrong, measured from the stylesheet
+
+`/all-maps` (your branch's page) renders each campus inside an `.application-card` with a border, a
+description and a copy field. The next card's picture is more than 160 px away, behind a card boundary.
+Three stacked cards in your own `before-phone.png` are plainly separate. **That page does not exhibit what
+Tad reported.**
+
+`/all-maps/campus` is `EventMapsComponent` through **`MapColumnsComponent`** - the same pictures, with **no
+card chrome**: `<a class="map-entry map-entry--pictured">` holding an image and a label, in a bare `<ul>`.
+At phone width the columns collapse to one list and entries stack directly on each other. From
+`discover-shared.scss`:
+
+| Gap | From | Size |
+| --- | --- | --- |
+| Picture to **its own** name | `.map-entry--pictured { gap: 0.5rem }` | **8 px** |
+| Name to the **next map's** picture | `.map-entry { padding: 0.15rem 0 }` twice; `.map-entry-item` and `.map-entry-list` add nothing | **~5 px** |
+
+**The name is closer to the next map's picture than to its own.** Not ambiguous - actively wrong. Nothing
+in the `@media (max-width: 768px)` block adds space between entries.
+
+### What to do
+
+On the **same branch**, keep the commit you have and add the real fix: at phone width, the gap below a name
+on `/all-maps/campus` must be clearly larger than the 8 px above it, so each name binds upward to its own
+picture.
+
+- The spacing lives in `discover-shared.scss`, which **both** listings import, so check what else uses
+  `.map-entry-item` and `.map-entry` before changing either - a glyph entry with no picture is a one-line
+  row and must not grow a gap that makes the parking lists sparse. If the right change is scoped to
+  `.map-entry--pictured`, scope it there.
+- The same reuse rule as before: say where you looked, and prefer the spacing scale.
+- **The desktop multi-column layout must not move**, on either page. Prove it the way you proved it last
+  time - identical screenshots were good evidence.
+
+### Prove it
+
+1. **Phone-width before and after of `/all-maps/campus`**, at least **three** stacked entries, pictures
+   loaded, committed to `docs/screenshots/2458-campus-name-spacing/` with names that say which page they
+   are (`campus-page-before-phone.png` and so on). Keep your existing four.
+2. Desktop before and after of that page too.
+3. Measure it, as you did: picture-to-name and name-to-next-picture, before and after, both pages.
+4. `scripts/check-in-volume.sh fix/2458-campus-name-spacing aggiemap-ngx-discover,aggiemap-angular` - exit 0.
+5. Update the release note: it currently describes only the `/all-maps` section. The *What to test on dev*
+   row should send someone to **`/all-maps/campus` on a phone**, which is where the report came from.
+6. Same answer on tests is fine if it is still the honest one, but say it again rather than leaving it.
+
+Report `branch ready:` with the new commit. No pull request.
+
+**After this, stop again** unless something new is queued. The hatch is still the overnight priority and
+the lab and home are on it.
 
 ---
 
