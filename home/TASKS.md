@@ -6,6 +6,32 @@
 
 ## Batch 12 (aggiemap: #2515, the vector basemap becomes production's default; 28 October 2026, from `work (aggiemap)`)
 
+> **The lab found the same check failing on dev, and your rewrite needs to cover it (7:55 AM Central, 28 October).**
+>
+> Batch 170's release tier on `f2160a189` passed - 829 passed, 4 failed, blank-map check 6 of 6 green,
+> Indoor Track 3 of 3 green - and **one of the four failures is new and is ours**:
+>
+> > the basemap view-limit test can't find the raster basemap since #2508 shares its MapServer
+> > (the limit itself still matches, 282)
+>
+> `services.spec.ts` finds the raster basemap by matching `basemaps.definition.ts`, and **#2508 added the
+> construction layer from `FCOR/TAMU_Basemap_20261008/MapServer/2` - the same MapServer as the raster
+> basemap** - so the match no longer resolves to one service.
+>
+> **Your rewrite should fix this, and must be shown to.** Run it against **today's `development`**, which
+> has #2508 in it, not against a tree without it: a rewrite that asks every basemap production offers will
+> probably resolve it by construction, but "probably" is how the broken one shipped.
+>
+> **Your 7:33 AM finding is the important one and it decides the limit**: the raster basemap production
+> still offers goes white past 1:282, and the maintainer chose option A, so production keeps the raster
+> available. **The limit therefore stays at 282** - raising it for the vector basemap would break the very
+> basemap we are keeping as the fallback. Put that reasoning in the code comment, because the next person
+> to read `AGGIEMAP_BASEMAP_MAX_SCALE = 282` beside a vector basemap that caches to 70 will assume it is
+> stale.
+>
+> The dev build is tagged `dev-2026-10-28`.
+
+
 **Your #2506 pictures decided it**: the maintainer picked orange at 25%, and the director is rebasing that
 branch and opening its pull request - nothing for you to do there.
 
