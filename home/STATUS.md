@@ -6,11 +6,10 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 14** (aggiemap: #657, the NSC popup, with the popup smoke check as the deliverable), started 8:15 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
-Next update by 8:30 AM Central (progress every 15 minutes).
+**`home`: a listener, nothing running.** Last batch done: 14.
 
-Progress (8:34 AM): my reading did not hold up. Both NSC and Break services return their lots **without geometry**, so a click never reaches either map's lots layer (it falls through to the generic lot popup on NSC and an empty one on Break). That is a service fault: filed as #2520 (Bug, project Todo; priority for the director). No code fix. The check is the deliverable: popup rows for both maps, red on dev without a listing, now recorded as known failures tied to #2520 (`allowedPopupFailures`). The check is running.
 ## Finished
+- **Batch 14** (aggiemap; report `home/reports/2026-10-28-14.md`): #657 is a service fault, filed as #2520 (both services return lots without geometry). branch ready: `fix/657-nsc-popup` at `5a60281ec`: popup rows for both maps, red without listing, known failures tied to #2520. Check exit 0.
 - **Batch 13** (aggiemap; report `home/reports/2026-10-28-13.md`): 30 issues triaged. Closed 8 with evidence (#458, #463, #552, #594, #656, #827, #881, #916); 16 still wanted, with a line each; 6 left for the maintainer (#497, #543, #546, #602, #867, #885). #659 is a live server-side defect.
 - **Batch 12** (aggiemap; report `home/reports/2026-10-28-12.md`): #2515 branch ready: `feat/2515-vector-basemap-production` at `5d747fdfd`. Vector default everywhere, production gallery = vector + raster, VTBase3 off the dev-only list, view limit kept at 1:282 with the smoke check following every offered basemap. Maps open one level closer (1:9,028 to 1:4,514): question 1. Check exit 0.
 - **Batch 11** (aggiemap; report `home/reports/2026-10-28-11.md`): #2506. `feat/2506-campus-construction` at `ec74b5e77` on the fork (stacked on #2459). Side-by-sides for both campuses: before, A, B 25%, B 45%. Recommend B 25%; A reads as missing buildings at Fort Worth Law. Tests red then green; check exit 0. No PR.
