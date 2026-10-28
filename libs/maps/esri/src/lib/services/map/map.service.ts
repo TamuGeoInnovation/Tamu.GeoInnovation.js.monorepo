@@ -110,15 +110,16 @@ export class EsriMapService {
    * The view is the element's own, made by `EsriMapComponent` with this map, and handed back with `useView`.
    */
   public async makeMap(mapProperties: MapProperties): Promise<esri.Map> {
-    const [Map, TileLayer, VectorTileLayer, WMSLayer, Basemap]: [
+    const [Map, TileLayer, VectorTileLayer, WMSLayer, Basemap, FeatureLayer]: [
       typeof esri.Map,
       typeof esri.TileLayer,
       typeof esri.VectorTileLayer,
       typeof esri.WMSLayer,
-      typeof esri.Basemap
-    ] = await this.moduleProvider.require(['Map', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap']);
+      typeof esri.Basemap,
+      typeof esri.FeatureLayer
+    ] = await this.moduleProvider.require(['Map', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap', 'FeatureLayer']);
 
-    const basemap = this.makeBasemap(mapProperties, { TileLayer, VectorTileLayer, WMSLayer }, Basemap);
+    const basemap = this.makeBasemap(mapProperties, { TileLayer, VectorTileLayer, WMSLayer, FeatureLayer }, Basemap);
 
     this._modules.map = new Map(basemap);
     keepSelectionLayerOnTop(this._modules.map);
@@ -1230,7 +1231,7 @@ interface MapProperties extends Omit<esri.MapProperties, 'basemap'> {
 }
 
 export interface BaseMapProperties extends Omit<esri.BasemapProperties, 'baseLayers'> {
-  baseLayers: [LayerProperties];
+  baseLayers: Array<LayerProperties>;
 }
 
 interface LayerProperties
@@ -1238,6 +1239,12 @@ interface LayerProperties
   type: string;
   /** Sprites to replace in a VectorTileLayer's published sheet once it loads (#2459). */
   spriteOverrides?: SpriteOverride[];
+  /** PROTOTYPE (#2459): style layers of a VectorTileLayer to turn off once its style loads. */
+  hiddenStyleLayers?: string[];
+  /** PROTOTYPE (#2459): a FeatureLayer in a basemap, drawing the construction hatch. */
+  definitionExpression?: string;
+  renderer?: unknown;
+  popupEnabled?: boolean;
 }
 
 /**

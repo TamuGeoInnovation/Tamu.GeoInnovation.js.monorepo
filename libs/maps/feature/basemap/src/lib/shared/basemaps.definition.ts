@@ -69,6 +69,9 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
       listMode: 'hide',
       visible: true,
       title: 'Base Map',
+      // PROTOTYPE (#2459, option D): the published construction fill is turned off and the layer below draws
+      // the hatch instead. The outline, `.../Currently Under Construction/0`, stays.
+      hiddenStyleLayers: ['Campus Structures/Currently Under Construction/1'],
       spriteOverrides: [
         {
           sprite: 'Campus Structures/Currently Under Construction/1',
@@ -93,6 +96,40 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
           hatch: { size: 64, spacing: 16, lineWidth: 2, color: 'rgb(230, 152, 0)', pattern: 'grid' }
         }
       ]
+    },
+    // PROTOTYPE (#2459, option D): the hatch as a layer, not a sprite. The buildings under construction,
+    // from the campus buildings service, drawn as an orange grid with a CIM hatch: lines 16 px (12 pt)
+    // apart and 2 px (1.5 pt) wide, like the sprite override above, over the basemap's own published fill.
+    // Part of this basemap, so it shows only where the vector basemap does.
+    {
+      type: 'FeatureLayer',
+      url: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_Basemap_20261008/MapServer/2',
+      definitionExpression: "Type = 'CONSTRUCTION'",
+      title: 'Buildings under construction',
+      listMode: 'hide',
+      popupEnabled: false,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'cim',
+          data: {
+            type: 'CIMSymbolReference',
+            symbol: {
+              type: 'CIMPolygonSymbol',
+              symbolLayers: [0, 90].map((rotation) => ({
+                type: 'CIMHatchFill',
+                enable: true,
+                rotation,
+                separation: 12,
+                lineSymbol: {
+                  type: 'CIMLineSymbol',
+                  symbolLayers: [{ type: 'CIMSolidStroke', enable: true, width: 1.5, color: [230, 152, 0, 255] }]
+                }
+              }))
+            }
+          }
+        }
+      }
     }
   ],
   id: 'aggie_basemap',
