@@ -26,9 +26,15 @@ const CHOICES = ['Streets', 'Light Gray Canvas'];
 /** Probe layer types a basemap is made of. */
 const BASEMAP_TYPES = ['tile', 'vector-tile'];
 
+/**
+ * The campus vector basemap's second layer, the hatch over the buildings under construction. It is a feature layer, so
+ * the types above miss it, and it is what a copy of the basemap made without its second layer loses (#2536).
+ */
+const CONSTRUCTION_HATCH = 'Buildings under construction';
+
 /** The titles of the basemap layers the view is drawing, once the map is ready; null before. */
 async function basemapLayers(page: Page): Promise<string | null> {
-  return await page.evaluate(async (types) => {
+  return await page.evaluate(async ([types, hatch]) => {
     const probe = (
       window as unknown as Record<
         string,
@@ -41,10 +47,10 @@ async function basemapLayers(page: Page): Promise<string | null> {
     }
 
     return (await probe.snapshot()).layers
-      .filter((layer) => types.includes(layer.type))
+      .filter((layer) => types.includes(layer.type) || layer.title === hatch)
       .map((layer) => layer.title)
       .join(', ');
-  }, BASEMAP_TYPES);
+  }, [BASEMAP_TYPES, CONSTRUCTION_HATCH] as const);
 }
 
 test.describe('basemap gallery', () => {

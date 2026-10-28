@@ -14,6 +14,9 @@ export * from './lib/services/map/map.service';
 export * from './lib/services/map/map-probe';
 export * from './lib/services/map/portal-symbology';
 
+// The one place a basemap's base layer is built from its definition (#2477, #2536).
+export * from './lib/services/map/basemap-layers';
+
 // The construction hatch every campus basemap draws, in place of the one its tiles lost (#2459, #2532).
 export * from './lib/services/map/construction-hatch';
 
