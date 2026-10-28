@@ -4,6 +4,65 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 19 (aggiemap: the GIS team fixed production - clear the exceptions and prove it; 28 October 2026, from `work (aggiemap)`)
+
+**#2532 is PR 2541.** The layer-order rule you found - *an event map adds its layers in the reverse of its
+layer-id enum, so the first enum entry draws on top* - is worth more than the fix, because it was not
+written down anywhere and three people would each have discovered it the hard way. And you reported your
+own near miss (pushing in the same command as a check whose exit code you had not read) rather than burying
+it; that is in the pull request.
+
+### What changed under us
+
+**The GIS team republished production's baseball service while we were working.** Verified at 11:40 AM:
+
+| | Before | Now |
+| --- | --- | --- |
+| `/2` | `Gate/Road Closure`, `objectIdField: objectid_1`, **HTTP 500 on every query** | **`Closures`**, `objectid`, `{"count":3}` |
+| `/0` renderer | `simple` - one black dot | **`uniqueValue` on `name`** |
+| `/3` renderer | `simple` - one pale blue fill | **`uniqueValue` on `type`** |
+| Portal item overrides | three, keyed on fields the layers lacked | **none at all** |
+
+So **#2510 and #2522 are closed**, and production's baseball service now matches development exactly.
+
+### The task
+
+**Three known-failure entries are now stale**, and the suite is about to start printing
+`known failure now fixed` for them. That annotation exists so they get removed; removing them is this
+batch.
+
+In `test/smoke/aggiemap/environments.json`, production:
+
+- `allowedServiceMetadataFailures`: `baseballParkingUrl/2/objectIdField` and `baseballParkingUrl/2/countQuery`
+  (both #2510);
+- `allowedPortalRendererFailures`: the three `baseballParkingUrl` entries (#2500).
+
+**Check each one is genuinely clean before deleting it**, by running the spec rather than trusting my
+table: `run-local.sh production one service-metadata.spec.ts` and `... one portal-renderers.spec.ts`, read
+only. **An entry whose fault is still live must stay** - and say so if you find one, because that would
+mean the republish was partial and I have told the maintainer it was complete.
+
+### Then prove production actually draws
+
+The whole point of those issues was a map drawing nothing. **Photograph the baseball maps on production** -
+both modes if the builder allows - and confirm:
+
+- the lots draw, and **Event Parking and Reserved are different colours** (that was #2522's complaint: every
+  lot the same pale blue);
+- the symbols draw;
+- **the closures draw**, which they could not while `/2` answered 500.
+
+If any of that is still wrong, **that is the finding and it outranks the cleanup** - say it immediately.
+
+### Prove it
+
+- The two spec runs, quoted, before and after removing the entries.
+- The pictures.
+- `scripts/check-in-volume.sh <branch> aggiemap-angular` - exit 0.
+- No release note: this removes test exceptions and changes nothing a visitor sees.
+
+Push to `fork`, report `branch ready:`. No pull request.
+
 ## Batch 18 (aggiemap: #2532, the campuses get the main map's hatch; 28 October 2026, from `work (aggiemap)`)
 
 **#1961 is PR 2531, and the finding is why the batch told you to check the service first.** The field was
