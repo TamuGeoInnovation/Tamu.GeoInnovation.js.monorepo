@@ -115,6 +115,20 @@ unknown_projects() {
     }'
 }
 
+# Prints `<memory> <parallel>`: the container's memory limit from CHECK_MEMORY (default 16g) and Nx's
+# --parallel from CHECK_PARALLEL (default 8), so a smaller machine can run the check (#2498). Fails, saying
+# why, when CHECK_PARALLEL is not a whole number above zero. Tested by scripts/check-in-volume.test.sh.
+check_limits() {
+  local memory="${CHECK_MEMORY:-16g}" parallel="${CHECK_PARALLEL:-8}"
+  case "$parallel" in
+    '' | *[!0-9]* | 0*)
+      echo "CHECK_PARALLEL must be a whole number above zero, not '$parallel'." >&2
+      return 1
+      ;;
+  esac
+  printf '%s %s\n' "$memory" "$parallel"
+}
+
 # Sourced (by the test): stop here, with only the functions defined.
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
@@ -131,6 +145,9 @@ branch="${1:-}"
 mode="${2:-affected}"
 [ -n "$branch" ] || usage
 [ $# -le 3 ] || usage
+limits="$(check_limits)" || exit 2
+memory="${limits% *}"
+parallel="${limits#* }"
 
 here="$(git rev-parse --show-toplevel)"
 main="$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")"
@@ -188,6 +205,7 @@ branch="$1"; mode="$2"; shift 2
 step() { echo "=== $1 $(date +%T)"; shift; "$@"; c=$?; echo "=== exit $c $(date +%T)"; return $c; }
 git config --global --add safe.directory "*"
 cd /w
+echo "memory $CHECK_MEMORY, parallel $CHECK_PARALLEL"
 if [ ! -d .git ]; then step "clone" git clone -q /src /w || exit 3; fi
 step "fetch development" git fetch -q -f /src refs/remotes/origin/development:refs/remotes/origin/development || exit 3
 step "fetch $branch" git fetch -q /src "refs/heads/$branch" || exit 3
@@ -221,9 +239,9 @@ while [ $# -ge 2 ]; do
   targets="$1"; excluded="$2"; shift 2
   exclude=""; [ -z "$excluded" ] || exclude="--exclude=$excluded"
   case "$mode" in
-    affected) step "affected $targets excluding [$excluded]" $nx affected -t "$targets" --base=origin/development $exclude --parallel=8 ;;
-    all) step "run-many $targets excluding [$excluded]" $nx run-many -t "$targets" --all $exclude --parallel=8 ;;
-    *) step "run-many $targets -p $mode" $nx run-many -t "$targets" -p "$mode" --parallel=8 ;;
+    affected) step "affected $targets excluding [$excluded]" $nx affected -t "$targets" --base=origin/development $exclude --parallel="$CHECK_PARALLEL" ;;
+    all) step "run-many $targets excluding [$excluded]" $nx run-many -t "$targets" --all $exclude --parallel="$CHECK_PARALLEL" ;;
+    *) step "run-many $targets -p $mode" $nx run-many -t "$targets" -p "$mode" --parallel="$CHECK_PARALLEL" ;;
   esac
   c=$?; [ "$code" -ne 0 ] || code=$c
 done
@@ -243,16 +261,16 @@ src="$(cd "$main" && pwd -W)"
 
 started="$(run_times_now)"
 SECONDS=0
-echo "Checking $branch ($mode) in volume $volume; log: $log"
+echo "Checking $branch ($mode) in volume $volume, memory $memory, parallel $parallel; log: $log"
 for ((i = 0; i < ${#runs[@]}; i += 2)); do echo "  ${runs[i]}: excluding [${runs[i+1]}]"; done
 [ -z "$extra" ] || printf '%s\n' "$extra" | sed 's/^/  lint.yml: /'
 set +e
 # Every `docker run` is a new machine as far as Nx can tell, so it would refuse the cache the previous
 # check left in the volume ("was not generated on this machine") and fail the run. Only this script's
 # containers ever write that cache, so it is trusted.
-docker run --rm -m 16g \
+docker run --rm -m "$memory" \
   -v "$volume:/w" -v "$src:/src:ro" -w /w \
-  -e NX_DAEMON=false -e NX_REJECT_UNKNOWN_LOCAL_CACHE=0 -e LINT_STEPS="$extra" node:24.22.1 sh -c "$(declare -f unknown_projects)
+  -e CHECK_MEMORY="$memory" -e CHECK_PARALLEL="$parallel" -e NX_DAEMON=false -e NX_REJECT_UNKNOWN_LOCAL_CACHE=0 -e LINT_STEPS="$extra" node:24.22.1 sh -c "$(declare -f unknown_projects)
 $inner" check "$branch" "$mode" "${runs[@]}" >"$log" 2>&1
 code=$?
 set -e

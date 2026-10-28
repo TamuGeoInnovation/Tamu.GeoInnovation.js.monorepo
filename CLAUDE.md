@@ -108,6 +108,7 @@ file read crosses the Windows-to-Linux boundary. Measured on a quiet machine on 
 On its first real use, a full affected check ran 131 tasks in its first four minutes, against about 42
 an hour before. The script keeps the Nx cache in the volume, so an unchanged task replays in about a second, and runs
 with `-m 16g` and `--parallel=8` (peak memory measured: 10.4 GB). Do not add `--skip-nx-cache`.
+On a smaller machine, set `CHECK_MEMORY` (default `16g`) and `CHECK_PARALLEL` (default `8`) to lower them (#2498).
 
 **Record how long something takes when you are measuring it, not otherwise.** `scripts/check-in-volume.sh`
 and `test/smoke/aggiemap/run-local.sh` print the elapsed time of every run. With `BUILD_TIMES_RECORD=1`
