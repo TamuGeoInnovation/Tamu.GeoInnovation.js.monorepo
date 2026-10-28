@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **11:15 AM Central, 28 October 2026**. A listener; job: not yet assigned.
+Last written **11:42 AM Central, 28 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -17,11 +17,13 @@ Last written **11:15 AM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-Batch 46 (aggiemap: #2536, pink sprite after switching basemaps), started 28 October 2026.
+Idle. Nothing queued after batch 46.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
+
+- **Batch 46, aggiemap: #2536 pink sprite after switching basemaps** (about 11:15 to 11:40 AM Central, 28 October): branch `fix/2536-basemap-switch-sprite` at `e385db2bbca266c2085c8b910d7219c8a3f6730b` on the fork; the gallery's copy now goes through `makeBaseLayer` and carries every base layer; unit test red (4 failed) then green; smoke round-trip test red on a development build, green on this branch; check exit 0; before/after screenshots. Report `copilot-home/reports/2026-10-28-46.md`.
 
 - **Batch 45, aggiemap: controls a keyboard cannot reach (read only)** (about 11:15 AM Central, 28 October): 212 template hits, 81 without key handling, 34 real or arguable plus 13 host-click components and 48 outerLink on non-anchors; rules are off in six projects and blind to host listeners, outerLink and mousedown. One issue filed: #2535 (Task, bug). Nothing pushed but the report copilot-home/reports/2026-10-28-45.md.
 
