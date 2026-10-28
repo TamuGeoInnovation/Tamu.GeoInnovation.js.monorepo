@@ -24,6 +24,9 @@ describe('making a base layer from its description', () => {
     }),
     WMSLayer: vi.fn(function (props) {
       return new Made('wms', props);
+    }),
+    FeatureLayer: vi.fn(function (props) {
+      return new Made('feature', props);
     })
   } as unknown as BaseLayerConstructors;
 
@@ -51,5 +54,44 @@ describe('making a base layer from its description', () => {
       "Unsupported basemap layer type 'ImageryLayer'"
     );
     expect(() => makeBaseLayer({}, constructors)).toThrow('Layer type is required.');
+  });
+});
+
+/**
+ * The campus basemap's buildings under construction, drawn by us rather than the tiles (#2459): a feature layer
+ * as one of a basemap's layers, and the tiles' own style layers turned off by id.
+ */
+describe('a base layer that draws over the tiles (#2459)', () => {
+  it('makes a FeatureLayer', () => {
+    const FeatureLayer = vi.fn(function (props) {
+      return { kind: 'feature', props };
+    });
+    const layer = makeBaseLayer({ type: 'FeatureLayer', url: 'f', definitionExpression: "Type = 'X'" }, {
+      FeatureLayer
+    } as unknown as BaseLayerConstructors) as unknown as { kind: string; props: Record<string, unknown> };
+
+    expect(layer.kind).toBe('feature');
+    expect(layer.props).toEqual({ url: 'f', definitionExpression: "Type = 'X'" });
+  });
+
+  it('hides the style layers it is given once the style has loaded, and does not pass the list on', async () => {
+    const setStyleLayerVisibility = vi.fn();
+    let made: Record<string, unknown> = {};
+    const VectorTileLayer = vi.fn(function (props) {
+      made = props;
+      return { when: (callback: () => void) => Promise.resolve().then(callback), setStyleLayerVisibility };
+    });
+
+    makeBaseLayer({ type: 'VectorTileLayer', url: 'v', hiddenStyleLayers: ['a/1', 'b/1'] }, {
+      VectorTileLayer
+    } as unknown as BaseLayerConstructors);
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(setStyleLayerVisibility.mock.calls).toEqual([
+      ['a/1', 'none'],
+      ['b/1', 'none']
+    ]);
+    expect(made).toEqual({ url: 'v' });
   });
 });

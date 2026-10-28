@@ -1,9 +1,8 @@
 import esri = __esri;
 
-import { applySpriteOverrides, browserSpriteOverrideDeps, SpriteOverride } from './vector-tile-sprites';
-
 /** The layer classes a basemap's base layers can be made from, keyed by the `type` a definition names. */
 export interface BaseLayerConstructors {
+  FeatureLayer: typeof esri.FeatureLayer;
   TileLayer: typeof esri.TileLayer;
   VectorTileLayer: typeof esri.VectorTileLayer;
   WMSLayer: typeof esri.WMSLayer;
@@ -14,6 +13,9 @@ export interface BaseLayerConstructors {
  *
  * `WMSLayer` is Aerial Imagery (Nearmap). Without it a saved Aerial Imagery choice could not be opened
  * from its definition, and an event map started with no basemap at all (#1692).
+ *
+ * `FeatureLayer` lets a basemap draw something the tiles draw badly, from a queryable service, with our own
+ * symbol: the campus basemap's buildings under construction (#2459).
  */
 export function makeBaseLayer(
   layer: { type?: string } & Record<string, unknown>,
@@ -24,8 +26,8 @@ export function makeBaseLayer(
   }
 
   // Remove the type property because it conflicts as a read-only property when instantiating the class.
-  // `spriteOverrides` is ours rather than Esri's and is applied below, so it comes out here too.
-  const { type, spriteOverrides, ...props } = layer as { type?: string; spriteOverrides?: SpriteOverride[] } & Record<
+  // `hiddenStyleLayers` is ours rather than Esri's and is applied below, so it comes out here too.
+  const { type, hiddenStyleLayers, ...props } = layer as { type?: string; hiddenStyleLayers?: string[] } & Record<
     string,
     unknown
   >;
@@ -37,18 +39,23 @@ export function makeBaseLayer(
   if (type === `VectorTileLayer`) {
     const vectorTileLayer = new constructors.VectorTileLayer(props);
 
-    // The sheet can only be patched once the style has loaded, and nothing waits on this: the basemap
-    // draws with the published sprites and swaps to the patched ones a moment later. A failure must not
-    // take the basemap down with it - a wrong hatch is better than no map (#2459).
-    if (spriteOverrides !== undefined && spriteOverrides.length > 0) {
+    // Style layers turned off once the style has loaded, so a layer drawn over the basemap can stand in for
+    // them (#2459). A style call only: nothing here touches the sprite sheet. Replacing the sheet with
+    // `setSpriteSource` left the map blank on about one load in four, and patched some tiles and not others in
+    // the same session. A failure must not take the basemap down with it.
+    if (hiddenStyleLayers !== undefined && hiddenStyleLayers.length > 0) {
       vectorTileLayer
-        .when(() => applySpriteOverrides(vectorTileLayer, spriteOverrides, browserSpriteOverrideDeps()))
+        .when(() => hiddenStyleLayers.forEach((id) => vectorTileLayer.setStyleLayerVisibility(id, 'none')))
         .catch((error: unknown) => {
-          console.warn(`Could not apply sprite overrides to ${props.url}.`, error);
+          console.warn(`Could not hide style layers in ${props.url}.`, error);
         });
     }
 
     return vectorTileLayer;
+  }
+
+  if (type === `FeatureLayer`) {
+    return new constructors.FeatureLayer(props);
   }
 
   if (type === `WMSLayer`) {

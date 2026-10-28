@@ -6,7 +6,6 @@ import { filter } from 'rxjs/operators';
 
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { SpriteOverride } from './vector-tile-sprites';
 import {
   AutocastableLayer,
   cleanPortalJSONLayer,
@@ -112,15 +111,16 @@ export class EsriMapService {
    * The view is the element's own, made by `EsriMapComponent` with this map, and handed back with `useView`.
    */
   public async makeMap(mapProperties: MapProperties): Promise<esri.Map> {
-    const [Map, TileLayer, VectorTileLayer, WMSLayer, Basemap]: [
+    const [Map, TileLayer, VectorTileLayer, WMSLayer, Basemap, FeatureLayer]: [
       typeof esri.Map,
       typeof esri.TileLayer,
       typeof esri.VectorTileLayer,
       typeof esri.WMSLayer,
-      typeof esri.Basemap
-    ] = await this.moduleProvider.require(['Map', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap']);
+      typeof esri.Basemap,
+      typeof esri.FeatureLayer
+    ] = await this.moduleProvider.require(['Map', 'TileLayer', 'VectorTileLayer', 'WMSLayer', 'Basemap', 'FeatureLayer']);
 
-    const basemap = this.makeBasemap(mapProperties, { TileLayer, VectorTileLayer, WMSLayer }, Basemap);
+    const basemap = this.makeBasemap(mapProperties, { TileLayer, VectorTileLayer, WMSLayer, FeatureLayer }, Basemap);
 
     this._modules.map = new Map(basemap);
     keepSelectionLayerOnTop(this._modules.map);
@@ -1242,14 +1242,19 @@ interface MapProperties extends Omit<esri.MapProperties, 'basemap'> {
 }
 
 export interface BaseMapProperties extends Omit<esri.BasemapProperties, 'baseLayers'> {
-  baseLayers: [LayerProperties];
+  /** More than one where a basemap draws something over its tiles (#2459). It was a one-element tuple. */
+  baseLayers: Array<LayerProperties>;
 }
 
 interface LayerProperties
   extends esri.LayerProperties, esri.TileLayerProperties, esri.VectorTileLayerProperties, esri.WMSLayerProperties {
   type: string;
-  /** Sprites to replace in a VectorTileLayer's published sheet once it loads (#2459). */
-  spriteOverrides?: SpriteOverride[];
+  /** A VectorTileLayer's style layers to turn off once its style loads, by id (#2459). */
+  hiddenStyleLayers?: string[];
+  /** A FeatureLayer's, for one drawn as part of a basemap (#2459). */
+  definitionExpression?: esri.FeatureLayerProperties['definitionExpression'];
+  renderer?: esri.FeatureLayerProperties['renderer'];
+  popupEnabled?: esri.FeatureLayerProperties['popupEnabled'];
 }
 
 /**

@@ -192,3 +192,44 @@ describe('campus basemap', () => {
     expect(offenders).toEqual([]);
   });
 });
+
+/**
+ * The buildings under construction on the vector basemap (#2459). The tiles fill them with a sprite pattern that
+ * was rasterized onto an opaque tile, so each draws as a solid pink block. The fill is hidden and the buildings are
+ * drawn from the campus buildings service with an orange grid hatch and our own black outline over it. Replacing the
+ * pattern in the sprite sheet instead blanked the map on about one load in four, and is gone.
+ */
+describe('the vector basemap draws its buildings under construction itself (#2459)', () => {
+  const layers = (definitions.AggiemapVectorBasemap as unknown as {
+    baseLayers: Array<Record<string, unknown>>;
+  }).baseLayers;
+  const tiles = layers.find((layer) => layer['type'] === 'VectorTileLayer');
+  const construction = layers.find((layer) => layer['type'] === 'FeatureLayer');
+
+  it("hides the tiles' construction fill and their outline, which a layer above the tiles cannot keep whole", () => {
+    expect(tiles?.['hiddenStyleLayers']).toEqual([
+      'Campus Structures/Currently Under Construction/1',
+      'Campus Structures/Currently Under Construction/0'
+    ]);
+  });
+
+  it('draws its own black outline on top of the hatch', () => {
+    const symbolLayers = (
+      construction?.['renderer'] as { symbol: { data: { symbol: { symbolLayers: Array<Record<string, unknown>> } } } }
+    ).symbol.data.symbol.symbolLayers;
+
+    // CIM draws the first symbol layer on top.
+    expect(symbolLayers[0]).toMatchObject({ type: 'CIMSolidStroke', color: [0, 0, 0, 255] });
+    expect(symbolLayers.slice(1).map((layer) => layer['type'])).toEqual(['CIMHatchFill', 'CIMHatchFill']);
+  });
+
+  it('draws the buildings under construction from the buildings service, with a CIM hatch', () => {
+    expect(construction?.['url']).toMatch(/\/FCOR\/TAMU_Basemap_\d+\/MapServer\/2$/);
+    expect(construction?.['definitionExpression']).toBe("Type = 'CONSTRUCTION'");
+    expect(JSON.stringify(construction?.['renderer'])).toContain('CIMHatchFill');
+  });
+
+  it('patches no sprite sheet', () => {
+    expect(JSON.stringify(layers)).not.toContain('spriteOverrides');
+  });
+});

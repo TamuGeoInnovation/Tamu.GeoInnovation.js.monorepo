@@ -1,27 +1,23 @@
 ---
 issue: 2459
-title: Buildings under construction draw as an orange checkered hatch over the map, not a solid block
+title: Buildings under construction draw as an orange grid on the campus basemap, and the map no longer goes blank over them
 testOnDev: |
-  | Buildings under construction on the October vector basemap ([#2459](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2459)) | [dev.aggiemap.tamu.edu/map/d?bldg=1526](https://dev.aggiemap.tamu.edu/map/d?bldg=1526) (the BBQ Pavilion, so the building to check is not selected), close the popup and zoom out once. Aplin Center, 1524, is next door | Aplin Center has a black outline and an orange checkered grid, with the grass and trees showing between the lines: no white, no pink, no tint. Turning on **Construction Zones** draws its own lines over it, also with nothing filled. The *Aggieland vector, September 2026* basemap in the gallery is unchanged and still solid magenta |
+  | Buildings under construction on the vector campus basemap ([#2459](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2459)) | [Aplin Center](https://dev.aggiemap.tamu.edu/map/d?bldg=1524) and [the Semiconductor Institute](https://dev.aggiemap.tamu.edu/map/d?bldg=8711); close the popup | Each building is an orange grid with the grass showing through it and a black outline: no pink, no solid block. Reload `/map/d` a few times: the map draws every time |
 ---
 
-### Buildings under construction draw as a hatch, not a solid block
+### Buildings under construction draw as an orange grid on the campus basemap, and the map no longer goes blank over them
 
-On the October 2026 vector basemap, development's default, every building under construction was a solid pink-and-white block. The
-service's hatch was packaged as a picture with no transparent pixels, so it covered the ground under the building. It now draws as
-an orange checkered grid over the building, with a black outline and nothing filled in between, so the grass and trees show
-through. Only that one pattern is replaced, in the browser; every other symbol on the basemap stays as the service publishes it
-([#2459](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2459)).
+On the development campus basemap, buildings under construction drew as solid pink blocks, because the published
+pattern was packaged on an opaque tile. The first fix replaced that pattern inside the basemap's sprite sheet, and
+on some loads it left the whole map blank. Now the basemap's own fill is switched off. The eight buildings are
+drawn from the campus buildings service as an orange grid, with the ground showing through it, and the basemap's
+black outline stays. Nothing touches the sprite sheet any more. The grid is the same density at every zoom.
+This fixes the College Station basemap only, which production does not draw yet
+([#2459](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2459)). **Two campus maps on
+production, Fort Worth Law School and Houston Space Institute, have the same pink fill in their own basemaps and
+keep it until [#2506](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2506).**
 
-Production shows the raster basemap, which this does not change. The September 2026 vector basemap, kept in development's gallery for
-comparison, is unchanged and still draws these buildings in solid magenta.
-
-Aplin Center, building 1524, at the same place and zoom:
-
-| Before | After |
-| --- | --- |
-| ![Aplin Center as a pink grid on opaque white, hiding the grass under it](../screenshots/2459-construction-hatch/before-aplin.png) | ![Aplin Center as an orange checkered grid with a black outline, grass and trees showing between the lines](../screenshots/2459-construction-hatch/after-aplin.png) |
-
-| After, with Construction Zones on | The September 2026 basemap, unchanged |
-| --- | --- |
-| ![The Construction Zones layer's own diagonal cross over the same area, with nothing filled](../screenshots/2459-construction-hatch/after-aplin-construction-zones.png) | ![Aplin Center in solid magenta on the September 2026 vector basemap](../screenshots/2459-construction-hatch/after-aplin-september-basemap.png) |
+| | Before | After |
+| --- | --- | --- |
+| Aplin Center (1524) | ![A solid pink block](../screenshots/2459-construction-hatch/control-1524.png) | ![An orange grid over grass, with a black outline](../screenshots/2459-construction-hatch/after-1524.png) |
+| At zoom 16, around West Campus | | ![Three buildings under construction, each an orange grid](../screenshots/2459-construction-hatch/prototype-1524-zoom16.png) |

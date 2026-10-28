@@ -15,7 +15,6 @@ export * from './lib/services/map/map-probe';
 export * from './lib/services/map/portal-symbology';
 
 // Replacing a sprite in a vector tile layer's published sheet, for a hatch the packager lost (#2459).
-export * from './lib/services/map/vector-tile-sprites';
 
 export * from './lib/services/layer-sources/layer-sources.service';
 export * from './lib/components/esri-map/esri-map.component';

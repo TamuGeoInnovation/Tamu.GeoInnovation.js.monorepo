@@ -54,12 +54,14 @@ export const AggiemapRasterBasemap: BaseMapProperties & { id: string } = {
  * No `spatialReference` here: a VectorTileLayer takes it from the service's tiling scheme and the
  * property is read-only. No `minScale`/`maxScale` either, because the cache carries its own levels.
  *
- * `spriteOverrides` replaces the under-construction buildings' pattern, which the vector tile packager
- * rasterized into a tile with no transparent pixels in it, so it paints each building as a solid block
- * instead of a hatch over it. The maintainer settled the replacement on 27 October 2026: **hatched
- * orange, no pink** - orange being what the Construction Zones layer already uses for its projects.
- * This is an override of published symbology and comes out when the service carries the hatch itself.
- * See #2459 and `docs/map-layers.md`.
+ * The buildings under construction are drawn by us, not by the tiles (#2459). The published style fills them
+ * with a sprite pattern the vector tile packager rasterized onto an opaque tile, so each draws as a solid pink
+ * block. Its fill layer is hidden and a layer from the campus buildings service draws them instead, with the
+ * hatch the maintainer settled on 27 October 2026: **an orange grid, no fill, a black outline**. The outline is
+ * ours too: anything added to a vector tile basemap draws above all of it, so the style's own outline would sit
+ * under our grid and read as a dashed line. This replaces published symbology; see `docs/map-layers.md`.
+ * Replacing the pattern in the sprite sheet instead (`setSpriteSource`) left the map blank on about one load
+ * in four, so that was deleted.
  */
 export const AggiemapVectorBasemap: BaseMapProperties = {
   baseLayers: [
@@ -69,30 +71,58 @@ export const AggiemapVectorBasemap: BaseMapProperties = {
       listMode: 'hide',
       visible: true,
       title: 'Base Map',
-      spriteOverrides: [
-        {
-          sprite: 'Campus Structures/Currently Under Construction/1',
-          // What the maintainer asked for on 27 October 2026: a black outline, a checkered hatch, and
-          // no fill of any kind. The outline is the style's own line layer and is left alone; this
-          // replaces only the pattern. The checkering is the one the service already draws - what was
-          // wrong with it was that it came packaged on an opaque white background, and in pink.
-          //
-          // Orange is the maintainer's choice (27 October 2026). It is one of the colours the
-          // Construction Zones layer already uses - rgb(230, 152, 0) is its UES Projects class - but
-          // that layer has no single construction colour: SSC is green, TS light blue, TxDOT blue, and
-          // its default "Building Projects" class is red. So where a building under construction sits
-          // inside a Building Projects zone, this orange grid draws under a red diagonal cross.
-          //
-          // 64 is a power of two as Esri's picture-fill guidance asks, and 16 divides it, which is what
-          // lets the lines meet across the tile's edges without a seam.
-          //
-          // The published tile drew its lines four pixels apart, and at that spacing a grid stops
-          // reading as lines and starts reading as a fill - which is half of what was wrong with it.
-          // Sixteen apart covers about a quarter of the tile, so the basemap is plainly visible
-          // through it.
-          hatch: { size: 64, spacing: 16, lineWidth: 2, color: 'rgb(230, 152, 0)', pattern: 'grid' }
-        }
+      // The construction fill (`/1`, a `fill-pattern` of the rasterized pink) and its black outline (`/0`, a
+      // line) are hidden; the layer below draws both instead. The outline has to move with the fill: a layer
+      // added to a vector tile basemap can only draw above the whole of it, so the style's outline would sit
+      // under the grid and be broken by every line crossing it.
+      hiddenStyleLayers: [
+        'Campus Structures/Currently Under Construction/1',
+        'Campus Structures/Currently Under Construction/0'
       ]
+    },
+    // The buildings under construction, drawn over the tiles as an orange grid with a black outline. The
+    // outline is the first symbol layer, because CIM draws the first on top, so it stays one continuous line
+    // over the grid; black, 1 pt (1.33 px), as the style drew it. The grid is two CIM hatches, 0 and 90
+    // degrees, lines 12 pt (16 px) apart and 1.5 pt (2 px) wide, so about a quarter of each building is covered
+    // and the ground shows through. The spacing is in screen points, so the grid is the same at every zoom.
+    // Orange, rgb(230, 152, 0), is the maintainer's choice (27 October 2026) and the Construction Zones layer's
+    // UES Projects class; that layer's default Building Projects class is red, so where a building under
+    // construction sits inside one, a red diagonal cross draws over this grid. Part of this basemap, so it shows
+    // only where the vector basemap does. The service and the tiles agreed on all eight buildings on 27 October.
+    {
+      type: 'FeatureLayer',
+      url: `${TAMU_CAMPUS_BASEMAP_URL}/2`,
+      definitionExpression: "Type = 'CONSTRUCTION'",
+      title: 'Buildings under construction',
+      listMode: 'hide',
+      popupEnabled: false,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'cim',
+          data: {
+            type: 'CIMSymbolReference',
+            symbol: {
+              type: 'CIMPolygonSymbol',
+              symbolLayers: [
+                { type: 'CIMSolidStroke', enable: true, width: 1, color: [0, 0, 0, 255] },
+                ...[0, 90].map(
+                  (rotation): __esri.CIMHatchFill => ({
+                    type: 'CIMHatchFill',
+                    enable: true,
+                    rotation,
+                    separation: 12,
+                    lineSymbol: {
+                      type: 'CIMLineSymbol',
+                      symbolLayers: [{ type: 'CIMSolidStroke', enable: true, width: 1.5, color: [230, 152, 0, 255] }]
+                    }
+                  })
+                )
+              ]
+            }
+          }
+        }
+      }
     }
   ],
   id: 'aggie_basemap',
