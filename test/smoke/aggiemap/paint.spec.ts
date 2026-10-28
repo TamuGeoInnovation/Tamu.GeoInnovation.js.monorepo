@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { PNG } from 'pngjs';
 
-import { BLANK_ABOVE, dominance, describePaint, PAINT_TIMEOUT_MS, waitForPaint } from './paint';
+import { BLANK_ABOVE, dominance, describePaint, PAINT_TIMEOUT_MS, waitForPaint, waitForPaintAndHold } from './paint';
 
 /**
  * The blank-canvas detector, proved against images this file builds.
@@ -151,6 +151,31 @@ test.describe('waiting for a map to paint', () => {
 
     expect(paint.paintedAfterMs).toBeNull();
     expect(paint.share).toBeGreaterThanOrEqual(BLANK_ABOVE);
+  });
+});
+
+test.describe('holding a drawn map', () => {
+  test('a map that draws and then goes white is not counted as drawn', async () => {
+    // The shape of #2487 when the sprite override lands late: three good readings, then white.
+    const frames = [...Array(3).fill(varied(40, 40)), solid(40, 40, [255, 255, 255])];
+
+    const paint = await waitForPaintAndHold(fakePage(frames), PAINT_TIMEOUT_MS);
+
+    expect(paint.paintedAfterMs).toBeNull();
+    expect(paint.share).toBeGreaterThanOrEqual(BLANK_ABOVE);
+  });
+
+  test('a map that draws and stays drawn is counted as drawn', async () => {
+    const paint = await waitForPaintAndHold(fakePage(Array(6).fill(varied(40, 40))), PAINT_TIMEOUT_MS);
+
+    expect(paint.paintedAfterMs).not.toBeNull();
+    expect(paint.share).toBeLessThan(BLANK_ABOVE);
+  });
+
+  test('a map that never draws is blank without a hold', async () => {
+    const paint = await waitForPaintAndHold(fakePage([solid(40, 40, [255, 255, 255])]), 500);
+
+    expect(paint.paintedAfterMs).toBeNull();
   });
 });
 

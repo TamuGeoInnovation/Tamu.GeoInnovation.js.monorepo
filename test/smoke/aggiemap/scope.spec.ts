@@ -103,6 +103,13 @@ test.describe('choosing the quick set for a change', () => {
     expect(set.unmapped).toEqual([]);
   });
 
+  test('checks that the map draws when the vector tile basemap code changes', () => {
+    const set = quickSetFor(['libs/maps/esri/src/lib/services/map/vector-tile-sprites.ts'], read);
+
+    expect(set.specs).toEqual(expect.arrayContaining(['blank-map.spec.ts']));
+    expect(set.unmapped).toEqual([]);
+  });
+
   test('checks which layers the event framework loads when it changes', () => {
     const set = quickSetFor(['libs/ts/events/ngx/src/lib/services/event/event.service.ts'], read);
 

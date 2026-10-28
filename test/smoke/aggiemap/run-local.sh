@@ -138,7 +138,7 @@ output="$(mktemp)"
 trap 'rm -f "$output"' EXIT
 set +e
 docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -v "$volume:/work/node_modules" -w /work \
-  -e SMOKE_ENV="$env_name" -e SMOKE_VOLUME="$volume" -e PW_VERSION="$pw_version" -e NPM_CONFIG_UPDATE_NOTIFIER=false -e UPDATE_FRAMING_BASELINE -e AGGIEMAP_SMOKE_TIER -e AGGIEMAP_SMOKE_CHANGED \
+  -e SMOKE_ENV="$env_name" -e SMOKE_VOLUME="$volume" -e PW_VERSION="$pw_version" -e NPM_CONFIG_UPDATE_NOTIFIER=false -e UPDATE_FRAMING_BASELINE -e AGGIEMAP_SMOKE_TIER -e AGGIEMAP_SMOKE_CHANGED -e AGGIEMAP_SMOKE_BLANK_LOADS \
   -e AGGIEMAP_SMOKE_FRAMING="${AGGIEMAP_SMOKE_FRAMING:-release}" "$image" \
   node -e '
     const fs = require("fs");
