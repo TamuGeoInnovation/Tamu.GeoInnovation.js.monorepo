@@ -22,6 +22,16 @@ describe('MonumentsComponent', () => {
     expect(rendered).toContain('Friday, November 20');
   });
 
+  // #2497
+  it('gives the dates in the eligibility sentence', () => {
+    const rendered = text().replace(/\s+/g, ' ');
+
+    expect(rendered).toContain(
+      'Only submissions made between Saturday, November 14 and 11:00 AM Central on Friday, November 20 will be considered for an award.'
+    );
+    expect(rendered).not.toContain('the week prior to and the days before the awards ceremony');
+  });
+
   it('no longer gives the old start or winners dates', () => {
     const rendered = text();
 
