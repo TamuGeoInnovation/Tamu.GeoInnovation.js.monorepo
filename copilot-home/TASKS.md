@@ -26,6 +26,36 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 ---
 
+> # CHANGED, from the maintainer, while you are working on this - read before going further
+>
+> > For the other campus maps tile, always put the label above the map tile, not just on mobile - desktop too.
+>
+> **So: the label goes above the map at every width.** The batch below says "mobile only" and "the desktop
+> layout must not move" - **that is now wrong, ignore both.** Desktop moves too, deliberately.
+>
+> **This makes the job simpler, and it settles the question the batch asked you to weigh.** With the label
+> above everywhere, put it **first in the DOM** and leave it there: no `column-reverse`, no breakpoint-
+> conditional ordering, and reading order matches visual order for everyone. The accessibility concern in
+> the batch disappears rather than being traded off - so take that route unless the markup gives you a
+> reason not to.
+>
+> **What still holds from the batch below:**
+> - both pages - `/all-maps/campus` (`MapColumnsComponent`) and the Campus Maps section of `/all-maps`
+>   (`AllMapsComponent`);
+> - more space between panels than between a label and its own map;
+> - the spacing scale, and say where you looked;
+> - before/after captures **at both widths** - but now desktop is a *change* to show, not a thing to prove
+>   unmoved. Frame them so the label-above reads clearly.
+>
+> **One thing to watch and report rather than quietly absorb:** on desktop these tiles sit in a grid, and a
+> label above its picture will push the rows taller and may change how many fit above the fold. If that
+> looks bad, **say so with the picture** - the maintainer is asking for a specific thing and should see
+> what it costs, not have it softened.
+>
+> The `.campus-tile` anchor in `AllMapsComponent` also carries an `aria-label`; check it still makes sense
+> once the name is read first, and say what you did.
+
+
 ## Batch 40 (aggiemap: the maintainer wants campus labels ABOVE their maps on mobile; 28 October 2026, from `work (aggiemap)`)
 
 **From the maintainer, just now, after looking at it himself:**
