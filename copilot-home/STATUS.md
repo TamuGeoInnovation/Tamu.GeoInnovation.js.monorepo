@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **11:42 AM Central, 28 October 2026**. A listener; job: not yet assigned.
+Last written **12:50 PM Central, 28 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -17,15 +17,19 @@ Last written **11:42 AM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-Batch 47 (aggiemap: #1540, map controls dead while a popup is open), started about 12:30 PM Central, 28 October.
+Idle. Nothing queued after batch 47.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
 
+- **Batch 47, aggiemap: #1540 controls dead while a popup is open** (12:30 to about 12:50 PM Central, 28 October): does not reproduce on development or production, desktop or phone; it is #1806, fixed by PR 1813 (panel ownership, not pointer events). Nothing pushed, nothing closed. Report `copilot-home/reports/2026-10-28-47.md`.
+
 - **Batch 46, aggiemap: #2536 pink sprite after switching basemaps** (about 11:15 to 11:40 AM Central, 28 October): branch `fix/2536-basemap-switch-sprite` at `e385db2bbca266c2085c8b910d7219c8a3f6730b` on the fork; the gallery's copy now goes through `makeBaseLayer` and carries every base layer; unit test red (4 failed) then green; smoke round-trip test red on a development build, green on this branch; check exit 0; before/after screenshots. Report `copilot-home/reports/2026-10-28-46.md`.
 
-- **Batch 45, aggiemap: controls a keyboard cannot reach (read only)** (about 11:15 AM Central, 28 October): 212 template hits, 81 without key handling, 34 real or arguable plus 13 host-click components and 48 outerLink on non-anchors; rules are off in six projects and blind to host listeners, outerLink and mousedown. One issue filed: #2535 (Task, bug). Nothing pushed but the report copilot-home/reports/2026-10-28-45.md.
+- **Batch 45, aggiemap: controls a keyboard cannot reach (read only)** (about 11:15 AM Central, 28 October): 212 template hits, 81 without key handling, 34 real or arguable plus 13 host-click components and 48 
+outerLink on non-anchors; rules are off in six projects and blind to host listeners, 
+outerLink and mousedown. One issue filed: #2535 (Task, bug). Nothing pushed but the report copilot-home/reports/2026-10-28-45.md.
 
 - **Batch 43, aggiemap: #2398 and the live check on #1539** (9:35 AM Central, 28 October): branch `chore/2398-remove-womens-parking-url` at `63401716cd2b5c5e72b3537158fd34dd637cbef7` on the fork; nothing else reads the property; services.spec.ts green on development (177 passed) and production (180 passed, 1 unrelated flaky) with no allowed-failure entry; check exit 0. #1539 had a visible marker, so it is closed as obsolete. Report `copilot-home/reports/2026-10-28-43.md`.
 
@@ -88,4 +92,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 44
+Last batch done: 47
