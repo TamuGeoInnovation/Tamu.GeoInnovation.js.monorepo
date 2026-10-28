@@ -6,7 +6,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running.** Last batch done: 6.
+**Batch 7** (workspace: #2498, check-in-volume.sh's memory and parallel limits from the environment; branch `chore/2498-check-memory-env`), started 8:00 PM Central, Tuesday 27 October 2026, from `work (gisday)`.
+Next update by 8:15 PM Central (progress every 15 minutes).
 
 ## Finished
 - **Batch 6** (aggiemap; report `home/reports/2026-10-27-6.md`): #2472 reproduces on demand. `--poll` with an empty dependency cache stalls; the Node process is saturated and esbuild sits idle. A bigger thread pool or a longer interval does not help. Workaround: prime the cache without `--poll`. Nothing pushed.
