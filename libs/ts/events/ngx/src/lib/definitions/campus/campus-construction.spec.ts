@@ -40,8 +40,7 @@ describe.each(cases)('%s construction (#2532)', (_, sources, layerIds, basemapId
     styleLayerPaint?: Record<string, Record<string, unknown>>;
   };
   const construction = sources.find((source) => source.url === constructionUrl) as
-    | (LayerSource & { native?: { renderer?: unknown } })
-    | undefined;
+    (LayerSource & { native?: { renderer?: unknown } }) | undefined;
 
   it("hides the tiles' construction fill and their outline, which a layer above the tiles cannot keep whole", () => {
     expect(basemap.hiddenStyleLayers).toEqual([`${styleLayer}/1`, `${styleLayer}/0`]);

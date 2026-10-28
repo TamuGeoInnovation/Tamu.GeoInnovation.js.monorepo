@@ -25,18 +25,16 @@ export const CONSTRUCTION_HATCH_RENDERER = {
         type: 'CIMPolygonSymbol',
         symbolLayers: [
           { type: 'CIMSolidStroke', enable: true, width: 1, color: [0, 0, 0, 255] },
-          ...[0, 90].map(
-            (rotation): esri.CIMHatchFill => ({
-              type: 'CIMHatchFill',
-              enable: true,
-              rotation,
-              separation: 12,
-              lineSymbol: {
-                type: 'CIMLineSymbol',
-                symbolLayers: [{ type: 'CIMSolidStroke', enable: true, width: 1.5, color: [230, 152, 0, 255] }]
-              }
-            })
-          )
+          ...[0, 90].map((rotation): esri.CIMHatchFill => ({
+            type: 'CIMHatchFill',
+            enable: true,
+            rotation,
+            separation: 12,
+            lineSymbol: {
+              type: 'CIMLineSymbol',
+              symbolLayers: [{ type: 'CIMSolidStroke', enable: true, width: 1.5, color: [230, 152, 0, 255] }]
+            }
+          }))
         ]
       }
     }
