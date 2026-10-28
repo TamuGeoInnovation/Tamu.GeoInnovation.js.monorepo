@@ -133,7 +133,7 @@ export class ClassAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'class-create-failed',
           title: 'Create class',
-          message: `Error creating class: ${err.status}`
+          message: `Error creating class: ${err?.error?.message ?? err.status}`
         });
       }
     });

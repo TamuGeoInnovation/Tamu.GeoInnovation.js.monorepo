@@ -1,6 +1,12 @@
-import { HttpException, Injectable, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  UnprocessableEntityException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, In, Repository } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, In, IsNull, Repository } from 'typeorm';
 import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 
 import { Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest/auth';
@@ -41,23 +47,39 @@ export class ClassProvider extends BaseProvider<Class> {
     return this.getClassesForSeason(season.guid);
   }
 
+  /**
+   * A class is the same class only when its code, number, section, professor and season all match, so a second
+   * section, or the same class in another season, is a new class (#2538). An empty value matches only an empty
+   * value: TypeORM reads an undefined condition as "anything". An exact duplicate is refused with 409, so the admin
+   * form says so instead of reporting a save that did not happen.
+   */
   public async createClass(dto: DeepPartial<Class>) {
+    const season = dto.season as unknown as string | { guid?: string } | null | undefined;
+    const seasonGuid = typeof season === 'string' ? season : season?.guid;
+    const orEmpty = <T>(value: T) => (value === undefined || value === null || value === '' ? IsNull() : value);
+
     const existing = await this.classRepo.findOne({
       where: {
-        code: dto.code,
-        number: dto.number,
-        professorName: dto.professorName
-      }
+        code: orEmpty(dto.code),
+        number: orEmpty(dto.number),
+        section: orEmpty(dto.section),
+        professorName: orEmpty(dto.professorName),
+        season: seasonGuid ? { guid: seasonGuid } : IsNull()
+      } as FindOptionsWhere<Class>
     });
 
-    if (!existing) {
-      delete dto.guid;
-      const created = this.classRepo.create(dto);
-
-      return created.save();
-    } else {
-      return existing;
+    if (existing) {
+      throw new ConflictException(
+        `${[dto.code, dto.number].filter(Boolean).join(' ')} section ${dto.section || '(none)'} for ${
+          dto.professorName || '(no professor)'
+        } is already in this season.`
+      );
     }
+
+    delete dto.guid;
+    const created = this.classRepo.create(dto);
+
+    return created.save();
   }
 
   public async copyClassesIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
