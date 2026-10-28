@@ -30,7 +30,13 @@ export const HoustonSpaceInstituteLayerSources: LayerSource[] = [
     url: Connections.houstonSpaceInstituteBasemapUrl,
     listMode: 'hide',
     visible: true,
-    essential: true
+    essential: true,
+    // The published style fills the buildings under construction with a sprite pattern the vector tile packager
+    // rasterized onto an opaque tile: a pink grid on solid white (#2506, as College Station's was in #2459). It is
+    // repainted here, inside the basemap's own style, as orange at 25%, so it draws under the basemap's outline,
+    // labels and buildings. A paint call, not a sprite: `setSpriteSource` blanked the map. Option A of #2506 was to
+    // hide it instead, `hiddenStyleLayers: ['GIS.FCOR.HSI_Construction/1']`, which leaves an empty outline on the map.
+    styleLayerPaint: { 'GIS.FCOR.HSI_Construction/1': { 'fill-color': 'rgba(230, 152, 0, 0.25)' } },
   },
   {
     type: 'feature',
