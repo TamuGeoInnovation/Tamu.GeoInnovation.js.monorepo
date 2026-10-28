@@ -101,6 +101,16 @@ be deleted or rewritten against a layer that still exists, not left red.
 director will confirm), then the branch, then `branch ready:`. If it turns out to be a real drawing-order
 fault rather than a stale test, stop and say so: that is a different answer and a different priority.
 
+> **The hatch's final commit is ready (2:05 AM Central, 28 October).** `feat/2459-hatch-layer` at
+> **`e081cc7ed`** on the fork - your outline defect is fixed, and home's 2x crop shows the edge as one
+> continuous line. **Take task 2's confirming block on `e081cc7ed` now**, ahead of task 1: the pull request
+> is open and its only outstanding evidence is your number.
+>
+> Since your `337047b1e`, two commits: a release note, and the outline (one more hidden style layer of the
+> kind you already measured, plus a CIM stroke). Nothing new in kind, no sprite call - which is why one
+> block of 15 with a 15-load control beside it is enough, not another 45.
+
+
 ### Task 2: stand by for one confirming block on the hatch
 
 home's batch 10 fixes the outline. When it reports `branch ready:`, take **one block of 15 plain loads on
