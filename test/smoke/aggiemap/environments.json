@@ -75,6 +75,11 @@
     "allowedServiceFailures": {
       "womensBasketballParkingUrl": "#2001: the Women's Basketball map's new version is stopped on the production GIS server until Transportation Services publish it; production draws womensBasketballUrl until then"
     },
+    "allowedPortalRendererFailures": {
+      "baseballParkingUrl/0": "#2500: the production portal item's Baseball Symbols renderer keys on type and event, which the republished layer lacks",
+      "baseballParkingUrl/2": "#2500: the production portal item's Gate/Road Closure renderer keys on baseball, which the republished layer lacks",
+      "baseballParkingUrl/3": "#2500: the production portal item's Baseball Event Parking Lots renderer keys on baseball, which the republished layer lacks"
+    },
     "allowedSearchSourceFailures": {
       "parking-garage": "#1163: choosing a garage opens an empty details panel",
       "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
