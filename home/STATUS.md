@@ -6,7 +6,8 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**`home`: a listener, nothing running.** Last batch done: 11.
+**Batch 12** (aggiemap: #2515, the vector basemap becomes production's default), started 7:25 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
+Next update by 7:40 AM Central (progress every 15 minutes).
 
 ## Finished
 - **Batch 11** (aggiemap; report `home/reports/2026-10-28-11.md`): #2506. `feat/2506-campus-construction` at `ec74b5e77` on the fork (stacked on #2459). Side-by-sides for both campuses: before, A, B 25%, B 45%. Recommend B 25%; A reads as missing buildings at Fort Worth Law. Tests red then green; check exit 0. No PR.
