@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 172.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 173.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -62,6 +62,49 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 172 (aggiemap: prove #2467's builder-map check actually catches things; 28 October 2026, from `work (aggiemap)`)
+
+**Your batch 171 triage found the loose end that matters: #2467's branch was never made a pull request.**
+I rebased it onto `development` (it was based on `2117003e8`, four commits behind), dropped three of your
+own smoke run-time CSVs that had been swept in with it, and opened **PR 2519**. Check exit 0.
+
+**It has never been run against a deployed environment since the rebase, and that is the whole point of
+this batch.** I have said so in the pull request rather than implying it was proven.
+
+Branch: `test/2467-builder-map-layers-2` on the fork at `03c2cf200`.
+
+### Two questions the run has to answer
+
+1. **Does it reach all eleven builder-gated maps?** `builder-destinations.ts` works out where each builder
+   choice lands. If a choice lands somewhere the logic does not expect, the check silently covers ten maps
+   instead of eleven and we are back where we started. **Say how many it actually visited**, by name.
+2. **Does it go red on the faults we already know about?** This is the important one. On **production**,
+   #2500's three baseball layers draw nothing and #2510's `/2 Gate/Road Closure` answers HTTP 500 to every
+   query. **A check that passes those is not doing its job.**
+
+   If it passes them, that is the most valuable finding of the day and you should say so immediately rather
+   than at the end - it would mean the check needs more work before it is worth merging, and I would rather
+   know that than merge something that only looks like coverage.
+
+### Run it
+
+```
+test/smoke/aggiemap/run-local.sh production one map-layers.spec.ts
+test/smoke/aggiemap/run-local.sh development one map-layers.spec.ts
+```
+
+Read only, both environments. Development should be clean. Production should be red on baseball - and if it
+is, **quote the failure text**, because that text is what someone will read when the next republish breaks
+something.
+
+### Report
+
+- How many builder maps it visited, and which;
+- what it found on each environment, with the failure text;
+- **your verdict on whether PR 2519 should merge as it stands**, and if not, what it needs.
+
+Nothing pushed; the branch is mine to update if your run says it needs changing.
 
 ## Batch 171 (aggiemap: triage the open `testing` issues; 28 October 2026, from `work (aggiemap)`)
 
