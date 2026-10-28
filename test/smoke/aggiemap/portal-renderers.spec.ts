@@ -12,6 +12,7 @@ import {
 } from '../../../libs/maps/esri/src/lib/services/map/portal-symbology';
 
 import { retiredConnections } from './retired';
+import { serviceLayers } from './service-layers';
 
 /**
  * Every portal renderer keys on fields its layer has (#2500).
@@ -75,19 +76,6 @@ function rendererProblems(
   });
 }
 
-/** The layer endpoints a connection stands for: itself when it names a layer, otherwise each layer of its service. */
-async function layerUrlsOf(request: APIRequestContext, url: string): Promise<string[]> {
-  if (/\/(MapServer|FeatureServer)\/\d+$/.test(url)) {
-    return [url];
-  }
-
-  const root = await (await request.get(`${url}?f=json`, { timeout: 30_000 })).json();
-
-  return ((root.layers ?? []) as Array<{ id: number; subLayerIds?: number[] | null }>)
-    .filter((layer) => !layer.subLayerIds?.length)
-    .map((layer) => `${url}/${layer.id}`);
-}
-
 test.describe(`portal item renderers key on their layer's fields (${GIS_HOST})`, () => {
   test('a renderer keyed on a field the layer lacks is a problem, and one keyed on fields it has is not', () => {
     const item: PortalItemData = {
@@ -118,17 +106,17 @@ test.describe(`portal item renderers key on their layer's fields (${GIS_HOST})`,
 
       test.skip(retiredIn !== undefined, `used only by retired maps: ${retiredIn?.join(', ')}`);
 
-      const layerUrls = await layerUrlsOf(request, url).catch(() => [] as string[]);
+      const layers = await serviceLayers(request, url);
       const items = new Map<string, PortalItemData | null>();
       const problems: Array<RendererProblem & { key: string }> = [];
 
-      for (const layerUrl of layerUrls) {
-        const metadata = await (await request.get(`${layerUrl}?f=json`, { timeout: 30_000 })).json().catch(() => null);
-        const itemId = metadata?.serviceItemId as string | undefined;
-        const dataUrl = itemId ? portalItemDataUrl(layerUrl, itemId) : null;
+      for (const layer of layers) {
+        const metadata = layer.metadata;
+        const itemId = metadata?.serviceItemId;
+        const dataUrl = itemId ? portalItemDataUrl(layer.url, itemId) : null;
 
         // A layer with no item, or one whose item cannot be read, keeps its service's symbology: nothing to compare.
-        if (!itemId || !dataUrl || metadata?.error) {
+        if (!metadata || !itemId || !dataUrl || metadata.error) {
           continue;
         }
 
@@ -138,7 +126,7 @@ test.describe(`portal item renderers key on their layer's fields (${GIS_HOST})`,
           items.set(itemId, data?.error ? null : data);
         }
 
-        const layerId = Number(layerUrl.split('/').pop());
+        const layerId = layer.id;
         const fields = ((metadata.fields ?? []) as Array<{ name: string }>).map((field) => field.name);
 
         problems.push(

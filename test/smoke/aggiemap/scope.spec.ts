@@ -139,6 +139,10 @@ test.describe('choosing the quick set for a change', () => {
     }
   });
 
+  test('checks what a service says about itself when the connections change', () => {
+    expect(quickSetFor(['libs/aggiemap/ngx/common/src/lib/connections.ts'], read).specs).toContain('service-metadata.spec.ts');
+  });
+
   test('runs a changed smoke spec whole', () => {
     const set = quickSetFor(['test/smoke/aggiemap/bus.spec.ts', 'test/smoke/aggiemap/environments.json'], read);
 
