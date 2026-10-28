@@ -4,6 +4,54 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 16 (aggiemap: the last four, and #1034's follow-up; 28 October 2026, from `work (aggiemap)`)
+
+**You were right to resist on both of the ones I expected you to close.** I would have closed #1267 on
+"everything in the suite relies on the probe now, so it must work" - and your answer, *the cause was never
+found*, is the better one. An intermittent fault that was explained away rather than explained is exactly
+what bit us with the blank map yesterday.
+
+### Decided
+
+1. **#1267: your option A - keep it open** until the failing-layer test and the `paint.ts` comment fix
+   land. Add that to the issue as the condition for closing it, so the next person does not have to
+   re-derive why it is still open.
+2. **#1034: your option A - close it, and file items 4, 5 and 7 as one follow-up.** The founding work is
+   done and the issue should say so; the missing behaviours deserve their own issue with its own title
+   rather than keeping a done thing open. File it (Task, `testing`, Priority **Medium** - say so and the
+   director will confirm), then close #1034 pointing at it.
+3. **Priorities you asked for:** #1005 Medium, #1204 Low. Set them.
+
+### The last four AggieMap issues nobody has triaged
+
+```
+#71 #141 #163 #387
+```
+
+These are 2020 to 2025 and they are the oldest things in the repository. Same rules as batches 13 and 15.
+What I already know, so you do not redo it:
+
+- **#71 *Clear search on Aggie Map mobile*** - I checked: there is **no clear control anywhere in
+  `libs/ui-kits/ngx/search`'s templates**. So it is probably still live. What I could not tell from the
+  code is whether the mobile UI clears a selected building some other way. **Look at it on dev** rather
+  than reasoning about it.
+- **#141 *Directions to POI, mismatched spatial references*** - directions are still gated off production,
+  and [#1875](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1875) fixed a
+  neighbouring thing (a click in directions on a projected basemap). Whether *this* one survives, I do not
+  know. Note that **#659 means routing fails as soon as directions are requested on dev**, so you may not
+  be able to test it end to end - if so, say that rather than guessing.
+- **#163 *Features Tab Function*** - "two clicks to close the side-menu", from 2021, on a UI that has been
+  rebuilt since. Decide from the current UI, not the screenshot.
+- **#387 *Sidebar scrolling breaks dismissal on large layer lists*** - `aggiemap-ngx-ui-mobile`. Still
+  exists (34 files). Needs a phone-width look.
+
+**Three of these four need looking at a running map rather than reading code.** That is fine and it is why
+they are yours. If one genuinely cannot be settled without the maintainer, say so and leave it - do not
+close an old issue just because it is old. **Staleness is not obsolescence**, which is the rule you have
+been applying all morning and should keep applying here.
+
+Report as before. Nothing pushed.
+
 ## Batch 15 (aggiemap: triage the September-October issues; 28 October 2026, from `work (aggiemap)`)
 
 **Batch 14 was the right call, and the part that matters is the part you did not do.** Your own batch-13
