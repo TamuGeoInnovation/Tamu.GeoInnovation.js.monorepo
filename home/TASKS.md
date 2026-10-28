@@ -52,6 +52,47 @@ no sprite sheet, no `setSpriteSource`, and nothing touching the basemap's own re
 A prototype that works is worth more tonight than a tidy one. If it blanks too, say so - that would mean
 the fault is not in sprites at all, which changes everything.
 
+### Added 10:35 PM: the maintainer's framing, and the two halves of this
+
+The maintainer: *"Do we have to use a sprite? Can't we just draw the features ourselves and symbolize it
+ourselves?"* That is this batch, and he is right that it sidesteps the whole problem. **The GIS team
+cannot fix the published sprite and the front end has promised to fix this**, so "ask them to republish"
+is not available. The hatch is the last thing holding the vector basemap back from production.
+
+There are **two halves**, and only one of them is the drawing:
+
+**1. Hide the basemap's own construction fill - and this is safe.** The style layer is
+`Campus Structures/Currently Under Construction/1`. It is turned off with **`setPaintProperties`**, which
+is a different API from `setSpriteSource` and **does not blank the map**: it was called on dev today
+(`setPaintProperties(id, { 'fill-pattern': id })`) and the map stayed drawn. `setStyleLayerVisibility`
+is the other candidate. Measure it on its own first - 15 plain loads, blank meaning 100% white for 30
+seconds - so you know the half that hides the pink is free before you build the half that draws.
+
+Leave the outline layer `.../Currently Under Construction/0` alone: a black outline is wanted, and it is
+not a sprite.
+
+**2. Draw the buildings ourselves, as an ordinary layer.** The vector tiles are not queryable, but the
+same buildings are: `FCOR/TAMU_Basemap_20261008/MapServer/2` supports `Query`, and
+`Type = 'CONSTRUCTION'` selects them - eight buildings today, Aplin Center (1524) among them. A
+`FeatureLayer` with a `CIMSymbol` using `CIMHatchFill` gives a real hatch at whatever angle, spacing and
+colour we choose, with no sheet, no sprite, and nothing reaching into the basemap's renderer.
+
+Orange, as the maintainer settled this afternoon. He also chose the density on the sprite version - lines
+16 apart, 2 wide, about a quarter covered - so start there and it will look familiar.
+
+### What would make this the answer
+
+- **0 of 15 blank loads**, the same measurement the lab used, so it is comparable.
+- **A picture of 1524 drawn with an orange hatch and the grass showing between the lines.**
+
+Both, not either. One screenshot of it working is not enough any more - there have been two of those
+today, each true at that instant and wrong overall.
+
+### Worth saying if you find it
+
+Whether the two datasets agree on which buildings are under construction. The basemap tiles were cooked
+from this same source, so they should - but "should" is what went wrong all day.
+
 ### Don't
 
 Merge anything, or change the basemap definition's existing `spriteOverrides`.
