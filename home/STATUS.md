@@ -9,6 +9,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 **Batch 12** (aggiemap: #2515, the vector basemap becomes production's default), started 7:25 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
 Next update by 7:40 AM Central (progress every 15 minutes).
 
+Progress (7:33 AM): looked below 1:282 on the vector basemap (crisp, but nothing new; trees vanish) and found the raster basemap production still offers would go white past 1:282, so the limit stays and the smoke check now asks every basemap production offers. Default switched, production gallery = vector + raster (own id), VTBase3 off the dev-only list, gallery's raster stand-in fixed. Tests red then green. Next: smoke check against the services, pictures, release note, check.
 ## Finished
 - **Batch 11** (aggiemap; report `home/reports/2026-10-28-11.md`): #2506. `feat/2506-campus-construction` at `ec74b5e77` on the fork (stacked on #2459). Side-by-sides for both campuses: before, A, B 25%, B 45%. Recommend B 25%; A reads as missing buildings at Fort Worth Law. Tests red then green; check exit 0. No PR.
 - **Batch 10** (aggiemap; report `home/reports/2026-10-28-10.md`): #2459 branch ready: `feat/2459-hatch-layer` at `e081cc7ed` on the fork. Our own black outline over the hatch; 2x crop continuous; tests red then green; check exit 0. The lab measured 0 of 45 on `337047b1e`, not this head.
