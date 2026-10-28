@@ -6,10 +6,10 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 19** (aggiemap: clear the stale baseball known-failure entries and prove production draws), started 11:37 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
-Progress (11:40 AM Central): production baseball photographed in both modes: lots in two colours, symbols and all 3 closures draw, no errors. The before runs of the two specs are going.
+Nothing. Idle and listening.
 
 ## Finished
+- **Batch 19** (aggiemap; report `home/reports/2026-10-28-19.md`): branch ready: `chore/2510-clear-baseball-exceptions` at `e9ab841e1`. All five production baseball entries were stale; with them removed both specs pass on production. Production draws both modes: lots in two colours, symbols, 3 closures, no errors. Check exit 0.
 - **Batch 18** (aggiemap; report `home/reports/2026-10-28-18.md`): #2532 branch ready: `feat/2532-campus-hatch` at `47eee6556`. One shared hatch symbol for all three campuses; the #2506 wash and styleLayerPaint deleted; layer order found in the browser (the first layer-id enum entry draws on top), checked on 5 of 5 loads each. Check exit 0. An early push went out before a failed check was read; fixed and re-pushed.
 - **Batch 17** (aggiemap; report `home/reports/2026-10-28-17.md`): #1961 branch ready: `fix/1961-restroom-building-number` at `0ccf5b7fd`. The named popup was unused since #418; the layer now opens it, reading BldgNum and hiding empty rows. Tests red then green; check exit 0. Filed #2529 (wrong building numbers in the service).
 - **Batch 16** (aggiemap; report `home/reports/2026-10-28-16.md`): decisions carried out (#1267 closing condition, #1034 closed and #2527 filed, #1005 Medium, #1204 Low). Last four looked at on dev: #163 closed; #71, #141 and #387 commented and left open. Nothing pushed.
