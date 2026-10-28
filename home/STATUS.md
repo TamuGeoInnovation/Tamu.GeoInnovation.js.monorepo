@@ -8,6 +8,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 ## Running now
 **Batch 20** (aggiemap: #2061, the layerIndex values that order nothing), started 12:24 PM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
 Progress (12:26 PM Central): every layerIndex compared with its enum order. Agree (noise): big event, outdoor track, soccer, softball, swimming, volleyball, fish camp. Disagree: graduation fall/spring, muster, cross country, dining kiosk, argentina, HS graduation. Building development to record what each map draws today before changing anything.
+Progress (1:08 PM Central): orders measured on development; found a live bug and filed #2552 (dining kiosk: clicking a dining location opens its building). All layerIndex values deleted, three real orders moved into references (muster, graduation, dining kiosk), docs updated, 3 layer-order rows added (dining red on production first). Measuring the branch now.
 
 ## Finished
 - **Batch 19** (aggiemap; report `home/reports/2026-10-28-19.md`): branch ready: `chore/2510-clear-baseball-exceptions` at `e9ab841e1`. All five production baseball entries were stale; with them removed both specs pass on production. Production draws both modes: lots in two colours, symbols, 3 closures, no errors. Check exit 0.
