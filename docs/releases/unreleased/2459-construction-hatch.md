@@ -12,8 +12,10 @@ pattern was packaged on an opaque tile. The first fix replaced that pattern insi
 on some loads it left the whole map blank. Now the basemap's own fill is switched off. The eight buildings are
 drawn from the campus buildings service as an orange grid, with the ground showing through it, and the basemap's
 black outline stays. Nothing touches the sprite sheet any more. The grid is the same density at every zoom.
-Production still draws the raster basemap and is unchanged
-([#2459](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2459)).
+This fixes the College Station basemap only, which production does not draw yet
+([#2459](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2459)). **Two campus maps on
+production, Fort Worth Law School and Houston Space Institute, have the same pink fill in their own basemaps and
+keep it until [#2506](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2506).**
 
 | | Before | After |
 | --- | --- | --- |
