@@ -204,6 +204,30 @@ alone.
 Never push to a Dependabot branch: it lives on `TamuGeoInnovation` and Dependabot rewrites it. A fix it needs (for
 example the READMEs that hard-code a Playwright image version) is its own small pull request.
 
+**Ask the service before you change a definition or a popup template.** Four faults in one week looked
+like a one-word field rename and not one of them was: [#657](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/657) (both services return their lots with
+no geometry, so no popup can open - [#2520](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2520)), [#1961](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1961) (the field was right and filled 116
+of 116; the component had been unused since #418), [#2500](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2500) (the **portal item's** renderers keyed
+on fields the republished service lacks) and [#2510](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2510) (the layer declares an `objectIdField` it does
+not have, so every query returns 500).
+
+In two of the four, making the obvious change would have **looked like a fix and changed nothing a visitor
+sees** - which is worse than leaving the bug, because the issue gets closed. So: query the service, check
+the field exists and how many records carry it, and check the component you are editing is the one the
+layer actually draws. **If the field is missing or empty, that is a data fault for the GIS team**: file it,
+and do not rename to a field that is also empty.
+
+**A revert made to stop an incident names the change it suspects, by number, and says why.**
+[#2536](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2536) is [#2477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2477) come back, on production, a week after it was fixed: [PR 2486](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2486)
+reverted "the two basemap layer changes" while the map was going blank, and **the one that blanked the map
+was the other one** - the sprite override. The gallery fix was innocent and went out with it, and nothing
+noticed for a week because no test switched basemaps and switched back.
+
+Deleting the sprite override permanently was right; losing the gallery fix was not. If two changes are
+backed out together, **say which one is suspected and that the other is going for safety**, so somebody can
+put the innocent one back once the incident is over. A revert that bundles them silently costs the fix and
+the knowledge that you ever had it.
+
 **Files are LF, and `.gitattributes` will not fix a mistake for you.** It sets `* -text`, which
 turns git's end-of-line normalization off for every file: git stores the bytes it is given, and
 `core.autocrlf` has no effect however a machine is configured. Endings are per-file and permanent
