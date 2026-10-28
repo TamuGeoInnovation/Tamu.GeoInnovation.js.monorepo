@@ -19,15 +19,16 @@ import { EventPopups } from '../../modules/popups/popups';
  * since those bypass `hitTest()` entirely).
  */
 export enum HOUSTON_SPACE_INSTITUTE_LAYERS {
-  BASEMAP = 'houston-space-institute-basemap-layer',
+  // The map adds these in reverse, so the first draws on top: the construction over the tiles (#2532).
   CONSTRUCTION = 'houston-space-institute-construction-layer',
+  BASEMAP = 'houston-space-institute-basemap-layer',
   PROPERTY = 'houston-space-institute-property-layer'
 }
 
 export const HoustonSpaceInstituteLayerSources: LayerSource[] = [
   // The construction, drawn over the tiles as every campus draws it: an orange grid with our own black outline
-  // (#2532). First, and not essential, so it is added after the tiles and draws over them: an event map adds its
-  // layers in turn with the first listed on top, but makes its essential layers as each one loads.
+  // (#2532). It is first in the layer ids above, which is what puts it on top, and is not essential: essential
+  // layers are made at start-up in no fixed order.
   {
     type: 'feature',
     id: HOUSTON_SPACE_INSTITUTE_LAYERS.CONSTRUCTION,

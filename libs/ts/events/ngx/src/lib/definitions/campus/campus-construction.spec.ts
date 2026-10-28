@@ -15,10 +15,11 @@ import { HOUSTON_SPACE_INSTITUTE_LAYERS, HoustonSpaceInstituteLayerSources } fro
  * feature service with the shared orange grid and black outline. The translucent orange wash that replaced their pink
  * in #2506 is gone with it, so the same thing is not drawn two ways.
  */
-const cases: Array<[string, LayerSource[], string, string, string]> = [
+const cases: Array<[string, LayerSource[], Record<string, string>, string, string, string]> = [
   [
     'Fort Worth Law School',
     FortWorthLawLayerSources,
+    FORT_WORTH_LAW_LAYERS,
     FORT_WORTH_LAW_LAYERS.BASEMAP,
     'Construction',
     `${Connections.fortWorthLawFeatureServerUrl}/1`
@@ -26,13 +27,14 @@ const cases: Array<[string, LayerSource[], string, string, string]> = [
   [
     'Houston Space Institute',
     HoustonSpaceInstituteLayerSources,
+    HOUSTON_SPACE_INSTITUTE_LAYERS,
     HOUSTON_SPACE_INSTITUTE_LAYERS.BASEMAP,
     'GIS.FCOR.HSI_Construction',
     `${Connections.houstonSpaceInstituteFeatureServerUrl}/5`
   ]
 ];
 
-describe.each(cases)('%s construction (#2532)', (_, sources, basemapId, styleLayer, constructionUrl) => {
+describe.each(cases)('%s construction (#2532)', (_, sources, layerIds, basemapId, styleLayer, constructionUrl) => {
   const basemap = sources.find((source) => source.id === basemapId) as LayerSource & {
     hiddenStyleLayers?: string[];
     styleLayerPaint?: Record<string, Record<string, unknown>>;
@@ -52,11 +54,11 @@ describe.each(cases)('%s construction (#2532)', (_, sources, basemapId, styleLay
   it("draws the construction from the campus's feature service with the shared hatch, over the tiles", () => {
     expect(construction).toBeDefined();
     expect(construction?.native?.renderer).toBe(CONSTRUCTION_HATCH_RENDERER);
-    // An event map adds its layers one at a time with the first listed on top, but `essential` layers are made at
-    // start-up as each one loads, in no fixed order. So the construction is listed first and is not essential: it
-    // is added after the tiles, every time. Pinning the tiles to the bottom instead put the click overlay above
-    // them, which hid the tiles' building labels.
-    expect(sources.indexOf(construction as LayerSource)).toBeLessThan(sources.indexOf(basemap));
+    // An event map adds its layers one at a time in the reverse of its layer ids, so the first id draws on top. Its
+    // `essential` layers are made at start-up as each one loads, in no fixed order, so the construction is not one.
+    // The order the sources are listed in decides nothing; nor does pinning the tiles to the bottom, which put the
+    // click overlay above them and hid the tiles' building labels.
+    expect(Object.values(layerIds)[0]).toBe(construction?.id);
     expect(construction?.essential).toBeFalsy();
     expect(basemap.layerIndex).toBeUndefined();
   });
