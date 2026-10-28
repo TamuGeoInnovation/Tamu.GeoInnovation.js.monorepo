@@ -17,6 +17,7 @@
     <input type="file" name="photo" (change)="onPhotoTaken($event, 1)" accept="image/*" capture />
     @if (file | async) {
     <div class="image" [ngStyle]="{'background-image': 'url(' + (fileUrl | async) + ')'}"></div>
+    <p class="change-hint"><span class="material-icons">photo_camera</span>Tap to change</p>
     }
   </div>
   <div class="block-input">
@@ -30,6 +31,7 @@
     <input type="file" name="photo2" (change)="onPhotoTaken($event, 2)" accept="image/*" capture />
     @if (file2 | async) {
     <div class="image" [ngStyle]="{'background-image': 'url(' + (fileUrl2 | async) + ')'}"></div>
+    <p class="change-hint"><span class="material-icons">photo_camera</span>Tap to change</p>
     }
   </div>
   @for (c of form.controls?.['fields']['controls']; track c; let i = $index) {
