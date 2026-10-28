@@ -26,15 +26,19 @@ export class ClassProvider extends BaseProvider<Class> {
     super(classRepo);
   }
 
-  public getClassesForSeason(seasonGuid: string) {
-    return this.classRepo.find({
+  /**
+   * A season's classes, as both class tables list them (Admin, Classes and the student's My Classes): by code (subject,
+   * then course number), then section, then professor. Sorted here rather than by SQL so numbers compare as numbers
+   * (GEOG 1000 after GEOG 205), which a text column cannot do.
+   */
+  public async getClassesForSeason(seasonGuid: string) {
+    const classes = await this.classRepo.find({
       where: {
         season: { guid: seasonGuid }
-      },
-      order: {
-        title: 'ASC'
       }
     });
+
+    return classes.sort(compareClasses);
   }
 
   public async getClassesForActiveSeason() {
@@ -207,4 +211,32 @@ export class ClassProvider extends BaseProvider<Class> {
       return [];
     }
   }
+}
+
+const byText = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
+
+/** Code (subject, then course number), then section, then professor; numbers as numbers, and an empty value last. */
+export function compareClasses(a: Partial<Class>, b: Partial<Class>): number {
+  for (const key of ['code', 'number', 'section', 'professorName'] as const) {
+    const left = (a[key] ?? '').trim();
+    const right = (b[key] ?? '').trim();
+
+    if (left !== right) {
+      if (!left) {
+        return 1;
+      }
+
+      if (!right) {
+        return -1;
+      }
+
+      const order = byText.compare(left, right);
+
+      if (order !== 0) {
+        return order;
+      }
+    }
+  }
+
+  return 0;
 }
