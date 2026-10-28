@@ -12,11 +12,13 @@ import { EventPopups } from '../modules/popups/popups';
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 
+// Drawn in this order, top first (docs/map-layers.md, "Drawing order"), as the map has drawn them: the road closures
+// on top, and the lots at the bottom, whose fill would cover the rest (#2061).
 export enum GRADUATION_LAYERS {
+  GRADUATION_ROAD_CLOSURES = 'graduation-road-closed',
   GRADUATION_ACCESSIBLE_PARKING = 'graduation-accessible-parking',
   GRADUATION_TRAFFIC_FLOW = 'graduation-traffic-flow',
-  GRADUATION_EVENT_PARKING_LOTS = 'graduation-event-parking-lots',
-  GRADUATION_ROAD_CLOSURES = 'graduation-road-closed'
+  GRADUATION_EVENT_PARKING_LOTS = 'graduation-event-parking-lots'
 }
 const eventUrl = Connections.graduationParkingUrl;
 
@@ -82,7 +84,6 @@ export const GraduationColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 13,
     native: {
       outFields: ['*']
     } as unknown as FeatureNative
@@ -99,7 +100,6 @@ export const GraduationColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 12,
     native: {
       outFields: ['*']
     } as unknown as FeatureNative
@@ -116,7 +116,6 @@ export const GraduationColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 10,
     native: {
       outFields: ['*'],
       definitionExpression: `Type <> 'Closure'`,
@@ -135,7 +134,6 @@ export const GraduationColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 11,
     native: {
       outFields: ['*'],
       definitionExpression: `Type = 'Closure'`

@@ -133,8 +133,7 @@ export const IndoorTrackParking_DevelopmentLayerSources: LayerSource[] =
   ).map((source) =>
     athleticsDevelopmentSource({
       id: (source as { id: string }).id,
-      url: `${eventUrl}/${indoorTrackParkingDevelopmentIndex[(source as { id: string }).id]}`,
-      layerIndex: (source as { layerIndex?: number }).layerIndex
+      url: `${eventUrl}/${indoorTrackParkingDevelopmentIndex[(source as { id: string }).id]}`
     })
   );
 

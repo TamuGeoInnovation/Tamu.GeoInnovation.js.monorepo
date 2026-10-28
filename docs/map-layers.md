@@ -208,7 +208,15 @@ order of the sources array does not decide it, and the layer list's order is sep
 Do not use `layerIndex` to order a map's own layers against each other. It is a position in the map's
 whole layer list, counted when the layer is added, and that list holds whatever else has loaded by then:
 on Indoor Track Parking it held about a dozen, so indices of 20 to 25 were each simply added on top, in
-load order, and Team Bus Parking ended up under the building it was meant to cover ([#2059][2059]).
+load order, and Team Bus Parking ended up under the building it was meant to cover ([#2059][2059]). No
+event definition sets one any more ([#2061][2061]).
+
+**An `essential` layer is outside this order.** It is made when the map starts and added as soon as it
+loads, so where it lands depends on timing. Leave a layer that must sit above or below another one of the
+map's own layers non-essential, and let the enum place it. On the Fort Worth Law School and Houston Space
+Institute maps the construction drew under the campus tiles until it was ([#2532][2532]); on the dining kiosk the
+buildings, a near-invisible click layer, landed above the dining locations and took their clicks
+([#2552][2552]).
 
 ### When it is right
 
@@ -243,3 +251,6 @@ rediscover the reason - or, more likely, leave it alone because they cannot tell
 [1802]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1802
 [2059]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2059
 [2209]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2209
+[2061]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2061
+[2532]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2532
+[2552]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2552

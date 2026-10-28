@@ -68,8 +68,7 @@ export const TennisParking_DevelopmentLayerSources: LayerSource[] = TennisParkin
 ).map((source) =>
   athleticsDevelopmentSource({
     id: (source as { id: string }).id,
-    url: `${eventUrl}/${tennisParkingDevelopmentIndex[(source as { id: string }).id]}`,
-    layerIndex: (source as { layerIndex?: number }).layerIndex
+    url: `${eventUrl}/${tennisParkingDevelopmentIndex[(source as { id: string }).id]}`
   })
 );
 

@@ -24,11 +24,6 @@ export enum BIG_EVENT_MAP_TYPE_OPTIONS {
 
 const eventUrl = Connections.bigEventUrl;
 
-const BIG_EVENT_LAYER_INDICES = {
-  PARKING_LOTS: 48,
-  ROAD_CLOSURES: 49,
-  TRAFFIC: 50
-} as const;
 
 const BIG_EVENT_ROAD_CLOSURE_EXPRESSIONS = {
   PRE_KICKOFF: `Notes LIKE '%To Kickoff%'`,
@@ -70,7 +65,6 @@ export const BigEventColdLayerSources: LayerSource[] = [
     // },
     visible: true,
     listMode: 'show',
-    layerIndex: BIG_EVENT_LAYER_INDICES.TRAFFIC,
     native: {
       outFields: ['*']
     }
@@ -82,7 +76,6 @@ export const BigEventColdLayerSources: LayerSource[] = [
     popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
-    layerIndex: BIG_EVENT_LAYER_INDICES.ROAD_CLOSURES,
     native: {
       outFields: ['*']
     }
@@ -98,7 +91,6 @@ export const BigEventColdLayerSources: LayerSource[] = [
     // },
     visible: true,
     listMode: 'show',
-    layerIndex: BIG_EVENT_LAYER_INDICES.PARKING_LOTS,
     native: {
       outFields: ['*']
     }

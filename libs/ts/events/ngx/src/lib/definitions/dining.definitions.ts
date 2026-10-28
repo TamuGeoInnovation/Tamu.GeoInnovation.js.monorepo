@@ -16,14 +16,19 @@ import {
  * pattern: reuse `BUILDINGS` as the standard basemap layer and add their own single layer.
  */
 export enum DINING_KIOSK_LAYERS {
-  BUILDINGS = 'buildings-layer',
-  DINING_LOCATIONS = 'dining-locations-layer'
+  // First, so it draws on top (docs/map-layers.md, "Drawing order"): the buildings are a near-invisible click layer,
+  // and above the dining locations they took every click on one inside a building (#2552).
+  DINING_LOCATIONS = 'dining-locations-layer',
+  BUILDINGS = 'buildings-layer'
 }
 
 /**
  * The buildings every kiosk map draws, as the main map draws them by default. A kiosk loads none of the
  * main map's layers, so each kiosk adds this one itself: the Dining kiosk and the Football Tailgating
  * kiosk (#1975) both do.
+ *
+ * Not `essential`: an essential layer is made at start-up, as soon as it loads, so its place among the kiosk's own
+ * layers depended on timing. Each kiosk's `references` place it instead, below what the kiosk is for (#2552).
  */
 export const KioskBuildingsLayerSource: LayerSource = {
   type: 'feature',
@@ -33,8 +38,6 @@ export const KioskBuildingsLayerSource: LayerSource = {
   popupComponent: Popups.BuildingPopupComponent,
   listMode: 'hide',
   visible: true,
-  essential: true,
-  layerIndex: 1,
   native: {
     ...commonLayerProps,
     legendEnabled: false

@@ -10,10 +10,12 @@ import {
 import esri = __esri;
 import { EventPopups } from '../modules/popups/popups';
 
+// Drawn in this order, top first (docs/map-layers.md, "Drawing order"): the accessible spaces and the traffic flow over
+// the lots, whose fill would cover them (#2061).
 export enum MUSTER_LAYERS {
-  PARKING = 'muster-parking',
+  ACCESSIBLE_PARKING = 'muster-accessible-parking',
   TRAFFIC_FLOW = 'muster-traffic-flow',
-  ACCESSIBLE_PARKING = 'muster-accessible-parking'
+  PARKING = 'muster-parking'
 }
 
 const eventUrl = Connections.musterUrl;
@@ -50,7 +52,6 @@ export const MusterEventColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 11,
     native: {
       outFields: ['*']
     }
@@ -67,7 +68,6 @@ export const MusterEventColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 12,
     native: {
       outFields: ['*']
     }
@@ -84,7 +84,6 @@ export const MusterEventColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 10,
     native: {
       outFields: ['*']
     }
