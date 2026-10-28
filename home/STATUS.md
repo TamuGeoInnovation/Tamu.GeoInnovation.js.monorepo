@@ -9,6 +9,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 Nothing. Idle and listening.
 
 ## Finished
+- **Batch 15** (aggiemap; report `home/reports/2026-10-28-15.md`): 13 issues triaged. Closed 5 with evidence (#967, #1006, #1027, #1036, #1202); 5 still wanted, commented (#954, #1005, #1034, #1204, #1267); 3 left for the maintainer (#959, #960, #962). Nothing pushed.
 - **Batch 14** (aggiemap; report `home/reports/2026-10-28-14.md`): #657 is a service fault, filed as #2520 (both services return lots without geometry). branch ready: `fix/657-nsc-popup` at `5a60281ec`: popup rows for both maps, red without listing, known failures tied to #2520. Check exit 0.
 - **Batch 13** (aggiemap; report `home/reports/2026-10-28-13.md`): 30 issues triaged. Closed 8 with evidence (#458, #463, #552, #594, #656, #827, #881, #916); 16 still wanted, with a line each; 6 left for the maintainer (#497, #543, #546, #602, #867, #885). #659 is a live server-side defect.
 - **Batch 12** (aggiemap; report `home/reports/2026-10-28-12.md`): #2515 branch ready: `feat/2515-vector-basemap-production` at `5d747fdfd`. Vector default everywhere, production gallery = vector + raster, VTBase3 off the dev-only list, view limit kept at 1:282 with the smoke check following every offered basemap. Maps open one level closer (1:9,028 to 1:4,514): question 1. Check exit 0.
