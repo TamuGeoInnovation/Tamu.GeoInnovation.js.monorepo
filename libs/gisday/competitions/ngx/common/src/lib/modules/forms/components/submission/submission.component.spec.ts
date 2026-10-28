@@ -328,6 +328,50 @@ describe('SubmissionComponent', () => {
       expect(attempts).toBe(2);
     }));
   });
+
+  describe('changing a photo (#2545)', () => {
+    const photo = (name: string) => new File([name], name, { type: 'image/jpeg' });
+
+    /**
+     * What the browser hands `change` when a picture is chosen: the input, holding the file and its path.
+     */
+    const chosen = (file: File) => ({ target: { files: [file], value: `C:\\fakepath\\${file.name}` } });
+
+    beforeEach(() => {
+      // jsdom has no object URLs, which the photo's preview is drawn from.
+      URL.createObjectURL = jest.fn(() => 'blob:preview');
+    });
+
+    it.each([
+      ['photo', 1],
+      ['photo2', 2]
+    ] as const)('says the %s box can be tapped to change its picture, once one is chosen', (input, box) => {
+      const fixture = create();
+      const container: HTMLElement = fixture.nativeElement.querySelector(`input[name=${input}]`).parentElement;
+
+      expect(container.textContent).not.toContain('Tap to change');
+
+      fixture.componentInstance.onPhotoTaken(chosen(photo('first.jpg')), box);
+      fixture.detectChanges();
+
+      expect(container.textContent).toContain('Tap to change');
+      expect(container.querySelector(`input[name=${input}]`)).not.toBeNull();
+    });
+
+    it('replaces the picture with the next one chosen, and lets the same file be chosen again', () => {
+      const fixture = create();
+      const first = chosen(photo('first.jpg'));
+
+      fixture.componentInstance.onPhotoTaken(first, 1);
+
+      // A browser fires no change for a file input whose value is unchanged, so it must be emptied.
+      expect(first.target.value).toBe('');
+
+      fixture.componentInstance.onPhotoTaken(chosen(photo('second.jpg')), 1);
+
+      expect(fixture.componentInstance.file.getValue().name).toBe('second.jpg');
+    });
+  });
 });
 
 describe('submissionFailureMessage', () => {
