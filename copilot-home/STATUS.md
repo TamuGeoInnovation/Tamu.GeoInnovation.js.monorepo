@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **12:37 AM Central, 28 October 2026**. A listener; job: not yet assigned.
+Last written **9:36 AM Central, 28 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -17,11 +17,13 @@ Last written **12:37 AM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-Batch 43 (aggiemap: #2398, live check on #1539) started 9:16 AM Central, 28 October.
+Idle. Nothing queued after batch 43.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
+
+- **Batch 43, aggiemap: #2398 and the live check on #1539** (9:35 AM Central, 28 October): branch `chore/2398-remove-womens-parking-url` at `63401716cd2b5c5e72b3537158fd34dd637cbef7` on the fork; nothing else reads the property; services.spec.ts green on development (177 passed) and production (180 passed, 1 unrelated flaky) with no allowed-failure entry; check exit 0. #1539 had a visible marker, so it is closed as obsolete. Report `copilot-home/reports/2026-10-28-43.md`.
 
 - **Batch 42, aggiemap: triage the October issues (read only)** (9:13 AM Central, 28 October): 18 issues checked, none closed (the count was 0 on purpose); #2075 is not clean (production nightly red every night since 15 Oct) and #2398 is still live; needs-maintainer: #2039, #2275, #1600. Nothing pushed but the report `copilot-home/reports/2026-10-28-42.md`.
 
@@ -82,4 +84,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 41
+Last batch done: 43
