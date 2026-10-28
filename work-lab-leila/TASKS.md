@@ -51,6 +51,58 @@ against production.
 
 ---
 
+## Batch 164 (aggiemap: the release tier on what actually shipped, production first; 27 October 2026, about 8:10 PM Central, from `work (aggiemap)`)
+
+**After batch 163**, which is testing `18d81e87b`. That commit is now two builds stale: it predates the
+baseball fix (`7451a14f6`) and the dashes and zoom build (`dad215775`). Its results are still worth
+having - they describe the revert build - but **they do not cover what is live**, and in particular not
+baseball, which was genuinely broken at that commit. The maintainer settled this at 8:05 PM: let 163
+finish, then run again on what shipped.
+
+### 1. The release tier on production, first
+
+```
+test/smoke/aggiemap/run-local.sh production release
+```
+
+**Production first, because production is live and has never been tested.** Today's release went out
+without the dev suite: the GIS team republished the athletics services to the new schema before the
+release was ready, which broke production, so it shipped immediately. Then baseball shipped again on
+top. Nothing has run against it.
+
+Report per failure what failed and why. **A failing GitHub run opens a health issue; a local run does
+not**, so say so when reporting rather than leaving anyone to open a duplicate.
+
+Pay particular attention to:
+
+- **the athletics maps, all ten sports.** Every one moved to the republished schema today, and the
+  services under them changed at the same time. This is the first time any of it has been tested against
+  production;
+- **baseball especially**: `?map-mode=event` must show **Lot 100j**, and `?map-mode=accessible` its
+  icons, the shuttle over the lots, and no doubled lots. The suite's own layer check **skips** this map
+  (it is builder-gated - [#2467](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2467)),
+  so **look at it yourself and say what you see**. A pass from the suite here means very little: the same
+  4 passed, 1 skipped came back both when baseball was broken and when it was fixed;
+- **the ten campus maps**, listed on production for the first time today.
+
+### 2. Then the same tier on development, at `dad215775`
+
+```
+test/smoke/aggiemap/run-local.sh development release
+```
+
+so the two environments can be compared and anything production-only is obvious.
+
+### What not to do
+
+**No tagging, no promotion, nothing on production but reading it.** Report and stop.
+
+### Worth carrying over from today
+
+Trust what you see over what anything reports. Every wrong conclusion today came from something that
+reported healthy: a layer `loaded`, `visible`, right spatial reference, no errors, drawing nothing; and a
+smoke run returning an identical pass whether the map worked or not.
+
 ## Batch 163 (aggiemap: the release tier on the shipped build, and what actually blanks the map; 27 October 2026, about 6:15 PM Central, from `work (aggiemap)`)
 
 Two jobs. The first is routine and the second matters more than it looks.
