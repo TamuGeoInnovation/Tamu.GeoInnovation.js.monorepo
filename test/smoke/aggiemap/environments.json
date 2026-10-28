@@ -91,15 +91,8 @@
     "developmentSectionsVisible": false,
     "allowedLayerFailures": [],
     "allowedServiceFailures": {},
-    "allowedPortalRendererFailures": {
-      "baseballParkingUrl/0": "#2500: the production portal item's Baseball Symbols renderer keys on type and event, which the republished layer lacks",
-      "baseballParkingUrl/2": "#2500: the production portal item's Gate/Road Closure renderer keys on baseball, which the republished layer lacks",
-      "baseballParkingUrl/3": "#2500: the production portal item's Baseball Event Parking Lots renderer keys on baseball, which the republished layer lacks"
-    },
-    "allowedServiceMetadataFailures": {
-      "baseballParkingUrl/2/objectIdField": "#2510: the production layer declares objectIdField objectid_1, which it does not have",
-      "baseballParkingUrl/2/countQuery": "#2510: every query to the production layer fails with JSONObject[\"objectid_1\"] not found."
-    },
+    "allowedPortalRendererFailures": {},
+    "allowedServiceMetadataFailures": {},
     "allowedSearchSourceFailures": {
       "parking-garage": "#1163: choosing a garage opens an empty details panel",
       "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
