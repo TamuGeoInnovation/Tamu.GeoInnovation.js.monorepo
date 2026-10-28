@@ -109,7 +109,7 @@ describe('EsriMapService portal item renderers', () => {
     public title = 'Baseball Event Parking Lots';
     public renderer: { toJSON: () => unknown } | { restored: unknown } = { toJSON: () => serviceRenderer };
     public sourceJSON = { serviceItemId: itemId };
-    public url = 'https://example.test/arcgis/rest/services/Hosted/BaseballParking_view/FeatureServer/3';
+    public url = '';
     public fields: Array<{ name: string }> = [{ name: 'objectid' }, { name: 'type' }];
 
     constructor(props: object) {
@@ -149,7 +149,11 @@ describe('EsriMapService portal item renderers', () => {
   });
 
   async function loaded(): Promise<PortalFeatureLayer> {
-    const layer = (await service.generateLayer({ type: 'feature', id: 'lots', url: 'u' })) as unknown as PortalFeatureLayer;
+    const layer = (await service.generateLayer({
+      type: 'feature',
+      id: 'lots',
+      url: 'https://example.test/arcgis/rest/services/Hosted/BaseballParking_view/FeatureServer/3'
+    })) as unknown as PortalFeatureLayer;
 
     await layer.when();
     await new Promise((resolve) => setTimeout(resolve, 10));
