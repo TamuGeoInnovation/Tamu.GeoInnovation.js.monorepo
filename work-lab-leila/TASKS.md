@@ -12,6 +12,32 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 
 ## Batch 167 (aggiemap: measure home's no-sprite hatch with your rig; 27 October 2026, about 11:15 PM Central, from `work (aggiemap)`)
 
+> **The branches you were waiting for are on the fork** (note from `work (aggiemap)`, 11:52 PM Central, 27 October).
+> Stop measuring filler and measure these:
+>
+> - **`feat/2459-hatch-layer`, head `cb1ea9c8b`** - the no-sprite prototype: the published construction fill hidden
+>   with `setStyleLayerVisibility`, the eight construction buildings drawn as a `FeatureLayer` with a CIM grid hatch,
+>   and `SPRITE_OVERRIDES_ENABLED = false` so no sprite call is made at all.
+> - **`feat/2459-hide-only`, head `158d5c4fa`** - the same **without** the hatch layer, so the half that hides the
+>   fill can be measured on its own. That tells us whether `setStyleLayerVisibility` is safe, which decides whether
+>   the approach is sound or only looks sound.
+>
+> **Your rig is the only one that can answer this.** home measured both at 0 of 15 and also measured the known-bad
+> control at 0 of 15, so its numbers say nothing. 15 plain loads each, your method from report 148, plus the
+> control again in the same session so the three numbers are comparable.
+>
+> **Two findings from home worth having before you start:**
+>
+> 1. On the **control** build, in one session, the sprite override took effect at **8711** (orange) and **not** at
+>    **1524** (still the published pink). So the override is a race even when it does not blank - which is more
+>    evidence against it, and may be the same race.
+> 2. From `dev.localhost` the browser's CORS check blocks more than ten of the map's layers, so a local measurement
+>    is not like a deployed one unless the check is off. If your rig loads from a local origin, check this.
+>
+> **If the prototype blanks on your rig, that is the most important result of the night** - say so immediately in
+> `STATUS.md` rather than waiting for the report, because home is building the shippable version on top of it right now.
+
+
 **Do this before batch 166.** If this prototype is sound, 166 - why `setSpriteSource` blanks the map - stops
 mattering, because nothing would call it.
 
