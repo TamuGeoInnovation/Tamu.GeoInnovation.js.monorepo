@@ -17,7 +17,7 @@ Last written **12:50 PM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-Idle. Nothing queued after batch 47.
+Batch 48 (aggiemap: #2034, a linked feature showing its template text), started 12:50 PM Central, 28 October. Expected about 60 minutes.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
