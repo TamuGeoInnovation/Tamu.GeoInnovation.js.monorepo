@@ -1,6 +1,15 @@
 <div class="popup-section">
   <div class="feature-style-1" tabindex="0">Unisex Restroom</div>
-  <div class="feature-style-2" tabindex="0">Building Name: {{ data.attributes.Name }}</div>
-  <div class="feature-style-2" tabindex="0">Building Number: {{ data.attributes.Bldg_Number }}</div>
-  <div class="feature-style-2" tabindex="0">Note: {{ data.attributes.Notes }}</div>
+  <div class="feature-style-2" tabindex="0">{{ data.attributes.Name }}</div>
+  @if (data.attributes.BldgNum) {
+  <div class="feature-style-2" tabindex="0">Building {{ data.attributes.BldgNum }}</div>
+  }
 </div>
+
+<!-- `Notes` lists the rooms, written with <br> in the service, so it is rendered as HTML (sanitized by
+     Angular), as the lactation popup renders its own (#1961). -->
+@if (data.attributes.Notes) {
+<div class="popup-section">
+  <div class="feature-style-2" tabindex="0"><strong>Restroom location(s)</strong>: <span [innerHTML]="data.attributes.Notes"></span></div>
+</div>
+}
