@@ -8,6 +8,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 ## Running now
 **Batch 18** (aggiemap: #2532, the campuses get the main map's hatch), started 10:33 AM Central, Wednesday 28 October 2026, from `work (aggiemap)`.
 Progress (10:51 AM Central): before pictures taken on today's development; tests red, then the change: one shared hatch symbol for all three campuses, the #2506 wash and its styleLayerPaint mechanism deleted, and a type fix so a CIM renderer needs no cast. Branch built; taking the after pictures.
+Progress (11:18 AM Central): after pictures taken. Two layer-order problems found in the browser and fixed: the construction drew under the tiles (an event map orders its layers by its layer-id enum, not the list), and pinning the tiles to the bottom hid their building labels. Now correct on 5 of 5 loads per campus. Release note and check next.
 
 ## Finished
 - **Batch 17** (aggiemap; report `home/reports/2026-10-28-17.md`): #1961 branch ready: `fix/1961-restroom-building-number` at `0ccf5b7fd`. The named popup was unused since #418; the layer now opens it, reading BldgNum and hiding empty rows. Tests red then green; check exit 0. Filed #2529 (wrong building numbers in the service).
