@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 168.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 169.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -62,6 +62,58 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 168 (aggiemap: the permanently red test, then stand by for the hatch; 28 October 2026, 1:55 AM Central, from `work (aggiemap)`)
+
+**Reports 151 and 152 are exactly what was needed.** The interleaved 45-against-60 design is what made the
+prototype's 0 mean something, and you were right that a 15-load block clears nothing. The outline defect
+you photographed is now home's batch 10.
+
+### Decided - your questions from report 150 are all answered, do not ask again
+
+1. **Baseball on production.** Filed as [#2500](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2500)
+   (Bug, Urgent) and fixed in **PR 2504**: the front end now discards a portal renderer whose key fields the
+   layer does not have, so the layer keeps its service symbology instead of drawing nothing. Note the part
+   that is **not** fixed: production's own service renderers are `simple` where development's are
+   `uniqueValue`, so production will draw uniform pale blue lots until the GIS team gives that service
+   development's symbology. The three layers are on a new `allowedPortalRendererFailures` list in
+   `environments.json` meanwhile.
+2. **Other maps using portal symbology: swept, and the answer is only baseball.** Every athletics service's
+   portal item was read against its layers' fields: three broken layers, all baseball. `IndoorTrackParking`
+   `/1` `/2` and `MensBasketballParking` `/0` `/1` `/2` key on `type` and `name`, which still exist; the
+   other eight have no `uniqueValue` portal override. PR 2504 also adds `portal-renderers.spec.ts`, which
+   makes that sweep a permanent check and **covers builder-gated maps**, so this cannot come back quietly.
+3. **Indoor Track's layer-order test** - that is this batch, below.
+
+### Task 1: the test that is always red
+
+`layer-order.spec.ts` on Indoor Track has failed on every run, on both environments, since at least report
+148. **A test that is always red is worse than no test**: it trains everyone to skim past the one place a
+real drawing-order fault would appear, and it cost three of production's three failures tonight.
+
+Work out what it asserts, what the map actually does now, and which of the two is wrong. [#2059](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2059)
+is the issue it was written for - Team Bus Parking drawn above the Indoor Track Building whose footprint it
+is. **Team Bus Parking was removed from the athletics definitions on 27 October** when the ten sports moved
+to the development schema, so the likeliest answer is that the test outlived its subject. If so it should
+be deleted or rewritten against a layer that still exists, not left red.
+
+**File the issue first** (Task, `test`/`bug` as fits, Priority **Low** - say so in your report and the
+director will confirm), then the branch, then `branch ready:`. If it turns out to be a real drawing-order
+fault rather than a stale test, stop and say so: that is a different answer and a different priority.
+
+### Task 2: stand by for one confirming block on the hatch
+
+home's batch 10 fixes the outline. When it reports `branch ready:`, take **one block of 15 plain loads on
+the final commit, with a 15-load control beside it**, to confirm the branch that will actually ship is the
+one that does not blank. Not 45 again - deleting the sprite override can only reduce the risk, and your 0
+of 45 on `337047b1e` is the result. This is a guard against a late mistake, not a re-proof.
+
+Say in your report **which commit each number was taken on**. The pull request will quote you.
+
+### Do not
+
+Start more of 166. You have the finding that matters - the blanking is a race on `setSpriteSource`, present
+even with the published sheet unmodified - and the mechanism is being deleted. Anything more is archaeology.
 
 ## Batch 167 (aggiemap: measure home's no-sprite hatch with your rig; 27 October 2026, about 11:15 PM Central, from `work (aggiemap)`)
 
