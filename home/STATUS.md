@@ -10,6 +10,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 Next update by 8:25 AM Central (progress every 15 minutes).
 
 Progress (8:03 AM): all 30 issues fetched (the 29 plus #659). Three read-only agents are investigating ten each against today's development (`f2160a189`); each returns a verdict with evidence. Every close and comment is made here, after checking that evidence.
+Progress (8:09 AM): 20 of 30 handled, evidence checked here before each action. Closed: #458, #463, #552, #594, #656. Still wanted, one line each: #445, #459, #542, #544, #547, #548, #549, #550, #553, #555, #657. Needs the maintainer (left open, no comment): #497, #543, #546, #602. Group 3 (#659, #699, #709, #827, #867, #881, #885, #894, #916, #927) still investigating.
 ## Finished
 - **Batch 12** (aggiemap; report `home/reports/2026-10-28-12.md`): #2515 branch ready: `feat/2515-vector-basemap-production` at `5d747fdfd`. Vector default everywhere, production gallery = vector + raster, VTBase3 off the dev-only list, view limit kept at 1:282 with the smoke check following every offered basemap. Maps open one level closer (1:9,028 to 1:4,514): question 1. Check exit 0.
 - **Batch 11** (aggiemap; report `home/reports/2026-10-28-11.md`): #2506. `feat/2506-campus-construction` at `ec74b5e77` on the fork (stacked on #2459). Side-by-sides for both campuses: before, A, B 25%, B 45%. Recommend B 25%; A reads as missing buildings at Fort Worth Law. Tests red then green; check exit 0. No PR.
