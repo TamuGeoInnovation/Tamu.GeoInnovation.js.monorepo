@@ -10,6 +10,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 Next update by 2:25 AM Central (progress every 15 minutes).
 
 Progress (2:15 AM): pictures taken (applied with the same Esri calls in the loaded page): before, A (fill hidden), B at 25% and at 45%, both campuses; side-by-sides made. A looks worse than the pink at Fort Worth Law (empty boxes over a rail yard); B 25% is my pick. Now the code (one helper for hide and paint, used by base layers and vector-tile sources), red-first tests, check.
+Progress (2:18 AM): code committed on `feat/2506-campus-construction` (`c134aea8f`, stacked on #2459): applyStyleLayerChanges for hide and paint, used by base layers and vector-tile sources; both campuses repaint their fill as orange at 25%. 4 new tests red, then green. Check running on five projects.
 ## Finished
 - **Batch 10** (aggiemap; report `home/reports/2026-10-28-10.md`): #2459 branch ready: `feat/2459-hatch-layer` at `e081cc7ed` on the fork. Our own black outline over the hatch; 2x crop continuous; tests red then green; check exit 0. The lab measured 0 of 45 on `337047b1e`, not this head.
 - **Batch 9** (aggiemap; report `home/reports/2026-10-28-9.md`): #2459 branch ready: `feat/2459-hatch-layer` at `f1aa31ca9` on the fork (#2506 caveat in the release note). Sprite override deleted; tests red then green; check exit 0; all eight buildings hatched; release note; density recommendation: ship as is.
