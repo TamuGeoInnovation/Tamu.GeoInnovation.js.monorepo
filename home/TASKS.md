@@ -4,6 +4,54 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 20 (aggiemap: #2061, the layerIndex values that order nothing; 28 October 2026, from `work (aggiemap)`)
+
+**Batch 19 did the thing I asked and the thing I needed.** You confirmed all five entries were stale **by
+running the specs** rather than trusting my table - which mattered, because if one fault had still been
+live my claim to the maintainer that the republish was complete would have been wrong. And you photographed
+production drawing in both modes: lots in two colours, symbols, three closures. That is the first time
+anyone has seen that map working since it broke. It is **PR 2547**.
+
+### Why this one is yours
+
+In batch 18 you worked out the rule nobody had written down:
+
+> an event map adds its layers in the **reverse of its layer-id enum**, one at a time, so the **first enum
+> entry draws on top**; the order of the source list decides nothing.
+
+[#2061](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2061) is the consequence:
+**45 `layerIndex` lines across the event definitions that do not order anything**, because that is not how
+ordering works here. They look like they mean something, and the next person to need a layer on top will
+set one and watch it do nothing - which is three tries' worth of confusion, as you found.
+
+copilot-home's triage line was: *"Per file, decide if the order was meant; move that into the `references`
+order; delete the values."*
+
+### How to do it without breaking a map
+
+**Per file, and the deciding is the work.** For each `layerIndex`:
+
+1. **Was an order meant?** If a map has a layer that must draw above another - an area over a building, a
+   highlight over a lot - that intent is real even though the mechanism never worked. **Move it into the
+   enum order**, where it does work.
+2. **Or was it noise?** Many will be copied boilerplate that never had an intent. Delete those.
+3. **Say which you decided for each file**, briefly. A table in the report is enough. That record is what
+   stops someone re-adding them.
+
+**Where an order is meant, prove it**: `layer-order.spec.ts` is the right tool and already covers Indoor
+Track. Add a row for any map where getting it wrong would be visible.
+
+### Watch for
+
+- **This is wide** - 16+ files. If it gets unwieldy, **do the files where an order was clearly meant first
+  and say what is left**; a half-done job honestly reported beats a rushed whole one.
+- **`docs/map-layers.md` has a Drawing order section.** If your batch-18 rule is not in it, add it - that
+  is the durable half of this, and more valuable than the deletions.
+- The campus maps you touched in batch 18 are already right; do not re-litigate them.
+
+`scripts/check-in-volume.sh <branch> ts-events-ngx,aggiemap-angular` - exit 0. Push to `fork`, report
+`branch ready:`. No pull request.
+
 ## Batch 19 (aggiemap: the GIS team fixed production - clear the exceptions and prove it; 28 October 2026, from `work (aggiemap)`)
 
 **#2532 is PR 2541.** The layer-order rule you found - *an event map adds its layers in the reverse of its

@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 47.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 48.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,50 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 47 (aggiemap: #1540, map controls dead while a popup is open; 28 October 2026, from `work (aggiemap)`)
+
+**#2536 is PR 2543 and the maintainer is building it now** - it was his own bug report this morning. Two
+things in your work corrected me, and both are in the pull request:
+
+- **PR 2479 was itself incomplete.** I said this was close to restoring it; you checked and found it still
+  copied only `baseLayers[0]`, so a plain restore would have fixed the pink fill and **still lost the
+  hatch**.
+- **There was already a round-trip test**, and it passed throughout - its type filter did not count the
+  construction layer. I had told the maintainer nothing tested this path. That is a sharper finding than
+  "no test": we had one and it was blind.
+
+### The task
+
+[#1540](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1540): *map controls do
+not fire while a popup's details are open*. Your own triage said: *"No commit mentions it; no code in the
+sidebar or popup services dismisses the popup when a control opens its panel. Not reproduced live."*
+
+**Reproduce it first.** The issue suggests a popup, then the basemap selector. If it does not reproduce,
+**say so and stop** - that is a clean close and a better outcome than a speculative fix.
+
+If it does:
+
+1. **Find the cause before choosing a fix.** The issue itself poses the question - pointer events versus
+   panel ownership. Say which it is, with what you observed, not what seems likely.
+2. **Then decide what the right behaviour is**, and say why: does opening a control dismiss the popup, or
+   do both stay open and both work? Those are different products, and the issue does not settle it. **If
+   you cannot tell which the maintainer would want, build the one that loses least** - a popup that stays
+   open and still works - and say in the report that it was a judgement call.
+3. **A test**, red first, driving the real sequence: open a popup, open a control, use the control.
+
+### Watch for
+
+- **This is the fourth popup issue this week and three were not what they looked like.** Check what the
+  control and the popup actually do before concluding - #657, #1961 and #2536 all turned on something other
+  than the obvious reading.
+- Before and after screenshots or a short recording if it is visible.
+- `scripts/check-in-volume.sh <branch> aggiemap-ngx-core,aggiemap-ngx-popups,aggiemap-angular` - exit 0.
+
+Push to `fork`, report `branch ready:`. **If it does not reproduce, report that and close nothing** - I
+will take the close to the maintainer.
 
 ---
 
