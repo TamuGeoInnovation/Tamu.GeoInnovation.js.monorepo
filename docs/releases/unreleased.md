@@ -620,22 +620,35 @@ file would say the work had stopped.
 
 ### AggieMap on 28 October: what another machine most needs to know
 
-Two faults on production need the GIS team and **no code change will fix either**. Both are on the baseball
-maps, both arrived with the 27 October republish of the athletics services, and both were found by hand
-rather than by a check.
+**The two baseball faults are fixed.** The GIS team republished production's `BaseballParking_view` on the
+morning of 28 October, and it was verified on the live service at 11:40 AM Central:
 
-| Fault | What is wrong | What fixes it |
+| Fault | What was wrong | State |
 | --- | --- | --- |
-| [#2500](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2500) | The **portal item's** renderers key on fields the republished service no longer has (`baseball`, `type,event`), and none has a default symbol, so layers `/0`, `/2` and `/3` draw nothing | [PR 2504](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2504) stops the front end trusting them, so the layers keep their service symbology. **But production's service renderers are `simple` where development's are `uniqueValue`**, so production draws uniform pale blue lots until the GIS team gives that service development's symbology |
-| [#2510](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2510) | `/2 Gate/Road Closure` declares `objectIdField: objectid_1`, **a field it does not have**, so every query to it returns **HTTP 500** | Nothing here. The view must be republished with `objectid`, as development's already is. After #2500 is fixed this layer is still empty |
+| [#2510](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2510) | `/2` declared `objectIdField: objectid_1`, a field it did not have, so **every query returned HTTP 500** | **Fixed.** The layer is `Closures`, its object ID field is `objectid`, and it answers `{"count":3}` |
+| [#2522](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2522) | `/0` and `/3` carried `simple` renderers where development's are `uniqueValue`, so every lot drew the same pale blue; the portal item still had three stale overrides | **Fixed.** Both renderers are `uniqueValue` again and the portal item has **no overrides at all**, which is how development has always been configured |
 
-**Do not read a green merge of PR 2504 as "baseball is fixed on production".** It is made safe, not correct,
-and the closure layer is not fixed at all. Every layer of all eleven athletics services was checked for both
-faults: three broken layers for #2500 and one for #2510, **all baseball**, nothing else.
+Production was then photographed in both baseball modes: **lots in two colours, symbols drawing, all three
+closures present, no console errors.** The five known-failure entries added while they were live were each
+confirmed stale by running the specs, and removed in [PR 2547](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2547).
 
-[#2511](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2511) adds the check that would have caught both - a layer's `objectIdField` and `displayField`
-must exist in its own fields, and it must answer `where=1=1`. Neither fault was visible to anything we run,
-because the layer checks skip builder-gated maps ([#2467](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2467)).
+**Those were the only two of their kind.** Every layer of all eleven athletics services was checked for
+both faults while they were live: three broken layers for #2500 and one for #2510, all baseball.
+
+**Both checks that would have caught them are now in place** and are the durable result:
+[#2511](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2511) asks every layer whether its `objectIdField` and `displayField` exist in its own fields and
+whether it answers `where=1=1`; [PR 2504](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2504) makes the front end discard a portal renderer whose
+fields its layer lacks, so the *next* republish that leaves a stale override behind degrades to the service
+renderer instead of drawing nothing. Neither fault was visible to anything we ran, because the layer checks
+skipped builder-gated maps ([#2467](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2467)) - which [PR 2542](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2542) has since fixed on production too.
+
+**Three faults do still need the GIS team**, and none is fixable here:
+
+- [#2520](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2520) - the NSC and Break parking services return their lots **with no geometry**, so neither
+  map's popups can ever open;
+- [#2529](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2529) - three restroom records carry building numbers that are not buildings;
+- [#659](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/659) - production's `Routing` folder publishes no services, and on dev routing fails with
+  `The table was not found. [Stops]` as soon as directions are requested.
 
 #### The athletics and campus maps moved on 27 October
 
