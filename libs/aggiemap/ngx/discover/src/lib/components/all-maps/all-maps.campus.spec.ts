@@ -143,6 +143,21 @@ describe('AllMapsComponent campus maps', () => {
     expect(listed).toContain('Galveston');
   });
 
+  it('puts each campus name before its picture, so a name is read before the map it belongs to', async () => {
+    const element = await renderAs(false);
+    const tiles = Array.from(element.querySelectorAll('.campus-maps-section .campus-tile'));
+    const pictured = tiles.filter((tile) => tile.querySelector('img.map-entry-thumbnail') !== null);
+
+    expect(pictured.length).toBeGreaterThan(0);
+
+    for (const tile of pictured) {
+      const label = tile.querySelector('.campus-tile-label') as HTMLElement;
+      const image = tile.querySelector('img.map-entry-thumbnail') as HTMLElement;
+
+      expect(label.compareDocumentPosition(image) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    }
+  });
+
   it('keeps each campus card copyable, since the map search does not reach them', async () => {
     const element = await renderAs(false);
 

@@ -75,6 +75,25 @@ describe('MapColumnsComponent pictures', () => {
     expect(element.querySelector('.map-entry-icon')).not.toBeNull();
   });
 
+  it('puts the name before the picture, so a name is read before the map it belongs to', () => {
+    // Phones show the name above its picture and wide screens below it; the order in the markup is the
+    // reading order for everyone, so it is name first and only the layout changes by breakpoint.
+    const element = render([application({ thumbnail: './assets/images/campus/galveston.jpg' })]);
+    const label = element.querySelector('.map-entry--pictured .map-entry-label') as HTMLElement;
+    const image = element.querySelector('.map-entry--pictured img.map-entry-thumbnail') as HTMLElement;
+
+    expect(label).not.toBeNull();
+    expect(label.compareDocumentPosition(image) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('keeps the glyph before the name on an entry with no picture', () => {
+    const element = render([application({ id: 'fire-school', name: 'Fire School' })]);
+    const icon = element.querySelector('.map-entry .map-entry-icon') as HTMLElement;
+    const label = element.querySelector('.map-entry .map-entry-label') as HTMLElement;
+
+    expect(icon.compareDocumentPosition(label) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it('stacks only the entries that carry a picture', () => {
     const element = render([
       application({ thumbnail: './assets/images/campus/galveston.jpg' }),
