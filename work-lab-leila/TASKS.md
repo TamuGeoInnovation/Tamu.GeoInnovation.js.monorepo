@@ -1,6 +1,6 @@
 # work-lab-leila: current tasks
 
-> **Next free batch number: 167.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 168.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -9,6 +9,54 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 167 (aggiemap: measure home's no-sprite hatch with your rig; 27 October 2026, about 11:15 PM Central, from `work (aggiemap)`)
+
+**Do this before batch 166.** If this prototype is sound, 166 - why `setSpriteSource` blanks the map - stops
+mattering, because nothing would call it.
+
+### Why it has to be you
+
+`home` has built the hatch **without a sprite**: a `FeatureLayer` over the vector basemap, drawing the
+eight `Type = 'CONSTRUCTION'` buildings from `FCOR/TAMU_Basemap_20261008/MapServer/2` with a `CIMSymbol`
+hatch, and the basemap's own construction fill hidden with `setPaintProperties` rather than
+`setSpriteSource`. It reports the hatch drawing correctly: 1524 with an orange grid, grass between the
+lines, black outline.
+
+**But it cannot reproduce the blanking.** It measured the *control* - today's build with the sprite
+override on, which you measured at **4 of 15** - at **0 of 15**. A machine that does not reproduce the
+fault cannot clear a fix of it. **You are the only machine that has reproduced it**, so the number only
+means something from your rig.
+
+### What to do
+
+1. **Take home's branch** from the fork - it will be pushed by the time you reach this; the name is in
+   `home/STATUS.md` and its report. Ask in your own status if it is not there.
+2. **Measure it exactly as in report 148**: one dev server, clean worktree, no `.angular` cache, started
+   without `--poll`, 15 plain loads of `/map/d`, blank meaning essentially pure white for 30 seconds.
+3. **Measure the control the same way in the same session** - today's `development` with the sprite
+   override still on - so the pair is comparable on your machine tonight, not against this afternoon's
+   number.
+4. **Capture 1524** on the prototype: it should be an orange hatch with the grass showing between the
+   lines and a black outline.
+
+### What would settle it
+
+- **The prototype at 0 of 15** while the control reproduces its 4 of 15, **and** the picture of 1524.
+
+Both. One screenshot is not enough - there have been two of those today, each true at that instant and
+wrong overall.
+
+If the prototype also blanks, say so plainly: that would mean the fault is not sprites at all and
+everything today has been chasing the wrong thing.
+
+### Also worth your eye
+
+`copilot-home` has a blank-map smoke check on `test/2487-blank-map-smoke` - red 6 of 6 with the bad change,
+green 12 of 12 locally, 1 of 18 blank on shipped dev. Your rig measured 4 of 15 on the same build. **The
+rate differs by machine**, which matters for whether that check is reliable or flaky. Say what you think
+after seeing both numbers.
+
 
 ## Batch 166 (aggiemap: #2487 why the sprite override blanks the map; 27 October 2026, about 10:10 PM Central, from `work (aggiemap)`)
 
