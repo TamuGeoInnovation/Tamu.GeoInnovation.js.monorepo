@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 35.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 36.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,108 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 35 (aggiemap: #2500, baseball draws nothing on production; 27 October 2026, 11:34 PM Central, from `work (aggiemap)`)
+
+**This is a live production fault, and it is yours alone - no other machine is on it.** Take it before
+anything else. The cause is already proven, so this is a fix and its tests, not an investigation.
+
+### What is wrong, proven tonight
+
+AggieMap prefers a layer's **portal item** renderer over its service's (#1497). The production portal item
+for `BaseballParking_view` (`65d4ec3d1e684a7ba5dc29277252c52d`) still carries renderers written for the
+schema the GIS team replaced today:
+
+| Portal layer | Keys on | The republished layer has | Draws |
+| --- | --- | --- | --- |
+| `/0 Baseball Symbols` | `type`, `event` | neither field | nothing |
+| `/2 Gate/Road Closure` | `baseball` | `type`, `event` | nothing |
+| `/3 Baseball Event Parking Lots` | `baseball` (`AnyValid`, `Permit`, `SeasonPass`) | `type` (`Event Parking`, `Reserved`) | nothing |
+
+No `defaultSymbol` on any of the three, and the field each keys on is **absent from the layer**, so no
+feature matches any class and nothing is drawn at all.
+
+**Development is right because its portal item overrides nothing** for those three layers, so the map
+falls back to the service's own `uniqueValue` renderers. That is also what
+[`docs/map-layers.md`](docs/map-layers.md) says should happen.
+
+Checked across every athletics service on production: **three broken layers, all baseball.**
+`IndoorTrackParking` `/1` `/2` and `MensBasketballParking` `/0` `/1` `/2` key on `type` and `name`, which
+still exist; the other eight services have no `uniqueValue` portal override. So do not go looking for more.
+
+### Task 1: the front end stops trusting a renderer it can see is wrong
+
+In [`libs/maps/esri/src/lib/services/map/portal-symbology.ts`](libs/maps/esri/src/lib/services/map/portal-symbology.ts),
+add one exported predicate beside the existing helpers - it belongs there, with `serviceClassRenderer`,
+which already handles the neighbouring case of a renderer gone stale against its data (#1992):
+
+```ts
+export function rendererFieldsPresent(renderer: unknown, fieldNames: string[]): boolean
+```
+
+True when every field the renderer keys on exists in `fieldNames`. The cases that must be right:
+
+- `uniqueValue`: `field1`, `field2`, `field3`, and the `field1`/`field2`/`field3` of any `uniqueValueInfos`
+  nested renderer if you find one. Empty strings are not fields.
+- `classBreaks`: `field`.
+- **A renderer with a `valueExpression` (Arcade) keys on no field and must pass**, whatever `field1` says.
+- A `simple`, `heatmap`, `dotDensity` or unrecognised renderer keys on no field and must pass. **Unknown
+  shapes pass**: this predicate exists to reject one proven fault, not to vet renderers in general.
+- Compare **case-insensitively**. ArcGIS field names are case-insensitive in queries and an item authored
+  in Pro does not always match the service's casing; rejecting a renderer over casing would be a new bug.
+
+Then use it at the one call site, `applyPortalItemSymbology` in
+[`libs/maps/esri/src/lib/services/map/map.service.ts`](libs/maps/esri/src/lib/services/map/map.service.ts)
+(about line 645): after `rendererForLayer`, discard the portal renderer when its fields are not present on
+`layer.fields`, so the layer keeps the service's symbology - exactly what it had before #1497 existed, and
+exactly what makes development draw today.
+
+`recordSymbologySource` must then record `'service'`, not `'portal'`, because that is what was used.
+**Say why in a console warning**, naming the layer and the missing fields: this is a condition someone
+has to be able to find from the browser console, and it is the only signal a republish has broken an item.
+
+Keep the existing quiet-failure contract in that method. A wrong symbol must never stop a map drawing.
+
+### Task 2: the check, in the same change
+
+Dan's standing rule: every bug gets a check, and a republish breaks maps with no commit and no build
+behind it, which is what the smoke suite is for. Add to [`test/smoke/aggiemap`](test/smoke/aggiemap) a spec
+that, for every hosted service in `connections.ts`, reads the portal item and asserts **every portal
+renderer's key fields exist on the layer it describes**. It must cover builder-gated maps, which is why
+nothing caught this: the layer check skips them (#2467).
+
+It will fail on production today, on those three baseball layers, until the item is corrected - so give it
+a known-failure entry in `test/smoke/aggiemap/environments.json` naming #2500, the way
+`allowedServiceFailures` does, and say in your report what the entry is. A check that lists a known
+failure tied to an issue is what CLAUDE.md asks for; a check commented out is not.
+
+Add its row to [`docs/testing.md`](docs/testing.md) and **leave every number on that page alone, the Total
+included** (#2002).
+
+### Prove it, in this order
+
+1. **The unit test red first**, against the unfixed code: a `uniqueValue` renderer keyed on `baseball`
+   against a layer whose fields are `type`, `event` must be rejected, and the three real production
+   renderers above are the cases to use. Then green.
+2. A renderer with a `valueExpression`, and a `simple` renderer, must still be applied. Red-first these too
+   if you can - a predicate that rejects everything would pass task 1's first test.
+3. `bash scripts/check-in-volume.sh <branch> maps-esri,aggiemap-angular` - exit 0, and quote it.
+4. **The smoke spec run against production**, read-only: `test/smoke/aggiemap/run-local.sh production one <your spec>`.
+   Quote what it says about baseball's three layers and what it says about everything else. That run is
+   the evidence that the scope above is right.
+5. **No screenshots needed from you.** The map cannot be made to draw from this machine without the portal
+   item being corrected, and the fix's visible result is that the *service* symbology is used instead. Say
+   so in the report and use the `no-visible-change` label reasoning; the director will decide.
+
+Do not open a pull request. Push to `fork` and report `branch ready: <name>` with the exact commit.
+
+### Questions for the director (aggiemap), not to be waited on
+
+Put them at the end of your report with options and a recommendation, and keep working. In particular: if
+you find the predicate wants to live in `map.service.ts` rather than `portal-symbology.ts`, say so with
+your reason rather than asking.
 
 ---
 
