@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 173.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 174.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -62,6 +62,56 @@
 
 Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STATUS.md` and
 `work-lab-leila/reports/`, never this file.
+
+## Batch 173 (aggiemap: the release tier on the second dev build of the day; 28 October 2026, from `work (aggiemap)`)
+
+**Batch 172 was the most useful run of the day.** You found that PR 2519 checks **no** builder map on
+production, so it would have merged as coverage that covers nothing - and then proved it catches #2500 and
+#2510 exactly when it does reach them. #2521 is filed for Graduation's legend and its known-failure entry
+is on the branch; 2519 is still open.
+
+### What is being built
+
+A second dev build is going out now, off **`a8898934a`**. Three more merged since `dev-2026-10-28`:
+
+| Merged | What it changes for you |
+| --- | --- |
+| [#2517](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2517) | **Fort Worth Law and Houston Space Institute** repaint their construction fill orange at 25% instead of the opaque pink tile. Both campus basemaps are live on production already |
+| [#2518](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2518) | **The vector basemap is production's default.** This is the big one |
+| [#2516](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2516) | `service-metadata.spec.ts` is new in the suite |
+
+**Run the release tier on development** once dev serves `a8898934a`, and confirm the build from the
+deployed bundle rather than the banner, as you did this morning.
+
+### What is different about this build, and what to lead with
+
+**#2518 changes every map on production-shaped builds**, so this run is not routine:
+
+1. **`service-metadata.spec.ts` is new and should be green on development.** On production it reports
+   #2510's two entries as known failures. A *different* failure from it is a new fault - report that first.
+2. **The view-limit test** was the one failure this morning that was ours. #2518 rewrote it to ask every
+   basemap production offers. **It must be green now.** If it is not, that is the finding.
+3. **`development-only.spec.ts`** - `Hosted/VTBase3/VectorTileServer` came off the development-only list in
+   #2518. Confirm that spec is green, because getting that wrong would have turned the production run red
+   for the thing we meant to ship.
+4. **Every map opens one level closer** than it did on a production-shaped build (1:9,028 to 1:4,514).
+   **Framing is checked against a baseline recorded from production** (`framing.spec.ts`, 71 tests). If
+   that baseline is scale-sensitive, expect failures there - and **say so clearly rather than treating them
+   as regressions**, because they would be the baseline being out of date, not the maps being wrong. This is
+   the single thing most likely to go red on this build and it is worth getting the explanation right.
+
+### Also
+
+- **Photograph Fort Worth Law and Houston Space Institute** on the deployed dev build, so #2517's result is
+  seen on a real deployment rather than only on home's local one. The maintainer has said the campus
+  construction is the thing he needs most.
+
+### Report
+
+Lead with: framing, the view limit, development-only, and the new metadata spec. Then the usual per
+environment. **If it passes, say so plainly and name the commit** - production follows straight after.
+
+**Do not tag.**
 
 ## Batch 172 (aggiemap: prove #2467's builder-map check actually catches things; 28 October 2026, from `work (aggiemap)`)
 
