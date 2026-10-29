@@ -16,7 +16,7 @@ describe('CheckInController', () => {
   let app: INestApplication;
   let url: string;
   let permissions: Array<string>;
-  const provider = { insertUserCheckin: jest.fn(), insertAttendeeCheckin: jest.fn() };
+  const provider = { insertUserCheckin: jest.fn(), insertAttendeeCheckin: jest.fn(), getCheckInCode: jest.fn() };
 
   const post = (path: string, body: object) =>
     fetch(`${url}/check-ins${path}`, {
@@ -29,6 +29,7 @@ describe('CheckInController', () => {
     permissions = [];
     provider.insertUserCheckin.mockReset().mockResolvedValue({ guid: 'checkin-1' });
     provider.insertAttendeeCheckin.mockReset().mockResolvedValue({ guid: 'checkin-1' });
+    provider.getCheckInCode.mockReset().mockResolvedValue({ code: 'code-1' });
 
     const module = await Test.createTestingModule({
       controllers: [CheckInController],
@@ -66,7 +67,41 @@ describe('CheckInController', () => {
 
       await post('', { eventGuid: 'event-1', ...position });
 
-      expect(provider.insertUserCheckin).toHaveBeenCalledWith('event-1', 'admin-1', position);
+      expect(provider.insertUserCheckin).toHaveBeenCalledWith('event-1', 'admin-1', position, undefined);
+    });
+
+    it('passes the QR code on, for a hybrid or virtual session (#2560)', async () => {
+      await post('', { eventGuid: 'event-1', code: 'code-1' });
+
+      expect(provider.insertUserCheckin).toHaveBeenCalledWith('event-1', 'admin-1', expect.anything(), 'code-1');
+    });
+  });
+
+  describe('GET /check-ins/code/:eventGuid (#2560)', () => {
+    const get = (path: string) => fetch(`${url}/check-ins${path}`);
+
+    it('gives an organizer with create:checkins the session code', async () => {
+      permissions = ['create:checkins'];
+
+      const response = await get('/code/event-1');
+
+      expect(response.status).toBe(200);
+      expect(await response.json()).toEqual({ code: 'code-1' });
+      expect(provider.getCheckInCode).toHaveBeenCalledWith('event-1');
+    });
+
+    it('refuses an attendee, who could otherwise check in without attending', async () => {
+      permissions = [];
+
+      expect((await get('/code/event-1')).status).toBe(403);
+      expect(provider.getCheckInCode).not.toHaveBeenCalled();
+    });
+
+    it('is guarded by a token and the create:checkins permission', () => {
+      const handler = Object.getOwnPropertyDescriptor(CheckInController.prototype, 'getCheckInCode')?.value;
+
+      expect(Reflect.getMetadata(GUARDS_METADATA, handler)).toEqual([JwtGuard, PermissionsGuard]);
+      expect(Reflect.getMetadata('Permissions', handler)).toEqual([['create:checkins'], 'some']);
     });
   });
 

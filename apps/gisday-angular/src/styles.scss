@@ -532,37 +532,6 @@ footer .logo-container {
   font-size: 1.1rem;
 }
 
-#qr-toggle {
-  position: block;
-  padding: 0.5rem;
-  opacity: 0.6;
-  position: relative;
-  @include transition(opacity 0.25s);
-
-  &:hover {
-    opacity: 1;
-    cursor: pointer;
-
-    span {
-      display: initial;
-    }
-  }
-
-  span {
-    display: none;
-    position: absolute;
-    background: #212121;
-    color: #ffffff;
-    border-radius: 3px;
-    font-size: 0.8rem;
-    padding: 0.5rem;
-    white-space: nowrap;
-    right: 50%;
-    @include transform(translateX(50%));
-    margin-top: 0.5rem;
-  }
-}
-
 .presenter-list-item {
   @include flexbox();
   @include flex-direction(row);

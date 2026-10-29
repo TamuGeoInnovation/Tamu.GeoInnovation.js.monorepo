@@ -2,10 +2,6 @@
   <div>
     <div class="container12 leader-3 flex flex-row">
       <h1 class="session-title">{{event.name}}</h1>
-      <div id="qr-toggle" *ngIf="event && ('checkIns' | siteHas)" class="popup" href="" magnific-popup>
-        <i class="fa fa-qrcode fa-3x"></i>
-        <span>Checkin QR</span>
-      </div>
     </div>
     <div class="container12" *ngIf="event">
       <div class="column10">
@@ -161,11 +157,16 @@
 
                   <ng-template #notCheckedIn>
                     <div *ngIf="eventLive$ | async; else eventNotOngoing">
-                      <p class="trailer-1">Check-in to register your attendance for this event.</p>
-                      <p class="trailer-1" *ngIf="needsCheckInLocation(event)">Check-in for this session uses your location: you need to be at {{ event.location.building }}.</p>
-                      <tamu-gisc-button fit="snug" [look]="'secondary'" value="CHECKIN" [disabled]="findingLocation()" (click)="checkin()"></tamu-gisc-button>
-                      <p class="leader-1" *ngIf="findingLocation()">Finding your location…</p>
-                      <p class="leader-1 error" *ngIf="checkInFailure()">{{ checkInFailure() }}</p>
+                      <!-- A hybrid or virtual session checks in from its QR code's link, which carries the code (#2560). -->
+                      <p *ngIf="needsCheckInCode(event) && !checkInCode(); else checkInButton">{{ checkInCodeMessage }}</p>
+
+                      <ng-template #checkInButton>
+                        <p class="trailer-1">Check-in to register your attendance for this event.</p>
+                        <p class="trailer-1" *ngIf="needsCheckInLocation(event)">Check-in for this session uses your location: you need to be at {{ event.location.building }}.</p>
+                        <tamu-gisc-button fit="snug" [look]="'secondary'" value="CHECKIN" [disabled]="findingLocation()" (click)="checkin()"></tamu-gisc-button>
+                        <p class="leader-1" *ngIf="findingLocation()">Finding your location…</p>
+                        <p class="leader-1 error" *ngIf="checkInFailure()">{{ checkInFailure() }}</p>
+                      </ng-template>
                     </div>
                   </ng-template>
                 </ng-template>
@@ -230,6 +231,27 @@
                   </div>
                 </form>
               </div>
+            </div>
+
+            <!-- #2560: attendees of a hybrid or virtual session check in by scanning this from the presenter's slides. -->
+            <div class="trailer-2" *ngIf="needsCheckInCode(event) && ('checkIns' | siteHas)">
+              <h3 class="trailer-1">Check-in QR Code</h3>
+
+              <p class="trailer-1">
+                Attendees of this {{ event.mode }} session check in by scanning this code. Put it on the presenter's slides. It is the same code every
+                time, and it checks people in only while the session's check-in is open.
+              </p>
+
+              <ng-container *ngIf="checkInLink() as link; else showCheckInCode">
+                <tamu-gisc-qr-code class="trailer-1" [text]="link" [label]="'Check-in QR code for ' + event.name" [downloadName]="'check-in-qr-' + event.guid"></tamu-gisc-qr-code>
+                <tamu-gisc-copy-field [text]="link"></tamu-gisc-copy-field>
+              </ng-container>
+
+              <ng-template #showCheckInCode>
+                <tamu-gisc-button value="Show check-in QR code" look="secondary" fit="snug" (go)="showCheckInCode(event)"></tamu-gisc-button>
+              </ng-template>
+
+              <p class="leader-1 error" *ngIf="checkInCodeFailure()">{{ checkInCodeFailure() }}</p>
             </div>
           </div>
         </ng-container>

@@ -1,0 +1,8 @@
+<svg class="qr-code" role="img" [attr.aria-label]="label()" [attr.viewBox]="'0 0 ' + modules().size + ' ' + modules().size" shape-rendering="crispEdges">
+  <rect [attr.width]="modules().size" [attr.height]="modules().size" fill="#ffffff"></rect>
+  <path [attr.d]="path()" fill="#000000"></path>
+</svg>
+
+@if (downloadName()) {
+  <tamu-gisc-button class="leader-1" value="Download PNG" look="secondary" fit="snug" (go)="download()"></tamu-gisc-button>
+}
