@@ -15,6 +15,10 @@ it opens the session page signed in, with a **Check In** button and no location 
 the page says to scan it, and the API refuses the check-in
 ([#2560](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2560)).
 
+The code is drawn in Texas A&M maroon with the university's logo in the middle, made with the highest
+error correction so phones still read it around the logo. Full screen fills the screen with the code and
+"Scan to check in to" the session's name, with **Exit full screen** in the corner; Escape also leaves it.
+
 The code is the same for the whole session, so a slide can be made ahead of time. It checks people in
 only while the session's check-in is open, from its start until 15 minutes after its end
 ([#1795](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1795)), so a photo
@@ -28,5 +32,6 @@ box on the admin event form. Production needs the `AddEventCheckInCode` migratio
 | Before | After |
 | --- | --- |
 | ![A hybrid session's check-in: a Check In button anyone signed in can press](../screenshots/2560-gisday-qr-checkin/before-hybrid-checkin.jpg) | ![The same session opened without the code: "Check in to this session by scanning the QR code on the presenter's slides."](../screenshots/2560-gisday-qr-checkin/after-hybrid-no-code.jpg) |
-| ![The admin event form's unused QR code box](../screenshots/2560-gisday-qr-checkin/before-admin-qr-box.jpg) | ![An organizer's Check-in QR Code section, with the code, Full screen, Download PNG and its link](../screenshots/2560-gisday-qr-checkin/after-organizer-qr.jpg) |
+| ![The admin event form's unused QR code box](../screenshots/2560-gisday-qr-checkin/before-admin-qr-box.jpg) | ![An organizer's Check-in QR Code section: the maroon code with the Texas A&M logo, Full screen and Download PNG](../screenshots/2560-gisday-qr-checkin/after-organizer-qr.jpg) |
+| | ![Full screen: the maroon code with the logo, centred, "Scan to check in to Session 79800bbb" under it, and Exit full screen](../screenshots/2560-gisday-qr-checkin/after-fullscreen-maroon-logo.jpg) |
 | | ![Opened from the QR code: a Check In button, then "Your attendance has been registered"](../screenshots/2560-gisday-qr-checkin/after-scanned-checked-in.jpg) |
