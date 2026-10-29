@@ -3,16 +3,14 @@
   <path [attr.d]="path()" fill="#000000"></path>
 </svg>
 
-@if (isFullscreen()) { @if (caption()) {
-<p class="qr-caption">{{ caption() }}</p>
-}
-<tamu-gisc-button class="qr-exit" value="Exit full screen" look="secondary" fit="snug" (go)="exitFullscreen()"></tamu-gisc-button>
-} @else if (downloadName() || fullscreen()) {
-<div class="qr-actions leader-1">
-  @if (fullscreen()) {
-  <tamu-gisc-button value="Full screen" look="secondary" fit="snug" (go)="enterFullscreen()"></tamu-gisc-button>
-  } @if (downloadName()) {
-  <tamu-gisc-button value="Download PNG" look="secondary" fit="snug" (go)="download()"></tamu-gisc-button>
-  }
-</div>
-}
+<ng-container *ngIf="isFullscreen(); else notFullscreen">
+  <p class="qr-caption" *ngIf="caption()">{{ caption() }}</p>
+  <tamu-gisc-button class="qr-exit" value="Exit full screen" look="secondary" fit="snug" (go)="exitFullscreen()"></tamu-gisc-button>
+</ng-container>
+
+<ng-template #notFullscreen>
+  <div class="qr-actions leader-1" *ngIf="downloadName() || fullscreen()">
+    <tamu-gisc-button *ngIf="fullscreen()" value="Full screen" look="secondary" fit="snug" (go)="enterFullscreen()"></tamu-gisc-button>
+    <tamu-gisc-button *ngIf="downloadName()" value="Download PNG" look="secondary" fit="snug" (go)="download()"></tamu-gisc-button>
+  </div>
+</ng-template>

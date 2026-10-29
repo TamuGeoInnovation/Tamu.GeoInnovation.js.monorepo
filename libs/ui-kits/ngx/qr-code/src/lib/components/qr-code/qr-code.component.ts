@@ -1,4 +1,5 @@
 import { Component, ElementRef, HostListener, computed, inject, input, signal } from '@angular/core';
+import { NgIf } from '@angular/common';
 import { encode } from 'uqr';
 
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -12,7 +13,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-qr-code',
   templateUrl: './qr-code.component.html',
   styleUrls: ['./qr-code.component.scss'],
-  imports: [ButtonComponent]
+  imports: [ButtonComponent, NgIf]
 })
 export class QrCodeComponent {
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
