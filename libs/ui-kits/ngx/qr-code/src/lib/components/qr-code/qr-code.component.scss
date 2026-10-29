@@ -17,23 +17,28 @@
   gap: 0.5rem;
 }
 
-// Full screen: the code as large as the screen allows, centred on white, for a presenter sharing
-// their screen. A phone at the back of a room needs every pixel.
-:host:fullscreen {
-  align-items: center;
+// Full screen: the code as large as the screen allows, centred on white with its caption under it, for a
+// presenter sharing their screen. A phone at the back of a room needs every pixel. Fixed to the viewport
+// so the layout holds whatever the browser's own full-screen styles do.
+:host(.is-fullscreen) {
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
   justify-content: center;
-  padding: 2vmin;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
   background: #ffffff;
 
   .qr-code {
-    width: auto;
+    flex: none;
+    width: min(100%, calc(100vh - 10rem));
     max-width: none;
-    height: calc(100vh - 12rem);
-    max-height: 100vw;
   }
 
   .qr-caption {
-    margin: 1rem 0 0;
+    flex: none;
+    margin: 0;
     padding: 0;
     color: #000000;
     font-size: clamp(1.25rem, 3vmin, 2.5rem);

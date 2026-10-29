@@ -131,6 +131,13 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   public readonly checkInCodeMessage = CHECK_IN_CODE_MESSAGE;
 
   /**
+   * The check-in QR code in Texas A&M maroon, with the university's box logo in the middle, from the
+   * shared assets every GIS Day site serves (as the header lockup uses).
+   */
+  public readonly checkInCodeColor = '#500000';
+  public readonly checkInCodeLogo = 'assets/images/logo/TAM-LogoBox.svg';
+
+  /**
    * The link in the session's check-in QR code, once an organizer has asked for it (#2560).
    */
   public readonly checkInLink = signal<string>(undefined);

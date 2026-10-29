@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QrCodeComponent, qrModules, qrPath } from './qr-code.component';
+import { QrCodeComponent, qrLogoBox, qrModules, qrPath } from './qr-code.component';
 
 describe('QrCodeComponent', () => {
   let fixture: ComponentFixture<QrCodeComponent>;
@@ -22,6 +22,51 @@ describe('QrCodeComponent', () => {
     expect(svg.getAttribute('aria-label')).toBe('Check-in QR code');
     expect(svg.getAttribute('viewBox')).toBe(`0 0 ${size} ${size}`);
     expect(svg.querySelector('path').getAttribute('d')).toMatch(/^M\d+ \d+h1v1h-1z/);
+  });
+
+  it('draws the modules black on white by default, with no logo', () => {
+    fixture.componentRef.setInput('text', 'x');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('path').getAttribute('fill')).toBe('#000000');
+    expect(fixture.nativeElement.querySelector('image')).toBeNull();
+  });
+
+  it('draws the modules in the colour given, and the logo in a clear square in the middle', () => {
+    fixture.componentRef.setInput('text', 'https://gisday.tamu.edu/sessions/details/e-1?checkin=abc');
+    fixture.componentRef.setInput('color', '#500000');
+    fixture.componentRef.setInput('logo', 'assets/images/logo/TAM-LogoBox.svg');
+    fixture.detectChanges();
+
+    const box = fixture.componentInstance.logoBox();
+    const image: SVGImageElement = fixture.nativeElement.querySelector('image');
+
+    expect(fixture.nativeElement.querySelector('path').getAttribute('fill')).toBe('#500000');
+    expect(image.getAttribute('href')).toBe('assets/images/logo/TAM-LogoBox.svg');
+    expect([image.getAttribute('x'), image.getAttribute('y'), image.getAttribute('width')]).toEqual([
+      `${box.x}`,
+      `${box.y}`,
+      `${box.size}`
+    ]);
+    // No module is drawn under the logo.
+    const drawn = (fixture.nativeElement.querySelector('path').getAttribute('d') as string)
+      .split('z')
+      .filter(Boolean)
+      .map((m) => m.replace('M', '').split('h')[0].split(' ').map(Number));
+    expect(drawn.some(([x, y]) => x >= box.x && x < box.x + box.size && y >= box.y && y < box.y + box.size)).toBe(false);
+  });
+
+  it('uses the highest error correction with a logo, so the code still reads around it', () => {
+    const text = 'https://gisday.tamu.edu/sessions/details/e-1?checkin=abc';
+    fixture.componentRef.setInput('text', text);
+    fixture.detectChanges();
+    const plain = fixture.componentInstance.modules();
+
+    fixture.componentRef.setInput('logo', 'logo.svg');
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.modules()).toEqual(qrModules(text, 'H'));
+    expect(fixture.componentInstance.modules().size).toBeGreaterThan(plain.size);
   });
 
   it('offers a download only when given a file name', () => {
@@ -95,6 +140,8 @@ describe('QrCodeComponent', () => {
 
       expect(fixture.nativeElement.textContent).toContain('Scan to check in');
       expect(buttons()).toEqual(['Exit full screen']);
+      // The full-screen layout hangs on this class, so it follows the same state as the template.
+      expect((fixture.nativeElement as HTMLElement).classList).toContain('is-fullscreen');
 
       press('Exit full screen');
       expect(exitFullscreen).toHaveBeenCalledTimes(1);
@@ -109,6 +156,7 @@ describe('QrCodeComponent', () => {
 
       expect(fixture.componentInstance.isFullscreen()).toBe(false);
       expect(buttons()).toEqual(['Full screen']);
+      expect((fixture.nativeElement as HTMLElement).classList).not.toContain('is-fullscreen');
     });
 
     it('ignores another element going full screen', () => {
@@ -146,7 +194,40 @@ describe('qrModules()', () => {
   });
 });
 
+describe('qrLogoBox()', () => {
+  it.each([29, 41, 49, 57, 77])('puts an odd square of about 30%% of a %i-module code exactly in the middle', (size) => {
+    const box = qrLogoBox(size);
+    const code = size - 8;
+
+    expect(box.size % 2).toBe(1);
+    expect(box.x).toBe(box.y);
+    expect(box.x * 2 + box.size).toBe(size);
+    expect(box.size / code).toBeGreaterThan(0.2);
+    expect(box.size / code).toBeLessThanOrEqual(0.31);
+  });
+
+  it('clears no more than a tenth of the modules, inside what H error correction recovers', () => {
+    for (const size of [29, 41, 49, 57, 77]) {
+      const box = qrLogoBox(size);
+
+      expect((box.size * box.size) / ((size - 8) * (size - 8))).toBeLessThan(0.1);
+    }
+  });
+});
+
 describe('qrPath()', () => {
+  it('leaves a hole clear', () => {
+    expect(
+      qrPath(
+        [
+          [true, true],
+          [true, true]
+        ],
+        { x: 1, y: 0, size: 1 }
+      )
+    ).toBe('M0 0h1v1h-1zM0 1h1v1h-1zM1 1h1v1h-1z');
+  });
+
   it('draws one unit square per dark module and nothing for a light one', () => {
     expect(
       qrPath([

@@ -298,6 +298,17 @@ describe('EventDetailComponent check-in', () => {
       expect(page().querySelector('tamu-gisc-copy-field')?.textContent).toContain(link);
     });
 
+    it('draws the code in Texas A&M maroon with the university’s logo in the middle', async () => {
+      const { page, press } = open('hybrid', undefined, undefined, organizer);
+
+      await press('Show check-in QR code');
+
+      expect(page().querySelector('tamu-gisc-qr-code path')?.getAttribute('fill')).toBe('#500000');
+      expect(page().querySelector('tamu-gisc-qr-code image')?.getAttribute('href')).toBe(
+        'assets/images/logo/TAM-LogoBox.svg'
+      );
+    });
+
     it('offers to show the code full screen, for a presenter sharing their screen', async () => {
       const { page, button, press } = open('virtual', undefined, undefined, organizer);
       const requestFullscreen = jest.fn().mockResolvedValue(undefined);
