@@ -21,4 +21,6 @@ soon as it is allowed. When location is blocked, the form lists the steps for th
 | Before | After |
 | --- | --- |
 | ![The submission page in a phone's browser sends the student to the install page](../screenshots/vgi-phone-browser/before-submission-sends-to-install.jpg) | ![The submission form opens in a phone's browser](../screenshots/vgi-phone-browser/after-submission-in-browser.jpg) |
-| | ![Location blocked: the steps for Chrome on Android](../screenshots/vgi-phone-browser/after-location-blocked-android-chrome.jpg) |
+| | ![Location blocked: the steps for Chrome on Android, and the optional home-screen link](../screenshots/vgi-phone-browser/after-location-blocked-android-chrome.jpg) |
+| | ![The map opens in a phone's browser](../screenshots/vgi-phone-browser/after-map-in-browser.jpg) |
+| | ![The install page, now optional](../screenshots/vgi-phone-browser/after-install-optional.jpg) |
