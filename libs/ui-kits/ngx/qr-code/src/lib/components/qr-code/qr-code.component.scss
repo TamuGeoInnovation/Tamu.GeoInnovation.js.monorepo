@@ -10,3 +10,39 @@
   max-width: 20rem;
   height: auto;
 }
+
+.qr-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+// Full screen: the code as large as the screen allows, centred on white, for a presenter sharing
+// their screen. A phone at the back of a room needs every pixel.
+:host:fullscreen {
+  align-items: center;
+  justify-content: center;
+  padding: 2vmin;
+  background: #ffffff;
+
+  .qr-code {
+    width: auto;
+    max-width: none;
+    height: calc(100vh - 12rem);
+    max-height: 100vw;
+  }
+
+  .qr-caption {
+    margin: 1rem 0 0;
+    padding: 0;
+    color: #000000;
+    font-size: clamp(1.25rem, 3vmin, 2.5rem);
+    text-align: center;
+  }
+
+  .qr-exit {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+}

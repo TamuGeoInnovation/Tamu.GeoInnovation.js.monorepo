@@ -237,10 +237,10 @@
             <div class="trailer-2" *ngIf="needsCheckInCode(event) && ('checkIns' | siteHas)">
               <h3 class="trailer-1">Check-in QR Code</h3>
 
-              <p class="trailer-1">Attendees of this {{ event.mode }} session check in by scanning this code. Put it on the presenter's slides. It is the same code every time, and it checks people in only while the session's check-in is open.</p>
+              <p class="trailer-1">Attendees of this {{ event.mode }} session check in by scanning this code. Put it on the presenter's slides, or show it full screen on the shared screen. It is the same code every time, and it checks people in only while the session's check-in is open.</p>
 
               <ng-container *ngIf="checkInLink() as link; else checkInCodeNotShown">
-                <tamu-gisc-qr-code class="trailer-1" [text]="link" [label]="'Check-in QR code for ' + event.name" [downloadName]="'check-in-qr-' + event.guid"></tamu-gisc-qr-code>
+                <tamu-gisc-qr-code class="trailer-1" [text]="link" [label]="'Check-in QR code for ' + event.name" [downloadName]="'check-in-qr-' + event.guid" [fullscreen]="true" [caption]="'Scan to check in to ' + event.name"></tamu-gisc-qr-code>
                 <tamu-gisc-copy-field [text]="link"></tamu-gisc-copy-field>
               </ng-container>
 

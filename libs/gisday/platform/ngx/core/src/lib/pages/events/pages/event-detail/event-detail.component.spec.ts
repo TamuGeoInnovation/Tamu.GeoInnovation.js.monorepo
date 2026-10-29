@@ -298,6 +298,21 @@ describe('EventDetailComponent check-in', () => {
       expect(page().querySelector('tamu-gisc-copy-field')?.textContent).toContain(link);
     });
 
+    it('offers to show the code full screen, for a presenter sharing their screen', async () => {
+      const { page, button, press } = open('virtual', undefined, undefined, organizer);
+      const requestFullscreen = jest.fn().mockResolvedValue(undefined);
+
+      await press('Show check-in QR code');
+      (page().querySelector('tamu-gisc-qr-code') as HTMLElement).requestFullscreen = requestFullscreen;
+
+      expect(button('Full screen')).toBeDefined();
+      expect(button('Download PNG')).toBeDefined();
+
+      await press('Full screen');
+
+      expect(requestFullscreen).toHaveBeenCalledTimes(1);
+    });
+
     it('offers no code for an in-person session, which checks in by location', () => {
       const { button } = open('in-person', undefined, undefined, organizer);
 

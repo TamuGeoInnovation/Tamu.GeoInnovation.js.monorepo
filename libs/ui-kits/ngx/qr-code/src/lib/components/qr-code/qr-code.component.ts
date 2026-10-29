@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, ElementRef, HostListener, computed, inject, input, signal } from '@angular/core';
 import { encode } from 'uqr';
 
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -6,6 +6,7 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 /**
  * A QR code for `text`, drawn as an SVG so it stays sharp at any size, from a projector to a phone
  * (#2560). With `downloadName` it also offers the code as a PNG, which every slide program accepts.
+ * With `fullscreen` it offers to fill the screen with the code, for a presenter sharing their screen.
  */
 @Component({
   selector: 'tamu-gisc-qr-code',
@@ -14,6 +15,8 @@ import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
   imports: [ButtonComponent]
 })
 export class QrCodeComponent {
+  private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
+
   /**
    * What the code holds, usually a link.
    */
@@ -28,6 +31,22 @@ export class QrCodeComponent {
    * The downloaded file's name, without `.png`. No download button without it.
    */
   public readonly downloadName = input<string>(undefined);
+
+  /**
+   * Whether to offer a Full Screen button. Escape, or the button shown in full screen, leaves it.
+   */
+  public readonly fullscreen = input<boolean>(false);
+
+  /**
+   * A line shown under the code in full screen only, such as what to scan it for.
+   */
+  public readonly caption = input<string>(undefined);
+
+  /**
+   * Whether this code fills the screen now. The browser can leave full screen on its own (Escape), so
+   * this follows the document rather than the buttons.
+   */
+  public readonly isFullscreen = signal(false);
 
   public readonly modules = computed(() => qrModules(this.text()));
 
@@ -47,6 +66,21 @@ export class QrCodeComponent {
     link.href = png;
     link.download = `${this.downloadName()}.png`;
     link.click();
+  }
+
+  public enterFullscreen() {
+    this.host.nativeElement.requestFullscreen?.()?.catch(() => undefined);
+  }
+
+  public exitFullscreen() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.()?.catch(() => undefined);
+    }
+  }
+
+  @HostListener('document:fullscreenchange')
+  public onFullscreenChange() {
+    this.isFullscreen.set(document.fullscreenElement === this.host.nativeElement);
   }
 }
 

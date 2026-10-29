@@ -33,6 +33,93 @@ describe('QrCodeComponent', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('tamu-gisc-button')).not.toBeNull();
   });
+
+  describe('full screen', () => {
+    const buttons = () =>
+      Array.from<HTMLInputElement>(fixture.nativeElement.querySelectorAll('tamu-gisc-button input')).map((b) => b.value);
+    const press = (label: string) => {
+      Array.from<HTMLInputElement>(fixture.nativeElement.querySelectorAll('tamu-gisc-button input'))
+        .find((b) => b.value === label)
+        .click();
+      fixture.detectChanges();
+    };
+    // jsdom has no Fullscreen API: the browser's side is stood in for here.
+    const setFullscreenElement = (element: Element | null) => {
+      Object.defineProperty(document, 'fullscreenElement', { value: element, configurable: true });
+      document.dispatchEvent(new Event('fullscreenchange'));
+      fixture.detectChanges();
+    };
+
+    let requestFullscreen: ReturnType<typeof vi.fn>;
+    let exitFullscreen: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+      requestFullscreen = vi.fn().mockResolvedValue(undefined);
+      exitFullscreen = vi.fn().mockResolvedValue(undefined);
+      (fixture.nativeElement as HTMLElement).requestFullscreen = requestFullscreen;
+      Object.defineProperty(document, 'exitFullscreen', { value: exitFullscreen, configurable: true });
+
+      fixture.componentRef.setInput('text', 'x');
+      fixture.componentRef.setInput('caption', 'Scan to check in');
+    });
+
+    afterEach(() => {
+      Object.defineProperty(document, 'fullscreenElement', { value: null, configurable: true });
+    });
+
+    it('is offered only when asked for', () => {
+      fixture.detectChanges();
+      expect(buttons()).not.toContain('Full screen');
+
+      fixture.componentRef.setInput('fullscreen', true);
+      fixture.detectChanges();
+      expect(buttons()).toContain('Full screen');
+    });
+
+    it('fills the screen with the code itself, not the page', () => {
+      fixture.componentRef.setInput('fullscreen', true);
+      fixture.detectChanges();
+
+      press('Full screen');
+
+      expect(requestFullscreen).toHaveBeenCalledTimes(1);
+    });
+
+    it('shows the caption and a way out in full screen, and nothing else', () => {
+      fixture.componentRef.setInput('fullscreen', true);
+      fixture.componentRef.setInput('downloadName', 'check-in');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.textContent).not.toContain('Scan to check in');
+
+      setFullscreenElement(fixture.nativeElement);
+
+      expect(fixture.nativeElement.textContent).toContain('Scan to check in');
+      expect(buttons()).toEqual(['Exit full screen']);
+
+      press('Exit full screen');
+      expect(exitFullscreen).toHaveBeenCalledTimes(1);
+    });
+
+    it('notices the browser leaving full screen, such as on Escape', () => {
+      fixture.componentRef.setInput('fullscreen', true);
+      fixture.detectChanges();
+      setFullscreenElement(fixture.nativeElement);
+
+      setFullscreenElement(null);
+
+      expect(fixture.componentInstance.isFullscreen()).toBe(false);
+      expect(buttons()).toEqual(['Full screen']);
+    });
+
+    it('ignores another element going full screen', () => {
+      fixture.componentRef.setInput('fullscreen', true);
+      fixture.detectChanges();
+
+      setFullscreenElement(document.body);
+
+      expect(fixture.componentInstance.isFullscreen()).toBe(false);
+    });
+  });
 });
 
 describe('qrModules()', () => {
