@@ -1,3 +1,4 @@
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
@@ -20,6 +21,7 @@ describe('SpeakerAddEditFormComponent', () => {
       TestBed.configureTestingModule({
         providers: [
           provideRouter([]),
+          provideHttpClient(),
           { provide: SpeakerService, useValue: { getEntity: () => of({}) } },
           { provide: AssetsService, useValue: { getAssetUrl: (path: string) => of(`assets/uploads/${path}`) } },
           { provide: UniversityService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
@@ -34,12 +36,14 @@ describe('SpeakerAddEditFormComponent', () => {
       fixture.detectChanges();
 
       const images = () => Array.from((fixture.nativeElement as HTMLElement).querySelectorAll<HTMLImageElement>('.speaker-photo img'));
+      const icon = () =>
+        (fixture.nativeElement as HTMLElement).querySelector('.speaker-photo .material-icons')?.textContent.trim();
       const choose = (file: File | null) => {
         fixture.componentInstance.form.get('file').setValue(file);
         fixture.detectChanges();
       };
 
-      return { images, choose };
+      return { images, icon, choose };
     }
 
     beforeEach(() => {
@@ -52,27 +56,36 @@ describe('SpeakerAddEditFormComponent', () => {
       expect(images().filter((img) => !img.getAttribute('src'))).toEqual([]);
     });
 
-    it('shows the placeholder before a photograph is chosen', () => {
-      const { images } = create();
+    /**
+     * The first fix showed `images/placeholder.svg` from the uploads folder. That file ships in the site image, but
+     * production mounts its uploads volume over that folder, so the file answered 404 there and the broken image
+     * stayed (28 October 2026). Before a photograph is chosen, the preview is now the person icon the shared speaker
+     * avatar draws for a speaker with no photo: no file at all, so nothing can be missing.
+     */
+    it('shows the person icon, and asks for no picture file, before a photograph is chosen', () => {
+      const { images, icon } = create();
 
-      expect(images().map((img) => img.getAttribute('src'))).toEqual(['assets/uploads/images/placeholder.svg']);
+      expect(images()).toEqual([]);
+      expect(icon()).toBe('person');
     });
 
-    it('shows the chosen photograph in place of the placeholder', () => {
-      const { images, choose } = create();
+    it('shows the chosen photograph in place of the icon', () => {
+      const { images, icon, choose } = create();
 
       choose(new File(['x'], 'speaker.png', { type: 'image/png' }));
 
       expect(images().map((img) => img.getAttribute('src'))).toEqual(['blob:chosen-photo']);
+      expect(icon()).toBeUndefined();
     });
 
-    it('brings the placeholder back on Undo', () => {
-      const { images, choose } = create();
+    it('brings the icon back on Undo', () => {
+      const { images, icon, choose } = create();
 
       choose(new File(['x'], 'speaker.png', { type: 'image/png' }));
       choose(null);
 
-      expect(images().map((img) => img.getAttribute('src'))).toEqual(['assets/uploads/images/placeholder.svg']);
+      expect(images()).toEqual([]);
+      expect(icon()).toBe('person');
     });
   });
 
@@ -88,6 +101,7 @@ describe('SpeakerAddEditFormComponent', () => {
       TestBed.configureTestingModule({
         providers: [
           provideRouter([]),
+          provideHttpClient(),
           { provide: SpeakerService, useValue: { getEntity: () => of({}) } },
           { provide: AssetsService, useValue: { getAssetUrl: () => of(null) } },
           { provide: UniversityService, useValue: { getEntitiesForActiveSeason: () => of(universities) } },
