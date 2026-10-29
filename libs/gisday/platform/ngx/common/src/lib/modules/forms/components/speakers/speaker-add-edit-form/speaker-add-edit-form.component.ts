@@ -22,6 +22,7 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { SpeakerClassBannerComponent } from '../../../../people/components/speaker-class-banner/speaker-class-banner.component';
+import { SpeakerAvatarComponent } from '../../../../people/components/speaker-avatar/speaker-avatar.component';
 
 @Component({
   selector: 'tamu-gisc-speaker-add-edit-form',
@@ -36,7 +37,8 @@ import { SpeakerClassBannerComponent } from '../../../../people/components/speak
     CheckboxComponent,
     ButtonComponent,
     AsyncPipe,
-    SpeakerClassBannerComponent
+    SpeakerClassBannerComponent,
+    SpeakerAvatarComponent
   ]
 })
 export class SpeakerAddEditFormComponent implements OnInit {
@@ -57,9 +59,6 @@ export class SpeakerAddEditFormComponent implements OnInit {
   public universities$: Observable<Array<Partial<University>>>;
   public organizations$: Observable<Array<Partial<Organization>>>;
   public speakerPhotoUrl$: Observable<SafeUrl>;
-
-  // What speakers without a photograph show on the site, so the preview is never an image with no source (#2422).
-  public readonly placeholderUrl$ = this.as.getAssetUrl('images/placeholder.svg');
 
   /**
    * The speaker as the banner on the photograph sees it: the university chosen in the form and the year
