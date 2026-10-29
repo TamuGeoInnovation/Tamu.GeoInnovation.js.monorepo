@@ -56,7 +56,15 @@
   } @case ('slow') {
   <p class="info-block warning">Still finding your location. Make sure Location is on in your phone's settings.</p>
   } @case ('blocked') {
-  <p class="info-block warning">Location access is blocked. Allow this site to use your location in your phone settings to submit.</p>
+  <div class="info-block warning location-help">
+    <p><strong>Location access is blocked.</strong> Each submission needs your location. To allow it in {{ locationHelp.device }}:</p>
+    <ol>
+      @for (step of locationHelp.steps; track step) {
+      <li>{{ step }}</li>
+      }
+    </ol>
+    <p>Then tap Submit again.</p>
+  </div>
   } @default {
   <p class="info-block context">Finding your location...</p>
   } }

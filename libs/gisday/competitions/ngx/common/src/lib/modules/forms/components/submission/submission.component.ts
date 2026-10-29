@@ -24,6 +24,8 @@ import { HttpEventType } from '@angular/common/http';
 import { Angulartics2 } from 'angulartics2';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { locationHelp } from '@tamu-gisc/common/utils/device';
+import { geolocationPermission } from '@tamu-gisc/common/utils/geometry';
 import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
 import { shrinkImage } from '@tamu-gisc/common/utils/ui';
 import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
@@ -65,6 +67,11 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
    */
   public locationStatus: BehaviorSubject<SubmissionLocationStatus> = new BehaviorSubject('finding');
 
+  /**
+   * How to allow the location on this phone and browser, shown when it is blocked (#2559).
+   */
+  public readonly locationHelp = locationHelp();
+
   public formValid: Observable<boolean>;
 
   public submissionProgress: BehaviorSubject<number> = new BehaviorSubject(0);
@@ -81,7 +88,21 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   private _submissionGuid: string;
 
   public ngOnInit(): void {
-    this._trackPosition();
+    // A browser remembers for each site whether it may use the location, so check before asking: a
+    // site already allowed is not asked, and a blocked one is not asked again but is followed as soon
+    // as it is allowed, in the settings or anywhere else (#2559). Where the browser cannot say, the
+    // watch asks, as it always has.
+    geolocationPermission()
+      .pipe(takeUntil(this._destroy$))
+      .subscribe((state) => {
+        if (state === 'denied') {
+          this._trackLocation?.dispose();
+          this._trackLocation = undefined;
+          this._showBlocked();
+        } else if (this._trackLocation === undefined) {
+          this._trackPosition();
+        }
+      });
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -157,10 +178,20 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
         },
         error: (err: GeolocationPositionError) => {
           // TrackLocation keeps watching through every other error, so this is a refusal.
-          this.locationStatus.next('blocked');
-          this.ns.preset('no_gps');
+          this._trackLocation = undefined;
+          this._showBlocked();
         }
       });
+  }
+
+  /**
+   * Says location is blocked, once: a refusal is heard both from the watch and from the permission.
+   */
+  private _showBlocked() {
+    if (this.locationStatus.getValue() !== 'blocked') {
+      this.locationStatus.next('blocked');
+      this.ns.preset('no_gps');
+    }
   }
 
   public onPhotoTaken(e, fileNumber: 1 | 2 = 1) {
@@ -311,7 +342,7 @@ const LOCATION_FAILURES_BEFORE_HINT = 3;
 const NO_LOCATION_MESSAGES: Record<Exclude<SubmissionLocationStatus, 'found'>, string> = {
   finding: 'Your phone is still finding your location. Wait until the form shows it has been found, then submit again.',
   slow: "Your phone has not found your location yet. Make sure Location is on in your phone's settings, then submit again.",
-  blocked: 'Location access is blocked. Allow this site to use your location in your phone settings, then submit again.'
+  blocked: 'Location access is blocked. Follow the steps on the form to allow it, then submit again.'
 };
 
 /**

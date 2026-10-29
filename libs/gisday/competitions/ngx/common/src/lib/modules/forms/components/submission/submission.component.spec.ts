@@ -219,6 +219,138 @@ describe('SubmissionComponent', () => {
   });
 
   /**
+   * #2559: in a phone's browser the site remembers whether it may use the location, so the form checks
+   * first. It does not ask a site that is blocked, says how to allow it on this phone, and picks the
+   * location up by itself once it is allowed.
+   */
+  describe('location permission', () => {
+    let status: { state: PermissionState; addEventListener: jest.Mock; removeEventListener: jest.Mock };
+
+    /**
+     * Gives the browser a Permissions API that answers `state` for the location, as Safari 16 and
+     * later and Chrome do.
+     */
+    const permission = (state: PermissionState) => {
+      status = { state, addEventListener: jest.fn(), removeEventListener: jest.fn() };
+      Object.defineProperty(navigator, 'permissions', { value: { query: jest.fn(() => Promise.resolve(status)) }, configurable: true });
+    };
+
+    /**
+     * The site's permission changes, for example after it is allowed in the phone's settings.
+     */
+    const change = (state: PermissionState) => {
+      status.state = state;
+      status.addEventListener.mock.calls.filter(([type]) => type === 'change').forEach(([, listener]) => listener());
+    };
+
+    const userAgent = (value: string) => jest.spyOn(navigator, 'userAgent', 'get').mockReturnValue(value);
+
+    afterEach(() => {
+      delete (navigator as unknown as { permissions?: unknown }).permissions;
+      jest.restoreAllMocks();
+    });
+
+    it('does not ask for the location when the site is already blocked, and says so', async () => {
+      permission('denied');
+      const fixture = create();
+      await settle();
+      fixture.detectChanges();
+
+      expect(navigator.geolocation.watchPosition).not.toHaveBeenCalled();
+      expect(fixture.componentInstance.locationStatus.getValue()).toBe('blocked');
+      expect(fixture.nativeElement.textContent).toContain('Location access is blocked');
+      expect(preset).toHaveBeenCalledWith('no_gps');
+    });
+
+    it('follows the location without asking when the site is already allowed', async () => {
+      permission('granted');
+      const fixture = create();
+      await settle();
+
+      expect(watchers.length).toBe(1);
+      watchers[0].ok(position());
+      expect(fixture.componentInstance.locationStatus.getValue()).toBe('found');
+    });
+
+    it('asks once: allowing the prompt does not start a second watch', async () => {
+      permission('prompt');
+      create();
+      await settle();
+      expect(watchers.length).toBe(1);
+
+      change('granted');
+
+      expect(watchers.length).toBe(1);
+    });
+
+    it('picks the location up by itself once it is allowed in the settings', async () => {
+      permission('denied');
+      const fixture = create();
+      await settle();
+      expect(watchers.length).toBe(0);
+
+      change('granted');
+      watchers[0].ok(position());
+
+      expect(fixture.componentInstance.locationStatus.getValue()).toBe('found');
+    });
+
+    it('stops listening for changes when the form closes', async () => {
+      permission('granted');
+      const fixture = create();
+      await settle();
+
+      fixture.destroy();
+
+      expect(status.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+    });
+
+    it('shows the steps for Safari on an iPhone when location is blocked', async () => {
+      userAgent(
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1'
+      );
+      permission('denied');
+      const fixture = create();
+      await settle();
+      fixture.detectChanges();
+
+      const help = fixture.nativeElement.textContent;
+      expect(help).toContain('Safari on iPhone or iPad');
+      expect(help).toContain('Safari Websites');
+      expect(help).toContain('Then tap Submit again.');
+    });
+
+    it('shows the steps for Chrome on an iPhone, which has its own entry in Location Services', async () => {
+      userAgent(
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/141.0.7390.96 Mobile/15E148 Safari/604.1'
+      );
+      permission('denied');
+      const fixture = create();
+      await settle();
+      fixture.detectChanges();
+
+      const help = fixture.nativeElement.textContent;
+      expect(help).toContain('Chrome on iPhone or iPad');
+      expect(help).toContain('tap Chrome, choose While Using the App');
+      expect(help).not.toContain('Safari Websites');
+    });
+
+    it('shows the steps for Chrome on Android when location is blocked', async () => {
+      userAgent(
+        'Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36'
+      );
+      permission('denied');
+      const fixture = create();
+      await settle();
+      fixture.detectChanges();
+
+      const help = fixture.nativeElement.textContent;
+      expect(help).toContain('Chrome on Android');
+      expect(help).toContain('left of the address bar, then Permissions');
+    });
+  });
+
+  /**
    * #1786: an upload that does not reach the server is sent again, after 2, 5 and 10 seconds, before
    * the form gives up; one the server refused is not.
    */

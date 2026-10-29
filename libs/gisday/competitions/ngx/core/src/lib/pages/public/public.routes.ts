@@ -11,32 +11,22 @@ export const publicRoutes: Routes = [
     path: '',
     component: PublicComponent,
     children: [
+      // Each page works in a phone's browser, so nobody has to install the app or add it to their home
+      // screen first (#2559). Installing it is still suggested, from the submission page.
       {
         path: 'map',
         loadChildren: () => import('./map/map.routes').then((m) => m.mapRoutes),
-        canActivate: [DeviceGuard, AuthGuard],
-        data: {
-          deviceModes: ['standalone'],
-          deviceFailRedirect: 'app/install'
-        }
+        canActivate: [AuthGuard]
       },
       {
         path: 'submission',
         loadChildren: () => import('./submission/submission.routes').then((m) => m.submissionRoutes),
-        canActivate: [DeviceGuard, AuthGuard],
-        data: {
-          deviceModes: ['standalone'],
-          deviceFailRedirect: 'app/install'
-        }
+        canActivate: [AuthGuard]
       },
       {
         path: 'leaderboard',
         loadChildren: () => import('./leaderboard/leaderboard.routes').then((m) => m.leaderboardRoutes),
-        canActivate: [DeviceGuard, AuthGuard],
-        data: {
-          deviceModes: ['standalone'],
-          deviceFailRedirect: 'app/install'
-        }
+        canActivate: [AuthGuard]
       },
       {
         path: 'install',

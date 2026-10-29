@@ -5,6 +5,15 @@
   display: inherit;
 }
 
+.location-help ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+
+  li {
+    margin-bottom: 0.25rem;
+  }
+}
+
 .statused-form-input-container {
   margin-bottom: 0.75rem;
 
