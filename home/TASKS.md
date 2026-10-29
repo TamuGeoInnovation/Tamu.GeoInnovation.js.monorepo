@@ -4,6 +4,81 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 21 (aggiemap: #2558, basketball parking refreshes like football - URGENT; 28 October 2026, from `work (aggiemap)`)
+
+**Batch 20 found a live production bug by doing cleanup, which is the best kind of find.** The dining kiosk
+opening the building's popup instead of the dining location's - and the `layerIndex: 1` that was meant to
+stop it and never could. Red 3 of 3 against production first. It is **PR 2557**, and #2552 is set to High.
+Measuring 19 views twice before and after, rather than reasoning about the order, is what makes that
+branch trustworthy.
+
+### This one is urgent and dated
+
+[#2558](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2558), from the
+maintainer, labelled `urgent`:
+
+> We're going to need the men's basketball map to refresh for basketball icons and basketball parking
+> layers every 60 seconds like football since it has an editor and can be updated day of to show lot
+> closures. **I believe the first game is Nov. 3rd.**
+
+**Field staff edit the service on game day and the map must show it without a reload.** Football already
+does this.
+
+### How football does it
+
+`football-parking.definitions.ts`:
+
+```ts
+const lotsNative = (): FeatureNativeProps => hiddenNative({ labelingInfo: lotLabelingInfo, refreshInterval: 1 });
+```
+
+`refreshInterval` is **minutes**, so `1` is the 60 seconds the issue asks for. `football-parking.lots.spec.ts`
+asserts every lot source has it - copy that idea.
+
+### What men's basketball has now
+
+`mens-basketball.definitions.ts`, three layers in `MensBasketball_ColdLayerSources`, each with plain
+`native: { outFields: ['*'] }` and **no** `refreshInterval`:
+
+| Layer | Enum id |
+| --- | --- |
+| Gates | `mens-basketball-gates` |
+| Symbols (the "icons" in the issue) | `mens-basketball-symbols` |
+| Parking lots | `mens-basketball-parking-lots` |
+
+The map draws `MensBasketball_ColdLayerSources` directly - there is no development array for it - so this
+is contained.
+
+### What to do
+
+1. **Symbols and parking lots get `refreshInterval: 1`.** Those are the two the issue names.
+2. **Decide about Gates and say why.** Gate closures are exactly the kind of day-of change the editor is
+   for, so it probably wants it too - but the issue does not ask, so make the call deliberately and
+   record it rather than silently including or excluding it.
+3. **Follow football's shape.** If a small helper like `lotsNative()` makes sense here, use one; do not
+   invent a different mechanism for the same job.
+4. **A spec**, modelled on `football-parking.lots.spec.ts`: each layer that should refresh does, every
+   minute. **Red first.**
+
+### Check the service, as always
+
+**Confirm the layers actually carry what field staff edit** before trusting the issue's framing - that rule
+has caught four things this week. Specifically: does the men's basketball service have the fields a closure
+would be marked in, and do the layers return features today? If the editor writes somewhere these layers do
+not read, polling them changes nothing and that is the finding.
+
+### Women's basketball
+
+**Do not change it in this branch.** It has the same shape and will likely want the same thing, but the
+issue names men's, and polling a layer nobody edits is wasted requests every minute for every visitor. Put
+it in your report as a question with a recommendation; I will take it to the maintainer.
+
+`scripts/check-in-volume.sh <branch> ts-events-ngx,aggiemap-angular` - exit 0. A release note with its
+*What to test on dev* row - a reviewer needs to know how to see a refresh happen.
+
+Push to `fork`, report `branch ready:`. **This is wanted for 3 November, so report as soon as it is ready
+rather than polishing.**
+
 ## Batch 20 (aggiemap: #2061, the layerIndex values that order nothing; 28 October 2026, from `work (aggiemap)`)
 
 **Batch 19 did the thing I asked and the thing I needed.** You confirmed all five entries were stale **by
