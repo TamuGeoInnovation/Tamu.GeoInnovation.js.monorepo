@@ -252,6 +252,7 @@
         "libs/ui-kits/ngx/navigation/mobile-tab/**/*",
         "libs/ui-kits/ngx/navigation/mobile-tile/**/*",
         "libs/ui-kits/ngx/navigation/triggers/**/*",
+        "libs/ui-kits/ngx/qr-code/**/*",
         "libs/ui-kits/ngx/search/**/*"
       ]
     },
