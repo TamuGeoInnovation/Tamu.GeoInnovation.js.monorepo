@@ -58,7 +58,7 @@ describe('CheckInController', () => {
       const response = await post('', { userGuid: 'attendee-1', eventGuid: 'event-1' });
 
       expect(response.status).toBe(201);
-      expect(provider.insertUserCheckin).toHaveBeenCalledWith('event-1', 'admin-1', expect.anything());
+      expect(provider.insertUserCheckin).toHaveBeenCalledWith('event-1', 'admin-1', expect.anything(), undefined);
       expect(provider.insertAttendeeCheckin).not.toHaveBeenCalled();
     });
 

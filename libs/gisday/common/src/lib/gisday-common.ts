@@ -44,7 +44,7 @@ export const CHECK_IN_CODE_EVENT_MODES: ReadonlyArray<string> = ['hybrid', 'virt
  * Whether checking in to an event with this mode needs the session's QR code.
  */
 export function checksInByCode(mode: string | undefined | null): boolean {
-  return CHECK_IN_CODE_EVENT_MODES.includes(mode);
+  return typeof mode === 'string' && CHECK_IN_CODE_EVENT_MODES.includes(mode);
 }
 
 /**

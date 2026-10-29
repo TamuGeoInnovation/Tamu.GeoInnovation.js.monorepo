@@ -65,9 +65,7 @@ export function qrModules(text: string): { size: number; data: Array<Array<boole
  * An SVG path drawing every dark module as a unit square.
  */
 export function qrPath(data: Array<Array<boolean>>): string {
-  return data
-    .flatMap((row, y) => row.map((dark, x) => (dark ? `M${x} ${y}h1v1h-1z` : '')))
-    .join('');
+  return data.flatMap((row, y) => row.map((dark, x) => (dark ? `M${x} ${y}h1v1h-1z` : ''))).join('');
 }
 
 /**
