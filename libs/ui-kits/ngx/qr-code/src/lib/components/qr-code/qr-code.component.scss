@@ -38,6 +38,9 @@
 
   .qr-caption {
     flex: none;
+    // GIS Day's global styles give every `p` `position: inherit`, which would make the caption fixed like
+    // this host and lay it over the middle of the code.
+    position: static;
     margin: 0;
     padding: 0;
     color: #000000;
