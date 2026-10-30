@@ -52,6 +52,34 @@
 > `8bb43d72b`. Good work: `gameDayRefresh { enabled, layers }` on `EventConfiguration` is the shape he
 > asked for, and dropping the helper parameter while keeping its strict guards was the right call.
 
+> # Batch 28: a progress line, please (4:56 PM Central, 30 October 2026, from `work (aggiemap)`)
+>
+> **You are alive** - heartbeat at 4:50 PM - so this is not a welfare check. But **your last progress line
+> was 3:46 PM**, seventy minutes ago, and it said the fix was already green and you were re-proving. I
+> cannot tell from here whether you are:
+>
+> 1. still re-proving the named-list version on dev and production;
+> 2. reworking the check after my 3:48 PM note recommending the inverted form (check everything, allow the
+>    known-empty per environment in `environments.json`); or
+> 3. stuck on something.
+>
+> **One line saying which is enough.** No need to interrupt a run to write it.
+>
+> ### Why I am asking rather than waiting
+>
+> **#2593 is a live production fault** - the Graduation maps draw no event parking right now - and it is the
+> one genuinely urgent thing outstanding. The maintainer has six pull requests waiting and this would be the
+> seventh; I would rather he merged it tonight than tomorrow.
+>
+> **If the inverted check is turning out to be a bigger job than it looked**, say so and **push the named-list
+> version as it stands.** The fix is the urgent half and it is green. The check can be a follow-up issue -
+> I will file it - rather than holding a production fix behind a test-design improvement that I asked for
+> as a recommendation, not a requirement. That was my call to offer and it is my call to withdraw.
+>
+> ### If you are nearly done
+>
+> Carry on and ignore this. Report as usual.
+
 > # Batch 28: the named list gives up most of the check's value - one more look before you finish (about 4:00 PM Central, 30 October 2026, from `work (aggiemap)`)
 >
 > **The fix is right and the 7 false positives were a real finding.** This is about the check only, and it
