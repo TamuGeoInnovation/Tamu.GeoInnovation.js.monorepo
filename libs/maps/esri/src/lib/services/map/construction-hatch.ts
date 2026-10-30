@@ -9,7 +9,9 @@ import esri = __esri;
  * over the grid; black, 1 pt (1.33 px), as the tiles drew it. The grid is two CIM hatches, 0 and 90 degrees,
  * lines 12 pt (16 px) apart and 1.5 pt (2 px) wide, so about a quarter of the area is covered and the ground
  * shows through. The spacing is in screen points, so the grid is the same at every zoom. Orange,
- * rgb(230, 152, 0), is the maintainer's choice and the Construction Zones layer's UES Projects class.
+ * rgb(230, 152, 0), is the maintainer's choice and the Construction Zones layer's UES Projects class. The lines
+ * are 60% opaque (alpha 153) because a basemap label draws under them: fully opaque, a line falling between two
+ * digits split 1524 into "15 24" (#2573). The maintainer named 75% as the fallback if 60% looks washed out.
  *
  * The tiles' own construction fill and outline are hidden where this draws: anything added to a vector tile
  * basemap draws above all of it, so the tiles' outline would sit under the grid and be broken by every line
@@ -32,7 +34,7 @@ export const CONSTRUCTION_HATCH_RENDERER = {
             separation: 12,
             lineSymbol: {
               type: 'CIMLineSymbol',
-              symbolLayers: [{ type: 'CIMSolidStroke', enable: true, width: 1.5, color: [230, 152, 0, 255] }]
+              symbolLayers: [{ type: 'CIMSolidStroke', enable: true, width: 1.5, color: [230, 152, 0, 153] }]
             }
           }))
         ]

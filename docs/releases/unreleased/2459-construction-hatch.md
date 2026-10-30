@@ -3,6 +3,7 @@ issue: 2459
 title: Construction draws as an orange grid on every campus basemap, and the map no longer goes blank over it
 testOnDev: |
   | Buildings under construction on the vector campus basemap ([#2459](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2459)) | [Aplin Center](https://dev.aggiemap.tamu.edu/map/d?bldg=1524) and [the Semiconductor Institute](https://dev.aggiemap.tamu.edu/map/d?bldg=8711); close the popup | Each building is an orange grid with the grass showing through it and a black outline: no pink, no solid block. Reload `/map/d` a few times: the map draws every time |
+  | The grid is lighter, so a building number under it reads as one number ([#2573](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2573)) | [Aplin Center](https://dev.aggiemap.tamu.edu/map/d?bldg=1524); close the popup and zoom in two levels | The grid lines are a lighter orange and the label reads *1524*, not *15 24*. Zoom back out three levels: the building is still clearly marked as construction |
   | Construction on the Fort Worth Law School and Houston Space Institute maps ([#2532](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2532)) | [Fort Worth Law School](https://dev.aggiemap.tamu.edu/campus/fort-worth-law/map/d) and [Houston Space Institute](https://dev.aggiemap.tamu.edu/campus/houston-space-institute/map/d); reload each a few times | The construction is the same orange grid with a black outline as College Station's, over the campus map, with no pink and no orange wash. Fort Worth has four areas in view, Houston one large site around building B500. The building labels are there on every load, and clicking a building still opens its popup |
 ---
 
@@ -12,7 +13,9 @@ On the development campus basemap, buildings under construction drew as solid pi
 pattern was packaged on an opaque tile. The first fix replaced that pattern inside the basemap's sprite sheet, and
 on some loads it left the whole map blank. Now the basemap's own fill is switched off. The eight buildings are
 drawn from the campus buildings service as an orange grid, with the ground showing through it, and the basemap's
-black outline stays. Nothing touches the sprite sheet any more. The grid is the same density at every zoom.
+black outline stays. Nothing touches the sprite sheet any more. The grid is the same density at every zoom, and its
+lines are 60% opaque, so a building number under the grid reads as one number: fully opaque, a line falling between
+two digits split *1524* into *15 24* ([#2573](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2573)).
 ([#2459](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2459)).
 
 The Fort Worth Law School and Houston Space Institute maps had the same pink fill in their own basemaps, on
@@ -30,3 +33,7 @@ building's label.
 | At zoom 16, around West Campus | | ![Three buildings under construction, each an orange grid](../screenshots/2459-construction-hatch/prototype-1524-zoom16.png) |
 | Fort Worth Law School, as the map opens (before: development's orange wash; production shows pink) | ![Four construction areas washed in translucent orange](../screenshots/2532-campus-hatch/fort-worth-law-before-opening.png) | ![The same four areas as an orange grid with a black outline](../screenshots/2532-campus-hatch/fort-worth-law-after-opening.png) |
 | Houston Space Institute, as the map opens (before: development's orange wash; production shows pink) | ![The construction site washed in translucent orange](../screenshots/2532-campus-hatch/houston-space-institute-before-opening.png) | ![The whole site as an orange grid with a black outline](../screenshots/2532-campus-hatch/houston-space-institute-after-opening.png) |
+| The grid at 60%, 1524 close up at zoom 18 ([#2573](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2573)) | ![The number 1524 with a solid orange grid line between the 5 and the 2](../screenshots/2573-hatch-opacity/before-1524-zoom18.png) | ![The same number with lighter grid lines, reading as 1524](../screenshots/2573-hatch-opacity/after-1524-zoom18.png) |
+| The same label, enlarged five times | ![Before and after side by side](../screenshots/2573-hatch-opacity/label-1524-zoom18-compare.png) | |
+| At zoom 16, where the building is small | ![A small orange grid with a black outline](../screenshots/2573-hatch-opacity/before-1524-zoom16.png) | ![The same building, its grid lighter, still clearly marked](../screenshots/2573-hatch-opacity/after-1524-zoom16.png) |
+| Fort Worth Law School at zoom 17, the 3901 RIB-A label | ![The label under a solid orange grid](../screenshots/2573-hatch-opacity/before-fort-worth-law-zoom17.png) | ![The label under lighter grid lines](../screenshots/2573-hatch-opacity/after-fort-worth-law-zoom17.png) |
