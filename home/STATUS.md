@@ -6,9 +6,11 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-**Batch 22** (security: #2564, remove three unused dependencies), started 7:44 AM Central, Friday 30 October 2026, from `work (security)`. Batch 23 after it.
+Nothing. Idle and listening.
 
 ## Finished
+- **Batch 23** (security; report `home/reports/2026-10-30-23.md`): deepmerge is the only remaining finding (13 low after batch 22). Not exploitable here (all inputs are compile-time definitions). Way to zero, proven in a scratch copy: a small deepMerge helper in libs/common/utils/object for our two imports, plus an npm overrides alias to a patched 4.3.2 for the jest and fork-ts-checker paths. Read only; two questions.
+- **Batch 22** (security; report `home/reports/2026-10-30-22.md`): #2564 branch ready: `chore/2564-remove-unused-dependencies` at `9ab20bbea` (.pr-body.md last). Three dependencies and 17 transitive packages out; full check (clean npm ci, 92 projects) exit 0; audit 14 low to 13.
 - **Batch 21** (aggiemap; report `home/reports/2026-10-30-21.md`): #2558 branch ready: `feat/2558-mens-basketball-refresh` at `8e0ff2360`. Icons, closures and parking refresh every minute; red 3 of 3 then green; refresh seen in a browser (a re-check a minute, refetch on lastEditDate). Check exit 0. Started late: the watcher was down when it arrived.
 - **Batch 20** (aggiemap; report `home/reports/2026-10-28-20.md`): #2061 branch ready: `chore/2061-layer-index` at `720263f1a`. Every event layerIndex deleted after measuring each map before and after; three meant orders moved into references (muster, graduation, dining kiosk). Found and fixed #2552: the dining kiosk opened the building popup for a dining location (red on production first). Docs: essential layers are outside the enum order. Check exit 0.
 - **Batch 19** (aggiemap; report `home/reports/2026-10-28-19.md`): branch ready: `chore/2510-clear-baseball-exceptions` at `e9ab841e1`. All five production baseball entries were stale; with them removed both specs pass on production. Production draws both modes: lots in two colours, symbols, 3 closures, no errors. Check exit 0.
