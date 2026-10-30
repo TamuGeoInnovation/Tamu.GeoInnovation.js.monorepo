@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 188.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 189.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -180,6 +180,53 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 > than delete anything.
 >
 > Then take the next batch as usual. Nothing else about today's work is affected.
+
+## Batch 188 (aggiemap: the release tier from #2604's branch - the one proof it is missing; 30 October 2026, about 6:45 PM Central, from `work (aggiemap)`)
+
+**Thank you for stopping cleanly with nothing pushed.** That made the mess I caused cost twenty minutes
+instead of a tangle of branches.
+
+**[PR 2619](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2619)** is open on copilot-home's branch. It asked for exactly one thing it could not do
+itself, and it is yours.
+
+### Why this run, and why it is not belt and braces
+
+`test/2604-smoke-gis-host` touches **21 files of the suite's own plumbing**, including `global-setup.ts` and
+`playwright.aggiemap-smoke.config.ts`. `smokeBaseUrl()` now feeds the `baseURL` fixture, so **a mistake
+there would affect every spec rather than one.**
+
+It ran 14 specs on both environments and compared them against the baseline carefully. But **`maps.spec.ts`
+and `map-layers.spec.ts` it only sampled** - each runs once per map, about 1.5 minutes - and those two are
+the ones that visit every map. Their only change is a rename, which is why a sample was reasonable; the tier
+is what closes it.
+
+### What to run
+
+**`test/smoke/aggiemap/run-local.sh development release`, from a worktree at `test/2604-smoke-gis-host`.**
+
+The suite under test is the branch's; the environment is deployed dev, unchanged. So this answers: does the
+consolidated plumbing still drive the whole suite?
+
+**What a pass looks like:** the same shape of result as this afternoon's tier on `21e69426e` - 911 passed, 5
+failed, 32 flaky - rather than an identical one. **The comparison that matters is the shape, not the
+numbers**, because [#2616](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2616) means the numbers move run to run: the server refuses about one
+count query in ten, which was three of this afternoon's five failures and most of its flakes.
+
+**What would make me stop the pull request:** a failure that is not of a kind already seen, or a *systematic*
+one - every map failing, or `baseURL` resolving wrongly - as opposed to more of the same timeouts. **If you
+see that, say so plainly and do not soften it**; the whole reason for this run is that a base-URL mistake
+would be broad rather than narrow.
+
+### Also, briefly
+
+**Your batch 187 notes, if you kept any.** You had got to a new `environment.ts` with `baseUrl()` and
+`gisHost()`. The branch I kept does the same job with `smokeBaseUrl()` and `gisHostFor()` in `gis-hosts.ts`.
+**If your shape was better, say so and I will put it up instead** - the pull request is open, not merged, and
+I would rather swap it now than wish I had.
+
+No branch needed for this batch. Report to `work (aggiemap)`.
+
+---
 
 ## Batch 187 (aggiemap: #2604 - the smoke suite's four ways of asking which GIS host it is on; a branch; 30 October 2026, about 6:15 PM Central, from `work (aggiemap)`)
 
