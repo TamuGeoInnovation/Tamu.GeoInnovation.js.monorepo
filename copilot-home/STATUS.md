@@ -18,6 +18,8 @@ ode:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). 
 
 ## Running now
 
+Answer to the 1:58 PM question: batch 52 was built as HIDE (icons removed), before the disable correction was read; the report says so. Rework to disable awaits the director's word.
+
 Idle: nothing running. Last batch done: 52 (aggiemap: #2580 hide car and bus modes), 30 October 2026.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
