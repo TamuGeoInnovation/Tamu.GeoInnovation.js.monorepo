@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 186.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 187.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,64 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 186 (aggiemap: triage three testable old issues, and read the 2026 commencement dates; read only; 30 October 2026, about 6:00 PM Central, from `work (aggiemap)`)
+
+**Batch 185 was the right standard.** Four closed, each with what you ran and what it said - #141 answered
+in five minutes once routing existed, after seven months of being unanswerable - three kept with what they
+would take, two escalated, and a real finding filed as [#2614](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2614). I have set its Type,
+Priority (Medium, provisional) and board place, since your token has no `project` scope.
+
+**#2614 is going to Transportation Services** as a concrete example rather than a general worry about bus
+answers. The maintainer decided this afternoon that every travel mode stays on, on their word that bus
+routes work; your 0.6-mile trip routed round 6.19 miles is not an argument to reverse that - the modes do
+solve - **it is evidence that one of the answers is unusable**, which is their question, not a toggle for us.
+
+### Part one: three old issues that are testable claims
+
+I picked these from the AggieMap backlog because each asserts something you can check, rather than asking
+for a feature - the 2025-11 cluster is mostly feature requests and needs the maintainer, not triage.
+
+| Issue | Filed | The claim |
+| --- | --- | --- |
+| [#387](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/387) | Mar 2025 | `aggiemap-ngx-ui-mobile`: sidebar scrolling breaks dismissal on large layer lists |
+| [#459](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/459) | Oct 2025 | `aggiemap-angular`: WebGL disabled alert |
+| [#555](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/555) | Nov 2025 | 3D model base-elevation correction for subsurface flickering |
+
+Same standard as batch 185: **close it with what you ran and what it said**, keep it with what it would
+take, or escalate to the report. "Probably stale" is not a reason.
+
+**#459 is worth a thought before you start:** testing a WebGL-disabled alert means disabling WebGL, which
+Chromium will do with a flag or a blocklist - if you cannot get the browser into that state, say so rather
+than guessing, because "I could not reproduce the precondition" is a different result from "it does not
+happen".
+
+**#555 needs a 3D view**, and remember a map canvas blank for 20 to 40 seconds is Esri still drawing, not a
+fault.
+
+### Part two: the 2026 fall commencement dates
+
+**[#2607](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2607):** the Fall Commencement map still offers **December 2025's** ceremony days, with
+labels naming weekdays wrong for 2026 - 17 December is a Wednesday in 2025 and a Thursday in 2026, and the
+labels carry no year so they read as current.
+
+The map's own `scheduleUrl` is **[aggie.tamu.edu/graduation](https://aggie.tamu.edu/graduation)**. **Read the
+2026 fall ceremony days off that page and put them in your report**, with the URL and the date you read
+them, as a proposal.
+
+**Do not change any definition**, and do not treat the page as authoritative on its own - the maintainer is
+deciding whether to confirm them with Transportation Services, and this is so that he has the dates in front
+of him either way instead of chasing them. If the page does not give fall 2026 days, say that plainly; it is
+a useful answer.
+
+### Scope
+
+**Read only throughout: no branch, no code, no pull request.** File an issue if triage turns something up,
+and name in the report anything needing the board or a Priority.
+
+Report to `work (aggiemap)`.
+
+---
 
 ## Batch 185 (aggiemap: triage the nine oldest open issues, 2020 to 2022; read only; 30 October 2026, about 5:25 PM Central, from `work (aggiemap)`)
 
