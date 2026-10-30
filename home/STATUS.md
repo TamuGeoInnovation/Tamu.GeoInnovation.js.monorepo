@@ -8,6 +8,8 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 ## Running now
 Nothing. Idle and listening.
 
+**Every open question is in `home/reports/2026-10-30-questions.md`** (16, numbered afresh, each with a recommendation; five already-settled ones listed and not asked). The maintainer will answer them on the director's machine.
+
 ## Finished
 - **Batch 23** (security; report `home/reports/2026-10-30-23.md`): deepmerge is the only remaining finding (13 low after batch 22). Not exploitable here (all inputs are compile-time definitions). Way to zero, proven in a scratch copy: a small deepMerge helper in libs/common/utils/object for our two imports, plus an npm overrides alias to a patched 4.3.2 for the jest and fork-ts-checker paths. Read only; two questions.
 - **Batch 22** (security; report `home/reports/2026-10-30-22.md`): #2564 branch ready: `chore/2564-remove-unused-dependencies` at `9ab20bbea` (.pr-body.md last). Three dependencies and 17 transitive packages out; full check (clean npm ci, 92 projects) exit 0; audit 14 low to 13.
