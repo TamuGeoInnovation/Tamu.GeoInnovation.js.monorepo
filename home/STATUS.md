@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 26** (aggiemap, #2581 Women's Basketball refresh): started about 2:15 PM Central, 30 October. Red proven (2:35 PM): the women's two layers and the helper's new option fail, and the two "exactly as before" guards pass on the old helper. Fix committed; green check (ts-events-ngx, aggiemap-angular) running, then the refresh watched in a browser.
+Nothing. Idle and listening.
 
 ## Finished
+- **Batch 26** (aggiemap, STOPPED on Megan's word; report `home/reports/2026-10-30-26.md`): #2581. branch ready: `chore/2581-athletics-refresh-option` at `acc45cbc2`, the helper's optional refreshInterval and its two strict guards only; no women's change, no release note; check exit 0. The full batch is kept as `feat/2581-womens-basketball-refresh` at `9411f5ffa` (red then green, exit 0; refresh seen in a browser). Men's cannot use the helper (popups differ). Two questions.
 - **Batch 24** (aggiemap; report `home/reports/2026-10-30-24.md`): #2573 branch ready: `fix/2573-hatch-opacity` at `195b08df4`. Hatch strokes alpha 153; red then green; check exit 0. Before and after at zoom 16-18 on 1524 and Fort Worth: the label reads as one number, and at zoom 16 the building stays identifiable (the black outline carries it); 60% holds, no need for 75%. #2459's note updated.
 - **Batch 25** (gisday; report `home/reports/2026-10-30-25.md`): #2574 branch ready: `fix/2574-gisday-admin-users` at `7743f1425`. getUsers stops at 1,000 and returns `{ users, truncated }`; `GET users?q=` searches name and email (v3); the page has a debounced search box and the cut-off line. Red then green; check exit 0. Screenshots skipped (Auth0 hosted sign-in); the lab could capture them.
 - **Batch 23** (security; report `home/reports/2026-10-30-23.md`): deepmerge is the only remaining finding (13 low after batch 22). Not exploitable here (all inputs are compile-time definitions). Way to zero, proven in a scratch copy: a small deepMerge helper in libs/common/utils/object for our two imports, plus an npm overrides alias to a patched 4.3.2 for the jest and fork-ts-checker paths. Read only; two questions.
