@@ -31,6 +31,20 @@ describe('Connections', () => {
     expect(Connections('gis-dev.it.tamu.edu').mensBasketballUrl).not.toBe(Connections.mensBasketballUrl);
   });
 
+  // Graduation's development copy was republished as a hosted view on the development GIS server, and the old one is
+  // to be decommissioned once AggieMap reads the new (#2530). Production stays on the transportation host.
+  it('reads Graduation from the development hosted view on a development build (#2530)', () => {
+    expect(Connections('gis-dev.it.tamu.edu').graduationParkingUrl).toBe(
+      'https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer'
+    );
+  });
+
+  it("reads Graduation from the transportation host's view on production", () => {
+    expect(Connections('gis.it.tamu.edu').graduationParkingUrl).toBe(
+      'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer'
+    );
+  });
+
   // RoutingProPublish is published on the development GIS server only (#659). It is pinned there, as the bus routes
   // are, so that localhost reaches it too; the trip planner reads it only where development-only features are on.
   it('names the development routing network on the development GIS server, from any host', () => {
