@@ -1,8 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, inject, input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, computed, inject, input } from '@angular/core';
 import { Observable, from, of, iif, Subject } from 'rxjs';
 import { switchMap, filter, withLatestFrom, map, mergeMap, pluck, takeUntil, shareReplay } from 'rxjs/operators';
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
+import { travelTypeOffered } from '../../../../services/trip-planner-travel-modes';
 import { TripResult } from '../../../../core/trip-planner-core';
 import { NgClass, AsyncPipe } from '@angular/common';
 
@@ -50,6 +51,11 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
    * Short text description of the mode. Used for alt and aria label text.
    */
   public readonly label = input<string>(undefined);
+
+  /**
+   * Whether the toggle is drawn at all: not when every mode it stands for is hidden (`HIDDEN_PLANNER_MODES`).
+   */
+  public readonly offered = computed(() => travelTypeOffered(this.activeModes()));
 
   /**
    * Single trip result for the specified travel mode derived from trip planner results collection.

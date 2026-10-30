@@ -46,7 +46,7 @@ import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { SearchService, SearchResult, SearchResultItem } from '@tamu-gisc/ui-kits/ngx/search';
 import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common/ngx/settings';
 import { TripPlannerConnection, TripPlannerConnectionService } from './trip-planner-connection.service';
-import { TripPlannerNetworkTravelMode, networkTravelModeFor, offeredTravelMode } from './trip-planner-travel-modes';
+import { TripPlannerNetworkTravelMode, modeOrFallback, networkTravelModeFor, offeredTravelMode } from './trip-planner-travel-modes';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
   TripResult,
@@ -2198,7 +2198,7 @@ export class TripPlannerService implements OnDestroy {
     // Check if mode is set in URL params.
     if (this.url.snapshot.queryParams.mode) {
       // Store mode from URL
-      const urlMode: number = parseInt(this.url.snapshot.queryParams.mode, 10);
+      const urlMode: number = modeOrFallback(parseInt(this.url.snapshot.queryParams.mode, 10));
 
       // Test if a rule with the given mode exists
       const rule = this.getRuleForModes([urlMode]);

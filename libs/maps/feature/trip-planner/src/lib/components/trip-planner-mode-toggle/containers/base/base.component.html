@@ -1,3 +1,4 @@
+@if (offered()) {
 <div [title]="name()" [attr.alt]="label()" type="domElement" [ngClass]="{ active: active | async, error: $safeNavigationMigration((status | async)?.isError), disabled: (meta_status | async).isModeRestricted || (!(meta_status | async).allPristine && !(meta_status | async).toggleHasResult) }" role="button" [attr.aria-label]="label()" [attr.aria-pressed]="!!(active | async)" (click)="setTravelMode()" (keydown.enter)="setTravelMode()" (keydown.space)="setTravelMode(); $event.preventDefault()" tabindex="0">
   <i class="material-icons">{{ iconName() }}</i>
 
@@ -16,3 +17,4 @@
   <span class="eta">{{ $safeNavigationMigration((status | async)?.directions?.totalDriveTime) | timeUntil }}</span>
   }
 </div>
+}

@@ -6,6 +6,7 @@ import { directionsAvailable, directionsEntryPoints } from './directions';
 import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
 import {
   NETWORK_TRAVEL_MODE_NAMES,
+  networkTravelModeFor,
   offeredTravelMode
 } from '../../../libs/maps/feature/trip-planner/src/lib/services/trip-planner-travel-modes';
 
@@ -142,29 +143,35 @@ test.describe(`the trip planner ${AVAILABLE ? 'is offered' : 'is not offered'} a
  * The development routing network solves what the trip planner offers on it (#659).
  *
  * The planner reads the network's travel modes from the network and finds each of its own by name, so a list that
- * changes cannot send a trip to the wrong mode. What this adds is the alarm: the modes the planner offers are exactly
- * the ones below, so when Transportation adds Drive_ADA, or drops Bus, this fails and a person decides what the picker
- * should say. Where directions are hidden nothing connects to the network, so nothing is asked of it.
+ * changes cannot send a trip to the wrong mode. What this adds is the alarm: the modes the network has for the planner
+ * are exactly the ones below, so when Transportation adds Drive_ADA, or drops Bus, this fails and a person decides what
+ * the picker should say. Driving and the bus are on the network but hidden from the picker (#2580), so the modes
+ * offered are the narrower list: it changes only when `HIDDEN_PLANNER_MODES` does. Where directions are hidden nothing
+ * connects to the network, so nothing is asked of it.
  */
-const OFFERED_ON_DEVELOPMENT_NETWORK = [1, 2, 3, 5, 7, 8];
+const ON_DEVELOPMENT_NETWORK = [1, 2, 3, 5, 7, 8];
+const OFFERED_ON_DEVELOPMENT_NETWORK = [1, 2, 7];
 
 if (AVAILABLE) {
   test.describe('the development routing network', () => {
     const route = `${Connections('gis-dev.it.tamu.edu').developmentRoutingBaseUrl}/Map/NAServer/Route`;
 
-    test('lists the travel modes the planner offers, and only those', async ({ request }) => {
+    test('lists the travel modes the planner knows, and offers the walking and bike ones', async ({ request }) => {
       const response = await request.get(`${route}?f=json`, { timeout: 30_000 });
       const { supportedTravelModes } = (await response.json()) as { supportedTravelModes: Array<{ name: string }> };
 
       expect(supportedTravelModes?.length, `${route} lists no travel modes`).toBeGreaterThan(0);
 
-      const offered = Object.keys(NETWORK_TRAVEL_MODE_NAMES)
-        .map(Number)
-        .filter((mode) => offeredTravelMode(supportedTravelModes, mode));
+      const planner = Object.keys(NETWORK_TRAVEL_MODE_NAMES).map(Number);
 
       expect(
-        offered,
-        `the network lists ${supportedTravelModes.map((m) => m.name).join(', ')}; the trip planner would offer these modes`
+        planner.filter((mode) => networkTravelModeFor(supportedTravelModes, mode)),
+        `the network lists ${supportedTravelModes.map((m) => m.name).join(', ')}; the trip planner would find these modes`
+      ).toEqual(ON_DEVELOPMENT_NETWORK);
+
+      expect(
+        planner.filter((mode) => offeredTravelMode(supportedTravelModes, mode)),
+        'the trip planner would offer these modes'
       ).toEqual(OFFERED_ON_DEVELOPMENT_NETWORK);
     });
 

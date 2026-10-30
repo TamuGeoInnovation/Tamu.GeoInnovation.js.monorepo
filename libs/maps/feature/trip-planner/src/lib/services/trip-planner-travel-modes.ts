@@ -33,12 +33,30 @@ export const NETWORK_TRAVEL_MODE_NAMES: Record<number, string> = {
 
 const normalized = (name: string) => `${name}`.trim().toLowerCase();
 
-/** Every planner mode that still has to be hidden; none yet. */
-export const HIDDEN_PLANNER_MODES: number[] = [];
+/**
+ * The planner modes the picker does not offer, and the planner does not solve, for now (#2580): driving with a pass,
+ * accessible driving, the bus, the accessible bus, and visitor driving.
+ *
+ * THIS IS HIDING, NOT A LIMIT OF THE NETWORK. The network has Drive and Bus modes and solves them (Drive 7 minutes and
+ * Bus 30 minutes with directions on dev), and every rule above still lists them. They are hidden because the answers
+ * mislead: the Bike, Bus and Drive travel modes all use the impedance `Length`, and nothing in the network knows a bus
+ * schedule, so "Bus 30 min" is a road-distance estimate along bus-permitted roads, not a transit time, and a drive time
+ * is a distance too. A confident wrong answer is worse than none. The walking modes use `Time` and mean what they say.
+ *
+ * To bring them back, empty or shorten this one list when the network has a time impedance for driving or a schedule
+ * for buses. Nothing else needs to change.
+ */
+export const HIDDEN_PLANNER_MODES: number[] = [3, 4, 5, 6, 8];
 
-export const travelTypeOffered = (modes: number[]) => modes.length > 0;
+/** Whether a travel type (a picker button) has a planner mode left to offer, so a button with none is not drawn. */
+export const travelTypeOffered = (modes: number[]) => modes.some((mode) => !HIDDEN_PLANNER_MODES.includes(mode));
 
-export const modeOrFallback = (mode: number) => mode;
+/**
+ * The planner mode a link's `mode` becomes. A hidden mode is solved as walking, or as accessible walking when it was an
+ * accessible mode, rather than leaving the panel empty or spinning on a mode that is not offered.
+ */
+export const modeOrFallback = (mode: number) =>
+  HIDDEN_PLANNER_MODES.includes(mode) ? (mode === 4 || mode === 6 ? 2 : 1) : mode;
 
 /** The network's travel mode that solves a planner mode, or undefined when it has none. */
 export function networkTravelModeFor<T extends { name: string }>(
@@ -55,9 +73,14 @@ export function networkTravelModeFor<T extends { name: string }>(
 }
 
 /**
- * Whether a planner mode should be offered. A network that has not yet said what it supports (`null`) offers all, so
- * the picker is not empty while it loads; one that lists none offers none.
+ * Whether a planner mode should be offered: not hidden (`HIDDEN_PLANNER_MODES`), and on the network. A network that has
+ * not yet said what it supports (`null`) offers every mode not hidden, so the picker is not empty while it loads; one
+ * that lists none offers none.
  */
 export function offeredTravelMode<T extends { name: string }>(supported: T[] | null | undefined, mode: number): boolean {
+  if (HIDDEN_PLANNER_MODES.includes(mode)) {
+    return false;
+  }
+
   return supported == null || networkTravelModeFor(supported, mode) !== undefined;
 }
