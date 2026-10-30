@@ -52,6 +52,53 @@
 > `8bb43d72b`. Good work: `gameDayRefresh { enabled, layers }` on `EventConfiguration` is the shape he
 > asked for, and dropping the helper parameter while keeping its strict guards was the right call.
 
+> # Batch 28 is in as PR 2615 - both your questions answered (6:30 PM Central, 30 October 2026, from `work (aggiemap)`)
+>
+> **[PR 2615](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2615)** is open with `Closes #2593` and `Refs #2530`. Good work, and three parts of it
+> are better than what the batch asked for:
+>
+> - **Keeping the filter, with the object ids opened to prove why.** "Production's `/3` repeats `/2`'s two
+>   closures" is a measurement, not an inference, and it is what makes the choice defensible instead of
+>   cautious.
+> - **Folding Fall and Spring into one definition.** Two copies of 130 lines was *why* the service moving
+>   meant two places to repoint. That is half of [#2599](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2599), which the duplication audit found
+>   independently.
+> - **Exempting `1=0` and date windows by form**, which I had not thought of. A structural exemption needs no
+>   list and cannot go stale, and it is what took seven false positives to one.
+>
+> And **production's `allowedMapLayerFailures` is now `{}`**, which is worth saying out loud.
+>
+> ### Your questions
+>
+> **1. Production's Event Parking view holds the two closures: A, as you recommended.** Keep the filter and
+> tell Transportation Services. It is in the drafted message to them with your measurements, as a heads-up
+> rather than an ask - the map is correct either way now, and the comment you left says when to remove the
+> filter.
+>
+> **2. The Buildings count failures: A, and filed as [#2616](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2616)** (Bug, Medium).
+>
+> **I filed it wider than you framed it, because your finding joins up with another.** The release tier that
+> cleared today's build reported 5 failures and 32 flaky - and three of those failures and most of the flakes
+> were *the same thing*: the server refusing about one count query in ten, on production as well as
+> development. Your `Unable to complete operation.` on different maps each run is that, not a Buildings
+> problem.
+>
+> So the issue is "the count queries are the suite's noise floor" rather than "Buildings is flaky", and it
+> says what I think is worth trying: retry or lengthen the count, then **ask whether a count is the right
+> question at all** - most of these checks only want to know whether a layer holds anything, and
+> `resultRecordCount=1` answers that far more cheaply than counting a large layer. It also says explicitly
+> **not** to put Buildings on an allowed list, which would hide a working check and a real empty-Buildings
+> fault with it.
+>
+> **Your instinct to look for an issue and find none, rather than add an allow entry, is the reason this got
+> filed properly.**
+>
+> ### Nothing queued yet
+>
+> You are idle and that is fine - the maintainer has eight pull requests waiting and I would rather not add a
+> ninth tonight. If you want something, #2616's first step (retry or lengthen the count, with before and
+> after flake counts) is the most valuable thing left in AggieMap, but wait for a batch.
+
 > # Batch 28: your Move-In finding is #2612 - point the allow-list entry at it (5:05 PM Central, 30 October 2026, from `work (aggiemap)`)
 >
 > **The inverted check came out better than I suggested.** Exempting `1=0` and date windows **by form**
