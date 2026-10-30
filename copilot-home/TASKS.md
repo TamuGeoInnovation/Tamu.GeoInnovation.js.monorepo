@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 55.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 56.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,56 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 55 (aggiemap: #2591 - find where we have implemented one idea more than once; read only; 30 October 2026, from `work (aggiemap)`)
+
+**After batch 54.** A read-only audit the maintainer asked for by name:
+
+> We need to always remember to build things in a reusable manner, not as one offs ... Can we set a task
+> computer looking for things where we have done this wrong?
+
+**[#2591](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2591) is the brief and it is detailed - follow it rather than this summary.**
+
+### Why you
+
+You did batch 45, the keyboard-reachability audit, and it is the model: 212 template hits narrowed to 34
+real or arguable, with the reasons, plus the finding that the lint rules were blind in six projects. **That
+shape - a number, then the honest subset, then why the tooling missed it - is what this needs.**
+
+### What started it
+
+Game-day refresh exists three times: `lotsNative()` in football's definitions, a separate local
+`gameDayNative()` in the men's basketball definitions, and `athleticsDevelopmentSource` in
+`common.definitions.ts` which **cannot express a refresh at all**. Nobody broke a rule knowingly; each copy
+reads as reasonable and only the set is wrong. It was found because a fourth was asked for.
+
+**CLAUDE.md already forbids this** - *Reuse before building; build to be reused. No one-offs.* It was
+followed as written. The gap, filed as [#2587](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2587), is that its *look first* list names
+components, services, helpers, styles and smoke helpers and **nothing for a behaviour declared in a
+definition file**. So a definition file does not read as somewhere the rule applies.
+
+### The one thing I most want from you
+
+**The tell, used directly:** two pieces of code that would both need changing to fix one bug. A finding has
+to answer *"how many places would you change, and would someone miss one?"* - not *"these look similar"*.
+
+**Prefer a handful of real findings to a long list.** Near-duplicates that genuinely serve different
+purposes are a **no**, and saying so with the reason is a useful result, not a gap in the audit. The
+three-copy refresh deserves more attention than twenty cosmetic repetitions.
+
+**Call out separately anything that is not duplication but a shared piece missing an option** - the
+`athleticsDevelopmentSource` case. The fix there points the other way: extend the shared piece rather than
+consolidate the copies. Mixing the two kinds of finding would make the report useless to act on.
+
+### Scope and output
+
+Read only. **Change nothing, push no code branch.** File an issue per finding worth acting on, with the
+fields CLAUDE.md's issue rules give, and list the numbers in your report with a suggested priority - I set
+Priority after asking the maintainer. The report is the deliverable.
+
+Questions go to `work (aggiemap)`.
 
 ---
 

@@ -6,86 +6,112 @@
 
 > **Batches 22 and 23 are WITHDRAWN** (from `work (security)`, 30 October 2026, about 2:30 PM Central): moved to the lab (batch 179) and copilot-home (batch 51), which are idle. Do not do them.
 
-> # BATCH 26 STOPPED - read this now (about 2:45 PM Central, 30 October 2026, from `work (aggiemap)`)
->
-> **Stop work on #2581, the Women's Basketball refresh.** From the maintainer, relaying Megan:
->
-> > She reports that the refresh should not occur for womens bball
->
-> She is the person who asked for the men's refresh (#2558 is hers), so this is her call about her own
-> map, not a misunderstanding to argue with. **I queued batch 26 without checking her issues first -
-> that is my error, not yours.**
->
-> ### What to do with what you have built
->
-> **Commit and push what exists, and do not throw it away.** Your report says the red was proven and the
-> green check was running. The work splits cleanly in two and one half is probably still wanted:
->
-> 1. **The optional refresh on `athleticsDevelopmentSource`** - the shared helper gaining a
->    `refreshInterval?: number`, with the guards proving the no-argument path is byte-for-byte unchanged.
->    **That is good work and is not specific to the women's map.** It is the thing that lets any athletics
->    map opt in later, including the men's.
-> 2. **Women's Basketball passing it** - the part Megan does not want. **Take this out.**
->
-> So: push a branch that is **only** the helper change and its guards, with no women's definition touched
-> and no release note claiming a visible change. If separating them is more work than redoing it, say so
-> and I will decide.
->
-> **Report what you have either way**, including whether the check had gone green, so I know what is
-> proven. #2581 will be closed or rewritten once I have read Megan's reasoning.
+## Batch 27 (aggiemap: #2581 rewritten - a per-event refresh switch, **not** the women's refresh; 30 October 2026, from `work (aggiemap)`)
 
-## Batch 26 (aggiemap: #2581, Women's Basketball refreshes like the men's - first game is 2 November; 30 October 2026, from `work (aggiemap)`)
+**Your batch 26 stop was right and your split was exactly what I wanted.** The maintainer has now decided
+what to build instead, and it is bigger and better than the women's change you were stopped on. **Read
+[#2581](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2581) again - I rewrote it; the title and body are new.**
 
-**Start now.** Your batch 21 gave Men's Basketball a one-minute refresh and it merged this morning as
-PR 2571. **Women's Basketball needs the same, and its season starts a day sooner** -
-`WomensBasketball_Configuration.eventDates` begins **2 November 2026**, three days from now, against the
-men's 3 November. [#2581](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2581)
-has the detail; Priority Urgent, same as #2558 was.
+Megan does not want Women's Basketball refreshing. The maintainer:
 
-### The one real decision, and I want you to make it deliberately
+> Can we configure it in the definition file for the event, but have it set to false for now?
 
-Women's Basketball has **two** layers, and both are built through `athleticsDevelopmentSource` in
-`common.definitions.ts`:
+> They will eventually build it, and we should have it as an option that we can turn on/off in a
+> generalized manner for different events.
 
-```ts
-athleticsDevelopmentSource({ id: WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING, url: `${parkingUrl}/0` })
-athleticsDevelopmentSource({ id: WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,       url: `${parkingUrl}/1` })
-```
+### His decisions, so you do not have to infer them
 
-That helper hard-codes `native: { outFields: ['*'], ...definitionExpression }` and **has no way to ask for
-a refresh**. Men's Basketball does not use it at all - it declares its own `gameDayNative()`.
+He was given the options and chose:
 
-**So the lazy route is a second local `gameDayNative()` in the women's file, and I do not want it.** The
-repository's standing rule is extend what exists rather than copy it, and a second near-identical helper is
-a future change made in one copy only. **Add an optional refresh to `athleticsDevelopmentSource`** -
-something like `refreshInterval?: number`, absent meaning no refresh so every existing caller is byte-for-byte
-unchanged - and have the women's two layers pass it.
+1. **A field on `EventConfiguration`**, in the event's own definition file - not a named constant per file,
+   and not a parameter on `athleticsDevelopmentSource`. That object is what a reader opens to ask what an
+   event does, and it reaches football and men's basketball, which do not use that helper.
+2. **A per-event switch plus a per-layer opt-in.** Both levels. Football refreshes **only its lots**; the
+   men's refreshes **all three**. A single per-event boolean would start refreshing football's other layers.
+3. **Fold football and men's basketball into it in the same change.** One way of doing this, not a fourth
+   alongside three old ones.
 
-**Then look at whether Men's Basketball should use the helper too.** It may not be able to: check why it
-builds its sources by hand (popups, titles, `onlyType`) before assuming it can. If it can, folding it in is
-the right finish and this issue is the moment to do it. **If it cannot, say why in the report** - that
-answer is worth having written down either way, and I would rather have the reason than a silent divergence.
+**Your batch 26 finding that the men's cannot use `athleticsDevelopmentSource` because its popups differ is
+still true and no longer blocking** - the switch is not on that helper.
 
-### Unchanged from batch 21
+### Your helper-only branch
 
-- `refreshInterval` is in **minutes**. ArcGIS refetches only when the service's `lastEditDate` moves, so a
-  one-minute poll costs almost nothing.
-- **Red first.** There is no `womens-basketball.definitions.spec.ts` today - `mens-basketball.definitions.spec.ts`
-  is the shape to follow, including its per-source `${source.id} refreshes every minute`. Two layers, not three.
-- **See it refresh in a browser**, as you did for the men's: the re-check about a minute apart and a refetch
-  when `lastEditDate` moves. Asserting the property is not the same as watching it poll.
-- `scripts/check-in-volume.sh <branch> ts-events-ngx,aggiemap-angular` - exit 0. If you change the shared
-  helper, **add every project that helper's callers live in**, or add `affected`; a change in
-  `common.definitions.ts` reaches more than the one map.
-- A release note with its *What to test on dev* row.
+`chore/2581-athletics-refresh-option` at `acc45cbc2` is good work and I have not thrown it away, but the
+optional `refreshInterval` on `athleticsDevelopmentSource` is **not** where the switch goes now. **Keep its
+two strict guards** - the ones proving an existing caller's source object comes out byte-for-byte unchanged.
+That idea is the most valuable thing in the branch and it applies just as much to the new shape. Decide
+whether the helper parameter still earns its place underneath the event-level switch; if it does not, say so
+and drop it.
 
-### One caution
+`feat/2581-womens-basketball-refresh` at `9411f5ffa` is **not** going anywhere - do not build on it.
 
-Changing `athleticsDevelopmentSource` touches every athletics map. **Prove the no-argument path is
-unchanged** - an existing caller's source object must come out identical - rather than trusting that an
-optional parameter is harmless. A test for that is worth more than the one for the new behaviour.
+### Women's Basketball
+
+**The switch present and explicitly off**, with **Megan's decision recorded beside it in a comment** - that
+she asked for it not to refresh, not merely that it is false. An unexplained `false` reads as an oversight
+and the next person switches it on.
+
+### Prove it
+
+- **Red first.**
+- **Football and the men's must behave exactly as they do now, and that is the claim to prove**, not
+  assume. `mens-basketball.definitions.spec.ts` and `football-parking.lots.spec.ts` already assert
+  `refreshInterval` is 1 - those are your guards that the fold-in changed nothing. Football: **lots only**.
+  Men's: **all three**.
+- `scripts/check-in-volume.sh <branch> affected` - this touches `EventConfiguration` and
+  `common.definitions.ts`, so it reaches far more than one map and a project list would miss something.
+  Exit 0.
+- **No release note** unless a visitor sees a difference, and they should not. Say in the report that you
+  checked rather than leaving it unmentioned.
 
 Push to `fork`, report `branch ready:`. Questions go to `work (aggiemap)`.
+
+---
+
+## Batch 28 (aggiemap: #2530 - Megan republished the Graduation maps; 30 October 2026, from `work (aggiemap)`)
+
+**After batch 27.** [#2530](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2530) has been open since 28 October and nobody has picked it up; the
+maintainer chose this as home's next job.
+
+Megan, in the issue:
+
+- **Production** has been republished **with the layers split: now 4 layers, closures as a separate layer.**
+- **Development** has been republished **as a hosted feature**, and the view AggieMap should read is a new
+  URL under `Hosted/GraduationParking_view/FeatureServer`. She will decommission the referenced map once we
+  are on the hosted view.
+- **Both maps should be identical**, and her screenshot in the issue shows what they should look like.
+
+### Why this is more than a URL change
+
+**Read the issue and both services before touching a definition**, because the shape changed, not just the
+address: a layer that was part of one service is now its own layer, so layer indices move. Getting an index
+wrong here draws the wrong thing rather than failing, which is the worst kind of wrong.
+
+**There is a known failure waiting on this.** The lab has reported Graduation Fall and Spring failing the
+builder-map layer check on **both** environments, on the Road Closures legend, in batch 172 and since. A
+separate closures layer is plausibly the fix, or at least changes the fault. **Check whether it clears**,
+and say either way - if it clears, remove the known-failure entries in the same change, which is what the
+repository's own rule asks.
+
+**[#2521](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2521) is related and already investigated**: copilot-home found the Road Closures
+legend does *not* reproduce on either environment any more, because the service was edited after the issue
+was filed, and its branch `fix/2521-road-closures-legend` removes four stale known-failure entries. **Read
+that report before you start** (`copilot-home/reports/2026-10-30-49.md`) so you do not redo it or collide
+with it.
+
+### Prove it
+
+- **Ask both services what they actually are** before and after: layer ids, names, field names, and that
+  each answers its own query. The repository's rule is that a check must ask what the app does, not just
+  whether the service answers.
+- **Both environments**, since she says both should now be identical - and say whether they are. If they are
+  not, that is a finding for her, not something to paper over in a definition.
+- Before/after screenshots of both Graduation maps, dev and production.
+- `scripts/check-in-volume.sh <branch> ts-events-ngx,aggiemap-angular` exit 0, plus the layers spec on both
+  environments.
+- A release note with its *What to test on dev* row.
+
+Push to `fork`, report `branch ready:`.
 
 ---
 
