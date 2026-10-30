@@ -17,12 +17,11 @@ Last written **12:50 PM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-Running batch 51 (security: deepmerge, read only), started 10:50 AM Central, 30 October 2026.
+Idle (last finished batch 51, 30 October 2026).
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
-## Finished
-
+## Finished`n`n- **Batch 51, security: deepmerge, the last vulnerability** (read only, 30 October 2026): no upstream (jest-config 30.5.2, fork-ts-checker 9.1.0, @nx 24.0.2) has dropped deepmerge and no fixed version exists; three call sites in our code; recommend deepmerge-ts for those and a patch or vetted override for dev paths. Nothing pushed but the report `copilot-home/reports/2026-10-30-51.md`.`n
 - **Batch 50, gisday: #2496 poster gallery** (7:54 to about 8:24 AM Central, 30 October 2026): fixed. The gallery's route `GET user-submissions/posters` was swallowed by the guarded `:guid` route (401); a public route now returns title, authors, link and year of accepted posters, and the gallery has a season list. Branch `fix/2496-gisday-poster-gallery` at `3947c8f3b40e17a3e096af07287d7db89ce53658` on the fork; red first, check exit 0; before and after screenshots. Nothing closed. Report `copilot-home/reports/2026-10-30-50.md`.
 
 - **Batch 49, aggiemap: #2521 Road Closures legend has no symbol** (7:54 AM Central, 30 October 2026): does not reproduce on development or production (the legend draws the hatch swatch; the service was edited after the issue was filed); no code fix. Branch `fix/2521-road-closures-legend` at `a9502d70d18d665edd03c32770da77b90cc2552f` on the fork removes the four stale known-failure entries; layers check passes on both environments without them; check exit 0. Nothing closed. Report `copilot-home/reports/2026-10-30-49.md`.
@@ -98,4 +97,4 @@ None.
 
 - Listen until the maintainer says to stop.
 
-Last batch done: 47
+Last batch done: 51
