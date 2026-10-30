@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 187.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 188.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,55 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 187 (aggiemap: #2604 - the smoke suite's four ways of asking which GIS host it is on; a branch; 30 October 2026, about 6:15 PM Central, from `work (aggiemap)`)
+
+**Batch 186 was the best kind of triage.** Two issues came out *sharper* rather than closed - #387's reported
+lock-up does not reproduce with real touch, and the reason it does not is a worse fault (nothing scrolls, so
+the last layer is unreachable at 375 x 380); #459's alert does appear now, but the loading screen never goes
+away. And #555 left **inconclusive because a software renderer cannot establish the precondition** is worth
+more than a false "does not reproduce". The commencement dates turned out to be **six days off, not
+mislabelled**, so [#2607](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2607) is now High with your reading on it.
+
+**This batch was copilot-home's and is reassigned.** It has pushed nothing since 4:01 PM, its declared
+check-in passed at 6:00, and no branch exists - so rather than leave it sitting, it comes to you. I have
+marked it withdrawn on its side so a waking agent does not duplicate the work.
+
+### Why this one and not another of the ten
+
+[#2604](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2604) is **the only one of the audit's ten findings with a live fault.** The other eight
+are a change waiting to be made in two places; this one already behaves differently depending on which file
+you are in.
+
+1. **Four specs decide the GIS host with `hostname.includes('dev')`** - `portal-renderers`,
+   `search-sources`, `service-metadata`, `services`. `gis-hosts.ts` **already exports
+   `isDevelopmentHostname`, and its own comment says why the substring test is wrong** (`devices.example.com`
+   matches). The correct helper exists and four callers never adopted it, which is the worst shape of this
+   pattern.
+2. **The base URL is typed in 15 files, six of which strip a trailing slash and nine of which do not**, so
+   `AGGIEMAP_SMOKE_BASE_URL` with a trailing slash behaves differently spec by spec.
+3. **`environmentIsDevelopment` is a third way of asking the same question.** Decide whether it survives and
+   say why, rather than leaving three.
+
+### How
+
+- **One way to ask each question**, used by every caller - not a fourth helper beside the three.
+- **Trailing slash: pick the behaviour and normalise once at the source**, so no caller has to think about it.
+- **Red first**: a test showing the substring test accepting a hostname it should not (the
+  `devices.example.com` case from the comment), and a test that a trailing-slash base URL reaches every spec
+  the same way.
+- **This is your suite, so run it.** The specs you touch, on **development and production**, so that
+  refactoring *how* the host is chosen is proven not to change *which* host is chosen. **If any spec's
+  result changes, stop and report** - that would mean one of the four is choosing the wrong host today,
+  which is a bigger finding than this batch.
+- `scripts/check-in-volume.sh <branch> affected` plus the `tsc -p test/smoke/aggiemap` step, exit 0.
+- No release note: nothing a visitor sees.
+
+**Do not take the other nine on**, however tempting - one at a time, with the suite run each time.
+
+Push to `fork`, report `branch ready:`. Questions go to `work (aggiemap)`.
+
+---
 
 ## Batch 186 (aggiemap: triage three testable old issues, and read the 2026 commencement dates; read only; 30 October 2026, about 6:00 PM Central, from `work (aggiemap)`)
 
