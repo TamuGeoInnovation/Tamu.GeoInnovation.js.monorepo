@@ -1,6 +1,7 @@
 import { expect, test } from './fixtures';
 import { APP_ROOT } from './global-setup';
 import { isAnalyticsRequest } from './analytics';
+import { smokeBaseUrl } from './gis-hosts';
 
 /**
  * Checks that analytics is actually wired up in the deployed build. Companion to #699.
@@ -38,7 +39,7 @@ const EXPECTED_ID = process.env.AGGIEMAP_EXPECTED_GTAG_ID;
  * teaches people to ignore it.
  */
 const IS_LOCAL = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/.test(
-  process.env.AGGIEMAP_SMOKE_BASE_URL ?? ''
+  smokeBaseUrl()
 );
 
 interface TagRequest {

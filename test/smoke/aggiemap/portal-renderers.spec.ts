@@ -13,6 +13,7 @@ import {
 
 import { retiredConnections } from './retired';
 import { serviceLayers } from './service-layers';
+import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 
 /**
  * Every portal renderer keys on fields its layer has (#2500).
@@ -27,10 +28,10 @@ import { serviceLayers } from './service-layers';
  * Needs no browser. Read-only.
  */
 
-const BASE_URL = process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu';
+const BASE_URL = smokeBaseUrl();
 
 /** The application chooses its GIS host from its own hostname (see `services.spec.ts`). */
-const GIS_HOST = new URL(BASE_URL).hostname.includes('dev') ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
+const GIS_HOST = gisHostFor(BASE_URL);
 
 /**
  * Layers whose portal renderer is known to be wrong in this environment, by `<connection name>/<layer id>`, each
@@ -40,10 +41,9 @@ const GIS_HOST = new URL(BASE_URL).hostname.includes('dev') ? 'gis-dev.it.tamu.e
 function allowedFailures(): Record<string, string> {
   const environments: Record<string, { baseUrl: string; allowedPortalRendererFailures?: Record<string, string> }> =
     JSON.parse(fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8'));
-  const normalised = BASE_URL.replace(/\/$/, '');
 
   return (
-    Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === normalised)
+    Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === BASE_URL)
       ?.allowedPortalRendererFailures ?? {}
   );
 }

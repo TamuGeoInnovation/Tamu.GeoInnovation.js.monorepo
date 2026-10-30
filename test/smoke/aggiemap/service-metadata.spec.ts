@@ -7,6 +7,7 @@ import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connectio
 import { retiredConnections } from './retired';
 import { countQueryProblem, metadataProblems, serviceLayers } from './service-layers';
 import type { LayerMetadata, MetadataProblem } from './service-layers';
+import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 
 /**
  * A service describes itself consistently (#2511).
@@ -24,10 +25,10 @@ import type { LayerMetadata, MetadataProblem } from './service-layers';
  * metadata comes from `service-layers.ts`, shared with `portal-renderers.spec.ts`.
  */
 
-const BASE_URL = process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu';
+const BASE_URL = smokeBaseUrl();
 
 /** The application chooses its GIS host from its own hostname (see `services.spec.ts`). */
-const GIS_HOST = new URL(BASE_URL).hostname.includes('dev') ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
+const GIS_HOST = gisHostFor(BASE_URL);
 
 /**
  * Known failures in this environment, by `<connection name>/<layer id>/<check>`, each with the issue that tracks it
@@ -38,10 +39,9 @@ function allowedFailures(): Record<string, string> {
   const environments: Record<string, { baseUrl: string; allowedServiceMetadataFailures?: Record<string, string> }> = JSON.parse(
     fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')
   );
-  const normalised = BASE_URL.replace(/\/$/, '');
 
   return (
-    Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === normalised)?.allowedServiceMetadataFailures ?? {}
+    Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === BASE_URL)?.allowedServiceMetadataFailures ?? {}
   );
 }
 

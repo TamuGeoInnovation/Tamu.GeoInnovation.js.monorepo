@@ -5,7 +5,7 @@ import { expect, HEAVY, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { loadBuilderTargets } from './builder-destinations';
-import { environmentIsDevelopment } from './gis-hosts';
+import { isDevelopmentUrl } from './gis-hosts';
 
 /**
  * Every map lists, draws and keys the layers its definition says it has (#1986).
@@ -65,7 +65,7 @@ const declared: Record<string, { layerList: boolean; layers: string[]; developme
 );
 
 /** Whether this environment reads the development GIS server, and so draws a map's development version. */
-const DEVELOPMENT_GIS = environmentIsDevelopment(manifest.baseUrl);
+const DEVELOPMENT_GIS = isDevelopmentUrl(manifest.baseUrl);
 
 /** Layers this environment is allowed to fail to load (environments.json); not checked here. */
 const ALLOWED_LAYER_FAILURES = (process.env.AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES ?? '')

@@ -1,5 +1,6 @@
 import { ESRI_RUNTIME_VERSION } from '../../../libs/maps/esri/src/lib/esri-runtime';
 import { expect, test } from './fixtures';
+import { smokeBaseUrl } from './gis-hosts';
 
 /**
  * The deployed site runs the ArcGIS SDK this workspace pins (#1219, #1844).
@@ -14,7 +15,7 @@ import { expect, test } from './fixtures';
  * names the version the same way, so this passes against either until production carries #1844.
  */
 /** The environment under test, as every other helper here resolves it. */
-const BASE_URL = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');
+const BASE_URL = smokeBaseUrl();
 
 test.describe('the ArcGIS runtime', () => {
   test(`is the pinned ${ESRI_RUNTIME_VERSION}`, async ({ page }) => {

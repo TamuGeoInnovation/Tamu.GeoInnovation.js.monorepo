@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
-import { environmentIsDevelopment } from './gis-hosts';
+import { isDevelopmentUrl, smokeBaseUrl } from './gis-hosts';
 
 /**
  * A layer its definition orders above another is drawn above it (#2059).
@@ -29,7 +29,7 @@ import { environmentIsDevelopment } from './gis-hosts';
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 /** Whether this environment reads the development GIS server, and so draws a map's development version. */
-const DEVELOPMENT_GIS = environmentIsDevelopment(process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu');
+const DEVELOPMENT_GIS = isDevelopmentUrl(smokeBaseUrl());
 
 /** By map id, the layers each map's development version has, where it has one. */
 const declared: Record<string, { developmentLayers?: string[] }> = JSON.parse(

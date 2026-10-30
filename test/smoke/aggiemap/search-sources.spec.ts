@@ -6,6 +6,7 @@ import * as path from 'path';
 import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
+import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 
 /**
  * Every search source the main map defines is exercised, each by the route a visitor uses to reach it
@@ -62,10 +63,10 @@ type SourceCase =
     }
   | { kind: 'not-on-main-map'; usedBy: string };
 
-const BASE_URL = process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu';
+const BASE_URL = smokeBaseUrl();
 
 /** The app picks its GIS host from its own hostname, as services.spec.ts mirrors. */
-const GIS_HOST = new URL(BASE_URL).hostname.includes('dev') ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
+const GIS_HOST = gisHostFor(BASE_URL);
 const connections = Connections(GIS_HOST);
 
 /**
@@ -272,8 +273,7 @@ function allowedFailures(): Record<string, string> {
   const environments: Record<string, EnvironmentSettings> = JSON.parse(
     fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')
   );
-  const normalised = BASE_URL.replace(/\/$/, '');
-  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === normalised);
+  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === BASE_URL);
 
   return match?.allowedSearchSourceFailures ?? {};
 }

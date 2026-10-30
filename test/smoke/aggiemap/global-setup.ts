@@ -5,6 +5,7 @@ import * as path from 'path';
 import { blockAnalytics } from './analytics';
 import { retiredMaps } from './retired';
 import { describeQuickSet, quickSetFor } from './scope';
+import { smokeBaseUrl } from './gis-hosts';
 
 /**
  * Discovers every map the target environment lists, and writes it to a manifest the spec reads at
@@ -67,7 +68,7 @@ export default async function globalSetup(): Promise<void> {
     console.log(describeQuickSet(quickSetFor((process.env.AGGIEMAP_SMOKE_CHANGED ?? '').split(',').filter(Boolean))));
   }
 
-  const baseUrl = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');
+  const baseUrl = smokeBaseUrl();
 
   const browser = await chromium.launch();
   const page = await browser.newPage();
