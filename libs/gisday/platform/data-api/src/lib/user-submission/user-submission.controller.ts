@@ -4,8 +4,10 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   Req,
   Request,
   UnauthorizedException,
@@ -25,6 +27,12 @@ export class UserSubmissionController {
   @Get('me')
   public async getPresentations(@Request() req) {
     return this.provider.getUserPresentationsForActiveSeason(req.user.sub);
+  }
+
+  // Public, and declared before ':guid', which would otherwise take 'posters' for a guid and ask for a sign-in.
+  @Get('posters')
+  public async getPosters(@Query('season', new ParseUUIDPipe({ optional: true })) seasonGuid?: string) {
+    return this.provider.getPosters(seasonGuid);
   }
 
   @UseGuards(JwtGuard)

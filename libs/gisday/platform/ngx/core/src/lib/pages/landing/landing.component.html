@@ -106,7 +106,12 @@
       <div class="icon-grid column12">
         @for (sponsor of sponsors; track sponsor) {
         <div class="icon-item">
-          <img [src]="$safeNavigationMigration(sponsor?.logos?.[0]?.path) | assetUrl | async" [alt]="sponsor.name + 'logo'" [title]="sponsor.name" />
+          <!-- A sponsor without a logo shows its name; a logo that fails to load shows nothing, never a broken image (#2569). -->
+          @if (sponsor?.logos?.[0]?.path) {
+          <tamu-gisc-image-preview [src]="sponsor.logos[0].path | assetUrl | async" [alt]="sponsor.name + ' logo'" [fallback]="null" [title]="sponsor.name"></tamu-gisc-image-preview>
+          } @else {
+          <p>{{ sponsor.name }}</p>
+          }
         </div>
         }
       </div>
@@ -131,7 +136,7 @@
       <div class="icon-grid column12">
         @for (org of organizations$ | async; track org) {
         <div class="icon-item">
-          <img [src]="$safeNavigationMigration(org?.logos?.[0]?.path) | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
+          <tamu-gisc-image-preview [src]="$safeNavigationMigration(org?.logos?.[0]?.path) | assetUrl | async" [alt]="org.name + ' logo'" [fallback]="null" [title]="org.name"></tamu-gisc-image-preview>
           @if (org.website !== null && org.website !== '') {
           <p><a [href]="org.website" target="_blank">{{org.name}}</a></p>
           } @else {

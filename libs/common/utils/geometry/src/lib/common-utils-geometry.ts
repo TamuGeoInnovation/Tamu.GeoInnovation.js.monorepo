@@ -1,6 +1,6 @@
-// Geometry with no map library, for the browser and for Nest. `getGeolocation` needs a browser;
-// everything else runs anywhere. The `esri` and `generic` entry points beside this one load map
-// libraries and are for the browser.
+// Geometry with no map library, for the browser and for Nest. `getGeolocation` and
+// `geolocationPermission` need a browser; everything else runs anywhere. The `esri` and `generic`
+// entry points beside this one load map libraries and are for the browser.
 
 import { from, Observable } from 'rxjs';
 
@@ -45,6 +45,56 @@ export function getGeolocation(
   } else {
     return promise;
   }
+}
+
+/**
+ * Whether this site may use the location: `granted`, `denied`, `prompt` (the browser will ask), or
+ * `unknown` where the browser cannot say (#2559).
+ */
+export type GeolocationPermission = PermissionState | 'unknown';
+
+/**
+ * Whether this site may use the location, read without asking for it, and again each time it changes,
+ * for example when it is allowed in the phone's settings. A browser remembers the answer for each
+ * site, so a page that checks first can avoid asking again (#2559).
+ */
+export function geolocationPermission(): Observable<GeolocationPermission> {
+  return new Observable<GeolocationPermission>((subscriber) => {
+    const permissions = globalThis.navigator?.permissions;
+    let status: PermissionStatus;
+    let closed = false;
+
+    const changed = () => subscriber.next(status.state);
+
+    if (typeof permissions?.query !== 'function') {
+      subscriber.next('unknown');
+
+      return undefined;
+    }
+
+    // A browser that does not know `geolocation` as a permission name refuses the query.
+    permissions.query({ name: 'geolocation' }).then(
+      (s) => {
+        if (closed) {
+          return;
+        }
+
+        status = s;
+        subscriber.next(s.state);
+        s.addEventListener?.('change', changed);
+      },
+      () => {
+        if (!closed) {
+          subscriber.next('unknown');
+        }
+      }
+    );
+
+    return () => {
+      closed = true;
+      status?.removeEventListener?.('change', changed);
+    };
+  });
 }
 
 /**

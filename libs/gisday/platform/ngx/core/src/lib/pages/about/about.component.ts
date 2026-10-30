@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { GISDAY_SITE, SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GISDAY_SITE, SiteHasPipe, ImagePreviewComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { Observable, filter, map, mergeMap, shareReplay, startWith, toArray } from 'rxjs';
 
 import { ActiveSeasonDto, Place, SeasonDay, Speaker } from '@tamu-gisc/gisday/platform/data-api';
@@ -30,7 +30,7 @@ const numberDictionary = {
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [SiteHasPipe, SpeakerAvatarComponent, RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
+  imports: [ImagePreviewComponent, SiteHasPipe, SpeakerAvatarComponent, RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
 })
 export class AboutComponent implements OnInit {
   public readonly site = inject(GISDAY_SITE);

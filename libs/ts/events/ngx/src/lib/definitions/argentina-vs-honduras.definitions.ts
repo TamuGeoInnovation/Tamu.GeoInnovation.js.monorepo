@@ -64,7 +64,6 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
     title: ArgentinaVsHondurasEventDefinitions.EVENT_SHUTTLES_GROUP.name,
     visible: true,
     listMode: 'show',
-    layerIndex: 60,
     sources: [
       {
         type: 'feature',
@@ -109,7 +108,6 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
     title: ArgentinaVsHondurasEventDefinitions.EVENT_PARKING_GROUP.name,
     visible: true,
     listMode: 'show',
-    layerIndex: 61,
     sources: [
       {
         type: 'feature',

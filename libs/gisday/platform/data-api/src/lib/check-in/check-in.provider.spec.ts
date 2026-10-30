@@ -2,7 +2,7 @@ import { ForbiddenException, NotFoundException, UnprocessableEntityException } f
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 
 import { checkInZoneMessage } from '@tamu-gisc/gisday/common';
 
@@ -125,7 +125,7 @@ describe('CheckInProvider', () => {
    * inside it. A position counts as inside when its accuracy circle touches the zone, with the
    * accuracy capped at `CHECK_IN_MAX_ACCURACY` metres. There is no checking in anyway: organizers
    * add exceptions from the admin page. Hybrid and virtual events, and locations with no zone, need
-   * no location.
+   * no location; hybrid and virtual ones need their QR code instead (#2560).
    */
   describe('.insertUserCheckin() and the check-in zone', () => {
     // CHECK_IN_MAX_ACCURACY in @tamu-gisc/gisday/common.
@@ -157,7 +157,7 @@ describe('CheckInProvider', () => {
       jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
       jest
         .spyOn(eventRepo, 'findOne')
-        .mockResolvedValue({ guid: 'e-1', mode, ...openNow, location: { building: venue, checkInZone } } as unknown as Event);
+        .mockResolvedValue({ guid: 'e-1', mode, ...openNow, checkInCode: 'code-1', location: { building: venue, checkInZone } } as unknown as Event);
       save = jest.fn().mockResolvedValue({ guid: 'c-new' });
       jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
     };
@@ -255,10 +255,12 @@ describe('CheckInProvider', () => {
 
     it('needs no location for a hybrid or virtual event, even at a location with a zone', async () => {
       withEvent('hybrid');
-      await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, 'code-1')).resolves.toEqual({ guid: 'c-new' });
 
       withEvent('virtual');
-      await expect(provider.insertUserCheckin('e-1', 'acct-1', kyleField)).resolves.toEqual({ guid: 'c-new' });
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', kyleField, 'code-1')).resolves.toEqual({
+        guid: 'c-new'
+      });
     });
 
     it('needs no location for an in-person event at a location with no zone', async () => {
@@ -296,9 +298,10 @@ describe('CheckInProvider', () => {
   describe('.insertUserCheckin() and when check-in is open', () => {
     // Wednesday 18 November 2026, 4:00 to 5:00 PM Central, stored as the admin form stores them. The
     // day as the API reads it from the database: midnight Central, in UTC.
+    // In person with no zone, so neither a location nor a QR code (#2560) is asked for.
     const session = {
       guid: 'e-1',
-      mode: 'hybrid',
+      mode: 'in-person',
       day: { date: new Date('2026-11-18T06:00:00Z') },
       startTime: '16:00:00 GMT-0600 (Central Standard Time)',
       endTime: '17:00:00 GMT-0600 (Central Standard Time)'
@@ -392,6 +395,161 @@ describe('CheckInProvider', () => {
       at('2026-11-17T12:00:00Z');
 
       await expect(provider.insertAttendeeCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
+    });
+  });
+
+  /**
+   * #2560: an attendee checks in to a hybrid or virtual session only with the code in its QR code,
+   * the one an organizer puts on the presenter's slides. Anyone signed in could otherwise check in from
+   * the session page, from anywhere, without attending.
+   */
+  describe('.insertUserCheckin() and the QR code', () => {
+    let save: jest.Mock;
+    let findEvent: jest.SpyInstance;
+
+    const withSession = (mode: string, checkInCode: string | null = 'code-1', times: object = openNow) => {
+      jest.spyOn(checkInRepo, 'findOne').mockResolvedValue(null);
+      findEvent = jest
+        .spyOn(eventRepo, 'findOne')
+        .mockResolvedValue({ guid: 'e-1', mode, ...times, checkInCode } as unknown as Event);
+      save = jest.fn().mockResolvedValue({ guid: 'c-new' });
+      jest.spyOn(checkInRepo, 'create').mockReturnValue({ save } as never);
+    };
+
+    it.each(['hybrid', 'virtual'])('checks in an attendee to a %s session with its code', async (mode) => {
+      withSession(mode);
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, 'code-1')).resolves.toEqual({
+        guid: 'c-new'
+      });
+    });
+
+    it.each(['hybrid', 'virtual'])('refuses an attendee to a %s session with no code, and says to scan it', async (mode) => {
+      withSession(mode);
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(
+        new ForbiddenException("Check in to this session by scanning the QR code on the presenter's slides.")
+      );
+      expect(save).not.toHaveBeenCalled();
+    });
+
+    it('refuses a code that is not the session’s, including one a character short', async () => {
+      withSession('hybrid');
+
+      for (const code of ['code-2', 'code-', '', 'CODE-1']) {
+        await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, code)).rejects.toThrow(ForbiddenException);
+      }
+
+      expect(save).not.toHaveBeenCalled();
+    });
+
+    it('refuses a code that is not text', async () => {
+      withSession('hybrid');
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, ['code-1'] as never)).rejects.toThrow(
+        ForbiddenException
+      );
+    });
+
+    it('refuses everyone while no organizer has made the session’s code', async () => {
+      withSession('virtual', null);
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, 'code-1')).rejects.toThrow(ForbiddenException);
+      await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, undefined)).rejects.toThrow(ForbiddenException);
+    });
+
+    it('reads the code on its own, as it is never selected with the event', async () => {
+      withSession('hybrid');
+
+      await provider.insertUserCheckin('e-1', 'acct-1', undefined, 'code-1');
+
+      expect(findEvent).toHaveBeenCalledWith({ where: { guid: 'e-1' }, select: { guid: true, checkInCode: true } });
+    });
+
+    it('still keeps a QR session to its check-in time, and says when before asking for the code', async () => {
+      withSession('hybrid', 'code-1', {
+        day: { date: new Date('2026-11-18T06:00:00Z') },
+        startTime: '16:00:00 GMT-0600 (Central Standard Time)',
+        endTime: '17:00:00 GMT-0600 (Central Standard Time)'
+      });
+      jest.useFakeTimers({ now: new Date('2026-11-18T21:00:00Z'), doNotFake: ['nextTick', 'setImmediate'] });
+
+      try {
+        await expect(provider.insertUserCheckin('e-1', 'acct-1', undefined, 'code-1')).rejects.toThrow(
+          /opens when it starts/
+        );
+        await expect(provider.insertUserCheckin('e-1', 'acct-1')).rejects.toThrow(/opens when it starts/);
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('asks an in-person attendee for no code', async () => {
+      withSession('in-person', null);
+
+      await expect(provider.insertUserCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
+    });
+
+    it('lets an organizer add a check-in to a QR session with no code', async () => {
+      withSession('hybrid');
+
+      await expect(provider.insertAttendeeCheckin('e-1', 'acct-1')).resolves.toEqual({ guid: 'c-new' });
+    });
+  });
+
+  /**
+   * #2560: the code an organizer puts on the slides.
+   */
+  describe('.getCheckInCode()', () => {
+    let update: jest.Mock;
+
+    beforeEach(() => {
+      update = jest.fn().mockResolvedValue({ affected: 1 });
+      (eventRepo as unknown as { update: jest.Mock }).update = update;
+    });
+
+    it('gives the session’s code when it has one, and writes nothing', async () => {
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'hybrid', checkInCode: 'code-1' } as Event);
+
+      await expect(provider.getCheckInCode('e-1')).resolves.toEqual({ code: 'code-1' });
+      expect(update).not.toHaveBeenCalled();
+    });
+
+    it('makes a code the first time, only where there is none yet, and gives the one saved', async () => {
+      const findOne = jest
+        .spyOn(eventRepo, 'findOne')
+        .mockResolvedValueOnce({ guid: 'e-1', mode: 'virtual', checkInCode: null } as Event)
+        .mockResolvedValueOnce({ guid: 'e-1', checkInCode: 'saved-by-whoever-was-first' } as Event);
+
+      await expect(provider.getCheckInCode('e-1')).resolves.toEqual({ code: 'saved-by-whoever-was-first' });
+
+      const [where, values] = update.mock.calls[0];
+      // Two organizers asking at once must not each save their own, or one slide's code stops working.
+      expect(where).toEqual({ guid: 'e-1', checkInCode: IsNull() });
+      expect(values.checkInCode).toMatch(/^[A-Za-z0-9_-]{22}$/);
+      expect(findOne).toHaveBeenCalledTimes(2);
+    });
+
+    it('makes a different code for each session', async () => {
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'hybrid', checkInCode: null } as Event);
+
+      await provider.getCheckInCode('e-1');
+      await provider.getCheckInCode('e-2');
+
+      expect(update.mock.calls[0][1].checkInCode).not.toEqual(update.mock.calls[1][1].checkInCode);
+    });
+
+    it('refuses an in-person session, which checks in by location', async () => {
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue({ guid: 'e-1', mode: 'in-person' } as Event);
+
+      await expect(provider.getCheckInCode('e-1')).rejects.toThrow(UnprocessableEntityException);
+      expect(update).not.toHaveBeenCalled();
+    });
+
+    it('refuses a session that does not exist', async () => {
+      jest.spyOn(eventRepo, 'findOne').mockResolvedValue(null);
+
+      await expect(provider.getCheckInCode('missing')).rejects.toThrow(NotFoundException);
     });
   });
 

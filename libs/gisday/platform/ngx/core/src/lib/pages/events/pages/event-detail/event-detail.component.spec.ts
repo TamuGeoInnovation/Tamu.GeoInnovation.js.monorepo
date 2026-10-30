@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { Angulartics2 } from 'angulartics2';
 import { of, throwError } from 'rxjs';
 
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
@@ -49,11 +50,14 @@ describe('EventDetailComponent check-in', () => {
       day: { guid: 'd-1', date: new Date() },
       startTime: '00:00:00',
       endTime: '23:59:59'
-    }
+    },
+    // The page's query string, and the signed-in account's roles.
+    { query = {}, roles = [] }: { query?: Record<string, string>; roles?: Array<string> } = {}
   ) {
     let checkedIn = false;
 
-    const insertUserCheckin = jest.fn<ReturnType<typeof insert>, [string, unknown?]>(() => {
+    const getCheckInCode = jest.fn(() => of({ code: 'code-1' }));
+    const insertUserCheckin = jest.fn<ReturnType<typeof insert>, [string, unknown?, string?]>(() => {
       const result = insert();
       checkedIn = true;
 
@@ -73,26 +77,35 @@ describe('EventDetailComponent check-in', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: { params: of({ guid: 'e-1' }) } },
+        {
+          provide: ActivatedRoute,
+          useValue: { params: of({ guid: 'e-1' }), queryParamMap: of(convertToParamMap(query)) }
+        },
         {
           provide: AuthService,
-          useValue: { isAuthenticated$: of(true), userRoles$: of([]), user$: of({ sub: 'acct-1' }) }
+          useValue: { isAuthenticated$: of(true), userRoles$: of(roles), user$: of({ sub: 'acct-1' }) }
         },
         {
           provide: UserService,
           useValue: { getUserMetadata: () => of({ app_metadata: { gisday: { completedProfile: true } } }) }
         },
-        { provide: EventService, useValue: { getEvent: () => of(event), getEventAttendance: () => of({}) } },
+        {
+          provide: EventService,
+          useValue: { getEvent: () => of(event), getEventAttendance: () => of({}), updateEventAttendance: () => of({}) }
+        },
         { provide: SeasonService, useValue: { isPastSeasonDay: () => of(false) } },
         { provide: RsvpService, useValue: { getUserRsvpForEvent: () => throwError(() => new Error('none')) } },
         {
           provide: CheckinService,
           useValue: {
             getUserCheckinForEvent: () => (checkedIn ? of({ guid: 'c-new' }) : throwError(() => new Error('none'))),
-            insertUserCheckin
+            insertUserCheckin,
+            getCheckInCode
           }
         },
-        { provide: NotificationService, useValue: { toast: jest.fn() } }
+        { provide: NotificationService, useValue: { toast: jest.fn() } },
+        // The QR code's copyable link counts copies.
+        { provide: Angulartics2, useValue: { eventTrack: { next: jest.fn() } } }
       ]
     });
 
@@ -103,17 +116,18 @@ describe('EventDetailComponent check-in', () => {
     const page = () => f.nativeElement as HTMLElement;
     const text = () => page().textContent ?? '';
 
-    // The button's label is its input's value, not text.
-    const pressCheckIn = async () => {
-      const button = Array.from(page().querySelectorAll<HTMLInputElement>('tamu-gisc-button input')).find(
-        (b) => b.value === 'CHECKIN'
-      );
+    // A button's label is its input's value, not text.
+    const button = (label: string) =>
+      Array.from(page().querySelectorAll<HTMLInputElement>('tamu-gisc-button input')).find((b) => b.value === label);
 
-      if (!button) {
-        throw new Error('No Check In button on the page');
+    const press = async (label: string) => {
+      const b = button(label);
+
+      if (!b) {
+        throw new Error(`No ${label} button on the page`);
       }
 
-      button.click();
+      b.click();
       f.detectChanges();
 
       // The browser's answer arrives as a promise.
@@ -121,7 +135,18 @@ describe('EventDetailComponent check-in', () => {
       f.detectChanges();
     };
 
-    return { text, pressCheckIn, insertUserCheckin, detectChanges: () => f.detectChanges() };
+    const pressCheckIn = () => press('CHECKIN');
+
+    return {
+      page,
+      text,
+      button,
+      press,
+      pressCheckIn,
+      insertUserCheckin,
+      getCheckInCode,
+      detectChanges: () => f.detectChanges()
+    };
   }
 
   const at = (latitude: number, longitude: number, accuracy: number) => (success: PositionCallback) =>
@@ -142,7 +167,12 @@ describe('EventDetailComponent check-in', () => {
 
     await pressCheckIn();
 
-    expect(insertUserCheckin).toHaveBeenCalledWith('e-1', { latitude: 30.6132, longitude: -96.3406, accuracy: 12 });
+    // An in-person session sends no QR code (#2560).
+    expect(insertUserCheckin).toHaveBeenCalledWith(
+      'e-1',
+      { latitude: 30.6132, longitude: -96.3406, accuracy: 12 },
+      undefined
+    );
     expect(text()).toContain('Your attendance has been registered');
   });
 
@@ -191,17 +221,120 @@ describe('EventDetailComponent check-in', () => {
     expect(insertUserCheckin).not.toHaveBeenCalled();
   });
 
-  it('checks in to a hybrid session without asking for location', async () => {
-    const { text, pressCheckIn, insertUserCheckin } = open('hybrid');
+  /**
+   * #2560: a hybrid or virtual session checks in from the link in its QR code, which carries the code.
+   */
+  describe('a hybrid or virtual session', () => {
+    const scanned = { query: { checkin: 'code-1' } };
 
-    expect(text()).not.toContain('uses your location');
+    it.each(['hybrid', 'virtual'])(
+      'checks in to a %s session from its QR code, sending the code and no location',
+      async (mode) => {
+        const { text, pressCheckIn, insertUserCheckin } = open(mode, undefined, undefined, scanned);
 
-    await pressCheckIn();
+        expect(text()).not.toContain('uses your location');
 
-    expect(getCurrentPosition).not.toHaveBeenCalled();
-    expect(insertUserCheckin.mock.calls[0][0]).toBe('e-1');
-    expect(insertUserCheckin.mock.calls[0][1]).toBeUndefined();
-    expect(text()).toContain('Your attendance has been registered');
+        await pressCheckIn();
+
+        expect(getCurrentPosition).not.toHaveBeenCalled();
+        expect(insertUserCheckin).toHaveBeenCalledWith('e-1', undefined, 'code-1');
+        expect(text()).toContain('Your attendance has been registered');
+      }
+    );
+
+    it('offers no Check In button without the code, and says to scan it', () => {
+      const { text, button } = open('virtual');
+
+      expect(button('CHECKIN')).toBeUndefined();
+      expect(text()).toContain("Check in to this session by scanning the QR code on the presenter's slides.");
+    });
+
+    it('shows why a code was refused', async () => {
+      const refused = "Check in to this session by scanning the QR code on the presenter's slides.";
+      const { text, pressCheckIn } = open(
+        'hybrid',
+        () => throwError(() => new HttpErrorResponse({ status: 403, error: { statusCode: 403, message: refused } })),
+        undefined,
+        { query: { checkin: 'from-another-session' } }
+      );
+
+      await pressCheckIn();
+
+      expect(text()).toContain(refused);
+      expect(text()).not.toContain('Your attendance has been registered');
+    });
+
+    it('sends no code for an in-person session, even when the address has one', async () => {
+      const { pressCheckIn, insertUserCheckin } = open('in-person', undefined, undefined, {
+        query: { checkin: 'code-1' }
+      });
+      getCurrentPosition.mockImplementation(at(30.6132, -96.3406, 12));
+
+      await pressCheckIn();
+
+      expect(insertUserCheckin.mock.calls[0][2]).toBeUndefined();
+    });
+  });
+
+  /**
+   * #2560: an organizer shows the QR code from the session's page, to put on the presenter's slides.
+   */
+  describe('the check-in QR code, for organizers', () => {
+    const organizer = { roles: ['GIS Day Organizer'] };
+
+    it('shows a hybrid session’s code, holding a link to this page with the code', async () => {
+      const { page, press, getCheckInCode } = open('hybrid', undefined, undefined, organizer);
+
+      expect(page().querySelector('tamu-gisc-qr-code')).toBeNull();
+
+      await press('Show check-in QR code');
+
+      const link = `${window.location.origin}/sessions/details/e-1?checkin=code-1`;
+
+      expect(getCheckInCode).toHaveBeenCalledWith('e-1');
+      expect(page().querySelector('tamu-gisc-qr-code svg')?.getAttribute('aria-label')).toBe(
+        'Check-in QR code for Opening session'
+      );
+      expect(page().querySelector('tamu-gisc-copy-field')?.textContent).toContain(link);
+    });
+
+    it('draws the code in Texas A&M maroon with the university’s logo in the middle', async () => {
+      const { page, press } = open('hybrid', undefined, undefined, organizer);
+
+      await press('Show check-in QR code');
+
+      expect(page().querySelector('tamu-gisc-qr-code path')?.getAttribute('fill')).toBe('#500000');
+      expect(page().querySelector('tamu-gisc-qr-code image')?.getAttribute('href')).toBe(
+        'assets/images/logo/TAM-LogoBox.svg'
+      );
+    });
+
+    it('offers to show the code full screen, for a presenter sharing their screen', async () => {
+      const { page, button, press } = open('virtual', undefined, undefined, organizer);
+      const requestFullscreen = jest.fn().mockResolvedValue(undefined);
+
+      await press('Show check-in QR code');
+      (page().querySelector('tamu-gisc-qr-code') as HTMLElement).requestFullscreen = requestFullscreen;
+
+      expect(button('Full screen')).toBeDefined();
+      expect(button('Download PNG')).toBeDefined();
+
+      await press('Full screen');
+
+      expect(requestFullscreen).toHaveBeenCalledTimes(1);
+    });
+
+    it('offers no code for an in-person session, which checks in by location', () => {
+      const { button } = open('in-person', undefined, undefined, organizer);
+
+      expect(button('Show check-in QR code')).toBeUndefined();
+    });
+
+    it('offers no code to an attendee', () => {
+      const { button } = open('hybrid');
+
+      expect(button('Show check-in QR code')).toBeUndefined();
+    });
   });
 
   /**
@@ -230,7 +363,7 @@ describe('EventDetailComponent check-in', () => {
     ])('%s: %s', (_, now, shown) => {
       jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
 
-      const { text } = open('hybrid', undefined, session);
+      const { text } = open('in-person', undefined, session);
 
       expect(hasButton(text)).toBe(shown);
     });

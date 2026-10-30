@@ -43,7 +43,6 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
     popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
-    layerIndex: 22,
     native: {
       outFields: ['*'],
       definitionExpression: `event = 'TrackOutdoor'`
@@ -69,7 +68,6 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 21,
     native: {
       outFields: ['*']
     }
@@ -100,8 +98,7 @@ export const OutdoorTrackParking_DevelopmentLayerSources: LayerSource[] = Outdoo
 ).map((source) =>
   athleticsDevelopmentSource({
     id: (source as { id: string }).id,
-    url: `${eventUrl}/${outdoorTrackParkingDevelopmentIndex[(source as { id: string }).id]}`,
-    layerIndex: (source as { layerIndex?: number }).layerIndex
+    url: `${eventUrl}/${outdoorTrackParkingDevelopmentIndex[(source as { id: string }).id]}`
   })
 );
 

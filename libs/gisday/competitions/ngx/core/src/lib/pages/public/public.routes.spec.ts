@@ -52,4 +52,19 @@ describe('the competition app public routes', () => {
       expect(pages.find((route) => route.path === path)?.canActivate).toContain(AuthGuard);
     }
   });
+
+  // Students open the competition in their phone's browser; it no longer has to be installed or added
+  // to the home screen first (#2559). The install page stays, as a suggestion.
+  it('opens the map, the submission form and the leaderboard in a browser, without sending anyone to install', () => {
+    const pages = publicRoutes[0].children ?? [];
+
+    for (const path of ['map', 'submission', 'leaderboard']) {
+      const route = pages.find((r) => r.path === path);
+
+      expect(route?.canActivate).not.toContain(DeviceGuard);
+      expect(route?.data?.['deviceFailRedirect']).toBeUndefined();
+    }
+
+    expect(pages.find((r) => r.path === 'install')).toBeDefined();
+  });
 });

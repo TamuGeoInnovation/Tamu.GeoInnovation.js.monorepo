@@ -2,7 +2,7 @@ import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
+import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs';
 
 import { Place, PlaceLink } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -17,12 +17,14 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PlaceLinkFormComponent } from '../place-link-form/place-link-form.component';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
+import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
+import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
 
 @Component({
   selector: 'tamu-gisc-place-location-add-edit-form',
   templateUrl: './place-location-add-edit-form.component.html',
   styleUrls: ['./place-location-add-edit-form.component.scss'],
-  imports: [
+  imports: [ImagePreviewComponent, 
     FormsModule,
     ReactiveFormsModule,
     TextboxComponent,
@@ -54,7 +56,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   public readonly links = signal<Array<AbstractControl>>([]);
 
   public entity$: Observable<Partial<Place>>;
-  public logoUrl$: Observable<SafeUrl>;
+  public logoUrl$: Observable<SafeUrl | string | null>;
 
   public visibilitySettingsOptions = [
     { label: 'Header', value: PlaceVisibilityOptions.Header },
@@ -98,22 +100,6 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         this.form.removeControl('season');
       });
 
-      // Image preview can come from two sources:
-      // 1. The entity itself, if it has a photoUrl property
-      // 2. The form, if the user has selected a file
-      this.logoUrl$ = merge(
-        this.entity$.pipe(
-          filter((ent) => ent?.logos?.[0]?.guid !== undefined && ent?.logos?.[0]?.guid !== null),
-          switchMap((entity) => {
-            return this.as.getAssetUrl(entity?.logos?.[0]?.path);
-          })
-        ),
-        this.form.valueChanges.pipe(
-          map((value) => value.file),
-          filter((file) => file !== null),
-          map((file) => this.sn.bypassSecurityTrustUrl(URL.createObjectURL(file)))
-        )
-      );
     } else {
       this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
         this.form.patchValue({
@@ -121,6 +107,15 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         });
       });
     }
+
+    // The chosen logo, else the saved one, else nothing (#2569); drawn by tamu-gisc-image-preview, never a broken image.
+    this.logoUrl$ = uploadPreviewUrl(
+      (this.entity$ ?? of(null)).pipe(
+        switchMap((entity) => (entity?.logos?.[0]?.path ? this.as.getAssetUrl(entity.logos[0].path) : of(null)))
+      ),
+      this.form.get('file').valueChanges,
+      this.sn
+    );
   }
 
   public handleSubmission() {

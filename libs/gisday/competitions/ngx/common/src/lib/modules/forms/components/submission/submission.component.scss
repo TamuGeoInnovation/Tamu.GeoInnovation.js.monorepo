@@ -5,6 +5,15 @@
   display: inherit;
 }
 
+.location-help ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+
+  li {
+    margin-bottom: 0.25rem;
+  }
+}
+
 .statused-form-input-container {
   margin-bottom: 0.75rem;
 
@@ -122,6 +131,27 @@
     width: 100%;
     top: 0;
     left: 0;
+  }
+
+  // Over the chosen photo, which the file input still covers, so it can be seen that a tap replaces it (#2545).
+  .change-hint {
+    @include flexbox();
+    @include align-items(center);
+    position: absolute;
+    bottom: 0.5rem;
+    margin: 0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    .material-icons {
+      color: inherit;
+      font-size: 1rem;
+      margin: 0 0.3rem 0 0;
+    }
   }
 }
 

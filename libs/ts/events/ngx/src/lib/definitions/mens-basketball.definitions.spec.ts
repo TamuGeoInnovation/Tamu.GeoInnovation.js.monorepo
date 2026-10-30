@@ -19,3 +19,23 @@ describe("Men's Basketball", () => {
     expect(parking?.popupData?.['name']).toBe('{attributes.name}');
   });
 });
+
+/**
+ * Men's Basketball reaches the map without a reload, as football does (#2558, #1587).
+ *
+ * Staff edit the service on game day: a lot's type set to Lot Closed, a closure drawn, an Alert icon placed. Each
+ * layer polls its service every minute, so a visitor with the map open sees the change. All three layers, because
+ * all three are what the editor changes: the issue names the icons and the parking, and the closures are the layer
+ * the closures are drawn on.
+ */
+describe("Men's Basketball game-day edits", () => {
+  it('declares its three layers', () => {
+    expect(MensBasketball_ColdLayerSources.length).toBe(3);
+  });
+
+  for (const source of MensBasketball_ColdLayerSources) {
+    it(`${source.id} refreshes every minute`, () => {
+      expect((source.native as { refreshInterval?: number } | undefined)?.refreshInterval).toBe(1);
+    });
+  }
+});

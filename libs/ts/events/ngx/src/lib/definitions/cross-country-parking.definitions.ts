@@ -49,7 +49,6 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 59,
     native: {
       outFields: ['*']
     } as unknown as FeatureNative
@@ -71,7 +70,6 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 60,
     native: {
       definitionExpression: `trackxc = 'EventParking'`,
       outFields: ['*']

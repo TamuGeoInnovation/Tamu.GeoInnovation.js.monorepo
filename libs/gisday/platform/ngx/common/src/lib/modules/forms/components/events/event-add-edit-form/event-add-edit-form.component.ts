@@ -177,7 +177,6 @@ export class EventAddEditFormComponent implements OnInit {
       observedAttendeeEnd: [null],
       resources: [null],
       requiresRsvp: [false],
-      qrCode: [null],
       mode: [null],
       eventType: [null],
       presentationType: [null],

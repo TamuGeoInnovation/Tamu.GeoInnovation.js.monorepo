@@ -1,0 +1,56 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.qr-code {
+  display: block;
+  width: 100%;
+  max-width: 20rem;
+  height: auto;
+}
+
+.qr-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+// Full screen: the code as large as the screen allows, centred on white with its caption under it, for a
+// presenter sharing their screen. A phone at the back of a room needs every pixel. Fixed to the viewport
+// so the layout holds whatever the browser's own full-screen styles do.
+:host(.is-fullscreen) {
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: #ffffff;
+
+  .qr-code {
+    flex: none;
+    width: min(100%, calc(100vh - 10rem));
+    max-width: none;
+  }
+
+  .qr-caption {
+    flex: none;
+    // GIS Day's global styles give every `p` `position: inherit`, which would make the caption fixed like
+    // this host and lay it over the middle of the code.
+    position: static;
+    margin: 0;
+    padding: 0;
+    color: #000000;
+    font-size: clamp(1.25rem, 3vmin, 2.5rem);
+    text-align: center;
+  }
+
+  .qr-exit {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+}

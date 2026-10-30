@@ -31,10 +31,14 @@
 
       <div class="form-collection row">
         <div>
-          <!-- The banner the public pages draw on this photograph, following the University and Graduation Year fields as they change. -->
+          <!-- The banner the public pages draw on this photograph, following the University and Graduation Year fields as they change.
+               Drawn only while a photo is showing, never over the person icon (#2568). -->
           <div class="speaker-photo">
+            @if (photo.showing()) {
             <tamu-gisc-speaker-class-banner [speaker]="bannerSpeaker$ | async"></tamu-gisc-speaker-class-banner>
-            <img [src]="(speakerPhotoUrl$ | async) || (placeholderUrl$ | async)" alt="Speaker photo preview" />
+            }
+            <!-- No photo, or one that fails to load: the person icon, never a broken image (#2422, #2569). -->
+            <tamu-gisc-image-preview #photo [src]="speakerPhotoUrl$ | async" alt="Speaker photo preview" fallback="person" fallbackLabel="No photo yet"></tamu-gisc-image-preview>
           </div>
           <tamu-gisc-file formControlName="file" clearMessage="Undo" accept="image/*">
             <p class="placeholder">Select Profile Picture</p>

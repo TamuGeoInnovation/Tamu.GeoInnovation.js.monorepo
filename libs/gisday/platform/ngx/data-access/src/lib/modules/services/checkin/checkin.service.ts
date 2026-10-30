@@ -38,19 +38,28 @@ export class CheckinService extends BaseService<CheckIn> {
   }
 
   /**
+   * The code in a hybrid or virtual session's check-in QR code, for an organizer (#2560).
+   */
+  public getCheckInCode(eventGuid: string) {
+    return this.http1.get<{ code: string }>(`${this.resource}/code/${eventGuid}`);
+  }
+
+  /**
    * @param position Where the attendee is, and how accurately. An in-person event at a location
    * with a check-in zone needs it (#1766).
+   * @param code The code from the session's QR code, which a hybrid or virtual session needs (#2560).
    *
    * A failure is passed on as the API sent it, with no message here: the page shows the API's
    * reason beside the button.
    */
-  public insertUserCheckin(eventGuid: string, position?: LatLon & { accuracy?: number }) {
+  public insertUserCheckin(eventGuid: string, position?: LatLon & { accuracy?: number }, code?: string) {
     return this.http1
       .post(`${this.resource}`, {
         eventGuid: eventGuid,
         latitude: position?.latitude,
         longitude: position?.longitude,
-        accuracy: position?.accuracy
+        accuracy: position?.accuracy,
+        code: code
       })
       .pipe(
         tap(() => {

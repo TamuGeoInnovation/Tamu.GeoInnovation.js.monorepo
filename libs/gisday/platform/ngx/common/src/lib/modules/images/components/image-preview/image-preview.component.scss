@@ -1,0 +1,28 @@
+@use 'libs/sass/mixins';
+@use 'libs/gisday/sass/variables';
+
+:host {
+  display: block;
+}
+
+.image-preview {
+  display: block;
+  max-width: 100%;
+}
+
+// The colours the speaker avatar uses for a speaker without a photo, so every missing picture looks the same.
+.image-preview-fallback {
+  width: 100%;
+  max-width: 17rem;
+  aspect-ratio: 1;
+  color: #ffffff;
+  background: variables.$gisday-blue-support-lightened;
+  @include mixins.flexbox();
+  @include mixins.flex-direction(row);
+  @include mixins.justify-content(center);
+  @include mixins.align-items(center);
+
+  .material-icons {
+    font-size: 4rem;
+  }
+}

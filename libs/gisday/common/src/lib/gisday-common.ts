@@ -34,6 +34,30 @@ export function checkInZoneMessage(venue?: string): string {
 }
 
 /**
+ * The event modes an attendee checks in to only with the session's QR code (#2560): the code the
+ * presenter shows on a slide. Their attendees may be anywhere, so the check-in zone cannot tell who
+ * is attending, and without the code anyone signed in could check in from the session page.
+ */
+export const CHECK_IN_CODE_EVENT_MODES: ReadonlyArray<string> = ['hybrid', 'virtual'];
+
+/**
+ * Whether checking in to an event with this mode needs the session's QR code.
+ */
+export function checksInByCode(mode: string | undefined | null): boolean {
+  return typeof mode === 'string' && CHECK_IN_CODE_EVENT_MODES.includes(mode);
+}
+
+/**
+ * The query parameter the QR code's link puts the code in: `/sessions/details/<guid>?checkin=<code>`.
+ */
+export const CHECK_IN_CODE_PARAM = 'checkin';
+
+/**
+ * What an attendee checking in to a QR session without its code, or with another session's, is told.
+ */
+export const CHECK_IN_CODE_MESSAGE = "Check in to this session by scanning the QR code on the presenter's slides.";
+
+/**
  * Minutes after a session's end that check-in stays open, for attendees who check in late.
  */
 export const CHECK_IN_GRACE_MINUTES = 15;

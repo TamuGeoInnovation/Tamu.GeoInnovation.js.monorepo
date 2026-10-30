@@ -17,6 +17,7 @@
     <input type="file" name="photo" (change)="onPhotoTaken($event, 1)" accept="image/*" capture />
     @if (file | async) {
     <div class="image" [ngStyle]="{'background-image': 'url(' + (fileUrl | async) + ')'}"></div>
+    <p class="change-hint"><span class="material-icons">photo_camera</span>Tap to change</p>
     }
   </div>
   <div class="block-input">
@@ -30,6 +31,7 @@
     <input type="file" name="photo2" (change)="onPhotoTaken($event, 2)" accept="image/*" capture />
     @if (file2 | async) {
     <div class="image" [ngStyle]="{'background-image': 'url(' + (fileUrl2 | async) + ')'}"></div>
+    <p class="change-hint"><span class="material-icons">photo_camera</span>Tap to change</p>
     }
   </div>
   @for (c of form.controls?.['fields']['controls']; track c; let i = $index) {
@@ -56,7 +58,15 @@
   } @case ('slow') {
   <p class="info-block warning">Still finding your location. Make sure Location is on in your phone's settings.</p>
   } @case ('blocked') {
-  <p class="info-block warning">Location access is blocked. Allow this site to use your location in your phone settings to submit.</p>
+  <div class="info-block warning location-help">
+    <p><strong>Location access is blocked.</strong> Each submission needs your location. To allow it in {{ locationHelp.device }}:</p>
+    <ol>
+      @for (step of locationHelp.steps; track step) {
+      <li>{{ step }}</li>
+      }
+    </ol>
+    <p>Then tap Submit again.</p>
+  </div>
   } @default {
   <p class="info-block context">Finding your location...</p>
   } }

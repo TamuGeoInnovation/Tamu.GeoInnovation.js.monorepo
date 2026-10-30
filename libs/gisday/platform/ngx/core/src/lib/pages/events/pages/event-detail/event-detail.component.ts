@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -40,8 +41,16 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ParseDateTimeStringsPipe } from '@tamu-gisc/gisday/platform/ngx/common';
 import { MarkdownParsePipe } from '@tamu-gisc/common/ngx/pipes';
 import { getGeolocation, isLatLonPolygon } from '@tamu-gisc/common/utils/geometry';
-import { CHECK_IN_ZONE_EVENT_MODE, checkInWindow } from '@tamu-gisc/gisday/common';
+import {
+  CHECK_IN_CODE_MESSAGE,
+  CHECK_IN_CODE_PARAM,
+  CHECK_IN_ZONE_EVENT_MODE,
+  checkInWindow,
+  checksInByCode
+} from '@tamu-gisc/gisday/common';
 import { SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
+import { QrCodeComponent } from '@tamu-gisc/ui-kits/ngx/qr-code';
+import { CopyComponent } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
@@ -63,7 +72,9 @@ import { SiteHasPipe } from '@tamu-gisc/gisday/platform/ngx/common';
     AsyncPipe,
     DatePipe,
     ParseDateTimeStringsPipe,
-    MarkdownParsePipe
+    MarkdownParsePipe,
+    QrCodeComponent,
+    CopyComponent
   ]
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
@@ -107,6 +118,34 @@ export class EventDetailComponent implements OnInit, OnDestroy {
    * Why the last check-in did not work, shown beside the button.
    */
   public readonly checkInFailure = signal<string>(undefined);
+
+  /**
+   * The code from the session's QR code, which its link carries (#2560). A hybrid or virtual session
+   * offers the Check In button only with it.
+   */
+  public readonly checkInCode = toSignal(
+    this.route.queryParamMap.pipe(map((params) => params.get(CHECK_IN_CODE_PARAM) ?? undefined)),
+    { initialValue: undefined }
+  );
+
+  public readonly checkInCodeMessage = CHECK_IN_CODE_MESSAGE;
+
+  /**
+   * The check-in QR code in Texas A&M maroon, with the university's box logo in the middle, from the
+   * shared assets every GIS Day site serves (as the header lockup uses).
+   */
+  public readonly checkInCodeColor = '#500000';
+  public readonly checkInCodeLogo = 'assets/images/logo/TAM-LogoBox.svg';
+
+  /**
+   * The link in the session's check-in QR code, once an organizer has asked for it (#2560).
+   */
+  public readonly checkInLink = signal<string>(undefined);
+
+  /**
+   * Why the check-in QR code could not be shown, such as an account without `create:checkins`.
+   */
+  public readonly checkInCodeFailure = signal<string>(undefined);
 
   private _refresh$: Subject<boolean> = new Subject();
   private _destroy$: Subject<boolean> = new Subject();
@@ -309,7 +348,13 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         take(1),
         switchMap((event) =>
           this._checkInPosition(event).pipe(
-            switchMap((position) => this.checkinService.insertUserCheckin(event.guid, position))
+            switchMap((position) =>
+              this.checkinService.insertUserCheckin(
+                event.guid,
+                position,
+                this.needsCheckInCode(event) ? this.checkInCode() : undefined
+              )
+            )
           )
         )
       )
@@ -330,6 +375,37 @@ export class EventDetailComponent implements OnInit, OnDestroy {
    */
   public needsCheckInLocation(event: Partial<Event>): boolean {
     return event?.mode === CHECK_IN_ZONE_EVENT_MODE && isLatLonPolygon(event?.location?.checkInZone);
+  }
+
+  /**
+   * Whether checking in to this event needs the code in its QR code: a hybrid or virtual session
+   * (#2560). The API makes the same decision, and checks the code.
+   */
+  public needsCheckInCode(event: Partial<Event>): boolean {
+    return checksInByCode(event?.mode);
+  }
+
+  /**
+   * Shows an organizer the session's check-in QR code, which holds a link to this page with the code.
+   */
+  public showCheckInCode(event: Partial<Event>) {
+    this.checkInCodeFailure.set(undefined);
+
+    this.checkinService.getCheckInCode(event.guid).subscribe({
+      next: ({ code }) => {
+        const link = new URL(`/sessions/details/${event.guid}`, window.location.origin);
+        link.searchParams.set(CHECK_IN_CODE_PARAM, code);
+
+        this.checkInLink.set(link.toString());
+      },
+      error: (err) => {
+        this.checkInCodeFailure.set(
+          err instanceof HttpErrorResponse && err.status === 403
+            ? 'Your account cannot make check-in codes. It needs the create:checkins permission.'
+            : (err?.error?.message ?? 'The check-in QR code could not be loaded. Please try again.')
+        );
+      }
+    });
   }
 
   /**
