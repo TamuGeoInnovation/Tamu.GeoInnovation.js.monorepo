@@ -39,3 +39,30 @@ describe('MonumentsComponent', () => {
     expect(rendered).not.toContain('November 19');
   });
 });
+
+/**
+ * #2559. The competition works in a phone's browser, so the page leads to the survey and the submission form
+ * with a button each, and no longer asks anyone to download an app.
+ */
+describe('MonumentsComponent ways in', () => {
+  function page() {
+    const fixture = TestBed.createComponent(MonumentsComponent);
+    fixture.detectChanges();
+
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it('has a button to the pre-competition survey, then one to the submission form, before the information sheet', () => {
+    const element = page();
+    const buttons = Array.from(element.querySelectorAll<HTMLAnchorElement>('.competition-actions a.button'));
+
+    expect(buttons.map((b) => b.getAttribute('href'))).toEqual(['https://forms.gle/GvVWuBc51PKniyPFA', '/app/submission']);
+
+    const sheet = element.querySelector('.fine-print');
+    expect(buttons[1].compareDocumentPosition(sheet) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('does not ask anyone to download or install an app', () => {
+    expect(page().textContent).not.toMatch(/download and install/i);
+  });
+});

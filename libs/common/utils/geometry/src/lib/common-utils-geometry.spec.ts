@@ -1,6 +1,7 @@
 import {
   distanceToPolygonEdge,
   formatLatLonLines,
+  geolocationPermission,
   isLatLonPolygon,
   isWithinPolygon,
   LatLon,
@@ -142,5 +143,61 @@ describe('isLatLonPolygon', () => {
     expect(isLatLonPolygon([corner, corner, { latitude: '30.61', longitude: -96.34 }])).toBe(false);
     expect(isLatLonPolygon(null)).toBe(false);
     expect(isLatLonPolygon('30.61, -96.34')).toBe(false);
+  });
+});
+
+/**
+ * #2559: the form reads whether it may use the location before asking, and hears when that changes.
+ */
+describe('geolocationPermission', () => {
+  /**
+   * Lets a promise the browser answered settle.
+   */
+  const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+  const withPermissions = (permissions: unknown) => Object.defineProperty(navigator, 'permissions', { value: permissions, configurable: true });
+
+  afterEach(() => {
+    delete (navigator as unknown as { permissions?: unknown }).permissions;
+  });
+
+  it('says unknown, at once, where the browser has no Permissions API', () => {
+    withPermissions(undefined);
+    const states: Array<string> = [];
+
+    geolocationPermission().subscribe((s) => states.push(s));
+
+    expect(states).toEqual(['unknown']);
+  });
+
+  it('says unknown where the browser does not know the location as a permission', async () => {
+    withPermissions({ query: () => Promise.reject(new TypeError('geolocation is not a valid permission name')) });
+    const states: Array<string> = [];
+
+    geolocationPermission().subscribe((s) => states.push(s));
+    await settle();
+
+    expect(states).toEqual(['unknown']);
+  });
+
+  it('reads the state, then each change, and stops listening when unsubscribed', async () => {
+    const status = new EventTarget() as EventTarget & { state: PermissionState };
+    status.state = 'denied';
+    const query = vi.fn(() => Promise.resolve(status));
+    withPermissions({ query });
+    const states: Array<string> = [];
+
+    const subscription = geolocationPermission().subscribe((s) => states.push(s));
+    await settle();
+
+    status.state = 'granted';
+    status.dispatchEvent(new Event('change'));
+
+    subscription.unsubscribe();
+    status.state = 'denied';
+    status.dispatchEvent(new Event('change'));
+
+    expect(query).toHaveBeenCalledWith({ name: 'geolocation' });
+    expect(states).toEqual(['denied', 'granted']);
   });
 });

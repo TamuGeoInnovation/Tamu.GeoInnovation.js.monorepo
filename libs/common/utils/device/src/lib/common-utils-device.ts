@@ -14,9 +14,19 @@ export class Device {
   private Operations: IDeviceOSOperations;
 
   /**
+   * Dictionary of browsers that can be told apart, for saying where a browser keeps a setting (#2559).
+   */
+  private Browsers: IBrowsers;
+
+  /**
    * Identified OS at class initialization.
    */
   public identity: IDeviceOSIdentity;
+
+  /**
+   * Identified browser at class initialization.
+   */
+  public browser: IDeviceBrowserIdentity;
 
   constructor() {
     this.OS = {
@@ -49,7 +59,35 @@ export class Device {
       }
     };
 
+    this.Browsers = {
+      UNKNOWN: {
+        code: -1,
+        name: 'Unknown'
+      },
+      SAFARI: {
+        code: 0,
+        name: 'Safari'
+      },
+      CHROME: {
+        code: 1,
+        name: 'Chrome'
+      },
+      FIREFOX: {
+        code: 2,
+        name: 'Firefox'
+      },
+      EDGE: {
+        code: 3,
+        name: 'Edge'
+      },
+      SAMSUNG: {
+        code: 4,
+        name: 'Samsung Internet'
+      }
+    };
+
     this.identity = this.getOS();
+    this.browser = this.getBrowser();
   }
 
   /**
@@ -79,7 +117,43 @@ export class Device {
       return this.OS.IOS;
     }
 
+    // An iPad asks for desktop sites by default and then says it is a Mac. No Mac has a touch screen.
+    if (/Macintosh/.test(userAgent) && navigator.maxTouchPoints > 1) {
+      return this.OS.IOS;
+    }
+
     return this.OS.UNKNOWN;
+  };
+
+  /**
+   * Returns the browser from the user agent. Every browser on iOS draws with Safari's engine but keeps
+   * its own settings, so each is told apart by the name it adds.
+   */
+  private getBrowser = (): IDeviceBrowserIdentity => {
+    const userAgent = navigator.userAgent || navigator.vendor;
+
+    // Order matters: Edge and Samsung Internet also say Chrome, and every Chrome says Safari.
+    if (/EdgiOS|EdgA|Edg\//.test(userAgent)) {
+      return this.Browsers.EDGE;
+    }
+
+    if (/SamsungBrowser/.test(userAgent)) {
+      return this.Browsers.SAMSUNG;
+    }
+
+    if (/FxiOS|Firefox/.test(userAgent)) {
+      return this.Browsers.FIREFOX;
+    }
+
+    if (/CriOS|Chrome/.test(userAgent)) {
+      return this.Browsers.CHROME;
+    }
+
+    if (/Safari/.test(userAgent)) {
+      return this.Browsers.SAFARI;
+    }
+
+    return this.Browsers.UNKNOWN;
   };
 
   /**
@@ -159,6 +233,15 @@ export interface IOperatingSystems {
 }
 
 export interface IDeviceOSIdentity {
+  code: number;
+  name: string;
+}
+
+export interface IBrowsers {
+  [key: string]: IDeviceBrowserIdentity;
+}
+
+export interface IDeviceBrowserIdentity {
   code: number;
   name: string;
 }

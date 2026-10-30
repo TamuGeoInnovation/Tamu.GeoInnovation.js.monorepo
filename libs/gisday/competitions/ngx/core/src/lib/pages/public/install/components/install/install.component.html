@@ -1,5 +1,5 @@
 <h1>
-  Install GIS Day Competitions on Your
+  Add GIS Day Competitions to Your
   <span>
     @switch (device.identity.code) { @case (1) {
     <span>Android</span>
@@ -9,8 +9,10 @@
     <span>Mobile</span>
     } }
   </span>
-  Device
+  Home Screen
 </h1>
+
+<p class="optional">Optional: the competition works in your phone's browser. Adding it to your home screen only saves finding the page again.</p>
 
 <div class="app-install" [ngClass]="{'mobile': device.identity.code === 1 || device.identity.code === 2}">
   @switch (device.identity.code) {
@@ -56,7 +58,7 @@
   <!-- iOS Instructions -->
   @case (2) {
   <div>
-    @if (version?.major < 11) {
+    @if (version && version.major < 11) {
     <div>
       <p>
         Your version of iOS @if (version !== null) {
@@ -64,7 +66,7 @@
         } is not supported. A minimum iOS version of <strong>11.0.1</strong> is required.
       </p>
     </div>
-    } @if (version?.major >= 11) {
+    } @else {
     <div>
       <tamu-gisc-accordion [expanded]="true">
         <tamu-gisc-accordion-header>Instructions</tamu-gisc-accordion-header>

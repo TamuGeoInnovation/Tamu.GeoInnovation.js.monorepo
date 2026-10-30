@@ -26,7 +26,7 @@ export const NotificationEvents: NotificationProperties[] = [
     id: 'no_gps',
     title: 'Location Services Disabled',
     acknowledge: false,
-    message: 'Location permissions are required for this application. Please enable them in your settings.',
+    message: 'Each submission needs your location. The form shows how to allow it on your phone.',
     imgUrl: './assets/images/out-of-bounds.svg',
     imgAltText: 'Out of Bounds Icon'
   }
