@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 183.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 184.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,67 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 183 (aggiemap: the five open pull requests, checked merged together; 30 October 2026, about 4:15 PM Central, from `work (aggiemap)`)
+
+**Your tiles work was exactly right** - you answered the ship-or-not question at tile size, hid dev's
+"Viewing as production" notice so it would not land inside a production asset, reconstructed the capture
+recipe from the old pictures and then *proved* the reconstruction by checking every parcel, and escalated
+the zoom and file-size calls instead of making them. [PR 2609](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2609) is open with both questions in
+it.
+
+**Now the rule that exists for exactly this moment.** CLAUDE.md: *before a batch is merged, check all of its
+pull requests merged together: two can each pass CI and still fail together.* There are five open, all green
+individually, and the maintainer is about to merge them.
+
+| PR | Branch | What it touches |
+| --- | --- | --- |
+| [2590](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2590) | `docs/release-2026-10-30` | **Deletes 58 release-note entry files**, writes `2026-10-30.md`, rewrites `unreleased.md` and `docs/testing.md` |
+| [2594](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2594) | `feat/2581-event-refresh-switch` | `EventConfiguration`, the event settings service, four definition files |
+| [2595](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2595) | `docs/2587-reuse-definition-files` | `CLAUDE.md` only |
+| [2609](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2609) | `chore/2533-campus-tiles` | Two JPEGs, and **adds** a release-note entry |
+| [2579](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2579) | `chore/2564-remove-unused-dependencies-2` | **Removes four dependencies and 18 transitive packages** |
+
+### What I have already checked, so you do not repeat it
+
+**2590 and 2609 do not conflict.** 2590 deletes 58 entry files and 2609 adds
+`docs/releases/unreleased/2533-campus-tiles.md`, which is **not** among them - so the tiles' entry correctly
+survives into the next release, which is right because the tiles are not in `21e69426e`. Confirm it comes
+out that way in the merged tree rather than taking my word.
+
+### What to look for, in order of what would actually bite
+
+1. **2579 against 2594.** A dependency removal and a code change are the pair most likely to pass separately
+   and fail together: 2594 touches the event settings service and definitions, 2579 removes
+   `@angular/language-service`, `@nx/web`, `@oxc-project/runtime` and `chart.js`. **A clean `npm ci` from the
+   merged lock**, then the full affected check. This is the real reason for the batch.
+2. **The release notes after everything merges.** `node scripts/collate-release-notes.mjs --check` on the
+   merged tree: it should read **exactly one** entry, the tiles', and report no problems. **If it reads 0 or
+   58, something went wrong in the merge** and that is worth stopping for - the release notes are the one
+   document nobody runs, so a bad merge there is invisible.
+3. **A bundle budget.** 2594 adds to `ts-events-ngx` and the settings service, which several apps import. A
+   purely additive change can fail a budget with no bad code in it - that is how `correction-lite-angular`
+   broke on 30 September while `aggiemap-angular` built fine. The full affected build covers it; just do not
+   scope it to one app.
+4. **`docs/testing.md`.** 2590 rewrites its headline counts and adds a history row. Check the *Lists every
+   smoke spec* check still passes on the merged tree, since that file and the suite are coupled.
+
+### How
+
+Merge all five onto current `development` locally - **do not push the merge** - and run
+`scripts/check-in-volume.sh <that branch> affected` with a **clean `npm ci`**, because the lock moves. Report
+per PR whether anything is attributable to it, and say plainly if the answer is "all clean", which is the
+likely and useful result.
+
+**You do not need to run a smoke tier for this**, and please do not: `21e69426e` is already cleared and
+these five do not change what is deployed. This is about whether they build and test together.
+
+**2579 is the security director's and 2595 is mine; neither is yours to push to.** Read-only on all five
+branches.
+
+Report to `work (aggiemap)`.
+
+---
 
 ## Batch 182 (aggiemap: #2533 - retake the two satellite campus tiles, now that dev draws the hatch; 30 October 2026, about 3:55 PM Central, from `work (aggiemap)`)
 
