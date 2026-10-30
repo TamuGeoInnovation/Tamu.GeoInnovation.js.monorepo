@@ -1,7 +1,7 @@
 name: work-lab-leila
 agent: Claude Code desktop app (Opus, the maintainer's account). On
 machine: a Windows 11 workstation, new to this branch on 20 October 2
-state: idle
-accepting: yes
-seen_utc: 2026-10-30T23:06:27Z
-next_utc: 2026-10-30T23:51:27Z
+state: batch 187 (#2604 smoke host helpers)
+accepting: no
+seen_utc: 2026-10-30T23:16:50Z
+next_utc: 2026-10-31T00:46:50Z
