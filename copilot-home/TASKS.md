@@ -26,6 +26,41 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 ---
 
+> # CHANGED while you are working - read before going further
+>
+> **From the maintainer, correcting me:**
+>
+> > I don't want them hidden, I just want them disabled so they cannot be selected.
+>
+> **So: the car and bus icons stay in the panel, visibly present, and cannot be chosen.** Batch 52 below
+> says "hide" throughout - **that is my error, not his.** Wherever it says hide, read **disable**.
+>
+> ### Why the difference matters
+>
+> Hiding says the capability does not exist. **Disabling says it exists and is not available yet**, which
+> is the truer thing and the better signal to a visitor - they can see driving and bus directions are
+> coming rather than wondering whether this map does them at all.
+>
+> ### What that changes in the work
+>
+> - **The icons render as they do now**, greyed or otherwise visibly inactive, and a click or tap does
+>   nothing.
+> - **Not just visually.** A disabled control that a keyboard or screen reader can still activate is the
+>   same bug in a different costume - and you audited exactly this class of thing in batch 45. Use the
+>   element's own disabled semantics where there is one; where there is not, `aria-disabled` **and** the
+>   control genuinely not firing, not merely styled grey.
+> - **Say why, where a person can see it.** A tooltip, title or short label - something that tells a
+>   visitor these are not available yet rather than leaving them to assume the map is broken. Propose the
+>   wording in your report rather than inventing final copy; the maintainer may want his own words.
+> - **Point 2 of the batch still matters and gets easier:** a shared `?mode=5` link should fall back
+>   sensibly, and now the panel can show the disabled icon so the fallback is visible rather than silent.
+>
+> ### Unchanged
+>
+> Which modes (**3, 4, 5, 6, 8** - confirm, leaving 1, 2, 7), the PR 2577 check needing to be narrowed
+> rather than deleted, red-first, and the picture of the panel - **which matters more now**, because the
+> disabled state is the thing he is asking for and a screenshot is how he will judge it.
+
 ## Batch 52 (aggiemap: #2580, hide the car and bus modes - the maintainer is looking at this now; 30 October 2026, from `work (aggiemap)`)
 
 **Your routing work is PR 2577 and merged, and the maintainer has it on dev: "routing works!"** - #659,
