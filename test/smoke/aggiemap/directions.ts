@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
+import { smokeBaseUrl } from './gis-hosts';
 
 /**
  * Whether directions should be offered in the environment under test (#1003).
@@ -12,7 +13,7 @@ import * as path from 'path';
  * require the entry points to be present instead.
  */
 export function directionsAvailable(): boolean {
-  const baseUrl = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');
+  const baseUrl = smokeBaseUrl();
   const environments: Record<string, { baseUrl: string; directionsAvailable?: boolean }> = JSON.parse(
     fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')
   );

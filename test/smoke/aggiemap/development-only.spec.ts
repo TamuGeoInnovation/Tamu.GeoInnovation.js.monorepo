@@ -2,7 +2,6 @@ import { Page } from '@playwright/test';
 
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
-import { environmentIsDevelopment } from './gis-hosts';
 import {
   DEVELOPMENT_ONLY_CONTROLS,
   DEVELOPMENT_ONLY_ALL_MAPS_TILES,
@@ -11,6 +10,7 @@ import {
   developmentSectionsVisible,
   sidebarTabs
 } from './development-only';
+import { isDevelopmentUrl, smokeBaseUrl } from './gis-hosts';
 
 /**
  * Development-only sections stay off production (#1090).
@@ -22,7 +22,7 @@ import {
 
 const VISIBLE = developmentSectionsVisible();
 /** Whether this environment reads the development GIS server, which localhost does not (#2001). */
-const DEVELOPMENT_GIS = environmentIsDevelopment(process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu');
+const DEVELOPMENT_GIS = isDevelopmentUrl(smokeBaseUrl());
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 /** Whether the map on the page reports it has loaded. */

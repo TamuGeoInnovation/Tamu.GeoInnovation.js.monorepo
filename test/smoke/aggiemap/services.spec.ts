@@ -7,6 +7,7 @@ import * as path from 'path';
 import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
 
 import { retiredConnections } from './retired';
+import { gisHostFor, smokeBaseUrl } from './gis-hosts';
 
 /**
  * Every GIS service the maps use is public and answering (#1118).
@@ -23,14 +24,14 @@ import { retiredConnections } from './retired';
  * Needs no browser and no screenshots. Read-only.
  */
 
-const BASE_URL = process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu';
+const BASE_URL = smokeBaseUrl();
 
 /**
  * The app chooses its GIS host from its own hostname: containing "dev" means the development GIS
  * server (see getDefaultGisHosts() in connections.ts). Mirrored here so a run against dev checks the
  * services dev actually uses, and a run against production or localhost checks production's.
  */
-const GIS_HOST = new URL(BASE_URL).hostname.includes('dev') ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
+const GIS_HOST = gisHostFor(BASE_URL);
 
 interface EnvironmentSettings {
   baseUrl: string;
@@ -49,8 +50,7 @@ function allowedFailures(): Record<string, string> {
   const environments: Record<string, EnvironmentSettings> = JSON.parse(
     fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')
   );
-  const normalised = BASE_URL.replace(/\/$/, '');
-  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === normalised);
+  const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === BASE_URL);
 
   return match?.allowedServiceFailures ?? {};
 }
