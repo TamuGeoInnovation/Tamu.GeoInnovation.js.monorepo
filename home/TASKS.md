@@ -20,6 +20,53 @@ went with `signage-angular` (PR 2442); `git grep` on `development` finds it only
 4. Push to `fork`, with a `.pr-body.md` draft started from `.github/pull_request_template.md` as the last commit. Report
    `home/reports/2026-10-30-22.md`, then push `home: batch 22 done - ...`. No PR; the director opens it.
 
+## Batch 24 (aggiemap: #2573, the hatch at 60% so the building number is readable; 30 October 2026, from `work (aggiemap)`)
+
+**#2558 is PR 2571, and checking the service first earned its keep again:** the enum ids do not match the
+layers - `GATES` is `/0` *Basketball Icons*, `SYMBOLS` is `/1` *Basketball Closures* - so the issue's
+"icons and parking" were two differently-named things and Closures was a third you included deliberately.
+Watching a real browser for 150 seconds, and reporting that **no data was re-queried because nothing had
+changed**, is what makes that pull request trustworthy rather than hopeful.
+
+### Decided, from your questions file
+
+The maintainer has answered, and these are now settled:
+
+| | |
+| --- | --- |
+| **1** | #2520 **Medium**, #2527 **Medium**, #2529 **Low** - all set |
+| **2** | **He** asks Transportation Services to republish the NSC and Break lots |
+| **3** | **Women's basketball gets the same refresh**, its own small PR - batch 25, after this |
+| **4** | **Your question 14 was right to ask: 60% was never applied.** This batch |
+| **5** | #959, #960, #962 one at a time, #960 first - not yours yet |
+| 9, 10, 11, 13, #141 | Taken by the director: leave the football casts for #1028; leave the 14 empty points and mention them to the GIS team; mark graduation's check heavy so it runs nightly; a follow-up issue for the basketball ids after 3 November; #141 stays open until #659 |
+| 15, 16 | `deepmerge` - passed to the security director, not yours to answer |
+
+### The task
+
+[#2573](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2573). In
+`construction-hatch.ts`, the hatch strokes go from `[230, 152, 0, 255]` to **`[230, 152, 0, 153]`**.
+
+**That is the whole change.** Spacing stays 12 pt, stroke stays 1.5 pt, colour stays the same. He looked at
+1524 on dev and a vertical grid line falls between the digits, so *1524* reads as *"15 24"*.
+
+### The one thing that could make it wrong
+
+**At zoom 15-16 the construction buildings are small and the grid is most of what identifies them.**
+Lightening it too far trades a legible label for an unidentifiable building. He named **75%** as the
+fallback if 60% looks washed out there.
+
+So: **before and after at zoom 16, 17 and 18**, on College Station (1524, and 1526 beside it has the same
+problem) and on one campus, since one symbol now serves all three. Then **your judgement in the report on
+whether 60% holds up at 16** - and if it does not, **say so with the picture rather than shipping it.**
+That call is his, as the density was.
+
+A test that the stroke alpha is 153, red first. `scripts/check-in-volume.sh <branch> maps-esri,maps-feature-basemap,ts-events-ngx,aggiemap-angular`
+- exit 0. Update #2459's release note rather than adding one; it already describes the hatch.
+
+Push to `fork`, report `branch ready:`. **Small, so report quickly** - it rides the same build as the
+basketball refresh and the dining kiosk fix.
+
 ## Batch 23 (security: `deepmerge`, the last vulnerability - find the way to zero; read only first; 30 October 2026, about 7:45 AM Central, from `work (security)`)
 
 **After batch 22. About an hour.** `npm audit` on `development` (`8db3a0fc4`) reports 14 **low** findings. All of them come
