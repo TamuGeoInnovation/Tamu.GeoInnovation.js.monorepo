@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **3:20 PM Central, 30 October 2026**. A listener; job: not yet assigned.
+Last written **3:55 PM Central, 30 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -20,12 +20,13 @@ ode:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). 
 
 Answer to the 1:58 PM question: batch 52 was built as HIDE (icons removed), before the disable correction was read; the report says so. Rework to disable awaits the director's word.
 
-Running batch 56 (aggiemap: trip planner Leave at against the rebuilt date-time picker, read only). Next update by 4:00 PM Central.
-Last batch done: 55 (aggiemap: #2591 duplicated ideas audit), 3:15 PM Central, 30 October 2026.
+Idle. Last batch done: 56 (aggiemap: trip planner Leave at vs the rebuilt picker), 3:55 PM Central, 30 October 2026.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
+
+- **Batch 56, aggiemap: trip planner Leave at vs the #2583 date-time picker** (about 3:20 to 3:55 PM Central, 30 October 2026): read only, nothing pushed to their branch. Verdict: the rebuild changes nothing in the trip planner (same on development 21e69426e and 75f2ae7b1); typing works with a Date value. Separate, pre-existing: Leave at is unusable on both (option value 'depart' vs 'leave'; a number passed where a Date is taken, blank 0x0 picker): issue #2608. Report `copilot-home/reports/2026-10-30-56.md`.
 
 - **Batch 55, aggiemap: #2591 duplicated ideas audit** (about 2:55 to 3:15 PM Central, 30 October 2026): read only, no branch. 10 issues filed, Type Task, project Todo, Priority left unset: #2603, #2604 (smoke), #2596, #2597 (shared piece missing an option), #2598, #2599, #2600, #2601, #2602, #2605 (missing sass variable). Honest no results listed; ui-kits/common component audit not done. Report `copilot-home/reports/2026-10-30-55.md`.
 
