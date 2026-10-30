@@ -23,12 +23,6 @@
       "Single Occupancy Restroom Locations"
     ],
     "allowedMapLayerFailures": {
-      "/events/graduation-fall": {
-        "Road Closures": "#2521: the layer is Event Parking's /2 filtered to Type = 'Closure'; it loads and holds a feature, but its legend row has no symbol. Found by #2467's builder-map check, the first thing ever to look at these maps"
-      },
-      "/events/graduation-spring": {
-        "Road Closures": "#2521: the layer is Event Parking's /2 filtered to Type = 'Closure'; it loads and holds a feature, but its legend row has no symbol. Found by #2467's builder-map check, the first thing ever to look at these maps"
-      },
       "/parking/cross-country-parking": {
         "Cross Country Event Parking Lots": "#2209: the development athletics view has no 'trackxc' field, which the layer's definition expression filters on"
       },
@@ -86,14 +80,7 @@
         "Bike Registration": "#2612: not a fault - Type = 'Bike' finds the service's two bike registration points, but neither is in Northside, so the Northside choice's area filter empties the layer"
       }
     },
-    "allowedMapLayerFailures": {
-      "/events/graduation-fall": {
-        "Road Closures": "#2521: the layer is Event Parking's /2 filtered to Type = 'Closure'; it loads and holds a feature, but its legend row has no symbol. Fails on production too, once #1134 makes the builder maps reachable there"
-      },
-      "/events/graduation-spring": {
-        "Road Closures": "#2521: the layer is Event Parking's /2 filtered to Type = 'Closure'; it loads and holds a feature, but its legend row has no symbol. Fails on production too, once #1134 makes the builder maps reachable there"
-      }
-    },
+    "allowedMapLayerFailures": {},
     "allowedBuildBannerPlaceholders": "#1306: tokenSubstitute.sh runs only in the Dockerfile, and this environment is served by IIS",
     "gtag": "G-GNS4JMVEZW",
     "healthLabel": "prod-health",
