@@ -87,7 +87,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       where: {
         season: { guid: season.guid },
         submissionType: PRESENTATION_SUBMISSION_TYPE.POSTER,
-        reviewed: true,
+        // `reviewed` is not asked: the 2025 posters are marked accepted without it (#2496).
         acceptance: true
       },
       order: { title: 'ASC' }

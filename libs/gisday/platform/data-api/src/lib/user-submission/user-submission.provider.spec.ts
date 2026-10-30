@@ -110,7 +110,7 @@ describe('UserSubmissionProvider', () => {
 
       expect(find).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { season: { guid: 'season-2025' }, submissionType: 'poster', reviewed: true, acceptance: true }
+          where: { season: { guid: 'season-2025' }, submissionType: 'poster', acceptance: true }
         })
       );
     });
