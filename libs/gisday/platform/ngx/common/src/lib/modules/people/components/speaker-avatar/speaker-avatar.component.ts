@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
-import { Observable, catchError, filter, mapTo, of, shareReplay, startWith, switchMap } from 'rxjs';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input, signal } from '@angular/core';
+import { Observable, catchError, filter, mapTo, of, shareReplay, startWith, switchMap, tap } from 'rxjs';
 
 import { AssetsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AsyncPipe } from '@angular/common';
@@ -58,6 +58,12 @@ export class SpeakerAvatarComponent implements OnInit {
    * Performs a HEAD request to the against the avatar image url to determine if the image exists.
    */
   public imageExists$: Observable<boolean>;
+
+  /**
+   * Whether the photo itself is on screen, for anything drawn over it: the class banner shows only on a photo, never
+   * on the initials or the person icon (#2568).
+   */
+  public readonly showingPhoto = signal(false);
   public initials$: Observable<string>;
 
   public ngOnInit(): void {
@@ -78,6 +84,7 @@ export class SpeakerAvatarComponent implements OnInit {
         return of(false);
       }),
       startWith(false),
+      tap((exists) => this.showingPhoto.set(exists)),
       shareReplay()
     );
 

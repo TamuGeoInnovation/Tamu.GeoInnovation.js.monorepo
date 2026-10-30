@@ -18,7 +18,7 @@ import {
 
 import { PlaceService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ActiveSeasonDto, Place, SeasonDay, Sponsor } from '@tamu-gisc/gisday/platform/data-api';
-import { PlaceVisibilityOptions } from '@tamu-gisc/gisday/platform/ngx/common';
+import { PlaceVisibilityOptions, ImagePreviewComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { AssetUrlPipe, activeSponsors } from '@tamu-gisc/gisday/platform/ngx/common';
@@ -43,7 +43,7 @@ const numberDictionary = {
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [SiteHasPipe, RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
+  imports: [ImagePreviewComponent, SiteHasPipe, RouterLink, AsyncPipe, DatePipe, AssetUrlPipe]
 })
 export class LandingComponent implements OnInit {
   private titleService = inject(Title);

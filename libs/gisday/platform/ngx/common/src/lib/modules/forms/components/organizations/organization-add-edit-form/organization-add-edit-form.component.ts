@@ -2,7 +2,7 @@ import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
+import { Observable, filter, map, of, shareReplay, switchMap, take } from 'rxjs';
 
 import { Organization, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, OrganizationService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -13,12 +13,14 @@ import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
+import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
+import { uploadPreviewUrl } from '../../../../images/upload-preview-url';
 
 @Component({
   selector: 'tamu-gisc-organization-add-edit-form',
   templateUrl: './organization-add-edit-form.component.html',
   styleUrls: ['./organization-add-edit-form.component.scss'],
-  imports: [FormsModule, ReactiveFormsModule, TextboxComponent, FileComponent, ButtonComponent, AsyncPipe]
+  imports: [ImagePreviewComponent, FormsModule, ReactiveFormsModule, TextboxComponent, FileComponent, ButtonComponent, AsyncPipe]
 })
 export class OrganizationAddEditFormComponent implements OnInit {
   private readonly fb = inject(UntypedFormBuilder);
@@ -34,7 +36,7 @@ export class OrganizationAddEditFormComponent implements OnInit {
 
   public entity$: Observable<Partial<Organization>>;
   public activeSeasons$: Observable<Partial<Season>>;
-  public logoUrl$: Observable<SafeUrl>;
+  public logoUrl$: Observable<SafeUrl | string | null>;
   public form: UntypedFormGroup;
 
   public ngOnInit(): void {
@@ -60,21 +62,14 @@ export class OrganizationAddEditFormComponent implements OnInit {
       shareReplay()
     );
 
-    // Image preview can come from two sources:
-    // 1. The entity itself, if it has a photoUrl property
-    // 2. The form, if the user has selected a file
-    this.logoUrl$ = merge(
-      this.entity$.pipe(
-        filter((ent) => ent?.logos?.[0]?.guid !== undefined && ent?.logos?.[0]?.guid !== null),
-        switchMap((entity) => {
-          return this.as.getAssetUrl(entity?.logos?.[0]?.path);
-        })
+
+    // The chosen logo, else the saved one, else nothing (#2569); drawn by tamu-gisc-image-preview, never a broken image.
+    this.logoUrl$ = uploadPreviewUrl(
+      (this.entity$ ?? of(null)).pipe(
+        switchMap((entity) => (entity?.logos?.[0]?.path ? this.as.getAssetUrl(entity.logos[0].path) : of(null)))
       ),
-      this.form.valueChanges.pipe(
-        map((value) => value.file),
-        filter((file) => file !== null),
-        map((file) => this.sn.bypassSecurityTrustUrl(URL.createObjectURL(file)))
-      )
+      this.form.get('file').valueChanges,
+      this.sn
     );
 
     if (this.type() === 'edit') {
