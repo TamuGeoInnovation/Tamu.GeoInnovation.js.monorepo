@@ -6,6 +6,61 @@
 
 > **Batches 22 and 23 are WITHDRAWN** (from `work (security)`, 30 October 2026, about 2:30 PM Central): moved to the lab (batch 179) and copilot-home (batch 51), which are idle. Do not do them.
 
+## Batch 26 (aggiemap: #2581, Women's Basketball refreshes like the men's - first game is 2 November; 30 October 2026, from `work (aggiemap)`)
+
+**Start now.** Your batch 21 gave Men's Basketball a one-minute refresh and it merged this morning as
+PR 2571. **Women's Basketball needs the same, and its season starts a day sooner** -
+`WomensBasketball_Configuration.eventDates` begins **2 November 2026**, three days from now, against the
+men's 3 November. [#2581](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2581)
+has the detail; Priority Urgent, same as #2558 was.
+
+### The one real decision, and I want you to make it deliberately
+
+Women's Basketball has **two** layers, and both are built through `athleticsDevelopmentSource` in
+`common.definitions.ts`:
+
+```ts
+athleticsDevelopmentSource({ id: WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING, url: `${parkingUrl}/0` })
+athleticsDevelopmentSource({ id: WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,       url: `${parkingUrl}/1` })
+```
+
+That helper hard-codes `native: { outFields: ['*'], ...definitionExpression }` and **has no way to ask for
+a refresh**. Men's Basketball does not use it at all - it declares its own `gameDayNative()`.
+
+**So the lazy route is a second local `gameDayNative()` in the women's file, and I do not want it.** The
+repository's standing rule is extend what exists rather than copy it, and a second near-identical helper is
+a future change made in one copy only. **Add an optional refresh to `athleticsDevelopmentSource`** -
+something like `refreshInterval?: number`, absent meaning no refresh so every existing caller is byte-for-byte
+unchanged - and have the women's two layers pass it.
+
+**Then look at whether Men's Basketball should use the helper too.** It may not be able to: check why it
+builds its sources by hand (popups, titles, `onlyType`) before assuming it can. If it can, folding it in is
+the right finish and this issue is the moment to do it. **If it cannot, say why in the report** - that
+answer is worth having written down either way, and I would rather have the reason than a silent divergence.
+
+### Unchanged from batch 21
+
+- `refreshInterval` is in **minutes**. ArcGIS refetches only when the service's `lastEditDate` moves, so a
+  one-minute poll costs almost nothing.
+- **Red first.** There is no `womens-basketball.definitions.spec.ts` today - `mens-basketball.definitions.spec.ts`
+  is the shape to follow, including its per-source `${source.id} refreshes every minute`. Two layers, not three.
+- **See it refresh in a browser**, as you did for the men's: the re-check about a minute apart and a refetch
+  when `lastEditDate` moves. Asserting the property is not the same as watching it poll.
+- `scripts/check-in-volume.sh <branch> ts-events-ngx,aggiemap-angular` - exit 0. If you change the shared
+  helper, **add every project that helper's callers live in**, or add `affected`; a change in
+  `common.definitions.ts` reaches more than the one map.
+- A release note with its *What to test on dev* row.
+
+### One caution
+
+Changing `athleticsDevelopmentSource` touches every athletics map. **Prove the no-argument path is
+unchanged** - an existing caller's source object must come out identical - rather than trusting that an
+optional parameter is harmless. A test for that is worth more than the one for the new behaviour.
+
+Push to `fork`, report `branch ready:`. Questions go to `work (aggiemap)`.
+
+---
+
 ## Batch 25 (gisday: #2574 - Admin → Users answers 500 past Auth0's 1,000-user limit; add a search; a branch; 30 October 2026, about 11:00 AM Central, from `work (gisday)`)
 
 **High priority, start now.** About 90 minutes. Questions go to `work (gisday)`.
