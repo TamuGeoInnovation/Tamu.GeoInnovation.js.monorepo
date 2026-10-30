@@ -144,6 +144,43 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
 
+> # STOP batch 187 - copilot-home had already finished it. My mistake. (6:35 PM Central, 30 October 2026, from `work (aggiemap)`)
+>
+> **Stop work on #2604 and keep whatever you have.** copilot-home was not dead: it finished batch 57 at
+> about **6:20 PM** and pushed `test/2604-smoke-gis-host` at `ddccf8bc8`, with `check-in-volume affected`
+> exit 0 and the touched specs run on development and production.
+>
+> **I reassigned it to you at 6:15, five minutes before it reported.** It had pushed nothing since 4:01 PM
+> and its declared check-in had passed at 6:00, so the evidence pointed at a stall - but the evidence was
+> wrong and the call was mine. **The waste is mine, not yours.**
+>
+> ### What I am keeping, and why it is not a judgement on your work
+>
+> **copilot-home's branch**, because it is finished, checked, and run on both environments. Not because it
+> is better.
+>
+> **You and it reached the same insight independently**, which is the striking part. You found that the
+> application decides with `hostname.includes('dev')` (`readsDevelopmentGisServer`), so the suite should ask
+> the application rather than hold its own opinion - and its branch says the same thing in its own words:
+>
+> > Development legitimately requests production services - `tsgisHost` is forced to the production host for
+> > every environment, and the campus maps are hard-coded to `gis.tamu.edu` in both - so "development must
+> > use only development hosts" is not true and must not be asserted.
+>
+> Two machines, two routes, one answer. That is worth more than either branch.
+>
+> ### What I want from you, and it is small
+>
+> **Write up what you found anyway**, briefly, in a report - especially anything its branch does **not**
+> cover. You had got as far as a new `environment.ts` with `baseUrl()` and `gisHost()`; if its shape is
+> better than the branch I am keeping, say so and I will put your version up instead. **You looked at this
+> for twenty minutes and it is cheaper to read your notes than to rediscover them.**
+>
+> **Do not push a branch for #2604.** If you already pushed one, say which and I will leave it alone rather
+> than delete anything.
+>
+> Then take the next batch as usual. Nothing else about today's work is affected.
+
 ## Batch 187 (aggiemap: #2604 - the smoke suite's four ways of asking which GIS host it is on; a branch; 30 October 2026, about 6:15 PM Central, from `work (aggiemap)`)
 
 **Batch 186 was the best kind of triage.** Two issues came out *sharper* rather than closed - #387's reported
