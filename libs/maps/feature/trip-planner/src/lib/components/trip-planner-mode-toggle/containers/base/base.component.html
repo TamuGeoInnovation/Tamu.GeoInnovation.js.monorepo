@@ -1,7 +1,7 @@
-@if (offered()) {
-<div [title]="name()" [attr.alt]="label()" type="domElement" [ngClass]="{ active: active | async, error: $safeNavigationMigration((status | async)?.isError), disabled: (meta_status | async).isModeRestricted || (!(meta_status | async).allPristine && !(meta_status | async).toggleHasResult) }" role="button" [attr.aria-label]="label()" [attr.aria-pressed]="!!(active | async)" (click)="setTravelMode()" (keydown.enter)="setTravelMode()" (keydown.space)="setTravelMode(); $event.preventDefault()" tabindex="0">
+<div [title]="title()" [attr.alt]="label()" type="domElement" [ngClass]="{ active: active | async, error: $safeNavigationMigration((status | async)?.isError), disabled: unavailable() || (meta_status | async).isModeRestricted || (!(meta_status | async).allPristine && !(meta_status | async).toggleHasResult) }" role="button" [attr.aria-label]="ariaLabel()" [attr.aria-pressed]="!!(active | async)" [attr.aria-disabled]="unavailable() ? 'true' : null" (click)="setTravelMode()" (keydown.enter)="setTravelMode()" (keydown.space)="setTravelMode(); $event.preventDefault()" [attr.tabindex]="unavailable() ? -1 : 0">
   <i class="material-icons">{{ iconName() }}</i>
 
+  @if (!unavailable()) {
   <!-- If trip result error, show ETA placeholder and apply error class. -->
   @if ((status | async)?.isFulfilled && (status | async)?.isError) {
   <span class="eta">--</span>
@@ -16,5 +16,5 @@
   @if ((status | async)?.isFulfilled && (status | async)?.directions?.totalTime) {
   <span class="eta">{{ $safeNavigationMigration((status | async)?.directions?.totalDriveTime) | timeUntil }}</span>
   }
+  }
 </div>
-}

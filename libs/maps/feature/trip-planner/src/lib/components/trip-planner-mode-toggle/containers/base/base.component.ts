@@ -3,7 +3,7 @@ import { Observable, from, of, iif, Subject } from 'rxjs';
 import { switchMap, filter, withLatestFrom, map, mergeMap, pluck, takeUntil, shareReplay } from 'rxjs/operators';
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
-import { travelTypeOffered } from '../../../../services/trip-planner-travel-modes';
+import { travelTypeUnavailable, unavailableTravelModeTitle } from '../../../../services/trip-planner-travel-modes';
 import { TripResult } from '../../../../core/trip-planner-core';
 import { NgClass, AsyncPipe } from '@angular/common';
 
@@ -53,9 +53,18 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
   public readonly label = input<string>(undefined);
 
   /**
-   * Whether the toggle is drawn at all: not when every mode it stands for is hidden (`HIDDEN_PLANNER_MODES`).
+   * Whether every mode this toggle stands for is unavailable (`UNAVAILABLE_PLANNER_MODES`). The toggle is still drawn,
+   * but disabled in fact: out of the tab order, `aria-disabled`, and a click or key press does nothing.
    */
-  public readonly offered = computed(() => travelTypeOffered(this.activeModes()));
+  public readonly unavailable = computed(() => travelTypeUnavailable(this.activeModes()));
+
+  /** The hover text of the toggle: its name, or why it cannot be chosen. */
+  public readonly title = computed(() => (this.unavailable() ? unavailableTravelModeTitle(this.name()) : this.name()));
+
+  /** The screen reader label of the toggle: its label, with why it cannot be chosen when it cannot. */
+  public readonly ariaLabel = computed(() =>
+    this.unavailable() ? `${this.label()}, ${unavailableTravelModeTitle(this.name())}` : this.label()
+  );
 
   /**
    * Single trip result for the specified travel mode derived from trip planner results collection.
@@ -206,8 +215,14 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
 
   /**
    * Calculate the travel mode from string reference and update call the trip planner service to update it.
+   *
+   * Does nothing for an unavailable travel type: the toggle's styling is not what stops a click.
    */
   public setTravelMode = () => {
+    if (this.unavailable()) {
+      return;
+    }
+
     this.tripPlanner.calculateTravelMode(
       this.activeModes().map((mode) => mode),
       true

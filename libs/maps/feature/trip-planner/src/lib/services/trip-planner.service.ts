@@ -46,7 +46,7 @@ import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { SearchService, SearchResult, SearchResultItem } from '@tamu-gisc/ui-kits/ngx/search';
 import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common/ngx/settings';
 import { TripPlannerConnection, TripPlannerConnectionService } from './trip-planner-connection.service';
-import { TripPlannerNetworkTravelMode, modeOrFallback, networkTravelModeFor, offeredTravelMode } from './trip-planner-travel-modes';
+import { TripPlannerNetworkTravelMode, modeOrFallback, networkTravelModeFor, selectableTravelMode } from './trip-planner-travel-modes';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
   TripResult,
@@ -705,7 +705,7 @@ export class TripPlannerService implements OnDestroy {
     // Limit the modes to a list of qualifying modes based on travel option constraint values, and to those the
     // network can solve.
     const qualifying = ruleModes.filter((mode) => {
-      if (!offeredTravelMode(this._supportedTravelModes, mode.mode)) {
+      if (!selectableTravelMode(this._supportedTravelModes, mode.mode)) {
         return false;
       }
 

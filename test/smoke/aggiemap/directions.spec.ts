@@ -7,7 +7,7 @@ import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connectio
 import {
   NETWORK_TRAVEL_MODE_NAMES,
   networkTravelModeFor,
-  offeredTravelMode
+  selectableTravelMode
 } from '../../../libs/maps/feature/trip-planner/src/lib/services/trip-planner-travel-modes';
 
 /**
@@ -145,18 +145,18 @@ test.describe(`the trip planner ${AVAILABLE ? 'is offered' : 'is not offered'} a
  * The planner reads the network's travel modes from the network and finds each of its own by name, so a list that
  * changes cannot send a trip to the wrong mode. What this adds is the alarm: the modes the network has for the planner
  * are exactly the ones below, so when Transportation adds Drive_ADA, or drops Bus, this fails and a person decides what
- * the picker should say. Driving and the bus are on the network but hidden from the picker (#2580), so the modes
- * offered are the narrower list: it changes only when `HIDDEN_PLANNER_MODES` does. Where directions are hidden nothing
+ * the picker should say. Driving and the bus are on the network but disabled in the picker (#2580), so the modes that
+ * can be chosen are the narrower list: it changes only when `UNAVAILABLE_PLANNER_MODES` does. Where directions are hidden nothing
  * connects to the network, so nothing is asked of it.
  */
 const ON_DEVELOPMENT_NETWORK = [1, 2, 3, 5, 7, 8];
-const OFFERED_ON_DEVELOPMENT_NETWORK = [1, 2, 7];
+const CHOSEN_ON_DEVELOPMENT_NETWORK = [1, 2, 7];
 
 if (AVAILABLE) {
   test.describe('the development routing network', () => {
     const route = `${Connections('gis-dev.it.tamu.edu').developmentRoutingBaseUrl}/Map/NAServer/Route`;
 
-    test('lists the travel modes the planner knows, and offers the walking and bike ones', async ({ request }) => {
+    test('lists the travel modes the planner knows, and lets the walking and bike ones be chosen', async ({ request }) => {
       const response = await request.get(`${route}?f=json`, { timeout: 30_000 });
       const { supportedTravelModes } = (await response.json()) as { supportedTravelModes: Array<{ name: string }> };
 
@@ -170,9 +170,9 @@ if (AVAILABLE) {
       ).toEqual(ON_DEVELOPMENT_NETWORK);
 
       expect(
-        planner.filter((mode) => offeredTravelMode(supportedTravelModes, mode)),
-        'the trip planner would offer these modes'
-      ).toEqual(OFFERED_ON_DEVELOPMENT_NETWORK);
+        planner.filter((mode) => selectableTravelMode(supportedTravelModes, mode)),
+        'the trip planner would let these modes be chosen'
+      ).toEqual(CHOSEN_ON_DEVELOPMENT_NETWORK);
     });
 
     test('solves a route between two campus points in every mode it lists', async ({ request }) => {
