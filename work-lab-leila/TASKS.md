@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 179.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 180.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -142,6 +142,25 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 > decide a production push, and a picture beats a commit hash for what he is asking.
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
+
+
+## Batch 179 (security: #2564 - remove four dependencies nothing uses; a branch; 30 October 2026, about 2:30 PM Central, from `work (security)`)
+
+Moved here from home's batch 22, which home has not reached.
+
+**Start now. About 45 minutes.** copilot-home's batch 27 proved three of knip's "unused" dependencies
+removable: `@angular/language-service`, `@nx/web` and `@oxc-project/runtime` (report `copilot-home/reports/2026-10-26-27.md`).
+The other seven are needed; don't touch them.
+**Also `chart.js`** (added 30 October): `scripts/security-tables.sh` now lists it, because its only user, `libs/ui-kits/ngx/charts`,
+went with `signage-angular` (PR 2442); `git grep` on `development` finds it only in `package.json`. Remove it too, so four in all.
+
+1. Branch `chore/2564-remove-unused-dependencies` from the latest `origin/development`. Remove the four from
+   `package.json`, then `npm install --package-lock-only --ignore-scripts` in a `node:24.22.1` container. `git diff --stat`
+   must equal `--ignore-all-space`; the lock may lose only those four and what only they brought in.
+2. `bash scripts/check-in-volume.sh chore/2564-remove-unused-dependencies all` (every project, clean `npm ci`): exit 0.
+3. `npm audit --package-lock-only`: record the counts. `@nx/web` is one of the 14 low findings, so expect fewer.
+4. Push to `fork`, with a `.pr-body.md` draft started from `.github/pull_request_template.md` as the last commit. Report
+   `work-lab-leila/reports/2026-10-30-179.md`, then push `work-lab-leila: batch 179 done - ...`. No PR; the director opens it.
 
 
 ## Batch 178 (gisday: #2568, #2569 - signed-in before and after screenshots of the image previews; a branch; 30 October 2026, about 1:45 PM Central, from `work (gisday)`)

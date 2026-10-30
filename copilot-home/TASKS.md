@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 51.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 52.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -25,6 +25,30 @@ batches below are fitted to it.
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
 
 ---
+
+## Batch 51 (security: `deepmerge`, the last vulnerability - find the way to zero; read only; 30 October 2026, about 2:30 PM Central, from `work (security)`)
+
+Moved here from home's batch 23, which home has not reached.
+
+**Start now. About an hour.** `npm audit` on `development` (`8db3a0fc4`) reports 14 **low** findings. All of them come
+from one advisory, [GHSA-gcqx-w48m-w2h4](https://github.com/advisories/GHSA-gcqx-w48m-w2h4): `deepmerge` 4.2.0 to 4.3.1,
+prototype poisoning in `mergeObject()`. **No fixed version exists**: 4.3.1 (March 2023) is the last release. One finding is
+production: `deepmerge` is a direct dependency (`package.json`, `^4.2.2`), imported by
+`libs/maps/esri/src/lib/services/layer-sources/layer-sources.service.ts` and `libs/ts/events/ngx/src/lib/services/event/event.service.ts`.
+The rest come through jest (`jest-config`), `fork-ts-checker-webpack-plugin` (via `@nx/webpack`) and the `@nx/*` packages
+that pull those in. The maintainer's goal is no vulnerability of any severity.
+
+Find out, and report each with evidence:
+1. **Our two imports:** what each merges, and whether attacker-shaped input (a service's JSON) can reach it. Then propose
+   the replacement: a small shared helper exported from `libs/common/**` that guards `__proto__`, `constructor` and `prototype`,
+   or a maintained library (name it, its age and its weekly downloads). Reuse before building (CLAUDE.md).
+2. **The dev-only paths:** does the newest `jest` / `jest-config`, `fork-ts-checker-webpack-plugin` or `@nx/webpack`
+   (each at least 7 days old) still depend on `deepmerge`? If any has dropped it, say which version and whether we can take it.
+   If none has, could an npm `overrides` entry pointing `deepmerge` at a maintained, API-compatible fork work, and which?
+3. A recommendation, with options, under **Questions for the director (security)**.
+
+Read only: no branch yet. Report `copilot-home/reports/2026-10-30-51.md`, then push `copilot-home: batch 51 done - ...`.
+
 
 ## Batch 50 (gisday: #2496 - the poster gallery shows the season's posters; a branch with screenshots; 30 October 2026, about 12:40 PM Central, from `work (gisday)`)
 
