@@ -1,0 +1,17 @@
+<svg class="qr-code" role="img" [attr.aria-label]="label()" [attr.viewBox]="'0 0 ' + modules().size + ' ' + modules().size" shape-rendering="crispEdges">
+  <rect [attr.width]="modules().size" [attr.height]="modules().size" fill="#ffffff"></rect>
+  <path [attr.d]="path()" [attr.fill]="color()"></path>
+  <image *ngIf="logoBox() as box" class="qr-logo" [attr.href]="logo()" [attr.x]="box.x" [attr.y]="box.y" [attr.width]="box.size" [attr.height]="box.size"></image>
+</svg>
+
+<ng-container *ngIf="isFullscreen(); else notFullscreen">
+  <p class="qr-caption" *ngIf="caption()">{{ caption() }}</p>
+  <tamu-gisc-button class="qr-exit" value="Exit full screen" look="secondary" fit="snug" (go)="exitFullscreen()"></tamu-gisc-button>
+</ng-container>
+
+<ng-template #notFullscreen>
+  <div class="qr-actions leader-1" *ngIf="downloadName() || fullscreen()">
+    <tamu-gisc-button *ngIf="fullscreen()" value="Full screen" look="secondary" fit="snug" (go)="enterFullscreen()"></tamu-gisc-button>
+    <tamu-gisc-button *ngIf="downloadName()" value="Download PNG" look="secondary" fit="snug" (go)="download()"></tamu-gisc-button>
+  </div>
+</ng-template>

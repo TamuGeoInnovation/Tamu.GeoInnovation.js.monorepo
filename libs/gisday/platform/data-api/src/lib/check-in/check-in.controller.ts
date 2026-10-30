@@ -58,14 +58,27 @@ export class CheckInController {
     @Body('eventGuid') eventGuid,
     @Body('latitude') latitude?: number,
     @Body('longitude') longitude?: number,
-    @Body('accuracy') accuracy?: number
+    @Body('accuracy') accuracy?: number,
+    @Body('code') code?: string
   ) {
     if (!eventGuid) {
       throw new BadRequestException('Event guid is missing');
     }
 
-    // An in-person event needs the attendee's position (#1766); the provider checks it.
-    return this.provider.insertUserCheckin(eventGuid, req.user.sub, { latitude, longitude, accuracy });
+    // An in-person event needs the attendee's position (#1766), and a hybrid or virtual one the code in
+    // its QR code (#2560); the provider checks both.
+    return this.provider.insertUserCheckin(eventGuid, req.user.sub, { latitude, longitude, accuracy }, code);
+  }
+
+  /**
+   * The code in a hybrid or virtual session's check-in QR code (#2560), for an organizer to put on the
+   * presenter's slides. The same permission as adding a check-in by hand, since the code checks people in.
+   */
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['create:checkins'])
+  @Get('code/:eventGuid')
+  public async getCheckInCode(@Param('eventGuid') eventGuid: string) {
+    return this.provider.getCheckInCode(eventGuid);
   }
 
   /**

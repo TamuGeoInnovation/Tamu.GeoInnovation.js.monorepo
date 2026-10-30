@@ -359,8 +359,19 @@ export class Event extends GuidIdentity {
   @Column({ nullable: true })
   public requiresRsvp: boolean;
 
+  /**
+   * Unused since 2020: free text nothing read. Its form field went with #2560; the column is dropped in
+   * the release after, as a removal waits a release (docs/gisday-migrations.md).
+   */
   @Column({ nullable: true })
   public qrCode: string;
+
+  /**
+   * The secret in a hybrid or virtual session's check-in QR code (#2560), made the first time an
+   * organizer asks for the code. Never selected unless asked for, so no event the API returns carries it.
+   */
+  @Column({ nullable: true, length: 64, select: false })
+  public checkInCode?: string;
 
   @Column({ nullable: true })
   public mode: string;
