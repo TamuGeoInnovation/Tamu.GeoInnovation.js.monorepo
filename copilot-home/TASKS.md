@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 50.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 51.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,43 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 50 (gisday: #2496 - the poster gallery shows the season's posters; a branch with screenshots; 30 October 2026, about 12:40 PM Central, from `work (gisday)`)
+
+About 90 minutes. Low priority, but wanted before GIS Day (16-20 November): the maintainer will collect **digital posters** for
+2026 and show them on this page. Questions go to `work (gisday)` under **Questions for the director (gisday)**.
+
+[#2496](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2496): `/competitions/posters/gallery` shows
+nothing. `gallery.component.ts` calls `UserSubmissionsService.getPosters()`
+(`libs/gisday/platform/ngx/data-access/src/lib/modules/services/user-submissions/user-submissions.service.ts`), which asks for
+`<user submissions>/posters`; the API has no such route and answers 401. Poster submissions are `Submission` rows
+(`libs/gisday/platform/data-api/src/lib/entities/all.entity.ts`, table `submissions`) whose type is `poster`; Admin, Research
+Competitions lists them by season (2025 has 16).
+
+### What to do
+
+1. Branch `fix/2496-gisday-poster-gallery` from the latest `origin/development`.
+2. **Read first, and say in the report:** the `Submission` fields, which hold the title, the authors and the poster's link or file;
+   whether a submission has an accepted or reviewed status; and how Admin, Research Competitions reads them (reuse its query).
+3. **Red first:** a unit test on a new **public** route (no sign-in), for example `GET .../posters?season=<guid>` (active season
+   when omitted), that returns the season's poster submissions with **only** title, authors, the poster's link or file, and the
+   season year: **no email, account id or other contact details**. Prove it red.
+4. **The API route**, in the controller that owns submissions, following how other public routes there are declared. If
+   submissions have an accepted status, return accepted ones only; if not, return all and say so.
+5. **The page:** `getPosters()` calls the new route; the gallery lists the active season's posters, with a season choice that
+   includes 2025 (reuse the season select the admin pages use, `tamu-gisc-select`). A season with none says "No posters yet."
+   Reuse existing card or list styles: **no new one-off styles** (CLAUDE.md, "Reuse before building").
+6. Add `/competitions/posters/gallery` to `test/e2e/gisday/public-routes.spec.ts` if it is not there.
+7. `scripts/check-in-volume.sh fix/2496-gisday-poster-gallery gisday-platform-data-api,gisday-platform-ngx-core,gisday-platform-ngx-data-access,gisday-nest,gisday-angular`
+   exit 0. If your machine runs short of memory, `CHECK_MEMORY` and `CHECK_PARALLEL` are not merged yet (PR 2566): say so
+   rather than editing the script.
+8. Before and after screenshots of the gallery (public, no sign-in) from a local build with the seed data, into
+   `docs/screenshots/2496-poster-gallery/`, and `docs/releases/unreleased/2496-poster-gallery.md` with its row. Commit with
+   `Closes #2496`; push to the fork.
+
+Report as usual. Nothing on GitHub; the director opens the pull request.
 
 ---
 
