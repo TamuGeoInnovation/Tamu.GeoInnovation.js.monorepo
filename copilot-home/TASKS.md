@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 53.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 54.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -26,55 +26,79 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 ---
 
-> ## Answer this in your next progress line (1:58 PM)
->
-> Your 1:55 PM line says the fix is committed locally, and your batch title still reads **"hide car and bus
-> modes"**. The correction below - **disable, not hide** - landed at about 1:37 PM, after you started, so I
-> cannot tell from here which you built.
->
-> **Say which in your next progress line.**
->
-> - If you built **disable** - the icons still render and cannot be chosen - carry on, nothing to redo.
-> - If you built **hide** - the icons are gone from the panel - **say so now rather than finishing.** It is
->   a small change in the other direction and it is better caught at a local commit than in a pull request.
->
-> The maintainer's words were: *"I don't want them hidden, I just want them disabled so they cannot be
-> selected."* He is looking at this on dev.
+## Batch 53 (aggiemap: #2580 again - **disabled, not hidden**; 30 October 2026, from `work (aggiemap)`)
 
-> # CHANGED while you are working - read before going further
->
-> **From the maintainer, correcting me:**
->
-> > I don't want them hidden, I just want them disabled so they cannot be selected.
->
-> **So: the car and bus icons stay in the panel, visibly present, and cannot be chosen.** Batch 52 below
-> says "hide" throughout - **that is my error, not his.** Wherever it says hide, read **disable**.
->
-> ### Why the difference matters
->
-> Hiding says the capability does not exist. **Disabling says it exists and is not available yet**, which
-> is the truer thing and the better signal to a visitor - they can see driving and bus directions are
-> coming rather than wondering whether this map does them at all.
->
-> ### What that changes in the work
->
-> - **The icons render as they do now**, greyed or otherwise visibly inactive, and a click or tap does
->   nothing.
-> - **Not just visually.** A disabled control that a keyboard or screen reader can still activate is the
->   same bug in a different costume - and you audited exactly this class of thing in batch 45. Use the
->   element's own disabled semantics where there is one; where there is not, `aria-disabled` **and** the
->   control genuinely not firing, not merely styled grey.
-> - **Say why, where a person can see it.** A tooltip, title or short label - something that tells a
->   visitor these are not available yet rather than leaving them to assume the map is broken. Propose the
->   wording in your report rather than inventing final copy; the maintainer may want his own words.
-> - **Point 2 of the batch still matters and gets easier:** a shared `?mode=5` link should fall back
->   sensibly, and now the panel can show the disabled icon so the fallback is visible rather than silent.
->
-> ### Unchanged
->
-> Which modes (**3, 4, 5, 6, 8** - confirm, leaving 1, 2, 7), the PR 2577 check needing to be narrowed
-> rather than deleted, red-first, and the picture of the panel - **which matters more now**, because the
-> disabled state is the thing he is asking for and a screenshot is how he will judge it.
+**Batch 52 built hiding, and the maintainer wants disabling.** My two notes above batch 52 said so, but
+they landed at 1:37 and 1:58 PM, after you had started, and your report says the modes are hidden and the
+toggle draws nothing - so they were not read in time. **That is a dropped message on my side, not a
+mistake on yours**: the work is sound, it is one deliberate behaviour away from what he asked for, and
+almost all of it is reusable.
+
+### His words, exactly
+
+> I don't want them hidden, I just want them disabled so they cannot be selected.
+
+**So: Driving and Bus stay on the panel, plainly visible, and cannot be chosen.** Keep the branch; change
+the behaviour. A new branch is fine if that is cleaner for you, but do not discard the tests, release note
+or screenshots - they mostly stand with their words changed.
+
+### Why he wants it this way, so the implementation reads right
+
+**Hiding says the capability does not exist. Disabling says it exists and is not available yet** - which
+is the truer statement, because the network *does* solve driving and bus; the numbers are road-distance
+estimates on impedance `Length`, with no bus schedule behind them. A visitor seeing a greyed-out Driving
+icon learns something correct. A visitor seeing no Driving icon at all concludes the campus map does not
+do driving directions, which is wrong and is the thing he is trying not to say.
+
+### What to change
+
+1. **The icons render**, in their normal place and order, visibly inactive. `HIDDEN_PLANNER_MODES` becomes
+   something like `UNAVAILABLE_PLANNER_MODES` - keep the one-list shape and the comment explaining this is
+   a judgement about the answers' quality, **not a limit of the network**, and that reversing the list
+   brings them back.
+2. **`offeredTravelMode` has to split into two questions.** Today it answers both "may this be chosen?"
+   and "does it appear?". The panel needs *appears but cannot be chosen*; the solver still needs *never
+   solved*. Do not let a disabled mode reach a solve.
+3. **The toggle is shown again** - `travelTypeOffered` drawing nothing when every mode in a group is
+   unavailable is exactly backwards now. Driving and Bus groups render, disabled.
+4. **Disabled in fact, not only in appearance.** You audited this class of bug in batch 45, so you know
+   the trap: grey styling with a live click handler is the same fault in a costume. Use the element's own
+   `disabled` where it has one; otherwise `aria-disabled="true"`, out of the tab order, and the handler
+   genuinely not firing. **A keyboard and a screen reader must reach the same conclusion a sighted mouse
+   user does.**
+5. **Say why, where a person can see it.** A `title` or tooltip on the disabled icons - *propose the
+   wording in your report, do not finalise it*; the maintainer may want his own words. Something to the
+   effect that driving and bus directions are not available yet.
+6. **The `?mode=5` fallback stays** (walking, and accessible walking for 4 and 6 - that was a good call).
+   It gets better here: the panel can show Bus disabled, so the fallback is visible rather than silent.
+7. **The PR 2577 check** keeps both lists, as you built it - but the second list is now "the modes that
+   can be chosen", which is the same `[1, 2, 7]`. Make sure its name and message say *chosen*, not
+   *offered*, or the next reader will think the icons are gone.
+
+### Unchanged from batch 52
+
+Which modes (**3, 4, 5, 6, 8**, leaving 1, 2, 7 - you confirmed this, good), red-first, and
+`scripts/check-in-volume.sh <branch> maps-feature-trip-planner,aggiemap-angular` exit 0.
+
+### The screenshot matters more than it did
+
+**The disabled state is the entire deliverable**, and a picture is how he will judge it. Retake the
+"after" shots: the panel at desktop width and at phone width, showing Walking and Biking selectable and
+Driving and Bus visibly inactive. Your "before" shots (live dev: all four live) are still correct and need
+no retaking.
+
+### Your two questions from batch 52, answered
+
+1. **A notice on a hidden-mode link:** your recommendation (a) was right and the change makes it moot -
+   the disabled icon is itself the notice. No extra banner.
+2. **Running the smoke solve test on dev before the PR:** **no, do not** - that is the lab's job and it is
+   mid-release-tier on one machine. Your local evidence plus the check is enough for me to open the pull
+   request; the lab proves it on deployed dev afterwards.
+
+**He is looking at this on dev**, so report as soon as it is ready rather than polishing. Push to `fork`,
+report `branch ready:`.
+
+---
 
 ## Batch 52 (aggiemap: #2580, hide the car and bus modes - the maintainer is looking at this now; 30 October 2026, from `work (aggiemap)`)
 
