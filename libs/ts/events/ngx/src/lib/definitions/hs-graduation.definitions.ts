@@ -81,7 +81,6 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
     title: HsGraduationEventDefinitions.ARRIVAL_GROUP.name,
     visible: true,
     listMode: 'show',
-    layerIndex: 60,
     sources: [
       {
         type: 'feature',
@@ -160,7 +159,6 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
     title: HsGraduationEventDefinitions.DEPARTURE_GROUP.name,
     visible: true,
     listMode: 'show',
-    layerIndex: 61,
     sources: [
       {
         type: 'feature',

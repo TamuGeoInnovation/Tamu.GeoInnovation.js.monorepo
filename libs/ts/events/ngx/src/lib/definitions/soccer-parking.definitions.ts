@@ -42,7 +42,6 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
-    layerIndex: 11,
     native: {
       outFields: ['*'],
       definitionExpression: `event = 'Soccer'`
@@ -65,7 +64,6 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 10,
     native: {
       outFields: ['*']
     }
@@ -92,13 +90,11 @@ export const SoccerParking_DevelopmentLayerSources: LayerSource[] = [
   athleticsDevelopmentSource({
     id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
-    url: `${eventUrl}/0`,
-    layerIndex: 11
+    url: `${eventUrl}/0`
   }),
   athleticsDevelopmentSource({
     id: SoccerParkingDefinitions.PARKING.id,
-    url: `${eventUrl}/1`,
-    layerIndex: 10
+    url: `${eventUrl}/1`
   })
 ];
 

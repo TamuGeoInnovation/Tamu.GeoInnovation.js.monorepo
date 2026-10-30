@@ -184,7 +184,6 @@ export const FishCampColdLayerSources: LayerSource[] = [
     // On by default; mutually exclusive with "Bring Back from Camp" (see exclusiveLayerIds).
     visible: true,
     listMode: 'show',
-    layerIndex: 61,
     sources: buildPhaseChildren(
       {
         parkingInfo: FISH_CAMP_LAYERS.ARRIVAL_PARKING_INFO,
@@ -205,7 +204,6 @@ export const FishCampColdLayerSources: LayerSource[] = [
     // Off by default; toggling it on turns "Send Off to Camp" off (see exclusiveLayerIds).
     visible: false,
     listMode: 'show',
-    layerIndex: 60,
     sources: buildPhaseChildren(
       {
         parkingInfo: FISH_CAMP_LAYERS.DEPARTURE_PARKING_INFO,

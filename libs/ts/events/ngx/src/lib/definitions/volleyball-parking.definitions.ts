@@ -43,7 +43,6 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
     popupComponent: EventPopups.MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
-    layerIndex: 61,
     native: {
       outFields: ['*'],
       definitionExpression: `event = 'Volleyball'`
@@ -66,7 +65,6 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    layerIndex: 60,
     native: {
       outFields: ['*']
     }
@@ -97,8 +95,7 @@ export const VolleyballParking_DevelopmentLayerSources: LayerSource[] = Volleyba
 ).map((source) =>
   athleticsDevelopmentSource({
     id: (source as { id: string }).id,
-    url: `${eventUrl}/${volleyballParkingDevelopmentIndex[(source as { id: string }).id]}`,
-    layerIndex: (source as { layerIndex?: number }).layerIndex
+    url: `${eventUrl}/${volleyballParkingDevelopmentIndex[(source as { id: string }).id]}`
   })
 );
 

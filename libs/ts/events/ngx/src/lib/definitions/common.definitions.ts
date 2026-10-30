@@ -73,7 +73,6 @@ export function athleticsDevelopmentSource(source: {
   id: string;
   url: string;
   title?: string;
-  layerIndex?: number;
   /** The `type` value this layer shows, where production split one service layer into two. */
   onlyType?: string;
 }): LayerSource {
@@ -82,7 +81,6 @@ export function athleticsDevelopmentSource(source: {
     id: source.id,
     url: source.url,
     ...(source.title === undefined ? {} : { title: source.title }),
-    ...(source.layerIndex === undefined ? {} : { layerIndex: source.layerIndex }),
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
