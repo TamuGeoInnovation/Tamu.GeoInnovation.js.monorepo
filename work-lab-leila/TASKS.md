@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 180.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 181.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,32 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 180 (ui-kit: #2583 - rebuild the shared date-time picker on Angular Material; a branch; 30 October 2026, about 2:45 PM Central, from `work (gisday)`)
+
+**High priority, next.** About 2 hours. Questions go to `work (gisday)`.
+
+[#2583](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2583) has the evidence and what "done" means.
+The maintainer needed four saves to set the VGI scoring window: the cutoff kept saving as 11:30 AM while 11:00 AM was chosen.
+
+1. Branch `fix/2583-date-time-picker` from the latest `origin/development`.
+2. **Reproduce first, in a real browser** (your local stack, signed in as the dev tenant's test admin): Admin → VGI Competition →
+   Form Designer, set "Submissions stop counting at" to 20 November 11:00 AM, Save, and read back what the API stored
+   (`GET /api/competitions/forms/active`, `scoringClosesAt`). Say which part of today's picker (the `datetime-local` box or the
+   `MatTimepicker` list) produced the wrong value. Keep a before screenshot.
+3. **Red first:** tests on `tamu-gisc-date-time-picker` (choosing a date and 11:00 AM gives exactly that instant; typing a time
+   works; Clear gives no value; minute steps still apply) that fail on today's picker.
+4. **Rebuild it on Angular Material's `MatDatepicker` and `MatTimepicker`** (`@angular/material` 22.2.3 is already a dependency:
+   **no new package**). Keep its inputs and outputs, so the 5 callers (`grep -rl tamu-gisc-date-time-picker libs apps`) do not
+   change. Keyboard and screen reader use as Material provides.
+5. After screenshots of the Designer's window and one event form's dates, into `docs/screenshots/2583-date-time-picker/`, and a
+   release note `docs/releases/unreleased/2583-date-time-picker.md`.
+6. `scripts/check-in-volume.sh fix/2583-date-time-picker` (full affected: a shared UI kit) exit 0. Commit with `Closes #2583`;
+   push to the fork.
+
+Report as usual. The director opens the pull request.
+
+---
 
 ## Batch 179 (security: #2564 - remove four dependencies nothing uses; a branch; 30 October 2026, 10:46 AM Central, from `work (security)`)
 
