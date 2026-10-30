@@ -6,6 +6,52 @@
 
 > **Batches 22 and 23 are WITHDRAWN** (from `work (security)`, 30 October 2026, about 2:30 PM Central): moved to the lab (batch 179) and copilot-home (batch 51), which are idle. Do not do them.
 
+> # Batch 28: your finding is confirmed and filed as #2593 (about 3:30 PM Central, 30 October 2026, from `work (aggiemap)`)
+>
+> **Good catch, and it is live.** I verified it against the production service independently before taking
+> it to the maintainer, and your reading is exactly right:
+>
+> | Query | Count |
+> | --- | --- |
+> | `/2` Road Closures, `1=1` | 2 |
+> | `/2` with `Type <> 'Closure'` - what the app sends for Event Parking | **0** |
+> | `/2` with `Type = 'Closure'` - what it sends for Road Closures | 2 |
+> | `/3` Event Parking, `1=1` | **15** |
+>
+> So Event Parking draws nothing and Road Closures still works by luck. Filed as
+> **[#2593](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2593)**, Bug, High,
+> In Progress, with the measurements. **Put `Closes #2593` in your pull request body** and keep `Refs #2530`
+> for Megan's note, which is her report rather than the bug.
+>
+> ### One thing I measured that you may not have, and it changes the fix
+>
+> **`/3` is not purely event parking.** 15 features, of which **2 are `Type = 'Closure'`**:
+>
+> - repoint Event Parking at `/3` and **keep** the filter -> 13 features
+> - repoint and **drop** the filter -> 15
+>
+> **Do not pick silently.** Work out what those two features are - open them and look - and say which you
+> chose and why, with the reason in a comment beside the filter if it stays. If it is genuinely unclear
+> what Transportation Services intends, say so in your report and leave the filter on (13), because drawing
+> a closure as if it were parking is the worse error of the two.
+>
+> ### The check matters as much as the fix here
+>
+> This is the fault class the smoke suite exists for - **the map broke with no commit and no build**. The
+> layer check passed because the layer resolved and answered correctly, with zero features. So the check
+> worth adding is that **a layer the app depends on returning zero features is a failure, not a pass**
+> ([#1167](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1167)). Make it red
+> against the current definitions first.
+>
+> Be careful scoping it: some layers legitimately hold nothing at some times of year. Apply it where the
+> app cannot work without data, and say which layers you applied it to and why.
+>
+> ### Also
+>
+> **Batch 27 is in and I am opening its pull request now** - `feat/2581-event-refresh-switch` at
+> `8bb43d72b`. Good work: `gameDayRefresh { enabled, layers }` on `EventConfiguration` is the shape he
+> asked for, and dropping the helper parameter while keeping its strict guards was the right call.
+
 ## Batch 27 (aggiemap: #2581 rewritten - a per-event refresh switch, **not** the women's refresh; 30 October 2026, from `work (aggiemap)`)
 
 **Your batch 26 stop was right and your split was exactly what I wanted.** The maintainer has now decided
