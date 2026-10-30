@@ -18,6 +18,7 @@ import {
 import {
   catchError,
   concatMap,
+  filter,
   flatMap,
   map,
   mergeMap,
@@ -45,6 +46,7 @@ import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { SearchService, SearchResult, SearchResultItem } from '@tamu-gisc/ui-kits/ngx/search';
 import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common/ngx/settings';
 import { TripPlannerConnection, TripPlannerConnectionService } from './trip-planner-connection.service';
+import { TripPlannerNetworkTravelMode, networkTravelModeFor, offeredTravelMode } from './trip-planner-travel-modes';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
   TripResult,
@@ -317,6 +319,11 @@ export class TripPlannerService implements OnDestroy {
    */
   public connection: TripPlannerConnection;
 
+  /**
+   * What the current network says it can solve, or `null` before it has said. Modes it lacks are not offered (#659).
+   */
+  private _supportedTravelModes: TripPlannerNetworkTravelMode[] | null = null;
+
   private _map: esri.Map;
 
   private _view: esri.MapView | esri.SceneView;
@@ -493,11 +500,20 @@ export class TripPlannerService implements OnDestroy {
         this.initializeHandlers();
       });
 
-    // Subscribe to the trip planner connection service and store the selected connection url when available.
-    this._currentNetworkSubscription = this.connectionService.currentNetwork
-      .pipe(takeUntil(this.$destroy))
-      .subscribe((connection) => {
+    // Subscribe to the trip planner connection service and store the selected connection url when available. A
+    // network is acted on once it has said which travel modes it supports, so a trip is never requested in a mode it
+    // lacks; a network that is not there (nothing published) has nothing to wait for.
+    this._currentNetworkSubscription = combineLatest([
+      this.connectionService.currentNetwork,
+      this.connectionService.supportedTravelModes
+    ])
+      .pipe(
+        filter(([connection, supported]) => supported !== null || !connection.name),
+        takeUntil(this.$destroy)
+      )
+      .subscribe(([connection, supported]) => {
         this.connection = connection;
+        this._supportedTravelModes = supported;
 
         this.executeTripTask();
       });
@@ -686,8 +702,13 @@ export class TripPlannerService implements OnDestroy {
 
     const ruleModes = this.flattenRule(rule);
 
-    // Limit the modes to a list of qualifying modes based on travel option constraint values.
+    // Limit the modes to a list of qualifying modes based on travel option constraint values, and to those the
+    // network can solve.
     const qualifying = ruleModes.filter((mode) => {
+      if (!offeredTravelMode(this._supportedTravelModes, mode.mode)) {
+        return false;
+      }
+
       const passAllConditions = Object.keys(rootConditions).every((condition) => {
         const modeOptions = mode.determinants;
 
@@ -750,12 +771,43 @@ export class TripPlannerService implements OnDestroy {
     }
   }
 
+  /**
+   * The network's travel mode for a planner mode, found by name, carrying the planner's own mode number as its id.
+   *
+   * The planner reads `params.travelMode.id` back as its mode number all through its results, and a network numbers its
+   * modes itself (#659), so the id is the planner's. `solveWithNetworkMode` puts the network's own mode back to solve.
+   */
   private getTravelModeById(supportedTravelModes: esri.TravelMode[], id: string | number) {
-    const parsedId = typeof id === 'number' ? id.toString() : id;
+    const mode = typeof id === 'number' ? id : parseInt(id, 10);
+    const networkMode = networkTravelModeFor(supportedTravelModes, mode);
 
-    return supportedTravelModes.find((mode) => {
-      return mode.id === parsedId;
-    });
+    if (!networkMode) {
+      return undefined;
+    }
+
+    const travelMode = networkMode.clone();
+
+    travelMode.id = mode.toString();
+
+    return travelMode;
+  }
+
+  /**
+   * Solves a route in the network's own travel mode for the planner mode in its parameters. A mode the network lacks is
+   * an error, never a solve in whatever mode the network defaults to.
+   */
+  private solveWithNetworkMode(supportedTravelModes: esri.TravelMode[], params: esri.RouteParameters) {
+    const networkMode = networkTravelModeFor(supportedTravelModes, parseInt(params.travelMode?.id, 10));
+
+    if (!networkMode) {
+      return Promise.reject(new Error(`The routing network has no travel mode for mode ${params.travelMode?.id}.`));
+    }
+
+    const solveParams = params.clone();
+
+    solveParams.travelMode = networkMode;
+
+    return this._Modules.route.solve(this.connection.url(), solveParams);
   }
 
   /**
@@ -1158,7 +1210,7 @@ export class TripPlannerService implements OnDestroy {
                 from(rq.tasks).pipe(
                   concatMap((t) => {
                     // Execute inner trip task with own trip params
-                    return from(this._Modules.route.solve(this.connection.url(), t.params as esri.RouteParameters)).pipe(
+                    return from(this.solveWithNetworkMode(supportedTravelModes, t.params as esri.RouteParameters)).pipe(
                       map((result) => {
                         return {
                           result,

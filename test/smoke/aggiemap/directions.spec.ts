@@ -3,6 +3,11 @@ import { Page } from '@playwright/test';
 import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { directionsAvailable, directionsEntryPoints } from './directions';
+import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
+import {
+  NETWORK_TRAVEL_MODE_NAMES,
+  offeredTravelMode
+} from '../../../libs/maps/feature/trip-planner/src/lib/services/trip-planner-travel-modes';
 
 /**
  * No "Directions To Here" is left anywhere while routing is unavailable (#1003).
@@ -132,3 +137,61 @@ test.describe(`the trip planner ${AVAILABLE ? 'is offered' : 'is not offered'} a
     });
   }
 });
+
+/**
+ * The development routing network solves what the trip planner offers on it (#659).
+ *
+ * The planner reads the network's travel modes from the network and finds each of its own by name, so a list that
+ * changes cannot send a trip to the wrong mode. What this adds is the alarm: the modes the planner offers are exactly
+ * the ones below, so when Transportation adds Drive_ADA, or drops Bus, this fails and a person decides what the picker
+ * should say. Where directions are hidden nothing connects to the network, so nothing is asked of it.
+ */
+const OFFERED_ON_DEVELOPMENT_NETWORK = [1, 2, 3, 5, 7, 8];
+
+if (AVAILABLE) {
+  test.describe('the development routing network', () => {
+    const route = `${Connections('gis-dev.it.tamu.edu').developmentRoutingBaseUrl}/Map/NAServer/Route`;
+
+    test('lists the travel modes the planner offers, and only those', async ({ request }) => {
+      const response = await request.get(`${route}?f=json`, { timeout: 30_000 });
+      const { supportedTravelModes } = (await response.json()) as { supportedTravelModes: Array<{ name: string }> };
+
+      expect(supportedTravelModes?.length, `${route} lists no travel modes`).toBeGreaterThan(0);
+
+      const offered = Object.keys(NETWORK_TRAVEL_MODE_NAMES)
+        .map(Number)
+        .filter((mode) => offeredTravelMode(supportedTravelModes, mode));
+
+      expect(
+        offered,
+        `the network lists ${supportedTravelModes.map((m) => m.name).join(', ')}; the trip planner would offer these modes`
+      ).toEqual(OFFERED_ON_DEVELOPMENT_NETWORK);
+    });
+
+    test('solves a route between two campus points in every mode it lists', async ({ request }) => {
+      const modes = ((await (await request.get(`${route}?f=json`, { timeout: 30_000 })).json()) as {
+        supportedTravelModes: Array<{ name: string }>;
+      }).supportedTravelModes;
+
+      for (const mode of modes) {
+        const answer = await request.get(`${route}/solve`, {
+          timeout: 60_000,
+          params: {
+            f: 'json',
+            // Two points on roads along University Drive, because Drive and Bus find no route between points that
+            // only walking reaches (the Evans Library and the Memorial Student Center, say).
+            stops: '-96.3500,30.6150;-96.3300,30.6150',
+            returnDirections: 'true',
+            returnRoutes: 'true',
+            outSR: '4326',
+            travelMode: JSON.stringify(mode)
+          }
+        });
+        const body = (await answer.json()) as { error?: { message?: string }; routes?: { features?: unknown[] } };
+
+        expect(body.error?.message, `${mode.name} did not solve`).toBeUndefined();
+        expect(body.routes?.features?.length, `${mode.name} returned no route`).toBeGreaterThan(0);
+      }
+    });
+  });
+}

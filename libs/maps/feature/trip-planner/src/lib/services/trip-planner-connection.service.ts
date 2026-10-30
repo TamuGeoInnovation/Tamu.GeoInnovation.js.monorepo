@@ -4,17 +4,28 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+
+import { TripPlannerNetworkTravelMode } from './trip-planner-travel-modes';
+
+/**
+ * The network Transportation published for #659. Its name is `RoutingProPublish/Map`, which is neither under the
+ * `Routing` folder nor a dated name, so discovery below would find it and discard it.
+ */
+const DEVELOPMENT_NETWORK_NAME = 'RoutingProPublish/Map';
 
 @Injectable({ providedIn: 'root' })
 export class TripPlannerConnectionService {
   private http = inject(HttpClient);
   private readonly env = inject(EnvironmentService);
+  private readonly testing = inject(TestingService);
 
   private _allNetworks: BehaviorSubject<TripPlannerConnection[]>;
   private _abNetworks: BehaviorSubject<TripPlannerConnection[]>;
   private _latestNonAbNetwork: BehaviorSubject<TripPlannerConnection>;
   private _currentNetwork: BehaviorSubject<TripPlannerConnection>;
   private _override: BehaviorSubject<boolean>;
+  private _supportedTravelModes = new BehaviorSubject<TripPlannerNetworkTravelMode[] | null>(null);
 
   private _store = {
     allNetworks: <Array<TripPlannerConnection>>[],
@@ -31,8 +42,17 @@ export class TripPlannerConnectionService {
   public readonly currentNetwork: Observable<TripPlannerConnection>;
   public readonly override: Observable<boolean>;
 
+  /**
+   * What the current network can solve, as its Route layer lists it: `null` until it has answered, and an empty list
+   * if it could not. The planner offers only the modes in it (#659).
+   */
+  public readonly supportedTravelModes: Observable<TripPlannerNetworkTravelMode[] | null> =
+    this._supportedTravelModes.asObservable();
+
   constructor() {
-    this._serviceURL = this.env.value('Connections', false)?.routingBaseUrl + '?f=pjson';
+    const connections = this.env.value('Connections', false);
+
+    this._serviceURL = connections?.routingBaseUrl + '?f=pjson';
 
     // Instantiate Subjects and observables from subjects
     this._allNetworks = new BehaviorSubject([]);
@@ -59,8 +79,51 @@ export class TripPlannerConnectionService {
     this.currentNetwork = this._currentNetwork.asObservable();
     this.override = this._override.asObservable();
 
+    // Where development-only features are on, use the network published for #659 and discover nothing: it has no dated
+    // name for discovery to find. Production, and a development host asked to behave as production, discover as before.
+    if (this.testing.isTesting && connections?.developmentRoutingBaseUrl) {
+      const network = new TripPlannerConnection({
+        baseServiceUrl: connections.developmentRoutingBaseUrl,
+        name: DEVELOPMENT_NETWORK_NAME,
+        type: 'NAServer'
+      });
+
+      this._store.allNetworks = [network];
+      this._store.latestNonAbNetwork = network;
+      this._allNetworks.next([network]);
+      this._latestNonAbNetwork.next(network);
+
+      this.connection();
+      this.fetchSupportedTravelModes();
+
+      return;
+    }
+
     // Self-invoke the fetch networks method in the class to populate the full network and network list
     this.fetchNetworks();
+  }
+
+  /**
+   * Asks the current network which travel modes it can solve. The planner reads it so that it offers only those, and so
+   * that it finds each by name rather than by a number the planner and the network may not share.
+   */
+  private fetchSupportedTravelModes() {
+    const network = this._store.currentNetwork;
+
+    if (!network.name) {
+      return;
+    }
+
+    this._supportedTravelModes.next(null);
+
+    this.http.get<{ supportedTravelModes?: TripPlannerNetworkTravelMode[] }>(`${network.url()}?f=json`).subscribe({
+      next: (res) => this._supportedTravelModes.next(res.supportedTravelModes ?? []),
+      error: (err) => {
+        console.error('Error fetching the routing network travel modes', err);
+
+        this._supportedTravelModes.next([]);
+      }
+    });
   }
 
   private fetchNetworks() {
@@ -159,6 +222,8 @@ export class TripPlannerConnectionService {
 
         // Select a random AB network and set it as the initial current network
         this.connection();
+
+        this.fetchSupportedTravelModes();
       },
       error: (err) => {
         console.error('Error fetching routing services', err);
@@ -187,7 +252,7 @@ export class TripPlannerConnectionService {
 
         // TODO: Remove this return once new implementation is in place
         return new TripPlannerConnection({
-          baseServiceUrl: this._serviceURL,
+          baseServiceUrl: this._store.latestNonAbNetwork.baseServiceUrl,
           name: this._store.latestNonAbNetwork.name,
           type: this._store.latestNonAbNetwork.type
         });
@@ -196,7 +261,7 @@ export class TripPlannerConnectionService {
 
         // TODO: Remove this return once new implementation is in place
         return new TripPlannerConnection({
-          baseServiceUrl: this._serviceURL,
+          baseServiceUrl: this._store.currentNetwork.baseServiceUrl,
           name: this._store.currentNetwork.name,
           type: this._store.currentNetwork.type
         });
@@ -260,9 +325,10 @@ export class TripPlannerConnectionService {
     // Copy network properties to assign to new immutable;
     const props = Object.assign({}, ref);
 
-    // Create a new immutable class reference
+    // Create a new immutable class reference. It keeps the network's own server: the development network is not on the
+    // one the discovery address names.
     const connection = new TripPlannerConnection({
-      baseServiceUrl: this._serviceURL,
+      baseServiceUrl: props.baseServiceUrl ?? this._serviceURL,
       name: props.name,
       type: props.type
     });
