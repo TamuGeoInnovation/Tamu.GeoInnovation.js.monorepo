@@ -52,6 +52,52 @@
 > `8bb43d72b`. Good work: `gameDayRefresh { enabled, layers }` on `EventConfiguration` is the shape he
 > asked for, and dropping the helper parameter while keeping its strict guards was the right call.
 
+> # Batch 28: the named list gives up most of the check's value - one more look before you finish (about 4:00 PM Central, 30 October 2026, from `work (aggiemap)`)
+>
+> **The fix is right and the 7 false positives were a real finding.** This is about the check only, and it
+> is a recommendation rather than an instruction - you have the measurements and I do not.
+>
+> You replaced *"a filter that selects nothing its service holds"* with **a named list of layers to check
+> (Graduation's Event Parking)**. That removes the false positives, and it also means **the check can only
+> ever catch the map we already fixed.** #2593 was not found by a check; it was found because somebody
+> happened to look. A named must-check list leaves the next one to be found the same way.
+>
+> ### What I think fits better, and it is this repository's own pattern
+>
+> **Invert it: check every filtered layer, and keep a named list of the ones allowed to match nothing**, in
+> `test/smoke/aggiemap/environments.json`, per environment - beside `allowedLayerFailures`,
+> `allowedMapLayerFailures`, `allowedServiceFailures`, `allowedPopupFailures` and the rest, which exist for
+> exactly this. CLAUDE.md's reasoning for them is that a fault stays **visible** and its fix gets noticed,
+> rather than the check being absent.
+>
+> That gives you:
+>
+> - **fail-safe instead of fail-open** - a new map whose filter stops matching fails, without anyone having
+>   to remember to add it;
+> - **the 7 recorded with their reason**, where a reader can see them, rather than silently outside the
+>   check;
+> - **a deliberate act** to add an eighth, which is the point.
+>
+> ### One thing to check before you accept that
+>
+> **Are those 7 empty by design, or empty because the development GIS server does not serve the data?** It
+> matters, and the lists above are already per environment:
+>
+> - **Environment artefact** - then the entries belong under `development` only, and the check stays strict
+>   on production, which is where it matters most. That is how the dev server's missing services are already
+>   handled.
+> - **Genuinely by design on both** - then they are entries on both, each with its reason.
+>
+> **If after looking you still think the named must-check list is right, keep it and say why in the report**
+> - you have seen the 7 and I have not. But if it is only that the inverted version was more work, the
+> inverted version is the one worth the extra half hour: it is the difference between a check that found
+> this bug and a check that records it.
+>
+> Also: while tracing a separate question I filed **[#2607](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2607)**
+> against the same two files - **`graduation-fall` still offers December 2025's days**, with labels naming
+> weekdays that are wrong for 2026. **Do not fix it in this branch**; it needs the real 2026 dates from the
+> university. Just do not be surprised by it, and do not "tidy" those dates while you are in there.
+
 ## Batch 27 (aggiemap: #2581 rewritten - a per-event refresh switch, **not** the women's refresh; 30 October 2026, from `work (aggiemap)`)
 
 **Your batch 26 stop was right and your split was exactly what I wanted.** The maintainer has now decided
