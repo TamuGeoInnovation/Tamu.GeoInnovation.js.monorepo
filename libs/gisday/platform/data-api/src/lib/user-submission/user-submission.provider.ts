@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
 
-import { SubmissionType, Submission, Season, PRESENTATION_SUBMISSION_TYPE } from '../entities/all.entity';
+import { SubmissionType, Submission, PRESENTATION_SUBMISSION_TYPE } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
 import { ContactService } from '../contact/contact.service';
@@ -64,7 +64,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
    * its authors' emails and student ids, the owner's account and the reviewer's message.
    */
   public async getPosters(seasonGuid?: string): Promise<PosterDto[]> {
-    let season: Season | null;
+    let season: { guid: string; year: number } | null;
 
     try {
       season = seasonGuid
