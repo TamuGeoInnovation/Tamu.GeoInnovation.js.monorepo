@@ -1,10 +1,11 @@
 import {
-  HIDDEN_PLANNER_MODES,
   modeOrFallback,
   NETWORK_TRAVEL_MODE_NAMES,
   networkTravelModeFor,
-  offeredTravelMode,
-  travelTypeOffered,
+  selectableTravelMode,
+  travelTypeUnavailable,
+  UNAVAILABLE_PLANNER_MODES,
+  unavailableTravelModeTitle,
   TripPlannerNetworkTravelMode
 } from './trip-planner-travel-modes';
 
@@ -29,30 +30,35 @@ describe('travel modes of a routing network', () => {
 
   const planner = Object.keys(NETWORK_TRAVEL_MODE_NAMES).map(Number);
 
-  it('finds on the network the modes it has, which is still drive and bus even though they are hidden', () => {
+  it('finds on the network the modes it has, which is still drive and bus even though they cannot be chosen', () => {
     // Accessible driving and the accessible bus have no mode on this network.
     expect(planner.filter((mode) => networkTravelModeFor(PUBLISHED, mode) !== undefined)).toEqual([1, 2, 3, 5, 7, 8]);
   });
 
-  it('offers walking, accessible walking and biking, and hides driving and the bus (#2580)', () => {
-    const offered = planner.filter((mode) => offeredTravelMode(PUBLISHED, mode));
+  it('lets walking, accessible walking and biking be chosen, and not driving or the bus (#2580)', () => {
+    const chosen = planner.filter((mode) => selectableTravelMode(PUBLISHED, mode));
 
-    expect(offered).toEqual([1, 2, 7]);
-    expect(HIDDEN_PLANNER_MODES).toEqual([3, 4, 5, 6, 8]);
+    expect(chosen).toEqual([1, 2, 7]);
+    expect(UNAVAILABLE_PLANNER_MODES).toEqual([3, 4, 5, 6, 8]);
   });
 
-  it('hides them whether or not the network has said what it supports', () => {
-    expect(planner.filter((mode) => offeredTravelMode(null, mode))).toEqual([1, 2, 7]);
+  it('keeps them unavailable whether or not the network has said what it supports', () => {
+    expect(planner.filter((mode) => selectableTravelMode(null, mode))).toEqual([1, 2, 7]);
   });
 
-  it('offers a travel type only while one of its modes is offered', () => {
-    expect(travelTypeOffered([1, 2])).toBe(true);
-    expect(travelTypeOffered([7])).toBe(true);
-    expect(travelTypeOffered([3, 4, 8])).toBe(false);
-    expect(travelTypeOffered([5, 6])).toBe(false);
+  it('marks a travel type unavailable only when none of its modes can be chosen', () => {
+    expect(travelTypeUnavailable([1, 2])).toBe(false);
+    expect(travelTypeUnavailable([7])).toBe(false);
+    expect(travelTypeUnavailable([3, 4, 8])).toBe(true);
+    expect(travelTypeUnavailable([5, 6])).toBe(true);
   });
 
-  it('falls back from a hidden mode to walking, keeping an accessible one accessible', () => {
+  it('says in words, by travel type, that the directions are not available yet', () => {
+    expect(unavailableTravelModeTitle('Driving')).toBe('Driving directions are not available yet');
+    expect(unavailableTravelModeTitle('Bus')).toBe('Bus directions are not available yet');
+  });
+
+  it('falls back from an unavailable mode to walking, keeping an accessible one accessible', () => {
     expect(modeOrFallback(5)).toBe(1);
     expect(modeOrFallback(3)).toBe(1);
     expect(modeOrFallback(8)).toBe(1);
@@ -63,8 +69,8 @@ describe('travel modes of a routing network', () => {
     expect(modeOrFallback(7)).toBe(7);
   });
 
-  it('offers nothing when the network lists no modes', () => {
-    expect(offeredTravelMode([], 1)).toBe(false);
+  it('lets nothing be chosen when the network lists no modes', () => {
+    expect(selectableTravelMode([], 1)).toBe(false);
   });
 
   it('is not tripped up by case or spacing in a published name', () => {
