@@ -26,7 +26,7 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 ---
 
-## Batch 51 (security: `deepmerge`, the last vulnerability - find the way to zero; read only; 30 October 2026, about 2:30 PM Central, from `work (security)`)
+## Batch 51 (security: `deepmerge`, the last vulnerability - find the way to zero; read only; 30 October 2026, 10:46 AM Central, from `work (security)`)
 
 Moved here from home's batch 23, which home has not reached.
 

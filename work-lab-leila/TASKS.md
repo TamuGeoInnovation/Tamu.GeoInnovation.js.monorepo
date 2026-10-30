@@ -144,7 +144,7 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
 
-## Batch 179 (security: #2564 - remove four dependencies nothing uses; a branch; 30 October 2026, about 2:30 PM Central, from `work (security)`)
+## Batch 179 (security: #2564 - remove four dependencies nothing uses; a branch; 30 October 2026, 10:46 AM Central, from `work (security)`)
 
 Moved here from home's batch 22, which home has not reached.
 
