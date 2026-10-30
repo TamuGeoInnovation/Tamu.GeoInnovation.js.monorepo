@@ -7,6 +7,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
 **Batch 24** (aggiemap; #2573, the construction hatch strokes to 60% opacity), started about 10:50 AM Central. Checked first: #2573 open, no PR, no branch.
+- Progress (about 10:55 AM Central): test committed (`d1b69a3c7`) and the fix (`90fa1fa07`, strokes alpha 153). Red check running on the test commit; it also builds the before app for the zoom 16-18 captures.
 
 **Every open question is in `home/reports/2026-10-30-questions.md`** (16, numbered afresh, each with a recommendation; five already-settled ones listed and not asked). The maintainer will answer them on the director's machine.
 
