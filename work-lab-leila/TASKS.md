@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 185.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 186.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,68 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 185 (aggiemap: triage the nine oldest open issues, 2020 to 2022; read only; 30 October 2026, about 5:25 PM Central, from `work (aggiemap)`)
+
+**Your #2586 work was the right kind of careful** - you corrected the premise I gave you by measuring it
+(a "No route" mode is `error`, not grey, and rightly stays live), and that correction changed what the issue
+means rather than just how it was fixed. [PR 2613](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2613) is open. Measuring which toggles grey out
+also turned up something bigger, now on [#2592](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2592).
+
+**This batch adds nothing to the maintainer's merge queue, which is deliberate.** He has seven pull requests
+waiting, one of them gating a production deploy. The standing instruction is to work through the open issues
+and close them "one way or another" - there are **319 open** - and the oldest are where that pays best.
+
+### The nine
+
+| Issue | Filed | What it says |
+| --- | --- | --- |
+| [#71](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/71) | Aug 2020 | `aggiemap-angular`: clear search on Aggie Map mobile |
+| [#141](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/141) | Jul 2021 | Directions to a POI layer fail on a mismatched spatial reference |
+| [#205](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/205) | Apr 2022 | `common-ngx-settings`: the settings service depends on an open subscription to `init` |
+| [#262](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/262) | Jul 2022 | `mailroom-nest`: Mailer class in the wrong library |
+| [#263](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/263) | Jul 2022 | `mailroom-nest`: verify it can contact the TAMU relay |
+| [#265](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/265) | Jul 2022 | `mailroom-angular`: style the app to be more responsive |
+| [#270](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/270) | Jul 2022 | `mailroom-nest`: a possible CORS issue |
+| [#274](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/274) | Aug 2022 | `common-ngx-settings`: cannot pull a settings branch for a component with no... |
+| [#300](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/300) | Aug 2022 | Bus route ignores a nearby stop |
+
+**I checked one thing for you so you do not start from a wrong assumption:** `apps/mailroom-angular`,
+`apps/mailroom-nest`, `apps/mailroom-helper-nest`, `libs/mailroom` and `libs/common/ngx/settings` **all still
+exist.** So none of these closes on "the app is gone" - they need actual triage.
+
+### #141 is the interesting one, and it is newly answerable
+
+Directions to a POI failing on spatial reference has been **untestable since March**, because routing did
+not work at all. It works on dev now ([#659](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/659), PR 2577). So this is the first chance in seven
+months to find out whether it still happens - and the new network is a different network, so the answer may
+simply have changed. **Try it in a browser.**
+
+### What a result looks like
+
+For each, one of:
+
+1. **Close it**, with a comment saying *how you established it* - the code that no longer exists, the
+   behaviour that no longer reproduces, or the thing that was superseded by a named issue or pull request.
+   "Probably stale" is not a reason; **"I ran it and it does X" is.**
+2. **Keep it**, with a comment saying what it would take and whether it still matters. A four-year-old issue
+   that is still real deserves that said out loud more than it deserves closing.
+3. **Needs the maintainer** - put it in the report with a recommendation, do not close it. #263 (can it
+   contact the TAMU relay) smells like this: it may need a credential or a decision about whether mailroom
+   is still wanted at all.
+
+**Do not guess, and do not close in bulk.** Nine closed for bad reasons is worse than three closed for good
+ones - the whole point of closing them is that the list becomes trustworthy.
+
+### Scope
+
+**Read only: no branch, no code, no pull request.** You can file an issue if triage turns up something new,
+and set its fields as far as your token allows - **you have no `project` scope**, so say in the report which
+issues need adding to the board and I will do it.
+
+Report per issue: what you did, what you found, and what you did about it. Questions go to `work (aggiemap)`.
+
+---
 
 ## Batch 184 (aggiemap: #2586 - a greyed-out travel-mode toggle can still be clicked; a branch; 30 October 2026, about 4:55 PM Central, from `work (aggiemap)`)
 
