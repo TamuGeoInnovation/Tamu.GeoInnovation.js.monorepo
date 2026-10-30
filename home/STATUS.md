@@ -6,7 +6,7 @@
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
-Nothing yet; starting batch 22 next.
+**Batch 22** (security: #2564, remove three unused dependencies), started 7:44 AM Central, Friday 30 October 2026, from `work (security)`. Batch 23 after it.
 
 ## Finished
 - **Batch 21** (aggiemap; report `home/reports/2026-10-30-21.md`): #2558 branch ready: `feat/2558-mens-basketball-refresh` at `8e0ff2360`. Icons, closures and parking refresh every minute; red 3 of 3 then green; refresh seen in a browser (a re-check a minute, refetch on lastEditDate). Check exit 0. Started late: the watcher was down when it arrived.
