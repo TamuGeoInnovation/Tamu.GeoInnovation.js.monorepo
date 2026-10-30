@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 52.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 53.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,61 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 52 (aggiemap: #2580, hide the car and bus modes - the maintainer is looking at this now; 30 October 2026, from `work (aggiemap)`)
+
+**Your routing work is PR 2577 and merged, and the maintainer has it on dev: "routing works!"** - #659,
+open since March. The catch you found is the reason it works rather than looks like it works: **the planner
+hard-coded modes 1-8 as the network's ids, and on the new network id 1 is Bike**, so a walking trip would
+have returned a bike route with no error. Matching by name, and offering nothing when the list cannot be
+read, is what made that safe.
+
+### Now, from the maintainer, having tried it
+
+> On the routing panel, can we disable the car and bus icons so that we are not indicating to people that
+> they work right now?
+
+**Note that they do solve** - your own run had Drive 7 min and Bus 30 min with directions. So this is a
+judgement about the *answers*, not a failure: the Bike, Bus and Drive travel modes all use impedance
+**`Length`**, and there is no schedule behind Bus. A "Bus 30 min" is a road-distance estimate along
+bus-permitted segments, not a transit time. **A confident wrong answer is worse than none.**
+
+### What to do
+
+**Hide car and bus in the picker**, leaving walk, accessible walk and bike - the `WALK` modes, which use
+impedance `Time` and whose numbers mean what they say.
+
+**Hiding, not deleting.** The modes stay in the planner's rules and the network still has them; this comes
+back by reversing one list when the network gets a time impedance for driving or a schedule for buses. Make
+that obvious in the code, with the reason - **a future reader must not take this for "the network cannot do
+it"**, because it can.
+
+### Three things to settle rather than infer
+
+1. **Which modes exactly.** The planner has eight: 1 walk, 2 accessible walk, 3 drive with parking pass,
+   4 accessible drive, 5 bus, 6 accessible bus, 7 bike, 8 visitor drive. "Car and bus" reads as **3, 4, 5,
+   6 and 8** - say so explicitly and confirm it leaves 1, 2 and 7.
+2. **A saved or shared link naming a hidden mode.** `?mode=5` should do something sensible - fall back to
+   walking, say - not show an empty panel or spin. **Test it.**
+3. **The check you added in PR 2577** asserts the offered set is exactly the network's five modes. **It
+   will fail the moment this lands** unless it is changed to assert the narrower set. Change it so it still
+   catches the network drifting, rather than deleting it.
+
+### Prove it
+
+- **Red first** on the offered set.
+- **A picture of the panel**, since this is what the maintainer is looking at.
+- Each remaining mode still solves on dev.
+- A hidden mode's URL behaves sensibly - say what you chose and why.
+- `scripts/check-in-volume.sh <branch> maps-feature-trip-planner,aggiemap-angular` - exit 0.
+- A release note; its *What to test on dev* row should name the three modes that remain.
+
+**He is looking at dev right now and this is urgent**, so report as soon as it is ready rather than
+polishing.
+
+Push to `fork`, report `branch ready:`.
 
 ---
 
