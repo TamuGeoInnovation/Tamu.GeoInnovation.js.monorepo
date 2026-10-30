@@ -14,12 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-**Batch 24** (aggiemap; #2573, the construction hatch strokes to 60% opacity), started about 10:50 AM Central. Checked first: #2573 open, no PR, no branch.
-- Progress (about 10:55 AM Central): test committed (`d1b69a3c7`) and the fix (`90fa1fa07`, strokes alpha 153). Red check running on the test commit; it also builds the before app for the zoom 16-18 captures.
-
-**Every open question is in `home/reports/2026-10-30-questions.md`** (16, numbered afresh, each with a recommendation; five already-settled ones listed and not asked). The maintainer will answer them on the director's machine.
+Nothing. Idle and listening.
 
 ## Finished
+- **Batch 24** (aggiemap; report `home/reports/2026-10-30-24.md`): #2573 branch ready: `fix/2573-hatch-opacity` at `195b08df4`. Hatch strokes alpha 153; red then green; check exit 0. Before and after at zoom 16-18 on 1524 and Fort Worth: the label reads as one number, and at zoom 16 the building stays identifiable (the black outline carries it); 60% holds, no need for 75%. #2459's note updated.
 - **Batch 25** (gisday; report `home/reports/2026-10-30-25.md`): #2574 branch ready: `fix/2574-gisday-admin-users` at `7743f1425`. getUsers stops at 1,000 and returns `{ users, truncated }`; `GET users?q=` searches name and email (v3); the page has a debounced search box and the cut-off line. Red then green; check exit 0. Screenshots skipped (Auth0 hosted sign-in); the lab could capture them.
 - **Batch 23** (security; report `home/reports/2026-10-30-23.md`): deepmerge is the only remaining finding (13 low after batch 22). Not exploitable here (all inputs are compile-time definitions). Way to zero, proven in a scratch copy: a small deepMerge helper in libs/common/utils/object for our two imports, plus an npm overrides alias to a patched 4.3.2 for the jest and fork-ts-checker paths. Read only; two questions.
 - **Batch 22** (security; report `home/reports/2026-10-30-22.md`, amended for chart.js): #2564 branch ready: `chore/2564-remove-unused-dependencies` at `8784a5384` (.pr-body.md last). Four dependencies (chart.js added) and 18 transitive packages out; full check (clean npm ci, 92 projects) exit 0, run again after chart.js; audit 14 low to 13.
