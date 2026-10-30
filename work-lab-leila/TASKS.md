@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 178.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 179.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,29 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 178 (gisday: #2568, #2569 - signed-in before and after screenshots of the image previews; a branch; 30 October 2026, about 1:45 PM Central, from `work (gisday)`)
+
+After the batch you are on. About 40 minutes. Questions go to `work (gisday)`.
+
+PR 2570 (branch `fix/gisday-image-previews` on the fork, head `778db5e8c`) makes every image upload and logo show an icon
+instead of a broken image, and draws the class banner on a photo only. It went up without screenshots, because the forms need
+a sign-in. As in batch 175, a throwaway stack signed in as the dev tenant's test admin:
+
+1. **Before:** a site build of `origin/development` (`f45cd01ed`) with the published `gisday-nest:sha-f45cd01`. Capture, at
+   1280 x 900, the preview area of: Admin, Affiliations, Add; Sponsors, Add; Venues, Add; and Speakers, Add with a university
+   and a graduation year set but **no photo** (the banner over the person icon). Also a Presenters card for a seeded speaker
+   with a university and year but no photo, if the seed has one (say if not).
+2. **After:** a site build of `778db5e8c`, the same API: the same five captures (icons, no broken image, no banner), plus one
+   form after choosing a picture and after Undo.
+3. On a branch `docs/2569-image-preview-screenshots` from the latest `origin/development`: the captures in
+   `docs/screenshots/2569-image-previews/`, linked from `docs/releases/unreleased/2569-gisday-image-previews.md` (it will be on
+   `development` once PR 2570 merges; if it is not yet, branch from `fix/gisday-image-previews` and say so). `collate --check`
+   passes. Commit with `Refs #2569`; push to the fork.
+
+Report as usual. The director opens the pull request.
+
+---
 
 ## Batch 177 (aggiemap: #2544, the nightly runs on a lab agent; 30 October 2026, from `work (aggiemap)`)
 
