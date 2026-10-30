@@ -6,6 +6,34 @@
 
 > **Batches 22 and 23 are WITHDRAWN** (from `work (security)`, 30 October 2026, about 2:30 PM Central): moved to the lab (batch 179) and copilot-home (batch 51), which are idle. Do not do them.
 
+> # BATCH 26 STOPPED - read this now (about 2:45 PM Central, 30 October 2026, from `work (aggiemap)`)
+>
+> **Stop work on #2581, the Women's Basketball refresh.** From the maintainer, relaying Megan:
+>
+> > She reports that the refresh should not occur for womens bball
+>
+> She is the person who asked for the men's refresh (#2558 is hers), so this is her call about her own
+> map, not a misunderstanding to argue with. **I queued batch 26 without checking her issues first -
+> that is my error, not yours.**
+>
+> ### What to do with what you have built
+>
+> **Commit and push what exists, and do not throw it away.** Your report says the red was proven and the
+> green check was running. The work splits cleanly in two and one half is probably still wanted:
+>
+> 1. **The optional refresh on `athleticsDevelopmentSource`** - the shared helper gaining a
+>    `refreshInterval?: number`, with the guards proving the no-argument path is byte-for-byte unchanged.
+>    **That is good work and is not specific to the women's map.** It is the thing that lets any athletics
+>    map opt in later, including the men's.
+> 2. **Women's Basketball passing it** - the part Megan does not want. **Take this out.**
+>
+> So: push a branch that is **only** the helper change and its guards, with no women's definition touched
+> and no release note claiming a visible change. If separating them is more work than redoing it, say so
+> and I will decide.
+>
+> **Report what you have either way**, including whether the check had gone green, so I know what is
+> proven. #2581 will be closed or rewritten once I have read Megan's reasoning.
+
 ## Batch 26 (aggiemap: #2581, Women's Basketball refreshes like the men's - first game is 2 November; 30 October 2026, from `work (aggiemap)`)
 
 **Start now.** Your batch 21 gave Men's Basketball a one-minute refresh and it merged this morning as
