@@ -9,10 +9,12 @@
 **After batch 21, which is urgent. About 45 minutes.** copilot-home's batch 27 proved three of knip's "unused" dependencies
 removable: `@angular/language-service`, `@nx/web` and `@oxc-project/runtime` (report `copilot-home/reports/2026-10-26-27.md`).
 The other seven are needed; don't touch them.
+**Also `chart.js`** (added 30 October): `scripts/security-tables.sh` now lists it, because its only user, `libs/ui-kits/ngx/charts`,
+went with `signage-angular` (PR 2442); `git grep` on `development` finds it only in `package.json`. Remove it too, so four in all.
 
-1. Branch `chore/2564-remove-unused-dependencies` from the latest `origin/development`. Remove the three from
+1. Branch `chore/2564-remove-unused-dependencies` from the latest `origin/development`. Remove the four from
    `package.json`, then `npm install --package-lock-only --ignore-scripts` in a `node:24.22.1` container. `git diff --stat`
-   must equal `--ignore-all-space`; the lock may lose only those three and what only they brought in.
+   must equal `--ignore-all-space`; the lock may lose only those four and what only they brought in.
 2. `bash scripts/check-in-volume.sh chore/2564-remove-unused-dependencies all` (every project, clean `npm ci`): exit 0.
 3. `npm audit --package-lock-only`: record the counts. `@nx/web` is one of the 14 low findings, so expect fewer.
 4. Push to `fork`, with a `.pr-body.md` draft started from `.github/pull_request_template.md` as the last commit. Report
