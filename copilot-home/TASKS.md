@@ -26,6 +26,104 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 ---
 
+## Batch 51 (aggiemap: #659, point routing at Megan's new network - development only; 30 October 2026, from `work (aggiemap)`)
+
+**Megan has published a working routing network**, and [#659](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/659)
+- *Routing stopped working*, open since March - is finally fixable.
+
+She published two things and was unsure which we need. **The answer is the second**, and I have verified it:
+
+| | Type | Verdict |
+| --- | --- | --- |
+| `.../services/RoutingWebTool` | `route_service_py_20261030` (**GPServer**) | A geoprocessing service. `@arcgis/core/rest/route` cannot use it |
+| `.../services/RoutingProPublish` | `RoutingProPublish/Map` (**MapServer + NAServer**) | **This one** |
+
+**Directions work on it** - the exact thing #659 said was broken:
+
+```
+.../RoutingProPublish/Map/NAServer/Route/solve  returnDirections=true
+-> 1 route, 10.66 min, 14 direction steps
+```
+
+Network dataset `TS.ND1_1`, impedance Time, directions in 38 languages. And it confirms the diagnosis:
+`gis.tamu.edu/.../services/Routing` publishes **nothing**, while dev's holds only `20220119` and
+`ChrisRoutingTest`.
+
+### The catch that would have made a one-line change fail
+
+**`trip-planner-connection.service.ts` does not just filter by `type === 'NAServer'`.** It then matches the
+service *name* against a convention:
+
+```
+^(Routing/)\d{8}[A|B]$     and     ^(Routing/)\d{8}$
+```
+
+**`RoutingProPublish/Map` matches neither.** So repointing `routingBaseUrl` would discover the NAServer and
+then discard it, and the trip planner would find no network at all.
+
+**Work out what that convention is for before changing it.** The dated `A`/`B` names look like a
+zero-downtime republish rotation - Transportation publishes `Routing/20261030A`, the app picks it up, and
+`B` is the next one. If that is right, the convention is load-bearing and the better fix may be **asking
+Megan to publish into the `Routing` folder under a dated name** rather than loosening our matching. Say
+which you conclude and why; if it is the ask, I will take it to the maintainer rather than you widening a
+regex that exists for a reason.
+
+### Development only
+
+**The maintainer is explicit: this must not reach production.** Production's `Routing` folder is empty, so
+there is nothing to point at there anyway - but do not rely on that as the gate.
+
+- Follow the repository's own rule: a service without a production counterpart is gated with
+  `TestingService` (`isTesting`), as bus routes and the vector basemap were.
+- **Add it to `DEVELOPMENT_ONLY_SERVICES`** in `test/smoke/aggiemap/development-only.ts`, with the pages
+  that request it, so **the smoke suite fails if production ever requests it**. That is the mechanism that
+  makes "development only" true rather than intended (#1229).
+- `directions.spec.ts` already checks directions appear on dev and never on production. It must still pass
+  both ways.
+
+### Only the travel modes the network supports
+
+The maintainer: *"I think that the travel modes are limited, so we will need to only make available the
+travel modes that the network supports."* He is right. `retrieveTravelModes` on the new network returns
+**five**:
+
+| Name | Type | Impedance |
+| --- | --- | --- |
+| Bike | AUTOMOBILE | Length |
+| Bus | AUTOMOBILE | Length |
+| Drive | AUTOMOBILE | Length |
+| Walk | WALK | Time |
+| Walk_ADA | WALK | Time |
+
+Its restrictions are campus-specific and worth knowing: `ADA`, `Doors`, `No Bike`, `No Bus`, `No Drive`,
+`No Walk`, `NoWalk OffCampus`, `One Way`, `PermitParking`, `TimedRoad`, `Visitor`.
+
+- **Compare that list with what the trip planner offers today** and say what differs. The planner has its
+  own mode rules (`getRuleForModes`, `getTravelModeFromRule`) and hard-coded ids - `travelMode.id`
+  defaulting to `1`, a literal `'1'` in the mode switch.
+- **Offer only modes the network has.** A mode in the picker that the network cannot solve is a dead
+  button, which is worse than one fewer option.
+- **Read the modes from the service where you can**, rather than hard-coding a second list that will drift
+  from the network the way the old one did. If that is too large a change for this batch, say so and
+  hard-code them *with* a check that fails when the service's list changes.
+
+### Prove it
+
+1. **A whole trip, end to end, on dev**, with directions shown - not just a solve. That is what #659 asks
+   for and what has been impossible since March.
+2. **Each travel mode you offer actually solves** on the new network. Name them in the report.
+3. **Production shows no directions** - `run-local.sh local-production` and the existing gating spec.
+4. `scripts/check-in-volume.sh <branch> maps-feature-trip-planner,aggiemap-ngx-common,aggiemap-angular` - exit 0.
+5. Before and after screenshots of a trip with directions.
+6. A release note with its *What to test on dev* row.
+
+**Do not close #659 in the pull request** unless a whole trip really works end to end. If something else
+is still broken, that is the finding and it is worth more than a partial switch.
+
+Push to `fork`, report `branch ready:`.
+
+---
+
 ## Batch 51 (security: `deepmerge`, the last vulnerability - find the way to zero; read only; 30 October 2026, 10:46 AM Central, from `work (security)`)
 
 Moved here from home's batch 23, which home has not reached.
