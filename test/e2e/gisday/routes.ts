@@ -11,6 +11,7 @@ export const PUBLIC_ROUTES = [
   { path: '/presenters', name: 'presenters' },
   { path: '/sponsors', name: 'sponsors' },
   { path: '/competitions', name: 'competitions' },
+  { path: '/competitions/posters/gallery', name: 'poster gallery' },
   { path: '/about', name: 'about' },
   { path: '/faq', name: 'faq' },
   { path: '/contact', name: 'contact' },

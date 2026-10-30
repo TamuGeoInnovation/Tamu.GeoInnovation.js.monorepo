@@ -4,10 +4,11 @@ import { Repository } from 'typeorm';
 
 import { isOwnerOrPermitted } from '@tamu-gisc/common/nest/auth';
 
-import { SubmissionType, Submission } from '../entities/all.entity';
+import { SubmissionType, Submission, Season, PRESENTATION_SUBMISSION_TYPE } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
 import { ContactService } from '../contact/contact.service';
+import { PosterDto } from './dto/poster.dto';
 
 @Injectable()
 export class UserSubmissionProvider extends BaseProvider<Submission> {
@@ -55,6 +56,49 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     const season = await this.seasonService.findOneActive();
 
     return this.getSubmissionsForSeason(season.guid);
+  }
+
+  /**
+   * The accepted posters of a season (the active one when none is named), for the public gallery (#2496).
+   * Only a title, the authors' names, the poster's link and the year leave here: a submission also holds
+   * its authors' emails and student ids, the owner's account and the reviewer's message.
+   */
+  public async getPosters(seasonGuid?: string): Promise<PosterDto[]> {
+    let season: Season | null;
+
+    try {
+      season = seasonGuid
+        ? await this.seasonService.findOne({ where: { guid: seasonGuid } })
+        : await this.seasonService.findOneActive();
+    } catch (err) {
+      // A site with no active season yet has no posters; anything else is a real failure.
+      if (err instanceof NotFoundException) {
+        return [];
+      }
+
+      throw err;
+    }
+
+    if (!season) {
+      return [];
+    }
+
+    const posters = await this.userSubmissionRepo.find({
+      where: {
+        season: { guid: season.guid },
+        submissionType: PRESENTATION_SUBMISSION_TYPE.POSTER,
+        reviewed: true,
+        acceptance: true
+      },
+      order: { title: 'ASC' }
+    });
+
+    return posters.map((poster) => ({
+      title: poster.title,
+      authors: (poster.participants ?? []).map((participant) => participant.name),
+      link: poster.link,
+      year: season.year
+    }));
   }
 
   /**
