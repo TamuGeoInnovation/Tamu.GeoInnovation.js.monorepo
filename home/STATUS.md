@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 27** (aggiemap, #2581 rewritten: a per-event refresh switch on `EventConfiguration`, football and men's folded in, women's off with Megan's reason): started about 2:45 PM Central, 30 October. Batch 28 (#2530 Graduation) after it.
+- **Batch 27** (aggiemap, #2581 rewritten: a per-event refresh switch on `EventConfiguration`, football and men's folded in, women's off with Megan's reason): started about 2:45 PM Central, 30 October. Red proven (3 switch tests fail; the football, men's, helper and every-other-map guards pass on the old code). Switch committed; `affected` check running. Batch 28 (#2530 Graduation) after it.
 
 ## Finished
 - **Batch 26** (aggiemap, STOPPED on Megan's word; report `home/reports/2026-10-30-26.md`): #2581. branch ready: `chore/2581-athletics-refresh-option` at `acc45cbc2`, the helper's optional refreshInterval and its two strict guards only; no women's change, no release note; check exit 0. The full batch is kept as `feat/2581-womens-basketball-refresh` at `9411f5ffa` (red then green, exit 0; refresh seen in a browser). Men's cannot use the helper (popups differ). Two questions.
