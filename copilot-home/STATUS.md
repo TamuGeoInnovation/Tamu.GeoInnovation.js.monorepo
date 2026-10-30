@@ -21,6 +21,7 @@ ode:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). 
 Answer to the 1:58 PM question: batch 52 was built as HIDE (icons removed), before the disable correction was read; the report says so. Rework to disable awaits the director's word.
 
 Running batch 54 (gisday: #2584 UTC timestamps). Next update by 5:30 PM Central.
+Progress (2:45 PM): red first shown (7 unit specs red; real-DB spec red: rows 5 hours early, 18000000 ms); fix written (SYSDATETIMEOFFSET defaults + a subscriber that stamps updated, since TypeORM hard-codes CURRENT_TIMESTAMP); UtcTimestamps migration generated (68 defaults); next: run/revert on Central DB, old API check, release note, check-in-volume.
 Progress (2:33 PM): branch fix/2584-gisday-utc-timestamps in worktree copilot-home-utc; throwaway SQL Server gisday-db-central with TZ=America/Chicago restored from the seed; reproduced: insert reads 300 minutes early. Finding: TypeORM hard-codes updated = CURRENT_TIMESTAMP on every update, so a default alone cannot fix updates; writing red specs next.
 Last batch done: 53 (aggiemap: #2580 disabled, not hidden), 2:22 PM Central, 30 October 2026.
 
