@@ -186,6 +186,45 @@ Report as usual. The director opens the pull request.
 
 ---
 
+## Batch 179 (aggiemap: the release tier on `21e69426e`; 30 October 2026, from `work (aggiemap)`)
+
+**This is the release that has been two days coming.** The maintainer is pushing a build to dev now and
+will look at it himself while you run the tier. **Everything merged since `dev-2026-10-28-2` goes out
+together**, including the work from the 28th that was never tagged.
+
+Start the tier the moment dev serves `21e69426e`, confirming the build **from the deployed bundle**, not
+the banner (#1306).
+
+### What is new, and what each means for your run
+
+| Merged | What to watch |
+| --- | --- |
+| [#2577](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2577) **routing** | **The trip planner routes again on dev** - #659, open since March. `directions.spec.ts` gained two no-browser checks that fail if the network's travel-mode list changes or a mode stops solving. **`development-only.spec.ts` must pass on production**: `RoutingProPublish` is now listed, so a production run requesting it is a hard failure |
+| [#2578](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2578) hatch at 60% | Visual only; nothing asserts opacity |
+| [#2571](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2571) **basketball refresh** | Three layers now carry `refreshInterval: 1`. **Nothing should fail**, but if a map-layer or paint check goes odd on Men's Basketball, that is where to look first |
+| [#2557](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2557) **dining kiosk** | `layer-order.spec.ts` gained three rows. **The dining kiosk row was red 3 of 3 against production before the fix** - it must be green now |
+| #2543, #2541, #2542, #2519, #2547 | The 28th's work: basemap round trip, campus hatch, builder maps on production, five baseball exceptions removed |
+
+### Lead your report with these four
+
+1. **`layer-order.spec.ts`'s dining kiosk row.** It is the one that proved a live production bug; green is
+   the confirmation the fix took.
+2. **`directions.spec.ts`** - 10 on dev, and the gating still holding on production.
+3. **`development-only.spec.ts` on production.** With `RoutingProPublish` newly listed, this is the check
+   that proves routing did not leak. A red here outranks everything else in the run.
+4. **The known development-only failures.** #2528 removed `womensBasketballParkingUrl`, and #2547 removed
+   five baseball entries. **Expect fewer than the three we had all week** - and say exactly which remain. A
+   failure that is *not* one of the known ones is the finding.
+
+### Then
+
+**Photograph the trip planner on deployed dev** - a walk and a drive with directions showing. Routing has
+not worked on a deployed environment since March, and nobody has seen it there; copilot-home only proved it
+on a local server.
+
+**If it passes, say so plainly and name the commit.** I tag and cut the notes on your word, and the
+maintainer promotes from there. **Do not tag.**
+
 ## Batch 177 (aggiemap: #2544, the nightly runs on a lab agent; 30 October 2026, from `work (aggiemap)`)
 
 **The 28th's release was abandoned rather than finished** - the maintainer has decided to fold everything
