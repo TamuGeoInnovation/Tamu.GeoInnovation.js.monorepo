@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 181.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 182.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,29 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 181 (ui-kit: #2588 - a phone menu tile is tappable all over, not only its word; a branch; 30 October 2026, about 3:10 PM Central, from `work (gisday)`)
+
+**After batch 180 (the date picker).** Medium. About 60 minutes. Questions go to `work (gisday)`.
+
+[#2588](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2588): in the GIS Day phone menu only the word is a
+link, because `tamuGiscTileLink` (`libs/ui-kits/ngx/navigation/mobile-tile`) sits on `tamu-gisc-tile-title`. Users:
+`libs/gisday/platform/ngx/common/.../header/header.component.html` and `libs/geoservices/ngx` (twice).
+
+1. Branch `fix/2588-mobile-tile-tap-target` from the latest `origin/development`.
+2. Before screenshots at phone width (375 x 812) of the open GIS Day menu (public, no sign-in), with the tap areas outlined if you
+   can (for example a capture with a temporary outline, not committed).
+3. **Red first:** a test in the mobile-tile library that a click on a tile's icon (or padding) follows its link; a tile without a
+   link (About, which opens a submenu) still does what it does today.
+4. **The fix, in the shared library only**, with no change to the pages' markup: the whole tile follows the link, and it is a real
+   link or button for keyboard and screen readers, with a visible focus.
+5. After screenshots; `docs/screenshots/2588-mobile-tile/`, and a release note `docs/releases/unreleased/2588-mobile-tile.md`.
+6. `scripts/check-in-volume.sh fix/2588-mobile-tile-tap-target` (full affected: a shared UI kit) exit 0. Commit with
+   `Closes #2588`; push to the fork.
+
+Report as usual. The director opens the pull request.
+
+---
 
 ## Batch 180 (ui-kit: #2583 - rebuild the shared date-time picker on Angular Material; a branch; 30 October 2026, about 2:45 PM Central, from `work (gisday)`)
 
