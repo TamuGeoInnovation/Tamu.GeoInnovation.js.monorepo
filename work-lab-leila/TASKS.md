@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 184.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 185.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,77 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 184 (aggiemap: #2586 - a greyed-out travel-mode toggle can still be clicked; a branch; 30 October 2026, about 4:55 PM Central, from `work (aggiemap)`)
+
+**Batch 183 was the result I wanted and the details were the useful part** - "none from cache" and "budgets
+included" across 13 builds are what make it mean something, and the release notes landing on **exactly one
+entry** confirmed the 2590/2609 interaction rather than leaving it reasoned. The maintainer has it.
+
+**[#2586](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2586).** Real, reachable, and user-facing. I checked the current code before queueing
+this rather than trusting the issue.
+
+### What is wrong
+
+`trip-planner-mode-toggle/containers/base/base.component.html` is one `div role="button"`. It gets a
+`disabled` class when either:
+
+- `isModeRestricted`, or
+- `!allPristine && !toggleHasResult` - results came back and this toggle has none.
+
+**And it stays fully live.** `(click)`, `(keydown.enter)` and `(keydown.space)` all call `setTravelMode()`
+with no guard, and `tabindex="0"` is unconditional. `setTravelMode()` goes straight to
+`calculateTravelMode`.
+
+So a button that is grey, with a `not-allowed` cursor, **can still be clicked, still activated with Enter or
+Space, and is still in the tab order.** Every visual cue says unavailable and every interaction says
+otherwise.
+
+### The second condition is the one you can reach today
+
+Routing works on dev now ([#659](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/659), PR 2577). A trip where **bike, car and bus answer "No
+route from location"** puts those toggles into exactly that state - copilot-home saw it this afternoon while
+checking something else. So this is reproducible on dev rather than theoretical.
+
+### The fix shape already exists, and is worth reusing rather than reinventing
+
+`feat/2580-hide-car-bus-modes` on the fork (copilot-home's, **unmerged and now closed** - [#2580](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2580)
+was dropped because every travel mode should be on) solved exactly this problem for a different set of
+modes, and its treatment is the one to copy:
+
+- `aria-disabled="true"`
+- `tabindex="-1"`, so Tab skips it
+- the existing `disabled` class for the grey and the cursor
+- and **`setTravelMode()` returning immediately**, so click, Enter and Space all genuinely do nothing
+
+Its component test asserted each of those **and** that `calculateTravelMode(..., true)` is never called.
+**Read that branch for the shape; do not build on it** - it carries mode-hiding we do not want.
+
+### What I do not want
+
+**Not `pointer-events: none`.** It stops a mouse and leaves the keyboard path open, which is the same bug
+with a narrower audience, and it also kills the `title` tooltip.
+
+**Do not add a reason tooltip** unless it falls out naturally. #2580's wording was for modes that were
+unavailable outright; "no route was found for this mode" is a different message and the maintainer has not
+been asked for words. Mention it in the report if you think it is wanted.
+
+### Prove it
+
+- **Red first**, as a component test: disabled toggle, then click, Enter and Space each proven not to reach
+  `calculateTravelMode`.
+- **In a browser on dev**, reach the state for real - a trip where some modes return no route - and show
+  that Tab skips the greyed toggles and that a forced click changes nothing (`aria-pressed` unmoved, the
+  address bar unmoved). That DOM read is the convincing part.
+- **Check the modes that *do* have a result are untouched**: `tabindex="0"`, live, still selectable. The
+  whole risk in this change is disabling one toggle too many.
+- `scripts/check-in-volume.sh <branch> maps-feature-trip-planner,aggiemap-angular` exit 0.
+- Before/after screenshots, and a release note - **this one is visible**, so it needs an entry with its
+  *What to test on dev* row.
+
+Push to `fork`, report `branch ready:`. Questions go to `work (aggiemap)`.
+
+---
 
 ## Batch 183 (aggiemap: the five open pull requests, checked merged together; 30 October 2026, about 4:15 PM Central, from `work (aggiemap)`)
 
