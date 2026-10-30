@@ -175,6 +175,9 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
         break;
       }
     }
+
+    // Emptied so that choosing the same file again still fires a change; the photo shown stays (#2545).
+    e.target.value = '';
   }
 
   public submitResponse() {
