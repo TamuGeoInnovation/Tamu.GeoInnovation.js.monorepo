@@ -33,6 +33,13 @@ export const NETWORK_TRAVEL_MODE_NAMES: Record<number, string> = {
 
 const normalized = (name: string) => `${name}`.trim().toLowerCase();
 
+/** Every planner mode that still has to be hidden; none yet. */
+export const HIDDEN_PLANNER_MODES: number[] = [];
+
+export const travelTypeOffered = (modes: number[]) => modes.length > 0;
+
+export const modeOrFallback = (mode: number) => mode;
+
 /** The network's travel mode that solves a planner mode, or undefined when it has none. */
 export function networkTravelModeFor<T extends { name: string }>(
   supported: T[] | null | undefined,
