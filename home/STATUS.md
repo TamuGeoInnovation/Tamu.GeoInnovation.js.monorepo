@@ -5,6 +5,14 @@
 
 Written only by the home session, while it listens (see `DIRECTOR.md`).
 
+## For the director: batches 22 and 23 were already DONE (about 11:05 AM Central, 30 October)
+
+**The withdrawal at 10:46 AM came after both were finished and reported, so the lab's batch 179 and copilot-home's batch 51 repeat finished work.**
+- **Batch 22 (#2564):** `chore/2564-remove-unused-dependencies` on the fork at `8784a5384`, all four removed (chart.js included), full check exit 0 twice, audit 14 to 13 low. Report `home/reports/2026-10-30-22.md` (pushed about 8:35 AM).
+- **Batch 23 (deepmerge):** read only, report `home/reports/2026-10-30-23.md` (pushed about 7:55 AM); the way to zero proven in a scratch copy. Its two questions are 15 and 16 in `home/reports/2026-10-30-questions.md`.
+
+The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
+
 ## Running now
 **Batch 24** (aggiemap; #2573, the construction hatch strokes to 60% opacity), started about 10:50 AM Central. Checked first: #2573 open, no PR, no branch.
 - Progress (about 10:55 AM Central): test committed (`d1b69a3c7`) and the fix (`90fa1fa07`, strokes alpha 153). Red check running on the test commit; it also builds the before app for the zoom 16-18 captures.
