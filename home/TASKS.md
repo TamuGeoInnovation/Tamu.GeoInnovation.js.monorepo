@@ -4,6 +4,41 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 22 (security: #2564 - remove three dependencies nothing uses; a branch; 30 October 2026, about 7:45 AM Central, from `work (security)`)
+
+**After batch 21, which is urgent. About 45 minutes.** copilot-home's batch 27 proved three of knip's "unused" dependencies
+removable: `@angular/language-service`, `@nx/web` and `@oxc-project/runtime` (report `copilot-home/reports/2026-10-26-27.md`).
+The other seven are needed; don't touch them.
+
+1. Branch `chore/2564-remove-unused-dependencies` from the latest `origin/development`. Remove the three from
+   `package.json`, then `npm install --package-lock-only --ignore-scripts` in a `node:24.22.1` container. `git diff --stat`
+   must equal `--ignore-all-space`; the lock may lose only those three and what only they brought in.
+2. `bash scripts/check-in-volume.sh chore/2564-remove-unused-dependencies all` (every project, clean `npm ci`): exit 0.
+3. `npm audit --package-lock-only`: record the counts. `@nx/web` is one of the 14 low findings, so expect fewer.
+4. Push to `fork`, with a `.pr-body.md` draft started from `.github/pull_request_template.md` as the last commit. Report
+   `home/reports/2026-10-30-22.md`, then push `home: batch 22 done - ...`. No PR; the director opens it.
+
+## Batch 23 (security: `deepmerge`, the last vulnerability - find the way to zero; read only first; 30 October 2026, about 7:45 AM Central, from `work (security)`)
+
+**After batch 22. About an hour.** `npm audit` on `development` (`8db3a0fc4`) reports 14 **low** findings. All of them come
+from one advisory, [GHSA-gcqx-w48m-w2h4](https://github.com/advisories/GHSA-gcqx-w48m-w2h4): `deepmerge` 4.2.0 to 4.3.1,
+prototype poisoning in `mergeObject()`. **No fixed version exists**: 4.3.1 (March 2023) is the last release. One finding is
+production: `deepmerge` is a direct dependency (`package.json`, `^4.2.2`), imported by
+`libs/maps/esri/src/lib/services/layer-sources/layer-sources.service.ts` and `libs/ts/events/ngx/src/lib/services/event/event.service.ts`.
+The rest come through jest (`jest-config`), `fork-ts-checker-webpack-plugin` (via `@nx/webpack`) and the `@nx/*` packages
+that pull those in. The maintainer's goal is no vulnerability of any severity.
+
+Find out, and report each with evidence:
+1. **Our two imports:** what each merges, and whether attacker-shaped input (a service's JSON) can reach it. Then propose
+   the replacement: a small shared helper exported from `libs/common/**` that guards `__proto__`, `constructor` and `prototype`,
+   or a maintained library (name it, its age and its weekly downloads). Reuse before building (CLAUDE.md).
+2. **The dev-only paths:** does the newest `jest` / `jest-config`, `fork-ts-checker-webpack-plugin` or `@nx/webpack`
+   (each at least 7 days old) still depend on `deepmerge`? If any has dropped it, say which version and whether we can take it.
+   If none has, could an npm `overrides` entry pointing `deepmerge` at a maintained, API-compatible fork work, and which?
+3. A recommendation, with options, under **Questions for the director (security)**.
+
+Read only: no branch yet. Report `home/reports/2026-10-30-23.md`, then push `home: batch 23 done - ...`.
+
 ## Batch 21 (aggiemap: #2558, basketball parking refreshes like football - URGENT; 28 October 2026, from `work (aggiemap)`)
 
 **Batch 20 found a live production bug by doing cleanup, which is the best kind of find.** The dining kiosk
@@ -1093,7 +1128,7 @@ Thank you for catching the cluster details yourself.
 6. `bash scripts/check-in-volume.sh <branch>` must exit 0. Add a `.pr-body.md` draft as the last commit. Report
    `home/reports/2026-10-26-3.md`, then push `home: batch 3 done - ...`. No PR (the director opens it).
 
-Next free number: 5.
+
 
 ## Batch 2 (security: prove the zod 4.6.6 override for jimp on branch chore/override-zod; 26 October 2026, about 7:30 AM Central, from `work (security)`)
 
