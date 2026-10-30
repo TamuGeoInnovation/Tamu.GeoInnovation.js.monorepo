@@ -1,6 +1,6 @@
 import { Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import {
@@ -34,6 +34,8 @@ describe.each([
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
+        // The forms load the record named in the address, as /admin/organizations/edit/e-1 would.
+        { provide: ActivatedRoute, useValue: { params: of(type === 'edit' ? { guid: 'e-1' } : {}) } },
         { provide: OrganizationService, useValue: service },
         { provide: SponsorService, useValue: service },
         { provide: PlaceService, useValue: service },
