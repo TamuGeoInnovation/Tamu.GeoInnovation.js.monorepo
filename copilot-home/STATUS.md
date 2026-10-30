@@ -2,7 +2,7 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **5:30 PM Central, 30 October 2026**. A listener; job: not yet assigned.
+Last written **3:08 PM Central, 30 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
@@ -20,15 +20,14 @@ ode:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). 
 
 Answer to the 1:58 PM question: batch 52 was built as HIDE (icons removed), before the disable correction was read; the report says so. Rework to disable awaits the director's word.
 
-Running batch 54 (gisday: #2584 UTC timestamps). Next update by 5:30 PM Central.
-Progress (2:52 PM): migration run, reverted and run again on the Central-clock DB (68 defaults getdate -> sysdatetimeoffset, no drift); real-DB spec 5/5 green after; old API build serves reads on the migrated DB; committed 3ed1a279d locally; check-in-volume running now.
-Progress (2:45 PM): red first shown (7 unit specs red; real-DB spec red: rows 5 hours early, 18000000 ms); fix written (SYSDATETIMEOFFSET defaults + a subscriber that stamps updated, since TypeORM hard-codes CURRENT_TIMESTAMP); UtcTimestamps migration generated (68 defaults); next: run/revert on Central DB, old API check, release note, check-in-volume.
-Progress (2:33 PM): branch fix/2584-gisday-utc-timestamps in worktree copilot-home-utc; throwaway SQL Server gisday-db-central with TZ=America/Chicago restored from the seed; reproduced: insert reads 300 minutes early. Finding: TypeORM hard-codes updated = CURRENT_TIMESTAMP on every update, so a default alone cannot fix updates; writing red specs next.
-Last batch done: 53 (aggiemap: #2580 disabled, not hidden), 2:22 PM Central, 30 October 2026.
+Idle. Nothing running.
+Last batch done: 54 (gisday: #2584 UTC timestamps), 3:08 PM Central, 30 October 2026.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
+
+- **Batch 54, gisday: #2584 times saved as true UTC instants** (about 2:30 to 3:08 PM Central, 30 October 2026): branch `fix/2584-gisday-utc-timestamps` at `3ed1a279d447eedffe4e3ff36a7d19f52945962c` on the fork; 68 defaults to SYSDATETIMEOFFSET (`UtcTimestamps` migration, run/revert/run proved on a Central-clock DB) plus a subscriber that stamps updated; red first (7 unit specs, real-DB spec 4 failed), check exit 0; old rows left; migrate before rollout. Report `copilot-home/reports/2026-10-30-54.md`.
 
 - **Batch 53, aggiemap: #2580 disabled, not hidden** (30 October 2026): branch `feat/2580-hide-car-bus-modes` at `e168344681bb1e7b1eef7eb60693bb3b27d2a837` on the fork; Driving and Bus drawn, greyed, aria-disabled, out of the tab order, handler inert; red first (5 failed), check exit 0; new component test; live DOM read and screenshots; proposed tooltip wording in the report. Report `copilot-home/reports/2026-10-30-53.md`.
 
