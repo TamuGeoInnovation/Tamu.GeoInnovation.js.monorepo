@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 54.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 55.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,45 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 54 (gisday: #2584 - stored times are local Central labelled as UTC; a branch with a migration; 30 October 2026, about 3:00 PM Central, from `work (gisday)`)
+
+**High priority, start now. Deadline: the pull request by Thursday 5 November**, so it can be released before the VGI competition
+opens on 14 November. About 3 hours. Questions go to `work (gisday)` under **Questions for the director (gisday)**.
+
+[#2584](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2584) has the evidence and the decision. In
+short: all 68 `created`/`updated` columns default to `getdate()`, which is the database server's **local** time; production's server
+is Central, so times are stored 5-6 hours early as `+00:00`. VGI scoring compares `created` with a correctly stored window, so the
+competition would score from about 6 AM Saturday to 5 PM Friday.
+
+### What to do
+
+1. Branch `fix/2584-gisday-utc-timestamps` from the latest `origin/development`.
+2. **Reproduce first, on a database whose clock is Central.** Your local SQL Server container is UTC, which hides the fault: run
+   the GIS Day stack's database with `-e TZ=America/Chicago` (a throwaway container; say exactly how you set it, and show
+   `SELECT GETDATE(), SYSDATETIMEOFFSET(), SYSUTCDATETIME()` from it). Insert a row and show its `created` reads 5 hours early.
+3. **Red first,** tests that fail on today's code against that database (or, where a unit test cannot hold a real clock, a spec
+   that asserts what the entity and migration declare):
+   - a row inserted at a known instant reads back as that instant;
+   - an update sets `updated` to the true instant;
+   - a VGI submission made at 10:59 AM Central on 20 November 2026 scores, and one at 11:00 AM does not, with the window
+     `2026-11-14T06:00:00Z` to `2026-11-20T17:00:00Z`.
+4. **The fix**, for **both** `TimeStampEntity` (`libs/gisday/platform/data-api`) and `GISDayCompetitionBaseEntity`
+   (`libs/gisday/competitions/data-api`), on **both** insert and update: the true instant, whether by `SYSDATETIMEOFFSET()` as the
+   default (and on update), or by the API setting the values itself (Node runs in UTC). Say which and why. Leave stored rows as
+   they are (decided).
+5. **The migration** (`docs/gisday-migrations.md`: generate, read its SQL, run, revert, run on your local copy): change the 68
+   defaults. Name it `UtcTimestamps`. Prove the old API still works on the migrated database.
+6. A release note `docs/releases/unreleased/2584-utc-timestamps.md`: what changes, and that **times saved before the fix read 5 to 6
+   hours early** (check-ins, registrations, submissions); a What to test row.
+7. `scripts/check-in-volume.sh fix/2584-gisday-utc-timestamps` (full affected: two shared libraries) exit 0 (use `CHECK_MEMORY` /
+   `CHECK_PARALLEL` if your machine needs them; PR 2566 merged). Commit with `Closes #2584`; push to the fork.
+
+The director writes the production migration script for kubernetes-config from your migration.
+
+Report as usual. Nothing on GitHub; the director opens the pull request.
 
 ---
 
