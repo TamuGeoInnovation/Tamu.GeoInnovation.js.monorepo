@@ -98,6 +98,14 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   '/code-maroon/feed.xml': {
     reason: '#1289: the Code Maroon proof of concept',
     pages: ['/map', '/parking/visitor-parking', '/events/tailgating']
+  },
+  // The routing network Transportation published for #659. The trip planner connects to it, on the development GIS
+  // server, only where development-only features are on. Production's Routing folder is empty, so it must never
+  // request this: a trip planner pointed at it there would have directions that nobody has agreed to publish. The
+  // planner asks the network which travel modes it supports as soon as it exists, which is the request seen here.
+  RoutingProPublish: {
+    reason: '#659: the development-only routing network',
+    pages: ['/map/d/trip']
   }
   // TS/WomensBasketballParking/MapServer was listed here for #2001, required of /events/womens-basketball on
   // dev. #2143 (#2176) moved that map's development version to the hosted athletics view, reached through the
