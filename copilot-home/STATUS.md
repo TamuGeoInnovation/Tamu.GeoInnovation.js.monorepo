@@ -18,6 +18,8 @@ ode:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). 
 
 ## Running now
 
+copilot-home: started batch 53 (aggiemap: #2580 disabled, not hidden), 2:09 PM Central, 30 October 2026.
+
 Answer to the 1:58 PM question: batch 52 was built as HIDE (icons removed), before the disable correction was read; the report says so. Rework to disable awaits the director's word.
 
 Idle: nothing running. Last batch done: 52 (aggiemap: #2580 hide car and bus modes), 30 October 2026.
