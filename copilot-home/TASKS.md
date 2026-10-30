@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 57.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 58.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -58,6 +58,67 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 >    regression to take to the GIS team.
 >
 > **Carry on with batch 54, then batch 55.** Nothing about the modes needs doing.
+
+## Batch 57 (aggiemap: #2604 - the smoke suite's four ways of asking which GIS host it is on; a branch; 30 October 2026, from `work (aggiemap)`)
+
+**Your batch 56 verdict was exactly what was needed** - a clean read, with the pre-existing fault separated
+from the change under test, so the other director's pull request is not held for something that is not
+theirs. I have put the verification on [#2583](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2583) and your questions are answered at the end
+of this batch.
+
+**Now fix the one finding from your own audit that has a live fault.** [#2604](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2604).
+
+### Why this one first, of the ten
+
+Eight of your findings are real but inert - a change waiting to be made in two places. **#2604 already
+behaves differently depending on which file you are in**, which is a fault rather than a risk:
+
+1. **Four specs decide the GIS host with `hostname.includes('dev')`** - `portal-renderers`,
+   `search-sources`, `service-metadata`, `services`. `gis-hosts.ts` already exports
+   `isDevelopmentHostname`, **and its own comment says why a substring test is wrong** (`devices.example.com`
+   matches). The fix was written and then not adopted by four callers, which is the worst version of this
+   pattern: the shared piece exists and is correct, and four places carry the bug it was written to remove.
+2. **The base URL is typed in 15 files, and six strip a trailing slash while nine do not.** So
+   `AGGIEMAP_SMOKE_BASE_URL` with a trailing slash behaves differently spec by spec. That is a real
+   inconsistency somebody will hit on a Monday morning and spend an hour on.
+3. **`environmentIsDevelopment` is a third way of asking the same question.** Decide whether it survives,
+   and say why, rather than leaving three.
+
+### How I would like it done
+
+- **One way to ask each question**, exported from where the suite already keeps shared things, and every
+  caller using it. Not a fourth helper beside the three.
+- **Trailing slash: pick the behaviour, apply it everywhere, and prove it.** The right answer is almost
+  certainly to normalise once at the source so no caller has to think about it.
+- **Red first.** A test that shows the substring test accepting a hostname it should not - the
+  `devices.example.com` case from the comment is the obvious one - and a test that a base URL with a
+  trailing slash reaches every spec the same way.
+- **This is the smoke suite, so run it.** `test/smoke/aggiemap/run-local.sh development release` is the test
+  machine's job and too heavy here; but the specs you touch must be run against **development and
+  production** so that a refactor of how the host is chosen is proven not to change which host is chosen.
+  **If any spec's result changes, stop and report** - that would mean one of the four was choosing the wrong
+  host today, which is a finding in its own right and bigger than this batch.
+- `scripts/check-in-volume.sh <branch> affected` plus the `tsc -p test/smoke/aggiemap` step, exit 0.
+- No release note: nothing a visitor sees.
+
+**Do not take the other nine on in this batch**, even though they are yours and you know them best. One at a
+time, with the suite run each time.
+
+### Your two questions from batch 56, answered
+
+1. **#2608 after #2583, not before.** They interact the way you described, and the order favours #2583
+   going first: with the binding fixed **on top of** the new picker the behaviour is correct, whereas fixing
+   #2608 against the old picker would have exposed its first-keystroke bug in the planner as well. #2583 is
+   also not ours to sequence. I have said as much on #2583.
+2. **Whether "Leave at" should change the route is a question for the maintainer**, and I am taking it to
+   him rather than answering it myself - your finding that **nothing sends the time to the solve**
+   (`startTimeIsUTC=true` and no `startTime`) is the useful half, and it is the kind of thing he will want
+   to decide with Transportation Services, since the network has no bus schedule and measures driving by
+   length. Leave #2608 describing it as you have.
+
+Push to `fork`, report `branch ready:`. Questions go to `work (aggiemap)`.
+
+---
 
 ## Batch 56 (aggiemap: does the rebuilt date-time picker still work in the trip planner? 30 October 2026, from `work (aggiemap)`)
 
