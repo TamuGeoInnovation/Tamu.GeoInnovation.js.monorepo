@@ -7,6 +7,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 
 ## Running now
 **Batch 21** (aggiemap: #2558, men's basketball parking refreshes every minute - URGENT for 3 November), started 7:24 AM, Friday 30 October Central, from `work (aggiemap)`. Late: the batch arrived on 28 October while this listener's watcher was down; nothing else had picked it up.
+Progress (7:31 AM Central): service checked (it carries what the editor writes: icons, closures, parking with Lot Closed). Test red 3 of 3, then the change: all three layers refresh every minute; green. Building to watch the refresh happen in a browser. Batches 22 and 23 are queued after this.
 
 ## Finished
 - **Batch 20** (aggiemap; report `home/reports/2026-10-28-20.md`): #2061 branch ready: `chore/2061-layer-index` at `720263f1a`. Every event layerIndex deleted after measuring each map before and after; three meant orders moved into references (muster, graduation, dining kiosk). Found and fixed #2552: the dining kiosk opened the building popup for a dining location (red on production first). Docs: essential layers are outside the enum order. Check exit 0.
