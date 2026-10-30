@@ -2,13 +2,14 @@
 
 Written only by copilot-home (see `DIRECTOR.md`). Clock times are read from the clock, US Central.
 
-Last written **12:50 PM Central, 28 October 2026**. A listener; job: not yet assigned.
+Last written **5:30 PM Central, 30 October 2026**. A listener; job: not yet assigned.
 
 ## What this is
 
 - **Machine:** the maintainer's home computer (Windows), working in `C:\TAMU\copilot-home`.
 - **Agent:** GitHub Copilot CLI (Claude Sonnet 5.5). Named `copilot-home` by the maintainer.
-- **Docker:** yes, Docker 28.3.2; `node:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). `bash` on PATH is WSL's, so use `C:\Program Files\Git\bin\bash.exe`.
+- **Docker:** yes, Docker 28.3.2; 
+ode:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). `bash` on PATH is WSL's, so use `C:\Program Files\Git\bin\bash.exe`.
 - **Fork remote:** yes, `fork` = `danielgoldbergtamu/Tamu.GeoInnovation.js.monorepo`; code branches go there only.
 - **`gh` CLI:** on PATH; by instruction it opens no pull requests and merges nothing.
 - **Takes batches only from** `copilot-home/TASKS.md` written by the `work (security)` director.
@@ -17,11 +18,16 @@ Last written **12:50 PM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-Running batch 51 (aggiemap: #659, point routing at Megan's new network), started 30 October 2026, about 11:20 AM Central. (Last finished: batch 51, security deepmerge.)
+Idle: nothing running. Last batch done: 51 (aggiemap: #659 routing on the new network), 30 October 2026.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
-## Finished`n`n- **Batch 51, security: deepmerge, the last vulnerability** (read only, 30 October 2026): no upstream (jest-config 30.5.2, fork-ts-checker 9.1.0, @nx 24.0.2) has dropped deepmerge and no fixed version exists; three call sites in our code; recommend deepmerge-ts for those and a patch or vetted override for dev paths. Nothing pushed but the report `copilot-home/reports/2026-10-30-51.md`.`n
+## Finished
+
+- **Batch 51, aggiemap: #659 routing on Megan's new network** (30 October 2026): branch `feat/659-routing-new-network` at `cbf323dda479732f6f69a332e09944f6b6f59c82` on the fork; development only, planner modes matched to the network's by name; a whole trip with directions works in a local dev run, production shows none; check exit 0. #659 not closed. Report `copilot-home/reports/2026-10-30-51-aggiemap.md`.
+
+- **Batch 51, security: deepmerge, the last vulnerability** (read only, 30 October 2026): no upstream (jest-config 30.5.2, fork-ts-checker 9.1.0, @nx 24.0.2) has dropped deepmerge and no fixed version exists; three call sites in our code; recommend deepmerge-ts for those and a patch or vetted override for dev paths. Nothing pushed but the report `copilot-home/reports/2026-10-30-51.md`.
+
 - **Batch 50, gisday: #2496 poster gallery** (7:54 to about 8:24 AM Central, 30 October 2026): fixed. The gallery's route `GET user-submissions/posters` was swallowed by the guarded `:guid` route (401); a public route now returns title, authors, link and year of accepted posters, and the gallery has a season list. Branch `fix/2496-gisday-poster-gallery` at `3947c8f3b40e17a3e096af07287d7db89ce53658` on the fork; red first, check exit 0; before and after screenshots. Nothing closed. Report `copilot-home/reports/2026-10-30-50.md`.
 
 - **Batch 49, aggiemap: #2521 Road Closures legend has no symbol** (7:54 AM Central, 30 October 2026): does not reproduce on development or production (the legend draws the hatch swatch; the service was edited after the issue was filed); no code fix. Branch `fix/2521-road-closures-legend` at `a9502d70d18d665edd03c32770da77b90cc2552f` on the fork removes the four stale known-failure entries; layers check passes on both environments without them; check exit 0. Nothing closed. Report `copilot-home/reports/2026-10-30-49.md`.
