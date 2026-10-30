@@ -15,3 +15,8 @@ this year.
 A class is now the same class only when its code, number, section, professor and season all match. A different
 section, or the same class in a new season, is added. Adding an exact copy is refused, and the toast says the class
 is already in this season instead of reporting a save that did not happen.
+
+| | Before | After |
+| --- | --- | --- |
+| A second section, GEOG 201 section 501 for Breyer | ![The toast says the class was created, and the list still has only section 500](../screenshots/2538-class-sections/before-second-section.png) | ![Sections 500 and 501 are both listed](../screenshots/2538-class-sections/after-second-section.png) |
+| An exact copy of section 500 | | ![The toast says GEOG 201 section 500 for Breyer is already in this season, and nothing is added](../screenshots/2538-class-sections/after-duplicate.png) |
