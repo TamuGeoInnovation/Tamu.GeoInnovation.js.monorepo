@@ -103,4 +103,12 @@ expect "a name nothing is close to is named alone, and each unknown one is liste
 nothing-like-it" "$(unknown_projects maps-esri-x,gisday-nest,nothing-like-it "$repo/projects.txt")"
 expect "a trailing comma is not a project" "" "$(unknown_projects gisday-nest, "$repo/projects.txt")"
 
+# The container's memory and Nx's parallel count come from the environment (#2498).
+expect "16g and 8 when neither is set" "16g 8" "$(unset CHECK_MEMORY CHECK_PARALLEL; check_limits)"
+expect "each honoured when set" "24g 12" "$(CHECK_MEMORY=24g CHECK_PARALLEL=12 check_limits)"
+expect "a CHECK_PARALLEL that is not a number is refused, saying so" \
+  "CHECK_PARALLEL must be a whole number above zero, not 'lots'." "$(CHECK_PARALLEL=lots check_limits 2>&1 >/dev/null)"
+CHECK_PARALLEL=0 check_limits >/dev/null 2>&1
+expect "a CHECK_PARALLEL of 0 is refused" "1" "$?"
+
 exit "$failed"
