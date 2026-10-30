@@ -18,11 +18,13 @@ ode:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). 
 
 ## Running now
 
-Running batch 57 (aggiemap: #2604 smoke suite GIS host helpers; a branch), started 4:05 PM Central, 30 October 2026. Last batch done: 56 (aggiemap: trip planner Leave at vs the rebuilt picker), 3:55 PM Central, 30 October 2026.
+Idle. Last batch done: 57 (aggiemap: #2604 smoke suite GIS host helpers), about 6:20 PM Central, 30 October 2026.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
+
+- **Batch 57, aggiemap: #2604 one way to ask which GIS host, one base URL** (about 4:05 to 6:20 PM Central, 30 October 2026): branch ready: `test/2604-smoke-gis-host` on fork, `ddccf8bc865ec8f90ac401f85b03cb74421c8556`; check-in-volume affected exit 0 (tsc included). Touched specs run on development and production; failures vary run to run and equal the unchanged baseline. Report `copilot-home/reports/2026-10-30-57.md`.
 
 - **Batch 56, aggiemap: trip planner Leave at vs the #2583 date-time picker** (about 3:20 to 3:55 PM Central, 30 October 2026): read only, nothing pushed to their branch. Verdict: the rebuild changes nothing in the trip planner (same on development 21e69426e and 75f2ae7b1); typing works with a Date value. Separate, pre-existing: Leave at is unusable on both (option value 'depart' vs 'leave'; a number passed where a Date is taken, blank 0x0 picker): issue #2608. Report `copilot-home/reports/2026-10-30-56.md`.
 
