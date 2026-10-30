@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 177.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 178.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,56 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 177 (aggiemap: #2544, the nightly runs on a lab agent; 30 October 2026, from `work (aggiemap)`)
+
+**The 28th's release was abandoned rather than finished** - the maintainer has decided to fold everything
+into the next clean build rather than chase a two-day-old build's paperwork. So batch 176's tier result is
+water under the bridge; no tag is owed for it.
+
+### The task
+
+[#2544](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2544), High, the
+maintainer's decision on 28 October: **move the scheduled smoke run off the hosted runner.**
+
+[#2075](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2075) has it failing on
+production **every night since 15 October**. That is now more than two weeks with no green scheduled run,
+and a bot commenting "still failing" daily. **The same suite is green from this machine** - your own
+release tiers all week.
+
+**This is the thing that makes everything else we built visible.** The builder-gated coverage (#1134), the
+service-metadata checks (#2511), the portal-renderer check - all of them report through that run. While it
+is red, none of them can be read, which is exactly how #2500 and #2510 reached users.
+
+### Find out what exists before writing any YAML
+
+**No GitHub Actions workflow in this repository uses a self-hosted runner today** - every `runs-on` is a
+hosted image. The Azure Pipelines run on lab agents, but that is a different system. So the first question
+is whether a self-hosted GitHub runner **exists, can exist, and is permitted here**, and that is worth
+answering before touching `aggiemap-smoke.yml`.
+
+**If the answer is no, stop and say so.** That is a finding, and it makes option 2 or 3 in the issue the
+real choice rather than a fallback. Do not work around it by raising timeouts - the maintainer explicitly
+rejected that, because raising a timeout on a check nobody understands is how a check stops meaning
+anything.
+
+### If a lab runner is possible
+
+Option 3 in the issue is worth considering first: **hosted for development, lab agent for production
+only.** Production is the environment this is about, and it halves the work and the risk.
+
+Whatever you build, the bar is: **the run must be green, or honestly red, on the first night after the
+change.** A nightly still red for infrastructure reasons is worse than none, because it keeps teaching
+people to ignore it.
+
+### Report
+
+- Whether a self-hosted runner is possible here, and how you established it.
+- What you changed, or what is blocking.
+- **Say plainly if this needs the maintainer** - runner registration may need an admin token or an
+  organisation setting, and that is his to grant, not something to work around.
+
+Push to `fork`, report `branch ready:` if there is a branch. No pull request.
 
 ## Batch 176 (aggiemap: the release tier on the next dev build; 28 October 2026, from `work (aggiemap)`)
 > ## Priority change from the maintainer, 1:05 PM Central: dev first after all
