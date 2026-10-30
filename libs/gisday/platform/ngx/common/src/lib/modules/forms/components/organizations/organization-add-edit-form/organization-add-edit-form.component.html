@@ -49,7 +49,7 @@
     <div class="form-section-body">
       <div class="form-collection row">
         <div>
-          <img [src]="logoUrl$ | async" alt="Logo preview" />
+          <tamu-gisc-image-preview [src]="logoUrl$ | async" alt="Logo preview" fallback="business" fallbackLabel="No logo yet"></tamu-gisc-image-preview>
           <tamu-gisc-file formControlName="file" accept="image/*">
             <p class="placeholder">Select Logo Image</p>
           </tamu-gisc-file>

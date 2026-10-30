@@ -56,7 +56,7 @@
         <div class="icon-grid column12">
           @for (org of organizations$ | async; track org) {
           <div class="icon-item">
-            <img [src]="$safeNavigationMigration(org?.logos?.[0]?.path) | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
+            <tamu-gisc-image-preview [src]="$safeNavigationMigration(org?.logos?.[0]?.path) | assetUrl | async" [alt]="org.name + ' logo'" [fallback]="null" [title]="org.name"></tamu-gisc-image-preview>
             @if (org.website !== null && org.website !== '') {
             <p><a [href]="org.website" target="_blank">{{org.name}}</a></p>
             } @else {

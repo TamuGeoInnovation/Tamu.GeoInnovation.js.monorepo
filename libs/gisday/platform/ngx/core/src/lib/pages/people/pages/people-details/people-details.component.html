@@ -3,8 +3,11 @@
     @if (($speaker | async); as person) {
     <div>
       <div class="column4 image-container">
+        <!-- On a photo only, never over the initials or the person icon (#2568). -->
+        @if (avatar.showingPhoto()) {
         <tamu-gisc-speaker-class-banner [speaker]="person"></tamu-gisc-speaker-class-banner>
-        <tamu-gisc-speaker-avatar [avatarImageUrl]="$safeNavigationMigration(person?.images?.[0]?.path)"></tamu-gisc-speaker-avatar>
+        }
+        <tamu-gisc-speaker-avatar #avatar [avatarImageUrl]="$safeNavigationMigration(person?.images?.[0]?.path)"></tamu-gisc-speaker-avatar>
       </div>
       <div class="column6 pre-2">
         <p class="name">

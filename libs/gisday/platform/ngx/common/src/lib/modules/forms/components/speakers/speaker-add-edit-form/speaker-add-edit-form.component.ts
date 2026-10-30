@@ -22,7 +22,7 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { SpeakerClassBannerComponent } from '../../../../people/components/speaker-class-banner/speaker-class-banner.component';
-import { SpeakerAvatarComponent } from '../../../../people/components/speaker-avatar/speaker-avatar.component';
+import { ImagePreviewComponent } from '../../../../images/components/image-preview/image-preview.component';
 
 @Component({
   selector: 'tamu-gisc-speaker-add-edit-form',
@@ -38,7 +38,7 @@ import { SpeakerAvatarComponent } from '../../../../people/components/speaker-av
     ButtonComponent,
     AsyncPipe,
     SpeakerClassBannerComponent,
-    SpeakerAvatarComponent
+    ImagePreviewComponent
   ]
 })
 export class SpeakerAddEditFormComponent implements OnInit {
