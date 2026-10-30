@@ -18,11 +18,13 @@ ode:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). 
 
 ## Running now
 
-Running batch 52 (aggiemap: #2580 hide car and bus modes), started about 1:30 PM Central, 30 October 2026. Last batch done: 51. Progress (1:55 PM): red first confirmed (4 failed), fix committed locally, check and dev server running.
+Idle: nothing running. Last batch done: 52 (aggiemap: #2580 hide car and bus modes), 30 October 2026.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
+
+- **Batch 52, aggiemap: #2580 hide the car and bus modes** (about 1:30 to 3:10 PM Central, 30 October 2026): branch `feat/2580-hide-car-bus-modes` at `50c7e21fd24af75d3d3dffbe3780f11002877667` on the fork; modes 3,4,5,6,8 hidden by one list, 1,2,7 remain; a hidden-mode link opens as walking; red first (4 failed), check exit 0; before/after screenshots; release note. Report `copilot-home/reports/2026-10-30-52.md`.
 
 - **Batch 51, aggiemap: #659 routing on Megan's new network** (30 October 2026): branch `feat/659-routing-new-network` at `cbf323dda479732f6f69a332e09944f6b6f59c82` on the fork; development only, planner modes matched to the network's by name; a whole trip with directions works in a local dev run, production shows none; check exit 0. #659 not closed. Report `copilot-home/reports/2026-10-30-51-aggiemap.md`.
 
