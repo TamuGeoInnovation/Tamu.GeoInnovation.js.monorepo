@@ -43,4 +43,5 @@ export * from './lib/event/dto/update-event.dto';
 export * from './lib/event/dto/event-attendance.dto';
 export * from './lib/event/dto/event-active.dto';
 export * from './lib/season/dto/active-season.dto';
+export * from './lib/user-submission/dto/poster.dto';
 export * from './lib/season-day/dto/simplified-season-day.dto';

@@ -67,6 +67,82 @@ describe('UserSubmissionProvider', () => {
     expect(provider).toBeDefined();
   });
 
+  describe('.getPosters()', () => {
+    const SEASON = { guid: 'season-2025', year: 2025 };
+    const poster = (over: Record<string, unknown> = {}) =>
+      submission({
+        title: 'Flood maps',
+        link: 'https://example.com/flood.pdf',
+        abstract: 'About floods',
+        submissionType: 'poster',
+        reviewed: true,
+        acceptance: true,
+        message: 'Reviewer note',
+        participants: [
+          { name: 'A. Aggie', email: 'a.aggie@tamu.edu', studentId: '123001234' },
+          { name: 'B. Bevo', email: 'b.bevo@tamu.edu', studentId: '123005678' }
+        ],
+        ...over
+      });
+
+    it('returns only the title, authors, link and year, never a contact detail', async () => {
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue(SEASON as never);
+      jest.spyOn(submissionRepo, 'find').mockResolvedValue([poster()]);
+
+      const posters = await provider.getPosters('season-2025');
+
+      expect(posters).toEqual([
+        { title: 'Flood maps', authors: ['A. Aggie', 'B. Bevo'], link: 'https://example.com/flood.pdf', year: 2025 }
+      ]);
+
+      const json = JSON.stringify(posters);
+
+      for (const hidden of ['tamu.edu', '1230012', OWNER, 'sub-1', 'Reviewer note']) {
+        expect(json).not.toContain(hidden);
+      }
+    });
+
+    it('asks only for accepted posters of the season', async () => {
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue(SEASON as never);
+      const find = jest.spyOn(submissionRepo, 'find').mockResolvedValue([]);
+
+      await provider.getPosters('season-2025');
+
+      expect(find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { season: { guid: 'season-2025' }, submissionType: 'poster', acceptance: true }
+        })
+      );
+    });
+
+    it('uses the active season when none is named', async () => {
+      jest.spyOn(seasonService, 'findOneActive').mockResolvedValue(SEASON as never);
+      const find = jest.spyOn(submissionRepo, 'find').mockResolvedValue([]);
+
+      await provider.getPosters();
+
+      expect(find).toHaveBeenCalledWith(
+        expect.objectContaining({ where: expect.objectContaining({ season: { guid: 'season-2025' } }) })
+      );
+    });
+
+    it('returns none for a season that does not exist, or a site with no active season', async () => {
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);
+      jest.spyOn(seasonService, 'findOneActive').mockRejectedValue(new NotFoundException('No active season found.'));
+
+      await expect(provider.getPosters('missing')).resolves.toEqual([]);
+      await expect(provider.getPosters()).resolves.toEqual([]);
+      expect(submissionRepo.find).not.toHaveBeenCalled();
+    });
+
+    it('lists a poster with no participants with no authors', async () => {
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue(SEASON as never);
+      jest.spyOn(submissionRepo, 'find').mockResolvedValue([poster({ participants: null })]);
+
+      await expect(provider.getPosters('season-2025')).resolves.toEqual([expect.objectContaining({ authors: [] })]);
+    });
+  });
+
   describe('.getUserPresentation()', () => {
     it('returns the submission to its owner', async () => {
       jest.spyOn(submissionRepo, 'findOne').mockResolvedValue(submission());

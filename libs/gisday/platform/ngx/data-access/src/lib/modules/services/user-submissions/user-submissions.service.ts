@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Submission } from '@tamu-gisc/gisday/platform/data-api';
+import { PosterDto, Submission } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
 
@@ -22,7 +22,7 @@ export class UserSubmissionsService extends BaseService<Submission> {
     return this.http1.get<Array<Partial<Submission>>>(`${this.resource}/me`);
   }
 
-  public getPosters() {
-    return this.http1.get<Array<Partial<Submission>>>(`${this.resource}/posters`);
+  public getPosters(season?: string) {
+    return this.http1.get<Array<PosterDto>>(`${this.resource}/posters`, { params: season ? { season } : {} });
   }
 }
