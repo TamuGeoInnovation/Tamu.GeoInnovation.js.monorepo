@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch 28** (aggiemap, #2530 Graduation republished): started about 3:20 PM Central, 30 October. First finding: both services now have Road Closures at /2 and Event Parking at /3, and the map still reads lots from /2 filtered to `Type <> 'Closure'`, so Graduation's Event Parking draws nothing on production today.
+- **Batch 28** (aggiemap, #2530 / #2593 Graduation): started about 3:20 PM Central. New layer check (a filter that selects nothing its service holds) proven red on dev for Fall and Spring. The two `Closure` features in production's /3 are the /2 road closures (same object ids); dev's /3 has only the 13 lots, so the filter stays. Fix committed (Event Parking /3, Road Closures /2, dev reads the new hosted view, Fall and Spring share one layer list); checks running, then green smoke and after pictures.
 
 ## Finished
 - **Batch 27** (aggiemap; report `home/reports/2026-10-30-27.md`): #2581 branch ready: `feat/2581-event-refresh-switch` at `8bb43d72b`. `EventConfiguration.gameDayRefresh { enabled, layers }`, applied in `eventLayerSources`; football (5 lots) and men's (3) folded in, women's off with Megan's request recorded; helper parameter dropped, its strict guards kept. Red 3 then green; guards pass before and after; `affected` exit 0. No release note (no visible change, checked).
