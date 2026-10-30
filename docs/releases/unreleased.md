@@ -34,11 +34,91 @@ dated notes as what was tested, and this table empties.
 
 ---
 
-## Work in flight - 13 October
+## Work in flight - 30 October
 
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
 file would say the work had stopped.
+
+### AggieMap on 30 October, evening: what another machine most needs to know
+
+**Production is one merge away.** `21e69426e` is tagged **`dev-2026-10-30`** and was cleared by the release
+tier: **911 passed, 5 failed, 32 flaky, 70 skipped**, 12:45 to 2:38 PM Central, with every failure accounted
+for - two are the week's known dev-only ones (the 3D globe's timeout, the `bldg=0468` popup) and three, with
+most of the flakes, are `gis.tamu.edu` refusing about one count query in ten, **which fails the same way on
+production**. The sequence from here is [docs/releases/README.md](README.md#cutting-a-release): merge the
+notes, promote that commit, tag `prod-2026-10-30`, check production.
+
+**Routing works on development for the first time since March** ([#659](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/659), PR 2577). It is
+**development only and enforced, not merely intended**: gated on `TestingService.isTesting` and listed in
+`DEVELOPMENT_ONLY_SERVICES`, so the production smoke run fails if production ever requests it. `RoutingProPublish/Map`
+is the usable service; the folder published on 27 October ([#2454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2454)) requires a token and
+could never have worked from a browser. **Every travel mode is on** - [#2580](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2580), disabling car
+and bus, was raised and then dropped on Transportation Services' word.
+
+**One live production fault, and it is the urgent thing: [#2593](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2593).** The Graduation maps draw
+**no event parking** on production. The service was republished with its layers split - `/2` is now Road
+Closures and Event Parking moved to `/3` - and the definitions still ask `/2` with a `Type <> 'Closure'`
+filter, which matches 0 of 2 there while the 15 features sit at `/3`. Road Closures still works by luck. The
+fix is green on the home machine with a new check behind it; its pull request follows.
+
+### What is waiting on the maintainer
+
+**Seven pull requests**, all green, and the first five were checked **merged together** (no conflicts, full
+affected check exit 0 from a clean `npm ci`, 198 tasks none from cache, 13 builds with budgets):
+
+| | |
+| --- | --- |
+| [PR 2590](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2590) | These release notes - **gates the production deploy** |
+| [PR 2594](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2594) | One per-event game-day refresh switch ([#2581](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2581)) |
+| [PR 2595](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2595) | CLAUDE.md: the reuse rule covers definition files ([#2587](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2587)) |
+| [PR 2609](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2609) | The two satellite campus tiles retaken ([#2533](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2533)) |
+| [PR 2611](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2611) | How the campus tiles are captured ([#2610](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2610)) |
+| [PR 2613](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2613) | A greyed travel-mode toggle disabled in fact ([#2586](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2586)) |
+| [PR 2579](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2579) | Four unused dependencies removed ([#2564](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2564)) |
+
+**Decisions open with him**, none blocking a merge: the drifted legend swatch ([#2601](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2601)),
+PR 2609's zoom and file size, whether "Leave at" should send a `startTime` ([#2608](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2608)),
+priorities on the ten audit issues and on [#2607](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2607), the 2026 fall commencement dates, and a
+drafted message to the GIS team.
+
+### What needs the GIS team
+
+- **[#2592](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2592)** - the routing network has no `Drive_ADA` or `Bus_ADA`, so accessible bus
+  cannot be offered at all **and accessible driving silently returns the ordinary driving route**: planner
+  mode 8 serves both "Visitor Accessible" and "Visitor Non-Accessible" and maps to the plain `Drive`.
+  Measured: the same trip is 7 min with the accessibility option off and 7 min with it on, while walking
+  moves 35 to 36 because `Walk_ADA` exists. The previous network published both ADA drive modes, so this was
+  lost in the republish.
+- **[#2520](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2520)** - `NewStudentConferenceParking/0` and `SummerBreakParking/0` return their lots
+  **with no geometry**, re-checked on 30 October, so nothing draws and no popup can open.
+- **[#2607](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2607)** - the Fall Commencement map still offers **December 2025's** ceremony days,
+  with labels naming weekdays that are wrong for 2026. Needs the real dates from the university.
+
+### A trap worth knowing about before it costs you an hour
+
+**[#2606](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2606): three athletics maps keep a `ColdLayerSources` list that no service matches and
+nothing sends.** Outdoor Track, Indoor Track and Cross Country. Their `sources:` points at a derived
+`_DevelopmentLayerSources` list built by `athleticsDevelopmentSource`, **which does not carry
+`definitionExpression` through** - so the stale filters and layer indices in the old lists are never
+requested.
+
+Measured against the live services, those stale lists look broken: Outdoor Track's filter matches 0 of 5,
+Indoor Track asks for a `/3` that returns 404, Cross Country's field no longer exists. **All three maps are
+fine.** One of the comments even says "Production still serves the four-layer version", which is no longer
+true. **Read `sources:` first, and then the helper's body, before concluding anything from a definition
+file** - this cost exactly that mistake on 30 October, publicly, before `sources:` was checked.
+
+### The reuse work, which is a thread rather than one change
+
+The maintainer's standing rule is no one-offs, and it was already in CLAUDE.md and being followed when
+game-day refresh turned out to be written **three times**. The gap - its "look first" list named every
+shared library and nothing for a behaviour declared in a **definition file** - is [#2587](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2587)
+(PR 2595). The sweep for what the gap already let through is [#2591](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2591): **10 issues over about
+130 places**, of which [#2604](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2604) is the only one with a live fault (four specs decide their GIS
+host with `hostname.includes('dev')` when the correct helper exists and its own comment says why the
+substring test is wrong) and [#2601](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2601) the only one a visitor could see (one of three copies of
+a legend swatch has drifted).
 
 ### AggieMap on 28 October: what another machine most needs to know
 
