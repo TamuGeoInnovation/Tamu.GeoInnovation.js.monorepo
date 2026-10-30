@@ -53,7 +53,7 @@
 > home is building on it right now and would be building on sand.
 
 
-> **Next free batch number: 182.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
+> **Next free batch number: 183.** Three directors write this file (`work (aggiemap)`, `work (gisday)`,
 > `work (security)`) and the numbers are one sequence, this machine's. **Read this line and bump it when you
 > queue a batch.** On 23 October two directors both used 19, and the file carried two "Batch 19" headings at
 > once. The lab coped - it ran both and skipped nothing - but "started batch 19" then meant two different
@@ -143,6 +143,65 @@ Written only by the director (see `DIRECTOR.md`). You write `work-lab-leila/STAT
 >
 > Then run batch 173's release tier on whatever the build turns out to be, naming it.
 
+
+## Batch 182 (aggiemap: #2533 - retake the two satellite campus tiles, now that dev draws the hatch; 30 October 2026, about 3:55 PM Central, from `work (aggiemap)`)
+
+**This is the maintainer's own request from 28 October and it has been waiting on a deployed build.** It no
+longer is: **dev serves `21e69426e`**, the build you cleared this afternoon.
+
+> The satellite campuses need to have their image panel images retaken after #2 is corrected.
+
+**[#2533](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2533) is the brief and it is complete - follow it, not this summary.** Two tiles,
+`fort-worth-law.jpg` and `houston-space-institute.jpg`, under
+`apps/aggiemap-angular/src/assets/images/campus/`. They still show the old opaque pink construction tile,
+so they advertise something the maps no longer draw.
+
+### Capture from dev, and capture the final hatch
+
+**`21e69426e` carries both halves of the hatch**, which matters: [#2532](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2532) gave the campuses
+the shared symbol, and **[#2578](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2578) then took its strokes to 60% opacity** so a building
+number stays readable through it. A tile taken from a build with only #2532 would be wrong again a day
+later. You confirmed both campuses drawing the orange hatch on deployed dev in batch 176; this is the same
+environment, two merges further on.
+
+### Add `?as=production`, and this is the one instruction not in the issue
+
+**These are committed production assets.** A tile captured on dev without `?as=production` can show a
+development-only layer or basemap, and it would then ship to production inside a picture, where nothing
+checks it - `development-only.spec.ts` reads requests, not images. So capture production-shaped, and **say
+in your report that you did.**
+
+### Match the existing tiles rather than improving them
+
+Same zoom, same framing, the whole of each campus's construction in view - the issue says to check each
+against its service's extent rather than eyeballing it. A better-framed pair that does not match the other
+eight is worse than a faithful pair.
+
+**Only these two.** The other eight campuses have no construction fill on their basemaps at all - only
+`VTBase3`, `FWLaw` and `HSI` have one - so leave them alone. If you think all ten want retaking for
+consistency of framing or date, **say so in the report rather than doing it**; that is the maintainer's
+call.
+
+### The check that decides whether this ships
+
+**Look at the result at tile size on `/all-maps/campus`, not only full size.** A hatch that reads well at
+1280 px can turn to mush in a 400 px tile.
+
+**If it does turn to mush, report it and do not ship the tiles.** That would be an argument about the
+hatch's density at small sizes - a follow-up to #2578 - and not about the capture. Getting that wrong the
+other way would commit a picture that makes the construction look like a smudge on the page most visitors
+see first.
+
+### Also worth a look while you are there
+
+**[#2458](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2458) moved the campus labels above their pictures** on both `/all-maps/campus` and
+`/all-maps`, at every width. It is on dev in this build. While you have those two pages open, say whether
+the layout reads well with the new tiles - that is the one place both changes meet, and nobody has seen
+them together.
+
+Push to `fork`, report `branch ready:`. Questions go to `work (aggiemap)`.
+
+---
 
 ## Batch 181 (ui-kit: #2588 - a phone menu tile is tappable all over, not only its word; a branch; 30 October 2026, about 3:10 PM Central, from `work (gisday)`)
 
