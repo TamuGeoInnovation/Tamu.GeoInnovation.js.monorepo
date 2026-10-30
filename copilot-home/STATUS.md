@@ -18,7 +18,7 @@ ode:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). 
 
 ## Running now
 
-Idle. Last batch done: 56 (aggiemap: trip planner Leave at vs the rebuilt picker), 3:55 PM Central, 30 October 2026.
+Running batch 57 (aggiemap: #2604 smoke suite GIS host helpers; a branch), started 4:05 PM Central, 30 October 2026. Last batch done: 56 (aggiemap: trip planner Leave at vs the rebuilt picker), 3:55 PM Central, 30 October 2026.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
