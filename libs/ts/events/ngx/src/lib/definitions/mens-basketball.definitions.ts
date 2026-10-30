@@ -16,6 +16,15 @@ export enum MENS_BASKETBALL_LAYERS {
 
 const eventUrl = Connections.mensBasketballUrl;
 
+type FeatureNativeProps = NonNullable<Extract<LayerSource, { type: 'feature' }>['native']>;
+
+/**
+ * `native` for every layer. Staff edit the service on game day - a lot set to Lot Closed, a closure drawn, an Alert
+ * icon placed - and each layer polls it every minute (`refreshInterval` is in minutes), so a visitor who already has
+ * the map open sees the change without a reload, as on football's lots (#2558, #1587).
+ */
+const gameDayNative = (): FeatureNativeProps => ({ outFields: ['*'], refreshInterval: 1 });
+
 export const MensBasketball_Definitions = {
   GATES: {
     id: MENS_BASKETBALL_LAYERS.GATES,
@@ -44,9 +53,7 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     url: MensBasketball_Definitions.GATES.url,
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
+    native: gameDayNative()
   },
 
   {
@@ -60,9 +67,7 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
+    native: gameDayNative()
   },
 
   {
@@ -76,9 +81,7 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
+    native: gameDayNative()
   }
 ];
 
