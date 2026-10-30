@@ -17,11 +17,13 @@ Last written **12:50 PM Central, 28 October 2026**. A listener; job: not yet ass
 
 ## Running now
 
-Batch 49 (aggiemap: #2521 Road Closures legend has no symbol), started 7:27 AM Central, 30 October 2026.
+Idle. Nothing queued after batch 49.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
+
+- **Batch 49, aggiemap: #2521 Road Closures legend has no symbol** (7:54 AM Central, 30 October 2026): does not reproduce on development or production (the legend draws the hatch swatch; the service was edited after the issue was filed); no code fix. Branch `fix/2521-road-closures-legend` at `a9502d70d18d665edd03c32770da77b90cc2552f` on the fork removes the four stale known-failure entries; layers check passes on both environments without them; check exit 0. Nothing closed. Report `copilot-home/reports/2026-10-30-49.md`.
 
 - **Batch 48, aggiemap: #2034 linked feature showing its template text** (12:48 to about 1:10 PM Central, 28 October): does not reproduce on a local production build of `development`, dev or production, for the building, lots and accessible layers and `?lot=`; the Team Bus layer was removed in #2468 and the `sp_sh_notes` template is dead code. Nothing pushed, nothing closed. Report `copilot-home/reports/2026-10-28-48.md`.
 
