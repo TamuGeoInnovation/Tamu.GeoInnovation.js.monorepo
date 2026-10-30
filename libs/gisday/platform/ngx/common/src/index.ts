@@ -32,6 +32,7 @@ export * from './lib/modules/people/components/presenter-card/presenter-card.com
 export * from './lib/modules/forms/components/seasons/season-add-edit-form/season-add-edit-form.component';
 export * from './lib/modules/events/components/season-day-card/season-day-card.component';
 export * from './lib/modules/forms/components/speakers/speaker-add-edit-form/speaker-add-edit-form.component';
+export * from './lib/modules/images/components/image-preview/image-preview.component';
 export * from './lib/modules/people/components/speaker-avatar/speaker-avatar.component';
 export * from './lib/modules/people/components/speaker-card/speaker-card.component';
 export * from './lib/modules/people/components/speaker-class-banner/speaker-class-banner.component';

@@ -1,0 +1,7 @@
+@if (showing()) {
+<img class="image-preview" [src]="src()" [alt]="alt()" (error)="onError()" />
+} @else if (fallback()) {
+<div class="image-preview-fallback" [attr.role]="fallbackLabel() ? 'img' : null" [attr.aria-label]="fallbackLabel() || null">
+  <span class="material-icons" aria-hidden="true">{{ fallback() }}</span>
+</div>
+}

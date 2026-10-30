@@ -121,20 +121,28 @@ describe('SpeakerAddEditFormComponent', () => {
         fixture.detectChanges();
       };
 
-      return { banner, set };
+      const choosePhoto = () => set({ file: new File(['x'], 'speaker.png', { type: 'image/png' }) });
+
+      return { banner, set, choosePhoto };
     }
 
-    it('shows the university and class year chosen in the form', () => {
-      const { banner, set } = create();
+    beforeEach(() => {
+      URL.createObjectURL = jest.fn(() => 'blob:chosen-photo');
+    });
 
+    it('shows the university and class year chosen in the form', () => {
+      const { banner, set, choosePhoto } = create();
+
+      choosePhoto();
       set({ university: 'tamu', graduationYear: '2024' });
 
       expect(banner()).toBe("TAMU '24");
     });
 
     it('changes as the university and the year are changed', () => {
-      const { banner, set } = create();
+      const { banner, set, choosePhoto } = create();
 
+      choosePhoto();
       set({ university: 'tamu', graduationYear: '2024' });
       set({ university: 'lsu', graduationYear: '2022' });
 
@@ -142,10 +150,30 @@ describe('SpeakerAddEditFormComponent', () => {
     });
 
     it('goes when the university is cleared', () => {
-      const { banner, set } = create();
+      const { banner, set, choosePhoto } = create();
 
+      choosePhoto();
       set({ university: 'tamu', graduationYear: '2024' });
       set({ university: null });
+
+      expect(banner()).toBeNull();
+    });
+
+    // #2568: a speaker with a school and a year but no photo got the banner drawn over the blank person icon.
+    it('is not drawn over the person icon when there is no photo (#2568)', () => {
+      const { banner, set } = create();
+
+      set({ university: 'tamu', graduationYear: '2013' });
+
+      expect(banner()).toBeNull();
+    });
+
+    it('goes with the photo on Undo (#2568)', () => {
+      const { banner, set, choosePhoto } = create();
+
+      choosePhoto();
+      set({ university: 'tamu', graduationYear: '2013' });
+      set({ file: null });
 
       expect(banner()).toBeNull();
     });
