@@ -18,7 +18,7 @@ ode:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). 
 
 ## Running now
 
-Running batch 52 (aggiemap: #2580 hide car and bus modes), started about 1:30 PM Central, 30 October 2026. Last batch done: 51.
+Running batch 52 (aggiemap: #2580 hide car and bus modes), started about 1:30 PM Central, 30 October 2026. Last batch done: 51. Progress (1:55 PM): red first confirmed (4 failed), fix committed locally, check and dev server running.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
