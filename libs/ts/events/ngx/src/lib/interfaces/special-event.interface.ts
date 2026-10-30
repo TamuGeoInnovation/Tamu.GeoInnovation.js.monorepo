@@ -116,6 +116,18 @@ export interface EventConfiguration {
   defaultLayerOverrides?: Record<string, Partial<LayerSource>>;
 
   /**
+   * Layers that poll their service every minute, so a visitor with the map open sees a game-day edit - a lot
+   * closed, a closure drawn - without a reload (#2581). ArcGIS refetches only when the service's `lastEditDate`
+   * moves, so the poll costs almost nothing while nobody is editing.
+   *
+   * Declared here, in the event's own definition, so that whether a map refreshes is read where everything
+   * else about it is. `layers` names each layer that refreshes, because a map's layers differ: football polls
+   * only its lots. `enabled: false` keeps the list for when the map's owner wants it on. The settings service
+   * applies it (`EventSettingsService.eventLayerSources`); no layer definition sets `refreshInterval` itself.
+   */
+  gameDayRefresh?: { enabled: boolean; layers: string[] };
+
+  /**
    * Toast notification configuration for the event. If provided, a toast notification will be
    * displayed when the event is active. This uses the same properties as NotificationProperties
    * from the notification service.
