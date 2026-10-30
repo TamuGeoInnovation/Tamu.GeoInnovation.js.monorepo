@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-Nothing. Idle and listening.
+- **Batch 26** (aggiemap, #2581 Women's Basketball refresh): started about 2:50 PM Central, 30 October. Plan: optional refresh on `athleticsDevelopmentSource`, a test that existing callers come out identical, then the women's spec red first.
 
 ## Finished
 - **Batch 24** (aggiemap; report `home/reports/2026-10-30-24.md`): #2573 branch ready: `fix/2573-hatch-opacity` at `195b08df4`. Hatch strokes alpha 153; red then green; check exit 0. Before and after at zoom 16-18 on 1524 and Fort Worth: the label reads as one number, and at zoom 16 the building stays identifiable (the black outline carries it); 60% holds, no need for 75%. #2459's note updated.
