@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 56.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 57.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -58,6 +58,65 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 >    regression to take to the GIS team.
 >
 > **Carry on with batch 54, then batch 55.** Nothing about the modes needs doing.
+
+## Batch 56 (aggiemap: does the rebuilt date-time picker still work in the trip planner? 30 October 2026, from `work (aggiemap)`)
+
+**After batch 55.** Small, and it covers a gap somebody else's change leaves in AggieMap.
+
+### What happened
+
+The test machine rebuilt the **shared** date-time picker on Angular Material for
+[#2583](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2583) - a GIS Day batch, branch `fix/2583-date-time-picker` at `75f2ae7b1` on the fork,
+three commits on `development` `21e69426e`. Good work: the Designer's `datetime-local` box fired `change` on
+every keystroke and the picker closed on the first, so typing "30" saved 11:03. Five tests red before, green
+after, full affected check exit 0.
+
+**Its report ends: "The trip planner's Leave at is not run in a browser."** That is AggieMap's, and it is
+the one caller nobody exercised.
+
+### Why this is worth a batch rather than a shrug
+
+`trip-planner-time-picker/containers/base/base.component.ts` imports **`DateTimePickerChange`** from
+`@tamu-gisc/ui-kits/ngx/forms/date-time-picker`. So the trip planner is a direct caller of the rebuilt
+component, across a value contract.
+
+**The failure mode to look for is a wrong answer, not a crash.** The trip planner feeds the chosen time into
+`requested_time` and sends it to the route solve. If the rebuild emits a differently shaped or differently
+zoned value, **the planner solves for the wrong time with no error anywhere** - the same shape of fault as
+the travel-mode ids in your batch 51, where a walk request would have returned a bike route silently.
+
+CLAUDE.md also notes this picker's internals were replaced once before ([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)) and that
+the point was leaving every caller alone. This is the second time, so the callers are the thing to check.
+
+**And the standing rule:** a change to a shared library can break an app you never opened. Building only
+the thing you were working in is what the advice used to say, and it is not enough.
+
+### What to do
+
+Read only on their branch - **do not push to it, and do not open its pull request; it is another director's
+batch.** Check out `fix/2583-date-time-picker` from the fork in your own worktree, serve AggieMap, and
+**drive the trip planner's Leave at in a browser**:
+
+1. Open the trip planner, set a **Leave at** date and time, and confirm the planner receives the value it
+   expects - the right instant, right zone. **Read what actually reaches `requested_time`**, do not judge
+   from the panel's label alone.
+2. **Type a time rather than only picking one**, since typing is the bug they fixed: does "30" behave in the
+   trip planner the way it now does in the Designer?
+3. **Clear it**, and confirm the planner goes back to leaving now rather than to an invalid time.
+4. Solve a trip with a Leave at set, and confirm it solves rather than hanging.
+5. Compare against plain `development` in the same session, so a difference is attributable.
+
+### Report
+
+A verdict the other director can act on: **does the trip planner still work, and if not, exactly what
+differs.** If it is broken, **file an issue** with the measurement and say so plainly in your report - I
+will take it to the maintainer, and it should block that pull request. If it works, say that too; a clean
+read is the result that lets it merge.
+
+**Do not fix it yourself** even if it is broken - it is their branch and their change, and two machines
+editing one branch is worse than a day's delay. Questions go to `work (aggiemap)`.
+
+---
 
 ## Batch 55 (aggiemap: #2591 - find where we have implemented one idea more than once; read only; 30 October 2026, from `work (aggiemap)`)
 
