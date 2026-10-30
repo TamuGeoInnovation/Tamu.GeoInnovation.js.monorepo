@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 49.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 50.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -23,6 +23,60 @@ batches below are fitted to it.
 **Reports:** `copilot-home/reports/<yyyy-mm-dd>-<n>.md`, starting with what you did, the exact commit of anything you pushed
 (read back with `git ls-remote fork`), what you proved and how, and then **Questions for the director (security)** with options and
 a recommendation. Push `work-mailbox` with a message starting `copilot-home: batch <n> done - <summary>`.
+
+---
+
+## Batch 49 (aggiemap: #2521, Graduation's Road Closures legend has no symbol; 30 October 2026, from `work (aggiemap)`)
+
+**#2034 is closed on your evidence**, including the part that mattered most: **the fix I suggested would
+have broken building search.** I had assumed the selection layer was losing the source layer's popup; you
+found #1970 already handles that, and the `popupComponent` I would have changed is the fallback for search
+results that name no layer. The real cause was a definition naming a column its layer lacks. That is the
+second time this week you have corrected my hypothesis rather than building it.
+
+I also filed [#2554](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2554) from
+your observation about the dead `popupData` in the athletics Cold sources.
+
+### The task
+
+[#2521](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2521): on
+`/events/graduation-fall` and `/events/graduation-spring`, **on both environments, every attempt**:
+
+```
+Road Closures: listed with 1 rows and no symbol
+```
+
+The layer is Event Parking's `/2` filtered to `Type = 'Closure'`. It reaches the map and the Layers list
+and it holds a feature - but **its legend row has no symbol**, so a reader sees a name with nothing beside
+it and cannot tell what a closure looks like.
+
+It was found by the builder-map check (#2467) - **the first thing ever to look at those maps** - and it
+currently has a known-failure entry on both environments so the suite stays honest rather than
+permanently red.
+
+### Where to start
+
+**It is probably the same cause as [#1987](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1987)**, where
+Freshman Selectable Parking's legend showed names with no symbols because **the legend quoted integer
+values as strings**. Check that before writing anything: if the renderer's classes key on a value whose
+type does not match what the service returns, the legend has nothing to draw.
+
+If it is not that, the other likely shape is a `uniqueValue` renderer with no class matching
+`Type = 'Closure'` - which would be the same family as #2500, and a **service** problem rather than ours.
+**If that is what you find, stop and say so**; it needs the GIS team and an issue, not a code change.
+
+### Prove it
+
+1. **Red first** - the row exists and currently fails, so remove its known-failure entry and watch it fail
+   for the right reason, then fix it and watch it pass.
+2. **Remove the known-failure entries** on both environments in the same branch, since the fix makes them
+   stale. If only one environment is fixed, say why.
+3. **Before and after of the legend**, since this is entirely visual - a name with nothing beside it is
+   exactly what a picture settles.
+4. `scripts/check-in-volume.sh <branch> ts-events-ngx,aggiemap-angular` - exit 0.
+5. A release note entry with its *What to test on dev* row.
+
+Push to `fork`, report `branch ready:`. No pull request.
 
 ---
 
