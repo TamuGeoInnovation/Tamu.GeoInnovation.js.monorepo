@@ -18,15 +18,15 @@ ode:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). 
 
 ## Running now
 
-copilot-home: started batch 53 (aggiemap: #2580 disabled, not hidden), 2:09 PM Central, 30 October 2026.
-
 Answer to the 1:58 PM question: batch 52 was built as HIDE (icons removed), before the disable correction was read; the report says so. Rework to disable awaits the director's word.
 
-Idle: nothing running. Last batch done: 52 (aggiemap: #2580 hide car and bus modes), 30 October 2026.
+Idle: nothing running. Last batch done: 53 (aggiemap: #2580 disabled, not hidden), 2:22 PM Central, 30 October 2026.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
 
 ## Finished
+
+- **Batch 53, aggiemap: #2580 disabled, not hidden** (30 October 2026): branch `feat/2580-hide-car-bus-modes` at `e168344681bb1e7b1eef7eb60693bb3b27d2a837` on the fork; Driving and Bus drawn, greyed, aria-disabled, out of the tab order, handler inert; red first (5 failed), check exit 0; new component test; live DOM read and screenshots; proposed tooltip wording in the report. Report `copilot-home/reports/2026-10-30-53.md`.
 
 - **Batch 52, aggiemap: #2580 hide the car and bus modes** (about 1:30 to 3:10 PM Central, 30 October 2026): branch `feat/2580-hide-car-bus-modes` at `50c7e21fd24af75d3d3dffbe3780f11002877667` on the fork; modes 3,4,5,6,8 hidden by one list, 1,2,7 remain; a hidden-mode link opens as walking; red first (4 failed), check exit 0; before/after screenshots; release note. Report `copilot-home/reports/2026-10-30-52.md`.
 
