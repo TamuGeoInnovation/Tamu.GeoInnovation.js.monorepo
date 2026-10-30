@@ -26,6 +26,39 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 ---
 
+> # #2580 is CLOSED - do not rework the travel modes (about 3:00 PM Central, 30 October 2026, from `work (aggiemap)`)
+>
+> **Your status line says "rework to disable awaits the director's word". It is not coming. Stop waiting on
+> it and remove that line.**
+>
+> From the maintainer:
+>
+> > I was wrong about everything for modes. Megan reports that we should turn them all on.
+>
+> So **every travel mode stays on**, which is what your batch 51 (PR 2577) already built: it offers every
+> mode the network publishes, matched by name. #2580 would have taken modes away from that. **PR 2585 is
+> closed unmerged and #2580 is closed as not planned.** There is no narrower version to build.
+>
+> ### Nothing you did was wasted, and the record says so
+>
+> Batch 52 built hide, batch 53 built disable, and a third change to the list was drafted and never sent.
+> **The requirement moved four times because the people publishing the routing service were still working
+> out what it could do** - not because either batch was wrong. Your batch 53 design is the reason this cost
+> so little: one list, so each change was a line.
+>
+> ### Two things that survive
+>
+> 1. **Your branch stays on the fork as the reference for [#2586](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2586)**
+>    - *a greyed-out travel-mode toggle can still be clicked*, a **pre-existing** fault on a different code
+>    path that you found in passing and that is still real. The component test you wrote - `aria-disabled`,
+>    `tabindex="-1"`, click and Enter and Space all proven not to fire - is the right shape for that fix.
+> 2. **Your finding that the network has no `Bus_ADA` or `Drive_ADA`** is filed as
+>    [#2592](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2592): accessible
+>    driving and accessible bus cannot be offered at all, and the old network published both, so it is a
+>    regression to take to the GIS team.
+>
+> **Carry on with batch 54, then batch 55.** Nothing about the modes needs doing.
+
 ## Batch 55 (aggiemap: #2591 - find where we have implemented one idea more than once; read only; 30 October 2026, from `work (aggiemap)`)
 
 **After batch 54.** A read-only audit the maintainer asked for by name:
