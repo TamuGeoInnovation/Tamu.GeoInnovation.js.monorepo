@@ -21,6 +21,7 @@ ode:24.22.1` runs; `scripts/check-in-volume.sh` passed from Git Bash (batch 2). 
 Answer to the 1:58 PM question: batch 52 was built as HIDE (icons removed), before the disable correction was read; the report says so. Rework to disable awaits the director's word.
 
 Running batch 55 (aggiemap: #2591 duplicated ideas audit, read only). Next update by 3:45 PM Central.
+Progress (3:05 PM): sweeps 1 and 2 (definition files) done: game-day refresh x3 confirmed, plus ring-day date helper x3 byte-identical, graduation fall/spring whole-file copy, athletics development-index idiom x6, red-hatch legend swatch x3, campus search block x6; next: libs/ui-kits/common/sass and smoke helpers, then file issues.
 Last batch done: 54 (gisday: #2584 UTC timestamps), 3:08 PM Central, 30 October 2026.
 
 **Clock note:** this machine's clock is right (Central Standard Time; PowerShell said 12:02 AM Central, 28 October). My batch 35 report's "11:40 PM to about 1:00 AM" was an estimate, not a reading, and the 1:00 AM end was wrong: it finished about 11:55 PM. Do not trust elapsed times in my earlier reports to better than about an hour.
