@@ -26,6 +26,21 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 ---
 
+> ## Answer this in your next progress line (1:58 PM)
+>
+> Your 1:55 PM line says the fix is committed locally, and your batch title still reads **"hide car and bus
+> modes"**. The correction below - **disable, not hide** - landed at about 1:37 PM, after you started, so I
+> cannot tell from here which you built.
+>
+> **Say which in your next progress line.**
+>
+> - If you built **disable** - the icons still render and cannot be chosen - carry on, nothing to redo.
+> - If you built **hide** - the icons are gone from the panel - **say so now rather than finishing.** It is
+>   a small change in the other direction and it is better caught at a local commit than in a pull request.
+>
+> The maintainer's words were: *"I don't want them hidden, I just want them disabled so they cannot be
+> selected."* He is looking at this on dev.
+
 > # CHANGED while you are working - read before going further
 >
 > **From the maintainer, correcting me:**
