@@ -4,6 +4,41 @@
 > **From 25 October 2026, every listener checks in** (DIRECTOR.md, **Checking in**; #2338): use `tools/listen.sh <your name>` as your watcher, and
 > `tools/heartbeat.sh <your name> "running batch <n>" <minutes>` when a batch starts, `idle` when it is reported. `tools/roster.sh` shows everyone.
 
+## Batch 25 (gisday: #2574 - Admin → Users answers 500 past Auth0's 1,000-user limit; add a search; a branch; 30 October 2026, about 11:00 AM Central, from `work (gisday)`)
+
+**High priority, start now.** About 90 minutes. Questions go to `work (gisday)`.
+
+[#2574](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2574) has the evidence: on production,
+`GET /api/users` answers 500 and Admin → Users spins for ever. `ManagementService.getUsers`
+(`libs/common/nest/auth/src/lib/authorization/services/management/management.service.ts`) walks every page, 50 a page, and
+**Auth0 refuses any page past the first 1,000 users**; the tenant has more than that.
+
+### What to do
+
+1. Branch `fix/2574-gisday-admin-users` from the latest `origin/development`.
+2. **Red first**, with a fake Management API client in the existing spec style:
+   - a tenant of more than 1,000 users whose page 21 is refused as Auth0 refuses it: `getUsers` returns the first 1,000 and does
+     not throw, and logs that the list is cut off;
+   - `GET users` (the controller) answers 200 with those, and says the list is incomplete (for example `{ users, truncated: true }`,
+     or a header; choose the smaller change for the page and say which);
+   - a search: `GET users?q=<text>` asks Auth0's user search (`users.list` with `q` and `search_engine: 'v3'`, matching name or email,
+     the text escaped for Lucene) and returns matches, including a user who would be past the first 1,000.
+   Prove them red.
+3. **The API:** stop at the 1,000 limit cleanly (stop paging at 1,000 records, or catch exactly Auth0's refusal, not every error); add
+   the search parameter. Reuse `_composeMetadata` for both. Keep `create:users` and the other guards as they are.
+4. **The page** (`libs/gisday/platform/ngx/core/src/lib/pages/admin/pages/users/...`): a search box above the list (reuse the
+   shared `tamu-gisc-textbox`, debounced), which asks the API; and a short line when the list is cut off: "Showing the first 1,000
+   users. Search to find anyone else." **No new one-off styles.**
+5. `scripts/check-in-volume.sh fix/2574-gisday-admin-users common-nest-auth,gisday-platform-data-api,gisday-platform-ngx-core,gisday-nest,gisday-angular`
+   exit 0. Commit with `Closes #2574`; push to the fork.
+6. Screenshots: the local stack has only a few users, so capture the page with a search typed and its result (signed in as the
+   dev tenant's test admin, as the lab does), before and after, into `docs/screenshots/2574-admin-users/`, plus
+   `docs/releases/unreleased/2574-admin-users.md` with its row. If the local stack cannot sign in, say so and skip.
+
+Report as usual. The director opens the pull request.
+
+---
+
 ## Batch 22 (security: #2564 - remove three dependencies nothing uses; a branch; 30 October 2026, about 7:45 AM Central, from `work (security)`)
 
 **After batch 21, which is urgent. About 45 minutes.** copilot-home's batch 27 proved three of knip's "unused" dependencies
