@@ -27,7 +27,7 @@ describe('MapService.getAlreadyFoundForActiveSeason', () => {
   const form2025 = { model: [{ attribute: 'art_type', isDiscriminator: true, options: [] }] };
 
   const found2025 = (latitude: number, longitude: number, kind: string, status?: string) => ({
-    guid: `g-${latitude}`,
+    guid: `g-${latitude}-${longitude}-${kind}`,
     userGuid: 'auth0|someone',
     value: { art_type: kind },
     location: { latitude: latitude.toFixed(5), longitude: longitude.toFixed(5), accuracy: '0' },
@@ -69,12 +69,12 @@ describe('MapService.getAlreadyFoundForActiveSeason', () => {
       features: [
         {
           type: 'Feature',
-          properties: { type: 'tree_bench_plaque', typeName: 'Tree or bench memorial plaque', year: 2025 },
+          properties: { type: 'tree_bench_plaque', typeName: 'Tree or bench memorial plaque', year: 2025, count: 1 },
           geometry: { type: 'Point', coordinates: [-96.34062, 30.61316] }
         },
         {
           type: 'Feature',
-          properties: { type: 'monument', typeName: 'Monument', year: 2025 },
+          properties: { type: 'monument', typeName: 'Monument', year: 2025, count: 1 },
           geometry: { type: 'Point', coordinates: [-96.3414, 30.6122] }
         }
       ]
@@ -112,8 +112,78 @@ describe('MapService.getAlreadyFoundForActiveSeason', () => {
         longitude: -96.34062,
         type: 'tree_bench_plaque',
         typeName: 'Tree or bench memorial plaque',
-        year: 2025
+        year: 2025,
+        count: 1
       }
     ]);
+  });
+
+  /**
+   * #2625: one thing found several times in 2025 is one ring, saying how many times, by the distance
+   * scoring uses to call a 2026 find already found (15 m for monuments, 3 m for plaques).
+   */
+  describe('one point for each thing found', () => {
+    const points = async () =>
+      (await service.getAlreadyFoundForActiveSeason('json')) as unknown as Array<{
+        latitude: number;
+        longitude: number;
+        type: string;
+        count: number;
+      }>;
+
+    it('counts finds of a type within its distance of the first as one, at the first', async () => {
+      // About 4 m and 11 m north of the first, within a monument's 15 m.
+      earlier = [
+        found2025(30.6122, -96.3414, 'statues_monuments'),
+        found2025(30.61224, -96.3414, 'statues_monuments'),
+        found2025(30.6123, -96.3414, 'statues_monuments')
+      ];
+
+      expect(await points()).toEqual([
+        expect.objectContaining({ latitude: 30.6122, longitude: -96.3414, type: 'monument', count: 3 })
+      ]);
+    });
+
+    it("uses each type's own distance: plaques 4 m apart are two", async () => {
+      earlier = [
+        found2025(30.61316, -96.34062, 'tree_bench_plaque'),
+        found2025(30.61318, -96.34062, 'tree_bench_plaque'), // About 2 m: the same plaque.
+        found2025(30.6132, -96.34062, 'tree_bench_plaque') // About 4.5 m: the next one.
+      ];
+
+      expect((await points()).map(({ latitude, count }) => ({ latitude, count }))).toEqual([
+        { latitude: 30.61316, count: 2 },
+        { latitude: 30.6132, count: 1 }
+      ]);
+    });
+
+    it('does not count a plaque with a monument beside it', async () => {
+      earlier = [found2025(30.6122, -96.3414, 'statues_monuments'), found2025(30.6122, -96.3414, 'tree_bench_plaque')];
+
+      expect((await points()).map(({ type, count }) => ({ type, count }))).toEqual([
+        { type: 'monument', count: 1 },
+        { type: 'tree_bench_plaque', count: 1 }
+      ]);
+    });
+
+    it('compares only with the first find of each thing, so a row does not chain into one', async () => {
+      // Each about 11 m north of the one before: the second is within 15 m of the first, the third is not.
+      earlier = [
+        found2025(30.612, -96.3414, 'statues_monuments'),
+        found2025(30.6121, -96.3414, 'statues_monuments'),
+        found2025(30.6122, -96.3414, 'statues_monuments')
+      ];
+
+      expect((await points()).map(({ latitude, count }) => ({ latitude, count }))).toEqual([
+        { latitude: 30.612, count: 2 },
+        { latitude: 30.6122, count: 1 }
+      ]);
+    });
+
+    it('asks for the finds oldest first, so each is counted at the place it was first found', async () => {
+      await points();
+
+      expect(find).toHaveBeenCalledWith(expect.objectContaining({ order: { created: 'ASC', guid: 'ASC' } }));
+    });
   });
 });

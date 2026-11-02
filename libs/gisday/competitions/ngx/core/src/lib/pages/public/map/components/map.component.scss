@@ -2,4 +2,54 @@
 
 :host {
   @include flex(1);
+  position: relative;
+}
+
+// Above the map's attribution, bottom right, where a phone's thumb is.
+.locate {
+  position: absolute;
+  right: 1rem;
+  bottom: 2.5rem;
+}
+
+// The same symbols the layers draw (#2625).
+.key {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 2rem;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  list-style: none;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-size: 0.8rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .symbol {
+    display: inline-block;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    box-sizing: border-box;
+  }
+
+  .mine {
+    background: #500000;
+    border: 1.5px solid #ffffff;
+    box-shadow: 0 0 0 1px #500000;
+  }
+
+  .others {
+    background: #424242;
+  }
+
+  .found {
+    border: 2px solid #500000;
+  }
 }

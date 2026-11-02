@@ -1,0 +1,24 @@
+// Sized and shaded as the map's own zoom buttons, so it reads as one of them.
+.map-location {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #424242;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+
+  &.on {
+    color: #4285f4;
+  }
+
+  &:disabled {
+    color: #9e9e9e;
+    cursor: default;
+  }
+}
