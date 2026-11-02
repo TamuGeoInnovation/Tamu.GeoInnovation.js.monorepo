@@ -46,7 +46,7 @@
     "@arcgis/core": "5.1.27",
     "@arcgis/map-components": "5.1.27",
     "@auth0/auth0-angular": "^2.13.0",
-    "@esri/calcite-components": "5.1.2",
+    "@esri/calcite-components": "5.2.0",
     "@jimp/core": "~1.6.1",
     "@jimp/js-jpeg": "~1.6.1",
     "@jimp/js-png": "~1.6.1",
