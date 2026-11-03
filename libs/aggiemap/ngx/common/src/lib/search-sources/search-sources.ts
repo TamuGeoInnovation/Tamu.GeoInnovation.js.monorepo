@@ -269,6 +269,39 @@ export function SearchSources(
       popupComponent: Popups.PoiPopupComponent,
       searchActive: true
     },
+    // Nature Rx (#2630), as Points of Interest is: one source a visitor searches, and an exact one a
+    // shared link opens. `key_words` is searched as well as the name because the service publishes it for
+    // that - a space is as likely to be looked for as "hammocks" or "disc golf" as by its own name.
+    NATURE_RX_EXACT: {
+      source: 'nature-rx-exact',
+      name: 'Nature Rx',
+      url: definitions.NATURE_RX.url,
+      queryParams: {
+        ...searchQueryParams,
+        where: {
+          keys: ['objectid'],
+          operators: ['=']
+        }
+      },
+      featuresLocation: 'features',
+      displayTemplate: '{attributes.area_name}',
+      popupComponent: Popups.NatureRxPopupComponent,
+      searchActive: false,
+      urlQueryParam: 'naturerx',
+      urlQueryParamAliases: ['NatureRx', 'nature-rx']
+    },
+    NATURE_RX: {
+      source: 'nature-rx',
+      name: 'Nature Rx',
+      url: definitions.NATURE_RX.url,
+      queryParams: {
+        ...containsSearch(['area_name', 'key_words'])
+      },
+      featuresLocation: 'features',
+      displayTemplate: '{attributes.area_name}',
+      popupComponent: Popups.NatureRxPopupComponent,
+      searchActive: true
+    },
     BIKE_RACKS: {
       source: 'bike-racks',
       name: 'Bike Racks',
@@ -342,6 +375,8 @@ export type ComposedSearchSourcesKeyMap = {
   PARKING_LOT: SearchSource;
   POINTS_OF_INTEREST_EXACT: SearchSource;
   POINTS_OF_INTEREST: SearchSource;
+  NATURE_RX_EXACT: SearchSource;
+  NATURE_RX: SearchSource;
   BIKE_RACKS: SearchSource;
   BUS_STOPS_EXACT: SearchSource;
 };
