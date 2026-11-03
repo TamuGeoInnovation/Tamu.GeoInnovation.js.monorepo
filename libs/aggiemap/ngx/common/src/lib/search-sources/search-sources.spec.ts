@@ -41,6 +41,12 @@ describe('SearchSources', () => {
       name: 'Points of Interest',
       url: 'https://example.com/poi'
     },
+    NATURE_RX: {
+      id: 'nature-rx',
+      layerId: 'nature-rx-layer',
+      name: 'Nature Rx',
+      url: 'https://example.com/nature-rx'
+    },
     BUILDINGS: {
       id: 'buildings',
       layerId: 'buildings-layer',

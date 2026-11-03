@@ -43,6 +43,13 @@ describe('LayerSources', () => {
         url: 'poi-url',
         popupComponent: 'poi-popup'
       },
+      NATURE_RX: {
+        id: 'nature-rx',
+        layerId: 'nature-rx',
+        name: 'Nature Rx',
+        url: 'nature-rx-url',
+        popupComponent: 'nature-rx-popup'
+      },
       BONFIRE: {
         id: 'bonfire',
         layerId: 'bonfire',
