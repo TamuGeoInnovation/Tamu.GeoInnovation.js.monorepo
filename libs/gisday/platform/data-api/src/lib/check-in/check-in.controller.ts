@@ -38,6 +38,16 @@ export class CheckInController {
     return this.provider.getCheckinsForUser(userGuid);
   }
 
+  /**
+   * A session's check-ins, for admins on its page, each marked when made outside its time (#2635).
+   */
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['read:checkins'])
+  @Get('event/:eventGuid')
+  public async getCheckinsForEvent(@Param('eventGuid') eventGuid: string) {
+    return this.provider.getCheckinsForEvent(eventGuid);
+  }
+
   @UseGuards(JwtGuard)
   @Get('user')
   public async getLoggedInUserCheckins(@Request() req) {

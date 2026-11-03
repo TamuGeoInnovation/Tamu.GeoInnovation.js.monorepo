@@ -182,6 +182,7 @@ export class EventAddEditFormComponent implements OnInit {
       presentationType: [null],
       isAcceptingRsvps: [false],
       isBringYourOwnDevice: [false],
+      checkInAnyTime: [false],
       requirements: [null],
       broadcast: [null],
       location: [null],

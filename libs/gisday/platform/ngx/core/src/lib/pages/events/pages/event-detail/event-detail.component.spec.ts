@@ -51,12 +51,26 @@ describe('EventDetailComponent check-in', () => {
       startTime: '00:00:00',
       endTime: '23:59:59'
     },
-    // The page's query string, and the signed-in account's roles.
-    { query = {}, roles = [] }: { query?: Record<string, string>; roles?: Array<string> } = {}
+    // The page's query string, the signed-in account's roles, whether the session is open at any time
+    // (#2635), and what the admins' list of its check-ins and the site's users answer.
+    {
+      query = {},
+      roles = [],
+      anyTime = false,
+      sessionCheckIns = () => of([] as Array<Record<string, unknown>>),
+      users = () => of([] as Array<Record<string, unknown>>)
+    }: {
+      query?: Record<string, string>;
+      roles?: Array<string>;
+      anyTime?: boolean;
+      sessionCheckIns?: () => ReturnType<typeof of>;
+      users?: () => ReturnType<typeof of>;
+    } = {}
   ) {
     let checkedIn = false;
 
     const getCheckInCode = jest.fn(() => of({ code: 'code-1' }));
+    const getCheckinsForEvent = jest.fn(sessionCheckIns);
     const insertUserCheckin = jest.fn<ReturnType<typeof insert>, [string, unknown?, string?]>(() => {
       const result = insert();
       checkedIn = true;
@@ -70,6 +84,7 @@ describe('EventDetailComponent check-in', () => {
       name: 'Opening session',
       mode,
       ...schedule,
+      checkInAnyTime: anyTime,
       speakers: [],
       location: { building: 'TAMU Rudder Plaza', checkInZone: zone }
     };
@@ -87,7 +102,10 @@ describe('EventDetailComponent check-in', () => {
         },
         {
           provide: UserService,
-          useValue: { getUserMetadata: () => of({ app_metadata: { gisday: { completedProfile: true } } }) }
+          useValue: {
+            getUserMetadata: () => of({ app_metadata: { gisday: { completedProfile: true } } }),
+            getUsers: users
+          }
         },
         {
           provide: EventService,
@@ -100,7 +118,8 @@ describe('EventDetailComponent check-in', () => {
           useValue: {
             getUserCheckinForEvent: () => (checkedIn ? of({ guid: 'c-new' }) : throwError(() => new Error('none'))),
             insertUserCheckin,
-            getCheckInCode
+            getCheckInCode,
+            getCheckinsForEvent
           }
         },
         { provide: NotificationService, useValue: { toast: jest.fn() } },
@@ -145,6 +164,7 @@ describe('EventDetailComponent check-in', () => {
       pressCheckIn,
       insertUserCheckin,
       getCheckInCode,
+      getCheckinsForEvent,
       detectChanges: () => f.detectChanges()
     };
   }
@@ -366,6 +386,104 @@ describe('EventDetailComponent check-in', () => {
       const { text } = open('in-person', undefined, session);
 
       expect(hasButton(text)).toBe(shown);
+    });
+
+    // #2635: a session open at any time shows the button before, during and after its time.
+    it.each([
+      ['the day before', '2026-11-17T22:30:00Z'],
+      ['a minute before the start', '2026-11-18T21:59:00Z'],
+      ['16 minutes after the end', '2026-11-18T23:16:00Z'],
+      ['a week later', '2026-11-25T22:30:00Z']
+    ])('open at any time, %s: shown', (_, now) => {
+      jest.useFakeTimers({ now: new Date(now), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+
+      const { text } = open('in-person', undefined, session, { anyTime: true });
+
+      expect(hasButton(text)).toBe(true);
+      expect(text()).not.toContain('no longer available');
+      // The zone still applies, so the page still says where to be.
+      expect(text()).toContain('you need to be at TAMU Rudder Plaza');
+    });
+  });
+
+  /**
+   * #2635: admins see a session's check-ins on its page, each marked when made outside its time.
+   */
+  describe("the session's check-ins, for admins", () => {
+    const admin = (overrides: Record<string, unknown> = {}) => ({ roles: ['GIS Day Admin'], ...overrides });
+    const rows = (page: () => HTMLElement) =>
+      Array.from(page().querySelectorAll('table.floating-table tbody tr')).map((tr) =>
+        Array.from(tr.querySelectorAll('td')).map((td) => td.textContent.trim())
+      );
+
+    it('lists who checked in and when, naming them from the site users, and marks one outside the time', () => {
+      const { page, getCheckinsForEvent } = open(
+        'in-person',
+        undefined,
+        undefined,
+        admin({
+          anyTime: true,
+          sessionCheckIns: () =>
+            of([
+              { accountGuid: 'auth0|late', created: '2026-11-18T23:30:00Z', outsideSessionTime: true },
+              { accountGuid: 'auth0|ontime', created: '2026-11-18T22:05:00Z', outsideSessionTime: false },
+              { accountGuid: 'auth0|unknown', created: '2026-11-18T22:10:00Z', outsideSessionTime: false }
+            ]),
+          users: () =>
+            of([
+              { user_info: { id: 'auth0|late', name: 'Reveille Late', email: 'late@tamu.edu' } },
+              { user_info: { id: 'auth0|ontime', email: 'ontime@tamu.edu' } }
+            ])
+        })
+      );
+
+      expect(getCheckinsForEvent).toHaveBeenCalledWith('e-1');
+      expect(page().textContent).toContain('Check-in is open at any time for this session.');
+      expect(rows(page)).toEqual([
+        ['Reveille Late (late@tamu.edu)', 'Nov 18, 5:30 PM CST', 'Outside Session Time Check-In'],
+        ['ontime@tamu.edu', 'Nov 18, 4:05 PM CST', ''],
+        ['auth0|unknown', 'Nov 18, 4:10 PM CST', '']
+      ]);
+    });
+
+    it("still lists the check-ins by account when the site's users cannot be read", () => {
+      const { page } = open(
+        'in-person',
+        undefined,
+        undefined,
+        admin({
+          sessionCheckIns: () =>
+            of([{ accountGuid: 'auth0|a', created: '2026-11-18T22:05:00Z', outsideSessionTime: false }]),
+          users: () => throwError(() => new HttpErrorResponse({ status: 503 }))
+        })
+      );
+
+      expect(rows(page)).toEqual([['auth0|a', 'Nov 18, 4:05 PM CST', '']]);
+    });
+
+    it('says why when the account cannot read check-ins', () => {
+      const { page } = open(
+        'in-person',
+        undefined,
+        undefined,
+        admin({ sessionCheckIns: () => throwError(() => new HttpErrorResponse({ status: 403 })) })
+      );
+
+      expect(page().textContent).toContain('It needs the read:checkins permission.');
+    });
+
+    it('says when nobody has checked in, and does not claim the session is open at any time when it is not', () => {
+      const { page } = open('in-person', undefined, undefined, admin());
+
+      expect(page().textContent).toContain('Nobody has checked in to this session yet.');
+      expect(page().textContent).not.toContain('open at any time');
+    });
+
+    it('shows attendees no list', () => {
+      const { page, getCheckinsForEvent } = open('in-person');
+
+      expect(page().querySelector('table.floating-table')).toBeNull();
+      expect(getCheckinsForEvent).not.toHaveBeenCalled();
     });
   });
 });
