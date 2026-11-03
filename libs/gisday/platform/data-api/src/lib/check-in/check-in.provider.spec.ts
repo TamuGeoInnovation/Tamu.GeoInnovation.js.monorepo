@@ -175,7 +175,12 @@ describe('CheckInProvider', () => {
       withEvent('in-person');
 
       await expect(provider.insertUserCheckin('e-1', 'acct-1', middleOfMsc)).resolves.toEqual({ guid: 'c-new' });
-      expect(checkInRepo.create).toHaveBeenCalledWith({ event: expect.anything(), accountGuid: 'acct-1' });
+      // Only whether it was made inside the session's time (#2635); nothing about the position.
+      expect(checkInRepo.create).toHaveBeenCalledWith({
+        event: expect.anything(),
+        accountGuid: 'acct-1',
+        outsideSessionTime: false
+      });
     });
 
     it('checks in an attendee outside the walls whose accuracy circle reaches the zone', async () => {
