@@ -47,6 +47,7 @@ import { SearchService, SearchResult, SearchResultItem } from '@tamu-gisc/ui-kit
 import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common/ngx/settings';
 import { TripPlannerConnection, TripPlannerConnectionService } from './trip-planner-connection.service';
 import { TripPlannerNetworkTravelMode, networkTravelModeFor, offeredTravelMode } from './trip-planner-travel-modes';
+import { lastStretch, lastStretchFinishText, routeEndVertex } from './trip-planner-last-stretch';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
   TripResult,
@@ -1460,15 +1461,23 @@ export class TripPlannerService implements OnDestroy {
               new Date(baseDate.getTime() + features[features.length - 1].attributes.relativeTime * 60 * 1000)
             );
 
+            // When the destination is off the network, the last step says to leave the path for it (#2639).
+            const stretch = lastStretch(
+              routeEndVertex(features),
+              this._Stops.value[this._Stops.value.length - 1].geometry
+            );
+            const finishText = (time: string) =>
+              stretch ? lastStretchFinishText(stretch, lastStopName, time) : `Finish at ${lastStopName} at ${time}`;
+
             // Setting the text on these should update the response directions as `features` are a reference to those.
             if (this._TravelOptions.getValue().time_mode === 'arrive') {
               features[0].attributes.text = `Start at ${firstStopName} at ${lastTime}`;
 
-              features[features.length - 1].attributes.text = `Finish at ${lastStopName} at ${firstTime}`;
+              features[features.length - 1].attributes.text = finishText(firstTime);
             } else {
               features[0].attributes.text = `Start at ${firstStopName} at ${firstTime}`;
 
-              features[features.length - 1].attributes.text = `Finish at ${lastStopName} at ${lastTime}`;
+              features[features.length - 1].attributes.text = finishText(lastTime);
             }
 
             const features_length = features.length;
@@ -1962,6 +1971,26 @@ export class TripPlannerService implements OnDestroy {
 
             graphicCollection.push(graphic);
           });
+
+          // The last stretch, from where the network's route ends to the destination itself, dashed because no
+          // path is known there (#2639). Drawn with the route, so it is zoomed to and cleared with it.
+          const stretch = lastStretch(
+            routeEndVertex(result.result.directions.features),
+            this._Stops.value[this._Stops.value.length - 1]?.geometry
+          );
+
+          if (stretch && this._view.type === '2d') {
+            graphicCollection.push(
+              new Graphic({
+                geometry: new Polyline({
+                  spatialReference: { wkid: 4326 },
+                  paths: [[stretch.from, stretch.to]]
+                }),
+                symbol: { ...routeSymbols.walk_2d, id: 'last-stretch', style: 'dash' } as esri.GraphicProperties['symbol'],
+                attributes: { lastStretchMetres: stretch.metres }
+              })
+            );
+          }
 
           // Add all graphics generated from the route segments.
           layer.addMany(graphicCollection);
