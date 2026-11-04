@@ -9,6 +9,7 @@ import { AssetsService, SeasonService, SponsorService } from '@tamu-gisc/gisday/
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { SPONSOR_LOGO_SIZES } from '../../../../../utils/sponsor-logo-size';
 import { TextboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -40,6 +41,8 @@ export class SponsorAddEditFormComponent implements OnInit {
   public activeSeasons$: Observable<Partial<Season>>;
   public logoUrl$: Observable<SafeUrl | string | null>;
   public form: UntypedFormGroup;
+
+  public logoSizesDict = SPONSOR_LOGO_SIZES;
 
   public sponsorshipLevelsDict = [
     {
@@ -75,6 +78,7 @@ export class SponsorAddEditFormComponent implements OnInit {
       contactEmail: [null],
       sponsorshipLevel: [null],
       active: [true],
+      logoSize: ['regular'],
       season: [null],
       file: [null]
     });

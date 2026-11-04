@@ -41,6 +41,10 @@
         <tamu-gisc-select formControlName="sponsorshipLevel" [data]="sponsorshipLevelsDict" [valueTemplate]="'value'" [displayTemplate]="'label'" [placeholder]="'Select sponsorship level'"></tamu-gisc-select>
       </div>
 
+      <div class="form-collection row leader-1">
+        <tamu-gisc-select formControlName="logoSize" [data]="logoSizesDict" [valueTemplate]="'value'" [displayTemplate]="'label'" [placeholder]="'Logo size on the Sponsors page'"></tamu-gisc-select>
+      </div>
+
       <div class="form-collection row">
         <div>
           <tamu-gisc-image-preview [src]="logoUrl$ | async" alt="Logo preview" fallback="business" fallbackLabel="No logo yet"></tamu-gisc-image-preview>

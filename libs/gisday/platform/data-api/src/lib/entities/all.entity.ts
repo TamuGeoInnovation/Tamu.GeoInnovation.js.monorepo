@@ -647,6 +647,11 @@ export class Tag extends GuidIdentity {
   public season: Season;
 }
 
+/**
+ * The sizes a sponsor's logo can be drawn at on the Sponsors page, smallest first (#2638).
+ */
+export type SponsorLogoSize = 'small' | 'regular' | 'large' | 'extra-large';
+
 @Entity({
   name: 'sponsors'
 })
@@ -681,6 +686,13 @@ export class Sponsor extends GuidIdentity {
    */
   @Column({ nullable: false, default: true })
   public active: boolean;
+
+  /**
+   * How large the sponsor's logo is drawn on the public Sponsors page, so a logo with small detail
+   * can be shown bigger than its neighbours. Existing sponsors are `regular`, the size before (#2638).
+   */
+  @Column({ nullable: false, default: 'regular' })
+  public logoSize: SponsorLogoSize;
 
   @ManyToOne(() => Season, (season) => season.sponsors)
   public season: Season;

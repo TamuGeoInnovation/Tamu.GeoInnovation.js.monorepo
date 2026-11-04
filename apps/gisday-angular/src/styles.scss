@@ -1978,6 +1978,45 @@ article .row {
         width: 250px;
       }
     }
+
+    // A sponsor's logo size, chosen in its admin form (#2638). Regular is the box above; the others
+    // keep its 10:3 shape. Never wider than the screen, so a phone still shows the whole logo.
+    &.logo-small,
+    &.logo-large,
+    &.logo-extra-large {
+      max-width: 100%;
+
+      a:first-child {
+        max-width: 100%;
+      }
+    }
+
+    &.logo-small {
+      width: 14.125rem;
+
+      a:first-child {
+        width: 160px;
+        height: 48px;
+      }
+    }
+
+    &.logo-large {
+      width: 26rem;
+
+      a:first-child {
+        width: 360px;
+        height: 108px;
+      }
+    }
+
+    &.logo-extra-large {
+      width: 36rem;
+
+      a:first-child {
+        width: 500px;
+        height: 150px;
+      }
+    }
   }
 
   &.opaque .icon-item > div:first-child {

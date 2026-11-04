@@ -5,7 +5,7 @@ import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import { AssetUrlPipe, activeSponsors } from '@tamu-gisc/gisday/platform/ngx/common';
+import { AssetUrlPipe, activeSponsors, sponsorLogoClass } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-sponsors-main',
@@ -51,6 +51,11 @@ export class SponsorsMainComponent implements OnInit {
     this.lineSponsors$ = this._sponsors$.pipe(this.filterSponsors('line'));
     this.pointSponsors$ = this._sponsors$.pipe(this.filterSponsors('point'));
   }
+
+  /**
+   * The class that sizes a sponsor's logo, as chosen in its admin form (#2638).
+   */
+  public logoClass = sponsorLogoClass;
 
   public filterSponsors(type: Sponsor['sponsorshipLevel']) {
     return pipe(
