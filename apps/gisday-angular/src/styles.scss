@@ -1979,15 +1979,18 @@ article .row {
       }
     }
 
-    // A sponsor's logo size, chosen in its admin form (#2638). Regular is the box above; the others
-    // keep its 10:3 shape. Never wider than the screen, so a phone still shows the whole logo.
+    // A sponsor's logo size, chosen in its admin form (#2638). Regular is the box above, 250px wide and
+    // held to 4rem tall by `.sponsor-list a`; the others keep its 25:6 shape, so they lift that cap.
+    // Never wider than the screen, so a phone still shows the whole logo: the list around the logos
+    // takes its width from them, so the cap is the screen's, not the list's.
     &.logo-small,
     &.logo-large,
     &.logo-extra-large {
-      max-width: 100%;
+      max-width: calc(100vw - 6rem);
 
       a:first-child {
         max-width: 100%;
+        max-height: none;
       }
     }
 
@@ -1996,7 +1999,7 @@ article .row {
 
       a:first-child {
         width: 160px;
-        height: 48px;
+        height: 38px;
       }
     }
 
@@ -2004,8 +2007,8 @@ article .row {
       width: 26rem;
 
       a:first-child {
-        width: 360px;
-        height: 108px;
+        width: 375px;
+        height: 90px;
       }
     }
 
@@ -2014,7 +2017,7 @@ article .row {
 
       a:first-child {
         width: 500px;
-        height: 150px;
+        height: 120px;
       }
     }
   }

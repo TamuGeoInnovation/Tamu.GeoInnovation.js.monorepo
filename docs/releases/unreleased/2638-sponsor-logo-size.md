@@ -7,11 +7,11 @@ testOnDev: |
 
 ### GIS Day: each sponsor's logo can be drawn small, regular, large or extra large
 
-Every logo on the Sponsors page was fitted into the same 250 × 75 px box, whatever its shape, so a logo with
+Every logo on the Sponsors page was fitted into the same 250 × 60 px box, whatever its shape, so a logo with
 small text, like the Bush School's seal and two lines beside it, read as tiny next to its neighbours and nothing
 could make it bigger. A sponsor's form now has a **Logo size**: Small, Regular, Large or Extra large. Regular is
 the box before and stays the size of every existing sponsor until someone changes it; Large and Extra large draw
-the logo about 1.4 and 2 times as wide, and no logo is ever wider than a phone's screen
+the logo 1.5 and 2 times as large (375 × 90 and 500 × 120 px), and no logo is ever wider than a phone's screen
 ([#2638](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2638)).
 
 The size is a new column on the sponsors table, added by the migration `AddSponsorLogoSize`. It only adds, so it
@@ -20,6 +20,6 @@ once it has.
 
 | Before | After |
 | --- | --- |
-| ![Both LiDAR logos in the same small box](../screenshots/2638-sponsor-logo-size/before-public-sponsors.png) | ![The Bush School's logo drawn extra large beside ConocoPhillips at regular](../screenshots/2638-sponsor-logo-size/after-public-sponsors.png) |
+| ![Both LiDAR logos in the same small box](../screenshots/2638-sponsor-logo-size/before-public-sponsors.png) | ![One Raster sponsor drawn extra large beside four at regular; each logo's box outlined, because the local copy has no logo files](../screenshots/2638-sponsor-logo-size/after-public-sponsors.png) |
 | | ![The sponsor form's Logo size select](../screenshots/2638-sponsor-logo-size/after-admin-sponsor-form.png) |
 
