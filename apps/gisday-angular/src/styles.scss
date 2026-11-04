@@ -1980,7 +1980,9 @@ article .row {
     }
 
     // A sponsor's logo size, chosen in its admin form (#2638). Regular is the box above, 250px wide and
-    // held to 4rem tall by `.sponsor-list a`; the others keep its 25:6 shape, so they lift that cap.
+    // held to 4rem tall by `.sponsor-list a`; the others lift that cap. Large and Extra large are about
+    // 2:1, not Regular's 25:6, so a stacked logo grows in height too; a wide one still stops at the
+    // width (#2646).
     // Never wider than the screen, so a phone still shows the whole logo: the list around the logos
     // takes its width from them, so the cap is the screen's, not the list's.
     &.logo-small,
@@ -2004,20 +2006,20 @@ article .row {
     }
 
     &.logo-large {
-      width: 26rem;
+      width: 31rem;
 
       a:first-child {
-        width: 375px;
-        height: 90px;
+        width: 450px;
+        height: 200px;
       }
     }
 
     &.logo-extra-large {
-      width: 36rem;
+      width: 45rem;
 
       a:first-child {
-        width: 500px;
-        height: 120px;
+        width: 650px;
+        height: 300px;
       }
     }
   }
