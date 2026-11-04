@@ -9,7 +9,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
-import { Asset, Sponsor } from '../entities/all.entity';
+import { Asset, Sponsor, SponsorLogoSize } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
@@ -140,7 +140,7 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
 
   public async createSponsor(sponsor: Partial<Sponsor>, file?: Express.Multer.File) {
     const sponsorEnt = this.sponsorRepo.create({
-      ...withActiveFlag(sponsor)
+      ...withLogoSize(withActiveFlag(sponsor))
     });
 
     if (sponsorEnt) {
@@ -173,7 +173,7 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
 
   public async updateSponsor(guid: string, incoming: Partial<Sponsor>, file?: Express.Multer.File) {
     delete incoming.guid;
-    incoming = withActiveFlag(incoming);
+    incoming = withLogoSize(withActiveFlag(incoming));
 
     const existing = await this.sponsorRepo.findOne({
       where: {
@@ -272,6 +272,23 @@ export function withActiveFlag<T extends Partial<Sponsor>>(sponsor: T): T {
     copy.active = false;
   } else {
     delete copy.active;
+  }
+
+  return copy;
+}
+
+const LOGO_SIZES: ReadonlyArray<SponsorLogoSize> = ['small', 'regular', 'large', 'extra-large'];
+
+/**
+ * The sponsor with `logoSize` kept only when it is one of the sizes the Sponsors page draws. Anything
+ * else is left out, so a new sponsor gets the column's default and an update leaves the size as it
+ * was (#2638).
+ */
+export function withLogoSize<T extends Partial<Sponsor>>(sponsor: T): T {
+  const copy = { ...sponsor };
+
+  if (!LOGO_SIZES.includes(copy.logoSize)) {
+    delete copy.logoSize;
   }
 
   return copy;

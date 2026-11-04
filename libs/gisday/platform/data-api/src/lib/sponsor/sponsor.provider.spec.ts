@@ -129,6 +129,17 @@ describe('SponsorProvider', () => {
       expect(assetService.saveAsset).not.toHaveBeenCalled();
     });
 
+    it('creates a sponsor with the logo size given, and without one that is not a size (#2638)', async () => {
+      jest.spyOn(sponsorRepo, 'create').mockReturnValue({ save: jest.fn().mockResolvedValue({}) } as never);
+
+      await provider.createSponsor({ name: 'Bush School', logoSize: 'large' });
+      await provider.createSponsor({ name: 'Esri', logoSize: '' } as unknown as Partial<Sponsor>);
+
+      const created = (sponsorRepo.create as jest.Mock).mock.calls.map((c) => c[0]);
+      expect(created[0].logoSize).toBe('large');
+      expect('logoSize' in created[1]).toBe(false);
+    });
+
     it('attaches a saved logo and persists a second time when a file is supplied', async () => {
       const saved = { guid: 'sp-new' } as Sponsor & { save: jest.Mock };
       saved.save = jest.fn().mockResolvedValue(saved);
@@ -206,6 +217,23 @@ describe('SponsorProvider', () => {
       await provider.updateSponsor('sp-1', { name: 'Esri' });
 
       expect((sponsorRepo.save as jest.Mock).mock.calls[0][0].active).toBe(false);
+    });
+
+    /**
+     * #2638. The size decides a CSS class on the public page, so only the four it draws are kept.
+     */
+    it('keeps a logo size the page draws and leaves out any other', async () => {
+      jest
+        .spyOn(sponsorRepo, 'findOne')
+        .mockResolvedValue({ guid: 'sp-1', logoSize: 'regular', logos: [] } as unknown as Sponsor);
+      jest.spyOn(sponsorRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
+
+      await provider.updateSponsor('sp-1', { logoSize: 'extra-large' });
+      await provider.updateSponsor('sp-1', { logoSize: 'huge' } as unknown as Partial<Sponsor>);
+      await provider.updateSponsor('sp-1', { name: 'Esri' });
+
+      const saved = (sponsorRepo.save as jest.Mock).mock.calls.map((c) => c[0].logoSize);
+      expect(saved).toEqual(['extra-large', 'regular', 'regular']);
     });
 
     it('does not let the caller overwrite the guid', async () => {
