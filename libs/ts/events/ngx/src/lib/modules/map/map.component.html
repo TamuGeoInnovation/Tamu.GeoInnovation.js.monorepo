@@ -32,10 +32,11 @@
 
 <!-- Map component -->
 @if ((config | async); as c) {
-<tamu-gisc-esri-map [config]="c" [zoom]="!isMobile()" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile() }">
-  <!-- In the map's slots, below the zoom buttons: locate, then the compass; on a phone, locate alone at the bottom right (#1949). -->
-  <arcgis-track [attr.slot]="isMobile() ? 'bottom-right' : 'top-left'" go-to-location-disabled></arcgis-track>
+<tamu-gisc-esri-map #esriMap [config]="c" [zoom]="!isMobile()" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile() }">
+  <!-- In the map's slots, below the zoom buttons: locate, then the compass (#1949). On a phone, locate is stacked above
+  the Legend and Layers buttons instead (#2642). -->
   @if (!isMobile()) {
+  <arcgis-track slot="top-left" go-to-location-disabled></arcgis-track>
   <tamu-gisc-map-compass slot="top-left"></tamu-gisc-map-compass>
   }
   @if (!hideSidebar) {
@@ -59,7 +60,12 @@
           desktop map the router cannot resolve them and falls back to the root map - a click that
           silently throws away the map the user was looking at. They also sit beneath the desktop
           side panel, which already offers Layers and Legend properly. See #1251. -->
-      @if (isMobile()) {
+      <!-- On a phone, locate heads the stack, above Legend and Layers. At the bottom right on its own it sat over the
+          tents and zones, and a tap that missed it opened a feature's popup (#2642). Outside the map, so it is pointed at
+          it, and it steps aside while the 3D scene shows, as it did in the map's slot. -->
+      @if (isMobile() && esriMap.flatMapElement(); as flat) {
+      <arcgis-track class="overlay-locate" [referenceElement]="flat" go-to-location-disabled></arcgis-track>
+      } @if (isMobile()) {
       <div routerLink="./m/sidebar/legend" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Legend">format_list_bulleted</span></div>
       } @if (isMobile()) {
       <div routerLink="./m/sidebar/layers" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Layer List">layers</span></div>
