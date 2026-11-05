@@ -201,6 +201,110 @@
 > weekdays that are wrong for 2026. **Do not fix it in this branch**; it needs the real 2026 dates from the
 > university. Just do not be surprised by it, and do not "tidy" those dates while you are in there.
 
+## Batch 29 (aggiemap: #2653 - make `tsgisHost` obey the environment flag, so a development build reads the development server; 5 November 2026, 8:20 AM Central, from `work (aggiemap)`)
+
+**Start now.** **Expected: 3 to 4 hours.** A branch. **This is yours because you built
+[PR 2615](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2615) in batch 28** - you
+already know `connections.ts`, `connections.spec.ts` and the graduation definitions, and this is the general
+form of the special case you made there. It was queued to `copilot-home` as its batch 59 and moved here
+because that machine has taken no batch since 30 October.
+
+[#2653](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2653) (Bug, **High**) has
+the whole measurement: all 57 services the app names on Transportation's host, asked of **both** hosts and
+compared by layer id, layer name **and field list**. Read it first; everything below assumes it.
+
+### What is wrong
+
+`getDefaultGisHosts()` hard-pins `tsgisHost` to `arc.ts.tamu.edu` with a `TEMP:` comment, so the permit and
+event maps ignore the environment flag that every other service obeys. The maintainer's words, 5 November:
+
+> These maps should be reading from the dev host layers based on which environment the site is running in. If
+> they are not doing this, it is an error that we have created in some of our work over time. [...] If these
+> were previously hardcoded into the event definition files, it's because the dev layers did not exist
+> previously, which they now do.
+
+He is right, and `athleticsHost` - the constant you added `graduationParkingUrl` to in batch 28 - is the same
+workaround applied by hand to twelve services. **This batch generalises it and retires it.**
+
+Two facts that explain why nobody has simply flipped it:
+
+- **`arc.ts-dev.tamu.edu`, the host in the commented-out line, does not resolve** and appears never to have.
+  The dev counterparts live on `gis.dev.tamu.edu`, where you pointed graduation.
+- **The dev server has no `TS_Events` folder.** It has a public `TS` folder of 60 services whose names line up
+  one-for-one. So flipping the host alone returns nothing on about half of them, which is very likely why an
+  earlier attempt was reverted to a pin.
+
+### The fix
+
+1. **`tsgisHost` resolves to `gis.dev.tamu.edu` on a development build**, by the same
+   `readsDevelopmentGisServer()` test `gisHost` uses, so `actingAsProduction` and the smoke suite's explicit
+   `Connections(host)` calls keep behaving.
+2. **A path rule beside it: `TS_Events/<X>` on production is `TS/<X>` on the development server.** One rule,
+   one place, with the measurement as its comment.
+3. **Retire `athleticsHost`** into the general mechanism rather than extending it a thirteenth time. Its
+   services are at the same path on both hosts, so they need no path rule - they stop being special.
+4. **The four we are simply missing move with the rest**: `4H_Roundup_view`, `AggielandSaturday_view`,
+   `Aggie_Family_Parade_view`, `Big_Event_view`. Public on the dev server at the identical path, same layer
+   ids, **every field matching** - pinned to production only because nobody added them to `athleticsHost`.
+5. **The sixteen that cannot move stay named on production, each with its own reason beside it**, the way
+   `lactationRoomsUrl` and `basemapUrl` are. Their dev copies are the older MapServer the hosted view
+   replaced and are **missing `objectid`** (and `SHAPE__Area`, `catid`, `createdat`, `publishedat`).
+   `objectid` is the one that matters: the exact-match search sources and the share links are built on it.
+   Routing them is #2209 again. **Name them individually. No silent fallback** - a fallback is how this
+   becomes invisible a second time.
+
+### Prove it red first, and prove the right thing
+
+The bug is not a wrong URL. It is a right URL nobody revisited. So the test has to fail when a service is
+pinned to production **without a stated reason**:
+
+- In `libs/aggiemap/ngx/common/src/lib/connections.spec.ts`, over a development-host `Connections(...)`:
+  every transportation URL resolves to the development host **except** an explicit, named allow-list - the
+  sixteen plus the four retired 150th-era events (`150th_Kickoff`, `Kickoff_at_Kyle`, `Live_at_the_Station`,
+  `Spirit_of_150_Week`, which have no dev counterpart at all).
+- **That allow-list is the deliverable as much as the code is.** It is what the director takes to
+  Transportation: "publish the hosted view for these sixteen on dev and the maps become testable."
+- Run it against unmodified `development` and confirm it fails, naming services. Put the output in the report.
+- **PR 2615 is not merged and touches `connections.ts` and `connections.spec.ts`.** Branch from
+  `origin/development`, and if 2615 has merged by the time you start, say so; if it has not, expect to resolve
+  it later and keep your diff narrow in those two files.
+
+### The five that differ only in geometry fields
+
+`Fish_Camp`, `HS_Graduation`, `Physics_Fest` and `SEC_Grounds_Conference` differ from their dev counterparts
+only in `Shape_Area` / `Shape_Length`. **Grep the definitions, popups and search sources for those two
+names.** If nothing reads them they move with the clean twenty, and the report says that was checked rather
+than assumed. `TS_Main` is different: its layer 6 is missing real `GIS.TS.SPC_PNT_CNT.*` attributes, so expect
+it on the allow-list with that as the reason.
+
+### In a browser, because this is the part no test tells you
+
+A development build of the branch, and for each of **business parking, contractor parking, freshman parking,
+timed parking, night and weekend, visitor parking, Aggieland Saturday and Big Event**: the layers draw, the
+legend has its symbols, a popup opens with its fields filled, and the copy link reopens the same feature.
+
+**Take the "before" first and keep it**: a development build of plain `development` draws production's data,
+and that state stops existing the moment the branch is on disk. Before and after for at least three maps.
+
+Then **`test/smoke/aggiemap/run-local.sh local`**, and say what changed against the same run on
+`development`. Layers will newly appear and some will newly fail - that is the point, and **every new failure
+is named, not explained away**. Where the dev server genuinely lacks something the suite expects, that is an
+`environments.json` entry with its own issue, as #1229 and #2350 did.
+
+### The check and the notes
+
+`bash scripts/check-in-volume.sh <branch>` - **the full affected check, not a project list.** This changes
+`connections.ts`, which nearly everything reads; it is not a bug-fix-shaped change. Exit code in the report.
+
+A release note at `docs/releases/unreleased/2653-dev-host-transportation.md` with its *What to test on dev*
+row, images under `docs/screenshots/2653-dev-host-transportation/`. The user-visible result is real: on
+development these maps begin showing development data.
+
+### The report
+
+`home/reports/2026-11-05-29.md`. Lead with the red test's output, then the branch commit, then the allow-list
+with a reason per entry. Questions under **Questions for the director (aggiemap)**.
+
 ## Batch 27 (aggiemap: #2581 rewritten - a per-event refresh switch, **not** the women's refresh; 30 October 2026, from `work (aggiemap)`)
 
 **Your batch 26 stop was right and your split was exactly what I wanted.** The maintainer has now decided
