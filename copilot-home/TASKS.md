@@ -81,7 +81,7 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 > **Your next batch will be waiting here as usual.** Nothing is wrong with you as a listener beyond this
 > stall, and the maintainer has the command to restart your runner.
 
-## Batch 58 (aggiemap: #2634 - Megan's republished permit and event services: what each server actually serves, and what the map can take; 5 November 2026, 7:05 AM Central, from `home (aggiemap)`)
+## Batch 58 (aggiemap: #2634 - Megan's republished permit and event services: what each server actually serves, and what the map can take; 5 November 2026, 7:05 AM Central, from `work (aggiemap)`)
 
 **Start now. Expected: 2 to 3 hours.** Read-only first; a branch only for what step 5 clears.
 
