@@ -5,19 +5,31 @@
   "sourceRoot": "apps/gisday-angular/src",
   "prefix": "tamu-gisc",
   "tags": [],
-  "implicitDependencies": ["assets", "sass", "gisday-sass"],
+  "implicitDependencies": [
+    "assets",
+    "sass",
+    "gisday-sass"
+  ],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
-      "dependsOn": ["build-app"],
-      "outputs": ["{workspaceRoot}/dist/apps/gisday-angular"],
+      "dependsOn": [
+        "build-app"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/apps/gisday-angular"
+      ],
       "cache": true,
-      "inputs": ["production", "^production"],
+      "inputs": [
+        "production",
+        "^production"
+      ],
       "options": {
-        "command": "node -r ts-node/register apps/gisday-angular/scripts/site-pages.ts dist/apps/gisday-angular",
+        "command": "node -r ts-node/register -r tsconfig-paths/register apps/gisday-angular/scripts/site-pages.ts dist/apps/gisday-angular",
         "env": {
-          "TS_NODE_TRANSPILE_ONLY": "true",
+          "TS_NODE_PROJECT": "tsconfig.base.json",
           "TS_NODE_SKIP_PROJECT": "true",
+          "TS_NODE_TRANSPILE_ONLY": "true",
           "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"node16\",\"moduleResolution\":\"node16\",\"target\":\"es2022\"}"
         }
       },
@@ -29,7 +41,9 @@
     },
     "build-app": {
       "executor": "@angular/build:application",
-      "outputs": ["{options.outputPath.base}"],
+      "outputs": [
+        "{options.outputPath.base}"
+      ],
       "defaultConfiguration": "",
       "options": {
         "crossOrigin": "anonymous",
@@ -38,7 +52,9 @@
           "browser": ""
         },
         "index": "apps/gisday-angular/src/index.html",
-        "polyfills": ["apps/gisday-angular/src/polyfills.ts"],
+        "polyfills": [
+          "apps/gisday-angular/src/polyfills.ts"
+        ],
         "tsConfig": "apps/gisday-angular/tsconfig.app.json",
         "assets": [
           "apps/gisday-angular/src/favicon.ico",
@@ -59,9 +75,13 @@
             "output": "./assets"
           }
         ],
-        "styles": ["apps/gisday-angular/src/styles.scss"],
+        "styles": [
+          "apps/gisday-angular/src/styles.scss"
+        ],
         "stylePreprocessorOptions": {
-          "includePaths": ["."]
+          "includePaths": [
+            "."
+          ]
         },
         "scripts": [],
         "loader": {
@@ -138,8 +158,13 @@
         }
       },
       "cache": true,
-      "inputs": ["production", "^production"],
-      "dependsOn": ["^build"]
+      "inputs": [
+        "production",
+        "^production"
+      ],
+      "dependsOn": [
+        "^build"
+      ]
     },
     "image-build": {
       "executor": "nx:run-commands",

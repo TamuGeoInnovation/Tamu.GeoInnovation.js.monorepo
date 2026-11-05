@@ -9,7 +9,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
-import { GISDAY_SITES, GisdaySite, withSiteHead } from '../../../libs/gisday/common/src/lib/sites';
+import { GISDAY_SITES, GisdaySite, withSiteHead } from '@tamu-gisc/gisday/common';
 
 const dist = process.argv[2] ?? 'dist/apps/gisday-angular';
 const page = readFileSync(join(dist, 'index.html'), 'utf8');
