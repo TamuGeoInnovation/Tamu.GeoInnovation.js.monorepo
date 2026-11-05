@@ -75,6 +75,12 @@ export interface GisdaySite {
   contact?: string;
 
   /**
+   * The Auth0 connection the site signs in with, such as `tradewing`. Auth0 then goes straight to that connection's
+   * own sign-in page instead of its page of choices. A site with none shows Auth0's page (#2575).
+   */
+  signInWith?: string;
+
+  /**
    * The addresses that show this site whatever the deployment's key, such as `gisday.tamu.edu`. A site
    * with none is reached only by its key.
    */
@@ -144,7 +150,10 @@ export const GISDAY_SITES = {
     off: ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu', 'tamuLinks'],
     // Its deployment names it by key; the address is here too so the site's server can give link previews this
     // site's page (#2649).
-    hosts: ['gisday.ucgis.org']
+    hosts: ['gisday.ucgis.org'],
+    // UCGIS's members sign in with their UCGIS Tradewing accounts, and only those; organizers too, with the admin role
+    // given to their Tradewing account in Auth0 (decided 5 November 2026, #2575).
+    signInWith: 'tradewing'
   }
 } satisfies Record<string, GisdaySite>;
 
