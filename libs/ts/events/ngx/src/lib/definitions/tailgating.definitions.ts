@@ -23,6 +23,7 @@ import { EventPopups } from '../modules/popups/popups';
  */
 export enum TAILGATING_LAYERS {
   ZONE_NUMBERS = 'tailgating-zone-numbers',
+  RESTROOMS = 'tailgating-restrooms',
   TENTS = 'tailgating-tents',
   SIMPSON_TENTS = 'tailgating-simpson-tents',
   AGGIE_PARK = 'tailgating-aggie-park',
@@ -42,7 +43,8 @@ const TAILGATE_ZONES_LAYER_INDEX = {
   TENTS: 1,
   SIMPSON_TENTS: 2,
   WEST_CAMPUS: 3,
-  AGGIE_PARK: 4
+  AGGIE_PARK: 4,
+  RESTROOMS: 5
 } as const;
 
 /**
@@ -151,6 +153,19 @@ export const TailgatingColdLayerSources: LayerSource[] = [
     url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.TENTS}`,
     popupComponent: EventPopups.MarkdownPopupComponent,
     popupData: tentPopupData,
+    listMode: 'show',
+    visible: true,
+    native: {
+      ...tentLayerProps
+    }
+  } as unknown as LayerSource,
+  {
+    // Game-day restrooms, drawn in ArcGIS Pro with the tents and zones. The popup reads `name` and `description`,
+    // and offers "Directions To Here" where directions are on. Their visible range comes from the service.
+    type: 'feature',
+    id: TAILGATING_LAYERS.RESTROOMS,
+    url: `${TAILGATE_ZONES_URL}/${TAILGATE_ZONES_LAYER_INDEX.RESTROOMS}`,
+    popupComponent: EventPopups.MarkdownWDirectionsPopupComponent,
     listMode: 'show',
     visible: true,
     native: {
