@@ -201,6 +201,103 @@
 > weekdays that are wrong for 2026. **Do not fix it in this branch**; it needs the real 2026 dates from the
 > university. Just do not be surprised by it, and do not "tidy" those dates while you are in there.
 
+## Batch 30 (aggiemap: #2655 - a tool that compares network routes to straight-line distance, to find where the routing network is wrong; 5 November 2026, 9:05 AM Central, from `work (aggiemap)`)
+
+**Start after batch 29.** **Expected: 4 to 5 hours**, plus one long run you start and leave going.
+
+[#2655](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2655) (Feature, Medium).
+**Read it first and do not re-measure what it already measured** - the network, the modes, the `Length`
+attribute, the building counts, the batch sizes and timings, the three hazards and the observed ratio
+distribution are all in it, taken from real requests on 5 November. The maintainer asked for this directly:
+quick tests he can run after a network change, and a full every-building-to-every-building matrix for
+comprehensive errors and for comparing one network publish with the next.
+
+### Build it as a tool, not a script
+
+`tools/network-detour/` (name it better if you have one), with a `README.md`, beside
+[`tools/layer-titles`](../../blob/development/tools/layer-titles/README.md) and
+[`tools/builder-inventory`](../../blob/development/tools/builder-inventory/README.md) - read both first and
+follow their shape: a `.mjs` entry point, run in a `node:24.22.1` container against a checkout, flags
+documented in a table, and a README that says what the thing is *for* and when not to use it.
+
+**Reuse before building** (CLAUDE.md, the maintainer's standing rule): the suite already has helpers for
+asking which GIS host to use - batch 57's `#2604` work and `test/smoke/aggiemap`'s shared modules. Look there
+before writing a host helper, and say in your report where you looked.
+
+### The three tiers, smallest first
+
+The smoke suite's tier design is the pattern ([its README](../../blob/development/test/smoke/aggiemap/README.md)):
+
+1. **`quick`** - a **committed** set of pairs, so one run is comparable with the next. A couple of minutes.
+   It must contain: a spread across distance bands (the ratio is distance-sensitive, see below), every pair
+   any run has ever flagged, and pairs a person would actually ask about. This set is the regression test;
+   it is checked in, and adding to it is how a found fault stays found.
+2. **`full`** - every building with coordinates to every other. **779 buildings, 302,931 unordered pairs,
+   about 4.4 hours single-threaded and under an hour at eight workers.** It must be **resumable**: a
+   four-hour run that loses everything to one timeout will not be run a second time. Write progress as you
+   go.
+3. **`one`** - a named pair or a named building against everything, for chasing one report.
+
+Flags: `--mode` (`Walk` default; `Bike`, `Bus`, `Drive`, `Walk_ADA`), `--network` (so one publish can be
+compared with the next - that comparison is the point), `--threshold`, `--workers`.
+
+### Get these five things right, because each one was found the hard way
+
+1. **Key on `OBJECTID`, never `Abbrev`.** 778 buildings match the filter; **only 377 have an abbreviation.**
+   A tool keyed on `Abbrev` covers under half the campus while looking complete. Carry `Abbrev` and
+   `BldgName` for the report, key on the id.
+2. **Join results on `RouteName`. Never by position.** A pair that cannot be routed comes back as *nothing*,
+   with no error, so a positional zip mis-pairs every route after the first gap and reports confident wrong
+   numbers. **Reconcile the counts on every batch and fail loudly** when routes back ≠ pairs sent minus pairs
+   explained. This is the #2631 shape again: the failure returns success.
+3. **The unreachable pairs are the most valuable output, not an error to swallow.** Fast pass with
+   `ignoreInvalidLocations=true`, then re-ask each gap on its own with it **false**, which makes the server
+   name it: `No route for "p0000" from location "1044" to location "1084". No solution found.` Report those
+   with the server's own words, grouped by building - a building that cannot reach anything is a different
+   fault from a pair that cannot be joined.
+4. **The threshold has to vary with distance.** 50 m of detour is a ratio of 1.25 on a 200 m line and 1.025
+   on a 2 km one, so a flat threshold fills the report with short pairs and buries the real errors. Report
+   **excess metres beside the ratio** and band by straight-line distance. Measured on 84 real pairs: worst
+   2.59, best 1.12, none below 1.0.
+5. **A ratio below 1.0 is impossible** - a network path cannot be shorter than the straight line. If one
+   appears, the measurement or the coordinates are wrong. Say so loudly; do not report it as a good result.
+
+### Prove it on a fault you make
+
+There is no production routing service (`gis.it.tamu.edu`'s `Routing` folder is empty), so this runs against
+development only - **say that in the README and in the output**, so a run is never mistaken for having tested
+production.
+
+**The test that matters is not "the tool runs".** It is "the tool finds a break that is there and does not
+cry wolf about one that is not". So:
+
+- A unit test over the ratio, banding and reconciliation logic with **fixture responses**, including a
+  response with a missing `RouteName` (does it fail loudly or mis-pair?) and one with a sub-1.0 ratio.
+- Prove the reconciliation red first: feed it a batch where one route is absent and confirm it fails, naming
+  the pair. That is the bug class this tool exists to avoid in itself.
+- Then run `quick` for real, and put its output in the report.
+
+### Start the full run early and leave it going
+
+Per the maintainer's standing preference, the long thing goes first: **once `full` works, start it and carry
+on with the writing while it runs.** Report its elapsed time and its finish time (US Central), and commit its
+run file.
+
+### The check and the notes
+
+`bash scripts/check-in-volume.sh <branch>` - a new tool under `tools/` belongs to no Nx project, so expect
+*No tasks were run* plus the `lint.yml` steps, unless you add a project for the unit tests, which would be
+better. Exit code in the report.
+
+No release note: this has no user-visible result. Apply `no-visible-change` thinking - say in the report that
+you checked rather than leaving the box blank.
+
+### The report
+
+`home/reports/2026-11-05-30.md`. Lead with what `quick` found and what `full` found, then the branch commit,
+then the unreachable buildings grouped - that list is what goes to the GIS team. Questions under
+**Questions for the director (aggiemap)**.
+
 ## Batch 29 (aggiemap: #2653 - make `tsgisHost` obey the environment flag, so a development build reads the development server; 5 November 2026, 8:20 AM Central, from `work (aggiemap)`)
 
 **Start now.** **Expected: 3 to 4 hours.** A branch. **This is yours because you built
