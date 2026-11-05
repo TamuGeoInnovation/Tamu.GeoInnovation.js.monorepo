@@ -62,3 +62,36 @@ test('no request on the landing page fails with a server error', async ({ page }
 
   expect(serverErrors, `server errors: ${serverErrors.join(', ')}`).toHaveLength(0);
 });
+
+/**
+ * #2649. Link previews (Tradewing, LinkedIn, Facebook, Slack) read the HTML a site serves and never run the app, so the
+ * page itself has to name the site it is reached at. Every site once served txgisday.org's page, so a UCGIS post about
+ * gisday.ucgis.org showed "TxGIS Day" with no image. Read as a preview service reads it: the raw HTML, no browser.
+ */
+const SITE_NAMES: Record<string, string> = {
+  'txgisday.org': 'TxGIS Day',
+  'gisday.tamu.edu': 'Texas A&M GIS Day',
+  'gisday.ucgis.org': 'UCGIS GIS Day'
+};
+
+test('the page a link preview reads names this site and has its image', async ({ request, baseURL }) => {
+  const host = new URL(baseURL ?? 'https://txgisday.org').hostname;
+  const response = await request.get('/');
+  const html = await response.text();
+  const meta = (property: string) =>
+    html.match(new RegExp(`<meta[^>]+property="${property}"[^>]+content="([^"]*)"`))?.[1]?.replace(/&amp;/g, '&');
+
+  expect(response.status()).toBe(200);
+
+  if (SITE_NAMES[host]) {
+    expect(meta('og:title'), `og:title on ${host}`).toBe(SITE_NAMES[host]);
+    expect(meta('og:site_name'), `og:site_name on ${host}`).toBe(SITE_NAMES[host]);
+  }
+
+  const image = meta('og:image');
+  expect(image, `og:image on ${host}`).toBeTruthy();
+
+  const picture = await request.get(image as string);
+  expect(picture.status(), `${image}`).toBe(200);
+  expect(picture.headers()['content-type']).toContain('image/');
+});

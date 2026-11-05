@@ -51,6 +51,20 @@ export interface GisdaySite {
   /** The browser tab's icon, relative to the front end's root. */
   favicon: string;
 
+  /**
+   * The site's own address, such as `https://txgisday.org`, which a link preview names as the page it shows (#2649).
+   */
+  address: string;
+
+  /** The sentence a link preview shows under the site's name, and that search engines show (#2649). */
+  description: string;
+
+  /**
+   * The image a link preview shows, relative to the front end's root: 1200 × 630, the size Tradewing, LinkedIn and
+   * Facebook crop to, made from the homepage banner (#2649).
+   */
+  preview: string;
+
   /** The features this site leaves out. Everything else is on. */
   off: Array<GisdayFeature>;
 
@@ -87,6 +101,10 @@ export const GISDAY_SITES = {
     banner: 'assets/images/2022-TIN-sq-1080px.png',
     owner: 'GeoInnovation Service Center',
     favicon: 'favicon.ico',
+    address: 'https://txgisday.org',
+    description:
+      'Three days of workshops and programs celebrating geospatial technology dedicated to students and faculty as they educate, innovate, and collaborate.',
+    preview: 'assets/images/sites/txgisday/preview.png',
     off: [],
     contact: 'gis@tamu.edu'
   },
@@ -98,6 +116,10 @@ export const GISDAY_SITES = {
     banner: 'assets/images/logo/TAM-LogoBox.svg',
     owner: 'GeoInnovation Service Center',
     favicon: 'assets/images/logo/TAM-LogoBox.svg',
+    address: 'https://gisday.tamu.edu',
+    description:
+      'Three days of workshops and programs celebrating geospatial technology dedicated to students and faculty as they educate, innovate, and collaborate.',
+    preview: 'assets/images/sites/tamu/preview.png',
     off: ['homeLinks'],
     contact: 'gis@tamu.edu',
     hosts: ['gisday.tamu.edu', 'tamu.txgisday.org'],
@@ -114,7 +136,15 @@ export const GISDAY_SITES = {
     banner: 'assets/images/sites/ucgis/banner.png',
     owner: 'University Consortium for Geographic Information Science',
     favicon: 'assets/images/sites/ucgis/favicon.png',
-    off: ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu', 'tamuLinks']
+    address: 'https://gisday.ucgis.org',
+    // The homepage's first line, until UCGIS sends its own (#2649).
+    description:
+      'Workshops, demonstrations, and programs from UCGIS member universities, celebrating the advancement of geospatial technology.',
+    preview: 'assets/images/sites/ucgis/preview.png',
+    off: ['competitions', 'faq', 'sponsors', 'classes', 'checkIns', 'pastYears', 'tamu', 'tamuLinks'],
+    // Its deployment names it by key; the address is here too so the site's server can give link previews this
+    // site's page (#2649).
+    hosts: ['gisday.ucgis.org']
   }
 } satisfies Record<string, GisdaySite>;
 
@@ -151,4 +181,49 @@ export function siteSessionPlaces(site: GisdaySite, places: Array<{ guid?: strin
   return (places ?? [])
     .filter((place) => place?.guid && place.name && names.includes(place.name.trim().toLowerCase()))
     .map((place) => place.guid as string);
+}
+
+/**
+ * The tags at the top of a site's page that link previews and search engines read (#2649). They never run the app,
+ * so the page each site serves has to carry its own name, description and image from the start; the app only changes
+ * them once it runs in a browser.
+ */
+export function siteHead(site: GisdaySite): string {
+  const text = (value: string) =>
+    value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const image = `${site.address}/${site.preview}`;
+
+  return [
+    `<title>${text(site.name)}</title>`,
+    `<meta name="description" content="${text(site.description)}" />`,
+    `<meta property="og:site_name" content="${text(site.name)}" />`,
+    `<meta property="og:title" content="${text(site.name)}" />`,
+    `<meta property="og:description" content="${text(site.description)}" />`,
+    `<meta property="og:type" content="website" />`,
+    `<meta property="og:url" content="${text(site.address)}/" />`,
+    `<meta property="og:image" content="${text(image)}" />`,
+    `<meta property="og:image:width" content="1200" />`,
+    `<meta property="og:image:height" content="630" />`,
+    `<meta property="og:image:alt" content="${text(site.name)}" />`,
+    `<meta name="twitter:card" content="summary_large_image" />`
+  ].join('\n    ');
+}
+
+/** Where a site's head goes in the app's page, between these two comments. */
+export const SITE_HEAD_START = '<!-- site head -->';
+export const SITE_HEAD_END = '<!-- /site head -->';
+
+/**
+ * The app's page with a site's head in place of whatever was between the markers. A page without both markers is an
+ * error rather than a page left as it was, since that page would quietly show txgisday.org to every link preview.
+ */
+export function withSiteHead(page: string, site: GisdaySite): string {
+  const start = page.indexOf(SITE_HEAD_START);
+  const end = page.indexOf(SITE_HEAD_END);
+
+  if (start < 0 || end < start) {
+    throw new Error(`The page has no ${SITE_HEAD_START} ... ${SITE_HEAD_END} block to put ${site.name}'s head in.`);
+  }
+
+  return page.slice(0, start + SITE_HEAD_START.length) + '\n    ' + siteHead(site) + '\n    ' + page.slice(end);
 }
