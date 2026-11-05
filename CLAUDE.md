@@ -283,8 +283,10 @@ MSYS_NO_PATHCONV=1 docker run --rm -v tamu-js-dev-nm:/nm node:24.22.1 sh -c "rm 
 
 On 3 November the documented command then worked exactly as written, `--poll=2000` included. On 30 October a
 second machine met the same hang and dropped `--poll` instead, which starts the server and leaves the stale
-cache in the volume for whoever mounts it next. **Prefer `docker stop` to `docker rm -f` for this container**,
-so the optimizer finishes its rename. See #2650.
+cache in the volume for whoever mounts it next. **`docker stop` is not a way out of this**: Nx's serve does
+not exit inside the default ten-second grace, so stop kills it too - measured on 5 November, `docker stop
+aggiemap-dev` on a container up 42 hours exited `137`. Clear the cache whenever the container did not shut
+itself down, which in practice is every time. See #2650.
 
 One volume serves whichever checkout is mounted, so it must match that checkout's lock. Check before
 trusting it: `node_modules/@angular/core/package.json` must show the version the checkout uses. On 4
