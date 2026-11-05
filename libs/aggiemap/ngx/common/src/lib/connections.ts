@@ -5,7 +5,8 @@ import { actingAsProduction } from './acting-as-production';
 function createConnections(gisHost: string): IComposedConnections {
   const tsgisHost = getDefaultGisHosts().tsgisHost;
   // The athletics event maps are hosted views on the development GIS server (#2143), and on the
-  // transportation host in production until the GIS team publish them there. Read from `gisHost`
+  // transportation host in production until the GIS team publish them there; so is Graduation, since its
+  // development copy was republished as a hosted view there on 28 October 2026 (#2530). Read from `gisHost`
   // rather than from the browser's address, so that `Connections(host)` - which the smoke suite calls
   // with an explicit host - resolves the same services the application would on that environment.
   const athleticsHost = gisHost.includes('dev') ? 'gis.dev.tamu.edu' : tsgisHost;
@@ -59,7 +60,7 @@ function createConnections(gisHost: string): IComposedConnections {
     crossCountryParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/CrossCountryParking_view/FeatureServer`,
     familyWeekendUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Family_Weekend_view/FeatureServer`,
     freshmanParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/FreshmanSelectableParking/MapServer`,
-    graduationParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer`,
+    graduationParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/GraduationParking_view/FeatureServer`,
     hsGraduationUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/HS_Graduation/MapServer`,
     indoorTrackParkingUrl: `https://${athleticsHost}/arcgis/rest/services/Hosted/IndoorTrackParking_view/FeatureServer`,
     loadingZonesUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/Loading_Zones/MapServer`,

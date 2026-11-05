@@ -31,6 +31,15 @@ import { environmentIsDevelopment } from './gis-hosts';
  *    At least one, not every one: many parking maps load every space or lot and let the renderer pick
  *    the ones to draw (Timed Parking drew 4 of the first 25 spaces it held, by design). How many of a
  *    layer's features have a symbol is recorded in the annotations instead.
+ *
+ *    **Not filtered to nothing**, either: a layer whose filter (`definitionExpression`) selects none of the
+ *    features its service layer holds. An empty layer passes everything else here, because a layer can be
+ *    empty by design. This shape is not: Graduation's Event Parking read layer 2 filtered to `Type <> 'Closure'`,
+ *    the service was republished with Road Closures at 2 and the lots at 3, and the map drew no lots on
+ *    either environment while every test passed (#2530). Asked of the service directly, both counts. Every
+ *    filtered layer is checked, so a map added later is too, except a filter that is empty by its form
+ *    (`emptyByDesign`: `1=0`, or a date window) and the layers environments.json `allowedEmptyFilters` names,
+ *    each with why.
  * 3. **Keyed.** Every layer that is on in the Layers list, and is not kept out of the legend by design
  *    (`legendEnabled: false`), has a legend entry holding at least one symbol: a row counts only if it
  *    holds an `img`, `canvas`, `svg` or an element with a background image. Freshman Selectable Parking
@@ -73,6 +82,15 @@ const ALLOWED_LAYER_FAILURES = (process.env.AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURE
   .map((entry) => entry.trim())
   .filter((entry) => entry.length > 0);
 
+/** By map path and then layer title or id, each with why: one of this environment's lists in environments.json. */
+function perMapEntries(key: 'allowedMapLayerFailures' | 'allowedEmptyFilters'): Record<string, Record<string, string>> {
+  const environments: Record<string, { baseUrl: string } & Partial<Record<typeof key, Record<string, Record<string, string>>>>> =
+    JSON.parse(fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8'));
+  const normalised = manifest.baseUrl.replace(/\/$/, '');
+
+  return Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === normalised)?.[key] ?? {};
+}
+
 /**
  * Layers this environment is allowed to fail on one map only, by map path and then by layer title or id, each
  * with the issue that tracks it (environments.json `allowedMapLayerFailures`, #2350). Narrower than
@@ -80,16 +98,14 @@ const ALLOWED_LAYER_FAILURES = (process.env.AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURE
  * that seven sports maps filter on (#2209), and tolerating "Accessible Parking Spaces" everywhere would hide the
  * same layer failing on any other map. Read from environments.json by base URL, as `services.spec.ts` does.
  */
-const ALLOWED_MAP_LAYER_FAILURES: Record<string, Record<string, string>> = (() => {
-  const environments: Record<string, { baseUrl: string; allowedMapLayerFailures?: Record<string, Record<string, string>> }> =
-    JSON.parse(fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8'));
-  const normalised = manifest.baseUrl.replace(/\/$/, '');
+const ALLOWED_MAP_LAYER_FAILURES = perMapEntries('allowedMapLayerFailures');
 
-  return (
-    Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === normalised)?.allowedMapLayerFailures ??
-    {}
-  );
-})();
+/**
+ * Layers whose filter is allowed to select nothing their service holds, by map path and then layer title or id,
+ * each with why (environments.json `allowedEmptyFilters`, #2530). Only the check for that, not every check: such a
+ * layer must still load, draw and key whatever it does hold.
+ */
+const ALLOWED_EMPTY_FILTERS = perMapEntries('allowedEmptyFilters');
 
 /** Features asked for at a time, and the most of one layer's given to its renderer. */
 const PAGE = 100;
@@ -123,6 +139,24 @@ interface MapLayer {
   drawn: number | null;
   /** Why the renderer could not be asked, where it could not. */
   queryError: string | null;
+  /** For a layer with a filter: how many features its service layer holds, and how many the filter selects. */
+  filtered: { filter: string; all: number | null; selected: number | null } | null;
+}
+
+/**
+ * A filter that is empty by its form, which this suite cannot tell from a fault: `1=0`, which hides a layer for a
+ * choice not made (Big Event's and Fish Camp's other days), and a date window, which selects nothing outside its
+ * event (Ring Day's, Move-Out's routes). Measured on development on 30 October 2026, the first run of the check.
+ */
+function emptyByDesign(filter: string): boolean {
+  return /^\s*1\s*=\s*0\s*$/.test(filter) || /\bdate\s*'/i.test(filter);
+}
+
+/** A layer whose filter selects none of the features its service layer holds, where that is not by design (#2530). */
+function filteredToNothing(layer: MapLayer): boolean {
+  return (
+    (layer.filtered?.all ?? 0) > 0 && layer.filtered?.selected === 0 && !emptyByDesign(layer.filtered?.filter ?? '')
+  );
 }
 
 /** A Layers list item's text is the layer's title, followed by ` - ` and its note where it has one. */
@@ -236,6 +270,9 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
           id: string;
           title?: string;
           type: string;
+          url?: string | null;
+          layerId?: number | null;
+          definitionExpression?: string | null;
           visible: boolean;
           listMode: string;
           legendEnabled?: boolean;
@@ -272,8 +309,27 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
               error: layer.loadError ? String(layer.loadError.message ?? layer.loadError) : null,
               checked: null,
               drawn: null,
-              queryError: null
+              queryError: null,
+              filtered: null
             };
+
+            // A filter and the service layer it filters, both counted by the service.
+            const filter = layer.definitionExpression;
+
+            if (!entry.error && filter && layer.url && layer.layerId != null) {
+              const count = async (where: string): Promise<number | null> => {
+                try {
+                  const query = `${layer.url}/${layer.layerId}/query?where=${encodeURIComponent(where)}&returnCountOnly=true&f=json`;
+                  const answer = (await (await fetch(query)).json()) as { count?: number };
+
+                  return typeof answer.count === 'number' ? answer.count : null;
+                } catch {
+                  return null;
+                }
+              };
+
+              entry.filtered = { filter, all: await count('1=1'), selected: await count(filter) };
+            }
 
             // On, what its layer view holds; off, what its service holds in the same extent.
             const source = on ? null : layer.queryFeatures ? layer : undefined;
@@ -366,7 +422,8 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
             }` +
             (l.checked === null ? '' : ` drawn=${l.drawn}/${l.checked}`) +
             (l.error ? ` error=${l.error}` : '') +
-            (l.queryError ? ` queryError=${l.queryError}` : '')
+            (l.queryError ? ` queryError=${l.queryError}` : '') +
+            (l.filtered ? ` filter="${l.filtered.filter}" selects ${l.filtered.selected ?? '?'}/${l.filtered.all ?? '?'}` : '')
         )
         .join('\n')
     });
@@ -467,6 +524,29 @@ for (const { mapPath, loadPath, title, borrowedFrom } of cases) {
       );
 
     expect.soft(undrawn, `${mapPath}: layers that hold features their renderer draws nothing for`).toEqual([]);
+
+    // 2a. Not filtered to nothing: a filter that selects none of what its service layer holds (#2530).
+    const allowedEmpty = ALLOWED_EMPTY_FILTERS[mapPath] ?? {};
+    const emptyAllowed = (l: MapLayer) => allowedEmpty[l.title] ?? allowedEmpty[l.id];
+
+    for (const l of layers.filter((layer) => emptyAllowed(layer) !== undefined)) {
+      test.info().annotations.push({
+        type: filteredToNothing(l) ? 'known failure' : 'known failure passes',
+        description: filteredToNothing(l)
+          ? `${l.title || l.id}: ${emptyAllowed(l)}`
+          : `${l.title || l.id}'s filter selects features again on ${mapPath}; remove it from allowedEmptyFilters (${emptyAllowed(l)})`
+      });
+    }
+
+    const filteredAway = layers
+      .filter((l) => !tolerated(l) && emptyAllowed(l) === undefined && filteredToNothing(l))
+      .map(
+        (l) =>
+          `${l.title || l.id}: its filter "${l.filtered?.filter}" selects none of the ${l.filtered?.all} features its ` +
+          `service layer holds`
+      );
+
+    expect.soft(filteredAway, `${mapPath}: layers whose filter selects nothing their service holds`).toEqual([]);
 
     // 2b. Counted: a layer whose count query failed may be drawing short, and must not pass as "n/a".
     //
