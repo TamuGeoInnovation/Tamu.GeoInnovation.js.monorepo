@@ -1,6 +1,6 @@
 # copilot-home: current tasks
 
-> **Next free batch number: 59.** Written only by the directors on the work computer: `work (security)` (the security and
+> **Next free batch number: 60.** Written only by the directors on the work computer: `work (security)` (the security and
 > dependency chat) and, from 26 October, `work (gisday)` (the GIS Day chat; the maintainer wants this machine given work first, to
 > use its Copilot credits before they expire). The two share one number sequence: read and bump this line when you queue. A batch's
 > heading says which director wrote it, and its questions go to that director. You write `copilot-home/STATUS.md` and
@@ -81,10 +81,105 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 > **Your next batch will be waiting here as usual.** Nothing is wrong with you as a listener beyond this
 > stall, and the maintainer has the command to restart your runner.
 
+## Batch 59 (aggiemap: #2653 - make `tsgisHost` obey the environment flag, so a development build reads the development server; 5 November 2026, 8:05 AM Central, from `work (aggiemap)`)
+
+**Do this before batch 58.** **Expected: 3 to 4 hours.** It is a branch, not an investigation: the
+investigation is done and is in the issue.
+
+> **This supersedes most of batch 58.** Batch 58 asked you to report what dev-host routing *would* take and
+> not to build it. The maintainer has since said plainly that the maps are supposed to follow the environment
+> flag already, and that where they do not it is an error we introduced over time. He is right, and it is
+> measured. **Build the fix here; then do batch 58, which becomes much smaller - most of Megan's items are
+> answered by the table in #2653.**
+
+[#2653](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2653) (Bug) has the whole
+measurement: all 57 services the app names on Transportation's host, asked of both hosts, compared by layer
+id, layer name **and field list**. Read it first; everything below assumes it.
+
+### The shape of the fix
+
+`getDefaultGisHosts()` hard-pins `tsgisHost` to `arc.ts.tamu.edu` with a `TEMP:` comment, so the permit and
+event maps ignore the environment flag that every other service obeys. `athleticsHost` is the same workaround
+applied by hand to eleven services, one at a time.
+
+1. **`tsgisHost` resolves to `gis.dev.tamu.edu` on a development build**, by the same
+   `readsDevelopmentGisServer()` test `gisHost` uses - so `acting-as-production` and the smoke suite's
+   explicit-host calls keep working.
+2. **A path rule beside it: `TS_Events/<X>` on production is `TS/<X>` on the development server.** The dev
+   server has no `TS_Events` folder; it has a public `TS` folder of 60 services whose names line up. This is
+   why flipping the host alone returns nothing, and probably why it was pinned.
+3. **Retire `athleticsHost`** into the general mechanism rather than extending it a thirteenth time. Its
+   eleven services are at the same path on both hosts, so they need no path rule - they just stop being a
+   special case.
+4. **The sixteen that cannot move stay named on production, each with its reason beside it**, the way
+   `lactationRoomsUrl` and `basemapUrl` already are. Their dev copies are the older MapServer the hosted view
+   replaced and are **missing `objectid`**, which the exact-match search sources and share links are built
+   on. Routing them is #2209 again. Name them individually; do not leave a silent fallback.
+5. **The four we are simply missing move with the rest**: `4H_Roundup_view`, `AggielandSaturday_view`,
+   `Aggie_Family_Parade_view`, `Big_Event_view` - already public on the dev server at the identical path,
+   every field matching, pinned to production only because nobody added them to `athleticsHost`.
+
+### Prove it red first, and prove the right thing
+
+The bug is not a wrong URL; it is a right URL nobody revisited. So the test has to fail when a service is
+pinned to production **without a stated reason**:
+
+- In `libs/aggiemap/ngx/common/src/lib/connections.spec.ts`, a test over `Connections('gis-dev.it.tamu.edu')`
+  (or whatever the dev host test uses) asserting that **every** transportation URL resolves to the
+  development host **except** an explicit, named allow-list of the sixteen plus the four retired events.
+  That list is the record of what is waiting on Transportation, and adding to it is then a deliberate act.
+- Run it against unmodified `development` and confirm it fails, naming the services. Put that output in the
+  report.
+- Keep the existing `connections.spec.ts` expectations green; **PR 2615 touches that file**, so rebase onto
+  `development` and check whether it has merged before you start.
+
+### Then check the five with only geometry fields missing
+
+`Fish_Camp`, `HS_Graduation`, `Physics_Fest`, `SEC_Grounds_Conference` differ from their dev counterparts only
+in `Shape_Area` / `Shape_Length`. **Grep the definitions and popups for those two names.** If nothing reads
+them, they move with the clean twenty and your report says so; if something does, they go on the allow-list
+with that as the reason. `TS_Main` is different - its layer 6 is missing real `GIS.TS.SPC_PNT_CNT.*`
+attributes, so expect it on the allow-list.
+
+### What to look at in a browser, because this is the part a test cannot tell you
+
+A development build of the branch, and for each of **business parking, contractor parking, freshman parking,
+timed parking, night and weekend, visitor parking, Aggieland Saturday and Big Event**: the layers draw, the
+legend has its symbols, a popup opens with its fields filled, and the copy link reopens the same feature.
+**Before and after screenshots of at least three of them** - the "before" is a development build of plain
+`development`, which draws production's data, so take it first and keep it.
+
+Then **`test/smoke/aggiemap/run-local.sh local`** against the dev server, and say what changed against the
+same run on `development`. Some layers will newly appear or newly fail; that is the point, and every new
+failure needs naming, not explaining away. If the development server is genuinely missing something the suite
+expects, that is an `environments.json` entry with its issue, as #1229 and #2350 did.
+
+### The check and the notes
+
+`bash scripts/check-in-volume.sh <branch>` - **the full affected check, not a project list**: this changes
+`connections.ts`, which nearly everything reads, so it is not a bug-fix-shaped change. Exit code in the
+report.
+
+A release note in `docs/releases/unreleased/2653-dev-host-transportation.md` with its *What to test on dev*
+row, and the before/after images under `docs/screenshots/2653-dev-host-transportation/`. The user-visible
+result is real: on development, these maps start showing development data.
+
+### The report
+
+`copilot-home/reports/2026-11-05-59.md`. Lead with the red test's output, then the branch commit, then the
+allow-list and the reason for each entry - that list is the thing the director takes to Transportation and to
+the maintainer. Questions under **Questions for the director (aggiemap)**.
+
 ## Batch 58 (aggiemap: #2634 - Megan's republished permit and event services: what each server actually serves, and what the map can take; 5 November 2026, 7:05 AM Central, from `work (aggiemap)`)
 
 **Start now. Expected: 2 to 3 hours.** Read-only first; a branch only for what step 5 clears.
 
+> **Do batch 59 first (8:05 AM Central, 5 November). It supersedes most of this batch**: the maintainer
+> has said the maps are supposed to follow the environment flag already, so the routing is being built
+> rather than reported on, and the measurement in #2653 answers most of Megan's items outright. Come
+> back here afterwards for what is left - the icons, the permit splits' renderer override, and the
+> answer to write to her.
+>
 > **Corrected at 7:20 AM Central, 5 November, before you started: step 1 is gone, and step 5 got easier.**
 > The director wrote step 1 from the state of `development` and missed that the graduation fault is already
 > fixed in an **open pull request**, [PR 2615](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2615)
