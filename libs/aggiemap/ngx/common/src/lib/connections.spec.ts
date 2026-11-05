@@ -1,4 +1,4 @@
-import { Connections, readsDevelopmentGisServer } from './connections';
+import { Connections, IComposedConnections, readsDevelopmentGisServer } from './connections';
 
 /**
  * Where the Men's Basketball map reads its layers from (#1749, then #2143).
@@ -70,5 +70,68 @@ describe('readsDevelopmentGisServer', () => {
 
   it('is false on dev asked to behave as production (#1722)', () => {
     expect(at('https://dev.aggiemap.tamu.edu/events/womens-basketball?as=production')).toBe(false);
+  });
+});
+
+const NO_HOSTED_VIEW_ON_DEVELOPMENT =
+  "the development server has only the older MapServer the hosted view replaced, which lacks objectid (the search sources and share links are built on it) and the view's other fields";
+const RETIRED = 'a retired 150th-anniversary event, with no counterpart on the development server';
+
+/**
+ * Transportation's services that a development build still reads from production, each with why (#2653). This is the
+ * list to take to Transportation: publish the hosted view on the development server and the map becomes testable
+ * there. Measured 5 November 2026 against both hosts, by layer id, layer name and field list.
+ */
+const READ_FROM_PRODUCTION_ON_DEVELOPMENT: Partial<Record<keyof IComposedConnections, string>> = {
+  tsMainUrl:
+    'layer 6 on the development server lacks the GIS.TS.SPC_PNT_CNT.* space counts, which the parking search and drive directions read',
+  accessibleParkingUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  beefCattleUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  constructionUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  familyWeekendUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  fireSchoolUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  gamesOfTexasUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  maroonWhiteGameUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  moveInParkingUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  ms150Url: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  ringDayUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  summerCommencementUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  tCampUrl: NO_HOSTED_VIEW_ON_DEVELOPMENT,
+  kickoff150thUrl: RETIRED,
+  kickoffAtKyleUrl: RETIRED,
+  liveAtTheStationUrl: RETIRED,
+  spiritOf150WeekUrl: RETIRED
+};
+
+/**
+ * A development build reads Transportation's development services (#2653). The failure this guards against is not a
+ * wrong address but a right one nobody revisited: the transportation host was pinned to production while the
+ * development copies were published one by one, so maps that could have been tested on dev were not.
+ */
+describe("Transportation's services on a development build (#2653)", () => {
+  const production = Connections('gis.it.tamu.edu');
+  const development = Connections('gis-dev.it.tamu.edu');
+  const onProductionHost = (url: string) => url.startsWith('https://arc.ts.tamu.edu/');
+  const transportation = (Object.keys(production) as Array<keyof IComposedConnections>).filter((key) =>
+    onProductionHost(production[key])
+  );
+
+  it('reads the development server for every one, except those listed with why', () => {
+    expect(transportation.filter((key) => onProductionHost(development[key]) && !READ_FROM_PRODUCTION_ON_DEVELOPMENT[key])).toEqual([]);
+  });
+
+  it('lists only services a development build still reads from production', () => {
+    const listed = Object.keys(READ_FROM_PRODUCTION_ON_DEVELOPMENT) as Array<keyof IComposedConnections>;
+
+    expect(listed.filter((key) => !onProductionHost(development[key]))).toEqual([]);
+  });
+
+  it("reads production's TS_Events services from the development server's TS folder", () => {
+    expect(production.businessParkingUrl).toBe('https://arc.ts.tamu.edu/arcgis/rest/services/TS_Events/BusinessParking/MapServer');
+    expect(development.businessParkingUrl).toBe('https://gis.dev.tamu.edu/arcgis/rest/services/TS/BusinessParking/MapServer');
+  });
+
+  it("reads Muster from the development server's MusterParking_view, a different name with the same layers and fields", () => {
+    expect(development.musterUrl).toBe('https://gis.dev.tamu.edu/arcgis/rest/services/Hosted/MusterParking_view/FeatureServer');
   });
 });
