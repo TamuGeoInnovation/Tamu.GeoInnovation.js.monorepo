@@ -15,6 +15,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 
 ## Running now
 - **Batch 29** (aggiemap, #2653: `tsgisHost` obeys the environment flag), started 6:30 AM Central, 5 November. Reading #2653, then a branch from `origin/development`, red test first.
+  - 7:05 AM: both hosts re-measured for every service (agrees with #2653 except: Muster is on dev as `MusterParking_view`, fields identical, so it moves; 12 hosted views plus TS_Main stay, not 16). Red test committed on `fix/2653-tsgis-dev-host`: 30 services named. Writing the fix.
 
 ## Finished
 - **Batch 28** (aggiemap; report `home/reports/2026-10-30-28.md`): #2593 branch ready: `fix/2530-graduation-republish` at `5c309f666`. Event Parking reads `/3` (filter kept: production's `/3` repeats the two closures), Road Closures `/2`, dev reads the new hosted view; Fall and Spring share one definition. Inverted filter check, `1=0` and date windows exempt by form, Move-In listed against #2612. Red on both environments, green locally; check exit 0. Two questions.
