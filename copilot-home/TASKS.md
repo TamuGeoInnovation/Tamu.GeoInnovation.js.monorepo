@@ -85,6 +85,15 @@ a recommendation. Push `work-mailbox` with a message starting `copilot-home: bat
 
 **Start now. Expected: 2 to 3 hours.** Read-only first; a branch only for what step 5 clears.
 
+> **Corrected at 7:20 AM Central, 5 November, before you started: step 1 is gone, and step 5 got easier.**
+> The director wrote step 1 from the state of `development` and missed that the graduation fault is already
+> fixed in an **open pull request**, [PR 2615](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2615)
+> (`fix/2530-graduation-republish`, closes #2593, refs #2530). Do not investigate it, do not fix it, and do
+> not branch near those files - it rewrote `graduation-fall`, `graduation-spring` and `graduation.definitions.ts`.
+> **Step 1 is now: read that pull request first.** It is the worked example for everything else in this batch,
+> and it answers the question step 6 says is with the maintainer.
+
+
 [#2634](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2634) (Task, Medium) is
 Megan's report that she has worked through most of
 [#1523](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1523) - the list of layer
@@ -123,29 +132,30 @@ Each service's layer list, read from `.../FeatureServer?f=json` on both hosts. *
 Not yet read, and yours to read: `TS_Events/BusinessParking`, `ContractorParking`,
 `FreshmanSelectableParking`, `NightWeekendParking`, `TimedParking` (all `MapServer` on `tsgisHost`).
 
-### 1. The graduation fault, first, because it may be live on production
+### 1. Read PR 2615 first. It has already done this once, correctly
 
-`libs/ts/events/ngx/src/lib/definitions/graduation-fall.definitions.ts` points **two entries at layer 2**:
+Transportation republished `GraduationParking_view` with its layers split on 28 October
+([#2530](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2530)) - the same
+republishing Megan's item 3 describes - and it broke the graduation maps on production: *Event Parking* and
+*Road Closures* both read layer `/2`, told apart by a filter, and once `/2` became closures only, Event
+Parking asked a closures layer for everything that is not a closure and got nothing.
+[PR 2615](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/2615) fixes it and is
+waiting on the maintainer. **That work is done. Read it, do not repeat it.**
 
-- `GRADUATION_EVENT_PARKING_LOTS`, titled `Event Parking`, at `${eventUrl}/2`
-- `GRADUATION_ROAD_CLOSURES`, titled `Road Closures`, at `${eventUrl}/2`, filtered `Type = 'Closure'`
+Two things in it decide the rest of this batch:
 
-The service's layer 2 **is** `Road Closures`; `Event Parking` is layer 3, on both servers. So the map's
-*Event Parking* layer appears to be drawing from the closures layer, on production, today.
-
-**Prove it before you believe it**, and prove it by querying rather than by reading the REST page: ask layer 2
-and layer 3 for their feature counts and for the `Type` values each holds, on both hosts. Three outcomes, and
-your report says which:
-
-- Layer 2 holds only closures - then *Event Parking* draws closures and this is a **live production bug**:
-  file it (Bug, screenshots, suggest High), point the entry at `/3`, and keep its title until the service's
-  own name is confirmed. The `Type = 'Closure'` filter on the closures entry then has nothing to exclude; say
-  whether it is now redundant rather than deleting it silently.
-- Layer 2 still holds both types - then the filter is doing real work, and the question is only whether
-  *Event Parking* should move to 3. Recommend, do not decide.
-- Something else - report it.
-
-`graduation-spring` and `graduation-summer` read the same service. **Check all three**; fix all three or none.
+1. **The mechanism for pointing one service at the development server already exists and is in use.**
+   `createConnections` has `athleticsHost = gisHost.includes('dev') ? 'gis.dev.tamu.edu' : tsgisHost` (#2143),
+   and PR 2615 moves `graduationParkingUrl` onto it, with the reason in the comment above. So the answer to
+   "how do we get Megan's work onto AggieMap dev for testing" is **one word per service**, not a new
+   mechanism. Your report recommends which of her services should move onto `athleticsHost` and which must
+   not.
+2. **What makes it safe there is that dev and production serve the same layer `id`s and the same fields.**
+   Graduation does (the director checked: identical on both hosts). The #2209 athletics failure was the
+   opposite case - dev views with a different *schema*, so the column each definition filtered on was absent
+   and eight maps listed a layer that drew nothing. **A differing layer *name* is harmless, because the
+   definition supplies the title. A differing field or layer id is not.** That distinction is the whole of
+   step 5, so get it straight before you write anything.
 
 ### 2. Run the tools we already have, and extend one rather than writing a script
 
@@ -213,9 +223,18 @@ screenshots.
 row per item of her list, with the verdict** - done on both, dev only, or needs something from her - and the
 evidence under it. Then anything you need decided under **Questions for the director (aggiemap)**.
 
-Already with the maintainer, so do not file it again: whether these maps should read `gis.dev.tamu.edu` on a
-development build the way the athletics maps do, so her work can be tested at all before it reaches
-production. **Report what that would take and what it would risk; do not build it.**
+### 7. Don't touch
+
+These are open pull requests. Do not branch near their files, and do not fix anything they already fix:
+
+- **PR 2615** `fix/2530-graduation-republish` - all three graduation definitions, `graduation.definitions.ts`,
+  `connections.ts`, `connections.spec.ts`, `test/smoke/aggiemap/environments.json`, `map-layers.spec.ts`.
+- **PR 2645**, **PR 2644**, **PR 2648**, **PR 2594** - other `ts-events-ngx` and popup work.
+- **PR 2619** - the smoke suite's GIS host helpers, which is your own batch 57.
+
+**`connections.ts` is in PR 2615.** If your recommendation is to move a service onto `athleticsHost`, say so
+in the report and leave the edit to the director, who will put it on top of 2615 once it merges. A second
+branch editing that file is a conflict for no gain.
 
 ## Batch 57 (aggiemap: #2604 - the smoke suite's four ways of asking which GIS host it is on; a branch; 30 October 2026, from `work (aggiemap)`)
 
